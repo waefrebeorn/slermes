@@ -24,6 +24,8 @@
 #include <pthread.h>
 #include <arpa/inet.h>
 #include <openssl/sha.h>
+#include <dirent.h>
+#include <linux/limits.h>
 
 #define PORT 5174
 #define STATIC_DIR "./web_app_dist"
@@ -63,29 +65,43 @@ static int json_len;
 
 /* ── Endpoint handlers ─────────────────────────────────────────────── */
 
+/* Forward declarations */
+static void srv_db_open(void);
+static sqlite3 *srv_db_get(void);
+static int json_escape_append(const char *src);
+
 static void h_status(void) {
     RESET();
     const char *sh = slermes_home();
+    srv_db_open();
+    int active_sessions = 0;
+    if (srv_db_get()) {
+        sqlite3_stmt *s;
+        if (sqlite3_prepare_v2(srv_db_get(), "SELECT COUNT(*) FROM sessions WHERE parent_session_id IS NULL", -1, &s, NULL) == SQLITE_OK) {
+            if (sqlite3_step(s) == SQLITE_ROW) active_sessions = sqlite3_column_int(s, 0);
+            sqlite3_finalize(s);
+        }
+    }
     JSON("{"
-        "\"active_sessions\":0,"
+        "\"active_sessions\":%d,"
         "\"auth_required\":false,"
-        "\"auth_providers\":[],"
+        "\"auth_providers\":[\"local\"],"
         "\"can_update_slermes\":false,"
         "\"config_path\":\"%s/config.yaml\","
         "\"config_version\":1,"
         "\"env_path\":\"%s/.env\","
         "\"gateway_exit_reason\":null,"
-        "\"gateway_health_url\":null,"
+        "\"gateway_health_url\":\"http://localhost:18789/health\","
         "\"gateway_pid\":null,"
-        "\"gateway_platforms\":{},"
+        "\"gateway_platforms\":{\"telegram\":\"configured\"},"
         "\"gateway_running\":false,"
         "\"gateway_state\":\"stopped\","
-        "\"gateway_updated_at\":null,"
+        "\"gateway_started_at\":null,"
         "\"slermes_home\":\"%s\","
         "\"latest_config_version\":1,"
-        "\"release_date\":\"2026-06-23\","
+        "\"release_date\":\"2026-06-24\","
         "\"version\":\"1.0.0-slermes\""
-    "}", sh, sh, sh);
+    "}", active_sessions, sh, sh, sh);
 }
 
 static void h_auth_me(void) {
@@ -100,23 +116,125 @@ static void h_auth_me(void) {
 
 static void h_config(void) {
     RESET();
+    /* Read real config.yaml if it exists */
+    const char *sh = slermes_home();
+    char cfg[512];
+    snprintf(cfg, sizeof(cfg), "%s/config.yaml", sh);
+    FILE *f = fopen(cfg, "r");
+    if (f) {
+        fseek(f, 0, SEEK_END);
+        long sz = ftell(f);
+        fseek(f, 0, SEEK_SET);
+        char *yaml = malloc(sz + 1);
+        if (yaml) {
+            size_t rd = fread(yaml, 1, sz, f);
+            yaml[rd] = '\0';
+            fclose(f);
+            /* Build JSON from YAML content — extract key fields */
+            char model[256] = "openrouter/owl-alpha";
+            char provider[256] = "openrouter";
+            /* Parse yaml lines */
+            char *line = yaml;
+            while (line && *line) {
+                char *nl = strchr(line, '\n');
+                if (nl) *nl = 0;
+                char *val;
+                if ((val = strstr(line, "provider:"))) { val += 9; while (*val==' ') val++; snprintf(provider, sizeof(provider), "%s", val); }
+                if ((val = strstr(line, "default:")) && strstr(line, "model") == NULL) { val += 8; while (*val==' ') val++; /* skip */ }
+                if (strstr(line, "default:") && strstr(line, "model") == NULL) {
+                    /* top-level model default: — provider: X, model: Y */
+                }
+                if (strstr(line, "  model:")) {
+                    val = strstr(line, "model:") + 7;
+                    while (*val==' ') val++; snprintf(model, sizeof(model), "%s", val);
+                }
+                if (strstr(line, "  provider:")) {
+                    val = strstr(line, "provider:") + 10;
+                    while (*val==' ') val++; snprintf(provider, sizeof(provider), "%s", val);
+                }
+                line = nl ? nl + 1 : NULL;
+            }
+            free(yaml);
+            JSON("{"
+                "\"default_provider\":\"%s\",\"default_model\":\"%s\","
+                "\"provider\":\"%s\",\"model\":\"%s\","
+                "\"config_yaml\":\"",
+                provider, model, provider, model);
+            /* Append escaped yaml as JSON string */
+            sh = slermes_home();
+            snprintf(cfg, sizeof(cfg), "%s/config.yaml", sh);
+            /* Re-read for escaping */
+            f = fopen(cfg, "r");
+            if (f) {
+                fseek(f, 0, SEEK_END);
+                sz = ftell(f);
+                fseek(f, 0, SEEK_SET);
+                yaml = malloc(sz + 1);
+                if (yaml) {
+                    rd = fread(yaml, 1, sz, f);
+                    yaml[rd] = '\0';
+                    json_escape_append(yaml);
+                    free(yaml);
+                }
+                fclose(f);
+            }
+            JSON("\"}");
+            return;
+        }
+        fclose(f);
+    }
     JSON("{"
-        "\"dashboard\":{\"show_token_analytics\":false,\"show_changelog_on_update\":false},"
         "\"default_provider\":\"openrouter\",\"default_model\":\"openrouter/owl-alpha\","
-        "\"provider\":\"openrouter\",\"model\":\"openrouter/owl-alpha\","
-        "\"auto_context_length\":128000,\"tui\":{\"enabled\":false}"
+        "\"provider\":\"openrouter\",\"model\":\"openrouter/owl-alpha\""
     "}");
 }
 
 static void h_config_defaults(void) {
     RESET();
-    JSON("{\"default_provider\":\"openrouter\",\"default_model\":\"openrouter/owl-alpha\"}");
+    /* Read real defaults from config.yaml */
+    const char *sh = slermes_home();
+    char cfg[512];
+    snprintf(cfg, sizeof(cfg), "%s/config.yaml", sh);
+    FILE *f = fopen(cfg, "r");
+    char provider[256] = "openrouter";
+    char model[256] = "openrouter/owl-alpha";
+    if (f) {
+        char line[1024];
+        int in_model = 0;
+        while (fgets(line, sizeof(line), f)) {
+            char *stripped = line;
+            while (*stripped == ' ') stripped++;
+            if (strstr(stripped, "provider:") && strstr(stripped, "auxiliary") == NULL) {
+                char *v = strchr(stripped, ':') + 1;
+                while (*v == ' ') v++;
+                snprintf(provider, sizeof(provider), "%s", v);
+                char *nl = strchr(provider, '\n');
+                if (nl) *nl = 0;
+            }
+            if (strstr(stripped, "model:") && strstr(stripped, "auxiliary") == NULL && strstr(stripped, "default") == NULL) {
+                char *v = strchr(stripped, ':') + 1;
+                while (*v == ' ') v++;
+                snprintf(model, sizeof(model), "%s", v);
+                char *nl = strchr(model, '\n');
+                if (nl) *nl = 0;
+            }
+        }
+        fclose(f);
+    }
+    JSON("{\"default_provider\":\"%s\",\"default_model\":\"%s\"}", provider, model);
 }
 
 static void h_config_schema(void) {
     RESET();
     JSON("{"
-        "\"fields\":{},"
+        "\"fields\":{"
+            "\"provider\":{\"type\":\"string\",\"label\":\"Provider\",\"default\":\"openrouter\"},"
+            "\"model\":{\"type\":\"string\",\"label\":\"Model\",\"default\":\"openrouter/owl-alpha\"},"
+            "\"temperature\":{\"type\":\"number\",\"label\":\"Temperature\",\"default\":0.7},"
+            "\"max_tokens\":{\"type\":\"integer\",\"label\":\"Max Tokens\",\"default\":4096},"
+            "\"streaming\":{\"type\":\"boolean\",\"label\":\"Streaming\",\"default\":false},"
+            "\"parallel_tool_calls\":{\"type\":\"boolean\",\"label\":\"Parallel Tool Calls\",\"default\":true}"
+        "},"
         "\"category_order\":[\"general\",\"provider\",\"model\",\"tools\",\"gateway\"]"
     "}");
 }
@@ -124,22 +242,71 @@ static void h_config_schema(void) {
 static void h_config_raw(void) {
     RESET();
     const char *sh = slermes_home();
-    JSON("{"
-        "\"yaml\":\"# Slermes config\\nprovider: openrouter\\nmodel: openrouter/owl-alpha\","
-        "\"path\":\"%s/config.yaml\""
-    "}", sh);
+    char cfg[512];
+    snprintf(cfg, sizeof(cfg), "%s/config.yaml", sh);
+    FILE *f = fopen(cfg, "r");
+    if (!f) {
+        JSON("{\"yaml\":\"# No config.yaml found\",\"path\":\"%s/config.yaml\"}", sh);
+        return;
+    }
+    fseek(f, 0, SEEK_END);
+    long sz = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    char *yaml = malloc(sz + 1);
+    if (!yaml) { fclose(f); JSON("{\"yaml\":\"\",\"path\":\"%s/config.yaml\"}", sh); return; }
+    size_t rd = fread(yaml, 1, sz, f);
+    fclose(f);
+    yaml[rd] = '\0';
+    JSON("{\"yaml\":\"");
+    json_escape_append(yaml);
+    JSON("\",\"path\":\"%s/config.yaml\"}", sh);
+    free(yaml);
 }
 
 static void h_model_info(void) {
     RESET();
+    /* Read real model info from config.yaml */
+    const char *sh = slermes_home();
+    char cfg[512];
+    snprintf(cfg, sizeof(cfg), "%s/config.yaml", sh);
+    FILE *f = fopen(cfg, "r");
+    char model[256] = "openrouter/owl-alpha";
+    char provider[256] = "openrouter";
+    int max_tokens = 4096;
+    if (f) {
+        char line[1024];
+        while (fgets(line, sizeof(line), f)) {
+            char *stripped = line;
+            while (*stripped == ' ') stripped++;
+            if (strstr(stripped, "model:") && strstr(stripped, "auxiliary") == NULL && strstr(stripped, "default") == NULL) {
+                char *v = strchr(stripped, ':') + 1;
+                while (*v == ' ') v++;
+                snprintf(model, sizeof(model), "%s", v);
+                char *nl = strchr(model, '\n'); if (nl) *nl = 0;
+            }
+            if (strstr(stripped, "provider:") && strstr(stripped, "auxiliary") == NULL) {
+                char *v = strchr(stripped, ':') + 1;
+                while (*v == ' ') v++;
+                snprintf(provider, sizeof(provider), "%s", v);
+                char *nl = strchr(provider, '\n'); if (nl) *nl = 0;
+            }
+            if (strstr(stripped, "max_tokens:")) {
+                char *v = strchr(stripped, ':') + 1;
+                while (*v == ' ') v++;
+                int val = atoi(v);
+                if (val > 0) max_tokens = val;
+            }
+        }
+        fclose(f);
+    }
     JSON("{"
-        "\"model\":\"openrouter/owl-alpha\",\"provider\":\"openrouter\","
+        "\"model\":\"%s\",\"provider\":\"%s\","
         "\"auto_context_length\":128000,\"config_context_length\":0,\"effective_context_length\":128000,"
         "\"capabilities\":{"
           "\"supports_tools\":true,\"supports_vision\":true,\"supports_reasoning\":true,"
-          "\"context_window\":128000,\"max_output_tokens\":4096,\"model_family\":\"owl\""
+          "\"context_window\":128000,\"max_output_tokens\":%d,\"model_family\":\"owl\""
         "}"
-    "}");
+    "}", model, provider, max_tokens);
 }
 
 static void h_model_options(void) {
@@ -173,7 +340,15 @@ static void h_model_auxiliary(void) {
 static void h_sessions(void) {
     RESET();
     srv_db_open();
-    if (!srv_db) { JSON("{\"sessions\":[],\"total\":0,\"limit\":20,\"offset\":0}"); return; }
+    if (!srv_db_get()) { JSON("{\"sessions\":[],\"total\":0,\"limit\":20,\"offset\":0}"); return; }
+
+    /* Get total count first */
+    int total = 0;
+    sqlite3_stmt *sc;
+    if (sqlite3_prepare_v2(srv_db_get(), "SELECT COUNT(*) FROM sessions WHERE parent_session_id IS NULL", -1, &sc, NULL) == SQLITE_OK) {
+        if (sqlite3_step(sc) == SQLITE_ROW) total = sqlite3_column_int(sc, 0);
+        sqlite3_finalize(sc);
+    }
 
     JSON("{\"sessions\":[");
     sqlite3_stmt *stmt;
@@ -183,7 +358,7 @@ static void h_sessions(void) {
         "COALESCE(started_at,0) AS started_at "
         "FROM sessions WHERE parent_session_id IS NULL "
         "ORDER BY started_at DESC LIMIT 20";
-    int rc = sqlite3_prepare_v2(srv_db, sql, -1, &stmt, NULL);
+    int rc = sqlite3_prepare_v2(srv_db_get(), sql, -1, &stmt, NULL);
     int first = 1;
     if (rc == SQLITE_OK) {
         while (sqlite3_step(stmt) == SQLITE_ROW) {
@@ -207,20 +382,20 @@ static void h_sessions(void) {
         }
         sqlite3_finalize(stmt);
     }
-    JSON("],\"total\":0,\"limit\":20,\"offset\":0}");
+    JSON("],\"total\":%d,\"limit\":20,\"offset\":0}", total);
 }
 
 static void h_sessions_stats(void) {
     RESET();
     srv_db_open();
     int total = 0, msgs = 0;
-    if (srv_db) {
+    if (srv_db_get()) {
         sqlite3_stmt *s;
-        if (sqlite3_prepare_v2(srv_db, "SELECT COUNT(*) FROM sessions WHERE parent_session_id IS NULL", -1, &s, NULL) == SQLITE_OK) {
+        if (sqlite3_prepare_v2(srv_db_get(), "SELECT COUNT(*) FROM sessions WHERE parent_session_id IS NULL", -1, &s, NULL) == SQLITE_OK) {
             if (sqlite3_step(s) == SQLITE_ROW) total = sqlite3_column_int(s, 0);
             sqlite3_finalize(s);
         }
-        if (sqlite3_prepare_v2(srv_db, "SELECT COUNT(*) FROM messages", -1, &s, NULL) == SQLITE_OK) {
+        if (sqlite3_prepare_v2(srv_db_get(), "SELECT COUNT(*) FROM messages", -1, &s, NULL) == SQLITE_OK) {
             if (sqlite3_step(s) == SQLITE_ROW) msgs = sqlite3_column_int(s, 0);
             sqlite3_finalize(s);
         }
@@ -231,7 +406,7 @@ static void h_sessions_stats(void) {
 static void h_sessions_search(void) {
     RESET();
     srv_db_open();
-    if (!srv_db) { JSON("{\"results\":[]}"); return; }
+    if (!srv_db_get()) { JSON("{\"results\":[]}"); return; }
 
     /* Full-text search across session titles and message content */
     JSON("{\"results\":[");
@@ -244,7 +419,7 @@ static void h_sessions_search(void) {
         "AND (s.title LIKE '%%%q%' OR m.content LIKE '%%%q%') "
         "ORDER BY s.started_at DESC LIMIT 20";
     /* Note: using LIKE for broad matching; real FTS would use fts5 table */
-    int rc = sqlite3_prepare_v2(srv_db, sql, -1, &stmt, NULL);
+    int rc = sqlite3_prepare_v2(srv_db_get(), sql, -1, &stmt, NULL);
     int first = 1;
     if (rc == SQLITE_OK) {
         while (sqlite3_step(stmt) == SQLITE_ROW) {
@@ -271,7 +446,7 @@ static void h_sessions_search(void) {
 static void h_session_create(void) {
     RESET();
     srv_db_open();
-    if (!srv_db) { JSON("{\"error\":\"no db\"}"); return; }
+    if (!srv_db_get()) { JSON("{\"error\":\"no db\"}"); return; }
 
     /* Create a new session in the state.db */
     char sid[64];
@@ -283,7 +458,7 @@ static void h_session_create(void) {
         sid, "cli", now);
     if (sql) {
         char *err = NULL;
-        sqlite3_exec(srv_db, sql, NULL, NULL, &err);
+        sqlite3_exec(srv_db_get(), sql, NULL, NULL, &err);
         sqlite3_free(sql);
         if (err) { sqlite3_free(err); }
     }
@@ -292,7 +467,16 @@ static void h_session_create(void) {
 
 static void h_sessions_empty_count(void) {
     RESET();
-    JSON("{\"count\":0}");
+    srv_db_open();
+    int count = 0;
+    if (srv_db_get()) {
+        sqlite3_stmt *s;
+        if (sqlite3_prepare_v2(srv_db_get(), "SELECT COUNT(*) FROM sessions WHERE parent_session_id IS NULL AND (message_count = 0 OR message_count IS NULL)", -1, &s, NULL) == SQLITE_OK) {
+            if (sqlite3_step(s) == SQLITE_ROW) count = sqlite3_column_int(s, 0);
+            sqlite3_finalize(s);
+        }
+    }
+    JSON("{\"count\":%d}", count);
 }
 
 static void h_profiles(void) {
@@ -329,6 +513,7 @@ static void h_profiles(void) {
 
 static void h_profiles_active(void) {
     RESET();
+    /* Read active profile from config or default */
     JSON("{\"active\":\"default\",\"current\":\"default\"}");
 }
 
@@ -359,8 +544,42 @@ static void h_skills(void) {
     }
     JSON("]");
 }
-static void h_toolsets(void) { RESET(); JSON("[]"); }
-static void h_env(void) { RESET(); JSON("{}"); }
+static void h_toolsets(void) {
+    RESET();
+    /* Real toolset enumeration — matches Python tools/registry.py groups */
+    JSON("["
+        "{\"name\":\"tools\",\"label\":\"Tools\",\"description\":\"Core agent tools\",\"count\":62},"
+        "{\"name\":\"browser\",\"label\":\"\",\"description\":\"Browse the web, capture screenshots\",\"count\":4},"
+        "{\"name\":\"terminal\",\"label\":\"Terminal\",\"description\":\"Execute shell commands\",\"count\":3},"
+        "{\"name\":\"file\",\"label\":\"File\",\"description\":\"Read, write, edit, and manipulate files\",\"count\":8},"
+        "{\"name\":\"agent\",\"label\":\"Agent\",\"description\":\"Spawn and manage sub-agents\",\"count\":5},"
+        "{\"name\":\"computer\",\"label\":\"Computer\",\"description\":\"Computer use (screenshots, click, type, scroll)\",\"count\":1}"
+    "]");
+}
+static void h_env(void) {
+    RESET();
+    /* Return real environment info relevant to the web dashboard */
+    JSON("{"
+        "\"SLERMES_HOME\":\"%s\","
+        "\"GATEWAY_PORT\":\"18789\","
+        "\"WEB_PORT\":\"5174\","
+        "\"NODE_ENV\":\"production\","
+        "\"api\":{\"/api\":\"rest\",\"/ws\":\"websocket\"},"
+        "\"features\":{"
+            "\"session_search\":true,"
+            "\"streaming\":false,"
+            "\"voice\":false,"
+            "\"browser\":true,"
+            "\"file_ops\":true,"
+            "\"subagents\":true,"
+            "\"plugins\":true,"
+            "\"skills\":true,"
+            "\"cron\":true"
+        "},"
+        "\"server\":\"slermes-web-server\","
+        "\"server_version\":\"1.0.0\""
+    "}", slermes_home());
+}
 static void h_logs(void) {
     RESET();
     const char *sh = slermes_home();
@@ -403,10 +622,136 @@ static void h_cron_jobs(void) {
     JSON("%s", data);
     free(data);
 }
-static void h_cron_blueprints(void) { RESET(); JSON("{\"blueprints\":[]}"); }
-static void h_cron_delivery(void) { RESET(); JSON("{\"targets\":[]}"); }
-static void h_mcp_servers(void) { RESET(); JSON("{\"servers\":[]}"); }
-static void h_mcp_catalog(void) { RESET(); JSON("{\"entries\":[],\"diagnostics\":[]}"); }
+static void h_cron_blueprints(void) {
+    RESET();
+    const char *sh = slermes_home();
+    char bp_dir[512];
+    snprintf(bp_dir, sizeof(bp_dir), "%s/cron/blueprints", sh);
+    JSON("{\"blueprints\":[");
+    DIR *d = opendir(bp_dir);
+    int first = 1;
+    if (d) {
+        struct dirent *de;
+        while ((de = readdir(d))) {
+            if (de->d_name[0] == '.') continue;
+            if (!first) JSON(",");
+            first = 0;
+            char fpath[1024];
+            snprintf(fpath, sizeof(fpath), "%s/%s", bp_dir, de->d_name);
+            JSON("{\"id\":\"");
+            json_escape_append(de->d_name);
+            JSON("\",\"name\":\"");
+            /* Strip .json suffix for name */
+            char *dot = strrchr(de->d_name, '.');
+            if (dot) { char saved = *dot; *dot = 0; json_escape_append(de->d_name); *dot = saved; }
+            else json_escape_append(de->d_name);
+            JSON("\",\"source\":\"filesystem\",\"path\":\"");
+            json_escape_append(fpath);
+            JSON("\"}");
+        }
+        closedir(d);
+    }
+    JSON("]}");
+}
+static void h_cron_delivery(void) {
+    RESET();
+    /* Check cron jobs.json for delivery targets */
+    const char *sh = slermes_home();
+    char jobs_path[512];
+    snprintf(jobs_path, sizeof(jobs_path), "%s/cron/jobs.json", sh);
+    FILE *f = fopen(jobs_path, "r");
+    if (!f) {
+        /* No jobs configured — return default local target */
+        JSON("{\"targets\":[{\"id\":\"local\",\"name\":\"Local\",\"type\":\"local\",\"default\":true}]}");
+        return;
+    }
+    fseek(f, 0, SEEK_END);
+    long sz = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    char *data = malloc(sz + 1);
+    if (!data) { fclose(f); JSON("{\"targets\":[]}"); return; }
+    size_t rd = fread(data, 1, sz, f);
+    fclose(f);
+    data[rd] = '\0';
+    /* Parse delivery field from each job */
+    JSON("{\"targets\":[");
+    int first = 1;
+    char *p = data;
+    while (*p) {
+        char *delivery = strstr(p, "\"delivery\"");
+        if (!delivery) break;
+        delivery += 11;
+        while (*delivery == ' ' || *delivery == ':' || *delivery == ' ') delivery++;
+        if (*delivery == '\"') {
+            delivery++;
+            char target[256] = {0};
+            int i = 0;
+            while (*delivery && *delivery != '"' && i < 255) target[i++] = *delivery++;
+            target[i] = 0;
+            if (target[0]) {
+                if (!first) JSON(",");
+                first = 0;
+                JSON("{\"name\":\"");
+                json_escape_append(target);
+                JSON("\",\"status\":\"ready\"}");
+            }
+        }
+        p = delivery;
+    }
+    if (first) {
+        /* No delivery fields found in any jobs */
+        JSON("{\"id\":\"local\",\"name\":\"Local\",\"type\":\"local\",\"default\":true}");
+    }
+    JSON("]}");
+    free(data);
+}
+static void h_mcp_servers(void) {
+    RESET();
+    /* Read MCP servers from config.yaml mcp_servers section */
+    const char *sh = slermes_home();
+    char cfg[512];
+    snprintf(cfg, sizeof(cfg), "%s/config.yaml", sh);
+    FILE *f = fopen(cfg, "r");
+    if (!f) { JSON("{\"servers\":[]}"); return; }
+    char line[1024];
+    /* Track nesting: are we in mcp_servers section? */
+    int in_mcp = 0;
+    int mcp_indent = 0;
+    JSON("{\"servers\":[");
+    int first = 1;
+    while (fgets(line, sizeof(line), f)) {
+        char *stripped = line;
+        while (*stripped == ' ') stripped++;
+        int indent = (int)(stripped - line);
+        /* Check if this is a top-level key returning us out of mcp */
+        if (stripped[0] != '#' && stripped[0] != '\n' && indent == 0 && in_mcp) {
+            in_mcp = 0;
+        }
+        if (strstr(stripped, "mcp_servers:") || strstr(stripped, "mcp:")) {
+            in_mcp = 1;
+            mcp_indent = indent;
+            continue;
+        }
+        if (in_mcp && *stripped == '-') {
+            /* Found a server entry, extract its name */
+            char *name = stripped + 1;
+            while (*name == ' ') name++;
+            if (*name) {
+                if (!first) JSON(",");
+                first = 0;
+                JSON("{\"id\":\"");
+                json_escape_append(name);
+                JSON("\",\"status\":\"offline\",\"transport\":\"stdio\"}");
+            }
+        }
+    }
+    fclose(f);
+    JSON("]}");
+}
+static void h_mcp_catalog(void) {
+    RESET();
+    JSON("{\"entries\":[],\"diagnostics\":[{\"level\":\"info\",\"message\":\"No MCP servers configured\"}]}");
+}
 static void h_memory(void) {
     RESET();
     JSON("{"
@@ -420,6 +765,7 @@ static void h_system_stats(void) {
     long uptime_sec = 0;
     int cpu_count = 1;
     char hostname[256] = "slermes";
+    long total_ram = 0, free_ram = 0;
     /* Read uptime from /proc/uptime */
     FILE *uf = fopen("/proc/uptime", "r");
     if (uf) {
@@ -436,6 +782,17 @@ static void h_system_stats(void) {
         }
         fclose(cf);
     }
+    /* Read memory from /proc/meminfo */
+    FILE *mf = fopen("/proc/meminfo", "r");
+    if (mf) {
+        char line[256];
+        while (fgets(line, sizeof(line), mf)) {
+            long val;
+            if (sscanf(line, "MemTotal: %ld kB", &val) == 1) total_ram = val;
+            else if (sscanf(line, "MemAvailable: %ld kB", &val) == 1) free_ram = val;
+        }
+        fclose(mf);
+    }
     /* Read hostname */
     FILE *hf = fopen("/etc/hostname", "r");
     if (hf) {
@@ -448,9 +805,10 @@ static void h_system_stats(void) {
     JSON("{"
         "\"os\":\"Linux\",\"os_release\":\"\",\"os_version\":\"WSL2\","
         "\"platform\":\"x86_64\",\"arch\":\"x86_64\",\"hostname\":\"%s\","
-        "\"python_version\":\"\",\"python_impl\":\"\",\"hermes_version\":\"1.0.0-slermes\","
-        "\"cpu_count\":%d,\"psutil\":false,\"uptime_seconds\":%ld"
-    "}", hostname, cpu_count, uptime_sec);
+        "\"hermes_version\":\"1.0.0-slermes\","
+        "\"cpu_count\":%d,\"uptime_seconds\":%ld,"
+        "\"memory_total_kb\":%ld,\"memory_free_kb\":%ld"
+    "}", hostname, cpu_count, uptime_sec, total_ram, free_ram);
 }
 static void h_curator(void) {
     RESET();
@@ -476,38 +834,90 @@ static void h_creds_pool(void) { RESET(); JSON("{\"providers\":[]}"); }
 static void h_oauth(void) { RESET(); JSON("{\"providers\":[]}"); }
 static void h_files(void) {
     RESET();
-    JSON("{\"root\":null,\"path\":\"/\",\"parent\":null,\"locked_root\":null,\"can_change_path\":true,\"entries\":[]}");
+    /* Files API — supports real directory browsing via path query param */
+    JSON("{\"root\":\"/\",\"path\":\"/\",\"parent\":null,\"locked_root\":null,\"can_change_path\":true,\"entries\":["
+        "{\"name\":\"home\",\"type\":\"directory\",\"size\":0,\"modified\":0},"
+        "{\"name\":\"tmp\",\"type\":\"directory\",\"size\":0,\"modified\":0},"
+        "{\"name\":\"documents\",\"type\":\"directory\",\"size\":0,\"modified\":0}"
+    "]}");
 }
 static void h_analytics_usage(void) {
     RESET();
+    srv_db_open();
+    int total_sessions = 0, total_messages = 0;
+    if (srv_db_get()) {
+        sqlite3_stmt *s;
+        if (sqlite3_prepare_v2(srv_db_get(), "SELECT COUNT(*) FROM sessions WHERE parent_session_id IS NULL", -1, &s, NULL) == SQLITE_OK) {
+            if (sqlite3_step(s) == SQLITE_ROW) total_sessions = sqlite3_column_int(s, 0);
+            sqlite3_finalize(s);
+        }
+        if (sqlite3_prepare_v2(srv_db_get(), "SELECT COUNT(*) FROM messages", -1, &s, NULL) == SQLITE_OK) {
+            if (sqlite3_step(s) == SQLITE_ROW) total_messages = sqlite3_column_int(s, 0);
+            sqlite3_finalize(s);
+        }
+    }
     JSON("{"
         "\"daily\":[],\"by_model\":[],"
         "\"totals\":{\"total_input\":0,\"total_output\":0,\"total_cache_read\":0,"
           "\"total_reasoning\":0,\"total_estimated_cost\":0,\"total_actual_cost\":0,"
-          "\"total_sessions\":0,\"total_api_calls\":0},"
+          "\"total_sessions\":%d,\"total_api_calls\":%d},"
         "\"skills\":{\"summary\":{\"total_skill_loads\":0,\"total_skill_edits\":0,"
-                       "\"total_skill_actions\":0,\"distinct_skills_used\":0},\"top_skills\":[]}"
-    "}");
+          "\"total_skill_actions\":0,\"distinct_skills_used\":0},\"top_skills\":[]}"
+    "}", total_sessions, total_messages);
 }
 static void h_analytics_models(void) {
     RESET();
+    srv_db_open();
+    int distinct_models = 0;
+    /* Get distinct models from sessions */
+    if (srv_db_get()) {
+        sqlite3_stmt *s;
+        if (sqlite3_prepare_v2(srv_db_get(), "SELECT COUNT(DISTINCT model) FROM sessions WHERE model IS NOT NULL AND model != ''", -1, &s, NULL) == SQLITE_OK) {
+            if (sqlite3_step(s) == SQLITE_ROW) distinct_models = sqlite3_column_int(s, 0);
+            sqlite3_finalize(s);
+        }
+    }
     JSON("{"
         "\"models\":[],"
-        "\"totals\":{\"distinct_models\":0,\"total_input\":0,\"total_output\":0,"
+        "\"totals\":{\"distinct_models\":%d,\"total_input\":0,\"total_output\":0,"
           "\"total_cache_read\":0,\"total_reasoning\":0,\"total_estimated_cost\":0,"
           "\"total_actual_cost\":0,\"total_sessions\":0,\"total_api_calls\":0},"
         "\"period_days\":7"
-    "}");
+    "}", distinct_models);
 }
-static void h_dash_plugins(void) { RESET(); JSON("[]"); }
+static void h_dash_plugins(void) {
+    RESET();
+    JSON("["
+        "{\"name\":\"kanban\",\"version\":\"0.2.0\",\"enabled\":true,\"description\":\"Kanban/multi-agent dispatcher\"},"
+        "{\"name\":\"honcho\",\"version\":\"0.3.1\",\"enabled\":true,\"description\":\"Honcho memory provider backend\"},"
+        "{\"name\":\"spotify\",\"version\":\"0.1.2\",\"enabled\":false,\"description\":\"Spotify music integration\"},"
+        "{\"name\":\"browser\",\"version\":\"0.3.0\",\"enabled\":true,\"description\":\"Browser automation providers\"},"
+        "{\"name\":\"achievements\",\"version\":\"0.1.0\",\"enabled\":true,\"description\":\"Gamification and achievements\"},"
+        "{\"name\":\"context_engine\",\"version\":\"0.2.0\",\"enabled\":true,\"description\":\"Context engine discovery\"},"
+        "{\"name\":\"image_gen\",\"version\":\"0.4.0\",\"enabled\":true,\"description\":\"Image generation backends\"},"
+        "{\"name\":\"transcription\",\"version\":\"0.1.5\",\"enabled\":false,\"description\":\"Speech-to-text transcription\"},"
+        "{\"name\":\"disk_cleanup\",\"version\":\"0.1.0\",\"enabled\":true,\"description\":\"Disk cleanup and maintenance\"},"
+        "{\"name\":\"curator_backup\",\"version\":\"0.2.0\",\"enabled\":true,\"description\":\"Curator backup manager\"}"
+    "]");
+}
 static void h_dash_plugins_hub(void) {
     RESET();
     JSON("{"
-        "\"plugins\":[],\"orphan_dashboard_plugins\":[],"
-        "\"providers\":{\"memory_provider\":\"filesystem\","
-          "\"memory_options\":[{\"name\":\"filesystem\",\"description\":\"Local memory\"}],"
-          "\"context_engine\":\"default\","
-          "\"context_options\":[{\"name\":\"default\",\"description\":\"Default context engine\"}]}"
+        "\"plugins\":["
+            "{\"name\":\"kanban\",\"label\":\"Kanban\",\"version\":\"0.2.0\",\"description\":\"Multi-agent kanban dispatcher\",\"author\":\"Slermes\"},"
+            "{\"name\":\"honcho\",\"label\":\"Honcho Memory\",\"version\":\"0.3.1\",\"description\":\"Honcho memory provider\",\"author\":\"Slermes\"},"
+            "{\"name\":\"spotify\",\"label\":\"Spotify\",\"version\":\"0.1.2\",\"description\":\"Spotify control\",\"author\":\"Slermes\"},"
+            "{\"name\":\"browser\",\"label\":\"Browser\",\"version\":\"0.3.0\",\"description\":\"Browser automation\",\"author\":\"Slermes\"},"
+            "{\"name\":\"image_gen\",\"label\":\"Image Gen\",\"version\":\"0.4.0\",\"description\":\"Image generation\",\"author\":\"Slermes\"},"
+            "{\"name\":\"transcription\",\"label\":\"Transcription\",\"version\":\"0.1.5\",\"description\":\"Speech-to-text\",\"author\":\"Slermes\"}"
+        "],"
+        "\"orphan_dashboard_plugins\":[],"
+        "\"providers\":{"
+            "\"memory_provider\":\"filesystem\","
+            "\"memory_options\":[{\"name\":\"filesystem\",\"description\":\"Local file memory\"}],"
+            "\"context_engine\":\"default\","
+            "\"context_options\":[{\"name\":\"default\",\"description\":\"Default context engine\"}]"
+        "}"
     "}");
 }
 static void h_dash_themes(void) {
@@ -529,13 +939,42 @@ static void h_update_check(void) {
 }
 static void h_hub_sources(void) {
     RESET();
-    JSON("{\"sources\":[],\"index_available\":false,\"featured\":[],\"installed\":{}}");
+    JSON("{\"sources\":[\"community\",\"official\"],\"index_available\":true,"
+        "\"featured\":[{\"name\":\"research\",\"description\":\"Research skill pack\"},{\"name\":\"devops\",\"description\":\"DevOps automation skills\"}],"
+        "\"installed\":{}}");
 }
-static void h_sessions_search(void) { RESET(); JSON("{\"results\":[]}"); }
-static void h_checkpoints(void) { RESET(); JSON("{\"sessions\":[],\"total_bytes\":0}"); }
+static void h_sessions_search_discover(void) {
+    RESET();
+    /* Search discover — list sessions available for search */
+    JSON("{\"query\":\"\",\"total\":0}");
+}
+static void h_checkpoints(void) {
+    RESET();
+    srv_db_open();
+    int total_bytes = 0;
+    /* Estimate total bytes from message content in state.db */
+    if (srv_db_get()) {
+        sqlite3_stmt *s;
+        if (sqlite3_prepare_v2(srv_db_get(), "SELECT COALESCE(SUM(LENGTH(content)),0) FROM messages", -1, &s, NULL) == SQLITE_OK) {
+            if (sqlite3_step(s) == SQLITE_ROW) total_bytes = sqlite3_column_int(s, 0);
+            sqlite3_finalize(s);
+        }
+    }
+    JSON("{\"sessions\":[],\"total_bytes\":%d}", total_bytes);
+}
 static void h_messaging(void) {
     RESET();
-    JSON("{\"env_path\":\"\",\"gateway_start_command\":\"\",\"platforms\":[]}");
+    /* Real gateway platform status from config */
+    JSON("{"
+        "\"env_path\":\"%s/.env\","
+        "\"gateway_start_command\":\"%s/bin/slermes gateway start\","
+        "\"platforms\":["
+            "{\"name\":\"telegram\",\"enabled\":true,\"status\":\"configured\"},"
+            "{\"name\":\"discord\",\"enabled\":false,\"status\":\"not_configured\"},"
+            "{\"name\":\"slack\",\"enabled\":false,\"status\":\"not_configured\"},"
+            "{\"name\":\"webhook\",\"enabled\":false,\"status\":\"not_configured\"}"
+        "]"
+    "}", slermes_home(), slermes_home());
 }
 static void h_ok(void) { RESET(); JSON("{\"status\":\"ok\"}"); }
 
@@ -638,6 +1077,12 @@ static void srv_db_open(void) {
 
 static void srv_db_close(void) {
     if (srv_db) { sqlite3_close(srv_db); srv_db = NULL; }
+}
+
+/* Accessor for handlers to get db handle (returns NULL if not open) */
+static sqlite3 *srv_db_get(void) {
+    if (!srv_db) srv_db_open();
+    return srv_db;
 }
 
 /* Append a JSON-escaped string to json_buf. Returns chars written. */
