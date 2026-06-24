@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f0f1a"/>
+      <stop offset="50%" stop-color="#1a1a2e"/>
+      <stop offset="100%" stop-color="#16213e"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e94560"/>
+      <stop offset="100%" stop-color="#ff6b6b"/>
+    </linearGradient>
+    <linearGradient id="accent2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4a90d9"/>
+      <stop offset="100%" stop-color="#67b8f7"/>
+    </linearGradient>
+    <linearGradient id="code-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e94560" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#4a90d9" stop-opacity="0.05"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="400" fill="url(#bg)" rx="12"/>
+
+  <!-- Subtle grid pattern -->
+  <g opacity="0.03" stroke="#fff" stroke-width="0.5">
+    <line x1="0" y1="100" x2="1200" y2="100"/>
+    <line x1="0" y1="200" x2="1200" y2="200"/>
+    <line x1="0" y1="300" x2="1200" y2="300"/>
+    <line x1="300" y1="0" x2="300" y2="400"/>
+    <line x1="600" y1="0" x2="600" y2="400"/>
+    <line x1="900" y1="0" x2="900" y2="400"/>
+  </g>
+
+  <!-- Code accent glow -->
+  <rect x="0" y="0" width="1200" height="400" fill="url(#code-glow)"/>
+
+  <!-- Left decorative brace -->
+  <text x="60" y="200" font-family="'Courier New', monospace" font-size="240" fill="url(#accent)" opacity="0.12">/*</text>
+
+  <!-- Right decorative close brace -->
+  <text x="1040" y="200" font-family="'Courier New', monospace" font-size="240" fill="url(#accent2)" opacity="0.12">*/</text>
+
+  <!-- Main title -->
+  <text x="600" y="165" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="96" font-weight="700" letter-spacing="-2" fill="#ffffff">
+    Slermes
+  </text>
+
+  <!-- Subtitle -->
+  <text x="600" y="215" text-anchor="middle" font-family="'Courier New', monospace" font-size="22" fill="#8899aa" letter-spacing="6">
+    C  L A N G U A G E    H E R M E S    A G E N T
+  </text>
+
+  <!-- Decorative line -->
+  <line x1="350" y1="240" x2="850" y2="240" stroke="url(#accent)" stroke-width="2" opacity="0.6"/>
+
+  <!-- Tagline -->
+  <text x="600" y="278" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#667788" letter-spacing="1">
+    One static binary · Zero runtime deps beyond libc + libssl
+  </text>
+
+  <!-- Stats bar -->
+  <rect x="80" y="320" width="1040" height="50" rx="8" fill="#1c1c36" opacity="0.7"/>
+  
+  <!-- Stat items -->
+  <text x="200" y="350" text-anchor="middle" font-family="'Courier New', monospace" font-size="20" font-weight="700" fill="#e94560">340+</text>
+  <text x="200" y="362" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#667788" letter-spacing="1">TESTS</text>
+
+  <line x1="320" y1="328" x2="320" y2="362" stroke="#333355" stroke-width="1"/>
+
+  <text x="430" y="350" text-anchor="middle" font-family="'Courier New', monospace" font-size="20" font-weight="700" fill="#4a90d9">85</text>
+  <text x="430" y="362" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#667788" letter-spacing="1">TOOLS</text>
+
+  <line x1="550" y1="328" x2="550" y2="362" stroke="#333355" stroke-width="1"/>
+
+  <text x="650" y="350" text-anchor="middle" font-family="'Courier New', monospace" font-size="20" font-weight="700" fill="#67b8f7">19</text>
+  <text x="650" y="362" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#667788" letter-spacing="1">GATEWAYS</text>
+
+  <line x1="770" y1="328" x2="770" y2="362" stroke="#333355" stroke-width="1"/>
+
+  <text x="880" y="350" text-anchor="middle" font-family="'Courier New', monospace" font-size="20" font-weight="700" fill="#e94560">10</text>
+  <text x="880" y="362" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#667788" letter-spacing="1">PROVIDERS</text>
+
+  <line x1="995" y1="328" x2="995" y2="362" stroke="#333355" stroke-width="1"/>
+
+  <text x="1080" y="350" text-anchor="middle" font-family="'Courier New', monospace" font-size="20" font-weight="700" fill="#4a90d9">0</text>
+  <text x="1080" y="362" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#667788" letter-spacing="1">WARNINGS</text>
+
+  <!-- Small C-style comment bottom right -->
+  <text x="1120" y="390" text-anchor="end" font-family="'Courier New', monospace" font-size="10" fill="#334455">// slermes</text>
+</svg>

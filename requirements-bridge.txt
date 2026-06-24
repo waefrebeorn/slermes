@@ -1,0 +1,52 @@
+# Slermes — Python Bridge Dependencies
+# ============================================================================
+# These packages are OPTIONAL — the C binary works fully standalone.
+# Install them only if you need Python bridge mode (delegating to Python
+# SDKs for features that have no C equivalent).
+#
+# Install all:
+#   pip install -r requirements-bridge.txt
+#
+# Or via make:
+#   make python-deps
+#
+# See THIRD_PARTY.md §9 for details on which features need which packages.
+# ============================================================================
+
+# Core inference (C replaces with libhttp to each provider's REST API)
+openai
+anthropic
+google-auth-oauthlib
+azure-identity
+httpx
+
+# Cloud sandbox environments (C runs locally by default)
+docker
+paramiko
+modal
+singularity
+
+# Provider-specific inference (C has provider_*.c for each)
+mistralai
+boto3
+edge-tts
+elevenlabs
+faster-whisper
+fal-client
+honcho-ai
+hindsight-client
+exa-py
+firecrawl-py
+
+# CLI tools (C has native ncurses CLI)
+rich
+prompt-toolkit
+pyyaml
+
+# Gateway plugins (C has native gateway in src/gateway/)
+wechatpy
+dingtalk-sdk
+feishu
+matrix-nio
+slack-sdk
+discord-py

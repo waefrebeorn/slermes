@@ -1,0 +1,220 @@
+/*
+ * port_gateway_shutdown_forensics.c — C port of gateway/shutdown_forensics.py
+ */
+
+#include "hermes.h"
+#include "hermes_logger.h"
+#include "hermes_json.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <signal.h>
+#include <time.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <errno.h>
+
+/* PoP: cli_gateway_shutdown_forensics__signal_name @ gateway/shutdown_forensics.py:_signal_name */
+const char* cli_gateway_shutdown_forensics__signal_name(int sig) {
+    switch (sig) {
+        case SIGTERM: return "SIGTERM";
+        case SIGINT:  return "SIGINT";
+        case SIGHUP:  return "SIGHUP";
+#ifdef SIGQUIT
+        case SIGQUIT: return "SIGQUIT";
+#endif
+#ifdef SIGUSR1
+        case SIGUSR1: return "SIGUSR1";
+#endif
+#ifdef SIGUSR2
+        case SIGUSR2: return "SIGUSR2";
+#endif
+        default: {
+            static char buf[32];
+            snprintf(buf, sizeof(buf), "signal#%d", sig);
+            return buf;
+        }
+    }
+}
+
+/* PoP: cli_gateway_shutdown_forensics__read_proc_field @ gateway/shutdown_forensics.py:_read_proc_field */
+char* cli_gateway_shutdown_forensics__read_proc_field(int pid, const char *key) {
+    if (pid <= 0 || !key) return NULL;
+    char path[128];
+    snprintf(path, sizeof(path), "/proc/%d/status", pid);
+    FILE *f = fopen(path, "r");
+    if (!f) return NULL;
+    char line[256];
+    char *result = NULL;
+    while (fgets(line, sizeof(line), f)) {
+        if (strncmp(line, key, strlen(key)) == 0 && line[strlen(key)] == ':') {
+            const char *val = line + strlen(key) + 1;
+            while (*val == ' ' || *val == '\t') val++;
+            result = strdup(val);
+            if (result) {
+                size_t len = strlen(result);
+                while (len > 0 && (result[len-1] == '\n' || result[len-1] == '\r')) result[--len] = '\0';
+            }
+            break;
+        }
+    }
+    fclose(f);
+    return result;
+}
+
+/* PoP: cli_gateway_shutdown_forensics__read_proc_cmdline @ gateway/shutdown_forensics.py:_read_proc_cmdline */
+char* cli_gateway_shutdown_forensics__read_proc_cmdline(int pid) {
+    if (pid <= 0) return NULL;
+    char path[128];
+    snprintf(path, sizeof(path), "/proc/%d/cmdline", pid);
+    FILE *f = fopen(path, "rb");
+    if (!f) return NULL;
+    char raw[4096];
+    size_t n = fread(raw, 1, sizeof(raw) - 1, f);
+    fclose(f);
+    if (n == 0) return NULL;
+    raw[n] = '\0';
+    for (size_t i = 0; i < n; i++) {
+        if (raw[i] == '\0') raw[i] = ' ';
+    }
+    char *result = strdup(raw);
+    if (result) {
+        size_t len = strlen(result);
+        while (len > 0 && result[len-1] == ' ') result[--len] = '\0';
+    }
+    return result;
+}
+
+/* PoP: cli_gateway_shutdown_forensics__proc_summary @ gateway/shutdown_forensics.py:_proc_summary */
+json_node_t* cli_gateway_shutdown_forensics__proc_summary(int pid) {
+    json_node_t *summary = json_new_object();
+    if (!summary) return NULL;
+    json_object_set(summary, "pid", json_new_number(pid));
+    if (pid <= 0) return summary;
+    char *name = cli_gateway_shutdown_forensics__read_proc_field(pid, "Name");
+    if (name) { json_object_set(summary, "name", json_new_string(name)); free(name); }
+    char *state = cli_gateway_shutdown_forensics__read_proc_field(pid, "State");
+    if (state) { json_object_set(summary, "state", json_new_string(state)); free(state); }
+    char *ppid_str = cli_gateway_shutdown_forensics__read_proc_field(pid, "PPid");
+    if (ppid_str) { json_object_set(summary, "ppid", json_new_number(atoi(ppid_str))); free(ppid_str); }
+    char *cmdline = cli_gateway_shutdown_forensics__read_proc_cmdline(pid);
+    if (cmdline) {
+        size_t len = strlen(cmdline);
+        if (len > 300) cmdline[300] = '\0';
+        json_object_set(summary, "cmdline", json_new_string(cmdline));
+        free(cmdline);
+    }
+    return summary;
+}
+
+/* PoP: cli_gateway_shutdown_forensics_snapshot_shutdown_context @ gateway/shutdown_forensics.py:snapshot_shutdown_context */
+json_node_t* cli_gateway_shutdown_forensics_snapshot_shutdown_context(int received_signal) {
+    json_node_t *ctx = json_new_object();
+    if (!ctx) return NULL;
+    time_t now = time(NULL);
+    pid_t pid = getpid();
+    pid_t ppid = getppid();
+    const char *sig_name = cli_gateway_shutdown_forensics__signal_name(received_signal);
+    json_object_set(ctx, "ts", json_new_number(now));
+    json_object_set(ctx, "signal", json_new_string(sig_name));
+    json_object_set(ctx, "signal_num", json_new_number(received_signal));
+    json_object_set(ctx, "pid", json_new_number(pid));
+    json_object_set(ctx, "ppid", json_new_number(ppid));
+    json_node_t *parent = cli_gateway_shutdown_forensics__proc_summary(ppid);
+    if (parent) json_object_set(ctx, "parent", parent);
+    json_node_t *self = cli_gateway_shutdown_forensics__proc_summary(pid);
+    if (self) json_object_set(ctx, "self", self);
+    const char *invocation_id = getenv("INVOCATION_ID");
+    if (invocation_id) json_object_set(ctx, "systemd_invocation_id", json_new_string(invocation_id));
+    json_object_set(ctx, "under_systemd", json_new_bool(invocation_id != NULL || ppid == 1));
+    return ctx;
+}
+
+/* PoP: cli_gateway_shutdown_forensics_spawn_async_diagnostic @ gateway/shutdown_forensics.py:spawn_async_diagnostic */
+int cli_gateway_shutdown_forensics_spawn_async_diagnostic(const char *log_path, const char *signal_name) {
+    if (!log_path || !signal_name) return -1;
+    int fd = open(log_path, O_WRONLY | O_CREAT | O_APPEND, 0644);
+    if (fd < 0) return -1;
+    pid_t child = fork();
+    if (child == 0) {
+        setsid();
+        close(0);
+        dup2(fd, STDOUT_FILENO);
+        dup2(fd, STDERR_FILENO);
+        close(fd);
+        char script[2048];
+        snprintf(script, sizeof(script),
+            "echo '=== shutdown diagnostic @ %s ==='\n"
+            "date -u +%%Y-%%m-%%dT%%H:%%M:%%SZ\n"
+            "ps auxf --sort=-pcpu 2>/dev/null | head -60\n"
+            "echo '=== end ==='\n", signal_name);
+        execlp("bash", "bash", "-c", script, NULL);
+        _exit(1);
+    }
+    close(fd);
+    return child > 0 ? child : -1;
+}
+
+/* PoP: cli_gateway_shutdown_forensics_format_context_for_log @ gateway/shutdown_forensics.py:format_context_for_log */
+char* cli_gateway_shutdown_forensics_format_context_for_log(json_node_t *ctx) {
+    if (!ctx) return strdup("(null)");
+    const char *sig = json_object_get_string(ctx, "signal", "?");
+    json_node_t *parent = json_object_get(ctx, "parent");
+    const char *parent_cmd = parent ? json_object_get_string(parent, "cmdline", "(unknown)") : "(unknown)";
+    const char *parent_name = parent ? json_object_get_string(parent, "name", "?") : "?";
+    int ppid_val = parent ? (int)json_object_get_number(parent, "pid", 0) : 0;
+    int under_systemd = json_get_bool(ctx, "under_systemd", false);
+    double load = json_object_get_number(ctx, "loadavg_1m", -1.0);
+    char buf[2048];
+    snprintf(buf, sizeof(buf),
+        "signal=%s under_systemd=%s parent_pid=%d parent_name=%s loadavg_1m=%.2f parent_cmdline=%s",
+        sig, under_systemd ? "yes" : "no", ppid_val, parent_name, load, parent_cmd);
+    return strdup(buf);
+}
+
+/* PoP: cli_gateway_shutdown_forensics_context_as_json @ gateway/shutdown_forensics.py:context_as_json */
+char* cli_gateway_shutdown_forensics_context_as_json(json_node_t *ctx) {
+    if (!ctx) return strdup("{}");
+    char *json_str = json_serialize(ctx);
+    return json_str ? json_str : strdup("{}");
+}
+
+/* PoP: cli_gateway_shutdown_forensics_check_systemd_timing_alignment @ gateway/shutdown_forensics.py:check_systemd_timing_alignment */
+json_node_t* cli_gateway_shutdown_forensics_check_systemd_timing_alignment(double drain_timeout) {
+    const char *invocation_id = getenv("INVOCATION_ID");
+    if (!invocation_id) return NULL;
+    json_node_t *result = json_new_object();
+    if (!result) return NULL;
+    json_object_set(result, "drain_timeout", json_new_number(drain_timeout));
+    json_object_set(result, "under_systemd", json_new_bool(true));
+    hermes_log(LOG_DEBUG, "shutdown_forensics", "check_systemd_timing: drain_timeout=%.1f", drain_timeout);
+    return result;
+}
+
+/* PoP: cli_gateway_shutdown_forensics__parse_systemd_duration_to_us @ gateway/shutdown_forensics.py:_parse_systemd_duration_to_us */
+long cli_gateway_shutdown_forensics__parse_systemd_duration_to_us(const char *raw) {
+    if (!raw || !*raw) return 0;
+    long total_us = 0;
+    const char *p = raw;
+    while (*p) {
+        while (*p == ' ' || *p == '\t') p++;
+        if (!*p) break;
+        char *end;
+        double val = strtod(p, &end);
+        if (end == p) { p++; continue; }
+        p = end;
+        while (*p == ' ' || *p == '\t') p++;
+        long mult = 1000000;
+        if (strncmp(p, "ms", 2) == 0) { mult = 1000; p += 2; }
+        else if (strncmp(p, "us", 2) == 0) { mult = 1; p += 2; }
+        else if (strncmp(p, "min", 3) == 0) { mult = 60000000; p += 3; }
+        else if (strncmp(p, "sec", 3) == 0) { mult = 1000000; p += 3; }
+        else if (strncmp(p, "h", 1) == 0) { mult = 3600000000L; p += 1; }
+        else if (strncmp(p, "hr", 2) == 0) { mult = 3600000000L; p += 2; }
+        else if (*p == 's') { mult = 1000000; p += 1; }
+        total_us += (long)(val * mult);
+    }
+    return total_us > 0 ? total_us : 0;
+}

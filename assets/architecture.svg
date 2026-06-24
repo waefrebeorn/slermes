@@ -1,0 +1,169 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f0f1a"/>
+      <stop offset="100%" stop-color="#1a1a2e"/>
+    </linearGradient>
+    <linearGradient id="python-side" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a1a3e"/>
+      <stop offset="100%" stop-color="#242450"/>
+    </linearGradient>
+    <linearGradient id="c-side" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1c2a1a"/>
+      <stop offset="100%" stop-color="#243024"/>
+    </linearGradient>
+    <linearGradient id="arrow-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e94560"/>
+      <stop offset="100%" stop-color="#4a90d9"/>
+    </linearGradient>
+    <linearGradient id="layer-agent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e94560"/>
+      <stop offset="100%" stop-color="#ff6b6b"/>
+    </linearGradient>
+    <linearGradient id="layer-cli" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4a90d9"/>
+      <stop offset="100%" stop-color="#67b8f7"/>
+    </linearGradient>
+    <linearGradient id="layer-gw" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#50c878"/>
+      <stop offset="100%" stop-color="#7ddfa0"/>
+    </linearGradient>
+    <linearGradient id="layer-tools" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#9370db"/>
+      <stop offset="100%" stop-color="#b896ff"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="700" fill="url(#bg)" rx="12"/>
+
+  <!-- Title -->
+  <text x="600" y="50" text-anchor="middle" font-family="system-ui, sans-serif" font-size="24" font-weight="700" fill="#ffffff" letter-spacing="1">Architecture</text>
+  <text x="600" y="70" text-anchor="middle" font-family="'Courier New', monospace" font-size="13" fill="#667788">Python Hermes Agent → Slermes C Translation</text>
+
+  <!-- Python side label -->
+  <rect x="40" y="90" width="360" height="30" rx="4" fill="#242450"/>
+  <text x="220" y="110" text-anchor="middle" font-family="'Courier New', monospace" font-size="13" fill="#8899bb">PYTHON HERMES AGENT</text>
+
+  <!-- Arrow -->
+  <line x1="400" y1="105" x2="520" y2="105" stroke="url(#arrow-grad)" stroke-width="2"/>
+  <polygon points="520,100 535,105 520,110" fill="#e94560"/>
+  <text x="467" y="98" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#667788">→ C</text>
+
+  <!-- C side label -->
+  <rect x="540" y="90" width="360" height="30" rx="4" fill="#243024"/>
+  <text x="720" y="110" text-anchor="middle" font-family="'Courier New', monospace" font-size="13" fill="#88bb99">SLERMES C</text>
+
+  <!-- Agent Loop Layer -->
+  <rect x="40" y="140" width="360" height="65" rx="6" fill="url(#python-side)" stroke="#e94560" stroke-width="1.5"/>
+  <text x="220" y="163" text-anchor="middle" font-family="'Courier New', monospace" font-size="12" font-weight="700" fill="url(#layer-agent)" filter="url(#glow)">Agent Loop</text>
+  <text x="220" y="180" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#667788">run_agent.py · agent/</text>
+
+  <line x1="400" y1="172" x2="520" y2="172" stroke="#444466" stroke-width="1"/>
+  <polygon points="520,168 530,172 520,176" fill="#444466"/>
+
+  <rect x="540" y="140" width="360" height="65" rx="6" fill="url(#c-side)" stroke="#e94560" stroke-width="1.5"/>
+  <text x="720" y="163" text-anchor="middle" font-family="'Courier New', monospace" font-size="12" font-weight="700" fill="url(#layer-agent)" filter="url(#glow)">Agent Loop</text>
+  <text x="720" y="180" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#667788">agent_loop.c · provider_*.c</text>
+
+  <!-- CLI Layer -->
+  <rect x="40" y="220" width="360" height="65" rx="6" fill="url(#python-side)" stroke="#4a90d9" stroke-width="1.5"/>
+  <text x="220" y="243" text-anchor="middle" font-family="'Courier New', monospace" font-size="12" font-weight="700" fill="url(#layer-cli)" filter="url(#glow)">CLI</text>
+  <text x="220" y="260" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#667788">cli.py · hermes_cli/</text>
+
+  <line x1="400" y1="252" x2="520" y2="252" stroke="#444466" stroke-width="1"/>
+  <polygon points="520,248 530,252 520,256" fill="#444466"/>
+
+  <rect x="540" y="220" width="360" height="65" rx="6" fill="url(#c-side)" stroke="#4a90d9" stroke-width="1.5"/>
+  <text x="720" y="243" text-anchor="middle" font-family="'Courier New', monospace" font-size="12" font-weight="700" fill="url(#layer-cli)" filter="url(#glow)">CLI</text>
+  <text x="720" y="260" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#667788">commands.c (89 cmds) · config.c</text>
+
+  <!-- Gateway Layer -->
+  <rect x="40" y="300" width="360" height="65" rx="6" fill="url(#python-side)" stroke="#50c878" stroke-width="1.5"/>
+  <text x="220" y="323" text-anchor="middle" font-family="'Courier New', monospace" font-size="12" font-weight="700" fill="url(#layer-gw)" filter="url(#glow)">Gateway</text>
+  <text x="220" y="340" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#667788">gateway/run.py · 19 platforms</text>
+
+  <line x1="400" y1="332" x2="520" y2="332" stroke="#444466" stroke-width="1"/>
+  <polygon points="520,328 530,332 520,336" fill="#444466"/>
+
+  <rect x="540" y="300" width="360" height="65" rx="6" fill="url(#c-side)" stroke="#50c878" stroke-width="1.5"/>
+  <text x="720" y="323" text-anchor="middle" font-family="'Courier New', monospace" font-size="12" font-weight="700" fill="url(#layer-gw)" filter="url(#glow)">Gateway</text>
+  <text x="720" y="340" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#667788">server.c · platforms/ · 19 adapters</text>
+
+  <!-- Tools Layer -->
+  <rect x="40" y="380" width="360" height="65" rx="6" fill="url(#python-side)" stroke="#9370db" stroke-width="1.5"/>
+  <text x="220" y="403" text-anchor="middle" font-family="'Courier New', monospace" font-size="12" font-weight="700" fill="url(#layer-tools)" filter="url(#glow)">Tools</text>
+  <text x="220" y="420" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#667788">tools/ · registry.py</text>
+
+  <line x1="400" y1="412" x2="520" y2="412" stroke="#444466" stroke-width="1"/>
+  <polygon points="520,408 530,412 520,416" fill="#444466"/>
+
+  <rect x="540" y="380" width="360" height="65" rx="6" fill="url(#c-side)" stroke="#9370db" stroke-width="1.5"/>
+  <text x="720" y="403" text-anchor="middle" font-family="'Courier New', monospace" font-size="12" font-weight="700" fill="url(#layer-tools)" filter="url(#glow)">Tools</text>
+  <text x="720" y="420" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#667788">registry.c · 85 handlers</text>
+
+  <!-- Supporting Layers (wider bottom row) -->
+  <rect x="40" y="465" width="235" height="65" rx="6" fill="url(#python-side)" stroke="#556677" stroke-width="1"/>
+  <text x="157" y="488" text-anchor="middle" font-family="'Courier New', monospace" font-size="11" font-weight="600" fill="#8899aa">MCP</text>
+  <text x="157" y="503" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#445566">mcp_client.py</text>
+
+  <rect x="290" y="465" width="235" height="65" rx="6" fill="url(#python-side)" stroke="#556677" stroke-width="1"/>
+  <text x="407" y="488" text-anchor="middle" font-family="'Courier New', monospace" font-size="11" font-weight="600" fill="#8899aa">Cron</text>
+  <text x="407" y="503" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#445566">cron/</text>
+
+  <line x1="275" y1="497" x2="290" y2="497" stroke="#333355" stroke-width="0.5" stroke-dasharray="3,3"/>
+
+  <!-- C supporting layers -->
+  <rect x="615" y="465" width="235" height="65" rx="6" fill="url(#c-side)" stroke="#556677" stroke-width="1"/>
+  <text x="732" y="488" text-anchor="middle" font-family="'Courier New', monospace" font-size="11" font-weight="600" fill="#88aa99">MCP</text>
+  <text x="732" y="503" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#445566">mcp_tool.c · libmcp/</text>
+
+  <rect x="865" y="465" width="235" height="65" rx="6" fill="url(#c-side)" stroke="#556677" stroke-width="1"/>
+  <text x="982" y="488" text-anchor="middle" font-family="'Courier New', monospace" font-size="11" font-weight="600" fill="#88aa99">Cron</text>
+  <text x="982" y="503" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#445566">scheduler.c</text>
+
+  <line x1="850" y1="497" x2="865" y2="497" stroke="#334433" stroke-width="0.5" stroke-dasharray="3,3"/>
+
+  <!-- Plugins row -->
+  <rect x="40" y="545" width="235" height="65" rx="6" fill="url(#python-side)" stroke="#556677" stroke-width="1"/>
+  <text x="157" y="568" text-anchor="middle" font-family="'Courier New', monospace" font-size="11" font-weight="600" fill="#8899aa">Plugins</text>
+  <text x="157" y="583" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#445566">plugins/</text>
+
+  <rect x="290" y="545" width="235" height="65" rx="6" fill="url(#python-side)" stroke="#556677" stroke-width="1"/>
+  <text x="407" y="568" text-anchor="middle" font-family="'Courier New', monospace" font-size="11" font-weight="600" fill="#8899aa">Skills</text>
+  <text x="407" y="583" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#445566">skills/</text>
+
+  <line x1="275" y1="577" x2="290" y2="577" stroke="#333355" stroke-width="0.5" stroke-dasharray="3,3"/>
+
+  <rect x="615" y="545" width="235" height="65" rx="6" fill="url(#c-side)" stroke="#556677" stroke-width="1"/>
+  <text x="732" y="568" text-anchor="middle" font-family="'Courier New', monospace" font-size="11" font-weight="600" fill="#88aa99">Plugins</text>
+  <text x="732" y="583" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#445566">src/plugins/</text>
+
+  <rect x="865" y="545" width="235" height="65" rx="6" fill="url(#c-side)" stroke="#556677" stroke-width="1"/>
+  <text x="982" y="568" text-anchor="middle" font-family="'Courier New', monospace" font-size="11" font-weight="600" fill="#88aa99">Skills</text>
+  <text x="982" y="583" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#445566">skills_hub.c</text>
+
+  <line x1="850" y1="577" x2="865" y2="577" stroke="#334433" stroke-width="0.5" stroke-dasharray="3,3"/>
+
+  <!-- Footer stats -->
+  <rect x="40" y="630" width="860" height="40" rx="6" fill="#1c1c36" opacity="0.6"/>
+  <text x="450" y="655" text-anchor="middle" font-family="'Courier New', monospace" font-size="12" fill="#667788">
+    slermes/src/agent/agent_loop.c + slermes/src/cli/commands.c + slermes/src/gateway/server.c
+  </text>
+
+  <!-- Legend -->
+  <circle cx="940" cy="650" r="4" fill="#e94560"/>
+  <text x="950" y="654" font-family="system-ui, sans-serif" font-size="11" fill="#667788">Agent</text>
+  <circle cx="1000" cy="650" r="4" fill="#4a90d9"/>
+  <text x="1010" y="654" font-family="system-ui, sans-serif" font-size="11" fill="#667788">CLI</text>
+  <circle cx="1055" cy="650" r="4" fill="#50c878"/>
+  <text x="1065" y="654" font-family="system-ui, sans-serif" font-size="11" fill="#667788">GW</text>
+  <circle cx="1110" cy="650" r="4" fill="#9370db"/>
+  <text x="1120" y="654" font-family="system-ui, sans-serif" font-size="11" fill="#667788">Tools</text>
+
+  <text x="1150" y="690" text-anchor="end" font-family="'Courier New', monospace" font-size="9" fill="#334455">// slermes</text>
+</svg>

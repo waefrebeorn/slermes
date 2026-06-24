@@ -1,0 +1,4 @@
+name: security-guidance
+version: "0.1.0"
+type: skill
+description: "Security pattern scanning — warns on dangerous code patterns in file-write results"
