@@ -26,14 +26,13 @@ After build, binaries are in the repo root:
 
 ```bash
 ./slermes                    # Main CLI binary (46 MB, all-in-one)
-./hermes-desktop             # ncurses desktop app (2.2 MB)
 ./slermes-desktop-gui        # SDL2 desktop GUI (1.6 MB)
 ./web-server                 # REST API server (30 KB)
 ```
 
 ## What Is This?
 
-Slermes is what happens when you SLERM an entire AI agent. We took Hermes Agent — 647 Python modules, 29 gateway platforms, a React/Electron desktop, a web dashboard — and reimplemented every piece in C11.
+Slermes is what happens when you SLERM an entire AI agent. We took Hermes Agent — 647 Python modules, 29 gateway platforms, a React/Electron desktop (including petdex, voice, file browser, side-by-side previews), a web dashboard — and reimplemented every piece in C11.
 
 The result is not a fork that follows upstream's architecture. It's our own code, our own build system, our own design decisions, our own GUI framework. We keep upstream as a reference to compare against, but Slermes is its own project.
 
@@ -43,6 +42,9 @@ The result is not a fork that follows upstream's architecture. It's our own code
 |--------|---------|-------|
 | 647 Python modules | **760 port_*.c files** | 1:1 behavioral parity with PoP annotations |
 | Electron/TypeScript desktop | **desktop_gui.c + gui_core.c** | Our own SDL2 widget framework |
+| Petdex (floating pets, pet overlay, gallery) | 🔲 Pending | Pet store, animated mascots, pet-bubble, pet-settings |
+| Voice (TTS/STT) | 🔲 Pending | OpenAI TTS, Siri TTS, faster-whisper |
+| File browser + side-by-side previews | 🔲 Pending | Web preview pane, file explorer |
 | React web dashboard | **web_server.c** | Serves SPA + REST API from a single binary |
 | ncurses TUI | **tui_fullscreen.c** | Full terminal dashboard with model picker, cron, skills |
 | Python plugin system | **19 plugin .so files** | Honcho, Spotify, Google Meet, Teams, etc. |
@@ -58,7 +60,7 @@ The result is not a fork that follows upstream's architecture. It's our own code
 | Header files | **130** |
 | Slermes binary | **46 MB** (single, all-in-one) |
 | Build time | ~30s on 4 cores |
-| Binary count | 4 (slermes, hermes-desktop, slermes-desktop-gui, web-server) |
+| Binary count | 3 (slermes, slermes-desktop-gui, web-server) |
 
 ## Architecture
 
@@ -93,7 +95,6 @@ slermes/
 ├── scripts/            # Build scripts, perf gates, release tools
 ├── tests/              # Test suite (test_runner.sh)
 ├── web_app_dist/       # Built SPA (served by web_server.c)
-├── hermes-desktop      # ncurses desktop binary
 ├── slermes-desktop-gui # SDL2 desktop GUI binary
 ├── web-server          # REST API server binary
 └── slermes             # Main binary (46 MB, all-in-one)
@@ -146,6 +147,31 @@ Terminal dashboard with full visual parity to the desktop apps.
 - Message threading
 
 **Build:** `make tui`
+
+## Pets Parity (petdex)
+
+The Hermes desktop app includes a **petdex** system — animated pet mascots that float over the app and react to what Hermes is doing. This is a significant UI feature that needs C11 parity in Slermes.
+
+### Upstream Hermes Petdex Features
+
+| Feature | Hermes (Electron/React) | Slermes |
+|---------|------------------------|---------|
+| Pet gallery (petdex) | `pet-gallery.ts` — searchable gallery with categories | 🔲 Not started |
+| Floating pet overlay | `floating-pet.tsx` — animated sprite over the app | 🔲 Not started |
+| Pet settings | `pet-settings.tsx` — enable/disable, choose pet | 🔲 Not started |
+| Pet bubble | `pet-bubble.tsx` — speech bubble with status text | 🔲 Not started |
+| Pet sprite | `pet-sprite.tsx` — animation frames, idle/run/celebrate/sulk states | 🔲 Not started |
+| Pet palette page | `pet-palette-page.tsx` — command palette integration | 🔲 Not started |
+| Pet store backend | `store/pet.ts` — pet state, persistence, API fetch | 🔲 Not started |
+| Pet overlay IPC | `preload.cjs` — transparent always-on-top window | 🔲 Not started |
+
+### Slermes Petdex Parity Plan
+
+1. **Pet engine** — `src/pet_engine.c` — sprite animation state machine (idle/run/celebrate/sulk), position tracking, z-ordering
+2. **Pet gallery** — `src/pet_gallery.c` — searchable pet catalog, pet metadata, selection persistence
+3. **Pet overlay** — `src/pet_overlay.c` — floating pet rendered on top of desktop_gui, reacts to tool execution state
+4. **Pet settings** — settings panel integration, enable/disable toggle, pet picker in desktop_gui sidebar
+5. **Pet bubble** — speech bubble rendering near pet sprite, status text from agent state
 
 ## Web Server
 
@@ -204,7 +230,6 @@ make test                 # Run test suite
 
 ```bash
 cp slermes ~/.local/bin/
-cp hermes-desktop ~/.local/bin/
 cp slermes-desktop-gui ~/.local/bin/
 ```
 
