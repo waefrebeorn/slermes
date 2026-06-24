@@ -1,0 +1,3571 @@
+/*
+ * provider_metadata.c — Provider/model metadata lookup (P85).
+ *
+ * Central registry of model capabilities, context windows, and pricing.
+ * Longer prefixes must come before shorter ones to avoid false matches.
+ *
+ * A18: models.dev integration — HTTP fetch + 3-tier cache.
+ */
+
+#include "provider_metadata.h"
+#include "hermes_json.h"
+#include "hermes_http.h"
+#include "hermes_url_safety.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <ctype.h>
+#include <time.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <errno.h>
+#include <arpa/inet.h>
+
+/* models.dev fetch constants */
+#define MODELS_DEV_URL       "https://models.dev/api.json"
+#define MODELS_DEV_CACHE_TTL 3600  /* 1 hour */
+#define MODELS_DEV_TIMEOUT   10    /* 10s HTTP timeout */
+#define MODELS_DEV_CACHE_FILE "models_dev_cache.json"
+
+/* In-memory cache */
+static json_t *g_models_dev_cache = NULL;
+static time_t  g_models_dev_cache_time = 0;
+
+/* Parse a capability name string (e.g. "vision", "streaming") into a bitmask.
+ * Returns 0 on unknown. Comma-separated or space-separated multiple values. */
+model_capability_t model_capability_parse(const char *name) {
+    if (!name || !*name) return 0;
+    model_capability_t caps = 0;
+    char buf[256];
+    snprintf(buf, sizeof(buf), "%s", name);
+    char *save = NULL;
+    const char *tok = strtok_r(buf, " ,", &save);
+    while (tok) {
+        if (strcasecmp(tok, "vision") == 0) caps |= MODEL_CAP_VISION;
+        else if (strcasecmp(tok, "streaming") == 0) caps |= MODEL_CAP_STREAMING;
+        else if (strcasecmp(tok, "thinking") == 0 ||
+                 strcasecmp(tok, "reasoning") == 0) caps |= MODEL_CAP_THINKING;
+        else if (strcasecmp(tok, "fc") == 0 ||
+                 strcasecmp(tok, "function_calling") == 0 ||
+                 strcasecmp(tok, "tool_calling") == 0 ||
+                 strcasecmp(tok, "tools") == 0) caps |= MODEL_CAP_FUNCTION_CALLING;
+        else if (strcasecmp(tok, "structured_output") == 0 ||
+                 strcasecmp(tok, "json") == 0) caps |= MODEL_CAP_STRUCTURED_OUTPUT;
+        else if (strcasecmp(tok, "code") == 0 ||
+                 strcasecmp(tok, "code_execution") == 0) caps |= MODEL_CAP_CODE_EXECUTION;
+        else if (strcasecmp(tok, "caching") == 0 ||
+                 strcasecmp(tok, "context_caching") == 0) caps |= MODEL_CAP_CONTEXT_CACHING;
+        tok = strtok_r(NULL, " ,", &save);
+    }
+    return caps;
+}
+
+/* Capability name lookup (returns static ptr, not thread-safe) */
+const char *model_capability_name(model_capability_t cap) {
+    switch (cap) {
+        case MODEL_CAP_VISION: return "vision";
+        case MODEL_CAP_FUNCTION_CALLING: return "fc";
+        case MODEL_CAP_STREAMING: return "streaming";
+        case MODEL_CAP_THINKING: return "thinking";
+        case MODEL_CAP_STRUCTURED_OUTPUT: return "json";
+        case MODEL_CAP_CODE_EXECUTION: return "code";
+        case MODEL_CAP_CONTEXT_CACHING: return "caching";
+        default: return "";
+    }
+}
+
+/* ================================================================
+ *  Provider metadata
+ * ================================================================ */
+
+static const provider_metadata_t PROVIDERS[] = {
+    {"openai",      "OpenAI",       "https://api.openai.com/v1",         true,  true,  true},
+    {"anthropic",   "Anthropic",    "https://api.anthropic.com/v1",      true,  true,  true},
+    {"google",      "Google AI",    "https://generativelanguage.googleapis.com/v1beta", true, false, true},
+    {"deepseek",    "DeepSeek",     "https://api.deepseek.com/v1",       true,  true,  true},
+    {"openrouter",  "OpenRouter",   "https://openrouter.ai/api/v1",      true,  false, true},
+    {"groq",        "Groq",         "https://api.groq.com/openai/v1",    true,  false, true},
+    {"together",    "Together AI",  "https://api.together.xyz/v1",       true,  false, true},
+    {"xai",         "xAI",          "https://api.x.ai/v1",               true,  false, true},
+    {"azure",       "Azure OpenAI", "https://YOUR_RESOURCE.openai.azure.com", true, true, true},
+    {"bedrock",     "AWS Bedrock",  "",                                   true,  true,  true},
+    {"nous",        "Nous Research","https://inference-api.nousresearch.com/v1",  true,  false, true},
+    {"alibaba",     "Alibaba Qwen", "https://dashscope.aliyuncs.com/compatible-mode/v1", true, false, true},
+    {"stepfun",     "StepFun",      "https://api.stepfun.com/v1",          true,  false, true},
+    {"minimax",     "MiniMax",      "https://api.minimax.chat/v1",         true,  false, true},
+    {"novita",      "Novita AI",    "https://api.novita.ai/v3/openai",     true,  false, true},
+    {"zai",         "Zhipu AI",     "https://open.bigmodel.cn/api/paas/v4",true,  false, true},
+    /* More OpenAI-compat providers (G41-G51) */
+    {"huggingface", "Hugging Face", "https://huggingface.co/api/inference/v1", true, false, true},
+    {"arcee",       "Arcee AI",     "https://api.arcee.ai/v1",                true, false, true},
+    {"ollama_cloud","Ollama Cloud", "https://api.ollama.cloud/v1",            true, false, true},
+    {"nvidia",      "Nvidia NIM",   "https://api.nvcf.nvidia.com/v1",         true, false, true},
+    {"gmi",         "GMI",          "https://api.gmi.com/v1",                 true, false, true},
+    {"kilocode",    "KiloCode",     "https://api.kilocode.ai/v1",             true, false, true},
+    {"kimi",        "Kimi Coding",  "https://api.moonshot.cn/v1",             true, false, true},
+    {"ai_gateway",  "AI Gateway",   "https://gateway.ai.cloudflare.com/v1",   true, false, true},
+    {"azure_foundry","Azure AI Foundry","https://YOUR_PROJECT.openai.azure.com", true, true, true},
+    {"xiaomi",      "Xiaomi",       "https://api.xiaomi.com/v1",              true, false, true},
+    {"qwen_oauth",  "Qwen OAuth",   "https://dashscope.aliyuncs.com/v1",      true, false, true},
+    {NULL, NULL, NULL, false, false, false},
+};
+
+/* ================================================================
+ *  Model metadata — longer prefixes first
+ * ================================================================ */
+
+static const model_metadata_t MODELS[] = {
+    /* OpenAI */
+    {"gpt-4.1",        "GPT-4.1",      1048576, 32768, MODEL_CAP_VISION|MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING|MODEL_CAP_STRUCTURED_OUTPUT|MODEL_CAP_CONTEXT_CACHING,   2.00,  8.00},
+    {"gpt-4o-mini",    "GPT-4o Mini",   131072, 16384, MODEL_CAP_VISION|MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING|MODEL_CAP_STRUCTURED_OUTPUT,   0.15,  0.60},
+    {"gpt-4o",         "GPT-4o",        131072, 16384, MODEL_CAP_VISION|MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING|MODEL_CAP_STRUCTURED_OUTPUT|MODEL_CAP_CONTEXT_CACHING,   2.50, 10.00},
+    {"gpt-4-turbo",    "GPT-4 Turbo",   131072,  4096, MODEL_CAP_VISION|MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING,  10.00, 30.00},
+    {"gpt-4",          "GPT-4",          32768,  4096, MODEL_CAP_FUNCTION_CALLING,  30.00, 60.00},
+    {"gpt-3.5",        "GPT-3.5 Turbo",  16384,  4096, MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING,   0.50,  1.50},
+    {"o1",             "o1",             131072, 32768, MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING|MODEL_CAP_THINKING,  15.00, 60.00},
+    {"o3-mini",        "o3-mini",        131072, 32768, MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING|MODEL_CAP_THINKING,   1.10,  4.40},
+    /* Anthropic */
+    {"claude-3.5-sonnet", "Claude 3.5 Sonnet", 131072, 8192, MODEL_CAP_VISION|MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING|MODEL_CAP_THINKING|MODEL_CAP_CONTEXT_CACHING,   3.00, 15.00},
+    {"claude-3.5-haiku",  "Claude 3.5 Haiku",  131072, 8192, MODEL_CAP_VISION|MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING|MODEL_CAP_CONTEXT_CACHING,   0.80,  4.00},
+    {"claude-3-opus",     "Claude 3 Opus",      65536, 4096, MODEL_CAP_VISION|MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING,  15.00, 75.00},
+    {"claude-fable-5", "Claude Fable 5", 1000000, 8192, MODEL_CAP_VISION|MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING|MODEL_CAP_THINKING|MODEL_CAP_CONTEXT_CACHING,   3.00, 15.00},
+    {"claude-4",       "Claude 4",       131072, 8192, MODEL_CAP_VISION|MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING|MODEL_CAP_THINKING|MODEL_CAP_CONTEXT_CACHING,   3.00, 15.00},
+    /* Google */
+    {"gemini-2.0-pro",  "Gemini 2.0 Pro",  1048576, 8192, MODEL_CAP_VISION|MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING|MODEL_CAP_CONTEXT_CACHING,   2.00,  8.00},
+    {"gemini-2.0-flash","Gemini 2.0 Flash", 1048576, 8192, MODEL_CAP_VISION|MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING|MODEL_CAP_CONTEXT_CACHING,   0.10,  0.40},
+    {"gemini-1.5-pro",  "Gemini 1.5 Pro",   2097152, 8192, MODEL_CAP_VISION|MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING|MODEL_CAP_CONTEXT_CACHING,   3.50, 10.50},
+    {"gemini-1.5-flash","Gemini 1.5 Flash", 1048576, 8192, MODEL_CAP_VISION|MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING|MODEL_CAP_CONTEXT_CACHING,   0.075, 0.30},
+    /* DeepSeek */
+    {"deepseek-v4",      "DeepSeek v4",      65536, 8192, MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING|MODEL_CAP_CONTEXT_CACHING,   0.27,  1.10},
+    {"deepseek-chat",    "DeepSeek Chat",    65536, 8192, MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING|MODEL_CAP_CONTEXT_CACHING,   0.27,  1.10},
+    {"deepseek-reasoner","DeepSeek Reasoner",65536, 8192, MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING|MODEL_CAP_THINKING|MODEL_CAP_CONTEXT_CACHING,   0.55,  2.19},
+    {"laguna-m.1",     "Laguna M.1",     131072, 4096, MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING,   0.00,  0.00},
+    {"nemotron-3-ultra","Nemotron 3 Ultra",131072, 8192, MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING,   0.00,  0.00},
+    {"nemotron-3-super","Nemotron 3 Super",131072, 8192, MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING,   0.35,  0.40},
+    {"nemotron-3-nano", "Nemotron 3 Nano", 131072, 4096, MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING,   0.30,  0.35},
+    /* Default fallback */
+    {NULL,               "Unknown",         32768, 4096, MODEL_CAP_FUNCTION_CALLING|MODEL_CAP_STREAMING,   1.00,  4.00},
+};
+
+/* ================================================================
+ *  Implementation
+ * ================================================================ */
+
+const model_metadata_t *model_metadata_find(const char *model_name) {
+    if (!model_name) return NULL;
+    for (int i = 0; MODELS[i].model_prefix; i++) {
+        if (strncasecmp(model_name, MODELS[i].model_prefix, strlen(MODELS[i].model_prefix)) == 0)
+            return &MODELS[i];
+    }
+    return NULL; /* No match */
+}
+
+const provider_metadata_t *provider_metadata_find(const char *provider_name) {
+    if (!provider_name) return NULL;
+    for (int i = 0; PROVIDERS[i].provider_name; i++) {
+        if (strcasecmp(provider_name, PROVIDERS[i].provider_name) == 0)
+            return &PROVIDERS[i];
+    }
+    return NULL;
+}
+
+bool model_name_has_capability(const char *model_name, model_capability_t cap) {
+    const model_metadata_t *meta = model_metadata_find(model_name);
+    return model_has_capability(meta, cap);
+}
+
+int model_context_window(const char *model_name) {
+    const model_metadata_t *meta = model_metadata_find(model_name);
+    return meta ? meta->context_window : -1;
+}
+
+int model_max_output(const char *model_name) {
+    const model_metadata_t *meta = model_metadata_find(model_name);
+    return meta ? meta->max_output : -1;
+}
+
+/* Port of Python agent/insights.py:_estimate_cost(). Also usage_pricing.py:estimate_usage_cost(). */
+double model_estimate_cost(const char *model, long long input_tokens, long long output_tokens) {
+    const model_metadata_t *meta = model_metadata_find(model);
+    if (!meta) {
+        /* Use fallback */
+        meta = &MODELS[sizeof(MODELS)/sizeof(MODELS[0]) - 1];
+    }
+    double input_cost = (double)input_tokens / 1000000.0 * meta->input_per_1m;
+    double output_cost = (double)output_tokens / 1000000.0 * meta->output_per_1m;
+    return input_cost + output_cost;
+}
+
+char *model_metadata_list_json(void) {
+    json_node_t *root = json_array();
+    for (int i = 0; MODELS[i].model_prefix; i++) {
+        json_node_t *entry = json_object();
+        json_set(entry, "model", json_string(MODELS[i].model_prefix));
+        json_set(entry, "family", json_string(MODELS[i].family));
+        json_set(entry, "context_window", json_number(MODELS[i].context_window));
+        json_set(entry, "max_output", json_number(MODELS[i].max_output));
+        json_append(root, entry);
+    }
+    char *result = json_serialize_pretty(root, 2);
+    json_free(root);
+    return result;
+}
+
+/* List models filtered by required capabilities */
+char *model_metadata_list_filtered_json(model_capability_t required_caps) {
+    json_node_t *root = json_array();
+    for (int i = 0; MODELS[i].model_prefix; i++) {
+        if (required_caps != 0 && (MODELS[i].caps & required_caps) != required_caps)
+            continue;
+        json_node_t *entry = json_object();
+        json_set(entry, "model", json_string(MODELS[i].model_prefix));
+        json_set(entry, "family", json_string(MODELS[i].family));
+        json_set(entry, "context_window", json_number(MODELS[i].context_window));
+        json_set(entry, "max_output", json_number(MODELS[i].max_output));
+        json_set(entry, "caps", json_number((double)MODELS[i].caps));
+        json_append(root, entry);
+    }
+    char *result = json_serialize_pretty(root, 2);
+    json_free(root);
+    return result;
+}
+
+/* Format capability bitmask as comma-separated string */
+void model_capability_format(model_capability_t caps, char *buf, size_t bufsz) {
+    if (!buf || bufsz == 0) return;
+    buf[0] = '\0';
+    size_t pos = 0;
+    #define APPEND_CAP(flag, name) do { \
+        if (caps & flag) { \
+            size_t nlen = strlen(name); \
+            if (pos + nlen + 2 < bufsz) { \
+                if (pos > 0) { buf[pos++] = ','; buf[pos] = '\0'; } \
+                memcpy(buf + pos, name, nlen); \
+                pos += nlen; \
+                buf[pos] = '\0'; \
+            } \
+        } \
+    } while(0)
+    APPEND_CAP(MODEL_CAP_VISION, "vision");
+    APPEND_CAP(MODEL_CAP_FUNCTION_CALLING, "fc");
+    APPEND_CAP(MODEL_CAP_STREAMING, "streaming");
+    APPEND_CAP(MODEL_CAP_THINKING, "thinking");
+    APPEND_CAP(MODEL_CAP_STRUCTURED_OUTPUT, "json");
+    APPEND_CAP(MODEL_CAP_CODE_EXECUTION, "code");
+    APPEND_CAP(MODEL_CAP_CONTEXT_CACHING, "caching");
+    #undef APPEND_CAP
+}
+
+char *provider_metadata_list_json(void) {
+    json_node_t *root = json_array();
+    for (int i = 0; PROVIDERS[i].provider_name; i++) {
+        json_node_t *entry = json_object();
+        json_set(entry, "name", json_string(PROVIDERS[i].provider_name));
+        json_set(entry, "display_name", json_string(PROVIDERS[i].display_name));
+        json_set(entry, "base_url", json_string(PROVIDERS[i].base_url));
+        json_set(entry, "supports_streaming", json_bool(PROVIDERS[i].supports_streaming));
+        json_set(entry, "supports_thinking", json_bool(PROVIDERS[i].supports_thinking));
+        json_set(entry, "supports_tool_calling", json_bool(PROVIDERS[i].supports_tool_calling));
+        json_append(root, entry);
+    }
+    char *result = json_serialize_pretty(root, 2);
+    json_free(root);
+    return result;
+}
+
+/* ================================================================
+ *  P158: API Key Security
+ * ================================================================ */
+
+bool provider_url_is_trusted(const char *provider_name, const char *url) {
+    if (!provider_name || !url) return false;
+    if (!url_has_valid_scheme(url)) return false;
+
+    /* Look up provider metadata */
+    const provider_metadata_t *meta = provider_metadata_find(provider_name);
+    if (!meta || !meta->base_url || !*meta->base_url) {
+        /* Unknown provider — trust by default (defensive) */
+        return true;
+    }
+
+    /* Extract hostname from the provider's known base_url */
+    char *expected_host = url_extract_hostname(meta->base_url);
+    if (!expected_host) {
+        /* Can't extract from metadata — trust by default */
+        return true;
+    }
+
+    /* Check if URL host matches provider's authoritative host */
+    bool trusted = url_host_matches(url, expected_host);
+    free(expected_host);
+
+    if (!trusted) {
+        fprintf(stderr, "[provider-security] WARNING: URL %s does not match "
+                "provider %s's known endpoint %s — not sending API key\n",
+                url, provider_name, meta->base_url);
+    }
+
+    return trusted;
+}
+
+char *provider_derive_api_key_name(const char *provider_name, const char *base_url) {
+    if (!provider_name && !base_url) return NULL;
+
+    const char *src = NULL;
+    char stripped[256] = "";  /* hoisted to function scope — src may point here beyond inner block */
+
+    /* First try: extract hostname from base_url */
+    if (base_url && *base_url) {
+        char *host = url_extract_hostname(base_url);
+        if (host) {
+            char host_lower[256];
+            size_t hl = 0;
+            for (const char *p = host; *p && hl < sizeof(host_lower) - 1; p++) {
+                host_lower[hl++] = tolower((unsigned char)*p);
+            }
+            host_lower[hl] = '\0';
+
+            /* Common API subdomains to skip */
+            static const char *prefixes[] = {
+                "api.", "api-", "openapi.", "rest.", "ws.", "gateway.",
+                "generativelanguage.", NULL
+            };
+
+            for (int pi = 0; prefixes[pi]; pi++) {
+                size_t plen = strlen(prefixes[pi]);
+                if (strncmp(host_lower, prefixes[pi], plen) == 0) {
+                    const char *rest = host_lower + plen;
+                    const char *dot = strchr(rest, '.');
+                    if (dot) {
+                        size_t root_len = (size_t)(dot - rest);
+                        if (root_len > 0 && root_len < sizeof(stripped)) {
+                            memcpy(stripped, rest, root_len);
+                            stripped[root_len] = '\0';
+                            src = stripped;
+                        }
+                    }
+                    break;
+                }
+            }
+
+            /* If no prefix stripped, use the first label */
+            if (!src && hl > 0) {
+                const char *dot = strchr(host_lower, '.');
+                if (dot) {
+                    size_t first_len = (size_t)(dot - host_lower);
+                    if (first_len > 0 && first_len < sizeof(stripped)) {
+                        memcpy(stripped, host_lower, first_len);
+                        stripped[first_len] = '\0';
+                        src = stripped;
+                    }
+                }
+            }
+
+            free(host);
+        }
+    }
+
+    /* Second try: use provider name directly */
+    if (!src && provider_name) {
+        const provider_metadata_t *meta = provider_metadata_find(provider_name);
+        if (meta && meta->provider_name) {
+            src = meta->provider_name;
+        } else {
+            src = provider_name;
+        }
+    }
+
+    if (!src) return NULL;
+
+    /* Build env var name: VENDOR_API_KEY (uppercase, underscores for hyphens) */
+    char result[128];
+    int pos = 0;
+    for (const char *p = src; *p && pos < (int)sizeof(result) - 12; p++) {
+        if (*p == '-' || *p == ' ') {
+            result[pos++] = '_';
+        } else {
+            result[pos++] = toupper((unsigned char)*p);
+        }
+    }
+    const char *suffix = "_API_KEY";
+    size_t slen = strlen(suffix);
+    if ((size_t)pos + slen < sizeof(result)) {
+        memcpy(result + pos, suffix, slen + 1);
+    } else {
+        return NULL;
+    }
+
+    return strdup(result);
+}
+
+/* Port of Python agent/models_dev.py:supports_vision(). */
+/* ================================================================
+ *  L06: supports_vision config override
+ * ================================================================ */
+
+bool model_supports_vision(const char *model_name, const provider_config_t *provider_cfg) {
+    if (!model_name) return false;
+
+    /* 1. Config override takes precedence */
+    if (provider_cfg && provider_cfg->supports_vision) {
+        return true;
+    }
+
+    /* 2. S06: Check per-model vision overrides (comma-separated prefixes) */
+    if (provider_cfg && provider_cfg->vision_overrides[0]) {
+        char buf[1024];
+        strncpy(buf, provider_cfg->vision_overrides, sizeof(buf) - 1);
+        buf[sizeof(buf) - 1] = '\0';
+        char *tok = buf;
+        while (tok && *tok) {
+            while (*tok == ' ' || *tok == ',') tok++;
+            if (!*tok) break;
+            char *end = tok;
+            while (*end && *end != ',') end++;
+            int is_last = (*end == '\0');
+            *end = '\0';
+            /* Trim trailing whitespace */
+            char *trim = end - 1;
+            while (trim >= tok && *trim == ' ') { *trim = '\0'; trim--; }
+            if (*tok && strncasecmp(model_name, tok, strlen(tok)) == 0) {
+                return true;
+            }
+            tok = is_last ? NULL : end + 1;
+        }
+    }
+
+    /* 3. Fall back to metadata lookup */
+    return model_name_has_capability(model_name, MODEL_CAP_VISION);
+}
+
+
+/* ================================================================
+ *  A18: models.dev Integration — HTTP fetch + 3-tier cache
+ *  Forward declarations for functions used within this section.
+ * ================================================================ */
+/* Port of Python: extract_context */
+static int extract_context(json_t *entry);
+static char *models_dev_format_cost(json_t *entry);
+static char *models_dev_format_capabilities(json_t *entry);
+
+/* Port of Python agent/models_dev.py:_get_cache_path().
+ * Build path to models.dev disk cache: ~/.hermes/models_dev_cache.json */
+static char *get_models_dev_cache_path(void) {
+    const char *home = getenv("XDG_CONFIG_HOME");
+    if (!home || !*home) home = getenv("HOME");
+    if (!home) return NULL;
+    size_t len = strlen(home) + 64;
+    char *path = (char *)malloc(len);
+    if (!path) return NULL;
+    snprintf(path, len, "%s/.hermes/%s", home, MODELS_DEV_CACHE_FILE);
+    return path;
+}
+
+/* Port of Python agent/models_dev.py:_disk_cache_age_seconds().
+ * Return age in seconds of the disk cache file, or -1 if missing/unreadable. */
+/* Port of Python: disk_cache_age_seconds */
+static double disk_cache_age_seconds(void) {
+    char *path = get_models_dev_cache_path();
+    if (!path) return -1.0;
+
+    struct stat st;
+    if (stat(path, &st) != 0) { free(path); return -1.0; }
+    free(path);
+
+    time_t now = time(NULL);
+    double age = difftime(now, st.st_mtime);
+    if (age < 0) return -1.0; /* clock skew — treat as unknown */
+    return age;
+}
+
+/* Port of Python agent/models_dev.py:_load_disk_cache().
+ * Load models.dev cache from disk. Returns parsed JSON or NULL. */
+static json_t *models_dev_load_disk_cache(void) {
+    char *path = get_models_dev_cache_path();
+    if (!path) return NULL;
+
+    /* Check disk cache freshness using the age function */
+    double age = disk_cache_age_seconds();
+    if (age < 0 || age > MODELS_DEV_CACHE_TTL * 2) {
+        free(path);
+        return NULL;
+    }
+
+    FILE *f = fopen(path, "r");
+    free(path);
+    if (!f) return NULL;
+
+    fseek(f, 0, SEEK_END);
+    long fsize = ftell(f);
+    if (fsize <= 0) { fclose(f); return NULL; }
+    rewind(f);
+
+    char *buf = (char *)malloc((size_t)fsize + 1);
+    if (!buf) { fclose(f); return NULL; }
+    size_t nread = fread(buf, 1, (size_t)fsize, f);
+    fclose(f);
+    buf[nread] = '\0';
+
+    char *err = NULL;
+    json_t *root = json_parse(buf, &err);
+    free(buf);
+    free(err);
+    return root;
+}
+
+/* Port of Python agent/models_dev.py:_save_disk_cache().
+ * Save models.dev data to disk cache. */
+/* Port of Python: save_disk_cache */
+static bool save_disk_cache(json_t *data) {
+    char *path = get_models_dev_cache_path();
+    if (!path) return false;
+
+    char *json_str = json_serialize(data);
+    if (!json_str) { free(path); return false; }
+
+    char tmp_path[4096];
+    snprintf(tmp_path, sizeof(tmp_path), "%s.tmp", path);
+
+    FILE *f = fopen(tmp_path, "w");
+    if (!f) { free(json_str); free(path); return false; }
+    fputs(json_str, f);
+    fclose(f);
+    free(json_str);
+
+    rename(tmp_path, path);
+    free(path);
+    return true;
+}
+
+/* Fetch models.dev data from network. Returns parsed JSON or NULL. */
+static json_t *models_dev_fetch_network(void) {
+    http_t *h = http_new(MODELS_DEV_TIMEOUT);
+    if (!h) return NULL;
+
+    http_resp_t *resp = http_get(h, MODELS_DEV_URL, NULL);
+    if (!resp || resp->status != 200) {
+        if (resp) http_resp_free(resp);
+        http_free(h);
+        return NULL;
+    }
+
+    char *err = NULL;
+    json_t *root = json_parse(resp->body, &err);
+    http_resp_free(resp);
+    http_free(h);
+    free(err);
+    return root;
+}
+
+/* Port of Python agent/models_dev.py:fetch_models_dev().
+ * Fetch models.dev data with 3-tier cache: in-memory -> disk -> network.
+ * Returns parsed JSON (root is a JSON object keyed by provider ID),
+ * or NULL if all sources fail. */
+json_t *models_dev_fetch(bool force_refresh) {
+    time_t now = time(NULL);
+
+    /* Stage 1: fresh in-memory cache */
+    if (!force_refresh && g_models_dev_cache &&
+        (now - g_models_dev_cache_time) < MODELS_DEV_CACHE_TTL) {
+        return g_models_dev_cache;
+    }
+
+    /* Stage 2: fresh disk cache (load into memory) */
+    if (!force_refresh) {
+        json_t *disk = models_dev_load_disk_cache();
+        if (disk) {
+            struct stat st;
+            char *path = get_models_dev_cache_path();
+            if (path) {
+                if (stat(path, &st) == 0 &&
+                    (now - st.st_mtime) < MODELS_DEV_CACHE_TTL) {
+                    if (g_models_dev_cache) json_free(g_models_dev_cache);
+                    g_models_dev_cache = disk;
+                    g_models_dev_cache_time = now;
+                    free(path);
+                    return g_models_dev_cache;
+                }
+                free(path);
+            }
+            json_free(disk);
+        }
+    }
+
+    /* Stage 3: network fetch */
+    json_t *net = models_dev_fetch_network();
+    if (net) {
+        save_disk_cache(net);
+        if (g_models_dev_cache) json_free(g_models_dev_cache);
+        g_models_dev_cache = net;
+        g_models_dev_cache_time = now;
+        return g_models_dev_cache;
+    }
+
+    /* Stage 4: fallback to any disk cache (even stale) */
+    json_t *stale = models_dev_load_disk_cache();
+    if (stale) {
+        if (g_models_dev_cache) json_free(g_models_dev_cache);
+        g_models_dev_cache = stale;
+        g_models_dev_cache_time = now;
+        return g_models_dev_cache;
+    }
+
+    return NULL;
+}
+
+/* Port of Python agent/models_dev.py:lookup_models_dev_context().
+ * Look up context window from models.dev data.
+ * Returns context window, or -1 if not found. */
+int lookup_models_dev_context(const char *provider, const char *model) {
+    if (!provider || !model) return -1;
+    json_t *data = models_dev_fetch(false);
+    if (!data) return -1;
+
+    json_t *prov_node = json_obj_get(data, provider);
+    if (!prov_node) return -1;
+
+    json_t *models_node = json_obj_get(prov_node, "models");
+    if (!models_node) return -1;
+
+    json_t *model_node = json_obj_get(models_node, model);
+    if (!model_node) return -1;
+
+    return extract_context(model_node);
+}
+
+/* Port of Python agent/models_dev.py:_extract_context().
+ * Extract context_length from a model entry's "limit" sub-object.
+ * Returns context_window (int) or -1 if invalid/zero. */
+static int extract_context(json_t *entry) {
+    if (!entry || entry->type != JSON_OBJECT) return -1;
+    json_t *limit = json_obj_get(entry, "limit");
+    if (!limit || limit->type != JSON_OBJECT) return -1;
+    json_t *ctx = json_obj_get(limit, "context");
+    if (!ctx || ctx->type != JSON_NUMBER || ctx->num_val <= 0) return -1;
+    return (int)ctx->num_val;
+}
+
+/* Convert models.dev data to a flat JSON array string for /model list.
+ * Returns malloc'd JSON string, caller must free(). */
+char *models_dev_list_json(void) {
+    json_t *data = models_dev_fetch(false);
+    if (!data) return NULL;
+
+    json_t *arr = json_array();
+    if (!arr) return NULL;
+
+    /* Iterate all provider keys */
+    for (size_t i = 0; i < data->c.count; i++) {
+        const char *prov_name = data->c.keys[i];
+        json_t *prov = data->c.items[i];
+        if (!prov_name || !prov) continue;
+
+        json_t *models = json_obj_get(prov, "models");
+        if (!models || models->type != JSON_OBJECT) continue;
+
+        for (size_t mi = 0; mi < models->c.count; mi++) {
+            const char *model_name = models->c.keys[mi];
+            json_t *md = models->c.items[mi];
+            if (!model_name || !md) continue;
+
+            json_t *entry = json_object();
+            json_set(entry, "id", json_string(model_name));
+            json_set(entry, "provider", json_string(prov_name));
+
+            json_t *ctx = json_obj_get(md, "context");
+            if (ctx && ctx->type == JSON_NUMBER)
+                json_set(entry, "context_window", json_copy(ctx));
+
+            json_t *out = json_obj_get(md, "max_output");
+            if (out && out->type == JSON_NUMBER)
+                json_set(entry, "max_output", json_copy(out));
+
+            json_t *desc = json_obj_get(md, "description");
+            if (desc && desc->type == JSON_STRING)
+                json_set(entry, "description", json_copy(desc));
+
+            json_append(arr, entry);
+        }
+    }
+
+    char *result = json_serialize(arr);
+    json_free(arr);
+    return result;
+}
+
+/* ================================================================
+ *  Provider mapping: Hermes → models.dev IDs (port of PROVIDER_TO_MODELS_DEV)
+ * ================================================================ */
+
+static const char *models_dev_lookup_provider(const char *provider) {
+    if (!provider || !*provider) return NULL;
+    /* Maps Hermes provider names to models.dev IDs */
+    static const struct { const char *hermes; const char *mdev; } map[] = {
+        {"openrouter",     "openrouter"},
+        {"novita",         "novita-ai"},
+        {"anthropic",      "anthropic"},
+        {"openai",         "openai"},
+        {"openai-codex",   "openai"},
+        {"zai",            "zai"},
+        {"kimi",           "kimi-for-coding"},
+        {"kimi-coding",    "kimi-for-coding"},
+        {"moonshot",       "kimi-for-coding"},
+        {"stepfun",        "stepfun"},
+        {"kimi-coding-cn", "kimi-for-coding"},
+        {"minimax",        "minimax"},
+        {"minimax-oauth",  "minimax"},
+        {"minimax-cn",     "minimax-cn"},
+        {"deepseek",       "deepseek"},
+        {"alibaba",        "alibaba"},
+        {"qwen-oauth",     "alibaba"},
+        {"copilot",        "github-copilot"},
+        {"opencode-zen",   "opencode"},
+        {"opencode-go",    "opencode-go"},
+        {"kilocode",       "kilo"},
+        {"fireworks",      "fireworks-ai"},
+        {"huggingface",    "huggingface"},
+        {"gemini",         "google"},
+        {"google",         "google"},
+        {"xai",            "xai"},
+        {"xai-oauth",      "xai"},
+        {"xiaomi",         "xiaomi"},
+        {"nvidia",         "nvidia"},
+        {"groq",           "groq"},
+        {"mistral",        "mistral"},
+        {"togetherai",     "togetherai"},
+        {"perplexity",     "perplexity"},
+        {"cohere",         "cohere"},
+        {"ollama-cloud",   "ollama-cloud"},
+    };
+    size_t n = sizeof(map) / sizeof(map[0]);
+    for (size_t i = 0; i < n; i++) {
+        if (strcmp(provider, map[i].hermes) == 0)
+            return map[i].mdev;
+    }
+    return provider; /* fallback: use provider name as-is */
+}
+
+const char *models_dev_resolve_hermes_provider(const char *provider) {
+    return models_dev_lookup_provider(provider);
+}
+
+/* ================================================================
+ *  Model capability queries (port of models_dev.py query functions)
+ * ================================================================ */
+
+/** Find provider models dict from models.dev data by resolved provider ID. */
+/* Port of Python agent/models_dev.py:_get_provider_models(). */
+static json_t *models_dev_get_provider_models(json_t *data, const char *provider) {
+    if (!data || !provider) return NULL;
+    const char *mdev_id = models_dev_lookup_provider(provider);
+    if (!mdev_id) return NULL;
+    json_t *prov = json_obj_get(data, mdev_id);
+    if (!prov || prov->type != JSON_OBJECT) return NULL;
+    json_t *models = json_obj_get(prov, "models");
+    if (!models || models->type != JSON_OBJECT) return NULL;
+    return models;
+}
+
+/* Port of Python agent/models_dev.py:_find_model_entry().
+ * Find model entry by exact match, then case-insensitive fallback. */
+static json_t *models_dev_find_model(json_t *models, const char *model) {
+    if (!models || !model) return NULL;
+    /* Exact match */
+    json_t *entry = json_obj_get(models, model);
+    if (entry) return entry;
+    /* Case-insensitive fallback */
+    size_t model_len = strlen(model);
+    char *model_lower = (char *)malloc(model_len + 1);
+    if (!model_lower) return NULL;
+    for (size_t i = 0; i < model_len; i++)
+        model_lower[i] = (char)tolower((unsigned char)model[i]);
+    model_lower[model_len] = '\0';
+    json_t *result = NULL;
+    for (size_t i = 0; i < models->c.count; i++) {
+        const char *mid = models->c.keys[i];
+        if (!mid) continue;
+        size_t mid_len = strlen(mid);
+        if (mid_len != model_len) continue;
+        bool match = true;
+        for (size_t j = 0; j < mid_len; j++) {
+            if (tolower((unsigned char)mid[j]) != model_lower[j]) {
+                match = false; break;
+            }
+        }
+        if (match && models->c.items[i] && models->c.items[i]->type == JSON_OBJECT) {
+            result = models->c.items[i];
+            break;
+        }
+    }
+    free(model_lower);
+    return result;
+}
+
+/* Get model capabilities from models.dev as JSON string.
+ * Port of Python agent/models_dev.py:get_model_capabilities(). */
+char *models_dev_get_capabilities_json(const char *provider, const char *model) {
+    json_t *data = models_dev_fetch(false);
+    if (!data) return NULL;
+    json_t *models = models_dev_get_provider_models(data, provider);
+    if (!models) return NULL;
+    json_t *entry = models_dev_find_model(models, model);
+    if (!entry) return NULL;
+
+    /* Extract capability flags */
+    bool supports_tools = json_get_bool(entry, "tool_call", false);
+    bool supports_reasoning = json_get_bool(entry, "reasoning", false);
+    /* Vision: check modalities.input first, fall back to attachment */
+    bool supports_vision = json_get_bool(entry, "attachment", false);
+    json_t *mods = json_obj_get(entry, "modalities");
+    if (mods && mods->type == JSON_OBJECT) {
+        json_t *input_mods = json_obj_get(mods, "input");
+        if (input_mods && input_mods->type == JSON_ARRAY) {
+            supports_vision = false;
+            for (size_t i = 0; i < input_mods->c.count; i++) {
+                json_t *item = input_mods->c.items[i];
+                if (item && item->type == JSON_STRING && strcmp(item->str_val, "image") == 0) {
+                    supports_vision = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    /* Extract limits from entry.limit sub-object */
+    int context_window = 200000;
+    int max_output_tokens = 8192;
+    json_t *limit = json_obj_get(entry, "limit");
+    if (limit && limit->type == JSON_OBJECT) {
+        json_t *ctx = json_obj_get(limit, "context");
+        if (ctx && ctx->type == JSON_NUMBER && ctx->num_val > 0)
+            context_window = (int)ctx->num_val;
+        json_t *out = json_obj_get(limit, "output");
+        if (out && out->type == JSON_NUMBER && out->num_val > 0)
+            max_output_tokens = (int)out->num_val;
+    }
+
+    const char *model_family = json_get_str(entry, "family", "");
+
+    /* Build response */
+    json_t *resp = json_object();
+    json_set(resp, "supports_tools", json_bool(supports_tools));
+    json_set(resp, "supports_vision", json_bool(supports_vision));
+    json_set(resp, "supports_reasoning", json_bool(supports_reasoning));
+    json_set(resp, "context_window", json_number(context_window));
+    json_set(resp, "max_output_tokens", json_number(max_output_tokens));
+    json_set(resp, "model_family", json_string(model_family));
+    /* Formatted convenience strings (port of ModelCapabilities methods) */
+    char *cost_str = models_dev_format_cost(entry);
+    if (cost_str) {
+        json_set(resp, "cost_display", json_string(cost_str));
+        free(cost_str);
+    }
+    char *cap_str = models_dev_format_capabilities(entry);
+    if (cap_str) {
+        json_set(resp, "capabilities_display", json_string(cap_str));
+        free(cap_str);
+    }
+    char *out = json_serialize(resp);
+    json_free(resp);
+    return out;
+}
+
+/* Check if a model ID should be hidden from provider catalog.
+ * Port of Python agent/models_dev.py:_should_hide_from_provider_catalog(). */
+static bool models_dev_should_hide(const char *provider, const char *model_id) {
+    if (!provider || !model_id) return false;
+    char prov_lower[128];
+    char model_lower[128];
+    /* Lowercase both */
+    size_t i;
+    for (i = 0; provider[i] && i < 127; i++)
+        prov_lower[i] = (char)tolower((unsigned char)provider[i]);
+    prov_lower[i] = '\0';
+    for (i = 0; model_id[i] && i < 127; i++)
+        model_lower[i] = (char)tolower((unsigned char)model_id[i]);
+    model_lower[i] = '\0';
+
+    /* Google hidden models */
+    bool is_google = (strcmp(prov_lower, "gemini") == 0 || strcmp(prov_lower, "google") == 0);
+    if (is_google) {
+        static const char *google_hidden[] = {
+            "gemma-4-31b-it", "gemma-4-26b-it", "gemma-4-26b-a4b-it",
+            "gemma-3-1b", "gemma-3-1b-it", "gemma-3-2b", "gemma-3-2b-it",
+            "gemma-3-4b", "gemma-3-4b-it", "gemma-3-12b", "gemma-3-12b-it",
+            "gemma-3-27b", "gemma-3-27b-it",
+            "gemini-1.5-flash", "gemini-1.5-pro",
+            "gemini-1.5-flash-8b", "gemini-2.0-flash", "gemini-2.0-flash-lite",
+        };
+        for (size_t j = 0; j < sizeof(google_hidden)/sizeof(google_hidden[0]); j++) {
+            if (strcmp(model_lower, google_hidden[j]) == 0)
+                return true;
+        }
+    }
+    return false;
+}
+
+/* Check if model ID matches noise patterns (TTS, embedding, previews, etc.)
+ * Port of Python agent/models_dev.py:_NOISE_PATTERNS (regex pattern). */
+static bool models_dev_is_noise(const char *model_id) {
+    if (!model_id) return false;
+    size_t len = strlen(model_id);
+    char *lower = (char *)malloc(len + 1);
+    if (!lower) return false;
+    for (size_t i = 0; i < len; i++)
+        lower[i] = (char)tolower((unsigned char)model_id[i]);
+    lower[len] = '\0';
+    bool is_noise = false;
+    if (strstr(lower, "-tts")) is_noise = true;
+    else if (strstr(lower, "embedding")) is_noise = true;
+    else if (strstr(lower, "live-")) is_noise = true;
+    else if (strstr(lower, "-image")) is_noise = true;
+    else if (strstr(lower, "-image-preview")) is_noise = true;
+    else if (strstr(lower, "-customtools")) is_noise = true;
+    /* Check for -preview-NNNN or -exp-NNNN patterns */
+    else {
+        const char *p = lower;
+        while (1) {
+            p = strstr(p, "-preview-");
+            if (!p) {
+                p = lower;
+                p = strstr(p, "-exp-");
+            }
+            if (!p) break;
+            p += 8; /* skip past "-preview-" or "-exp-" */
+            if (*p && isdigit((unsigned char)*p)) { is_noise = true; break; }
+        }
+    }
+    free(lower);
+    return is_noise;
+}
+
+/* List all non-hidden model IDs for a provider.
+ * Port of Python agent/models_dev.py:list_provider_models(). */
+char *models_dev_list_provider_models(const char *provider) {
+    json_t *data = models_dev_fetch(false);
+    if (!data) return NULL;
+    json_t *models = models_dev_get_provider_models(data, provider);
+    if (!models) return strdup("[]");
+    json_t *arr = json_array();
+    for (size_t i = 0; i < models->c.count; i++) {
+        const char *mid = models->c.keys[i];
+        if (!mid) continue;
+        if (models_dev_should_hide(provider, mid)) continue;
+        json_append(arr, json_string(mid));
+    }
+    char *result = json_serialize(arr);
+    json_free(arr);
+    return result;
+}
+
+/* List agentic model IDs (tool_call=true, filtered).
+ * Port of Python agent/models_dev.py:list_agentic_models(). */
+char *models_dev_list_agentic_models(const char *provider) {
+    json_t *data = models_dev_fetch(false);
+    if (!data) return NULL;
+    json_t *models = models_dev_get_provider_models(data, provider);
+    if (!models) return strdup("[]");
+    json_t *arr = json_array();
+    for (size_t i = 0; i < models->c.count; i++) {
+        const char *mid = models->c.keys[i];
+        json_t *entry = models->c.items[i];
+        if (!mid || !entry || entry->type != JSON_OBJECT) continue;
+        if (models_dev_should_hide(provider, mid)) continue;
+        if (!json_get_bool(entry, "tool_call", false)) continue;
+        if (models_dev_is_noise(mid)) continue;
+        json_append(arr, json_string(mid));
+    }
+    char *result = json_serialize(arr);
+    json_free(arr);
+    return result;
+}
+
+/* Get provider metadata as JSON string.
+ * Port of Python agent/models_dev.py:get_provider_info(). */
+char *models_dev_get_provider_info_json(const char *provider_id) {
+    if (!provider_id) return NULL;
+    json_t *data = models_dev_fetch(false);
+    if (!data) return NULL;
+    const char *mdev_id = models_dev_lookup_provider(provider_id);
+    if (!mdev_id) return NULL;
+    json_t *raw = json_obj_get(data, mdev_id);
+    if (!raw || raw->type != JSON_OBJECT) return NULL;
+
+    const char *name = json_get_str(raw, "name", mdev_id);
+    json_t *env_arr = json_obj_get(raw, "env");
+    const char *api = json_get_str(raw, "api", "");
+    const char *doc = json_get_str(raw, "doc", "");
+    json_t *models = json_obj_get(raw, "models");
+    int model_count = (models && models->type == JSON_OBJECT) ? (int)models->c.count : 0;
+
+    json_t *resp = json_object();
+    json_set(resp, "id", json_string(mdev_id));
+    json_set(resp, "name", json_string(name));
+    json_set(resp, "api", json_string(api));
+    json_set(resp, "doc", json_string(doc));
+    json_set(resp, "model_count", json_number(model_count));
+    if (env_arr && env_arr->type == JSON_ARRAY) {
+        json_set(resp, "env", json_copy(env_arr));
+    } else {
+        json_set(resp, "env", json_array());
+    }
+    char *out = json_serialize(resp);
+    json_free(resp);
+    return out;
+}
+
+/* Get full model metadata as JSON string.
+ * AG26: Port of Python agent/models_dev.py:_parse_model_info()
+ * Port of Python agent/models_dev.py:get_model_info() + _parse_model_info(). */
+char *models_dev_get_model_info_json(const char *provider_id, const char *model_id) {
+    if (!provider_id || !model_id) return NULL;
+    json_t *data = models_dev_fetch(false);
+    if (!data) return NULL;
+    const char *mdev_id = models_dev_lookup_provider(provider_id);
+    if (!mdev_id) return NULL;
+    json_t *pdata = json_obj_get(data, mdev_id);
+    if (!pdata || pdata->type != JSON_OBJECT) return NULL;
+    json_t *models = json_obj_get(pdata, "models");
+    if (!models || models->type != JSON_OBJECT) return NULL;
+    json_t *entry = models_dev_find_model(models, model_id);
+    if (!entry) return NULL;
+
+    /* Parse fields from model entry */
+    json_t *limit = json_obj_get(entry, "limit");
+    if (limit && limit->type != JSON_OBJECT) limit = NULL;
+    json_t *cost = json_obj_get(entry, "cost");
+    if (cost && cost->type != JSON_OBJECT) cost = NULL;
+    json_t *modalities = json_obj_get(entry, "modalities");
+    if (modalities && modalities->type != JSON_OBJECT) modalities = NULL;
+
+    const char *name = json_get_str(entry, "name", model_id);
+    const char *family = json_get_str(entry, "family", "");
+    bool reasoning = json_get_bool(entry, "reasoning", false);
+    bool tool_call = json_get_bool(entry, "tool_call", false);
+    bool attachment = json_get_bool(entry, "attachment", false);
+    bool temperature = json_get_bool(entry, "temperature", false);
+    bool structured_output = json_get_bool(entry, "structured_output", false);
+    bool open_weights = json_get_bool(entry, "open_weights", false);
+
+    /* Limits */
+    int ctx = 0, out = 0, inp = 0;
+    if (limit) {
+        json_t *v = json_obj_get(limit, "context");
+        if (v && v->type == JSON_NUMBER && v->num_val > 0) ctx = (int)v->num_val;
+        v = json_obj_get(limit, "output");
+        if (v && v->type == JSON_NUMBER && v->num_val > 0) out = (int)v->num_val;
+        v = json_obj_get(limit, "input");
+        if (v && v->type == JSON_NUMBER && v->num_val > 0) inp = (int)v->num_val;
+    }
+
+    /* Costs */
+    double cost_input = 0, cost_output = 0;
+    double cost_cache_read = -1, cost_cache_write = -1;
+    if (cost) {
+        json_t *v = json_obj_get(cost, "input");
+        if (v && v->type == JSON_NUMBER) cost_input = v->num_val;
+        v = json_obj_get(cost, "output");
+        if (v && v->type == JSON_NUMBER) cost_output = v->num_val;
+        v = json_obj_get(cost, "cache_read");
+        if (v && v->type == JSON_NUMBER) cost_cache_read = v->num_val;
+        v = json_obj_get(cost, "cache_write");
+        if (v && v->type == JSON_NUMBER) cost_cache_write = v->num_val;
+    }
+
+    /* Modalities */
+    json_t *input_mods = NULL, *output_mods = NULL;
+    if (modalities) {
+        input_mods = json_obj_get(modalities, "input");
+        if (input_mods && input_mods->type != JSON_ARRAY) input_mods = NULL;
+        output_mods = json_obj_get(modalities, "output");
+        if (output_mods && output_mods->type != JSON_ARRAY) output_mods = NULL;
+    }
+
+    const char *knowledge = json_get_str(entry, "knowledge", "");
+    const char *release_date = json_get_str(entry, "release_date", "");
+    const char *status = json_get_str(entry, "status", "");
+    bool interleaved = json_get_bool(entry, "interleaved", false);
+
+    /* Build JSON response matching ModelInfo dataclass */
+    json_t *resp = json_object();
+    json_set(resp, "id", json_string(model_id));
+    json_set(resp, "name", json_string(name));
+    json_set(resp, "family", json_string(family));
+    json_set(resp, "provider_id", json_string(mdev_id));
+    json_set(resp, "reasoning", json_bool(reasoning));
+    json_set(resp, "tool_call", json_bool(tool_call));
+    json_set(resp, "attachment", json_bool(attachment));
+    json_set(resp, "temperature", json_bool(temperature));
+    json_set(resp, "structured_output", json_bool(structured_output));
+    json_set(resp, "open_weights", json_bool(open_weights));
+    if (input_mods) json_set(resp, "input_modalities", json_copy(input_mods));
+    else json_set(resp, "input_modalities", json_array());
+    if (output_mods) json_set(resp, "output_modalities", json_copy(output_mods));
+    else json_set(resp, "output_modalities", json_array());
+    json_set(resp, "context_window", json_number(ctx));
+    json_set(resp, "max_output", json_number(out));
+    if (inp > 0) json_set(resp, "max_input", json_number(inp));
+    else json_set(resp, "max_input", json_null());
+    json_set(resp, "cost_input", json_number(cost_input));
+    json_set(resp, "cost_output", json_number(cost_output));
+    if (cost_cache_read >= 0) json_set(resp, "cost_cache_read", json_number(cost_cache_read));
+    else json_set(resp, "cost_cache_read", json_null());
+    if (cost_cache_write >= 0) json_set(resp, "cost_cache_write", json_number(cost_cache_write));
+    else json_set(resp, "cost_cache_write", json_null());
+    json_set(resp, "knowledge_cutoff", json_string(knowledge));
+    json_set(resp, "release_date", json_string(release_date));
+    json_set(resp, "status", json_string(status));
+    json_set(resp, "interleaved", json_bool(interleaved));
+    char *out_json = json_serialize(resp);
+    json_free(resp);
+    return out_json;
+}
+
+/* ================================================================
+ * ModelCapabilities helper functions (port of Python ModelCapabilities class methods)
+ * AG26: Port of Python agent/models_dev.py:ModelCapabilities.has_cost_data()
+ * AG26: Port of Python agent/models_dev.py:ModelCapabilities.supports_pdf()
+ * AG26: Port of Python agent/models_dev.py:ModelCapabilities.supports_audio_input()
+ * AG26: Port of Python agent/models_dev.py:ModelCapabilities.format_cost()
+ * AG26: Port of Python agent/models_dev.py:ModelCapabilities.format_capabilities()
+ * These operate on a raw models.dev model entry JSON object,
+ * not on a C struct — matching the dataclass + JSON query pattern.
+ * ================================================================ */
+
+/* Port of Python agent/models_dev.py:ModelCapabilities.has_cost_data().
+ * Check if a model entry has meaningful cost data. */
+/* Port of Python agent/models_dev.py:has_cost_data() */
+static bool models_dev_has_cost_data(json_t *entry) {
+    if (!entry || entry->type != JSON_OBJECT) return false;
+    json_t *cost = json_obj_get(entry, "cost");
+    if (!cost || cost->type != JSON_OBJECT) return false;
+    json_t *inp = json_obj_get(cost, "input");
+    if (inp && inp->type == JSON_NUMBER && inp->num_val > 0) return true;
+    json_t *out = json_obj_get(cost, "output");
+    if (out && out->type == JSON_NUMBER && out->num_val > 0) return true;
+    return false;
+}
+
+/* Port of Python agent/models_dev.py:ModelCapabilities.supports_vision().
+ * Check if model entry has vision capability (attachment flag or "image" in input_modalities). */
+static bool models_dev_supports_vision(json_t *entry) {
+    if (!entry || entry->type != JSON_OBJECT) return false;
+    if (json_get_bool(entry, "attachment", false)) return true;
+    json_t *mods = json_obj_get(entry, "modalities");
+    if (mods && mods->type == JSON_OBJECT) {
+        json_t *input_mods = json_obj_get(mods, "input");
+        if (input_mods && input_mods->type == JSON_ARRAY) {
+            for (size_t i = 0; i < input_mods->c.count; i++) {
+                json_t *item = input_mods->c.items[i];
+                if (item && item->type == JSON_STRING && strcmp(item->str_val, "image") == 0)
+                    return true;
+            }
+        }
+    }
+    return false;
+}
+
+/* Port of Python agent/models_dev.py:ModelCapabilities.supports_pdf().
+ * Check if "pdf" is in input_modalities. */
+/* Port of Python agent/models_dev.py:supports_pdf() */
+static bool models_dev_supports_pdf(json_t *entry) {
+    if (!entry || entry->type != JSON_OBJECT) return false;
+    json_t *mods = json_obj_get(entry, "modalities");
+    if (mods && mods->type == JSON_OBJECT) {
+        json_t *input_mods = json_obj_get(mods, "input");
+        if (input_mods && input_mods->type == JSON_ARRAY) {
+            for (size_t i = 0; i < input_mods->c.count; i++) {
+                json_t *item = input_mods->c.items[i];
+                if (item && item->type == JSON_STRING && strcmp(item->str_val, "pdf") == 0)
+                    return true;
+            }
+        }
+    }
+    return false;
+}
+
+/* Port of Python agent/models_dev.py:ModelCapabilities.supports_audio_input().
+ * Check if "audio" is in input_modalities. */
+/* Port of Python agent/models_dev.py:supports_audio_input() */
+static bool models_dev_supports_audio_input(json_t *entry) {
+    if (!entry || entry->type != JSON_OBJECT) return false;
+    json_t *mods = json_obj_get(entry, "modalities");
+    if (mods && mods->type == JSON_OBJECT) {
+        json_t *input_mods = json_obj_get(mods, "input");
+        if (input_mods && input_mods->type == JSON_ARRAY) {
+            for (size_t i = 0; i < input_mods->c.count; i++) {
+                json_t *item = input_mods->c.items[i];
+                if (item && item->type == JSON_STRING && strcmp(item->str_val, "audio") == 0)
+                    return true;
+            }
+        }
+    }
+    return false;
+}
+
+/* Port of Python agent/models_dev.py:ModelCapabilities.format_cost().
+ * Build human-readable cost string. Returns malloc'd string, caller must free(). */
+/* Port of Python agent/models_dev.py:format_cost() */
+static char *models_dev_format_cost(json_t *entry) {
+    if (!models_dev_has_cost_data(entry))
+        return strdup("unknown");
+
+    json_t *cost = json_obj_get(entry, "cost");
+    if (!cost || cost->type != JSON_OBJECT) return strdup("unknown");
+
+    double cost_in = 0, cost_out = 0, cost_cache = -1;
+    json_t *v = json_obj_get(cost, "input");
+    if (v && v->type == JSON_NUMBER) cost_in = v->num_val;
+    v = json_obj_get(cost, "output");
+    if (v && v->type == JSON_NUMBER) cost_out = v->num_val;
+    v = json_obj_get(cost, "cache_read");
+    if (v && v->type == JSON_NUMBER) cost_cache = v->num_val;
+
+    char buf[256];
+    int n = snprintf(buf, sizeof(buf), "$%.2f/M in, $%.2f/M out", cost_in, cost_out);
+    if (cost_cache >= 0 && n < (int)sizeof(buf) - 32)
+        snprintf(buf + n, sizeof(buf) - (size_t)n, ", cache read $%.2f/M", cost_cache);
+    return strdup(buf);
+}
+
+/* Port of Python agent/models_dev.py:ModelCapabilities.format_capabilities().
+ * Build human-readable capabilities string. Returns malloc'd string, caller must free(). */
+/* Port of Python agent/models_dev.py:format_capabilities() */
+static char *models_dev_format_capabilities(json_t *entry) {
+    if (!entry || entry->type != JSON_OBJECT) return strdup("basic");
+
+    bool has_reasoning = json_get_bool(entry, "reasoning", false);
+    bool has_tools = json_get_bool(entry, "tool_call", false);
+    bool has_vision = models_dev_supports_vision(entry);
+    bool has_pdf = models_dev_supports_pdf(entry);
+    bool has_audio = models_dev_supports_audio_input(entry);
+    bool has_structured = json_get_bool(entry, "structured_output", false);
+    bool has_open = json_get_bool(entry, "open_weights", false);
+
+    char buf[256];
+    size_t pos = 0;
+    buf[0] = '\0';
+    if (has_reasoning) pos += (size_t)snprintf(buf + pos, sizeof(buf) - pos, "%sreasoning", pos > 0 ? ", " : "");
+    if (has_tools)     pos += (size_t)snprintf(buf + pos, sizeof(buf) - pos, "%stools", pos > 0 ? ", " : "");
+    if (has_vision)    pos += (size_t)snprintf(buf + pos, sizeof(buf) - pos, "%svision", pos > 0 ? ", " : "");
+    if (has_pdf)       pos += (size_t)snprintf(buf + pos, sizeof(buf) - pos, "%sPDF", pos > 0 ? ", " : "");
+    if (has_audio)     pos += (size_t)snprintf(buf + pos, sizeof(buf) - pos, "%saudio", pos > 0 ? ", " : "");
+    if (has_structured) pos += (size_t)snprintf(buf + pos, sizeof(buf) - pos, "%sstructured output", pos > 0 ? ", " : "");
+    if (has_open)      pos += (size_t)snprintf(buf + pos, sizeof(buf) - pos, "%sopen weights", pos > 0 ? ", " : "");
+
+    if (pos == 0) return strdup("basic");
+    return strdup(buf);
+}
+
+/* Port of Python agent/models_dev.py:_parse_provider_info().
+ * Logic inlined in models_dev_get_provider_info_json() above. */
+
+
+/* ================================================================
+ *  R10: Provider utility functions — ported from model_metadata.py
+ * ================================================================ */
+
+/* Normalize a base URL: strip whitespace and trailing slash.
+ * Port of Python model_metadata._normalize_base_url().
+ * Returns malloc'd string, caller must free(). */
+char *provider_normalize_base_url(const char *base_url) {
+    if (!base_url || !*base_url) return NULL;
+
+    /* Skip leading whitespace */
+    const char *start = base_url;
+    while (*start && isspace((unsigned char)*start)) start++;
+    if (!*start) return NULL;
+
+    /* Find end (before trailing whitespace) */
+    const char *end = start + strlen(start) - 1;
+    while (end > start && isspace((unsigned char)*end)) end--;
+
+    /* Strip trailing slash */
+    if (*end == '/') end--;
+
+    size_t len = (size_t)(end - start + 1);
+    char *result = malloc(len + 1);
+    if (!result) return NULL;
+    memcpy(result, start, len);
+    result[len] = '\0';
+    return result;
+}
+
+/* Strip a recognized provider prefix from a model name.
+ * Port of Python model_metadata._strip_provider_prefix().
+ * Handles "provider/" prefix format: "openrouter/gpt-4" → "gpt-4".
+ * Handles "provider:" prefix format: "openrouter:gpt-4" → "gpt-4".
+ * Preserves model:tag format like "qwen3.5:27b" (not a provider prefix).
+ * Returns malloc'd string, caller must free(). Returns NULL on error. */
+char *provider_strip_prefix(const char *model) {
+    if (!model || !*model) return NULL;
+
+    /* Skip if starts with http (URL, not model name) */
+    if (strncmp(model, "http", 4) == 0)
+        return strdup(model);
+
+    /* Check for "provider/" format (last slash) */
+    const char *slash = strrchr(model, '/');
+    if (slash && slash != model) {
+        /* Check if prefix looks like a provider name (no dots, no digits at start) */
+        size_t prefix_len = (size_t)(slash - model);
+        if (prefix_len > 0 && prefix_len < 64) {
+            return strdup(slash + 1);
+        }
+    }
+
+    /* Check for "provider:" format (first colon, but not model:tag) */
+    const char *colon = strchr(model, ':');
+    if (colon && colon != model) {
+        size_t prefix_len = (size_t)(colon - model);
+        if (prefix_len > 0 && prefix_len < 64) {
+            /* Check if suffix looks like a tag (e.g. "7b", "latest", "q4_0") */
+            const char *suffix = colon + 1;
+            /* Simple heuristic: if suffix starts with a digit or is short, it's a tag */
+            bool looks_like_tag = false;
+            if (isdigit((unsigned char)*suffix))
+                looks_like_tag = true;
+            else if (strncmp(suffix, "latest", 6) == 0 ||
+                     strncmp(suffix, "stable", 6) == 0 ||
+                     strncmp(suffix, "instruct", 8) == 0 ||
+                     strncmp(suffix, "text", 4) == 0)
+                looks_like_tag = true;
+
+            if (!looks_like_tag)
+                return strdup(suffix);
+        }
+    }
+
+    /* No prefix detected — return copy */
+    return strdup(model);
+}
+
+/* Check if a URL points to a local or private endpoint.
+ * Port of Python model_metadata.is_local_endpoint().
+ * Recognises loopback, container DNS (host.docker.internal),
+ * RFC-1918 private ranges, link-local, and Tailscale CGNAT.
+ * Returns true if the host is local/private. */
+bool is_local_endpoint(const char *base_url) {
+    if (!base_url || !*base_url) return false;
+
+    /* Normalize */
+    char *normalized = provider_normalize_base_url(base_url);
+    if (!normalized) return false;
+
+    /* Add scheme if missing */
+    char url_buf[1024];
+    if (strstr(normalized, "://")) {
+        snprintf(url_buf, sizeof(url_buf), "%s", normalized);
+    } else {
+        snprintf(url_buf, sizeof(url_buf), "http://%s", normalized);
+    }
+    free(normalized);
+
+    /* Extract hostname — handle IPv6 literal URLs separately */
+    char host_buf[256];
+    const char *host = NULL;
+
+    /* Check for IPv6 bracketed address */
+    const char *scheme_end = strstr(url_buf, "://");
+    if (scheme_end) {
+        const char *host_start = scheme_end + 3;
+        if (*host_start == '[') {
+            /* IPv6 literal: extract between brackets */
+            const char *close_bracket = strchr(host_start + 1, ']');
+            if (close_bracket) {
+                size_t ipv6_len = (size_t)(close_bracket - host_start - 1);
+                if (ipv6_len < sizeof(host_buf) - 1) {
+                    memcpy(host_buf, host_start + 1, ipv6_len);
+                    host_buf[ipv6_len] = '\0';
+                    host = host_buf;
+                }
+            }
+        }
+    }
+
+    /* Fallback: use url_extract_hostname for non-IPv6 */
+    if (!host) {
+        char *h = url_extract_hostname(url_buf);
+        if (!h || !*h) return false;
+        snprintf(host_buf, sizeof(host_buf), "%s", h);
+        host = host_buf;
+        free(h);
+    }
+
+    if (!host || !*host) return false;
+
+    bool result = false;
+
+    /* Check known local hosts */
+    static const char *local_hosts[] = {
+        "localhost", "127.0.0.1", "::1", "0.0.0.0", "127.0.1.1", NULL
+    };
+    for (int i = 0; local_hosts[i]; i++) {
+        if (strcasecmp(host, local_hosts[i]) == 0) {
+            result = true;
+            goto done;
+        }
+    }
+
+    /* Check container DNS suffixes */
+    static const char *container_suffixes[] = {
+        "host.docker.internal", "host.podman.internal",
+        "host.lima.internal", ".host.docker.internal",
+        ".host.podman.internal", ".host.lima.internal", NULL
+    };
+    size_t hlen = strlen(host);
+    for (int i = 0; container_suffixes[i]; i++) {
+        size_t slen = strlen(container_suffixes[i]);
+        if (hlen >= slen && strcasecmp(host + hlen - slen, container_suffixes[i]) == 0) {
+            result = true;
+            goto done;
+        }
+    }
+
+    /* Check IP ranges */
+    struct in_addr addr4;
+    if (inet_pton(AF_INET, host, &addr4) == 1) {
+        unsigned long ip = ntohl(addr4.s_addr);
+        /* 127.0.0.0/8 — loopback */
+        if ((ip & 0xFF000000) == 0x7F000000) { result = true; goto done; }
+        /* 10.0.0.0/8 — RFC-1918 */
+        if ((ip & 0xFF000000) == 0x0A000000) { result = true; goto done; }
+        /* 172.16.0.0/12 — RFC-1918 */
+        if ((ip & 0xFFF00000) == 0xAC100000) { result = true; goto done; }
+        /* 192.168.0.0/16 — RFC-1918 */
+        if ((ip & 0xFFFF0000) == 0xC0A80000) { result = true; goto done; }
+        /* 169.254.0.0/16 — link-local */
+        if ((ip & 0xFFFF0000) == 0xA9FE0000) { result = true; goto done; }
+        /* 100.64.0.0/10 — Tailscale CGNAT (RFC 6598) */
+        if ((ip & 0xFFC00000) == 0x64400000) { result = true; goto done; }
+        /* 0.0.0.0/8 — current network */
+        if ((ip & 0xFF000000) == 0x00000000) { result = true; goto done; }
+    }
+
+    /* Check IPv6 loopback and private */
+    struct in6_addr addr6;
+    if (inet_pton(AF_INET6, host, &addr6) == 1) {
+        static const unsigned char loopback[16] =
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
+        static const unsigned char ipv4_mapped_prefix[12] =
+            {0,0,0,0,0,0,0,0,0,0,0xFF,0xFF};
+        if (memcmp(&addr6, loopback, 16) == 0) { result = true; goto done; }
+        /* IPv4-mapped IPv6 — extract embedded IPv4 and recheck */
+        if (memcmp(&addr6, ipv4_mapped_prefix, 12) == 0) {
+            struct in_addr embedded;
+            memcpy(&embedded, ((const unsigned char *)&addr6) + 12, 4);
+            unsigned long ip = ntohl(embedded.s_addr);
+            if ((ip & 0xFF000000) == 0x7F000000) { result = true; goto done; }
+            if ((ip & 0xFF000000) == 0x0A000000) { result = true; goto done; }
+            if ((ip & 0xFFF00000) == 0xAC100000) { result = true; goto done; }
+            if ((ip & 0xFFFF0000) == 0xC0A80000) { result = true; goto done; }
+            if ((ip & 0xFFFF0000) == 0xA9FE0000) { result = true; goto done; }
+            if ((ip & 0xFFC00000) == 0x64400000) { result = true; goto done; }
+        }
+        /* Unique local address (fc00::/7) */
+        if (((const unsigned char *)&addr6)[0] & 0x02) { /* fec0::/10 not fc00::/7; check fd00::/8 */
+            if (((const unsigned char *)&addr6)[0] == 0xfd) { result = true; goto done; }
+        }
+        /* Link-local (fe80::/10) */
+        if (((const unsigned char *)&addr6)[0] == 0xfe &&
+            (((const unsigned char *)&addr6)[1] & 0xc0) == 0x80) { result = true; goto done; }
+    }
+
+done:
+    return result;
+}
+
+/* Infer provider name from a base URL by matching against known provider hosts.
+ * Port of Python model_metadata._infer_provider_from_url().
+ * Returns malloc'd provider name string, or NULL if unknown. Caller must free(). */
+char *provider_infer_from_url(const char *base_url) {
+    if (!base_url || !*base_url) return NULL;
+
+    /* Normalize */
+    char *normalized = provider_normalize_base_url(base_url);
+    if (!normalized) return NULL;
+
+    /* Add scheme if missing */
+    char url_buf[1024];
+    if (strstr(normalized, "://")) {
+        snprintf(url_buf, sizeof(url_buf), "%s", normalized);
+    } else {
+        snprintf(url_buf, sizeof(url_buf), "https://%s", normalized);
+    }
+    free(normalized);
+
+    /* Extract hostname from the URL */
+    char *host = url_extract_hostname(url_buf);
+    if (!host || !*host) {
+        free(host);
+        return NULL;
+    }
+
+    /* Lowercase the hostname for comparison */
+    for (char *p = host; *p; p++) *p = (char)tolower((unsigned char)*p);
+
+    /* Check each known provider's base_url hostname against our URL */
+    char *result = NULL;
+    for (int i = 0; PROVIDERS[i].provider_name; i++) {
+        const char *prov_base_url = PROVIDERS[i].base_url;
+        if (!prov_base_url || !*prov_base_url) continue;
+
+        /* Extract hostname from provider's base_url */
+        char *prov_host = url_extract_hostname(prov_base_url);
+        if (!prov_host || !*prov_host) {
+            free(prov_host);
+            continue;
+        }
+
+        /* Lowercase the provider hostname */
+        for (char *p = prov_host; *p; p++) *p = (char)tolower((unsigned char)*p);
+
+        /* Check if provider hostname appears in our URL's host */
+        if (strstr(host, prov_host) || strstr(prov_host, host)) {
+            result = strdup(PROVIDERS[i].provider_name);
+            free(prov_host);
+            break;
+        }
+        free(prov_host);
+    }
+
+    /* Check OpenAI-compat aliases that may not be in PROVIDERS table */
+    if (!result) {
+        static const struct { const char *host_part; const char *provider; } aliases[] = {
+            {"api.fireworks.ai", "fireworks"},
+            {"opencode.ai", "opencode-go"},
+            {"api.arcee.ai", "arcee"},
+            {"api.minimax", "minimax"},
+            {"xiaomimimo.com", "xiaomi"},
+            {"api.gmi-serving.com", "gmi"},
+            {"api.novita.ai", "novita"},
+            {"tokenhub.tencentmaas.com", "tencent-tokenhub"},
+            {"api.anthropic.com", "anthropic"},
+            {"api.deepseek.com", "deepseek"},
+            {"generativelanguage.googleapis.com", "gemini"},
+            {"inference-api.nousresearch.com", "nous"},
+            {"chatgpt.com", "openai"},
+            {"localhost", "local"},
+            {"127.0.0.1", "local"},
+            {NULL, NULL}
+        };
+        for (int i = 0; aliases[i].host_part; i++) {
+            if (strstr(host, aliases[i].host_part)) {
+                result = strdup(aliases[i].provider);
+                break;
+            }
+        }
+    }
+
+    free(host);
+    return result;
+}
+
+/* Parse a context length limit from an API error message.
+ * Port of Python model_metadata.parse_context_limit_from_error().
+ * Extracts numbers near context-related keywords. Returns limit,
+ * or -1 if not found / not parseable. */
+int parse_context_limit_from_error(const char *error_msg) {
+    if (!error_msg || !*error_msg) return -1;
+
+    /* Work on a lowercase copy */
+    char buf[2048];
+    size_t len = strlen(error_msg);
+    if (len >= sizeof(buf)) len = sizeof(buf) - 1;
+    for (size_t i = 0; i < len; i++)
+        buf[i] = (char)tolower((unsigned char)error_msg[i]);
+    buf[len] = '\0';
+
+    /* Pattern 1: "maximum context length is N" or "max context size is N" */
+    const char *p = strstr(buf, "maximum");
+    if (!p) p = strstr(buf, "max");
+    if (p) {
+        /* Scan around this area for a 4+ digit number */
+        const char *scan_start = p > buf ? p - 20 : buf;
+        const char *scan_end = p + 40;
+        if (scan_end > buf + len) scan_end = buf + len;
+        if (scan_start < buf) scan_start = buf;
+
+        /* Look for number near context/length keywords */
+        const char *keywords[] = {"context", "length", "size", "window", "limit", "token", NULL};
+        for (int ki = 0; keywords[ki]; ki++) {
+            const char *kw = strstr(scan_start, keywords[ki]);
+            if (kw && kw < scan_end) {
+                /* Search for digits before and after the keyword */
+                const char *num_search_start = (kw - scan_start) > 20 ? kw - 20 : scan_start;
+                const char *num_search_end = kw + 20;
+                if (num_search_end > scan_end) num_search_end = scan_end;
+
+                for (const char *cp = num_search_start; cp < num_search_end; cp++) {
+                    if (cp >= buf + len) break;
+                    if (cp >= num_search_end) break;
+                    if (cp < scan_start) continue;
+                    if (*cp >= '0' && *cp <= '9') {
+                        long val = strtol(cp, NULL, 10);
+                        if (val >= 1024 && val <= 10000000)
+                            return (int)val;
+                        /* Skip this number */
+                        while (cp < num_search_end && *cp >= '0' && *cp <= '9') cp++;
+                    }
+                }
+            }
+        }
+    }
+
+    /* Pattern 2: "context_length_exceeded: NNNNN" */
+    const char *cl = strstr(buf, "context_length_exceeded");
+    if (cl) {
+        const char *num = cl + 24; /* skip past "context_length_exceeded" */
+        while (*num && (*num == ':' || *num == ' ' || *num == ',')) num++;
+        if (*num >= '0' && *num <= '9') {
+            long val = strtol(num, NULL, 10);
+            if (val >= 1024 && val <= 10000000) return (int)val;
+        }
+    }
+
+    /* Pattern 3: "context length is N" or "context size N" */
+    p = strstr(buf, "context length");
+    if (!p) p = strstr(buf, "context size");
+    if (!p) p = strstr(buf, "context window");
+    if (p) {
+        /* Look for a number within 30 chars after the keyword */
+        const char *end = p + 30;
+        if (end > buf + len) end = buf + len;
+        for (const char *cp = p; cp < end; cp++) {
+            if (*cp >= '0' && *cp <= '9') {
+                long val = strtol(cp, NULL, 10);
+                if (val >= 1024 && val <= 10000000) return (int)val;
+                while (cp < end && *cp >= '0' && *cp <= '9') cp++;
+            }
+        }
+    }
+
+    return -1;
+}
+
+/* Parse available output tokens from a max_tokens-too-large error message.
+ * Port of Python model_metadata.parse_available_output_tokens_from_error().
+ * Returns available tokens, or -1 if not a max_tokens-too-large error. */
+int parse_available_output_tokens_from_error(const char *error_msg) {
+    if (!error_msg || !*error_msg) return -1;
+
+    /* Work on a lowercase copy */
+    char buf[2048];
+    size_t len = strlen(error_msg);
+    if (len >= sizeof(buf)) len = sizeof(buf) - 1;
+    for (size_t i = 0; i < len; i++)
+        buf[i] = (char)tolower((unsigned char)error_msg[i]);
+    buf[len] = '\0';
+
+    /* Must contain "max_tokens" and "available_(output_)?tokens" */
+    if (!strstr(buf, "max_tokens")) return -1;
+    if (!strstr(buf, "available_tokens") && !strstr(buf, "available tokens")
+        && !strstr(buf, "available_output_tokens")) return -1;
+
+    /* Extract the available tokens figure */
+    const char *at = strstr(buf, "available_output_tokens");
+    if (!at) at = strstr(buf, "available_tokens");
+    if (!at) at = strstr(buf, "available tokens");
+    if (at) {
+        const char *num = at;
+        /* Skip past the keyword */
+        while (*num && *num != ':' && *num != '=' && *num != ' ') num++;
+        while (*num && (*num == ':' || *num == ' ' || *num == '=')) num++;
+        if (*num >= '0' && *num <= '9') {
+            long val = strtol(num, NULL, 10);
+            if (val >= 1) return (int)val;
+        }
+    }
+
+    /* Fallback: look for "= N" at the end of the error */
+    const char *eq = strrchr(buf, '=');
+    if (eq) {
+        const char *num = eq + 1;
+        while (*num && *num == ' ') num++;
+        if (*num >= '0' && *num <= '9') {
+            long val = strtol(num, NULL, 10);
+            if (val >= 1) return (int)val;
+        }
+    }
+
+    return -1;
+}
+
+/* ---- model_id_matches ---- */
+/* Port of Python model_metadata._model_id_matches(). */
+bool model_id_matches(const char *candidate_id, const char *lookup_model) {
+    if (!candidate_id || !lookup_model) return false;
+
+    /* Exact match */
+    if (strcmp(candidate_id, lookup_model) == 0) return true;
+
+    /* Slug match: part after last '/' equals lookup_model */
+    const char *slash = strrchr(candidate_id, '/');
+    if (slash) {
+        const char *slug = slash + 1;
+        if (strcmp(slug, lookup_model) == 0) return true;
+    }
+
+    return false;
+}
+
+/* ---- provider_model_suggests_kimi ---- */
+/* Port of Python model_metadata._model_name_suggests_kimi(). */
+bool provider_model_suggests_kimi(const char *model) {
+    if (!model) return false;
+
+    /* Case-insensitive check */
+    size_t len = strlen(model);
+    char *lower = malloc(len + 1);
+    if (!lower) return false;
+    for (size_t i = 0; i < len; i++) {
+        lower[i] = tolower((unsigned char)model[i]);
+    }
+    lower[len] = '\0';
+
+    /* Check for 'kimi' prefix or 'moonshot' substring */
+    bool result = (strncmp(lower, "kimi", 4) == 0) || (strstr(lower, "moonshot") != NULL);
+
+    free(lower);
+    return result;
+}
+
+/* ---- provider_model_suggests_minimax_m3 ---- */
+/* Port of Python model_metadata._model_name_suggests_minimax_m3(). */
+bool provider_model_suggests_minimax_m3(const char *model) {
+    if (!model) return false;
+    /* Case-insensitive check for "minimax-m3" substring */
+    size_t len = strlen(model);
+    /* Quick check: must be at least 10 chars to contain "minimax-m3" */
+    if (len < 10) return false;
+    char *lower = malloc(len + 1);
+    if (!lower) return false;
+    for (size_t i = 0; i < len; i++)
+        lower[i] = tolower((unsigned char)model[i]);
+    lower[len] = '\0';
+    bool result = (strstr(lower, "minimax-m3") != NULL);
+    free(lower);
+    return result;
+}
+
+/* ---- provider_normalize_model_version ---- */
+/* Port of Python model_metadata._normalize_model_version(). */
+char *provider_normalize_model_version(const char *model) {
+    if (!model) return NULL;
+
+    size_t len = strlen(model);
+    char *result = malloc(len + 1);
+    if (!result) return NULL;
+
+    for (size_t i = 0; i < len; i++) {
+        result[i] = (model[i] == '.') ? '-' : model[i];
+    }
+    result[len] = '\0';
+
+    return result;
+}
+
+/* ---- grok_supports_reasoning_effort (name parity) ---- */
+/* Port of Python model_metadata.grok_supports_reasoning_effort(). */
+bool grok_supports_reasoning_effort(const char *model) {
+    if (!model) return false;
+    size_t len = strlen(model);
+    char *lower = malloc(len + 1);
+    if (!lower) return false;
+    for (size_t i = 0; i < len; i++)
+        lower[i] = tolower((unsigned char)model[i]);
+    lower[len] = '\0';
+    /* Strip aggregator prefix after last '/' */
+    const char *name = lower;
+    const char *slash = strrchr(lower, '/');
+    if (slash) name = slash + 1;
+    /* Check against known capable prefixes */
+    const char *prefixes[] = {"grok-3-mini", "grok-4.20-multi-agent", "grok-4.3", NULL};
+    bool result = false;
+    for (int i = 0; prefixes[i]; i++) {
+        if (strncmp(name, prefixes[i], strlen(prefixes[i])) == 0) {
+            result = true;
+            break;
+        }
+    }
+    free(lower);
+    return result;
+}
+
+/* ---- is_openrouter_base_url ---- */
+/* Port of Python model_metadata._is_openrouter_base_url().
+ * Checks if URL contains "openrouter.ai". */
+bool is_openrouter_base_url(const char *base_url) {
+    return base_url && strstr(base_url, "openrouter.ai") != NULL;
+}
+
+/* ---- is_custom_endpoint ---- */
+/* Port of Python model_metadata._is_custom_endpoint().
+ * URL is valid (non-empty) and not an OpenRouter endpoint. */
+bool is_custom_endpoint(const char *base_url) {
+    return base_url && *base_url && !is_openrouter_base_url(base_url);
+}
+
+/* ---- provider_is_known_base_url ---- */
+/* Port of Python model_metadata._is_known_provider_base_url().
+ * Wraps provider_infer_from_url(). */
+bool provider_is_known_base_url(const char *base_url) {
+    char *provider = provider_infer_from_url(base_url);
+    if (provider) {
+        free(provider);
+        return true;
+    }
+    return false;
+}
+
+/* ---- provider_auth_headers ---- */
+/* Port of Python model_metadata._auth_headers().
+ * Returns json_t dict {Authorization: Bearer <key>} or NULL if key empty. */
+json_t *provider_auth_headers(const char *api_key) {
+    if (!api_key) return NULL;
+    while (*api_key == ' ' || *api_key == '\t') api_key++;
+    if (!*api_key) return NULL;
+    json_t *obj = json_object();
+    if (!obj) return NULL;
+    size_t klen = strlen(api_key);
+    char *bearer = malloc(klen + 8);
+    if (!bearer) { json_free(obj); return NULL; }
+    memcpy(bearer, "Bearer ", 7);
+    memcpy(bearer + 7, api_key, klen + 1);
+    json_set(obj, "Authorization", json_string(bearer));
+    free(bearer);
+    return obj;
+}
+
+/* ---- coerce_reasonable_int ---- */
+/* Port of Python model_metadata._coerce_reasonable_int().
+ * Converts string to int, checks range [minimum, maximum].
+ * Returns -1 on failure (overflow, non-numeric, out of range). */
+int coerce_reasonable_int(const char *value, int minimum, int maximum) {
+    if (!value) return -1;
+    while (*value == ' ' || *value == '\t') value++;
+    if (!*value) return -1;
+    size_t len = strlen(value);
+    char *buf = malloc(len + 1);
+    if (!buf) return -1;
+    size_t j = 0;
+    for (size_t i = 0; i < len; i++) {
+        if (value[i] != ',') buf[j++] = value[i];
+    }
+    buf[j] = '\0';
+    char *endptr = NULL;
+    long val = strtol(buf, &endptr, 10);
+    /* Save whether endptr consumed all non-whitespace BEFORE freeing buf */
+    bool endptr_ok = (endptr && (*endptr == '\0' || *endptr == ' ' || *endptr == '\t'));
+    free(buf);
+    if (!endptr_ok) return -1;
+    if (val < (long)minimum || val > (long)maximum) return -1;
+    return (int)val;
+}
+
+/* ---- estimate_tokens_rough ---- */
+/* Port of Python model_metadata.estimate_tokens_rough().
+ * Rough token estimate using ceiling division: (len + 3) / 4. */
+int estimate_tokens_rough(const char *text) {
+    if (!text) return 0;
+    size_t len = strlen(text);
+    return (int)((len + 3) / 4);
+}
+
+/* ---- resolve_requests_verify ---- */
+/* Port of Python model_metadata._resolve_requests_verify().
+ * Returns 1 for verify, 0 for skip verify, -1 for custom CA path. */
+int resolve_requests_verify(void) {
+    const char *value = getenv("HERMES_VERIFY_SSL");
+    if (!value || !*value) return 1; /* Default: verify */
+    /* Lowercase the value for comparison */
+    size_t len = strlen(value);
+    char *lower = malloc(len + 1);
+    if (!lower) return 1;
+    for (size_t i = 0; i < len; i++)
+        lower[i] = tolower((unsigned char)value[i]);
+    lower[len] = '\0';
+    int result;
+    if (strcmp(lower, "0") == 0 || strcmp(lower, "false") == 0 ||
+        strcmp(lower, "no") == 0 || strcmp(lower, "off") == 0) {
+        result = 0;
+    } else if (strcmp(lower, "1") == 0 || strcmp(lower, "true") == 0 ||
+               strcmp(lower, "yes") == 0 || strcmp(lower, "on") == 0) {
+        result = 1;
+    } else {
+        result = -1; /* Custom CA bundle path */
+    }
+    free(lower);
+    return result;
+}
+
+/* ---- provider_requests_verify_path ---- */
+/* Return the custom CA bundle path from HERMES_VERIFY_SSL, or NULL if
+ * the env var is a boolean keyword or not set. */
+const char *provider_requests_verify_path(void) {
+    if (resolve_requests_verify() != -1) return NULL;
+    return getenv("HERMES_VERIFY_SSL");
+}
+
+/* ---- extract_first_int ---- */
+/* Port of Python model_metadata._extract_first_int().
+ * Iterates nested JSON objects looking for keys in the NULL-terminated
+ * keys array. Returns the first matching coerced int value, or -1. */
+int extract_first_int(const json_t *payload, const char **keys) {
+    if (!payload || !keys) return -1;
+    if (payload->type == JSON_OBJECT) {
+        for (size_t i = 0; i < payload->c.count; i++) {
+            const char *key = payload->c.keys ? payload->c.keys[i] : "";
+            if (!key) continue;
+            size_t klen = strlen(key);
+            char *klower = malloc(klen + 1);
+            if (!klower) continue;
+            for (size_t j = 0; j < klen; j++)
+                klower[j] = tolower((unsigned char)key[j]);
+            klower[klen] = '\0';
+            for (int k = 0; keys[k]; k++) {
+                if (strcmp(klower, keys[k]) == 0) {
+                    json_t *val = payload->c.items[i];
+                    int result = -1;
+                    if (val->type == JSON_NUMBER) {
+                        int n = (int)val->num_val;
+                        if (n >= 1024 && n <= 10000000) result = n;
+                    } else if (val->type == JSON_STRING) {
+                        int n = coerce_reasonable_int(val->str_val, 1024, 10000000);
+                        if (n >= 1024) result = n;
+                    }
+                    free(klower);
+                    if (result >= 0) return result;
+                    goto next_key_fi;
+                }
+            }
+            /* Recursively check nested objects — Port of Python model_metadata._iter_nested_dicts() */
+            /* AG26: Port of Python agent/model_metadata.py:_iter_nested_dicts() */
+            if (payload->c.items[i]->type == JSON_OBJECT) {
+                int n = extract_first_int(payload->c.items[i], keys);
+                free(klower);
+                if (n >= 0) return n;
+            } else {
+                free(klower);
+            }
+            next_key_fi:;
+        }
+    }
+    return -1;
+}
+
+/* ---- extract_context_length ---- */
+/* Port of Python model_metadata._extract_context_length().
+ * Delegates to extract_first_int with context-length keys. */
+int extract_context_length(const json_t *payload) {
+    const char *keys[] = {
+        "context_length", "context_window", "context_size",
+        "max_context_length", "max_position_embeddings", "max_model_len",
+        "max_input_tokens", "max_sequence_length", "max_seq_len",
+        "n_ctx_train", "n_ctx", "ctx_size", NULL
+    };
+    return extract_first_int(payload, keys);
+}
+
+/* ---- extract_max_completion_tokens ---- */
+/* Port of Python model_metadata._extract_max_completion_tokens().
+ * Delegates to extract_first_int with max-completion keys. */
+int extract_max_completion_tokens(const json_t *payload) {
+    const char *keys[] = {
+        "max_completion_tokens", "max_output_tokens", "max_tokens", NULL
+    };
+    return extract_first_int(payload, keys);
+}
+/* ---- provider_extract_pricing ---- */
+/* Port of Python model_metadata._extract_pricing().
+ * Extracts pricing from model metadata payload.
+ * First checks for novita-specific keys, then iterates nested dicts
+ * using alias maps for prompt/completion/request/cache_read/cache_write. */
+json_t *provider_extract_pricing(const json_t *payload) {
+    if (!payload || payload->type != JSON_OBJECT) return NULL;
+
+    /* First check for novita-specific pricing keys */
+    json_t *novita_input = json_obj_get(payload, "input_token_price_per_m");
+    json_t *novita_output = json_obj_get(payload, "output_token_price_per_m");
+    if (novita_input || novita_output) {
+        json_t *pricing = json_object();
+        if (novita_input && novita_input->type == JSON_NUMBER) {
+            /* Convert: input_token_price_per_m / 10_000 / 1_000_000 */
+            double val = novita_input->num_val / 10000000000.0;
+            char buf[64];
+            snprintf(buf, sizeof(buf), "%.12g", val);
+            json_set(pricing, "prompt", json_string(buf));
+        }
+        if (novita_output && novita_output->type == JSON_NUMBER) {
+            double val = novita_output->num_val / 10000000000.0;
+            char buf[64];
+            snprintf(buf, sizeof(buf), "%.12g", val);
+            json_set(pricing, "completion", json_string(buf));
+        }
+        return pricing;
+    }
+
+    /* Alias maps for pricing keys */
+    typedef struct {
+        const char *target;
+        const char *aliases[6];
+    } pricing_alias_group_t;
+
+    pricing_alias_group_t groups[] = {
+        {"prompt",     {"prompt", "input", "input_cost_per_token", "prompt_token_cost", NULL}},
+        {"completion", {"completion", "output", "output_cost_per_token", "completion_token_cost", NULL}},
+        {"request",    {"request", "request_cost", NULL}},
+        {"cache_read", {"cache_read", "cached_prompt", "input_cache_read", "cache_read_cost_per_token", NULL}},
+        {"cache_write",{"cache_write", "cache_creation", "input_cache_write", "cache_write_cost_per_token", NULL}},
+    };
+    int num_groups = sizeof(groups) / sizeof(groups[0]);
+
+    /* Iterate over nested dicts in the payload recursively */
+    /* We use a simple 2-level recursion: payload and any immediate child dicts */
+    const json_t *dicts[32];
+    int num_dicts = 0;
+    dicts[num_dicts++] = payload;
+
+    /* Add first-level child dicts */
+    for (size_t i = 0; i < payload->c.count && num_dicts < 32; i++) {
+        if (payload->c.items[i]->type == JSON_OBJECT)
+            dicts[num_dicts++] = payload->c.items[i];
+    }
+
+    for (int d = 0; d < num_dicts; d++) {
+        const json_t *mapping = dicts[d];
+
+        /* Quick check: does this dict have ANY pricing-related keys? */
+        bool has_pricing_key = false;
+        for (size_t i = 0; i < mapping->c.count && !has_pricing_key; i++) {
+            const char *key = mapping->c.keys ? mapping->c.keys[i] : "";
+            if (!key) continue;
+            size_t klen = strlen(key);
+            char *klower = malloc(klen + 1);
+            if (!klower) continue;
+            for (size_t j = 0; j < klen; j++)
+                klower[j] = tolower((unsigned char)key[j]);
+            klower[klen] = '\0';
+            for (int g = 0; g < num_groups && !has_pricing_key; g++) {
+                for (int a = 0; groups[g].aliases[a]; a++) {
+                    if (strcmp(klower, groups[g].aliases[a]) == 0) {
+                        has_pricing_key = true;
+                        break;
+                    }
+                }
+            }
+            free(klower);
+        }
+
+        if (!has_pricing_key) continue;
+
+        /* Build pricing dict from this mapping */
+        json_t *pricing = json_object();
+        int found = 0;
+
+        for (int g = 0; g < num_groups; g++) {
+            for (int a = 0; groups[g].aliases[a]; a++) {
+                for (size_t i = 0; i < mapping->c.count; i++) {
+                    const char *key = mapping->c.keys ? mapping->c.keys[i] : "";
+                    if (!key) continue;
+                    size_t klen = strlen(key);
+                    char *klower = malloc(klen + 1);
+                    if (!klower) continue;
+                    for (size_t j = 0; j < klen; j++)
+                        klower[j] = tolower((unsigned char)key[j]);
+                    klower[klen] = '\0';
+                    bool match = (strcmp(klower, groups[g].aliases[a]) == 0);
+                    free(klower);
+                    if (!match) continue;
+
+                    json_t *val = mapping->c.items[i];
+                    if (val->type == JSON_NULL) continue;
+                    if (val->type == JSON_STRING && (!val->str_val || !*val->str_val))
+                        continue;
+                    if (val->type == JSON_NUMBER) {
+                        char buf[64];
+                        snprintf(buf, sizeof(buf), "%.12g", val->num_val);
+                        json_set(pricing, groups[g].target, json_string(buf));
+                    } else if (val->type == JSON_STRING) {
+                        json_set(pricing, groups[g].target, json_string(val->str_val));
+                    } else {
+                        /* Other types: skip */
+                        continue;
+                    }
+                    found++;
+                    break;
+                }
+            }
+        }
+
+        if (found > 0) return pricing;
+        json_free(pricing);
+    }
+
+    return NULL;
+}
+
+/* ---- estimate_count_image_tokens ---- */
+/* Port of Python model_metadata._count_image_tokens().
+ * Counts image-like content parts in a message JSON object. */
+int estimate_count_image_tokens(const json_t *msg, int cost_per_image) {
+    if (!msg || msg->type != JSON_OBJECT) return 0;
+    int count = 0;
+
+    /* Check content array for type=image|image_url|input_image */
+    json_t *content = json_obj_get(msg, "content");
+    if (content && content->type == JSON_ARRAY) {
+        for (size_t i = 0; i < content->c.count; i++) {
+            json_t *part = content->c.items[i];
+            if (!part || part->type != JSON_OBJECT) continue;
+            const char *ptype = json_get_str(part, "type", "");
+            if (strcmp(ptype, "image") == 0 || strcmp(ptype, "image_url") == 0 ||
+                strcmp(ptype, "input_image") == 0) {
+                count++;
+            }
+        }
+    }
+
+    /* Check _anthropic_content_blocks for type=image */
+    json_t *stashed = json_obj_get(msg, "_anthropic_content_blocks");
+    if (stashed && stashed->type == JSON_ARRAY) {
+        for (size_t i = 0; i < stashed->c.count; i++) {
+            json_t *part = stashed->c.items[i];
+            if (part && part->type == JSON_OBJECT) {
+                const char *ptype = json_get_str(part, "type", "");
+                if (strcmp(ptype, "image") == 0) count++;
+            }
+        }
+    }
+
+    /* Check _multimodal content */
+    if (content && content->type == JSON_OBJECT) {
+        json_t *multimodal = json_obj_get(content, "_multimodal");
+        if (multimodal && multimodal->type == JSON_BOOL && multimodal->bool_val) {
+            json_t *inner = json_obj_get(content, "content");
+            if (inner && inner->type == JSON_ARRAY) {
+                for (size_t i = 0; i < inner->c.count; i++) {
+                    json_t *part = inner->c.items[i];
+                    if (!part || part->type != JSON_OBJECT) continue;
+                    const char *ptype = json_get_str(part, "type", "");
+                    if (strcmp(ptype, "image") == 0 || strcmp(ptype, "image_url") == 0) {
+                        count++;
+                    }
+                }
+            }
+        }
+    }
+
+    return count * cost_per_image;
+}
+
+/* ---- estimate_message_chars ---- */
+/* Port of Python model_metadata._estimate_message_chars().
+ * Counts serialized chars of a message dict. */
+int estimate_message_chars(const json_t *msg) {
+    if (!msg) return 0;
+    char *serialized = json_serialize(msg);
+    if (!serialized) return 0;
+    int len = (int)strlen(serialized);
+    free(serialized);
+    return len;
+}
+
+/* ---- estimate_messages_tokens_rough ---- */
+/* Port of Python model_metadata.estimate_messages_tokens_rough().
+ * Sums char-based tokens + image tokens for a message array.
+ * Uses ceiling division: (total_chars + 3) / 4. */
+int estimate_messages_tokens_rough(const json_t *messages) {
+    if (!messages || messages->type != JSON_ARRAY) return 0;
+    int total_chars = 0;
+    int image_tokens = 0;
+    for (size_t i = 0; i < messages->c.count; i++) {
+        json_t *msg = messages->c.items[i];
+        if (!msg || msg->type != JSON_OBJECT) continue;
+        total_chars += estimate_message_chars(msg);
+        image_tokens += estimate_count_image_tokens(msg, 1500);
+    }
+    return ((total_chars + 3) / 4) + image_tokens;
+}
+
+/* ---- estimate_request_tokens_rough ---- */
+/* Port of Python model_metadata.estimate_request_tokens_rough().
+ * Estimates tokens for system_prompt + messages + tools. */
+int estimate_request_tokens_rough(const json_t *messages,
+                                   const char *system_prompt,
+                                   const json_t *tools) {
+    int total = 0;
+    if (system_prompt && *system_prompt) {
+        total += (int)((strlen(system_prompt) + 3) / 4);
+    }
+    if (messages) {
+        total += estimate_messages_tokens_rough(messages);
+    }
+    if (tools) {
+        char *tools_str = json_serialize(tools);
+        if (tools_str) {
+            total += (int)((strlen(tools_str) + 3) / 4);
+            free(tools_str);
+        }
+    }
+    return total;
+}
+
+/* ---- Context probe tiers ---- */
+
+/* Port of Python model_metadata.CONTEXT_PROBE_TIERS. */
+const int CONTEXT_PROBE_TIERS[CONTEXT_PROBE_TIER_COUNT] = {
+    256000,
+    128000,
+    64000,
+    32000,
+    16000,
+    8000,
+};
+
+/* ---- get_next_probe_tier ---- */
+/* Port of Python model_metadata.get_next_probe_tier().
+ * Returns the next lower probe tier, or -1 if already at minimum. */
+int get_next_probe_tier(int current_length) {
+    for (int i = 0; i < CONTEXT_PROBE_TIER_COUNT; i++) {
+        if (CONTEXT_PROBE_TIERS[i] < current_length)
+            return CONTEXT_PROBE_TIERS[i];
+    }
+    return -1;
+}
+
+/* ---- provider_context_cache_path ---- */
+/* Port of Python model_metadata._get_context_cache_path().
+ * Returns path: {hermes_home}/context_length_cache.json */
+void provider_context_cache_path(char *buf, size_t sz) {
+    hermes_resolve_path("context_length_cache.json", buf, sz);
+}
+
+/* ---- provider_context_cache_load ---- */
+/* Port of Python model_metadata._load_context_cache().
+ * Loads the context_length_cache.json file and returns the root object. */
+json_t *provider_context_cache_load(void) {
+    char path[HERMES_PATH_MAX];
+    provider_context_cache_path(path, sizeof(path));
+
+    struct stat st;
+    if (stat(path, &st) != 0 || !S_ISREG(st.st_mode))
+        return NULL;
+
+    json_t *root = json_parse_file(path, NULL);
+    if (!root || root->type != JSON_OBJECT) {
+        json_free(root);
+        return NULL;
+    }
+    return root;
+}
+
+/* ---- save_context_length (name parity) ---- */
+/* Port of Python model_metadata.save_context_length().
+ * Saves model@base_url -> length entry to the cache file.
+ * Creates the file if it doesn't exist. */
+int save_context_length(const char *model, const char *base_url, int length) {
+    if (!model || !base_url) return 0;
+
+    /* Build cache key: model@base_url */
+    size_t key_len = strlen(model) + 1 + strlen(base_url) + 1;
+    char *key = malloc(key_len);
+    if (!key) return 0;
+    snprintf(key, key_len, "%s@%s", model, base_url);
+
+    /* Load existing cache or create new */
+    json_t *cache = provider_context_cache_load();
+    if (!cache)
+        cache = json_object();
+
+    /* Check if already stored with same value */
+    json_t *existing = json_obj_get(cache, key);
+    if (existing && existing->type == JSON_NUMBER) {
+        int existing_val = (int)existing->num_val;
+        if (existing_val == length) {
+            free(key);
+            json_free(cache);
+            return 1; /* Already stored */
+        }
+    }
+
+    /* Update or add entry */
+    json_set(cache, key, json_number((double)length));
+
+    /* Serialize and write */
+    char *json_str = json_serialize(cache);
+    if (!json_str) {
+        free(key);
+        json_free(cache);
+        return 0;
+    }
+
+    char path[HERMES_PATH_MAX];
+    provider_context_cache_path(path, sizeof(path));
+
+    FILE *f = fopen(path, "w");
+    if (!f) {
+        free(key);
+        free(json_str);
+        json_free(cache);
+        return 0;
+    }
+    fwrite(json_str, 1, strlen(json_str), f);
+    fclose(f);
+
+    free(key);
+    free(json_str);
+    json_free(cache);
+    return 1;
+}
+
+/* ---- get_cached_context_length (name parity) ---- */
+/* Port of Python model_metadata.get_cached_context_length().
+ * Looks up model@base_url in the cache file. Returns -1 if not found. */
+int get_cached_context_length(const char *model, const char *base_url) {
+    if (!model || !base_url) return -1;
+
+    size_t key_len = strlen(model) + 1 + strlen(base_url) + 1;
+    char *key = malloc(key_len);
+    if (!key) return -1;
+    snprintf(key, key_len, "%s@%s", model, base_url);
+
+    json_t *cache = provider_context_cache_load();
+    if (!cache) {
+        free(key);
+        return -1;
+    }
+
+    json_t *val = json_obj_get(cache, key);
+    int result = -1;
+    if (val && val->type == JSON_NUMBER)
+        result = (int)val->num_val;
+
+    free(key);
+    json_free(cache);
+    return result;
+}
+
+/* ---- provider_context_cache_invalidate ---- */
+/* Port of Python model_metadata._invalidate_cached_context_length().
+ * Removes a stale cache entry and rewrites the file. */
+int provider_context_cache_invalidate(const char *model, const char *base_url) {
+    if (!model || !base_url) return 0;
+
+    size_t key_len = strlen(model) + 1 + strlen(base_url) + 1;
+    char *key = malloc(key_len);
+    if (!key) return 0;
+    snprintf(key, key_len, "%s@%s", model, base_url);
+
+    json_t *cache = provider_context_cache_load();
+    if (!cache) {
+        free(key);
+        return 0; /* No cache file to invalidate from */
+    }
+
+    /* Check if key exists */
+    json_t *existing = json_obj_get(cache, key);
+    if (!existing) {
+        free(key);
+        json_free(cache);
+        return 1; /* Already absent — success */
+    }
+
+    /* Remove by setting to null */
+    json_set(cache, key, json_null());
+
+    char *json_str = json_serialize(cache);
+    if (!json_str) {
+        free(key);
+        json_free(cache);
+        return 0;
+    }
+
+    char path[HERMES_PATH_MAX];
+    provider_context_cache_path(path, sizeof(path));
+
+    FILE *f = fopen(path, "w");
+    if (!f) {
+        free(key);
+        free(json_str);
+        json_free(cache);
+        return 0;
+    }
+    fwrite(json_str, 1, strlen(json_str), f);
+    fclose(f);
+
+    free(key);
+    free(json_str);
+    json_free(cache);
+    return 1;
+}
+
+/* ---- detect_local_server_type ---- */
+/* Port of Python model_metadata.detect_local_server_type().
+ * Probes known local inference endpoints via HTTP GET and
+ * returns the detected server type, or NULL if undetermined. */
+char *detect_local_server_type(const char *base_url, const char *api_key) {
+    if (!base_url || !*base_url) return NULL;
+
+    /* Normalize URL */
+    char *normalized = provider_normalize_base_url(base_url);
+    if (!normalized) return NULL;
+
+    /* Strip /v1 suffix for probing */
+    char server_url[512];
+    size_t nlen = strlen(normalized);
+    if (nlen >= 3 && strcmp(normalized + nlen - 3, "/v1") == 0) {
+        memcpy(server_url, normalized, nlen - 3);
+        server_url[nlen - 3] = '\0';
+    } else {
+        snprintf(server_url, sizeof(server_url), "%s", normalized);
+    }
+    free(normalized);
+
+    /* Build Authorization header string */
+    char *headers_str = NULL;
+    if (api_key && *api_key) {
+        json_t *hdr = provider_auth_headers(api_key);
+        if (hdr) {
+            const char *auth_val = json_get_str(hdr, "Authorization", NULL);
+            if (auth_val) {
+                size_t hlen = strlen(auth_val) + 32;
+                headers_str = malloc(hlen);
+                if (headers_str)
+                    snprintf(headers_str, hlen, "Authorization: %s", auth_val);
+            }
+            json_free(hdr);
+        }
+    }
+
+    /* Create HTTP client with 2s timeout */
+    http_t *h = http_new(2);
+    const char *result = NULL;
+    char probe_url[1024];
+    http_resp_t *r = NULL;
+
+    /* LM Studio: GET {server_url}/api/v1/models */
+    snprintf(probe_url, sizeof(probe_url), "%s/api/v1/models", server_url);
+    r = http_get(h, probe_url, headers_str);
+    if (r && r->status == 200) {
+        result = "lm-studio";
+        http_resp_free(r);
+        r = NULL;
+        goto done;
+    }
+    http_resp_free(r);
+    r = NULL;
+
+    /* Ollama: GET {server_url}/api/tags → check for "models" in body */
+    snprintf(probe_url, sizeof(probe_url), "%s/api/tags", server_url);
+    r = http_get(h, probe_url, headers_str);
+    if (r && r->status == 200 && r->body && strstr(r->body, "models")) {
+        result = "ollama";
+        http_resp_free(r);
+        r = NULL;
+        goto done;
+    }
+    http_resp_free(r);
+    r = NULL;
+
+    /* llama.cpp: GET {server_url}/v1/props (fallback /props) */
+    snprintf(probe_url, sizeof(probe_url), "%s/v1/props", server_url);
+    r = http_get(h, probe_url, headers_str);
+    if (!r || r->status != 200) {
+        http_resp_free(r);
+        r = NULL;
+        snprintf(probe_url, sizeof(probe_url), "%s/props", server_url);
+        r = http_get(h, probe_url, headers_str);
+    }
+    if (r && r->status == 200 && r->body && strstr(r->body, "default_generation_settings")) {
+        result = "llamacpp";
+        http_resp_free(r);
+        r = NULL;
+        goto done;
+    }
+    http_resp_free(r);
+    r = NULL;
+
+    /* vLLM: GET {server_url}/version → check for "version" in JSON response */
+    snprintf(probe_url, sizeof(probe_url), "%s/version", server_url);
+    r = http_get(h, probe_url, headers_str);
+    if (r && r->status == 200 && r->body) {
+        json_t *vdata = json_parse(r->body, NULL);
+        if (vdata && vdata->type == JSON_OBJECT) {
+            json_t *ver = json_obj_get(vdata, "version");
+            if (ver && ver->type == JSON_STRING) {
+                result = "vllm";
+            }
+        }
+        json_free(vdata);
+    }
+    http_resp_free(r);
+
+done:
+    http_free(h);
+    free(headers_str);
+
+    if (result) return strdup(result);
+    return NULL;
+}
+
+/* ---- add_model_aliases ---- */
+/* Port of Python model_metadata._add_model_aliases().
+ * Sets cache[model_id] = entry (via json_copy for ownership safety).
+ * If model_id contains "/", the bare model part (after first "/") is
+ * also added as an alias — but only if no entry already exists under
+ * that key (setdefault semantics). */
+void add_model_aliases(json_t *cache, const char *model_id, json_t *entry) {
+    if (!cache || !model_id || !*model_id || !entry) return;
+
+    /* Add primary entry */
+    json_set(cache, model_id, json_copy(entry));
+
+    /* Add alias for bare model name (after first "/") */
+    const char *slash = strchr(model_id, '/');
+    if (slash && *(slash + 1)) {
+        const char *bare_model = slash + 1;
+        json_t *existing = json_obj_get(cache, bare_model);
+        if (!existing) {
+            json_set(cache, bare_model, json_copy(entry));
+        }
+    }
+}
+
+/* ---- get_context_length_from_provider_error ---- */
+/* Port of Python model_metadata.get_context_length_from_provider_error().
+ * Returns a provider-reported lower context limit only if it's less than
+ * the current_context_length. Returns -1 if no limit found. */
+int get_context_length_from_provider_error(const char *error_msg, int current_context_length) {
+    int parsed = parse_context_limit_from_error(error_msg);
+    if (parsed < 0) return -1;
+    if (parsed < current_context_length) return parsed;
+    return -1;
+}
+
+/* ---- Internal: POST to Ollama /api/show and return parsed values ---- */
+/* Returns bitmask: bit 0 = model_info had context_length (sets *model_info_ctx),
+ *           bit 1 = parameters had num_ctx (sets *num_ctx_val),
+ *           or 0 on failure. */
+static int ollama_query_api_show_internal(const char *model, const char *base_url,
+                                           const char *api_key,
+                                           int *model_info_ctx, int *num_ctx_val) {
+    if (!model || !*model || !base_url || !*base_url) return 0;
+
+    /* Normalize URL, strip /v1 */
+    char *normalized = provider_normalize_base_url(base_url);
+    if (!normalized) return 0;
+
+    char server_url[512];
+    size_t nlen = strlen(normalized);
+    if (nlen >= 3 && strcmp(normalized + nlen - 3, "/v1") == 0) {
+        memcpy(server_url, normalized, nlen - 3);
+        server_url[nlen - 3] = '\0';
+    } else {
+        snprintf(server_url, sizeof(server_url), "%s", normalized);
+    }
+    free(normalized);
+
+    /* Build POST body: {"name": model} */
+    json_t *body = json_object();
+    json_set(body, "name", json_string(model));
+    char *body_str = json_serialize(body);
+    json_free(body);
+    if (!body_str) return 0;
+
+    /* Build auth header */
+    char *auth_header = NULL;
+    if (api_key && *api_key) {
+        size_t hlen = strlen(api_key) + 32;
+        auth_header = malloc(hlen);
+        if (auth_header)
+            snprintf(auth_header, hlen, "Authorization: Bearer %s", api_key);
+    }
+
+    /* POST to /api/show */
+    char probe_url[1024];
+    snprintf(probe_url, sizeof(probe_url), "%s/api/show", server_url);
+
+    http_t *h = http_new(5);
+    http_resp_t *resp = http_post_json_auth(h, probe_url, body_str, auth_header);
+    free(body_str);
+    free(auth_header);
+
+    if (!resp || resp->status != 200 || !resp->body) {
+        http_resp_free(resp);
+        http_free(h);
+        return 0;
+    }
+
+    int result = 0;
+    if (model_info_ctx) *model_info_ctx = -1;
+    if (num_ctx_val) *num_ctx_val = -1;
+
+    json_t *data = json_parse(resp->body, NULL);
+    if (data && data->type == JSON_OBJECT) {
+        /* Check model_info.*.context_length (GGUF training max) */
+        json_t *model_info = json_obj_get(data, "model_info");
+        if (model_info && model_info->type == JSON_OBJECT) {
+            for (size_t i = 0; i < model_info->c.count; i++) {
+                if (model_info->c.keys[i] && strstr(model_info->c.keys[i], "context_length")) {
+                    json_t *val = model_info->c.items[i];
+                    if (val && val->type == JSON_NUMBER) {
+                        int ctx = (int)val->num_val;
+                        if (ctx >= 1024) {
+                            if (model_info_ctx) *model_info_ctx = ctx;
+                            result |= 1;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        /* Check num_ctx from Modelfile parameters */
+        const char *params = json_get_str(data, "parameters", NULL);
+        if (params && *params && strstr(params, "num_ctx")) {
+            char *params_copy = strdup(params);
+            if (params_copy) {
+                char *line = strtok(params_copy, "\n");
+                while (line) {
+                    if (strstr(line, "num_ctx")) {
+                        char *last = NULL;
+                        char *tok = strtok(line, " \t");
+                        while (tok) { last = tok; tok = strtok(NULL, " \t"); }
+                        if (last) {
+                            char *end = NULL;
+                            long val = strtol(last, &end, 10);
+                            if (*end == '\0' && val >= 1024) {
+                                if (num_ctx_val) *num_ctx_val = (int)val;
+                                result |= 2;
+                                break;
+                            }
+                        }
+                    }
+                    line = strtok(NULL, "\n");
+                }
+                free(params_copy);
+            }
+        }
+    }
+
+    json_free(data);
+    http_resp_free(resp);
+    http_free(h);
+    return result;
+}
+
+/* ---- query_ollama_api_show ---- */
+/* Port of Python model_metadata._query_ollama_api_show().
+ * Provider-agnostic: POSTs to /api/show, parses response.
+ * Resolution: model_info.*.context_length > num_ctx. */
+int query_ollama_api_show(const char *model, const char *base_url, const char *api_key) {
+    int model_ctx = -1, num_ctx = -1;
+    int flags = ollama_query_api_show_internal(model, base_url, api_key, &model_ctx, &num_ctx);
+    if (flags & 1) return model_ctx;   /* Prefer model_info context_length */
+    if (flags & 2) return num_ctx;     /* Fall back to num_ctx */
+    return -1;
+}
+
+/* ---- query_ollama_num_ctx ---- */
+/* Port of Python model_metadata.query_ollama_num_ctx().
+ * Strips provider prefix, verifies server is Ollama, then queries.
+ * Resolution: num_ctx > model_info context_length. */
+int query_ollama_num_ctx(const char *model, const char *base_url, const char *api_key) {
+    if (!model || !*model || !base_url || !*base_url) return -1;
+
+    /* First, verify this is an Ollama server */
+    char *server_type = detect_local_server_type(base_url, api_key);
+    if (!server_type || strcmp(server_type, "ollama") != 0) {
+        free(server_type);
+        return -1;
+    }
+    free(server_type);
+
+    /* Strip provider prefix from model name */
+    char *bare_model = provider_strip_prefix(model);
+    if (!bare_model) return -1;
+
+    int model_ctx = -1, num_ctx = -1;
+    int flags = ollama_query_api_show_internal(bare_model, base_url, api_key, &model_ctx, &num_ctx);
+    free(bare_model);
+
+    if (flags & 2) return num_ctx;     /* Prefer num_ctx (user override) */
+    if (flags & 1) return model_ctx;   /* Fall back to model_info */
+    return -1;
+}
+
+/* ---- Internal: parse a context length from a single model JSON object ---- */
+/* Checks max_model_len, context_length, max_tokens fields. Returns -1 if none. */
+static int parse_model_ctx_from_json(json_t *model_obj) {
+    if (!model_obj || model_obj->type != JSON_OBJECT) return -1;
+    const char *keys[] = {"max_model_len", "context_length", "max_tokens"};
+    for (int i = 0; i < 3; i++) {
+        json_t *val = json_obj_get(model_obj, keys[i]);
+        if (val && val->type == JSON_NUMBER) {
+            int ctx = (int)val->num_val;
+            if (ctx >= 1024) return ctx;
+        }
+    }
+    return -1;
+}
+
+/* ---- Internal: probe generic /v1/models/{model} endpoint ---- */
+static int probe_v1_models_model(http_t *h, const char *server_url,
+                                  const char *auth_header, const char *model) {
+    char url[1024];
+    snprintf(url, sizeof(url), "%s/v1/models/%s", server_url, model);
+    http_resp_t *resp = http_get(h, url, auth_header);
+    if (!resp || resp->status != 200 || !resp->body) {
+        http_resp_free(resp);
+        return -1;
+    }
+    json_t *data = json_parse(resp->body, NULL);
+    http_resp_free(resp);
+    int ctx = -1;
+    if (data && data->type == JSON_OBJECT)
+        ctx = parse_model_ctx_from_json(data);
+    json_free(data);
+    return ctx;
+}
+
+/* ---- Internal: probe generic /v1/models endpoint and match by ID ---- */
+static int probe_v1_models_list(http_t *h, const char *server_url,
+                                 const char *auth_header, const char *model) {
+    char url[1024];
+    snprintf(url, sizeof(url), "%s/v1/models", server_url);
+    http_resp_t *resp = http_get(h, url, auth_header);
+    if (!resp || resp->status != 200 || !resp->body) {
+        http_resp_free(resp);
+        return -1;
+    }
+    json_t *data = json_parse(resp->body, NULL);
+    http_resp_free(resp);
+    if (!data || data->type != JSON_OBJECT) { json_free(data); return -1; }
+    json_t *models_list = json_obj_get(data, "data");
+    if (!models_list || models_list->type != JSON_ARRAY) { json_free(data); return -1; }
+    int ctx = -1;
+    for (size_t i = 0; i < models_list->c.count; i++) {
+        json_t *m = models_list->c.items[i];
+        if (!m || m->type != JSON_OBJECT) continue;
+        const char *mid = json_get_str(m, "id", "");
+        if (!*mid) continue;
+        if (model_id_matches(mid, model)) {
+            ctx = parse_model_ctx_from_json(m);
+            break;
+        }
+    }
+    json_free(data);
+    return ctx;
+}
+
+/* ---- query_local_context_length ---- */
+/* Port of Python model_metadata._query_local_context_length().
+ * Probes local inference server endpoints to find the model's context length. */
+int query_local_context_length(const char *model, const char *base_url, const char *api_key) {
+    if (!model || !*model || !base_url || !*base_url) return -1;
+
+    /* Strip provider prefix */
+    char *bare_model = provider_strip_prefix(model);
+    if (!bare_model) return -1;
+
+    /* Normalize URL, strip /v1 */
+    char *normalized = provider_normalize_base_url(base_url);
+    if (!normalized) { free(bare_model); return -1; }
+
+    char server_url[512];
+    size_t nlen = strlen(normalized);
+    if (nlen >= 3 && strcmp(normalized + nlen - 3, "/v1") == 0) {
+        memcpy(server_url, normalized, nlen - 3);
+        server_url[nlen - 3] = '\0';
+    } else {
+        snprintf(server_url, sizeof(server_url), "%s", normalized);
+    }
+    free(normalized);
+
+    /* Build auth header */
+    char *auth_header = NULL;
+    if (api_key && *api_key) {
+        size_t hlen = strlen(api_key) + 32;
+        auth_header = malloc(hlen);
+        if (auth_header)
+            snprintf(auth_header, hlen, "Authorization: Bearer %s", api_key);
+    }
+
+    /* Detect server type */
+    char *server_type = detect_local_server_type(base_url, api_key);
+
+    /* Create HTTP client 3s timeout */
+    http_t *h = http_new(3);
+    int result = -1;
+
+    /* 1. Ollama: POST /api/show */
+    if (server_type && strcmp(server_type, "ollama") == 0) {
+        result = query_ollama_api_show(bare_model, base_url, api_key);
+        if (result > 0) goto done;
+    }
+
+    /* 2. LM Studio: GET /api/v1/models */
+    if (server_type && strcmp(server_type, "lm-studio") == 0) {
+        char url[1024];
+        snprintf(url, sizeof(url), "%s/api/v1/models", server_url);
+        http_resp_t *resp = http_get(h, url, auth_header);
+        if (resp && resp->status == 200 && resp->body) {
+            json_t *data = json_parse(resp->body, NULL);
+            if (data && data->type == JSON_OBJECT) {
+                json_t *models = json_obj_get(data, "models");
+                if (models && models->type == JSON_ARRAY) {
+                    for (size_t i = 0; i < models->c.count; i++) {
+                        json_t *m = models->c.items[i];
+                        if (!m || m->type != JSON_OBJECT) continue;
+                        const char *key = json_get_str(m, "key", "");
+                        const char *mid = json_get_str(m, "id", "");
+                        if (model_id_matches(key, bare_model) || model_id_matches(mid, bare_model)) {
+                            json_t *instances = json_obj_get(m, "loaded_instances");
+                            if (instances && instances->type == JSON_ARRAY) {
+                                for (size_t j = 0; j < instances->c.count; j++) {
+                                    json_t *inst = instances->c.items[j];
+                                    if (!inst || inst->type != JSON_OBJECT) continue;
+                                    json_t *cfg = json_obj_get(inst, "config");
+                                    if (cfg && cfg->type == JSON_OBJECT) {
+                                        json_t *ctx_val = json_obj_get(cfg, "context_length");
+                                        if (ctx_val && ctx_val->type == JSON_NUMBER) {
+                                            int ctx = (int)ctx_val->num_val;
+                                            if (ctx >= 1024) {
+                                                result = ctx;
+                                                goto lm_studio_done;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            lm_studio_done:
+            json_free(data);
+        }
+        http_resp_free(resp);
+        if (result > 0) goto done;
+    }
+
+    /* 3. Generic: GET /v1/models/{model} */
+    result = probe_v1_models_model(h, server_url, auth_header, bare_model);
+    if (result > 0) goto done;
+
+    /* 4. Generic: GET /v1/models → find model by ID */
+    result = probe_v1_models_list(h, server_url, auth_header, bare_model);
+
+done:
+    http_free(h);
+    free(server_type);
+    free(auth_header);
+    free(bare_model);
+    return result;
+}
+
+/* ================================================================
+ *  Model metadata HTTP query functions — ported from model_metadata.py
+ * ================================================================ */
+
+/* ---- query_anthropic_context_length ---- */
+/* Port of Python model_metadata._query_anthropic_context_length().
+ * Queries Anthropic's /v1/models endpoint for model context length.
+ * Returns context length or -1 on failure/unsupported. */
+int query_anthropic_context_length(const char *model, const char *base_url, const char *api_key) {
+    if (!model || !*model || !base_url || !*base_url) return -1;
+    /* OAuth tokens (sk-ant-oat*) cannot access /v1/models */
+    if (!api_key || !*api_key || strncmp(api_key, "sk-ant-oat", 10) == 0)
+        return -1;
+
+    /* Normalize base URL, strip /v1 */
+    char *base = provider_normalize_base_url(base_url);
+    if (!base) return -1;
+    size_t blen = strlen(base);
+    if (blen >= 3 && strcmp(base + blen - 3, "/v1") == 0)
+        base[blen - 3] = '\0';
+
+    /* Build URL: {base}/v1/models?limit=1000 */
+    char url[1024];
+    snprintf(url, sizeof(url), "%s/v1/models?limit=1000", base);
+    free(base);
+
+    /* Build headers: x-api-key + anthropic-version */
+    char headers[2048];
+    snprintf(headers, sizeof(headers),
+        "x-api-key: %s\r\n"
+        "anthropic-version: 2023-06-01\r\n", api_key);
+
+    http_t *h = http_new(10);
+    if (!h) return -1;
+    int result = -1;
+
+    http_resp_t *resp = http_get(h, url, headers);
+    if (resp && resp->status == 200 && resp->body) {
+        json_t *data = json_parse(resp->body, NULL);
+        if (data && data->type == JSON_OBJECT) {
+            json_t *models_arr = json_obj_get(data, "data");
+            if (models_arr && models_arr->type == JSON_ARRAY) {
+                for (size_t i = 0; i < models_arr->c.count; i++) {
+                    json_t *m = models_arr->c.items[i];
+                    if (!m || m->type != JSON_OBJECT) continue;
+                    const char *mid = json_get_str(m, "id", "");
+                    if (strcmp(mid, model) == 0) {
+                        json_t *ctx_val = json_obj_get(m, "max_input_tokens");
+                        if (ctx_val && ctx_val->type == JSON_NUMBER) {
+                            int ctx = (int)ctx_val->num_val;
+                            if (ctx > 0) result = ctx;
+                        }
+                        break;
+                    }
+                }
+            }
+            json_free(data);
+        }
+    }
+    http_resp_free(resp);
+    http_free(h);
+    return result;
+}
+
+/* ---- resolve_endpoint_context_length ---- */
+/* Port of Python model_metadata._resolve_endpoint_context_length().
+ * Resolves context length from an endpoint's live /models metadata.
+ * Tries exact match first, then single-entry fallback, then fuzzy match. */
+int resolve_endpoint_context_length(const char *model, const char *base_url, const char *api_key) {
+    if (!model || !*model || !base_url || !*base_url) return -1;
+
+    json_t *metadata = provider_fetch_endpoint_model_metadata(base_url, api_key, false);
+    if (!metadata || metadata->type != JSON_OBJECT) { json_free(metadata); return -1; }
+
+    int result = -1;
+
+    /* Exact model match */
+    json_t *matched = json_obj_get(metadata, model);
+    if (matched && matched->type == JSON_OBJECT) {
+        json_t *ctx_val = json_obj_get(matched, "context_length");
+        if (ctx_val && ctx_val->type == JSON_NUMBER) {
+            int ctx = (int)ctx_val->num_val;
+            if (ctx >= 1024) result = ctx;
+        }
+    }
+
+    /* Single entry fallback */
+    if (result < 0 && metadata->c.count == 1) {
+        json_t *entry = metadata->c.items[0];
+        if (entry && entry->type == JSON_OBJECT) {
+            json_t *ctx_val = json_obj_get(entry, "context_length");
+            if (ctx_val && ctx_val->type == JSON_NUMBER) {
+                int ctx = (int)ctx_val->num_val;
+                if (ctx >= 1024) result = ctx;
+            }
+        }
+    }
+
+    /* Fuzzy match */
+    if (result < 0) {
+        for (size_t i = 0; i < metadata->c.count; i++) {
+            const char *kname = metadata->c.keys ? metadata->c.keys[i] : "";
+            if (!*kname) continue;
+            json_t *entry = metadata->c.items[i];
+            if (!entry || entry->type != JSON_OBJECT) continue;
+            if (strstr(kname, model) || strstr(model, kname)) {
+                json_t *ctx_val = json_obj_get(entry, "context_length");
+                if (ctx_val && ctx_val->type == JSON_NUMBER) {
+                    int ctx = (int)ctx_val->num_val;
+                    if (ctx >= 1024) { result = ctx; break; }
+                }
+            }
+        }
+    }
+
+    json_free(metadata);
+    return result;
+}
+
+/* ================================================================
+ *  Codex OAuth context length resolution
+ * ================================================================ */
+
+/* Static fallback dict: longest keys first for substring match */
+static const struct { const char *slug; int ctx; } g_codex_oauth_fallback[] = {
+    {"gpt-5.3-codex-spark", 128000},
+    {"gpt-5.1-codex-max",   272000},
+    {"gpt-5.1-codex-mini",  272000},
+    {"gpt-5.3-codex",       272000},
+    {"gpt-5.2-codex",       272000},
+    {"gpt-5.4-mini",        272000},
+    {"gpt-5.5",             272000},
+    {"gpt-5.4",             272000},
+    {"gpt-5.2",             272000},
+    {"gpt-5",               272000},
+};
+#define CODEX_FALLBACK_COUNT (sizeof(g_codex_oauth_fallback) / sizeof(g_codex_oauth_fallback[0]))
+
+/* ---- provider_fetch_codex_oauth_context_lengths ---- */
+/* Port of Python model_metadata._fetch_codex_oauth_context_lengths().
+ * Probes chatgpt.com/backend-api/codex/models for per-slug context windows.
+ * Returns json_t* dict of slug -> context_window, or NULL on failure.
+ * Caller must json_free(). */
+json_t *provider_fetch_codex_oauth_context_lengths(const char *access_token) {
+    if (!access_token || !*access_token) return NULL;
+
+    const char *url = "https://chatgpt.com/backend-api/codex/models?client_version=1.0.0";
+
+    /* Build auth header */
+    char headers[1024];
+    snprintf(headers, sizeof(headers), "Authorization: Bearer %s\r\n", access_token);
+
+    http_t *h = http_new(10);
+    if (!h) return NULL;
+
+    json_t *result = NULL;
+    http_resp_t *resp = http_get(h, url, headers);
+    if (resp && resp->status == 200 && resp->body) {
+        json_t *data = json_parse(resp->body, NULL);
+        if (data && data->type == JSON_OBJECT) {
+            json_t *models_arr = json_obj_get(data, "models");
+            if (models_arr && models_arr->type == JSON_ARRAY) {
+                result = json_object();
+                for (size_t i = 0; i < models_arr->c.count; i++) {
+                    json_t *item = models_arr->c.items[i];
+                    if (!item || item->type != JSON_OBJECT) continue;
+                    const char *slug = json_get_str(item, "slug", "");
+                    json_t *ctx_val = json_obj_get(item, "context_window");
+                    if (*slug && ctx_val && ctx_val->type == JSON_NUMBER) {
+                        int ctx = (int)ctx_val->num_val;
+                        if (ctx > 0) {
+                            char buf[32];
+                            snprintf(buf, sizeof(buf), "%d", ctx);
+                            json_set(result, slug, json_string(buf));
+                        }
+                    }
+                }
+            }
+            json_free(data);
+        }
+    }
+    http_resp_free(resp);
+    http_free(h);
+    return result;
+}
+
+/* ---- resolve_codex_oauth_context_length ---- */
+/* Port of Python model_metadata._resolve_codex_oauth_context_length().
+ * Resolves a Codex OAuth model's real context window.
+ * Prefers live probe, falls back to hardcoded defaults via substring match. */
+int resolve_codex_oauth_context_length(const char *model, const char *access_token) {
+    if (!model || !*model) return -1;
+
+    char *model_bare = provider_strip_prefix(model);
+    if (!model_bare || !*model_bare) { free(model_bare); return -1; }
+
+    int result = -1;
+
+    /* Live probe */
+    if (access_token && *access_token) {
+        json_t *live = provider_fetch_codex_oauth_context_lengths(access_token);
+        if (live) {
+            /* Exact match */
+            json_t *entry = json_obj_get(live, model_bare);
+            if (entry && entry->type == JSON_STRING) {
+                result = atoi(entry->str_val);
+            }
+            /* Case-insensitive fallback */
+            if (result < 0) {
+                size_t mlen = strlen(model_bare);
+                char *model_lower = malloc(mlen + 1);
+                if (model_lower) {
+                    for (size_t i = 0; i < mlen; i++)
+                        model_lower[i] = tolower((unsigned char)model_bare[i]);
+                    model_lower[mlen] = '\0';
+                    for (size_t i = 0; i < live->c.count; i++) {
+                        const char *k = live->c.keys ? live->c.keys[i] : "";
+                        if (!*k) continue;
+                        size_t klen = strlen(k);
+                        char *klower = malloc(klen + 1);
+                        if (!klower) continue;
+                        for (size_t j = 0; j < klen; j++)
+                            klower[j] = tolower((unsigned char)k[j]);
+                        klower[klen] = '\0';
+                        if (strcmp(klower, model_lower) == 0) {
+                            json_t *val = live->c.items[i];
+                            if (val && val->type == JSON_STRING) {
+                                result = atoi(val->str_val);
+                            }
+                            free(klower);
+                            break;
+                        }
+                        free(klower);
+                    }
+                    free(model_lower);
+                }
+            }
+            json_free(live);
+        }
+    }
+
+    /* Fallback: longest-key-first substring match over hardcoded defaults */
+    if (result < 0) {
+        size_t mlen = strlen(model_bare);
+        char *model_lower = malloc(mlen + 1);
+        if (model_lower) {
+            for (size_t i = 0; i < mlen; i++)
+                model_lower[i] = tolower((unsigned char)model_bare[i]);
+            model_lower[mlen] = '\0';
+            for (size_t i = 0; i < CODEX_FALLBACK_COUNT; i++) {
+                if (strstr(model_lower, g_codex_oauth_fallback[i].slug)) {
+                    result = g_codex_oauth_fallback[i].ctx;
+                    break;
+                }
+            }
+            free(model_lower);
+        }
+    }
+
+    free(model_bare);
+    return result;
+}
+
+/* ---- provider_fetch_model_metadata ---- */
+/* Port of Python model_metadata.fetch_model_metadata().
+ * Fetches model metadata from OpenRouter API with 1-hour TTL.
+ * Returns json_t* dict keyed by model ID, or NULL on failure.
+ * Caller must json_free(). */
+json_t *provider_fetch_model_metadata(bool force_refresh) {
+    /* Static in-memory cache */
+    static json_t *g_cache = NULL;
+    static time_t g_cache_time = 0;
+    static const int CACHE_TTL = 3600;
+
+    time_t now = time(NULL);
+    if (!force_refresh && g_cache && (now - g_cache_time) < CACHE_TTL)
+        return g_cache;
+
+    const char *url = "https://openrouter.ai/api/v1/models";
+
+    http_t *h = http_new(10);
+    if (!h) return NULL;
+
+    json_t *cache = NULL;
+    http_resp_t *resp = http_get(h, url, NULL);
+    if (resp && resp->status == 200 && resp->body) {
+        json_t *data = json_parse(resp->body, NULL);
+        if (data && data->type == JSON_OBJECT) {
+            json_t *models_arr = json_obj_get(data, "data");
+            if (models_arr && models_arr->type == JSON_ARRAY) {
+                cache = json_object();
+                for (size_t i = 0; i < models_arr->c.count; i++) {
+                    json_t *model_entry = models_arr->c.items[i];
+                    if (!model_entry || model_entry->type != JSON_OBJECT) continue;
+                    const char *model_id = json_get_str(model_entry, "id", "");
+                    if (!*model_id) continue;
+
+                    json_t *entry = json_object();
+
+                    json_t *ctx = json_obj_get(model_entry, "context_length");
+                    json_set(entry, "context_length", ctx ? json_copy(ctx) : json_number(128000));
+
+                    json_t *top_provider = json_obj_get(model_entry, "top_provider");
+                    if (top_provider && top_provider->type == JSON_OBJECT) {
+                        json_t *mct = json_obj_get(top_provider, "max_completion_tokens");
+                        json_set(entry, "max_completion_tokens", mct ? json_copy(mct) : json_number(4096));
+                    } else {
+                        json_set(entry, "max_completion_tokens", json_number(4096));
+                    }
+
+                    const char *name = json_get_str(model_entry, "name", "");
+                    if (*name)
+                        json_set(entry, "name", json_string(name));
+                    else
+                        json_set(entry, "name", json_string(model_id));
+
+                    json_t *pricing = json_obj_get(model_entry, "pricing");
+                    if (pricing && pricing->type == JSON_OBJECT)
+                        json_set(entry, "pricing", json_copy(pricing));
+
+                    add_model_aliases(cache, model_id, entry);
+
+                    const char *canonical = json_get_str(model_entry, "canonical_slug", "");
+                    if (*canonical && strcmp(canonical, model_id) != 0)
+                        add_model_aliases(cache, canonical, json_copy(entry));
+                }
+            }
+            json_free(data);
+        }
+    }
+    http_resp_free(resp);
+    http_free(h);
+
+    if (cache) {
+        if (g_cache) json_free(g_cache);
+        g_cache = cache;
+        g_cache_time = now;
+    }
+
+    return g_cache ? json_copy(g_cache) : NULL;
+}
+
+/* ---- provider_fetch_endpoint_model_metadata ---- */
+/* Port of Python model_metadata.fetch_endpoint_model_metadata().
+ * Fetches model metadata from an OpenAI-compatible /models endpoint.
+ * Returns json_t* dict keyed by model ID, or NULL on failure.
+ * Caller must json_free(). */
+json_t *provider_fetch_endpoint_model_metadata(const char *base_url, const char *api_key, bool force_refresh) {
+    if (!base_url || !*base_url) return NULL;
+
+    char *normalized = provider_normalize_base_url(base_url);
+    if (!normalized) return NULL;
+
+    if (is_openrouter_base_url(normalized)) {
+        free(normalized);
+        return NULL;
+    }
+
+    /* Static per-URL cache */
+    static char g_last_url[512] = "";
+    static json_t *g_cache = NULL;
+    static time_t g_cache_time = 0;
+    static const int CACHE_TTL = 300;
+
+    time_t now = time(NULL);
+    if (!force_refresh && g_cache && strcmp(g_last_url, normalized) == 0 && (now - g_cache_time) < CACHE_TTL) {
+        free(normalized);
+        return json_copy(g_cache);
+    }
+
+    /* Build candidate URLs */
+    char candidates[2][512];
+    int n_candidates = 0;
+    snprintf(candidates[n_candidates], sizeof(candidates[0]), "%s", normalized);
+    n_candidates++;
+
+    size_t nlen = strlen(normalized);
+    if (nlen >= 3 && strcmp(normalized + nlen - 3, "/v1") == 0) {
+        char alt[512];
+        size_t alen = nlen - 3;
+        while (alen > 0 && normalized[alen - 1] == '/') alen--;
+        memcpy(alt, normalized, alen);
+        alt[alen] = '\0';
+        if (strcmp(alt, normalized) != 0 && alen > 0) {
+            snprintf(candidates[n_candidates], sizeof(candidates[0]), "%s", alt);
+            n_candidates++;
+        }
+    } else {
+        snprintf(candidates[n_candidates], sizeof(candidates[0]), "%s/v1", normalized);
+        n_candidates++;
+    }
+
+    char *headers_str = NULL;
+    if (api_key && *api_key) {
+        size_t hlen = strlen(api_key) + 32;
+        headers_str = malloc(hlen);
+        if (headers_str)
+            snprintf(headers_str, hlen, "Authorization: Bearer %s\r\n", api_key);
+    }
+
+    json_t *result_cache = NULL;
+    http_t *h = http_new(10);
+
+    for (int ci = 0; ci < n_candidates && !result_cache; ci++) {
+        char url[1024];
+        snprintf(url, sizeof(url), "%s/models", candidates[ci]);
+
+        http_resp_t *resp = http_get(h, url, headers_str);
+        if (resp && resp->status == 200 && resp->body) {
+            json_t *data = json_parse(resp->body, NULL);
+            if (data && data->type == JSON_OBJECT) {
+                json_t *models_arr = json_obj_get(data, "data");
+                if (models_arr && models_arr->type == JSON_ARRAY) {
+                    result_cache = json_object();
+                    for (size_t i = 0; i < models_arr->c.count; i++) {
+                        json_t *model_entry = models_arr->c.items[i];
+                        if (!model_entry || model_entry->type != JSON_OBJECT) continue;
+                        const char *model_id = json_get_str(model_entry, "id", "");
+                        if (!*model_id) continue;
+
+                        json_t *entry = json_object();
+                        const char *ename = json_get_str(model_entry, "name", "");
+                        json_set(entry, "name", json_string(*ename ? ename : model_id));
+
+                        int ctx = extract_context_length(model_entry);
+                        if (ctx >= 0)
+                            json_set(entry, "context_length", json_number(ctx));
+
+                        int mct = extract_max_completion_tokens(model_entry);
+                        if (mct >= 0)
+                            json_set(entry, "max_completion_tokens", json_number(mct));
+
+                        json_t *pricing = provider_extract_pricing(model_entry);
+                        if (pricing)
+                            json_set(entry, "pricing", pricing);
+
+                        add_model_aliases(result_cache, model_id, entry);
+                    }
+                }
+            }
+            json_free(data);
+        }
+        http_resp_free(resp);
+    }
+
+    http_free(h);
+    free(headers_str);
+
+    if (result_cache) {
+        snprintf(g_last_url, sizeof(g_last_url), "%s", normalized);
+        if (g_cache) json_free(g_cache);
+        g_cache = result_cache;
+        g_cache_time = now;
+        free(normalized);
+        return json_copy(g_cache);
+    }
+
+    /* Cache empty result */
+    snprintf(g_last_url, sizeof(g_last_url), "%s", normalized);
+    if (g_cache) json_free(g_cache);
+    g_cache = json_object();
+    g_cache_time = now;
+    free(normalized);
+    return NULL;
+}
+
+/* ---- resolve_nous_context_length ---- */
+/* Port of Python model_metadata._resolve_nous_context_length().
+ * Resolves Nous Portal model context length via live portal then OR fallback.
+ * Returns context length or -1 on failure. */
+int resolve_nous_context_length(const char *model, const char *base_url, const char *api_key) {
+    if (!model || !*model) return -1;
+
+    /* 1. Portal first — the Nous /models endpoint is authoritative */
+    if (base_url && *base_url) {
+        int portal_ctx = resolve_endpoint_context_length(model, base_url, api_key);
+        if (portal_ctx >= 0) return portal_ctx;
+    }
+
+    /* 2. OpenRouter metadata fallback */
+    json_t *metadata = provider_fetch_model_metadata(false);
+    if (!metadata || metadata->type != JSON_OBJECT) { json_free(metadata); return -1; }
+
+    int result = -1;
+
+    /* Direct model match */
+    json_t *entry = json_obj_get(metadata, model);
+    if (entry && entry->type == JSON_OBJECT) {
+        json_t *ctx_val = json_obj_get(entry, "context_length");
+        if (ctx_val && ctx_val->type == JSON_NUMBER) {
+            int ctx = (int)ctx_val->num_val;
+            /* Guard against Kimi-family 32K underreport */
+            if (!(ctx <= 32768 && provider_model_suggests_kimi(model)))
+                result = ctx;
+        }
+    }
+
+    /* Normalized version match + bare-name match */
+    if (result < 0) {
+        char *normalized_model = provider_normalize_model_version(model);
+        if (normalized_model) {
+            for (size_t i = 0; i < metadata->c.count && result < 0; i++) {
+                const char *or_id = metadata->c.keys ? metadata->c.keys[i] : "";
+                if (!*or_id) continue;
+                const char *slash = strrchr(or_id, '/');
+                const char *bare = slash ? slash + 1 : or_id;
+                json_t *m_entry = metadata->c.items[i];
+                if (!m_entry || m_entry->type != JSON_OBJECT) continue;
+
+                /* Bare name match */
+                json_t *ctx_val_bare = json_obj_get(m_entry, "context_length");
+                if (ctx_val_bare && ctx_val_bare->type == JSON_NUMBER) {
+                    int ctx = (int)ctx_val_bare->num_val;
+                    if (!(ctx <= 32768 && provider_model_suggests_kimi(or_id)))
+                        result = ctx;
+                }
+
+                if (result < 0) {
+                    char *norm_bare = provider_normalize_model_version(bare);
+                    if (norm_bare && strcasecmp(norm_bare, normalized_model) == 0) {
+                        json_t *ctx_val = json_obj_get(m_entry, "context_length");
+                        if (ctx_val && ctx_val->type == JSON_NUMBER) {
+                            int c = (int)ctx_val->num_val;
+                            if (!(c <= 32768 && provider_model_suggests_kimi(or_id)))
+                                result = c;
+                        }
+                    }
+                    free(norm_bare);
+                }
+            }
+            free(normalized_model);
+        }
+    }
+
+    /* Prefix + suffix boundary match */
+    if (result < 0) {
+        size_t mlen = strlen(model);
+        char *model_lower = malloc(mlen + 1);
+        if (model_lower) {
+            for (size_t i = 0; i < mlen; i++)
+                model_lower[i] = tolower((unsigned char)model[i]);
+            model_lower[mlen] = '\0';
+            char *nm_lower = provider_normalize_model_version(model_lower);
+            if (nm_lower) {
+                size_t nmlen = strlen(nm_lower);
+                for (size_t i = 0; i < metadata->c.count && result < 0; i++) {
+                    const char *or_id = metadata->c.keys ? metadata->c.keys[i] : "";
+                    if (!*or_id) continue;
+                    const char *slash = strrchr(or_id, '/');
+                    const char *bare = slash ? slash + 1 : or_id;
+                    json_t *m_entry = metadata->c.items[i];
+                    if (!m_entry || m_entry->type != JSON_OBJECT) continue;
+
+                    /* Try bare name prefix match */
+                    size_t blen = strlen(bare);
+                    if (blen >= mlen && strncasecmp(bare, model_lower, mlen) == 0) {
+                        if (blen == mlen || bare[mlen] == '-' || bare[mlen] == ':' || bare[mlen] == '.') {
+                            json_t *ctx_val = json_obj_get(m_entry, "context_length");
+                            if (ctx_val && ctx_val->type == JSON_NUMBER) {
+                                int c = (int)ctx_val->num_val;
+                                if (!(c <= 32768 && provider_model_suggests_kimi(or_id)))
+                                    result = c;
+                            }
+                        }
+                    }
+
+                    /* Try normalized prefix match */
+                    if (result < 0) {
+                        char *norm_bare = provider_normalize_model_version(bare);
+                        if (norm_bare) {
+                            size_t nblen = strlen(norm_bare);
+                            if (nblen >= nmlen && strncasecmp(norm_bare, nm_lower, nmlen) == 0) {
+                                if (nblen == nmlen || norm_bare[nmlen] == '-' || norm_bare[nmlen] == ':') {
+                                    json_t *ctx_val = json_obj_get(m_entry, "context_length");
+                                    if (ctx_val && ctx_val->type == JSON_NUMBER) {
+                                        int c = (int)ctx_val->num_val;
+                                        if (!(c <= 32768 && provider_model_suggests_kimi(or_id)))
+                                            result = c;
+                                    }
+                                }
+                            }
+                            free(norm_bare);
+                        }
+                    }
+                }
+                free(nm_lower);
+            }
+            free(model_lower);
+        }
+    }
+
+    json_free(metadata);
+    return result;
+}
+
+/* ---- get_model_context_length ---- */
+/* Port of Python model_metadata.get_model_context_length().
+ * Main orchestrator for model context length resolution.
+ * Returns context length or DEFAULT_FALLBACK_CONTEXT (256K). */
+int get_model_context_length(const char *model, const char *base_url,
+                                       const char *api_key, int config_context_length,
+                                       const char *provider_name) {
+    (void)api_key;
+    /* 0. Explicit config override */
+    if (config_context_length > 0)
+        return config_context_length;
+
+    if (!model || !*model) return DEFAULT_FALLBACK_CONTEXT;
+
+    /* Strip provider prefix for cache lookups */
+    char *bare_model = provider_strip_prefix(model);
+    if (!bare_model || !*bare_model) { free(bare_model); return DEFAULT_FALLBACK_CONTEXT; }
+
+    int result = -1;
+
+    /* 1. Persistent cache (model+base_url) — skip for lmstudio */
+    if (base_url && *base_url && provider_name && strcasecmp(provider_name, "lmstudio") != 0) {
+        int cached = get_cached_context_length(bare_model, base_url);
+        if (cached >= 0) {
+            /* Invalidate stale Codex entries ≥400K */
+            if (provider_name && strcasecmp(provider_name, "openai-codex") == 0 && cached >= 400000) {
+                provider_context_cache_invalidate(bare_model, base_url);
+            }
+            /* Invalidate stale Kimi 32K entries */
+            else if (cached <= 32768 && provider_model_suggests_kimi(bare_model)) {
+                provider_context_cache_invalidate(bare_model, base_url);
+            }
+            /* Invalidate stale MiniMax-M3 ≤204800 entries */
+            else if (cached <= 204800 && provider_model_suggests_minimax_m3(bare_model)) {
+                provider_context_cache_invalidate(bare_model, base_url);
+            }
+            /* Nous Portal: bypass cache */
+            else if (base_url && *base_url && provider_infer_from_url(base_url)) {
+                /* Fall through to step 5b */
+            }
+            else {
+                result = cached;
+            }
+        }
+    }
+
+    /* 2. Custom endpoint probe — skip for known providers */
+    if (result < 0 && base_url && *base_url &&
+        is_custom_endpoint(base_url) &&
+        !provider_is_known_base_url(base_url)) {
+        int ctx = resolve_endpoint_context_length(bare_model, base_url, api_key);
+        if (ctx >= 1024) result = ctx;
+    }
+
+    /* 3. Anthropic /v1/models API */
+    if (result < 0 && provider_name &&
+        (strcasecmp(provider_name, "anthropic") == 0)) {
+        int ctx = query_anthropic_context_length(bare_model, base_url, api_key);
+        if (ctx > 0) result = ctx;
+    }
+
+    /* 4a. Codex OAuth */
+    if (result < 0 && provider_name &&
+        strcasecmp(provider_name, "openai-codex") == 0) {
+        int ctx = resolve_codex_oauth_context_length(bare_model, api_key);
+        if (ctx > 0) result = ctx;
+    }
+
+    /* 4b. Nous Portal */
+    if (result < 0 && provider_name &&
+        strcasecmp(provider_name, "nous") == 0) {
+        int ctx = resolve_nous_context_length(bare_model, base_url, api_key);
+        if (ctx > 0) result = ctx;
+    }
+
+    /* 5. Ollama native /api/show probe */
+    if (result < 0 && base_url && *base_url) {
+        int ctx = query_ollama_api_show(bare_model, base_url, api_key);
+        if (ctx >= 1024) {
+            result = ctx;
+        }
+    }
+
+    /* 6. Fallback to default probe tiers */
+    if (result < 0) {
+        result = DEFAULT_FALLBACK_CONTEXT;
+    }
+
+    /* Save to persistent cache */
+    if (result > 0 && base_url && *base_url && provider_name &&
+        strcasecmp(provider_name, "lmstudio") != 0) {
+        save_context_length(bare_model, base_url, result);
+    }
+
+    free(bare_model);
+    return result;
+}
+
+/* Port of Python: _model_name_suggests_grok_4_3 — check if model has "grok-4.3" */
+bool model_name_suggests_grok_4_3(const char *model) {
+    if (!model || !model[0]) return false;
+    for (const char *p = model; *p; p++) {
+        if (strncasecmp(p, "grok-4.3", 8) == 0)
+            return true;
+    }
+    return false;
+}

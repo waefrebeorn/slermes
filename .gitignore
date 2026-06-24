@@ -1,0 +1,48 @@
+# ── Build artifacts ─────────────────────────────────────────────────
+slermes
+slermes-tui
+slermes-static
+slermes-asan
+slermes-fuzz
+slermes_test
+hermes
+hermes-fuzz
+hermes-tui
+*.o
+*.a
+*.so
+*.out
+*.gcda
+*.gcno
+*.gcov
+
+# ── Test intermediates ──────────────────────────────────────────────
+tests/test_json
+tests/test_line_edit
+*.jsonl
+.digest_state.json
+failed_trajectories.jsonl
+trajectory_samples.jsonl
+test_runner.sh.log
+
+# ── Temp & cache ────────────────────────────────────────────────────
+/tmp/
+__pycache__/
+/tmp/
+.digest_state.json
+.digest_state.json
+
+# ── Config (user-specific) ──────────────────────────────────────────
+.env
+config.yaml
+
+# ── IDE ──────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+
+# ── Reference ───────────────────────────────────────────────────────
+upstream-python-ref/
+slermes/lib/ctranslate2_src/
+slermes/lib/whisper_cpp_src/
+slermes-static
