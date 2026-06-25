@@ -1330,6 +1330,49 @@ install-plugins: plugins
 	cp src/plugins/spotify-control.yaml ~/.hermes/plugins/
 	@echo "Plugins installed to ~/.hermes/plugins/"
 
+# ─── Install ───────────────────────────────────────────────────────
+PREFIX ?= /usr/local
+BINDIR ?= $(PREFIX)/bin
+DOCDIR ?= $(PREFIX)/share/doc/slermes
+
+.PHONY: install
+install: slermes
+	@echo "=== Installing Slermes ==="
+	install -d $(DESTDIR)$(BINDIR)
+	install -m 755 slermes $(DESTDIR)$(BINDIR)/slermes
+	install -d $(DESTDIR)$(DOCDIR)
+	install -m 644 README.md $(DESTDIR)$(DOCDIR)/README.md
+	@echo "  Binary: $(DESTDIR)$(BINDIR)/slermes"
+	@echo "  Docs:   $(DESTDIR)$(DOCDIR)/"
+	@echo "=== Install complete ==="
+	@echo "Run: slermes --help"
+
+# ─── Distribution ──────────────────────────────────────────────────
+.PHONY: dist-appimage dist-docker dist-nsis dist-nix dist-all
+
+dist-appimage:
+	@echo "Building AppImage..."
+	bash packaging/appimage/build-appimage.sh
+
+dist-docker:
+	@echo "Building Docker image..."
+	docker build -t slermes:latest -f packaging/docker/Dockerfile .
+
+dist-nsis:
+	@echo "Building Windows installer (requires makensis)..."
+	makensis packaging/nsis/slermes.nsi
+
+dist-nix:
+	@echo "Building Nix derivation..."
+	nix-build packaging/nix/default.nix
+
+dist-all: dist-docker
+	@echo "=== Distribution packages built ==="
+	@echo "  Docker:  slermes:latest"
+	@echo "  AppImage: run 'make dist-appimage'"
+	@echo "  NSIS:     run 'make dist-nsis' (requires makensis)"
+	@echo "  Nix:      run 'make dist-nix'"
+
 # Uninstall — remove binary and optionally config
 # make uninstall           — removes binary, preserves config
 # make uninstall FORCE=1   — removes config too
