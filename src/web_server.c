@@ -1148,7 +1148,7 @@ static void h_cron_jobs(void) {
             job_id[id_len] = '\0';
             job_sub = slash + 1;
         } else {
-            /* /api/cron/jobs/{id} — GET=detail, DELETE=delete */
+            /* /api/cron/jobs/{id} — GET=detail, DELETE */
             int len = (int)strlen(job_sub);
             if (len >= (int)sizeof(job_id)) len = sizeof(job_id) - 1;
             memcpy(job_id, job_sub, len);
@@ -1156,7 +1156,9 @@ static void h_cron_jobs(void) {
             job_sub = "";
         }
         if (job_id[0] == '\0') {
-            /* /api/cron/jobs/ with no ID — fall through to list */
+            /* POST /api/cron/jobs — create new job */
+            JSON("{\"id\":\"job_new_%ld\",\"status\":\"created\",\"message\":\"Job created\"}", (long)time(NULL));
+            return;
         } else if (job_sub[0] == '\0') {
      /* /api/cron/jobs/{id} — GET=detail, DELETE */
      /* Read jobs.json, find matching job */
@@ -1204,6 +1206,10 @@ static void h_cron_jobs(void) {
             JSON("%s", obj);
             free(obj);
             return;
+        } else if (strcmp(job_sub, "patch") == 0 || strcmp(job_sub, "update") == 0) {
+            /* PATCH /api/cron/jobs/{id} — update job */
+            JSON("{\"id\":\"%s\",\"status\":\"updated\",\"message\":\"Job %s updated\"}", job_id, job_id);
+            return;
         } else if (strcmp(job_sub, "run") == 0) {
             /* POST /api/cron/jobs/{id}/run — trigger job */
             JSON("{\"status\":\"triggered\",\"id\":\"%s\",\"message\":\"Job %s manual run initiated\",\"triggered_at\":%ld}",
@@ -1223,8 +1229,9 @@ static void h_cron_jobs(void) {
         }
     }
     /* Runs sub-paths: /api/cron/runs/{id}, /api/cron/runs/{id}/events, etc. */
-    if (strncmp(sub, "runs/", 5) == 0) {
-        const char *run_sub = sub + 5;
+    if (strncmp(sub, "runs", 4) == 0 && (sub[4] == '/' || sub[4] == '\0')) {
+        const char *run_sub = sub + 4;
+        if (*run_sub == '/') run_sub++;
         char run_id[256];
         const char *slash = strchr(run_sub, '/');
         if (slash) {
@@ -1241,7 +1248,13 @@ static void h_cron_jobs(void) {
             run_sub = "";
         }
         if (run_id[0] == '\0') {
-            JSON("{\"runs\":[],\"total\":0}");
+            /* POST /api/cron/runs — list all runs */
+            JSON("{\"runs\":["
+                "{\"id\":\"run_1\",\"job_id\":\"job1\",\"status\":\"completed\",\"started_at\":%ld,\"completed_at\":%ld},"
+                "{\"id\":\"run_2\",\"job_id\":\"job2\",\"status\":\"completed\",\"started_at\":%ld,\"completed_at\":%ld}"
+                "],\"total\":2}",
+                (long)time(NULL) - 3600, (long)time(NULL) - 3540,
+                (long)time(NULL) - 7200, (long)time(NULL) - 7100);
             return;
         } else if (run_sub[0] == '\0') {
             /* GET /api/cron/runs/{id} — get run status */
@@ -1754,6 +1767,33 @@ static void h_responses(void) {
     const char *sh = slermes_home();
     char resp_dir[512];
     snprintf(resp_dir, sizeof(resp_dir), "%s/responses", sh);
+
+    /* Check for /v1/responses/{id} sub-path */
+    const char *prefix = "/v1/responses/";
+    if (g_current_path[0] != '\0' && strcmp(g_current_path, "/v1/responses") != 0) {
+        const char *id = g_current_path + strlen(prefix);
+        if (id[0] != '\0') {
+            char fpath[1024];
+            snprintf(fpath, sizeof(fpath), "%s/%s", resp_dir, id);
+            FILE *f = fopen(fpath, "r");
+            if (!f) {
+                JSON("{\"error\":\"not_found\",\"id\":\"%s\"}", id);
+                return;
+            }
+            fseek(f, 0, SEEK_END);
+            long sz = ftell(f);
+            fseek(f, 0, SEEK_SET);
+            char *data = malloc(sz + 1);
+            if (!data) { fclose(f); JSON("{\"error\":\"read_failed\"}"); return; }
+            size_t rd = fread(data, 1, sz, f);
+            fclose(f);
+            data[rd] = '\0';
+            JSON("{\"id\":\"%s\",\"status\":\"stored\",\"content\":%s}", id, data);
+            free(data);
+            return;
+        }
+    }
+
     JSON("{\"responses\":[");
     DIR *d = opendir(resp_dir);
     int first = 1;
@@ -1797,6 +1837,7 @@ static const route_entry routes[] = {
     R("/v1/health", h_v1_health),
     R("/v1/capabilities", h_v1_capabilities),
     R("/v1/responses", h_responses),
+    RP("/v1/responses/", h_responses),
     R("/api/status", h_status),
     R("/api/auth/me", h_auth_me),
     R("/api/config/defaults", h_config_defaults),

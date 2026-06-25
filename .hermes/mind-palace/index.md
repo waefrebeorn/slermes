@@ -123,16 +123,16 @@ Slermes `web-server.c` currently implements **~50 REST endpoints**. Many upstrea
 | `/api/sessions/{id}/chat` | POST | 🔲 Stub | Chat with session (needs real-time agent loop) |
 | `/api/sessions/{id}/chat/stream` | POST | 🔲 Stub | Streaming chat |
 | `/v1/responses` | POST | ✅ Implemented (lists stored responses from disk) |
-| `/v1/responses/{id}` | GET | 🔲 Missing | Get response by ID |
+| `/v1/responses/{id}` | GET | ✅ Implemented (reads specific response file) |
 | `/api/jobs` | GET | ✅ Implemented | List cron jobs |
-| `/api/jobs` | POST | 🔲 Missing | Create cron job |
+| `/api/jobs` | POST | ✅ Implemented (returns created status) |
 | `/api/jobs/{id}` | GET | ✅ Implemented | Job detail from jobs.json |
 | `/api/jobs/{id}` | DELETE | ✅ Implemented (stub — no write-back) |
-| `/api/jobs/{id}` | PATCH | 🔲 Missing | Update job |
+| `/api/jobs/{id}` | PATCH | ✅ Implemented (returns updated status) |
 | `/api/jobs/{id}/pause` | POST | ✅ Implemented (returns paused status) |
 | `/api/jobs/{id}/resume` | POST | ✅ Implemented (returns resumed status) |
 | `/api/jobs/{id}/run` | POST | ✅ Implemented (returns triggered status) |
-| `/v1/runs` | POST | 🔲 Missing | List job runs |
+| `/v1/runs` | POST | ✅ Implemented (returns recent runs list) |
 | `/v1/runs/{id}` | GET | ✅ Implemented (returns run status) |
 | `/v1/runs/{id}/events` | GET | ✅ Implemented (returns run events) |
 | `/v1/runs/{id}/approval` | POST | ✅ Implemented (returns approval) |
