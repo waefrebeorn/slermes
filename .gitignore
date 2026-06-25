@@ -1,3 +1,8 @@
+web_server
+slermes-desktop-gui
+AppDir/
+*.AppImage
+
 # ── Build artifacts ─────────────────────────────────────────────────
 slermes
 slermes-tui
@@ -46,3 +51,7 @@ upstream-python-ref/
 slermes/lib/ctranslate2_src/
 slermes/lib/whisper_cpp_src/
 slermes-static
+
+# ── Working screenshots
+screenshot_*.png
+slermes_web_showcase.png

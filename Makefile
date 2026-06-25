@@ -62,7 +62,7 @@ else
 endif
 
 CFLAGS = -O2 -g -Wall -Wno-pedantic -Wno-attributes -Wno-unused-result -Wno-format-truncation -Wstringop-truncation -Wno-misleading-indentation -Wno-discarded-qualifiers -Wno-unused-parameter -Wno-missing-field-initializers -Wno-format-extra-args -Wno-comment -Wno-format-zero-length -Wno-address -Wno-maybe-uninitialized -Wno-unused-function -I include $(SSL_CFLAGS) $(OS_DEF) $(CFLAGS_EXTRA)
-CFLAGS += -DHERMES_VERSION=\"$(HERMES_VERSION)-slermes\" -DHERMES_RELEASE_DATE=\"$(HERMES_RELEASE_DATE)\"
+CFLAGS += -DHERMES_VERSION=\\\"$(HERMES_VERSION)-slermes\\\" -DHERMES_RELEASE_DATE=\\\"$(HERMES_RELEASE_DATE)\\\" -DATADIR=\\\"$(PREFIX)/share/slermes/docs\\\"
 LDFLAGS = $(SSL_LDFLAGS) $(PLATFORM_LDFLAGS)
 LIBS = -lm
 
