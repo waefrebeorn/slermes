@@ -1334,6 +1334,7 @@ install-plugins: plugins
 PREFIX ?= /usr/local
 BINDIR ?= $(PREFIX)/bin
 DOCDIR ?= $(PREFIX)/share/doc/slermes
+DATADIR ?= $(PREFIX)/share/slermes
 
 .PHONY: install
 install: slermes
@@ -1342,8 +1343,10 @@ install: slermes
 	install -m 755 slermes $(DESTDIR)$(BINDIR)/slermes
 	install -d $(DESTDIR)$(DOCDIR)
 	install -m 644 README.md $(DESTDIR)$(DOCDIR)/README.md
+	install -d $(DESTDIR)$(DATADIR)/docs
+	@cp -r docs/* $(DESTDIR)$(DATADIR)/docs/ 2>/dev/null || true
 	@echo "  Binary: $(DESTDIR)$(BINDIR)/slermes"
-	@echo "  Docs:   $(DESTDIR)$(DOCDIR)/"
+	@echo "  Docs:   $(DESTDIR)$(DATADIR)/docs/"
 	@echo "=== Install complete ==="
 	@echo "Run: slermes --help"
 
