@@ -2303,7 +2303,7 @@ static void serve_md_as_html(int fd, const char *filepath, const char *title) {
         "<main>\n%s</main>\n"
         "<hr>\n"
         "<footer style=\"text-align:center;color:#888;font-size:0.85em;margin-top:24px;\">"
-        "Slermes Documentation Server &mdash; v501-dev</footer>\n"
+        "Slermes Documentation Server &mdash; " HERMES_VERSION "</footer>"
         "</body>\n</html>",
         title, body);
 
@@ -2337,7 +2337,7 @@ static void h_docs(void) {
         "th{background:#f0f0f0;}\n"
         "</style>\n"
         "</head>\n<body>\n"
-        "<h1>📚 Slermes Documentation <span class=\"badge\">v501-dev</span></h1>\n"
+        "<h1>📚 Slermes Documentation <span class=\"badge\">" HERMES_VERSION "</span></h1>\n"
         "<p>Documentation for the Slermes C11 fork of Hermes Agent, sourced from the "
         "upstream documentation set. Each section corresponds to a logical area of the "
         "Hermes Agent project architecture.</p>\n"
@@ -2383,7 +2383,7 @@ static void h_docs(void) {
         "\n"
         "<hr>\n"
         "<footer style=\"text-align:center;color:#888;font-size:0.85em;margin-top:24px;\">"
-        "Slermes Documentation Server &mdash; v501-dev</footer>\n"
+        "Slermes Documentation Server &mdash; " HERMES_VERSION "</footer>"
         "</body>\n</html>";
 
     send_html(g_client_fd, html);
@@ -2392,7 +2392,8 @@ static void h_docs(void) {
 /* ── /api/docs/readme — README.md as HTML ─────────────────────────── */
 static void h_docs_readme(void) {
     char path[1024];
-    snprintf(path, sizeof(path), "%s/docs/README.md", "/home/wubu/hermes-agent-dev");
+    const char *home = slermes_home();
+    snprintf(path, sizeof(path), "%s/docs/README.md", home);
     serve_md_as_html(g_client_fd, path, "README");
 }
 
@@ -2401,14 +2402,15 @@ static void h_docs_architecture(void) {
     /* Concatenate architecture-related docs into one page */
     char combined[262144];
     size_t pos = 0;
+    const char *home = slermes_home();
 
-    const char *files[] = {
-        "/home/wubu/hermes-agent-dev/docs/session-lifecycle.md",
-        "/home/wubu/hermes-agent-dev/docs/kanban/multi-gateway.md",
-        "/home/wubu/hermes-agent-dev/docs/relay-connector-contract.md",
-        "/home/wubu/hermes-agent-dev/docs/chronos-managed-cron-contract.md",
-        NULL
-    };
+    char p1[1024], p2[1024], p3[1024], p4[1024];
+    snprintf(p1, sizeof(p1), "%s/docs/session-lifecycle.md", home);
+    snprintf(p2, sizeof(p2), "%s/docs/kanban/multi-gateway.md", home);
+    snprintf(p3, sizeof(p3), "%s/docs/relay-connector-contract.md", home);
+    snprintf(p4, sizeof(p4), "%s/docs/chronos-managed-cron-contract.md", home);
+
+    const char *files[] = { p1, p2, p3, p4, NULL };
 
     for (int i = 0; files[i]; i++) {
         FILE *f = fopen(files[i], "r");
@@ -2423,7 +2425,7 @@ static void h_docs_architecture(void) {
             bn = bn ? bn + 1 : files[i];
 
             char sec_title[256];
-            snprintf(sec_title, sizeof(sec_title), "� %s", bn);
+            snprintf(sec_title, sizeof(sec_title), "&#x1F4C4; %s", bn);
 
             char esc[512];
             html_escape(esc, sizeof(esc), sec_title);
@@ -2490,7 +2492,7 @@ static void h_docs_architecture(void) {
         "<main>\n%s</main>\n"
         "<hr>\n"
         "<footer style=\"text-align:center;color:#888;font-size:0.85em;margin-top:24px;\">"
-        "Slermes Documentation Server &mdash; v501-dev</footer>\n"
+        "Slermes Documentation Server &mdash; " HERMES_VERSION "</footer>"
         "</body>\n</html>",
         body);
 
@@ -2501,16 +2503,17 @@ static void h_docs_architecture(void) {
 static void h_docs_contributing(void) {
     char combined[262144];
     size_t pos = 0;
+    const char *home = slermes_home();
 
-    const char *files[] = {
-        "/home/wubu/hermes-agent-dev/docs/design/profile-builder.md",
-        "/home/wubu/hermes-agent-dev/docs/middleware/README.md",
-        "/home/wubu/hermes-agent-dev/docs/observability/README.md",
-        "/home/wubu/hermes-agent-dev/docs/security/network-egress-isolation.md",
-        "/home/wubu/hermes-agent-dev/docs/rca-ssl-cacert-post-git-pull.md",
-        "/home/wubu/hermes-agent-dev/docs/plans/2026-06-09-003-fix-telegram-stream-overflow-continuations-plan.md",
-        NULL
-    };
+    char p1[1024], p2[1024], p3[1024], p4[1024], p5[1024], p6[1024];
+    snprintf(p1, sizeof(p1), "%s/docs/design/profile-builder.md", home);
+    snprintf(p2, sizeof(p2), "%s/docs/middleware/README.md", home);
+    snprintf(p3, sizeof(p3), "%s/docs/observability/README.md", home);
+    snprintf(p4, sizeof(p4), "%s/docs/security/network-egress-isolation.md", home);
+    snprintf(p5, sizeof(p5), "%s/docs/rca-ssl-cacert-post-git-pull.md", home);
+    snprintf(p6, sizeof(p6), "%s/docs/plans/2026-06-09-003-fix-telegram-stream-overflow-continuations-plan.md", home);
+
+    const char *files[] = { p1, p2, p3, p4, p5, p6, NULL };
 
     for (int i = 0; files[i]; i++) {
         FILE *f = fopen(files[i], "r");
@@ -2524,7 +2527,7 @@ static void h_docs_contributing(void) {
             bn = bn ? bn + 1 : files[i];
 
             char sec_title[256];
-            snprintf(sec_title, sizeof(sec_title), "� %s", bn);
+            snprintf(sec_title, sizeof(sec_title), "&#x1F4C4; %s", bn);
 
             char esc[512];
             html_escape(esc, sizeof(esc), sec_title);
@@ -2591,7 +2594,7 @@ static void h_docs_contributing(void) {
         "<main>\n%s</main>\n"
         "<hr>\n"
         "<footer style=\"text-align:center;color:#888;font-size:0.85em;margin-top:24px;\">"
-        "Slermes Documentation Server &mdash; v501-dev</footer>\n"
+        "Slermes Documentation Server &mdash; " HERMES_VERSION "</footer>"
         "</body>\n</html>",
         body);
 
