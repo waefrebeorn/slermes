@@ -26,7 +26,7 @@ Anything the Nous Research team produces — **code AND documents** — is upstr
 | **Binary** | 46 MB (slermes) + 1.6 MB (slermes-desktop-gui) + ~150 KB (web-server) |
 | **C source files** | 1,107 files, ~497K LOC |
 | **Web Endpoints** | ~50 REST (99% real), 100 JSON-RPC (registered) |
-| **Desktop Features** | ~50/111 (P0+P1+settings overlay+right-sidebar done) |
+| **Desktop Features** | ~55/111 (P0+P1+settings+command-center+session-picker+switcher done) |
 | **Platform Backends** | Linux ✅, Win32 ✅ (975 LOC), macOS ✅ (1009 LOC) |
 
 ---
@@ -104,7 +104,7 @@ The entire `apps/desktop/` directory. Every component, store, hook, lib, page, s
 | `app/command-center/` | 1 | Command center | ✅ Done (real-time gateway/session/skill/cron stats) |
 | `app/page-search-shell.tsx` | 1 | Page search | 🔲 REAL_GAP |
 | `app/session-picker-overlay.tsx` | 1 | Session picker | ✅ Done (Ctrl+O: searchable list, click/Enter to switch) |
-| `app/session-switcher.tsx` | 1 | Session switcher | 🔲 REAL_GAP |
+| `app/session-switcher.tsx` | 1 | Session switcher | ✅ Done (Ctrl+Tab: HUD with 1-9 hotkeys) |
 | `app/floating-hud.ts` | 1 | Floating HUD | 🔲 REAL_GAP |
 | `app/desktop-controller.tsx` | 1 | Desktop controller | 🔲 REAL_GAP |
 | `app/updates-overlay.tsx` | 1 | Updates overlay | ✅ Done (C equivalent) |
