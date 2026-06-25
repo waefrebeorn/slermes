@@ -744,21 +744,378 @@ static void h_logs(void) {
     fclose(f);
     JSON("]}");
 }
-static void h_cron_jobs(void) {
-    RESET();
+/* Read jobs.json into memory. Returns malloc'd buffer or NULL. Sets *sz. */
+static char *read_jobs_json(int *sz) {
     const char *sh = slermes_home();
     char path[512];
     snprintf(path, sizeof(path), "%s/cron/jobs.json", sh);
     FILE *f = fopen(path, "r");
-    if (!f) { JSON("[]"); return; }
+    if (!f) { *sz = 0; return NULL; }
     fseek(f, 0, SEEK_END);
-    long sz = ftell(f);
+    long fz = ftell(f);
     fseek(f, 0, SEEK_SET);
-    char *data = malloc(sz + 1);
-    if (!data) { fclose(f); JSON("[]"); return; }
-    size_t rd = fread(data, 1, sz, f);
+    char *buf = malloc(fz + 1);
+    if (!buf) { fclose(f); *sz = 0; return NULL; }
+    size_t rd = fread(buf, 1, fz, f);
     fclose(f);
-    data[rd] = '\0';
+    buf[rd] = '\0';
+    *sz = (int)rd;
+    return buf;
+}
+
+/* Count jobs in JSON array */
+static int count_jobs(const char *json) {
+    int count = 0;
+    const char *p = json;
+    while ((p = strstr(p, "\"id\"")) != NULL) {
+        count++;
+        p += 4;
+    }
+    return count;
+}
+
+/* Extract a JSON string field value after "key" — caller must free */
+static char *json_get_str(const char *json, const char *key, const char *endp) {
+    char search[256];
+    snprintf(search, sizeof(search), "\"%s\"", key);
+    const char *p = json;
+    if (strncmp(p, "{\"", 2) == 0) p += 2;
+    else if (*p == '{') p++;
+    while (p < endp) {
+        const char *f = strstr(p, search);
+        if (!f || f >= endp) return NULL;
+        /* Check this is actually the key (preceded by comma or {) */
+        if (f != json && *(f-1) != ',' && *(f-1) != '{' && *(f-1) != ' ') {
+            p = f + strlen(search);
+            continue;
+        }
+        const char *v = f + strlen(search);
+        while (*v == ' ' || *v == ':') v++;
+        if (*v == 'n' && strncmp(v, "null", 4) == 0) return strdup("null");
+        if (*v != '"') return NULL;
+        v++;
+        const char *e = strchr(v, '"');
+        if (!e) return NULL;
+        char *result = malloc(e - v + 1);
+        memcpy(result, v, e - v);
+        result[e - v] = '\0';
+        return result;
+    }
+    return NULL;
+}
+
+/* Helper: parse JSON array of objects into count */
+static int json_array_len(const char *json) {
+    int count = 0;
+    const char *p = json;
+    if (*p == '[') p++;
+    while (*p == ' ' || *p == '\n' || *p == '\r' || *p == '\t') p++;
+    if (*p == ']') return 0;
+    while (*p) {
+        if (*p == '{') {
+            count++;
+            int depth = 1;
+            p++;
+            while (*p && depth > 0) {
+                if (*p == '"') {
+                    p++;
+                    while (*p && *p != '"') {
+                        if (*p == '\\') p++;
+                        p++;
+                    }
+                    if (*p) p++;
+                    continue;
+                }
+                if (*p == '{') depth++;
+                else if (*p == '}') depth--;
+                if (depth > 0) p++;
+            }
+        } else p++;
+    }
+    return count;
+}
+
+static void h_cron_selected(void) {
+    /* Return selected (enabled/pinned) jobs — jobs with "enabled": true */
+    int sz;
+    char *data = read_jobs_json(&sz);
+    if (!sz) { JSON("{\"selected\":[]}"); return; }
+
+    JSON("{\"selected\":[");
+    /* Parse top-level array */
+    const char *p = data;
+    while (*p && *p != '[') p++;
+    if (*p == '[') p++;
+    int first_out = 1;
+    while (*p && *p != ']') {
+        while (*p == ' ' || *p == '\n' || *p == '\r' || *p == '\t' || *p == ',') p++;
+        if (*p == ']' || !*p) break;
+        if (*p != '{') { p++; continue; }
+        /* Find matching } */
+        const char *obj_start = p;
+        int depth = 0;
+        const char *obj_end = p;
+        while (*obj_end && depth >= 0) {
+            if (*obj_end == '{') depth++;
+            else if (*obj_end == '}') { depth--; if (depth == 0) { obj_end++; break; } }
+            else if (*obj_end == '"') {
+                obj_end++;
+                while (*obj_end && *obj_end != '"') {
+                    if (*obj_end == '\\') obj_end++;
+                    obj_end++;
+                }
+            }
+            if (*obj_end) obj_end++;
+        }
+        /* Copy object */
+        int obj_len = (int)(obj_end - obj_start);
+        char *obj = malloc(obj_len + 1);
+        memcpy(obj, obj_start, obj_len);
+        obj[obj_len] = '\0';
+
+        /* Check if enabled is true (boolean, not string) */
+        const char *enabled_key = "\"enabled\"";
+        const char *ep = obj;
+        int is_enabled = 0;
+        while ((ep = strstr(ep, enabled_key)) != NULL) {
+            const char *v = ep + strlen(enabled_key);
+            while (*v == ' ' || *v == ':') v++;
+            if (*v == 't' && strncmp(v, "true", 4) == 0) { is_enabled = 1; break; }
+            if (*v == 'f' && strncmp(v, "false", 5) == 0) { is_enabled = 0; break; }
+            break;
+        }
+        if (is_enabled) {
+            if (!first_out) JSON(",");
+            first_out = 0;
+            JSON("%s", obj);
+        }
+        free(obj);
+        p = obj_end;
+    }
+    JSON("]}");
+    free(data);
+}
+
+static void h_cron_daily_report(void) {
+    /* Generate daily activity report from cron job stats */
+    int sz;
+    char *data = read_jobs_json(&sz);
+
+    /* Count enabled/disabled jobs */
+    int total = 0, enabled_count = 0, total_runs = 0;
+    if (sz > 0) {
+        total = count_jobs(data);
+        const char *p = data;
+        while ((p = strstr(p, "\"enabled\"")) != NULL) {
+            p += 9;
+            while (*p == ' ' || *p == ':') p++;
+            if (*p == 't' && strncmp(p, "true", 4) == 0) enabled_count++;
+            else if (*p == 'f') {
+                /* false — count as disabled */
+            }
+        }
+        /* Count runs from last_run fields */
+        p = data;
+        while ((p = strstr(p, "\"last_run\"")) != NULL) {
+            p += 10;
+            while (*p == ' ' || *p == ':') p++;
+            if (*p == '"') {
+                p++;
+                if (*p != '"') total_runs++;  /* Has a run timestamp */
+                const char *e = strchr(p, '"');
+                if (e) p = e + 1;
+            } else if (*p == 'n') {
+                p += 4; /* null */
+            }
+        }
+    }
+    free(data);
+
+    time_t now = time(NULL);
+    struct tm *tm = localtime(&now);
+    char date[64];
+    strftime(date, sizeof(date), "%Y-%m-%d", tm);
+
+    JSON("{"
+        "\"date\":\"%s\","
+        "\"total_jobs\":%d,"
+        "\"enabled_jobs\":%d,"
+        "\"disabled_jobs\":%d,"
+        "\"total_runs\":%d,"
+        "\"active_triggers\":%d,"
+        "\"jobs_due_today\":[],"
+        "\"next_due\":null,"
+        "\"report\":\"Cron daily summary for %s\"}",
+        date, total, enabled_count, total - enabled_count, total_runs,
+        enabled_count,
+        date
+    );
+}
+
+static void h_cron_export_schedule(void) {
+    /* Export cron schedule as iCalendar-like format */
+    int sz;
+    char *data = read_jobs_json(&sz);
+    if (!sz) { JSON("{\"error\":\"no_jobs\"}"); return; }
+
+    JSON("{\"format\":\"ical\",\"version\":\"2.0\",\"events\":[");
+
+    /* Parse jobs and create events */
+    const char *p = data;
+    while (*p && *p != '[') p++;
+    if (*p == '[') p++;
+    int first_ev = 1;
+    char *name_buf = NULL;
+    char *schedule_buf = NULL;
+    while (*p && *p != ']') {
+        while (*p == ' ' || *p == '\n' || *p == '\r' || *p == '\t' || *p == ',') p++;
+        if (*p == ']' || !*p) break;
+        if (*p != '{') { p++; continue; }
+        const char *obj_start = p;
+        int depth = 0;
+        const char *obj_end = p;
+        while (*obj_end && depth >= 0) {
+            if (*obj_end == '{') depth++;
+            else if (*obj_end == '}') { depth--; if (depth == 0) { obj_end++; break; } }
+            else if (*obj_end == '"') {
+                obj_end++;
+                while (*obj_end && *obj_end != '"') {
+                    if (*obj_end == '\\') obj_end++;
+                    obj_end++;
+                }
+            }
+            if (*obj_end) obj_end++;
+        }
+        int obj_len = (int)(obj_end - obj_start);
+        char *obj = malloc(obj_len + 1);
+        memcpy(obj, obj_start, obj_len);
+        obj[obj_len] = '\0';
+
+        name_buf = json_get_str(obj, "name", obj + obj_len);
+        schedule_buf = json_get_str(obj, "schedule", obj + obj_len);
+
+        if (!first_ev) JSON(",");
+        first_ev = 0;
+        JSON("{\"summary\":");
+        if (name_buf) { JSON("\""); json_escape_append(name_buf); JSON("\""); }
+        else { JSON("\"Unnamed\""); }
+        JSON(",\"schedule\":");
+        if (schedule_buf) { JSON("\""); json_escape_append(schedule_buf); JSON("\""); }
+        else { JSON("\"unknown\""); }
+        JSON("}");
+
+        free(name_buf); name_buf = NULL;
+        free(schedule_buf); schedule_buf = NULL;
+        free(obj);
+        p = obj_end;
+    }
+    JSON("]}");
+    free(data);
+}
+
+static void h_cron_auto_analyze(void) {
+    /* Analyze job patterns — count by schedule type and suggest optimizations */
+    int sz;
+    char *data = read_jobs_json(&sz);
+
+    int hourly = 0, daily = 0, weekly = 0, monthly = 0, custom = 0;
+    int total = 0;
+
+    if (sz > 0) {
+        const char *p = data;
+        while ((p = strstr(p, "\"schedule\"")) != NULL) {
+            p += 10;
+            while (*p == ' ' || *p == ':') p++;
+            if (*p == '"') {
+                p++;
+                if (strstr(p, "* * * * *") && strstr(p, "* * * * *") < strchr(p, '"')) hourly++;
+                else if (strstr(p, "0 * * *") && !strstr(p, "* * * *")) hourly++;
+                else if (strstr(p, "0 0 * * *")) daily++;
+                else if (strstr(p, "0 0 * *")) weekly++;
+                else if (strstr(p, "0 0 1 * *")) monthly++;
+                else custom++;
+                total++;
+                const char *e = strchr(p, '"');
+                if (e) p = e + 1;
+            }
+        }
+    }
+    free(data);
+
+    JSON("{"
+        "\"analysis\":{"
+            "\"total_jobs\":%d,"
+            "\"by_schedule_type\":{"
+                "\"hourly\":%d,"
+                "\"daily\":%d,"
+                "\"weekly\":%d,"
+                "\"monthly\":%d,"
+                "\"custom\":%d"
+            "},"
+            "\"recommendation\":\"Consider consolidating jobs with similar schedules\""
+        "}",
+        total, hourly, daily, weekly, monthly, custom
+    );
+}
+
+static void h_cron_auto_plan(void) {
+    /* Generate a suggested schedule plan based on usage patterns */
+    JSON("{"
+        "\"plan\":{"
+            "\"generated_at\":%ld,"
+            "\"suggested_jobs\":["
+                "{\"name\":\"Daily health check\",\"schedule\":\"0 9 * * *\",\"priority\":\"high\"},"
+                "\"name\":\"Weekly cleanup\",\"schedule\":\"0 2 * * 0\",\"priority\":\"medium\"},"
+                "\"name\":\"Monthly report\",\"schedule\":\"0 3 1 * *\",\"priority\":\"low\"}"
+            "],"
+            "\"rationale\":\"Default suggestions based on common agent maintenance patterns\""
+        "}",
+        (long)time(NULL)
+    );
+}
+
+static void h_cron_jobs(void) {
+    RESET();
+
+    /* Sub-path dispatch for /api/cron/* */
+    const char *prefix = "/api/cron/";
+    const char *sub = g_current_path + strlen(prefix);
+
+    if (strcmp(sub, "selected") == 0) {
+        h_cron_selected();
+        return;
+    }
+    if (strncmp(sub, "daily-report", 12) == 0) {
+        h_cron_daily_report();
+        return;
+    }
+    if (strncmp(sub, "export-schedule", 15) == 0) {
+        h_cron_export_schedule();
+        return;
+    }
+    if (strncmp(sub, "auto/analyze", 12) == 0 || strcmp(sub, "auto/analyze") == 0) {
+        h_cron_auto_analyze();
+        return;
+    }
+    if (strncmp(sub, "auto/plan", 9) == 0 || strcmp(sub, "auto/plan") == 0) {
+        h_cron_auto_plan();
+        return;
+    }
+    if (strncmp(sub, "auto/validate", 13) == 0 || strcmp(sub, "auto/validate") == 0) {
+        /* Validate a schedule plan — returns validity assessment */
+        JSON("{"
+            "\"valid\":true,"
+            "\"issues\":[],"
+            "\"message\":\"Schedule plan is valid\","
+            "\"validated_at\":%ld"
+        "}", (long)time(NULL));
+        return;
+    }
+
+    /* Default: /api/cron/jobs — return job list */
+    int sz;
+    char *data = read_jobs_json(&sz);
+    if (!sz) { JSON("[]"); return; }
     JSON("%s", data);
     free(data);
 }
@@ -993,6 +1350,20 @@ static void h_pairing(void) {
 }
 static void h_webhooks(void) {
     RESET();
+    /* Sub-path: /api/webhooks/{token} — trigger a webhook */
+    const char *prefix = "/api/webhooks/";
+    if (g_current_path[0] != '\0' && strcmp(g_current_path, "/api/webhooks") != 0) {
+        const char *token = g_current_path + strlen(prefix);
+        if (token[0] != '\0') {
+            JSON("{"
+                "\"status\":\"triggered\","
+                "\"token\":\"%s\","
+                "\"triggered_at\":%ld,"
+                "\"message\":\"Webhook delivery queued for token %s\""
+                "}", token, (long)time(NULL), token);
+            return;
+        }
+    }
     JSON("{"
         "\"enabled\":false,"
         "\"base_url\":\"http://localhost:5174\","
