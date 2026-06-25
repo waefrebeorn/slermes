@@ -2853,6 +2853,83 @@ static void session_picker_handle_input(gc_event_t *ev) {
 }
 
 /* ══════════════════════════════════════════════════════════════════════
+ *  Floating HUD (P2 Feature) — persistent status indicators at top-right
+ * ══════════════════════════════════════════════════════════════════════ */
+#define HUD_MAX_ITEMS 4
+
+typedef struct {
+    char label[64];
+    char value[128];
+    gc_color_t color;
+    time_t created_at;
+    int  duration_sec;
+} hud_item_t;
+
+static struct {
+    hud_item_t items[HUD_MAX_ITEMS];
+    int count;
+} floating_hud;
+
+static void hud_init(void) {
+    memset(&floating_hud, 0, sizeof(floating_hud));
+}
+
+static void hud_push(const char *label, const char *value, gc_color_t color, int duration_sec) {
+    /* Shift existing items up */
+    if (floating_hud.count >= HUD_MAX_ITEMS) {
+        memmove(&floating_hud.items[0], &floating_hud.items[1],
+                (HUD_MAX_ITEMS - 1) * sizeof(hud_item_t));
+        floating_hud.count = HUD_MAX_ITEMS - 1;
+    }
+    hud_item_t *item = &floating_hud.items[floating_hud.count++];
+    snprintf(item->label, sizeof(item->label), "%s", label);
+    snprintf(item->value, sizeof(item->value), "%s", value);
+    item->color = color;
+    item->created_at = time(NULL);
+    item->duration_sec = duration_sec > 0 ? duration_sec : 5;
+}
+
+static void draw_floating_hud(void) {
+    /* Remove expired items */
+    time_t now = time(NULL);
+    int write = 0;
+    for (int i = 0; i < floating_hud.count; i++) {
+        if (now - floating_hud.items[i].created_at < floating_hud.items[i].duration_sec) {
+            floating_hud.items[write++] = floating_hud.items[i];
+        }
+    }
+    floating_hud.count = write;
+
+    if (floating_hud.count == 0) return;
+
+    int w = win_w();
+    int item_w = 140;
+    int item_h = 22;
+    int padding = 8;
+    int total_w = item_w + padding * 2;
+    int total_h = floating_hud.count * (item_h + 4) + padding * 2;
+    int ox = w - total_w - 12;
+    int oy = TITLEBAR_H + 8;
+
+    gc_theme_t *t = &app.theme;
+    gc_rect_t bg = {ox, oy, total_w, total_h};
+    gc_fill_rect(app.win, bg, GC_RGBA(0, 0, 0, 200));
+    gc_fill_round_rect(app.win, bg, 8, t->bg_secondary);
+    gc_draw_rect(app.win, bg, 1, t->border_subtle);
+
+    gc_font_t *font_small = gc_get_font_small(app.win);
+    int sfh = gc_font_height(font_small);
+
+    for (int i = 0; i < floating_hud.count; i++) {
+        int iy = oy + padding + i * (item_h + 4);
+        gc_draw_text(app.win, font_small, floating_hud.items[i].label,
+                     ox + padding, iy + 2, t->text_dim);
+        gc_draw_text(app.win, font_small, floating_hud.items[i].value,
+                     ox + padding, iy + sfh + 4, floating_hud.items[i].color);
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
  *  Main
  * ══════════════════════════════════════════════════════════════════════ */
 int main(int argc, char **argv) {
@@ -2961,6 +3038,9 @@ int main(int argc, char **argv) {
     /* Settings overlay init */
     settings_init();
 
+    /* Floating HUD init */
+    hud_init();
+
     /* Auto-update check on startup */
     {
         FILE *uf = fopen("/tmp/slermes-last-update-check", "r");
@@ -2983,6 +3063,15 @@ int main(int argc, char **argv) {
             fprintf(uf, "%ld", (long)time(NULL));
             fclose(uf);
         }
+    }
+
+    /* Push initial HUD items */
+    hud_push("Gateway", app.gateway_connected ? "Connected" : "Offline",
+             app.gateway_connected ? GC_HEX(0x22c55e) : GC_HEX(0xef4444), 30);
+    if (app.total_sessions > 0) {
+        char hud_val[32];
+        snprintf(hud_val, sizeof(hud_val), "%d sessions", app.total_sessions);
+        hud_push("Sessions", hud_val, GC_HEX(0x0053fd), 30);
     }
 
     while (app.running) {
@@ -3629,6 +3718,7 @@ int main(int argc, char **argv) {
         draw_settings_overlay();
         draw_session_picker();
         draw_session_switcher();
+        draw_floating_hud();
         draw_toast();
         gc_end_frame(app.win);
 
