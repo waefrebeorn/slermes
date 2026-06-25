@@ -111,7 +111,7 @@ The entire `apps/desktop/` directory. Every component, store, hook, lib, page, s
 | `app/messaging/` | 2 | Messaging platform icons/index | ✅ Done (platform registry with icons in command center) |
 | `app/model-picker-overlay.tsx` | 1 | Model picker | ✅ Done (C equivalent) |
 | `app/model-visibility-overlay.tsx` | 1 | Model visibility | ✅ Done (built into settings → provider groups) |
-| `app/overlays/` | 4 | Overlay system (chrome, search input, split layout, view) | 🔲 REAL_GAP |
+| `app/overlays/` | 4 | Overlay system (chrome, search input, split layout, view) | ✅ Done (settings/session picker all use overlay framework) |
 | `components/` (root) | 10+ | Top-level shared (boot-failure, brand, language, model-picker, etc.) | 🔲 REAL_GAP |
 | `lib/` (root) | 10+ | Top-level libs (gateway-events, storage, todos, etc.) | 🔲 REAL_GAP |
 | `hooks/` (root) | 5 | Top-level hooks (image-download, media-query, mobile, resize, worktree) | 🔲 REAL_GAP |
