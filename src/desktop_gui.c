@@ -3030,6 +3030,137 @@ static void boot_handle_input(gc_event_t *ev) {
 }
 
 /* ══════════════════════════════════════════════════════════════════════
+ *  Page Search (P2 Feature) — Ctrl+F search within current chat
+ * ══════════════════════════════════════════════════════════════════════ */
+static struct {
+    bool visible;
+    char query[128];
+    int  query_len;
+    int  match_count;
+    int  current_match;
+    int  match_positions[64]; /* indices into app.messages */
+} page_search;
+
+static void page_search_init(void) {
+    memset(&page_search, 0, sizeof(page_search));
+}
+
+static void page_search_find_matches(void) {
+    page_search.match_count = 0;
+    if (page_search.query_len == 0) return;
+
+    char lower_query[128];
+    for (int i = 0; page_search.query[i]; i++)
+        lower_query[i] = tolower((unsigned char)page_search.query[i]);
+    lower_query[page_search.query_len] = '\0';
+
+    for (int i = 0; i < app.message_count && page_search.match_count < 64; i++) {
+        const char *content = app.messages[i].content;
+        /* Simple case-insensitive search */
+        int len = (int)strlen(content);
+        for (int j = 0; j <= len - page_search.query_len; j++) {
+            int k;
+            for (k = 0; k < page_search.query_len; k++) {
+                if (tolower((unsigned char)content[j + k]) != lower_query[k]) break;
+            }
+            if (k == page_search.query_len) {
+                page_search.match_positions[page_search.match_count++] = i;
+                break; /* One match per message is enough for navigation */
+            }
+        }
+    }
+}
+
+static void draw_page_search(void) {
+    if (!page_search.visible) return;
+
+    int w = win_w();
+    int ow = 400;
+    int oh = 36;
+    int ox = (w - ow) / 2;
+    int oy = win_h() - STATUSBAR_H - oh - 8;
+
+    gc_theme_t *t = &app.theme;
+    gc_rect_t bg = {ox, oy, ow, oh};
+    gc_fill_rect(app.win, bg, GC_RGBA(0, 0, 0, 220));
+    gc_fill_round_rect(app.win, bg, 8, t->bg_secondary);
+    gc_draw_rect(app.win, bg, 1, t->border);
+
+    gc_font_t *font_small = gc_get_font_small(app.win);
+    int sfh = gc_font_height(font_small);
+
+    /* Search icon */
+    gc_draw_text(app.win, font_small, "🔍", ox + 8, oy + 7, t->text_dim);
+
+    /* Input field */
+    int input_x = ox + 28;
+    int input_w = ow - 100;
+    gc_rect_t input_bg = {input_x, oy + 4, input_w, oh - 8};
+    gc_fill_rect(app.win, input_bg, t->bg_card);
+
+    if (page_search.query_len > 0) {
+        gc_draw_text(app.win, font_small, page_search.query, input_x + 4, oy + 7, t->text);
+    } else {
+        gc_draw_text(app.win, font_small, "Search in chat...", input_x + 4, oy + 7, t->text_dim);
+    }
+
+    /* Match counter */
+    char counter[32];
+    if (page_search.query_len > 0) {
+        snprintf(counter, sizeof(counter), "%d/%d", page_search.current_match + 1, page_search.match_count);
+    } else {
+        snprintf(counter, sizeof(counter), "0/0");
+    }
+    gc_draw_text(app.win, gc_get_font_mono(app.win), counter, ox + ow - 64, oy + 7, t->text_dim);
+
+    /* Blinking cursor */
+    if ((SDL_GetTicks() / 500) % 2 && page_search.query_len < 126) {
+        int cursor_x = input_x + 4 + gc_text_width(font_small, page_search.query);
+        gc_fill_rect(app.win, gc_rect(cursor_x, oy + 6, 2, sfh), t->accent);
+    }
+}
+
+static void page_search_handle_input(gc_event_t *ev) {
+    if (!page_search.visible) return;
+
+    if (ev->type == GC_EV_KEY_DOWN) {
+        if (ev->key == SDLK_ESCAPE) {
+            page_search.visible = false;
+            return;
+        }
+        if (ev->key == SDLK_RETURN || ev->key == SDLK_F3) {
+            /* Go to next match */
+            if (page_search.match_count > 0) {
+                page_search.current_match = (page_search.current_match + 1) % page_search.match_count;
+                /* Scroll to the matched message */
+                int msg_idx = page_search.match_positions[page_search.current_match];
+                if (msg_idx < app.message_count) {
+                    /* Approximate scroll position based on message index */
+                    app.chat_scroll = msg_idx * 200; /* rough estimate */
+                    int max_scroll = app.chat_content_h - chat_h();
+                    if (max_scroll < 0) max_scroll = 0;
+                    if (app.chat_scroll > max_scroll) app.chat_scroll = max_scroll;
+                }
+            }
+            return;
+        }
+        if (ev->key == SDLK_BACKSPACE && page_search.query_len > 0) {
+            page_search.query[--page_search.query_len] = '\0';
+            page_search.current_match = 0;
+            page_search_find_matches();
+            return;
+        }
+        if (ev->key >= 32 && ev->key <= 126 && page_search.query_len < 126) {
+            page_search.query[page_search.query_len++] = (char)ev->key;
+            page_search.query[page_search.query_len] = '\0';
+            page_search.current_match = 0;
+            page_search_find_matches();
+            return;
+        }
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
  *  Main
  * ══════════════════════════════════════════════════════════════════════ */
 int main(int argc, char **argv) {
@@ -3202,6 +3333,11 @@ int main(int argc, char **argv) {
             switch (ev.type) {
             case GC_EV_QUIT: app.running = false; break;
             case GC_EV_KEY_DOWN:
+                /* Page search input — consume when visible */
+                if (page_search.visible) {
+                    page_search_handle_input(&ev);
+                    break;
+                }
                 /* Boot overlay input — consume when visible */
                 if (desktop_controller.boot == BOOT_ERROR) {
                     boot_handle_input(&ev);
@@ -3254,6 +3390,15 @@ int main(int argc, char **argv) {
                     session_picker.visible = !session_picker.visible;
                     if (session_picker.visible) {
                         session_picker_init();
+                    }
+                    break;
+                }
+                /* Page search: Ctrl+F */
+                if (ev.key == SDLK_f && (ev.mod & KMOD_CTRL)) {
+                    page_search.visible = !page_search.visible;
+                    if (page_search.visible) {
+                        page_search_init();
+                        app.search_active = false; /* disable sidebar search to avoid conflict */
                     }
                     break;
                 }
@@ -3842,6 +3987,7 @@ int main(int argc, char **argv) {
         draw_session_switcher();
         draw_floating_hud();
         draw_boot_overlay();
+        draw_page_search();
         draw_toast();
         gc_end_frame(app.win);
 
