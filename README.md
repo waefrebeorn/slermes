@@ -83,7 +83,7 @@ The result is not a fork that follows upstream's architecture. It's our own code
 | Build time | ~30s on 4 cores |
 | Binary count | 3 (slermes, slermes-desktop-gui, web-server) |
 | Skills parsed | **121** (from 77 SKILL.md files) |
-| Docs served | **4** (README, architecture, contributing, security) |
+| Docs served | **6** endpoints (README, architecture, contributing, security, guides, index) |
 | Test cases | **63** (API×17, CLI×9, state_db×27, UI×10) |
 | Packaging targets | **6** (AppImage, Homebrew, NSIS, Docker, Nix, make install) |
 
@@ -213,6 +213,7 @@ The standalone `web-server` binary serves both the React SPA and a REST API back
 | `GET /api/docs/architecture` | Architecture docs rendered as HTML |
 | `GET /api/docs/contributing` | Contributing docs rendered as HTML |
 | `GET /api/docs/security` | Security policy docs rendered as HTML |
+| `GET /api/docs/guides` | 30+ guide &amp; tutorial pages rendered as HTML |
 
 **Run:** `./web-server [port]`
 
