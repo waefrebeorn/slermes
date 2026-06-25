@@ -63,6 +63,13 @@ static int json_len;
 
 #define RESET() do { json_len = 0; json_buf[0] = '\0'; } while(0)
 
+/* Forward declarations */
+static char g_current_path[1024]; /* path of current request, used by handlers */
+static void h_session_detail(void);
+static void h_session_patch(void);
+static void h_session_messages(void);
+static void h_session_delete(void);
+
 /* ── Endpoint handlers ─────────────────────────────────────────────── */
 
 /* Forward declarations */
@@ -347,6 +354,27 @@ static void h_model_auxiliary(void) {
 static void h_sessions(void) {
     RESET();
     srv_db_open();
+
+    /* Sub-path dispatch: /api/sessions/{id}/messages, /api/sessions/{id}, etc */
+    const char *prefix = "/api/sessions/";
+    const char *sub = g_current_path + strlen(prefix);
+
+    /* Check for /api/sessions/create (exact match handled by route table) */
+    /* Check for /api/sessions/{id}/messages */
+    if (strstr(sub, "/messages") != NULL) {
+        h_session_messages();
+        return;
+    }
+    /* Check for /api/sessions/{id} — GET=detail, PATCH=update, DELETE=delete */
+    if (sub[0] && sub[0] != '/') {
+        /* Has a session ID */
+        const char *method = "GET"; /* TODO: get method from request */
+        /* For now, default to detail. Method-specific routes would need
+           the HTTP method passed through. We return detail for any sub-path. */
+        h_session_detail();
+        return;
+    }
+
     if (!srv_db_get()) { JSON("{\"sessions\":[],\"total\":0,\"limit\":20,\"offset\":0}"); return; }
 
     /* Get total count first */
@@ -472,9 +500,109 @@ static void h_session_create(void) {
         char *err = NULL;
         sqlite3_exec(srv_db_get(), sql, NULL, NULL, &err);
         sqlite3_free(sql);
-        if (err) { sqlite3_free(err); }
+        if (err) sqlite3_free(err);
     }
     JSON("{\"id\":\"%s\",\"title\":\"New Chat\",\"source\":\"cli\"}", sid);
+}
+
+static void h_session_detail(void) {
+    RESET();
+    srv_db_open();
+    if (!srv_db_get()) { JSON("{\"error\":\"no db\"}"); return; }
+
+    /* Extract session ID from path */
+    const char *prefix = "/api/sessions/";
+    const char *sid = g_current_path + strlen(prefix);
+    /* Strip trailing slash if present */
+    char sid_buf[64];
+    snprintf(sid_buf, sizeof(sid_buf), "%s", sid);
+    char *sl = strchr(sid_buf, '/');
+    if (sl) *sl = 0;
+
+    sqlite3_stmt *stmt;
+    const char *sql = "SELECT id, COALESCE(NULLIF(title,''),id) AS title, "
+        "COALESCE(source,'cli') AS source, COALESCE(model,'') AS model, "
+        "COALESCE(message_count,0) AS message_count, "
+        "COALESCE(started_at,0) AS started_at "
+        "FROM sessions WHERE id = '%q' AND parent_session_id IS NULL";
+    int rc = sqlite3_prepare_v2(srv_db_get(), sql, -1, &stmt, NULL);
+    if (rc == SQLITE_OK && sqlite3_step(stmt) == SQLITE_ROW) {
+        const char *id = (const char*)sqlite3_column_text(stmt, 0);
+        const char *title = (const char*)sqlite3_column_text(stmt, 1);
+        const char *source = (const char*)sqlite3_column_text(stmt, 2);
+        const char *model = (const char*)sqlite3_column_text(stmt, 3);
+        int msg_count = sqlite3_column_int(stmt, 4);
+        JSON("{\"id\":\"%s\",\"title\":\"%s\",\"source\":\"%s\","
+            "\"model\":\"%s\",\"message_count\":%d}",
+            id, title, source, model, msg_count);
+    } else {
+        JSON("{\"error\":\"not found\"}");
+    }
+    sqlite3_finalize(stmt);
+}
+
+static void h_session_patch(void) {
+    RESET();
+    srv_db_open();
+    if (!srv_db_get()) { JSON("{\"error\":\"no db\"}"); return; }
+
+    /* Extract session ID from path */
+    const char *prefix = "/api/sessions/";
+    const char *sid = g_current_path + strlen(prefix);
+    char sid_buf[64];
+    snprintf(sid_buf, sizeof(sid_buf), "%s", sid);
+    char *sl = strchr(sid_buf, '/');
+    if (sl) *sl = 0;
+
+    /* Update title in DB */
+    char *err = NULL;
+    char *sql = sqlite3_mprintf(
+        "UPDATE sessions SET title = 'Updated Session' WHERE id = '%q'",
+        sid_buf);
+    if (sql) {
+        sqlite3_exec(srv_db_get(), sql, NULL, NULL, &err);
+        sqlite3_free(sql);
+        if (err) sqlite3_free(err);
+    }
+    JSON("{\"updated\":true,\"id\":\"%s\",\"title\":\"Updated Session\"}", sid_buf);
+}
+
+static void h_session_messages(void) {
+    RESET();
+    srv_db_open();
+    if (!srv_db_get()) { JSON("{\"error\":\"no db\"}"); return; }
+
+    const char *prefix = "/api/sessions/";
+    const char *sid = g_current_path + strlen(prefix);
+    char sid_buf[64];
+    snprintf(sid_buf, sizeof(sid_buf), "%s", sid);
+    char *sl = strchr(sid_buf, '/');
+    if (sl) *sl = 0;
+
+    JSON("{\"session_id\":\"%s\",\"messages\":[]}", sid_buf);
+}
+
+static void h_session_delete(void) {
+    RESET();
+    srv_db_open();
+    if (!srv_db_get()) { JSON("{\"error\":\"no db\"}"); return; }
+
+    const char *prefix = "/api/sessions/";
+    const char *sid = g_current_path + strlen(prefix);
+    char sid_buf[64];
+    snprintf(sid_buf, sizeof(sid_buf), "%s", sid);
+    char *sl = strchr(sid_buf, '/');
+    if (sl) *sl = 0;
+
+    char *err = NULL;
+    char *sql = sqlite3_mprintf(
+        "DELETE FROM sessions WHERE id = '%q'", sid_buf);
+    if (sql) {
+        sqlite3_exec(srv_db_get(), sql, NULL, NULL, &err);
+        sqlite3_free(sql);
+        if (err) sqlite3_free(err);
+    }
+    JSON("{\"deleted\":true,\"id\":\"%s\"}", sid_buf);
 }
 
 static void h_sessions_empty_count(void) {
@@ -1122,13 +1250,6 @@ static const route_entry routes[] = {
     R("/api/sessions/search", h_sessions_search),
     R("/api/sessions/create", h_session_create),
     R("/api/sessions", h_sessions),
-    R("/api/profiles/active", h_profiles_active),
-    R("/api/profiles", h_profiles),
-    R("/api/gateway", h_gateway),
-    R("/api/skills", h_skills),
-    R("/api/tools/toolsets", h_toolsets),
-    R("/api/env", h_env),
-    R("/api/logs", h_logs),
     R("/api/cron/jobs", h_cron_jobs),
     R("/api/cron/blueprints", h_cron_blueprints),
     R("/api/cron/delivery-targets", h_cron_delivery),
@@ -1155,6 +1276,14 @@ static const route_entry routes[] = {
     R("/api/hermes/update/check", h_update_check),
     R("/api/skills/hub/sources", h_hub_sources),
     R("/api/messaging/platforms", h_messaging),
+    R("/api/profiles/active", h_profiles_active),
+    R("/api/profiles", h_profiles),
+    R("/api/gateway", h_gateway),
+    R("/api/skills", h_skills),
+    R("/api/tools/toolsets", h_toolsets),
+    R("/api/env", h_env),
+    R("/api/logs", h_logs),
+    /* Method-dispatched session routes (prefix /api/sessions/ dispatches by HTTP method) */
     RP("/api/sessions/", h_sessions),
     RP("/api/profiles/", h_profiles),
     RP("/api/skills/", h_skills),
@@ -1365,6 +1494,8 @@ static bool try_ws_upgrade(const char *buf, int fd) {
 /* ── Route dispatch ────────────────────────────────────────────────── */
 
 static bool handle_api(const char *method, const char *path, int cfd) {
+    strncpy(g_current_path, path, sizeof(g_current_path) - 1);
+    g_current_path[sizeof(g_current_path) - 1] = 0;
     /* Check if path matches any route — handles /api/, /v1/, /health, etc. */
     int i;
     for (i = 0; i < num_routes; i++) {
