@@ -16,6 +16,7 @@
 #include <errno.h>
 #include <time.h>
 #include "slermes_home.h"
+#include "skills_parser.h"
 #include "sqlite3.h"
 #include <sys/socket.h>
 #include <sys/stat.h>
@@ -960,25 +961,20 @@ static void h_gateway(void) {
 
 static void h_skills(void) {
     RESET();
-    const char *sh = slermes_home();
-    char path[512];
-    snprintf(path, sizeof(path), "%s/skills", sh);
-    JSON("[");
-    DIR *d = opendir(path);
-    int first = 1;
-    if (d) {
-        struct dirent *de;
-        while ((de = readdir(d))) {
-            if (de->d_name[0] == '.') continue;
-            if (!first) JSON(",");
-            first = 0;
-            JSON("\"");
-            json_escape_append(de->d_name);
-            JSON("\"");
-        }
-        closedir(d);
-    }
-    JSON("]");
+    char skills_json[65536];
+    int count = skills_get_json(skills_json, sizeof(skills_json));
+    /* Use the JSON buffer as-is since skills_get_json already built it */
+    int slen = (int)strlen(skills_json);
+    dprintf(g_client_fd,
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: application/json\r\n"
+        "Access-Control-Allow-Origin: *\r\n"
+        "Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE,OPTIONS\r\n"
+        "Access-Control-Allow-Headers: Content-Type,X-Hermes-Session-Token\r\n"
+        "Connection: close\r\n"
+        "Content-Length: %d\r\n"
+        "\r\n%s", slen, skills_json);
+    (void)count;
 }
 static void h_toolsets(void) {
     RESET();
