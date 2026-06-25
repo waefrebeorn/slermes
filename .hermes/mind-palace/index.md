@@ -103,7 +103,7 @@ The entire `apps/desktop/` directory. Every component, store, hook, lib, page, s
 | `app/command-palette/` | 3 | Command palette + pet palette + marketplace | ✅ Done (C equivalent) |
 | `app/command-center/` | 1 | Command center | ✅ Done (real-time gateway/session/skill/cron stats) |
 | `app/page-search-shell.tsx` | 1 | Page search | 🔲 REAL_GAP |
-| `app/session-picker-overlay.tsx` | 1 | Session picker | 🔲 REAL_GAP |
+| `app/session-picker-overlay.tsx` | 1 | Session picker | ✅ Done (Ctrl+O: searchable list, click/Enter to switch) |
 | `app/session-switcher.tsx` | 1 | Session switcher | 🔲 REAL_GAP |
 | `app/floating-hud.ts` | 1 | Floating HUD | 🔲 REAL_GAP |
 | `app/desktop-controller.tsx` | 1 | Desktop controller | 🔲 REAL_GAP |
