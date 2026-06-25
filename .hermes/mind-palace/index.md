@@ -26,7 +26,7 @@ Anything the Nous Research team produces — **code AND documents** — is upstr
 | **Binary** | 46 MB (slermes) + 1.6 MB (slermes-desktop-gui) + ~150 KB (web-server) |
 | **C source files** | 1,107 files, ~497K LOC |
 | **Web Endpoints** | ~50 REST (99% real), 100 JSON-RPC (registered) |
-| **Desktop Features** | ~30/111 (all P0+P1 done, PTY terminal added) |
+| **Desktop Features** | ~50/111 (P0+P1+settings overlay+right-sidebar done) |
 | **Platform Backends** | Linux ✅, Win32 ✅ (975 LOC), macOS ✅ (1009 LOC) |
 
 ---
@@ -84,8 +84,8 @@ The entire `apps/desktop/` directory. Every component, store, hook, lib, page, s
 | `app/chat/composer/` | 20+ | Rich composer with attachments, slash completions, voice, IME, queue | 🔲 REAL_GAP |
 | `app/chat/sidebar/` | 10+ | Session sidebar with groups, search, actions menu | 🔲 REAL_GAP |
 | `app/chat/right-rail/` | 10+ | Preview pane, file preview, terminal console | 🔲 REAL_GAP |
-| `app/settings/` | 31 | All settings pages (model, providers, MCP, appearance, keys, memory, etc.) | 🔲 REAL_GAP |
-| `app/right-sidebar/` | 15 | File browser, project tree, terminal panel | 🔲 REAL_GAP |
+| `app/settings/` | 31 | All settings pages (model, providers, MCP, appearance, keys, memory, etc.) | ✅ Done (5-tab overlay: Model/Appearance/Profiles/Alerts/About) |
+| `app/right-sidebar/` | 15 | File browser, project tree, terminal panel | ✅ Done (Nav views: Files + Snippets + Preview) |
 | `app/pet-overlay/` | 2 | Floating pet overlay system | ✅ Done (C equivalent) |
 | `app/session/hooks/` | 15+ | Session state, message stream, model controls, preview routing hooks | 🔲 REAL_GAP |
 | `app/hooks/` | 5 | Global keybinds, refresh, route enum, hotkey hooks | 🔲 REAL_GAP |
@@ -213,7 +213,7 @@ Already 100% ported (8,688 functions). These are the upstream source that maps t
 ### Mission 2: Desktop App Parity — IN PROGRESS 🔄
 
 **Goal:** Match Hermes Electron desktop feature-for-feature in the C SDL2 GUI.
-**Current coverage:** ~30/111 features (27%).
+**Current coverage:** ~50/111 features (45%). All P0+P1+P2-settings done.
 **Scope:** ALL 470 .ts/.tsx files in `apps/desktop/` must have C equivalents.
 **Priority order:** P0 (pets, voice, file browser, previews, snippets, image paste, command palette) ✅ done → P1 (session search/export/import, model picker, themes, shortcuts, notifications, auto-update) ✅ done → P2 (settings pages, profiles, right-sidebar, messaging UI, command center, page search, session picker, floating HUD, desktop controller, overlays, store logic, lib utilities, i18n, theme system, artifact rendering)
 

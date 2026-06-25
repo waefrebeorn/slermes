@@ -284,6 +284,9 @@ typedef struct {
     char        image_paste_data[1048576]; /* base64 or raw */
     int         image_paste_data_len;
     bool        image_paste_is_base64;
+
+    /* Settings / config */
+    bool        yolo_active;
 } app_state_t;
 
 static app_state_t app;
@@ -1973,6 +1976,429 @@ static void draw_notification_panel(void) {
 }
 
 /* ══════════════════════════════════════════════════════════════════════
+ *  Settings Overlay (P2 Feature)
+ * ══════════════════════════════════════════════════════════════════════ */
+#define SETTINGS_TAB_MODEL      0
+#define SETTINGS_TAB_APPEARANCE 1
+#define SETTINGS_TAB_PROFILES   2
+#define SETTINGS_TAB_NOTIFICATIONS 3
+#define SETTINGS_TAB_ABOUT      4
+#define SETTINGS_TAB_COUNT      5
+
+static const char *settings_tab_names[] = {"Model", "Appearance", "Profiles", "Alerts", "About"};
+
+typedef struct {
+    char label[128];
+    char value[256];
+    char key[128];
+    int  type; /* 0=text, 1=bool, 2=select */
+    bool changed;
+} settings_field_t;
+
+static struct {
+    bool visible;
+    int  active_tab;
+    int  scroll;
+    int  field_count;
+    int  field_hover;
+    int  field_sel;
+    settings_field_t fields[32];
+    char profile_name_buf[64];
+    int  profile_name_len;
+    bool creating_profile;
+    int  selected_theme; /* 0=system, 1=dark, 2=light */
+} settings;
+
+static void settings_init(void) {
+    memset(&settings, 0, sizeof(settings));
+    settings.active_tab = 0;
+    settings.selected_theme = app.dark_mode ? 1 : 2;
+}
+
+static void settings_load_fields(void) {
+    settings.field_count = 0;
+    settings.field_hover = -1;
+    settings.field_sel = -1;
+
+    switch (settings.active_tab) {
+    case SETTINGS_TAB_MODEL: {
+        settings_field_t *f = &settings.fields[settings.field_count++];
+        snprintf(f->label, sizeof(f->label), "Active Model");
+        snprintf(f->value, sizeof(f->value), "%s", app.latest_model);
+        snprintf(f->key, sizeof(f->key), "model");
+        f->type = 0;
+        f = &settings.fields[settings.field_count++];
+        snprintf(f->label, sizeof(f->label), "Context Window");
+        snprintf(f->value, sizeof(f->value), "128000");
+        snprintf(f->key, sizeof(f->key), "context_length");
+        f->type = 0;
+        f = &settings.fields[settings.field_count++];
+        snprintf(f->label, sizeof(f->label), "Max Output Tokens");
+        snprintf(f->value, sizeof(f->value), "8192");
+        snprintf(f->key, sizeof(f->key), "max_output");
+        f->type = 0;
+        f = &settings.fields[settings.field_count++];
+        snprintf(f->label, sizeof(f->label), "Max Agent Steps");
+        snprintf(f->value, sizeof(f->value), "10");
+        snprintf(f->key, sizeof(f->key), "max_turns");
+        f->type = 0;
+        f = &settings.fields[settings.field_count++];
+        snprintf(f->label, sizeof(f->label), "Yolo Mode (skip approvals)");
+        snprintf(f->value, sizeof(f->value), app.yolo_active ? "Enabled" : "Disabled");
+        snprintf(f->key, sizeof(f->key), "yolo_mode");
+        f->type = 1;
+        break;
+    }
+    case SETTINGS_TAB_APPEARANCE: {
+        settings_field_t *f = &settings.fields[settings.field_count++];
+        snprintf(f->label, sizeof(f->label), "Theme");
+        const char *thm[] = {"System", "Dark", "Light"};
+        snprintf(f->value, sizeof(f->value), "%s", thm[settings.selected_theme]);
+        snprintf(f->key, sizeof(f->key), "theme");
+        f->type = 2;
+        f = &settings.fields[settings.field_count++];
+        snprintf(f->label, sizeof(f->label), "Font Size");
+        snprintf(f->value, sizeof(f->value), "14");
+        snprintf(f->key, sizeof(f->key), "font_size");
+        f->type = 0;
+        f = &settings.fields[settings.field_count++];
+        snprintf(f->label, sizeof(f->label), "Sidebar Width");
+        snprintf(f->value, sizeof(f->value), "%d px", SIDEBAR_W);
+        snprintf(f->key, sizeof(f->key), "sidebar_width");
+        f->type = 0;
+        f = &settings.fields[settings.field_count++];
+        snprintf(f->label, sizeof(f->label), "Personality");
+        snprintf(f->value, sizeof(f->value), "helpful");
+        snprintf(f->key, sizeof(f->key), "personality");
+        f->type = 0;
+        break;
+    }
+    case SETTINGS_TAB_PROFILES: {
+        for (int i = 0; i < app.profile_count; i++) {
+            settings_field_t *f = &settings.fields[settings.field_count++];
+            snprintf(f->label, sizeof(f->label), "%s", app.profile_names[i]);
+            snprintf(f->value, sizeof(f->value), "%s", i == 0 ? "active" : "");
+            snprintf(f->key, sizeof(f->key), "profile_%d", i);
+            f->type = 0;
+        }
+        if (settings.field_count < 31) {
+            settings_field_t *f = &settings.fields[settings.field_count++];
+            snprintf(f->label, sizeof(f->label), "+ New Profile");
+            snprintf(f->value, sizeof(f->value), "");
+            snprintf(f->key, sizeof(f->key), "profile_new");
+            f->type = 0;
+        }
+        break;
+    }
+    case SETTINGS_TAB_NOTIFICATIONS: {
+        settings_field_t *f = &settings.fields[settings.field_count++];
+        snprintf(f->label, sizeof(f->label), "Show Notifications");
+        snprintf(f->value, sizeof(f->value), "Enabled");
+        snprintf(f->key, sizeof(f->key), "notifications_enabled");
+        f->type = 1;
+        f = &settings.fields[settings.field_count++];
+        snprintf(f->label, sizeof(f->label), "Notification Duration (sec)");
+        snprintf(f->value, sizeof(f->value), "5");
+        snprintf(f->key, sizeof(f->key), "notif_duration");
+        f->type = 0;
+        f = &settings.fields[settings.field_count++];
+        snprintf(f->label, sizeof(f->label), "Sound");
+        snprintf(f->value, sizeof(f->value), "System");
+        snprintf(f->key, sizeof(f->key), "notif_sound");
+        f->type = 0;
+        break;
+    }
+    case SETTINGS_TAB_ABOUT: {
+        settings_field_t *f = &settings.fields[settings.field_count++];
+        snprintf(f->label, sizeof(f->label), "Version");
+        snprintf(f->value, sizeof(f->value), "v480-slermes");
+        snprintf(f->key, sizeof(f->key), "version");
+        f->type = 0;
+        f = &settings.fields[settings.field_count++];
+        snprintf(f->label, sizeof(f->label), "Implementation");
+        snprintf(f->value, sizeof(f->value), "C11 SDL2");
+        snprintf(f->key, sizeof(f->key), "impl");
+        f->type = 0;
+        f = &settings.fields[settings.field_count++];
+        snprintf(f->label, sizeof(f->label), "Ported Functions");
+        snprintf(f->value, sizeof(f->value), "8,688 / 8,688 (100%)");
+        snprintf(f->key, sizeof(f->key), "ported");
+        f->type = 0;
+        f = &settings.fields[settings.field_count++];
+        snprintf(f->label, sizeof(f->label), "Desktop Features");
+        snprintf(f->value, sizeof(f->value), "~50 / 111");
+        snprintf(f->key, sizeof(f->key), "features");
+        f->type = 0;
+        f = &settings.fields[settings.field_count++];
+        snprintf(f->label, sizeof(f->label), "C Source LOC");
+        snprintf(f->value, sizeof(f->value), "~497K");
+        snprintf(f->key, sizeof(f->key), "loc");
+        f->type = 0;
+        break;
+    }
+    }
+}
+
+static void draw_settings_overlay(void) {
+    if (!settings.visible) return;
+    int w = win_w(), h = win_h();
+    int ow = 600, oh = 500;
+    int ox = (w - ow) / 2, oy = (h - oh) / 2;
+    if (ox < 0) ox = 0;
+    if (oy < 0) oy = 0;
+    if (ow > w) ow = w;
+    if (oh > h) oh = h;
+
+    gc_theme_t *t = &app.theme;
+    gc_rect_t bg = {ox, oy, ow, oh};
+    gc_fill_rect(app.win, bg, GC_RGBA(0, 0, 0, 240));
+    gc_fill_round_rect(app.win, bg, 12, t->bg_secondary);
+    gc_draw_rect(app.win, bg, 1, t->border);
+
+    gc_font_t *font = gc_get_font(app.win);
+    gc_font_t *font_small = gc_get_font_small(app.win);
+    int fh = gc_font_height(font);
+    gc_draw_text(app.win, font, "Settings", ox + 16, oy + 12, t->text);
+
+    gc_rect_t close_btn = {ox + ow - 36, oy + 8, 28, 22};
+    gc_fill_round_rect(app.win, close_btn, 4, t->bg_card);
+    gc_draw_text(app.win, font, "×", close_btn.x + 8, close_btn.y + 2, t->text_dim);
+
+    int tab_y = oy + 12 + fh + 12;
+    int tab_x = ox + 16;
+    int tab_w = (ow - 32) / SETTINGS_TAB_COUNT;
+    for (int i = 0; i < SETTINGS_TAB_COUNT; i++) {
+        bool active = (settings.active_tab == i);
+        bool hover = (settings.field_hover == -2 - i);
+        gc_rect_t tab = {tab_x + i * tab_w, tab_y, tab_w - 4, 24};
+        if (active) {
+            gc_fill_round_rect(app.win, tab, 4, t->accent);
+            gc_draw_text(app.win, font_small, settings_tab_names[i], tab.x + 4, tab.y + 4, t->bg);
+        } else if (hover) {
+            gc_fill_round_rect(app.win, tab, 4, t->bg_card);
+            gc_draw_text(app.win, font_small, settings_tab_names[i], tab.x + 4, tab.y + 4, t->text);
+        } else {
+            gc_draw_text(app.win, font_small, settings_tab_names[i], tab.x + 4, tab.y + 4, t->text_dim);
+        }
+    }
+
+    gc_fill_rect(app.win, gc_rect(ox + 12, tab_y + 30, ow - 24, 1), t->border_subtle);
+
+    int content_y = tab_y + 38;
+    int content_h = oh - (content_y - oy) - 28;
+    int fh_small = gc_font_height(font_small);
+
+    int field_idx = 0;
+    for (int si = 0; si < settings.field_count; si++) {
+        settings_field_t *f = &settings.fields[si];
+        int fy = content_y + (field_idx - settings.scroll) * (fh_small + 24);
+        field_idx++;
+        if (fy < content_y - fh_small) continue;
+        if (fy + fh_small > content_y + content_h) continue;
+
+        bool fhov = (settings.field_hover == si);
+        if (fhov) {
+            gc_fill_rect(app.win, gc_rect(ox + 16, fy - 2, ow - 32, fh_small + 20), t->bg_card);
+        }
+
+        gc_draw_text(app.win, font_small, f->label, ox + 24, fy + 4, t->text);
+
+        int val_x = ox + ow / 2;
+        switch (f->type) {
+        case 0:
+            gc_draw_text(app.win, font_small, f->value, val_x, fy + 4, t->text_secondary);
+            break;
+        case 1: {
+            int tog_w = 40, tog_h = 18;
+            int tog_x = ox + ow - 24 - tog_w;
+            int tog_y = fy + 1;
+            bool is_on = (strcmp(f->value, "Enabled") == 0);
+            gc_color_t bg = is_on ? t->accent : t->bg_card;
+            gc_fill_round_rect(app.win, gc_rect(tog_x, tog_y, tog_w, tog_h), tog_h/2, bg);
+            gc_color_t knob = is_on ? t->text : t->text_dim;
+            int knob_x = is_on ? tog_x + tog_w - tog_h + 2 : tog_x + 2;
+            gc_fill_rect(app.win, gc_rect(knob_x, tog_y + 2, tog_h - 4, tog_h - 4), knob);
+            gc_draw_text(app.win, gc_get_font_mono(app.win), is_on ? "ON" : "OFF", tog_x - 36, fy + 4, t->text_dim);
+            break;
+        }
+        case 2:
+            gc_draw_text(app.win, font_small, f->value, val_x, fy + 4, t->accent);
+            gc_draw_text(app.win, gc_get_font_mono(app.win), "▶", ox + ow - 24 - 16, fy + 4, t->text_dim);
+            break;
+        }
+    }
+
+    gc_draw_text(app.win, gc_get_font_mono(app.win), "↑↓:nav  Space:toggle  Tab:switch  Esc:close",
+                 ox + 16, oy + oh - 20, t->text_dim);
+    (void)content_h;
+}
+
+static void settings_handle_input(gc_event_t *ev) {
+    if (!settings.visible) return;
+
+    if (ev->type == GC_EV_KEY_DOWN) {
+        if (ev->key == SDLK_ESCAPE) {
+            settings.visible = false;
+            return;
+        }
+        if (ev->key == SDLK_TAB) {
+            if (ev->mod & KMOD_SHIFT)
+                settings.active_tab = (settings.active_tab - 1 + SETTINGS_TAB_COUNT) % SETTINGS_TAB_COUNT;
+            else
+                settings.active_tab = (settings.active_tab + 1) % SETTINGS_TAB_COUNT;
+            settings_load_fields();
+            return;
+        }
+        if (ev->key == SDLK_UP) {
+            if (settings.field_sel > 0) settings.field_sel--;
+            else if (settings.field_sel == 0 && settings.scroll > 0) settings.scroll--;
+            return;
+        }
+        if (ev->key == SDLK_DOWN) {
+            if (settings.field_sel < settings.field_count - 1) {
+                settings.field_sel++;
+                int fh_small = gc_font_height(gc_get_font_small(app.win));
+                int visible_lines = 220 / (fh_small + 24);
+                if (settings.field_sel >= settings.scroll + visible_lines - 1)
+                    settings.scroll = settings.field_sel - visible_lines + 1;
+            }
+            return;
+        }
+        if (ev->key == SDLK_RETURN || ev->key == ' ') {
+            if (settings.field_sel >= 0 && settings.field_sel < settings.field_count) {
+                settings_field_t *f = &settings.fields[settings.field_sel];
+                if (f->type == 1) {
+                    if (strcmp(f->value, "Enabled") == 0)
+                        snprintf(f->value, sizeof(f->value), "Disabled");
+                    else
+                        snprintf(f->value, sizeof(f->value), "Enabled");
+                    f->changed = true;
+                    if (strcmp(f->key, "yolo_mode") == 0)
+                        app.yolo_active = (strcmp(f->value, "Enabled") == 0);
+                } else if (f->type == 2) {
+                    if (strcmp(f->key, "theme") == 0) {
+                        settings.selected_theme = (settings.selected_theme + 1) % 3;
+                        const char *thm[] = {"System", "Dark", "Light"};
+                        snprintf(f->value, sizeof(f->value), "%s", thm[settings.selected_theme]);
+                        f->changed = true;
+                        app.dark_mode = (settings.selected_theme == 1);
+                        gc_set_theme(app.win, app.dark_mode ? &gc_theme_dark : &gc_theme_light);
+                        app.theme = gc_get_theme(app.win);
+                    }
+                } else if (f->type == 0 && strcmp(f->key, "profile_new") == 0) {
+                    if (app.profile_count < MAX_ITEMS - 1) {
+                        snprintf(app.profile_names[app.profile_count], sizeof(app.profile_names[0]),
+                                 "Profile %d", app.profile_count + 1);
+                        app.profile_count++;
+                        settings_load_fields();
+                        snprintf(app.toast_msg, sizeof(app.toast_msg), "New profile created");
+                        app.toast_time = 60;
+                    }
+                }
+            }
+            return;
+        }
+    }
+
+    if (ev->type == GC_EV_MOUSE_DOWN) {
+        int w = win_w(), h = win_h();
+        int ow = 600, oh = 500;
+        int ox = (w - ow) / 2, oy = (h - oh) / 2;
+        if (ox < 0) ox = 0;
+        if (oy < 0) oy = 0;
+        if (ow > w) ow = w;
+        if (oh > h) oh = h;
+
+        gc_rect_t close_btn = {ox + ow - 36, oy + 8, 28, 22};
+        if (ev->x >= close_btn.x && ev->x < close_btn.x + close_btn.w &&
+            ev->y >= close_btn.y && ev->y < close_btn.y + close_btn.h) {
+            settings.visible = false;
+            return;
+        }
+
+        int tab_y = oy + 12 + gc_font_height(gc_get_font(app.win)) + 12;
+        int tab_x = ox + 16;
+        int tab_w = (ow - 32) / SETTINGS_TAB_COUNT;
+        if (ev->y >= tab_y && ev->y < tab_y + 24) {
+            for (int i = 0; i < SETTINGS_TAB_COUNT; i++) {
+                if (ev->x >= tab_x + i * tab_w && ev->x < tab_x + (i + 1) * tab_w - 4) {
+                    settings.active_tab = i;
+                    settings_load_fields();
+                    return;
+                }
+            }
+        }
+
+        int content_y = tab_y + 38;
+        int fh_small = gc_font_height(gc_get_font_small(app.win));
+        for (int si = 0; si < settings.field_count; si++) {
+            int fy = content_y + (si - settings.scroll) * (fh_small + 24);
+            if (fy < content_y - fh_small) continue;
+            if (fy + fh_small > content_y + oh - 180) continue;
+            if (ev->x >= ox + 16 && ev->x < ox + ow - 16 &&
+                ev->y >= fy - 2 && ev->y < fy + fh_small + 20) {
+                settings.field_sel = si;
+                settings_field_t *f = &settings.fields[si];
+                if (f->type == 1) {
+                    if (strcmp(f->value, "Enabled") == 0)
+                        snprintf(f->value, sizeof(f->value), "Disabled");
+                    else
+                        snprintf(f->value, sizeof(f->value), "Enabled");
+                    f->changed = true;
+                    if (strcmp(f->key, "yolo_mode") == 0)
+                        app.yolo_active = (strcmp(f->value, "Enabled") == 0);
+                } else if (f->type == 2 && strcmp(f->key, "theme") == 0) {
+                    settings.selected_theme = (settings.selected_theme + 1) % 3;
+                    const char *thm[] = {"System", "Dark", "Light"};
+                    snprintf(f->value, sizeof(f->value), "%s", thm[settings.selected_theme]);
+                    app.dark_mode = (settings.selected_theme == 1);
+                    gc_set_theme(app.win, app.dark_mode ? &gc_theme_dark : &gc_theme_light);
+                    app.theme = gc_get_theme(app.win);
+                }
+                return;
+            }
+        }
+    }
+
+    if (ev->type == GC_EV_MOUSE_MOVE) {
+        int w = win_w(), h = win_h();
+        int ow = 600, oh = 500;
+        int ox = (w - ow) / 2, oy = (h - oh) / 2;
+        if (ox < 0) ox = 0;
+        if (oy < 0) oy = 0;
+        if (ow > w) ow = w;
+        if (oh > h) oh = h;
+
+        settings.field_hover = -1;
+
+        int tab_y = oy + 12 + gc_font_height(gc_get_font(app.win)) + 12;
+        int tab_x = ox + 16;
+        int tab_w = (ow - 32) / SETTINGS_TAB_COUNT;
+        if (ev->y >= tab_y && ev->y < tab_y + 24) {
+            for (int i = 0; i < SETTINGS_TAB_COUNT; i++) {
+                if (ev->x >= tab_x + i * tab_w && ev->x < tab_x + (i + 1) * tab_w - 4) {
+                    settings.field_hover = -2 - i;
+                    break;
+                }
+            }
+        }
+
+        int content_y = tab_y + 38;
+        int fh_small = gc_font_height(gc_get_font_small(app.win));
+        for (int si = 0; si < settings.field_count; si++) {
+            int fy = content_y + (si - settings.scroll) * (fh_small + 24);
+            if (fy < content_y - fh_small) continue;
+            if (fy + fh_small > content_y + oh - 180) continue;
+            if (ev->x >= ox + 16 && ev->x < ox + ow - 16 &&
+                ev->y >= fy - 2 && ev->y < fy + fh_small + 20) {
+                settings.field_hover = si;
+                break;
+            }
+        }
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
  *  Main
  * ══════════════════════════════════════════════════════════════════════ */
 int main(int argc, char **argv) {
@@ -2078,6 +2504,9 @@ int main(int argc, char **argv) {
     app.toast_msg[0] = 0;
     app.toast_time = 0;
 
+    /* Settings overlay init */
+    settings_init();
+
     /* Auto-update check on startup */
     {
         FILE *uf = fopen("/tmp/slermes-last-update-check", "r");
@@ -2113,6 +2542,11 @@ int main(int argc, char **argv) {
             switch (ev.type) {
             case GC_EV_QUIT: app.running = false; break;
             case GC_EV_KEY_DOWN:
+                /* Settings overlay input first — when visible, consume all key events */
+                if (settings.visible) {
+                    settings_handle_input(&ev);
+                    break;
+                }
                 /* Command palette: Ctrl+K or Cmd+K */
                 if (ev.key == SDLK_k && (ev.mod & (KMOD_CTRL | KMOD_GUI))) {
                     app.show_command_palette = !app.show_command_palette;
@@ -2129,6 +2563,15 @@ int main(int argc, char **argv) {
                 /* Pet gallery: Ctrl+P */
                 if (ev.key == SDLK_p && (ev.mod & KMOD_CTRL) && !(ev.mod & KMOD_SHIFT)) {
                     app.pet_show_gallery = !app.pet_show_gallery;
+                    break;
+                }
+                /* Settings overlay: Ctrl+, (comma) or Ctrl+Escape-override */
+                if (ev.key == SDLK_s && (ev.mod & (KMOD_CTRL | KMOD_SHIFT))) {
+                    settings.visible = !settings.visible;
+                    if (settings.visible) {
+                        settings_init();
+                        settings_load_fields();
+                    }
                     break;
                 }
                 /* Side-by-side preview: Ctrl+Shift+P */
@@ -2335,6 +2778,11 @@ int main(int argc, char **argv) {
                 break;
             }
             case GC_EV_MOUSE_MOVE: {
+                /* Settings overlay mouse move */
+                if (settings.visible) {
+                    settings_handle_input(&ev);
+                    break;
+                }
                 int sw = sidebar_w();
                 app.mouse_in_sidebar = (ev.x < sw);
                 app.mouse_in_chat = (ev.x >= sw);
@@ -2413,6 +2861,11 @@ int main(int argc, char **argv) {
             }
             case GC_EV_MOUSE_DOWN:
             case GC_EV_MOUSE_UP: {
+                /* Settings overlay mouse input — consume when visible */
+                if (settings.visible) {
+                    settings_handle_input(&ev);
+                    break;
+                }
                 /* Preview panel close button */
                 if (app.show_preview && ev.type == GC_EV_MOUSE_DOWN) {
                     int w = win_w(), h = win_h();
@@ -2673,6 +3126,7 @@ int main(int argc, char **argv) {
         draw_image_paste_overlay();
         draw_preview_panel();
         draw_notification_panel();
+        draw_settings_overlay();
         draw_toast();
         gc_end_frame(app.win);
 
