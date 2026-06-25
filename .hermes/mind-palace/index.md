@@ -105,7 +105,7 @@ The entire `apps/desktop/` directory. Every component, store, hook, lib, page, s
 | `app/page-search-shell.tsx` | 1 | Page search | 🔲 REAL_GAP |
 | `app/session-picker-overlay.tsx` | 1 | Session picker | ✅ Done (Ctrl+O: searchable list, click/Enter to switch) |
 | `app/session-switcher.tsx` | 1 | Session switcher | ✅ Done (Ctrl+Tab: HUD with 1-9 hotkeys) |
-| `app/floating-hud.ts` | 1 | Floating HUD | 🔲 REAL_GAP |
+| `app/floating-hud.ts` | 1 | Floating HUD | ✅ Done (top-right status panel, auto-expiring items) |
 | `app/desktop-controller.tsx` | 1 | Desktop controller | 🔲 REAL_GAP |
 | `app/updates-overlay.tsx` | 1 | Updates overlay | ✅ Done (C equivalent) |
 | `app/messaging/` | 2 | Messaging platform icons/index | 🔲 REAL_GAP |
