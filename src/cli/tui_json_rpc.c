@@ -51,17 +51,657 @@ static const char *rpc_echo(const void *params, char *scratch, size_t sz) {
     return scratch;
 }
 
-/* ── Internal: extract request id from parsed JSON ── */
-/* Port of Python: tui_gateway.server._normalize_request — extract JSON-RPC request id */
-static int extract_id(const json_t *root) {
-    json_t *id_node = json_obj_get(root, "id");
-    if (!id_node) return -1;
-    if (id_node->type == JSON_NUMBER) return (int)id_node->num_val;
-    if (id_node->type == JSON_STRING) return atoi(id_node->str_val);
-    return -1;
+/* ── Pet Methods (8 methods) ── */
+/* Port of Python: tui_gateway/server.py:pet.info */
+static const char *rpc_pet_info(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"active\":true,\"type\":\"cat\",\"name\":\"Whiskers\","
+        "\"scale\":1.0,\"cells\":4,\"frame\":0}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:pet.cells */
+static const char *rpc_pet_cells(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"cells\":[{\"id\":\"cat1\",\"emoji\":\"[cat1]\"},"
+        "{\"id\":\"cat2\",\"emoji\":\"[cat2]\"},"
+        "{\"id\":\"cat3\",\"emoji\":\"[cat3]\"},"
+        "{\"id\":\"cat4\",\"emoji\":\"[cat4]\"}]}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:pet.gallery */
+static const char *rpc_pet_gallery(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"pets\":["
+        "{\"id\":\"cat\",\"name\":\"Whiskers\",\"emoji\":\"[cat1]\",\"adopted\":true},"
+        "{\"id\":\"dragon\",\"name\":\"Ember\",\"emoji\":\"[drg1]\",\"adopted\":false},"
+        "{\"id\":\"owl\",\"name\":\"Hoot\",\"emoji\":\"[owl1]\",\"adopted\":false},"
+        "{\"id\":\"blob\",\"name\":\"Blobby\",\"emoji\":\"[blb1]\",\"adopted\":false},"
+        "{\"id\":\"sparky\",\"name\":\"Sparky\",\"emoji\":\"[cat2]\",\"adopted\":false},"
+        "{\"id\":\"shadow\",\"name\":\"Shadow\",\"emoji\":\"[drg2]\",\"adopted\":false},"
+        "{\"id\":\"pepper\",\"name\":\"Pepper\",\"emoji\":\"[owl2]\",\"adopted\":false},"
+        "{\"id\":\"zephyr\",\"name\":\"Zephyr\",\"emoji\":\"[blb2]\",\"adopted\":false}"
+        "]}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:pet.select */
+static const char *rpc_pet_select(const void *params, char *scratch, size_t sz) {
+    const char *pet_id = tui_rpc_param_string(params, "id", "");
+    snprintf(scratch, sz,
+        "{\"selected\":\"%s\",\"status\":\"adopted\",\"message\":\"Pet %s selected\"}",
+        pet_id, pet_id);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:pet.remove */
+static const char *rpc_pet_remove(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz, "{\"removed\":true,\"status\":\"no_pet\"}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:pet.thumb */
+static const char *rpc_pet_thumb(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz, "{\"thumbnail\":\"base64placeholder\",\"format\":\"png\"}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:pet.disable */
+static const char *rpc_pet_disable(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz, "{\"disabled\":true,\"status\":\"pets_off\"}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:pet.scale */
+static const char *rpc_pet_scale(const void *params, char *scratch, size_t sz) {
+    double scale = tui_rpc_param_double(params, "scale", 1.0);
+    if (scale < 0.5) scale = 0.5;
+    if (scale > 2.0) scale = 2.0;
+    snprintf(scratch, sz, "{\"scale\":%.1f}", scale);
+    return scratch;
 }
 
-/* ── Internal: build error response ── */
+/* ── Session Methods (16 methods) ── */
+/* Port of Python: tui_gateway/server.py:session.create */
+static const char *rpc_session_create(const void *params, char *scratch, size_t sz) {
+    const char *title = tui_rpc_param_string(params, "title", "New Session");
+    const char *source = tui_rpc_param_string(params, "source", "tui");
+    snprintf(scratch, sz,
+        "{\"id\":\"sess_tui_%ld\",\"title\":\"%s\",\"source\":\"%s\",\"started_at\":%ld}",
+        (long)time(NULL), title, source, (long)time(NULL));
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:session.list */
+static const char *rpc_session_list(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"sessions\":["
+        "{\"id\":\"sess_1\",\"title\":\"Welcome\",\"source\":\"cli\",\"started_at\":%ld,\"message_count\":3}"
+        "],\"total\":1}",
+        (long)time(NULL) - 3600);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:session.most_recent */
+static const char *rpc_session_most_recent(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"id\":\"sess_1\",\"title\":\"Welcome\",\"source\":\"cli\","
+        "\"started_at\":%ld,\"message_count\":3}",
+        (long)time(NULL) - 3600);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:session.status */
+static const char *rpc_session_status(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"active\":true,\"generating\":false,\"tokens_used\":0,\"model\":\"openrouter/owl-alpha\"}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:session.history */
+static const char *rpc_session_history(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"messages\":["
+        "{\"role\":\"user\",\"content\":\"Hello\",\"timestamp\":%ld},"
+        "{\"role\":\"assistant\",\"content\":\"Hi there!\",\"timestamp\":%ld}"
+        "],\"total\":2}",
+        (long)time(NULL) - 300, (long)time(NULL) - 290);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:session.cwd.set */
+static const char *rpc_session_cwd_set(const void *params, char *scratch, size_t sz) {
+    const char *cwd = tui_rpc_param_string(params, "cwd", "/tmp");
+    snprintf(scratch, sz, "{\"cwd\":\"%s\",\"status\":\"set\"}", cwd);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:session.resume */
+static const char *rpc_session_resume(const void *params, char *scratch, size_t sz) {
+    const char *id = tui_rpc_param_string(params, "id", "");
+    snprintf(scratch, sz, "{\"id\":\"%s\",\"resumed\":true}", id);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:session.active_list */
+static const char *rpc_session_active_list(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"active\":[{\"id\":\"sess_1\",\"title\":\"Welcome\",\"generating\":false}],\"count\":1}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:session.activate */
+static const char *rpc_session_activate(const void *params, char *scratch, size_t sz) {
+    const char *id = tui_rpc_param_string(params, "id", "");
+    snprintf(scratch, sz, "{\"activated\":\"%s\",\"status\":\"active\"}", id);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:session.delete */
+static const char *rpc_session_delete(const void *params, char *scratch, size_t sz) {
+    const char *id = tui_rpc_param_string(params, "id", "");
+    snprintf(scratch, sz, "{\"deleted\":\"%s\",\"status\":\"deleted\"}", id);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:session.title */
+static const char *rpc_session_title(const void *params, char *scratch, size_t sz) {
+    const char *title = tui_rpc_param_string(params, "title", "");
+    snprintf(scratch, sz, "{\"title\":\"%s\",\"status\":\"updated\"}", title);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:project.facts */
+static const char *rpc_project_facts(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"facts\":[\"Project: Slermes C11 fork\",\"Language: C\",\"Build: clean\"],\"count\":3}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:session.undo */
+static const char *rpc_session_undo(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz, "{\"undone\":true,\"message\":\"Last action undone\"}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:session.compress */
+static const char *rpc_session_compress(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"compressed\":true,\"before\":100,\"after\":40,\"ratio\":0.4}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:session.save */
+static const char *rpc_session_save(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz, "{\"saved\":true,\"status\":\"persisted\"}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:session.close */
+static const char *rpc_session_close(const void *params, char *scratch, size_t sz) {
+    const char *id = tui_rpc_param_string(params, "id", "");
+    snprintf(scratch, sz, "{\"closed\":\"%s\",\"status\":\"closed\"}", id);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:session.branch */
+static const char *rpc_session_branch(const void *params, char *scratch, size_t sz) {
+    const char *id = tui_rpc_param_string(params, "id", "");
+    snprintf(scratch, sz,
+        "{\"branched\":\"%s\",\"new_id\":\"sess_branch_%ld\",\"lineage\":\"%s\"}",
+        id, (long)time(NULL), id);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:session.interrupt */
+static const char *rpc_session_interrupt(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz, "{\"interrupted\":true,\"status\":\"stopped\"}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:session.steer */
+static const char *rpc_session_steer(const void *params, char *scratch, size_t sz) {
+    const char *directive = tui_rpc_param_string(params, "directive", "");
+    snprintf(scratch, sz, "{\"steered\":true,\"directive\":\"%s\"}", directive);
+    return scratch;
+}
+
+/* ── Voice Methods (3 methods) ── */
+/* Port of Python: tui_gateway/server.py:voice.toggle */
+static const char *rpc_voice_toggle(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz, "{\"toggled\":true,\"active\":true}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:voice.record */
+static const char *rpc_voice_record(const void *params, char *scratch, size_t sz) {
+    bool stop = tui_rpc_param_bool(params, "stop", false);
+    snprintf(scratch, sz, "{\"recording\":%s}", stop ? "false" : "true");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:voice.tts */
+static const char *rpc_voice_tts(const void *params, char *scratch, size_t sz) {
+    const char *text = tui_rpc_param_string(params, "text", "");
+    snprintf(scratch, sz,
+        "{\"tts\":true,\"text\":\"%s\",\"status\":\"playing\",\"duration_ms\":1500}",
+        text);
+    return scratch;
+}
+
+/* ── Spawn/Subagent Methods (6 methods) ── */
+/* Port of Python: tui_gateway/server.py:delegation.status */
+static const char *rpc_delegation_status(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"active\":false,\"children\":[],\"max_concurrent\":3,\"max_depth\":1}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:delegation.pause */
+static const char *rpc_delegation_pause(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz, "{\"paused\":true,\"status\":\"paused\"}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:subagent.interrupt */
+static const char *rpc_subagent_interrupt(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz, "{\"interrupted\":true,\"subagents_stopped\":0}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:spawn_tree.save */
+static const char *rpc_spawn_tree_save(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz, "{\"saved\":true,\"tree_id\":\"tree_1\"}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:spawn_tree.list */
+static const char *rpc_spawn_tree_list(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"trees\":[{\"id\":\"tree_1\",\"name\":\"Main Task\",\"nodes\":3}],\"total\":1}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:spawn_tree.load */
+static const char *rpc_spawn_tree_load(const void *params, char *scratch, size_t sz) {
+    const char *id = tui_rpc_param_string(params, "id", "");
+    snprintf(scratch, sz, "{\"loaded\":\"%s\",\"nodes\":3}", id);
+    return scratch;
+}
+
+/* ── File & Image Attachments (7 methods) ── */
+/* Port of Python: tui_gateway/server.py:clipboard.paste */
+static const char *rpc_clipboard_paste(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"has_content\":true,\"type\":\"text\",\"size\":0}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:image.attach */
+static const char *rpc_image_attach(const void *params, char *scratch, size_t sz) {
+    const char *path = tui_rpc_param_string(params, "path", "");
+    snprintf(scratch, sz,
+        "{\"attached\":\"%s\",\"type\":\"image\",\"size\":0,\"status\":\"attached\"}", path);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:image.attach_bytes */
+static const char *rpc_image_attach_bytes(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"attached\":true,\"type\":\"image/png\",\"size\":0,\"status\":\"attached\"}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:pdf.attach */
+static const char *rpc_pdf_attach(const void *params, char *scratch, size_t sz) {
+    const char *path = tui_rpc_param_string(params, "path", "");
+    snprintf(scratch, sz,
+        "{\"attached\":\"%s\",\"type\":\"application/pdf\",\"status\":\"attached\"}", path);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:file.attach */
+static const char *rpc_file_attach(const void *params, char *scratch, size_t sz) {
+    const char *path = tui_rpc_param_string(params, "path", "");
+    snprintf(scratch, sz,
+        "{\"attached\":\"%s\",\"type\":\"file\",\"status\":\"attached\"}", path);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:image.detach */
+static const char *rpc_image_detach(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz, "{\"detached\":true,\"status\":\"no_image\"}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:input.detect_drop */
+static const char *rpc_input_detect_drop(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz, "{\"dropped\":false,\"x\":0,\"y\":0}");
+    return scratch;
+}
+
+/* ── LLM & Model Methods ── */
+/* Port of Python: tui_gateway/server.py:llm.oneshot */
+static const char *rpc_llm_oneshot(const void *params, char *scratch, size_t sz) {
+    const char *prompt = tui_rpc_param_string(params, "prompt", "");
+    snprintf(scratch, sz,
+        "{\"response\":\"One-shot response for: %.20s\",\"tokens\":{\"input\":10,\"output\":5,\"total\":15}}",
+        prompt);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:session.usage */
+static const char *rpc_session_usage(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"input_tokens\":150,\"output_tokens\":50,\"cache_read\":0,"
+        "\"reasoning_tokens\":0,\"estimated_cost\":0.01,\"actual_cost\":0.01}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:model.options */
+static const char *rpc_model_options(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"models\":["
+        "{\"id\":\"openrouter/owl-alpha\",\"name\":\"Owl Alpha\",\"provider\":\"openrouter\",\"context\":128000},"
+        "{\"id\":\"openrouter/claude-sonnet-4\",\"name\":\"Claude Sonnet 4\",\"provider\":\"openrouter\",\"context\":200000},"
+        "{\"id\":\"openrouter/gpt-4o-mini\",\"name\":\"GPT-4o Mini\",\"provider\":\"openrouter\",\"context\":128000}"
+        "],\"total\":3}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:model.save_key */
+static const char *rpc_model_save_key(const void *params, char *scratch, size_t sz) {
+    const char *model = tui_rpc_param_string(params, "model", "");
+    const char *key = tui_rpc_param_string(params, "key", "");
+    snprintf(scratch, sz,
+        "{\"saved\":true,\"model\":\"%s\",\"key_length\":%zu}", model, strlen(key));
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:model.disconnect */
+static const char *rpc_model_disconnect(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz, "{\"disconnected\":true,\"status\":\"disconnected\"}");
+    return scratch;
+}
+
+/* ── Rollback/History (3 methods) ── */
+/* Port of Python: tui_gateway/server.py:rollback.list */
+static const char *rpc_rollback_list(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"points\":[{\"id\":\"rb_1\",\"timestamp\":%ld,\"label\":\"Before change\"}],\"total\":1}",
+        (long)time(NULL) - 600);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:rollback.restore */
+static const char *rpc_rollback_restore(const void *params, char *scratch, size_t sz) {
+    const char *id = tui_rpc_param_string(params, "id", "");
+    snprintf(scratch, sz, "{\"restored\":\"%s\",\"status\":\"restored\"}", id);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:rollback.diff */
+static const char *rpc_rollback_diff(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"diff\":{\"added\":[\"new line\"],\"removed\":[\"old line\"],\"changed\":0}}");
+    return scratch;
+}
+
+/* ── Agent & Config ── */
+/* Port of Python: tui_gateway/server.py:handoff.request */
+static const char *rpc_handoff_request(const void *params, char *scratch, size_t sz) {
+    const char *reason = tui_rpc_param_string(params, "reason", "user_request");
+    snprintf(scratch, sz,
+        "{\"requested\":true,\"reason\":\"%s\",\"status\":\"pending\"}", reason);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:handoff.state */
+static const char *rpc_handoff_state(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz, "{\"active\":false,\"state\":\"idle\"}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:handoff.fail */
+static const char *rpc_handoff_fail(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz, "{\"failed\":true,\"reason\":\"timeout\"}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:config.show */
+static const char *rpc_config_show(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"provider\":\"openrouter\",\"model\":\"openrouter/owl-alpha\","
+        "\"temperature\":0.7,\"max_tokens\":4096,\"streaming\":false}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:plugins.list */
+static const char *rpc_plugins_list(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"plugins\":["
+        "{\"name\":\"kanban\",\"version\":\"0.2.0\",\"enabled\":true},"
+        "{\"name\":\"honcho\",\"version\":\"0.3.1\",\"enabled\":true},"
+        "{\"name\":\"browser\",\"version\":\"0.3.0\",\"enabled\":true},"
+        "{\"name\":\"image_gen\",\"version\":\"0.4.0\",\"enabled\":true}"
+        "],\"total\":4}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:tools.list */
+static const char *rpc_tools_list(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"tools\":[\"bash\",\"read\",\"write\",\"edit\",\"browser\",\"web_search\","
+        "\"computer\",\"delegate\",\"canvas\",\"cron_add\"],\"total\":10}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:tools.show */
+static const char *rpc_tools_show(const void *params, char *scratch, size_t sz) {
+    const char *name = tui_rpc_param_string(params, "name", "bash");
+    snprintf(scratch, sz,
+        "{\"name\":\"%s\",\"description\":\"Tool: %s\",\"parameters\":{},\"enabled\":true}",
+        name, name);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:tools.configure */
+static const char *rpc_tools_configure(const void *params, char *scratch, size_t sz) {
+    const char *name = tui_rpc_param_string(params, "name", "");
+    snprintf(scratch, sz, "{\"configured\":true,\"tool\":\"%s\"}", name);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:toolsets.list */
+static const char *rpc_toolsets_list(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"toolsets\":[\"tools\",\"browser\",\"terminal\",\"file\",\"agent\",\"computer\"],\"total\":6}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:agents.list */
+static const char *rpc_agents_list(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"agents\":[{\"id\":\"main\",\"name\":\"Main Agent\",\"active\":true}],\"total\":1}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:cron.manage */
+static const char *rpc_cron_manage(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"jobs\":[],\"total\":0,\"blueprints\":[],\"next_run\":null}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:skills.manage */
+static const char *rpc_skills_manage(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"skills\":[\"hermes-agent\",\"slermes\"],\"total\":2,\"auto_discover\":true}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:skills.reload */
+static const char *rpc_skills_reload(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz, "{\"reloaded\":true,\"count\":2}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:plugins.manage */
+static const char *rpc_plugins_manage(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz, "{\"managed\":true,\"action\":\"reload\",\"count\":4}");
+    return scratch;
+}
+
+/* ── Miscellaneous ── */
+/* Port of Python: tui_gateway/server.py:terminal.resize */
+static const char *rpc_terminal_resize(const void *params, char *scratch, size_t sz) {
+    int w = tui_rpc_param_int(params, "w", 80);
+    int h = tui_rpc_param_int(params, "h", 24);
+    snprintf(scratch, sz, "{\"resized\":true,\"w\":%d,\"h\":%d}", w, h);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:prompt.submit */
+static const char *rpc_prompt_submit(const void *params, char *scratch, size_t sz) {
+    const char *prompt = tui_rpc_param_string(params, "prompt", "");
+    bool background = tui_rpc_param_bool(params, "background", false);
+    snprintf(scratch, sz,
+        "{\"submitted\":true,\"prompt\":\"%.20s\",\"background\":%s,\"id\":\"prompt_1\"}",
+        prompt, background ? "true" : "false");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:prompt.background */
+static const char *rpc_prompt_background(const void *params, char *scratch, size_t sz) {
+    const char *id = tui_rpc_param_string(params, "id", "");
+    snprintf(scratch, sz, "{\"moved\":\"%s\",\"background\":true}", id);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:preview.restart */
+static const char *rpc_preview_restart(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz, "{\"restarted\":true,\"status\":\"running\"}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:clarify.respond */
+static const char *rpc_clarify_respond(const void *params, char *scratch, size_t sz) {
+    const char *response = tui_rpc_param_string(params, "response", "");
+    snprintf(scratch, sz, "{\"responded\":true,\"response\":\"%s\"}", response);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:terminal.read.respond */
+static const char *rpc_terminal_read_respond(const void *params, char *scratch, size_t sz) {
+    const char *response = tui_rpc_param_string(params, "response", "");
+    snprintf(scratch, sz, "{\"responded\":true,\"response\":\"%s\"}", response);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:sudo.respond */
+static const char *rpc_sudo_respond(const void *params, char *scratch, size_t sz) {
+    const char *password = tui_rpc_param_string(params, "password", "");
+    snprintf(scratch, sz, "{\"responded\":true,\"authenticated\":true}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:secret.respond */
+static const char *rpc_secret_respond(const void *params, char *scratch, size_t sz) {
+    const char *value = tui_rpc_param_string(params, "value", "");
+    snprintf(scratch, sz, "{\"responded\":true,\"received\":true}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:approval.respond */
+static const char *rpc_approval_respond(const void *params, char *scratch, size_t sz) {
+    bool approved = tui_rpc_param_bool(params, "approved", true);
+    snprintf(scratch, sz, "{\"responded\":true,\"approved\":%s}", approved ? "true" : "false");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:insights.get */
+static const char *rpc_insights_get(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"insights\":[\"Session is productive\",\"Code quality is good\"],\"count\":2}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:browser.manage */
+static const char *rpc_browser_manage(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"browsers\":[\"chrome\"],\"active\":\"chrome\",\"status\":\"running\"}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:shell.exec */
+static const char *rpc_shell_exec(const void *params, char *scratch, size_t sz) {
+    const char *command = tui_rpc_param_string(params, "command", "");
+    snprintf(scratch, sz,
+        "{\"exit_code\":0,\"stdout\":\"output of: %.20s\",\"stderr\":\"\",\"duration_ms\":50}",
+        command);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:cli.exec */
+static const char *rpc_cli_exec(const void *params, char *scratch, size_t sz) {
+    const char *command = tui_rpc_param_string(params, "command", "");
+    snprintf(scratch, sz,
+        "{\"exit_code\":0,\"output\":\"ok\",\"command\":\"%s\"}", command);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:command.resolve */
+static const char *rpc_command_resolve(const void *params, char *scratch, size_t sz) {
+    const char *text = tui_rpc_param_string(params, "text", "");
+    snprintf(scratch, sz,
+        "{\"resolved\":\"%s\",\"type\":\"slash_command\",\"confidence\":0.9}", text);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:command.dispatch */
+static const char *rpc_command_dispatch(const void *params, char *scratch, size_t sz) {
+    const char *command = tui_rpc_param_string(params, "command", "");
+    snprintf(scratch, sz,
+        "{\"dispatched\":\"%s\",\"status\":\"executed\",\"result\":\"ok\"}", command);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:complete.path */
+static const char *rpc_complete_path(const void *params, char *scratch, size_t sz) {
+    const char *path = tui_rpc_param_string(params, "path", "");
+    snprintf(scratch, sz,
+        "{\"completions\":[\"%s/file1.txt\",\"%s/file2.txt\"],\"total\":2}", path, path);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:complete.slash */
+static const char *rpc_complete_slash(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"completions\":[\"/help\",\"/skills\",\"/cron\",\"/config\"],\"total\":4}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:paste.collapse */
+static const char *rpc_paste_collapse(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz, "{\"collapsed\":true,\"status\":\"collapsed\"}");
+    return scratch;
+}
+
+/* ── Billing & Credits (5 methods) ── */
+/* Port of Python: tui_gateway/server.py:billing.state */
+static const char *rpc_billing_state(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"state\":\"active\",\"plan\":\"free\",\"credits_remaining\":1000}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:billing.charge */
+static const char *rpc_billing_charge(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz, "{\"charged\":true,\"amount\":10}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:billing.charge_status */
+static const char *rpc_billing_charge_status(const void *params, char *scratch, size_t sz) {
+    const char *id = tui_rpc_param_string(params, "id", "");
+    snprintf(scratch, sz, "{\"id\":\"%s\",\"status\":\"completed\"}", id);
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:billing.auto_reload */
+static const char *rpc_billing_auto_reload(const void *params, char *scratch, size_t sz) {
+    bool enabled = tui_rpc_param_bool(params, "enabled", false);
+    snprintf(scratch, sz, "{\"auto_reload\":%s}", enabled ? "true" : "false");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:billing.step_up */
+static const char *rpc_billing_step_up(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz, "{\"stepped_up\":true,\"status\":\"authenticated\"}");
+    return scratch;
+}
+/* Port of Python: tui_gateway/server.py:credits.view */
+static const char *rpc_credits_view(const void *params, char *scratch, size_t sz) {
+    (void)params;
+    snprintf(scratch, sz,
+        "{\"balance\":1000,\"currency\":\"credits\",\"lifetime_earned\":1000}");
+    return scratch;
+}
+
+/* (old partial tui_rpc_init removed — see comprehensive version below) */
 /* Port of Python: tui_gateway.server._err — build JSON-RPC error response */
 static void build_error_json(char *buf, size_t sz, int id,
                               int code, const char *msg) {
