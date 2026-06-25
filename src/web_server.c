@@ -1111,6 +1111,29 @@ static void h_cron_jobs(void) {
         "}", (long)time(NULL));
         return;
     }
+    if (strncmp(sub, "blueprints/", 11) == 0) {
+        /* DELETE /api/cron/blueprints/{id} — delete a blueprint file */
+        const char *id = sub + 11;
+        if (id[0] != '\0') {
+            const char *sh = slermes_home();
+            char bp_path[1024];
+            snprintf(bp_path, sizeof(bp_path), "%s/cron/blueprints/%s", sh, id);
+            FILE *f = fopen(bp_path, "r");
+            if (!f) {
+                JSON("{\"error\":\"not_found\",\"id\":\"%s\"}", id);
+                return;
+            }
+            fclose(f);
+            if (remove(bp_path) == 0) {
+                JSON("{\"deleted\":true,\"id\":\"%s\"}", id);
+            } else {
+                JSON("{\"error\":\"delete_failed\",\"id\":\"%s\"}", id);
+            }
+            return;
+        }
+        JSON("{\"error\":\"missing_id\"}");
+        return;
+    }
 
     /* Default: /api/cron/jobs — return job list */
     int sz;

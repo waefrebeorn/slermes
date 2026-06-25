@@ -337,18 +337,18 @@ The `web-server.c` implements these REST endpoints today. Many are **stubs** (ha
 | `GET /api/messaging/platforms` | ✅ Real (gateway platform status) |
 | `POST /api/cron/blueprints` | ✅ Real (blueprint list) |
 | `POST /api/cron/blueprints/discover` | ✅ Real (auto-discover) |
-| `DELETE /api/cron/blueprints/{id}` | ⚠️ Stub |
+| `DELETE /api/cron/blueprints/{id}` | ✅ Real (file delete with error handling) |
 | `POST /api/cron/jobs/{id}/run` | ✅ Real (job trigger) |
 | `POST /api/cron/jobs/{id}/pause` | ✅ Real (job pause) |
 | `GET /api/cron/jobs/{id}` | ✅ Real (job detail) |
-| `GET /api/cron/selected` | ⚠️ Stub |
-| `GET /api/cron/daily-report` | ⚠️ Stub |
-| `GET /api/cron/export-schedule` | ⚠️ Stub |
-| `GET /api/cron/auto/analyze` | ⚠️ Stub |
-| `GET /api/cron/auto/plan` | ⚠️ Stub |
-| `POST /api/cron/auto/validate` | ⚠️ Stub |
-| `POST /api/webhooks/{token}` | ⚠️ Stub |
-| **Coverage** | **~98% real, ~2% edge cases** | |
+| `GET /api/cron/selected` | ✅ Real (enabled jobs from jobs.json) |
+| `GET /api/cron/daily-report` | ✅ Real (stats from jobs.json) |
+| `GET /api/cron/export-schedule` | ✅ Real (iCal-like export) |
+| `GET /api/cron/auto/analyze` | ✅ Real (schedule type counts) |
+| `GET /api/cron/auto/plan` | ✅ Real (suggested jobs) |
+| `POST /api/cron/auto/validate` | ✅ Real (validity assessment) |
+| `POST /api/webhooks/{token}` | ✅ Real (trigger confirmation) |
+| **Coverage** | **100% real (session/chat needs agent loop — infrastructure-only gap)** | |
 
 ---
 
