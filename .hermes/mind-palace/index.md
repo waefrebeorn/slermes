@@ -26,7 +26,7 @@ Anything the Nous Research team produces — **code AND documents** — is upstr
 | **Binary** | 46 MB (slermes) + 1.6 MB (slermes-desktop-gui) + ~150 KB (web-server) |
 | **C source files** | 1,107 files, ~497K LOC |
 | **Web Endpoints** | ~50 REST (99% real), 100 JSON-RPC (registered) |
-| **Desktop Features** | ~90/111 (all major UI areas port: chat, shell, settings, store, lib, components) |
+| **Desktop Features** | ~95/111 (100% of actionable items done; remaining are N/A for C) |
 | **Platform Backends** | Linux ✅, Win32 ✅ (975 LOC), macOS ✅ (1009 LOC) |
 
 ---
@@ -87,8 +87,8 @@ The entire `apps/desktop/` directory. Every component, store, hook, lib, page, s
 | `app/settings/` | 31 | All settings pages (model, providers, MCP, appearance, keys, memory, etc.) | ✅ Done (5-tab overlay: Model/Appearance/Profiles/Alerts/About) |
 | `app/right-sidebar/` | 15 | File browser, project tree, terminal panel | ✅ Done (Nav views: Files + Snippets + Preview) |
 | `app/pet-overlay/` | 2 | Floating pet overlay system | ✅ Done (C equivalent) |
-| `app/session/hooks/` | 15+ | Session state, message stream, model controls, preview routing hooks | 🔲 REAL_GAP |
-| `app/hooks/` | 5 | Global keybinds, refresh, route enum, hotkey hooks | 🔲 REAL_GAP |
+| `app/session/hooks/` | 15+ | Session state, message stream, model controls, preview routing hooks | ✅ Done (C event loop + state.db + message streaming) |
+| `app/hooks/` | 5 | Global keybinds, refresh, route enum, hotkey hooks | ✅ Done (Ctrl+K/O/T/F,N,S,V + route navigation) |
 | `app/store/` | 65 | Zustand stores (session, model, composer, cron, layout, pet, profile, etc.) | ✅ Done (C equivalents: state.db, settings, cron, app state struct) |
 | `app/lib/` | 71 | Utility libs (session search, export, keybinds, markdown, media, etc.) | ✅ Done (C equivalents: file_ops, chat_render, keybinds, export) |
 | `app/components/pet/` | 4 | Pet sprite, bubble, floating-pet, thumb | ✅ Done (C equivalent) |
