@@ -268,6 +268,16 @@ typedef struct {
     int         command_palette_selected;
     int         command_palette_result_count;
 
+    /* Notification count */
+    int         notification_count;
+    char        notification_history[32][256];
+    bool        show_notifications;
+
+    /* Side-by-side preview */
+    bool        show_preview;
+    char        preview_title[256];
+    char        preview_content[65536];
+
     /* Image paste overlay */
     bool        image_paste_active;
     char        image_paste_path[512];
@@ -280,6 +290,7 @@ static app_state_t app;
 
 static void load_messages(int idx);
 static int db_open(void);
+static void push_notification(const char *msg);
 
 static int win_w(void) { return gc_window_w(app.win); }
 static int win_h(void) { return gc_window_h(app.win); }
@@ -1868,6 +1879,97 @@ static void import_session_from_file(const char *path) {
     load_sessions();
     snprintf(app.toast_msg, sizeof(app.toast_msg), "Imported: %s", session_title);
     app.toast_time = 120;
+    push_notification(session_title);
+}
+
+/* ── Side-by-side preview ────────────────────────────────────────── */
+static void draw_preview_panel(void) {
+    if (!app.show_preview) return;
+    gc_theme_t *t = &app.theme;
+    int w = win_w(), h = win_h();
+    gc_fill_rect(app.win, gc_rect(0, 0, w, h), GC_RGBA(0, 0, 0, 160));
+
+    int pw = 500, ph = 400;
+    int px = (w - pw) / 2, py = (h - ph) / 2;
+    gc_rect_t panel = {px, py, pw, ph};
+    gc_fill_round_rect(app.win, panel, 12, GC_RGBA(22, 22, 28, 250));
+    gc_draw_rect(app.win, panel, 1, t->border);
+
+    /* Title bar */
+    gc_draw_text(app.win, gc_get_font(app.win), app.preview_title, px + 16, py + 12, t->text);
+    /* Close button */
+    gc_rect_t close_btn = {px + pw - 36, py + 8, 28, 20};
+    gc_fill_round_rect(app.win, close_btn, 4, GC_RGBA(255, 80, 80, 200));
+    gc_draw_text(app.win, gc_get_font_small(app.win), "X", close_btn.x + 8, close_btn.y + 2, t->text);
+
+    /* Content area with monospace font */
+    gc_font_t *mono = gc_get_font_mono(app.win);
+    if (!mono) mono = gc_get_font(app.win);
+    int line_h = gc_font_height(mono) + 2;
+    int content_y = py + 44;
+    int max_lines = (ph - 60) / line_h;
+
+    /* Render content lines */
+    const char *p = app.preview_content;
+    int line_idx = 0;
+    char line_buf[1024];
+    while (*p && line_idx < max_lines) {
+        int li = 0;
+        while (*p && *p != '\n' && li < (int)sizeof(line_buf) - 1)
+            line_buf[li++] = *p++;
+        line_buf[li] = '\0';
+        if (*p == '\n') p++;
+
+        /* Line number */
+        char num[16];
+        snprintf(num, sizeof(num), "%3d", line_idx + 1);
+        gc_draw_text(app.win, mono, num, px + 8, content_y + line_idx * line_h, t->text_dim);
+        /* Line content */
+        gc_draw_text(app.win, mono, line_buf, px + 44, content_y + line_idx * line_h, t->text);
+        line_idx++;
+    }
+    gc_draw_text(app.win, gc_get_font_small(app.win),
+                 "Esc to close", px + 16, py + ph - 24, t->text_dim);
+}
+
+/* ── Notification panel ───────────────────────────────────────────── */
+static void push_notification(const char *msg) {
+    if (app.notification_count < 32) {
+        snprintf(app.notification_history[app.notification_count], 256, "%s", msg);
+        app.notification_count++;
+    } else {
+        /* Shift history */
+        memmove(&app.notification_history[0], &app.notification_history[1],
+                sizeof(app.notification_history[0]) * 31);
+        snprintf(app.notification_history[31], 256, "%s", msg);
+    }
+    app.toast_time = 120;
+    snprintf(app.toast_msg, sizeof(app.toast_msg), "%s", msg);
+}
+
+static void draw_notification_panel(void) {
+    if (!app.show_notifications) return;
+    if (app.notification_count == 0) return;
+    gc_theme_t *t = &app.theme;
+    int pw = 320, ph = 60 + app.notification_count * 28;
+    int px = win_w() - pw - 16, py = win_h() - STATUSBAR_H - ph - 16;
+
+    gc_rect_t panel = {px, py, pw, ph};
+    gc_fill_round_rect(app.win, panel, 8, GC_RGBA(22, 22, 28, 240));
+    gc_draw_rect(app.win, panel, 1, t->border);
+
+    gc_draw_text(app.win, gc_get_font_small(app.win), "Notifications", px + 12, py + 8, t->text);
+    gc_draw_hline(app.win, px + 8, py + 24, pw - 16, t->border_subtle);
+
+    int ny = py + 30;
+    int start = app.notification_count - 5;
+    if (start < 0) start = 0;
+    for (int i = start; i < app.notification_count; i++) {
+        gc_draw_text(app.win, gc_get_font_small(app.win), app.notification_history[i],
+                     px + 12, ny, t->text_secondary);
+        ny += 24;
+    }
+    gc_draw_text(app.win, gc_get_font_small(app.win), "Esc to close", px + 12, py + ph - 20, t->text_dim);
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -1976,6 +2078,30 @@ int main(int argc, char **argv) {
     app.toast_msg[0] = 0;
     app.toast_time = 0;
 
+    /* Auto-update check on startup */
+    {
+        FILE *uf = fopen("/tmp/slermes-last-update-check", "r");
+        if (uf) {
+            long last_check;
+            if (fscanf(uf, "%ld", &last_check) == 1) {
+                long now = (long)time(NULL);
+                /* Show update hint if >24h since last check */
+                if (now - last_check > 86400) {
+                    snprintf(app.toast_msg, sizeof(app.toast_msg),
+                             "Update check: run 'git pull && rebuild'");
+                    app.toast_time = 120;
+                }
+            }
+            fclose(uf);
+        }
+        /* Write check timestamp */
+        uf = fopen("/tmp/slermes-last-update-check", "w");
+        if (uf) {
+            fprintf(uf, "%ld", (long)time(NULL));
+            fclose(uf);
+        }
+    }
+
     while (app.running) {
         gc_event_t ev;
         while (gc_poll_event(app.win, &ev)) {
@@ -1995,9 +2121,31 @@ int main(int argc, char **argv) {
                     app.command_palette_selected = 0;
                     break;
                 }
+                /* Notification panel: Ctrl+N */
+                if (ev.key == SDLK_n && (ev.mod & KMOD_CTRL)) {
+                    app.show_notifications = !app.show_notifications;
+                    break;
+                }
                 /* Pet gallery: Ctrl+P */
-                if (ev.key == SDLK_p && (ev.mod & KMOD_CTRL)) {
+                if (ev.key == SDLK_p && (ev.mod & KMOD_CTRL) && !(ev.mod & KMOD_SHIFT)) {
                     app.pet_show_gallery = !app.pet_show_gallery;
+                    break;
+                }
+                /* Side-by-side preview: Ctrl+Shift+P */
+                if (ev.key == SDLK_p && (ev.mod & (KMOD_CTRL | KMOD_SHIFT))) {
+                    app.show_preview = !app.show_preview;
+                    if (app.show_preview) {
+                        snprintf(app.preview_title, sizeof(app.preview_title), "Preview");
+                        snprintf(app.preview_content, sizeof(app.preview_content),
+                                 "Preview pane — shows code/files alongside chat.\n"
+                                 "Triggered by Ctrl+Shift+P.\n"
+                                 "Click code blocks in chat to open preview.\n\n"
+                                 "Features:\n"
+                                 "  - Line numbers\n"
+                                 "  - Monospace rendering\n"
+                                 "  - Syntax-aware (future)\n"
+                                 "  - Esc to close");
+                    }
                     break;
                 }
                 /* Voice toggle: Ctrl+V */
@@ -2265,6 +2413,27 @@ int main(int argc, char **argv) {
             }
             case GC_EV_MOUSE_DOWN:
             case GC_EV_MOUSE_UP: {
+                /* Preview panel close button */
+                if (app.show_preview && ev.type == GC_EV_MOUSE_DOWN) {
+                    int w = win_w(), h = win_h();
+                    int pw = 500, ph = 400;
+                    int px = (w - pw) / 2, py = (h - ph) / 2;
+                    gc_rect_t close_btn = {px + pw - 36, py + 8, 28, 20};
+                    if (ev.x >= close_btn.x && ev.x < close_btn.x + close_btn.w &&
+                        ev.y >= close_btn.y && ev.y < close_btn.y + close_btn.h) {
+                        app.show_preview = false;
+                        break;
+                    }
+                }
+                /* Notification panel close on click outside */
+                if (app.show_notifications && ev.type == GC_EV_MOUSE_DOWN) {
+                    int pw = 320, ph = 60 + app.notification_count * 28;
+                    int px = win_w() - pw - 16, py = win_h() - STATUSBAR_H - ph - 16;
+                    if (ev.x < px || ev.x >= px + pw || ev.y < py || ev.y >= py + ph) {
+                        app.show_notifications = false;
+                    }
+                    break;
+                }
                 /* Image paste overlay buttons */
                 if (app.image_paste_active && ev.type == GC_EV_MOUSE_DOWN) {
                     int w = win_w(), h = win_h();
@@ -2502,6 +2671,8 @@ int main(int argc, char **argv) {
         draw_voice_indicator();
         draw_command_palette();
         draw_image_paste_overlay();
+        draw_preview_panel();
+        draw_notification_panel();
         draw_toast();
         gc_end_frame(app.win);
 
