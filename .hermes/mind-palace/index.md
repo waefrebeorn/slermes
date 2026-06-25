@@ -18,7 +18,7 @@
 | **Tests** | 33/33 pass |
 | **Binary** | 46 MB (slermes) + 1.6 MB (slermes-desktop-gui) + ~150 KB (web-server) |
 | **Web Endpoints** | ~50 REST (99% real), 91 JSON-RPC (registered) |
-| **Desktop Features** | ~30/111 (all P0+P1 done) |
+| **Desktop Features** | ~30/111 (all P0+P1 done, PTY terminal added) |
 | **Platform Backends** | Linux ✅, Win32 ✅ (975 LOC), macOS ✅ (1009 LOC) |
 
 ---
@@ -109,7 +109,7 @@ Slermes `web-server.c` currently implements **~50 REST endpoints**. Many upstrea
 |----------|--------|----------------|-------|
 | `/health` | GET | ✅ Im ok status |
 | `/health/detailed` | GET | ✅ Implemented | Detailed health with system info |
-| `/v1/health` | GET | � Missing | v1 health alias |
+| `/v1/health` | GET | ✅ Implemented | v1 health alias |
 | `/v1/models` | GET | ✅ Implemented | Model list from providers |
 | `/v1/capabilities` | GET | ✅ Implemented | Provider capabilities |
 | `/v1/skills` | GET | ✅ Implemented | Skills scan |
