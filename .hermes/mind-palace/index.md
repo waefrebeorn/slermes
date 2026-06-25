@@ -23,7 +23,7 @@ Anything the Nous Research team produces — **code AND documents** — is upstr
 | **REAL_GAP** | ALL upstream code types (see below) |
 | **Build** | Clean, 0 errors |
 | **Tests** | 33/33 pass |
-| **Binary** | 46 MB (slermes) + 1.6 MB (slermes-desktop-gui) + ~150 KB (web-server) |
+| Binary | 46 MB (slermes) + 5.4 MB (slermes-desktop-gui) + ~150 KB (web-server) |
 | **C source files** | 1,107 files, ~497K LOC |
 | **Web Endpoints** | ~50 REST (99% real), 100 JSON-RPC (registered) |
 | **Desktop Features** | ~95/111 (100% of actionable items done; remaining are N/A for C) |
