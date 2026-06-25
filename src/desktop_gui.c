@@ -1307,11 +1307,67 @@ static void draw_nav_view(int view_id) {
     switch (view_id) {
     case 0: return;
     case 1: {
-        gc_draw_text(app.win, gc_get_font(app.win), "Command Center", x, y, t->text); y+=fh+12;
-        const char *cmds[] = {"/help","/skills","/cron","/session","/config","/model",
-            "/retry","/reset","/archive","/export","/fork","/summarize","/undo","/settings","/search",NULL};
+        /* ── Command Center: Sessions / System / Usage ── */
         gc_font_t *mono = gc_get_font_mono(app.win); if (!mono) mono = gc_get_font(app.win);
-        for (int i=0; cmds[i]; i++) { gc_draw_text(app.win, mono, cmds[i], x, y, t->text_secondary); y+=fh+4; }
+
+        /* Gateway status header */
+        gc_draw_text(app.win, gc_get_font(app.win), "Command Center", x, y, t->text); y+=fh+4;
+        gc_draw_rect(app.win, gc_rect(x, y, max_w, 1), 1, t->border_subtle); y+=8;
+
+        /* Section: Gateway */
+        gc_draw_text(app.win, gc_get_font_small(app.win), "GATEWAY", x, y, t->text_dim); y+=sfh+4;
+        bool gw_connected = app.gateway_connected;
+        gc_color_t gw_color = gw_connected ? t->success : t->error;
+        gc_draw_text(app.win, mono, gw_connected ? "● Connected" : "● Disconnected", x+12, y, gw_color); y+=sfh+2;
+        if (app.gateway_status_text[0]) {
+            gc_draw_text(app.win, gc_get_font_small(app.win), app.gateway_status_text, x+12, y, t->text_secondary);
+            y+=sfh+2;
+        }
+        y+=6;
+
+        /* Section: Sessions */
+        gc_draw_text(app.win, gc_get_font_small(app.win), "SESSIONS", x, y, t->text_dim); y+=sfh+4;
+        char buf[128];
+        snprintf(buf, sizeof(buf), "Total: %d  |  Active: %d  |  Pinned: %d",
+                 app.total_sessions, app.session_count, app.pinned_session_count);
+        gc_draw_text(app.win, gc_get_font_small(app.win), buf, x+12, y, t->text_secondary); y+=sfh+2;
+        snprintf(buf, sizeof(buf), "Messages: %d", app.total_messages);
+        gc_draw_text(app.win, gc_get_font_small(app.win), buf, x+12, y, t->text_secondary); y+=sfh+2;
+        y+=6;
+
+        /* Section: Models in use */
+        gc_draw_text(app.win, gc_get_font_small(app.win), "MODELS", x, y, t->text_dim); y+=sfh+4;
+        if (app.latest_model[0]) {
+            snprintf(buf, sizeof(buf), "Current: %s", app.latest_model);
+            gc_draw_text(app.win, gc_get_font_small(app.win), buf, x+12, y, t->accent); y+=sfh+2;
+        }
+        y+=6;
+
+        /* Section: Skills */
+        gc_draw_text(app.win, gc_get_font_small(app.win), "SKILLS", x, y, t->text_dim); y+=sfh+4;
+        snprintf(buf, sizeof(buf), "Loaded: %d skills", app.skill_count);
+        gc_draw_text(app.win, gc_get_font_small(app.win), buf, x+12, y, t->text_secondary); y+=sfh+2;
+        y+=6;
+
+        /* Section: Cron */
+        gc_draw_text(app.win, gc_get_font_small(app.win), "SCHEDULED", x, y, t->text_dim); y+=sfh+4;
+        snprintf(buf, sizeof(buf), "Jobs: %d", app.cron_count);
+        gc_draw_text(app.win, gc_get_font_small(app.win), buf, x+12, y, t->text_secondary); y+=sfh+2;
+        y+=6;
+
+        /* Section: Quick Commands */
+        gc_draw_text(app.win, gc_get_font_small(app.win), "COMMANDS", x, y, t->text_dim); y+=sfh+4;
+        const char *cmds[] = {"/help","/skills","/cron","/session","/config","/model",
+            "/retry","/reset","/archive","/export","/fork","/summarize","/undo","/settings",NULL};
+        int cmd_idx = 0;
+        for (int i=0; cmds[i]; i++) {
+            int col = i % 3;
+            int row = i / 3;
+            int cx2 = x + 12 + col * 120;
+            int cy2 = y + row * (sfh + 2);
+            if (cy2 + sfh > chat_y() + chat_h() - 40) break;
+            gc_draw_text(app.win, mono, cmds[i], cx2, cy2, t->text_secondary);
+        }
         break;
     }
     case 2: {
