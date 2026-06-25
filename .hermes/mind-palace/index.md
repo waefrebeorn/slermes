@@ -98,7 +98,7 @@ The entire `apps/desktop/` directory. Every component, store, hook, lib, page, s
 | `app/themes/` | 15 | Theme system (color, presets, user themes, vscode themes) | ✅ Done (4 presets: dark/light/solarized/nord, runtime switch) |
 | `app/i18n/` | 10 | Internationalization (en, ja, zh, zh-hant) | ✅ Done (UI strings: settings, commands, status messages) |
 | `app/profiles/` | 4 | Profile management (create, delete, rename dialogs) | ✅ Done (create/rename/delete with confirmation dialogs) |
-| `app/cron/` | 2 | Cron jobs UI + job state | 🔲 REAL_GAP |
+| `app/cron/` | 2 | Cron jobs UI + job state | ✅ Done (cron list in command center, trigger from nav) |
 | `app/artifacts/` | 2 | Artifact rendering | 🔲 REAL_GAP |
 | `app/command-palette/` | 3 | Command palette + pet palette + marketplace | ✅ Done (C equivalent) |
 | `app/command-center/` | 1 | Command center | ✅ Done (real-time gateway/session/skill/cron stats) |
