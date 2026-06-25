@@ -294,6 +294,7 @@ PORT_OBJ = \
     src/cli/port_tools_write_approval.o \
     src/cli/port_tools_x_search_tool.o \
     src/cli/port_tools_xai_http.o \
+    src/skills/skills_parser.o \
     src/cli/port_hermes_cli_web_server.o \
     src/cli/port_tui_gateway_server.o \
     src/cli/port_hermes_cli_main.o \
@@ -889,6 +890,9 @@ lib/libdb/sqlite3.o: lib/libdb/sqlite3.c lib/libdb/sqlite3.h
 	$(CC) $(CFLAGS) -DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION -c -o $@ $<
 
 src/slermes_home.o: src/slermes_home.c include/slermes_home.h
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+src/skills/skills_parser.o: src/skills/skills_parser.c include/skills_parser.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 desktop-gui: $(DESKTOP_GUI_OBJ)
