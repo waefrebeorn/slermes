@@ -533,6 +533,7 @@ int gc_poll_event(gc_window_t *win, gc_event_t *ev) {
         case SDL_KEYDOWN:
             ev->type = GC_EV_KEY_DOWN;
             ev->key = sdl_ev.key.keysym.sym;
+            ev->mod = sdl_ev.key.keysym.mod;
             if (ev->key == SDLK_BACKSPACE || ev->key == SDLK_RETURN ||
                 ev->key == SDLK_ESCAPE || ev->key == SDLK_TAB)
                 return 1;

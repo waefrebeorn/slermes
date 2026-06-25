@@ -132,6 +132,7 @@ typedef struct {
     int button;
     int wheel_delta;
     int resize_w, resize_h;
+    int mod; /* KMOD_* modifier flags */
     char text[GC_MAX_TEXT];
 } gc_event_t;
 

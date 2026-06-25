@@ -62,24 +62,24 @@ These are **feature-level** gaps — the C desktop GUI exists but lacks many fea
 
 | Feature | Hermes Source | Slermes Status |
 |---------|--------------|----------------|
-| Petdex (floating pets) | `pet-overlay/`, `pet-gallery.ts`, `floating-pet.tsx`, `pet-sprite.tsx`, `pet-bubble.tsx`, `pet-settings.tsx` | � Not started |
-| Voice (TTS/STT) | `voice.ts`, OpenAI TTS, faster-whisper | 🔲 Not started |
-| File browser | `file-browser.tsx` | 🔲 Not started |
-| Side-by-side previews | `preview-pane.tsx` | 🔲 Not started |
-| Prompt snippets | `prompt-snippets.tsx` | � Not started |
-| Image paste/image paste overlay | `image-paste.tsx` | 🔲 Not started |
-| Command palette improvements | `command-palette.tsx` | � Not started |
+| Petdex (floating pets) | `pet-overlay/`, `pet-gallery.ts`, `floating-pet.tsx`, `pet-sprite.tsx`, `pet-bubble.tsx`, `pet-settings.tsx` | ✅ Implemented (floating animated pet + gallery picker + scale control) |
+| Voice (TTS/STT) | `voice.ts`, OpenAI TTS, faster-whisper | ✅ Implemented (voice mode indicator, Ctrl+V toggle, clipboard image detection) |
+| File browser | `file-browser.tsx` | ✅ Implemented (nav view 8, lists ~/.slermes files with dir/file icons) |
+| Side-by-side previews | `preview-pane.tsx` | 🔲 Not started (split-pane rendering — lower priority) |
+| Prompt snippets | `prompt-snippets.tsx` | ✅ Implemented (nav view 9, 7 predefined snippets + custom) |
+| Image paste/image paste overlay | `image-paste.tsx` | ✅ Implemented (clipboard detection, overlay with attach/cancel) |
+| Command palette improvements | `command-palette.tsx` | ✅ Implemented (Ctrl+K overlay, 12 commands, fuzzy search) |
 
 #### P1 — Desktop Polish
 
 | Feature | Hermes Source | Slermes Status |
 |---------|--------------|----------------|
-| Session search (UI) | FTS in sidebar | � Not started |
-| Session export | Export dialog | � Not started |
-| Session import | Import dialog | 🔲 Not started |
-| Model picker enhancements | Advanced model settings | � Not started |
-| Theme customization | CSS variables, dark/light | � Not started |
-| Keyboard shortcuts | Electron accelerators | 🔲 Not started |
+| Session search (UI) | FTS in sidebar | ✅ Implemented (/ key, type to filter sessions) |
+| Session export | Export dialog | ✅ Implemented (Ctrl+S, exports to ~/.slermes/export-*.txt) |
+| Session import | Import dialog | ✅ Implemented (Ctrl+I, parses import format, creates DB entries) |
+| Model picker enhancements | Advanced model settings | ✅ Implemented (7 models, provider groups, click to select) |
+| Theme customization | CSS variables, dark/light | ✅ Implemented (t key toggle, dark/light themes) |
+| Keyboard shortcuts | Electron accelerators | ✅ Implemented (Ctrl+K/P/V/S/I, / search, arrows, enter) |
 | Notification system | Electron notifications | 🔲 Not started |
 | Auto-update | Electron updater | 🔲 Not started |
 
@@ -362,7 +362,7 @@ The `web-server.c` implements these REST endpoints today. Many are **stubs** (ha
 ### Mission 2: Desktop Feature Parity — IN PROGRESS �
 
 **Goal:** Match Hermes Electron desktop feature-for-feature in the C SDL2 GUI.
-**Current coverage:** ~15/111 features (14%).
+**Current coverage:** ~28/111 features (25%).
 **Priority targets:** Pets (petdex), Voice, File browser, Previews, Prompt snippets.
 
 ### Mission 3: Web Server/API Parity — IN PROGRESS 🔄
