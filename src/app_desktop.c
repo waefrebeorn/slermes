@@ -41,6 +41,7 @@
 #include <ctype.h>
 #include <sys/ioctl.h>
 #include "pty.h"
+#include "clipboard.h"
 
 /* ── PANEL IDs ─────────────────────────────────────────────────────── */
 typedef enum {
@@ -327,6 +328,15 @@ static void ui_init(void) {
     app.settings_tab = SETTINGS_TAB_MODEL;
     app.sidebar_section = 0;
     app.iteration = 3;
+
+    /* Probe gateway for real connection status */
+    probe_result_t probe = gateway_probe_default("http://localhost:18789/health");
+    if (probe.reachable) {
+        app.conn_state = CONN_CONNECTED;
+        snprintf(app.model, sizeof(app.model), "%s", probe.version);
+    } else {
+        app.conn_state = CONN_DISCONNECTED;
+    }
     app.max_iterations = 42;
     app.yolo_active = false;
     app.tokens_in = 4520;
@@ -1253,6 +1263,8 @@ static void ui_draw_keyboard_shortcuts(void) {
         {"n",     "New Session"},
         {"r",     "Rename Session"},
         {"d",     "Delete Session"},
+        {"y",     "Copy Last Response to Clipboard"},
+        {"i",     "Paste from Clipboard"},
         {"q",     "Quit (or into composer)"},
         {"F1/?",  "Keyboard Shortcuts"},
         {"ESC/q", "Close Overlay/Dialog"},
@@ -1597,6 +1609,39 @@ static void ui_handle_normal(int key) {
         if (ui.terminal_visible) term_launch_pty();
         ui_resize();
         break;
+    case 'y': {
+        /* Copy last assistant message to clipboard */
+        if (ui.rendered_count > 0) {
+            /* Find last assistant message */
+            for (int i = ui.rendered_count - 1; i >= 0; i--) {
+                if (ui.rendered_msgs[i] && ui.rendered_msgs[i]->role[0] == 'a' &&
+                    ui.rendered_msgs[i]->raw[0]) {
+                    char *plain = chat_render_plain_text(ui.rendered_msgs[i]);
+                    if (plain && *plain) {
+                        clipboard_write_text(plain);
+                        app_desktop_notify(&app, "Copied to clipboard", 2);
+                    }
+                    free(plain);
+                    break;
+                }
+            }
+        }
+        break;
+    }
+    case 'i': {
+        /* Insert from clipboard to composer */
+        char *clip = clipboard_read_text();
+        if (clip && *clip) {
+            if (ui.composer) {
+                composer_insert(ui.composer, clip);
+                app_desktop_notify(&app, "Pasted from clipboard", 2);
+            }
+            free(clip);
+        } else {
+            app_desktop_notify(&app, "Clipboard empty", 2);
+        }
+        break;
+    }
     case 's':
         app_desktop_toggle_settings(&app);
         break;
@@ -1845,9 +1890,9 @@ bool app_desktop_init(void) {
     if (m3) ui.rendered_msgs[ui.rendered_count++] = m3;
 
     chat_rendered_msg_t *m4 = chat_render_message(
-        "Keybinds: `s` Settings | `p` Model Picker | `:` Command Palette\n"
-        "`Tab` Sidebar | `t` Terminal | `n` New Chat | `r` Rename | `d` Delete\n"
-        "`F1` or `?` for keyboard shortcuts | `/` for sidebar search\n"
+        "Keybinds: `s` Settings | `p` Model Picker | `:` Command Palette\\n"
+        "`Tab` Sidebar | `t` Terminal | `n` New Chat | `r` Rename | `d` Delete\\n"
+        "`y` Copy | `i` Paste | `F1` or `?` for keyboard shortcuts | `/` for sidebar search\\n"
         "Arrow keys navigate sidebar. `q` quits (or type into composer).", "system");
     if (m4) ui.rendered_msgs[ui.rendered_count++] = m4;
 
