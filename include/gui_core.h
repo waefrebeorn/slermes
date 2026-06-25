@@ -60,6 +60,8 @@ typedef struct {
 
 extern gc_theme_t gc_theme_dark;
 extern gc_theme_t gc_theme_light;
+extern gc_theme_t gc_theme_solarized;
+extern gc_theme_t gc_theme_nord;
 
 /* ══════════════════════════════════════════════════════════════════════
  * Font
