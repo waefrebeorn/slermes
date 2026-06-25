@@ -99,7 +99,7 @@ The entire `apps/desktop/` directory. Every component, store, hook, lib, page, s
 | `app/i18n/` | 10 | Internationalization (en, ja, zh, zh-hant) | ✅ Done (UI strings: settings, commands, status messages) |
 | `app/profiles/` | 4 | Profile management (create, delete, rename dialogs) | ✅ Done (create/rename/delete with confirmation dialogs) |
 | `app/cron/` | 2 | Cron jobs UI + job state | ✅ Done (cron list in command center, trigger from nav) |
-| `app/artifacts/` | 2 | Artifact rendering | 🔲 REAL_GAP |
+| `app/artifacts/` | 2 | Artifact rendering | ✅ Done (preview panel shows HTML/JS/CSS artifacts) |
 | `app/command-palette/` | 3 | Command palette + pet palette + marketplace | ✅ Done (C equivalent) |
 | `app/command-center/` | 1 | Command center | ✅ Done (real-time gateway/session/skill/cron stats) |
 | `app/page-search-shell.tsx` | 1 | Page search | ✅ Done (Ctrl+F: search in chat messages, highlight matches) |
