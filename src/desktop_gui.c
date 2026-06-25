@@ -2469,6 +2469,146 @@ static void session_picker_init(void) {
     memset(&session_picker, 0, sizeof(session_picker));
 }
 
+/* ══════════════════════════════════════════════════════════════════════
+ *  Session Switcher HUD (P2 Feature)
+ * ══════════════════════════════════════════════════════════════════════ */
+static struct {
+    bool visible;
+    int  selected;
+    int  session_ids[32]; /* indices into app.sessions */
+    int  count;
+} session_switcher;
+
+static void session_switcher_init(void) {
+    memset(&session_switcher, 0, sizeof(session_switcher));
+    /* Build list: last 8 sessions by started_at descending */
+    int indices[256];
+    for (int i = 0; i < app.session_count; i++) indices[i] = i;
+    /* Simple sort by started_at (bubble, small N) */
+    for (int i = 0; i < app.session_count - 1; i++)
+        for (int j = i + 1; j < app.session_count; j++)
+            if (app.sessions[indices[j]].started_at > app.sessions[indices[i]].started_at) {
+                int tmp = indices[i]; indices[i] = indices[j]; indices[j] = tmp;
+            }
+    session_switcher.count = app.session_count < 8 ? app.session_count : 8;
+    for (int i = 0; i < session_switcher.count; i++)
+        session_switcher.session_ids[i] = indices[i];
+}
+
+static void draw_session_switcher(void) {
+    if (!session_switcher.visible || session_switcher.count == 0) return;
+    int w = win_w();
+    int ow = 400;
+    int item_h = 28;
+    int oh = 32 + session_switcher.count * item_h + 8;
+    int ox = (w - ow) / 2;
+    int oy = TITLEBAR_H + 4;
+
+    gc_theme_t *t = &app.theme;
+    gc_rect_t bg = {ox, oy, ow, oh};
+    gc_fill_rect(app.win, bg, GC_RGBA(0, 0, 0, 220));
+    gc_fill_round_rect(app.win, bg, 10, t->bg_secondary);
+    gc_draw_rect(app.win, bg, 1, t->border);
+
+    gc_font_t *font_small = gc_get_font_small(app.win);
+    int sfh = gc_font_height(font_small);
+
+    /* Title */
+    gc_draw_text(app.win, font_small, "Switch Session", ox + 12, oy + 6, t->text_dim);
+
+    for (int i = 0; i < session_switcher.count; i++) {
+        int si = session_switcher.session_ids[i];
+        int iy = oy + 24 + i * item_h;
+        bool sel = (i == session_switcher.selected);
+        bool is_active = (si == app.selected_session);
+
+        if (sel)
+            gc_fill_rect(app.win, gc_rect(ox + 4, iy - 2, ow - 8, item_h - 2), t->bg_card);
+
+        /* Number key hint */
+        char num[8];
+        snprintf(num, sizeof(num), "%d", i + 1);
+        gc_draw_text(app.win, gc_get_font_mono(app.win), num, ox + 12, iy + 4,
+                     sel ? t->accent : t->text_dim);
+
+        /* Active indicator */
+        if (is_active)
+            gc_draw_text(app.win, gc_get_font_mono(app.win), "●", ox + 36, iy + 4, t->accent);
+
+        /* Session title */
+        gc_color_t title_color = sel ? t->text : (is_active ? t->accent : t->text_secondary);
+        gc_draw_text_clipped(app.win, font_small, app.sessions[si].title, ox + 52, iy + 4, ow - 80, title_color);
+    }
+}
+
+static void session_switcher_handle_input(gc_event_t *ev) {
+    if (!session_switcher.visible) return;
+
+    if (ev->type == GC_EV_KEY_DOWN) {
+        if (ev->key == SDLK_ESCAPE) {
+            session_switcher.visible = false;
+            return;
+        }
+        if (ev->key == SDLK_UP) {
+            if (session_switcher.selected > 0) session_switcher.selected--;
+            return;
+        }
+        if (ev->key == SDLK_DOWN) {
+            if (session_switcher.selected < session_switcher.count - 1) session_switcher.selected++;
+            return;
+        }
+        if (ev->key == SDLK_RETURN) {
+            int si = session_switcher.session_ids[session_switcher.selected];
+            app.selected_session = si;
+            app.current_view = 0;
+            app.chat_scroll = 0;
+            load_messages(si);
+            snprintf(app.current_view_name, sizeof(app.current_view_name), "Chat");
+            session_switcher.visible = false;
+            return;
+        }
+        /* Number keys 1-9 to select directly */
+        if (ev->key >= SDLK_1 && ev->key <= SDLK_9) {
+            int idx = ev->key - SDLK_1;
+            if (idx < session_switcher.count) {
+                int si = session_switcher.session_ids[idx];
+                app.selected_session = si;
+                app.current_view = 0;
+                app.chat_scroll = 0;
+                load_messages(si);
+                snprintf(app.current_view_name, sizeof(app.current_view_name), "Chat");
+                session_switcher.visible = false;
+            }
+            return;
+        }
+    }
+
+    if (ev->type == GC_EV_MOUSE_DOWN) {
+        int w = win_w();
+        int ow = 400;
+        int item_h = 28;
+        int oh = 32 + session_switcher.count * item_h + 8;
+        int ox = (w - ow) / 2;
+        int oy = TITLEBAR_H + 4;
+
+        if (ev->x >= ox && ev->x < ox + ow && ev->y >= oy + 24 && ev->y < oy + oh - 8) {
+            int clicked = (ev->y - (oy + 24)) / item_h;
+            if (clicked >= 0 && clicked < session_switcher.count) {
+                int si = session_switcher.session_ids[clicked];
+                app.selected_session = si;
+                app.current_view = 0;
+                app.chat_scroll = 0;
+                load_messages(si);
+                snprintf(app.current_view_name, sizeof(app.current_view_name), "Chat");
+                session_switcher.visible = false;
+                return;
+            }
+        }
+        /* Click outside closes */
+        session_switcher.visible = false;
+    }
+}
+
 static void draw_session_picker(void) {
     if (!session_picker.visible) return;
     int w = win_w(), h = win_h();
@@ -2856,6 +2996,11 @@ int main(int argc, char **argv) {
             switch (ev.type) {
             case GC_EV_QUIT: app.running = false; break;
             case GC_EV_KEY_DOWN:
+                /* Session switcher input — consume all key events when visible */
+                if (session_switcher.visible) {
+                    session_switcher_handle_input(&ev);
+                    break;
+                }
                 /* Session picker input — consume all key events when visible */
                 if (session_picker.visible) {
                     session_picker_handle_input(&ev);
@@ -2898,6 +3043,14 @@ int main(int argc, char **argv) {
                     session_picker.visible = !session_picker.visible;
                     if (session_picker.visible) {
                         session_picker_init();
+                    }
+                    break;
+                }
+                /* Session switcher: Ctrl+Tab */
+                if (ev.key == SDLK_TAB && (ev.mod & KMOD_CTRL)) {
+                    session_switcher.visible = !session_switcher.visible;
+                    if (session_switcher.visible) {
+                        session_switcher_init();
                     }
                     break;
                 }
@@ -3105,6 +3258,11 @@ int main(int argc, char **argv) {
                 break;
             }
             case GC_EV_MOUSE_MOVE: {
+                /* Session switcher mouse move */
+                if (session_switcher.visible) {
+                    session_switcher_handle_input(&ev);
+                    break;
+                }
                 /* Session picker mouse move */
                 if (session_picker.visible) {
                     session_picker_handle_input(&ev);
@@ -3193,6 +3351,11 @@ int main(int argc, char **argv) {
             }
             case GC_EV_MOUSE_DOWN:
             case GC_EV_MOUSE_UP: {
+                /* Session switcher mouse input — consume when visible */
+                if (session_switcher.visible) {
+                    session_switcher_handle_input(&ev);
+                    break;
+                }
                 /* Session picker mouse input — consume when visible */
                 if (session_picker.visible) {
                     session_picker_handle_input(&ev);
@@ -3465,6 +3628,7 @@ int main(int argc, char **argv) {
         draw_notification_panel();
         draw_settings_overlay();
         draw_session_picker();
+        draw_session_switcher();
         draw_toast();
         gc_end_frame(app.win);
 
