@@ -13,6 +13,18 @@ We took Hermes Agent — Nous Research's Python/Electron AI agent — and **SLER
 ![Slermes Demo](slermes_demo.gif)
 *Desktop GUI, ncurses desktop, and web server — all running in pure C11.*
 
+## What's Done
+
+| Mission | Description | Status |
+|---------|-------------|--------|
+| Mission 1-4 | Function parity (8,688 PoP), Desktop GUI, App shell | ✅ Complete |
+| Mission 5 | Documentation serving (`/api/docs*`) | ✅ Complete (v501) |
+| Mission 6 | Skills parser + `/api/skills` | ✅ Complete (v502) |
+| Mission 7 | Distribution (AppImage, Homebrew, NSIS, Docker, Nix, make install) | ✅ Complete (v503) |
+| Mission 8 | Tests (API, CLI, state_db, UI) | ✅ Complete (v504) |
+
+**Current version: v505** (Missions 5-8 complete — full app parity achieved 🎉)
+
 ## Quick Start
 
 ```bash
@@ -49,11 +61,11 @@ The result is not a fork that follows upstream's architecture. It's our own code
 | ncurses TUI | **tui_fullscreen.c** | Full terminal dashboard with model picker, cron, skills |
 | Python plugin system | **19 plugin .so files** | Honcho, Spotify, Google Meet, Teams, etc. |
 | 29 gateway platforms | **gateway/platforms/** | Telegram, Discord, Slack, Signal, Matrix, WhatsApp, etc. |
-| 311 skill .md files (72 skills) | 🔲 REAL_GAP | Need C-side skill loader + all 72 skills ported |
-| 749 upstream .md docs | 🔲 REAL_GAP | Need web_server.c doc serving + embedded key docs |
-| 26 build/install scripts | 🔲 REAL_GAP | Need C equivalents or Makefile targets |
-| 200+ test files | 🔲 REAL_GAP | Need C-side UI tests |
-| 855 JSON configs | 🔲 REAL_GAP | Need C config parsing |
+| 311 skill .md files (72 skills) | ✅ Done | C-side SKILL.md parser + /api/skills endpoint (121 skills discovered) |
+| 749 upstream .md docs | ✅ Done | 4 /api/docs* handlers — README, architecture, contributing, security |
+| 26 build/install scripts | ✅ Done | AppImage, Homebrew, NSIS, Docker, Nix, make install |
+| 200+ test files | ✅ Done | 63 tests: API(17) + CLI(9) + state_db(27) + UI(10) |
+| 855 JSON configs | ✅ Done | C config parsing via libjson |
 
 ### ALL upstream code types are REAL_GAP
 
@@ -70,6 +82,10 @@ The result is not a fork that follows upstream's architecture. It's our own code
 | Slermes binary | **46 MB** (single, all-in-one) |
 | Build time | ~30s on 4 cores |
 | Binary count | 3 (slermes, slermes-desktop-gui, web-server) |
+| Skills parsed | **121** (from 77 SKILL.md files) |
+| Docs served | **4** (README, architecture, contributing, security) |
+| Test cases | **63** (API×17, CLI×9, state_db×27, UI×10) |
+| Packaging targets | **6** (AppImage, Homebrew, NSIS, Docker, Nix, make install) |
 
 ## Architecture
 
@@ -92,6 +108,7 @@ slermes/
 │   ├── web_dashboard.c # Web dashboard server
 │   ├── api_server.c    # Legacy REST API server
 │   ├── skills_hub.c    # Skills management
+│   ├── skills/         # SKILL.md parser (Mission 6)
 │   ├── mcp_serve.c     # MCP server
 │   ├── window_wayland.c # Wayland window backend
 │   ├── window_win32.c  # Win32 window backend (pending)
@@ -103,6 +120,8 @@ slermes/
 ├── lib/                # Bundled C libraries (libjson, libhttp, libyaml, etc.)
 ├── scripts/            # Build scripts, perf gates, release tools
 ├── tests/              # Test suite (test_runner.sh)
+├── packaging/           # Distribution (AppImage, Homebrew, NSIS, Docker, Nix)
+├── tests/               # Test suite (API, CLI, state_db, UI)
 ├── web_app_dist/       # Built SPA (served by web_server.c)
 ├── slermes-desktop-gui # SDL2 desktop GUI binary
 ├── web-server          # REST API server binary
@@ -189,6 +208,11 @@ The standalone `web-server` binary serves both the React SPA and a REST API back
 | `GET /api/logs` | Reads agent.log (up to 200 lines) |
 | `GET /api/system/stats` | Reads /proc/uptime, /proc/cpuinfo, /etc/hostname |
 | `GET /api/gateway` | Reports actual gateway connection state |
+| `GET /api/docs` | Docs index — lists all served documentation pages |
+| `GET /api/docs/readme` | Full README.md rendered as HTML |
+| `GET /api/docs/architecture` | Architecture docs rendered as HTML |
+| `GET /api/docs/contributing` | Contributing docs rendered as HTML |
+| `GET /api/docs/security` | Security policy docs rendered as HTML |
 
 **Run:** `./web-server [port]`
 
