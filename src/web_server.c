@@ -2116,6 +2116,492 @@ static void h_responses(void) {
     JSON("],\"total\":0}");
 }
 
+/* ── Documentation handlers ───────────────────────────────────────── */
+
+/* Helper: send HTML response with full headers */
+static void send_html(int fd, const char *html) {
+    dprintf(fd,
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/html; charset=utf-8\r\n"
+        "Access-Control-Allow-Origin: *\r\n"
+        "Connection: close\r\n"
+        "Content-Length: %zu\r\n"
+        "\r\n%s", strlen(html), html);
+}
+
+/* Helper: escape a string for safe embedding in HTML.
+ * Writes to buf[bufsz], returns bytes written (excluding NUL). */
+static size_t html_escape(char *buf, size_t bufsz, const char *src) {
+    size_t pos = 0;
+    while (*src && pos + 6 < bufsz) {
+        switch (*src) {
+            case '&':  memcpy(buf + pos, "&amp;", 5);  pos += 5; break;
+            case '<':  memcpy(buf + pos, "&lt;", 4);   pos += 4; break;
+            case '>':  memcpy(buf + pos, "&gt;", 4);   pos += 4; break;
+            case '"':  memcpy(buf + pos, "&quot;", 6); pos += 6; break;
+            default:   buf[pos++] = *src; break;
+        }
+        src++;
+    }
+    buf[pos] = '\0';
+    return pos;
+}
+
+/* Helper: convert a subset of markdown to simple HTML.
+ * Processes # heading, ``` code fences, paragraphs.
+ * Output capped at outsz. */
+static size_t md_to_html(char *out, size_t outsz, const char *md) {
+    size_t pos = 0;
+    int in_code = 0;
+
+    while (*md && pos + 32 < outsz) {
+        /* Code fence */
+        if (strncmp(md, "```", 3) == 0) {
+            if (!in_code) {
+                memcpy(out + pos, "<pre><code>", 11); pos += 11;
+                in_code = 1;
+            } else {
+                memcpy(out + pos, "</code></pre>", 13); pos += 13;
+                in_code = 0;
+            }
+            md += 3;
+            while (*md == '\n') md++;
+            continue;
+        }
+
+        if (in_code) {
+            /* Inside code block — escape but preserve text */
+            char esc[128];
+            size_t elen = html_escape(esc, sizeof(esc), md);
+            if (pos + elen + 10 < outsz) {
+                memcpy(out + pos, esc, elen);
+                pos += elen;
+            }
+            /* Find next newline or end */
+            while (*md && *md != '\n') md++;
+            if (*md == '\n') {
+                out[pos++] = '\n'; md++;
+            }
+            continue;
+        }
+
+        /* Headings */
+        if (*md == '#') {
+            int level = 0;
+            while (*md == '#' && level < 6) { level++; md++; }
+            while (*md == ' ') md++;
+            const char *end = strchr(md, '\n');
+            if (!end) end = md + strlen(md);
+            size_t tlen = (size_t)(end - md);
+            if (tlen > 255) tlen = 255;
+            char title[256];
+            memcpy(title, md, tlen);
+            title[tlen] = '\0';
+
+            char esc[512];
+            html_escape(esc, sizeof(esc), title);
+
+            pos += snprintf(out + pos, outsz - pos, "<h%d>%s</h%d>\n", level, esc, level);
+            md = end;
+            if (*md == '\n') md++;
+            continue;
+        }
+
+        /* Horizontal rule */
+        if (strncmp(md, "---", 3) == 0 && (md[3] == '\n' || md[3] == '\0')) {
+            memcpy(out + pos, "<hr>\n", 5); pos += 5;
+            md += 3;
+            if (*md == '\n') md++;
+            continue;
+        }
+
+        /* Empty line — paragraph break */
+        if (*md == '\n') {
+            md++;
+            continue;
+        }
+
+        /* Regular paragraph line — accumulate until blank line */
+        const char *end = strchr(md, '\n');
+        if (!end) end = md + strlen(md);
+        size_t llen = (size_t)(end - md);
+        if (llen > 1200) llen = 1200;
+
+        char line[1280];
+        memcpy(line, md, llen); line[llen] = '\0';
+        /* Skip leading/trailing whitespace */
+        char *start = line;
+        while (*start == ' ') start++;
+        char *ep = line + strlen(line) - 1;
+        while (ep > start && (*ep == ' ' || *ep == '\t')) *ep-- = '\0';
+
+        if (start[0]) {
+            char esc[2048];
+            html_escape(esc, sizeof(esc), start);
+            pos += snprintf(out + pos, outsz - pos, "<p>%s</p>\n", esc);
+        }
+        md = end;
+        if (*md == '\n') md++;
+    }
+    out[pos] = '\0';
+    return pos;
+}
+
+/* Helper: serve a markdown file as HTML with navigation */
+static void serve_md_as_html(int fd, const char *filepath, const char *title) {
+    char raw[65536];
+    size_t rlen = 0;
+
+    FILE *f = fopen(filepath, "r");
+    if (f) {
+        rlen = fread(raw, 1, sizeof(raw) - 1, f);
+        fclose(f);
+    }
+    raw[rlen] = '\0';
+
+    char body[65536];
+    md_to_html(body, sizeof(body), raw);
+
+    char html[131072];
+    snprintf(html, sizeof(html),
+        "<!DOCTYPE html>\n"
+        "<html lang=\"en\">\n<head>\n"
+        "<meta charset=\"utf-8\">\n"
+        "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n"
+        "<title>Slermes — %s</title>\n"
+        "<style>\n"
+        "body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;"
+        "max-width:900px;margin:0 auto;padding:20px 26px;color:#1a1a1a;"
+        "background:#fafafa;line-height:1.7;}\n"
+        "h1{color:#1d1d1d;border-bottom:2px solid #e0e0e0;padding-bottom:8px;}\n"
+        "h2{color:#2c3e50;margin-top:28px;border-bottom:1px solid #eee;"
+        "padding-bottom:4px;}\n"
+        "h3{color:#34495e;margin-top:20px;}\n"
+        "h4{color:#555;}\n"
+        "code{background:#f0f0f0;padding:2px 6px;border-radius:3px;"
+        "font-size:0.9em;font-family:'SF Mono',Cambria,Consolas,monospace;}\n"
+        "pre{background:#f5f5f5;padding:16px 20px;border-radius:6px;"
+        "overflow-x:auto;font-size:0.88em;border:1px solid #ddd;}\n"
+        "pre code{background:none;padding:0;}\n"
+        "blockquote{border-left:4px solid #aaa;margin:16px 0;padding:8px 20px;"
+        "color:#555;background:#f9f9f9;}\n"
+        "table{border-collapse:collapse;width:100%%;margin:12px 0;}\n"
+        "th,td{border:1px solid #ddd;padding:8px 14px;text-align:left;}\n"
+        "th{background:#f0f0f0;}\n"
+        "a{color:#2563eb;text-decoration:none;}\n"
+        "a:hover{text-decoration:underline;}\n"
+        "hr{border:none;border-top:1px solid #ddd;margin:24px 0;}\n"
+        ".nav{background:#fff;border:1px solid #ddd;border-radius:6px;"
+        "padding:14px 20px;margin-bottom:24px;}\n"
+        ".nav ul{padding-left:20px;}\n"
+        ".nav h3{margin-top:0;}\n"
+        "</style>\n"
+        "</head>\n<body>\n"
+        "<nav class=\"nav\"><h3>Slermes Documentation</h3>\n"
+        "<li><strong><a href=\"/api/docs\">Documentation Index</a></strong></li>\n"
+        "<li><a href=\"/api/docs/readme\">README</a></li>\n"
+        "<li><a href=\"/api/docs/architecture\">Architecture &amp; Design</a></li>\n"
+        "<li><a href=\"/api/docs/contributing\">Contributing &amp; Engine Contracts</a></li>\n"
+        "</ul>\n"
+        "</nav>\n"
+        "<main>\n%s</main>\n"
+        "<hr>\n"
+        "<footer style=\"text-align:center;color:#888;font-size:0.85em;margin-top:24px;\">"
+        "Slermes Documentation Server &mdash; v501-dev</footer>\n"
+        "</body>\n</html>",
+        title, body);
+
+    send_html(fd, html);
+}
+
+/* ── /api/docs — Documentation index ──────────────────────────────── */
+static void h_docs(void) {
+    const char *html =
+        "<!DOCTYPE html>\n"
+        "<html lang=\"en\">\n<head>\n"
+        "<meta charset=\"utf-8\">\n"
+        "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n"
+        "<title>Slermes Documentation</title>\n"
+        "<style>\n"
+        "body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;"
+        "max-width:900px;margin:0 auto;padding:20px 26px;color:#1a1a1a;"
+        "background:#fafafa;line-height:1.6;}\n"
+        "h1{color:#1d1d1d;border-bottom:2px solid #e0e0e0;padding-bottom:8px;}\n"
+        "h2{color:#2c3e50;margin-top:28px;}\n"
+        "a{color:#2563eb;text-decoration:none;}\n"
+        "a:hover{text-decoration:underline;}\n"
+        ".card{background:#fff;border:1px solid #ddd;border-radius:8px;padding:20px 24px;"
+        "margin:16px 0;}\n"
+        ".card h3{margin-top:4px;}\n"
+        ".card p{color:#555;}\n"
+        ".badge{display:inline-block;background:#2563eb;color:#fff;border-radius:12px;"
+        "padding:2px 10px;font-size:0.8em;margin-left:8px;}\n"
+        "table{border-collapse:collapse;width:100%%;margin:12px 0;}\n"
+        "th,td{border:1px solid #ddd;padding:8px 14px;text-align:left;}\n"
+        "th{background:#f0f0f0;}\n"
+        "</style>\n"
+        "</head>\n<body>\n"
+        "<h1>📚 Slermes Documentation <span class=\"badge\">v501-dev</span></h1>\n"
+        "<p>Documentation for the Slermes C11 fork of Hermes Agent, sourced from the "
+        "upstream documentation set. Each section corresponds to a logical area of the "
+        "Hermes Agent project architecture.</p>\n"
+        "\n"
+        "<div class=\"card\">\n"
+        "<h3><a href=\"/api/docs/readme\">README</a></h3>\n"
+        "<p>The full project README — quickstart, build instructions, feature matrix, "
+        "migration guide, dependencies, and project status overview.</p>\n"
+        "</div>\n"
+        "\n"
+        "<div class=\"card\">\n"
+        "<h3><a href=\"/api/docs/architecture\">Architecture &amp; Design</a></h3>\n"
+        "<p>System architecture, session lifecycle, multi-gateway deployment, "
+        "relay-connector contract, and core design documents from the upstream project.</p>\n"
+        "</div>\n"
+        "\n"
+        "<div class=\"card\">\n"
+        "<h3><a href=\"/api/docs/contributing\">Contributing &amp; Engine Contracts</a></h3>\n"
+        "<p>Contributing guidelines, profile builder design, middleware contract, "
+        "observer hooks, and root-cause analysis documents.</p>\n"
+        "</div>\n"
+        "\n"
+        "<div class=\"card\">\n"
+        "<h3>External Documentation</h3>\n"
+        "<p>For the canonical, latest documentation including user guide, API reference, "
+        "and tutorials:</p>\n"
+        "<ul>\n"
+        "<li><a href=\"https://hermes-agent.nousresearch.com/docs/\">"
+        "hermes-agent.nousresearch.com/docs/</a></li>\n"
+        "<li><a href=\"https://hermes-agent.nousresearch.com/\">"
+        "hermes-agent.nousresearch.com</a></li>\n"
+        "</ul>\n"
+        "</div>\n"
+        "\n"
+        "<h2>Documentation Sections</h2>\n"
+        "<table>\n"
+        "<tr><th>Endpoint</th><th>Description</th></tr>\n"
+        "<tr><td><code>/api/docs</code></td><td>This index page</td></tr>\n"
+        "<tr><td><code>/api/docs/readme</code></td><td>Full project README</td></tr>\n"
+        "<tr><td><code>/api/docs/architecture</code></td><td>Architecture &amp; design documents</td></tr>\n"
+        "<tr><td><code>/api/docs/contributing</code></td><td>Contributing &amp; engine contracts</td></tr>\n"
+        "</table>\n"
+        "\n"
+        "<hr>\n"
+        "<footer style=\"text-align:center;color:#888;font-size:0.85em;margin-top:24px;\">"
+        "Slermes Documentation Server &mdash; v501-dev</footer>\n"
+        "</body>\n</html>";
+
+    send_html(g_client_fd, html);
+}
+
+/* ── /api/docs/readme — README.md as HTML ─────────────────────────── */
+static void h_docs_readme(void) {
+    char path[1024];
+    snprintf(path, sizeof(path), "%s/docs/README.md", "/home/wubu/hermes-agent-dev");
+    serve_md_as_html(g_client_fd, path, "README");
+}
+
+/* ── /api/docs/architecture — Architecture & Design docs ──────────── */
+static void h_docs_architecture(void) {
+    /* Concatenate architecture-related docs into one page */
+    char combined[262144];
+    size_t pos = 0;
+
+    const char *files[] = {
+        "/home/wubu/hermes-agent-dev/docs/session-lifecycle.md",
+        "/home/wubu/hermes-agent-dev/docs/kanban/multi-gateway.md",
+        "/home/wubu/hermes-agent-dev/docs/relay-connector-contract.md",
+        "/home/wubu/hermes-agent-dev/docs/chronos-managed-cron-contract.md",
+        NULL
+    };
+
+    for (int i = 0; files[i]; i++) {
+        FILE *f = fopen(files[i], "r");
+        if (f) {
+            char buf[32768];
+            size_t n = fread(buf, 1, sizeof(buf) - 1, f);
+            fclose(f);
+            buf[n] = '\0';
+
+            /* Extract filename for section header */
+            const char *bn = strrchr(files[i], '/');
+            bn = bn ? bn + 1 : files[i];
+
+            char sec_title[256];
+            snprintf(sec_title, sizeof(sec_title), "� %s", bn);
+
+            char esc[512];
+            html_escape(esc, sizeof(esc), sec_title);
+
+            pos += snprintf(combined + pos, sizeof(combined) - pos,
+                "<h2>%s</h2>\n", esc);
+            if (pos >= sizeof(combined) - 1024) break;
+
+            size_t remaining = sizeof(combined) - pos - 1024;
+            if (n > remaining) n = remaining;
+            memcpy(combined + pos, buf, n);
+            pos += n;
+            combined[pos] = '\0';
+            pos += snprintf(combined + pos, sizeof(combined) - pos, "\n\n");
+        }
+    }
+    combined[pos] = '\0';
+
+    char body[262144];
+    md_to_html(body, sizeof(body), combined);
+
+    char html[524288];
+    snprintf(html, sizeof(html),
+        "<!DOCTYPE html>\n"
+        "<html lang=\"en\">\n<head>\n"
+        "<meta charset=\"utf-8\">\n"
+        "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n"
+        "<title>Slermes — Architecture &amp; Design</title>\n"
+        "<style>\n"
+        "body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;"
+        "max-width:900px;margin:0 auto;padding:20px 26px;color:#1a1a1a;"
+        "background:#fafafa;line-height:1.7;}\n"
+        "h1{color:#1d1d1d;border-bottom:2px solid #e0e0e0;padding-bottom:8px;}\n"
+        "h2{color:#2c3e50;margin-top:28px;border-bottom:1px solid #eee;"
+        "padding-bottom:4px;}\n"
+        "h3{color:#34495e;margin-top:20px;}\n"
+        "h4{color:#555;}\n"
+        "code{background:#f0f0f0;padding:2px 6px;border-radius:3px;"
+        "font-size:0.9em;font-family:'SF Mono',Cambria,Consolas,monospace;}\n"
+        "pre{background:#f5f5f5;padding:16px 20px;border-radius:6px;"
+        "overflow-x:auto;font-size:0.88em;border:1px solid #ddd;}\n"
+        "pre code{background:none;padding:0;}\n"
+        "blockquote{border-left:4px solid #aaa;margin:16px 0;padding:8px 20px;"
+        "color:#555;background:#f9f9f9;}\n"
+        "table{border-collapse:collapse;width:100%%;margin:12px 0;}\n"
+        "th,td{border:1px solid #ddd;padding:8px 14px;text-align:left;}\n"
+        "th{background:#f0f0f0;}\n"
+        "a{color:#2563eb;text-decoration:none;}\n"
+        "a:hover{text-decoration:underline;}\n"
+        "hr{border:none;border-top:1px solid #ddd;margin:24px 0;}\n"
+        ".nav{background:#fff;border:1px solid #ddd;border-radius:6px;"
+        "padding:14px 20px;margin-bottom:24px;}\n"
+        ".nav ul{padding-left:20px;}\n"
+        ".nav h3{margin-top:0;}\n"
+        "</style>\n"
+        "</head>\n<body>\n"
+        "<nav class=\"nav\"><h3>Slermes Documentation</h3>\n"
+        "<li><strong><a href=\"/api/docs\">Documentation Index</a></strong></li>\n"
+        "<li><a href=\"/api/docs/readme\">README</a></li>\n"
+        "<li><a href=\"/api/docs/architecture\">Architecture &amp; Design</a></li>\n"
+        "<li><a href=\"/api/docs/contributing\">Contributing &amp; Engine Contracts</a></li>\n"
+        "</ul>\n"
+        "</nav>\n"
+        "<main>\n%s</main>\n"
+        "<hr>\n"
+        "<footer style=\"text-align:center;color:#888;font-size:0.85em;margin-top:24px;\">"
+        "Slermes Documentation Server &mdash; v501-dev</footer>\n"
+        "</body>\n</html>",
+        body);
+
+    send_html(g_client_fd, html);
+}
+
+/* ── /api/docs/contributing — Contributing & Contracts ─────────────── */
+static void h_docs_contributing(void) {
+    char combined[262144];
+    size_t pos = 0;
+
+    const char *files[] = {
+        "/home/wubu/hermes-agent-dev/docs/design/profile-builder.md",
+        "/home/wubu/hermes-agent-dev/docs/middleware/README.md",
+        "/home/wubu/hermes-agent-dev/docs/observability/README.md",
+        "/home/wubu/hermes-agent-dev/docs/security/network-egress-isolation.md",
+        "/home/wubu/hermes-agent-dev/docs/rca-ssl-cacert-post-git-pull.md",
+        "/home/wubu/hermes-agent-dev/docs/plans/2026-06-09-003-fix-telegram-stream-overflow-continuations-plan.md",
+        NULL
+    };
+
+    for (int i = 0; files[i]; i++) {
+        FILE *f = fopen(files[i], "r");
+        if (f) {
+            char buf[32768];
+            size_t n = fread(buf, 1, sizeof(buf) - 1, f);
+            fclose(f);
+            buf[n] = '\0';
+
+            const char *bn = strrchr(files[i], '/');
+            bn = bn ? bn + 1 : files[i];
+
+            char sec_title[256];
+            snprintf(sec_title, sizeof(sec_title), "� %s", bn);
+
+            char esc[512];
+            html_escape(esc, sizeof(esc), sec_title);
+
+            pos += snprintf(combined + pos, sizeof(combined) - pos,
+                "<h2>%s</h2>\n", esc);
+            if (pos >= sizeof(combined) - 1024) break;
+
+            size_t remaining = sizeof(combined) - pos - 1024;
+            if (n > remaining) n = remaining;
+            memcpy(combined + pos, buf, n);
+            pos += n;
+            combined[pos] = '\0';
+            pos += snprintf(combined + pos, sizeof(combined) - pos, "\n\n");
+        }
+    }
+    combined[pos] = '\0';
+
+    char body[262144];
+    md_to_html(body, sizeof(body), combined);
+
+    char html[524288];
+    snprintf(html, sizeof(html),
+        "<!DOCTYPE html>\n"
+        "<html lang=\"en\">\n<head>\n"
+        "<meta charset=\"utf-8\">\n"
+        "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n"
+        "<title>Slermes — Contributing &amp; Engine Contracts</title>\n"
+        "<style>\n"
+        "body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;"
+        "max-width:900px;margin:0 auto;padding:20px 26px;color:#1a1a1a;"
+        "background:#fafafa;line-height:1.7;}\n"
+        "h1{color:#1d1d1d;border-bottom:2px solid #e0e0e0;padding-bottom:8px;}\n"
+        "h2{color:#2c3e50;margin-top:28px;border-bottom:1px solid #eee;"
+        "padding-bottom:4px;}\n"
+        "h3{color:#34495e;margin-top:20px;}\n"
+        "h4{color:#555;}\n"
+        "code{background:#f0f0f0;padding:2px 6px;border-radius:3px;"
+        "font-size:0.9em;font-family:'SF Mono',Cambria,Consolas,monospace;}\n"
+        "pre{background:#f5f5f5;padding:16px 20px;border-radius:6px;"
+        "overflow-x:auto;font-size:0.88em;border:1px solid #ddd;}\n"
+        "pre code{background:none;padding:0;}\n"
+        "blockquote{border-left:4px solid #aaa;margin:16px 0;padding:8px 20px;"
+        "color:#555;background:#f9f9f9;}\n"
+        "table{border-collapse:collapse;width:100%%;margin:12px 0;}\n"
+        "th,td{border:1px solid #ddd;padding:8px 14px;text-align:left;}\n"
+        "th{background:#f0f0f0;}\n"
+        "a{color:#2563eb;text-decoration:none;}\n"
+        "a:hover{text-decoration:underline;}\n"
+        "hr{border:none;border-top:1px solid #ddd;margin:24px 0;}\n"
+        ".nav{background:#fff;border:1px solid #ddd;border-radius:6px;"
+        "padding:14px 20px;margin-bottom:24px;}\n"
+        ".nav ul{padding-left:20px;}\n"
+        ".nav h3{margin-top:0;}\n"
+        "</style>\n"
+        "</head>\n<body>\n"
+        "<nav class=\"nav\"><h3>Slermes Documentation</h3>\n"
+        "<li><strong><a href=\"/api/docs\">Documentation Index</a></strong></li>\n"
+        "<li><a href=\"/api/docs/readme\">README</a></li>\n"
+        "<li><a href=\"/api/docs/architecture\">Architecture &amp; Design</a></li>\n"
+        "<li><a href=\"/api/docs/contributing\">Contributing &amp; Engine Contracts</a></li>\n"
+        "</ul>\n"
+        "</nav>\n"
+        "<main>\n%s</main>\n"
+        "<hr>\n"
+        "<footer style=\"text-align:center;color:#888;font-size:0.85em;margin-top:24px;\">"
+        "Slermes Documentation Server &mdash; v501-dev</footer>\n"
+        "</body>\n</html>",
+        body);
+
+    send_html(g_client_fd, html);
+}
+
 /* ── Route table ────────────────────────────────────────────────────── */
 
 typedef struct {
@@ -2414,8 +2900,7 @@ static bool handle_api(const char *method, const char *path, int cfd) {
                 goto send;
             }
         }
-    }
-    return false; /* No route matched — fall through to static file handler */
+    }    return false; /* No route matched — fall through to static file handler */
 
 send:
     send_json(cfd);
