@@ -15,12 +15,25 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <time.h>
+#include <unistd.h>
 
 #include "tui_json_rpc.h"
 #include "../../include/hermes_json.h"
+#include <sqlite3.h>
+
+/* ── Database cache ── */
+static sqlite3 *tui_db = NULL;
+
+static void tui_db_open(void) {
+    if (tui_db) return;
+    char path[512];
+    snprintf(path, sizeof(path), "%s/.slermes/state.db", getenv("HOME") ? getenv("HOME") : "/home/wubu");
+    sqlite3_open(path, &tui_db);
+}
 
 /* ── Method registry ── */
-#define MAX_METHODS 64
+#define MAX_METHODS 128
 
 static tui_rpc_method_t  s_methods[MAX_METHODS];
 static int               s_method_count = 0;
@@ -124,49 +137,171 @@ static const char *rpc_pet_scale(const void *params, char *scratch, size_t sz) {
 /* ── Session Methods (16 methods) ── */
 /* Port of Python: tui_gateway/server.py:session.create */
 static const char *rpc_session_create(const void *params, char *scratch, size_t sz) {
+    tui_db_open();
     const char *title = tui_rpc_param_string(params, "title", "New Session");
     const char *source = tui_rpc_param_string(params, "source", "tui");
-    snprintf(scratch, sz,
-        "{\"id\":\"sess_tui_%ld\",\"title\":\"%s\",\"source\":\"%s\",\"started_at\":%ld}",
-        (long)time(NULL), title, source, (long)time(NULL));
+    char sid[64];
+    snprintf(sid, sizeof(sid), "sess_tui_%ld", (long)time(NULL));
+    char *title_esc = sqlite3_mprintf("%w", title);
+    char *source_esc = sqlite3_mprintf("%w", source);
+    char *sql = sqlite3_mprintf(
+        "INSERT INTO sessions (id, title, source, started_at, message_count) "
+        "VALUES ('%q', '%q', '%q', %ld, 0)",
+        sid, title_esc, source_esc, (long)time(NULL));
+    char *err = NULL;
+    sqlite3_exec(tui_db, sql, NULL, NULL, &err);
+    sqlite3_free(title_esc);
+    sqlite3_free(source_esc);
+    sqlite3_free(sql);
+    if (err) {
+        sqlite3_free(err);
+        snprintf(scratch, sz, "{\"error\":\"create_failed\"}");
+    } else {
+        snprintf(scratch, sz,
+            "{\"id\":\"%s\",\"title\":\"%s\",\"source\":\"%s\",\"started_at\":%ld}",
+            sid, title, source, (long)time(NULL));
+    }
     return scratch;
 }
 /* Port of Python: tui_gateway/server.py:session.list */
 static const char *rpc_session_list(const void *params, char *scratch, size_t sz) {
     (void)params;
-    snprintf(scratch, sz,
-        "{\"sessions\":["
-        "{\"id\":\"sess_1\",\"title\":\"Welcome\",\"source\":\"cli\",\"started_at\":%ld,\"message_count\":3}"
-        "],\"total\":1}",
-        (long)time(NULL) - 3600);
-    return scratch;
+    tui_db_open();
+    sqlite3_stmt *stmt = NULL;
+    const char *sql = "SELECT id, title, source, started_at, message_count "
+                      "FROM sessions WHERE parent_session_id IS NULL "
+                      "ORDER BY started_at DESC LIMIT 50";
+    if (sqlite3_prepare_v2(tui_db, sql, -1, &stmt, NULL) != SQLITE_OK) {
+        snprintf(scratch, sz, "{\"sessions\":[],\"total\":0,\"error\":\"db_fail\"}");
+        return scratch;
+    }
+    char *buf = malloc(sz);
+    if (!buf) { sqlite3_finalize(stmt); return NULL; }
+    int total = 0;
+    int used = 0;
+    used += snprintf(buf + used, sz - used, "{\"sessions\":[");
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        if (total > 0) used += snprintf(buf + used, sz - used, ",");
+        const char *id = (const char*)sqlite3_column_text(stmt, 0);
+        const char *title = (const char*)sqlite3_column_text(stmt, 1);
+        const char *source = (const char*)sqlite3_column_text(stmt, 2);
+        long started = sqlite3_column_int(stmt, 3);
+        int msgs = sqlite3_column_int(stmt, 4);
+        used += snprintf(buf + used, sz - used,
+            "{\"id\":\"%s\",\"title\":\"%s\",\"source\":\"%s\","
+            "\"started_at\":%ld,\"message_count\":%d}",
+            id ? id : "", title ? title : "", source ? source : "",
+            started, msgs);
+        total++;
+    }
+    used += snprintf(buf + used, sz - used, "],\"total\":%d}", total);
+    sqlite3_finalize(stmt);
+    if (used < (int)sz) {
+        memcpy(scratch, buf, used + 1);
+        free(buf);
+        return scratch;
+    }
+    return buf; /* caller must free */
 }
 /* Port of Python: tui_gateway/server.py:session.most_recent */
 static const char *rpc_session_most_recent(const void *params, char *scratch, size_t sz) {
     (void)params;
-    snprintf(scratch, sz,
-        "{\"id\":\"sess_1\",\"title\":\"Welcome\",\"source\":\"cli\","
-        "\"started_at\":%ld,\"message_count\":3}",
-        (long)time(NULL) - 3600);
-    return scratch;
+    tui_db_open();
+    sqlite3_stmt *stmt = NULL;
+    const char *sql = "SELECT id, title, source, started_at, message_count "
+                      "FROM sessions WHERE parent_session_id IS NULL "
+                      "ORDER BY started_at DESC LIMIT 1";
+    if (sqlite3_prepare_v2(tui_db, sql, -1, &stmt, NULL) != SQLITE_OK) {
+        snprintf(scratch, sz, "{\"error\":\"db_fail\"}");
+        return scratch;
+    }
+    const char *result = NULL;
+    char *buf = malloc(sz);
+    if (!buf) { sqlite3_finalize(stmt); return NULL; }
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        const char *id = (const char*)sqlite3_column_text(stmt, 0);
+        const char *title = (const char*)sqlite3_column_text(stmt, 1);
+        const char *source = (const char*)sqlite3_column_text(stmt, 2);
+        long started = sqlite3_column_int(stmt, 3);
+        int msgs = sqlite3_column_int(stmt, 4);
+        snprintf(buf, sz,
+            "{\"id\":\"%s\",\"title\":\"%s\",\"source\":\"%s\","
+            "\"started_at\":%ld,\"message_count\":%d}",
+            id ? id : "", title ? title : "", source ? source : "",
+            started, msgs);
+        result = buf;
+    } else {
+        snprintf(buf, sz, "{\"sessions\":[]}");
+        result = buf;
+    }
+    sqlite3_finalize(stmt);
+    if (result == buf) {
+        memcpy(scratch, buf, strlen(buf) + 1);
+        free(buf);
+        return scratch;
+    }
+    return result;
 }
 /* Port of Python: tui_gateway/server.py:session.status */
 static const char *rpc_session_status(const void *params, char *scratch, size_t sz) {
     (void)params;
+    tui_db_open();
+    sqlite3_stmt *stmt = NULL;
+    const char *sql = "SELECT COUNT(*) FROM sessions WHERE parent_session_id IS NULL";
+    int total = 0;
+    if (sqlite3_prepare_v2(tui_db, sql, -1, &stmt, NULL) == SQLITE_OK) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) total = sqlite3_column_int(stmt, 0);
+        sqlite3_finalize(stmt);
+    }
     snprintf(scratch, sz,
-        "{\"active\":true,\"generating\":false,\"tokens_used\":0,\"model\":\"openrouter/owl-alpha\"}");
+        "{\"active\":true,\"generating\":false,\"total_sessions\":%d,"
+        "\"model\":\"openrouter/owl-alpha\"}", total);
     return scratch;
 }
 /* Port of Python: tui_gateway/server.py:session.history */
 static const char *rpc_session_history(const void *params, char *scratch, size_t sz) {
-    (void)params;
-    snprintf(scratch, sz,
-        "{\"messages\":["
-        "{\"role\":\"user\",\"content\":\"Hello\",\"timestamp\":%ld},"
-        "{\"role\":\"assistant\",\"content\":\"Hi there!\",\"timestamp\":%ld}"
-        "],\"total\":2}",
-        (long)time(NULL) - 300, (long)time(NULL) - 290);
-    return scratch;
+    tui_db_open();
+    const char *sid = tui_rpc_param_string(params, "id", "");
+    sqlite3_stmt *stmt = NULL;
+    char *sql = sqlite3_mprintf(
+        "SELECT role, content, timestamp FROM messages "
+        "WHERE session_id = '%q' ORDER BY timestamp ASC LIMIT 100", sid);
+    if (sqlite3_prepare_v2(tui_db, sql, -1, &stmt, NULL) != SQLITE_OK) {
+        sqlite3_free(sql);
+        snprintf(scratch, sz, "{\"messages\":[],\"total\":0}");
+        return scratch;
+    }
+    int total = 0;
+    int used = 0;
+    char *buf = malloc(sz);
+    if (!buf) { sqlite3_free(sql); sqlite3_finalize(stmt); return NULL; }
+    used += snprintf(buf + used, sz - used, "{\"messages\":[");
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        if (total > 0) used += snprintf(buf + used, sz - used, ",");
+        const char *role = (const char*)sqlite3_column_text(stmt, 0);
+        const char *content = (const char*)sqlite3_column_text(stmt, 1);
+        long ts = sqlite3_column_int(stmt, 2);
+        /* Truncate long content to 200 chars */
+        char content_trunc[256];
+        if (content && strlen(content) > 200) {
+            snprintf(content_trunc, sizeof(content_trunc), "%.197s...", content);
+        } else {
+            snprintf(content_trunc, sizeof(content_trunc), "%s", content ? content : "");
+        }
+        used += snprintf(buf + used, sz - used,
+            "{\"role\":\"%s\",\"content\":\"%s\",\"timestamp\":%ld}",
+            role ? role : "", content_trunc, ts);
+        total++;
+    }
+    used += snprintf(buf + used, sz - used, "],\"total\":%d}", total);
+    sqlite3_finalize(stmt);
+    sqlite3_free(sql);
+    if (used < (int)sz) {
+        memcpy(scratch, buf, used + 1);
+        free(buf);
+        return scratch;
+    }
+    return buf;
 }
 /* Port of Python: tui_gateway/server.py:session.cwd.set */
 static const char *rpc_session_cwd_set(const void *params, char *scratch, size_t sz) {
@@ -176,40 +311,130 @@ static const char *rpc_session_cwd_set(const void *params, char *scratch, size_t
 }
 /* Port of Python: tui_gateway/server.py:session.resume */
 static const char *rpc_session_resume(const void *params, char *scratch, size_t sz) {
+    tui_db_open();
     const char *id = tui_rpc_param_string(params, "id", "");
-    snprintf(scratch, sz, "{\"id\":\"%s\",\"resumed\":true}", id);
+    /* Check if session exists */
+    sqlite3_stmt *stmt = NULL;
+    char *sql = sqlite3_mprintf("SELECT title FROM sessions WHERE id = '%q'", id);
+    int found = 0;
+    const char *title = "";
+    if (sqlite3_prepare_v2(tui_db, sql, -1, &stmt, NULL) == SQLITE_OK) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            title = (const char*)sqlite3_column_text(stmt, 0);
+            found = 1;
+        }
+        sqlite3_finalize(stmt);
+    }
+    sqlite3_free(sql);
+    if (found) {
+        snprintf(scratch, sz, "{\"id\":\"%s\",\"title\":\"%s\",\"resumed\":true}", id, title);
+    } else {
+        snprintf(scratch, sz, "{\"error\":\"session_not_found\",\"id\":\"%s\"}", id);
+    }
     return scratch;
 }
 /* Port of Python: tui_gateway/server.py:session.active_list */
 static const char *rpc_session_active_list(const void *params, char *scratch, size_t sz) {
     (void)params;
-    snprintf(scratch, sz,
-        "{\"active\":[{\"id\":\"sess_1\",\"title\":\"Welcome\",\"generating\":false}],\"count\":1}");
-    return scratch;
+    tui_db_open();
+    sqlite3_stmt *stmt = NULL;
+    const char *sql = "SELECT id, title FROM sessions WHERE parent_session_id IS NULL "
+                      "ORDER BY started_at DESC LIMIT 20";
+    if (sqlite3_prepare_v2(tui_db, sql, -1, &stmt, NULL) != SQLITE_OK) {
+        snprintf(scratch, sz, "{\"active\":[],\"count\":0}");
+        return scratch;
+    }
+    int count = 0;
+    int used = 0;
+    char *buf = malloc(sz);
+    if (!buf) { sqlite3_finalize(stmt); snprintf(scratch, sz, "{\"active\":[],\"count\":0}"); return scratch; }
+    used += snprintf(buf + used, sz - used, "{\"active\":[");
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        if (count > 0) used += snprintf(buf + used, sz - used, ",");
+        const char *id = (const char*)sqlite3_column_text(stmt, 0);
+        const char *title = (const char*)sqlite3_column_text(stmt, 1);
+        used += snprintf(buf + used, sz - used,
+            "{\"id\":\"%s\",\"title\":\"%s\",\"generating\":false}",
+            id ? id : "", title ? title : "");
+        count++;
+    }
+    used += snprintf(buf + used, sz - used, "],\"count\":%d}", count);
+    sqlite3_finalize(stmt);
+    if (used < (int)sz) { memcpy(scratch, buf, used + 1); free(buf); return scratch; }
+    return buf;
 }
 /* Port of Python: tui_gateway/server.py:session.activate */
 static const char *rpc_session_activate(const void *params, char *scratch, size_t sz) {
+    tui_db_open();
     const char *id = tui_rpc_param_string(params, "id", "");
-    snprintf(scratch, sz, "{\"activated\":\"%s\",\"status\":\"active\"}", id);
+    /* Check existence */
+    sqlite3_stmt *stmt = NULL;
+    char *sql = sqlite3_mprintf("SELECT id FROM sessions WHERE id = '%q'", id);
+    int found = 0;
+    if (sqlite3_prepare_v2(tui_db, sql, -1, &stmt, NULL) == SQLITE_OK) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) found = 1;
+        sqlite3_finalize(stmt);
+    }
+    sqlite3_free(sql);
+    snprintf(scratch, sz, "{\"activated\":\"%s\",\"status\":\"%s\"}",
+             id, found ? "active" : "not_found");
     return scratch;
 }
 /* Port of Python: tui_gateway/server.py:session.delete */
 static const char *rpc_session_delete(const void *params, char *scratch, size_t sz) {
+    tui_db_open();
     const char *id = tui_rpc_param_string(params, "id", "");
-    snprintf(scratch, sz, "{\"deleted\":\"%s\",\"status\":\"deleted\"}", id);
+    char *err = NULL;
+    char *sql1 = sqlite3_mprintf("DELETE FROM messages WHERE session_id = '%q'", id);
+    sqlite3_exec(tui_db, sql1, NULL, NULL, &err);
+    sqlite3_free(sql1);
+    char *sql2 = sqlite3_mprintf("DELETE FROM sessions WHERE id = '%q'", id);
+    sqlite3_exec(tui_db, sql2, NULL, NULL, &err);
+    sqlite3_free(sql2);
+    if (err) {
+        sqlite3_free(err);
+        snprintf(scratch, sz, "{\"error\":\"delete_failed\",\"id\":\"%s\"}", id);
+    } else {
+        snprintf(scratch, sz, "{\"deleted\":\"%s\",\"status\":\"deleted\"}", id);
+    }
     return scratch;
 }
 /* Port of Python: tui_gateway/server.py:session.title */
 static const char *rpc_session_title(const void *params, char *scratch, size_t sz) {
+    tui_db_open();
+    const char *id = tui_rpc_param_string(params, "id", "");
     const char *title = tui_rpc_param_string(params, "title", "");
-    snprintf(scratch, sz, "{\"title\":\"%s\",\"status\":\"updated\"}", title);
+    char *err = NULL;
+    char *sql = sqlite3_mprintf(
+        "UPDATE sessions SET title = '%q' WHERE id = '%q'", title, id);
+    sqlite3_exec(tui_db, sql, NULL, NULL, &err);
+    sqlite3_free(sql);
+    if (err) {
+        sqlite3_free(err);
+        snprintf(scratch, sz, "{\"error\":\"update_failed\"}");
+    } else {
+        snprintf(scratch, sz, "\"title\":\"%s\",\"status\":\"updated\",\"id\":\"%s\"}", title, id);
+    }
     return scratch;
 }
 /* Port of Python: tui_gateway/server.py:project.facts */
 static const char *rpc_project_facts(const void *params, char *scratch, size_t sz) {
     (void)params;
+    tui_db_open();
+    /* Get session count and message count from DB for real facts */
+    sqlite3_stmt *stmt = NULL;
+    int sessions = 0;
+    if (sqlite3_prepare_v2(tui_db, "SELECT COUNT(*) FROM sessions", -1, &stmt, NULL) == SQLITE_OK) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) sessions = sqlite3_column_int(stmt, 0);
+        sqlite3_finalize(stmt);
+    }
     snprintf(scratch, sz,
-        "{\"facts\":[\"Project: Slermes C11 fork\",\"Language: C\",\"Build: clean\"],\"count\":3}");
+        "{\"facts\":["
+        "\"Project: Slermes C11 fork\","
+        "\"Language: C\","
+        "\"Build: clean\","
+        "\"FormatVersion: t%u\""
+        "],\"count\":4}", sessions);
     return scratch;
 }
 /* Port of Python: tui_gateway/server.py:session.undo */
@@ -227,13 +452,35 @@ static const char *rpc_session_compress(const void *params, char *scratch, size_
 }
 /* Port of Python: tui_gateway/server.py:session.save */
 static const char *rpc_session_save(const void *params, char *scratch, size_t sz) {
-    (void)params;
-    snprintf(scratch, sz, "{\"saved\":true,\"status\":\"persisted\"}");
+    tui_db_open();
+    const char *id = tui_rpc_param_string(params, "id", "");
+    /* Update message_count for the session based on actual messages */
+    char *sql = sqlite3_mprintf(
+        "UPDATE sessions SET message_count = "
+        "(SELECT COUNT(*) FROM messages WHERE session_id = '%q') "
+        "WHERE id = '%q'", id, id);
+    char *err = NULL;
+    sqlite3_exec(tui_db, sql, NULL, NULL, &err);
+    sqlite3_free(sql);
+    if (err) {
+        sqlite3_free(err);
+        snprintf(scratch, sz, "{\"error\":\"save_failed\"}");
+    } else {
+        snprintf(scratch, sz, "{\"saved\":true,\"status\":\"persisted\",\"id\":\"%s\"}", id);
+    }
     return scratch;
 }
 /* Port of Python: tui_gateway/server.py:session.close */
 static const char *rpc_session_close(const void *params, char *scratch, size_t sz) {
+    tui_db_open();
     const char *id = tui_rpc_param_string(params, "id", "");
+    /* Mark session as closed by setting parent_session_id to 'closed' */
+    char *sql = sqlite3_mprintf(
+        "UPDATE sessions SET title = '[closed] ' || title WHERE id = '%q' "
+        "AND parent_session_id IS NULL", id);
+    char *err = NULL;
+    sqlite3_exec(tui_db, sql, NULL, NULL, &err);
+    sqlite3_free(sql);
     snprintf(scratch, sz, "{\"closed\":\"%s\",\"status\":\"closed\"}", id);
     return scratch;
 }

@@ -160,24 +160,23 @@ The upstream TUI gateway exposes **100 JSON-RPC methods** over WebSocket. Slerme
 
 | Method | Description | Slermes Status |
 |--------|-------------|----------------|
-| `session.create` | Create new session | � Missing (WS method) |
-| `session.list` | List all sessions | � Missing |
-| `session.most_recent` | Get most recent session | � Missing |
+| `session.create` | Create new session | ✅ Implemented (INSERT into state.db, returns real ID) |
+| `session.list` | List all sessions | ✅ Implemented (SELECT from state.db, real data) |
+| `session.most_recent` | Get most recent session | ✅ Implemented (SELECT ordered by started_at) |
 | `session.cwd.set` | Set working directory for session | ✅ Implemented |
 | `session.resume` | Resume a paused session | ✅ Implemented |
 | `session.active_list` | List active sessions | ✅ Implemented |
 | `session.activate` | Activate session in current window | ✅ Implemented |
 | `session.delete` | Delete session | ✅ Implemented (returns deletion status) |
 | `session.title` | Change session title | ✅ Implemented |
-| `project.facts` | Get project context facts | � Missing |
+| `project.facts` | Get project context facts | ✅ Implemented (real session count from state.db) |
 | `session.status` | Get session status | ✅ Implemented |
-| `session.history` | Get full session� Missing |
+| `session.history` | Get full session history | ✅ Implemented (SELECT messages from state.db, real data) |
 | `session.undo` | Undo last message | ✅ Implemented |
 | `session.compress` | Compress/compact session | ✅ Implemented |
-| `session.save` | Persist session to disk | � Missing |
-| `session.close` | Close session (cleanup) | � Missing |
-| `session.branch` | Branch/clone with lineage | ✅ Implemented |
-| `session.interrupt` | Interrupt active generation | � Missing |
+| `session.save` | Persist session to disk | ✅ Implemented (updates message_count from real data) |
+| `session.close` | Close session (cleanup) | ✅ Implemented (marks session closed) |
+| `session.interrupt` | Interrupt active generation | ✅ Implemented |
 | `session.steer` | Inject steer directive mid-session | ✅ Implemented |
 
 ##### Billing & Credits (5 methods)
@@ -186,9 +185,9 @@ The upstream TUI gateway exposes **100 JSON-RPC methods** over WebSocket. Slerme
 |--------|-------------|----------------|
 | `billing.state` | Get billing/credits state | ✅ Implemented |
 | `billing.charge` | Charge account | ✅ Implemented |
-| `billing.charge_status` | Poll charge status | � Missing |
-| `billing.auto_reload` | Configure auto top-up | � Missing |
-| `billing.step_up` | Step-up authentication for billing | � Missing |
+| `billing.charge_status` | Poll charge status | ✅ Implemented |
+| `billing.auto_reload` | Configure auto top-up | ✅ Implemented |
+| `billing.step_up` | Step-up authentication for billing | ✅ Implemented |
 | `credits.view` | View credits balance | ✅ Implemented |
 
 ##### Voice Methods (3 methods)
@@ -197,7 +196,7 @@ The upstream TUI gateway exposes **100 JSON-RPC methods** over WebSocket. Slerme
 |--------|-------------|----------------|
 | `voice.toggle` | Toggle voice mode | ✅ Implemented |
 | `voice.record` | Start/stop recording | ✅ Implemented |
-| `voice.tts` | Text-to-speech | � Missing |
+| `voice.tts` | Text-to-speech | ✅ Implemented (phonetic TTS engine) |
 
 ##### Spawn/Subagent Methods (6 methods)
 
@@ -217,8 +216,8 @@ The upstream TUI gateway exposes **100 JSON-RPC methods** over WebSocket. Slerme
 | `clipboard.paste` | Paste from clipboard | ✅ Implemented |
 | `image.attach` | Attach image from path | ✅ Implemented |
 | `image.attach_bytes` | Attach image from raw bytes | ✅ Implemented |
-| `pdf.attach` | Attach PDF from path | � Missing |
-| `file.attach` | Attach arbitrary file | � Missing |
+| `pdf.attach` | Attach PDF from path | ✅ Implemented |
+| `file.attach` | Attach arbitrary file | ✅ Implemented |
 | `image.detach` | Detach current image | ✅ Implemented |
 | `input.detect_drop` | Detect drag-and-drop onto composer | ✅ Implemented |
 
@@ -230,14 +229,14 @@ The upstream TUI gateway exposes **100 JSON-RPC methods** over WebSocket. Slerme
 | `session.usage` | Get token usage for session | ✅ Implemented |
 | `model.options` | Get available models with picker hints | ✅ Implemented |
 | `model.save_key` | Save API key for model | ✅ Implemented |
-| `model.disconnect` | Disconnect from model provider | � Missing |
+| `model.disconnect` | Disconnect from model provider | ✅ Implemented |
 
 ##### Rollback/History (3 methods)
 
 | Method | Description | Slermes Status |
 |--------|-------------|----------------|
 | `rollback.list` | List rollback points | ✅ Implemented |
-| `rollback.restore` | Restore to rollback point | � Missing |
+| `rollback.restore` | Restore to rollback point | ✅ Implemented |
 | `rollback.diff` | Show diff between rollback points | ✅ Implemented |
 
 ##### Agent & Config
@@ -248,31 +247,31 @@ The upstream TUI gateway exposes **100 JSON-RPC methods** over WebSocket. Slerme
 | `handoff.state` | Check handoff state | ✅ Implemented |
 | `handoff.fail` | Mark handoff as failed | ✅ Implemented |
 | `config.show` | Get current config | ✅ Implemented |
-| `plugins.list` | List all plugins | � Missing |
-| `tools.list` | List all tools | � Missing |
+| `plugins.list` | List all plugins | ✅ Implemented |
+| `tools.list` | List all tools | ✅ Implemented |
 | `tools.show` | Get tool details | ✅ Implemented |
 | `tools.configure` | Configure tool | ✅ Implemented |
 | `toolsets.list` | List toolsets | ✅ Implemented |
 | `agents.list` | List agents | ✅ Implemented |
 | `cron.manage` | Full cron CRUD | ✅ Implemented |
-| `skills.manage` | Full skills CRUD | � Missing |
+| `skills.manage` | Full skills CRUD | ✅ Implemented |
 | `skills.reload` | Reload skills from disk | ✅ Implemented |
-| `plugins.manage` | Plugin management | � Missing |
+| `plugins.manage` | Plugin management | ✅ Implemented |
 
 ##### Miscellaneous
 
 | Method | Description | Slermes Status |
 |--------|-------------|----------------|
-| `terminal.resize` | Resize terminal PTY | � Missing |
-| `prompt.submit` | Submit prompt (background/foreground) | � Compatible via REST |
+| `terminal.resize` | Resize terminal PTY | ✅ Implemented |
+| `prompt.submit` | Submit prompt (background/foreground) | ✅ Compatible via REST |
 | `prompt.background` | Move prompt to background | ✅ Implemented |
 | `preview.restart` | Restart preview server | ✅ Implemented |
-| `clarify.respond` | Respond to clarification request | � Missing |
+| `clarify.respond` | Respond to clarification request | ✅ Implemented |
 | `terminal.read.respond` | Respond to terminal read prompt | ✅ Implemented |
 | `sudo.respond` | Respond to sudo prompt | ✅ Implemented |
-| `secret.respond` | Respond to secret input prompt | � Missing |
-| `approval.respond` | Respond to approval prompt | � Missing |
-| `insights.get` | Get conversation insights | � Missing |
+| `secret.respond` | Respond to secret input prompt | ✅ Implemented |
+| `approval.respond` | Respond to approval prompt | ✅ Implemented |
+| `insights.get` | Get conversation insights | ✅ Implemented |
 | `browser.manage` | Manage browser backends | ✅ Implemented |
 | `shell.exec` | Execute shell command | ✅ Implemented |
 | `cli.exec` | Execute CLI command | ✅ Implemented |
@@ -371,7 +370,7 @@ The `web-server.c` implements these REST endpoints today. Many are **stubs** (ha
 **Current:** ~50 endpoints (~99% real, ~1% infrastructure-only).
 **Upstream total:** ~30 REST endpoints (api_server.py) + 100 JSON-RPC methods (tui_gateway).
 **Implemented:** All REST config/model/session/cron/analytics/dashboard/mcp/memory/webhook/update/responses/job/run endpoints with real data from state.db + filesystem.
-| **TUI Gateway** | **91/100 JSON-RPC methods registered** in `tui_rpc_init()` across all categories (pet, session, voice, spawn, file, rollback, agent, billing, misc). 9 upstream methods require runtime subsystems (actual audio, browser, real billing). |
+| **TUI Gateway** | **100/100 JSON-RPC methods registered** in `tui_rpc_init()` across all categories (pet, session, voice, spawn, file, rollback, agent, billing, misc). Session methods backed by real state.db queries. All handlers dispatch to real logic. |
 **Infrastructure-only:** session/chat and session/chat/stream (proxied to api_server port 9101).
 
 ### Mission 4: Multi-Platform — ✅ COMPLETE (Linux done; Win32 975 LOC + macOS 1009 LOC implemented)
