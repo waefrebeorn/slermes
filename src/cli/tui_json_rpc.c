@@ -745,8 +745,120 @@ void tui_rpc_init(void) {
     s_method_count = 0;
 
     /* Register built-in methods */
-    tui_rpc_register("ping", rpc_ping, "Health check — returns \"pong\"");
-    tui_rpc_register("echo", rpc_echo, "Echoes back params (debug)");
+    tui_rpc_register("ping", rpc_ping, "Health check");
+    tui_rpc_register("echo", rpc_echo, "Echo params back (debug)");
+
+    /* ── Agent & Config ── */
+    tui_rpc_register("agents_list", rpc_agents_list, "agents_list");
+    tui_rpc_register("config_show", rpc_config_show, "config_show");
+    tui_rpc_register("cron_manage", rpc_cron_manage, "cron_manage");
+    tui_rpc_register("plugins_list", rpc_plugins_list, "plugins_list");
+    tui_rpc_register("plugins_manage", rpc_plugins_manage, "plugins_manage");
+    tui_rpc_register("skills_manage", rpc_skills_manage, "skills_manage");
+    tui_rpc_register("skills_reload", rpc_skills_reload, "skills_reload");
+    tui_rpc_register("tools_configure", rpc_tools_configure, "tools_configure");
+    tui_rpc_register("tools_list", rpc_tools_list, "tools_list");
+    tui_rpc_register("tools_show", rpc_tools_show, "tools_show");
+    tui_rpc_register("toolsets_list", rpc_toolsets_list, "toolsets_list");
+
+    /* ── Interaction Methods ── */
+    tui_rpc_register("approval_respond", rpc_approval_respond, "approval_respond");
+    tui_rpc_register("clarify_respond", rpc_clarify_respond, "clarify_respond");
+    tui_rpc_register("handoff_fail", rpc_handoff_fail, "handoff_fail");
+    tui_rpc_register("handoff_request", rpc_handoff_request, "handoff_request");
+    tui_rpc_register("handoff_state", rpc_handoff_state, "handoff_state");
+    tui_rpc_register("secret_respond", rpc_secret_respond, "secret_respond");
+    tui_rpc_register("sudo_respond", rpc_sudo_respond, "sudo_respond");
+    tui_rpc_register("terminal_read_respond", rpc_terminal_read_respond, "terminal_read_respond");
+
+    /* ── Billing & Credits ── */
+    tui_rpc_register("billing_auto_reload", rpc_billing_auto_reload, "billing_auto_reload");
+    tui_rpc_register("billing_charge", rpc_billing_charge, "billing_charge");
+    tui_rpc_register("billing_charge_status", rpc_billing_charge_status, "billing_charge_status");
+    tui_rpc_register("billing_state", rpc_billing_state, "billing_state");
+    tui_rpc_register("billing_step_up", rpc_billing_step_up, "billing_step_up");
+    tui_rpc_register("credits_view", rpc_credits_view, "credits_view");
+
+    /* ── Miscellaneous ── */
+    tui_rpc_register("browser_manage", rpc_browser_manage, "browser_manage");
+    tui_rpc_register("cli_exec", rpc_cli_exec, "cli_exec");
+    tui_rpc_register("command_dispatch", rpc_command_dispatch, "command_dispatch");
+    tui_rpc_register("command_resolve", rpc_command_resolve, "command_resolve");
+    tui_rpc_register("complete_path", rpc_complete_path, "complete_path");
+    tui_rpc_register("complete_slash", rpc_complete_slash, "complete_slash");
+    tui_rpc_register("insights_get", rpc_insights_get, "insights_get");
+    tui_rpc_register("paste_collapse", rpc_paste_collapse, "paste_collapse");
+    tui_rpc_register("preview_restart", rpc_preview_restart, "preview_restart");
+    tui_rpc_register("prompt_background", rpc_prompt_background, "prompt_background");
+    tui_rpc_register("prompt_submit", rpc_prompt_submit, "prompt_submit");
+    tui_rpc_register("shell_exec", rpc_shell_exec, "shell_exec");
+    tui_rpc_register("terminal_resize", rpc_terminal_resize, "terminal_resize");
+
+    /* ── File & Image Attachments ── */
+    tui_rpc_register("clipboard_paste", rpc_clipboard_paste, "clipboard_paste");
+    tui_rpc_register("file_attach", rpc_file_attach, "file_attach");
+    tui_rpc_register("image_attach", rpc_image_attach, "image_attach");
+    tui_rpc_register("image_attach_bytes", rpc_image_attach_bytes, "image_attach_bytes");
+    tui_rpc_register("image_detach", rpc_image_detach, "image_detach");
+    tui_rpc_register("input_detect_drop", rpc_input_detect_drop, "input_detect_drop");
+    tui_rpc_register("pdf_attach", rpc_pdf_attach, "pdf_attach");
+
+    /* ── Spawn/Subagent Methods ── */
+    tui_rpc_register("delegation_pause", rpc_delegation_pause, "delegation_pause");
+    tui_rpc_register("delegation_status", rpc_delegation_status, "delegation_status");
+    tui_rpc_register("spawn_tree_list", rpc_spawn_tree_list, "spawn_tree_list");
+    tui_rpc_register("spawn_tree_load", rpc_spawn_tree_load, "spawn_tree_load");
+    tui_rpc_register("spawn_tree_save", rpc_spawn_tree_save, "spawn_tree_save");
+    tui_rpc_register("subagent_interrupt", rpc_subagent_interrupt, "subagent_interrupt");
+
+    /* ── LLM & Model Methods ── */
+    tui_rpc_register("llm_oneshot", rpc_llm_oneshot, "llm_oneshot");
+    tui_rpc_register("model_disconnect", rpc_model_disconnect, "model_disconnect");
+    tui_rpc_register("model_options", rpc_model_options, "model_options");
+    tui_rpc_register("model_save_key", rpc_model_save_key, "model_save_key");
+
+    /* ── Pet Methods ── */
+    tui_rpc_register("pet_cells", rpc_pet_cells, "pet_cells");
+    tui_rpc_register("pet_disable", rpc_pet_disable, "pet_disable");
+    tui_rpc_register("pet_gallery", rpc_pet_gallery, "pet_gallery");
+    tui_rpc_register("pet_info", rpc_pet_info, "pet_info");
+    tui_rpc_register("pet_remove", rpc_pet_remove, "pet_remove");
+    tui_rpc_register("pet_scale", rpc_pet_scale, "pet_scale");
+    tui_rpc_register("pet_select", rpc_pet_select, "pet_select");
+    tui_rpc_register("pet_thumb", rpc_pet_thumb, "pet_thumb");
+
+    /* ── Session Methods ── */
+    tui_rpc_register("project_facts", rpc_project_facts, "project_facts");
+    tui_rpc_register("session_activate", rpc_session_activate, "session_activate");
+    tui_rpc_register("session_active_list", rpc_session_active_list, "session_active_list");
+    tui_rpc_register("session_branch", rpc_session_branch, "session_branch");
+    tui_rpc_register("session_close", rpc_session_close, "session_close");
+    tui_rpc_register("session_compress", rpc_session_compress, "session_compress");
+    tui_rpc_register("session_create", rpc_session_create, "session_create");
+    tui_rpc_register("session_cwd_set", rpc_session_cwd_set, "session_cwd_set");
+    tui_rpc_register("session_delete", rpc_session_delete, "session_delete");
+    tui_rpc_register("session_history", rpc_session_history, "session_history");
+    tui_rpc_register("session_interrupt", rpc_session_interrupt, "session_interrupt");
+    tui_rpc_register("session_list", rpc_session_list, "session_list");
+    tui_rpc_register("session_most_recent", rpc_session_most_recent, "session_most_recent");
+    tui_rpc_register("session_resume", rpc_session_resume, "session_resume");
+    tui_rpc_register("session_save", rpc_session_save, "session_save");
+    tui_rpc_register("session_status", rpc_session_status, "session_status");
+    tui_rpc_register("session_steer", rpc_session_steer, "session_steer");
+    tui_rpc_register("session_title", rpc_session_title, "session_title");
+    tui_rpc_register("session_undo", rpc_session_undo, "session_undo");
+    tui_rpc_register("session_usage", rpc_session_usage, "session_usage");
+
+    /* ── Rollback/History ── */
+    tui_rpc_register("rollback_diff", rpc_rollback_diff, "rollback_diff");
+    tui_rpc_register("rollback_list", rpc_rollback_list, "rollback_list");
+    tui_rpc_register("rollback_restore", rpc_rollback_restore, "rollback_restore");
+
+    /* ── Voice Methods ── */
+    tui_rpc_register("voice_record", rpc_voice_record, "voice_record");
+    tui_rpc_register("voice_toggle", rpc_voice_toggle, "voice_toggle");
+    tui_rpc_register("voice_tts", rpc_voice_tts, "voice_tts");
+
 }
 
 /* ── API: Register method ── */

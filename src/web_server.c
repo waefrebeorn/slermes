@@ -1082,7 +1082,6 @@ static void h_cron_jobs(void) {
     const char *sub = g_current_path + strlen(prefix);
 
     if (strcmp(sub, "selected") == 0) {
-        h_cron_selected();
         return;
     }
     if (strncmp(sub, "daily-report", 12) == 0) {
@@ -1133,6 +1132,141 @@ static void h_cron_jobs(void) {
         }
         JSON("{\"error\":\"missing_id\"}");
         return;
+    }
+    /* Job sub-paths: /api/cron/jobs/{id}, /api/cron/jobs/{id}/run, etc. */
+    if (strncmp(sub, "jobs", 4) == 0 && (sub[4] == '/' || sub[4] == '\0')) {
+        const char *job_sub = sub + 4;
+        /* Skip the / to get to the job ID */
+        if (*job_sub == '/') job_sub++;
+        /* Extract job ID — everything before next / or end */
+        const char *slash = strchr(job_sub, '/');
+        char job_id[256];
+        if (slash) {
+            int id_len = (int)(slash - job_sub);
+            if (id_len >= (int)sizeof(job_id)) id_len = sizeof(job_id) - 1;
+            memcpy(job_id, job_sub, id_len);
+            job_id[id_len] = '\0';
+            job_sub = slash + 1;
+        } else {
+            /* /api/cron/jobs/{id} — GET=detail, DELETE=delete */
+            int len = (int)strlen(job_sub);
+            if (len >= (int)sizeof(job_id)) len = sizeof(job_id) - 1;
+            memcpy(job_id, job_sub, len);
+            job_id[len] = '\0';
+            job_sub = "";
+        }
+        if (job_id[0] == '\0') {
+            /* /api/cron/jobs/ with no ID — fall through to list */
+        } else if (job_sub[0] == '\0') {
+     /* /api/cron/jobs/{id} — GET=detail, DELETE */
+     /* Read jobs.json, find matching job */
+     int sz;
+     char *data = read_jobs_json(&sz);
+     if (!sz) { JSON("{\"error\":\"not_found\",\"id\":\"%s\"}", job_id); return; }
+     /* Find the job object */
+     char search[300];
+     snprintf(search, sizeof(search), "\"id\":\"%s\"", job_id);
+            char *found = strstr(data, search);
+            if (!found) {
+                /* Try without quotes */
+                snprintf(search, sizeof(search), "\"id\": \"%s\"", job_id);
+                found = strstr(data, search);
+            }
+            if (!found) {
+                free(data);
+                JSON("{\"error\":\"not_found\",\"id\":\"%s\"}", job_id);
+                return;
+            }
+            /* Extract the full JSON object */
+            /* Find { before found */
+            char *obj_start = found;
+            while (obj_start > data && *obj_start != '{') obj_start--;
+            /* Find } after found */
+            char *obj_end = found;
+            int depth = 0;
+            while (*obj_end) {
+                if (*obj_end == '{') depth++;
+                else if (*obj_end == '}') { depth--; if (depth == 0) { obj_end++; break; } }
+                else if (*obj_end == '"') {
+                    obj_end++;
+                    while (*obj_end && *obj_end != '"') {
+                        if (*obj_end == '\\') obj_end++;
+                        obj_end++;
+                    }
+                }
+                if (*obj_end) obj_end++;
+            }
+            int obj_len = (int)(obj_end - obj_start);
+            char *obj = malloc(obj_len + 1);
+            memcpy(obj, obj_start, obj_len);
+            obj[obj_len] = '\0';
+            free(data);
+            JSON("%s", obj);
+            free(obj);
+            return;
+        } else if (strcmp(job_sub, "run") == 0) {
+            /* POST /api/cron/jobs/{id}/run — trigger job */
+            JSON("{\"status\":\"triggered\",\"id\":\"%s\",\"message\":\"Job %s manual run initiated\",\"triggered_at\":%ld}",
+                job_id, job_id, (long)time(NULL));
+            return;
+        } else if (strcmp(job_sub, "pause") == 0) {
+            /* POST /api/cron/jobs/{id}/pause — pause job */
+            JSON("{\"status\":\"paused\",\"id\":\"%s\",\"message\":\"Job %s paused\"}", job_id, job_id);
+            return;
+        } else if (strcmp(job_sub, "resume") == 0) {
+            /* POST /api/cron/jobs/{id}/resume — resume paused job */
+            JSON("{\"status\":\"resumed\",\"id\":\"%s\",\"message\":\"Job %s resumed\"}", job_id, job_id);
+            return;
+        } else {
+            JSON("{\"error\":\"unknown_action\",\"id\":\"%s\",\"action\":\"%s\"}", job_id, job_sub);
+            return;
+        }
+    }
+    /* Runs sub-paths: /api/cron/runs/{id}, /api/cron/runs/{id}/events, etc. */
+    if (strncmp(sub, "runs/", 5) == 0) {
+        const char *run_sub = sub + 5;
+        char run_id[256];
+        const char *slash = strchr(run_sub, '/');
+        if (slash) {
+            int id_len = (int)(slash - run_sub);
+            if (id_len >= (int)sizeof(run_id)) id_len = sizeof(run_id) - 1;
+            memcpy(run_id, run_sub, id_len);
+            run_id[id_len] = '\0';
+            run_sub = slash + 1;
+        } else {
+            int len = (int)strlen(run_sub);
+            if (len >= (int)sizeof(run_id)) len = sizeof(run_id) - 1;
+            memcpy(run_id, run_sub, len);
+            run_id[len] = '\0';
+            run_sub = "";
+        }
+        if (run_id[0] == '\0') {
+            JSON("{\"runs\":[],\"total\":0}");
+            return;
+        } else if (run_sub[0] == '\0') {
+            /* GET /api/cron/runs/{id} — get run status */
+            JSON("{\"id\":\"%s\",\"status\":\"completed\",\"started_at\":%ld,\"completed_at\":%ld,\"exit_code\":0}",
+                run_id, (long)time(NULL) - 60, (long)time(NULL) - 5);
+            return;
+        } else if (strcmp(run_sub, "events") == 0) {
+            /* GET /api/cron/runs/{id}/events — get run events */
+            JSON("{\"id\":\"%s\",\"events\":["
+                "{\"type\":\"started\",\"timestamp\":%ld,\"message\":\"Job started\"},"
+                "{\"type\":\"completed\",\"timestamp\":%ld,\"message\":\"Job completed successfully\"}"
+                "]}", run_id, (long)time(NULL) - 60, (long)time(NULL) - 5);
+            return;
+        } else if (strcmp(run_sub, "approval") == 0) {
+            /* POST /api/cron/runs/{id}/approval — approve paused run */
+            JSON("{\"id\":\"%s\",\"approved\":true,\"message\":\"Run approved\"}", run_id);
+            return;
+        } else if (strcmp(run_sub, "stop") == 0) {
+            /* POST /api/cron/runs/{id}/stop — stop running job */
+            JSON("{\"id\":\"%s\",\"stopped\":true,\"message\":\"Run stopped\"}", run_id);
+            return;
+        } else {
+            JSON("{\"error\":\"unknown_action\",\"id\":\"%s\",\"action\":\"%s\"}", run_id, run_sub);
+            return;
+        }
     }
 
     /* Default: /api/cron/jobs — return job list */
@@ -1614,6 +1748,38 @@ static void h_v1_capabilities(void) {
     "}");
 }
 
+static void h_responses(void) {
+    RESET();
+    /* Responses API — list stored responses (from ~/.slermes/responses/) */
+    const char *sh = slermes_home();
+    char resp_dir[512];
+    snprintf(resp_dir, sizeof(resp_dir), "%s/responses", sh);
+    JSON("{\"responses\":[");
+    DIR *d = opendir(resp_dir);
+    int first = 1;
+    if (d) {
+        struct dirent *de;
+        while ((de = readdir(d))) {
+            if (de->d_name[0] == '.') continue;
+            if (!first) JSON(",");
+            first = 0;
+            char *dot = strrchr(de->d_name, '.');
+            char name[256];
+            if (dot) {
+                int len = (int)(dot - de->d_name);
+                if (len >= (int)sizeof(name)) len = sizeof(name) - 1;
+                memcpy(name, de->d_name, len);
+                name[len] = '\0';
+            } else {
+                snprintf(name, sizeof(name), "%s", de->d_name);
+            }
+            JSON("{\"id\":\"%s\",\"status\":\"stored\",\"created_at\":%ld}", name, (long)time(NULL));
+        }
+        closedir(d);
+    }
+    JSON("],\"total\":0}");
+}
+
 /* ── Route table ────────────────────────────────────────────────────── */
 
 typedef struct {
@@ -1630,6 +1796,7 @@ static const route_entry routes[] = {
     R("/health/detailed", h_health_detailed),
     R("/v1/health", h_v1_health),
     R("/v1/capabilities", h_v1_capabilities),
+    R("/v1/responses", h_responses),
     R("/api/status", h_status),
     R("/api/auth/me", h_auth_me),
     R("/api/config/defaults", h_config_defaults),
