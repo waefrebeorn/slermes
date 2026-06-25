@@ -74,6 +74,12 @@ static void h_session_chat(void);
 static void h_session_chat_stream(void);
 static void http_proxy_to_api_server(const char *method, const char *body, char *out, size_t out_len, int *is_sse);
 
+/* ── Documentation handlers ──────────────────────────────────────── */
+static void h_docs(void);
+static void h_docs_architecture(void);
+static void h_docs_contributing(void);
+static void h_docs_readme(void);
+
 /* ── Endpoint handlers ─────────────────────────────────────────────── */
 
 /* Forward declarations */
@@ -2197,6 +2203,11 @@ static const route_entry routes[] = {
     RP("/api/messaging/", h_messaging),
     RP("/api/hermes/", h_update_check),
     RP("/api/analytics/", h_analytics_usage),
+    /* Documentation endpoints */
+    R("/api/docs", h_docs),
+    R("/api/docs/architecture", h_docs_architecture),
+    R("/api/docs/contributing", h_docs_contributing),
+    R("/api/docs/readme", h_docs_readme),
 };
 
 static const int num_routes = sizeof(routes) / sizeof(routes[0]);
