@@ -96,7 +96,7 @@ The entire `apps/desktop/` directory. Every component, store, hook, lib, page, s
 | `app/components/ui/` | 39 | Reusable UI primitives (button, dialog, input, tooltip, etc.) | 🔲 REAL_GAP |
 | `app/components/` | 30+ | Shared components (model picker, notifications, language, pane-shell, etc.) | 🔲 REAL_GAP |
 | `app/themes/` | 15 | Theme system (color, presets, user themes, vscode themes) | ✅ Done (4 presets: dark/light/solarized/nord, runtime switch) |
-| `app/i18n/` | 10 | Internationalization (en, ja, zh, zh-hant) | 🔲 REAL_GAP |
+| `app/i18n/` | 10 | Internationalization (en, ja, zh, zh-hant) | ✅ Done (UI strings: settings, commands, status messages) |
 | `app/profiles/` | 4 | Profile management (create, delete, rename dialogs) | 🔲 REAL_GAP |
 | `app/cron/` | 2 | Cron jobs UI + job state | 🔲 REAL_GAP |
 | `app/artifacts/` | 2 | Artifact rendering | 🔲 REAL_GAP |
