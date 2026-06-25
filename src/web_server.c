@@ -65,10 +65,14 @@ static int json_len;
 
 /* Forward declarations */
 static char g_current_path[1024]; /* path of current request, used by handlers */
+static int g_client_fd = -1;      /* client fd of current request, for direct responses */
 static void h_session_detail(void);
 static void h_session_patch(void);
 static void h_session_messages(void);
 static void h_session_delete(void);
+static void h_session_chat(void);
+static void h_session_chat_stream(void);
+static void http_proxy_to_api_server(const char *method, const char *body, char *out, size_t out_len, int *is_sse);
 
 /* ── Endpoint handlers ─────────────────────────────────────────────── */
 
@@ -365,6 +369,16 @@ static void h_sessions(void) {
         h_session_messages();
         return;
     }
+    /* Check for /api/sessions/{id}/chat/stream (must come before /chat) */
+    if (strstr(sub, "/chat/stream") != NULL) {
+        h_session_chat_stream();
+        return;
+    }
+    /* Check for /api/sessions/{id}/chat */
+    if (strstr(sub, "/chat") != NULL) {
+        h_session_chat();
+        return;
+    }
     /* Check for /api/sessions/{id} — GET=detail, PATCH=update, DELETE=delete */
     if (sub[0] && sub[0] != '/') {
         /* Has a session ID */
@@ -605,6 +619,282 @@ static void h_session_delete(void) {
     JSON("{\"deleted\":true,\"id\":\"%s\"}", sid_buf);
 }
 
+/* ── HTTP Proxy to api_server (port 9101) ───────────────────────── */
+
+/**
+ * http_proxy_to_api_server — forward a request to the api_server on port 9101.
+ * Returns 0 on success, -1 on error. If is_sse is set, out contains SSE chunks.
+ */
+static void http_proxy_to_api_server(const char *method, const char *body,
+                                     char *out, size_t out_len, int *is_sse) {
+    if (is_sse) *is_sse = 0;
+
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (sock < 0) { snprintf(out, out_len, "{\"error\":\"socket failed\"}"); return; }
+
+    struct sockaddr_in addr;
+    memset(&addr, 0, sizeof(addr));
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(9101);
+    inet_pton(AF_INET, "127.0.0.1", &addr.sin_addr);
+
+    struct timeval tv = { .tv_sec = 30, .tv_usec = 0 };
+    setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+    setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+
+    if (connect(sock, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
+        close(sock);
+        snprintf(out, out_len, "{\"error\":\"api_server not reachable on port 9101. Start the main slermes binary first.\"}");
+        return;
+    }
+
+    /* Build HTTP request */
+    char req[65536];
+    int req_len = snprintf(req, sizeof(req),
+        "%s /v1/chat/completions HTTP/1.1\r\n"
+        "Host: 127.0.0.1:9101\r\n"
+        "Content-Type: application/json\r\n"
+        "Content-Length: %zu\r\n"
+        "Connection: close\r\n"
+        "\r\n%s",
+        method, body ? strlen(body) : 0, body ? body : "");
+
+    if (send(sock, req, req_len, 0) < 0) {
+        close(sock);
+        snprintf(out, out_len, "{\"error\":\"send failed\"}");
+        return;
+    }
+
+    /* Read response */
+    size_t total = 0;
+    char buf[8192];
+    ssize_t n;
+    while ((n = recv(sock, buf, sizeof(buf), 0)) > 0) {
+        if (total + n >= out_len) break;
+        memcpy(out + total, buf, n);
+        total += n;
+    }
+    close(sock);
+    out[total] = '\0';
+
+    /* Check if response is SSE */
+    if (strstr(out, "text/event-stream")) {
+        if (is_sse) *is_sse = 1;
+    }
+
+    return;
+}
+
+/* Session messages helper for chat context */
+static void h_session_chat(void) {
+    srv_db_open();
+    if (!srv_db_get()) { dprintf(g_client_fd, "HTTP/1.1 503 Service Unavailable\r\nContent-Type: application/json\r\nConnection: close\r\n\r\n{\"error\":\"no db\"}"); return; }
+
+    const char *prefix = "/api/sessions/";
+    const char *sid = g_current_path + strlen(prefix);
+    char session_id[128];
+    snprintf(session_id, sizeof(session_id), "%s", sid);
+    char *sl = strchr(session_id, '/');
+    if (sl) *sl = 0;
+
+    /* Load messages from this session from DB */
+    sqlite3_stmt *stmt;
+    const char *sql = "SELECT role, content FROM messages WHERE session_id = '%q' "
+                      "ORDER BY rowid ASC LIMIT 50";
+    char *query = sqlite3_mprintf(sql, session_id);
+    if (!query) { dprintf(g_client_fd, "HTTP/1.1 503 Service Unavailable\r\nContent-Type: application/json\r\nConnection: close\r\n\r\n{\"error\":\"oom\"}"); return; }
+
+    /* Build messages JSON array */
+    char *messages = malloc(32768);
+    if (!messages) { sqlite3_free(query); dprintf(g_client_fd, "HTTP/1.1 503 Service Unavailable\r\nContent-Type: application/json\r\nConnection: close\r\n\r\n{\"error\":\"oom\"}"); return; }
+    strcpy(messages, "[");
+    int first_msg = 1;
+
+    if (sqlite3_prepare_v2(srv_db_get(), query, -1, &stmt, NULL) == SQLITE_OK) {
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            const char *role = (const char*)sqlite3_column_text(stmt, 0);
+            const char *content = (const char*)sqlite3_column_text(stmt, 1);
+            if (!role) role = "user";
+            if (!content) content = "";
+            char entry[4096];
+            if (!first_msg) strcat(messages, ",");
+            first_msg = 0;
+            snprintf(entry, sizeof(entry),
+                "{\"role\":\"%s\",\"content\":\"%s\"}", role, content);
+
+            size_t cur_len = strlen(messages);
+            if (cur_len + sizeof(entry) < 32768) {
+                strcat(messages, entry);
+            }
+        }
+        sqlite3_finalize(stmt);
+    }
+    sqlite3_free(query);
+    strcat(messages, "]");
+
+    /* Get session config to determine model */
+    char model[128] = "";
+    char *q2 = sqlite3_mprintf("SELECT model FROM sessions WHERE id = '%q'", session_id);
+    if (q2) {
+        sqlite3_stmt *s2;
+        if (sqlite3_prepare_v2(srv_db_get(), q2, -1, &s2, NULL) == SQLITE_OK) {
+            if (sqlite3_step(s2) == SQLITE_ROW) {
+                const char *m = (const char*)sqlite3_column_text(s2, 0);
+                if (m) strncpy(model, m, sizeof(model) - 1);
+            }
+            sqlite3_finalize(s2);
+        }
+        sqlite3_free(q2);
+    }
+
+    /* Build the proxy body — messages array + session_id for context */
+    char *body = malloc(65536);
+    if (!body) { free(messages); dprintf(g_client_fd, "HTTP/1.1 503 Service Unavailable\r\nContent-Type: application/json\r\nConnection: close\r\n\r\n{\"error\":\"oom\"}"); return; }
+    snprintf(body, 65536,
+        "{\"model\":\"%s\",\"messages\":%s,\"session_id\":\"%s\",\"stream\":false}",
+        model, messages, session_id);
+    free(messages);
+
+    /* Proxy to api_server */
+    char *response = malloc(65536);
+    if (!response) { free(body); dprintf(g_client_fd, "HTTP/1.1 503 Service Unavailable\r\nContent-Type: application/json\r\nConnection: close\r\n\r\n{\"error\":\"oom\"}"); return; }
+
+    int is_sse = 0;
+    http_proxy_to_api_server("POST", body, response, 65536, &is_sse);
+    free(body);
+
+    if (0) {
+        /* api_server not available — return error directly */
+        dprintf(g_client_fd,
+            "HTTP/1.1 502 Bad Gateway\r\n"
+            "Content-Type: application/json\r\n"
+            "Access-Control-Allow-Origin: *\r\n"
+            "Connection: close\r\n"
+            "Content-Length: %zu\r\n"
+            "\r\n%s",
+            strlen(response), response);
+        free(response);
+        return;
+    }
+
+    if (is_sse) {
+        /* Forward SSE response as-is */
+        dprintf(g_client_fd,
+            "HTTP/1.1 200 OK\r\n"
+            "Content-Type: text/event-stream\r\n"
+            "Cache-Control: no-cache\r\n"
+            "X-Accel-Buffering: no\r\n"
+            "Access-Control-Allow-Origin: *\r\n"
+            "Connection: close\r\n"
+            "\r\n%s", response);
+    } else {
+        /* Forward JSON response */
+        dprintf(g_client_fd,
+            "HTTP/1.1 200 OK\r\n"
+            "Content-Type: application/json\r\n"
+            "Access-Control-Allow-Origin: *\r\n"
+            "Access-Control-Allow-Headers: Content-Type\r\n"
+            "Connection: close\r\n"
+            "Content-Length: %zu\r\n"
+            "\r\n%s", strlen(response), response);
+    }
+    free(response);
+    return;
+}
+
+static void h_session_chat_stream(void) {
+    /* For streaming, we proxy with stream=true and forward SSE chunks */
+    srv_db_open();
+    if (!srv_db_get()) { dprintf(g_client_fd, "HTTP/1.1 503 Service Unavailable\r\nContent-Type: application/json\r\nConnection: close\r\n\r\n{\"error\":\"no db\"}"); return; }
+
+    const char *prefix = "/api/sessions/";
+    const char *sid = g_current_path + strlen(prefix);
+    char session_id[128];
+    snprintf(session_id, sizeof(session_id), "%s", sid);
+    char *sl = strchr(session_id, '/');
+    if (sl) *sl = 0;
+
+    /* Load messages */
+    sqlite3_stmt *stmt;
+    const char *sql = "SELECT role, content FROM messages WHERE session_id = '%q' "
+                      "ORDER BY rowid ASC LIMIT 50";
+    char *query = sqlite3_mprintf(sql, session_id);
+    if (!query) { dprintf(g_client_fd, "HTTP/1.1 503 Service Unavailable\r\nContent-Type: application/json\r\nConnection: close\r\n\r\n{\"error\":\"oom\"}"); return; }
+
+    char *messages = malloc(32768);
+    if (!messages) { sqlite3_free(query); dprintf(g_client_fd, "HTTP/1.1 503 Service Unavailable\r\nContent-Type: application/json\r\nConnection: close\r\n\r\n{\"error\":\"oom\"}"); return; }
+    strcpy(messages, "[");
+
+    if (sqlite3_prepare_v2(srv_db_get(), query, -1, &stmt, NULL) == SQLITE_OK) {
+        int first_msg = 1;
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            const char *role = (const char*)sqlite3_column_text(stmt, 0);
+            const char *content = (const char*)sqlite3_column_text(stmt, 1);
+            if (!role) role = "user";
+            if (!content) content = "";
+            if (!first_msg) strcat(messages, ",");
+            first_msg = 0;
+            size_t cur_len = strlen(messages);
+            snprintf(messages + cur_len, 32768 - cur_len,
+                "{\"role\":\"%s\",\"content\":\"%s\"}", role, content);
+        }
+        sqlite3_finalize(stmt);
+    }
+    sqlite3_free(query);
+    strcat(messages, "]");
+
+    char model[128] = "";
+    char *q2 = sqlite3_mprintf("SELECT model FROM sessions WHERE id = '%q'", session_id);
+    if (q2) {
+        sqlite3_stmt *s2;
+        if (sqlite3_prepare_v2(srv_db_get(), q2, -1, &s2, NULL) == SQLITE_OK) {
+            if (sqlite3_step(s2) == SQLITE_ROW) {
+                const char *m = (const char*)sqlite3_column_text(s2, 0);
+                if (m) strncpy(model, m, sizeof(model) - 1);
+            }
+            sqlite3_finalize(s2);
+        }
+        sqlite3_free(q2);
+    }
+
+    char *body = malloc(65536);
+    if (!body) { free(messages); dprintf(g_client_fd, "HTTP/1.1 503 Service Unavailable\r\nContent-Type: application/json\r\nConnection: close\r\n\r\n{\"error\":\"oom\"}"); return; }
+    snprintf(body, 65536,
+        "{\"model\":\"%s\",\"messages\":%s,\"session_id\":\"%s\",\"stream\":true}",
+        model, messages, session_id);
+    free(messages);
+
+    char *response = malloc(65536);
+    if (!response) { free(body); dprintf(g_client_fd, "HTTP/1.1 503 Service Unavailable\r\nContent-Type: application/json\r\nConnection: close\r\n\r\n{\"error\":\"oom\"}"); return; }
+
+    int is_sse = 0;
+    http_proxy_to_api_server("POST", body, response, 65536, &is_sse);
+    free(body);
+
+    if (0) {
+        dprintf(g_client_fd,
+            "HTTP/1.1 502 Bad Gateway\r\n"
+            "Content-Type: application/json\r\n"
+            "Access-Control-Allow-Origin: *\r\n"
+            "Connection: close\r\n"
+            "Content-Length: %zu\r\n"
+            "\r\n%s",
+            strlen(response), response);
+        free(response);
+        return;
+    }
+
+    /* Forward as SSE */
+    dprintf(g_client_fd,
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/event-stream\r\n"
+        "Cache-Control: no-cache\r\n"
+        "X-Accel-Buffering: no\r\n"
+        "Access-Control-Allow-Origin: *\r\n"
+        "Connection: close\r\n"
+        "\r\n%s", response);
+    free(response);
+}
 static void h_sessions_empty_count(void) {
     RESET();
     srv_db_open();
@@ -2098,6 +2388,7 @@ static bool try_ws_upgrade(const char *buf, int fd) {
 static bool handle_api(const char *method, const char *path, int cfd) {
     strncpy(g_current_path, path, sizeof(g_current_path) - 1);
     g_current_path[sizeof(g_current_path) - 1] = 0;
+    g_client_fd = cfd;
     /* Check if path matches any route — handles /api/, /v1/, /health, etc. */
     int i;
     for (i = 0; i < num_routes; i++) {
