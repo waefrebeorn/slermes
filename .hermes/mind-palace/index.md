@@ -117,9 +117,7 @@ Slermes `web-server.c` currently implements **~50 REST endpoints**. Many upstrea
 | `/api/sessions/{id}` | PATCH | ✅ Implemented (rename via h_session_patch) |
 | `/api/sessions/{id}` | DELETE | ✅ Implemented | Delete session |
 | `/api/sessions/{id}/messages` | GET | ✅ Implemented | Session messages |
-| `/api/sessions/{id}/fork` | POST | � Missing | Branch/clone session |
-| `/api/sessions/{id}/chat` | POST | 🔲 Stub | Chat with session (needs real-time agent loop) |
-| `/api/sessions/{id}` | PATCH | ✅ Implemented (rename via h_session_patch) |
+| `/api/sessions/{id}/fork` | POST | ✅ Implemented (returns branch metadata) |
 | `/api/sessions/{id}/chat` | POST | 🔲 Stub | Chat with session (needs real-time agent loop) |
 | `/api/sessions/{id}/chat/stream` | POST | 🔲 Stub | Streaming chat |
 | `/v1/responses` | POST | ✅ Implemented (lists stored responses from disk) |
