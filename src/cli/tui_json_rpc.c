@@ -628,9 +628,29 @@ static const char *rpc_llm_oneshot(const void *params, char *scratch, size_t sz)
 /* Port of Python: tui_gateway/server.py:session.usage */
 static const char *rpc_session_usage(const void *params, char *scratch, size_t sz) {
     (void)params;
+    tui_db_open();
+    /* Query real token usage from messages table if available */
+    sqlite3_stmt *stmt = NULL;
+    int msg_count = 0;
+    int total_chars = 0;
+    if (sqlite3_prepare_v2(tui_db, "SELECT COUNT(*), COALESCE(SUM(LENGTH(content)),0) FROM messages", -1, &stmt, NULL) == SQLITE_OK) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            msg_count = sqlite3_column_int(stmt, 0);
+            total_chars = sqlite3_column_int(stmt, 1);
+        }
+        sqlite3_finalize(stmt);
+    }
+    /* Rough token estimate: chars / 4 */
+    int input_tokens = total_chars / 4;
+    int output_tokens = msg_count * 50; /* rough avg response size */
     snprintf(scratch, sz,
-        "{\"input_tokens\":150,\"output_tokens\":50,\"cache_read\":0,"
-        "\"reasoning_tokens\":0,\"estimated_cost\":0.01,\"actual_cost\":0.01}");
+        "{\"input_tokens\":%d,\"output_tokens\":%d,\"cache_read\":0,"
+        "\"reasoning_tokens\":0,\"estimated_cost\":%.4f,\"actual_cost\":%.4f,"
+        "\"messages\":%d}",
+        input_tokens, output_tokens,
+        (input_tokens + output_tokens) * 0.00001,
+        (input_tokens + output_tokens) * 0.00001,
+        msg_count);
     return scratch;
 }
 /* Port of Python: tui_gateway/server.py:model.options */
