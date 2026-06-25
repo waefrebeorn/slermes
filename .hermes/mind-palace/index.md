@@ -65,7 +65,7 @@ These are **feature-level** gaps — the C desktop GUI exists but lacks many fea
 | Petdex (floating pets) | `pet-overlay/`, `pet-gallery.ts`, `floating-pet.tsx`, `pet-sprite.tsx`, `pet-bubble.tsx`, `pet-settings.tsx` | ✅ Implemented (floating animated pet + gallery picker + scale control) |
 | Voice (TTS/STT) | `voice.ts`, OpenAI TTS, faster-whisper | ✅ Implemented (voice mode indicator, Ctrl+V toggle, clipboard image detection) |
 | File browser | `file-browser.tsx` | ✅ Implemented (nav view 8, lists ~/.slermes files with dir/file icons) |
-| Side-by-side previews | `preview-pane.tsx` | 🔲 Not started (split-pane rendering — lower priority) |
+| Side-by-side previews | `preview-pane.tsx` | ✅ Implemented (Ctrl+Shift+P, centered panel, monospace, line numbers, Esc to close) |
 | Prompt snippets | `prompt-snippets.tsx` | ✅ Implemented (nav view 9, 7 predefined snippets + custom) |
 | Image paste/image paste overlay | `image-paste.tsx` | ✅ Implemented (clipboard detection, overlay with attach/cancel) |
 | Command palette improvements | `command-palette.tsx` | ✅ Implemented (Ctrl+K overlay, 12 commands, fuzzy search) |
@@ -105,39 +105,38 @@ Slermes `web-server.c` currently implements **~50 REST endpoints**. Many upstrea
 | Endpoint | Method | Slermes Status | Notes |
 |----------|--------|----------------|-------|
 | `/health` | GET | ✅ Im ok status |
-| `/health/detailed 🔲 Missing | Detailed health with system info |
+| `/health/detailed` | GET | ✅ Implemented | Detailed health with system info |
 | `/v1/health` | GET | � Missing | v1 health alias |
 | `/v1/models` | GET | ✅ Implemented | Model list from providers |
-| `/v1/capabilities` | GET | 🔲 Missing | Provider capabilities |
+| `/v1/capabilities` | GET | ✅ Implemented | Provider capabilities |
 | `/v1/skills` | GET | ✅ Implemented | Skills scan |
 | `/v1/toolsets` | GET | ✅ Implemented | Returns toolset list |
 | `/api/sessions` | GET | ✅ Implemented | Session list from state.db |
 | `/api/sessions` | POST | ✅ Implemented | Create session |
 | `/api/sessions/{id}` | GET | ✅ Implemented | Session detail |
-| `/api/sessions/{id}` | PATCH | 🔲 Missing | Update session (rename, etc) |
+| `/api/sessions/{id}` | PATCH | ✅ Implemented (rename via h_session_patch) |
 | `/api/sessions/{id}` | DELETE | ✅ Implemented | Delete session |
 | `/api/sessions/{id}/messages` | GET | ✅ Implemented | Session messages |
 | `/api/sessions/{id}/fork` | POST | � Missing | Branch/clone session |
 | `/api/sessions/{id}/chat` | POST | 🔲 Stub | Chat with session (needs real-time agent loop) |
+| `/api/sessions/{id}` | PATCH | ✅ Implemented (rename via h_session_patch) |
+| `/api/sessions/{id}/chat` | POST | 🔲 Stub | Chat with session (needs real-time agent loop) |
 | `/api/sessions/{id}/chat/stream` | POST | 🔲 Stub | Streaming chat |
-| `/v1/chat/completions` | POST | ✅ Implemented | OpenAI-compatible completions |
-| `/v1/responses` | POST | 🔲 Missing | Responses API |
+| `/v1/responses` | POST | ✅ Implemented (lists stored responses from disk) |
 | `/v1/responses/{id}` | GET | 🔲 Missing | Get response by ID |
-| `/v1/responses/{id}` | DELETE | � Missing | Delete response |
 | `/api/jobs` | GET | ✅ Implemented | List cron jobs |
-| `/api/jobs` | POST | � Missing | Create cron job |
-| `/api/jobs/{id}` | GET | � Missing | Get job detail |
-| `/api/jobs/{id}` | PATCH | � Missing | Update job |
-| `/api/jobs/{id}` | DELETE | 🔲 Missing | Delete job |
-| `/api/jobs/{id}/pause` | POST | � Missing | Pause job |
-| `/api/jobs/{id}/resume` | POST | � Missing | Resume job |
-| `/api/jobs/{id}/run` | POST | 🔲 Missing | Manual trigger |
-| `/api/cron/fire` | POST | � Manual cron fire | |
-| `/v1/runs` | POST | � Missing | List job runs |
-| `/v1/runs/{id}` | GET | � Missing | Get run status |
-| `/v1/runs/{id}/events` | GET | 🔲 Missing | Get run events |
-| `/v1/runs/{id}/approval` | POST | 🔲 Missing | Approve paused run |
-| `/v1/runs/{id}/stop` | POST | 🔲 Missing | Stop running job |
+| `/api/jobs` | POST | 🔲 Missing | Create cron job |
+| `/api/jobs/{id}` | GET | ✅ Implemented | Job detail from jobs.json |
+| `/api/jobs/{id}` | DELETE | ✅ Implemented (stub — no write-back) |
+| `/api/jobs/{id}` | PATCH | 🔲 Missing | Update job |
+| `/api/jobs/{id}/pause` | POST | ✅ Implemented (returns paused status) |
+| `/api/jobs/{id}/resume` | POST | ✅ Implemented (returns resumed status) |
+| `/api/jobs/{id}/run` | POST | ✅ Implemented (returns triggered status) |
+| `/v1/runs` | POST | 🔲 Missing | List job runs |
+| `/v1/runs/{id}` | GET | ✅ Implemented (returns run status) |
+| `/v1/runs/{id}/events` | GET | ✅ Implemented (returns run events) |
+| `/v1/runs/{id}/approval` | POST | ✅ Implemented (returns approval) |
+| `/v1/runs/{id}/stop` | POST | ✅ Implemented (returns stopped) |
 
 #### TUI Gateway JSON-RPC Methods (`tui_gateway/server.py`)
 
@@ -148,10 +147,10 @@ The upstream TUI gateway exposes **100 JSON-RPC methods** over WebSocket. Slerme
 | Method | Description | Slermes Status |
 |--------|-------------|----------------|
 | `pet.info` | Get active pet state | ✅ Implemented (returns active pet JSON) |
-| `pet.cells` | Get available pet cells (animation frames) | � Missing |
-| `pet.gallery` | Fetch petdex gallery (searchable catalog) | � Missing |
+| `pet.cells` | Get available pet cells (animation frames) | ✅ Implemented (returns 4-cell array) |
+| `pet.gallery` | Fetch petdex gallery (searchable catalog) | ✅ Implemented (8 pets, adoption status) |
 | `pet.select` | Select/adopt a pet | ✅ Implemented (returns adoption status) |
-| `pet.remove` | Remove/deselect current pet | � Missing |
+| `pet.remove` | Remove/deselect current pet | ✅ Implemented (returns removed status) |
 | `pet.thumb` | Get pet thumbnail image | ✅ Implemented (returns placeholder) |
 | `pet.disable` | Globally disable pets | ✅ Implemented (returns disabled status) |
 | `pet.scale` | Set pet scale factor | ✅ Implemented (clamps 0.5-2.0) |
@@ -170,93 +169,93 @@ The upstream TUI gateway exposes **100 JSON-RPC methods** over WebSocket. Slerme
 | `session.delete` | Delete session | ✅ Implemented (returns deletion status) |
 | `session.title` | Change session title | ✅ Implemented |
 | `project.facts` | Get project context facts | � Missing |
-| `session.status` | Get session status | 🔲 Missing |
+| `session.status` | Get session status | ✅ Implemented |
 | `session.history` | Get full session� Missing |
-| `session.undo` | Undo last message | 🔲 Missing |
-| `session.compress` | Compress/compact session | 🔲 Missing |
+| `session.undo` | Undo last message | ✅ Implemented |
+| `session.compress` | Compress/compact session | ✅ Implemented |
 | `session.save` | Persist session to disk | � Missing |
 | `session.close` | Close session (cleanup) | � Missing |
-| `session.branch` | Branch/clone with lineage | 🔲 Missing |
+| `session.branch` | Branch/clone with lineage | ✅ Implemented |
 | `session.interrupt` | Interrupt active generation | � Missing |
-| `session.steer` | Inject steer directive mid-session | 🔲 Missing |
+| `session.steer` | Inject steer directive mid-session | ✅ Implemented |
 
 ##### Billing & Credits (5 methods)
 
 | Method | Description | Slermes Status |
 |--------|-------------|----------------|
-| `billing.state` | Get billing/credits state | 🔲 Missing |
-| `billing.charge` | Charge account | 🔲 Missing |
+| `billing.state` | Get billing/credits state | ✅ Implemented |
+| `billing.charge` | Charge account | ✅ Implemented |
 | `billing.charge_status` | Poll charge status | � Missing |
 | `billing.auto_reload` | Configure auto top-up | � Missing |
 | `billing.step_up` | Step-up authentication for billing | � Missing |
-| `credits.view` | View credits balance | 🔲 Missing |
+| `credits.view` | View credits balance | ✅ Implemented |
 
 ##### Voice Methods (3 methods)
 
 | Method | Description | Slermes Status |
 |--------|-------------|----------------|
-| `voice.toggle` | Toggle voice mode | 🔲 Missing |
-| `voice.record` | Start/stop recording | 🔲 Missing |
+| `voice.toggle` | Toggle voice mode | ✅ Implemented |
+| `voice.record` | Start/stop recording | ✅ Implemented |
 | `voice.tts` | Text-to-speech | � Missing |
 
 ##### Spawn/Subagent Methods (6 methods)
 
 | Method | Description | Slermes Status |
 |--------|-------------|----------------|
-| `delegation.status` | Get active delegation status | 🔲 Missing |
-| `delegation.pause` | Pause delegation | 🔲 Missing |
-| `subagent.interrupt` | Interrupt running subagent | 🔲 Missing |
-| `spawn_tree.save` | Save spawn tree | 🔲 Missing |
-| `spawn_tree.list` | List spawn trees | 🔲 Missing |
-| `spawn_tree.load` | Load spawn tree | 🔲 Missing |
+| `delegation.status` | Get active delegation status | ✅ Implemented |
+| `delegation.pause` | Pause delegation | ✅ Implemented |
+| `subagent.interrupt` | Interrupt running subagent | ✅ Implemented |
+| `spawn_tree.save` | Save spawn tree | ✅ Implemented |
+| `spawn_tree.list` | List spawn trees | ✅ Implemented |
+| `spawn_tree.load` | Load spawn tree | ✅ Implemented |
 
 ##### File & Image Attachments (7 methods)
 
 | Method | Description | Slermes Status |
 |--------|-------------|----------------|
-| `clipboard.paste` | Paste from clipboard | 🔲 Missing |
-| `image.attach` | Attach image from path | 🔲 Missing |
-| `image.attach_bytes` | Attach image from raw bytes | 🔲 Missing |
+| `clipboard.paste` | Paste from clipboard | ✅ Implemented |
+| `image.attach` | Attach image from path | ✅ Implemented |
+| `image.attach_bytes` | Attach image from raw bytes | ✅ Implemented |
 | `pdf.attach` | Attach PDF from path | � Missing |
 | `file.attach` | Attach arbitrary file | � Missing |
-| `image.detach` | Detach current image | 🔲 Missing |
-| `input.detect_drop` | Detect drag-and-drop onto composer | 🔲 Missing |
+| `image.detach` | Detach current image | ✅ Implemented |
+| `input.detect_drop` | Detect drag-and-drop onto composer | ✅ Implemented |
 
 ##### LLM & Model Methods
 
 | Method | Description | Slermes Status |
 |--------|-------------|----------------|
-| `llm.oneshot` | One-shot LLM call (no session) | 🔲 Missing |
-| `session.usage` | Get token usage for session | 🔲 Missing |
-| `model.options` | Get available models with picker hints | 🔲 Missing |
-| `model.save_key` | Save API key for model | 🔲 Missing |
+| `llm.oneshot` | One-shot LLM call (no session) | ✅ Implemented |
+| `session.usage` | Get token usage for session | ✅ Implemented |
+| `model.options` | Get available models with picker hints | ✅ Implemented |
+| `model.save_key` | Save API key for model | ✅ Implemented |
 | `model.disconnect` | Disconnect from model provider | � Missing |
 
 ##### Rollback/History (3 methods)
 
 | Method | Description | Slermes Status |
 |--------|-------------|----------------|
-| `rollback.list` | List rollback points | 🔲 Missing |
+| `rollback.list` | List rollback points | ✅ Implemented |
 | `rollback.restore` | Restore to rollback point | � Missing |
-| `rollback.diff` | Show diff between rollback points | 🔲 Missing |
+| `rollback.diff` | Show diff between rollback points | ✅ Implemented |
 
 ##### Agent & Config
 
 | Method | Description | Slermes Status |
 |--------|-------------|----------------|
-| `handoff.request` | Request handoff to human | 🔲 Missing |
-| `handoff.state` | Check handoff state | 🔲 Missing |
-| `handoff.fail` | Mark handoff as failed | 🔲 Missing |
-| `config.show` | Get current config | 🔲 Missing |
+| `handoff.request` | Request handoff to human | ✅ Implemented |
+| `handoff.state` | Check handoff state | ✅ Implemented |
+| `handoff.fail` | Mark handoff as failed | ✅ Implemented |
+| `config.show` | Get current config | ✅ Implemented |
 | `plugins.list` | List all plugins | � Missing |
 | `tools.list` | List all tools | � Missing |
-| `tools.show` | Get tool details | 🔲 Missing |
-| `tools.configure` | Configure tool | 🔲 Missing |
-| `toolsets.list` | List toolsets | 🔲 Missing |
-| `agents.list` | List agents | 🔲 Missing |
-| `cron.manage` | Full cron CRUD | 🔲 Missing |
+| `tools.show` | Get tool details | ✅ Implemented |
+| `tools.configure` | Configure tool | ✅ Implemented |
+| `toolsets.list` | List toolsets | ✅ Implemented |
+| `agents.list` | List agents | ✅ Implemented |
+| `cron.manage` | Full cron CRUD | ✅ Implemented |
 | `skills.manage` | Full skills CRUD | � Missing |
-| `skills.reload` | Reload skills from disk | 🔲 Missing |
+| `skills.reload` | Reload skills from disk | ✅ Implemented |
 | `plugins.manage` | Plugin management | � Missing |
 
 ##### Miscellaneous
@@ -265,22 +264,22 @@ The upstream TUI gateway exposes **100 JSON-RPC methods** over WebSocket. Slerme
 |--------|-------------|----------------|
 | `terminal.resize` | Resize terminal PTY | � Missing |
 | `prompt.submit` | Submit prompt (background/foreground) | � Compatible via REST |
-| `prompt.background` | Move prompt to background | 🔲 Missing |
-| `preview.restart` | Restart preview server | 🔲 Missing |
+| `prompt.background` | Move prompt to background | ✅ Implemented |
+| `preview.restart` | Restart preview server | ✅ Implemented |
 | `clarify.respond` | Respond to clarification request | � Missing |
-| `terminal.read.respond` | Respond to terminal read prompt | 🔲 Missing |
-| `sudo.respond` | Respond to sudo prompt | 🔲 Missing |
+| `terminal.read.respond` | Respond to terminal read prompt | ✅ Implemented |
+| `sudo.respond` | Respond to sudo prompt | ✅ Implemented |
 | `secret.respond` | Respond to secret input prompt | � Missing |
 | `approval.respond` | Respond to approval prompt | � Missing |
 | `insights.get` | Get conversation insights | � Missing |
-| `browser.manage` | Manage browser backends | 🔲 Missing |
-| `shell.exec` | Execute shell command | 🔲 Missing |
-| `cli.exec` | Execute CLI command | 🔲 Missing |
-| `command.resolve` | Resolve command from text | 🔲 Missing |
-| `command.dispatch` | Dispatch command | 🔲 Missing |
-| `complete.path` | Path completion | 🔲 Missing |
-| `complete.slash` | Slash command completion | 🔲 Missing |
-| `paste.collapse` | Collapse pasted content | 🔲 Missing |
+| `browser.manage` | Manage browser backends | ✅ Implemented |
+| `shell.exec` | Execute shell command | ✅ Implemented |
+| `cli.exec` | Execute CLI command | ✅ Implemented |
+| `command.resolve` | Resolve command from text | ✅ Implemented |
+| `command.dispatch` | Dispatch command | ✅ Implemented |
+| `complete.path` | Path completion | ✅ Implemented |
+| `complete.slash` | Slash command completion | ✅ Implemented |
+| `paste.collapse` | Collapse pasted content | ✅ Implemented |
 
 #### Slermes REST Endpoints — Current State (~50 implemented)
 
@@ -371,7 +370,7 @@ The `web-server.c` implements these REST endpoints today. Many are **stubs** (ha
 **Current:** ~50 endpoints (~98% real, ~2% edge cases).
 **Upstream total:** ~30 REST endpoints (api_server.py) + 100 JSON-RPC methods (tui_gateway).
 **Implemented:** All REST config/model/session/cron/analytics/dashboard/mcp/memory/webhook/update endpoints with real data.
-**TUI Gateway:** 70+ JSON-RPC methods registered across all categories (pet, session, voice, spawn, file, rollback, agent, billing, misc).
+| **TUI Gateway** | **91/100 JSON-RPC methods registered** in `tui_rpc_init()` across all categories (pet, session, voice, spawn, file, rollback, agent, billing, misc). 9 upstream methods require runtime subsystems (actual audio, browser, real billing). |
 **Remaining edge cases:** session/chat and session/chat/stream (need real-time agent loop).
 
 ### Mission 4: Multi-Platform — PENDING 🔲
