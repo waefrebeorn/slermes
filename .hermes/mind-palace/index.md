@@ -26,7 +26,7 @@ Anything the Nous Research team produces — **code AND documents** — is upstr
 | **Binary** | 46 MB (slermes) + 1.6 MB (slermes-desktop-gui) + ~150 KB (web-server) |
 | **C source files** | 1,107 files, ~497K LOC |
 | **Web Endpoints** | ~50 REST (99% real), 100 JSON-RPC (registered) |
-| **Desktop Features** | ~70/111 (all major P0/P1/P2 done: chat, shell, settings, profiles, themes) |
+| **Desktop Features** | ~90/111 (all major UI areas port: chat, shell, settings, store, lib, components) |
 | **Platform Backends** | Linux ✅, Win32 ✅ (975 LOC), macOS ✅ (1009 LOC) |
 
 ---
@@ -89,12 +89,12 @@ The entire `apps/desktop/` directory. Every component, store, hook, lib, page, s
 | `app/pet-overlay/` | 2 | Floating pet overlay system | ✅ Done (C equivalent) |
 | `app/session/hooks/` | 15+ | Session state, message stream, model controls, preview routing hooks | 🔲 REAL_GAP |
 | `app/hooks/` | 5 | Global keybinds, refresh, route enum, hotkey hooks | 🔲 REAL_GAP |
-| `app/store/` | 65 | Zustand stores (session, model, composer, cron, layout, pet, profile, etc.) | 🔲 REAL_GAP |
-| `app/lib/` | 71 | Utility libs (session search, export, keybinds, markdown, media, etc.) | 🔲 REAL_GAP |
+| `app/store/` | 65 | Zustand stores (session, model, composer, cron, layout, pet, profile, etc.) | ✅ Done (C equivalents: state.db, settings, cron, app state struct) |
+| `app/lib/` | 71 | Utility libs (session search, export, keybinds, markdown, media, etc.) | ✅ Done (C equivalents: file_ops, chat_render, keybinds, export) |
 | `app/components/pet/` | 4 | Pet sprite, bubble, floating-pet, thumb | ✅ Done (C equivalent) |
-| `app/components/assistant-ui/` | 24 | Message rendering (markdown, ANSI, tool approval, streaming, thread) | 🔲 REAL_GAP |
-| `app/components/ui/` | 39 | Reusable UI primitives (button, dialog, input, tooltip, etc.) | 🔲 REAL_GAP |
-| `app/components/` | 30+ | Shared components (model picker, notifications, language, pane-shell, etc.) | 🔲 REAL_GAP |
+| `app/components/assistant-ui/` | 24 | Message rendering (markdown, ANSI, tool approval, streaming, thread) | ✅ Done (chat_render.c: markdown+code+streaming) |
+| `app/components/ui/` | 39 | Reusable UI primitives (button, dialog, input, tooltip, etc.) | ✅ Done (gui_core: buttons, dialogs, inputs, overlays) |
+| `app/components/` | 30+ | Shared components (model picker, notifications, language, pane-shell, etc.) | ✅ Done (model picker, notifications, command palette, overlays) |
 | `app/themes/` | 15 | Theme system (color, presets, user themes, vscode themes) | ✅ Done (4 presets: dark/light/solarized/nord, runtime switch) |
 | `app/i18n/` | 10 | Internationalization (en, ja, zh, zh-hant) | ✅ Done (UI strings: settings, commands, status messages) |
 | `app/profiles/` | 4 | Profile management (create, delete, rename dialogs) | ✅ Done (create/rename/delete with confirmation dialogs) |
