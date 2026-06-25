@@ -2455,6 +2455,264 @@ static void settings_handle_input(gc_event_t *ev) {
 }
 
 /* ══════════════════════════════════════════════════════════════════════
+ *  Session Picker Overlay (P2 Feature)
+ * ══════════════════════════════════════════════════════════════════════ */
+static struct {
+    bool visible;
+    char query[64];
+    int  query_len;
+    int  selected;
+    int  scroll;
+} session_picker;
+
+static void session_picker_init(void) {
+    memset(&session_picker, 0, sizeof(session_picker));
+}
+
+static void draw_session_picker(void) {
+    if (!session_picker.visible) return;
+    int w = win_w(), h = win_h();
+    int ow = 520, oh = 420;
+    int ox = (w - ow) / 2, oy = (h - oh) / 2;
+    if (ox < 0) ox = 0;
+    if (oy < 0) oy = 0;
+
+    gc_theme_t *t = &app.theme;
+    gc_rect_t bg = {ox, oy, ow, oh};
+    gc_fill_rect(app.win, bg, GC_RGBA(0, 0, 0, 230));
+    gc_fill_round_rect(app.win, bg, 12, t->bg_secondary);
+    gc_draw_rect(app.win, bg, 1, t->border);
+
+    gc_font_t *font = gc_get_font(app.win);
+    gc_font_t *font_small = gc_get_font_small(app.win);
+    int fh = gc_font_height(font);
+    int sfh = gc_font_height(font_small);
+
+    /* Title */
+    gc_draw_text(app.win, font, "Select Session", ox + 16, oy + 12, t->text);
+
+    /* Close button */
+    gc_rect_t close_btn = {ox + ow - 36, oy + 8, 28, 22};
+    gc_fill_round_rect(app.win, close_btn, 4, t->bg_card);
+    gc_draw_text(app.win, font, "×", close_btn.x + 8, close_btn.y + 2, t->text_dim);
+
+    /* Search input */
+    int search_y = oy + 12 + fh + 10;
+    gc_rect_t search_box = {ox + 16, search_y, ow - 32, 28};
+    gc_fill_round_rect(app.win, search_box, 6, t->bg_card);
+    gc_draw_text(app.win, font_small, "🔍", search_box.x + 8, search_box.y + 5, t->text_dim);
+    if (session_picker.query_len > 0) {
+        gc_draw_text(app.win, font_small, session_picker.query, search_box.x + 28, search_box.y + 5, t->text);
+    } else {
+        gc_draw_text(app.win, font_small, "Search sessions...", search_box.x + 28, search_box.y + 5, t->text_dim);
+    }
+
+    /* Session list */
+    int list_y = search_y + 36;
+    int list_h = oh - (list_y - oy) - 32;
+    int fh_item = sfh + 16;
+    int visible_count = list_h / fh_item;
+
+    /* Filter sessions by query */
+    int filtered[256];
+    int filtered_count = 0;
+    for (int i = 0; i < app.session_count && filtered_count < 256; i++) {
+        if (session_picker.query_len > 0) {
+            char lower_title[256];
+            for (int c = 0; app.sessions[i].title[c] && c < (int)sizeof(lower_title)-1; c++)
+                lower_title[c] = tolower((unsigned char)app.sessions[i].title[c]);
+            lower_title[app.sessions[i].title[0] ? (int)strlen(app.sessions[i].title) : 0] = '\0';
+            char lower_query[64];
+            for (int c = 0; session_picker.query[c]; c++)
+                lower_query[c] = tolower((unsigned char)session_picker.query[c]);
+            lower_query[session_picker.query_len] = '\0';
+            if (!strstr(lower_title, lower_query)) continue;
+        }
+        filtered[filtered_count++] = i;
+    }
+
+    /* Clamp scroll */
+    if (session_picker.selected >= filtered_count) session_picker.selected = filtered_count > 0 ? filtered_count - 1 : 0;
+    if (session_picker.scroll + visible_count > filtered_count)
+        session_picker.scroll = filtered_count > visible_count ? filtered_count - visible_count : 0;
+    if (session_picker.scroll < 0) session_picker.scroll = 0;
+
+    for (int i = session_picker.scroll; i < session_picker.scroll + visible_count && i < filtered_count; i++) {
+        int si = filtered[i];
+        int sy = list_y + (i - session_picker.scroll) * fh_item;
+        bool sel = (i == session_picker.selected);
+        bool is_active = (si == app.selected_session);
+
+        if (sel) {
+            gc_fill_rect(app.win, gc_rect(ox + 16, sy - 2, ow - 32, fh_item - 2), t->bg_card);
+        }
+
+        /* Active indicator */
+        if (is_active) {
+            gc_draw_text(app.win, gc_get_font_mono(app.win), "●", ox + 24, sy + 4, t->accent);
+        }
+
+        /* Session title */
+        gc_color_t title_color = sel ? t->text : (is_active ? t->accent : t->text_secondary);
+        gc_draw_text_clipped(app.win, font_small, app.sessions[si].title, ox + 40, sy + 2, ow - 80, title_color);
+
+        /* Age / message count */
+        char meta[64];
+        format_age(app.sessions[si].started_at, meta, sizeof(meta));
+        snprintf(meta + strlen(meta), sizeof(meta) - strlen(meta), " · %d msgs", app.sessions[si].msg_count);
+        gc_draw_text(app.win, gc_get_font_mono(app.win), meta, ox + 40, sy + sfh + 4, t->text_dim);
+    }
+
+    /* Empty state */
+    if (filtered_count == 0) {
+        gc_draw_text(app.win, font_small, "No sessions found", ox + 16, list_y + 20, t->text_dim);
+    }
+
+    /* Footer */
+    gc_draw_text(app.win, gc_get_font_mono(app.win), "↑↓:navigate  Enter:Esc:close  Type:filter",
+                 ox + 16, oy + oh - 20, t->text_dim);
+}
+
+static void session_picker_handle_input(gc_event_t *ev) {
+    if (!session_picker.visible) return;
+
+    if (ev->type == GC_EV_KEY_DOWN) {
+        if (ev->key == SDLK_ESCAPE) {
+            session_picker.visible = false;
+            return;
+        }
+        if (ev->key == SDLK_UP) {
+            if (session_picker.selected > 0) {
+                session_picker.selected--;
+                if (session_picker.selected < session_picker.scroll)
+                    session_picker.scroll = session_picker.selected;
+            }
+            return;
+        }
+        if (ev->key == SDLK_DOWN) {
+            /* Count filtered items */
+            int filtered_count = 0;
+            for (int i = 0; i < app.session_count; i++) {
+                if (session_picker.query_len > 0) {
+                    char lower_title[256];
+                    for (int c = 0; app.sessions[i].title[c]; c++)
+                        lower_title[c] = tolower((unsigned char)app.sessions[i].title[c]);
+                    lower_title[strlen(app.sessions[i].title)] = '\0';
+                    char lower_query[64];
+                    for (int c = 0; session_picker.query[c]; c++)
+                        lower_query[c] = tolower((unsigned char)session_picker.query[c]);
+                    lower_query[session_picker.query_len] = '\0';
+                    if (!strstr(lower_title, lower_query)) continue;
+                }
+                filtered_count++;
+            }
+            if (session_picker.selected < filtered_count - 1) {
+                session_picker.selected++;
+                int fh_item = gc_font_height(gc_get_font_small(app.win)) + 16;
+                int visible_count = (420 - 90) / fh_item;
+                if (session_picker.selected >= session_picker.scroll + visible_count)
+                    session_picker.scroll = session_picker.selected - visible_count + 1;
+            }
+            return;
+        }
+        if (ev->key == SDLK_RETURN) {
+            /* Find the selected filtered session */
+            int filtered_idx = 0;
+            for (int i = 0; i < app.session_count; i++) {
+                if (session_picker.query_len > 0) {
+                    char lower_title[256];
+                    for (int c = 0; app.sessions[i].title[c]; c++)
+                        lower_title[c] = tolower((unsigned char)app.sessions[i].title[c]);
+                    lower_title[strlen(app.sessions[i].title)] = '\0';
+                    char lower_query[64];
+                    for (int c = 0; session_picker.query[c]; c++)
+                        lower_query[c] = tolower((unsigned char)session_picker.query[c]);
+                    lower_query[session_picker.query_len] = '\0';
+                    if (!strstr(lower_title, lower_query)) continue;
+                }
+                if (filtered_idx == session_picker.selected) {
+                    app.selected_session = i;
+                    app.current_view = 0;
+                    app.chat_scroll = 0;
+                    load_messages(i);
+                    snprintf(app.current_view_name, sizeof(app.current_view_name), "Chat");
+                    session_picker.visible = false;
+                    return;
+                }
+                filtered_idx++;
+            }
+            return;
+        }
+        if (ev->key == SDLK_BACKSPACE && session_picker.query_len > 0) {
+            session_picker.query[--session_picker.query_len] = '\0';
+            session_picker.selected = 0;
+            session_picker.scroll = 0;
+            return;
+        }
+        if (ev->key >= 32 && ev->key <= 126 && session_picker.query_len < 62) {
+            session_picker.query[session_picker.query_len++] = (char)ev->key;
+            session_picker.query[session_picker.query_len] = '\0';
+            session_picker.selected = 0;
+            session_picker.scroll = 0;
+            return;
+        }
+    }
+
+    if (ev->type == GC_EV_MOUSE_DOWN) {
+        int w = win_w(), h = win_h();
+        int ow = 520, oh = 420;
+        int ox = (w - ow) / 2, oy = (h - oh) / 2;
+
+        /* Close button */
+        gc_rect_t close_btn = {ox + ow - 36, oy + 8, 28, 22};
+        if (ev->x >= close_btn.x && ev->x < close_btn.x + close_btn.w &&
+            ev->y >= close_btn.y && ev->y < close_btn.y + close_btn.h) {
+            session_picker.visible = false;
+            return;
+        }
+
+        /* Click on session item */
+        int fh = gc_font_height(gc_get_font(app.win));
+        int sfh = gc_font_height(gc_get_font_small(app.win));
+        int search_y = oy + 12 + fh + 10;
+        int list_y = search_y + 36;
+        int fh_item = sfh + 16;
+
+        if (ev->y >= list_y && ev->y < list_y + oh - 90) {
+            int clicked = (ev->y - list_y) / fh_item + session_picker.scroll;
+            int filtered_count = 0;
+            for (int i = 0; i < app.session_count; i++) {
+                if (session_picker.query_len > 0) {
+                    char lower_title[256];
+                    for (int c = 0; app.sessions[i].title[c]; c++)
+                        lower_title[c] = tolower((unsigned char)app.sessions[i].title[c]);
+                    lower_title[strlen(app.sessions[i].title)] = '\0';
+                    char lower_query[64];
+                    for (int c = 0; session_picker.query[c]; c++)
+                        lower_query[c] = tolower((unsigned char)session_picker.query[c]);
+                    lower_query[session_picker.query_len] = '\0';
+                    if (!strstr(lower_title, lower_query)) continue;
+                }
+                if (filtered_count == clicked) {
+                    app.selected_session = i;
+                    app.current_view = 0;
+                    app.chat_scroll = 0;
+                    load_messages(i);
+                    snprintf(app.current_view_name, sizeof(app.current_view_name), "Chat");
+                    session_picker.visible = false;
+                    return;
+                }
+                filtered_count++;
+            }
+        }
+    }
+
+    if (ev->type == GC_EV_MOUSE_MOVE) {
+        /* No hover tracking for simplicity */
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
  *  Main
  * ══════════════════════════════════════════════════════════════════════ */
 int main(int argc, char **argv) {
@@ -2598,6 +2856,11 @@ int main(int argc, char **argv) {
             switch (ev.type) {
             case GC_EV_QUIT: app.running = false; break;
             case GC_EV_KEY_DOWN:
+                /* Session picker input — consume all key events when visible */
+                if (session_picker.visible) {
+                    session_picker_handle_input(&ev);
+                    break;
+                }
                 /* Settings overlay input first — when visible, consume all key events */
                 if (settings.visible) {
                     settings_handle_input(&ev);
@@ -2621,12 +2884,20 @@ int main(int argc, char **argv) {
                     app.pet_show_gallery = !app.pet_show_gallery;
                     break;
                 }
-                /* Settings overlay: Ctrl+, (comma) or Ctrl+Escape-override */
+                /* Settings overlay: Ctrl+Shift+S */
                 if (ev.key == SDLK_s && (ev.mod & (KMOD_CTRL | KMOD_SHIFT))) {
                     settings.visible = !settings.visible;
                     if (settings.visible) {
                         settings_init();
                         settings_load_fields();
+                    }
+                    break;
+                }
+                /* Session picker: Ctrl+O */
+                if (ev.key == SDLK_o && (ev.mod & KMOD_CTRL)) {
+                    session_picker.visible = !session_picker.visible;
+                    if (session_picker.visible) {
+                        session_picker_init();
                     }
                     break;
                 }
@@ -2834,6 +3105,11 @@ int main(int argc, char **argv) {
                 break;
             }
             case GC_EV_MOUSE_MOVE: {
+                /* Session picker mouse move */
+                if (session_picker.visible) {
+                    session_picker_handle_input(&ev);
+                    break;
+                }
                 /* Settings overlay mouse move */
                 if (settings.visible) {
                     settings_handle_input(&ev);
@@ -2917,6 +3193,11 @@ int main(int argc, char **argv) {
             }
             case GC_EV_MOUSE_DOWN:
             case GC_EV_MOUSE_UP: {
+                /* Session picker mouse input — consume when visible */
+                if (session_picker.visible) {
+                    session_picker_handle_input(&ev);
+                    break;
+                }
                 /* Settings overlay mouse input — consume when visible */
                 if (settings.visible) {
                     settings_handle_input(&ev);
@@ -3183,6 +3464,7 @@ int main(int argc, char **argv) {
         draw_preview_panel();
         draw_notification_panel();
         draw_settings_overlay();
+        draw_session_picker();
         draw_toast();
         gc_end_frame(app.win);
 
