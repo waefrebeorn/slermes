@@ -119,6 +119,8 @@ static nav_item_t nav_items[] = {
     {"\xe2\x99\xa0", "Profiles",    5},
     {"\xe2\x99\x9f", "Agents",      6},
     {"\xe2\x87\x84", "Messaging",   7},
+    {"\xf0\x9f\x93\x81", "Files",   8},
+    {"\xf0\x9f\x93\xab", "Snippets", 9},
     {NULL, NULL, 0}
 };
 
@@ -229,6 +231,49 @@ typedef struct {
     /* Gateway status */
     bool        gateway_connected;
     char        gateway_status_text[64];
+
+    /* Session export/import */
+    char        export_path[512];
+    bool        show_export_dialog;
+    bool        show_import_dialog;
+    char        import_path[512];
+    int         import_path_len;
+
+    /* Notification toast */
+    char        toast_msg[256];
+    int         toast_time;
+
+    /* Petdex */
+    bool        pet_active;
+    int         pet_type;       /* 0=cat, 1=dragon, 2=owl, 3=blob */
+    int         pet_frame;      /* animation frame */
+    int         pet_frame_tick; /* frame timer */
+    float       pet_x, pet_y;   /* position */
+    float       pet_vx, pet_vy;  /* velocity */
+    bool        pet_show_gallery;
+    char        pet_names[16][32]; /* petdex catalog */
+    int         pet_count;
+    int         pet_selected;
+    float       pet_scale;
+
+    /* Voice */
+    bool        voice_active;
+    bool        voice_recording;
+    int         voice_tts_pending;
+
+    /* Command palette */
+    bool        show_command_palette;
+    char        command_palette_query[128];
+    int         command_palette_query_len;
+    int         command_palette_selected;
+    int         command_palette_result_count;
+
+    /* Image paste overlay */
+    bool        image_paste_active;
+    char        image_paste_path[512];
+    char        image_paste_data[1048576]; /* base64 or raw */
+    int         image_paste_data_len;
+    bool        image_paste_is_base64;
 } app_state_t;
 
 static app_state_t app;
@@ -1291,9 +1336,62 @@ static void draw_nav_view(int view_id) {
         const char *plats[] = {"Telegram","CLI","Cron",NULL};
         for (int i=0; plats[i]; i++) {
             gc_draw_text(app.win, gc_get_font_small(app.win), "\xe2\x97\x8b", x, y, t->text_secondary);
-            gc_draw_text(app.win, gc_get_font_small(app.win), plats[i], x+16, y, t->text_secondary);
+            gc_draw_text_clipped(app.win, gc_get_font_small(app.win), plats[i], x+16, y, max_w-16, t->text_secondary);
             y+=sfh+2;
         }
+        break;
+    }
+    case 8: {
+        /* ── File Browser ── */
+        gc_draw_text(app.win, gc_get_font(app.win), "Files", x, y, t->text); y+=fh+8;
+        char dir_path[512];
+        snprintf(dir_path, sizeof(dir_path), "%s", slermes_home());
+        DIR *d = opendir(dir_path);
+        if (d) {
+            struct dirent *de;
+            int file_count = 0;
+            while ((de = readdir(d)) && file_count < 30) {
+                if (de->d_name[0] == '.') continue;
+                char fpath[1024];
+                snprintf(fpath, sizeof(fpath), "%s/%s", dir_path, de->d_name);
+                struct stat st;
+                if (stat(fpath, &st) != 0) continue;
+                bool is_dir = S_ISDIR(st.st_mode);
+                gc_draw_text(app.win, gc_get_font_small(app.win),
+                    is_dir ? "\xf0\x9f\x91\x91" : "\xf0\x9f\x93\x84", x, y, t->text_secondary);
+                gc_draw_text_clipped(app.win, gc_get_font_small(app.win),
+                    de->d_name, x+16, y, max_w-16, t->text_secondary);
+                y+=sfh+2;
+                file_count++;
+            }
+            closedir(d);
+            if (file_count == 0) {
+                gc_draw_text(app.win, gc_get_font_small(app.win), "(empty)", x+16, y, t->text_dim);
+            }
+        } else {
+            gc_draw_text(app.win, gc_get_font_small(app.win), "(cannot open)", x+16, y, t->text_dim);
+        }
+        break;
+    }
+    case 9: {
+        /* ── Prompt Snippets ── */
+        gc_draw_text(app.win, gc_get_font(app.win), "Prompt Snippets", x, y, t->text); y+=fh+8;
+        const char *snippets[] = {
+            "Explain this code",
+            "Write a test for",
+            "Refactor to be more efficient",
+            "Add documentation",
+            "Find bugs in",
+            "Summarize conversation",
+            "Generate API docs",
+            NULL
+        };
+        for (int i=0; snippets[i]; i++) {
+            gc_draw_text(app.win, gc_get_font_small(app.win), "\xf0\x9f\x93\x8b", x, y, t->text_secondary);
+            gc_draw_text_clipped(app.win, gc_get_font_small(app.win), snippets[i], x+16, y, max_w-16, t->text_secondary);
+            y+=sfh+2;
+        }
+        gc_draw_text(app.win, gc_get_font_small(app.win), "+ New snippet...", x+16, y, t->accent);
         break;
     }
     default: break;
@@ -1443,6 +1541,335 @@ static void draw_statusbar(void) {
     gc_draw_text(app.win, gc_get_font_small(app.win), info, lx, sy+2, t->text_secondary);
 }
 
+/* ── Petdex: floating pet with animation ───────────────────────────── */
+static const char *pet_sprites[][4] = {
+    /* cat frames */
+    {"[cat1]", "[cat2]", "[cat3]", "[cat4]"},
+    /* dragon frames */
+    {"[drg1]", "[drg2]", "[drg3]", "[drg4]"},
+    /* owl frames */
+    {"[owl1]", "[owl2]", "[owl3]", "[owl4]"},
+    /* blob frames */
+    {"[blb1]", "[blb2]", "[blb3]", "[blb4]"},
+};
+static const int pet_frame_counts[] = {4, 4, 4, 4};
+
+static void draw_pet(void) {
+    if (!app.pet_active || app.show_command_palette) return;
+    gc_theme_t *t = &app.theme;
+
+    /* Animate pet position */
+    app.pet_frame_tick++;
+    if (app.pet_frame_tick >= 30) {
+        app.pet_frame_tick = 0;
+        app.pet_frame = (app.pet_frame + 1) % pet_frame_counts[app.pet_type];
+    }
+    app.pet_x += app.pet_vx;
+    app.pet_y += app.pet_vy;
+    /* Bounce off edges */
+    if (app.pet_x < 50 || app.pet_x > win_w() - 100) app.pet_vx = -app.pet_vx;
+    if (app.pet_y < 50 || app.pet_y > win_h() - 100) app.pet_vy = -app.pet_vy;
+    if (app.pet_x < 50) app.pet_x = 50;
+    if (app.pet_x > win_w() - 100) app.pet_x = win_w() - 100;
+    if (app.pet_y < 50) app.pet_y = 50;
+    if (app.pet_y > win_h() - 100) app.pet_y = win_h() - 100;
+
+    int sz = (int)(36 * app.pet_scale);
+    const char *sprite = pet_sprites[app.pet_type][app.pet_frame];
+
+    /* Shadow */
+    gc_draw_text(app.win, gc_get_font(app.win), " ",
+                 (int)app.pet_x + 2, (int)app.pet_y + sz - 4,
+                 GC_RGBA(0,0,0,60));
+    /* Pet sprite */
+    gc_draw_text(app.win, gc_get_font(app.win), sprite,
+                 (int)app.pet_x, (int)app.pet_y,
+                 GC_RGBA(255,255,255,255));
+    /* Name label */
+    if (app.pet_scale > 0.8f) {
+        gc_draw_text(app.win, gc_get_font_small(app.win), app.pet_names[app.pet_type],
+                     (int)app.pet_x, (int)app.pet_y - 14, t->text_secondary);
+    }
+}
+
+static void draw_pet_gallery(void) {
+    if (!app.pet_show_gallery) return;
+    gc_theme_t *t = &app.theme;
+    int w = win_w(), h = win_h();
+    /* Overlay */
+    gc_fill_rect(app.win, gc_rect(0, 0, w, h), GC_RGBA(0, 0, 0, 180));
+    /* Panel */
+    int pw = 420, ph = 340;
+    int px = (w - pw) / 2, py = (h - ph) / 2;
+    gc_rect_t panel = {px, py, pw, ph};
+    gc_fill_round_rect(app.win, panel, 12, GC_RGBA(22, 22, 28, 250));
+    gc_draw_rect(app.win, panel, 1, t->border);
+    gc_draw_text(app.win, gc_get_font(app.win), "Petdex Gallery", px + 16, py + 12, t->text);
+    gc_draw_text(app.win, gc_get_font_small(app.win), "Select your companion", px + 16, py + 34, t->text_dim);
+
+    /* Grid of pets */
+    int cell_w = 90, cell_h = 90;
+    int cols = 4, start_x = px + (pw - cols * cell_w) / 2 + 10;
+    int start_y = py + 60;
+    for (int i = 0; i < app.pet_count; i++) {
+        int cx = start_x + (i % cols) * cell_w;
+        int cy = start_y + (i / cols) * cell_h;
+        gc_rect_t cell = {cx, cy, cell_w - 8, cell_h - 8};
+        bool sel = (i == app.pet_selected);
+        if (sel) gc_fill_round_rect(app.win, cell, 8, GC_RGBA(0, 83, 253, 40));
+        gc_draw_rect(app.win, cell, 1, sel ? t->accent : t->border_subtle);
+        gc_draw_text(app.win, gc_get_font(app.win), pet_sprites[i % 4][0],
+                     cx + cell_w / 2 - 20, cy + 10, t->text);
+        gc_draw_text(app.win, gc_get_font_small(app.win), app.pet_names[i],
+                     cx + 4, cy + 50, t->text_secondary);
+    }
+    /* Scale slider */
+    gc_draw_text(app.win, gc_get_font_small(app.win), "Scale:", px + 16, py + ph - 40, t->text_dim);
+    gc_draw_hline(app.win, px + 70, py + ph - 33, pw - 100, t->border_subtle);
+    int slider_x = px + 70 + (int)((app.pet_scale - 0.5f) / 1.5f * (pw - 100));
+    gc_fill_round_rect(app.win, gc_rect(slider_x - 4, py + ph - 38, 8, 12), 4, t->accent);
+}
+
+/* ── Voice indicator ──────────────────────────────────────────────── */
+static void draw_voice_indicator(void) {
+    if (!app.voice_active) return;
+    gc_theme_t *t = &app.theme;
+    int w = win_w();
+    int vx = w - 160, vy = win_h() - STATUSBAR_H - 30;
+    gc_rect_t bg = {vx, vy, 140, 22};
+    gc_fill_round_rect(app.win, bg, 11,
+        app.voice_recording ? GC_RGBA(255, 60, 60, 200) : GC_RGBA(0, 83, 253, 180));
+    gc_draw_text(app.win, gc_get_font_small(app.win),
+        app.voice_recording ? "⏺ Recording..." : "🎤 Voice mode",
+        vx + 8, vy + 3, GC_RGBA(255, 255, 255, 240));
+}
+
+/* ── Command palette (Ctrl+K) ─────────────────────────────────────── */
+static const char *command_palette_items[] = {
+    "New Chat", "Toggle Theme", "Toggle Sidebar", "Search Sessions",
+    "Model Picker", "Pet Gallery", "Voice Toggle", "Export Session",
+    "Import Session", "Settings", "Keyboard Shortcuts", "About",
+    NULL
+};
+
+static void draw_command_palette(void) {
+    if (!app.show_command_palette) return;
+    gc_theme_t *t = &app.theme;
+    int w = win_w(), h = win_h();
+    gc_fill_rect(app.win, gc_rect(0, 0, w, h), GC_RGBA(0, 0, 0, 160));
+
+    int pw = 480, ph = 380;
+    int px = (w - pw) / 2, py = (h - ph) / 2;
+    gc_rect_t panel = {px, py, pw, ph};
+    gc_fill_round_rect(app.win, panel, 12, GC_RGBA(22, 22, 28, 250));
+    gc_draw_rect(app.win, panel, 1, t->border);
+
+    /* Search input */
+    gc_rect_t inp = {px + 12, py + 12, pw - 24, 28};
+    gc_fill_round_rect(app.win, inp, 6, GC_RGBA(255, 255, 255, 6));
+    const char *q = app.command_palette_query_len > 0 ? app.command_palette_query : "Type a command...";
+    gc_color_t qc = app.command_palette_query_len > 0 ? t->text : t->text_dim;
+    gc_draw_text(app.win, gc_get_font_small(app.win), q, px + 20, py + 18, qc);
+    /* Blinking cursor */
+    if ((SDL_GetTicks() / 500) % 2) {
+        int cw = gc_text_width(gc_get_font_small(app.win), q) + 2;
+        gc_draw_vline(app.win, px + 20 + cw, py + 18, 14, t->accent);
+    }
+
+    /* Results */
+    int ry = py + 52;
+    int idx = 0;
+    app.command_palette_result_count = 0;
+    for (int i = 0; command_palette_items[i]; i++) {
+        if (app.command_palette_query_len > 0 &&
+            strcasestr(command_palette_items[i], app.command_palette_query) == NULL)
+            continue;
+        app.command_palette_result_count++;
+        bool sel = (idx == app.command_palette_selected);
+        if (sel) {
+            gc_rect_t row = {px + 8, ry - 2, pw - 16, 24};
+            gc_fill_round_rect(app.win, row, 4, GC_RGBA(0, 83, 253, 30));
+        }
+        gc_draw_text(app.win, gc_get_font_small(app.win), command_palette_items[i],
+                     px + 16, ry, sel ? t->text : t->text_secondary);
+        ry += 24;
+        idx++;
+        if (ry > py + ph - 30) break;
+    }
+    gc_draw_text(app.win, gc_get_font_small(app.win),
+                 "↑↓ navigate  ⏎ select  esc close", px + 16, py + ph - 24, t->text_dim);
+}
+
+/* ── Image paste overlay ──────────────────────────────────────────── */
+static void draw_image_paste_overlay(void) {
+    if (!app.image_paste_active) return;
+    gc_theme_t *t = &app.theme;
+    int w = win_w(), h = win_h();
+    gc_fill_rect(app.win, gc_rect(0, 0, w, h), GC_RGBA(0, 0, 0, 160));
+
+    int pw = 400, ph = 200;
+    int px = (w - pw) / 2, py = (h - ph) / 2;
+    gc_rect_t panel = {px, py, pw, ph};
+    gc_fill_round_rect(app.win, panel, 12, GC_RGBA(22, 22, 28, 250));
+    gc_draw_rect(app.win, panel, 1, t->border);
+
+    gc_draw_text(app.win, gc_get_font(app.win), "Image Paste", px + 16, py + 12, t->text);
+    gc_draw_text(app.win, gc_get_font_small(app.win),
+                 "Image detected in clipboard or dropped file.", px + 16, py + 40, t->text_secondary);
+    if (app.image_paste_path[0]) {
+        gc_draw_text(app.win, gc_get_font_small(app.win), app.image_paste_path,
+                     px + 16, py + 64, t->text_dim);
+    }
+    /* Action buttons */
+    gc_rect_t attach_btn = {px + 16, py + ph - 40, 100, 28};
+    gc_fill_round_rect(app.win, attach_btn, 6, GC_RGBA(0, 83, 253, 200));
+    gc_draw_text(app.win, gc_get_font_small(app.win), "Attach", attach_btn.x + 20, attach_btn.y + 4, t->text);
+
+    gc_rect_t cancel_btn = {px + pw - 116, py + ph - 40, 100, 28};
+    gc_fill_round_rect(app.win, cancel_btn, 6, GC_RGBA(60, 60, 68, 200));
+    gc_draw_text(app.win, gc_get_font_small(app.win), "Cancel", cancel_btn.x + 20, cancel_btn.y + 4, t->text);
+}
+
+/* ── Toast notification ───────────────────────────────────────────── */
+static void draw_toast(void) {
+    if (app.toast_time <= 0) return;
+    gc_theme_t *t = &app.theme;
+    int alpha = app.toast_time > 30 ? 200 : app.toast_time * 7;
+    int tw = gc_text_width(gc_get_font_small(app.win), app.toast_msg) + 32;
+    int tx = (win_w() - tw) / 2, ty = win_h() - STATUSBAR_H - 50;
+    gc_rect_t bg = {tx, ty, tw, 28};
+    gc_fill_round_rect(app.win, bg, 14, GC_RGBA(40, 40, 48, alpha));
+    gc_draw_text(app.win, gc_get_font_small(app.win), app.toast_msg,
+                 tx + 16, ty + 4, GC_RGBA(255, 255, 255, alpha));
+    app.toast_time--;
+}
+
+/* ── Session export/import ────────────────────────────────────────── */
+static void export_session_to_file(int session_idx, const char *path) {
+    if (session_idx < 0 || session_idx >= app.session_count) return;
+    FILE *f = fopen(path, "w");
+    if (!f) return;
+    session_entry_t *s = &app.sessions[session_idx];
+    fprintf(f, "# Slermes Session Export\n");
+    fprintf(f, "id: %s\n", s->id);
+    fprintf(f, "title: %s\n", s->title);
+    fprintf(f, "source: %s\n", s->source);
+    fprintf(f, "model: %s\n", s->model);
+    fprintf(f, "started_at: %ld\n", s->started_at);
+    fprintf(f, "---\n");
+    /* Reload messages for this session */
+    int prev_count = app.message_count;
+    load_messages(session_idx);
+    for (int i = 0; i < app.message_count; i++) {
+        fprintf(f, "[%s] %s\n", app.messages[i].role, app.messages[i].content);
+    }
+    if (session_idx == app.selected_session) {
+        /* Restore previous message count */
+        app.message_count = prev_count;
+    }
+    fclose(f);
+    snprintf(app.toast_msg, sizeof(app.toast_msg), "Exported to %s", path);
+    app.toast_time = 120;
+}
+
+static void show_import_dialog(void) {
+    app.show_import_dialog = true;
+    /* Use a default path */
+    snprintf(app.import_path, sizeof(app.import_path), "%s/import-session.txt", slermes_home());
+    app.import_path_len = (int)strlen(app.import_path);
+}
+
+static void import_session_from_file(const char *path) {
+    FILE *f = fopen(path, "r");
+    if (!f) {
+        snprintf(app.toast_msg, sizeof(app.toast_msg), "Cannot open %s", path);
+        app.toast_time = 120;
+        return;
+    }
+    if (!app.db) {
+        fclose(f);
+        return;
+    }
+    /* Parse simple format */
+    char line[65536];
+    char session_id[64] = "";
+    char session_title[256] = "Imported Session";
+    char session_source[32] = "cli";
+    char session_model[128] = "";
+    long started_at = (long)time(NULL);
+    bool in_header = true;
+    char content[65536] = "";
+    char role[32] = "assistant";
+    int content_len = 0;
+
+    while (fgets(line, sizeof(line), f)) {
+        /* Strip newline */
+        char *nl = strchr(line, '\n');
+        if (nl) *nl = 0;
+        if (in_header) {
+            if (line[0] == '#' || line[0] == '\0') continue;
+            if (strcmp(line, "---") == 0) {
+                in_header = false;
+                /* Create session in DB */
+                char *err = NULL;
+                char *sql = sqlite3_mprintf(
+                    "INSERT INTO sessions (id, title, source, model, started_at, message_count) "
+                    "VALUES ('%q', '%q', '%q', '%q', %f, 0)",
+                    session_id, session_title, session_source, session_model, (double)started_at * 1000);
+                if (sql) {
+                    sqlite3_exec(app.db, sql, NULL, NULL, &err);
+                    sqlite3_free(sql);
+                    if (err) sqlite3_free(err);
+                }
+                continue;
+            }
+            if (strncmp(line, "id:", 3) == 0) snprintf(session_id, sizeof(session_id), "%s", line + 3);
+            else if (strncmp(line, "title:", 6) == 0) snprintf(session_title, sizeof(session_title), "%s", line + 6);
+            else if (strncmp(line, "source:", 7) == 0) snprintf(session_source, sizeof(session_source), "%s", line + 7);
+            else if (strncmp(line, "model:", 6) == 0) snprintf(session_model, sizeof(session_model), "%s", line + 6);
+            else if (strncmp(line, "started_at:", 11) == 0) started_at = atol(line + 11);
+        } else {
+            if (line[0] == '[') {
+                /* Role line: [user] or [assistant] */
+                char *end = strchr(line + 1, ']');
+                if (end) {
+                    snprintf(role, sizeof(role), "%.*s", (int)(end - line - 1), line + 1);
+                    content_len = 0;
+                }
+            } else {
+                /* Content line */
+                if (content_len > 0 && content_len < (int)sizeof(content) - 2)
+                    content[content_len++] = '\n';
+                int rem = (int)sizeof(content) - content_len - 1;
+                if (rem > 0) {
+                    snprintf(content + content_len, rem, "%s", line);
+                    content_len = (int)strlen(content);
+                }
+                /* Save message */
+                if (content_len > 0 && session_id[0]) {
+                    char *err = NULL;
+                    char *sql = sqlite3_mprintf(
+                        "INSERT INTO messages (session_id, role, content, timestamp) "
+                        "VALUES ('%q', '%q', '%q', %f)",
+                        session_id, role, content, (double)(time(NULL) * 1000));
+                    if (sql) {
+                        sqlite3_exec(app.db, sql, NULL, NULL, &err);
+                        sqlite3_free(sql);
+                        if (err) sqlite3_free(err);
+                    }
+                }
+                content[0] = 0;
+                content_len = 0;
+            }
+        }
+    }
+    fclose(f);
+    /* Reload sessions */
+    load_sessions();
+    snprintf(app.toast_msg, sizeof(app.toast_msg), "Imported: %s", session_title);
+    app.toast_time = 120;
+}
+
 /* ══════════════════════════════════════════════════════════════════════
  *  Main
  * ══════════════════════════════════════════════════════════════════════ */
@@ -1505,6 +1932,50 @@ int main(int argc, char **argv) {
     app.theme = gc_get_theme(app.win);
     gc_set_fps(app.win, 60);
 
+    /* Petdex init */
+    app.pet_active = true;
+    app.pet_type = 0;
+    app.pet_frame = 0;
+    app.pet_frame_tick = 0;
+    app.pet_x = 100.0f;
+    app.pet_y = 200.0f;
+    app.pet_vx = 0.5f;
+    app.pet_vy = 0.3f;
+    app.pet_show_gallery = false;
+    app.pet_count = 8;
+    app.pet_selected = 0;
+    app.pet_scale = 1.0f;
+    snprintf(app.pet_names[0], 32, "Whiskers");
+    snprintf(app.pet_names[1], 32, "Ember");
+    snprintf(app.pet_names[2], 32, "Hoot");
+    snprintf(app.pet_names[3], 32, "Blobby");
+    snprintf(app.pet_names[4], 32, "Sparky");
+    snprintf(app.pet_names[5], 32, "Shadow");
+    snprintf(app.pet_names[6], 32, "Pepper");
+    snprintf(app.pet_names[7], 32, "Zephyr");
+
+    /* Voice */
+    app.voice_active = false;
+    app.voice_recording = false;
+    app.voice_tts_pending = 0;
+
+    /* Command palette */
+    app.show_command_palette = false;
+    app.command_palette_query[0] = 0;
+    app.command_palette_query_len = 0;
+    app.command_palette_selected = 0;
+    app.command_palette_result_count = 0;
+
+    /* Image paste */
+    app.image_paste_active = false;
+    app.image_paste_path[0] = '\0';
+    app.image_paste_data_len = 0;
+    app.image_paste_is_base64 = false;
+
+    /* Toast */
+    app.toast_msg[0] = 0;
+    app.toast_time = 0;
+
     while (app.running) {
         gc_event_t ev;
         while (gc_poll_event(app.win, &ev)) {
@@ -1516,6 +1987,134 @@ int main(int argc, char **argv) {
             switch (ev.type) {
             case GC_EV_QUIT: app.running = false; break;
             case GC_EV_KEY_DOWN:
+                /* Command palette: Ctrl+K or Cmd+K */
+                if (ev.key == SDLK_k && (ev.mod & (KMOD_CTRL | KMOD_GUI))) {
+                    app.show_command_palette = !app.show_command_palette;
+                    app.command_palette_query[0] = 0;
+                    app.command_palette_query_len = 0;
+                    app.command_palette_selected = 0;
+                    break;
+                }
+                /* Pet gallery: Ctrl+P */
+                if (ev.key == SDLK_p && (ev.mod & KMOD_CTRL)) {
+                    app.pet_show_gallery = !app.pet_show_gallery;
+                    break;
+                }
+                /* Voice toggle: Ctrl+V */
+                if (ev.key == SDLK_v && (ev.mod & KMOD_CTRL)) {
+                    app.voice_active = !app.voice_active;
+                    app.voice_recording = false;
+                    if (app.voice_active) {
+                        /* Check SDL clipboard for image */
+                        if (SDL_HasClipboardText()) {
+                            char *clip = SDL_GetClipboardText();
+                            if (clip) {
+                                if (strncmp(clip, "data:image", 10) == 0) {
+                                    /* Base64 image in clipboard */
+                                    app.image_paste_is_base64 = true;
+                                    app.image_paste_data_len = 0;
+                                    snprintf(app.image_paste_path, sizeof(app.image_paste_path), "clipboard");
+                                    app.image_paste_active = true;
+                                } else if (strncmp(clip, "file://", 7) == 0) {
+                                    /* File path in clipboard */
+                                    snprintf(app.image_paste_path, sizeof(app.image_paste_path), "%s", clip + 7);
+                                    app.image_paste_is_base64 = false;
+                                    app.image_paste_active = true;
+                                }
+                                SDL_free(clip);
+                            }
+                        }
+                        if (!app.image_paste_active) {
+                            snprintf(app.toast_msg, sizeof(app.toast_msg), "Voice mode enabled");
+                            app.toast_time = 60;
+                        }
+                    }
+                    break;
+                }
+                /* Export session: Ctrl+S */
+                if (ev.key == SDLK_s && (ev.mod & KMOD_CTRL)) {
+                    if (app.session_count > 0) {
+                        char path[512];
+                        snprintf(path, sizeof(path), "%s/export-%ld.txt",
+                                 slermes_home(), (long)time(NULL));
+                        export_session_to_file(app.selected_session, path);
+                    }
+                    break;
+                }
+                /* Import session: Ctrl+I */
+                if (ev.key == SDLK_i && (ev.mod & KMOD_CTRL)) {
+                    import_session_from_file(app.import_path);
+                    break;
+                }
+                /* Command palette navigation */
+                if (app.show_command_palette) {
+                    if (ev.key == SDLK_ESCAPE) {
+                        app.show_command_palette = false;
+                    } else if (ev.key == SDLK_UP) {
+                        if (app.command_palette_selected > 0) app.command_palette_selected--;
+                    } else if (ev.key == SDLK_DOWN) {
+                        if (app.command_palette_selected < app.command_palette_result_count - 1)
+                            app.command_palette_selected++;
+                    } else if (ev.key == SDLK_RETURN) {
+                        /* Execute selected command */
+                        int idx = 0;
+                        for (int i = 0; command_palette_items[i]; i++) {
+                            if (app.command_palette_query_len > 0 &&
+                                strcasestr(command_palette_items[i], app.command_palette_query) == NULL)
+                                continue;
+                            if (idx == app.command_palette_selected) {
+                                if (i == 0) { /* New Chat */
+                                    /* Trigger new chat via existing mechanism */
+                                } else if (i == 1) { /* Toggle Theme */
+                                    app.dark_mode = !app.dark_mode;
+                                    gc_set_theme(app.win, app.dark_mode ? &gc_theme_dark : &gc_theme_light);
+                                    app.theme = gc_get_theme(app.win);
+                                } else if (i == 2) { /* Toggle Sidebar */
+                                    app.sidebar_collapsed = !app.sidebar_collapsed;
+                                } else if (i == 3) { /* Search */
+                                    app.search_active = true;
+                                } else if (i == 4) { /* Model Picker */
+                                    app.show_model_picker = !app.show_model_picker;
+                                } else if (i == 5) { /* Pet Gallery */
+                                    app.pet_show_gallery = !app.pet_show_gallery;
+                                } else if (i == 6) { /* Voice Toggle */
+                                    app.voice_active = !app.voice_active;
+                                } else if (i == 7) { /* Export */
+                                    if (app.session_count > 0) {
+                                        char path[512];
+                                        snprintf(path, sizeof(path), "%s/export-%ld.txt",
+                                                 slermes_home(), (long)time(NULL));
+                                        export_session_to_file(app.selected_session, path);
+                                    }
+                                } else if (i == 8) { /* Import */
+                                    import_session_from_file(app.import_path);
+                                } else if (i == 9) { /* Settings */
+                                    snprintf(app.toast_msg, sizeof(app.toast_msg), "Settings not yet implemented");
+                                    app.toast_time = 60;
+                                } else if (i == 10) { /* Keyboard Shortcuts */
+                                    snprintf(app.toast_msg, sizeof(app.toast_msg),
+                                             "Ctrl+K: Cmd Palette  Ctrl+S: Export  Ctrl+I: Import  Ctrl+V: Voice");
+                                    app.toast_time = 120;
+                                } else if (i == 11) { /* About */
+                                    snprintf(app.toast_msg, sizeof(app.toast_msg),
+                                             "Slermes v1.0.0 — C11 Desktop Parity");
+                                    app.toast_time = 60;
+                                }
+                                break;
+                            }
+                            idx++;
+                        }
+                        app.show_command_palette = false;
+                    } else if (ev.key == SDLK_BACKSPACE && app.command_palette_query_len > 0) {
+                        app.command_palette_query[--app.command_palette_query_len] = 0;
+                        app.command_palette_selected = 0;
+                    } else if (ev.key >= 32 && ev.key <= 126 && app.command_palette_query_len < 126) {
+                        app.command_palette_query[app.command_palette_query_len++] = (char)ev.key;
+                        app.command_palette_query[app.command_palette_query_len] = 0;
+                        app.command_palette_selected = 0;
+                    }
+                    break;
+                }
                 /* Composer takes priority when focused */
                 if (app.composer_focused) {
                     if (ev.key == SDLK_ESCAPE) {
@@ -1666,6 +2265,67 @@ int main(int argc, char **argv) {
             }
             case GC_EV_MOUSE_DOWN:
             case GC_EV_MOUSE_UP: {
+                /* Image paste overlay buttons */
+                if (app.image_paste_active && ev.type == GC_EV_MOUSE_DOWN) {
+                    int w = win_w(), h = win_h();
+                    int pw = 400, ph = 200;
+                    int px = (w - pw) / 2, py = (h - ph) / 2;
+                    gc_rect_t attach_btn = {px + 16, py + ph - 40, 100, 28};
+                    gc_rect_t cancel_btn = {px + pw - 116, py + ph - 40, 100, 28};
+                    if (ev.x >= attach_btn.x && ev.x < attach_btn.x + attach_btn.w &&
+                        ev.y >= attach_btn.y && ev.y < attach_btn.y + attach_btn.h) {
+                        /* Attach image to composer */
+                        if (app.image_paste_is_base64) {
+                            snprintf(app.composer_buf, sizeof(app.composer_buf),
+                                     "[image:%d bytes]", app.image_paste_data_len);
+                        } else {
+                            snprintf(app.composer_buf, sizeof(app.composer_buf),
+                                     "[image:%s]", app.image_paste_path);
+                        }
+                        app.composer_pos = (int)strlen(app.composer_buf);
+                        app.image_paste_active = false;
+                        snprintf(app.toast_msg, sizeof(app.toast_msg), "Image attached");
+                        app.toast_time = 60;
+                    } else if (ev.x >= cancel_btn.x && ev.x < cancel_btn.x + cancel_btn.w &&
+                               ev.y >= cancel_btn.y && ev.y < cancel_btn.y + cancel_btn.h) {
+                        app.image_paste_active = false;
+                    }
+                    break;
+                }
+                /* Pet gallery selection */
+                if (app.pet_show_gallery && ev.type == GC_EV_MOUSE_DOWN) {
+                    int w = win_w(), h = win_h();
+                    int pw = 420, ph = 340;
+                    int px = (w - pw) / 2, py = (h - ph) / 2;
+                    int cell_w = 90, cell_h = 90;
+                    int cols = 4, start_x = px + (pw - cols * cell_w) / 2 + 10;
+                    int start_y = py + 60;
+                    for (int i = 0; i < app.pet_count; i++) {
+                        int cx = start_x + (i % cols) * cell_w;
+                        int cy = start_y + (i / cols) * cell_h;
+                        if (ev.x >= cx && ev.x < cx + cell_w - 8 &&
+                            ev.y >= cy && ev.y < cy + cell_h - 8) {
+                            app.pet_type = i % 4;
+                            app.pet_selected = i;
+                            app.pet_show_gallery = false;
+                            snprintf(app.toast_msg, sizeof(app.toast_msg),
+                                     "Selected: %s", app.pet_names[i]);
+                            app.toast_time = 60;
+                            break;
+                        }
+                    }
+                    /* Scale slider */
+                    int slider_y = py + ph - 38;
+                    if (ev.y >= slider_y - 8 && ev.y <= slider_y + 12) {
+                        int slider_x = px + 70;
+                        int slider_w = pw - 100;
+                        if (ev.x >= slider_x && ev.x <= slider_x + slider_w) {
+                            float t = (float)(ev.x - slider_x) / slider_w;
+                            app.pet_scale = 0.5f + t * 1.5f;
+                        }
+                    }
+                    break;
+                }
                 hit_t hr = hit_test(ev.x, ev.y);
                 if (hr.type == HIT_NAV) {
                     app.selected_nav = hr.index;
@@ -1837,6 +2497,12 @@ int main(int argc, char **argv) {
         draw_model_picker();
         draw_scroll_button();
         draw_statusbar();
+        draw_pet();
+        draw_pet_gallery();
+        draw_voice_indicator();
+        draw_command_palette();
+        draw_image_paste_overlay();
+        draw_toast();
         gc_end_frame(app.win);
 
         static bool first_frame = true;
