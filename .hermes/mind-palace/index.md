@@ -101,7 +101,7 @@ The entire `apps/desktop/` directory. Every component, store, hook, lib, page, s
 | `app/cron/` | 2 | Cron jobs UI + job state | 🔲 REAL_GAP |
 | `app/artifacts/` | 2 | Artifact rendering | 🔲 REAL_GAP |
 | `app/command-palette/` | 3 | Command palette + pet palette + marketplace | ✅ Done (C equivalent) |
-| `app/command-center/` | 1 | Command center | 🔲 REAL_GAP |
+| `app/command-center/` | 1 | Command center | ✅ Done (real-time gateway/session/skill/cron stats) |
 | `app/page-search-shell.tsx` | 1 | Page search | 🔲 REAL_GAP |
 | `app/session-picker-overlay.tsx` | 1 | Session picker | 🔲 REAL_GAP |
 | `app/session-switcher.tsx` | 1 | Session switcher | 🔲 REAL_GAP |
