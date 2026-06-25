@@ -268,6 +268,12 @@ typedef struct app_desktop_state {
     char notification[256];
     time_t notification_time;
     int notification_duration_sec;
+
+    /* Terminal PTY */
+    pty_t *term_pty;
+    char term_buf[32768];
+    int term_buf_len;
+    int term_scroll;
 } app_desktop_state_t;
 
 /* ── Lifecycle ──────────────────────────────────────────────────────── */

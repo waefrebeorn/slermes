@@ -40,6 +40,7 @@
 #include <time.h>
 #include <ctype.h>
 #include <sys/ioctl.h>
+#include "pty.h"
 
 /* ── PANEL IDs ─────────────────────────────────────────────────────── */
 typedef enum {
@@ -97,6 +98,12 @@ static void ui_draw_dialog(void);
 static void ui_refresh_panels(void);
 static void filter_palette_commands(void);
 static void execute_palette_command(const char *action);
+
+/* ── PTY forward decls ────────────────────────────────────────────── */
+static void term_launch_pty(void);
+static void term_read_pty(void);
+static void term_shutdown_pty(void);
+static void term_write_pty(const char *data, int len);
 
 /* ── COLOUR PAIRS ─────────────────────────────────────────────────── */
 /* Accessible, high-contrast colour schemes (WCAG AA friendly).
@@ -766,12 +773,48 @@ static void ui_draw_terminal(void) {
               cols - 25, cols - 25, " Terminal ");
     wattroff(ui.wins[PANEL_TERMINAL], A_REVERSE);
 
-    wattron(ui.wins[PANEL_TERMINAL], COLOR_PAIR(CP_CHAT_DIM));
-    mvwprintw(ui.wins[PANEL_TERMINAL], 1, 0, " PTY not connected — press 't' to toggle");
-    wattroff(ui.wins[PANEL_TERMINAL], COLOR_PAIR(CP_CHAT_DIM));
+    if (!app.term_pty || !app.term_pty->active) {
+        wattron(ui.wins[PANEL_TERMINAL], COLOR_PAIR(CP_CHAT_DIM));
+        mvwprintw(ui.wins[PANEL_TERMINAL], 1, 0, " PTY not connected — press 't' to toggle");
+        wattroff(ui.wins[PANEL_TERMINAL], COLOR_PAIR(CP_CHAT_DIM));
+        for (int r = 2; r < rows; r++) {
+            mvwprintw(ui.wins[PANEL_TERMINAL], r, 0, "~");
+        }
+    } else {
+        /* Render PTY output */
+        wattron(ui.wins[PANEL_TERMINAL], COLOR_PAIR(CP_CHAT_DIM));
+        mvwprintw(ui.wins[PANEL_TERMINAL], 1, 0, " PID:%d %dx%d fd:%d",
+                  app.term_pty->pid, app.term_pty->cols, app.term_pty->rows,
+                  app.term_pty->master_fd);
+        wattroff(ui.wins[PANEL_TERMINAL], COLOR_PAIR(CP_CHAT_DIM));
 
-    for (int r = 2; r < rows; r++) {
-        mvwprintw(ui.wins[PANEL_TERMINAL], r, 0, "~");
+        /* Render terminal buffer content */
+        if (app.term_buf_len > 0) {
+            /* Split buffer into lines based on terminal width */
+            int render_row = 2;
+            int buf_pos = 0;
+            int skip = 0;
+            /* Skip to last N lines that fit in the window */
+            int line_count = 0;
+            for (int i = 0; i < app.term_buf_len; i++) {
+                if (app.term_buf[i] == '\n') line_count++;
+            }
+            int start_line = (line_count > rows - 2) ? line_count - (rows - 2) : 0;
+            for (int i = 0; i < app.term_buf_len && render_row < rows; i++) {
+                if (app.term_buf[i] == '\n') {
+                    if (skip < start_line) { skip++; buf_pos = i + 1; continue; }
+                    render_row++;
+                    buf_pos = i + 1;
+                } else {
+                    if (skip < start_line) continue;
+                    int col = i - buf_pos;
+                    if (col < cols) {
+                        mvwaddch(ui.wins[PANEL_TERMINAL], render_row, col,
+                                 (unsigned char)app.term_buf[i]);
+                    }
+                }
+            }
+        }
     }
     wnoutrefresh(ui.wins[PANEL_TERMINAL]);
 }
@@ -1551,6 +1594,7 @@ static void ui_handle_normal(int key) {
         break;
     case 't':
         ui.terminal_visible = !ui.terminal_visible;
+        if (ui.terminal_visible) term_launch_pty();
         ui_resize();
         break;
     case 's':
@@ -1731,6 +1775,16 @@ static void ui_handle_normal(int key) {
         }
         break;
     default:
+        /* Terminal PTY input: send keystrokes to PTY when terminal is visible */
+        if (ui.terminal_visible && app.term_pty && app.term_pty->active) {
+            char c = (char)key;
+            if (key >= 32 && key < 127) {
+                term_write_pty(&c, 1);
+            } else if (key == 13 || key == 10) {
+                term_write_pty("\r", 1);
+            }
+            break;
+        }
         /* Check for sidebar search input */
         if (ui.sidebar_search_active && key >= 32 && key < 127 &&
             ui.sidebar_search_len < (int)sizeof(ui.sidebar_search) - 1) {
@@ -1797,10 +1851,65 @@ bool app_desktop_init(void) {
         "Arrow keys navigate sidebar. `q` quits (or type into composer).", "system");
     if (m4) ui.rendered_msgs[ui.rendered_count++] = m4;
 
+    /* Terminal PTY init */
+    app.term_pty = NULL;
+    app.term_buf_len = 0;
+    app.term_scroll = 0;
+
     return true;
 }
 
-void app_desktop_shutdown(void) { ui_shutdown(); }
+/* ── PTY helpers ─────────────────────────────────────────────────────── */
+static void term_launch_pty(void) {
+    if (app.term_pty && app.term_pty->active) return;
+    app.term_pty = pty_allocate(NULL, NULL, 80, 24);
+    if (app.term_pty && app.term_pty->active) {
+        app.term_buf_len = 0;
+        fprintf(stderr, "PTY launched: PID=%d fd=%d\n", app.term_pty->pid, app.term_pty->master_fd);
+    }
+}
+
+static void term_read_pty(void) {
+    if (!app.term_pty || !app.term_pty->active) return;
+    char readbuf[4096];
+    int n = pty_read(app.term_pty, readbuf, sizeof(readbuf) - 1);
+    if (n > 0) {
+        readbuf[n] = '\0';
+        int new_len = app.term_buf_len + n;
+        if (new_len >= (int)sizeof(app.term_buf)) {
+            int keep = 16384;
+            int start = app.term_buf_len - keep;
+            if (start > 0) {
+                memmove(app.term_buf, app.term_buf + start, keep);
+                app.term_buf_len = keep;
+            } else {
+                app.term_buf_len = 0;
+            }
+            new_len = app.term_buf_len + n;
+        }
+        memcpy(app.term_buf + app.term_buf_len, readbuf, n);
+        app.term_buf_len = new_len;
+        app.term_buf[app.term_buf_len] = '\0';
+        ui.dirty = true;
+    }
+}
+
+static void term_shutdown_pty(void) {
+    if (app.term_pty) {
+        if (app.term_pty->active) pty_dispose(app.term_pty);
+        app.term_pty = NULL;
+    }
+}
+
+/* ── PTY input ──────────────────────────────────────────────────────── */
+static void term_write_pty(const char *data, int len) {
+    if (app.term_pty && app.term_pty->active) {
+        pty_write(app.term_pty, data, len);
+        ui.dirty = true;
+    }
+}
+
+void app_desktop_shutdown(void) { term_shutdown_pty(); ui_shutdown(); }
 
 void app_desktop_draw(app_desktop_state_t *app_state) {
     (void)app_state;
@@ -1931,6 +2040,8 @@ int app_desktop_run(int argc, char **argv) {
     if (!app_desktop_init()) { fprintf(stderr, "Failed to initialize desktop app\n"); return 1; }
     ui_draw_all();
     while (app.running) {
+        /* Read PTY output if terminal is active */
+        term_read_pty();
         int key = getch();
         if (key != ERR) app_desktop_handle_input(&app, key);
         if (ui.dirty) ui_draw_all();

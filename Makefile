@@ -878,7 +878,7 @@ slermes: $(PHASE5_OBJ) src/main.o $(HERMES_CLI_PORT_OBJ) $(HERMES_CLI_PORT_EXTRA
 DESKTOP_APP_OBJ = src/main_desktop.o src/app_desktop.o src/chat_render.o src/chat_composer.o \
     src/desktop_app_common.o src/gateway_probe.o src/window_stubs.o \
     src/hermes_env_keys.o src/file_ops.o src/cli/port_hermes_logging.o \
-    src/agent/logger.o
+    src/agent/logger.o src/pty.o
 DESKTOP_LIBS_FILTER = lib/libdb/sqlite3.o lib/whisper_cpp/whisper_wrapper.o lib/libtranscribe/transcribe.o
 # ── Custom GUI desktop (SDL2-based, our own framework) ────────────────
 DESKTOP_GUI_OBJ := src/gui_core.o src/desktop_gui.o src/slermes_home.o src/chat_render.o lib/libdb/sqlite3.o lib/libhttp/http.o lib/libjson/json.o lib/libbase64/base64.o lib/libcrypto/crypto.o
