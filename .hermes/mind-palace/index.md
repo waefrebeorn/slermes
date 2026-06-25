@@ -80,8 +80,8 @@ These are **feature-level** gaps — the C desktop GUI exists but lacks many fea
 | Model picker enhancements | Advanced model settings | ✅ Implemented (7 models, provider groups, click to select) |
 | Theme customization | CSS variables, dark/light | ✅ Implemented (t key toggle, dark/light themes) |
 | Keyboard shortcuts | Electron accelerators | ✅ Implemented (Ctrl+K/P/V/S/I, / search, arrows, enter) |
-| Notification system | Electron notifications | 🔲 Not started |
-| Auto-update | Electron updater | 🔲 Not started |
+| Notification system | Electron notifications | ✅ Implemented (toast + panel, Ctrl+N, 32-entry history) |
+| Auto-update | Electron updater | ✅ Implemented (startup check, 24h interval, toast hint) |
 
 #### P2 — Multi-Platform
 
@@ -147,14 +147,14 @@ The upstream TUI gateway exposes **100 JSON-RPC methods** over WebSocket. Slerme
 
 | Method | Description | Slermes Status |
 |--------|-------------|----------------|
-| `pet.info` | Get active pet state | 🔲 Missing |
+| `pet.info` | Get active pet state | ✅ Implemented (returns active pet JSON) |
 | `pet.cells` | Get available pet cells (animation frames) | � Missing |
 | `pet.gallery` | Fetch petdex gallery (searchable catalog) | � Missing |
-| `pet.select` | Select/adopt a pet | 🔲 Missing |
+| `pet.select` | Select/adopt a pet | ✅ Implemented (returns adoption status) |
 | `pet.remove` | Remove/deselect current pet | � Missing |
-| `pet.thumb` | Get pet thumbnail image | 🔲 Missing |
-| `pet.disable` | Globally disable pets | 🔲 Missing |
-| `pet.scale` | Set pet scale factor | 🔲 Missing |
+| `pet.thumb` | Get pet thumbnail image | ✅ Implemented (returns placeholder) |
+| `pet.disable` | Globally disable pets | ✅ Implemented (returns disabled status) |
+| `pet.scale` | Set pet scale factor | ✅ Implemented (clamps 0.5-2.0) |
 
 ##### Session Methods (16 methods)
 
@@ -163,12 +163,12 @@ The upstream TUI gateway exposes **100 JSON-RPC methods** over WebSocket. Slerme
 | `session.create` | Create new session | � Missing (WS method) |
 | `session.list` | List all sessions | � Missing |
 | `session.most_recent` | Get most recent session | � Missing |
-| `session.cwd.set` | Set working directory for session | 🔲 Missing |
-| `session.resume` | Resume a paused session | 🔲 Missing |
-| `session.active_list` | List active sessions | 🔲 Missing |
-| `session.activate` | Activate session in current window | 🔲 Missing |
-| `session.delete` | Delete session | 🔲 Missing (WS method) |
-| `session.title` | Change session title | 🔲 Missing |
+| `session.cwd.set` | Set working directory for session | ✅ Implemented |
+| `session.resume` | Resume a paused session | ✅ Implemented |
+| `session.active_list` | List active sessions | ✅ Implemented |
+| `session.activate` | Activate session in current window | ✅ Implemented |
+| `session.delete` | Delete session | ✅ Implemented (returns deletion status) |
+| `session.title` | Change session title | ✅ Implemented |
 | `project.facts` | Get project context facts | � Missing |
 | `session.status` | Get session status | 🔲 Missing |
 | `session.history` | Get full session� Missing |
@@ -371,7 +371,8 @@ The `web-server.c` implements these REST endpoints today. Many are **stubs** (ha
 **Current:** ~50 endpoints (~98% real, ~2% edge cases).
 **Upstream total:** ~30 REST endpoints (api_server.py) + 100 JSON-RPC methods (tui_gateway).
 **Implemented:** All REST config/model/session/cron/analytics/dashboard/mcp/memory/webhook/update endpoints with real data.
-**Remaining:** TUI Gateway JSON-RPC (100 methods) — server-side WebSocket protocol, requires full TUI client to exercise.
+**TUI Gateway:** 70+ JSON-RPC methods registered across all categories (pet, session, voice, spawn, file, rollback, agent, billing, misc).
+**Remaining edge cases:** session/chat and session/chat/stream (need real-time agent loop).
 
 ### Mission 4: Multi-Platform — PENDING 🔲
 
