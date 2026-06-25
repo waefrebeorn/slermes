@@ -102,15 +102,15 @@ The entire `apps/desktop/` directory. Every component, store, hook, lib, page, s
 | `app/artifacts/` | 2 | Artifact rendering | 🔲 REAL_GAP |
 | `app/command-palette/` | 3 | Command palette + pet palette + marketplace | ✅ Done (C equivalent) |
 | `app/command-center/` | 1 | Command center | ✅ Done (real-time gateway/session/skill/cron stats) |
-| `app/page-search-shell.tsx` | 1 | Page search | 🔲 REAL_GAP |
+| `app/page-search-shell.tsx` | 1 | Page search | ✅ Done (Ctrl+F: search in chat messages, highlight matches) |
 | `app/session-picker-overlay.tsx` | 1 | Session picker | ✅ Done (Ctrl+O: searchable list, click/Enter to switch) |
 | `app/session-switcher.tsx` | 1 | Session switcher | ✅ Done (Ctrl+Tab: HUD with 1-9 hotkeys) |
 | `app/floating-hud.ts` | 1 | Floating HUD | ✅ Done (top-right status panel, auto-expiring items) |
 | `app/desktop-controller.tsx` | 1 | Desktop controller | ✅ Done (boot sequence, gateway status, HUD integration) |
 | `app/updates-overlay.tsx` | 1 | Updates overlay | ✅ Done (C equivalent) |
-| `app/messaging/` | 2 | Messaging platform icons/index | 🔲 REAL_GAP |
+| `app/messaging/` | 2 | Messaging platform icons/index | ✅ Done (platform registry with icons in command center) |
 | `app/model-picker-overlay.tsx` | 1 | Model picker | ✅ Done (C equivalent) |
-| `app/model-visibility-overlay.tsx` | 1 | Model visibility | 🔲 REAL_GAP |
+| `app/model-visibility-overlay.tsx` | 1 | Model visibility | ✅ Done (built into settings → provider groups) |
 | `app/overlays/` | 4 | Overlay system (chrome, search input, split layout, view) | 🔲 REAL_GAP |
 | `components/` (root) | 10+ | Top-level shared (boot-failure, brand, language, model-picker, etc.) | 🔲 REAL_GAP |
 | `lib/` (root) | 10+ | Top-level libs (gateway-events, storage, todos, etc.) | 🔲 REAL_GAP |
