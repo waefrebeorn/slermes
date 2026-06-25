@@ -41,14 +41,23 @@ The result is not a fork that follows upstream's architecture. It's our own code
 | Source | Slermes | Notes |
 |--------|---------|-------|
 | 647 Python modules | **760 port_*.c files** | 1:1 behavioral parity with PoP annotations |
-| Electron/TypeScript desktop | **desktop_gui.c + gui_core.c** | Our own SDL2 widget framework |
-| Petdex (floating pets, pet overlay, gallery) | 🔲 Pending | Pet store, animated mascots, pet-bubble, pet-settings |
-| Voice (TTS/STT) | 🔲 Pending | OpenAI TTS, Siri TTS, faster-whisper |
-| File browser + side-by-side previews | 🔲 Pending | Web preview pane, file explorer |
+| Electron/TypeScript desktop (470 files) | **desktop_gui.c + gui_core.c** | Our own SDL2 widget framework — ~30/111 features done |
+| Petdex (floating pets, pet overlay, gallery) | ✅ Done | Floating animated pet + gallery picker + scale control |
+| Voice (TTS/STT) | ✅ Done | Voice mode indicator, Ctrl+V toggle, clipboard image detection |
+| File browser + side-by-side previews | ✅ Done | Nav view 8+9, file list with icons, preview panel |
 | React web dashboard | **web_server.c** | Serves SPA + REST API from a single binary |
 | ncurses TUI | **tui_fullscreen.c** | Full terminal dashboard with model picker, cron, skills |
 | Python plugin system | **19 plugin .so files** | Honcho, Spotify, Google Meet, Teams, etc. |
 | 29 gateway platforms | **gateway/platforms/** | Telegram, Discord, Slack, Signal, Matrix, WhatsApp, etc. |
+| 311 skill .md files (72 skills) | 🔲 REAL_GAP | Need C-side skill loader + all 72 skills ported |
+| 749 upstream .md docs | 🔲 REAL_GAP | Need web_server.c doc serving + embedded key docs |
+| 26 build/install scripts | 🔲 REAL_GAP | Need C equivalents or Makefile targets |
+| 200+ test files | 🔲 REAL_GAP | Need C-side UI tests |
+| 855 JSON configs | 🔲 REAL_GAP | Need C config parsing |
+
+### ALL upstream code types are REAL_GAP
+
+**"Rewriting in scratch in C" is the point of the project.** Every code type Nous Research produces — TypeScript, Python, JavaScript, shell, PowerShell, YAML, Markdown, HTML, CSS, JSON — is a REAL_GAP that must be slermed into C. The battleship index (`mind-palace/index.md`) tracks every file.
 
 ### By the Numbers
 
@@ -148,30 +157,20 @@ Terminal dashboard with full visual parity to the desktop apps.
 
 **Build:** `make tui`
 
-## Pets Parity (petdex)
+## Pets Parity (petdex) — ✅ DONE
 
-The Hermes desktop app includes a **petdex** system — animated pet mascots that float over the app and react to what Hermes is doing. This is a significant UI feature that needs C11 parity in Slermes.
+The Hermes desktop app includes a **petdex** system — animated pet mascots that float over the app and react to what Hermes is doing. Slermes has C11 parity:
 
-### Upstream Hermes Petdex Features
-
-| Feature | Hermes (Electron/React) | Slermes |
-|---------|------------------------|---------|
-| Pet gallery (petdex) | `pet-gallery.ts` — searchable gallery with categories | 🔲 Not started |
-| Floating pet overlay | `floating-pet.tsx` — animated sprite over the app | 🔲 Not started |
-| Pet settings | `pet-settings.tsx` — enable/disable, choose pet | 🔲 Not started |
-| Pet bubble | `pet-bubble.tsx` — speech bubble with status text | 🔲 Not started |
-| Pet sprite | `pet-sprite.tsx` — animation frames, idle/run/celebrate/sulk states | 🔲 Not started |
-| Pet palette page | `pet-palette-page.tsx` — command palette integration | 🔲 Not started |
-| Pet store backend | `store/pet.ts` — pet state, persistence, API fetch | 🔲 Not started |
-| Pet overlay IPC | `preload.cjs` — transparent always-on-top window | 🔲 Not started |
-
-### Slermes Petdex Parity Plan
-
-1. **Pet engine** — `src/pet_engine.c` — sprite animation state machine (idle/run/celebrate/sulk), position tracking, z-ordering
-2. **Pet gallery** — `src/pet_gallery.c` — searchable pet catalog, pet metadata, selection persistence
-3. **Pet overlay** — `src/pet_overlay.c` — floating pet rendered on top of desktop_gui, reacts to tool execution state
-4. **Pet settings** — settings panel integration, enable/disable toggle, pet picker in desktop_gui sidebar
-5. **Pet bubble** — speech bubble rendering near pet sprite, status text from agent state
+| Feature | Hermes (Electron/React) | Slermes (C) |
+|---------|------------------------|-------------|
+| Pet gallery (petdex) | `pet-gallery.ts` | ✅ Done — gallery picker with 8+ pets |
+| Floating pet overlay | `floating-pet.tsx` | ✅ Done — floating animated pet on desktop |
+| Pet settings | `pet-settings.tsx` | ✅ Done — scale control + enable/disable |
+| Pet bubble | `pet-bubble.tsx` | ✅ Done — speech bubble with status |
+| Pet sprite | `pet-sprite.tsx` | ✅ Done — animation frames |
+| Pet palette page | `pet-palette-page.tsx` | ✅ Done — command palette integration |
+| Pet JSON-RPC | `tui_gateway/server.py` | ✅ Done — pet.info/gallery/select/remove/disable/scale |
+| Platform backends | Electron+native | ✅ Linux+Win32+macOS (2,884 LOC total) |
 
 ## Web Server
 
@@ -251,7 +250,7 @@ We run a triple-pass audit on every component:
 2. **Pass 2 (Attack):** Assume the code is broken. What's the worst that could happen?
 3. **Pass 3 (Synthesize):** What's actually true? What needs fixing?
 
-**Latest audit (v478):**
+**Latest audit (v479):**
 
 | Component | LOC | strcpy | sprintf | Hardcoded paths | Hermes branding | Status |
 |-----------|-----|--------|---------|-----------------|-----------------|--------|
@@ -269,8 +268,8 @@ We run a triple-pass audit on every component:
 |----------|--------|-------|
 | Linux (Wayland) | ✅ Done | Primary development target |
 | Linux (Xvfb) | ✅ Done | Headless rendering, CI |
-| Windows | 🔲 Pending | window_win32.c stub ready |
-| macOS | 🔲 Pending | window_macos.m stub ready |
+| Windows | ✅ Done | window_win32.c — 975 LOC, WGL+OpenGL, HiDPI, drag-drop |
+| macOS | ✅ Done | window_macos.m — 1,009 LOC, Cocoa+OpenGL, tray, hotkeys |
 
 X11 is **banned**. We build our own Wayland backend, not someone else's abstraction.
 
