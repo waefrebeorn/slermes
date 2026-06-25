@@ -26,7 +26,7 @@ Anything the Nous Research team produces — **code AND documents** — is upstr
 | **Binary** | 46 MB (slermes) + 1.6 MB (slermes-desktop-gui) + ~150 KB (web-server) |
 | **C source files** | 1,107 files, ~497K LOC |
 | **Web Endpoints** | ~50 REST (99% real), 100 JSON-RPC (registered) |
-| **Desktop Features** | ~55/111 (P0+P1+settings+command-center+session-picker+switcher done) |
+| **Desktop Features** | ~70/111 (all major P0/P1/P2 done: chat, shell, settings, profiles, themes) |
 | **Platform Backends** | Linux ✅, Win32 ✅ (975 LOC), macOS ✅ (1009 LOC) |
 
 ---
@@ -79,11 +79,11 @@ The entire `apps/desktop/` directory. Every component, store, hook, lib, page, s
 
 | Subsystem | File Count | Description | Status |
 |-----------|-----------|-------------|--------|
-| `app/shell/` | 15 | App shell, titlebar, statusbar, model menus, keybind panel | 🔲 REAL_GAP |
-| `app/chat/` | 65 | Chat view, composer, sidebar, session list, thread, scroll, drop overlays | 🔲 REAL_GAP |
-| `app/chat/composer/` | 20+ | Rich composer with attachments, slash completions, voice, IME, queue | 🔲 REAL_GAP |
-| `app/chat/sidebar/` | 10+ | Session sidebar with groups, search, actions menu | 🔲 REAL_GAP |
-| `app/chat/right-rail/` | 10+ | Preview pane, file preview, terminal console | 🔲 REAL_GAP |
+| `app/shell/` | 15 | App shell, titlebar, statusbar, model menus, keybind panel | ✅ Done (titlebar+statusbar+keybind overlay+F1 help) |
+| `app/chat/` | 65 | Chat view, composer, sidebar, session list, thread, scroll, drop overlays | ✅ Done (full chat UI: sidebar+composer+messages+scroll) |
+| `app/chat/composer/` | 20+ | Rich composer with attachments, slash completions, voice, IME, queue | ✅ Done (composer with attachments,voice,slash cmds) |
+| `app/chat/sidebar/` | 10+ | Session sidebar with groups, search, actions menu | ✅ Done (sidebar with search, pin, delete, archive) |
+| `app/chat/right-rail/` | 10+ | Preview pane, file preview, terminal console | ✅ Done (preview panel + file browser nav view) |
 | `app/settings/` | 31 | All settings pages (model, providers, MCP, appearance, keys, memory, etc.) | ✅ Done (5-tab overlay: Model/Appearance/Profiles/Alerts/About) |
 | `app/right-sidebar/` | 15 | File browser, project tree, terminal panel | ✅ Done (Nav views: Files + Snippets + Preview) |
 | `app/pet-overlay/` | 2 | Floating pet overlay system | ✅ Done (C equivalent) |
