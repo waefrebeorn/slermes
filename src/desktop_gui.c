@@ -2068,7 +2068,22 @@ static struct {
 static void settings_init(void) {
     memset(&settings, 0, sizeof(settings));
     settings.active_tab = 0;
-    settings.selected_theme = app.dark_mode ? 1 : 2;
+    /* Detect current theme */
+    if (app.dark_mode) {
+        /* Check which dark theme is active by comparing bg color */
+        uint32_t bg = app.theme.bg;
+        uint8_t r = (bg >> 16) & 0xFF;
+        uint8_t g = (bg >> 8) & 0xFF;
+        uint8_t b = bg & 0xFF;
+        if (r == 0x00 && g == 0x2b && b == 0x36)
+            settings.selected_theme = 2; /* Solarized */
+        else if (r == 0x2e && g == 0x34 && b == 0x40)
+            settings.selected_theme = 3; /* Nord */
+        else
+            settings.selected_theme = 0; /* Dark */
+    } else {
+        settings.selected_theme = 1; /* Light */
+    }
 }
 
 static void settings_load_fields(void) {
@@ -2108,7 +2123,8 @@ static void settings_load_fields(void) {
     case SETTINGS_TAB_APPEARANCE: {
         settings_field_t *f = &settings.fields[settings.field_count++];
         snprintf(f->label, sizeof(f->label), "Theme");
-        const char *thm[] = {"System", "Dark", "Light"};
+        const char *thm[] = {"Dark", "Light", "Solarized", "Nord"};
+        if (settings.selected_theme >= 4) settings.selected_theme = 0;
         snprintf(f->value, sizeof(f->value), "%s", thm[settings.selected_theme]);
         snprintf(f->key, sizeof(f->key), "theme");
         f->type = 2;
@@ -2333,12 +2349,17 @@ static void settings_handle_input(gc_event_t *ev) {
                         app.yolo_active = (strcmp(f->value, "Enabled") == 0);
                 } else if (f->type == 2) {
                     if (strcmp(f->key, "theme") == 0) {
-                        settings.selected_theme = (settings.selected_theme + 1) % 3;
-                        const char *thm[] = {"System", "Dark", "Light"};
+                        settings.selected_theme = (settings.selected_theme + 1) % 4;
+                        const char *thm[] = {"Dark", "Light", "Solarized", "Nord"};
                         snprintf(f->value, sizeof(f->value), "%s", thm[settings.selected_theme]);
                         f->changed = true;
-                        app.dark_mode = (settings.selected_theme == 1);
-                        gc_set_theme(app.win, app.dark_mode ? &gc_theme_dark : &gc_theme_light);
+                        /* Apply theme immediately */
+                        switch (settings.selected_theme) {
+                        case 0: app.dark_mode = true; gc_set_theme(app.win, &gc_theme_dark); break;
+                        case 1: app.dark_mode = false; gc_set_theme(app.win, &gc_theme_light); break;
+                        case 2: app.dark_mode = true; gc_set_theme(app.win, &gc_theme_solarized); break;
+                        case 3: app.dark_mode = true; gc_set_theme(app.win, &gc_theme_nord); break;
+                        }
                         app.theme = gc_get_theme(app.win);
                     }
                 } else if (f->type == 0 && strcmp(f->key, "profile_new") == 0) {
@@ -2404,11 +2425,15 @@ static void settings_handle_input(gc_event_t *ev) {
                     if (strcmp(f->key, "yolo_mode") == 0)
                         app.yolo_active = (strcmp(f->value, "Enabled") == 0);
                 } else if (f->type == 2 && strcmp(f->key, "theme") == 0) {
-                    settings.selected_theme = (settings.selected_theme + 1) % 3;
-                    const char *thm[] = {"System", "Dark", "Light"};
+                    settings.selected_theme = (settings.selected_theme + 1) % 4;
+                    const char *thm[] = {"Dark", "Light", "Solarized", "Nord"};
                     snprintf(f->value, sizeof(f->value), "%s", thm[settings.selected_theme]);
-                    app.dark_mode = (settings.selected_theme == 1);
-                    gc_set_theme(app.win, app.dark_mode ? &gc_theme_dark : &gc_theme_light);
+                    switch (settings.selected_theme) {
+                    case 0: app.dark_mode = true; gc_set_theme(app.win, &gc_theme_dark); break;
+                    case 1: app.dark_mode = false; gc_set_theme(app.win, &gc_theme_light); break;
+                    case 2: app.dark_mode = true; gc_set_theme(app.win, &gc_theme_solarized); break;
+                    case 3: app.dark_mode = true; gc_set_theme(app.win, &gc_theme_nord); break;
+                    }
                     app.theme = gc_get_theme(app.win);
                 }
                 return;
@@ -3555,10 +3580,15 @@ int main(int argc, char **argv) {
                     break;
                 }
                 if (ev.key == SDLK_ESCAPE || ev.key == SDLK_q) app.running = false;
-                /* Theme toggle */
+                /* Theme toggle — t key cycles Dark→Light→Solarized→Nord */
                 if (ev.key == 't') {
-                    app.dark_mode = !app.dark_mode;
-                    gc_set_theme(app.win, app.dark_mode ? &gc_theme_dark : &gc_theme_light);
+                    settings.selected_theme = (settings.selected_theme + 1) % 4;
+                    switch (settings.selected_theme) {
+                    case 0: app.dark_mode = true; gc_set_theme(app.win, &gc_theme_dark); break;
+                    case 1: app.dark_mode = false; gc_set_theme(app.win, &gc_theme_light); break;
+                    case 2: app.dark_mode = true; gc_set_theme(app.win, &gc_theme_solarized); break;
+                    case 3: app.dark_mode = true; gc_set_theme(app.win, &gc_theme_nord); break;
+                    }
                     app.theme = gc_get_theme(app.win);
                 }
                 /* Search: activate with /, escape to cancel */

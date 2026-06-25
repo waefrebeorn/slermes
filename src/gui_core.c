@@ -73,6 +73,52 @@ gc_theme_t gc_theme_light = {
     .padding        = 16,
 };
 
+/* ── Solarized Dark ──────────────────────────────────────────────── */
+gc_theme_t gc_theme_solarized = {
+    .bg             = GC_RGB(0x00, 0x2b, 0x36),  /* base03 */
+    .bg_secondary   = GC_RGB(0x07, 0x36, 0x42),  /* base02 */
+    .bg_card        = GC_RGB(0x00, 0x44, 0x58),  /* base01-ish */
+    .accent         = GC_RGB(0x26, 0x8b, 0xd2),  /* blue */
+    .accent2        = GC_RGB(0x00, 0x65, 0x80),  /* darker blue */
+    .text           = GC_RGB(0x93, 0xa1, 0xa1),  /* base1 */
+    .text_secondary = GC_RGB(0x83, 0x94, 0x96),  /* base0 */
+    .text_dim       = GC_RGB(0x58, 0x6e, 0x75),  /* base00 */
+    .border         = GC_RGB(0x00, 0x44, 0x58),
+    .border_subtle  = GC_RGB(0x07, 0x36, 0x42),
+    .error          = GC_RGB(0xdc, 0x32, 0x2f),  /* red */
+    .warn           = GC_RGB(0xb5, 0x89, 0x00),  /* yellow */
+    .success        = GC_RGB(0x85, 0x99, 0x00),  /* green */
+    .cyan           = GC_RGB(0x2a, 0xa1, 0x98),  /* cyan */
+    .font_size      = 10,
+    .sidebar_w      = 237,
+    .header_h       = 34,
+    .statusbar_h    = 20,
+    .padding        = 16,
+};
+
+/* ── Nord ────────────────────────────────────────────────────────── */
+gc_theme_t gc_theme_nord = {
+    .bg             = GC_RGB(0x2e, 0x34, 0x40),  /* nord0 */
+    .bg_secondary   = GC_RGB(0x3b, 0x42, 0x52),  /* nord1 */
+    .bg_card        = GC_RGB(0x43, 0x4c, 0x5e),  /* nord2 */
+    .accent         = GC_RGB(0x88, 0xc0, 0xd0),  /* nord8 */
+    .accent2        = GC_RGB(0x5e, 0x81, 0xac),  /* nord9 */
+    .text           = GC_RGB(0xec, 0xef, 0xf4),  /* nord6 */
+    .text_secondary = GC_RGB(0xd8, 0xde, 0xe9),  /* nord4 */
+    .text_dim       = GC_RGB(0x61, 0x6e, 0x88),  /* nord3-ish */
+    .border         = GC_RGB(0x4c, 0x56, 0x6a),  /* nord3 */
+    .border_subtle  = GC_RGB(0x3b, 0x42, 0x52),
+    .error          = GC_RGB(0xbf, 0x61, 0x6a),  /* nord11 */
+    .warn           = GC_RGB(0xeb, 0xcb, 0x8b),  /* nord13 */
+    .success        = GC_RGB(0xa3, 0xbe, 0x8c),  /* nord14 */
+    .cyan           = GC_RGB(0x8f, 0xbc, 0xbb),  /* nord7 */
+    .font_size      = 10,
+    .sidebar_w      = 237,
+    .header_h       = 34,
+    .statusbar_h    = 20,
+    .padding        = 16,
+};
+
 /* ══════════════════════════════════════════════════════════════════════
  *  Window struct
  * ══════════════════════════════════════════════════════════════════════ */
