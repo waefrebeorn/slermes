@@ -13,8 +13,23 @@
 #include <string.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#ifdef STANDALONE_WEB_SERVER
+#include <pwd.h>
+#include <unistd.h>
+static void hermes_get_home(char *buf, size_t sz) {
+    const char *h = getenv("SLERMES_HOME");
+    if (h && *h) {
+        snprintf(buf, sz, "%s", h);
+    } else {
+        const char *home = getenv("HOME");
+        if (!home) home = getpwuid(getuid())->pw_dir;
+        snprintf(buf, sz, "%s/.slermes", home ? home : "/tmp");
+    }
+}
+#else
 /* Use the home resolution from the CLI port layer */
 extern void hermes_get_home(char *buf, size_t sz);
+#endif
 
 #define MAX_SKILLS      256
 #define MAX_SKILL_NAME   64
@@ -230,7 +245,18 @@ int skills_discover(skill_info_t *skills, int max_skills, const char *extra_path
     char home[512];
 
     /* Primary: ~/.slermes/skills/ — use hermes_get_home for compatibility with main binary */
+#ifndef STANDALONE_WEB_SERVER
     hermes_get_home(home, sizeof(home));
+#else
+    const char *h = getenv("SLERMES_HOME");
+    if (h && *h) {
+        snprintf(home, sizeof(home), "%s", h);
+    } else {
+        const char *e = getenv("HOME");
+        if (!e) e = getpwuid(getuid())->pw_dir;
+        snprintf(home, sizeof(home), "%s/.slermes", e ? e : "/tmp");
+    }
+#endif
     snprintf(base_dir, sizeof(base_dir), "%s/skills", home);
 
     DIR *d = opendir(base_dir);
