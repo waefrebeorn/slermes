@@ -17,10 +17,15 @@ bool detect_project_facts(const char *root, json_t *out_facts) {
     if (!root || !out_facts) return false;
     
     json_t *facts = json_object();
+    if (!facts) return false;
     json_t *manifests = json_array();
+    if (!manifests) { json_free(facts); return false; }
     json_t *package_managers = json_array();
+    if (!package_managers) { json_free(facts); json_free(manifests); return false; }
     json_t *verify_commands = json_array();
+    if (!verify_commands) { json_free(facts); json_free(manifests); json_free(package_managers); return false; }
     json_t *context_files = json_array();
+    if (!context_files) { json_free(facts); json_free(manifests); json_free(package_managers); json_free(verify_commands); return false; }
     
     /* Project markers - simplified from Python's _PROJECT_MARKERS */
     const char *project_markers[] = {
@@ -31,7 +36,7 @@ bool detect_project_facts(const char *root, json_t *out_facts) {
     };
     
     for (int i = 0; project_markers[i]; i++) {
-        char path[1024];
+        char path[1024] = {0};
         snprintf(path, sizeof(path), "%s/%s", root, project_markers[i]);
         if (access(path, F_OK) == 0) {
             json_array_append(manifests, json_string(project_markers[i]));
@@ -55,7 +60,7 @@ bool detect_project_facts(const char *root, json_t *out_facts) {
     };
     
     for (int i = 0; lockfiles[i].lock; i++) {
-        char path[1024];
+        char path[1024] = {0};
         snprintf(path, sizeof(path), "%s/%s", root, lockfiles[i].lock);
         if (access(path, F_OK) == 0) {
             /* Check if already added */
@@ -76,7 +81,7 @@ bool detect_project_facts(const char *root, json_t *out_facts) {
     }
     
     /* Verify commands */
-    char path[1024];
+    char path[1024] = {0};
     snprintf(path, sizeof(path), "%s/scripts/run_tests.sh", root);
     if (access(path, F_OK) == 0) {
         json_array_append(verify_commands, json_string("scripts/run_tests.sh"));
@@ -91,6 +96,7 @@ bool detect_project_facts(const char *root, json_t *out_facts) {
         fseek(f, 0, SEEK_SET);
         if (sz > 0 && sz < 10000) {
             char *buf = malloc(sz + 1);
+            if (!buf) { fclose(f); return false; }
             fread(buf, 1, sz, f);
             buf[sz] = '\0';
             fclose(f);
@@ -112,7 +118,7 @@ bool detect_project_facts(const char *root, json_t *out_facts) {
                         const char *key = key_item->str_val;
                         for (int i = 0; verify_targets[i]; i++) {
                             if (strcmp(key, verify_targets[i]) == 0) {
-                                char cmd[256];
+                                char cmd[256] = {0};
                                 snprintf(cmd, sizeof(cmd), "%s run %s", "npm", key);
                                 json_array_append(verify_commands, json_string(cmd));
                                 break;
@@ -133,7 +139,7 @@ bool detect_project_facts(const char *root, json_t *out_facts) {
         snprintf(path, sizeof(path), "%s/pyproject.toml", root);
         f = fopen(path, "r");
         if (f) {
-            char line[1024];
+            char line[1024] = {0};
             while (fgets(line, sizeof(line), f)) {
                 if (strstr(line, "[tool.pytest")) {
                     json_array_append(verify_commands, json_string("pytest"));
@@ -153,18 +159,19 @@ bool detect_project_facts(const char *root, json_t *out_facts) {
         fseek(f, 0, SEEK_SET);
         if (sz > 0 && sz < 50000) {
             char *buf = malloc(sz + 1);
+            if (!buf) { fclose(f); return false; }
             fread(buf, 1, sz, f);
             buf[sz] = '\0';
             fclose(f);
             
             const char *verify_targets[] = {"test", "lint", "check", "build", "verify", NULL};
             for (int i = 0; verify_targets[i]; i++) {
-                char pattern[128];
+                char pattern[128] = {0};
                 snprintf(pattern, sizeof(pattern), "^%s:", verify_targets[i]);
                 /* Simple string search for target pattern */
                 char *found = strstr(buf, pattern);
                 if (found && (found == buf || found[-1] == '\n')) {
-                    char cmd[256];
+                    char cmd[256] = {0};
                     snprintf(cmd, sizeof(cmd), "make %s", verify_targets[i]);
                     json_array_append(verify_commands, json_string(cmd));
                 }
@@ -215,7 +222,7 @@ json_t *project_facts_for(const char *cwd) {
     char *root = strdup(resolved);
     char *p = root;
     while (p && *p) {
-        char path[1024];
+        char path[1024] = {0};
         snprintf(path, sizeof(path), "%s/.git", p);
         if (access(path, F_OK) == 0) break;
         
@@ -239,6 +246,7 @@ json_t *project_facts_for(const char *cwd) {
         p = parent;
     }
     
+    /* If we exited the loop without finding a root, return NULL */
     if (!p || !*p) {
         free(root);
         return NULL;
