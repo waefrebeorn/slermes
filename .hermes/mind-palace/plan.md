@@ -1,11 +1,11 @@
-# Plan — Slermes C Translation (v466)
+# Plan — Slermes C Translation (v506)
 
 ## Current State
 - 8,688/8,688 PORTED (100%) — Python→C port complete
 - Build: CLEAN, scanner: 100%
 - Triple DA audit suite: created
 
-## Next: Desktop/Web Parity (v466-v470)
+## Next: Desktop/Web Parity (v506-v470)
 1. **Terminal/PTY** — libvterm + posix_openpt/CreatePseudoConsole
 2. **Chat rendering** — markdown/code rendering in C
 3. **WebSocket client** — libwebsockets for gateway connection

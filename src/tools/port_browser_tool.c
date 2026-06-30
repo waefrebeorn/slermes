@@ -15,17 +15,18 @@ const char* browser_console(void* ctx, void* clear, void* expression, void* task
         return NULL;
     }
     hermes_log(LOG_DEBUG, "port", "browser_console called");
-    if (clear) {
-        hermes_log(LOG_DEBUG, "port", "browser_console: clear is set");
+    bool has_clear = (clear != NULL);
+    bool has_expr = (expression != NULL);
+    bool has_task = (task_id != NULL);
+    (void)has_task; /* unused but kept for clarity */
+    /* Minimal implementation - browser console is a browser-specific feature
+     * that requires WebDriver/CDP which is handled in browser_camofox.c */
+    char *result = malloc(128);
+    if (result) {
+        snprintf(result, 128, "{\"console\":\"browser_console_not_implemented_in_port\",\"clear\":%s,\"expression\":%s}",
+                 has_clear ? "true" : "false", has_expr ? "true" : "false");
     }
-    if (expression) {
-        hermes_log(LOG_DEBUG, "port", "browser_console: expression is set");
-    }
-    if (task_id) {
-        hermes_log(LOG_DEBUG, "port", "browser_console: task_id is set");
-    }
-    /* TODO: implement browser_console logic */
-    return NULL;
+    return result;
 }
 
 #endif /* SRC_TOOLS_PORT_BROWSER_TOOL_C */

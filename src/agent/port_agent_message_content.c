@@ -82,4 +82,3 @@ int flatten_message_text(const char *message_json, char *output, size_t out_sz) 
     output[total_len] = '\0';
     return total_len;
 }
-

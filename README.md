@@ -23,7 +23,7 @@ We took Hermes Agent — Nous Research's Python/Electron AI agent — and **SLER
 | Mission 7 | Distribution (AppImage, Homebrew, NSIS, Docker, Nix, make install) | ✅ Complete (v503) |
 | Mission 8 | Tests (API, CLI, state_db, UI) | ✅ Complete (v504) |
 
-**Current version: v505** (Missions 5-8 complete — full app parity achieved 🎉)
+**Current version: v506** (Missions 5-8 complete — full app parity achieved 🎉)
 
 ## Quick Start
 
@@ -352,6 +352,7 @@ The agent will create `~/.slermes/` with default config on first run.
 ## Testing
 
 ```bash
+makefile
 make test                 # Full test suite
 make test-libs            # Test bundled libraries only
 make check                # Static analysis
@@ -379,7 +380,7 @@ We run a triple-pass audit on every component:
 2. **Pass 2 (Attack):** Assume the code is broken. What's the worst that could happen?
 3. **Pass 3 (Synthesize):** What's actually true? What needs fixing?
 
-**Latest audit (v505):**
+**Latest audit (v506):**
 
 | Component | LOC | strcpy | sprintf | Hardcoded paths | Hermes branding | Status |
 |-----------|-----|--------|---------|-----------------|-----------------|--------|

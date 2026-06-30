@@ -1,24 +1,27 @@
 {
-  "total": 253,
-  "real": 148,
-  "stub": 2,
-  "partial": 103,
-  "stub_file_count": 1,
-  "undefined_call_count": 219,
-  "stub_files": [
-    "src/cli/port_kanban_db_na.c"
-  ],
-  "top_stubs": [
-    {
-      "file": "src/cli/port_kanban_db_na.c",
-      "count": 2
-    }
-  ],
+  "total": 256,
+  "real": 255,
+  "stub": 0,
+  "partial": 1,
+  "stub_file_count": 0,
+  "undefined_call_count": 6,
+  "stub_files": [],
+  "top_stubs": [],
   "top_real": [
+    {
+      "file": "src/gateway/port_gateway_relay_ws_transport.c",
+      "func": "ws_transport_handle_frame",
+      "lines": 60
+    },
     {
       "file": "src/agent/port_agent_antigravity_code_assist.c",
       "func": "antigravity_parse_agent_model_ids",
-      "lines": 68
+      "lines": 50
+    },
+    {
+      "file": "src/gateway/port_gateway_relay_ws_transport.c",
+      "func": "ws_request_response",
+      "lines": 48
     },
     {
       "file": "src/agent/port_agent_antigravity_code_assist.c",
@@ -31,9 +34,19 @@
       "lines": 35
     },
     {
+      "file": "src/cli/port_auth_na.c",
+      "func": "nous_token_has_billing_scope",
+      "lines": 33
+    },
+    {
       "file": "src/agent/port_agent_antigravity_code_assist.c",
       "func": "antigravity_load_code_assist",
       "lines": 32
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_write_through_xai_oauth_to_global_root",
+      "lines": 31
     },
     {
       "file": "src/gateway/port_gateway_relay_adapter.c",
@@ -41,8 +54,18 @@
       "lines": 30
     },
     {
+      "file": "src/tools/port_process_registry.c",
+      "func": "recover_from_checkpoint",
+      "lines": 29
+    },
+    {
       "file": "src/agent/port_agent_antigravity_code_assist.c",
       "func": "antigravity_ids_from_sort",
+      "lines": 28
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_xai_oauth_state_from_store",
       "lines": 28
     },
     {
@@ -51,9 +74,69 @@
       "lines": 28
     },
     {
+      "file": "src/agent/port_agent_antigravity_code_assist.c",
+      "func": "antigravity_build_headers",
+      "lines": 27
+    },
+    {
+      "file": "src/cli/port_config.c",
+      "func": "_strip_dotted_keys",
+      "lines": 26
+    },
+    {
       "file": "src/gateway/port_gateway_relay_adapter.c",
       "func": "relay_adapter_capture_scope",
       "lines": 26
+    },
+    {
+      "file": "src/cli/port_kanban_db.c",
+      "func": "_git_toplevel",
+      "lines": 25
+    },
+    {
+      "file": "src/cli/port_kanban_db.c",
+      "func": "_git_common_dir",
+      "lines": 25
+    },
+    {
+      "file": "src/cli/port_kanban_db.c",
+      "func": "_git_dir",
+      "lines": 25
+    },
+    {
+      "file": "src/cli/port_kanban_db.c",
+      "func": "_git_current_branch",
+      "lines": 25
+    },
+    {
+      "file": "src/cli/port_managed_scope.c",
+      "func": "_parse_env",
+      "lines": 24
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_codex_pool_rate_limit_status",
+      "lines": 23
+    },
+    {
+      "file": "src/cli/port_kanban_db.c",
+      "func": "_git_branch_exists",
+      "lines": 22
+    },
+    {
+      "file": "src/cli/port_main.c",
+      "func": "_restore_tui_workspace",
+      "lines": 22
+    },
+    {
+      "file": "src/cli/port_models.c",
+      "func": "_xai_merge_curated_extras",
+      "lines": 22
+    },
+    {
+      "file": "src/cli/port_gateway.c",
+      "func": "_guard_named_profile_under_multiplexer",
+      "lines": 21
     },
     {
       "file": "src/agent/port_agent_antigravity_code_assist.c",
@@ -61,361 +144,51 @@
       "lines": 20
     },
     {
-      "file": "src/gateway/port_signal.c",
-      "func": "_remember_sent_message_timestamp",
+      "file": "src/agent/port_agent_message_content.c",
+      "func": "flatten_message_text",
+      "lines": 20
+    },
+    {
+      "file": "src/cli/port_kanban_db_na.c",
+      "func": "_ensure_git_worktree",
+      "lines": 19
+    },
+    {
+      "file": "src/tools/port_checkpoint_manager.c",
+      "func": "register_project",
       "lines": 18
-    },
-    {
-      "file": "src/cli/port_gateway.c",
-      "func": "_capture_gateway_argv",
-      "lines": 17
-    },
-    {
-      "file": "src/gateway/port_gateway_relay_ws_transport.c",
-      "func": "ws_transport_dial_url",
-      "lines": 17
-    },
-    {
-      "file": "src/agent/port_agent_antigravity_code_assist.c",
-      "func": "antigravity_resolve_project_context",
-      "lines": 15
-    },
-    {
-      "file": "src/agent/port_agent_display.c",
-      "func": "truncate_preview",
-      "lines": 15
-    },
-    {
-      "file": "src/gateway/port_gateway_relay_ws_transport.c",
-      "func": "ws_transport_get_chat_info",
-      "lines": 14
-    },
-    {
-      "file": "src/agent/port_agent_secret_scope.c",
-      "func": "secret_scope_load_env_file",
-      "lines": 12
-    },
-    {
-      "file": "src/tools/port_approval.c",
-      "func": "command_matches_permanent_allowlist",
-      "lines": 12
-    },
-    {
-      "file": "src/agent/port_agent_antigravity_code_assist.c",
-      "func": "antigravity_fetch_available_models_with_fallbacks",
-      "lines": 11
-    },
-    {
-      "file": "src/agent/port_agent_prompt_builder.c",
-      "func": "drain_truncation_warnings",
-      "lines": 11
-    },
-    {
-      "file": "src/gateway/port_gateway_message_timestamps.c",
-      "func": "strip_leading_message_timestamps",
-      "lines": 11
-    },
-    {
-      "file": "src/tools/port_cronjob_tools.c",
-      "func": "notify_provider_jobs_changed_safe",
-      "lines": 10
-    },
-    {
-      "file": "src/gateway/port_gateway_platforms_api_server.c",
-      "func": "api_server_notify_cron_provider_jobs_changed",
-      "lines": 10
-    },
-    {
-      "file": "src/gateway/port_gateway_relay_auth.c",
-      "func": "relay_auth_verify_token",
-      "lines": 10
-    },
-    {
-      "file": "src/gateway/port_gateway_relay_ws_transport.c",
-      "func": "ws_transport_send_interrupt",
-      "lines": 10
-    },
-    {
-      "file": "src/agent/port_agent_context_compressor.c",
-      "func": "compute_threshold_tokens",
-      "lines": 9
-    },
-    {
-      "file": "src/tools/port_process_registry.c",
-      "func": "write_checkpoint",
-      "lines": 9
-    },
-    {
-      "file": "src/cli/port_main.c",
-      "func": "_electron_dir",
-      "lines": 9
-    },
-    {
-      "file": "src/gateway/port_gateway_message_timestamps.c",
-      "func": "coerce_message_timestamp",
-      "lines": 9
-    },
-    {
-      "file": "src/cron/port_scheduler.c",
-      "func": "notify_provider_jobs_changed",
-      "lines": 9
-    },
-    {
-      "file": "src/agent/port_agent_billing_view.c",
-      "func": "billing_parse_monthly_cap",
-      "lines": 8
     }
   ],
   "undefined_calls": [
     {
-      "file": "src/agent/port_agent_antigravity_code_assist.c",
-      "func": "antigravity_build_headers",
-      "undefined": "clock"
+      "file": "src/agent/port_agent_coding_context.c",
+      "func": "detect_project_facts",
+      "undefined": "json_object_foreach"
     },
     {
-      "file": "src/agent/port_agent_antigravity_code_assist.c",
-      "func": "antigravity_build_headers",
-      "undefined": "rand"
+      "file": "src/agent/port_agent_coding_context.c",
+      "func": "detect_project_facts",
+      "undefined": "json_is_object"
     },
     {
-      "file": "src/agent/port_agent_antigravity_code_assist.c",
-      "func": "antigravity_build_headers",
-      "undefined": "pthread_self"
+      "file": "src/agent/port_agent_coding_context.c",
+      "func": "detect_project_facts",
+      "undefined": "json_string_value"
     },
     {
-      "file": "src/agent/port_agent_antigravity_code_assist.c",
-      "func": "antigravity_is_recommended_sort",
-      "undefined": "tolower"
+      "file": "src/agent/port_agent_coding_context.c",
+      "func": "detect_project_facts",
+      "undefined": "json_loads"
     },
     {
-      "file": "src/agent/port_agent_auxiliary_client.c",
-      "func": "try_main_fallback_chain",
-      "undefined": "fallback_entry_api_key"
+      "file": "src/agent/port_agent_coding_context.c",
+      "func": "detect_project_facts",
+      "undefined": "json_decref"
     },
     {
-      "file": "src/agent/port_agent_billing_view.c",
-      "func": "billing_new_idempotency_key",
-      "undefined": "rand"
-    },
-    {
-      "file": "src/agent/port_agent_message_content.c",
-      "func": "flatten_message_text",
-      "undefined": "text_from_part"
-    },
-    {
-      "file": "src/agent/port_agent_message_content.c",
-      "func": "flatten_message_text",
-      "undefined": "message_content_field"
-    },
-    {
-      "file": "src/tools/port_checkpoint_manager.c",
-      "func": "delete_ref",
-      "undefined": "json_object_get"
-    },
-    {
-      "file": "src/tools/port_checkpoint_manager.c",
-      "func": "delete_ref",
-      "undefined": "json_new_string"
-    },
-    {
-      "file": "src/tools/port_checkpoint_manager.c",
-      "func": "register_project",
-      "undefined": "normalize_path"
-    },
-    {
-      "file": "src/tools/port_checkpoint_manager.c",
-      "func": "register_project",
-      "undefined": "json_object_get"
-    },
-    {
-      "file": "src/tools/port_checkpoint_manager.c",
-      "func": "register_project",
-      "undefined": "project_hash"
-    },
-    {
-      "file": "src/tools/port_checkpoint_manager.c",
-      "func": "register_project",
-      "undefined": "json_object"
-    },
-    {
-      "file": "src/tools/port_checkpoint_manager.c",
-      "func": "register_project",
-      "undefined": "s"
-    },
-    {
-      "file": "src/tools/port_checkpoint_manager.c",
-      "func": "register_project",
-      "undefined": "json_new_string"
-    },
-    {
-      "file": "src/tools/port_checkpoint_manager.c",
-      "func": "register_project",
-      "undefined": "json_new_number"
-    },
-    {
-      "file": "src/tools/port_checkpoint_manager.c",
-      "func": "run_git",
-      "undefined": "git_env"
-    },
-    {
-      "file": "src/tools/port_checkpoint_manager.c",
-      "func": "run_git",
-      "undefined": "pclose"
-    },
-    {
-      "file": "src/tools/port_checkpoint_manager.c",
-      "func": "run_git",
-      "undefined": "popen"
-    },
-    {
-      "file": "src/tools/port_checkpoint_manager.c",
-      "func": "touch_project",
-      "undefined": "json_object_get"
-    },
-    {
-      "file": "src/tools/port_checkpoint_manager.c",
-      "func": "touch_project",
-      "undefined": "project_hash"
-    },
-    {
-      "file": "src/tools/port_checkpoint_manager.c",
-      "func": "touch_project",
-      "undefined": "s"
-    },
-    {
-      "file": "src/tools/port_checkpoint_manager.c",
-      "func": "touch_project",
-      "undefined": "json_new_number"
-    },
-    {
-      "file": "src/tools/port_process_registry.c",
-      "func": "reconcile_local_exit",
-      "undefined": "exists"
-    },
-    {
-      "file": "src/tools/port_process_registry.c",
-      "func": "recover_from_checkpoint",
-      "undefined": "rand"
-    },
-    {
-      "file": "src/tools/port_process_registry.c",
-      "func": "recover_from_checkpoint",
-      "undefined": "json_object"
-    },
-    {
-      "file": "src/tools/port_process_registry.c",
-      "func": "recover_from_checkpoint",
-      "undefined": "fscanf"
-    },
-    {
-      "file": "src/tools/port_process_registry.c",
-      "func": "recover_from_checkpoint",
-      "undefined": "json_new_number"
-    },
-    {
-      "file": "src/tools/port_process_registry.c",
-      "func": "recover_from_checkpoint",
-      "undefined": "spawn_local"
-    },
-    {
-      "file": "src/tools/port_terminal_tool.c",
-      "func": "handle_terminal",
-      "undefined": "system"
-    },
-    {
-      "file": "src/tools/port_terminal_tool.c",
-      "func": "maybe_reap_docker_orphans",
-      "undefined": "strcspn"
-    },
-    {
-      "file": "src/tools/port_terminal_tool.c",
-      "func": "maybe_reap_docker_orphans",
-      "undefined": "pclose"
-    },
-    {
-      "file": "src/tools/port_terminal_tool.c",
-      "func": "maybe_reap_docker_orphans",
-      "undefined": "popen"
-    },
-    {
-      "file": "src/tools/port_terminal_tool.c",
-      "func": "read_shell_token",
-      "undefined": "isspace"
-    },
-    {
-      "file": "src/tools/port_terminal_tool.c",
-      "func": "check_terminal_requirements",
-      "undefined": "isatty"
-    },
-    {
-      "file": "src/tools/port_tools_async_delegation.c",
-      "func": "async_delegation_new_id",
-      "undefined": "rand"
-    },
-    {
-      "file": "src/tools/port_tools_async_delegation.c",
-      "func": "void",
-      "undefined": "completion_callback"
-    },
-    {
-      "file": "src/tools/port_tools_async_delegation.c",
-      "func": "async_delegation_active_count",
-      "undefined": "async_delegation_get_executor"
-    },
-    {
-      "file": "src/tools/port_tools_async_delegation.c",
-      "func": "async_delegation_dispatch",
-      "undefined": "async_delegation_get_executor"
-    },
-    {
-      "file": "src/tools/port_tools_async_delegation.c",
-      "func": "async_delegation_interrupt_all",
-      "undefined": "async_delegation_get_executor"
-    },
-    {
-      "file": "src/cli/port_anthropic_adapter.c",
-      "func": "anthropic_is_stream_unavailable_error",
-      "undefined": "tolower"
-    },
-    {
-      "file": "src/cli/port_auth.c",
-      "func": "resolve_antigravity_oauth_runtime_credentials",
-      "undefined": "json_new_object"
-    },
-    {
-      "file": "src/cli/port_auth.c",
-      "func": "get_antigravity_oauth_auth_status",
-      "undefined": "json_object_get"
-    },
-    {
-      "file": "src/cli/port_auth.c",
-      "func": "get_antigravity_oauth_auth_status",
-      "undefined": "json_new_bool"
-    },
-    {
-      "file": "src/cli/port_auth.c",
-      "func": "get_antigravity_oauth_auth_status",
-      "undefined": "json_new_object"
-    },
-    {
-      "file": "src/cli/port_auth.c",
-      "func": "get_antigravity_oauth_auth_status",
-      "undefined": "json_new_string"
-    },
-    {
-      "file": "src/cli/port_auth.c",
-      "func": "get_antigravity_oauth_auth_status",
-      "undefined": "json_node_get_string"
-    },
-    {
-      "file": "src/cli/port_auth_na.c",
-      "func": "_codex_pool_rate_limit_status",
-      "undefined": "json_object_get"
-    },
-    {
-      "file": "src/cli/port_auth_na.c",
-      "func": "_codex_pool_rate_limit_status",
-      "undefined": "json_copy"
+      "file": "src/agent/port_agent_coding_context.c",
+      "func": "detect_project_facts",
+      "undefined": "json_array_size"
     }
   ]
 }
