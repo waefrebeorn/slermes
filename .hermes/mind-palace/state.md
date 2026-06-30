@@ -1,4 +1,4 @@
-# State — Slermes C Translation (v466)
+# State — Slermes C Translation (v506)
 
 - Build: `make -j$(nproc)` = 0 errors
 - **Real counts:** 8,688 PORTED (100.0%), 0 PARTIAL, 0 STUB, 0 REAL_GAP, 0 N/A

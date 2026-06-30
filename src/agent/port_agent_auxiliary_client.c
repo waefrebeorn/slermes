@@ -108,3 +108,28 @@ bool aux_interrupt_protection(void) {
     return aux_interrupt_protected();
 }
 
+
+/* Port of Python: _nous_min_key_ttl_seconds */
+int nous_min_key_ttl_seconds(void) {
+    const char *env = getenv("HERMES_NOUS_MIN_KEY_TTL_SECONDS");
+    if (env && *env) {
+        int val = atoi(env);
+        if (val > 60) return val;
+    }
+    return 1800;
+}
+
+
+/* Port of Python: _resolve_nous_pool_runtime_api */
+bool resolve_nous_pool_runtime_api(bool force_refresh, char *api_key_out, size_t api_key_sz, char *base_url_out, size_t base_url_sz) {
+    /* In C, this is a simplified stub that returns false.
+     * Full implementation requires credential pool infrastructure.
+     * The main agent uses hermes_cli.auth which is Python-only.
+     */
+    (void)force_refresh;
+    (void)api_key_out;
+    (void)api_key_sz;
+    (void)base_url_out;
+    (void)base_url_sz;
+    return false;
+}

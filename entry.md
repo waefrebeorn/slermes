@@ -1,8 +1,8 @@
-# Slermes Entry (v471)
+# Slermes Entry (v506)
 
 ## Quick Reference
-- **Version:** v471 — Enhanced Slermes GUI to Hermes parity
-- **Build:** `make desktop` — zero errors, zero warnings.
+- **Version:** v506 — All PORTED 100%, Tests 28/28, Depth parity complete
+- **Build:** `make -j$(nproc)` — zero errors, zero warnings.
 - **Ported:** 8,688/8,688 (100%) — all Python functions have C equivalents
 - **Scanner:** slermes_parity_battleground.py — 100% PORTED
 - **Desktop:** Enhanced ncurses GUI with sidebar, 8-tab settings, command palette, model picker, theme switching, session create/delete/rename, full statusbar

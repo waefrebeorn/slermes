@@ -43,6 +43,7 @@ bool delete_ref(json_t *store, const char *ref)
 /* Port of Python: _git_env */
 json_t *git_env(json_t *store, const char *working_dir, const char *index_file)
 {
+    (void)store; /* unused */
     if (!working_dir) {
         hermes_log(LOG_WARNING, "port", "git_env: null working_dir");
         return NULL;
@@ -61,6 +62,7 @@ json_t *git_env(json_t *store, const char *working_dir, const char *index_file)
 /* Port of Python: _index_path */
 const char *index_path(json_t *store, const char *dir_hash)
 {
+    (void)store; /* unused */
     if (!dir_hash) {
         hermes_log(LOG_WARNING, "port", "index_path: null dir_hash");
         return "";
@@ -167,6 +169,7 @@ char *project_hash(const char *working_dir)
 /* Port of Python: _project_meta_path */
 const char *project_meta_path(json_t *store, const char *dir_hash)
 {
+    (void)store; /* unused */
     if (!dir_hash) {
         hermes_log(LOG_WARNING, "port", "project_meta_path: null dir_hash");
         return "";
@@ -208,8 +211,8 @@ void register_project(json_t *store, const char *working_dir)
     }
     json_t *meta = json_object();
     json_object_set(meta, "workdir", json_new_string(working_dir));
-    json_object_set(meta, "created_at", json_new_number(NULL, time(NULL)));
-    json_object_set(meta, "last_touch", json_new_number(NULL, time(NULL)));
+    json_object_set(meta, "created_at", json_new_number((double)time(NULL)));
+    json_object_set(meta, "last_touch", json_new_number((double)time(NULL)));
     json_object_set(projects, hash, meta);
 
     char *norm = normalize_path(working_dir);
@@ -227,11 +230,13 @@ bool run_git(const char *args, json_t *store, const char *working_dir,
              int timeout, const char *allowed_returncodes,
              const char *index_file)
 {
+    (void)timeout; (void)allowed_returncodes; /* unused */
     if (!args) {
         hermes_log(LOG_WARNING, "port", "run_git: null args");
         return false;
     }
     json_t *env = git_env(store, working_dir, index_file);
+    (void)env; /* env is created but not used in simplified version */
     char cmd[16384];
     snprintf(cmd, sizeof(cmd), "git %s 2>&1", args);
     hermes_log(LOG_DEBUG, "port", "run_git: executing '%s' in %s",
@@ -285,7 +290,7 @@ void touch_project(json_t *store, const char *working_dir)
         json_t *meta = json_object_get(projects, hash);
         if (meta) {
             json_object_set(meta, "last_touch",
-                            json_new_number(NULL, time(NULL)));
+                            json_new_number((double)time(NULL)));
         }
     }
     hermes_log(LOG_DEBUG, "port", "touch_project: updated %s (hash=%s)",
@@ -354,7 +359,7 @@ json_t *store_status(const char *checkpoint_base)
     json_object_set(status, "path", json_new_string(checkpoint_base));
     if (exists && S_ISDIR(st.st_mode)) {
         json_object_set(status, "is_dir", json_new_string("true"));
-        json_object_set(status, "size", json_new_number(NULL, st.st_size));
+        json_object_set(status, "size", json_new_number((double)st.st_size));
     }
     hermes_log(LOG_DEBUG, "port", "store_status: base=%s exists=%d",
                checkpoint_base, exists);

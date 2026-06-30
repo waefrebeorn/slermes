@@ -108,7 +108,8 @@ void async_delegation_set_completion_callback(completion_callback_t cb) {
 /* Port of Python: active_count */
 int async_delegation_active_count(void) {
     async_executor_t *exec = async_delegation_get_executor();
-    return exec ? exec->active_count : 0;
+    int count = exec ? exec->active_count : 0;
+    return count;
 }
 
 
@@ -170,4 +171,3 @@ delegation_list_t async_delegation_list(void) {
     }
     return list;
 }
-

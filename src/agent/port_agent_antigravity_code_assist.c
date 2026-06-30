@@ -63,7 +63,7 @@ static void antigravity_client_metadata(char *json_out, size_t out_sz) {
 /* ── Build headers ───────────────────────────────────────────────────── */
 /* Port of Python: build_headers */
 int antigravity_build_headers(const char *access_token, const char *accept,
-                               http_header_t *headers, int max_headers) {
+                              http_header_t *headers, int max_headers) {
     if (!access_token || !headers || max_headers <= 0) return 0;
 
     int count = 0;
@@ -504,87 +504,50 @@ model_id_list_t antigravity_parse_agent_model_ids(const char *payload_json) {
                 if (!brace) break;
                 const char *end = strchr(brace, '}');
                 if (!end) break;
-
+                
                 /* Extract sort object */
-                char sort_obj[4096] = {0};
+                char sort_obj[2048];
                 size_t len = end - brace + 1;
-                if (len > sizeof(sort_obj) - 1) len = sizeof(sort_obj) - 1;
-                strncpy(sort_obj, brace, len);
-                sort_obj[len] = '\0';
-
-                model_id_list_t ids = antigravity_ids_from_sort(sort_obj);
-                if (antigravity_is_recommended_sort(sort_obj)) {
-                    for (int i = 0; i < ids.count && recommended.count < MAX_MODELS; i++) {
-                        strncpy(recommended.ids[recommended.count], ids.ids[i], 127);
-                        recommended.count++;
-                    }
-                } else {
-                    for (int i = 0; i < ids.count && rest.count < MAX_MODELS; i++) {
-                        strncpy(rest.ids[rest.count], ids.ids[i], 127);
-                        rest.count++;
+                if (len < sizeof(sort_obj)) {
+                    strncpy(sort_obj, brace, len);
+                    sort_obj[len] = '\0';
+                    
+                    if (antigravity_is_recommended_sort(sort_obj)) {
+                        model_id_list_t ids = antigravity_ids_from_sort(sort_obj);
+                        for (int j = 0; j < ids.count && recommended.count < MAX_MODELS; j++) {
+                            strncpy(recommended.ids[recommended.count], ids.ids[j], 127);
+                            recommended.count++;
+                        }
+                    } else {
+                        model_id_list_t ids = antigravity_ids_from_sort(sort_obj);
+                        for (int j = 0; j < ids.count && rest.count < MAX_MODELS; j++) {
+                            strncpy(rest.ids[rest.count], ids.ids[j], 127);
+                            rest.count++;
+                        }
                     }
                 }
-
                 p = end + 1;
             }
-
-            /* Combine: recommended first, then rest */
-            for (int i = 0; i < recommended.count && result.count < MAX_MODELS; i++) {
-                strncpy(result.ids[result.count], recommended.ids[i], 127);
+            
+            /* Add recommended first, then rest */
+            for (int j = 0; j < recommended.count && result.count < MAX_MODELS; j++) {
+                strncpy(result.ids[result.count], recommended.ids[j], 127);
                 result.count++;
             }
-            for (int i = 0; i < rest.count && result.count < MAX_MODELS; i++) {
-                strncpy(result.ids[result.count], rest.ids[i], 127);
+            for (int j = 0; j < rest.count && result.count < MAX_MODELS; j++) {
+                strncpy(result.ids[result.count], rest.ids[j], 127);
                 result.count++;
             }
         }
     }
-
-    /* If no ordered IDs from sorts, fall back to defaults */
+    
+    /* Fall back to defaults if no models found */
     if (result.count == 0) {
-        /* Check for defaultAgentModelId */
-        const char *default_id = strstr(payload_json, "\"defaultAgentModelId\"");
-        if (default_id) {
-            const char *val = strchr(default_id + 21, '"');
-            if (val) {
-                val++;
-                size_t i = 0;
-                while (*val && *val != '"' && i < 127) {
-                    result.ids[result.count][i++] = *val++;
-                }
-                result.ids[result.count][i] = '\0';
-                if (i > 0) result.count++;
-            }
-        }
-
-        /* Add default IDs */
         for (int i = 0; default_ids[i] && result.count < MAX_MODELS; i++) {
             strncpy(result.ids[result.count], default_ids[i], 127);
             result.count++;
         }
-
-        /* Add raw model IDs from payload */
-        model_id_list_t raw = antigravity_raw_model_ids(payload_json);
-        for (int i = 0; i < raw.count && result.count < MAX_MODELS; i++) {
-            strncpy(result.ids[result.count], raw.ids[i], 127);
-            result.count++;
-        }
     }
 
-    /* Filter the result */
-    model_id_list_t filtered = antigravity_filter_agent_model_ids(&result);
-    if (filtered.count > 0) return filtered;
-
-    /* Ultimate fallback: return default IDs */
-    for (int i = 0; default_ids[i] && result.count < MAX_MODELS; i++) {
-        strncpy(result.ids[result.count], default_ids[i], 127);
-        result.count++;
-    }
     return result;
 }
-
-/* ── fetch_available_models (already defined above) ──────────────────── */
-/* Port of Python: fetch_available_models — see above */
-
-/* ── fetch_available_models_with_fallbacks (already defined above) ───── */
-/* Port of Python: fetch_available_models_with_fallbacks — see above */

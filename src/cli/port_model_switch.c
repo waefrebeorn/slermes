@@ -21,8 +21,13 @@ bool resolve_persist_behavior(void* ctx, void* is_global, void* is_session)
     if (is_session) {
         hermes_log(LOG_DEBUG, "port", "resolve_persist_behavior: is_session is set");
     }
-    /* TODO: implement resolve_persist_behavior logic */
-    return false;
+    /* Determine persist behavior based on flags */
+    bool persist_global = (is_global != NULL);
+    bool persist_session = (is_session != NULL);
+    bool result = persist_global || persist_session;
+    hermes_log(LOG_DEBUG, "port", "resolve_persist_behavior: global=%d session=%d -> %d",
+               persist_global, persist_session, result);
+    return result;
 }
 
 #endif /* SRC_CLI_PORT_MODEL_SWITCH_C */

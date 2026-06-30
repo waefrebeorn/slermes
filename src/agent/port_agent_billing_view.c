@@ -159,7 +159,7 @@ void billing_masked(const billing_card_t *card, char *out, size_t out_sz) {
 void billing_new_idempotency_key(char *out, size_t out_sz) {
     if (!out || out_sz == 0) return;
     /* Generate a simple UUID-like key */
-    snprintf(out, out_sz, "%08x-%04x-%04x-%04x-%012x",
+    snprintf(out, out_sz, "%08x-%04x-%04x-%04x-%012lx",
              rand(), rand() & 0xffff, rand() & 0xffff,
              rand() & 0xffff, (unsigned long)time(NULL));
 }
@@ -180,4 +180,3 @@ bool billing_validate_charge_amount(double amount) {
     bool within_limit = (amount <= 10000.0);
     return positive && within_limit;
 }
-

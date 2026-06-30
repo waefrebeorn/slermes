@@ -65,7 +65,7 @@ assert_exit_code "help exits 0"              0             "$BINARY" --help
 
 VER_OUTPUT=$("$BINARY" --version 2>&1 || true)
 assert_contains "version output"              "slermes"     "$VER_OUTPUT"
-assert_contains "version shows version"       "0.16.0"      "$VER_OUTPUT"
+assert_contains "version shows version"       "0.17.0"      "$VER_OUTPUT"
 
 # ═══════════════════════════════════════════
 # Phase 2: Doctor Tests
@@ -75,7 +75,7 @@ echo "--- Doctor Tests ---"
 
 DOCTOR_OUTPUT=$("$BINARY" doctor 2>&1 || true)
 assert_contains "doctor shows Slermes Doctor" "Doctor"                  "$DOCTOR_OUTPUT"
-assert_contains "doctor shows version"        "0.16.0"                  "$DOCTOR_OUTPUT"
+assert_contains "doctor shows version"        "0.17.0"                  "$DOCTOR_OUTPUT"
 assert_contains "doctor shows provider"       "Provider"                "$DOCTOR_OUTPUT"
 assert_contains "doctor shows model"          "Model"                   "$DOCTOR_OUTPUT"
 assert_contains "doctor shows config status"  "Config OK"               "$DOCTOR_OUTPUT"

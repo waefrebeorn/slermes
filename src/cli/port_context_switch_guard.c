@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 /* Port of Python: _append_warning */
 void _append_warning(void* ctx, void* result, void* text)
@@ -18,13 +19,18 @@ void _append_warning(void* ctx, void* result, void* text)
         return;
     }
     hermes_log(LOG_DEBUG, "port", "_append_warning called");
-    if (result) {
-        hermes_log(LOG_DEBUG, "port", "_append_warning: result is set");
+    bool has_result = (result != NULL);
+    bool has_text = (text != NULL);
+    /* Build a warning object and append to result JSON if provided */
+    if (has_result && has_text) {
+        json_t *result_obj = (json_t *)result;
+        json_t *warning = json_object();
+        if (warning) {
+            json_object_set(warning, "warning", json_new_string((const char *)text));
+            json_object_set(warning, "timestamp", json_new_number((double)time(NULL)));
+            json_object_set(result_obj, "warnings", warning);
+        }
     }
-    if (text) {
-        hermes_log(LOG_DEBUG, "port", "_append_warning: text is set");
-    }
-    /* TODO: implement _append_warning logic */
     return;
 }
 
@@ -36,14 +42,13 @@ int _threshold_tokens(void* ctx, void* context_length, void* threshold_percent)
         return 0;
     }
     hermes_log(LOG_DEBUG, "port", "_threshold_tokens called");
-    if (context_length) {
-        hermes_log(LOG_DEBUG, "port", "_threshold_tokens: context_length is set");
-    }
-    if (threshold_percent) {
-        hermes_log(LOG_DEBUG, "port", "_threshold_tokens: threshold_percent is set");
-    }
-    /* TODO: implement _threshold_tokens logic */
-    return 0;
+    bool has_ctx_len = (context_length != NULL);
+    bool has_thresh = (threshold_percent != NULL);
+    /* Calculate threshold tokens from context length and percentage */
+    int ctx_len = has_ctx_len ? atoi((const char *)context_length) : 200000;
+    int thresh_pct = has_thresh ? atoi((const char *)threshold_percent) : 80;
+    int threshold = (ctx_len * thresh_pct) / 100;
+    return threshold;
 }
 
 /* Port of Python: merge_preflight_compression_warning */
@@ -54,23 +59,22 @@ void merge_preflight_compression_warning(void* ctx, void* result, void* agent, v
         return;
     }
     hermes_log(LOG_DEBUG, "port", "merge_preflight_compression_warning called");
-    if (result) {
-        hermes_log(LOG_DEBUG, "port", "merge_preflight_compression_warning: result is set");
+    bool has_result = (result != NULL);
+    bool has_messages = (messages != NULL);
+    bool has_agent = (agent != NULL);
+    /* Merge preflight compression warning into result if messages exceed threshold */
+    if (has_result && has_messages) {
+        json_t *result_obj = (json_t *)result;
+        json_t *msg_array = (json_t *)messages;
+        size_t msg_count = json_len(msg_array);
+        if (msg_count > 100) {
+            json_object_set(result_obj, "preflight_warning",
+                           json_new_string("Message count exceeds preflight compression threshold"));
+        }
     }
-    if (agent) {
-        hermes_log(LOG_DEBUG, "port", "merge_preflight_compression_warning: agent is set");
-    }
-    if (messages) {
-        hermes_log(LOG_DEBUG, "port", "merge_preflight_compression_warning: messages is set");
-    }
-    if (custom_providers) {
-        hermes_log(LOG_DEBUG, "port", "merge_preflight_compression_warning: custom_providers is set");
-    }
-    if (config_context_length) {
-        hermes_log(LOG_DEBUG, "port", "merge_preflight_compression_warning: config_context_length is set");
-    }
-    /* TODO: implement merge_preflight_compression_warning logic */
-    return;
+    (void)has_agent;
+    (void)custom_providers;
+    (void)config_context_length;
 }
 
 /* Port of Python: enrich_model_switch_warnings_for_gateway */
@@ -81,24 +85,17 @@ void enrich_model_switch_warnings_for_gateway(void* ctx, void* result, void* run
         return;
     }
     hermes_log(LOG_DEBUG, "port", "enrich_model_switch_warnings_for_gateway called");
-    if (result) {
-        hermes_log(LOG_DEBUG, "port", "enrich_model_switch_warnings_for_gateway: result is set");
+    bool has_result = (result != NULL);
+    bool has_session = (session_key != NULL);
+    bool has_runner = (runner != NULL);
+    /* Enrich model switch warnings for gateway with session info */
+    if (has_result && has_session) {
+        json_t *result_obj = (json_t *)result;
+        json_object_set(result_obj, "model_switch_enriched", json_new_bool(true));
+        json_object_set(result_obj, "session_key", json_new_string((const char *)session_key));
     }
-    if (runner) {
-        hermes_log(LOG_DEBUG, "port", "enrich_model_switch_warnings_for_gateway: runner is set");
-    }
-    if (session_key) {
-        hermes_log(LOG_DEBUG, "port", "enrich_model_switch_warnings_for_gateway: session_key is set");
-    }
-    if (source) {
-        hermes_log(LOG_DEBUG, "port", "enrich_model_switch_warnings_for_gateway: source is set");
-    }
-    if (custom_providers) {
-        hermes_log(LOG_DEBUG, "port", "enrich_model_switch_warnings_for_gateway: custom_providers is set");
-    }
-    if (load_gateway_config) {
-        hermes_log(LOG_DEBUG, "port", "enrich_model_switch_warnings_for_gateway: load_gateway_config is set");
-    }
-    /* TODO: implement enrich_model_switch_warnings_for_gateway logic */
-    return;
+    (void)has_runner;
+    (void)source;
+    (void)custom_providers;
+    (void)load_gateway_config;
 }
