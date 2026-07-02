@@ -440,6 +440,7 @@ void json_set(json_t *obj, const char *key, json_t *val) {
     obj->c.count = i + 1;
 }
 
+/* PoP: json_obj_get @ agent/auxiliary_client.py:_obj_get */
 json_t *json_obj_get(const json_t *obj, const char *key) {
     if (!obj || !key || obj->type != JSON_OBJECT) return NULL;
     for (size_t i = 0; i < obj->c.count; i++)

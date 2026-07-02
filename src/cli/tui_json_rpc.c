@@ -20,6 +20,7 @@
 
 #include "tui_json_rpc.h"
 #include "../../include/hermes_json.h"
+#include "../../include/pet.h"
 #include <sqlite3.h>
 
 /* ── Database cache ── */
@@ -65,72 +66,80 @@ static const char *rpc_echo(const void *params, char *scratch, size_t sz) {
 }
 
 /* ── Pet Methods (8 methods) ── */
-/* Port of Python: tui_gateway/server.py:pet.info */
+/* PoP: pet.info @ agent/pet/render.py:pet.info */
 static const char *rpc_pet_info(const void *params, char *scratch, size_t sz) {
     (void)params;
-    snprintf(scratch, sz,
-        "{\"active\":true,\"type\":\"cat\",\"name\":\"Whiskers\","
-        "\"scale\":1.0,\"cells\":4,\"frame\":0}");
+    char *json = pet_info_json();
+    if (json) { snprintf(scratch, sz, "%s", json); free(json); }
+    else snprintf(scratch, sz, "{}");
     return scratch;
 }
-/* Port of Python: tui_gateway/server.py:pet.cells */
+/* PoP: pet.cells @ agent/pet/render.py:pet.cells */
 static const char *rpc_pet_cells(const void *params, char *scratch, size_t sz) {
-    (void)params;
-    snprintf(scratch, sz,
-        "{\"cells\":[{\"id\":\"cat1\",\"emoji\":\"[cat1]\"},"
-        "{\"id\":\"cat2\",\"emoji\":\"[cat2]\"},"
-        "{\"id\":\"cat3\",\"emoji\":\"[cat3]\"},"
-        "{\"id\":\"cat4\",\"emoji\":\"[cat4]\"}]}");
+    int cols = (int)tui_rpc_param_double(params, "cols", 0);
+    char *json = pet_cells_json(cols);
+    if (json) { snprintf(scratch, sz, "%s", json); free(json); }
+    else snprintf(scratch, sz, "{}");
     return scratch;
 }
-/* Port of Python: tui_gateway/server.py:pet.gallery */
+/* PoP: pet.gallery @ agent/pet/store.py:installed_pets (JSON) */
 static const char *rpc_pet_gallery(const void *params, char *scratch, size_t sz) {
     (void)params;
-    snprintf(scratch, sz,
-        "{\"pets\":["
-        "{\"id\":\"cat\",\"name\":\"Whiskers\",\"emoji\":\"[cat1]\",\"adopted\":true},"
-        "{\"id\":\"dragon\",\"name\":\"Ember\",\"emoji\":\"[drg1]\",\"adopted\":false},"
-        "{\"id\":\"owl\",\"name\":\"Hoot\",\"emoji\":\"[owl1]\",\"adopted\":false},"
-        "{\"id\":\"blob\",\"name\":\"Blobby\",\"emoji\":\"[blb1]\",\"adopted\":false},"
-        "{\"id\":\"sparky\",\"name\":\"Sparky\",\"emoji\":\"[cat2]\",\"adopted\":false},"
-        "{\"id\":\"shadow\",\"name\":\"Shadow\",\"emoji\":\"[drg2]\",\"adopted\":false},"
-        "{\"id\":\"pepper\",\"name\":\"Pepper\",\"emoji\":\"[owl2]\",\"adopted\":false},"
-        "{\"id\":\"zephyr\",\"name\":\"Zephyr\",\"emoji\":\"[blb2]\",\"adopted\":false}"
-        "]}");
+    char *json = pet_gallery_json();
+    if (json) { snprintf(scratch, sz, "%s", json); free(json); }
+    else snprintf(scratch, sz, "{}");
     return scratch;
 }
-/* Port of Python: tui_gateway/server.py:pet.select */
+/* PoP: pet.select @ agent/pet/store.py:resolve_active_pet (select path) */
 static const char *rpc_pet_select(const void *params, char *scratch, size_t sz) {
     const char *pet_id = tui_rpc_param_string(params, "id", "");
+    bool ok = pet_select(pet_id);
     snprintf(scratch, sz,
-        "{\"selected\":\"%s\",\"status\":\"adopted\",\"message\":\"Pet %s selected\"}",
-        pet_id, pet_id);
+        "{\"selected\":%s,\"slug\":\"%s\",\"status\":\"%s\"}",
+        ok ? "true" : "false", pet_id,
+        ok ? "adopted" : "not_found");
     return scratch;
 }
-/* Port of Python: tui_gateway/server.py:pet.remove */
+/* PoP: pet.remove @ agent/pet/store.py:remove_pet */
 static const char *rpc_pet_remove(const void *params, char *scratch, size_t sz) {
-    (void)params;
-    snprintf(scratch, sz, "{\"removed\":true,\"status\":\"no_pet\"}");
+    const char *pet_id = tui_rpc_param_string(params, "id", "");
+    bool removed = pet_remove_pet(pet_id);
+    snprintf(scratch, sz,
+        "{\"removed\":%s,\"slug\":\"%s\"}",
+        removed ? "true" : "false", pet_id);
     return scratch;
 }
-/* Port of Python: tui_gateway/server.py:pet.thumb */
+/* PoP: pet.thumb @ agent/pet/store.py:thumbnail_png */
 static const char *rpc_pet_thumb(const void *params, char *scratch, size_t sz) {
-    (void)params;
-    snprintf(scratch, sz, "{\"thumbnail\":\"base64placeholder\",\"format\":\"png\"}");
+    const char *pet_id = tui_rpc_param_string(params, "id", "");
+    int len = 0;
+    unsigned char *thumb = pet_thumbnail_png(pet_id, &len);
+    if (thumb && len > 0) {
+        /* Base64 encode for JSON */
+        /* Simple base64 — reuse the internal base64 if available */
+        /* For now, return a status response */
+        snprintf(scratch, sz,
+            "{\"slug\":\"%s\",\"thumb_size\":%d,\"format\":\"png\",\"available\":true}",
+            pet_id, len);
+        free(thumb);
+    } else {
+        snprintf(scratch, sz,
+            "{\"slug\":\"%s\",\"available\":false}", pet_id);
+    }
     return scratch;
 }
-/* Port of Python: tui_gateway/server.py:pet.disable */
+/* PoP: pet.disable @ agent/pet/store.py:disable */
 static const char *rpc_pet_disable(const void *params, char *scratch, size_t sz) {
     (void)params;
+    pet_disable();
     snprintf(scratch, sz, "{\"disabled\":true,\"status\":\"pets_off\"}");
     return scratch;
 }
-/* Port of Python: tui_gateway/server.py:pet.scale */
+/* PoP: pet.scale @ agent/pet/render.py:scale */
 static const char *rpc_pet_scale(const void *params, char *scratch, size_t sz) {
-    double scale = tui_rpc_param_double(params, "scale", 1.0);
-    if (scale < 0.5) scale = 0.5;
-    if (scale > 2.0) scale = 2.0;
-    snprintf(scratch, sz, "{\"scale\":%.1f}", scale);
+    double scale = tui_rpc_param_double(params, "scale", PET_DEFAULT_SCALE);
+    pet_set_scale((float)scale);
+    snprintf(scratch, sz, "{\"scale\":%.2f,\"clamped_scale\":%.2f}", scale, pet_get_scale());
     return scratch;
 }
 

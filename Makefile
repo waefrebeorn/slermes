@@ -62,7 +62,7 @@ else
 endif
 
 CFLAGS = -O2 -g -Wall -Wno-pedantic -Wno-attributes -Wno-unused-result -Wno-format-truncation -Wstringop-truncation -Wno-misleading-indentation -Wno-discarded-qualifiers -Wno-unused-parameter -Wno-missing-field-initializers -Wno-format-extra-args -Wno-comment -Wno-format-zero-length -Wno-address -Wno-maybe-uninitialized -Wno-unused-function -I include $(SSL_CFLAGS) $(OS_DEF) $(CFLAGS_EXTRA)
-CFLAGS += -DHERMES_VERSION=\\\"$(HERMES_VERSION)-slermes\\\" -DHERMES_RELEASE_DATE=\\\"$(HERMES_RELEASE_DATE)\\\" -DATADIR=\\\"$(PREFIX)/share/slermes/docs\\\"
+CFLAGS += -DHERMES_VERSION='"$(HERMES_VERSION)-slermes"' -DHERMES_RELEASE_DATE='"$(HERMES_RELEASE_DATE)"' -DATADIR='"$(PREFIX)/share/slermes/docs"'
 LDFLAGS = $(SSL_LDFLAGS) $(PLATFORM_LDFLAGS)
 LIBS = -lm
 
@@ -804,6 +804,15 @@ PORT_OBJ = \
     src/tools/port_process_registry.o \
     src/agent/anthropic_adapter.o
 
+# Pet system parity objects (v509 — ripping Hermes pet system into C11)
+PET_OBJ = \
+    src/pet/pet_constants.o \
+    src/pet/pet_state.o \
+    src/pet/pet_manifest.o \
+    src/pet/pet_store.o \
+    src/pet/pet_render.o \
+    src/pet/pet_commands.o
+
 # Desktop app parity objects (v465-v468)
 DESKTOP_OBJ = \
     src/pty.o \
@@ -880,7 +889,7 @@ setup: deps slermes
 deps: lib/libdb/sqlite3.h
 	@echo "📦 Dependencies ready"
 
-slermes: $(PHASE5_OBJ) src/main.o $(HERMES_CLI_PORT_OBJ) $(HERMES_CLI_PORT_EXTRA_OBJ) $(PORT_OBJ) $(DESKTOP_OBJ) $(LIB_OBJ)
+slermes: $(PHASE5_OBJ) src/main.o $(HERMES_CLI_PORT_OBJ) $(HERMES_CLI_PORT_EXTRA_OBJ) $(PORT_OBJ) $(PET_OBJ) $(DESKTOP_OBJ) $(LIB_OBJ)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(PLATFORM_LDFLAGS) $(LIBS) \
 		$(if $(findstring 1,$(HAS_NCURSES)),-L lib/syslib -lncursesw -ltinfo -lpanelw) -lstdc++ \
 		lib/whisper_cpp/lib/libwhisper.a lib/whisper_cpp/lib/libggml.a lib/whisper_cpp/lib/libggml-base.a lib/whisper_cpp/lib/libggml-cpu.a
