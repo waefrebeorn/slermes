@@ -10,6 +10,8 @@ RUN apk add --no-cache \
     musl-dev \
     openssl-dev \
     openssl-libs-static \
+    ncurses-dev \
+    ncurses-static \
     pkgconf \
     make \
     bash \

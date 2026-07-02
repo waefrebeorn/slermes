@@ -761,8 +761,8 @@ PET_OBJ = \
 
 # Custom GUI desktop (SDL2-based)
 DESKTOP_GUI_OBJ := src/gui_core.o src/desktop_gui.o src/slermes_home.o src/chat_render.o lib/libdb/sqlite3.o lib/libhttp/http.o lib/libjson/json.o lib/libbase64/base64.o lib/libcrypto/crypto.o
-DESKTOP_GUI_CFLAGS := $(shell pkg-config --cflags sdl2 SDL2_ttf)
-DESKTOP_GUI_LIBS := $(shell pkg-config --libs sdl2 SDL2_ttf) -lm -lssl -lcrypto -lz
+DESKTOP_GUI_CFLAGS := $(shell pkg-config --cflags sdl2 SDL2_ttf 2>/dev/null)
+DESKTOP_GUI_LIBS := $(shell pkg-config --libs sdl2 SDL2_ttf 2>/dev/null) -lm -lssl -lcrypto -lz
 
 # Phase targets (each adds its objects)
 DEPS_OBJ = src/hermes_error.o src/secrets.o src/hermes_tokenizer.o src/xai_retirement.o src/skills_hub.o src/mcp_serve.o src/api_server.o src/hermes_env_keys.o src/web_dashboard.o src/jiter_preload.o
