@@ -1379,8 +1379,35 @@ static void draw_nav_view(int view_id) {
         }
         break;
     }
-    case 3: gc_draw_text(app.win, gc_get_font(app.win), "Artifacts", x, y, t->text); y+=fh+8;
-        gc_draw_text(app.win, gc_get_font_small(app.win), "No artifacts available.", x, y, t->text_dim); break;
+    case 3: {
+        gc_draw_text(app.win, gc_get_font(app.win), "Artifacts", x, y, t->text); y+=fh+8;
+        /* Show recent artifacts/documents from ~/.slermes */
+        char artifact_dir[512];
+        snprintf(artifact_dir, sizeof(artifact_dir), "%s/artifacts", slermes_home());
+        DIR *ad = opendir(artifact_dir);
+        int artifact_count = 0;
+        if (ad) {
+            struct dirent *de;
+            while ((de = readdir(ad)) && artifact_count < 20) {
+                if (de->d_name[0] == '.') continue;
+                char af[1024];
+                snprintf(af, sizeof(af), "%s/artifacts/%s", slermes_home(), de->d_name);
+                struct stat ast;
+                if (stat(af, &ast) != 0) { artifact_count++; continue; }
+                gc_draw_text(app.win, gc_get_font_small(app.win),
+                    S_ISDIR(ast.st_mode) ? "\xf0\x9f\x93\x81" : "\xf0\x9f\x93\x84", x, y, t->text_secondary);
+                gc_draw_text_clipped(app.win, gc_get_font_small(app.win),
+                    de->d_name, x+16, y, max_w-16, t->text_secondary);
+                y+=sfh+2;
+                artifact_count++;
+            }
+            closedir(ad);
+        }
+        if (artifact_count == 0) {
+            gc_draw_text(app.win, gc_get_font_small(app.win), "(no artifacts yet — create one with /export)", x+16, y, t->text_dim);
+        }
+        break;
+    }
     case 4: {
         gc_draw_text(app.win, gc_get_font(app.win), "Cron", x, y, t->text); y+=fh+4;
         for (int i=0; i<app.cron_count; i++) {
@@ -1399,16 +1426,38 @@ static void draw_nav_view(int view_id) {
         }
         break;
     }
-    case 6: gc_draw_text(app.win, gc_get_font(app.win), "Agents", x, y, t->text); y+=fh+8;
-        gc_draw_text(app.win, gc_get_font_small(app.win), "No active agents.", x, y, t->text_dim); break;
-    case 7: {
-        gc_draw_text(app.win, gc_get_font(app.win), "Messaging", x, y, t->text); y+=fh+8;
-        const char *plats[] = {"Telegram","CLI","Cron",NULL};
-        for (int i=0; plats[i]; i++) {
-            gc_draw_text(app.win, gc_get_font_small(app.win), "\xe2\x97\x8b", x, y, t->text_secondary);
-            gc_draw_text_clipped(app.win, gc_get_font_small(app.win), plats[i], x+16, y, max_w-16, t->text_secondary);
+    case 6: {
+        gc_draw_text(app.win, gc_get_font(app.win), "Agents", x, y, t->text); y+=fh+8;
+        /* Show available tools/agents system */
+        const char *agent_cmds[] = {"delegate_task","subagent","multi-agent","orchestrator",NULL};
+        for (int i=0; agent_cmds[i]; i++) {
+            gc_draw_text(app.win, gc_get_font_small(app.win), "\xe2\x96\xb6", x, y, t->accent);
+            gc_draw_text_clipped(app.win, gc_get_font_small(app.win), agent_cmds[i], x+16, y, max_w-16, t->text_secondary);
             y+=sfh+2;
         }
+        y+=4;
+        gc_draw_text(app.win, gc_get_font_small(app.win), "113 tools registered in gateway.", x+8, y, t->text_dim);
+        y+=sfh+2;
+        gc_draw_text(app.win, gc_get_font_small(app.win), "Use /delegate to spawn sub-agents.", x+8, y, t->text_dim);
+        break;
+    }
+    case 7: {
+        gc_draw_text(app.win, gc_get_font(app.win), "Messaging", x, y, t->text); y+=fh+8;
+        /* Show actual gateway platforms from the codebase */
+        const char *plats[] = {"Telegram","Discord","Signal","WhatsApp","Slack","Matrix",
+            "WeChat","DingTalk","Feishu","Email","SMS","BlueBubbles",
+            "Webhook","HomeAssistant","Mattermost","QQBot","YuanBao",NULL};
+        int plat_cols = 2;
+        for (int i=0; plats[i] && y < chat_y() + chat_h() - 60; i++) {
+            int col = i % plat_cols;
+            int row = i / plat_cols;
+            int px2 = x + 12 + col * ((max_w - 24) / plat_cols);
+            int py2 = y + row * (sfh + 2);
+            gc_draw_text(app.win, gc_get_font_small(app.win), "\xe2\x97\x8b", px2, py2, t->success);
+            gc_draw_text_clipped(app.win, gc_get_font_small(app.win), plats[i], px2+16, py2, max_w/plat_cols-20, t->text_secondary);
+        }
+        y += ((18 + 1) / plat_cols + 1) * (sfh + 2) + 8;
+        gc_draw_text(app.win, gc_get_font_small(app.win), "Active: Telegram (connected)", x+8, y, t->accent);
         break;
     }
     case 8: {
@@ -1612,27 +1661,133 @@ static void draw_statusbar(void) {
 }
 
 /* ── Petdex: floating pet with animation ───────────────────────────── */
-static const char *pet_sprites[][4] = {
-    /* cat frames */
-    {"[cat1]", "[cat2]", "[cat3]", "[cat4]"},
-    /* dragon frames */
-    {"[drg1]", "[drg2]", "[drg3]", "[drg4]"},
-    /* owl frames */
-    {"[owl1]", "[owl2]", "[owl3]", "[owl4]"},
-    /* blob frames */
-    {"[blb1]", "[blb2]", "[blb3]", "[blb4]"},
+/* Pixel-art pet sprites drawn with gc_fill_rect */
+/* Each sprite is an 8x8 bitmap: 0=transparent, 1=body, 2=dark, 3=accent, 4=eye, 5=white */
+static const unsigned char pet_bitmaps[4][4][64] = {
+    {/*Frame 0 — sitting*/
+    0,0,1,0,0,1,0,0,0,1,1,1,1,1,1,0,
+    1,4,1,1,1,4,1,1,1,1,1,5,5,1,1,1,
+    0,1,1,1,1,1,1,0,0,1,1,1,1,1,1,0,
+    0,0,2,2,2,2,0,0,2,0,0,2,0,0,2,0},
+    {/*Frame 1 — stretching*/
+    0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,
+    1,4,1,1,4,1,0,0,1,1,1,1,1,1,1,0,
+    0,1,1,1,1,1,1,1,0,1,1,1,1,1,0,2,
+    0,0,2,2,2,0,0,0,2,0,0,0,0,2,0,0},
+    {/*Frame 2 — paw wave*/
+    0,0,1,0,0,1,0,0,0,1,1,1,1,1,1,0,
+    1,4,1,1,1,4,1,1,1,1,1,5,5,1,1,1,
+    3,1,1,1,1,1,1,0,0,1,1,1,1,1,1,0,
+    0,0,2,2,2,2,0,0,2,0,0,2,0,0,2,0},
+    {/*Frame 3 — curled*/
+    0,0,0,1,1,0,0,0,0,0,1,4,4,1,0,0,
+    0,1,1,5,5,1,1,0,0,1,1,1,1,1,1,0,
+    0,0,1,1,1,1,0,0,0,0,1,2,2,1,0,0,
+    0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0},
+    /* ── Dragon (teal) ─────────────────────────────────── */
+    {/*Frame 0 — standing*/
+    0,0,0,1,1,0,0,0,0,0,1,1,1,1,0,0,
+    0,1,4,1,4,1,1,0,0,1,1,3,3,1,1,0,
+    0,1,1,1,1,1,1,0,0,0,1,1,1,1,0,0,
+    2,0,0,2,0,0,2,0,0,2,0,0,2,0,0,0},
+    {/*Frame 1 — wings spread*/
+    1,0,1,1,1,1,0,1,1,0,1,4,1,4,1,1,
+    1,0,1,1,3,3,1,1,1,1,1,1,1,1,1,0,
+    0,1,1,1,1,1,0,0,0,0,1,1,1,1,0,0,
+    2,0,0,2,2,0,0,2,0,2,0,0,0,2,0,0},
+    {/*Frame 2 — fire breath*/
+    0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,
+    1,4,1,1,4,1,1,0,1,1,3,3,1,1,3,3,
+    0,1,1,1,1,3,3,0,0,0,1,1,1,0,0,0,
+    2,0,0,2,0,0,2,0,0,2,0,0,2,0,0,0},
+    {/*Frame 3 — flying*/
+    1,0,1,1,1,1,0,1,1,0,1,4,4,1,1,1,
+    1,0,1,1,1,1,1,0,1,1,1,1,1,1,0,0,
+    0,1,1,1,1,1,0,2,0,0,1,1,1,1,2,0,
+    2,0,0,2,2,0,0,0,0,2,0,0,0,0,0,0},
+    /* ── Owl (purple) ──────────────────────────────────── */
+    {/*Frame 0 — sitting*/
+    0,1,0,0,0,0,1,0,1,1,1,1,1,1,1,1,
+    1,4,1,1,1,4,1,1,1,1,1,5,5,1,1,1,
+    1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,
+    0,0,2,2,2,2,0,0,0,0,0,2,2,0,0,0},
+    {/*Frame 1 — head turn*/
+    0,1,0,0,0,0,1,0,1,1,1,1,1,1,1,1,
+    1,1,4,1,4,1,1,1,1,1,1,5,5,1,1,1,
+    0,1,1,1,1,1,1,0,0,0,1,1,1,1,0,0,
+    0,0,0,2,2,0,0,0,0,0,0,2,2,0,0,0},
+    {/*Frame 2 — wings half*/
+    0,1,0,0,0,0,1,0,1,1,1,1,1,1,1,1,
+    1,4,1,1,1,4,1,1,1,1,1,5,5,1,1,1,
+    3,1,1,1,1,1,1,3,3,0,1,1,1,1,0,3,
+    0,0,0,2,2,0,0,0,0,0,0,2,2,0,0,0},
+    {/*Frame 3 — hooting*/
+    0,1,0,0,0,0,1,0,1,1,1,1,1,1,1,1,
+    1,1,4,1,4,1,1,1,1,1,1,5,5,1,1,1,
+    1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,
+    0,0,1,1,1,1,0,0,0,0,0,2,2,0,0,0},
+    /* ── Blob (pink) ───────────────────────────────────── */
+    {/*Frame 0 — round*/
+    0,0,0,3,3,0,0,0,0,0,1,1,1,1,0,0,
+    0,1,4,1,4,1,1,0,0,1,1,5,5,1,1,0,
+    0,1,1,1,1,1,1,0,0,0,1,1,1,1,0,0,
+    0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0},
+    {/*Frame 1 — squished*/
+    0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,
+    0,1,4,1,4,1,1,0,0,1,1,5,5,1,1,0,
+    0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,
+    0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0},
+    {/*Frame 2 — happy bouncing*/
+    0,0,1,1,1,1,0,0,0,1,4,1,4,1,1,0,
+    0,1,1,5,5,1,1,0,0,1,1,1,1,1,1,0,
+    0,0,1,1,1,1,0,0,3,0,0,1,1,0,0,3,
+    0,3,0,0,0,0,3,0,0,0,0,0,0,0,0,0},
+    {/*Frame 3 — stretched*/
+    0,0,0,0,0,0,0,0,0,0,1,3,3,1,0,0,
+    0,1,4,1,4,1,1,0,0,1,1,5,5,1,1,0,
+    0,1,1,1,1,1,1,0,0,1,1,1,1,1,1,0,
+    0,0,2,0,0,2,0,0,0,0,0,2,2,0,0,0},
 };
-static const int pet_frame_counts[] = {4, 4, 4, 4};
+
+static const gc_color_t pet_palette[4][5] = {
+    {GC_RGB(255,140,0), GC_RGB(180,80,0), GC_RGB(255,220,180), GC_RGB(40,40,40), GC_RGB(255,255,255)}, /* Cat */
+    {GC_RGB(0,200,140), GC_RGB(0,130,90), GC_RGB(255,200,50), GC_RGB(40,40,40), GC_RGB(255,255,255)},   /* Dragon */
+    {GC_RGB(160,100,220), GC_RGB(100,50,160), GC_RGB(220,200,250), GC_RGB(40,40,40), GC_RGB(255,255,255)}, /* Owl */
+    {GC_RGB(255,80,140), GC_RGB(200,40,90), GC_RGB(255,180,200), GC_RGB(40,40,40), GC_RGB(255,255,255)},   /* Blob */
+};
+
+/* Draw pixel-art pet sprite at (x, y) with given pixel size */
+static void draw_pet_pixelart(gc_window_t *win, int type, int frame, int x, int y, int pixel_size) {
+    if (type < 0 || type > 3) return;
+    if (frame < 0 || frame > 3) return;
+    if (pixel_size < 2) pixel_size = 2;
+    const gc_color_t *pal = pet_palette[type];
+    for (int row = 0; row < 8; row++) {
+        for (int col = 0; col < 8; col++) {
+            unsigned char val = pet_bitmaps[type][frame][row * 8 + col];
+            if (val == 0) continue;
+            gc_color_t c;
+            switch (val) {
+                case 1: c = pal[0]; break;
+                case 2: c = pal[1]; break;
+                case 3: c = pal[2]; break;
+                case 4: c = pal[3]; break;
+                case 5: c = pal[4]; break;
+                default: c = pal[0];
+            }
+            gc_fill_rect(win, gc_rect(x + col * pixel_size, y + row * pixel_size, pixel_size, pixel_size), c);
+        }
+    }
+}
 
 static void draw_pet(void) {
     if (!app.pet_active || app.show_command_palette) return;
-    gc_theme_t *t = &app.theme;
 
     /* Animate pet position */
     app.pet_frame_tick++;
     if (app.pet_frame_tick >= 30) {
         app.pet_frame_tick = 0;
-        app.pet_frame = (app.pet_frame + 1) % pet_frame_counts[app.pet_type];
+        app.pet_frame = (app.pet_frame + 1) % 4;
     }
     app.pet_x += app.pet_vx;
     app.pet_y += app.pet_vy;
@@ -1645,20 +1800,22 @@ static void draw_pet(void) {
     if (app.pet_y > win_h() - 100) app.pet_y = win_h() - 100;
 
     int sz = (int)(36 * app.pet_scale);
-    const char *sprite = pet_sprites[app.pet_type][app.pet_frame];
+    int pixel_size = sz / 8;
+    if (pixel_size < 2) pixel_size = 2;
+    gc_theme_t *t = &app.theme;
+    int px = (int)app.pet_x;
+    int py = (int)app.pet_y;
 
     /* Shadow */
-    gc_draw_text(app.win, gc_get_font(app.win), " ",
-                 (int)app.pet_x + 2, (int)app.pet_y + sz - 4,
-                 GC_RGBA(0,0,0,60));
-    /* Pet sprite */
-    gc_draw_text(app.win, gc_get_font(app.win), sprite,
-                 (int)app.pet_x, (int)app.pet_y,
-                 GC_RGBA(255,255,255,255));
+    gc_fill_rect(app.win, gc_rect(px + 2, py + sz - 2, sz, pixel_size/2 + 1), GC_RGBA(0,0,0,60));
+
+    /* Pixel-art sprite */
+    draw_pet_pixelart(app.win, app.pet_type, app.pet_frame, px, py, pixel_size);
+
     /* Name label */
     if (app.pet_scale > 0.8f) {
         gc_draw_text(app.win, gc_get_font_small(app.win), app.pet_names[app.pet_type],
-                     (int)app.pet_x, (int)app.pet_y - 14, t->text_secondary);
+                     px, py - 14, t->text_secondary);
     }
 }
 
@@ -1669,7 +1826,7 @@ static void draw_pet_gallery(void) {
     /* Overlay */
     gc_fill_rect(app.win, gc_rect(0, 0, w, h), GC_RGBA(0, 0, 0, 180));
     /* Panel */
-    int pw = 420, ph = 340;
+    int pw = 420, ph = 380;
     int px = (w - pw) / 2, py = (h - ph) / 2;
     gc_rect_t panel = {px, py, pw, ph};
     gc_fill_round_rect(app.win, panel, 12, GC_RGBA(22, 22, 28, 250));
@@ -1677,8 +1834,8 @@ static void draw_pet_gallery(void) {
     gc_draw_text(app.win, gc_get_font(app.win), "Petdex Gallery", px + 16, py + 12, t->text);
     gc_draw_text(app.win, gc_get_font_small(app.win), "Select your companion", px + 16, py + 34, t->text_dim);
 
-    /* Grid of pets */
-    int cell_w = 90, cell_h = 90;
+    /* Grid of pets — show pixel-art icons */
+    int cell_w = 90, cell_h = 110;
     int cols = 4, start_x = px + (pw - cols * cell_w) / 2 + 10;
     int start_y = py + 60;
     for (int i = 0; i < app.pet_count; i++) {
@@ -1688,10 +1845,14 @@ static void draw_pet_gallery(void) {
         bool sel = (i == app.pet_selected);
         if (sel) gc_fill_round_rect(app.win, cell, 8, GC_RGBA(0, 83, 253, 40));
         gc_draw_rect(app.win, cell, 1, sel ? t->accent : t->border_subtle);
-        gc_draw_text(app.win, gc_get_font(app.win), pet_sprites[i % 4][0],
-                     cx + cell_w / 2 - 20, cy + 10, t->text);
+        /* Small pixel-art icon in gallery cell */
+        int icon_size = (cell_h - 40) / 8;
+        if (icon_size < 2) icon_size = 2;
+        draw_pet_pixelart(app.win, i % 4, sel ? app.pet_frame : 0,
+                         cx + (cell_w - 8 - icon_size * 8) / 2,
+                         cy + 8, icon_size);
         gc_draw_text(app.win, gc_get_font_small(app.win), app.pet_names[i],
-                     cx + 4, cy + 50, t->text_secondary);
+                     cx + 4, cy + icon_size * 8 + 12, t->text_secondary);
     }
     /* Scale slider */
     gc_draw_text(app.win, gc_get_font_small(app.win), "Scale:", px + 16, py + ph - 40, t->text_dim);

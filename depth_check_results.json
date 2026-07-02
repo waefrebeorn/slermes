@@ -4,7 +4,7 @@
   "stub": 0,
   "partial": 1,
   "stub_file_count": 0,
-  "undefined_call_count": 6,
+  "undefined_call_count": 1,
   "stub_files": [],
   "top_stubs": [],
   "top_real": [
@@ -163,32 +163,7 @@
     {
       "file": "src/agent/port_agent_coding_context.c",
       "func": "detect_project_facts",
-      "undefined": "json_object_foreach"
-    },
-    {
-      "file": "src/agent/port_agent_coding_context.c",
-      "func": "detect_project_facts",
-      "undefined": "json_is_object"
-    },
-    {
-      "file": "src/agent/port_agent_coding_context.c",
-      "func": "detect_project_facts",
       "undefined": "json_string_value"
-    },
-    {
-      "file": "src/agent/port_agent_coding_context.c",
-      "func": "detect_project_facts",
-      "undefined": "json_loads"
-    },
-    {
-      "file": "src/agent/port_agent_coding_context.c",
-      "func": "detect_project_facts",
-      "undefined": "json_decref"
-    },
-    {
-      "file": "src/agent/port_agent_coding_context.c",
-      "func": "detect_project_facts",
-      "undefined": "json_array_size"
     }
   ]
 }

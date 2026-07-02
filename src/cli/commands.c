@@ -4,6 +4,7 @@
  */
 
 #include "hermes.h"
+#include "pet.h"
 /* PoP: cmd_approve @ hermes_cli/callbacks.py:approval_callback */
 /* PoP: cmd_approve @ hermes_cli/write_approval_commands.py:handle_pending_subcommand */
 /* PoP: cmd_auth @ hermes_cli/auth.py:get_auth_status */
@@ -493,6 +494,12 @@ static void cmd_deps(const char *args, agent_state_t *state);
 /* Forward declaration for send_message_handler from tools/send_message.c */
 extern char *send_message_handler(const char *args_json, const char *task_id);
 
+/* Forward declaration for delegate_list from tools/delegate.c */
+extern void delegate_list(void *result);
+
+/* Forward declaration for cmd_pet (defined at end of file) */
+static void cmd_pet(const char *args, agent_state_t *state);
+
 /* Registry — mirroring Python Hermes COMMAND_REGISTRY */
 /* Registry — mirroring Python Hermes COMMAND_REGISTRY */
 static const command_def_t COMMANDS[] = {
@@ -590,6 +597,7 @@ static const command_def_t COMMANDS[] = {
     {.name="/send", .alias=NULL, .description="Send a message: [target] <message>", .category="System", .args_hint="[target] <message>", .subcommands=NULL, .handler=cmd_send},
     {.name="/key", .alias=NULL, .description="Manage API keys: list, set, show, unset", .category="Security", .args_hint="[list|set <provider>|show <provider>|unset <provider>]", .subcommands="list,set,show,unset", .handler=cmd_key},
     {.name="/deps", .alias=NULL, .description="Install third-party Python bridge dependencies", .category="System", .args_hint=NULL, .subcommands=NULL, .handler=cmd_deps, .cli_only=true, .gateway_only=false},
+    {.name="/pet", .alias=NULL, .description="Petdex: info, gallery, select, remove, disable, scale", .category="Display", .args_hint="[info|gallery|select <slug>|remove <slug>|disable|scale <n>]", .subcommands="info,gallery,select,remove,disable,scale", .handler=cmd_pet},
     {.name=NULL, .alias=NULL, .description=NULL, .category=NULL, .args_hint=NULL, .subcommands=NULL, .handler=NULL},
 };
 
@@ -3446,10 +3454,43 @@ static void cmd_goal(const char *args, agent_state_t *state) {
     printf("Goal saved: %s\n", args);
 }
 
-/* /agents: Show active subagents */
+/* PoP: cmd_agents @ hermes_cli/main.py:cmd_agents */
 static void cmd_agents(const char *args, agent_state_t *state) {
     (void)args; (void)state;
-    printf("Subagent delegation: available via /delegate. Use /delegate <task> to spawn a subagent inline.\n");
+    json_t *result = json_object();
+    delegate_list(result);
+
+    int count = (int)json_get_num(result, "count", 0);
+    if (count <= 0) {
+        printf("\n=== Active Subagents ===\n");
+        printf("  No active subagents.\n");
+        printf("  Use /delegate <task> to spawn a subagent.\n");
+        json_free(result);
+        return;
+    }
+
+    printf("\n=== Active Subagents (%d) ===\n", count);
+    json_t *children = json_obj_get(result, "children");
+    if (!children || children->type != JSON_ARRAY) {
+        json_free(result);
+        return;
+    }
+
+    for (int i = 0; i < json_len(children); i++) {
+        json_t *c = json_get(children, i);
+        if (!c) continue;
+        int sid = (int)json_get_num(c, "session_id", 0);
+        const char *goal = json_node_get_string(json_obj_get(c, "goal"));
+        const char *status = json_node_get_string(json_obj_get(c, "status"));
+        bool orch = json_get_bool(c, "orchestrator", false);
+        int elapsed = (int)json_get_num(c, "elapsed_seconds", 0);
+
+        printf("  #%d — %s\n", sid, goal ? goal : "(no goal)");
+        printf("       Status: %s | Elapsed: %ds | Orchestrator: %s\n",
+               status ? status : "?", elapsed, orch ? "yes" : "no");
+    }
+    printf("\n  Use /delegate <task> to spawn a new subagent.\n");
+    json_free(result);
 }
 
 /* /reasoning: Manage reasoning effort */
@@ -7643,4 +7684,110 @@ static void cmd_dashboard(const char *args, agent_state_t *state) {
     }
 
     printf("Usage: /dashboard [start|stop|status|url]\n");
+}
+
+/* ─── /pet — Petdex pet management ─── */
+/* PoP: cmd_pet @ agent/pet/commands.py:pet_cli */
+static void cmd_pet(const char *args, agent_state_t *state) {
+    (void)state;
+
+    /* Parse subcommand */
+    const char *subcmd = args;
+    while (subcmd && *subcmd == ' ') subcmd++;
+
+    if (!subcmd || !subcmd[0] || strcmp(subcmd, "info") == 0) {
+        char *json = pet_info_json();
+        if (json) {
+            printf("\n=== Pet Info ===\n");
+            printf("  Status: %s\n", pet_is_enabled() ? "ENABLED" : "DISABLED");
+            printf("  Active: %s\n", pet_active_slug()[0] ? pet_active_slug() : "(none)");
+            printf("  State:  %s\n", pet_state_string(pet_get_state()));
+            printf("  Scale:  %.2f\n", pet_get_scale());
+            printf("  JSON:   %s\n", json);
+            free(json);
+        } else {
+            printf("  No pet system initialized.\n");
+        }
+        return;
+    }
+
+    if (strcmp(subcmd, "gallery") == 0) {
+        char *json = pet_gallery_json();
+        if (json) {
+            printf("\n=== Pet Gallery ===\n");
+            printf("  %s\n", json);
+            free(json);
+        } else {
+            printf("  No installed pets.\n");
+        }
+        return;
+    }
+
+    if (strncmp(subcmd, "select ", 7) == 0) {
+        const char *slug = subcmd + 7;
+        while (*slug == ' ') slug++;
+        if (*slug) {
+            bool ok = pet_select(slug);
+            printf("\n=== Pet Select ===\n");
+            if (ok) {
+                printf("  Pet '%s' selected.\n", slug);
+            } else {
+                printf("  Could not select pet '%s'. Try installing it first.\n", slug);
+            }
+        } else {
+            printf("  Usage: /pet select <slug>\n");
+        }
+        return;
+    }
+
+    if (strncmp(subcmd, "remove ", 7) == 0) {
+        const char *slug = subcmd + 7;
+        while (*slug == ' ') slug++;
+        if (*slug) {
+            bool removed = pet_remove_pet(slug);
+            printf("\n=== Pet Remove ===\n");
+            printf("  Pet '%s' %s.\n", slug, removed ? "removed" : "not found");
+        } else {
+            printf("  Usage: /pet remove <slug>\n");
+        }
+        return;
+    }
+
+    if (strcmp(subcmd, "disable") == 0) {
+        pet_disable();
+        printf("\n=== Pet Disable ===\n");
+        printf("  Pet system disabled.\n");
+        return;
+    }
+
+    if (strcmp(subcmd, "enable") == 0) {
+        printf("\n=== Pet Enable ===\n");
+        printf("  Pet system enabled (call pet_init() with config to reactivate).\n");
+        return;
+    }
+
+    if (strncmp(subcmd, "scale ", 6) == 0) {
+        const char *scale_str = subcmd + 6;
+        while (*scale_str == ' ') scale_str++;
+        if (*scale_str) {
+            float scale = (float)atof(scale_str);
+            pet_set_scale(scale);
+            printf("\n=== Pet Scale ===\n");
+            printf("  Set to %.2f\n", pet_get_scale());
+        } else {
+            printf("  Current scale: %.2f\n", pet_get_scale());
+        }
+        return;
+    }
+
+    /* Default: show usage */
+    printf("\n=== Petdex — Pet Manager ===\n");
+    printf("  Usage:\n");
+    printf("    /pet info              Show active pet info\n");
+    printf("    /pet gallery           List all installed pets\n");
+    printf("    /pet select <slug>     Select/adopt a pet\n");
+    printf("    /pet remove <slug>     Remove an installed pet\n");
+    printf("    /pet scale <n>         Set pet scale (%.1f - %.1f)\n", PET_MIN_SCALE, PET_MAX_SCALE);
+    printf("    /pet disable           Turn off the pet\n");
+    printf("    /pet enable            Turn on the pet\n");
 }

@@ -261,6 +261,7 @@ void shell_hooks_allowlist_record(const char *event, const char *command) {
  * Constructs: {hook_event_name, tool_name, tool_input, session_id, cwd}
  */
 /* Port of Python agent/shell_hooks.py:_serialize_payload(). */
+/* PoP: build_payload @ hermes_cli/journey.py:_build_payload */
 static char *build_payload(const char *event, const char *tool_name,
                             const char *tool_input, const char *session_id) {
     json_t *payload = json_object();

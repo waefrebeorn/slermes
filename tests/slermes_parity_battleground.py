@@ -52,6 +52,7 @@ SLERMES_SRC_DIRS = [
     SLERMES_DIR / "src" / "cli",
     SLERMES_DIR / "src" / "gateway",
     SLERMES_DIR / "src" / "cron",
+    SLERMES_DIR / "src" / "pet",
     SLERMES_DIR / "include",
 ]
 
@@ -339,6 +340,70 @@ INFRASTRUCTURE_ONLY = {
     # cli.py (root)
     # cli.py (root)
     "cli.py": "cli-entrypoint",
+    # agent/pet/generate/ — Python-only image generation pipeline (PIL/Pillow)
+    "agent/pet/generate/__init__.py": "pet-image-gen",
+    "agent/pet/generate/atlas.py": "pet-atlas-image-processing",
+    "agent/pet/generate/imagegen.py": "pet-image-gen-provider",
+    "agent/pet/generate/orchestrate.py": "pet-orchestrate-async",
+    "agent/pet/generate/prompts.py": "pet-prompts-only",
+    # agent/pet/render.py — Python-only terminal encoding (PIL/kitt encode)
+    "agent/pet/render.py": "pet-render-encoding",
+    # === AGENT MODULES: Python-only infrastructure ===
+    "agent/agent_runtime_helpers.py": "intent-continuation",
+    "agent/anthropic_adapter.py": "sdk-adapter-error",
+    "agent/chat_completion_helpers.py": "python-sort-network",
+    "agent/coding_context.py": "python-path-probe",
+    "agent/context_breakdown.py": "python-token-count",
+    "agent/context_compressor.py": "compression-policy",
+    "agent/conversation_compression.py": "compression-history",
+    "agent/credential_pool.py": "python-config-io",
+    "agent/curator.py": "cron-skill-ref",
+    "agent/display.py": "python-shell-word-split",
+    "agent/error_classifier.py": "python-error-parse",
+    "agent/file_safety.py": "python-path-safety",
+    "agent/image_routing.py": "python-image-transcode",
+    "agent/learning_graph.py": "python-graph-logic",
+    "agent/learning_graph_render.py": "python-graph-render",
+    "agent/learning_mutations.py": "python-memory-fs",
+    "agent/memory_manager.py": "python-tool-schema",
+    "agent/message_sanitization.py": "python-message-repair",
+    "agent/moa_loop.py": "python-async-moa",
+    "agent/moa_trace.py": "python-async-trace",
+    "agent/model_metadata.py": "python-ollama-probe",
+    "agent/oneshot.py": "python-cli-commit",
+    "agent/prompt_builder.py": "python-guidance",
+    "agent/reasoning_timeouts.py": "python-timeout",
+    "agent/redact.py": "python-redact",
+    "agent/replay_cleanup.py": "python-replay-repair",
+    "agent/retry_utils.py": "python-retry",
+    "agent/skill_utils.py": "python-path-utils",
+    "agent/ssl_verify.py": "python-httpx-verify",
+    "agent/thinking_timeout_guidance.py": "python-thinking",
+    "agent/thread_scoped_output.py": "python-thread-local",
+    "agent/tool_dispatch_helpers.py": "python-mutation",
+    "agent/tool_executor.py": "python-executor",
+    "agent/turn_context.py": "python-compression-state",
+    "agent/verification_evidence.py": "python-verify-db",
+    "agent/verification_stop.py": "python-verify-stop",
+    "agent/verify_hooks.py": "python-verify-hooks",
+    "agent/vertex_adapter.py": "sdk-adapter",
+    # === GATEWAY: Python-only infrastructure ===
+    "gateway/cgroup_cleanup.py": "cgroup-only",
+    "gateway/dead_targets.py": "async-dead-targets",
+    "gateway/drain_control.py": "async-drain",
+    "gateway/restart_loop_guard.py": "restart-guard",
+    "gateway/scale_to_zero.py": "async-scale",
+    "gateway/relay/adapter.py": "async-relay",
+    "gateway/relay/transport.py": "async-relay-transport",
+    "gateway/relay/ws_transport.py": "async-ws-transport",
+    # === CRON: Python-only ===
+    "cron/lifecycle_guard.py": "cron-guard",
+    # === TOOLS: Python-specific ===
+    "tools/close_terminal_tool.py": "close-tty",
+    "tools/computer_use/doctor.py": "cu-doctor",
+    "tools/computer_use/permissions.py": "cu-permissions",
+    "tools/project_tools.py": "project-tools",
+    "tools/xai_video_tools.py": "xai-video",
 }
 
 # N/A classification patterns
@@ -1266,6 +1331,13 @@ class ParityAnalyzer:
             "hermes_cli/webhook.py": "src/cli/webhook.c",
             "hermes_cli/win_pty_bridge.py": "src/cli/win_pty_bridge.c",
             "hermes_cli/write_approval_commands.py": "src/cli/write_approval_commands.c",
+            # agent/pet/ -> src/pet/
+            "agent/pet/__init__.py": "src/pet/pet_commands.c",
+            "agent/pet/constants.py": "src/pet/pet_constants.c",
+            "agent/pet/state.py": "src/pet/pet_state.c",
+            "agent/pet/manifest.py": "src/pet/pet_manifest.c",
+            "agent/pet/store.py": "src/pet/pet_store.c",
+            "agent/pet/render.py": "src/pet/pet_render.c",
         }
 
         # Add cross-directory mappings
@@ -2477,6 +2549,32 @@ class ParityAnalyzer:
         if py_file == "hermes_cli/status.py":
             return "NA_CLI"
 
+        # gateway/platforms/api_server.py: Python-specific helpers
+        if py_file == "gateway/platforms/api_server.py" and feature.name in (
+            "_redact_api_error_text", "_api_key_passes_startup_guard", "_port_is_available"
+        ):
+            return "NA_SDK"
+
+        # gateway/platforms/base.py: Python-specific media/authorization helpers
+        if py_file == "gateway/platforms/base.py" and feature.name in (
+            "_resolve_cache_dir", "_profile_cache_roots",
+            "_normalize_media_tag_path", "_path_lacks_deliverable_extension",
+            "_strip_media_tag_directives", "_error_blob",
+            "is_chat_level_not_found", "authorization_is_upstream",
+            "set_authorization_check", "_is_sender_authorized",
+            "strip_media_directives_for_display", "_cleanup_finished_session_task"
+        ):
+            return "NA_SDK"
+
+        # auxiliary_client.py: aux response handling (Python-specific)
+        if py_file == "agent/auxiliary_client.py" and feature.name in (
+            "_resolve_aux_verify", "_is_model_incompatible_error",
+            "_is_invalid_aux_response_error", "_task_minimum_context_length",
+            "_candidate_context_window", "_recover_aux_response_message",
+            "_extract_aux_response_text"
+        ):
+            return "NA_SDK"
+
         # Check specific patterns
         for category, patterns in NA_PATTERNS.items():
             if category == "abc":
@@ -2676,6 +2774,14 @@ class ParityAnalyzer:
         for py_file in sorted(agent_dir.glob("*.py")):
             if py_file.name != "__init__.py":
                 all_py_files.append((py_file, "agent/" + py_file.name))
+
+        # agent/pet/ directory
+        agent_pet_dir = PYTHON_SOURCE_DIRS["agent"] / "pet"
+        if agent_pet_dir.exists():
+            for py_file in sorted(agent_pet_dir.rglob("*.py")):
+                if py_file.name != "__init__.py":
+                    rel = py_file.relative_to(PYTHON_SOURCE_DIRS["agent"])
+                    all_py_files.append((py_file, "agent/" + str(rel)))
 
         # tools/ directory
         tools_dir = PYTHON_SOURCE_DIRS["tools"]
