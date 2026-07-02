@@ -732,10 +732,16 @@ DESKTOP_OBJ = \
     src/desktop_app_common.o \
     src/app_desktop.o
 
-# Platform-specific window backends
+# Platform-specific window backends (only when headers are available)
 ifeq ($(UNAME_S),Linux)
-    DESKTOP_OBJ += src/window_wayland.o
-    DESKTOP_OBJ += src/xdg-shell-protocol.o
+    # Auto-detect Wayland headers
+    HAS_WAYLAND := $(shell pkg-config --exists wayland-client 2>/dev/null && echo 1 || echo 0)
+    ifneq ($(HAS_WAYLAND),0)
+        DESKTOP_OBJ += src/window_wayland.o
+        DESKTOP_OBJ += src/xdg-shell-protocol.o
+    else
+        $(info WARNING: Wayland headers not found — window_wayland.o excluded)
+    endif
 else ifeq ($(UNAME_S),Darwin)
     DESKTOP_OBJ += src/window_macos.o
 else
