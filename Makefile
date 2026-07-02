@@ -847,7 +847,7 @@ PHASE4_OBJ = $(PHASE3_OBJ) $(GATEWAY_OBJ)
 PHASE5_OBJ = $(PHASE4_OBJ) $(CRON_OBJ)
 
 .PHONY: all clean phase1 phase2 phase3 phase4 phase5 test asan coverage clean-tests \
-        upstream-sync upstream-merge what-changed test-libs tui docs asan fuzz static \
+        setup deps upstream-sync upstream-merge what-changed test-libs tui docs asan fuzz static \
         static-analysis
 
 all: phase5
@@ -869,6 +869,17 @@ phase4: $(PHASE4_OBJ)
 phase5: slermes
 	@echo "Phase 5 complete: slermes binary built"
 
+# ── Setup / deps targets ──────────────────────────────────────────────
+# `make setup` — builds everything including third-party deps
+# `make deps` — just ensures third-party libraries are downloaded/built
+setup: deps slermes
+	@echo "✅ Slermes C setup complete"
+	@echo "   Binary: ./slermes"
+	@echo "   Run:    ./slermes --help"
+
+deps: lib/libdb/sqlite3.h
+	@echo "📦 Dependencies ready"
+
 slermes: $(PHASE5_OBJ) src/main.o $(HERMES_CLI_PORT_OBJ) $(HERMES_CLI_PORT_EXTRA_OBJ) $(PORT_OBJ) $(DESKTOP_OBJ) $(LIB_OBJ)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(PLATFORM_LDFLAGS) $(LIBS) \
 		$(if $(findstring 1,$(HAS_NCURSES)),-L lib/syslib -lncursesw -ltinfo -lpanelw) -lstdc++ \
@@ -885,6 +896,21 @@ DESKTOP_LIBS_FILTER = lib/libdb/sqlite3.o lib/whisper_cpp/whisper_wrapper.o lib/
 DESKTOP_GUI_OBJ := src/gui_core.o src/desktop_gui.o src/slermes_home.o src/chat_render.o lib/libdb/sqlite3.o lib/libhttp/http.o lib/libjson/json.o lib/libbase64/base64.o lib/libcrypto/crypto.o
 DESKTOP_GUI_CFLAGS := $(shell pkg-config --cflags sdl2 SDL2_ttf)
 DESKTOP_GUI_LIBS := $(shell pkg-config --libs sdl2 SDL2_ttf) -lm -lssl -lcrypto -lz
+
+# SQLite3 amalgamation — auto-download if missing
+lib/libdb/sqlite3.h:
+	@if [ ! -f lib/libdb/sqlite3.c ]; then \
+		echo "[setup] Downloading SQLite amalgamation..."; \
+		curl -sL https://www.sqlite.org/2024/sqlite-amalgamation-3450100.zip -o /tmp/sqlite.zip && \
+		unzip -o /tmp/sqlite.zip -d /tmp/sqlite && \
+		cp /tmp/sqlite/sqlite-amalgamation-3450100/sqlite3.c lib/libdb/ && \
+		cp /tmp/sqlite/sqlite-amalgamation-3450100/sqlite3.h lib/libdb/ && \
+		rm -rf /tmp/sqlite /tmp/sqlite.zip && \
+		echo "[setup] ✓ SQLite amalgamation downloaded"; \
+	fi
+
+lib/libdb/sqlite3.c: lib/libdb/sqlite3.h
+	@echo "[setup] sqlite3.c already present"
 
 lib/libdb/sqlite3.o: lib/libdb/sqlite3.c lib/libdb/sqlite3.h
 	$(CC) $(CFLAGS) -DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION -c -o $@ $<
