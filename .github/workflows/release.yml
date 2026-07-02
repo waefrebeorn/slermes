@@ -38,7 +38,6 @@ jobs:
           sudo apt-get update -qq 2>&1 || true
           sudo apt-get install -y -qq build-essential gcc libssl-dev \
             libncurses-dev libwayland-dev pkg-config file unzip 2>&1 || true
-          dpkg -l | grep -E 'ncurses|ssl|wayland' 2>/dev/null | head -5 || true
       - name: Fetch SQLite amalgamation
         run: |
           if [ ! -f lib/libdb/sqlite3.h ]; then
@@ -48,38 +47,8 @@ jobs:
             cp /tmp/sqlite/sqlite-amalgamation-3490100/sqlite3.c lib/libdb/
             rm -rf /tmp/sqlite.zip /tmp/sqlite/
           fi
-      - name: Build
-        run: |
-          echo "=== Building all objects (direct compilation, bypassing make) ==="
-          # GitHub Actions Make 4.3 on Ubuntu 24.04 has a pattern-rule resolution
-          # bug — compile everything directly with gcc instead.
-          INCS="-I include $(find lib -maxdepth 2 -name '*.h' -exec dirname {} \; | sort -u | sed 's/^/-I /' | tr '\n' ' ')"
-          CFLAGS="-O2 -g -Wall $INCS"
-          # Library objects (with special flags for sqlite3)
-          find lib -name '*.c' ! -path '*/whisper_cpp/*' ! -path '*/libncurses/*' ! -path '*/syslib/*' | sort | while read -r src; do
-            obj="${src%.c}.o"
-            [ -f "$obj" ] && continue
-            case "$src" in
-              */sqlite3.c) gcc $CFLAGS -DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION -c "$src" -o "$obj";;
-              */whisper_stubs.c) gcc $CFLAGS -I lib/whisper_cpp/include -c "$src" -o "$obj";;
-              *) gcc $CFLAGS -c "$src" -o "$obj";;
-            esac
-          done
-          # Application objects
-          find src -name '*.c' ! -path '*/plugins/*' | sort | while read -r src; do
-            obj="${src%.c}.o"
-            [ -f "$obj" ] && continue
-            gcc $CFLAGS -c "$src" -o "$obj"
-          done
-          echo "=== Linking ==="
-          OBJS=$(find src lib -name '*.o' ! -path '*/plugins/*' ! -path '*whisper_cpp/whisper_wrapper*' ! -path '*libncurses*' ! -path '*/syslib/*' | sort -u | tr '\n' ' ')
-          gcc -O2 -g -o slermes $OBJS \
-            -lssl -lcrypto -ldl -lpthread -lz -lm -lstdc++ \
-            /usr/lib/x86_64-linux-gnu/libncursesw.so.6 \
-            /usr/lib/x86_64-linux-gnu/libpanelw.so.6 \
-            /usr/lib/x86_64-linux-gnu/libtinfo.so.6 2>&1
-          echo "=== Build complete: $(ls -lh slermes | awk '{print $5}') ==="
-          ./slermes --version
+      - name: Build (bypasses Make 4.3 pattern-rule bug)
+        run: CC=gcc bash ci-build.sh 2>&1
       - name: Verify
         run: |
           file slermes
@@ -148,10 +117,9 @@ jobs:
             cp /tmp/sqlite/sqlite-amalgamation-3490100/sqlite3.c lib/libdb/
             rm -rf /tmp/sqlite.zip /tmp/sqlite/
           fi
-      - name: Cross-compile
+      - name: Cross-compile (bypasses Make 4.3 pattern-rule bug)
         run: |
-          make -j$(nproc) CC=aarch64-linux-gnu-gcc AR=aarch64-linux-gnu-ar \
-            CFLAGS_EXTRA="-Wno-pointer-sign" 2>&1 || echo "Build failed"
+          CC=aarch64-linux-gnu-gcc AR=aarch64-linux-gnu-ar bash ci-build.sh 2>&1
           if [ -f slermes ]; then
             mv slermes slermes-linux-aarch64
             file slermes-linux-aarch64
@@ -184,10 +152,10 @@ jobs:
             cp /tmp/sqlite/sqlite-amalgamation-3490100/sqlite3.c lib/libdb/
             rm -rf /tmp/sqlite.zip /tmp/sqlite/
           fi
-      - name: Cross-compile
+      - name: Cross-compile (bypasses Make 4.3 pattern-rule bug)
         run: |
-          make -j$(nproc) CC=arm-linux-gnueabihf-gcc AR=arm-linux-gnueabihf-ar \
-            CFLAGS_EXTRA="-Wno-pointer-sign -march=armv7-a+fp" 2>&1 || echo "Build failed"
+          CC=arm-linux-gnueabihf-gcc AR=arm-linux-gnueabihf-ar \
+            MAKE_OPTS="CFLAGS_EXTRA=-Wno-pointer-sign" bash ci-build.sh 2>&1
           if [ -f slermes ]; then
             mv slermes slermes-linux-armv7
             file slermes-linux-armv7
@@ -220,11 +188,11 @@ jobs:
             cp /tmp/sqlite/sqlite-amalgamation-3490100/sqlite3.c lib/libdb/
             rm -rf /tmp/sqlite.zip /tmp/sqlite/
           fi
-      - name: Cross-compile
+      - name: Cross-compile (bypasses Make 4.3 pattern-rule bug)
         run: |
-          make -j$(nproc) CC=x86_64-w64-mingw32-gcc AR=x86_64-w64-mingw32-ar \
-            CFLAGS_EXTRA="-D_WIN32_WINNT=0x0A00 -Wno-pointer-sign" \
-            LDFLAGS="-lssl -lcrypto -lws2_32 -lz" 2>&1
+          CC=x86_64-w64-mingw32-gcc AR=x86_64-w64-mingw32-ar \
+            MAKE_OPTS="CFLAGS_EXTRA='-D_WIN32_WINNT=0x0A00 -Wno-pointer-sign'" \
+            bash ci-build.sh 2>&1
           ls -la slermes slermes.exe 2>/dev/null || true
           mv slermes slermes-windows-x86_64.exe 2>/dev/null || \
           mv slermes.exe slermes-windows-x86_64.exe 2>/dev/null || \
@@ -319,7 +287,7 @@ jobs:
               [ -f "$file" ] || continue
               SIZE=$(du -h "$file" | cut -f1)
               NAME=$(basename "$file")
-              INVENTORY="$INVENTORY- \`$NAME\` ($SIZE)\n"
+              INVENTORY="$INVENTORY- \`$NAME\` ($SIZE)\\n"
             done
           done
 
