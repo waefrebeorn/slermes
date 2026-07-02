@@ -12,6 +12,8 @@ RUN apk add --no-cache \
     openssl-libs-static \
     ncurses-dev \
     ncurses-static \
+    zlib-dev \
+    zlib-static \
     pkgconf \
     make \
     bash \
