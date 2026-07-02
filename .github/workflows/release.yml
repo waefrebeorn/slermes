@@ -50,16 +50,16 @@ jobs:
           fi
       - name: Build
         run: |
-          echo "=== Building all objects via explicit targets ==="
-          # Build all objects by listing them explicitly as targets
-          # (pattern rules work for single targets but not the default chain on this runner)
-          make -r -j4 CC=gcc \
-            $(sed -n 's/^CLI_OBJ = //p; s/^PORT_OBJ = //p; s/^PET_OBJ = //p; s/^DEPS_OBJ = //p; s/^CRON_OBJ = //p; s/^GATEWAY_OBJ = //p; s/^AGENT_OBJ = //p; s/^TOOLS_OBJ = //p; s/^DESKTOP_OBJ = //p; s/^DESKTOP_APP_OBJ = //p' build/objects.mk | tr '\\' ' ' | sed 's/  */ /g' | tr '\n' ' ') \
-            src/main.o \
-            2>&1 | tail -5; echo "COMPILE EXIT: $?"
+          echo "=== Building all objects (bypassing default target chain) ==="
+          # Extract object lists from Makefile and pass as explicit targets
+          # Pattern rules work for single targets on this runner, but the
+          # default target chain (all→phase5→slermes) fails to trigger them.
+          SRC_OBJS=$(sed -n 's/^CLI_OBJ = //p; s/^PORT_OBJ = //p; s/^PET_OBJ = //p; s/^DEPS_OBJ = //p; s/^CRON_OBJ = //p; s/^GATEWAY_OBJ = //p; s/^AGENT_OBJ = //p; s/^TOOLS_OBJ = //p; s/^DESKTOP_OBJ = //p; s/^DESKTOP_APP_OBJ = //p' build/objects.mk | tr '\\\\' ' ' | sed 's/  */ /g')
+          LIB_OBJS=$(sed -n '/^LIB_OBJ  = /,/^LIB_A    = /p' build/libs-config.mk | head -n -1 | tr '\\\\' ' ' | sed 's/LIB_OBJ  = //; s/LIB_A    = //; s/  */ /g')
+          make -r -j4 CC=gcc $SRC_OBJS $LIB_OBJS src/main.o 2>&1 | tail -3; echo "COMPILE EXIT: $?"
           echo "=== Linking ==="
           gcc -O2 -g -o slermes \
-            $(find src lib -name '*.o' ! -path '*/plugins/*' ! -path '*whisper_cpp*' ! -path '*libncurses*' | sort -u) \
+            $(find src lib -name '*.o' ! -path '*/plugins/*' ! -path '*whisper_cpp*' ! -path '*libncurses*' ! -path '*/syslib/*' | sort -u) \
             -lssl -lcrypto -ldl -lpthread -lz -lm -lstdc++ \
             /usr/lib/x86_64-linux-gnu/libncursesw.so.6 \
             /usr/lib/x86_64-linux-gnu/libpanelw.so.6 \
