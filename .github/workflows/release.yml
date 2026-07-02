@@ -37,8 +37,8 @@ jobs:
         run: |
           sudo apt-get update -qq || true
           sudo apt-get install -y -qq build-essential libssl-dev \
-            libncursesw6-dev libpanelw-dev libwayland-dev pkg-config file unzip \
-            2>&1 || echo "Some packages not available, continuing..."
+            gcc libncursesw6-dev libpanelw-dev libwayland-dev pkg-config file unzip \
+            2>&1 || true
       - name: Fetch SQLite amalgamation
         run: |
           if [ ! -f lib/libdb/sqlite3.h ]; then
@@ -49,7 +49,7 @@ jobs:
             rm -rf /tmp/sqlite.zip /tmp/sqlite/
           fi
       - name: Build
-        run: make -j$(nproc) 2>&1
+        run: make -j$(nproc) CC=gcc 2>&1
       - name: Verify
         run: |
           file slermes
