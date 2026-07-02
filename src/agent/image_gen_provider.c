@@ -38,12 +38,13 @@
 #include <libgen.h>
 #include <ctype.h>
 #include <stdarg.h>
+#include <limits.h>
 
 /* ================================================================== */
 /*  Constants (Port of Python module-level constants)                 */
 /* ================================================================== */
 
-static const char *VALID_ASPECT_RATIOS[] = {
+const char *VALID_ASPECT_RATIOS[] = {
     "landscape", "square", "portrait", NULL
 };
 #define DEFAULT_ASPECT_RATIO "landscape"
@@ -347,7 +348,7 @@ json_t *image_gen_success_response(const char *image, const char *model,
     json_t *payload = json_object();
     if (!payload) return NULL;
 
-    json_set(payload, "success", json_boolean(true));
+    json_set(payload, "success", json_bool(true));
     json_set(payload, "image", json_string(image ? image : ""));
     json_set(payload, "model", json_string(model ? model : ""));
     json_set(payload, "prompt", json_string(prompt ? prompt : ""));
@@ -358,7 +359,7 @@ json_t *image_gen_success_response(const char *image, const char *model,
         /* Merge extra fields */
         if (extra->type == JSON_OBJECT) {
             for (size_t i = 0; i < extra->c.count; i++) {
-                json_t *val = json_deep_copy(extra->c.items[i]);
+                json_t *val = json_copy(extra->c.items[i]);
                 if (val)
                     json_set(payload, extra->c.keys[i], val);
             }
@@ -375,7 +376,7 @@ json_t *image_gen_error_response(const char *error, const char *error_type,
     json_t *payload = json_object();
     if (!payload) return NULL;
 
-    json_set(payload, "success", json_boolean(false));
+    json_set(payload, "success", json_bool(false));
     json_set(payload, "image", json_string(""));
     json_set(payload, "error", json_string(error ? error : "Unknown error"));
     json_set(payload, "error_type", json_string(error_type ? error_type : "provider_error"));
