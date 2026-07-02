@@ -13,6 +13,8 @@ RUN apk add --no-cache \
     pkgconf \
     make \
     bash \
+    curl \
+    unzip \
     file
 
 WORKDIR /build
@@ -20,8 +22,10 @@ WORKDIR /build
 # Copy source
 COPY . .
 
-# Build static binary (pure C11, no C++)
-RUN make -j$(nproc) static
+# Fetch SQLite amalgamation + build static binary
+RUN make deps 2>/dev/null; \
+    make -j$(nproc) static 2>&1 || \
+    make -j$(nproc) all 2>&1
 
 # ─── Runtime Stage ─────────────────────────────────────────────────
 FROM alpine:3.19
