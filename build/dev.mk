@@ -43,13 +43,18 @@ sync-all: upstream-merge phase5
 digest:
 	@if [ -f digest.py ]; then python3 digest.py; else echo "NOTE: digest.py not found — diff digest unavailable"; fi
 
-# Convenience: install dependencies (used by CI workflows)
+# Convenience: install dependencies (used by CI workflows) + fetch SQLite amalgamation
 deps:
-	@echo "=== Installing Slermes build dependencies ==="
-	@if command -v apt-get >/dev/null 2>&1; then \\
-		sudo apt-get update -qq && sudo apt-get install -y -qq build-essential libssl-dev pkg-config file 2>/dev/null || true; \\
-	elif command -v brew >/dev/null 2>&1; then \\
-		brew install pkg-config openssl file 2>/dev/null || true; \\
+	@echo "=== Fetching SQLite amalgamation ==="
+	@if [ ! -f lib/libdb/sqlite3.h ]; then \
+		curl -sL https://www.sqlite.org/2025/sqlite-amalgamation-3490100.zip -o /tmp/sqlite.zip && \
+		unzip -o -q /tmp/sqlite.zip -d /tmp/sqlite/ && \
+		cp /tmp/sqlite/sqlite-amalgamation-3490100/sqlite3.h lib/libdb/ && \
+		cp /tmp/sqlite/sqlite-amalgamation-3490100/sqlite3.c lib/libdb/ && \
+		rm -rf /tmp/sqlite.zip /tmp/sqlite/ && \
+		echo "  SQLite amalgamation downloaded to lib/libdb/"; \
+	else \
+		echo "  SQLite amalgamation already present"; \
 	fi
 	@echo "=== Dependency check complete ==="
 
