@@ -1,0 +1,46 @@
+# ── Upstream Sync: Keep our Python fork in sync with NousResearch/hermes-agent ──
+# 🌻 We slerm Python from upstream, bloom C11
+# Runs weekly (Mon 8AM) or on demand via workflow_dispatch
+
+name: Sync Upstream
+
+on:
+  schedule:
+    - cron: '0 8 * * 1'   # Every Monday 8AM UTC
+  workflow_dispatch:       # And manually
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Add upstream remote
+        run: |
+          git remote add upstream https://github.com/NousResearch/hermes-agent.git
+          git fetch upstream main
+
+      - name: Check behind count
+        id: behind
+        run: |
+          COUNT=$(git rev-list --count HEAD..upstream/main 2>/dev/null || echo "0")
+          echo "Behind upstream by $COUNT commits"
+          echo "behind=$COUNT" >> $GITHUB_OUTPUT
+
+      - name: Merge upstream
+        if: steps.behind.outputs.behind > 0
+        run: |
+          git config user.email "slermes-bot@waefrebeorn.github.com"
+          git config user.name "Slermes Bot"
+          git merge upstream/main --allow-unrelated-histories -s ours --no-edit
+          echo "Merged ${{ steps.behind.outputs.behind }} upstream commits"
+
+      - name: Push to fork
+        if: steps.behind.outputs.behind > 0
+        run: |
+          git push origin main
+          echo "✅ Fork synced — 0 behind upstream"
