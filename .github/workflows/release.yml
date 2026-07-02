@@ -50,9 +50,10 @@ jobs:
           fi
       - name: Build
         run: |
-          echo "make version: $(make --version 2>&1 | head -1)"
-          echo "Default target: $(make -n -r -p 2>&1 | grep '^all:' | head -1)"
-          make -j$(nproc) CC=gcc 2>&1
+          make -j$(nproc) CC=gcc 2>&1; echo "EXIT CODE: $?"
+          ls -la slermes 2>/dev/null || echo "slermes not found"
+          ls -la src/*.o 2>/dev/null | head -5 || echo "no .o files"
+          ls -la src/cli/*.o 2>/dev/null | head -5 || echo "no cli .o files"
       - name: Verify
         run: |
           file slermes
