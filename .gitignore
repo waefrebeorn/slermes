@@ -66,3 +66,5 @@ web-server
 web_app_dist
 test_screenshot
 test_window
+test_screenshot*
+test_window*
