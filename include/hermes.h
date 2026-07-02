@@ -24,6 +24,20 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* strcasestr — case-insensitive substring search (glibc extension)
+ * macOS/BSD doesn't provide it in <string.h> — provide fallback */
+#if defined(__APPLE__) || defined(__MACH__)
+static inline const char *hermes_strcasestr(const char *haystack, const char *needle) {
+    size_t nlen = strlen(needle);
+    if (!nlen) return haystack;
+    for (; *haystack; ++haystack)
+        if (strncasecmp(haystack, needle, nlen) == 0)
+            return haystack;
+    return NULL;
+}
+#define strcasestr(h, n) hermes_strcasestr(h, n)
+#endif
+
 /* Forward declarations for agent subsystem types */
 typedef struct budget_tracker_t budget_tracker_t;
 
