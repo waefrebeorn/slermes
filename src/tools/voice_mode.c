@@ -50,6 +50,7 @@ static struct {
  *  Configuration API
  * ================================================================ */
 
+/* PoP: voice_set_enabled @ hermes_cli/pets.py:_set_enabled */
 void voice_set_enabled(int enabled) {
     g_voice_enabled = enabled;
 }

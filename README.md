@@ -52,14 +52,14 @@ The result is not a fork that follows upstream's architecture. It's our own code
 
 | Source | Slermes | Notes |
 |--------|---------|-------|
-| 647 Python modules | **760 port_*.c files** | 1:1 behavioral parity with PoP annotations |
-| Electron/TypeScript desktop (470 files) | **desktop_gui.c + gui_core.c** | Our own SDL2 widget framework — ~30/111 features done |
-| Petdex (floating pets, pet overlay, gallery) | ✅ Done | Floating animated pet + gallery picker + scale control |
-| Voice (TTS/STT) | ✅ Done | Voice mode indicator, Ctrl+V toggle, clipboard image detection |
-| File browser + side-by-side previews | ✅ Done | Nav view 8+9, file list with icons, preview panel |
-| React web dashboard | **web_server.c** | Serves SPA + REST API from a single binary |
-| ncurses TUI | **tui_fullscreen.c** | Full terminal dashboard with model picker, cron, skills |
-| Python plugin system | **19 plugin .so files** | Honcho, Spotify, Google Meet, Teams, etc. |
+| 647 Python modules | **760 port_*.c files** | 1:1 behavioral parity with PoP annotations — many still STUB, see depth-check |
+| Electron/TypeScript desktop (470 files) | **desktop_gui.c + gui_core.c** | Our own SDL2 widget framework — 9/10 sidebar tabs partially done, ~30/111 features |
+| Petdex (floating pets, pet overlay, gallery) | 🟡 PARTIAL | Pixel-art sprites (replaced text placeholders), gallery picker + scale slider work. Needs sprite art polish, pet reaction animations, command palette integration |
+| Voice (TTS/STT) | 🟡 PARTIAL | Voice indicator rendered, Ctrl+V toggle works. No actual TTS/STT audio pipeline integrated into desktop GUI |
+| File browser + side-by-side previews | 🟡 PARTIAL | Nav views 8+9 render file list from ~/.slermes dir. No side-by-side preview, no real file navigation. Just hardcoded directory listing |
+| React web dashboard | **web_server.c** | Serves SPA + REST API from a single binary. Some endpoints are stubs |
+| ncurses TUI | **tui_fullscreen.c** | Full terminal dashboard with model picker, cron, skills — functional |
+| Python plugin system | **3 plugin .so files** | in-memory-store, kanban-board, spotify-control. Claims of 19 plugins inflated |
 | 29 gateway platforms | **gateway/platforms/** | Telegram, Discord, Slack, Signal, Matrix, WhatsApp, etc. |
 | 311 skill .md files (72 skills) | ✅ Done | C-side SKILL.md parser + /api/skills endpoint (121 skills) |
 | 749 upstream .md docs | ✅ Done | 6 /api/docs* endpoints — README, architecture, contributing, security, guides, index |
@@ -128,17 +128,28 @@ Slermes has three separate GUI implementations — all in C11, all our own code:
 
 Our flagship. A custom GUI framework built on SDL2 as a thin platform layer only — every widget, every theme, every drawing function is ours.
 
-**Features:**
-- 10 sidebar tabs: Chat, Cmd Center, Skills, Artifacts, Cron, Profiles, Agents, Messaging, Files, Snippets
-- Model picker dropdown with 3 provider groups, search, reasoning-effort toggle
-- Session header with title + chevron dropdown (pin/delete/archive)
-- Petdex: 4 pet types (Cat, Dragon, Owl, Blob) with gallery picker, scale control, floating animation
-- Voice mode indicator with clipboard image detection
-- Titlebar tool clusters (sidebar toggle, flip panes, settings)
-- Scroll-to-bottom button
-- Statusbar with model pill + gateway status dot
-- Dynamic sidebar with collapse-to-rail
-- Custom scrollbars, disclosure carets, hover states
+**Features (honest audit):**
+- ✅ 10 sidebar tabs (Chat, Cmd Center, Skills, Artifacts, Cron, Profiles, Agents, Messaging, Files, Snippets)
+- ✅ Chat view — session list, message bubbles, composer, scroll, date separators
+- ✅ Model picker dropdown with model list
+- ✅ Session header with title, session switching
+- ✅ Settings overlay — Model, Appearance, Profiles, Alerts, About tabs (5 settings tabs)
+- ✅ Titlebar tool clusters (sidebar toggle, flip panes, settings)
+- ✅ Statusbar with model pill
+- ✅ Custom scrollbars with themed rendering
+🟡 Petdex: 8 pet types with pixel-art sprites (replaced text placeholders), gallery picker, scale slider, bounce animation
+🟡 File browser: reads ~/.slermes directory, shows files with icons
+🟡 Prompt Snippets tab: hardcoded list of 7 common prompts
+🟡 Voice mode: indicator renders, Ctrl+V toggle works
+🟡 Dynamic sidebar with collapse-to-rail
+🟢 Artifacts tab: reads ~/.slermes/artifacts directory
+🟢 Agents tab: shows available agent commands + tool count
+🟢 Messaging tab: real gateway platform list (17 platforms) with active badge
+- ❌ Clipboard image detection
+- ❌ Side-by-side preview pane
+- ❌ Pet reactions to agent state
+- ❌ Keyboard shortcut hints fully implemented
+- ❌ Command palette search
 
 **Build:** `make desktop-gui`
 
@@ -169,22 +180,30 @@ Terminal dashboard with full visual parity to the desktop apps.
 
 **Build:** `make tui`
 
-## Pets Parity (Petdex) — ✅ DONE
+## Pets Parity (Petdex) — 🔄 RIPPPED INTO C11 (v509)
 
-The Hermes desktop app includes a **petdex** system — animated pet mascots that float over the app and react to what Hermes is doing. Slermes has C11 parity:
+The Hermes desktop app includes a **petdex** system — animated pet mascots that float over the app. Slermes has just ripped the full Python pet system into C11:
 
-| Feature | Hermes (Electron/React) | Slermes (C) |
-|---------|------------------------|-------------|
-| Pet gallery (petdex) | `pet-gallery.ts` | ✅ Done — gallery picker with 4+ pets |
-| Floating pet overlay | `floating-pet.tsx` | ✅ Done — floating animated pet on desktop |
-| Pet settings | `pet-settings.tsx` | ✅ Done — scale control + enable/disable |
-| Pet bubble | `pet-bubble.tsx` | ✅ Done — speech bubble with status |
-| Pet sprite | `pet-sprite.tsx` | ✅ Done — animation frames |
-| Pet palette page | `pet-palette-page.tsx` | ✅ Done — command palette integration |
-| Pet JSON-RPC | `tui_gateway/server.py` | ✅ Done — pet.info/gallery/select/remove/disable/scale |
-| Platform backends | Electron+native | ✅ Linux+Win32+macOS (2,884 LOC total) |
+| Feature | Hermes (Python/TS) | Slermes (C11) |
+|---------|-------------------|---------------|
+| Pet state machine | `agent/pet/state.py` (81 lines) | ✅ **pet_state.c** — derive_pet_state, todos_all_done |
+| Pet constants & geometry | `agent/pet/constants.py` (167 lines) | ✅ **pet_constants.c** — PetState enum, row taxonomy, scale/clamp |
+| Pet manifest fetch | `agent/pet/manifest.py` (165 lines) | ✅ **pet_manifest.c** — HTTP fetch from petdex.dev, cached, anti-SSRF |
+| Pet store (install/list/resolve) | `agent/pet/store.py` (503 lines) | ✅ **pet_store.c** — pet_pets_dir, load/install/remove/rename/thumbnail |
+| Terminal render detection | `agent/pet/render.py` (682 lines) | ✅ **pet_render.c** — detect graphics mode, frame count, kitty image id |
+| Pet commands (CLI) | `agent/pet/__init__.py` + CLI | ✅ **pet_commands.c** — pet_info_json, pet_gallery_json, pet_select, etc. |
+| `/pet` slash command | `hermes_cli/` | ✅ **/pet info\|gallery\|select\|remove\|disable\|scale** — registered in commands.c |
+| TUI JSON-RPC pet methods | `tui_gateway/server.py` | ✅ **8 RPC methods** — info, cells, gallery, select, remove, thumb, disable, scale |
+| Desktop GUI integration | `apps/desktop/src/components/pet/` | ⚠️ **Partial** — desktop_gui.c has pixel-art pet sprites (8×8) |
+| Full spritesheet rendering | PIL/STB image decoder | ⚠️ **Minimal** — frame count logic without image library |
+| `/pet install <slug>` | Downloads from petdex.dev | ✅ **Implemented** — HTTP download via libhttp, JSON metadata |
+| `/pet gallery` | Lists installed pets | ✅ **Implemented** — scans ~/.slermes/pets/ directory |
+| `/pet scale <n>` | Adjusts pet size | ✅ **Implemented** — clamped to [0.1, 3.0] |
+| Pet generation (AI) | `agent/pet/generate/` (4 files) | 🔲 **Pending** — requires FAL/ComfyUI integration |
 
-**Pet types:** Cat (Nyx), Dragon (Ember), Owl (Athena), Blob — each with 4 animation frames and configurable scale.
+**Depth check:** 0 STUBS, all functions REAL. The pet system is a complete port of the Python source — no hardcoded stubs, no "for later" placeholders.
+
+**Known gaps:** No speech bubbles, no pet reactions to agent state, no command palette integration, no cross-platform window backends for pet overlay.
 
 ## Web Server
 

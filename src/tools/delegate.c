@@ -187,7 +187,7 @@ static void delegate_kill(int session_id, json_node_t *result) {
 
 /* PoP: list_active_subagents @ src/tools/delegate.c:delegate_list
  * Port of Python tools/delegate_tool.py:list_active_subagents(). */
-static void delegate_list(json_node_t *result) {
+void delegate_list(json_node_t *result) {
     json_node_t *children = json_new_array();
     int count = 0;
     for (int i = 0; i < MAX_CHILDREN; i++) {
