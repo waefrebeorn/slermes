@@ -12,6 +12,8 @@ RUN apk add --no-cache \
     openssl-libs-static \
     ncurses-dev \
     ncurses-static \
+    wayland-dev \
+    wayland-libs-client \
     zlib-dev \
     zlib-static \
     pkgconf \
