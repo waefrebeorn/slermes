@@ -43,7 +43,10 @@ ERRORS=0
 while IFS= read -r target; do
     [ -f "$target" ] && echo "  SKIP $target (exists)" && continue
     echo "  MAKE $target"
-    eval make "$target" $MAKE_OPTS 2>&1 | tail -2 || { echo "  FAILED: $target"; ERRORS=$((ERRORS+1)); }
+    if ! make "$target" $MAKE_OPTS 2>&1; then
+        echo "  FAILED: $target"
+        ERRORS=$((ERRORS+1))
+    fi
 done < /tmp/all_targets.txt
 
 if [ "$ERRORS" -gt 0 ]; then

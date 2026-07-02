@@ -68,7 +68,7 @@ bool detect_project_facts(const char *root, json_t *out_facts) {
             size_t pm_count = json_len(package_managers);
             for (size_t j = 0; j < pm_count; j++) {
                 json_t *item = json_get(package_managers, j);
-                const char *existing = json_string_value(item);
+                const char *existing = json_node_get_string(item);
                 if (existing && strcmp(existing, lockfiles[i].pm) == 0) {
                     found = true;
                     break;

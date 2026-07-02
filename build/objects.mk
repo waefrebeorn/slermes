@@ -717,37 +717,37 @@ PORT_OBJ = \
     src/agent/anthropic_adapter.o
 
 # Desktop app parity objects (v465-v468)
-# Desktop app parity objects
-DESKTOP_OBJ = \
+# Desktop app parity objects (core — always needed for main binary)
+DESKTOP_CORE_OBJ = \
     src/pty.o \
     src/terminal.o \
+    src/gateway_client.o \
+    src/clipboard.o \
+    src/file_ops.o
+
+# Desktop windowing objects (only for desktop target)
+DESKTOP_WINDOW_OBJ = \
     src/window_compositor.o \
     src/window_stubs.o \
     src/chat_render.o \
     src/chat_composer.o \
-    src/gateway_client.o \
-    src/clipboard.o \
-    src/file_ops.o \
     src/gateway_probe.o \
     src/desktop_app_common.o \
     src/app_desktop.o
 
-# Platform-specific window backends (only when headers are available)
+# Platform-specific window backends (only for desktop target)
 ifeq ($(UNAME_S),Linux)
-    # Auto-detect Wayland headers
-    HAS_WAYLAND := $(shell pkg-config --exists wayland-client 2>/dev/null && echo 1 || echo 0)
-    ifneq ($(HAS_WAYLAND),0)
-        DESKTOP_OBJ += src/window_wayland.o
-        DESKTOP_OBJ += src/xdg-shell-protocol.o
-    else
-        $(info WARNING: Wayland headers not found — window_wayland.o excluded)
-    endif
+    DESKTOP_WINDOW_OBJ += src/window_wayland.o
+    DESKTOP_WINDOW_OBJ += src/xdg-shell-protocol.o
 else ifeq ($(UNAME_S),Darwin)
-    DESKTOP_OBJ += src/window_macos.o
+    DESKTOP_WINDOW_OBJ += src/window_macos.o
 else
     # Windows (MinGW/Cygwin)
-    DESKTOP_OBJ += src/window_win32.o
+    DESKTOP_WINDOW_OBJ += src/window_win32.o
 endif
+
+# Combined for legacy targets
+DESKTOP_OBJ = $(DESKTOP_CORE_OBJ) $(DESKTOP_WINDOW_OBJ)
 
 # Desktop app (ncurses-based, PoP replacement)
 DESKTOP_APP_OBJ = src/main_desktop.o src/app_desktop.o src/chat_render.o src/chat_composer.o \
