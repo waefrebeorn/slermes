@@ -1,6 +1,5 @@
 # ── Docker CI: Build and optionally publish slermes Docker image ──
-# Triggers: push to main, PRs, manual dispatch.
-# Publishes to GHCR when run on main branch.
+# 🌻 Slermes C — the agent that grows with you, Now in C
 
 name: Docker
 
