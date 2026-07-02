@@ -1,5 +1,6 @@
 # ── CI: Build, test, and verify Slermes C on every push ──
 # 🌻 Multi-OS CI — Linux native, macOS, Windows cross-compile, ARM
+# Uses ci-build.sh to bypass Make 4.3 pattern-rule resolution bug on GHA.
 
 name: CI
 
@@ -30,7 +31,7 @@ jobs:
         run: make deps
 
       - name: Build slermes
-        run: make -j$(nproc) 2>&1 | tail -10
+        run: bash ci-build.sh 2>&1
 
       - name: Smoke test
         run: |
@@ -69,7 +70,7 @@ jobs:
         run: make deps
 
       - name: Build slermes
-        run: make -j$(sysctl -n hw.logicalcpu) 2>&1 | tail -10
+        run: make -j$(sysctl -n hw.logicalcpu) 2>&1
 
       - name: Smoke test
         run: |
@@ -106,10 +107,7 @@ jobs:
 
       - name: Cross-compile
         run: |
-          make -j$(nproc) CC=aarch64-linux-gnu-gcc \
-            AR=aarch64-linux-gnu-ar \
-            CFLAGS_EXTRA="-Wno-pointer-sign" \
-            2>&1 | tail -10
+          CC=aarch64-linux-gnu-gcc AR=aarch64-linux-gnu-ar bash ci-build.sh 2>&1
           mv slermes slermes-aarch64
 
       - name: Verify
@@ -140,10 +138,8 @@ jobs:
 
       - name: Cross-compile
         run: |
-          make -j$(nproc) CC=arm-linux-gnueabihf-gcc \
-            AR=arm-linux-gnueabihf-ar \
-            CFLAGS_EXTRA="-Wno-pointer-sign -march=armv7-a" \
-            2>&1 | tail -10
+          CC=arm-linux-gnueabihf-gcc AR=arm-linux-gnueabihf-ar \
+            MAKE_OPTS="CFLAGS_EXTRA=-Wno-pointer-sign" bash ci-build.sh 2>&1
           mv slermes slermes-armv7
 
       - name: Verify
@@ -174,11 +170,9 @@ jobs:
 
       - name: Cross-compile
         run: |
-          make -j$(nproc) CC=x86_64-w64-mingw32-gcc \
-            AR=x86_64-w64-mingw32-ar \
-            CFLAGS_EXTRA="-D_WIN32_WINNT=0x0A00 -Wno-pointer-sign" \
-            LDFLAGS_EXTRA="-lws2_32" \
-            2>&1 | tail -10
+          CC=x86_64-w64-mingw32-gcc AR=x86_64-w64-mingw32-ar \
+            MAKE_OPTS="CFLAGS_EXTRA='-D_WIN32_WINNT=0x0A00 -Wno-pointer-sign'" \
+            bash ci-build.sh 2>&1
           mv slermes slermes.exe
 
       - name: Verify

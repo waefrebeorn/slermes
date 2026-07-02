@@ -37,7 +37,6 @@
  * Port of Python agent/coding_context.py:resolve_runtime_mode() — consolidated in coding_context_resolve_runtime_mode()
  */
 
-#include "coding_context.h"
 #include "hermes.h"
 #include <string.h>
 #include <stdlib.h>
@@ -47,6 +46,9 @@
 #include <sys/stat.h>
 #include <libgen.h>
 #include <limits.h>
+
+/* Forward declaration of runtime mode struct (defined at line ~526) */
+typedef struct coding_runtime_mode_s coding_runtime_mode_t;
 
 /* ================================================================== */
 /*  Constants (Port of Python module-level constants)                 */
@@ -109,50 +111,50 @@ static const char *VERIFY_TARGETS[] = {
 #define GIT_TIMEOUT_SECONDS 2.5
 
 /* Operating brief for the coding posture */
-static const char *CODING_AGENT_GUIDANCE =
-    "You are a coding agent pairing with the user inside their codebase. "
-    "Operate like a careful senior engineer.\n"
-    "\n"
-    "Gather context first:\n"
-    "- Read the relevant files with `read_file` and locate code with "
-    "`search_files` before changing anything. Trace a symbol to its definition "
-    "and usages rather than guessing its shape.\n"
-    "- Batch independent lookups: when several reads/searches don't depend on "
-    "each other, issue them together in one turn instead of one at a time.\n"
-    "- Never invent files, symbols, APIs, or imports. If you haven't seen it in "
-    "the repo, go look. Don't assume a library is available — check the project "
-    "manifest (pyproject.toml / package.json / Cargo.toml / go.mod) and how "
-    "neighbouring files import it.\n"
-    "\n"
-    "Make changes through the tools, not the chat:\n"
-    "- Edit with `patch`/`write_file`. Do NOT print code blocks to the user as "
-    "a substitute for editing — apply the change, then summarise it. Only show "
-    "code when the user explicitly asks to see it.\n"
-    "- Match the project's existing style and conventions; AGENTS.md / "
-    "CLAUDE.md / .cursorrules already in context win over your defaults. Touch "
-    "only what the task needs — no drive-by refactors, renames, or reformatting "
-    "— and add any imports/dependencies your code requires.\n"
-    "- If an edit fails to apply, re-read the file to get the current exact "
-    "contents before retrying — don't repeat a stale patch. If the same region "
-    "fails twice, rewrite the enclosing function or file with `write_file` "
-    "instead of attempting a third patch.\n"
-    "\n"
-    "Verify, and know when to stop:\n"
-    "- Use `terminal` for git, builds, tests, and inspection. Run the relevant "
-    "tests/linter/build and confirm they pass before claiming the work is done.\n"
-    "- Fix root causes, not symptoms: when you find a bug, check sibling call "
-    "paths for the same flaw and fix the class, not just the reported site.\n"
-    "- When fixing linter/type errors on a file, stop after about three "
-    "attempts on the same file and ask the user rather than looping.\n"
-    "- Track multi-step work with `todo`. Reference code as `path:line` instead "
-    "of pasting whole files.\n"
-    "\n"
-    "Respect the user's repo: don't commit, push, or rewrite history unless "
-    "asked, and never read, print, or commit secrets — leave `.env` and "
-    "credential files alone unless the user explicitly asks. The Workspace "
-    "block below is a snapshot from session start — re-run `git status`/"
-    "`git branch` before relying on it. Be concise: lead with the change or "
-    "answer, not a preamble.";
+#define CODING_AGENT_GUIDANCE \
+    "You are a coding agent pairing with the user inside their codebase. " \
+    "Operate like a careful senior engineer.\n" \
+    "\n" \
+    "Gather context first:\n" \
+    "- Read the relevant files with `read_file` and locate code with " \
+    "`search_files` before changing anything. Trace a symbol to its definition " \
+    "and usages rather than guessing its shape.\n" \
+    "- Batch independent lookups: when several reads/searches don't depend on " \
+    "each other, issue them together in one turn instead of one at a time.\n" \
+    "- Never invent files, symbols, APIs, or imports. If you haven't seen it in " \
+    "the repo, go look. Don't assume a library is available — check the project " \
+    "manifest (pyproject.toml / package.json / Cargo.toml / go.mod) and how " \
+    "neighbouring files import it.\n" \
+    "\n" \
+    "Make changes through the tools, not the chat:\n" \
+    "- Edit with `patch`/`write_file`. Do NOT print code blocks to the user as " \
+    "a substitute for editing — apply the change, then summarise it. Only show " \
+    "code when the user explicitly asks to see it.\n" \
+    "- Match the project's existing style and conventions; AGENTS.md / " \
+    "CLAUDE.md / .cursorrules already in context win over your defaults. Touch " \
+    "only what the task needs — no drive-by refactors, renames, or reformatting " \
+    "— and add any imports/dependencies your code requires.\n" \
+    "- If an edit fails to apply, re-read the file to get the current exact " \
+    "contents before retrying — don't repeat a stale patch. If the same region " \
+    "fails twice, rewrite the enclosing function or file with `write_file` " \
+    "instead of attempting a third patch.\n" \
+    "\n" \
+    "Verify, and know when to stop:\n" \
+    "- Use `terminal` for git, builds, tests, and inspection. Run the relevant " \
+    "tests/linter/build and confirm they pass before claiming the work is done.\n" \
+    "- Fix root causes, not symptoms: when you find a bug, check sibling call " \
+    "paths for the same flaw and fix the class, not just the reported site.\n" \
+    "- When fixing linter/type errors on a file, stop after about three " \
+    "attempts on the same file and ask the user rather than looping.\n" \
+    "- Track multi-step work with `todo`. Reference code as `path:line` instead " \
+    "of pasting whole files.\n" \
+    "\n" \
+    "Respect the user's repo: don't commit, push, or rewrite history unless " \
+    "asked, and never read, print, or commit secrets — leave `.env` and " \
+    "credential files alone unless the user explicitly asks. The Workspace " \
+    "block below is a snapshot from session start — re-run `git status`/" \
+    "`git branch` before relying on it. Be concise: lead with the change or " \
+    "answer, not a preamble."
 
 /* Per-model edit-format steering (Port of Python _EDIT_FORMAT_GUIDANCE) */
 struct edit_format_family {
@@ -163,21 +165,21 @@ struct edit_format_family {
 static const char *PATCH_NEEDLES[] = {
     "gpt", "codex", NULL
 };
-static const char *PATCH_GUIDANCE =
-    "- Edit format: author new files with `write_file`; for edits to "
-    "existing code use `patch` with `mode='patch'` (V4A diff) — including "
-    "single-file edits. It's the edit format you handle most reliably.";
+#define PATCH_GUIDANCE \
+    "- Edit format: author new files with `write_file`; for edits to " \
+    "existing code use `patch` with `mode='patch'` (V4A diff) — including " \
+    "single-file edits. It's the edit format you handle most reliably."
 
 static const char *REPLACE_NEEDLES[] = {
     "claude", "sonnet", "opus", "haiku",
     "gemini", "gemma", "deepseek", "qwen", "kimi", "glm", "grok",
     "hermes", "llama", "mistral", "devstral", "minimax", NULL
 };
-static const char *REPLACE_GUIDANCE =
-    "- Edit format: author new files with `write_file`; for edits to "
-    "existing code prefer `patch` in `mode='replace'` — match a unique "
-    "snippet and swap it. Reach for `mode='patch'` (V4A) only when an edit "
-    "genuinely spans several files at once.";
+#define REPLACE_GUIDANCE \
+    "- Edit format: author new files with `write_file`; for edits to " \
+    "existing code prefer `patch` in `mode='replace'` — match a unique " \
+    "snippet and swap it. Reach for `mode='patch'` (V4A) only when an edit " \
+    "genuinely spans several files at once."
 
 static const struct edit_format_family EDIT_FORMAT_FAMILIES[] = {
     {PATCH_NEEDLES, PATCH_GUIDANCE},
@@ -298,8 +300,8 @@ const coding_context_profile_t *coding_context_get_profile(const char *name) {
 /* AG26: Port of Python agent/coding_context.py:_coding_mode() */
 const char *coding_context_resolve_mode(const hermes_config_t *config) {
     const char *raw = "auto";
-    if (config && config->agent.coding_context[0])
-        raw = config->agent.coding_context;
+    /* TODO: add agent.coding_context field to config when ported */
+    (void)config;
 
     char *mode = str_dup_lower(raw);
     if (!mode) return "auto";
@@ -328,10 +330,8 @@ const char *coding_context_resolve_mode(const hermes_config_t *config) {
 
 /* AG26: Port of Python agent/coding_context.py:_resolve_cwd() */
 void coding_context_resolve_cwd(const hermes_config_t *config, char *out, size_t out_size) {
-    if (config && config->agent.cwd[0]) {
-        snprintf(out, out_size, "%s", config->agent.cwd);
-        return;
-    }
+    /* TODO: add agent.cwd field to config when ported */
+    (void)config;
     if (getcwd(out, out_size) == NULL)
         out[0] = '\0';
 }
