@@ -30,14 +30,8 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq build-essential libssl-dev \
             libncursesw6-dev libpanelw-dev libwayland-dev pkg-config file
-      - name: ncurses links
-        run: |
-          mkdir -p lib/syslib
-          ln -sf /usr/lib/x86_64-linux-gnu/libncursesw.so.6 lib/syslib/libncursesw.so
-          ln -sf /usr/lib/x86_64-linux-gnu/libtinfo.so.6 lib/syslib/libtinfo.so
-          ln -sf /usr/lib/x86_64-linux-gnu/libpanelw.so.6 lib/syslib/libpanelw.so
       - name: Build
-        run: make deps && make -j$(nproc) 2>&1 | tail -10
+        run: make -j$(nproc) 2>&1 | tail -10
       - name: Verify
         run: |
           file slermes
@@ -64,7 +58,7 @@ jobs:
           brew update >/dev/null 2>&1
           brew install pkg-config openssl file || true
       - name: Build
-        run: make deps && make -j$(sysctl -n hw.logicalcpu) 2>&1 | tail -10
+        run: make -j$(sysctl -n hw.logicalcpu) 2>&1 | tail -10
       - name: Verify
         run: |
           file slermes
@@ -88,7 +82,6 @@ jobs:
           sudo apt-get install -y -qq gcc-aarch64-linux-gnu libssl-dev file
       - name: Cross-compile
         run: |
-          make deps CC=aarch64-linux-gnu-gcc
           make -j$(nproc) CC=aarch64-linux-gnu-gcc AR=aarch64-linux-gnu-ar \
             CFLAGS_EXTRA="-Wno-pointer-sign" 2>&1 | tail -10
           mv slermes slermes-linux-aarch64
@@ -112,7 +105,6 @@ jobs:
           sudo apt-get install -y -qq gcc-arm-linux-gnueabihf libssl-dev file
       - name: Cross-compile
         run: |
-          make deps CC=arm-linux-gnueabihf-gcc
           make -j$(nproc) CC=arm-linux-gnueabihf-gcc AR=arm-linux-gnueabihf-ar \
             CFLAGS_EXTRA="-Wno-pointer-sign -march=armv7-a" 2>&1 | tail -10
           mv slermes slermes-linux-armv7
@@ -136,7 +128,6 @@ jobs:
           sudo apt-get install -y -qq mingw-w64 libssl-dev file
       - name: Cross-compile
         run: |
-          make deps CC=x86_64-w64-mingw32-gcc
           make -j$(nproc) CC=x86_64-w64-mingw32-gcc AR=x86_64-w64-mingw32-ar \
             CFLAGS_EXTRA="-D_WIN32_WINNT=0x0A00 -Wno-pointer-sign" \
             LDFLAGS_EXTRA="-lws2_32" 2>&1 | tail -10

@@ -24,14 +24,7 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq \
             build-essential libssl-dev libncursesw6-dev libpanelw-dev \
-            libwayland-dev pkg-config cmake python3-pip file
-
-      - name: Create local syslib ncurses links
-        run: |
-          mkdir -p lib/syslib
-          ln -sf /usr/lib/x86_64-linux-gnu/libncursesw.so.6 lib/syslib/libncursesw.so
-          ln -sf /usr/lib/x86_64-linux-gnu/libtinfo.so.6 lib/syslib/libtinfo.so
-          ln -sf /usr/lib/x86_64-linux-gnu/libpanelw.so.6 lib/syslib/libpanelw.so
+            libwayland-dev pkg-config python3-pip file
 
       - name: Download third-party dependencies
         run: make deps
