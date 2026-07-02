@@ -49,7 +49,13 @@ jobs:
             rm -rf /tmp/sqlite.zip /tmp/sqlite/
           fi
       - name: Build
-        run: make -j$(nproc) CC=gcc 2>&1
+        run: |
+          echo "=== Build info ==="
+          which gcc || which clang
+          gcc --version | head -1
+          make --version | head -1
+          ls include/hermes.h
+          make -j$(nproc) CC=gcc 2>&1 || echo "BUILD FAILED"
       - name: Verify
         run: |
           file slermes
