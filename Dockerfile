@@ -10,10 +10,17 @@
 FROM debian:13-slim AS build
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        gcc make libssl-dev pkg-config ca-certificates && \
+        gcc make libssl-dev pkg-config ca-certificates \
+        libncursesw6-dev libpanelw-dev libwayland-dev \
+        unzip curl cmake g++ && \
     rm -rf /var/lib/apt/lists/*
 COPY . /build
 WORKDIR /build
+RUN mkdir -p lib/syslib && ln -sf /usr/lib/x86_64-linux-gnu/libncursesw.so.6 lib/syslib/libncursesw.so && \
+    ln -sf /usr/lib/x86_64-linux-gnu/libtinfo.so.6 lib/syslib/libtinfo.so && \
+    ln -sf /usr/lib/x86_64-linux-gnu/libpanelw.so.6 lib/syslib/libpanelw.so
+RUN make deps
+RUN bash ./scripts/build_third_party.sh whisper_cpp 2>&1 | tail -5 || echo "whisper skipped"
 RUN make -j$(nproc)
 RUN make static 2>/dev/null; true
 
