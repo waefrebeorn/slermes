@@ -79,3 +79,8 @@ lib/whisper_cpp/lib/cmake/
 lib/whisper_cpp/include/
 lib/whisper_cpp/include/
 lib/whisper_cpp/pkgconfig/
+
+# Compiled binaries (not in PATH)
+/test_screenshot
+/test_window
+/slermes-desktop-gui
