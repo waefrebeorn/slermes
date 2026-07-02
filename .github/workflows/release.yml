@@ -49,11 +49,7 @@ jobs:
             rm -rf /tmp/sqlite.zip /tmp/sqlite/
           fi
       - name: Build
-        run: |
-          echo "=== files ==="
-          ls include/hermes.h src/hermes_error.c lib/libdb/sqlite3.c 2>&1
-          echo "=== make with all debug ==="
-          make -d -j$(nproc) CC=gcc src/hermes_error.o 2>&1 | head -50
+        run: make -j$(nproc) CC=gcc
       - name: Verify
         run: |
           file slermes
