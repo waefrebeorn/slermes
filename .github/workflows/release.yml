@@ -49,7 +49,14 @@ jobs:
             rm -rf /tmp/sqlite.zip /tmp/sqlite/
           fi
       - name: Build
-        run: make -j$(nproc) CC=gcc
+        run: |
+          echo "=== Explicit compile ==="
+          gcc -I include -c src/hermes_error.c -o src/hermes_error.o
+          ls -la src/hermes_error.o
+          echo "=== make -r (no builtin rules) ==="
+          make -r -j$(nproc) CC=gcc 2>&1 || echo "MAKE FAILED"
+          ls -la slermes 2>/dev/null || echo "NO BINARY"
+          ls src/*.o 2>/dev/null | wc -l | xargs echo ".o files in src:"
       - name: Verify
         run: |
           file slermes
