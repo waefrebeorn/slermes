@@ -206,3 +206,29 @@ bool window_terminal_has_hyperlinks(window_t *w) {
     (void)w;
     return false;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+ *  Core Window API Stubs (weak — overridden by platform backends)
+ * ═══════════════════════════════════════════════════════════════════════ */
+
+/* PoP: window_create @ window_wayland.c */
+__attribute__((weak)) window_t *window_create(const window_config_t *config) {
+    (void)config;
+    return NULL;
+}
+
+/* PoP: window_destroy @ window_wayland.c */
+__attribute__((weak)) void window_destroy(window_t *w) {
+    (void)w;
+}
+
+/* PoP: window_set_title @ window_wayland.c */
+__attribute__((weak)) void window_set_title(window_t *w, const char *title) {
+    (void)w;
+    (void)title;
+}
+
+/* PoP: window_focus @ window_wayland.c */
+__attribute__((weak)) void window_focus(window_t *w) {
+    (void)w;
+}
