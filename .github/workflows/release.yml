@@ -50,10 +50,14 @@ jobs:
           fi
       - name: Build
         run: |
-          make -j$(nproc) CC=gcc 2>&1; echo "EXIT CODE: $?"
-          ls -la slermes 2>/dev/null || echo "slermes not found"
-          ls -la src/*.o 2>/dev/null | head -5 || echo "no .o files"
-          ls -la src/cli/*.o 2>/dev/null | head -5 || echo "no cli .o files"
+          echo "=== Testing single compile ==="
+          gcc -I include -c src/hermes_error.c -o /tmp/test.o && echo "Single compile OK" || echo "Single compile FAILED"
+          echo "=== Full build ==="
+          make -f Makefile -j$(nproc) CC=gcc 2>&1; echo "EXIT CODE: $?"
+          echo "=== File check ==="
+          test -f slermes && echo "slermes EXISTS" || echo "slermes MISSING"
+          ls *.o 2>/dev/null | head -3 || echo "no .o files in root"
+          ls src/*.o 2>/dev/null | head -3 || echo "no .o files in src"
       - name: Verify
         run: |
           file slermes
