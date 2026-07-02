@@ -50,19 +50,36 @@ jobs:
           fi
       - name: Build
         run: |
-          echo "=== Building all objects (bypassing default target chain) ==="
-          # Extract ALL .o references from Makefile and pass as explicit targets
-          # (pattern rules work for single targets but not the default chain)
-          ALL_OBJS=$(grep -ohP 'src/[^ ]+\.o' build/objects.mk build/libs-config.mk | sort -u | tr '\n' ' ')
-          LIB_OBJS=$(grep -ohP 'lib/[^ ]+\.o' build/libs-config.mk | sort -u | tr '\n' ' ')
-          make -r -j4 CC=gcc $ALL_OBJS $LIB_OBJS 2>&1 | tail -3; echo "COMPILE EXIT: $?"
+          echo "=== Building all objects (direct compilation, bypassing make) ==="
+          # GitHub Actions Make 4.3 on Ubuntu 24.04 has a pattern-rule resolution
+          # bug — compile everything directly with gcc instead.
+          INCS="-I include $(find lib -maxdepth 2 -name '*.h' -exec dirname {} \; | sort -u | sed 's/^/-I /' | tr '\n' ' ')"
+          CFLAGS="-O2 -g -Wall $INCS"
+          # Library objects (with special flags for sqlite3)
+          find lib -name '*.c' ! -path '*/whisper_cpp/*' ! -path '*/libncurses/*' ! -path '*/syslib/*' | sort | while read -r src; do
+            obj="${src%.c}.o"
+            [ -f "$obj" ] && continue
+            case "$src" in
+              */sqlite3.c) gcc $CFLAGS -DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION -c "$src" -o "$obj";;
+              */whisper_stubs.c) gcc $CFLAGS -I lib/whisper_cpp/include -c "$src" -o "$obj";;
+              *) gcc $CFLAGS -c "$src" -o "$obj";;
+            esac
+          done
+          # Application objects
+          find src -name '*.c' ! -path '*/plugins/*' | sort | while read -r src; do
+            obj="${src%.c}.o"
+            [ -f "$obj" ] && continue
+            gcc $CFLAGS -c "$src" -o "$obj"
+          done
           echo "=== Linking ==="
-          gcc -O2 -g -o slermes \
-            $(find src lib -name '*.o' ! -path '*/plugins/*' ! -path '*whisper_cpp*whisper_wrapper*' ! -path '*libncurses*' ! -path '*/syslib/*' | sort -u) \
+          OBJS=$(find src lib -name '*.o' ! -path '*/plugins/*' ! -path '*whisper_cpp/whisper_wrapper*' ! -path '*libncurses*' ! -path '*/syslib/*' | sort -u | tr '\n' ' ')
+          gcc -O2 -g -o slermes $OBJS \
             -lssl -lcrypto -ldl -lpthread -lz -lm -lstdc++ \
             /usr/lib/x86_64-linux-gnu/libncursesw.so.6 \
             /usr/lib/x86_64-linux-gnu/libpanelw.so.6 \
-            /usr/lib/x86_64-linux-gnu/libtinfo.so.6 2>&1 | tail -5; echo "LINK EXIT: $?"
+            /usr/lib/x86_64-linux-gnu/libtinfo.so.6 2>&1
+          echo "=== Build complete: $(ls -lh slermes | awk '{print $5}') ==="
+          ./slermes --version
       - name: Verify
         run: |
           file slermes
