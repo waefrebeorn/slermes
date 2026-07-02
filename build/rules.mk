@@ -19,12 +19,13 @@ src/gui_core.o: src/gui_core.c include/gui_core.h
 src/desktop_gui.o: src/desktop_gui.c include/gui_core.h
 	$(CC) $(CFLAGS) $(DESKTOP_GUI_CFLAGS) -I include -I lib -c -o $@ $<
 
-# Pattern rule for .c files
-src/%.o: src/%.c include/hermes.h
+# Pattern rule for .c files — NOTE: hermes.h omitted as explicit dependency
+# to work around GitHub Actions Make 4.3 pattern-rule resolution issue
+src/%.o: src/%.c
 	$(CC) $(CFLAGS) $(TUI_INC) -c -o $@ $<
 
 # Pattern rule for .m files (Objective-C, macOS only)
-src/%.o: src/%.m include/hermes.h
+src/%.o: src/%.m
 	$(CC) $(CFLAGS) $(TUI_INC) -c -o $@ $<
 
 # Library pattern rule — standalone libs
