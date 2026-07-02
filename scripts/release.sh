@@ -56,11 +56,11 @@ make -C "$CDIR" -j"$(nproc)" 2>&1 | tail -3
 
 # 5. Run tests
 echo "→ Running test suite..."
-if ! bash "$CDIR/test_runner.sh" 2>&1 | tail -1 | grep -q "0 failed"; then
-    echo "ERROR: Test suite has failures. Release aborted."
+if ! bash tests/run_mission8_tests.sh 2>&1 | tail -1 | grep -q "0 failed"; then
+    echo "  FAIL: tests failed!"
     exit 1
 fi
-TEST_LINE=$(bash "$CDIR/test_runner.sh" 2>&1 | grep "^  Results:")
+TEST_LINE=$(bash tests/run_mission8_tests.sh 2>&1 | grep "^  Results:")
 echo "  $TEST_LINE"
 
 # 6. Update CHANGELOG.md — insert new version entry after header

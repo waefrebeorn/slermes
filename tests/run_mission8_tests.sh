@@ -20,7 +20,7 @@ echo "--- Building tests ---"
 
 # API Integration Tests
 if gcc -O2 -g -I include -o /tmp/test_api tests/integration/test_api_endpoints.c \
-    lib/libhttp/http.o lib/libjson/json.o lib/libbase64/base64.o -lm -lpthread 2>/dev/null; then
+    lib/libhttp/http.o lib/libjson/json.o lib/libbase64/base64.o -lssl -lcrypto -lz -lm -lpthread 2>/dev/null; then
     echo "  Built: test_api_endpoints"
 else
     echo "  SKIP: test_api_endpoints (build failed)"
@@ -37,7 +37,7 @@ else
 fi
 
 # State DB Tests
-if gcc -O2 -g -I include -o /tmp/test_state_db tests/state_db/test_state_db.c \
+if gcc -O2 -g -I include -I lib/libdb -o /tmp/test_state_db tests/state_db/test_state_db.c \
     lib/libdb/sqlite3.o lib/libdb/db.o -lm -lpthread 2>/dev/null; then
     echo "  Built: test_state_db"
 else
@@ -46,7 +46,7 @@ else
 fi
 
 # UI Tests
-if gcc -O2 -g -I include -I lib/libncurses/include -I lib/libtui \
+if gcc -O2 -g -D_DEFAULT_SOURCE -D_POSIX_C_SOURCE=199309L -I include -I lib/libncurses/include -I lib/libtui \
     -o /tmp/test_ui tests/ui/test_ui_harness.c lib/libtui/tui.o \
     lib/libncurses_widget/curses_widget.o -lncursesw -ltinfo -lpanelw -lm -lpthread 2>/dev/null; then
     echo "  Built: test_ui"

@@ -1,7 +1,6 @@
 # ── Slermes C Docker image ──
 # Multi-stage build: compile static binary, copy into slim runtime image.
-# Runtime deps: ca-certificates (for HTTPS), libssl3t64 (for crypto at runtime
-# if the static fallback doesn't cover it).
+# Pure C11 — no C++, no ncurses, no Wayland needed in Docker.
 #
 # The binary is installed as `slermes`. A `hermes` symlink is also created
 # for backward compatibility with workflows that reference the Python name.
@@ -11,8 +10,7 @@ FROM debian:13-slim AS build
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         gcc make libssl-dev pkg-config ca-certificates \
-        libncursesw6-dev libpanelw-dev libwayland-dev \
-        unzip curl cmake g++ && \
+        unzip curl && \
     rm -rf /var/lib/apt/lists/*
 COPY . /build
 WORKDIR /build
