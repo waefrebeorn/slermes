@@ -1,0 +1,147 @@
+#ifndef HERMES_IMAGE_ROUTING_H
+#define HERMES_IMAGE_ROUTING_H
+
+#include <stdbool.h>
+#include <stddef.h>
+
+/*
+ * Image routing helpers for inbound user-attached images.
+ *
+ * Two modes:
+ *   "native"  -- attach images as data URL content parts for provider
+ *   "text"    -- run vision_analyze up-front, model sees text summary only
+ *
+ * The decision is made once per message turn by decide_image_input_mode().
+ * It reads agent.image_input_mode from config (auto|native|text, default auto)
+ * and the active model's capability metadata.
+ *
+ * In auto mode:
+ *   - If auxiliary.vision.provider is explicitly configured → text pipeline
+ *   - Else if model reports supports_vision=true → native
+ *   - Else → text
+ */
+
+/* ── Public API ────────────────────────────────────────────────── */
+
+/**
+ * decide_image_input_mode: Return "native" or "text" for the given turn.
+ *
+ * provider: active inference provider ID (e.g. "anthropic", "openrouter").
+ * model:    active model slug.
+ * cfg:      loaded config (hermes_config_t), or NULL for auto-behaviour.
+ *
+ * Returns a static string "native" or "text" — do NOT free.
+ */
+const char *decide_image_input_mode(const char *provider,
+                                    const char *model,
+                                    const void *cfg);
+
+/**
+ * image_routing_decide_mode: Like decide_image_input_mode but also checks
+ * vision_disabled flag from the runtime agent state.
+ * Returns "text" if vision is disabled, otherwise delegates.
+ */
+const char *image_routing_decide_mode(const void *state,
+                                       const char *provider,
+                                       const char *model,
+                                       const void *cfg);
+
+/**
+ * build_native_content_parts: Build OpenAI-style content list JSON string.
+ *
+ * user_text:    the user's text input.
+ * image_paths:  array of file paths to attach as image_url parts.
+ * num_paths:    count of paths in array.
+ * skipped_out:  on return, points to malloc'd array of skipped paths.
+ * skipped_cnt:  on return, count of skipped paths.
+ *
+ * Returns malloc'd JSON string (caller free()), or NULL on error.
+ * On success, content has the shape:
+ *   [{"type":"text","text":"..."},
+ *    {"type":"image_url","image_url":{"url":"data:image/png;base64,..."}}]
+ */
+char *build_native_content_parts(const char *user_text,
+                                  const char **image_paths,
+                                  size_t num_paths,
+                                  char ***skipped_out,
+                                  size_t *skipped_cnt);
+
+/**
+ * file_to_data_url: Encode local image as base64 data URL string.
+ * Returns malloc'd string (caller free()), or NULL if file can't be read.
+ */
+char *file_to_data_url(const char *path);
+
+/**
+ * sniff_mime_from_bytes: Detect image MIME type from magic bytes.
+ * data: raw file bytes.
+ * len:  byte count.
+ * Returns static string (e.g. "image/png") or NULL if unrecognised.
+ */
+const char *sniff_mime_from_bytes(const unsigned char *data, size_t len);
+
+/**
+ * guess_mime: Return MIME type for a file path.
+ * Uses magic bytes when data is provided, falls back to suffix.
+ * Returns static string — do NOT free.
+ */
+const char *guess_mime(const char *path,
+                       const unsigned char *data,
+                       size_t data_len);
+
+/**
+ * image_routing_disable_vision: Mark vision as disabled for this session.
+ * Called when a provider returns an error indicating images are not supported.
+ */
+void image_routing_disable_vision(void *state);
+
+/**
+ * image_routing_vision_disabled: Check if vision is disabled.
+ * Returns true if a provider error previously triggered disable_vision.
+ */
+bool image_routing_vision_disabled(const void *state);
+
+/**
+ * image_routing_notify_error: Feed an error string to the image router.
+ * If the error message suggests the model doesn't support images,
+ * auto-disables vision for the rest of the session.
+ * Returns true if vision was newly disabled by this call.
+ */
+bool image_routing_notify_error(void *state, const char *error_text);
+
+/* Port of Python vision_tools.py _validate_image_url().
+ * Validates image URL: non-NULL, http/https scheme, network location,
+ * and SSRF safety check via url_is_safe. Returns true if valid. */
+bool vision_validate_image_url(const char *url);
+
+/* Port of Python agent/image_routing.py extract_image_refs().
+ * Scan free-form text for image references the model should see.
+ * Returns (local_paths, urls) — order-preserving, deduplicated,
+ * skipping matches inside fenced code blocks and inline backticks.
+ * Output arrays are malloc'd — caller must free each string and the arrays. */
+void extract_image_refs(const char *text,
+                        char ***local_paths_out, int *num_local_out,
+                        char ***urls_out,       int *num_url_out);
+
+/* Port of Python agent/image_routing.py _coerce_capability_bool().
+ * Normalize YAML/JSON capability value into 1/0/-1.
+ * Accepts: "true","yes","on","1" → 1; "false","no","off","0" → 0.
+ * Case-insensitive, whitespace-trimmed. Returns -1 for unrecognised values. */
+int coerce_capability_bool(const char *raw);
+
+/* Port of Python vision_tools.py _supports_media_in_tool_results().
+ * content inside a tool-result message (vs. requiring a separate
+ * vision analysis step). Conservative default is false. */
+bool vision_supports_media_in_tool_results(const char *provider, const char *model);
+
+/* Port of Python vision_tools.py _detect_video_mime_type().
+ * Returns static MIME type string ("video/mp4", "video/webm", etc.)
+ * based on file extension, or NULL if unrecognised. */
+const char *vision_detect_video_mime_type(const char *path);
+
+/* Port of Python vision_tools.py _video_to_base64_data_url().
+ * Reads a video file, base64-encodes it, and returns a
+ * "data:<mime>;base64,<encoded>" string. Caller must free(). */
+char *vision_video_to_base64_data_url(const char *path);
+
+#endif /* HERMES_IMAGE_ROUTING_H */

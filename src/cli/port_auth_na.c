@@ -1,0 +1,268 @@
+/*
+ * port_auth_na.c — Port of Python hermes_cli/auth.py (NA_CLI functions)
+ * Functions that don't exist in port_auth.c.
+ */
+
+#include "hermes_logger.h"
+#include "hermes_json.h"
+#include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/stat.h>
+
+/* Port of Python: _codex_pool_rate_limit_status */
+json_t* _codex_pool_rate_limit_status(void)
+{
+    hermes_log(LOG_DEBUG, "port", "_codex_pool_rate_limit_status: called");
+
+    const char* home = getenv("HOME");
+    if (!home) return NULL;
+
+    char path[4096];
+    snprintf(path, sizeof(path), "%s/.hermes/auth.json", home);
+
+    FILE* f = fopen(path, "r");
+    if (!f) return NULL;
+
+    fseek(f, 0, SEEK_END);
+    long size = ftell(f);
+    fseek(f, 0, SEEK_SET);
+
+    char* buf = malloc(size + 1);
+    if (!buf) { fclose(f); return NULL; }
+
+    size_t n = fread(buf, 1, size, f);
+    fclose(f);
+    buf[n] = '\0';
+
+    json_t* auth_store = json_parse(buf, NULL);
+    free(buf);
+    if (!auth_store) return NULL;
+
+    json_t* pool = json_object_get(auth_store, "credential_pool");
+    if (!pool) { json_free(auth_store); return NULL; }
+
+    json_t* codex = json_object_get(pool, "codex");
+    if (!codex) { json_free(auth_store); return NULL; }
+
+    json_t* result = json_copy(codex);
+    json_free(auth_store);
+    return result ? result : json_new_object();
+}
+
+/* Port of Python: _xai_oauth_state_from_store */
+json_t* _xai_oauth_state_from_store(json_t* auth_store)
+{
+    if (!auth_store) return NULL;
+    hermes_log(LOG_DEBUG, "port", "_xai_oauth_state_from_store: called");
+
+    json_t* providers = json_object_get(auth_store, "providers");
+    json_t* xai_state = providers ? json_object_get(providers, "xai-oauth") : NULL;
+
+    json_t* tokens = xai_state ? json_object_get(xai_state, "tokens") : NULL;
+    if (tokens) {
+        json_t* access = json_object_get(tokens, "access_token");
+        json_t* refresh = json_object_get(tokens, "refresh_token");
+        const char* at = access ? json_node_get_string(access) : NULL;
+        const char* rt = refresh ? json_node_get_string(refresh) : NULL;
+        if (at && at[0] && rt && rt[0]) return json_copy(xai_state);
+    }
+
+    json_t* pool = json_object_get(auth_store, "credential_pool");
+    json_t* entries = pool ? json_object_get(pool, "xai-oauth") : NULL;
+    if (entries) {
+        int count = json_array_count(entries);
+        for (int i = 0; i < count; i++) {
+            json_t* entry = json_array_get(entries, i);
+            if (!entry) continue;
+            json_t* access = json_object_get(entry, "access_token");
+            json_t* refresh = json_object_get(entry, "refresh_token");
+            const char* at = access ? json_node_get_string(access) : NULL;
+            const char* rt = refresh ? json_node_get_string(refresh) : NULL;
+            if (at && at[0] && rt && rt[0]) {
+                json_t* merged = json_copy(xai_state ? xai_state : json_new_object());
+                json_t* new_tokens = json_new_object();
+                json_object_set(new_tokens, "access_token", json_new_string(at));
+                json_object_set(new_tokens, "refresh_token", json_new_string(rt));
+                json_object_set(new_tokens, "token_type", json_new_string("Bearer"));
+                json_object_set(merged, "tokens", new_tokens);
+                return merged;
+            }
+        }
+    }
+
+    return NULL;
+}
+
+/* Port of Python: _xai_oauth_state_has_usable_tokens */
+bool _xai_oauth_state_has_usable_tokens(json_t* state)
+{
+    if (!state) return false;
+    hermes_log(LOG_DEBUG, "port", "_xai_oauth_state_has_usable_tokens: called");
+
+    json_t* tokens = json_object_get(state, "tokens");
+    if (!tokens) return false;
+
+    json_t* access = json_object_get(tokens, "access_token");
+    json_t* refresh = json_object_get(tokens, "refresh_token");
+    const char* at = access ? json_node_get_string(access) : NULL;
+    const char* rt = refresh ? json_node_get_string(refresh) : NULL;
+
+    return (at && at[0] && rt && rt[0]);
+}
+
+/* Port of Python: _profile_has_own_xai_oauth_state */
+bool _profile_has_own_xai_oauth_state(json_t* auth_store)
+{
+    if (!auth_store) return false;
+    hermes_log(LOG_DEBUG, "port", "_profile_has_own_xai_oauth_state: called");
+
+    json_t* providers = json_object_get(auth_store, "providers");
+    if (!providers) return false;
+
+    json_t* xai = json_object_get(providers, "xai-oauth");
+    return (xai != NULL);
+}
+
+/* Port of Python: _write_through_xai_oauth_to_global_root */
+void _write_through_xai_oauth_to_global_root(json_t* state)
+{
+    if (!state) return;
+    hermes_log(LOG_DEBUG, "port", "_write_through_xai_oauth_to_global_root: called");
+
+    const char* home = getenv("HOME");
+    if (!home) return;
+
+    if (getenv("PYTEST_CURRENT_TEST")) return;
+
+    char path[4096];
+    snprintf(path, sizeof(path), "%s/.hermes/auth.json", home);
+
+    FILE* f = fopen(path, "r");
+    if (!f) return;
+
+    fseek(f, 0, SEEK_END);
+    long size = ftell(f);
+    fseek(f, 0, SEEK_SET);
+
+    char* buf = malloc(size + 1);
+    if (!buf) { fclose(f); return; }
+
+    size_t n = fread(buf, 1, size, f);
+    fclose(f);
+    buf[n] = '\0';
+
+    json_t* global_store = json_parse(buf, NULL);
+    free(buf);
+    if (!global_store) return;
+
+    json_t* providers = json_object_get(global_store, "providers");
+    if (!providers) {
+        providers = json_new_object();
+        json_object_set(global_store, "providers", providers);
+    }
+
+    json_t* xai_copy = json_copy(state);
+    json_object_set(providers, "xai-oauth", xai_copy);
+
+    char* out = json_serialize(global_store);
+    if (out) {
+        f = fopen(path, "w");
+        if (f) { fputs(out, f); fclose(f); }
+        free(out);
+    }
+
+    json_free(global_store);
+}
+
+/* Port of Python: _auth_file_cache_key */
+json_t* _auth_file_cache_key(void)
+{
+    hermes_log(LOG_DEBUG, "port", "_auth_file_cache_key: called");
+
+    const char* home = getenv("HOME");
+    if (!home) home = ".";
+
+    char path[4096];
+    snprintf(path, sizeof(path), "%s/.hermes/auth.json", home);
+
+    json_t* result = json_new_object();
+    json_object_set(result, "path", json_new_string(path));
+
+    struct stat st;
+    if (stat(path, &st) == 0) {
+        json_object_set(result, "mtime", json_new_number((double)st.st_mtime));
+    } else {
+        json_object_set(result, "mtime", json_new_number(0));
+    }
+
+    return result;
+}
+
+/* Port of Python: nous_token_has_billing_scope */
+bool nous_token_has_billing_scope(void)
+{
+    hermes_log(LOG_DEBUG, "port", "nous_token_has_billing_scope: called");
+
+    const char* home = getenv("HOME");
+    if (!home) return false;
+
+    char path[4096];
+    snprintf(path, sizeof(path), "%s/.hermes/auth.json", home);
+
+    FILE* f = fopen(path, "r");
+    if (!f) return false;
+
+    fseek(f, 0, SEEK_END);
+    long size = ftell(f);
+    fseek(f, 0, SEEK_SET);
+
+    char* buf = malloc(size + 1);
+    if (!buf) { fclose(f); return false; }
+
+    size_t n = fread(buf, 1, size, f);
+    fclose(f);
+    buf[n] = '\0';
+
+    json_t* auth_store = json_parse(buf, NULL);
+    free(buf);
+    if (!auth_store) return false;
+
+    json_t* providers = json_object_get(auth_store, "providers");
+    json_t* nous = providers ? json_object_get(providers, "nous") : NULL;
+    json_t* scope_node = nous ? json_object_get(nous, "scope") : NULL;
+    const char* scope = scope_node ? json_node_get_string(scope_node) : NULL;
+
+    bool has_scope = false;
+    if (scope && scope[0]) {
+        const char* billing = "billing:manage";
+        int blen = strlen(billing);
+        const char* p = scope;
+        while (*p) {
+            while (*p == ' ') p++;
+            if (strncmp(p, billing, blen) == 0 && (p[blen] == ' ' || p[blen] == '\0')) {
+                has_scope = true;
+                break;
+            }
+            while (*p && *p != ' ') p++;
+        }
+    }
+
+    json_free(auth_store);
+    return has_scope;
+}
+
+/* Port of Python: step_up_nous_billing_scope */
+bool step_up_nous_billing_scope(bool open_browser, float timeout_seconds)
+{
+    (void)open_browser;
+    (void)timeout_seconds;
+    hermes_log(LOG_DEBUG, "port", "step_up_nous_billing_scope: called");
+
+    if (nous_token_has_billing_scope()) return true;
+
+    hermes_log(LOG_WARNING, "port", "step_up_nous_billing_scope: billing:manage scope not present, manual re-login required");
+    return false;
+}

@@ -1,0 +1,483 @@
+/*
+ * provider_metadata.h — Provider/model metadata for Hermes C (P85).
+ *
+ * Defines model capabilities, context windows, and pricing.
+ * Used by budget tracking, model selection, and agent loop.
+ */
+
+#ifndef PROVIDER_METADATA_H
+#define PROVIDER_METADATA_H
+
+#include "hermes.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* ================================================================
+ *  Model Capabilities — bitmask flags
+ * ================================================================ */
+
+typedef enum {
+    MODEL_CAP_NONE               = 0,
+    MODEL_CAP_VISION             = 1 << 0,  /* can process images */
+    MODEL_CAP_FUNCTION_CALLING   = 1 << 1,  /* supports tool/function calling */
+    MODEL_CAP_STREAMING          = 1 << 2,  /* supports response streaming */
+    MODEL_CAP_THINKING           = 1 << 3,  /* extended thinking/reasoning */
+    MODEL_CAP_STRUCTURED_OUTPUT  = 1 << 4,  /* JSON mode / structured output */
+    MODEL_CAP_CODE_EXECUTION     = 1 << 5,  /* code interpreter / sandbox */
+    MODEL_CAP_CONTEXT_CACHING    = 1 << 6,  /* supports prompt caching */
+} model_capability_t;
+
+/* ================================================================
+ *  Model Metadata Record
+ * ================================================================ */
+
+typedef struct {
+    const char *model_prefix;    /* matched by prefix (longer first) */
+    const char *family;          /* model family name */
+    int         context_window;  /* max context tokens */
+    int         max_output;      /* max output tokens */
+    model_capability_t caps;     /* capability bitmask */
+    double      input_per_1m;    /* USD per 1M input tokens */
+    double      output_per_1m;   /* USD per 1M output tokens */
+} model_metadata_t;
+
+/* ================================================================
+ *  Provider Metadata Record
+ * ================================================================ */
+
+typedef struct {
+    const char *provider_name;   /* "openai", "anthropic", etc. */
+    const char *display_name;    /* "OpenAI", "Anthropic", etc. */
+    const char *base_url;        /* default API endpoint */
+    bool        supports_streaming;
+    bool        supports_thinking;
+    bool        supports_tool_calling;
+} provider_metadata_t;
+
+/* ================================================================
+ *  API
+ * ================================================================ */
+
+/* Find model metadata by model name (prefix match). Returns NULL if not found. */
+const model_metadata_t *model_metadata_find(const char *model_name);
+
+/* Get provider metadata by provider name (case-insensitive). Returns NULL if not found. */
+const provider_metadata_t *provider_metadata_find(const char *provider_name);
+
+/* Check if a model has a specific capability. */
+static inline bool model_has_capability(const model_metadata_t *meta, model_capability_t cap) {
+    return meta && (meta->caps & cap) != 0;
+}
+
+/* Check if a model name has a specific capability (convenience). */
+bool model_name_has_capability(const char *model_name, model_capability_t cap);
+
+/* Get context window for a model. Returns -1 if unknown. */
+int model_context_window(const char *model_name);
+
+/* Get max output tokens for a model. Returns -1 if unknown. */
+int model_max_output(const char *model_name);
+
+/* Compute estimated USD cost from token counts. Wraps the pricing table. */
+double model_estimate_cost(const char *model, long long input_tokens, long long output_tokens);
+
+/* List all known models as JSON string (malloc'd). Caller must free(). */
+char *model_metadata_list_json(void);
+
+/* List models filtered by required capabilities as JSON string (malloc'd).
+ * required_caps: bitmask of capabilities the model must have (all must match).
+ * Pass 0 to list all models (equivalent to model_metadata_list_json). */
+char *model_metadata_list_filtered_json(model_capability_t required_caps);
+
+/* Parse a capability name string (e.g. "vision", "streaming") into a bitmask.
+ * Returns 0 on unknown/empty input. Accepts comma or space-separated. */
+model_capability_t model_capability_parse(const char *name);
+
+/* Get the short name for a capability flag. Returns "" for unknown. */
+const char *model_capability_name(model_capability_t cap);
+
+/* Format capability bitmask as comma-separated string into buf. */
+void model_capability_format(model_capability_t caps, char *buf, size_t bufsz);
+
+/* Get all known providers as JSON string (malloc'd). Caller must free(). */
+char *provider_metadata_list_json(void);
+
+/* ================================================================
+ *  P158: API Key Security
+ * ================================================================ */
+
+/* Check if a URL is trusted to receive this provider's API key.
+ * Compares URL host against the provider's known authoritative hostname.
+ * Returns true if host matches (or is subdomain of) the provider's known host.
+ * Falls back to true if provider not found in metadata (defensive). */
+bool provider_url_is_trusted(const char *provider_name, const char *url);
+
+/* Derive <VENDOR>_API_KEY env var name from provider name or base_url.
+ * When no explicit API key is set, this derives the likely env var name
+ * from the provider's hostname (e.g. "api.deepseek.com" → "DEEPSEEK_API_KEY").
+ * Returns malloc'd env var name string, or NULL if undetermined.
+ * Caller must free(). */
+char *provider_derive_api_key_name(const char *provider_name, const char *base_url);
+
+/* ================================================================
+ *  L06: supports_vision config override helper
+ * ================================================================ */
+
+/* Check if a model supports vision, respecting the config override.
+ * If supports_vision override is set (true), returns true regardless of metadata.
+ * If supports_vision override is unset (false), delegates to model_metadata.
+ * The override comes from model.supports_vision YAML key or HERMES_SUPPORTS_VISION env var.
+ * provider_cfg can be NULL (no override). */
+bool model_supports_vision(const char *model_name, const provider_config_t *provider_cfg);
+
+/* ================================================================
+ *  A18: models.dev Integration
+ * ================================================================ */
+
+/* Fetch models.dev data with 3-tier cache (in-memory -> disk -> network).
+ * force_refresh=true skips cache, always hits network.
+ * Returns parsed JSON object keyed by provider ID, or NULL on failure. */
+json_t *models_dev_fetch(bool force_refresh);
+
+/* Look up context window for a specific provider/model from models.dev data.
+ * Returns context window, or -1 if not found / unavailable. */
+int lookup_models_dev_context(const char *provider, const char *model);
+
+/* Convert models.dev data to flat JSON array string (same format as
+ * model_metadata_list_json). Returns malloc'd string, caller must free(). */
+char *models_dev_list_json(void);
+
+/* Resolve a Hermes provider name to a models.dev provider ID.
+ * Maps e.g. "openai-codex" → "openai", "copilot" → "github-copilot".
+ * If no mapping found, returns the input provider name (same string pointer). */
+const char *models_dev_resolve_hermes_provider(const char *provider);
+
+/* Get model capabilities from models.dev data as JSON string.
+ * Returns malloc'd JSON with: supports_tools, supports_vision, supports_reasoning,
+ * context_window, max_output_tokens, model_family. Returns NULL on failure.
+ * Port of Python models_dev.py:get_model_capabilities(). */
+char *models_dev_get_capabilities_json(const char *provider, const char *model);
+
+/* List all non-hidden model IDs for a provider from models.dev.
+ * Returns malloc'd JSON array string. Returns NULL on failure.
+ * Port of Python models_dev.py:list_provider_models(). */
+char *models_dev_list_provider_models(const char *provider);
+
+/* List agentic (tool_call=true) model IDs for a provider from models.dev.
+ * Filters out noise patterns and hidden models.
+ * Returns malloc'd JSON array string. Returns NULL on failure.
+ * Port of Python models_dev.py:list_agentic_models(). */
+char *models_dev_list_agentic_models(const char *provider);
+
+/* Get provider metadata from models.dev as JSON string.
+ * Returns malloc'd JSON with: id, name, env, api, doc, model_count.
+ * Returns NULL on failure.
+ * Port of Python models_dev.py:get_provider_info(). */
+char *models_dev_get_provider_info_json(const char *provider_id);
+
+/* Get full model metadata from models.dev as JSON string.
+ * Returns malloc'd JSON with all ModelInfo fields.
+ * Tries exact match then case-insensitive fallback.
+ * Returns NULL on failure.
+ * Port of Python models_dev.py:get_model_info(). */
+char *models_dev_get_model_info_json(const char *provider_id, const char *model_id);
+
+/* ================================================================
+ *  R10: Provider utility functions — ported from model_metadata.py
+ * ================================================================ */
+
+/* Normalize a base URL: strip whitespace and trailing slash.
+ * Port of Python _normalize_base_url().
+ * Returns malloc'd string, caller must free(). */
+char *provider_normalize_base_url(const char *base_url);
+
+/* Strip a recognized provider prefix from a model name.
+ * Handles "provider/" and "provider:" prefix formats.
+ * Preserves model:tag format (e.g. "qwen3.5:27b").
+ * Returns malloc'd string, caller must free(). */
+char *provider_strip_prefix(const char *model);
+
+/* Check if a URL points to a local or private endpoint.
+ * Port of Python model_metadata.is_local_endpoint().
+ * Recognises loopback, container DNS (host.docker.internal),
+ * RFC-1918 private ranges, link-local, and Tailscale CGNAT. */
+bool is_local_endpoint(const char *base_url);
+
+/* Infer provider name from a base URL by matching against known provider hosts.
+ * Port of Python model_metadata._infer_provider_from_url().
+ * Returns malloc'd provider name string, or NULL if unknown. Caller must free(). */
+char *provider_infer_from_url(const char *base_url);
+
+/* Parse a context length limit from an API error message.
+ * Port of Python model_metadata.parse_context_limit_from_error().
+ * Returns limit, or -1 if not found. */
+int parse_context_limit_from_error(const char *error_msg);
+
+/* Parse available output tokens from a max_tokens-too-large error message.
+ * Port of Python model_metadata.parse_available_output_tokens_from_error().
+ * Returns available tokens, or -1 if not a max_tokens-too-large error. */
+int parse_available_output_tokens_from_error(const char *error_msg);
+
+/* Check if a candidate model ID matches a lookup model string.
+ * Port of Python model_metadata._model_id_matches().
+ * Supports exact match and slug match (part after last '/' equals lookup). */
+bool model_id_matches(const char *candidate_id, const char *lookup_model);
+
+/* Check if a model name looks like a Kimi-family model.
+ * Port of Python model_metadata._model_name_suggests_kimi().
+ * Checks for 'kimi' prefix or 'moonshot' in the name (case-insensitive). */
+bool provider_model_suggests_kimi(const char *model);
+
+/* Check if a model name looks like MiniMax-M3.
+ * Port of Python model_metadata._model_name_suggests_minimax_m3().
+ * Checks for 'minimax-m3' in the name (case-insensitive). */
+bool provider_model_suggests_minimax_m3(const char *model);
+
+/* Normalize version separators: replace '.' with '-'.
+ * Port of Python model_metadata._normalize_model_version().
+ * Returns malloc'd string, caller must free(). */
+char *provider_normalize_model_version(const char *model);
+
+/* Check if Grok model supports reasoning.effort parameter.
+ * Port of Python model_metadata.grok_supports_reasoning_effort(). Name parity. */
+bool grok_supports_reasoning_effort(const char *model);
+
+/* Check if a URL is an OpenRouter base URL (contains openrouter.ai).
+ * Port of Python model_metadata._is_openrouter_base_url(). */
+bool is_openrouter_base_url(const char *base_url);
+
+/* Check if a URL is a custom (non-OpenRouter) endpoint.
+ * Port of Python model_metadata._is_custom_endpoint(). */
+bool is_custom_endpoint(const char *base_url);
+
+/* Check if a URL is a known provider base URL.
+ * Port of Python model_metadata._is_known_provider_base_url(). */
+bool provider_is_known_base_url(const char *base_url);
+
+/* Build Authorization header dict as json_t {Authorization: Bearer <key>}.
+ * Port of Python model_metadata._auth_headers().
+ * Returns NULL when api_key is empty/NULL/whitespace-only. */
+json_t *provider_auth_headers(const char *api_key);
+
+/* Coerce a string value to an int within [minimum, maximum].
+ * Port of Python model_metadata._coerce_reasonable_int().
+ * Returns -1 on failure (not a valid int, or out of range). */
+int coerce_reasonable_int(const char *value, int minimum, int maximum);
+
+/* Extract the first matching integer from a nested JSON payload.
+ * Port of Python model_metadata._extract_first_int().
+ * Iterates nested JSON objects looking for keys in the NULL-terminated
+ * keys array. Returns the value via coerce_reasonable_int
+ * with default bounds [1024, 10000000], or -1 if not found. */
+int extract_first_int(const json_t *payload, const char **keys);
+
+/* Estimate tokens from text length (~4 chars/token, ceiling division).
+ * Port of Python model_metadata.estimate_tokens_rough(). */
+int estimate_tokens_rough(const char *text);
+
+/* Resolve HERMES_VERIFY_SSL env var for HTTP client verification.
+ * Port of Python model_metadata._resolve_requests_verify().
+ * Returns 1 (verify), 0 (skip verify), or -1 (custom CA bundle path). */
+int resolve_requests_verify(void);
+
+/* Return custom CA bundle path from HERMES_VERIFY_SSL env var, or NULL. */
+const char *provider_requests_verify_path(void);
+
+/* Extract context length from a model metadata payload JSON object.
+ * Port of Python model_metadata._extract_context_length().
+ * Searches nested dicts for known context-length keys.
+ * Returns the value or -1 if not found. */
+int extract_context_length(const json_t *payload);
+
+/* Extract max completion tokens from a model metadata payload JSON object.
+ * Port of Python model_metadata._extract_max_completion_tokens().
+ * Searches nested dicts for known max-completion-token keys.
+ * Returns the value or -1 if not found. */
+int extract_max_completion_tokens(const json_t *payload);
+
+/* Extract pricing from a model metadata payload JSON object.
+ * Port of Python model_metadata._extract_pricing().
+ * Checks for novita-specific keys first, then iterates nested dicts
+ * using alias maps for prompt/completion/request/cache_read/cache_write.
+ * Returns json_t* dict (caller must free) or NULL on empty/no pricing. */
+json_t *provider_extract_pricing(const json_t *payload);
+
+/* ---- Message token estimation helpers ---- */
+
+/* Count image-like content parts in a message JSON object.
+ * Port of Python model_metadata._count_image_tokens().
+ * Checks content array, _anthropic_content_blocks, and _multimodal
+ * for {type: image|image_url|input_image} parts.
+ * Returns count * cost_per_image. */
+int estimate_count_image_tokens(const json_t *msg, int cost_per_image);
+
+/* Estimate char count of a message JSON object, excluding base64 image data.
+ * Port of Python model_metadata._estimate_message_chars().
+ * Counts all stringified fields except image content parts
+ * (replaced with "[stripped]" placeholder for char counting). */
+int estimate_message_chars(const json_t *msg);
+
+/* Rough token estimate for a message array (pre-flight only).
+ * Port of Python model_metadata.estimate_messages_tokens_rough().
+ * Sums estimate_message_chars per message + _count_image_tokens.
+ * Uses ceiling division: (total_chars + 3) / 4. */
+int estimate_messages_tokens_rough(const json_t *messages);
+
+/* Rough token estimate for a full chat-completions request.
+ * Port of Python model_metadata.estimate_request_tokens_rough().
+ * Includes system prompt, messages, and tool schemas. */
+int estimate_request_tokens_rough(const json_t *messages,
+                                   const char *system_prompt,
+                                   const json_t *tools);
+
+/* ---- Context probe tiers ---- */
+
+/* Probe tiers for context length discovery: start at 256K and step down. */
+#define CONTEXT_PROBE_TIER_COUNT 6
+extern const int CONTEXT_PROBE_TIERS[CONTEXT_PROBE_TIER_COUNT];
+
+/* Default context length when no detection method succeeds (256K). */
+#define DEFAULT_FALLBACK_CONTEXT CONTEXT_PROBE_TIERS[0]
+
+/* Minimum context length required to run Hermes Agent (64K). */
+#define MINIMUM_CONTEXT_LENGTH 64000
+
+/* Return the next lower probe tier, or -1 if already at minimum.
+ * Port of Python model_metadata.get_next_probe_tier(). */
+int get_next_probe_tier(int current_length);
+
+/* ---- Context length cache ---- */
+
+/* Get path to context length cache file ({hermes_home}/context_length_cache.json). */
+void provider_context_cache_path(char *buf, size_t sz);
+
+/* Load context length cache from disk.
+ * Port of Python model_metadata._load_context_cache().
+ * Returns json_t* object of model@base_url -> length mappings, or NULL. */
+json_t *provider_context_cache_load(void);
+
+/* Save a context length entry for model@base_url to the cache file.
+ * Port of Python model_metadata.save_context_length(). Name parity.
+ * Returns 1 on success, 0 on failure. */
+int save_context_length(const char *model, const char *base_url, int length);
+
+/* Look up a cached context length for model@base_url.
+ * Port of Python model_metadata.get_cached_context_length(). Name parity.
+ * Returns the length or -1 if not found. */
+int get_cached_context_length(const char *model, const char *base_url);
+
+/* Remove a stale cache entry for model@base_url.
+ * Port of Python model_metadata._invalidate_cached_context_length().
+ * Returns 1 on success, 0 on failure. */
+int provider_context_cache_invalidate(const char *model, const char *base_url);
+/* Detect which local server is running at a base URL by probing known endpoints.
+ * Port of Python model_metadata.detect_local_server_type().
+ * Probes: LM Studio (/api/v1/models), Ollama (/api/tags with "models" check),
+ * llama.cpp (/v1/props or /props with "default_generation_settings"),
+ * vLLM (/version with JSON "version" field).
+ * Returns malloc'd server type string ("lm-studio", "ollama", "llamacpp", "vllm")
+ * or NULL if undetermined. Caller must free(). */
+char *detect_local_server_type(const char *base_url, const char *api_key);
+
+/* Query an Ollama server's native /api/show endpoint for model context length.
+ * Port of Python model_metadata._query_ollama_api_show().
+ * Provider-agnostic: POSTs /api/show with {"name": model}, parses response
+ * for model_info.*.context_length (GGUF training max, authoritative for hosted)
+ * and falls back to num_ctx from parameters text.
+ * Returns context length or -1 on failure. */
+int query_ollama_api_show(const char *model, const char *base_url, const char *api_key);
+
+/* Query an Ollama server for the model's num_ctx (user-overridden context length).
+ * Port of Python model_metadata.query_ollama_num_ctx().
+ * Strips provider prefix, verifies server is Ollama via detect_local_server_type(),
+ * then delegates to query_ollama_api_show() with flipped preference order:
+ * num_ctx from parameters > model_info context_length.
+ * Returns context length or -1 on failure. */
+int query_ollama_num_ctx(const char *model, const char *base_url, const char *api_key);
+
+/* Query a local inference server for the model's context length by probing
+ * known server-specific and generic endpoints.
+ * Port of Python model_metadata._query_local_context_length().
+ * Strips provider prefix, detects server type (Ollama/LM Studio/etc.), then
+ * probes the appropriate endpoints in order of reliability:
+ *   Ollama: POST /api/show → num_ctx > model_info.context_length
+ *   LM Studio: GET /api/v1/models → loaded_instances config context_length
+ *   Generic: GET /v1/models/{model} → max_model_len/context_length/max_tokens
+ *   Generic: GET /v1/models → find model by ID match
+ * Returns context length or -1 on failure. */
+int query_local_context_length(const char *model, const char *base_url, const char *api_key);
+
+/* Add model aliases: if model_id contains "/", also indexes under bare name.
+ * Port of Python model_metadata._add_model_aliases().
+ * Sets cache[model_id] = entry via json_copy. If model_id contains "/",
+ * also sets cache[bare_model] = json_copy(entry) if bare_model not already present. */
+void add_model_aliases(json_t *cache, const char *model_id, json_t *entry);
+
+/* Get a lower context length from a provider error (bounded by current).
+ * Port of Python model_metadata.get_context_length_from_provider_error().
+ * Returns parsed limit only if < current_context_length, or -1 if no limit found. */
+int get_context_length_from_provider_error(const char *error_msg, int current_context_length);
+
+/* ================================================================
+ *  R18: Model metadata HTTP query functions — ported from model_metadata.py
+ * ================================================================ */
+
+/* Query Anthropic's /v1/models endpoint for model context length.
+ * Port of Python model_metadata._query_anthropic_context_length().
+ * OAuth tokens (sk-ant-oat*) return -1.
+ * Returns context length or -1 on failure. */
+int query_anthropic_context_length(const char *model, const char *base_url, const char *api_key);
+
+/* Resolve context length from an endpoint's live /models metadata.
+ * Port of Python model_metadata._resolve_endpoint_context_length().
+ * Tries exact match first, then single-entry, then fuzzy match.
+ * Uses provider_fetch_endpoint_model_metadata() internally.
+ * Returns context length or -1 on failure. */
+int resolve_endpoint_context_length(const char *model, const char *base_url, const char *api_key);
+
+/* Fetch Codex OAuth context lengths from chatgpt.com/backend-api/codex/models.
+ * Port of Python model_metadata._fetch_codex_oauth_context_lengths().
+ * Returns json_t* dict of slug -> context_window (strings), or NULL on failure.
+ * Caller must json_free(). */
+json_t *provider_fetch_codex_oauth_context_lengths(const char *access_token);
+
+/* Resolve a Codex OAuth model's real context window.
+ * Port of Python model_metadata._resolve_codex_oauth_context_length().
+ * Prefers live probe, falls back to hardcoded defaults.
+ * Returns context length or -1 on failure. */
+int resolve_codex_oauth_context_length(const char *model, const char *access_token);
+
+/* Fetch model metadata from OpenRouter API with 1-hour TTL.
+ * Port of Python model_metadata.fetch_model_metadata().
+ * Returns json_t* dict keyed by model ID, or NULL on failure.
+ * Caller must json_free(). */
+json_t *provider_fetch_model_metadata(bool force_refresh);
+
+/* Fetch model metadata from an OpenAI-compatible /models endpoint.
+ * Port of Python model_metadata.fetch_endpoint_model_metadata().
+ * Returns json_t* dict keyed by model ID, or NULL on failure.
+ * Caller must json_free(). */
+json_t *provider_fetch_endpoint_model_metadata(const char *base_url, const char *api_key, bool force_refresh);
+
+/* Resolve Nous Portal model context length.
+ * Port of Python model_metadata._resolve_nous_context_length().
+ * Tries live /v1/models portal first, then OpenRouter metadata fallback.
+ * Returns context length or -1 on failure. */
+int resolve_nous_context_length(const char *model, const char *base_url, const char *api_key);
+
+/* Main model context length orchestrator.
+ * Port of Python model_metadata.get_model_context_length().
+ * 10-step resolution: config → cache → endpoint → Anthropic → Codex → Nous
+ * → Ollama → models.dev → OpenRouter → hardcoded defaults → local → 256K fallback.
+ * Returns context length or DEFAULT_FALLBACK_CONTEXT (256K). */
+int get_model_context_length(const char *model, const char *base_url,
+                                       const char *api_key, int config_context_length,
+                                       const char *provider_name);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* PROVIDER_METADATA_H */
