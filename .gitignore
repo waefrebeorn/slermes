@@ -55,3 +55,14 @@ slermes-static
 # ── Working screenshots
 screenshot_*.png
 slermes_web_showcase.png
+
+# ── Build artifacts (added) ─────────────────────────────────────────
+test_render
+test_composer
+slermes-desktop-gui
+hermes-desktop
+slermes_desktop_gui_v2.png
+web-server
+web_app_dist
+test_screenshot
+test_window
