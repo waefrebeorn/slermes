@@ -2,7 +2,7 @@
 # Binary link targets: slermes, phase targets, desktop, tui, static, fuzz, desktop-gui
 # Included by top-level Makefile. Expected vars: CC, CFLAGS, LDFLAGS, PLATFORM_LDFLAGS, LIBS
 
-.PHONY: all phase1 phase2 phase3 phase4 phase5 libs
+.PHONY: all phase1 phase2 phase3 phase4 phase5 libs tui desktop desktop-gui static fuzz
 
 all: phase5
 
