@@ -6,7 +6,8 @@
 FROM alpine:3.19 AS builder
 
 RUN apk add --no-cache \
-    build-base \
+    gcc \
+    musl-dev \
     openssl-dev \
     openssl-libs-static \
     pkgconf \
@@ -19,16 +20,13 @@ WORKDIR /build
 # Copy source
 COPY . .
 
-# Build static binary
+# Build static binary (pure C11, no C++)
 RUN make -j$(nproc) static
 
 # ─── Runtime Stage ─────────────────────────────────────────────────
 FROM alpine:3.19
 
 RUN apk add --no-cache \
-    libstdc++ \
-    libgcc \
-    openssl \
     ca-certificates \
     tzdata \
     && adduser -D -h /home/slermes slermes

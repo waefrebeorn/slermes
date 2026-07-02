@@ -1416,7 +1416,7 @@ sync-all: upstream-merge phase5
 
 # Test
 test: slermes
-	bash test_runner.sh
+	bash tests/run_mission8_tests.sh
 
 # Test all standalone libraries
 test-libs:
@@ -1490,7 +1490,7 @@ asan:
 asan-test: asan
 	@echo "=== ASan: Running test suite under AddressSanitizer ==="
 	@ASAN_SYMBOLIZER_PATH=$(shell command -v llvm-symbolizer 2>/dev/null || echo "") \
-		CFLAGS_EXTRA="-fsanitize=address" ./test_runner.sh
+		CFLAGS_EXTRA="-fsanitize=address" bash tests/run_mission8_tests.sh
 	@echo "=== ASan: Test run complete ==="
 
 # Valgrind leak check target — build with debug symbols, run under valgrind
@@ -1509,7 +1509,7 @@ coverage:
 		LDFLAGS="--coverage $(SSL_LDFLAGS) $(PLATFORM_LDFLAGS) $(LIBS)" \
 		clean all
 	@echo "=== Coverage: Running test suite with coverage instrumentation === (this will also instrument test binaries)"
-	@CFLAGS_EXTRA="--coverage" ./test_runner.sh
+	@CFLAGS_EXTRA="--coverage" bash tests/run_mission8_tests.sh
 	@echo "=== Coverage: Generating report ==="
 	lcov --capture --directory . --output-file coverage.info \
 		--rc lcov_branch_coverage=1 2>/dev/null || true
@@ -1526,7 +1526,7 @@ coverage-gate:
 		LDFLAGS="--coverage $(SSL_LDFLAGS) $(PLATFORM_LDFLAGS) $(LIBS)" \
 		clean all
 	@echo "=== Coverage: Running test suite with coverage instrumentation ==="
-	@-CFLAGS_EXTRA="--coverage" ./test_runner.sh
+	@-CFLAGS_EXTRA="--coverage" bash tests/run_mission8_tests.sh
 	@rm -f *.gcov
 	@echo "=== Coverage gate: checking threshold ==="
 	@COVERAGE_THRESHOLD="$(or $(COVERAGE_THRESHOLD),1.0)" python3 scripts/coverage-gate.py --threshold="$(or $(COVERAGE_THRESHOLD),1.0)"
@@ -1541,11 +1541,11 @@ perf-gate: hermes
 .PHONY: check
 check:
 	@echo "=== Check: lint ==="
-	bash -n test_runner.sh 2>/dev/null || true
+	@bash -n tests/run_mission8_tests.sh 2>/dev/null || true
 	@echo "=== Check: build ==="
 	$(MAKE) -j$(nproc) all
 	@echo "=== Check: test suite ==="
-	bash test_runner.sh
+	bash tests/run_mission8_tests.sh
 
 # S13 #2: Static analysis — cppcheck on src/ agent/ tools/ gateway/ cron/
 static-analysis:

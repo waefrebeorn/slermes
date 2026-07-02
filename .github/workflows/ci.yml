@@ -45,7 +45,7 @@ jobs:
           ./slermes --help | head -10
 
       - name: Run test suite
-        run: bash test_runner.sh || echo "Some tests skipped"
+        run: bash tests/run_mission8_tests.sh || echo "Some tests skipped"
 
       - name: Verify binary
         run: |
