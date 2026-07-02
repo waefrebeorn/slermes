@@ -13,11 +13,20 @@ OUTPUT="${PROJECT_DIR}/${APP_NAME}-${ARCH}.AppImage"
 
 echo "=== Building Slermes AppImage ==="
 
-# Step 1: Build static binary
-echo "[1/4] Building static binary..."
+# Step 1: Fetch SQLite amalgamation and build binary
+echo "[1/4] Fetching deps + building binary..."
 cd "$PROJECT_DIR"
-make clean
-make static
+make deps 2>/dev/null || true
+
+if make static 2>&1; then
+    echo "  Static binary built"
+elif make -j$(nproc) all 2>&1; then
+    echo "  Dynamic binary built (static unavailable)"
+    cp slermes slermes-static 2>/dev/null || true
+else
+    echo "  ERROR: Build failed"
+    exit 1
+fi
 
 # Step 2: Create AppDir structure
 echo "[2/4] Creating AppDir..."

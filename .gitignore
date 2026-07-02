@@ -1,86 +1,50 @@
-web_server
-slermes-desktop-gui
-AppDir/
-*.AppImage
+# ── Slermes .gitignore ────────────────────────────────────────────
 
-# ── Build artifacts ─────────────────────────────────────────────────
+# Build artifacts
 slermes
-slermes-tui
 slermes-static
-slermes-asan
+slermes-tui
+slermes-desktop-gui
 slermes-fuzz
-slermes_test
-hermes
-hermes-fuzz
-hermes-tui
+hermes-desktop
+
+# Object files
 *.o
+*.obj
 *.a
-*.so
-*.out
+
+# Coverage
 *.gcda
 *.gcno
-*.gcov
+coverage_html/
+coverage.info
+coverage-filtered.info
 
-# ── Test intermediates ──────────────────────────────────────────────
-tests/test_json
-tests/test_line_edit
-*.jsonl
-.digest_state.json
-failed_trajectories.jsonl
-trajectory_samples.jsonl
-test_runner.sh.log
-
-# ── Temp & cache ────────────────────────────────────────────────────
-/tmp/
-__pycache__/
-/tmp/
-.digest_state.json
-.digest_state.json
-
-# ── Config (user-specific) ──────────────────────────────────────────
-.env
-config.yaml
-
-# ── IDE ──────────────────────────────────────────────────────────────
-.idea/
-.vscode/
-*.swp
-
-# ── Reference ───────────────────────────────────────────────────────
-upstream-python-ref/
-slermes/lib/ctranslate2_src/
-slermes/lib/whisper_cpp_src/
-slermes-static
-
-# ── Working screenshots
-screenshot_*.png
-slermes_web_showcase.png
-
-# ── Build artifacts (added) ─────────────────────────────────────────
-test_render
-test_composer
-slermes-desktop-gui
-hermes-desktop
-slermes_desktop_gui_v2.png
-web-server
-web_app_dist
-test_screenshot
-test_window
-test_screenshot*
-test_window*
-
-# SQLite amalgamation (auto-downloaded by setup)
-lib/libdb/sqlite3.c
+# Auto-fetched dependencies (SQLite amalgamation)
 lib/libdb/sqlite3.h
-lib/whisper_cpp_src/
-lib/syslib/
-lib/whisper_cpp/lib/*.a
-lib/whisper_cpp/lib/cmake/
-lib/whisper_cpp/include/
-lib/whisper_cpp/include/
-lib/whisper_cpp/pkgconfig/
+lib/libdb/sqlite3.c
 
-# Compiled binaries (not in PATH)
-/test_screenshot
-/test_window
-/slermes-desktop-gui
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# AppImage tooling
+appimagetool
+AppDir/
+Slermes-*.AppImage
+
+# Build output
+digest_output/
+
+# Python (venv)
+__pycache__/
+*.pyc
+.venv/
+venv/
