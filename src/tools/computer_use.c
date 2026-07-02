@@ -818,7 +818,7 @@ static const char *json_get_str(const char *json_str, const char *key,
     json_t *val = json_obj_get(root, key);
     const char *s = def;
     if (val && json_is_string(val))
-        s = json_string_value(val);
+        s = json_node_get_string(val);
     json_free(root);
     return s;
 }
@@ -892,7 +892,7 @@ static int parse_windows(const char *lw_json, int *out_pid, int *out_wid,
                 if (jw && json_is_integer(jw)) wid = (int)json_integer_value(jw);
                 json_t *ja = json_obj_get(w0, "app_name");
                 if (ja && json_is_string(ja))
-                    snprintf(name, sizeof(name), "%s", json_string_value(ja));
+                    snprintf(name, sizeof(name), "%s", json_node_get_string(ja));
             }
         }
     }
