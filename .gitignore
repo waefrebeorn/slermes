@@ -68,3 +68,14 @@ test_screenshot
 test_window
 test_screenshot*
 test_window*
+
+# SQLite amalgamation (auto-downloaded by setup)
+lib/libdb/sqlite3.c
+lib/libdb/sqlite3.h
+lib/whisper_cpp_src/
+lib/syslib/
+lib/whisper_cpp/lib/*.a
+lib/whisper_cpp/lib/cmake/
+lib/whisper_cpp/include/
+lib/whisper_cpp/include/
+lib/whisper_cpp/pkgconfig/

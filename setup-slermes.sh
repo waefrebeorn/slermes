@@ -175,6 +175,26 @@ echo ""
 
 echo -e "${CYAN}→${NC} Building Slermes..."
 
+# Build third-party dependencies first
+if [ -f "./scripts/build_third_party.sh" ]; then
+    echo -e "  ${CYAN}→${NC} Building third-party libraries (whisper.cpp)..."
+    if bash ./scripts/build_third_party.sh whisper_cpp 2>&1 | tail -3; then
+        echo -e "  ${GREEN}✓${NC} Third-party libraries built"
+    else
+        echo -e "  ${YELLOW}⚠${NC} Third-party build skipped (speech-to-text may be unavailable)"
+    fi
+fi
+
+# Check if syslib links exist for ncurses
+if [ -f /usr/lib/x86_64-linux-gnu/libncursesw.so.6 ] && [ ! -f "lib/syslib/libncursesw.so" ]; then
+    echo -e "  ${CYAN}→${NC} Creating ncurses system library links..."
+    mkdir -p lib/syslib
+    ln -sf /usr/lib/x86_64-linux-gnu/libncursesw.so.6 lib/syslib/libncursesw.so
+    ln -sf /usr/lib/x86_64-linux-gnu/libtinfo.so.6 lib/syslib/libtinfo.so
+    ln -sf /usr/lib/x86_64-linux-gnu/libpanelw.so.6 lib/syslib/libpanelw.so
+    echo -e "  ${GREEN}✓${NC} ncurses library links created"
+fi
+
 NPROC=$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)
 
 if make -j"$NPROC"; then
