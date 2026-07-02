@@ -50,13 +50,14 @@ jobs:
           fi
       - name: Build
         run: |
-          echo "=== Explicit compile ==="
+          echo "=== Explicit: works ==="
           gcc -I include -c src/hermes_error.c -o src/hermes_error.o
-          ls -la src/hermes_error.o
-          echo "=== make -r (no builtin rules) ==="
-          make -r -j$(nproc) CC=gcc 2>&1 || echo "MAKE FAILED"
+          echo "=== Pattern rule single target ==="
+          make -r -j4 CC=gcc src/cli/cli.o 2>&1; echo "make exit: $?"
+          ls -la src/cli/cli.o 2>/dev/null || echo "cli.o NOT CREATED"
+          echo "=== Default target with -r ==="
+          make -r -j4 CC=gcc 2>&1; echo "make exit: $?"
           ls -la slermes 2>/dev/null || echo "NO BINARY"
-          ls src/*.o 2>/dev/null | wc -l | xargs echo ".o files in src:"
       - name: Verify
         run: |
           file slermes
