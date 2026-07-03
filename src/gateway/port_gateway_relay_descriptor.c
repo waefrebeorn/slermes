@@ -4,12 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <stdbool.h>
-#include <time.h>
+#include "hermes_json.h"
 
-
-/* Port of Python: from_platform_entry */
 typedef struct {
     char label[256];
     int max_message_length;
@@ -22,6 +19,7 @@ typedef struct {
     bool supports_threads;
 } capability_descriptor_t;
 
+/* PoP: capability_descriptor_from_platform_entry @ gateway/relay/descriptor.py:from_platform_entry */
 capability_descriptor_t capability_descriptor_from_platform_entry(
     const char *entry_json, const char *len_unit,
     bool supports_draft, bool supports_edit,
@@ -50,3 +48,58 @@ capability_descriptor_t capability_descriptor_from_platform_entry(
     return desc;
 }
 
+/* PoP: capability_descriptor_from_json @ gateway/relay/descriptor.py:from_json */
+capability_descriptor_t capability_descriptor_from_json(const char *data)
+{
+    /* Deserialize from a handshake JSON string.
+     * Unknown keys are ignored (forward-compat).
+     * Port of Python gateway/relay/descriptor.py:CapabilityDescriptor.from_json(). */
+    capability_descriptor_t desc = {0};
+    if (!data || !*data) return desc;
+
+    json_t *raw = json_parse(data, NULL);
+    if (!raw || raw->type != JSON_OBJECT) {
+        if (raw) json_free(raw);
+        return desc;
+    }
+
+    json_t *node;
+    node = json_object_get(raw, "label");
+    if (node && node->type == JSON_STRING)
+        strncpy(desc.label, json_node_get_string(node), sizeof(desc.label) - 1);
+
+    node = json_object_get(raw, "max_message_length");
+    if (node && node->type == JSON_NUMBER)
+        desc.max_message_length = (int)json_node_get_double(node);
+
+    node = json_object_get(raw, "emoji");
+    if (node && node->type == JSON_STRING)
+        strncpy(desc.emoji, json_node_get_string(node), sizeof(desc.emoji) - 1);
+
+    node = json_object_get(raw, "platform_hint");
+    if (node && node->type == JSON_STRING)
+        strncpy(desc.platform_hint, json_node_get_string(node), sizeof(desc.platform_hint) - 1);
+
+    node = json_object_get(raw, "pii_safe");
+    if (node && node->type == JSON_BOOL)
+        desc.pii_safe = node->bool_val;
+
+    node = json_object_get(raw, "markdown_dialect");
+    if (node && node->type == JSON_STRING)
+        strncpy(desc.markdown_dialect, json_node_get_string(node), sizeof(desc.markdown_dialect) - 1);
+
+    node = json_object_get(raw, "supports_draft_streaming");
+    if (node && node->type == JSON_BOOL)
+        desc.supports_draft_streaming = node->bool_val;
+
+    node = json_object_get(raw, "supports_edit");
+    if (node && node->type == JSON_BOOL)
+        desc.supports_edit = node->bool_val;
+
+    node = json_object_get(raw, "supports_threads");
+    if (node && node->type == JSON_BOOL)
+        desc.supports_threads = node->bool_val;
+
+    json_free(raw);
+    return desc;
+}

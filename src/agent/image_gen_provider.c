@@ -411,3 +411,11 @@ json_t *image_gen_error_response(const char *error, const char *error_type,
  * Port of Python agent/image_gen_provider.py:PluginContext.register_image_gen_provider() — N/A, plugin system
  * Port of Python agent/image_gen_provider.py:image_gen.provider config key — N/A, C uses config.yaml directly
  */
+
+/* PoP: image_gen_capabilities @ agent/image_gen_provider.py:capabilities */
+const char *image_gen_capabilities(void)
+{
+    /* Return the default capabilities dict for an image gen provider.
+     * Port of Python agent/image_gen_provider.py:ImageGenProvider.capabilities. */
+    return "{\"modalities\":[\"text\"],\"max_reference_images\":0}";
+}

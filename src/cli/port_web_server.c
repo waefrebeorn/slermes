@@ -44,6 +44,7 @@ char *coerce_field_value(const char *field, const char *raw)
     return result;
 }
 
+/* PoP: config_profile_scope @ hermes_cli/web_server.py:_profile_scope */
 /* Port of Python: _config_profile_scope */
 char *config_profile_scope(const char *profile)
 {

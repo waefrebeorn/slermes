@@ -91,6 +91,7 @@ static int atomic_write(const char *path, const char *content) {
 
 /* --- Public API --- */
 
+/* PoP: nous_rate_guard_record @ rich_sent_store:record */
 /* Port of Python agent/nous_rate_guard.py:record_nous_rate_limit().
  * Record that Nous Portal is rate-limited.
  * Writes reset_at timestamp to the shared state file. */

@@ -112,6 +112,7 @@ bool restore_primary_runtime(agent_state_t *agent)
  *  create_openai_client
  * ================================================================ */
 
+/* PoP: create_openai_client @ agent/auxiliary_client.py:_create_openai_client */
 /* Port of Python agent/agent_runtime_helpers.py:create_openai_client(). */
 json_node_t *create_openai_client(const char *provider, const char *base_url,
                                    const char *api_key) {
