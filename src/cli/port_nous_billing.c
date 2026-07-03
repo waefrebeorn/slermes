@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <time.h>
 
+/* PoP: resolve_portal_base_url @ hermes_cli/dashboard_register.py:_resolve_portal_base_url */
 /* Port of Python: resolve_portal_base_url */
 char *resolve_portal_base_url(void *ctx, void *state)
 {

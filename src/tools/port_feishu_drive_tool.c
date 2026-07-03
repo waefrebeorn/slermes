@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <time.h>
 
+/* PoP: handle_add_comment @ hermes_cli/kanban_db.py:add_comment */
 /* Port of Python: _handle_add_comment */
 char *handle_add_comment(const char *args)
 {
@@ -39,6 +40,7 @@ char *handle_add_comment(const char *args)
     return result;
 }
 
+/* PoP: handle_list_comments @ hermes_cli/kanban_db.py:list_comments */
 /* Port of Python: _handle_list_comments */
 char *handle_list_comments(const char *args)
 {

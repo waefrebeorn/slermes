@@ -224,7 +224,7 @@ static bool _delete_ref(const char *store, const char *ref) {
     return _run_git(shadow, cmd, NULL, 0);
 }
 
-/* PoP: prune_checkpoints @ checkpoint_manager:prune_checkpoints */
+/* PoP: prune_checkpoints @ hermes_cli/web_server.py:prune_checkpoints */
 bool prune_checkpoints(const char *store, const char *working_dir, int keep) {
     (void)store; (void)working_dir; (void)keep;
     /* Simplified - no-op */

@@ -19,6 +19,7 @@
  * Port of Python agent/auxiliary_client.py:_resolve_xai_oauth_for_aux — N/A, xAI OAuth
  * Port of Python agent/auxiliary_client.py:_read_codex_access_token — N/A, codex token file
  * Port of Python agent/auxiliary_client.py:_resolve_api_key_provider,_try_openrouter — N/A, SDK constructors
+ * Port of Python agent/auxiliary_client.py:_is_timeout_error — implemented in is_timeout_error() below
  * Port of Python agent/auxiliary_client.py:_try_nous,_refresh_nous_recommended_model — N/A, SDK constructors
  * Port of Python agent/auxiliary_client.py:_validate_proxy_env_urls,_try_custom_endpoint — N/A, SDK constructors
  * Port of Python agent/auxiliary_client.py:_build_xai_oauth_aux_client,_build_codex_client — N/A, SDK constructors
@@ -1456,4 +1457,41 @@ void resolve_task_provider_model(
  * N/A: _resolve_xai_oauth_for_aux() — OAuth credential resolution
  * N/A: _read_codex_access_token() — reads stored OAuth token
  */
-#include "hermes.h"
+
+#include <string.h>
+
+/* PoP: is_timeout_error @ agent/auxiliary_client.py:_is_timeout_error */
+bool is_timeout_error(const char *error_message)
+{
+    /* Detect a request timeout — the full-budget stall, distinct from a fast
+     * connection drop.
+     * Port of Python agent/auxiliary_client.py:_is_timeout_error(). */
+    if (!error_message || !*error_message) return false;
+
+    /* Check for "Timeout" in the error type name pattern */
+    if (strstr(error_message, "Timeout") != NULL ||
+        strstr(error_message, "APITimeoutError") != NULL)
+        return true;
+
+    /* Check for "timed out" in the error text */
+    const char *lower = error_message;
+    /* Case-insensitive check for "timed out" */
+    size_t len = strlen(error_message);
+    for (size_t i = 0; i + 8 < len; i++) {
+        char c = error_message[i];
+        char c_lower = (c >= 'A' && c <= 'Z') ? (c + 32) : c;
+        if (c_lower == 't') {
+            if ((error_message[i+1] == 'i' || error_message[i+1] == 'I') &&
+                (error_message[i+2] == 'm' || error_message[i+2] == 'M') &&
+                (error_message[i+3] == 'e' || error_message[i+3] == 'E') &&
+                (error_message[i+4] == 'd' || error_message[i+4] == 'D') &&
+                (error_message[i+5] == ' ') &&
+                (error_message[i+6] == 'o' || error_message[i+6] == 'O') &&
+                (error_message[i+7] == 'u' || error_message[i+7] == 'U') &&
+                (error_message[i+8] == 't' || error_message[i+8] == 'T'))
+                return true;
+        }
+    }
+
+    return false;
+}

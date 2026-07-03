@@ -614,3 +614,46 @@ bool pet_register_local_pet(const char *slug, const char *display_name,
     json_free(meta);
     return true;
 }
+
+/* PoP: pet_download_file @ agent/pet/store.py:_download */
+bool pet_download_file(const char *url, const char *dest_path, int timeout_sec)
+{
+    (void)timeout_sec;
+    if (!url || !*url || !dest_path || !*dest_path) return false;
+
+    http_client_t *client = http_new(timeout_sec > 0 ? timeout_sec : 30);
+    if (!client) return false;
+
+    http_resp_t *resp = http_get(client, url, NULL);
+    http_free(client);
+
+    if (!resp || resp->status != 200) {
+        if (resp) http_resp_free(resp);
+        return false;
+    }
+
+    size_t dest_len = strlen(dest_path);
+    char *tmp_path = malloc(dest_len + 6);
+    if (!tmp_path) { http_resp_free(resp); return false; }
+    snprintf(tmp_path, dest_len + 6, "%s.part", dest_path);
+
+    FILE *fh = fopen(tmp_path, "wb");
+    if (!fh) { free(tmp_path); http_resp_free(resp); return false; }
+
+    size_t written = fwrite(resp->body, 1, resp->body_len, fh);
+    fclose(fh);
+
+    if (written != resp->body_len) {
+        unlink(tmp_path); free(tmp_path);
+        http_resp_free(resp); return false;
+    }
+
+    if (rename(tmp_path, dest_path) != 0) {
+        unlink(tmp_path); free(tmp_path);
+        http_resp_free(resp); return false;
+    }
+
+    free(tmp_path);
+    http_resp_free(resp);
+    return true;
+}

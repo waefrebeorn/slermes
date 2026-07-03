@@ -267,6 +267,7 @@ static void path_dirname(const char *path, char *out, size_t out_size) {
     free(copy);
 }
 
+/* PoP: file_exists @ agent/pet/store.py:exists */
 static bool file_exists(const char *path) {
     if (!path) return false;
     struct stat st;

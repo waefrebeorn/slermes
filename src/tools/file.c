@@ -446,10 +446,10 @@ static char *handle_read(const char *args_json) {
 /* PoP: _handle_write_file @ src/tools/file.c:handle_write
  * Port of Python tools/file_operations.py:write_file_tool(). */
 /* PoP: handle_write @ file_tools:write */
-/* PoP: handle_write @ process_bootstrap:write */
-/* PoP: handle_write @ main:write */
-/* PoP: handle_write @ pty_bridge:write */
-/* PoP: handle_write @ win_pty_bridge:write */
+/* PoP: handle_write @ agent/process_bootstrap.py:write */
+/* PoP: handle_write @ hermes_cli/main.py:write */
+/* PoP: handle_write @ hermes_cli/pty_bridge.py:write */
+/* PoP: handle_write @ hermes_cli/win_pty_bridge.py:write */
 /* PoP: handle_write @ todo_tool:write */
 static char *handle_write(const char *args_json) {
     if (!args_json) return strdup("{\"error\":\"No args\"}");
