@@ -80,8 +80,9 @@ char *gemini_cloudcode_adapter__create_chat_completion(void *adapter, const char
     char *response = (char *)malloc(1024);
     if (response) {
         snprintf(response, 1024,
-                 "{"id":"chatcmpl-placeholder","object":"chat.completion","
-                 ""model":"%s","choices":[{"message":{"role":"assistant","content":""}}]}",
+                 "{\"id\":\"chatcmpl-placeholder\",\"object\":\"chat.completion\","
+                 "\"model\":\"%s\",\"choices\":[{\"message\":{\"role\":\"assistant\","
+                 "\"content\":\"\"}}]}",
                  model);
     }
     return response;
@@ -105,8 +106,8 @@ char *gemini_cloudcode_adapter__stream_completion(void *adapter, const char *mod
     char *response = (char *)malloc(512);
     if (response) {
         snprintf(response, 512,
-                 "{"id":"chatcmpl-stream-placeholder","object":"chat.completion.chunk","
-                 ""model":"%s","choices":[{"delta":{"role":"assistant"}}]}",
+                 "{\"id\":\"chatcmpl-stream-placeholder\",\"object\":\"chat.completion.chunk\","
+                 "\"model\":\"%s\",\"choices\":[{\"delta\":{\"role\":\"assistant\"}}]}",
                  model);
     }
     return response;

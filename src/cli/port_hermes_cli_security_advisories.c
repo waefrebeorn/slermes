@@ -144,7 +144,7 @@ void* cli_security_advisories_ack_advisory(void* p1, void* p2, void* p3, void* p
 
 /* PoP: cli_security_advisories_filter_unacked @ hermes_cli/security_advisories.py:filter_unacked */
 /* Port of Python hermes_cli/security_advisories.py:filter_unacked */
-void* cli_security_advisories_filter_unacked(void* p1, void* p2, void* p3, void* p4, void* p5) {
+void* cli_security_advisories_filter_unacked(void* p1, void* p2, void* p3, void* p4, void* p5, void* p6) {
     const char *hits_json = (const char *)p1;
     const char *acked_json = (const char *)p2;
     char *out = (char *)p3;
@@ -416,7 +416,7 @@ void* cli_security_advisories__write_banner_cache(void* p1, void* p2, void* p3, 
 
 /* PoP: cli_security_advisories_hits_due_for_banner @ hermes_cli/security_advisories.py:hits_due_for_banner */
 /* Port of Python hermes_cli/security_advisories.py:hits_due_for_banner */
-void* cli_security_advisories_hits_due_for_banner(void* p1, void* p2, void* p3, void* p4, void* p5) {
+void* cli_security_advisories_hits_due_for_banner(void* p1, void* p2, void* p3, void* p4, void* p5, void* p6, void* p7) {
     const char *hits_json = (const char *)p1;
     int repeat_hours = (int)(uintptr_t)p2;
     const char *cache_path = (const char *)p3;
