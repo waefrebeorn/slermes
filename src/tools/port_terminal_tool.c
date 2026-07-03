@@ -188,7 +188,7 @@ int read_shell_token(const char *command, const char *start)
     while (*p && !isspace((unsigned char)*p) && *p != ';' && *p != '&' && *p != '|') {
         if (*p == '"' || *p == '\'') {
             char quote = *p++;
-            while (*p && *quote != '"') {
+            while (*p && *p != quote) {
                 if (*p == '\\' && *(p+1)) p++;
                 p++;
                 len++;

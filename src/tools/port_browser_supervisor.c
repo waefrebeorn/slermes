@@ -21,7 +21,7 @@ char *cdp(const char *method, json_t *params)
     json_t *result = json_object();
     if (!result) return NULL;
     json_object_set(result, "method", json_new_string(method));
-    json_object_set(result, "id", json_new_number(NULL, rand()));
+    json_object_set(result, "id", json_new_number((double)rand()));
     if (params) {
         json_object_set(result, "params", params);
     }

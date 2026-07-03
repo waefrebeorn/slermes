@@ -74,7 +74,7 @@ json_t *diff_bundled_skill(const char *name)
     }
     if (content) {
         json_object_set(result, "has_content", json_new_string("true"));
-        json_object_set(result, "content_length", json_new_number(NULL, strlen(content)));
+        json_object_set(result, "content_length", json_new_number((double)strlen(content)));
         free(content);
     } else {
         json_object_set(result, "has_content", json_new_string("false"));
