@@ -107,12 +107,3 @@ int cli_agent_usage_pricing_normalize_usage(
 }
 
 /* Port of Python agent/usage_pricing.py:_normalize_bedrock_model_name */
-void* cli_agent_usage_pricing__normalize_bedrock_model_name(void* p1, void* p2, void* p3, void* p4, void* p5) {
-    hermes_log(LOG_DEBUG, "port", "cli_agent_usage_pricing__normalize_bedrock_model_name called");
-    /* Extract and validate parameters */
-    if (p1) {
-        /* Process input */
-    }
-    /* Return processed result */
-    return NULL;
-}

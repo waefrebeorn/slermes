@@ -1,71 +1,13 @@
 /*
- * port_agent_gemini_cloudcode_adapter.c — C port of agent/gemini_cloudcode_adapter.py
- *
- * OpenAI-compatible facade for Google Cloud Code Assist backend.
+ * port_agent_gemini_cloudcode_adapter_methods.c — C port of agent/gemini_cloudcode_adapter.py
  */
-
 #include "hermes.h"
 #include "hermes_logger.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-/* PoP: gemini_cloudcode_adapter___enter__ @ agent/gemini_cloudcode_adapter.py:__enter__ */
-
-/* Port of Python agent/gemini_cloudcode_adapter.py:__enter__ */
-/* Context manager entry. Returns opaque handle. */
-void *gemini_cloudcode_adapter___enter__(void *adapter)
-{
-    if (!adapter) {
-        hermes_log(LOG_ERROR, "gemini_adapter", "__enter__: null adapter");
-        return NULL;
-    }
-    hermes_log(LOG_DEBUG, "gemini_adapter", "Entering context");
-    return adapter;
-}
-
-/* PoP: gemini_cloudcode_adapter___exit__ @ agent/gemini_cloudcode_adapter.py:__exit__ */
-
-/* Port of Python agent/gemini_cloudcode_adapter.py:__exit__ */
-/* Context manager exit. */
-int gemini_cloudcode_adapter___exit__(void *adapter, int exc_type, void *exc_val, void *exc_tb)
-{
-    (void)exc_val; (void)exc_tb;
-    if (exc_type != 0) {
-        hermes_log(LOG_WARNING, "gemini_adapter", "Exiting context with exception type %d", exc_type);
-    } else {
-        hermes_log(LOG_DEBUG, "gemini_adapter", "Exiting context normally");
-    }
-    /* Clean up any resources */
-    return 0;
-}
-
-/* PoP: gemini_cloudcode_adapter__ensure_project_context @ agent/gemini_cloudcode_adapter.py:_ensure_project_context */
-
-/* Port of Python agent/gemini_cloudcode_adapter.py:_ensure_project_context */
-/* Ensure project context is resolved. Returns project_id or NULL on failure. */
-char *gemini_cloudcode_adapter__ensure_project_context(void *adapter)
-{
-    if (!adapter) {
-        hermes_log(LOG_ERROR, "gemini_adapter", "_ensure_project_context: null adapter");
-        return NULL;
-    }
-
-    /* In a real implementation, resolve from config or API */
-    const char *project_id = getenv("GOOGLE_CLOUD_PROJECT");
-    if (project_id && project_id[0]) {
-        hermes_log(LOG_DEBUG, "gemini_adapter", "Project context: %s", project_id);
-        return strdup(project_id);
-    }
-
-    hermes_log(LOG_WARNING, "gemini_adapter", "No project context available");
-    return NULL;
-}
 
 /* PoP: gemini_cloudcode_adapter__create_chat_completion @ agent/gemini_cloudcode_adapter.py:_create_chat_completion */
 
 /* Port of Python agent/gemini_cloudcode_adapter.py:_create_chat_completion */
-/* Create a chat completion. Returns JSON response or NULL on error. */
+/* Create a chat completion. Returns JSON string or NULL on error. */
 char *gemini_cloudcode_adapter__create_chat_completion(void *adapter, const char *model,
                                                          const char *messages, const char *tools)
 {

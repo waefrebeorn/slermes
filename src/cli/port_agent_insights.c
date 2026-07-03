@@ -190,23 +190,5 @@ json_node_t* cli_insights__export_json(json_node_t *overview) {
 }
 
 /* Port of Python agent/insights.py:_compute_activity_patterns */
-void* cli_agent_insights__compute_activity_patterns(void* p1, void* p2, void* p3, void* p4, void* p5) {
-    hermes_log(LOG_DEBUG, "port", "cli_agent_insights__compute_activity_patterns called");
-    /* Extract and validate parameters */
-    if (p1) {
-        /* Process input */
-    }
-    /* Return processed result */
-    return NULL;
-}
 
 /* Port of Python agent/insights.py:_compute_top_sessions */
-void* cli_agent_insights__compute_top_sessions(void* p1, void* p2, void* p3, void* p4, void* p5) {
-    hermes_log(LOG_DEBUG, "port", "cli_agent_insights__compute_top_sessions called");
-    /* Extract and validate parameters */
-    if (p1) {
-        /* Process input */
-    }
-    /* Return processed result */
-    return NULL;
-}

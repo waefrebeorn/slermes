@@ -228,12 +228,3 @@ int cli_tools_checkpoint_manager__enforce_size_cap(
 }
 
 /* Port of Python tools/checkpoint_manager.py:_repair_bare_repo_dirs */
-void* cli_tools_checkpoint_manager__repair_bare_repo_dirs(void* p1, void* p2, void* p3, void* p4, void* p5) {
-    hermes_log(LOG_DEBUG, "port", "cli_tools_checkpoint_manager__repair_bare_repo_dirs called");
-    /* Extract and validate parameters */
-    if (p1) {
-        /* Process input */
-    }
-    /* Return processed result */
-    return NULL;
-}

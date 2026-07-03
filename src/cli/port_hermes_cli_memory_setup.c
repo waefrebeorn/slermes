@@ -151,23 +151,5 @@ void cli_hermes_cli_memory_setup_memory_command(const char *subcommand)
 }
 
 /* Port of Python hermes_cli/memory_setup.py:_print_cancelled_setup */
-void* cli_hermes_cli_memory_setup__print_cancelled_setup(void* p1, void* p2, void* p3, void* p4, void* p5) {
-    hermes_log(LOG_DEBUG, "port", "cli_hermes_cli_memory_setup__print_cancelled_setup called");
-    /* Extract and validate parameters */
-    if (p1) {
-        /* Process input */
-    }
-    /* Return processed result */
-    return NULL;
-}
 
 /* Port of Python hermes_cli/memory_setup.py:_clear_interactive_transition */
-void* cli_hermes_cli_memory_setup__clear_interactive_transition(void* p1, void* p2, void* p3, void* p4, void* p5) {
-    hermes_log(LOG_DEBUG, "port", "cli_hermes_cli_memory_setup__clear_interactive_transition called");
-    /* Extract and validate parameters */
-    if (p1) {
-        /* Process input */
-    }
-    /* Return processed result */
-    return NULL;
-}

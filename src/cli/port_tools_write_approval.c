@@ -158,67 +158,13 @@ int cli_tools_write_approval__store_local_approval(const char *path, const char 
 }
 
 /* Port of Python tools/write_approval.py:write_approval_enabled */
-void* cli_tools_write_approval_write_approval_enabled(void* p1, void* p2, void* p3, void* p4, void* p5) {
-    hermes_log(LOG_DEBUG, "port", "cli_tools_write_approval_write_approval_enabled called");
-    /* Extract and validate parameters */
-    if (p1) {
-        /* Process input */
-    }
-    /* Return processed result */
-    return NULL;
-}
 
 /* Port of Python tools/write_approval.py:_normalize_enabled */
-void* cli_tools_write_approval__normalize_enabled(void* p1, void* p2, void* p3, void* p4, void* p5) {
-    hermes_log(LOG_DEBUG, "port", "cli_tools_write_approval__normalize_enabled called");
-    /* Extract and validate parameters */
-    if (p1) {
-        /* Process input */
-    }
-    /* Return processed result */
-    return NULL;
-}
 
 /* Port of Python tools/write_approval.py:stage_write */
-void* cli_tools_write_approval_stage_write(void* p1, void* p2, void* p3, void* p4, void* p5) {
-    hermes_log(LOG_DEBUG, "port", "cli_tools_write_approval_stage_write called");
-    /* Extract and validate parameters */
-    if (p1) {
-        /* Process input */
-    }
-    /* Return processed result */
-    return NULL;
-}
 
 /* Port of Python tools/write_approval.py:skill_gist */
-void* cli_tools_write_approval_skill_gist(void* p1, void* p2, void* p3, void* p4, void* p5) {
-    hermes_log(LOG_DEBUG, "port", "cli_tools_write_approval_skill_gist called");
-    /* Extract and validate parameters */
-    if (p1) {
-        /* Process input */
-    }
-    /* Return processed result */
-    return NULL;
-}
 
 /* Port of Python tools/write_approval.py:_frontmatter_description */
-void* cli_tools_write_approval__frontmatter_description(void* p1, void* p2, void* p3, void* p4, void* p5) {
-    hermes_log(LOG_DEBUG, "port", "cli_tools_write_approval__frontmatter_description called");
-    /* Extract and validate parameters */
-    if (p1) {
-        /* Process input */
-    }
-    /* Return processed result */
-    return NULL;
-}
 
 /* Port of Python tools/write_approval.py:skill_pending_diff */
-void* cli_tools_write_approval_skill_pending_diff(void* p1, void* p2, void* p3, void* p4, void* p5) {
-    hermes_log(LOG_DEBUG, "port", "cli_tools_write_approval_skill_pending_diff called");
-    /* Extract and validate parameters */
-    if (p1) {
-        /* Process input */
-    }
-    /* Return processed result */
-    return NULL;
-}

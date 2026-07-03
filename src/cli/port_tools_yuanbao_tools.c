@@ -10,23 +10,19 @@
  *
  * The active adapter singleton lives in gateway.platforms.yuanbao.
  */
-
 #include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: cli_tools_yuanbao_tools__get_active_adapter @ tools/yuanbao_tools.py:_get_active_adapter */
-void* cli_tools_yuanbao_tools__get_active_adapter(void) {
-    /*
-     * Lazy import to avoid ImportError when gateway.platforms.yuanbao is unavailable.
-     * Returns the active yuanbao adapter or NULL.
-     */
-    hermes_log(LOG_DEBUG, "yuanbao_tools", "_get_active_adapter: looking up yuanbao adapter");
-    /* Adapter registry lookup — the actual adapter is registered by the gateway */
+/* Stub: adapter resolution not ported yet */
+void *cli_tools_yuanbao_tools__get_active_adapter(void) {
     return NULL;
 }
+
+/* PoP: cli_tools_yuanbao_tools__get_active_adapter
+/* PoP: cli_tools_yuanbao_tools__get_active_adapter @ tools/yuanbao_tools.py:_get_active_adapter */
 
 /* PoP: cli_tools_yuanbao_tools_get_group_info @ tools/yuanbao_tools.py:get_group_info */
 json_node_t* cli_tools_yuanbao_tools_get_group_info(const char *group_code) {

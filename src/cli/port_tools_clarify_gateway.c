@@ -39,45 +39,8 @@ static clarify_entry_t *g_entries = NULL;
 static int g_entry_count = 0;
 
 /* PoP: cli_tools_clarify_gateway_signature @ tools/clarify_gateway.py:signature */
-void* cli_tools_clarify_gateway_signature(void* p1, void* p2, void* p3, void* p4, void* p5) {
-    clarify_entry_t *entry = (clarify_entry_t *)p1;
-    if (!entry) {
-        hermes_log(LOG_WARNING, "clarify_gateway", "signature: NULL entry");
-        return NULL;
-    }
-    hermes_log(LOG_DEBUG, "clarify_gateway",
-               "signature: clarify_id=%s session=%s", entry->clarify_id, entry->session_key);
-    /* Build signature dict: clarify_id, session_key, question, choices */
-    json_node_t *sig = json_new_object();
-    if (sig) {
-        json_object_set(sig, "clarify_id", json_new_string(entry->clarify_id));
-        json_object_set(sig, "session_key", json_new_string(entry->session_key));
-        json_object_set(sig, "question", json_new_string(entry->question));
-        json_object_set(sig, "choices", json_new_null());
-    }
-    return sig;
-}
 
 /* PoP: cli_tools_clarify_gateway_wait_for_response @ tools/clarify_gateway.py:wait_for_response */
-void* cli_tools_clarify_gateway_wait_for_response(void* p1, void* p2, void* p3, void* p4, void* p5) {
-    /*
-     * Block on the clarify entry's event until resolved or timeout.
-     * The gateway layer handles the actual Event wait; this function
-     * returns the response pointer for the gateway to consume.
-     */
-    clarify_entry_t *entry = (clarify_entry_t *)p1;
-    double timeout = p2 ? *(double *)p2 : 600.0;
-    if (!entry) {
-        hermes_log(LOG_WARNING, "clarify_gateway", "wait_for_response: NULL entry");
-        return NULL;
-    }
-    hermes_log(LOG_INFO, "clarify_gateway",
-               "wait_for_response: blocking on clarify_id=%.30s timeout=%.0f",
-               entry->clarify_id, timeout);
-    /* In C, the actual blocking is done by the gateway event loop.
-     * We return the entry pointer so the gateway can match it. */
-    return entry;
-}
 
 /* PoP: cli_tools_clarify_gateway_resolve_gateway_clarify @ tools/clarify_gateway.py:resolve_gateway_clarify */
 int cli_tools_clarify_gateway_resolve_gateway_clarify(const char *clarify_id, const char *response) {
@@ -210,14 +173,3 @@ void cli_tools_clarify_gateway_unregister_notify(const char *session_key) {
 }
 
 /* PoP: cli_tools_clarify_gateway_get_notify @ tools/clarify_gateway.py:get_notify */
-void* cli_tools_clarify_gateway_get_notify(const char *session_key) {
-    /*
-     * Retrieve the per-session notify callback.
-     * Returns NULL if no callback is registered for this session.
-     */
-    if (!session_key) return NULL;
-    hermes_log(LOG_DEBUG, "clarify_gateway",
-               "get_notify: lookup for session=%.40s", session_key);
-    /* In C, callback registry is managed by the gateway layer */
-    return NULL;
-}
