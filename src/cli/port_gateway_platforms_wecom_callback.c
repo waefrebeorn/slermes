@@ -186,23 +186,6 @@ char* cli_gateway_platforms_wecom_callback__decrypt_request(json_node_t *app, co
 }
 
 /* PoP: cli_gateway_platforms_wecom_callback__crypt_for_app @ gateway/platforms/wecom_callback.py:_crypt_for_app */
-void* cli_gateway_platforms_wecom_callback__crypt_for_app(json_node_t *app) {
-    /*
-     * Create a WXBizMsgCrypt instance for the given app.
-     * Returns a handle to the crypto object.
-     */
-    if (!app || !json_node_is_object(app)) return NULL;
-    json_node_t *token = json_object_get(app, "token");
-    json_node_t *aes_key = json_object_get(app, "encoding_aes_key");
-    json_node_t *corp_id = json_object_get(app, "corp_id");
-    if (!token || !aes_key) {
-        hermes_log(LOG_WARNING, "wecom_callback", "_crypt_for_app: missing token or aes_key");
-        return NULL;
-    }
-    hermes_log(LOG_DEBUG, "wecom_callback", "_crypt_for_app: created crypto handle");
-    /* In C, the crypto handle is managed by the wecom_crypto module */
-    return NULL;
-}
 
 /* PoP: cli_gateway_platforms_wecom_callback__get_app_by_name @ gateway/platforms/wecom_callback.py:_get_app_by_name */
 json_node_t* cli_gateway_platforms_wecom_callback__get_app_by_name(const char *name, json_node_t *apps) {

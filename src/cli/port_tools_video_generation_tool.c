@@ -10,6 +10,13 @@
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>
+
+/* Stub: provider resolution not ported yet */
+void *cli_tools_video_generation_tool__resolve_active_provider(void) {
+    hermes_log(LOG_DEBUG, "video_gen", "_resolve_active_provider stub");
+    return NULL;
+}
+
 #include <string.h>
 
 /*
@@ -105,22 +112,6 @@ int cli_tools_video_generation_tool_check_video_generation_requirements(void) {
 }
 
 /* PoP: cli_tools_video_generation_tool__resolve_active_provider @ tools/video_generation_tool.py:_resolve_active_provider */
-void* cli_tools_video_generation_tool__resolve_active_provider(void) {
-    /*
-     * Return the active provider object or NULL.
-     * Forces plugin discovery before checking the registry.
-     */
-    char provider_buf[256];
-    const char *configured = cli_tools_video_generation_tool__read_configured_video_provider(
-        provider_buf, sizeof(provider_buf));
-    if (!configured) {
-        hermes_log(LOG_WARNING, "video_gen", "_resolve_active_provider: no provider configured");
-        return NULL;
-    }
-    hermes_log(LOG_INFO, "video_gen", "_resolve_active_provider: resolved provider=%s", configured);
-    /* Return a non-NULL handle indicating the provider was found */
-    return (void*)(uintptr_t)1;
-}
 
 /* PoP: cli_tools_video_generation_tool__missing_provider_error @ tools/video_generation_tool.py:_missing_provider_error */
 json_node_t* cli_tools_video_generation_tool__missing_provider_error(const char *configured) {

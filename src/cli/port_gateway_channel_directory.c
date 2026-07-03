@@ -80,23 +80,5 @@ char *cli_gateway_channel_directory__build_slack(
 }
 
 /* Port of Python gateway/channel_directory.py:_load_channel_aliases */
-void* cli_gateway_channel_directory__load_channel_aliases(void* p1, void* p2, void* p3, void* p4, void* p5) {
-    hermes_log(LOG_DEBUG, "port", "cli_gateway_channel_directory__load_channel_aliases called");
-    /* Extract and validate parameters */
-    if (p1) {
-        /* Process input */
-    }
-    /* Return processed result */
-    return NULL;
-}
 
 /* Port of Python gateway/channel_directory.py:_apply_channel_aliases */
-void* cli_gateway_channel_directory__apply_channel_aliases(void* p1, void* p2, void* p3, void* p4, void* p5) {
-    hermes_log(LOG_DEBUG, "port", "cli_gateway_channel_directory__apply_channel_aliases called");
-    /* Extract and validate parameters */
-    if (p1) {
-        /* Process input */
-    }
-    /* Return processed result */
-    return NULL;
-}
