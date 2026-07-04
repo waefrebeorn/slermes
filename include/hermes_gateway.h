@@ -1507,5 +1507,17 @@ void stop_memory_monitoring(void);
 /* Check if memory monitoring is running. */
 bool is_memory_monitoring_running(void);
 
+/* ================================================================
+ *  Session Context — Port of Python gateway/session_context.py
+ * ================================================================ */
+
+/* Set the async delivery capability for the current session.
+ * Called by session init code before each turn.
+ * 0 = not supported (stateless adapters), 1 = supported (gateway/cli/cron). */
+void gw_session_set_async_delivery(int supported);
+
+/* Reset async delivery to unset state (used in cleanup / session clear). */
+void gw_session_reset_async_delivery(void);
+
 /** @} */ /* end of hermes_gateway group */
 #endif /* HERMES_GATEWAY_H */

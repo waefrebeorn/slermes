@@ -45,17 +45,24 @@ char *_getenv(void *ctx, void *name, void *default_val)
 }
 
 /* Port of Python: canonical_custom_identity */
-void canonical_custom_identity(void *ctx)
+char *canonical_custom_identity(const char *base_url, const char *config_provider)
+{
+    (void)base_url;
+    (void)config_provider;
+    /* In C, we don't have the full custom provider registry.
+     * Return NULL (equivalent to Python's None) */
+    return NULL;
+}
+
+/* PoP: canonical_custom_identity @ hermes_cli/runtime_provider.py:canonical_custom_identity */
+char *_canonical_custom_identity(void *ctx, void *base_url, void *config_provider)
 {
     if (!ctx) {
         hermes_log(LOG_WARNING, "port", "canonical_custom_identity: null context");
-        return;
+        return NULL;
     }
     hermes_log(LOG_DEBUG, "port", "canonical_custom_identity: called");
-    const char *identity = getenv("HERMES_CUSTOM_IDENTITY");
-    if (identity) {
-        hermes_log(LOG_INFO, "port", "canonical_custom_identity: %s", identity);
-    } else {
-        hermes_log(LOG_DEBUG, "port", "canonical_custom_identity: no custom identity");
-    }
+    return canonical_custom_identity(
+        base_url ? (const char *)base_url : NULL,
+        config_provider ? (const char *)config_provider : NULL);
 }

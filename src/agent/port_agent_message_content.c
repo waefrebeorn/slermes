@@ -46,22 +46,27 @@ const char *text_from_part(const char *part) {
 
 
 /* Port of Python: flatten_message_text */
-int flatten_message_text(const char *message_json, char *output, size_t out_sz) {
-    if (!message_json || !output || out_sz == 0) return 0;
-    
+char *flatten_message_text(const char *message_json)
+{
+    if (!message_json) return strdup("");
+
+    char *output = malloc(16384);
+    if (!output) return strdup("");
+
     /* Extract all text parts and concatenate */
     const char *parts = strstr(message_json, "\"parts\"");
     if (!parts) {
         /* Single text message */
         const char *text = message_content_field(message_json, "text");
         if (text) {
-            strncpy(output, text, out_sz - 1);
-            output[out_sz - 1] = '\0';
-            return strlen(output);
+            strncpy(output, text, 16383);
+            output[16383] = '\0';
+            return output;
         }
-        return 0;
+        free(output);
+        return strdup("");
     }
-    
+
     /* Iterate through parts array */
     int total_len = 0;
     const char *p = parts;
@@ -69,7 +74,7 @@ int flatten_message_text(const char *message_json, char *output, size_t out_sz) 
         const char *text = text_from_part(p);
         if (text) {
             size_t len = strlen(text);
-            if (total_len + len < out_sz - 1) {
+            if (total_len + len < 16383) {
                 memcpy(output + total_len, text, len);
                 total_len += len;
             }
@@ -80,5 +85,5 @@ int flatten_message_text(const char *message_json, char *output, size_t out_sz) 
         p = next + 1;
     }
     output[total_len] = '\0';
-    return total_len;
+    return output;
 }

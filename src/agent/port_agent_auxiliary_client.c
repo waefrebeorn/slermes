@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <signal.h>
+#include "hermes_logger.h"
 
 
 /* Port of Python: _aux_interrupt_protected */
@@ -104,8 +105,21 @@ bool try_main_fallback_chain(const char *primary_provider, const char *fallback_
 
 
 /* Port of Python: aux_interrupt_protection */
-bool aux_interrupt_protection(void) {
+bool aux_interrupt_protection(bool active)
+{
+    (void)active;
     return aux_interrupt_protected();
+}
+
+/* PoP: aux_interrupt_protection @ agent/auxiliary_client.py:aux_interrupt_protection */
+bool aux_interrupt_protection_bridge(void *ctx, void *active)
+{
+    if (!ctx) {
+        hermes_log(LOG_WARNING, "port", "aux_interrupt_protection: null context");
+        return false;
+    }
+    hermes_log(LOG_DEBUG, "port", "aux_interrupt_protection called");
+    return aux_interrupt_protection(active ? true : false);
 }
 
 
@@ -122,14 +136,27 @@ int nous_min_key_ttl_seconds(void) {
 
 /* Port of Python: _resolve_nous_pool_runtime_api */
 bool resolve_nous_pool_runtime_api(bool force_refresh, char *api_key_out, size_t api_key_sz, char *base_url_out, size_t base_url_sz) {
-    /* In C, this is a simplified stub that returns false.
-     * Full implementation requires credential pool infrastructure.
-     * The main agent uses hermes_cli.auth which is Python-only.
-     */
-    (void)force_refresh;
-    (void)api_key_out;
-    (void)api_key_sz;
-    (void)base_url_out;
-    (void)base_url_sz;
-    return false;
+    if (!api_key_out || api_key_sz == 0 || !base_url_out || base_url_sz == 0) {
+        return false;
+    }
+
+    /* Try to get credentials from environment */
+    const char *api_key = getenv("NOUS_API_KEY");
+    if (!api_key) api_key = getenv("NOUS_BILLING_KEY");
+    if (!api_key) api_key = getenv("HERMES_NOUS_API_KEY");
+    
+    const char *base_url = getenv("NOUS_BASE_URL");
+    if (!base_url) base_url = getenv("NOUS_PORTAL_URL");
+    if (!base_url) base_url = "https://api.nousresearch.com";
+
+    if (!api_key || !*api_key) {
+        return false;
+    }
+
+    strncpy(api_key_out, api_key, api_key_sz - 1);
+    api_key_out[api_key_sz - 1] = '\0';
+    strncpy(base_url_out, base_url, base_url_sz - 1);
+    base_url_out[base_url_sz - 1] = '\0';
+
+    return true;
 }

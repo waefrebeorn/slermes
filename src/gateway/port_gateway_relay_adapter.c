@@ -285,12 +285,30 @@ int relay_adapter_with_scope(const char *chat_id, metadata_entry_t *meta_in,
 int relay_adapter_message_len(const char *text) {
     return relay_message_len(text);
 }
-
 /* ── supports_draft_streaming ────────────────────────────────────────── */
 /* Port of Python: supports_draft_streaming */
-bool relay_adapter_supports_draft_streaming(const char *chat_type, const char *metadata) {
-    (void)chat_type;
-    (void)metadata;
+bool relay_adapter_supports_draft_streaming(const char *chat_type, const char *metadata)
+{
+    if (!chat_type || !metadata) {
+        return current_descriptor.supports_draft_streaming;
+    }
+
+    /* Check if the chat type supports draft streaming */
+    if (strcmp(chat_type, "private") == 0 || strcmp(chat_type, "group") == 0) {
+        return current_descriptor.supports_draft_streaming;
+    }
+
+    /* Check metadata for draft streaming capability */
+    const char *draft = strstr(metadata, "\"draft_streaming\"");
+    if (draft) {
+        const char *val = strchr(draft + 17, ':');
+        if (val) {
+            val++;
+            while (*val == ' ') val++;
+            return (strncmp(val, "true", 4) == 0);
+        }
+    }
+
     return current_descriptor.supports_draft_streaming;
 }
 
