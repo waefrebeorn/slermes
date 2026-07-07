@@ -15,6 +15,9 @@
 #include <time.h>
 #include <errno.h>
 #include <sys/stat.h>
+#include <openssl/evp.h>
+#include <openssl/rand.h>
+#include "libbase64/base64.h"
 
 /* ================================================================
  *  Constants
@@ -614,4 +617,118 @@ void weixin_send_file(const char *chat_id, const char *file_url,
                        const char *filename, const char *context_token) {
     if (!chat_id || !file_url) return;
     send_file(chat_id, file_url, filename, context_token);
+}
+
+/* ===========================================================================
+ *  WeChat crypto helpers — ported from gateway/platforms/weixin.py
+ *  Real AES-128-ECB (PKCS7) via OpenSSL EVP. These were REAL_GAP.
+ * =========================================================================== */
+
+/* PoP: _pkcs7_pad @ gateway/platforms/weixin.py:_pkcs7_pad
+ * Caller frees the returned buffer. Returns NULL on alloc failure. */
+unsigned char *weixin_pkcs7_pad(const unsigned char *data, size_t len, size_t *out_len)
+{
+    size_t pad = 16 - (len % 16);
+    size_t total = len + pad;
+    unsigned char *buf = (unsigned char *)malloc(total ? total : 1);
+    if (!buf) return NULL;
+    if (len) memcpy(buf, data, len);
+    memset(buf + len, (int)pad, pad);
+    *out_len = total;
+    return buf;
+}
+
+/* PoP: _aes_padded_size @ gateway/platforms/weixin.py:_aes_padded_size */
+size_t weixin_aes_padded_size(size_t size)
+{
+    return ((size + 1 + 15) / 16) * 16;
+}
+
+/* PoP: _aes128_ecb_encrypt @ gateway/platforms/weixin.py:_aes128_ecb_encrypt
+ * Encrypts PKCS7-padded plaintext with AES-128-ECB. Caller frees *out. */
+int weixin_aes128_ecb_encrypt(const unsigned char *plaintext, size_t pt_len,
+                              const unsigned char *key, size_t key_len,
+                              unsigned char **out, size_t *out_len)
+{
+    if (!plaintext || !key || key_len != 16 || !out) return -1;
+    size_t pad_len = 0;
+    unsigned char *padded = weixin_pkcs7_pad(plaintext, pt_len, &pad_len);
+    if (!padded) return -1;
+
+    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+    if (!ctx) { free(padded); return -1; }
+    unsigned char *ct = (unsigned char *)malloc(pad_len + 16);
+    if (!ct) { EVP_CIPHER_CTX_free(ctx); free(padded); return -1; }
+    int len1 = 0, len2 = 0;
+    EVP_EncryptInit_ex(ctx, EVP_aes_128_ecb(), NULL, key, NULL);
+    EVP_CIPHER_CTX_set_padding(ctx, 0); /* manual PKCS7 */
+    EVP_EncryptUpdate(ctx, ct, &len1, padded, (int)pad_len);
+    EVP_EncryptFinal_ex(ctx, ct + len1, &len2);
+    EVP_CIPHER_CTX_free(ctx);
+    free(padded);
+
+    *out = ct;
+    *out_len = (size_t)(len1 + len2);
+    return 0;
+}
+
+/* PoP: _aes128_ecb_decrypt @ gateway/platforms/weixin.py:_aes128_ecb_decrypt
+ * Decrypts AES-128-ECB and strips PKCS7 padding. Caller frees *out. */
+int weixin_aes128_ecb_decrypt(const unsigned char *ciphertext, size_t ct_len,
+                              const unsigned char *key, size_t key_len,
+                              unsigned char **out, size_t *out_len)
+{
+    if (!ciphertext || !key || key_len != 16 || !out) return -1;
+    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+    if (!ctx) return -1;
+    unsigned char *pt = (unsigned char *)malloc(ct_len + 16);
+    if (!pt) { EVP_CIPHER_CTX_free(ctx); return -1; }
+    int len1 = 0, len2 = 0;
+    EVP_DecryptInit_ex(ctx, EVP_aes_128_ecb(), NULL, key, NULL);
+    EVP_CIPHER_CTX_set_padding(ctx, 0); /* manual PKCS7 */
+    EVP_DecryptUpdate(ctx, pt, &len1, ciphertext, (int)ct_len);
+    EVP_DecryptFinal_ex(ctx, pt + len1, &len2);
+    EVP_CIPHER_CTX_free(ctx);
+
+    size_t total = (size_t)(len1 + len2);
+    if (total > 0) {
+        unsigned char pad = pt[total - 1];
+        if (pad >= 1 && pad <= 16) {
+            int ok = 1;
+            for (size_t i = total - pad; i < total; i++) if (pt[i] != pad) ok = 0;
+            if (ok) total -= pad;
+        }
+    }
+    *out = pt;
+    *out_len = total;
+    return 0;
+}
+
+/* PoP: _safe_id @ gateway/platforms/weixin.py:_safe_id
+ * Strip non-printable / non-identifier chars for safe logging. */
+void weixin_safe_id(const char *in, char *out, size_t out_sz)
+{
+    size_t o = 0;
+    if (in) for (size_t i = 0; in[i] && o + 1 < out_sz; i++) {
+        unsigned char c = (unsigned char)in[i];
+        if (c == '_' || c == '-' || c == '@' || c == '.' ||
+            (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'))
+            out[o++] = (char)c;
+    }
+    out[o] = '\0';
+}
+
+/* PoP: _random_wechat_uin @ gateway/platforms/weixin.py:_random_wechat_uin
+ * Generate a random 32-bit big-endian value, base64-encoded as ASCII. */
+void weixin_random_wechat_uin(char *out, size_t out_sz)
+{
+    unsigned char b[4];
+    if (RAND_bytes(b, 4) != 1) { if (out_sz) out[0]='\0'; return; }
+    unsigned long v = ((unsigned long)b[0] << 24) | ((unsigned long)b[1] << 16) |
+                      ((unsigned long)b[2] << 8) | b[3];
+    char s[24];
+    snprintf(s, sizeof(s), "%lu", v);
+    char *enc = base64_encode((const unsigned char *)s, strlen(s));
+    if (enc) { snprintf(out, out_sz, "%s", enc); free(enc); }
+    else if (out_sz) out[0] = '\0';
 }
