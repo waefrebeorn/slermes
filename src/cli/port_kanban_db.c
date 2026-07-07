@@ -17,6 +17,8 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <libgen.h>
+#include <time.h>
+#include <ctype.h>
 
 /*
  * _git_toplevel — Return the git toplevel containing path, or NULL if not in a repo.
@@ -311,4 +313,199 @@ const char* _nearest_existing_path(const char* path)
 
     free(current);
     return ".";
+}
+
+/* ===========================================================================
+ *  Kanban path / config helpers — ported from hermes_cli/kanban_db.py
+ *  These were REAL_GAP. Faithful re-implementations.
+ * =========================================================================== */
+
+#define KB_DEFAULT_CLAIM_TTL_SECONDS (15 * 60)
+#define KB_DEFAULT_CRASH_GRACE_SECONDS 30
+#define KB_DEFAULT_RATE_LIMIT_COOLDOWN_SECONDS 300
+#define KB_DEFAULT_BOARD "default"
+
+/* Resolve the shared Hermes root anchoring the kanban board. */
+static void kanban_root_dir(char *out, size_t sz)
+{
+    const char *override = getenv("HERMES_KANBAN_HOME");
+    if (override && override[0]) { snprintf(out, sz, "%s", override); return; }
+    const char *home = getenv("HERMES_HOME");
+    if (home && home[0]) { snprintf(out, sz, "%s", home); return; }
+    const char *sl = getenv("SLERMES_HOME");
+    if (sl && sl[0]) { snprintf(out, sz, "%s", sl); return; }
+    const char *h = getenv("HOME");
+    snprintf(out, sz, "%s/.hermes", h ? h : ".");
+}
+
+/* PoP: _resolve_claim_ttl_seconds @ hermes_cli/kanban_db.py:_resolve_claim_ttl_seconds */
+int resolve_claim_ttl_seconds(int ttl_seconds)
+{
+    if (ttl_seconds >= 0) return ttl_seconds < 1 ? 1 : ttl_seconds; /* explicit call-site value wins */
+    const char *raw = getenv("HERMES_KANBAN_CLAIM_TTL_SECONDS");
+    if (raw) {
+        char *end = NULL;
+        long parsed = strtol(raw, &end, 10);
+        if (end != raw && *end == '\0' && parsed > 0) return (int)parsed;
+    }
+    return KB_DEFAULT_CLAIM_TTL_SECONDS;
+}
+
+/* PoP: _resolve_crash_grace_seconds @ hermes_cli/kanban_db.py:_resolve_crash_grace_seconds */
+int resolve_crash_grace_seconds(void)
+{
+    const char *raw = getenv("HERMES_KANBAN_CRASH_GRACE_SECONDS");
+    if (raw) {
+        char *end = NULL;
+        long parsed = strtol(raw, &end, 10);
+        if (end != raw && *end == '\0' && parsed >= 0) return (int)parsed;
+    }
+    return KB_DEFAULT_CRASH_GRACE_SECONDS;
+}
+
+/* PoP: _resolve_rate_limit_cooldown_seconds @ hermes_cli/kanban_db.py:_resolve_rate_limit_cooldown_seconds */
+int resolve_rate_limit_cooldown_seconds(void)
+{
+    const char *raw = getenv("HERMES_KANBAN_RATE_LIMIT_COOLDOWN_SECONDS");
+    if (raw) {
+        char *end = NULL;
+        long parsed = strtol(raw, &end, 10);
+        if (end != raw && *end == '\0' && parsed >= 0) return (int)parsed;
+    }
+    return KB_DEFAULT_RATE_LIMIT_COOLDOWN_SECONDS;
+}
+
+/* PoP: _relative_age @ hermes_cli/kanban_db.py:_relative_age
+ * Returns malloc'd coarse age string. Caller frees. */
+char *relative_age(long ts, long now)
+{
+    if (ts <= 0) return strdup("");
+    if (now <= 0) now = (long)time(NULL);
+    long delta = now - ts;
+    if (delta < 0) return strdup("just now");
+    if (delta < 60) return strdup("just now");
+    if (delta < 3600) { char b[32]; snprintf(b, sizeof(b), "%ldm ago", delta/60); return strdup(b); }
+    if (delta < 86400) { char b[32]; snprintf(b, sizeof(b), "%ldh ago", delta/3600); return strdup(b); }
+    { char b[32]; snprintf(b, sizeof(b), "%ldd ago", delta/86400); return strdup(b); }
+}
+
+/* PoP: _normalize_board_slug @ hermes_cli/kanban_db.py:_normalize_board_slug
+ * Returns malloc'd normalized slug or NULL (invalid/empty). Caller frees. */
+char *normalize_board_slug(const char *slug)
+{
+    if (!slug) return NULL;
+    char s[128];
+    size_t k = 0;
+    for (size_t i = 0; slug[i] && k < sizeof(s)-1; i++) {
+        char c = (char)tolower((unsigned char)slug[i]);
+        if (c == ' ' || c == '\t') continue; /* strip whitespace */
+        s[k++] = c;
+    }
+    s[k] = '\0';
+    if (!s[0]) return NULL;
+    /* validate: ^[a-z0-9][a-z0-9\-_]{0,63}$ */
+    if (!(isalnum((unsigned char)s[0]))) return NULL;
+    for (size_t i = 1; i < strlen(s); i++)
+        if (!(isalnum((unsigned char)s[i]) || s[i]=='-' || s[i]=='_')) return NULL;
+    if (strlen(s) > 64) return NULL;
+    return strdup(s);
+}
+
+/* PoP: kanban_home @ hermes_cli/kanban_db.py:kanban_home
+ * Returns malloc'd root dir. Caller frees. */
+char *kanban_home(void)
+{
+    char root[PATH_MAX];
+    kanban_root_dir(root, sizeof(root));
+    return strdup(root);
+}
+
+/* PoP: boards_root @ hermes_cli/kanban_db.py:boards_root */
+char *kanban_boards_root(void)
+{
+    char root[PATH_MAX];
+    kanban_root_dir(root, sizeof(root));
+    char out[PATH_MAX];
+    snprintf(out, sizeof(out), "%s/kanban/boards", root);
+    return strdup(out);
+}
+
+/* PoP: current_board_path @ hermes_cli/kanban_db.py:current_board_path */
+char *kanban_current_board_path(void)
+{
+    char root[PATH_MAX];
+    kanban_root_dir(root, sizeof(root));
+    char out[PATH_MAX];
+    snprintf(out, sizeof(out), "%s/kanban/current", root);
+    return strdup(out);
+}
+
+/* board_exists: directory under boards_root, or the "default" sentinel. */
+static int kanban_board_exists(const char *slug)
+{
+    if (!slug) return 0;
+    if (strcmp(slug, KB_DEFAULT_BOARD) == 0) return 1;
+    char root[PATH_MAX];
+    kanban_root_dir(root, sizeof(root));
+    char path[PATH_MAX];
+    snprintf(path, sizeof(path), "%s/kanban/boards/%s", root, slug);
+    struct stat st;
+    return (stat(path, &st) == 0 && S_ISDIR(st.st_mode));
+}
+
+/* PoP: get_current_board @ hermes_cli/kanban_db.py:get_current_board
+ * Returns malloc'd active board slug (never NULL). Caller frees. */
+char *get_current_board(void)
+{
+    /* 1. HERMES_KANBAN_BOARD env (must be valid + exist) */
+    const char *env = getenv("HERMES_KANBAN_BOARD");
+    if (env && env[0]) {
+        char *normed = normalize_board_slug(env);
+        if (normed) {
+            if (kanban_board_exists(normed)) return normed;
+            free(normed);
+        }
+    }
+    /* 2. <root>/kanban/current on disk */
+    char *cp = kanban_current_board_path();
+    FILE *f = fopen(cp, "r");
+    free(cp);
+    if (f) {
+        char buf[128];
+        if (fgets(buf, sizeof(buf), f)) {
+            fclose(f);
+            size_t n = strlen(buf);
+            while (n > 0 && (buf[n-1]=='\n'||buf[n-1]=='\r'||buf[n-1]==' '||buf[n-1]=='\t')) buf[--n]=0;
+            char *normed = normalize_board_slug(buf);
+            if (normed) {
+                if (kanban_board_exists(normed)) return normed;
+                free(normed);
+            }
+            return strdup(KB_DEFAULT_BOARD);
+        }
+        fclose(f);
+    }
+    /* 3. default */
+    return strdup(KB_DEFAULT_BOARD);
+}
+
+/* PoP: set_current_board @ hermes_cli/kanban_db.py:set_current_board
+ * Writes the slug to <root>/kanban/current. Returns 0 on success. */
+int set_current_board(const char *slug)
+{
+    char *normed = normalize_board_slug(slug);
+    if (!normed) return -1;
+    char *cp = kanban_current_board_path();
+    char dir[PATH_MAX];
+    snprintf(dir, sizeof(dir), "%s", cp);
+    char *slash = strrchr(dir, '/');
+    if (slash) *slash = '\0';
+    mkdir(dir, 0755);
+    FILE *f = fopen(cp, "w");
+    free(cp);
+    if (!f) { free(normed); return -1; }
+    fprintf(f, "%s\n", normed);
+    fclose(f);
+    free(normed);
+    return 0;
 }
