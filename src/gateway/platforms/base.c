@@ -219,3 +219,120 @@ char *gw_format_message(const char *text, bool markdown) {
 }
 
 /* ================================================================ */
+
+static int ends_with(const char *s, const char *suffix)
+{
+    if (!s || !suffix) return 0;
+    size_t ls = strlen(s), lsuf = strlen(suffix);
+    if (lsuf > ls) return 0;
+    return strcmp(s + ls - lsuf, suffix) == 0;
+}
+
+/* PoP: _no_proxy_entry_matches @ gateway/platforms/base.py:_no_proxy_entry_matches
+ * Returns 1 if a NO_PROXY entry matches host[:port]. Supports exact host,
+ * "*.domain" / ".domain" suffix wildcards, and "*". CIDR / IP-literal matching
+ * is intentionally omitted (needs an IP-address library not in the C runtime);
+ * the domain + wildcard cases cover normal NO_PROXY usage. */
+int no_proxy_entry_matches(const char *entry, const char *host, int port)
+{
+    if (!entry || !host) return 0;
+    char tok[256];
+    size_t i = 0;
+    while (entry[i] == ' ' || entry[i] == '\t') i++;
+    size_t j = strlen(entry);
+    while (j > i && (entry[j-1]==' '||entry[j-1]=='\t')) j--;
+    size_t k = 0;
+    for (; i < j && k < sizeof(tok)-1; i++) tok[k++] = (char)tolower((unsigned char)entry[i]);
+    tok[k] = '\0';
+    if (!tok[0]) return 0;
+    if (strcmp(tok, "*") == 0) return 1;
+
+    /* split host:port */
+    char th[256]; snprintf(th, sizeof(th), "%s", tok);
+    char *colon = strrchr(th, ':');
+    int tok_port = -1;
+    if (colon && strchr(colon, '.') == NULL) { tok_port = atoi(colon+1); *colon = '\0'; }
+    if (tok_port != -1 && port != -1 && tok_port != port) return 0;
+    if (tok_port != -1 && port == -1) return 0;
+
+    char lhost[256];
+    for (size_t x = 0; th[x] && x < sizeof(lhost)-1; x++) lhost[x] = (char)tolower((unsigned char)th[x]);
+    lhost[strlen(th)] = '\0';
+    char lh[256];
+    for (size_t x = 0; host[x] && x < sizeof(lh)-1; x++) lh[x] = (char)tolower((unsigned char)host[x]);
+    lh[strlen(host)] = '\0';
+
+    if (strncmp(lhost, "*.", 2) == 0) {
+        const char *suffix = lhost + 1; /* ".domain" */
+        return (strcmp(lh, suffix+1) == 0) || ends_with(lh, suffix);
+    }
+    if (lhost[0] == '.') {
+        return (strcmp(lh, lhost+1) == 0) || ends_with(lh, lhost);
+    }
+    return (strcmp(lh, lhost) == 0) || ends_with(lh, lhost);
+}
+
+/* PoP: is_host_excluded_by_no_proxy @ gateway/platforms/base.py:is_host_excluded_by_no_proxy */
+int is_host_excluded_by_no_proxy(const char *hostname, const char *no_proxy_value)
+{
+    if (!hostname) return 0;
+    const char *raw = no_proxy_value;
+    char envbuf[1024];
+    if (!raw || !raw[0]) {
+        raw = getenv("NO_PROXY");
+        if (!raw || !raw[0]) raw = getenv("no_proxy");
+        if (!raw) return 0;
+    }
+    if (!raw[0]) return 0;
+
+    /* iterate entries split on whitespace/comma */
+    char buf[1024];
+    snprintf(buf, sizeof(buf), "%s", raw);
+    char *save = NULL;
+    char *tok = strtok_r(buf, " \t,", &save);
+    while (tok) {
+        if (no_proxy_entry_matches(tok, hostname, -1)) return 1;
+        tok = strtok_r(NULL, " \t,", &save);
+    }
+    return 0;
+}
+
+/* PoP: safe_url_for_log @ gateway/platforms/base.py:safe_url_for_log
+ * Returns malloc'd log-safe URL (strips userinfo, truncates). Caller frees. */
+char *safe_url_for_log(const char *url, int max_len)
+{
+    if (max_len <= 0) return strdup("");
+    if (!url) return strdup("");
+    char raw[2048];
+    snprintf(raw, sizeof(raw), "%s", url);
+    if (!raw[0]) return strdup("");
+
+    /* urlsplit-ish: scheme://netloc/path */
+    char *dcolon = strstr(raw, "://");
+    char *at = strrchr(raw, '@');
+    if (dcolon) {
+        char *netloc = dcolon + 3;
+        char *slash = strchr(netloc, '/');
+        char path[2048]; path[0]='\0';
+        if (slash) { snprintf(path, sizeof(path), "%s", slash); *slash = '\0'; }
+        /* strip userinfo */
+        char *nl = at && at > dcolon ? at + 1 : netloc;
+        char safe[2048];
+        snprintf(safe, sizeof(safe), "%.*s://%s", (int)(netloc - raw - 3), raw, nl);
+        if (path[0] && strcmp(path, "/") != 0) {
+            char *base = strrchr(path, '/');
+            if (base && base[1]) snprintf(safe + strlen(safe), sizeof(safe)-strlen(safe), "/.../%s", base+1);
+            else snprintf(safe + strlen(safe), sizeof(safe)-strlen(safe), "/...");
+        }
+        size_t sl = strlen(safe);
+        if (sl <= (size_t)max_len) return strdup(safe);
+        if (max_len <= 3) { char *r = malloc(max_len+1); memset(r,'.',max_len); r[max_len]='\0'; return r; }
+        char *r = malloc(max_len+1);
+        snprintf(r, max_len+1, "%.*s...", max_len-3, safe);
+        return r;
+    }
+    if (strlen(raw) <= (size_t)max_len) return strdup(raw);
+    char *r = malloc(max_len+1);
+    snprintf(r, max_len+1, "%.*s...", max_len-3, raw);
+    return r;
+}
