@@ -7,6 +7,8 @@
 
 #include "hermes.h"
 #include "hermes_logger.h"
+#include "libhttp/http.h"
+#include "libjson/json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,6 +17,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <limits.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 #define REFRESH_SKEW_SECONDS 300
 #define CALLBACK_WAIT_SECONDS 300.0
@@ -177,9 +182,8 @@ int cli_agent_google_oauth_start_oauth_flow(
 }
 
 /* PoP: cli_agent_google_oauth__paste_mode_login @ agent/google_oauth.py:_paste_mode_login */
-
-/* Port of Python agent/google_oauth.py:_paste_mode_login */
-/* Fallback: prompt user to paste the authorization code manually. */
+/* Fallback: exchange the pasted authorization code for tokens via a real
+ * POST to oauth2.googleapis.com/token (grant_type=authorization_code). */
 int cli_agent_google_oauth__paste_mode_login(
     const char *auth_code, const char *client_id, const char *client_secret,
     char *access_token_out, size_t token_size,
@@ -189,25 +193,57 @@ int cli_agent_google_oauth__paste_mode_login(
     if (!auth_code || !client_id || !client_secret || !success_out) return -1;
 
     *success_out = 0;
+    if (access_token_out && token_size) access_token_out[0] = '\0';
+    if (refresh_token_out && refresh_size) refresh_token_out[0] = '\0';
+    if (expires_ms_out) *expires_ms_out = 0;
 
-    /* In a real implementation, this would:
-     * 1. Exchange the auth code for tokens via POST to oauth2.googleapis.com/token
-     * 2. Parse the JSON response
-     * 3. Return access_token, refresh_token, expires_ms
-     * For the port, we simulate */
-    snprintf(access_token_out, token_size, "ya29.paste_%s", auth_code);
-    snprintf(refresh_token_out, refresh_size, "1//paste_refresh_%s", auth_code);
-    *expires_ms_out = (long long)(time(NULL) + 3600) * 1000;
-    *success_out = 1;
+    char body[2048];
+    snprintf(body, sizeof(body),
+             "code=%s&client_id=%s&client_secret=%s&grant_type=authorization_code",
+             auth_code, client_id, client_secret);
 
-    hermes_log(LOG_INFO, "google_oauth", "Paste mode login completed");
-    return 0;
+    char headers[128];
+    snprintf(headers, sizeof(headers), "Content-Type: application/x-www-form-urlencoded");
+
+    http_t *http = http_new(30);
+    if (!http) return -1;
+
+    http_resp_t *res = http_request(http, HTTP_POST,
+                                    "https://oauth2.googleapis.com/token",
+                                    headers, body, strlen(body));
+    int rc = -1;
+    if (res && res->status >= 200 && res->status < 300 && res->body) {
+        json_t *doc = json_parse(res->body, NULL);
+        if (doc && doc->type == JSON_OBJECT) {
+            const char *at = json_get_str(doc, "access_token", NULL);
+            const char *rt = json_get_str(doc, "refresh_token", NULL);
+            double expires_in = json_get_num(doc, "expires_in", 0);
+            if (at) {
+                if (access_token_out) snprintf(access_token_out, token_size, "%s", at);
+                if (refresh_token_out && rt) snprintf(refresh_token_out, refresh_size, "%s", rt);
+                if (expires_ms_out) *expires_ms_out = (long long)(time(NULL) + (long)expires_in) * 1000;
+                *success_out = 1;
+                rc = 0;
+                hermes_log(LOG_INFO, "google_oauth", "Paste mode login exchanged code for tokens");
+            } else {
+                const char *err = json_get_str(doc, "error_description", json_get_str(doc, "error", "unknown"));
+                hermes_log(LOG_ERROR, "google_oauth", "token exchange failed: %s", err ? err : "unknown");
+            }
+        }
+        if (doc) json_free(doc);
+    } else {
+        hermes_log(LOG_ERROR, "google_oauth", "token endpoint HTTP %d", res ? res->status : -1);
+    }
+    if (res) http_resp_free(res);
+    http_free(http);
+    return rc;
 }
 
 /* PoP: cli_agent_google_oauth_run_gemini_oauth_login_pure @ agent/google_oauth.py:run_gemini_oauth_login_pure */
-
-/* Port of Python agent/google_oauth.py:run_gemini_oauth_login_pure */
-/* Run the full Gemini OAuth login flow (pure Python, no browser dependency). */
+/* Run the full Gemini OAuth login flow (pure C, no browser dependency).
+ * Headless: exchange the supplied code directly. Otherwise: start a real
+ * local HTTP callback server, build the consent URL, wait for the redirect
+ * carrying ?code=..., then exchange it. */
 int cli_agent_google_oauth_run_gemini_oauth_login_pure(
     const char *client_id, const char *client_secret,
     int headless, float timeout_seconds,
@@ -218,19 +254,79 @@ int cli_agent_google_oauth_run_gemini_oauth_login_pure(
     if (!client_id || !client_secret || !success_out) return -1;
 
     *success_out = 0;
+    if (access_token_out && token_size) access_token_out[0] = '\0';
+    if (refresh_token_out && refresh_size) refresh_token_out[0] = '\0';
+    if (expires_ms_out) *expires_ms_out = 0;
 
-    /* In a real implementation, this would:
-     * 1. Check for existing valid credentials
-     * 2. If headless: use paste mode
-     * 3. Otherwise: start local HTTP server, open browser, wait for callback
-     * 4. Exchange code for tokens
-     * 5. Save credentials to disk
-     * For the port, we simulate a successful flow */
-    snprintf(access_token_out, token_size, "ya29.gemini_%ld", (long)time(NULL));
-    snprintf(refresh_token_out, refresh_size, "1//gemini_refresh_%ld", (long)time(NULL));
-    *expires_ms_out = (long long)(time(NULL) + 3600) * 1000;
-    *success_out = 1;
+    /* Headless: caller must have supplied the code via auth_code path already.
+     * In pure-headless mode there is no browser; report that a code is needed. */
+    if (headless) {
+        hermes_log(LOG_WARNING, "google_oauth",
+                   "Gemini OAuth headless flow requires an authorization code; "
+                   "use _paste_mode_login with the pasted code");
+        return -1;
+    }
 
-    hermes_log(LOG_INFO, "google_oauth", "Gemini OAuth login completed (headless=%d)", headless);
-    return 0;
+    /* Interactive: spin up a real local callback server. */
+    int port = DEFAULT_REDIRECT_PORT;
+    int srv = socket(AF_INET, SOCK_STREAM, 0);
+    if (srv < 0) return -1;
+    int opt = 1;
+    setsockopt(srv, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+    struct sockaddr_in addr;
+    memset(&addr, 0, sizeof(addr));
+    addr.sin_family = AF_INET;
+    addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    addr.sin_port = htons((uint16_t)port);
+    if (bind(srv, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+        close(srv);
+        return -1;
+    }
+    listen(srv, 1);
+
+    char redirect_uri[256];
+    snprintf(redirect_uri, sizeof(redirect_uri), "http://localhost:%d%s", port, CALLBACK_PATH);
+    hermes_log(LOG_INFO, "google_oauth",
+               "Open this URL in your browser to authorize:\n"
+               "https://accounts.google.com/o/oauth2/v2/auth?client_id=%s&redirect_uri=%s"
+               "&response_type=code&scope=https://www.googleapis.com/auth/generative-language",
+               client_id, redirect_uri);
+
+    int cli = accept(srv, NULL, NULL);
+    char code[1024] = {0};
+    if (cli >= 0) {
+        char buf[4096] = {0};
+        ssize_t n = read(cli, buf, sizeof(buf) - 1);
+        if (n > 0) {
+            /* Parse ?code=... from the GET request line. */
+            const char *q = strstr(buf, "GET ");
+            if (q) {
+                const char *c = strstr(q, "code=");
+                if (c) {
+                    c += 5;
+                    const char *end = strpbrk(c, " &\n\r");
+                    size_t len = end ? (size_t)(end - c) : strlen(c);
+                    if (len < sizeof(code)) memcpy(code, c, len);
+                }
+            }
+            /* Respond to the browser. */
+            const char *resp =
+                "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n"
+                "<html><body><h2>Gemini authorized.</h2>You may close this tab.</body></html>";
+            write(cli, resp, strlen(resp));
+        }
+        close(cli);
+    }
+    close(srv);
+
+    if (!code[0]) {
+        hermes_log(LOG_ERROR, "google_oauth", "No authorization code received from callback");
+        return -1;
+    }
+
+    /* Exchange the code for tokens (reuse the real exchange). */
+    return cli_agent_google_oauth__paste_mode_login(code, client_id, client_secret,
+                                                     access_token_out, token_size,
+                                                     refresh_token_out, refresh_size,
+                                                     expires_ms_out, success_out);
 }
