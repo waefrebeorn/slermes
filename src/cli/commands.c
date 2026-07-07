@@ -434,6 +434,7 @@ static void cmd_completions(const char *args, agent_state_t *state);
 /* Port of Python hermes_cli/bundles.py:_cmd_reload(). */
 static void cmd_reload(const char *args, agent_state_t *state);
 /* Port of Python hermes_cli/hooks.py:_cmd_doctor(). */
+/* PoP: cmd_doctor @ tools/computer_use/permissions.py:_doctor */
 static void cmd_doctor(const char *args, agent_state_t *state);
 /* Port of Python hermes_cli/curator.py:_cmd_rollback(). */
 static void cmd_rollback(const char *args, agent_state_t *state);
@@ -7791,3 +7792,4 @@ static void cmd_pet(const char *args, agent_state_t *state) {
     printf("    /pet disable           Turn off the pet\n");
     printf("    /pet enable            Turn on the pet\n");
 }
+

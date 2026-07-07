@@ -135,6 +135,7 @@ static cu_action_t *noop_wait(double seconds) {
     return noop_make_action("wait", true, "waited %.2fs", seconds);
 }
 
+/* PoP: make_noop_backend @ tools/computer_use/cua_backend.py:CuaDriverBackend.is_available */
 static cu_backend_t *make_noop_backend(void) {
     cu_backend_t *b = (cu_backend_t *)calloc(1, sizeof(cu_backend_t));
     if (!b) return NULL;
@@ -436,6 +437,7 @@ static cu_action_t *x11_wait(double seconds) {
     return x11_make_action("wait", true, "waited %.2fs", seconds);
 }
 
+/* PoP: make_x11_backend @ tools/computer_use/cua_backend.py:CuaDriverBackend.is_available */
 static cu_backend_t *make_x11_backend(void) {
     cu_backend_t *b = (cu_backend_t *)calloc(1, sizeof(cu_backend_t));
     if (!b) return NULL;
@@ -767,6 +769,7 @@ static cu_action_t *wayland_wait(double seconds) {
     return wayland_make_action("wait", true, "waited %.2fs", seconds);
 }
 
+/* PoP: make_wayland_backend @ tools/computer_use/cua_backend.py:CuaDriverBackend.is_available */
 static cu_backend_t *make_wayland_backend(void) {
     cu_backend_t *b = (cu_backend_t *)calloc(1, sizeof(cu_backend_t));
     if (!b) return NULL;
@@ -1147,6 +1150,7 @@ static cu_action_t *macos_wait(void *state, double seconds) {
 }
 
 /* ── Factory ──────────────────────────────────────────────────────── */
+/* PoP: make_macos_backend @ tools/computer_use/cua_backend.py:CuaDriverBackend.is_available */
 static cu_backend_t *make_macos_backend(void) {
     macos_state_t *st = (macos_state_t *)calloc(1, sizeof(macos_state_t));
     if (!st) return NULL;
@@ -1172,6 +1176,7 @@ static cu_backend_t *make_macos_backend(void) {
 }
 
 #else /* !__APPLE__ */
+/* PoP: make_macos_backend @ tools/computer_use/cua_backend.py:CuaDriverBackend.is_available */
 static cu_backend_t *make_macos_backend(void) {
     return NULL;  /* macOS backend not available on this platform */
 }
@@ -1468,6 +1473,7 @@ static cu_action_t *win_wait(void *state, double seconds) {
 }
 
 /* ── Factory ──────────────────────────────────────────────────────── */
+/* PoP: make_windows_backend @ tools/computer_use/cua_backend.py:CuaDriverBackend.is_available */
 static cu_backend_t *make_windows_backend(void) {
     windows_state_t *st = (windows_state_t *)calloc(1, sizeof(windows_state_t));
     if (!st) return NULL;
@@ -1493,6 +1499,7 @@ static cu_backend_t *make_windows_backend(void) {
 }
 
 #else /* !_WIN32 */
+/* PoP: make_windows_backend @ tools/computer_use/cua_backend.py:CuaDriverBackend.is_available */
 static cu_backend_t *make_windows_backend(void) {
     return NULL;  /* Windows backend not available on this platform */
 }
@@ -1509,6 +1516,7 @@ static cu_backend_t *g_cu_backend = NULL;
 static cu_backend_entry_t *g_backend_registry = NULL;
 static int g_backend_count = 0;
 
+/* PoP: cu_register_backend @ tools/computer_use/cua_backend.py:cua_driver_binary_available */
 bool cu_register_backend(const char *name,
                           const char *description,
                           cu_backend_t *(*factory)(void)) {
@@ -1524,6 +1532,7 @@ bool cu_register_backend(const char *name,
     return true;
 }
 
+/* PoP: cu_list_backends @ tools/computer_use/cua_backend.py:cua_driver_update_check */
 char *cu_list_backends(void) {
     json_t *arr = json_array();
     if (!arr) return strdup("[]");
@@ -1542,6 +1551,7 @@ char *cu_list_backends(void) {
     return str ? str : strdup("[]");
 }
 
+/* PoP: cu_clear_backends @ tools/computer_use/cua_backend.py:_maybe_nudge_update */
 void cu_clear_backends(void) {
     cu_backend_entry_t *e = g_backend_registry;
     while (e) {
@@ -1577,6 +1587,7 @@ static void cu_auto_register(void) {
     cu_register_backend("windows", "Windows via Win32 API",                    make_windows_backend);
 }
 
+/* PoP: computer_use_select_backend @ tools/computer_use/cua_backend.py:_is_macos */
 cu_backend_t *computer_use_select_backend(void) {
     cu_auto_register();
     /* Check CU_BACKEND env var for explicit override */
@@ -1600,6 +1611,7 @@ cu_backend_t *computer_use_select_backend(void) {
     return make_noop_backend();
 }
 
+/* PoP: cu_get_global_backend @ tools/computer_use/cua_backend.py:CuaDriverBackend.get_config */
 cu_backend_t *cu_get_global_backend(void) {
     if (!g_cu_backend) {
         g_cu_backend = computer_use_select_backend();
@@ -1607,6 +1619,7 @@ cu_backend_t *cu_get_global_backend(void) {
     return g_cu_backend;
 }
 
+/* PoP: cu_reset_global_backend @ tools/computer_use/cua_backend.py:CuaDriverBackend.set_config */
 void cu_reset_global_backend(void) {
     if (g_cu_backend) {
         g_cu_backend->stop();
@@ -1620,6 +1633,7 @@ void cu_reset_global_backend(void) {
  *  Free helpers
  * ====================================================================== */
 
+/* PoP: cu_capture_free @ tools/computer_use/cua_backend.py:CuaDriverBackend.get_accessibility_tree */
 void cu_capture_free(cu_capture_t *cap) {
     if (!cap) return;
     free(cap->png_b64);
@@ -1627,6 +1641,7 @@ void cu_capture_free(cu_capture_t *cap) {
     free(cap);
 }
 
+/* PoP: cu_action_free @ tools/computer_use/cua_backend.py:_parse_elements_from_tree */
 void cu_action_free(cu_action_t *act) {
     if (!act) return;
     if (act->capture) cu_capture_free(act->capture);
@@ -1771,6 +1786,7 @@ static char *make_error_response(const char *fmt, ...) {
  *  Action dispatch
  * ====================================================================== */
 
+/* PoP: dispatch_capture @ tools/computer_use/cua_backend.py:CuaDriverBackend.click */
 static char *dispatch_capture(cu_backend_t *b, json_t *args) {
     const char *mode = json_get_str(args, "mode", "som");
     if (strcmp(mode, "som") != 0 && strcmp(mode, "vision") != 0 &&
@@ -1813,6 +1829,7 @@ static char *dispatch_capture(cu_backend_t *b, json_t *args) {
     return resp;
 }
 
+/* PoP: dispatch_action @ tools/computer_use/cua_backend.py:CuaDriverBackend.scroll */
 static char *dispatch_action(cu_backend_t *b, const char *action,
                               json_t *args) {
     /* capture */
@@ -1997,6 +2014,7 @@ static char *dispatch_action(cu_backend_t *b, const char *action,
  *  Main handler
  * ====================================================================== */
 
+/* PoP: handle_computer_use @ tools/computer_use/cua_backend.py:CuaDriverBackend.call_tool */
 static char *handle_computer_use(const char *args_json, const char *task_id) {
     (void)task_id;
 

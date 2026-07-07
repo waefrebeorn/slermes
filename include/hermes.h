@@ -1770,8 +1770,10 @@ char *generate_preview(const char *content, int max_chars, bool *has_more);
 
 /* D07: Delegate spawn pause — global gate for TUI/gateway */
 bool set_spawn_paused(bool paused);
+/* PoP: is_spawn_paused @ tools/delegate_tool.py:is_spawn_paused */
 bool is_spawn_paused(void);
 
 /** @} */ /* end of hermes group */
 
 #endif /* HERMES_H */
+

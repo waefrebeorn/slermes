@@ -60,11 +60,10 @@ echo ""
 # ── Run State DB Tests (no server needed) ──
 echo "--- State DB Tests ---"
 if [ -x /tmp/test_state_db ]; then
-    /tmp/test_state_db 2>&1 | while IFS= read -r line; do
-        if echo "$line" | grep -q "PASS"; then PASS=$((PASS + 1)); fi
-        if echo "$line" | grep -q "FAIL"; then FAIL=$((FAIL + 1)); fi
-        echo "  $line"
-    done
+    OUT=$(/tmp/test_state_db 2>&1)
+    PASS=$((PASS + $(echo "$OUT" | grep -c "PASS" || true)))
+    FAIL=$((FAIL + $(echo "$OUT" | grep -c "FAIL" || true)))
+    echo "$OUT" | sed 's/^/  /'
 else
     echo "  SKIP (not built)"
 fi
@@ -74,11 +73,10 @@ echo ""
 # ── Run CLI Tests ──
 echo "--- CLI Tests ---"
 if [ -x /tmp/test_cli ]; then
-    /tmp/test_cli ./slermes 2>&1 | while IFS= read -r line; do
-        if echo "$line" | grep -q "PASS"; then PASS=$((PASS + 1)); fi
-        if echo "$line" | grep -q "FAIL"; then FAIL=$((FAIL + 1)); fi
-        echo "  $line"
-    done
+    OUT=$(/tmp/test_cli ./slermes 2>&1)
+    PASS=$((PASS + $(echo "$OUT" | grep -c "PASS" || true)))
+    FAIL=$((FAIL + $(echo "$OUT" | grep -c "FAIL" || true)))
+    echo "$OUT" | sed 's/^/  /'
 else
     echo "  SKIP (not built)"
 fi
@@ -87,12 +85,11 @@ echo ""
 
 # ── Run UI Tests ──
 echo "--- UI Tests ---"
-if [ -x /tmp/test_ui ] && [ -n "${TERMINAL:-}" ] || [ -t 0 ]; then
-    /tmp/test_ui 2>&1 | while IFS= read -r line; do
-        if echo "$line" | grep -q "PASS"; then PASS=$((PASS + 1)); fi
-        if echo "$line" | grep -q "FAIL"; then FAIL=$((FAIL + 1)); fi
-        echo "  $line"
-    done
+if [ -x /tmp/test_ui ] && { [ -n "${TERMINAL:-}" ] || [ -t 0 ]; }; then
+    OUT=$(/tmp/test_ui 2>&1)
+    PASS=$((PASS + $(echo "$OUT" | grep -c "PASS" || true)))
+    FAIL=$((FAIL + $(echo "$OUT" | grep -c "FAIL" || true)))
+    echo "$OUT" | sed 's/^/  /'
 else
     echo "  SKIP (no terminal available)"
     SKIP=$((SKIP + 10))
@@ -105,11 +102,10 @@ echo "--- API Integration Tests ---"
 if [ -x /tmp/test_api ]; then
     # Check if server is running
     if curl -s http://localhost:5174/health >/dev/null 2>&1; then
-        /tmp/test_api 5174 2>&1 | while IFS= read -r line; do
-            if echo "$line" | grep -q "PASS"; then PASS=$((PASS + 1)); fi
-            if echo "$line" | grep -q "FAIL"; then FAIL=$((FAIL + 1)); fi
-            echo "  $line"
-        done
+        OUT=$(/tmp/test_api 5174 2>&1)
+        PASS=$((PASS + $(echo "$OUT" | grep -c "PASS" || true)))
+        FAIL=$((FAIL + $(echo "$OUT" | grep -c "FAIL" || true)))
+        echo "$OUT" | sed 's/^/  /'
     else
         echo "  SKIP (server not running on port 5174)"
         echo "  Start with: ./web_server &"

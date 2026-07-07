@@ -97,6 +97,7 @@ int debug_session_is_active(const debug_session_t *session)
 }
 
 /* PoP: debug_session_log_call @ debug_helpers:log_call */
+/* PoP: debug_session_log_call @ tools/debug_helpers.py:log_call */
 void debug_session_log_call(debug_session_t *session,
                              const char *call_name,
                              const char *call_data)
@@ -213,3 +214,4 @@ char *debug_session_get_info(const debug_session_t *session)
 
     return json;
 }
+

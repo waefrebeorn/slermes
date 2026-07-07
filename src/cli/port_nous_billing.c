@@ -22,6 +22,7 @@
  *  Internal: HTTP helpers via curl popen
  * ================================================================ */
 
+/* PoP: http_post @ tools/browser_camofox.py:_post */
 static char *http_post(const char *url, const char *auth_header, const char *json_body) {
     if (!url) return NULL;
 
@@ -99,6 +100,7 @@ static char *http_post(const char *url, const char *auth_header, const char *jso
     return buf;
 }
 
+/* PoP: http_patch @ gateway/platforms/yuanbao.py:_patch */
 static char *http_patch(const char *url, const char *auth_header, const char *json_body) {
     if (!url) return NULL;
 

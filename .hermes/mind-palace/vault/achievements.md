@@ -115,3 +115,37 @@
 
 **Build:** CLEAN (0 errors, 0 warnings). **Desktop binary:** 2.3MB.
 **Pushed:** pending
+
+## v540 — Façade Audit: port_tools_url_safety.c closed (2026-07-06)
+
+**What happened:** Continued the façade-audit from prior session. Eliminated all 3
+banned "In a real implementation" stubs in src/cli/port_tools_url_safety.c (one of 19
+files carrying 57 total façade stubs) per the user edict (no fake-looking code).
+
+Real implementations added:
+- `normalize_url_for_request`: hand-rolled RFC 3492 punycode (IDNA) encoder per
+  hostname label + `urllib.parse.quote`-equivalent percent-encoding. Verified
+  byte-for-byte against Python tools/url_safety.py:
+  `Köln`→`K%C3%B6ln`, `Bücher.de`→`xn--Bcher-kva.de`,
+  `münchen.de`→`xn--mnchen-3ya.de`, port + userinfo preserved, `ftp://` rejected.
+  Fixed 4 bugs during port: extra `+BASE` in digit char, wrong digit→char map
+  (26-35 must be `0-9`), dropped bias update (`delta = adapt()` should be
+  `bias = adapt()`), and strtok_r buffer corruption from writing encoded label
+  back in place (caused double-encoding `xn--Bcher-kva.r-kva`).
+- `_global_allow_private_urls`: now reads `security.allow_private_urls` +
+  `browser.allow_private_urls` from config.yaml (minimal YAML line-scan) plus the
+  `HERMES_ALLOW_PRIVATE_URLS` env var — was a "also check config" stub.
+- `async_is_safe_url`: honest comment (no event loop in C; sync call is correct).
+
+Also: removed the hermes.h god-header from the file (used nothing from it), removed
+dead CGNAT_NET/CGNAT_MASK consts (confirmed `_is_blocked_ip` already fully implements
+SSRF blocks incl. CGNAT 100.64/10).
+
+**New skill:** slermes/url-safety-c-port — verified punycode encoder + build/test recipe.
+
+**Build:** CLEAN (0 errors). **Tests:** 36/36 pass (`bash tests/run_mission8_tests.sh`).
+**Scanner:** 4,664 PORTED / 5,067 REAL_GAP (9,731 total) — unchanged by this edit
+(the functions were already PoP-annotated PORTED; the change is behavioral, not class).
+**Note:** walkway state.md/BANNER.md corrected from stale "8,688/8,688 100%" fiction
+(v398-era) to live scanner output. NOT YET COMMITTED — dirty tree carries
+prior-session uncommitted work; commit pending next session.

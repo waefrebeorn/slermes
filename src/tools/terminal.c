@@ -2039,6 +2039,7 @@ bool is_persistent_env(const char *task_id) {
 /* PoP: cleanup_all_environments @ terminal_tool:cleanup_all_environments */
 /* Clean up all environment containers/VMs.
  * C core doesn't manage environments - no-op. */
+/* PoP: cleanup_all_environments @ tools/terminal_tool.py:cleanup_all_environments */
 void cleanup_all_environments(void) {
     /* No-op in C core */
 }
@@ -2046,6 +2047,7 @@ void cleanup_all_environments(void) {
 /* PoP: cleanup_vm @ terminal_tool:cleanup_vm */
 /* Clean up a specific VM environment.
  * C core doesn't manage VMs - no-op. */
+/* PoP: cleanup_vm @ tools/terminal_tool.py:cleanup_vm */
 void cleanup_vm(const char *task_id, bool force_remove) {
     (void)task_id;
     (void)force_remove;
@@ -2087,3 +2089,5 @@ void registry_init_terminal(void) {
         "Use for running code, compiling, testing, and system operations.",
         SCHEMA, terminal_handler);
 }
+
+

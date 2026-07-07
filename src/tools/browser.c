@@ -43,6 +43,11 @@ typedef struct {
 
 static browser_tab_t g_tab;
 
+/* Get current browser tab URL (NULL if no active session) */
+const char *browser_get_current_url(void) {
+    return g_tab.url[0] ? g_tab.url : NULL;
+}
+
 /* Initialize browser state */
 void browser_init(void) {
     memset(&g_tab, 0, sizeof(g_tab));
@@ -66,6 +71,7 @@ void cleanup_browser(void) {
  * ================================================================ */
 
 /* Extract <title> from HTML. Returns empty string if not found. */
+/* PoP: extract_title @ tools/browser_tool.py:_extract_title */
 static void extract_title(const char *html, char *title, size_t title_sz) {
     title[0] = '\0';
     if (!html) return;
@@ -91,6 +97,7 @@ static void extract_title(const char *html, char *title, size_t title_sz) {
 }
 
 /* Strip HTML tags for a plain-text snapshot. Returns malloc'd string. */
+/* PoP: html_to_text @ tools/browser_tool.py:_html_to_text */
 static char *html_to_text(const char *html) {
     if (!html) return strdup("");
     /* Simple tag stripper. For production, use a proper HTML parser. */
@@ -150,6 +157,7 @@ static char *html_to_text(const char *html) {
 /* Scan HTML for interactive elements (a, button, input, textarea, select).
  * Populates g_tab.elements[] with descriptions like "[@e1] Link: text".
  * Returns element count. */
+/* PoP: index_elements @ tools/browser_tool.py:_index_elements */
 static int index_elements(const char *html) {
     g_tab.element_count = 0;
     if (!html) return 0;
@@ -313,6 +321,7 @@ static int index_elements(const char *html) {
  * ================================================================ */
 
 /* Navigate to a URL. Returns error string or NULL on success. */
+/* PoP: browser_navigate_to @ tools/browser_tool.py:_navigate_to */
 static const char *browser_navigate_to(const char *url) {
     if (!url || !*url) return "No URL provided";
 
@@ -419,6 +428,7 @@ static const char *browser_navigate_to(const char *url) {
 
 /* Port of Python tools/browser_tool.py:browser_navigate(). */
 /* browser_navigate: Navigate to a URL */
+/* PoP: browser_navigate_handler @ tools/browser_tool.py:navigate */
 char *browser_navigate_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     json_t *args = json_parse(args_json, NULL);
@@ -489,6 +499,7 @@ char *browser_navigate_handler(const char *args_json, const char *task_id) {
 
 /* Port of Python tools/browser_tool.py:browser_snapshot(). */
 /* browser_snapshot: Get current page state with scroll support */
+/* PoP: browser_snapshot_handler @ tools/browser_tool.py:snapshot */
 char *browser_snapshot_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     if (!g_tab.html) {
@@ -640,6 +651,7 @@ char *browser_snapshot_handler(const char *args_json, const char *task_id) {
 
 /* Port of Python tools/browser_tool.py:browser_back(). */
 /* browser_back: Navigate back in history */
+/* PoP: browser_back_handler @ tools/browser_tool.py:back */
 char *browser_back_handler(const char *args_json, const char *task_id) {
     (void)args_json; (void)task_id;
     if (g_tab.history_pos == 0 || g_tab.history_count == 0) {
@@ -661,6 +673,7 @@ char *browser_back_handler(const char *args_json, const char *task_id) {
 }
 
 /* browser_forward: Navigate forward in history */
+/* PoP: browser_forward_handler @ tools/browser_tool.py:forward */
 char *browser_forward_handler(const char *args_json, const char *task_id) {
     (void)args_json; (void)task_id;
     if (g_tab.history_pos >= g_tab.history_count - 1) {
@@ -687,6 +700,7 @@ char *browser_forward_handler(const char *args_json, const char *task_id) {
 
 /* Find an <a> tag whose inner text contains the target string.
  * Returns malloc'd href URL or NULL if not found. */
+/* PoP: find_link_by_text @ tools/browser_tool.py:_find_link_by_text */
 static char *find_link_by_text(const char *html, const char *target) {
     if (!html || !target) return NULL;
     const char *p = html;
@@ -755,6 +769,7 @@ static char *find_link_by_text(const char *html, const char *target) {
 
 /* Port of Python tools/microsoft_graph_client.py:_resolve_url(). */
 /* Resolve a relative URL against the current page URL */
+/* PoP: resolve_url @ tools/browser_tool.py:_resolve_url */
 static char *resolve_url(const char *base, const char *href) {
     if (!href) return NULL;
     if (strstr(href, "://")) return strdup(href);
@@ -817,6 +832,9 @@ static char *resolve_url(const char *base, const char *href) {
 /* PoP: browser_click_handler @ backend:click */
 /* PoP: browser_click_handler @ cua_backend:click */
 /* PoP: browser_click_handler @ computer_use:click */
+/* PoP: browser_click_handler @ tools/browser_tool.py:click */
+/* PoP: browser_click_handler @ tools/computer_use/backend.py:click */
+/* PoP: browser_click_handler @ tools/computer_use/tool.py:click */
 char *browser_click_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     json_t *args = json_parse(args_json, NULL);
@@ -931,6 +949,7 @@ char *browser_click_handler(const char *args_json, const char *task_id) {
 
 /* Port of Python tools/browser_tool.py:browser_type(). */
 /* browser_type: Type text into an input field */
+/* PoP: browser_type_handler @ tools/browser_tool.py:type */
 char *browser_type_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     json_t *args = json_parse(args_json, NULL);
@@ -979,6 +998,7 @@ char *browser_type_handler(const char *args_json, const char *task_id) {
 /* PoP: browser_scroll_handler @ cua_backend:scroll */
 /* PoP: browser_scroll_handler @ computer_use:scroll */
 /* PoP: browser_scroll_handler @ session_search:_scroll */
+/* PoP: browser_scroll_handler @ tools/browser_tool.py:scroll */
 char *browser_scroll_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     json_t *args = json_parse(args_json, NULL);
@@ -1050,6 +1070,7 @@ char *browser_scroll_handler(const char *args_json, const char *task_id) {
 
 /* Port of Python tools/browser_tool.py:browser_get_images(). */
 /* browser_get_images: Extract all <img> tags from the cached HTML */
+/* PoP: browser_get_images_handler @ tools/browser_tool.py:get_images */
 char *browser_get_images_handler(const char *args_json, const char *task_id) {
     (void)args_json; (void)task_id;
 
@@ -1199,6 +1220,7 @@ char *browser_get_images_handler(const char *args_json, const char *task_id) {
 
 /* Port of Python tools/browser_tool.py:browser_press(). */
 /* browser_press: Press a keyboard key (Enter, Tab, Escape, etc.) */
+/* PoP: browser_press_handler @ tools/browser_tool.py:press */
 char *browser_press_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     json_t *args = json_parse(args_json, NULL);
@@ -1314,6 +1336,7 @@ static char *cdp_send_command(const char *method, const char *params_json);
 /* Ping CDP endpoint to check health.
  * Returns JSON string with status, or NULL if CDP not configured.
  * Caller must free the result. */
+/* PoP: cdp_supervisor_ping @ tools/browser_tool.py:_cdp_supervisor_ping */
 static char *cdp_supervisor_ping(void) {
     const char *url = cdp_get_url();
     if (!url) {
@@ -1379,6 +1402,7 @@ static char *cdp_supervisor_ping(void) {
 }
 
 /* browser_supervisor handler — returns CDP connection health status */
+/* PoP: browser_supervisor_handler @ tools/browser_tool.py:browser_supervisor */
 static char *browser_supervisor_handler(const char *args_json, const char *task_id) {
     (void)args_json; (void)task_id;
     return cdp_supervisor_ping();
@@ -1408,6 +1432,7 @@ const char *cdp_get_url(void) {
 }
 
 /* Set CDP URL (from config) */
+/* PoP: cdp_set_url @ tools/browser_tool.py:_cdp_set_url */
 void cdp_set_url(const char *url) {
     if (url) snprintf(g_cdp_url, sizeof(g_cdp_url), "%s", url);
 }
@@ -1415,6 +1440,7 @@ void cdp_set_url(const char *url) {
 /* Send a CDP command and wait for response.
  * Returns malloc'd JSON response string, or NULL on error.
  * format: {"id":N,"method":"...","params":{...}} */
+/* PoP: cdp_send_command @ tools/browser_tool.py:_cdp_send_command */
 static char *cdp_send_command(const char *method, const char *params_json) {
     const char *url = cdp_get_url();
     if (!url) return NULL;
@@ -1478,6 +1504,7 @@ static char *cdp_send_command(const char *method, const char *params_json) {
 /* browser_cdp handler — sends an arbitrary CDP command */
 /* PoP: browser_cdp_handler @ browser_tool:cdp */
 /* PoP: browser_cdp_handler @ browser_supervisor:_cdp */
+/* PoP: browser_cdp_handler @ tools/browser_tool.py:cdp */
 static char *browser_cdp_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     if (!args_json) return strdup("{\"error\":\"No args\"}");
@@ -1507,6 +1534,7 @@ static char *browser_cdp_handler(const char *args_json, const char *task_id) {
 
 /* Port of Python tools/browser_tool.py:browser_vision(). */
 /* browser_vision handler — take screenshot via CDP and analyze */
+/* PoP: browser_vision_handler @ tools/browser_tool.py:vision_analyze */
 static char *browser_vision_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     if (!args_json) return strdup("{\"error\":\"No args\"}");
@@ -1554,6 +1582,7 @@ static char *browser_vision_handler(const char *args_json, const char *task_id) 
 }
 
 /* D03: CDP PDF generation — Page.printToPDF via CDP */
+/* PoP: cdp_generate_pdf @ tools/browser_tool.py:_cdp_generate_pdf */
 static char *cdp_generate_pdf(json_node_t *result) {
     const char *url = cdp_get_url();
     if (!url) {
@@ -1610,8 +1639,9 @@ static char *cdp_generate_pdf(json_node_t *result) {
 
 /* Port of Python hermes_cli/bundles.py:_console(). */
 /* browser_console handler — get console logs via CDP */
-/* PoP: browser_console_handler @ browser_tool:browser_console */
+/* PoP: browser_console_handler @ tools/browser_tool.py:browser_console */
 /* PoP: browser_console_handler @ browser_camofox:browser_console */
+/* PoP: browser_console_handler @ tools/browser_tool.py:browser_console */
 static char *browser_console_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     if (!args_json) return strdup("{\"error\":\"No args\"}");
@@ -1649,6 +1679,7 @@ static char *browser_console_handler(const char *args_json, const char *task_id)
 
 /* Port of Python tools/browser_dialog_tool.py:browser_dialog(). */
 /* browser_dialog handler — handle JavaScript dialogs */
+/* PoP: browser_dialog_handler @ tools/browser_tool.py:browser_dialog */
 static char *browser_dialog_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     if (!args_json) return strdup("{\"error\":\"No args\"}");
@@ -1702,6 +1733,7 @@ static const char *BROWSER_SCROLL_SCHEMA =
 
 
 /* D03: browser_generate_pdf — Generate PDF of current page via CDP */
+/* PoP: browser_generate_pdf_handler @ tools/browser_tool.py:generate_pdf */
 char *browser_generate_pdf_handler(const char *args_json, const char *task_id) {
     (void)args_json;
     (void)task_id;
@@ -1795,3 +1827,5 @@ void registry_init_browser(void) {
         "{\"type\":\"object\",\"properties\":{}}",
         browser_supervisor_handler);
 }
+
+

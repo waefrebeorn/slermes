@@ -35,6 +35,7 @@ static void shutdown_handler(int sig) {
 }
 
 /* Get lock directory path */
+/* PoP: get_lock_dir @ gateway/status.py:_get_lock_dir */
 static const char *get_lock_dir(void) {
     if (g_lock_dir[0]) return g_lock_dir;
 

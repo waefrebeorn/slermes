@@ -1,0 +1,1968 @@
+{
+  "by_module": {
+    "agent/anthropic_adapter.py": [
+      66,
+      2
+    ],
+    "tools/approval.py": [
+      75,
+      23
+    ],
+    "tools/browser_supervisor.py": [
+      40,
+      14
+    ],
+    "tools/browser_tool.py": [
+      100,
+      25
+    ],
+    "tools/cronjob_tools.py": [
+      22,
+      16
+    ],
+    "tools/image_generation_tool.py": [
+      27,
+      19
+    ],
+    "tools/kanban_tools.py": [
+      26,
+      13
+    ],
+    "tools/process_registry.py": [
+      48,
+      31
+    ],
+    "tools/send_message_tool.py": [
+      26,
+      9
+    ],
+    "tools/session_search_tool.py": [
+      14,
+      3
+    ],
+    "tools/skills_sync.py": [
+      27,
+      19
+    ],
+    "tools/web_tools.py": [
+      18,
+      16
+    ],
+    "tools/write_approval.py": [
+      17,
+      1
+    ]
+  },
+  "all_gaps": [
+    {
+      "py": "agent/anthropic_adapter.py",
+      "feature": "_read_claude_code_credentials_from_file",
+      "kind": "function",
+      "parent": null,
+      "line": 929,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "agent/anthropic_adapter.py",
+      "feature": "_apply_assistant_cache_control_to_last_cacheable_block",
+      "kind": "function",
+      "parent": null,
+      "line": 1896,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "set_hermes_interactive_context",
+      "kind": "function",
+      "parent": null,
+      "line": 67,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "reset_hermes_interactive_context",
+      "kind": "function",
+      "parent": null,
+      "line": 77,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "_is_interactive_cli",
+      "kind": "function",
+      "parent": null,
+      "line": 82,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "_hardline_rm_path",
+      "kind": "function",
+      "parent": null,
+      "line": 340,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "_home_prefix_fold_regex",
+      "kind": "function",
+      "parent": null,
+      "line": 815,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "_fold_home_prefixes",
+      "kind": "function",
+      "parent": null,
+      "line": 846,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "_skip_shell_whitespace",
+      "kind": "function",
+      "parent": null,
+      "line": 938,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "_scan_dollar_paren_end",
+      "kind": "function",
+      "parent": null,
+      "line": 944,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "_scan_backtick_end",
+      "kind": "function",
+      "parent": null,
+      "line": 980,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "_read_shell_word",
+      "kind": "function",
+      "parent": null,
+      "line": 992,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "_strip_optional_shell_quotes",
+      "kind": "function",
+      "parent": null,
+      "line": 1041,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "_is_simple_shell_literal",
+      "kind": "function",
+      "parent": null,
+      "line": 1047,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "_literal_command_substitution_output",
+      "kind": "function",
+      "parent": null,
+      "line": 1051,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "_replace_simple_command_substitutions",
+      "kind": "function",
+      "parent": null,
+      "line": 1081,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "_replace_simple_shell_expansions",
+      "kind": "function",
+      "parent": null,
+      "line": 1106,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "_strip_shell_word_syntax",
+      "kind": "function",
+      "parent": null,
+      "line": 1112,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "_deobfuscate_shell_word_for_detection",
+      "kind": "function",
+      "parent": null,
+      "line": 1143,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "_iter_shell_command_starts",
+      "kind": "function",
+      "parent": null,
+      "line": 1160,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "_mark_command_starts",
+      "kind": "function",
+      "parent": null,
+      "line": 1239,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "_iter_shell_command_word_spans",
+      "kind": "function",
+      "parent": null,
+      "line": 1262,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "_command_detection_variants",
+      "kind": "function",
+      "parent": null,
+      "line": 1304,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "is_approval_bypass_active",
+      "kind": "function",
+      "parent": null,
+      "line": 1773,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/approval.py",
+      "feature": "_should_skip_container_guards",
+      "kind": "function",
+      "parent": null,
+      "line": 1939,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_supervisor.py",
+      "feature": "_redact_cdp_error_text",
+      "kind": "function",
+      "parent": null,
+      "line": 37,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_supervisor.py",
+      "feature": "_redact_supervisor_text",
+      "kind": "function",
+      "parent": null,
+      "line": 56,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_supervisor.py",
+      "feature": "respond_to_dialog",
+      "kind": "method",
+      "parent": "CDPSupervisor",
+      "line": 441,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_supervisor.py",
+      "feature": "evaluate_runtime",
+      "kind": "method",
+      "parent": "CDPSupervisor",
+      "line": 503,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_supervisor.py",
+      "feature": "_thread_main",
+      "kind": "method",
+      "parent": "CDPSupervisor",
+      "line": 609,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_supervisor.py",
+      "feature": "_archive_dialog_locked",
+      "kind": "method",
+      "parent": "CDPSupervisor",
+      "line": 996,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_supervisor.py",
+      "feature": "_on_frame_attached",
+      "kind": "method",
+      "parent": "CDPSupervisor",
+      "line": 1196,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_supervisor.py",
+      "feature": "_on_frame_navigated",
+      "kind": "method",
+      "parent": "CDPSupervisor",
+      "line": 1212,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_supervisor.py",
+      "feature": "_on_frame_detached",
+      "kind": "method",
+      "parent": "CDPSupervisor",
+      "line": 1232,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_supervisor.py",
+      "feature": "_on_target_detached",
+      "kind": "method",
+      "parent": "CDPSupervisor",
+      "line": 1317,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_supervisor.py",
+      "feature": "_on_console",
+      "kind": "method",
+      "parent": "CDPSupervisor",
+      "line": 1349,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_supervisor.py",
+      "feature": "_build_frame_tree_locked",
+      "kind": "method",
+      "parent": "CDPSupervisor",
+      "line": 1374,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_supervisor.py",
+      "feature": "get_or_start",
+      "kind": "method",
+      "parent": "_SupervisorRegistry",
+      "line": 1436,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_supervisor.py",
+      "feature": "stop_all",
+      "kind": "method",
+      "parent": "_SupervisorRegistry",
+      "line": 1487,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_build_browser_env",
+      "kind": "function",
+      "parent": null,
+      "line": 90,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_sanitize_url_for_logs",
+      "kind": "function",
+      "parent": null,
+      "line": 242,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_safe_command_timeout",
+      "kind": "function",
+      "parent": null,
+      "line": 282,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_get_open_command_timeout",
+      "kind": "function",
+      "parent": null,
+      "line": 294,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_needs_chromium_sandbox_bypass",
+      "kind": "function",
+      "parent": null,
+      "line": 301,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_read_command_output_files",
+      "kind": "function",
+      "parent": null,
+      "line": 317,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_unlink_command_output_files",
+      "kind": "function",
+      "parent": null,
+      "line": 333,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_format_browser_timeout_error",
+      "kind": "function",
+      "parent": null,
+      "line": 341,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_bare_task_id_for_session_key",
+      "kind": "function",
+      "parent": null,
+      "line": 1291,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_session_info_owned_by_task",
+      "kind": "function",
+      "parent": null,
+      "line": 1298,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_get_session_inactivity_timeout",
+      "kind": "function",
+      "parent": null,
+      "line": 1420,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_verify_reapable_browser_daemon",
+      "kind": "function",
+      "parent": null,
+      "line": 1543,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_agent_browser_candidate_present",
+      "kind": "function",
+      "parent": null,
+      "line": 2103,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_redact_browser_output",
+      "kind": "function",
+      "parent": null,
+      "line": 2669,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_blocked_private_page_action",
+      "kind": "function",
+      "parent": null,
+      "line": 3253,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_eval_ssrf_guard_active",
+      "kind": "function",
+      "parent": null,
+      "line": 3347,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_expression_targets_private_url",
+      "kind": "function",
+      "parent": null,
+      "line": 3370,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_current_page_private_url",
+      "kind": "function",
+      "parent": null,
+      "line": 3387,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_allow_unsafe_browser_evaluate",
+      "kind": "function",
+      "parent": null,
+      "line": 3447,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_decode_js_string_literal",
+      "kind": "function",
+      "parent": null,
+      "line": 3466,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_decoded_js_string_literals",
+      "kind": "function",
+      "parent": null,
+      "line": 3482,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_sensitive_browser_eval_token_reason",
+      "kind": "function",
+      "parent": null,
+      "line": 3486,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_risky_browser_eval_reason",
+      "kind": "function",
+      "parent": null,
+      "line": 3511,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_enforce_browser_eval_policy",
+      "kind": "function",
+      "parent": null,
+      "line": 3521,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/browser_tool.py",
+      "feature": "_maybe_autoinstall_chromium",
+      "kind": "function",
+      "parent": null,
+      "line": 4462,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/cronjob_tools.py",
+      "feature": "_is_emoji_cp",
+      "kind": "function",
+      "parent": null,
+      "line": 141,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/cronjob_tools.py",
+      "feature": "_zwj_has_emoji_neighbour",
+      "kind": "function",
+      "parent": null,
+      "line": 145,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/cronjob_tools.py",
+      "feature": "_strip_legitimate_emoji_zwj",
+      "kind": "function",
+      "parent": null,
+      "line": 160,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/cronjob_tools.py",
+      "feature": "_strip_cron_safe_constructs",
+      "kind": "function",
+      "parent": null,
+      "line": 171,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/cronjob_tools.py",
+      "feature": "_check_invisible_unicode",
+      "kind": "function",
+      "parent": null,
+      "line": 189,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/cronjob_tools.py",
+      "feature": "_strip_invisible_unicode",
+      "kind": "function",
+      "parent": null,
+      "line": 200,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/cronjob_tools.py",
+      "feature": "_scan_cron_skill_assembled",
+      "kind": "function",
+      "parent": null,
+      "line": 251,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/cronjob_tools.py",
+      "feature": "_origin_from_env",
+      "kind": "function",
+      "parent": null,
+      "line": 285,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/cronjob_tools.py",
+      "feature": "_local_delivery_notice",
+      "kind": "function",
+      "parent": null,
+      "line": 311,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/cronjob_tools.py",
+      "feature": "_repeat_display",
+      "kind": "function",
+      "parent": null,
+      "line": 348,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/cronjob_tools.py",
+      "feature": "_resolve_model_override",
+      "kind": "function",
+      "parent": null,
+      "line": 376,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/cronjob_tools.py",
+      "feature": "_validate_cron_base_url",
+      "kind": "function",
+      "parent": null,
+      "line": 448,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/cronjob_tools.py",
+      "feature": "_validate_cron_script_path",
+      "kind": "function",
+      "parent": null,
+      "line": 528,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/cronjob_tools.py",
+      "feature": "_format_job",
+      "kind": "function",
+      "parent": null,
+      "line": 567,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/cronjob_tools.py",
+      "feature": "cronjob",
+      "kind": "function",
+      "parent": null,
+      "line": 649,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/cronjob_tools.py",
+      "feature": "check_cronjob_requirements",
+      "kind": "function",
+      "parent": null,
+      "line": 1084,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/image_generation_tool.py",
+      "feature": "_resolve_managed_fal_gateway",
+      "kind": "function",
+      "parent": null,
+      "line": 452,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/image_generation_tool.py",
+      "feature": "_submit_fal_request",
+      "kind": "function",
+      "parent": null,
+      "line": 484,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/image_generation_tool.py",
+      "feature": "_resolve_fal_model",
+      "kind": "function",
+      "parent": null,
+      "line": 530,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/image_generation_tool.py",
+      "feature": "_build_fal_payload",
+      "kind": "function",
+      "parent": null,
+      "line": 565,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/image_generation_tool.py",
+      "feature": "_upscale_image",
+      "kind": "function",
+      "parent": null,
+      "line": 674,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/image_generation_tool.py",
+      "feature": "_looks_like_absolute_file_path",
+      "kind": "function",
+      "parent": null,
+      "line": 723,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/image_generation_tool.py",
+      "feature": "_active_terminal_env",
+      "kind": "function",
+      "parent": null,
+      "line": 734,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/image_generation_tool.py",
+      "feature": "_agent_cache_base_for_env",
+      "kind": "function",
+      "parent": null,
+      "line": 744,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/image_generation_tool.py",
+      "feature": "_agent_visible_cache_path",
+      "kind": "function",
+      "parent": null,
+      "line": 779,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/image_generation_tool.py",
+      "feature": "_force_artifact_sync",
+      "kind": "function",
+      "parent": null,
+      "line": 796,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/image_generation_tool.py",
+      "feature": "_postprocess_image_generate_result",
+      "kind": "function",
+      "parent": null,
+      "line": 806,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/image_generation_tool.py",
+      "feature": "image_generate_tool",
+      "kind": "function",
+      "parent": null,
+      "line": 838,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/image_generation_tool.py",
+      "feature": "check_fal_api_key",
+      "kind": "function",
+      "parent": null,
+      "line": 1040,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/image_generation_tool.py",
+      "feature": "_build_no_backend_setup_message",
+      "kind": "function",
+      "parent": null,
+      "line": 1045,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/image_generation_tool.py",
+      "feature": "check_image_generation_requirements",
+      "kind": "function",
+      "parent": null,
+      "line": 1086,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/image_generation_tool.py",
+      "feature": "_normalize_krea_model",
+      "kind": "function",
+      "parent": null,
+      "line": 1416,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/image_generation_tool.py",
+      "feature": "is_krea_model",
+      "kind": "function",
+      "parent": null,
+      "line": 1426,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/image_generation_tool.py",
+      "feature": "_maybe_route_managed_krea",
+      "kind": "function",
+      "parent": null,
+      "line": 1431,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/image_generation_tool.py",
+      "feature": "_handle_image_generate",
+      "kind": "function",
+      "parent": null,
+      "line": 1513,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/kanban_tools.py",
+      "feature": "_profile_has_kanban_toolset",
+      "kind": "function",
+      "parent": null,
+      "line": 52,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/kanban_tools.py",
+      "feature": "_check_kanban_mode",
+      "kind": "function",
+      "parent": null,
+      "line": 65,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/kanban_tools.py",
+      "feature": "_check_kanban_orchestrator_mode",
+      "kind": "function",
+      "parent": null,
+      "line": 82,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/kanban_tools.py",
+      "feature": "_worker_run_id",
+      "kind": "function",
+      "parent": null,
+      "line": 108,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/kanban_tools.py",
+      "feature": "_stamp_worker_session_metadata",
+      "kind": "function",
+      "parent": null,
+      "line": 121,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/kanban_tools.py",
+      "feature": "_enforce_worker_task_ownership",
+      "kind": "function",
+      "parent": null,
+      "line": 135,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/kanban_tools.py",
+      "feature": "_goal_judge_available",
+      "kind": "function",
+      "parent": null,
+      "line": 185,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/kanban_tools.py",
+      "feature": "heartbeat_current_worker_from_env",
+      "kind": "function",
+      "parent": null,
+      "line": 231,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/kanban_tools.py",
+      "feature": "_ok",
+      "kind": "function",
+      "parent": null,
+      "line": 290,
+      "c_loc": "include/hermes_error.h",
+      "c_func": "hermes_ok",
+      "reason": "C function appears to be stub/trivial"
+    },
+    {
+      "py": "tools/kanban_tools.py",
+      "feature": "_normalize_profile",
+      "kind": "function",
+      "parent": null,
+      "line": 294,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/kanban_tools.py",
+      "feature": "_parse_bool_arg",
+      "kind": "function",
+      "parent": null,
+      "line": 304,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/kanban_tools.py",
+      "feature": "_require_orchestrator_tool",
+      "kind": "function",
+      "parent": null,
+      "line": 318,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/kanban_tools.py",
+      "feature": "_task_summary_dict",
+      "kind": "function",
+      "parent": null,
+      "line": 336,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "_emit_output",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 217,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "_global_watch_admit",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 356,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "_is_host_pid_alive",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 444,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "_safe_host_start_time",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 454,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "_host_pid_is_ours",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 465,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "_refresh_detached_session",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 485,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "_proc_alive",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 508,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "_daemon_term_grace_seconds",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 522,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "_terminate_host_pid",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 540,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "_env_temp_dir",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 670,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "spawn_via_env",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 821,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "_reader_loop",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 923,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "_env_poller_loop",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 974,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "_pty_reader_loop",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 1032,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "is_completion_consumed",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 1098,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "is_session_waiting",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 1102,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "_drain_should_skip",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 1138,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "read_log",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 1295,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "kill_process",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 1414,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "write_stdin",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 1480,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "submit_stdin",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 1511,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "request_close_terminal",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 1515,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "close_stdin",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 1546,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "list_sessions",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 1582,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "has_any_active",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 1685,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "_prune_if_needed",
+      "kind": "method",
+      "parent": "ProcessRegistry",
+      "line": 1719,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "_format_age",
+      "kind": "function",
+      "parent": null,
+      "line": 1893,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "_format_async_delegation",
+      "kind": "function",
+      "parent": null,
+      "line": 1908,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "format_process_notification",
+      "kind": "function",
+      "parent": null,
+      "line": 2042,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "_redact_process_result",
+      "kind": "function",
+      "parent": null,
+      "line": 2148,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/process_registry.py",
+      "feature": "_handle_process",
+      "kind": "function",
+      "parent": null,
+      "line": 2173,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/send_message_tool.py",
+      "feature": "_telegram_retry_delay",
+      "kind": "function",
+      "parent": null,
+      "line": 98,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/send_message_tool.py",
+      "feature": "send_message_tool",
+      "kind": "function",
+      "parent": null,
+      "line": 181,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/send_message_tool.py",
+      "feature": "_handle_react",
+      "kind": "function",
+      "parent": null,
+      "line": 206,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/send_message_tool.py",
+      "feature": "_handle_send",
+      "kind": "function",
+      "parent": null,
+      "line": 298,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/send_message_tool.py",
+      "feature": "_parse_target_ref",
+      "kind": "function",
+      "parent": null,
+      "line": 475,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/send_message_tool.py",
+      "feature": "_describe_media_for_mirror",
+      "kind": "function",
+      "parent": null,
+      "line": 563,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/send_message_tool.py",
+      "feature": "_get_cron_auto_delivery_target",
+      "kind": "function",
+      "parent": null,
+      "line": 582,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/send_message_tool.py",
+      "feature": "_maybe_skip_cron_duplicate_send",
+      "kind": "function",
+      "parent": null,
+      "line": 597,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/send_message_tool.py",
+      "feature": "_check_send_message",
+      "kind": "function",
+      "parent": null,
+      "line": 1656,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/session_search_tool.py",
+      "feature": "_order_for_recall",
+      "kind": "function",
+      "parent": null,
+      "line": 106,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/session_search_tool.py",
+      "feature": "_normalize_title_query",
+      "kind": "function",
+      "parent": null,
+      "line": 427,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/session_search_tool.py",
+      "feature": "_title_match_result",
+      "kind": "function",
+      "parent": null,
+      "line": 432,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/skills_sync.py",
+      "feature": "_get_bundled_dir",
+      "kind": "function",
+      "parent": null,
+      "line": 53,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/skills_sync.py",
+      "feature": "_get_optional_dir",
+      "kind": "function",
+      "parent": null,
+      "line": 63,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/skills_sync.py",
+      "feature": "_build_external_skill_index",
+      "kind": "function",
+      "parent": null,
+      "line": 68,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/skills_sync.py",
+      "feature": "_read_suppressed_names",
+      "kind": "function",
+      "parent": null,
+      "line": 124,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/skills_sync.py",
+      "feature": "_discover_bundled_skills",
+      "kind": "function",
+      "parent": null,
+      "line": 204,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/skills_sync.py",
+      "feature": "_compute_relative_dest",
+      "kind": "function",
+      "parent": null,
+      "line": 223,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/skills_sync.py",
+      "feature": "_safe_rel_install_path",
+      "kind": "function",
+      "parent": null,
+      "line": 246,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/skills_sync.py",
+      "feature": "_skill_file_list",
+      "kind": "function",
+      "parent": null,
+      "line": 257,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/skills_sync.py",
+      "feature": "_content_hash",
+      "kind": "function",
+      "parent": null,
+      "line": 266,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/skills_sync.py",
+      "feature": "_optional_skill_index",
+      "kind": "function",
+      "parent": null,
+      "line": 278,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/skills_sync.py",
+      "feature": "_move_to_restore_backup",
+      "kind": "function",
+      "parent": null,
+      "line": 305,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/skills_sync.py",
+      "feature": "restore_official_optional_skill",
+      "kind": "function",
+      "parent": null,
+      "line": 319,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/skills_sync.py",
+      "feature": "_backfill_optional_provenance",
+      "kind": "function",
+      "parent": null,
+      "line": 390,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/skills_sync.py",
+      "feature": "sync_skills",
+      "kind": "function",
+      "parent": null,
+      "line": 483,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/skills_sync.py",
+      "feature": "_rmtree_writable",
+      "kind": "function",
+      "parent": null,
+      "line": 723,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/skills_sync.py",
+      "feature": "reset_bundled_skill",
+      "kind": "function",
+      "parent": null,
+      "line": 772,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/skills_sync.py",
+      "feature": "set_bundled_skills_opt_out",
+      "kind": "function",
+      "parent": null,
+      "line": 1038,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/skills_sync.py",
+      "feature": "is_bundled_skills_opt_out",
+      "kind": "function",
+      "parent": null,
+      "line": 1088,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/skills_sync.py",
+      "feature": "remove_pristine_bundled_skills",
+      "kind": "function",
+      "parent": null,
+      "line": 1093,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/web_tools.py",
+      "feature": "_env_value",
+      "kind": "function",
+      "parent": null,
+      "line": 108,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/web_tools.py",
+      "feature": "_load_web_config",
+      "kind": "function",
+      "parent": null,
+      "line": 131,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/web_tools.py",
+      "feature": "_get_backend",
+      "kind": "function",
+      "parent": null,
+      "line": 139,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/web_tools.py",
+      "feature": "_get_search_backend",
+      "kind": "function",
+      "parent": null,
+      "line": 174,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/web_tools.py",
+      "feature": "_get_extract_backend",
+      "kind": "function",
+      "parent": null,
+      "line": 188,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/web_tools.py",
+      "feature": "_get_capability_backend",
+      "kind": "function",
+      "parent": null,
+      "line": 199,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/web_tools.py",
+      "feature": "_is_backend_available",
+      "kind": "function",
+      "parent": null,
+      "line": 212,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/web_tools.py",
+      "feature": "_ddgs_package_importable",
+      "kind": "function",
+      "parent": null,
+      "line": 241,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/web_tools.py",
+      "feature": "_web_requires_env",
+      "kind": "function",
+      "parent": null,
+      "line": 265,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/web_tools.py",
+      "feature": "_get_extract_char_limit",
+      "kind": "function",
+      "parent": null,
+      "line": 322,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/web_tools.py",
+      "feature": "convert_base64_images_to_links",
+      "kind": "function",
+      "parent": null,
+      "line": 336,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/web_tools.py",
+      "feature": "_store_full_text",
+      "kind": "function",
+      "parent": null,
+      "line": 366,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/web_tools.py",
+      "feature": "_truncate_with_footer",
+      "kind": "function",
+      "parent": null,
+      "line": 402,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/web_tools.py",
+      "feature": "_ensure_web_plugins_loaded",
+      "kind": "function",
+      "parent": null,
+      "line": 476,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/web_tools.py",
+      "feature": "web_search_tool",
+      "kind": "function",
+      "parent": null,
+      "line": 505,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/web_tools.py",
+      "feature": "check_web_api_key",
+      "kind": "function",
+      "parent": null,
+      "line": 863,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    },
+    {
+      "py": "tools/write_approval.py",
+      "feature": "list_pending",
+      "kind": "function",
+      "parent": null,
+      "line": 154,
+      "c_loc": null,
+      "c_func": null,
+      "reason": "No C equivalent found in any source directory"
+    }
+  ]
+}

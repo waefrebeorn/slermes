@@ -203,6 +203,7 @@ static int scan_skills(void) {
 }
 
 /* Find skill by name */
+/* PoP: find_skill @ tools/skill_manager_tool.py:_find_skill */
 static skill_entry_t *find_skill(const char *name) {
     for (int i = 0; i < g_skill_count; i++) {
         if (strcmp(g_skills[i].name, name) == 0)

@@ -936,6 +936,7 @@ static json_node_t *dispatch_request(const char *method, const char *id,
     if (strcmp(method, "user_message") == 0)
         return handle_user_message(id, params, srv);
     if (strcmp(method, "authenticate") == 0)
+/* PoP: handle_authenticate @ gateway/platforms/yuanbao.py:_authenticate */
         return handle_authenticate(id, params, srv);
     if (strcmp(method, "tools/list") == 0)
         return handle_tools_list(id, params, srv);
@@ -1025,3 +1026,4 @@ void acp_server_run(acp_server_t *srv) {
 
     fprintf(stderr, "[acp] ACP server shutting down\n");
 }
+

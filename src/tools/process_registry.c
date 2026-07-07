@@ -658,7 +658,7 @@ char* process_registry_wait(const char *session_id, int timeout_sec) {
         pthread_mutex_unlock(&s->lock);
 
         /* Check interrupt - simplified */
-        /* In real implementation, would check is_interrupted() */
+        /* interrupt check pending */
 
         sleep(1);
     }

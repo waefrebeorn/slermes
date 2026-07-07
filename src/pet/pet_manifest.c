@@ -12,7 +12,8 @@
 #include <time.h>
 #include <pthread.h>
 #include "pet.h"
-#include "hermes.h"
+#include "hermes_http.h"
+#include "hermes_json.h"
 #include "hermes_logger.h"
 
 /* ── In-process cache ───────────────────────────────────────────────── */
