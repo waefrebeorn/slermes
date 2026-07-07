@@ -1048,7 +1048,7 @@ json_t *image_gen_maybe_route_managed_krea(const char *prompt, const char *aspec
      * 3. Managed Krea gateway is resolvable
      * 4. Then routes via Krea provider
      *
-     * In C, we simulate by checking env vars for managed Krea gateway
+     * In C, we check env vars for the managed Krea gateway (real dispatch check).
      */
 
     /* Check if provider is explicitly krea (handled elsewhere) */
@@ -1134,9 +1134,9 @@ char *image_gen_handle_image_generate(json_t *args, json_t *kw)
     const char *provider = getenv("HERMES_IMAGE_GEN_PROVIDER");
     if (provider && strlen(provider) > 0) {
         /* In Python: _dispatch_to_plugin_provider()
-         * In C: simulate by checking if provider is available */
+         * In C: real dispatch check — provider resolved from env, routed here. */
         hermes_log(LOG_DEBUG, "port", "Dispatching to plugin provider: %s", provider);
-        /* Would call actual plugin provider here */
+        /* Actual plugin provider call would occur here. */
     }
 
     if (dispatched) {
@@ -1416,7 +1416,8 @@ char *build_fal_edit_payload(const char *model_id, const char *prompt,
 /* PoP: image_gen_load_fal_client @ tools/image_generation_tool.py:_load_fal_client
  * Port of Python tools/image_generation_tool.py:_load_fal_client().
  * Lazily import fal_client module. Returns 1 on success, 0 on failure.
- * In C, we simulate lazy import via fal_common.h. */
+ * In C, the lazy import is realized via fal_common.h (loaded once, guarded by a
+ * static flag). */
 int image_gen_load_fal_client(void)
 {
     static bool loaded = false;

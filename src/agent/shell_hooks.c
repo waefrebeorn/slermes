@@ -651,7 +651,7 @@ char *shell_hooks_run_once(const char *event, const char *command,
                             const char *json_args) {
     if (!event || !command) return NULL;
 
-    /* Build a spec for the simulated hook */
+    /* Build the hook spec and invoke it via the chain callback. */
     shell_hook_spec_t spec;
     memset(&spec, 0, sizeof(spec));
     snprintf(spec.event, sizeof(spec.event), "%s", event);
