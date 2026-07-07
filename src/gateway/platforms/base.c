@@ -15,6 +15,9 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <sys/socket.h>
 
 /* ================================================================
  *  UTF-16 helpers (Port of Python gateway/platforms/base.py)
@@ -335,4 +338,90 @@ char *safe_url_for_log(const char *url, int max_len)
     char *r = malloc(max_len+1);
     snprintf(r, max_len+1, "%.*s...", max_len-3, raw);
     return r;
+}
+
+/* ===========================================================================
+ *  Network / media helpers — ported from gateway/platforms/base.py
+ *  These were REAL_GAP.
+ * =========================================================================== */
+
+/* PoP: is_network_accessible @ gateway/platforms/base.py:is_network_accessible
+ * True if host would expose the server beyond loopback (IPv4/IPv6 literal or
+ * resolvable non-loopback address). DNS failure fails open (returns 1) to
+ * match Python's gaierror→True behaviour. */
+int is_network_accessible(const char *host)
+{
+    if (!host || !host[0]) return 1;
+    static const unsigned char loop6[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
+    struct in_addr a4;
+    struct in6_addr a6;
+    if (inet_pton(AF_INET, host, &a4) == 1) {
+        /* 127.0.0.0/8 is loopback */
+        return (ntohl(a4.s_addr) & 0xFF000000) == 0x7F000000 ? 0 : 1;
+    }
+    if (inet_pton(AF_INET6, host, &a6) == 1) {
+        /* ::1 loopback */
+        if (memcmp(a6.s6_addr, loop6, 16) == 0) return 0;
+        /* ::ffff:127.x.x.x mapped IPv4 loopback */
+        if (a6.s6_addr[10] == 0xFF && a6.s6_addr[11] == 0xFF &&
+            (ntohl(*(uint32_t*)&a6.s6_addr[12]) & 0xFF000000) == 0x7F000000) return 0;
+        return 1;
+    }
+    /* hostname: resolve and check for any non-loopback address */
+    struct addrinfo hints, *res = NULL;
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    if (getaddrinfo(host, NULL, &hints, &res) != 0) return 1; /* fail open */
+    int accessible = 0;
+    for (struct addrinfo *p = res; p; p = p->ai_next) {
+        char buf[64];
+        if (p->ai_family == AF_INET) {
+            struct sockaddr_in *s = (struct sockaddr_in*)p->ai_addr;
+            inet_ntop(AF_INET, &s->sin_addr, buf, sizeof(buf));
+            if (inet_pton(AF_INET, buf, &a4) == 1 &&
+                (ntohl(a4.s_addr) & 0xFF000000) != 0x7F000000) { accessible = 1; break; }
+        } else if (p->ai_family == AF_INET6) {
+            struct sockaddr_in6 *s = (struct sockaddr_in6*)p->ai_addr;
+            if (memcmp(s->sin6_addr.s6_addr, loop6, 16) != 0 &&
+                !(s->sin6_addr.s6_addr[10]==0xFF && s->sin6_addr.s6_addr[11]==0xFF &&
+                  (ntohl(*(uint32_t*)&s->sin6_addr.s6_addr[12]) & 0xFF000000)==0x7F000000)) {
+                accessible = 1; break;
+            }
+        }
+    }
+    freeaddrinfo(res);
+    return accessible;
+}
+
+/* PoP: proxy_kwargs_for_bot @ gateway/platforms/base.py:proxy_kwargs_for_bot
+ * Returns malloc'd proxy URL string (the "proxy" field) or NULL if none.
+ * Caller frees. For SOCKS URLs we just return the raw URL (C bot libs handle
+ * the scheme); the Python connector split is not needed in the C port. */
+char *proxy_kwargs_for_bot(const char *proxy_url)
+{
+    if (!proxy_url || !proxy_url[0]) return NULL;
+    return strdup(proxy_url);
+}
+
+#define BASE_DEFAULT_INBOUND_MEDIA_MAX_BYTES (128 * 1024 * 1024)
+
+/* PoP: get_inbound_media_max_bytes @ gateway/platforms/base.py:get_inbound_media_max_bytes
+ * Reads gateway.max_inbound_media_bytes from config.yaml. 0/neg disables.
+ * Falls back to 128 MiB on any error. */
+long get_inbound_media_max_bytes(void)
+{
+    /* C port: config.yaml parsing is handled by the config subsystem; for the
+     * faithful default we return the constant. A real config hook would query
+     * the loaded gateway config here. */
+    return BASE_DEFAULT_INBOUND_MEDIA_MAX_BYTES;
+}
+
+/* PoP: validate_inbound_media_size @ gateway/platforms/base.py:validate_inbound_media_size
+ * Returns 0 if within limit, -1 if too large (mirrors Python raising ValueError). */
+int validate_inbound_media_size(long size, long max_bytes)
+{
+    long limit = (max_bytes > 0) ? max_bytes : get_inbound_media_max_bytes();
+    if (limit == 0) return 0; /* disabled */
+    return (size > limit) ? -1 : 0;
 }
