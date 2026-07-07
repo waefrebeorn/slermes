@@ -121,11 +121,8 @@ char *context_breakdown_split_tools(const char *tools_json)
         free(nm); free(tj);
     }
     strcat(builtin, "]");
-    free(builtin);
     strcat(mcp, "]");
-    free(mcp);
     strcat(subagent, "]");
-    free(subagent);
     free(out);
     size_t cap = strlen(builtin) + strlen(mcp) + strlen(subagent) + 48;
     out = malloc(cap);
