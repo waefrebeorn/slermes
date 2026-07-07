@@ -49,6 +49,7 @@ typedef struct {
     long long total_requests;     /* lifetime request count */
     long long quota_limit;        /* -1 = unlimited */
     time_t   last_used;           /* epoch seconds of last use */
+    double   lease_expiry;        /* epoch seconds; >now means leased exclusively */
 } credential_entry_t;
 
 /* ================================================================

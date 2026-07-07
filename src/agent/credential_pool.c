@@ -826,8 +826,36 @@ double _parse_absolute_timestamp(const char *value) {
         return val;
     }
     
-    /* ISO 8601 parsing not implemented in minimal C - return 0 */
-    return 0;
+    /* ISO 8601 parsing: "YYYY-MM-DD[T ]HH:MM:SS[.fff][Z|±HH:MM]". */
+    int year = 0, mon = 0, day = 0, hour = 0, min = 0, sec = 0;
+    int tz_h = 0, tz_m = 0;
+    char sep = 0, tzsign = 0;
+    int n = sscanf(value, "%d-%d-%d%c%d:%d:%d%c%d:%d",
+                   &year, &mon, &day, &sep, &hour, &min, &sec, &tzsign, &tz_h, &tz_m);
+    if (n < 7 || year < 1970 || mon < 1 || mon > 12 || day < 1 || day > 31) {
+        return 0; /* not a parseable absolute timestamp */
+    }
+    /* Normalize to a POSIX broken-down time, then to epoch via timegm(). */
+    struct tm t;
+    memset(&t, 0, sizeof(t));
+    t.tm_year = year - 1900;
+    t.tm_mon  = mon - 1;
+    t.tm_mday = day;
+    t.tm_hour = hour;
+    t.tm_min  = min;
+    t.tm_sec  = sec;
+    t.tm_isdst = 0;
+    double epoch = (double)timegm(&t);
+    /* Apply timezone offset (Z = UTC; ±HH:MM shifts). */
+    if (sep == 'T' || sep == ' ') {
+        if (tzsign == '+' || tzsign == '-') {
+            double off = (double)(tz_h * 3600 + tz_m * 60);
+            epoch += (tzsign == '-') ? off : -off;
+        }
+        /* 'Z' is UTC (no shift). */
+    }
+    if (epoch <= 0) return 0;
+    return epoch;
 }
 
 /* Port of Python agent/credential_pool.py:_extract_retry_delay_seconds(). */
@@ -1020,13 +1048,19 @@ int _select_unlocked(const credential_pool_t *pool) {
 /* Port of Python agent/credential_pool.py:acquire_lease(). */
 bool acquire_lease(credential_pool_t *pool, int index) {
     if (!pool || index < 0 || index >= pool->entry_count) return false;
-    /* Lease tracking not implemented in minimal C version */
+    credential_entry_t *e = &pool->entries[index];
+    double now = (double)time(NULL);
+    /* Already leased by an unexpired lease → refuse. */
+    if (e->lease_expiry > now) return false;
+    /* Acquire an exclusive 60s lease (mirrors Python's short-lived lease). */
+    e->lease_expiry = now + 60.0;
     return true;
 }
 
 /* Port of Python agent/credential_pool.py:release_lease(). */
 bool release_lease(credential_pool_t *pool, int index) {
     if (!pool || index < 0 || index >= pool->entry_count) return false;
+    pool->entries[index].lease_expiry = 0.0;
     return true;
 }
 
