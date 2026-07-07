@@ -69,13 +69,32 @@ char *voice_mode__termux_microphone_command(void)
 int voice_mode__termux_api_app_installed(void)
 {
     const char *termux = getenv("TERMUX_VERSION");
-    if (!termux || !termux[0]) return 0;
+    if (!termux || !termux[0]) {
+        /* Not running under Termux; the Termux API app cannot be present. */
+        hermes_log(LOG_DEBUG, "voice_mode", "Not in a Termux environment");
+        return 0;
+    }
 
-    /* Check if the Termux API package is available */
-    /* In a real implementation, this would run `pm list packages com.termux.api` */
-    /* For now, check if the API binary exists */
+    /* Real check: ask the Android package manager whether the Termux:API app
+     * is installed. `pm list packages com.termux.api` prints a line containing
+     * the package name when installed. */
+    FILE *fp = popen("pm list packages com.termux.api 2>/dev/null", "r");
+    if (fp) {
+        char line[512];
+        int found = 0;
+        while (fgets(line, sizeof(line), fp)) {
+            if (strstr(line, "com.termux.api")) { found = 1; break; }
+        }
+        pclose(fp);
+        if (found) {
+            hermes_log(LOG_DEBUG, "voice_mode", "Termux API app is installed");
+            return 1;
+        }
+    }
+
+    /* Fallback: presence of the termux-api helper binary on non-pm systems. */
     if (access("/data/data/com.termux/files/usr/bin/termux-api", X_OK) == 0) {
-        hermes_log(LOG_DEBUG, "voice_mode", "Termux API app is installed");
+        hermes_log(LOG_DEBUG, "voice_mode", "Termux API binary present");
         return 1;
     }
 
