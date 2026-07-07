@@ -84,9 +84,12 @@ secret_list_t antigravity_secret_candidates(void) {
 bool antigravity_run_oauth_login_pure(char *token_out, size_t out_sz) {
     if (!token_out || out_sz == 0) return false;
     
-    /* Run the Antigravity OAuth PKCE flow */
-    /* In C, this would start a local server and open a browser */
-    /* Simplified: check for existing token first */
+    /* Run the Antigravity OAuth PKCE flow.
+     * The Python flow opens a local server + browser for interactive PKCE;
+     * that interactive path is not available in the C runtime. We instead
+     * perform the real, portable part: discover any already-issued token from
+     * the candidate secret files and return it. If none exists, the caller
+     * must fall back to an interactive login (honestly reported as false). */
     secret_list_t candidates = antigravity_secret_candidates();
     if (candidates.count > 0) {
         strncpy(token_out, candidates.secrets[0], out_sz - 1);
