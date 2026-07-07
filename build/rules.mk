@@ -21,8 +21,10 @@ src/desktop_gui.o: src/desktop_gui.c include/gui_core.h
 
 # Pattern rule for .c files — NOTE: hermes.h omitted as explicit dependency
 # to work around GitHub Actions Make 4.3 pattern-rule resolution issue
+# -I lib added so "libjson/..." and similar prefixed includes resolve
+# (consistent with the lib/%.o rule which uses $(LIB_INCS)).
 src/%.o: src/%.c
-	$(CC) $(CFLAGS) $(TUI_INC) -c -o $@ $<
+	$(CC) $(CFLAGS) $(TUI_INC) -I include -I lib -c -o $@ $<
 
 # Pattern rule for .m files (Objective-C, macOS only)
 src/%.o: src/%.m
