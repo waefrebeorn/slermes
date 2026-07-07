@@ -6,9 +6,11 @@
 
 #include "hermes.h"
 #include "hermes_logger.h"
+#include "libwebsocket/websocket.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #define CDP_DOCS_URL "https://chromedevtools.github.io/devtools-protocol/"
 
@@ -96,13 +98,62 @@ char *browser_cdp_tool__cdp_call(const char *ws_url, const char *method,
         hermes_log(LOG_DEBUG, "browser_cdp", "Attaching to target: %s", target_id);
     }
 
-    /* In a real implementation, this would connect to the WebSocket and send the CDP command */
-    /* For now, return a placeholder result */
-    char *result = (char *)malloc(512);
-    if (result) {
-        snprintf(result, 512,
-                 "{\"success\":true,\"method\":\"%s\",\"result\":{\"placeholder\":true}}",
-                 method);
+    /* Real CDP call: open a WebSocket to the browser's DevTools endpoint, send
+     * a CDP command frame {id, method, params}, and read the response frame. */
+    ws_t *ws = ws_connect(ws_url, (timeout > 0 && timeout < 120) ? (int)timeout : 30);
+    if (!ws) {
+        hermes_log(LOG_ERROR, "browser_cdp", "CDP connect failed: %s", ws_url);
+        return NULL;
+    }
+
+    static long _cdp_id = 0;
+    long id = ++_cdp_id;
+    char req[8192];
+    const char *p = params && params[0] ? params : "{}";
+    snprintf(req, sizeof(req),
+             "{\"id\":%ld,\"method\":\"%s\",\"params\":%s%s}",
+             id, method, p,
+             (target_id && target_id[0]) ? ",\"sessionId\":\"" : "");
+    if (target_id && target_id[0]) {
+        size_t l = strlen(req);
+        snprintf(req + l, sizeof(req) - l, "%s\"}", target_id);
+    }
+
+    if (ws_send(ws, WS_OP_TEXT, req, strlen(req)) < 0) {
+        hermes_log(LOG_ERROR, "browser_cdp", "CDP send failed");
+        ws_close(ws);
+        return NULL;
+    }
+
+    char *result = NULL;
+    ws_frame_t frame;
+    int rc;
+    while ((rc = ws_recv(ws, &frame, (int)timeout)) > 0) {
+        if (frame.opcode == WS_OP_TEXT || frame.opcode == WS_OP_BIN) {
+            /* Match the response whose "id" equals ours; ignore events. */
+            if (frame.payload && frame.len > 0) {
+                char *buf = malloc(frame.len + 1);
+                memcpy(buf, frame.payload, frame.len);
+                buf[frame.len] = '\0';
+                char *idfield = strstr(buf, "\"id\"");
+                if (idfield && strstr(idfield, "sessionId") == NULL) {
+                    /* Accept the first command response. */
+                    result = malloc(frame.len + 64);
+                    snprintf(result, frame.len + 64,
+                             "{\"success\":true,\"method\":\"%s\",\"result\":%s}", method, buf);
+                    free(buf);
+                    ws_frame_free(&frame);
+                    break;
+                }
+                free(buf);
+            }
+        }
+        ws_frame_free(&frame);
+    }
+    ws_close(ws);
+
+    if (!result) {
+        hermes_log(LOG_ERROR, "browser_cdp", "CDP no response for %s", method);
     }
     return result;
 }
@@ -130,14 +181,26 @@ char *browser_cdp_tool__browser_cdp_via_supervisor(const char *task_id,
     hermes_log(LOG_INFO, "browser_cdp", "Supervisor CDP: task=%s frame=%s method=%s",
                task_id, frame_id, method);
 
-    /* In a real implementation, look up supervisor and dispatch */
-    /* For now, return a placeholder */
-    char *result = (char *)malloc(512);
-    if (result) {
-        snprintf(result, 512,
-                 "{\"success\":true,\"method\":\"%s\",\"frame_id\":\"%s\",\"result\":{\"supervisor\":true}}",
-                 method, frame_id);
+    /* Real path: resolve the live CDP endpoint (the supervisor's browser) and
+     * issue the command over WebSocket, scoped to the given OOPIF frame. */
+    char *endpoint = browser_cdp_tool__resolve_cdp_endpoint();
+    if (!endpoint || !endpoint[0]) {
+        hermes_log(LOG_ERROR, "browser_cdp",
+                   "Supervisor CDP: no CDP endpoint available (set BROWSER_CDP_URL or config browser.cdp_url)");
+        free(endpoint);
+        return NULL;
     }
+
+    /* Scope the command to the target frame via sessionId (the frame id is the
+     * CDP target/session identifier for OOPIF frames). */
+    char *result = browser_cdp_tool__cdp_call(endpoint, method, params, frame_id, timeout);
+    if (!result) {
+        char *fb = malloc(256);
+        if (fb) snprintf(fb, 256,
+                         "{\"success\":false,\"method\":\"%s\",\"error\":\"no CDP response\"}", method);
+        result = fb;
+    }
+    free(endpoint);
     return result;
 }
 
