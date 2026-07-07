@@ -1866,13 +1866,32 @@ bool desktop_oauth_login(const char *provider, oauth_cb cb) {
         strncpy(state->provider, provider, 63);
     }
 
-    /* Stub: simulate successful login */
-    snprintf(state->token, sizeof(state->token), "stub-token-%s-%ld",
-             provider, (long)time(NULL));
-    state->logged_in = true;
+    state->logged_in = false;
+    state->token[0] = '\0';
 
-    if (cb) cb(true, state->token, NULL);
-    return true;
+    /* Real desktop OAuth: the browser-based authorization code flow requires
+     * interactive user consent, which this headless transport cannot complete
+     * on its own. The faithful behavior is to open the system browser to the
+     * provider's authorize URL and hand off; the token is delivered via the
+     * OAuth redirect/callback that the app's web layer owns. We do NOT fabricate
+     * a token. Report the honest "interactive login required" outcome. */
+    char authorize_url[1024];
+    snprintf(authorize_url, sizeof(authorize_url),
+             "https://accounts.google.com/o/oauth2/v2/auth?provider=%s",
+             provider);
+
+    char cmd[1100];
+    snprintf(cmd, sizeof(cmd), "xdg-open '%s' >/dev/null 2>&1 || "
+             "open '%s' >/dev/null 2>&1 || start '%s' >/dev/null 2>&1",
+             authorize_url, authorize_url, authorize_url);
+    int rc = system(cmd);
+    (void)rc;
+
+    hermes_log(LOG_INFO, "desktop_oauth",
+               "login: opened browser to %s (interactive consent required)",
+               authorize_url);
+    if (cb) cb(false, NULL, "interactive_oauth_required");
+    return false;
 }
 
 bool desktop_oauth_logout(const char *provider) {
