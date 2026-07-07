@@ -30,3 +30,12 @@ All 18 files ported to real implementations (per-file commits, no god-header):
 
 - Build CLEAN, 36/36 tests pass, every ported file committed individually.
 - Residual `simulate` mentions live only in 7 non-audited files (antigravity_code_assist, shell_hooks, desktop_app_common, browser, port_send_message_tool, port_image_generation_tool, port_gateway_relay_ws_transport) — outside the 52-stub audit scope; flag for a follow-up audit if desired.
+
+## Follow-up Audit (same session, post-push)
+Extended the façade sweep to the 7 residual `simulate`/fake-comment files. Outcome:
+- **antigravity_code_assist** — `antigravity_post_json` was a real fake (returned `{}` 200). → real Code Assist POST via libhttp (Bearer auth + JSON body, status mapped).
+- **desktop_app_common** — `desktop_oauth_login` fabricated `stub-token-...`. → real browser OAuth handoff (opens authorize URL, honest `interactive_oauth_required`, no fake token).
+- **relay_ws_transport** — `ws_connect_worker`/`ws_send_frame`/`ws_read_loop` were all fakes (fake fd, no-op send, usleep loop). → real libwebsocket: `ws_connect`, `ws_send`, `ws_recv` loop dispatching frames to handler.
+- **relay_adapter** — reworded stale "in production" handshake comment to reflect real descriptor delivery.
+- **shell_hooks / image_generation / browser / port_send_message_tool** — `simulate` comments were misworded; behavior already real (env-var dispatch, lazy-load flag, text-browser UI text, retry_after parse). Reworded; left honest UI/help text in browser.c.
+- 36/36 tests still pass; full tree now free of fake-looking stub code.
