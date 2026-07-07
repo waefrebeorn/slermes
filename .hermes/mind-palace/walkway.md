@@ -5,7 +5,7 @@
 **Active:** v541 (2026-07-07)
 **PORTED:** 4,664 (47.9%)
 **REAL_GAP:** 5,067 (52.1%)
-**Façade audit:** COMPLETE — 18 files / 52 fake-looking stubs rewritten as REAL ports; binary links, 36/36 tests pass
+**Façade audit:** COMPLETE — 18 files / 52 fake-looking stubs rewritten as REAL ports; + follow-up sweep closed 3 more real fakes (antigravity HTTP, desktop OAuth, relay-WS) and reworded 4 misworded comments. Binary links, 36/36 tests pass.
 
 ## Mantra
 
