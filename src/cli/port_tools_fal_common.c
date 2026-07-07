@@ -4,6 +4,7 @@
 
 #include "hermes.h"
 #include "hermes_logger.h"
+#include "libhttp/http.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,13 +12,12 @@
 /* PoP: cli_tools_fal_common_import_fal_client @ tools/fal_common.py:import_fal_client */
 
 /* Port of Python tools/fal_common.py:import_fal_client */
-/* Lazy import of fal_client SDK. In C, this is a no-op placeholder. */
+/* Lazy import of the fal_client SDK. In C there is no SDK to import — the
+ * native FAL HTTP client (see cli_tools_fal_common_submit) replaces it. This
+ * exists for API parity only and correctly does nothing. */
 void *cli_tools_fal_common_import_fal_client(void)
 {
-    /* The fal_client is a Python-specific SDK. In the C runtime,
-     * image generation uses the native FAL HTTP API via libcurl.
-     * This function exists for API parity only. */
-    hermes_log(LOG_DEBUG, "port", "fal_common: import_fal_client (no-op in C)");
+    hermes_log(LOG_DEBUG, "port", "fal_common: import_fal_client (no Python SDK in C runtime)");
     return NULL;
 }
 
@@ -100,39 +100,60 @@ int cli_tools_fal_common__extract_http_status(const char *error_str)
 
 /* PoP: cli_tools_fal_common_submit @ tools/fal_common.py:submit */
 
-/* Port of Python tools/fal_common.py:submit */
-/* Submit a FAL job. In C, this delegates to the native FAL HTTP client. */
+/* PoP: cli_tools_fal_common_submit @ tools/fal_common.py:submit */
+/* Submit a FAL job: POST the arguments JSON to the managed FAL queue URL and
+ * return the real response JSON (request_id / response_url / status_url /
+ * cancel_url) exactly as the Python client does. */
 char *cli_tools_fal_common_submit(const char *application, const char *arguments_json,
                                    const char *path, const char *hint)
 {
     if (!application || !application[0]) {
         return strdup("{\"error\":\"application name required\"}");
     }
+    if (!arguments_json || !arguments_json[0]) {
+        return strdup("{\"error\":\"arguments json required\"}");
+    }
 
-    /* Build the queue URL */
+    /* Build the queue URL: <origin>/<application>[/<path>] */
     char *url_format = cli_tools_fal_common__normalize_fal_queue_url_format(
         "https://gateway.ai/fal/queue");
     if (!url_format) {
         url_format = strdup("https://gateway.ai/fal/queue/");
     }
 
-    /* In the real C runtime, this would POST to the FAL queue via libcurl.
-     * For the port, we return a placeholder response. */
-    size_t result_len = 256 + strlen(application) + (path ? strlen(path) : 0);
-    char *result = (char *)malloc(result_len);
-    if (result) {
-        snprintf(result, result_len,
-                 "{\"request_id\":\"fal-req-001\",\"response_url\":\"%s%s\","
-                 "\"status_url\":\"%s%s/status\",\"cancel_url\":\"%s%s/cancel\"}",
-                 url_format, application,
-                 url_format, application,
-                 url_format, application);
+    size_t url_len = strlen(url_format) + strlen(application) + (path ? strlen(path) + 1 : 0) + 16;
+    char *url = (char *)malloc(url_len);
+    if (!url) { free(url_format); return strdup("{\"error\":\"submit failed\"}"); }
+    snprintf(url, url_len, "%s%s", url_format, application);
+    if (path && path[0]) {
+        size_t l = strlen(url);
+        snprintf(url + l, url_len - l, "/%s", path);
     }
-
     free(url_format);
+
     hermes_log(LOG_DEBUG, "port",
-               "fal_common: submitted job for application=%s path=%s hint=%s",
+               "fal_common: POST job application=%s path=%s hint=%s",
                application, path ? path : "", hint ? hint : "");
 
+    http_t *http = http_new(120);
+    if (!http) { free(url); return strdup("{\"error\":\"http init failed\"}"); }
+
+    /* http_post_json sets the JSON content-type and POSTs the body. */
+    http_resp_t *resp = http_post_json(http, url, arguments_json);
+    char *result = NULL;
+    if (!resp) {
+        result = strdup("{\"error\":\"submit request failed\"}");
+    } else if (resp->status < 200 || resp->status >= 300) {
+        size_t el = 64 + (resp->body ? strlen(resp->body) : 0);
+        result = (char *)malloc(el);
+        snprintf(result, el, "{\"error\":\"fal submit http %d\",\"detail\":%s}",
+                 resp->status, resp->body ? resp->body : "null");
+    } else {
+        /* Return the server's JSON response verbatim (request_id, urls, etc.). */
+        result = strdup(resp->body ? resp->body : "{\"error\":\"empty response\"}");
+    }
+    http_resp_free(resp);
+    http_free(http);
+    free(url);
     return result ? result : strdup("{\"error\":\"submit failed\"}");
 }
