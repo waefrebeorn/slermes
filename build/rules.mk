@@ -2,9 +2,9 @@
 # Pattern rules, per-file compilation rules, and .a archive bundling
 # Included by top-level Makefile. Expected vars: CC, CXX, AR, CFLAGS, LIB_INCS
 
-# SQLite3 compile with threading-friendly flags
+# SQLite3 compile with threading-friendly flags (FTS5 enabled for session search)
 lib/libdb/sqlite3.o: lib/libdb/sqlite3.c lib/libdb/sqlite3.h
-	$(CC) $(CFLAGS) -DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION -c -o $@ $<
+	$(CC) $(CFLAGS) -DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION -DSQLITE_ENABLE_FTS5 -c -o $@ $<
 
 src/slermes_home.o: src/slermes_home.c include/slermes_home.h
 	$(CC) $(CFLAGS) -c -o $@ $<
