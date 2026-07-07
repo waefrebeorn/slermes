@@ -2,7 +2,7 @@
 # All source file objects organized by subsystem
 # Included by top-level Makefile
 
-CLI_OBJ = src/cli/cli.o src/cli/commands.o src/cli/config.o src/cli/paths.o src/cli/display.o src/cli/display_core.o src/cli/main.o src/cli/doctor.o src/cli/setup_wizard.o src/cli/cli_gaps.o src/cli/port_backup.o src/cli/port_context_switch_guard.o src/cli/port_env_loader.o src/cli/port_gateway_windows.o src/cli/port_nous_billing.o src/cli/port_voice.o
+CLI_OBJ = src/cli/cli.o src/cli/commands.o src/cli/config.o src/cli/paths.o src/cli/display.o src/cli/display_core.o src/cli/main.o src/cli/doctor.o src/cli/setup_wizard.o src/cli/cli_gaps.o src/cli/port_context_switch_guard.o src/cli/port_gateway_windows.o src/cli/port_nous_billing.o src/cli/port_voice.o
 
 # Auto-generated hermes_cli/ port objects (empty — placeholder)
 HERMES_CLI_PORT_OBJ = \
@@ -10,161 +10,72 @@ HERMES_CLI_PORT_OBJ = \
 HERMES_CLI_PORT_EXTRA_OBJ = \
 
 PORT_OBJ = \
-    src/cli/port_agent_account_usage.o \
     src/cli/port_agent_anthropic_adapter.o \
-    src/cli/port_agent_async_utils.o \
-    src/cli/port_agent_auxiliary_client.o \
-    src/cli/port_agent_azure_identity_adapter.o \
     src/cli/port_agent_bedrock_adapter.o \
-    src/cli/port_agent_browser_provider.o \
     src/cli/port_agent_codex_runtime.o \
-    src/cli/port_agent_coding_context.o \
     src/cli/port_agent_context_compressor.o \
     src/cli/port_agent_context_references.o \
     src/cli/port_agent_copilot_acp_client.o \
-    src/cli/port_agent_credential_pool.o \
     src/cli/port_agent_credits_tracker.o \
     src/cli/port_agent_display.o \
     src/cli/port_agent_error_classifier.o \
-    src/cli/port_agent_gemini_cloudcode_adapter.o \
-    src/cli/port_agent_gemini_native_adapter.o \
     src/cli/port_agent_google_oauth.o \
     src/cli/port_agent_image_gen_provider.o \
     src/cli/port_agent_insights.o \
-    src/cli/port_agent_jiter_preload.o \
-    src/cli/port_agent_memory_manager.o \
-    src/cli/port_agent_memory_provider.o \
     src/cli/port_agent_model_metadata.o \
-    src/cli/port_agent_nous_rate_guard.o \
     src/cli/port_agent_onboarding.o \
     src/cli/port_agent_plugin_llm.o \
-    src/cli/port_agent_process_bootstrap.o \
-    src/cli/port_agent_shell_hooks.o \
-    src/cli/port_agent_skill_commands.o \
     src/cli/port_agent_skill_utils.o \
     src/cli/port_agent_tool_executor.o \
     src/cli/port_agent_tool_guardrails.o \
     src/cli/port_agent_transcription_provider.o \
-    src/cli/port_agent_tts_provider.o \
-    src/cli/port_agent_turn_retry_state.o \
     src/cli/port_agent_usage_pricing.o \
-    src/cli/port_agent_video_gen_provider.o \
     src/cli/port_agent_web_search_provider.o \
-    src/cli/port_agent_web_search_registry.o \
     src/cli/port_cli.o \
-    src/cli/port_cron_blueprint_catalog.o \
-    src/cli/port_cron_jobs.o \
-    src/cli/port_cron_scheduler.o \
-    src/cli/port_cron_scripts_classify_items.o \
-    src/cli/port_cron_suggestion_catalog.o \
-    src/cli/port_cron_suggestions.o \
     src/cli/port_gateway_authz_mixin.o \
     src/cli/port_gateway_channel_directory.o \
     src/cli/port_gateway_config.o \
     src/cli/port_gateway_delivery.o \
-    src/cli/port_gateway_display_config.o \
     src/cli/port_gateway_hooks.o \
-    src/cli/port_gateway_kanban_watchers.o \
-    src/cli/port_gateway_mirror.o \
-    src/cli/port_gateway_pairing.o \
     src/cli/port_gateway_platform_registry.o \
-    src/cli/port_gateway_platforms__http_client_limits.o \
-    src/cli/port_gateway_platforms_api_server.o \
-    src/cli/port_gateway_platforms_base.o \
-    src/cli/port_gateway_platforms_bluebubbles.o \
-    src/cli/port_gateway_platforms_dingtalk.o \
-    src/cli/port_gateway_platforms_email.o \
-    src/cli/port_gateway_platforms_feishu.o \
-    src/cli/port_gateway_platforms_feishu_comment.o \
-    src/cli/port_gateway_platforms_feishu_comment_rules.o \
     src/cli/port_gateway_platforms_feishu_meeting_invite.o \
     src/cli/port_gateway_platforms_helpers.o \
-    src/cli/port_gateway_platforms_matrix.o \
-    src/cli/port_gateway_platforms_msgraph_webhook.o \
-    src/cli/port_gateway_platforms_qqbot_adapter.o \
-    src/cli/port_gateway_platforms_qqbot_chunked_upload.o \
     src/cli/port_gateway_platforms_qqbot_crypto.o \
     src/cli/port_gateway_platforms_qqbot_keyboards.o \
     src/cli/port_gateway_platforms_qqbot_onboard.o \
     src/cli/port_gateway_platforms_qqbot_utils.o \
-    src/cli/port_gateway_platforms_signal.o \
     src/cli/port_gateway_platforms_signal_rate_limit.o \
-    src/cli/port_gateway_platforms_slack.o \
     src/cli/port_gateway_platforms_sms.o \
-    src/cli/port_gateway_platforms_telegram.o \
     src/cli/port_gateway_platforms_telegram_network.o \
-    src/cli/port_gateway_platforms_webhook.o \
-    src/cli/port_gateway_platforms_wecom.o \
     src/cli/port_gateway_platforms_wecom_callback.o \
     src/cli/port_gateway_platforms_wecom_crypto.o \
-    src/cli/port_gateway_platforms_weixin.o \
-    src/cli/port_gateway_platforms_whatsapp.o \
-    src/cli/port_gateway_platforms_whatsapp_cloud.o \
-    src/cli/port_gateway_platforms_whatsapp_common.o \
-    src/cli/port_gateway_platforms_yuanbao.o \
     src/cli/port_gateway_platforms_yuanbao_media.o \
-    src/cli/port_gateway_platforms_yuanbao_proto.o \
     src/cli/port_gateway_platforms_yuanbao_sticker.o \
     src/cli/port_gateway_response_filters.o \
-    src/cli/port_gateway_run.o \
-    src/cli/port_gateway_session.o \
     src/cli/port_gateway_shutdown_forensics.o \
     src/cli/port_gateway_slash_access.o \
-    src/cli/port_gateway_slash_commands.o \
-    src/cli/port_gateway_status.o \
     src/cli/port_gateway_sticker_cache.o \
-    src/cli/port_gateway_stream_consumer.o \
-    src/cli/port_tools_approval.o \
     src/cli/port_tools_blueprints.o \
-    src/cli/port_tools_browser_camofox.o \
-    src/cli/port_tools_browser_camofox_state.o \
     src/cli/port_tools_browser_cdp_tool.o \
-    src/cli/port_tools_browser_dialog_tool.o \
-    src/cli/port_tools_browser_supervisor.o \
-    src/cli/port_tools_browser_tool.o \
     src/cli/port_tools_checkpoint_manager.o \
     src/cli/port_tools_clarify_gateway.o \
     src/cli/port_tools_clarify_tool.o \
-    src/cli/port_tools_code_execution_tool.o \
     src/cli/port_tools_computer_use_backend.o \
-    src/cli/port_tools_computer_use_cua_backend.o \
-    src/cli/port_tools_computer_use_schema.o \
-    src/cli/port_tools_computer_use_tool.o \
     src/cli/port_tools_computer_use_vision_routing.o \
     src/cli/port_tools_credential_files.o \
-    src/cli/port_tools_cronjob_tools.o \
     src/cli/port_tools_debug_helpers.o \
-    src/cli/port_tools_delegate_tool.o \
-    src/cli/port_tools_discord_tool.o \
     src/cli/port_tools_env_passthrough.o \
     src/cli/port_tools_env_probe.o \
-    src/cli/port_tools_environments_base.o \
     src/cli/port_tools_environments_daytona.o \
-    src/cli/port_tools_environments_docker.o \
     src/cli/port_tools_environments_file_sync.o \
-    src/cli/port_tools_environments_local.o \
     src/cli/port_tools_environments_managed_modal.o \
-    src/cli/port_tools_environments_modal.o \
     src/cli/port_tools_environments_modal_utils.o \
     src/cli/port_tools_environments_singularity.o \
     src/cli/port_tools_environments_ssh.o \
     src/cli/port_tools_fal_common.o \
-    src/cli/port_tools_feishu_doc_tool.o \
     src/cli/port_tools_feishu_drive_tool.o \
-    src/cli/port_tools_file_operations.o \
-    src/cli/port_tools_file_state.o \
-    src/cli/port_tools_file_tools.o \
-    src/cli/port_tools_fuzzy_match.o \
-    src/cli/port_tools_homeassistant_tool.o \
-    src/cli/port_tools_image_generation_tool.o \
-    src/cli/port_tools_interrupt.o \
-    src/cli/port_tools_kanban_tools.o \
-    src/cli/port_tools_lazy_deps.o \
     src/cli/port_tools_managed_tool_gateway.o \
-    src/cli/port_tools_mcp_oauth.o \
     src/cli/port_tools_mcp_oauth_manager.o \
-    src/cli/port_tools_mcp_tool.o \
-    src/cli/port_tools_memory_tool.o \
     src/cli/port_tools_microsoft_graph_auth.o \
     src/cli/port_tools_microsoft_graph_client.o \
     src/cli/port_tools_mixture_of_agents_tool.o \
@@ -172,537 +83,54 @@ PORT_OBJ = \
     src/cli/port_tools_osv_check.o \
     src/cli/port_tools_patch_parser.o \
     src/cli/port_tools_path_security.o \
-    src/cli/port_tools_process_registry.o \
-    src/cli/port_tools_read_extract.o \
     src/cli/port_tools_read_terminal_tool.o \
-    src/cli/port_tools_registry.o \
     src/cli/port_tools_schema_sanitizer.o \
-    src/cli/port_tools_send_message_tool.o \
     src/cli/port_tools_session_search_tool.o \
-    src/cli/port_tools_skill_manager_tool.o \
-    src/cli/port_tools_skill_provenance.o \
-    src/cli/port_tools_skill_usage.o \
     src/cli/port_tools_skills_ast_audit.o \
     src/cli/port_tools_skills_guard.o \
-    src/cli/port_tools_skills_hub.o \
-    src/cli/port_tools_skills_sync.o \
-    src/cli/port_tools_skills_tool.o \
     src/cli/port_tools_slash_confirm.o \
-    src/cli/port_tools_terminal_tool.o \
-    src/cli/port_tools_thread_context.o \
     src/cli/port_tools_threat_patterns.o \
     src/cli/port_tools_todo_tool.o \
     src/cli/port_tools_tool_backend_helpers.o \
     src/cli/port_tools_tool_output_limits.o \
     src/cli/port_tools_tool_result_storage.o \
     src/cli/port_tools_tool_search.o \
-    src/cli/port_tools_transcription_tools.o \
-    src/cli/port_tools_tts_tool.o \
     src/cli/port_tools_url_safety.o \
     src/cli/port_tools_video_generation_tool.o \
-    src/cli/port_tools_vision_tools.o \
-    src/cli/port_tools_web_tools.o \
     src/cli/port_tools_website_policy.o \
     src/cli/port_tools_write_approval.o \
-    src/cli/port_tools_x_search_tool.o \
     src/cli/port_tools_xai_http.o \
     src/skills/skills_parser.o \
-    src/cli/port_hermes_cli_web_server.o \
-    src/cli/port_tui_gateway_server.o \
-    src/cli/port_hermes_cli_main.o \
-    src/cli/port_plugins_platforms_discord_adapter.o \
-    src/cli/port_run_agent.o \
-    src/cli/port_hermes_cli_auth.o \
-    src/cli/port_hermes_cli_gateway.o \
-    src/cli/port_hermes_cli_kanban_db.o \
-    src/cli/port_hermes_state.o \
-    src/cli/port_hermes_cli_models.o \
-    src/cli/port_optional_skills_migration_openclaw_migration_scripts_openclaw_to_hermes.o \
-    src/cli/port_hermes_cli_config.o \
-    src/cli/port_plugins_platforms_google_chat_adapter.o \
-    src/cli/port_optional_skills_blockchain_hyperliquid_scripts_hyperliquid_client.o \
-    src/cli/port_plugins_platforms_line_adapter.o \
-    src/cli/port_acp_adapter_server.o \
-    src/cli/port_hermes_cli_kanban.o \
-    src/cli/port_hermes_cli_plugins.o \
-    src/cli/port_hermes_cli_tools_config.o \
-    src/cli/port_plugins_kanban_dashboard_plugin_api.o \
-    src/cli/port_agent_lsp_servers.o \
-    src/cli/port_hermes_cli_setup.o \
-    src/cli/port_plugins_platforms_photon_auth.o \
-    src/cli/port_hermes_cli_plugins_cmd.o \
-    src/cli/port_optional_skills_productivity_telephony_scripts_telephony.o \
-    src/cli/port_plugins_platforms_photon_adapter.o \
-    src/cli/port_hermes_cli_service_manager.o \
-    src/cli/port_hermes_cli_gateway_windows.o \
-    src/cli/port_plugins_hermes_achievements_dashboard_plugin_api.o \
-    src/cli/port_hermes_cli_profiles.o \
-    src/cli/port_optional_skills_blockchain_evm_scripts_evm_client.o \
-    src/cli/port_plugins_memory_honcho_session.o \
-    src/cli/port_plugins_platforms_teams_adapter.o \
-    src/cli/port_plugins_spotify_client.o \
-    src/cli/port_hermes_cli_cli_commands_mixin.o \
-    src/cli/port_hermes_cli_commands.o \
-    src/cli/port_optional_skills_security_godmode_scripts_parseltongue.o \
-    src/cli/port_agent_agent_runtime_helpers.o \
-    src/cli/port_agent_lsp_client.o \
-    src/cli/port_skills_productivity_google_workspace_scripts_google_api.o \
-    src/cli/port_plugins_platforms_simplex_adapter.o \
-    src/cli/port_acp_adapter_tools.o \
-    src/cli/port_agent_curator.o \
-    src/cli/port_hermes_cli_skills_hub.o \
-    src/cli/port_plugins_memory_honcho_cli.o \
-    src/cli/port_plugins_platforms_mattermost_adapter.o \
-    src/cli/port_hermes_cli_doctor.o \
-    src/cli/port_hermes_cli_nous_account.o \
-    src/cli/port_mcp_serve.o \
-    src/cli/port_skills_creative_comfyui_scripts__common.o \
-    src/cli/port_hermes_cli_curses_ui.o \
-    src/cli/port_hermes_cli_goals.o \
-    src/cli/port_trajectory_compressor.o \
-    src/cli/port_hermes_constants.o \
-    src/cli/port_optional_skills_creative_pixel_art_scripts_pixel_art_video.o \
-    src/cli/port_plugins_platforms_google_chat_oauth.o \
-    src/cli/port_hermes_cli_nous_subscription.o \
-    src/cli/port_agent_chat_completion_helpers.o \
-    src/cli/port_agent_prompt_builder.o \
-    src/cli/port_hermes_cli_runtime_provider.o \
-    src/cli/port_skills_productivity_maps_scripts_maps_client.o \
-    src/cli/port_hermes_cli_mcp_config.o \
-    src/cli/port_model_tools.o \
-    src/cli/port_plugins_platforms_irc_adapter.o \
-    src/cli/port_plugins_teams_pipeline_pipeline.o \
-    src/cli/port_plugins_web_firecrawl_provider.o \
-    src/cli/port_tools_tirith_security.o \
-    src/cli/port_acp_adapter_session.o \
-    src/cli/port_hermes_cli_banner.o \
-    src/cli/port_hermes_cli_debug.o \
-    src/cli/port_hermes_cli_kanban_diagnostics.o \
-    src/cli/port_hermes_cli_profile_distribution.o \
-    src/cli/port_optional_skills_finance_stocks_scripts_stocks_client.o \
-    src/cli/port_plugins_memory_honcho_client.o \
-    src/cli/port_agent_models_dev.o \
-    src/cli/port_hermes_cli_auth_commands.o \
-    src/cli/port_hermes_cli_backup.o \
-    src/cli/port_hermes_cli_clipboard.o \
-    src/cli/port_hermes_cli_uninstall.o \
-    src/cli/port_agent_secret_sources_bitwarden.o \
-    src/cli/port_agent_transports_codex_app_server.o \
-    src/cli/port_hermes_cli_mcp_catalog.o \
-    src/cli/port_plugins_teams_pipeline_cli.o \
-    src/cli/port_skills_creative_comfyui_scripts_run_workflow.o \
-    src/cli/port_agent_lsp_manager.o \
-    src/cli/port_agent_transports_codex_app_server_session.o \
-    src/cli/port_hermes_cli_model_setup_flows.o \
-    src/cli/port_hermes_cli_model_switch.o \
-    src/cli/port_plugins_memory_holographic_store.o \
-    src/cli/port_plugins_teams_pipeline_store.o \
-    src/cli/port_website_scripts_generate_skill_docs.o \
-    src/cli/port_agent_curator_backup.o \
-    src/cli/port_agent_redact.o \
-    src/cli/port_hermes_cli_active_sessions.o \
-    src/cli/port_optional_skills_blockchain_solana_scripts_solana_client.o \
-    src/cli/port_plugins_google_meet_meet_bot.o \
-    src/cli/port_plugins_platforms_ntfy_adapter.o \
-    src/cli/port_hermes_cli_security_audit.o \
-    src/cli/port_hermes_logging.o \
-    src/cli/port_optional_skills_productivity_memento_flashcards_scripts_memento_cards.o \
-    src/cli/port_plugins_disk_cleanup_disk_cleanup.o \
-    src/cli/port_plugins_platforms_homeassistant_adapter.o \
-    src/cli/port_plugins_teams_pipeline_meetings.o \
-    src/cli/port_plugins_teams_pipeline_models.o \
-    src/cli/port_hermes_cli_curator.o \
-    src/cli/port_optional_skills_creative_meme_generation_scripts_generate_meme.o \
-    src/cli/port_plugins_platforms_discord_voice_mixer.o \
-    src/cli/port_scripts_release.o \
-    src/cli/port_agent_skill_bundles.o \
-    src/cli/port_hermes_cli_telegram_managed_bot.o \
-    src/cli/port_skills_productivity_google_workspace_scripts_setup.o \
-    src/cli/port_skills_productivity_powerpoint_scripts_office_helpers_merge_runs.o \
-    src/cli/port_utils.o \
-    src/cli/port_agent_codex_responses_adapter.o \
-    src/cli/port_agent_conversation_loop.o \
-    src/cli/port_agent_credential_sources.o \
-    src/cli/port_agent_file_safety.o \
-    src/cli/port_agent_rate_limit_tracker.o \
-    src/cli/port_batch_runner.o \
-    src/cli/port_acp_adapter_edit_approval.o \
-    src/cli/port_agent_context_engine.o \
-    src/cli/port_agent_lsp_eventlog.o \
-    src/cli/port_agent_tool_dispatch_helpers.o \
-    src/cli/port_hermes_cli_dashboard_auth_routes.o \
-    src/cli/port_hermes_cli_fallback_cmd.o \
-    src/cli/port_hermes_cli_model_catalog.o \
-    src/cli/port_hermes_cli_webhook.o \
-    src/cli/port_plugins_platforms_photon_cli.o \
-    src/cli/port_plugins_spotify_tools.o \
-    src/cli/port_plugins_web_xai_provider.o \
-    src/cli/port_scripts_profile_tui.o \
-    src/cli/port_skills_creative_comfyui_scripts_hardware_check.o \
-    src/cli/port_skills_research_polymarket_scripts_polymarket.o \
-    src/cli/port_hermes_cli_codex_runtime_plugin_migration.o \
-    src/cli/port_plugins_browser_browser_use_provider.o \
-    src/cli/port_plugins_google_meet_cli.o \
-    src/cli/port_plugins_google_meet_realtime_openai_client.o \
-    src/cli/port_plugins_web_parallel_provider.o \
-    src/cli/port_scripts_run_tests_parallel.o \
-    src/cli/port_scripts_tool_search_livetest.o \
-    src/cli/port_agent_image_routing.o \
-    src/cli/port_agent_message_sanitization.o \
-    src/cli/port_agent_transports_chat_completions.o \
-    src/cli/port_agent_transports_types.o \
-    src/cli/port_hermes_cli_claw.o \
-    src/cli/port_hermes_cli_gui_uninstall.o \
-    src/cli/port_hermes_cli_pty_bridge.o \
-    src/cli/port_hermes_cli_win_pty_bridge.o \
-    src/cli/port_optional_skills_security_oss_forensics_scripts_evidence_store.o \
-    src/cli/port_plugins_teams_pipeline_subscriptions.o \
-    src/cli/port_acp_adapter_events.o \
-    src/cli/port_agent_google_code_assist.o \
-    src/cli/port_agent_lsp_install.o \
-    src/cli/port_agent_markdown_tables.o \
-    src/cli/port_agent_transports_codex_event_projector.o \
-    src/cli/port_hermes_cli_dashboard_auth_cookies.o \
-    src/cli/port_hermes_cli_dump.o \
-    src/cli/port_hermes_cli_kanban_decompose.o \
-    src/cli/port_hermes_cli_logs.o \
-    src/cli/port_hermes_cli_managed_uv.o \
-    src/cli/port_hermes_cli_mcp_picker.o \
-    src/cli/port_hermes_cli_session_recap.o \
-    src/cli/port_mini_swe_runner.o \
-    src/cli/port_plugins_google_meet_process_manager.o \
-    src/cli/port_plugins_memory_holographic_holographic.o \
-    src/cli/port_plugins_memory_holographic_retrieval.o \
-    src/cli/port_plugins_web_tavily_provider.o \
-    src/cli/port_skills_productivity_powerpoint_scripts_office_helpers_simplify_redlines.o \
-    src/cli/port_tui_gateway_transport.o \
-    src/cli/port_website_scripts_extract_skills.o \
-    src/cli/port_agent_lsp_cli.o \
-    src/cli/port_hermes_cli_azure_detect.o \
-    src/cli/port_hermes_cli_blueprint_cmd.o \
-    src/cli/port_hermes_cli_checkpoints.o \
-    src/cli/port_hermes_cli_cron.o \
-    src/cli/port_hermes_cli_env_loader.o \
-    src/cli/port_hermes_cli_secrets_cli.o \
-    src/cli/port_optional_skills_finance_dcf_model_scripts_validate_dcf.o \
-    src/cli/port_optional_skills_mlops_training_trl_fine_tuning_templates_basic_grpo_training.o \
-    src/cli/port_optional_skills_research_domain_intel_scripts_domain_intel.o \
-    src/cli/port_plugins_web_exa_provider.o \
-    src/cli/port_scripts_check_windows_footguns.o \
-    src/cli/port_scripts_discord_voice_doctor.o \
-    src/cli/port_skills_creative_comfyui_scripts_check_deps.o \
-    src/cli/port_toolsets.o \
-    src/cli/port_acp_adapter_entry.o \
-    src/cli/port_agent_transports_codex.o \
-    src/cli/port_hermes_cli_browser_connect.o \
-    src/cli/port_hermes_cli_container_boot.o \
-    src/cli/port_hermes_cli_copilot_auth.o \
-    src/cli/port_hermes_cli_providers.o \
-    src/cli/port_hermes_cli_proxy_adapters_xai.o \
-    src/cli/port_hermes_cli_proxy_server.o \
-    src/cli/port_hermes_cli_secret_prompt.o \
-    src/cli/port_optional_skills_security_godmode_scripts_auto_jailbreak.o \
-    src/cli/port_plugins_browser_browserbase_provider.o \
-    src/cli/port_plugins_browser_firecrawl_provider.o \
-    src/cli/port_plugins_google_meet_audio_bridge.o \
-    src/cli/port_plugins_google_meet_node_registry.o \
-    src/cli/port_plugins_google_meet_tools.o \
-    src/cli/port_scripts_lint_diff.o \
-    src/cli/port_skills_productivity_powerpoint_scripts_clean.o \
-    src/cli/port_agent_i18n.o \
-    src/cli/port_agent_lsp_protocol.o \
-    src/cli/port_agent_subdirectory_hints.o \
     src/cli/port_auth_na.o \
     src/cli/port_kanban_db_na.o \
     src/cli/port_main_na.o \
     src/cli/port_web_server_extra.o \
     src/gateway/platforms/port_signal_na.o \
-    src/cli/port_agent_transports_anthropic.o \
-    src/cli/port_agent_transports_base.o \
-    src/cli/port_hermes_cli_bundles.o \
-    src/cli/port_hermes_cli_dingtalk_auth.o \
-    src/cli/port_hermes_cli_inventory.o \
-    src/cli/port_hermes_cli_setup_whatsapp_cloud.o \
-    src/cli/port_optional_skills_devops_watchers_scripts__watermark.o \
-    src/cli/port_plugins_google_meet_node_client.o \
-    src/cli/port_plugins_web_searxng_provider.o \
-    src/cli/port_scripts_contributor_audit.o \
-    src/cli/port_scripts_sample_and_compress.o \
-    src/cli/port_slermes_stub_hunt.o \
-    src/cli/port_tui_gateway_entry.o \
-    src/cli/port_tui_gateway_ws.o \
-    src/cli/port_agent_agent_init.o \
-    src/cli/port_agent_conversation_compression.o \
-    src/cli/port_agent_skill_preprocessing.o \
-    src/cli/port_agent_transports_bedrock.o \
-    src/cli/port_hermes_cli_cli_output.o \
-    src/cli/port_hermes_cli_dashboard_auth_base.o \
-    src/cli/port_hermes_cli_dashboard_auth_middleware.o \
-    src/cli/port_hermes_cli_proxy_adapters_base.o \
-    src/cli/port_hermes_cli_send_cmd.o \
-    src/cli/port_hermes_cli_status.o \
-    src/cli/port_hermes_cli_xai_retirement.o \
-    src/cli/port_optional_skills_creative_kanban_video_orchestrator_scripts_bootstrap_pipeline.o \
-    src/cli/port_optional_skills_creative_kanban_video_orchestrator_scripts_monitor.o \
-    src/cli/port_optional_skills_health_fitness_nutrition_scripts_body_calc.o \
-    src/cli/port_optional_skills_research_darwinian_evolver_scripts_parrot_openrouter.o \
-    src/cli/port_optional_skills_research_darwinian_evolver_templates_custom_problem_template.o \
-    src/cli/port_optional_skills_research_osint_investigation_scripts_fetch_icij_offshore.o \
-    src/cli/port_optional_skills_security_godmode_scripts_godmode_race.o \
-    src/cli/port_plugins_google_meet_node_server.o \
-    src/cli/port_plugins_plugin_utils.o \
-    src/cli/port_plugins_web_brave_free_provider.o \
-    src/cli/port_plugins_web_ddgs_provider.o \
-    src/cli/port_providers_base.o \
-    src/cli/port_scripts_build_skills_index.o \
-    src/cli/port_skills_productivity_powerpoint_scripts_add_slide.o \
-    src/cli/port_acp_adapter_permissions.o \
-    src/cli/port_agent_background_review.o \
-    src/cli/port_agent_browser_registry.o \
-    src/cli/port_agent_credential_persistence.o \
-    src/cli/port_agent_image_gen_registry.o \
-    src/cli/port_agent_lsp_workspace.o \
-    src/cli/port_agent_ssl_guard.o \
-    src/cli/port_gateway_memory_monitor.o \
-    src/cli/port_hermes_cli_codex_runtime_switch.o \
-    src/cli/port_hermes_cli_dashboard_auth_ws_tickets.o \
-    src/cli/port_hermes_cli_oneshot.o \
-    src/cli/port_hermes_cli_portal_cli.o \
-    src/cli/port_hermes_cli_relaunch.o \
-    src/cli/port_hermes_cli_stdio.o \
-    src/cli/port_optional_skills_mcp_fastmcp_templates_database_server.o \
-    src/cli/port_optional_skills_productivity_canvas_scripts_canvas_api.o \
-    src/cli/port_optional_skills_research_osint_investigation_scripts_fetch_wikipedia.o \
-    src/cli/port_optional_skills_research_osint_investigation_scripts_timing_analysis.o \
-    src/cli/port_plugins_google_meet_node_protocol.o \
-    src/cli/port_plugins_teams_pipeline_runtime.o \
-    src/cli/port_skills_creative_comfyui_scripts_extract_schema.o \
-    src/cli/port_slermes_scripts_perf_gate.o \
-    src/cli/port_slermes_stub_hunt_v5.o \
-    src/cli/port_tui_gateway_slash_worker.o \
-    src/cli/port_website_scripts_generate_llms_txt.o \
-    src/cli/port_agent_iteration_budget.o \
-    src/cli/port_agent_moonshot_schema.o \
-    src/cli/port_agent_runtime_cwd.o \
-    src/cli/port_agent_stream_diag.o \
-    src/cli/port_agent_system_prompt.o \
-    src/cli/port_agent_video_gen_registry.o \
-    src/cli/port_gateway_runtime_footer.o \
-    src/cli/port_hermes_cli__subprocess_compat.o \
-    src/cli/port_hermes_cli_cli_agent_setup_mixin.o \
-    src/cli/port_hermes_cli_codex_models.o \
-    src/cli/port_hermes_cli_completion.o \
-    src/cli/port_hermes_cli_dashboard_register.o \
-    src/cli/port_hermes_cli_kanban_specify.o \
-    src/cli/port_hermes_cli_pairing.o \
-    src/cli/port_hermes_cli_proxy_cli.o \
-    src/cli/port_hermes_time.o \
-    src/cli/port_optional_skills_mcp_fastmcp_templates_api_wrapper.o \
-    src/cli/port_optional_skills_research_osint_investigation_scripts_entity_resolution.o \
-    src/cli/port_scripts_keystroke_diagnostic.o \
-    src/cli/port_skills_creative_comfyui_scripts_auto_fix_deps.o \
-    src/cli/port_skills_creative_comfyui_scripts_health_check.o \
-    src/cli/port_skills_productivity_google_workspace_scripts_gws_bridge.o \
-    src/cli/port_skills_productivity_ocr_and_documents_scripts_extract_pymupdf.o \
-    src/cli/port_slermes_stub_hunt_v2.o \
-    src/cli/port_slermes_stub_hunt_v3.o \
-    src/cli/port_slermes_stub_hunt_v4.o \
-    src/cli/port_toolset_distributions.o \
-    src/cli/port_agent_lsp_range_shift.o \
-    src/cli/port_agent_transcription_registry.o \
-    src/cli/port_agent_transports_hermes_tools_mcp_server.o \
-    src/cli/port_agent_tts_registry.o \
-    src/cli/port_gateway_session_context.o \
-    src/cli/port_hermes_cli_dashboard_auth_registry.o \
-    src/cli/port_hermes_cli_dep_ensure.o \
-    src/cli/port_hermes_cli_fallback_config.o \
-    src/cli/port_hermes_cli_mcp_security.o \
-    src/cli/port_hermes_cli_mcp_startup.o \
-    src/cli/port_hermes_cli_model_cost_guard.o \
-    src/cli/port_hermes_cli_partial_compress.o \
-    src/cli/port_hermes_cli_profile_describer.o \
-    src/cli/port_hermes_cli_timeouts.o \
-    src/cli/port_optional_skills_mcp_fastmcp_templates_file_processor.o \
-    src/cli/port_optional_skills_productivity_memento_flashcards_scripts_youtube_quiz.o \
-    src/cli/port_optional_skills_research_drug_discovery_scripts_ro5_screen.o \
-    src/cli/port_optional_skills_research_osint_investigation_scripts__normalize.o \
-    src/cli/port_optional_skills_research_osint_investigation_scripts_fetch_ofac_sdn.o \
-    src/cli/port_optional_skills_research_osint_investigation_scripts_fetch_opencorporates.o \
-    src/cli/port_optional_skills_research_osint_investigation_scripts_fetch_sec_edgar.o \
-    src/cli/port_scripts_analyze_livetest.o \
-    src/cli/port_scripts_benchmark_browser_eval.o \
-    src/cli/port_skills_creative_comfyui_scripts_fetch_logs.o \
-    src/cli/port_skills_media_youtube_content_scripts_fetch_transcript.o \
-    src/cli/port_tui_gateway_event_publisher.o \
-    src/cli/port_acp_adapter_auth.o \
-    src/cli/port_agent_lsp_reporter.o \
-    src/cli/port_agent_portal_tags.o \
-    src/cli/port_agent_prompt_caching.o \
-    src/cli/port_agent_title_generator.o \
-    src/cli/port_agent_trajectory.o \
-    src/cli/port_gateway_stream_dispatch.o \
-    src/cli/port_gateway_whatsapp_identity.o \
-    src/cli/port_hermes_cli_callbacks.o \
-    src/cli/port_hermes_cli_migrate.o \
-    src/cli/port_hermes_cli_psutil_android.o \
-    src/cli/port_hermes_cli_pt_input_extras.o \
-    src/cli/port_hermes_cli_suggestions_cmd.o \
-    src/cli/port_optional_skills_devops_watchers_scripts_watch_github.o \
-    src/cli/port_optional_skills_devops_watchers_scripts_watch_http_json.o \
-    src/cli/port_optional_skills_devops_watchers_scripts_watch_rss.o \
-    src/cli/port_optional_skills_finance_excel_author_scripts_recalc.o \
-    src/cli/port_optional_skills_health_fitness_nutrition_scripts_nutrition_search.o \
-    src/cli/port_optional_skills_mcp_fastmcp_scripts_scaffold_fastmcp.o \
-    src/cli/port_optional_skills_research_osint_investigation_scripts_build_findings.o \
-    src/cli/port_optional_skills_research_osint_investigation_scripts_fetch_nyc_acris.o \
-    src/cli/port_optional_skills_research_osint_investigation_scripts_fetch_usaspending.o \
-    src/cli/port_plugins_google_meet_node_cli.o \
-    src/cli/port_scripts_docker_config_migrate.o \
-    src/cli/port_skills_creative_comfyui_scripts_run_batch.o \
-    src/cli/port_skills_creative_comfyui_scripts_ws_monitor.o \
-    src/cli/port_skills_creative_excalidraw_scripts_upload.o \
-    src/cli/port_skills_productivity_powerpoint_scripts_office_pack.o \
-    src/cli/port_slermes_scripts_coverage_gate.o \
-    src/cli/port_slermes_src_tools_vision_analysis.o \
-    src/cli/port_tui_gateway_render.o \
-    src/cli/port_acp_adapter_provenance.o \
-    src/cli/port_agent_gemini_schema.o \
-    src/cli/port_hermes_cli__parser.o \
-    src/cli/port_hermes_cli_colors.o \
-    src/cli/port_hermes_cli_dashboard_auth_audit.o \
-    src/cli/port_hermes_cli_dashboard_auth_login_page.o \
-    src/cli/port_hermes_cli_platforms.o \
-    src/cli/port_hermes_cli_slack_cli.o \
-    src/cli/port_hermes_cli_subcommands_gateway.o \
-    src/cli/port_optional_skills_creative_pixel_art_scripts_pixel_art.o \
-    src/cli/port_optional_skills_research_drug_discovery_scripts_chembl_target.o \
-    src/cli/port_optional_skills_research_osint_investigation_scripts__http.o \
-    src/cli/port_optional_skills_research_osint_investigation_scripts_fetch_courtlistener.o \
-    src/cli/port_optional_skills_research_osint_investigation_scripts_fetch_gdelt.o \
-    src/cli/port_optional_skills_research_osint_investigation_scripts_fetch_senate_ld.o \
-    src/cli/port_optional_skills_research_osint_investigation_scripts_fetch_wayback.o \
-    src/cli/port_scripts_build_model_catalog.o \
-    src/cli/port_scripts_check_subprocess_stdin.o \
-    src/cli/port_scripts_install_psutil_android.o \
-    src/cli/port_skills_productivity_ocr_and_documents_scripts_extract_marker.o \
-    src/cli/port_slermes_scripts_web_extract_delegate.o \
-    src/cli/port_tools_neutts_synth.o \
-    src/cli/port_website_scripts_extract_automation_blueprints.o \
-    src/cli/port_agent_lmstudio_reasoning.o \
-    src/cli/port_agent_manual_compression_feedback.o \
-    src/cli/port_agent_retry_utils.o \
-    src/cli/port_agent_tool_result_classification.o \
-    src/cli/port_agent_turn_context.o \
-    src/cli/port_agent_turn_finalizer.o \
-    src/cli/port_gateway_restart.o \
-    src/cli/port_hermes_bootstrap.o \
-    src/cli/port_hermes_cli_build_info.o \
-    src/cli/port_hermes_cli_subcommands__shared.o \
-    src/cli/port_hermes_cli_subcommands_acp.o \
-    src/cli/port_hermes_cli_subcommands_auth.o \
-    src/cli/port_hermes_cli_subcommands_backup.o \
-    src/cli/port_hermes_cli_subcommands_claw.o \
-    src/cli/port_hermes_cli_subcommands_config.o \
-    src/cli/port_hermes_cli_subcommands_cron.o \
-    src/cli/port_hermes_cli_subcommands_dashboard.o \
-    src/cli/port_hermes_cli_subcommands_debug.o \
-    src/cli/port_hermes_cli_subcommands_doctor.o \
-    src/cli/port_hermes_cli_subcommands_dump.o \
-    src/cli/port_hermes_cli_subcommands_gui.o \
-    src/cli/port_hermes_cli_subcommands_hooks.o \
-    src/cli/port_hermes_cli_subcommands_import_cmd.o \
-    src/cli/port_hermes_cli_subcommands_insights.o \
-    src/cli/port_hermes_cli_subcommands_login.o \
-    src/cli/port_hermes_cli_subcommands_logout.o \
-    src/cli/port_hermes_cli_subcommands_logs.o \
-    src/cli/port_hermes_cli_subcommands_mcp.o \
-    src/cli/port_hermes_cli_subcommands_memory.o \
-    src/cli/port_hermes_cli_subcommands_model.o \
-    src/cli/port_hermes_cli_subcommands_pairing.o \
-    src/cli/port_hermes_cli_subcommands_plugins.o \
-    src/cli/port_hermes_cli_subcommands_postinstall.o \
-    src/cli/port_hermes_cli_subcommands_profile.o \
-    src/cli/port_hermes_cli_subcommands_prompt_size.o \
-    src/cli/port_hermes_cli_subcommands_security.o \
-    src/cli/port_hermes_cli_subcommands_setup.o \
-    src/cli/port_hermes_cli_subcommands_skills.o \
-    src/cli/port_hermes_cli_subcommands_slack.o \
-    src/cli/port_hermes_cli_subcommands_status.o \
-    src/cli/port_hermes_cli_subcommands_tools.o \
-    src/cli/port_hermes_cli_subcommands_uninstall.o \
-    src/cli/port_hermes_cli_subcommands_update.o \
-    src/cli/port_hermes_cli_subcommands_version.o \
-    src/cli/port_hermes_cli_subcommands_webhook.o \
-    src/cli/port_hermes_cli_subcommands_whatsapp.o \
-    src/cli/port_hermes_cli_tips.o \
-    src/cli/port_optional_skills_creative_pixel_art_scripts_palettes.o \
-    src/cli/port_optional_skills_research_darwinian_evolver_scripts_show_snapshot.o \
-    src/cli/port_optional_skills_security_godmode_scripts_load_godmode.o \
-    src/cli/port_plugins_security_guidance_patterns.o \
-    src/cli/port_setup.o \
-    src/cli/port_skills_research_arxiv_scripts_search_arxiv.o \
-    src/cli/port_slermes_src_tools_vision_delegate.o \
-    src/cli/port_tools_ansi_strip.o \
-    src/cli/port_tools_binary_extensions.o \
-    src/cli/port_tools_budget_config.o \
     src/cli/port_tools_yuanbao_tools.o \
-    src/cli/port_hermes_cli_gateway_enroll.o \
-    src/cli/port_hermes_cli_managed_scope.o \
-    src/cli/port_hermes_cli_provider_catalog.o \
-    src/cli/port_hermes_cli_session_listing.o \
-    src/cli/port_hermes_cli_memory_providers.o \
-    src/cli/port_hermes_cli_nous_billing.o \
-    src/cli/port_hermes_cli_skin_engine.o \
     src/cli/port_hermes_cli_memory_setup.o \
-    src/cli/port_hermes_cli_mcp_startup.o \
-    src/cli/port_gateway_run.o \
-    src/cli/port_tools_process_registry.o \
-    src/cli/port_tools_terminal_tool.o \
     src/cli/port_tools_checkpoint_manager.o \
     src/cli/port_tools_write_approval.o \
-    src/cli/port_tools_environments_docker.o \
     src/tools/environments.o \
-    src/cli/port_tools_mcp_tool.o \
-    src/cli/port_tools_skill_usage.o \
-    src/cli/port_tools_memory_tool.o \
-    src/cli/port_tools_file_tools.o \
-    src/cli/port_tools_delegate_tool.o \
-    src/cli/port_tools_browser_tool.o \
-    src/cli/port_tools_browser_supervisor.o \
-    src/cli/port_gateway_status.o \
     src/gateway/session.o \
-    src/cli/port_gateway_kanban_watchers.o \
     src/gateway/stream_consumer.o \
     src/cli/port_gateway_channel_directory.o \
-    src/cli/port_gateway_whatsapp_identity.o \
     src/gateway/session_context.o \
-    src/cli/port_cron_jobs.o \
     src/cli/port_agent_insights.o \
     src/cli/port_agent_usage_pricing.o \
-    src/cli/port_auth.o \
-    src/cli/port_backup.o \
     src/cli/port_cli_extra.o \
     src/cli/port_config.o \
     src/cli/port_container_boot.o \
     src/cli/port_context_switch_guard.o \
     src/cli/port_dump.o \
-    src/cli/port_env_loader.o \
     src/cli/port_gateway.o \
     src/cli/port_gateway_windows.o \
     src/cli/port_goals.o \
     src/cli/port_kanban_db.o \
     src/cli/port_main.o \
-    src/cli/port_managed_scope.o \
     src/cli/port_memory_providers.o \
     src/cli/port_model_normalize.o \
-    src/cli/port_model_setup_flows.o \
     src/cli/port_model_switch.o \
-    src/cli/port_models.o \
     src/cli/port_nous_billing.o \
-    src/cli/port_plugins.o \
-    src/cli/port_profiles.o \
-    src/cli/port_provider_catalog.o \
-    src/cli/port_proxy/adapters/nous_portal.o \
     src/cli/port_runtime_provider.o \
     src/cli/port_voice.o \
     src/cli/port_web_server.o \
@@ -712,8 +140,8 @@ PORT_OBJ = \
     src/gateway/port_signal_rate_limit.o \
     src/gateway/port_webhook.o \
     src/tools/port_browser_tool.o \
+    src/tools/port_browser_supervisor.o \
     src/tools/port_environments/base.o \
-    src/tools/port_process_registry.o \
     src/agent/anthropic_adapter.o
 
 # Desktop app parity objects (v465-v468)
@@ -723,7 +151,8 @@ DESKTOP_CORE_OBJ = \
     src/terminal.o \
     src/gateway_client.o \
     src/clipboard.o \
-    src/file_ops.o
+    src/file_ops.o \
+    src/slermes_home.o
 
 # Desktop windowing objects (only for desktop target)
 DESKTOP_WINDOW_OBJ = \
