@@ -4679,10 +4679,11 @@ void tui_fullscreen_cleanup(void) {
     for (int i = 0; i < tui.input.history_count; i++)
         free(tui.input.history[i]);
 
-    /* Free external skin memory */
+    /* Free external skin memory (first 4 are static const built-ins;
+     * external skins registered at runtime are heap-allocated structs). */
     for (int i = 4; i < tui_theme_count; i++) {
-        /* First 4 are static const; external are heap-allocated */
-        /* In a real implementation we'd track this */
+        free((void *)tui_themes[i]);
+        tui_themes[i] = NULL;
     }
 
     /* Destroy windows */
@@ -4999,7 +5000,12 @@ bool tui_fullscreen_switch_model(const char *model_spec, bool persist) {
     strncpy(g_resolved_model, model_spec, sizeof(g_resolved_model) - 1);
 
     if (persist) {
-        /* Write to config.yaml — placeholder for yaml config write */
+        /* Persist the chosen model to the slermes home so it survives restart. */
+        const char *home = slermes_home();
+        char mp[1024];
+        snprintf(mp, sizeof(mp), "%s/active_model.txt", home);
+        FILE *mf = fopen(mp, "w");
+        if (mf) { fprintf(mf, "%s\n", model_spec); fclose(mf); }
         tui_fullscreen_print("Model switched to %s (persisted)\n", model_spec);
     } else {
         tui_fullscreen_print("Model switched to %s (session only)\n", model_spec);
