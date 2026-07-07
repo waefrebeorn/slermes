@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include "libcrypto/crypto.h"
 
 /* Port of Python: _codex_pool_rate_limit_status */
 json_t* _codex_pool_rate_limit_status(void)
@@ -265,4 +266,106 @@ bool step_up_nous_billing_scope(bool open_browser, float timeout_seconds)
 
     hermes_log(LOG_WARNING, "port", "step_up_nous_billing_scope: billing:manage scope not present, manual re-login required");
     return false;
+}
+
+/* ===========================================================================
+ *  Auth error helpers — ported from hermes_cli/auth.py
+ *  These were REAL_GAP. A minimal AuthError abstraction is defined here to
+ *  match the Python dataclass fields (code, provider, relogin_required, msg).
+ * =========================================================================== */
+
+#define CODEX_RATE_LIMITED_CODE 429
+
+typedef struct {
+    const char *code;          /* e.g. "subscription_required", "429", ... */
+    const char *provider;      /* e.g. "nous", "codex" */
+    int         relogin_required;
+    const char *msg;           /* the base error message */
+} auth_error_t;
+
+/* PoP: is_rate_limited_auth_error @ hermes_cli/auth.py:is_rate_limited_auth_error */
+int is_rate_limited_auth_error(const auth_error_t *error)
+{
+    if (!error) return 0;
+    return (error->code != NULL) && (error->relogin_required == 0) &&
+           (strcmp(error->code, "429") == 0);
+}
+
+/* PoP: _parse_retry_after_seconds @ hermes_cli/auth.py:_parse_retry_after_seconds
+ * headers is a simple key→value map (NULL-terminated array of pairs). */
+int parse_retry_after_seconds(const char *const *headers)
+{
+    if (!headers) return -1;
+    const char *raw = NULL;
+    for (int i = 0; headers[i]; i += 2) {
+        if (strcasecmp(headers[i], "retry-after") == 0) { raw = headers[i+1]; break; }
+    }
+    if (!raw) return -1;
+    char *end = NULL;
+    long seconds = strtol(raw, &end, 10);
+    if (end == raw || *end != '\0') return -1;
+    return (seconds >= 0) ? (int)seconds : -1;
+}
+
+/* PoP: _token_fingerprint @ hermes_cli/auth.py:_token_fingerprint
+ * Returns malloc'd 12-hex-char fingerprint of the token (sha256[:12]). Caller frees. */
+char *token_fingerprint(const char *token)
+{
+    if (!token) return NULL;
+    char cleaned[4096];
+    size_t i = 0;
+    while (token[i] == ' ' || token[i] == '\t') i++;
+    size_t j = strlen(token);
+    while (j > i && (token[j-1]==' '||token[j-1]=='\t')) j--;
+    if (i >= j) return NULL;
+    size_t k = 0;
+    for (; i < j && k < sizeof(cleaned)-1; i++) cleaned[k++] = token[i];
+    cleaned[k] = '\0';
+
+    unsigned char raw[32];
+    crypto_sha256((const unsigned char*)cleaned, strlen(cleaned), raw);
+    static const char *hexd = "0123456789abcdef";
+    char *out = (char*)malloc(13);
+    for (int n = 0; n < 12; n++) {
+        out[n] = hexd[(raw[n >> 1] >> ((n & 1) ? 0 : 4)) & 0xF];
+    }
+    out[12] = '\0';
+    return out;
+}
+
+/* PoP: format_auth_error @ hermes_cli/auth.py:format_auth_error
+ * Returns malloc'd user-facing message. Caller frees. For non-AuthError
+ * inputs returns a copy of msg. */
+char *format_auth_error(const auth_error_t *error)
+{
+    if (!error) return strdup("");
+    if (!error->code) return strdup(error->msg ? error->msg : "");
+
+    /* rate-limited: no remediation */
+    if (is_rate_limited_auth_error(error))
+        return strdup(error->msg ? error->msg : "");
+
+    if (error->relogin_required) {
+        size_t n = (error->msg ? strlen(error->msg) : 0) + 64;
+        char *r = (char*)malloc(n);
+        snprintf(r, n, "%s Run `hermes model` to re-authenticate.", error->msg ? error->msg : "");
+        return r;
+    }
+
+    const char *nous = error->provider && strcmp(error->provider, "nous") == 0 ? "nous" : NULL;
+    if (strcmp(error->code, "subscription_required") == 0) {
+        if (nous) return strdup("Check credits or billing in Nous Portal, then retry.");
+        return strdup("No active paid subscription found. Please purchase/activate a subscription, then retry.");
+    }
+    if (strcmp(error->code, "insufficient_credits") == 0) {
+        if (nous) return strdup("Check credits or billing in Nous Portal, then retry.");
+        return strdup("Subscription credits are exhausted. Top up/renew credits, then retry.");
+    }
+    if (strcmp(error->code, "temporarily_unavailable") == 0) {
+        size_t n = (error->msg ? strlen(error->msg) : 0) + 64;
+        char *r = (char*)malloc(n);
+        snprintf(r, n, "%s Please retry in a few seconds.", error->msg ? error->msg : "");
+        return r;
+    }
+    return strdup(error->msg ? error->msg : "");
 }
