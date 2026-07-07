@@ -67,6 +67,7 @@ PORT_OBJ = \
     src/cli/port_managed_scope_helpers.o \
     src/cli/port_context_breakdown_helpers.o \
     src/cli/port_verification_stop_helpers.o \
+    src/cli/port_blueprint_catalog_helpers.o \
     src/cli/port_tools_blueprints.o \
     src/cli/port_tools_browser_cdp_tool.o \
     src/cli/port_tools_checkpoint_manager.o \
