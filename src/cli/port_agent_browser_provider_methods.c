@@ -6,6 +6,8 @@
 
 #include "hermes.h"
 #include "hermes_logger.h"
+#include "libhttp/http.h"
+#include "libjson/json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,7 +15,10 @@
 /* PoP: browser_provider_create_session @ agent/browser_provider.py:create_session */
 
 /* Port of Python agent/browser_provider.py:create_session */
-/* Create a cloud browser session and return session metadata. */
+/* Create a cloud browser session and return session metadata.
+ * The base provider is abstract; if a concrete provider (Browserbase) is
+ * configured via BROWSERBASE_API_KEY we make the real REST call and return
+ * its cdp_url/id; otherwise we return NULL (no concrete backend configured). */
 char *browser_provider_create_session(const char *task_id)
 {
     if (!task_id || !task_id[0]) {
@@ -21,15 +26,52 @@ char *browser_provider_create_session(const char *task_id)
         return NULL;
     }
 
-    /* In a real implementation, this would call the cloud provider API */
-    char *metadata = (char *)malloc(512);
-    if (metadata) {
-        snprintf(metadata, 512,
-                 "{\"session_name\":\"session_%s\",\"bb_session_id\":\"bb_%s\","
-                 "\"cdp_url\":\"ws://127.0.0.1:9222\",\"features\":{}}",
-                 task_id, task_id);
+    const char *bb_key = getenv("BROWSERBASE_API_KEY");
+    const char *bb_project = getenv("BROWSERBASE_PROJECT_ID");
+    if (!bb_key || !bb_key[0] || !bb_project || !bb_project[0]) {
+        hermes_log(LOG_WARNING, "browser_provider",
+                   "No concrete browser backend configured (BROWSERBASE_API_KEY/PROJECT_ID); "
+                   "create_session is a no-op for the abstract base provider");
+        return NULL;
     }
-    hermes_log(LOG_INFO, "browser_provider", "Created session for task %s", task_id);
+
+    char body[512];
+    snprintf(body, sizeof(body), "{\"projectId\":\"%s\"}", bb_project);
+
+    char auth[1024];
+    snprintf(auth, sizeof(auth),
+             "Authorization: Bearer %s\r\nContent-Type: application/json", bb_key);
+
+    http_t *http = http_new(30);
+    char *metadata = NULL;
+    if (http) {
+        http_resp_t *res = http_request(http, HTTP_POST,
+                                        "https://api.browserbase.com/v1/sessions",
+                                        auth, body, strlen(body));
+        if (res && res->status >= 200 && res->status < 300 && res->body) {
+            json_t *doc = json_parse(res->body, NULL);
+            if (doc && doc->type == JSON_OBJECT) {
+                const char *sid = json_get_str(doc, "id", NULL);
+                const char *cdp = json_get_str(doc, "connectUrl", json_get_str(doc, "cdpUrl", NULL));
+                metadata = malloc(512);
+                if (metadata) {
+                    snprintf(metadata, 512,
+                             "{\"session_name\":\"session_%s\",\"bb_session_id\":\"%s\","
+                             "\"cdp_url\":\"%s\",\"features\":{}}",
+                             task_id, sid ? sid : "", cdp ? cdp : "");
+                }
+                hermes_log(LOG_INFO, "browser_provider",
+                           "Created real Browserbase session %s for task %s",
+                           sid ? sid : "(none)", task_id);
+            }
+            if (doc) json_free(doc);
+        } else {
+            hermes_log(LOG_ERROR, "browser_provider", "Browserbase session HTTP %d",
+                       res ? res->status : -1);
+        }
+        if (res) http_resp_free(res);
+        http_free(http);
+    }
     return metadata;
 }
 
