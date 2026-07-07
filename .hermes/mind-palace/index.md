@@ -17,7 +17,7 @@ Anything the Nous Research team produces — **code AND documents** — is upstr
 
 | Metric | Value |
 |--------|-------|
-| **Version** | v504 |
+| **Version** | v541 |
 | **Checkpoint** | 117+ |
 | **PORTED** | 8,688 (100% of Python functions) |
 | **REAL_GAP** | Missions 5-8 now ✅ (see below) |

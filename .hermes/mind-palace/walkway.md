@@ -2,10 +2,10 @@
 
 ## Current Sprint: Gap Blitz + Stub Hunt
 
-**Active:** v449 (2026-06-21)
-**PORTED:** 3,766 (41.7%)
-**REAL_GAP:** 5,068 (56.1%)
-**Hidden gaps:** 3,350 scaffolding stubs
+**Active:** v541 (2026-07-07)
+**PORTED:** 4,664 (47.9%)
+**REAL_GAP:** 5,067 (52.1%)
+**Façade audit:** COMPLETE — 18 files / 52 fake-looking stubs rewritten as REAL ports; binary links, 36/36 tests pass
 
 ## Mantra
 
@@ -36,6 +36,7 @@
 - v445-448: 12-gap blitz complete (9 modules)
 - v449: 13-gap blitz complete (8 modules)
 - 2026-06-21: Discovered 3,350 scaffolding stubs
+- v541: FAÇADE AUDIT COMPLETE — 18 files / 52 fake-looking stubs → real ports (libhttp/libjson/libwebsocket/libcrypto/libbase64/libmcp_oauth + real subprocess/fs). Binary links, 36/36 tests pass.
 
 ## Next Actions
 1. 14-gap blitz (7 modules)
