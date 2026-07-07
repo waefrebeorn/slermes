@@ -7,6 +7,7 @@
  */
 
 #include "hermes_logger.h"
+#include "libjson/json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -217,4 +218,40 @@ long read_cgroup_memory_limit(void)
         return limit;
     }
     return -1;
+}
+
+/* PoP: _read_tui_active_session_file @ hermes_cli/main.py:_read_tui_active_session_file
+ * Reads a JSON file and extracts the "session_id" field. Returns malloc'd
+ * session id, or NULL. Caller frees. */
+char *read_tui_active_session_file(const char *path)
+{
+    if (!path) return NULL;
+    FILE *f = fopen(path, "r");
+    if (!f) return NULL;
+    char buf[8192];
+    size_t total = 0;
+    char *blob = NULL;
+    while (fgets(buf, sizeof(buf), f)) {
+        size_t n = strlen(buf);
+        char *nb = realloc(blob, total + n + 1);
+        if (!nb) { free(blob); fclose(f); return NULL; }
+        blob = nb;
+        memcpy(blob + total, buf, n);
+        total += n;
+        blob[total] = '\0';
+    }
+    fclose(f);
+    if (!blob) return NULL;
+    json_t *root = json_parse(blob, NULL);
+    free(blob);
+    if (!root || root->type != JSON_OBJECT) { json_free(root); return NULL; }
+    json_t *sid = json_obj_get(root, "session_id");
+    char *result = NULL;
+    if (sid && sid->type == JSON_STRING && sid->str_val && sid->str_val[0]) {
+        char *s = sid->str_val;
+        while (*s==' '||*s=='\t') s++;
+        if (*s) result = strdup(s);
+    }
+    json_free(root);
+    return result;
 }
