@@ -63,6 +63,7 @@ PORT_OBJ = \
     src/cli/port_config_helpers.o \
     src/cli/port_models_helpers.o \
     src/cli/port_goals_helpers.o \
+    src/cli/port_status_helpers.o \
     src/cli/port_tools_blueprints.o \
     src/cli/port_tools_browser_cdp_tool.o \
     src/cli/port_tools_checkpoint_manager.o \
