@@ -13,6 +13,8 @@
 #include <unistd.h>
 #include <signal.h>
 #include <errno.h>
+#include <sys/types.h>
+#include <ctype.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 
@@ -208,4 +210,109 @@ void _guard_named_profile_under_multiplexer(const char* profile_name, bool force
     /* Stale PID file — remove it */
     unlink(pid_path);
     return;
+}
+
+/* ===========================================================================
+ *  PID-resolution helpers — ported from hermes_cli/gateway.py
+ *  These were REAL_GAP.
+ * =========================================================================== */
+
+/* PoP: _get_parent_pid @ hermes_cli/gateway.py:_get_parent_pid
+ * Returns parent PID of pid, or -1 when unavailable (portable /proc walk). */
+int get_parent_pid(int pid)
+{
+    if (pid <= 1) return -1;
+    char path[64];
+    snprintf(path, sizeof(path), "/proc/%d/stat", pid);
+    FILE *f = fopen(path, "r");
+    if (!f) return -1;
+    /* Format: pid (comm) state ppid ... — comm may contain spaces/parens,
+     * so scan fields: skip pid, then read comm (balanced parens), then
+     * state, then ppid is the 4th field. */
+    int field = 0, ppid = -1;
+    char buf[512];
+    if (!fgets(buf, sizeof(buf), f)) { fclose(f); return -1; }
+    fclose(f);
+    const char *p = buf;
+    while (*p && field < 4) {
+        /* skip to next field start */
+        while (*p == ' ' || *p == '\t') p++;
+        if (field == 1) {
+            /* comm: ( ... ) possibly with spaces/parens inside */
+            if (*p == '(') {
+                int depth = 1;
+                p++;
+                while (*p && depth > 0) {
+                    if (*p == '(') depth++;
+                    else if (*p == ')') {
+                        depth--;
+                        if (depth == 0) { p++; break; }
+                    }
+                    p++;
+                }
+            } else {
+                while (*p && *p != ' ' && *p != '\t') p++;
+            }
+            field = 2;
+            continue;
+        }
+        /* read a single token */
+        char tok[64] = {0};
+        int i = 0;
+        while (*p && *p != ' ' && *p != '\t' && i < (int)sizeof(tok)-1) tok[i++] = *p++;
+        if (field == 0) field = 1;       /* pid consumed, next is comm */
+        else if (field == 2) field = 3;  /* state consumed */
+        else if (field == 3) { ppid = atoi(tok); field = 4; break; }
+    }
+    return (ppid > 0) ? ppid : -1;
+}
+
+/* PoP: _is_pid_ancestor_of_current_process @ hermes_cli/gateway.py:_is_pid_ancestor_of_current_process */
+int is_pid_ancestor_of_current_process(int target_pid)
+{
+    if (target_pid <= 0) return 0;
+    int pid = (int)getpid();
+    for (int guard = 0; guard < 64; guard++) {
+        if (pid == target_pid) return 1;
+        int parent = get_parent_pid(pid);
+        if (parent <= 0) break;
+        pid = parent;
+    }
+    return 0;
+}
+
+/* PoP: _get_ancestor_pids @ hermes_cli/gateway.py:_get_ancestor_pids
+ * Fills out[] with ancestor PIDs (including self); returns count (<=max). */
+int get_ancestor_pids(int *out, int max)
+{
+    int pid = (int)getpid();
+    int n = 0;
+    for (int guard = 0; guard < 64 && n < max; guard++) {
+        int found = 0;
+        for (int k = 0; k < n; k++) if (out[k] == pid) { found = 1; break; }
+        if (found) break;
+        out[n++] = pid;
+        int parent = get_parent_pid(pid);
+        if (parent <= 0) break;
+        pid = parent;
+    }
+    return n;
+}
+
+/* PoP: _append_unique_pid @ hermes_cli/gateway.py:_append_unique_pid
+ * Appends pid to *pids (growing the array) if valid/unique/not excluded. */
+void append_unique_pid(int **pids, int *count, int *cap, int pid,
+                       const int *exclude, int exclude_n)
+{
+    if (pid <= 0) return;
+    if (pid == (int)getpid()) return;
+    for (int i = 0; i < exclude_n; i++) if (exclude[i] == pid) return;
+    for (int i = 0; i < *count; i++) if ((*pids)[i] == pid) return;
+    if (*count >= *cap) {
+        int ncap = (*cap == 0) ? 8 : *cap * 2;
+        int *np = realloc(*pids, ncap * sizeof(int));
+        if (!np) return;
+        *pids = np; *cap = ncap;
+    }
+    (*pids)[(*count)++] = pid;
 }
