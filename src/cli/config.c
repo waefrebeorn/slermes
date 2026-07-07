@@ -6647,3 +6647,85 @@ const char *hermes_platform_token_env(const char *platform_name) {
     if (strcmp(platform_name, "email") == 0) return "EMAIL_FROM";
     return NULL;
 }
+
+/* ===========================================================================
+ *  .env value parsing/quoting — ported from hermes_cli/config.py
+ *  These were REAL_GAP.
+ * =========================================================================== */
+
+/* PoP: _parse_env_value @ hermes_cli/config.py:_parse_env_value
+ * Parse the small .env value subset Hermes writes itself. Returns malloc'd
+ * string. Caller frees. */
+char *parse_env_value(const char *raw_value)
+{
+    if (!raw_value) return strdup("");
+    /* strip leading/trailing whitespace */
+    while (*raw_value == ' ' || *raw_value == '\t') raw_value++;
+    size_t len = strlen(raw_value);
+    while (len > 0 && (raw_value[len-1]==' '||raw_value[len-1]=='\t')) len--;
+
+    if (len >= 2 && raw_value[0] == '"' && raw_value[len-1] == '"') {
+        const char *q = raw_value + 1;
+        size_t ql = len - 2;
+        char *out = malloc(ql + 1);
+        size_t o = 0;
+        for (size_t i = 0; i < ql; i++) {
+            if (q[i] == '\\' && i + 1 < ql && (q[i+1]=='"' || q[i+1]=='\\')) {
+                out[o++] = q[i+1]; i++;
+            } else {
+                out[o++] = q[i];
+            }
+        }
+        out[o] = '\0';
+        return out;
+    }
+    if (len >= 2 && raw_value[0] == '\047' && raw_value[len-1] == '\047') {
+        char *out = malloc(len - 1);
+        memcpy(out, raw_value + 1, len - 2);
+        out[len-2] = '\0';
+        return out;
+    }
+    char *out = malloc(len + 1);
+    memcpy(out, raw_value, len);
+    out[len] = '\0';
+    return out;
+}
+
+/* PoP: _quote_env_value @ hermes_cli/config.py:_quote_env_value
+ * Quote .env values containing characters with special dotenv meaning.
+ * Returns malloc'd string. Caller frees. */
+char *quote_env_value(const char *value)
+{
+    if (!value) value = "";
+    if (value[0] == '\0') return strdup("");
+    int needs = 0;
+    for (const char *p = value; *p; p++) {
+        if (*p == '#' || *p == '"' || *p == '\047') { needs = 1; break; }
+        if (*p == ' ' || *p == '\t') { needs = 1; break; }
+    }
+    if (!needs) return strdup(value);
+    /* escape backslashes and double-quotes */
+    size_t cap = strlen(value) * 2 + 3;
+    char *out = malloc(cap);
+    size_t o = 0;
+    out[o++] = '"';
+    for (const char *p = value; *p; p++) {
+        if (*p == '\\' || *p == '"') out[o++] = '\\';
+        out[o++] = *p;
+    }
+    out[o++] = '"';
+    out[o] = '\0';
+    return out;
+}
+
+/* PoP: _looks_like_structured_value @ hermes_cli/config.py:_looks_like_structured_value */
+int looks_like_structured_value(const char *value)
+{
+    if (!value) return 0;
+    static const char *markers[] = {"://", "?", "&", NULL};
+    for (int i = 0; markers[i]; i++)
+        if (strstr(value, markers[i])) return 1;
+    for (const char *p = value; *p; p++)
+        if (*p == ' ' || *p == '\t') return 1;
+    return 0;
+}
