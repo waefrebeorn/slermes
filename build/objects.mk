@@ -75,6 +75,7 @@ PORT_OBJ = \
     src/cli/port_scale_to_zero_helpers.o \
     src/cli/port_cron_jobs_helpers.o \
     src/cli/port_profiles_helpers.o \
+    src/cli/port_yuanbao_proto_helpers.o \
     src/cli/port_tools_blueprints.o \
     src/cli/port_tools_browser_cdp_tool.o \
     src/cli/port_tools_checkpoint_manager.o \
