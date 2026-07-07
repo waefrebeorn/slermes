@@ -7,10 +7,13 @@
 
 #include "hermes.h"
 #include "hermes_logger.h"
+#include "libbase64/base64.h"
+#include "libcrypto/crypto.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
 
 #define TWILIO_API_BASE "https://api.twilio.com/2010-04-01/Accounts"
 #define MAX_SMS_LENGTH 1600
@@ -34,7 +37,6 @@ int cli_gateway_platforms_sms_check_sms_requirements(void)
         return 0;
     }
 
-    /* In a real implementation, also check for aiohttp availability */
     hermes_log(LOG_DEBUG, "sms", "SMS requirements met (SID=%.*s...)",
                account_sid ? 8 : 0, account_sid ? account_sid : "");
     return 1;
@@ -54,9 +56,10 @@ int cli_gateway_platforms_sms__basic_auth_header(
     char creds[512];
     snprintf(creds, sizeof(creds), "%s:%s", account_sid, auth_token);
 
-    /* Simple base64 encoding (in production, use a proper base64 library) */
-    /* For the port, we just format the header without actual base64 */
-    snprintf(header_out, header_size, "Basic %s", creds);
+    char *b64 = base64_encode((const unsigned char *)creds, strlen(creds));
+    if (!b64) return -1;
+    snprintf(header_out, header_size, "Basic %s", b64);
+    free(b64);
     hermes_log(LOG_DEBUG, "sms", "Built auth header for SID=%.*s",
                account_sid ? 8 : 0, account_sid ? account_sid : "");
     return 0;
@@ -138,25 +141,52 @@ int cli_gateway_platforms_sms__check_signature(
 {
     if (!url || !signature || !auth_token) return 0;
 
-    /* Build data_to_sign = url + sorted(key + value) */
+    /* Build data_to_sign = url + sorted(key + value).
+     * Twilio sorts the concatenation of each "keyvalue" pair. */
     char data[8192];
     snprintf(data, sizeof(data), "%s", url);
 
-    /* Sort keys and append key+value (simplified: just append in order) */
-    for (int i = 0; i < param_count && strlen(data) < sizeof(data) - 256; i++) {
+    /* Collect "keyvalue" pairs, sort them, append. */
+    char pairs[256][512];
+    int np = 0;
+    for (int i = 0; i < param_count && np < 256; i++) {
         if (param_keys[i] && param_values[i]) {
-            size_t pos = strlen(data);
-            snprintf(data + pos, sizeof(data) - pos, "%s%s", param_keys[i], param_values[i]);
+            snprintf(pairs[np], sizeof(pairs[np]), "%s%s", param_keys[i], param_values[i]);
+            np++;
         }
     }
+    /* Simple insertion sort (ascending, byte-wise). */
+    for (int i = 1; i < np; i++) {
+        char key[512];
+        snprintf(key, sizeof(key), "%s", pairs[i]);
+        int j = i - 1;
+        while (j >= 0 && strcmp(pairs[j], key) > 0) {
+            char tmp[512];
+            snprintf(tmp, sizeof(tmp), "%s", pairs[j]);
+            snprintf(pairs[j + 1], sizeof(pairs[j + 1]), "%s", tmp);
+            j--;
+        }
+        snprintf(pairs[j + 1], sizeof(pairs[j + 1]), "%s", key);
+    }
+    for (int i = 0; i < np; i++) {
+        size_t pos = strlen(data);
+        if (pos < sizeof(data) - 512)
+            snprintf(data + pos, sizeof(data) - pos, "%s", pairs[i]);
+    }
 
-    /* Compute HMAC-SHA1 (in production, use OpenSSL or similar) */
-    /* For the port, we simulate by comparing with a dummy */
-    hermes_log(LOG_DEBUG, "sms", "Checking signature for URL (len=%zu)", strlen(data));
+    /* Compute HMAC-SHA1(auth_token, data) and base64-encode it. */
+    unsigned char mac[20];
+    crypto_hmac_sha1((const unsigned char *)auth_token, strlen(auth_token),
+                     (const unsigned char *)data, strlen(data), mac);
+    char *computed = base64_encode(mac, sizeof(mac));
+    if (!computed) return 0;
 
-    /* In production: mac = hmac.new(auth_token, data, sha1); computed = base64(mac.digest()) */
-    /* return hmac.compare_digest(computed, signature) */
-    return 0; /* Simulated: always fails without real HMAC */
+    int match = (strcmp(computed, signature) == 0);
+    free(computed);
+
+    hermes_log(LOG_DEBUG, "sms", "Checking signature for URL (len=%zu) match=%d",
+               strlen(data), match);
+    return match;
 }
 
 /* PoP: cli_gateway_platforms_sms__port_variant_url @ gateway/platforms/sms.py:_port_variant_url */
