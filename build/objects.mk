@@ -57,6 +57,7 @@ PORT_OBJ = \
     src/cli/port_gateway_sticker_cache.o \
     src/cli/port_hermes_cli_models.o \
     src/cli/port_hermes_cli_main_helpers.o \
+    src/cli/port_hermes_cli_backup.o \
     src/cli/port_tools_blueprints.o \
     src/cli/port_tools_browser_cdp_tool.o \
     src/cli/port_tools_checkpoint_manager.o \
