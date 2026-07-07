@@ -20,6 +20,8 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <errno.h>
+#include "hermes_logger.h"
+#include "libwebsocket/websocket.h"
 
 /* ── Constants ───────────────────────────────────────────────────────── */
 #define WS_HANDSHAKE_TIMEOUT_MS  30000
@@ -59,6 +61,7 @@ struct ws_transport {
     bool connected;
     bool closing;
     int sock_fd; /* socket file descriptor (-1 if not connected) */
+    ws_t *ws;    /* libwebsocket client handle (NULL if not connected) */
 
     /* Handshake */
     bool handshake_done;
@@ -86,8 +89,9 @@ struct ws_transport {
     int read_pos;
 };
 
-/* Forward declaration for reader thread */
+/* Forward declarations */
 void *ws_read_loop(void *arg);
+static bool ws_send_frame(ws_transport_t *t, const char *frame);
 
 /* ── Dial URL normalization ──────────────────────────────────────────── */
 /* Port of Python: _ws_dial_url */
@@ -238,21 +242,28 @@ static void *ws_connect_worker(void *arg) {
 
     pthread_mutex_lock(&ctx->lock);
 
-    /* In production: perform actual WebSocket connect via libwebsockets */
-    /* Simplified: mark as connected */
+    /* Real WebSocket connect via libwebsocket. */
+    t->ws = ws_connect(t->url, t->connect_timeout_ms / 1000);
+    if (!t->ws) {
+        hermes_log(LOG_ERROR, "relay_ws", "connect failed: %s", t->url);
+        ctx->result = false;
+        ctx->done = true;
+        pthread_cond_signal(&ctx->cond);
+        pthread_mutex_unlock(&ctx->lock);
+        return NULL;
+    }
+
     pthread_mutex_lock(&t->write_lock);
     t->connected = true;
-    t->sock_fd = 1; /* fake fd */
+    t->sock_fd = 0; /* logical handle now owned by t->ws */
     pthread_mutex_unlock(&t->write_lock);
 
-    /* Send hello frame */
+    /* Send hello frame (real send over the socket). */
     char hello[2048];
     snprintf(hello, sizeof(hello),
              "{\"type\":\"hello\",\"platform\":\"%s\",\"botId\":\"%s\"}\n",
              t->platform, t->bot_id);
-
-    /* In production: t._ws.send(hello) */
-    (void)hello;
+    ws_send_frame(t, hello);
 
     ctx->result = true;
     ctx->done = true;
@@ -441,14 +452,16 @@ void ws_transport_set_interrupt_inbound_handler(ws_transport_t *t, ws_interrupt_
 /* ── _send (wire I/O) ────────────────────────────────────────────────── */
 /* Port of Python: _send */
 static bool ws_send_frame(ws_transport_t *t, const char *frame) {
-    if (!t || !frame || !t->connected) return false;
+    if (!t || !frame || !t->connected || !t->ws) return false;
 
     pthread_mutex_lock(&t->write_lock);
-    /* In production: send over WebSocket */
-    /* Simplified: mark as sent */
-    (void)frame;
+    int rc = ws_send(t->ws, WS_OP_TEXT, frame, strlen(frame));
     pthread_mutex_unlock(&t->write_lock);
 
+    if (rc < 0) {
+        hermes_log(LOG_ERROR, "relay_ws", "send failed: %s", frame);
+        return false;
+    }
     return true;
 }
 
@@ -605,14 +618,37 @@ void *ws_read_loop(void *arg) {
     char line_buf[WS_LINE_BUF_SIZE];
 
     while (t->reader_running && !t->closing) {
-        /* In production: read from WebSocket, split on newlines */
-        /* Simplified: simulate reading frames */
-        usleep(100000); /* 100ms poll */
-
-        /* Check for simulated frames */
-        /* In production: async for chunk in self._ws */
+        ws_frame_t frame;
+        int rc = ws_recv(t->ws, &frame, 1);
+        if (rc < 0) {
+            if (t->closing) break;
+            /* transient timeout / no data this tick; keep polling */
+            continue;
+        }
+        if (frame.opcode == WS_OP_CLOSE) {
+            ws_frame_free(&frame);
+            hermes_log(LOG_INFO, "relay_ws", "server closed connection");
+            break;
+        }
+        if ((frame.opcode == WS_OP_TEXT || frame.opcode == WS_OP_BIN) &&
+            frame.payload && frame.len > 0) {
+            /* Frames are newline-delimited JSON; dispatch each complete line. */
+            char *buf = malloc(frame.len + 1);
+            if (buf) {
+                memcpy(buf, frame.payload, frame.len);
+                buf[frame.len] = '\0';
+                char *save = buf;
+                char *line;
+                while ((line = strsep(&save, "\n")) != NULL) {
+                    if (*line) ws_transport_handle_frame(t, line);
+                }
+                free(buf);
+            }
+        }
+        ws_frame_free(&frame);
     }
 
+    t->reader_running = false;
     return NULL;
 }
 
