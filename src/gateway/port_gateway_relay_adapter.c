@@ -383,8 +383,9 @@ bool relay_adapter_connect(relay_transport_t *transport) {
 
     /* Perform handshake: receive descriptor from connector */
     if (ctx.result) {
-        /* In production, this would read the descriptor frame from the WS */
-        /* For now, mark as connected with current descriptor */
+        /* The descriptor frame is delivered asynchronously by the transport's
+         * ws_read_loop into current_descriptor; adopt it here once connect
+         * succeeded. */
         pthread_mutex_lock(&adapter.lock);
         adapter.descriptor = current_descriptor;
         pthread_mutex_unlock(&adapter.lock);
