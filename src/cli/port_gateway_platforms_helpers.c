@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <pthread.h>
 
 #define MAX_DEDUP_SEEN 2000
 #define MAX_THREADS 500
@@ -77,26 +78,54 @@ int helpers_is_duplicate(const char *msg_id)
 
 /* ─── Text Batch Aggregation ───────────────────────────────────────────── */
 
+/* Real pending batch: each enqueued (key, text) fragment is appended to a
+ * bounded ring buffer; flush/cancel operate on this buffer. */
+#define HELPERS_BATCH_MAX 256
+typedef struct {
+    char key[128];
+    char text[2048];
+    int text_len;
+} BatchEntry;
+
+static BatchEntry _batch[HELPERS_BATCH_MAX];
+static int _batch_count = 0;
+static pthread_mutex_t _batch_lock = PTHREAD_MUTEX_INITIALIZER;
+
 /* PoP: helpers_enqueue @ gateway/platforms/helpers.py:enqueue */
 
 /* Port of Python gateway/platforms/helpers.py:enqueue */
-/* Add event to the pending batch for key. */
+/* Append event text to the pending batch for key. */
 void helpers_enqueue(const char *key, const char *text, int text_len)
 {
     if (!key || !key[0] || !text || text_len <= 0) return;
 
-    hermes_log(LOG_DEBUG, "helpers", "Enqueued text for key=%s len=%d", key, text_len);
-    /* In a real implementation, add to pending batch */
+    pthread_mutex_lock(&_batch_lock);
+    if (_batch_count < HELPERS_BATCH_MAX) {
+        BatchEntry *e = &_batch[_batch_count++];
+        strncpy(e->key, key, sizeof(e->key) - 1);
+        e->key[sizeof(e->key) - 1] = '\0';
+        int copy = text_len < (int)sizeof(e->text) - 1 ? text_len : (int)sizeof(e->text) - 1;
+        memcpy(e->text, text, copy);
+        e->text[copy] = '\0';
+        e->text_len = copy;
+    }
+    pthread_mutex_unlock(&_batch_lock);
+
+    hermes_log(LOG_DEBUG, "helpers", "Enqueued text for key=%s len=%d (batch=%d)", key, text_len, _batch_count);
 }
 
 /* PoP: helpers_cancel_all @ gateway/platforms/helpers.py:cancel_all */
 
 /* Port of Python gateway/platforms/helpers.py:cancel_all */
-/* Cancel all pending flush tasks. */
+/* Cancel all pending flush tasks by clearing the batch buffer. */
 void helpers_cancel_all(void)
 {
-    hermes_log(LOG_DEBUG, "helpers", "Cancelled all pending flush tasks");
-    /* In a real implementation, cancel all pending timers */
+    pthread_mutex_lock(&_batch_lock);
+    int cleared = _batch_count;
+    _batch_count = 0;
+    pthread_mutex_unlock(&_batch_lock);
+
+    hermes_log(LOG_DEBUG, "helpers", "Cancelled all pending flush tasks (%d cleared)", cleared);
 }
 
 /* ─── Thread Participation Tracking ─────────────────────────────────────── */
