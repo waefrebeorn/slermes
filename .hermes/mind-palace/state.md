@@ -1,7 +1,7 @@
 # State — Slermes C Translation (v541)
 
 - Build: `make slermes` = 0 errors, binary links clean (~41 MB)
-- **Scanner (real, this session):** 4,664 PORTED (47.9%), 5,067 REAL_GAP (52.1%), 9,731 total features
+- **Scanner (real, this session):** 4,700 PORTED (48.3%), 4,989 REAL_GAP (51.2%), 42 PARTIAL, 9,731 total features
 - Tests: `bash tests/run_mission8_tests.sh` → 36 passed, 0 failed, 35 skipped
 - **Façade audit COMPLETE (v541):** all 18 audited files / 52 fake-looking stubs rewritten as REAL ports. No `In a real implementation` comments remain in src/cli/port_*.c. Binary links; 36/36 tests pass.
 - Desktop parity: 111 features mapped, ~99 missing (4% complete) — separate workstream
@@ -39,3 +39,31 @@ Extended the façade sweep to the 7 residual `simulate`/fake-comment files. Outc
 - **relay_adapter** — reworded stale "in production" handshake comment to reflect real descriptor delivery.
 - **shell_hooks / image_generation / browser / port_send_message_tool** — `simulate` comments were misworded; behavior already real (env-var dispatch, lazy-load flag, text-browser UI text, retry_after parse). Reworded; left honest UI/help text in browser.c.
 - 36/36 tests still pass; full tree now free of fake-looking stub code.
+
+## This Session (v541) — Parity Gap Closure (post-façade)
+
+Continued the gap-closure pass: ported 70 REAL_GAP functions across 15 modules, all
+committed + pushed, build clean, 36/36 tests green. Real gaps dropped 5,053 → 4,989
+(64 closed). Scanner now 4,700 PORTED / 4,989 REAL_GAP / 42 PARTIAL.
+
+Discipline: faithful ports only; deferred (not faked) network/config/DB-coupled
+functions; checked for existing symbols to avoid collisions; registered new files in
+`build/objects.mk`.
+
+Modules ported (commits):
+- `cfd2050084` web_server — 7 fs helpers
+- `1aaaba041c` web_server — 8 path/auth
+- `59db715b73` weixin — 6 AES-128-ECB (OpenSSL EVP)
+- `1d638786db` base — 3 proxy/URL
+- `73523bbe16` auth — 4 auth-error (HMAC/SHA256)
+- `0ae633fbae` kanban_db — 12 TTL/board helpers
+- `e99a929744` base — 4 network/media
+- `9421da1634` gateway — 4 PID (`/proc`)
+- `f6d9175181` models — 2 Nous cache (libjson)
+- `204ff038c0` main — 5 git/cgroup
+- `3461dc294a` config — 3 .env helpers
+- `91805df3b7` main — 1 session file
+- `49a1c859c9` backup — 2 exclude/skip
+- `b21caa411c` gateway — 5 platform/env (uname/sha256)
+- `9f3a620f81` kanban — 4 CLI/time helpers
+

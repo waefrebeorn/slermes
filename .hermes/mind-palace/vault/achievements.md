@@ -149,3 +149,24 @@ SSRF blocks incl. CGNAT 100.64/10).
 **Note:** walkway state.md/BANNER.md corrected from stale "8,688/8,688 100%" fiction
 (v398-era) to live scanner output. NOT YET COMMITTED — dirty tree carries
 prior-session uncommitted work; commit pending next session.
+
+## v541 — Parity Gap Closure (post-façade), 70 functions / 15 modules
+
+**What happened:** Continued gap-closure pass after façade audit. Ported 70 REAL_GAP
+functions across 15 modules. Real gaps 5,053 → 4,989 (64 closed). Scanner now
+4,700 PORTED / 4,989 REAL_GAP / 42 PARTIAL (9,731 total).
+
+**Evidence (commits, all pushed):**
+- `cfd2050084` web_server 7 fs helpers · `1aaaba041c` web_server 8 path/auth
+- `59db715b73` weixin 6 AES-128-ECB (OpenSSL EVP) · `1d638786db` base 3 proxy/URL
+- `73523bbe16` auth 4 auth-error (HMAC/SHA256) · `0ae633fbae` kanban_db 12 TTL/board
+- `e99a929744` base 4 network/media · `9421da1634` gateway 4 PID (/proc)
+- `f6d9175181` models 2 Nous cache (libjson) · `204ff038c0` main 5 git/cgroup
+- `3461dc294a` config 3 .env helpers · `91805df3b7` main 1 session file
+- `49a1c859c9` backup 2 exclude/skip · `b21caa411c` gateway 5 platform/env
+- `9f3a620f81` kanban 4 CLI/time helpers
+
+**Build:** CLEAN (0 errors). **Tests:** 36/36 pass.
+**Discipline:** faithful ports only; deferred network/config/DB-coupled fns (not faked);
+collision-checked; new files registered in build/objects.mk.
+**Note:** new helper files created: port_hermes_cli_*.c (models/main/backup/gateway_platform/kanban_helpers).
