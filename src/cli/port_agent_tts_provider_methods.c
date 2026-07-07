@@ -18,24 +18,10 @@ int tts_provider_list_voices(char **voice_ids, char **voice_names, int *language
 {
     if (!voice_ids || max_voices <= 0) return 0;
 
-    /* In a real implementation, this would call the TTS provider API */
-    /* Return some default voices */
-    int count = 0;
-    if (count < max_voices) {
-        voice_ids[count] = strdup("default-voice-1");
-        voice_names[count] = strdup("Default Voice 1");
-        if (languages) languages[count] = 0;
-        count++;
-    }
-    if (count < max_voices) {
-        voice_ids[count] = strdup("default-voice-2");
-        voice_names[count] = strdup("Default Voice 2");
-        if (languages) languages[count] = 0;
-        count++;
-    }
-
-    hermes_log(LOG_DEBUG, "tts_provider", "Listed %d voices", count);
-    return count;
+    /* Base provider has no concrete voices; concrete providers override this.
+     * Faithful to Python base class which returns [] (empty catalog). */
+    hermes_log(LOG_DEBUG, "tts_provider", "Listed 0 voices (abstract base provider)");
+    return 0;
 }
 
 /* PoP: tts_provider_default_voice @ agent/tts_provider.py:default_voice */
@@ -82,21 +68,13 @@ char *tts_provider_synthesize(const char *text, const char *output_path,
     hermes_log(LOG_INFO, "tts_provider", "Synthesizing: text='%s' voice=%s format=%s",
                text, voice ? voice : "(default)", format ? format : "mp3");
 
-    /* In a real implementation, call TTS API and write to file */
-    FILE *f = fopen(output_path, "wb");
-    if (f) {
-        /* Write a minimal WAV header as placeholder */
-        unsigned char wav_header[] = {
-            'R', 'I', 'F', 'F', 0, 0, 0, 0, 'W', 'A', 'V', 'E',
-            'f', 'm', 't', ' ', 16, 0, 0, 0, 1, 0, 1, 0,
-            0x44, 0xAC, 0, 0, 0x88, 0x58, 0x01, 0, 2, 0, 16, 0,
-            'd', 'a', 't', 'a', 0, 0, 0, 0
-        };
-        fwrite(wav_header, 1, sizeof(wav_header), f);
-        fclose(f);
-    }
-
-    return strdup(output_path);
+    /* The base provider is abstract: synthesize() raises NotImplementedError in
+     * Python. Concrete providers (OpenAI, ElevenLabs, ...) override this to call
+     * their real TTS API. Return NULL rather than emit a fake audio file. */
+    hermes_log(LOG_WARNING, "tts_provider",
+               "synthesize() not implemented by abstract base provider; "
+               "use a concrete TTS provider (e.g. OpenAI TTS)");
+    return NULL;
 }
 
 /* PoP: tts_provider_stream @ agent/tts_provider.py:stream */
@@ -114,13 +92,12 @@ char *tts_provider_stream(const char *text, const char *voice, const char *model
     hermes_log(LOG_INFO, "tts_provider", "Streaming: text='%s' voice=%s format=%s",
                text, voice ? voice : "(default)", format ? format : "opus");
 
-    /* In a real implementation, set up streaming audio */
-    /* For now, return a placeholder */
-    char *chunk = (char *)malloc(64);
-    if (chunk) {
-        snprintf(chunk, 64, "audio_chunk_placeholder");
-    }
-    return chunk;
+    /* Abstract base: stream() raises NotImplementedError in Python. Return NULL
+     * (no fake chunk) rather than a placeholder. */
+    hermes_log(LOG_WARNING, "tts_provider",
+               "stream() not implemented by abstract base provider; "
+               "use a concrete TTS provider");
+    return NULL;
 }
 
 /* PoP: tts_provider_voice_compatible @ agent/tts_provider.py:voice_compatible */
