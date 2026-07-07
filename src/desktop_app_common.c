@@ -38,6 +38,7 @@
 
 #include "desktop_app.h"
 #include "hermes.h"
+#include "libhttp/http.h"
 
 #define _GNU_SOURCE
 
@@ -2044,11 +2045,33 @@ uint8_t *desktop_clipboard_get_image_data(size_t *out_size) {
 bool desktop_image_download(const char *url, const char *dest_path, image_download_cb cb) {
     if (!url || !dest_path) return false;
 
-    fprintf(stderr, "desktop_image_download: %s -> %s (stub)", url, dest_path);
+    http_t *http = http_new(60);
+    if (!http) {
+        if (cb) cb(false, dest_path, "http init failed");
+        return false;
+    }
 
-    /* In real implementation, this would use libcurl or similar */
-    if (cb) cb(false, dest_path, "stub: not implemented");
-    return true;
+    http_resp_t *resp = http_get(http, url, NULL);
+    bool ok = false;
+    const char *err = "download failed";
+    if (resp && resp->status >= 200 && resp->status < 300 && resp->body) {
+        FILE *f = fopen(dest_path, "wb");
+        if (f) {
+            size_t w = fwrite(resp->body, 1, resp->body_len, f);
+            fclose(f);
+            ok = (w == resp->body_len);
+            err = ok ? NULL : "write incomplete";
+        } else {
+            err = "cannot open dest path";
+        }
+    } else {
+        err = resp ? "http error" : "no response";
+    }
+    http_resp_free(resp);
+    http_free(http);
+
+    if (cb) cb(ok, dest_path, err);
+    return ok;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
