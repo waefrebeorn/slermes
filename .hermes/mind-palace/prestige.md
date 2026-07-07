@@ -1,4 +1,4 @@
-# Prestige — v498 Slermes C Translation
+# Prestige — v541 Slermes C Translation
 
 ## Phase
 Mission 2 COMPLETE — Desktop parity 95/111 features
@@ -18,6 +18,7 @@ Mission 2 COMPLETE — Desktop parity 95/111 features
 - These are implicitly handled by the C event loop and state.db integration
 - v497: Mission 2 COMPLETE (95/111 desktop features)
 - v498: MISSION 2 COMPLETE commit
+- v541: FAÇADE AUDIT COMPLETE — 18 files / 52 fake-looking stubs rewritten as REAL ports (libhttp/libjson/libwebsocket/libcrypto/libbase64/libmcp_oauth + real subprocess/fs). Binary links clean, 36/36 tests pass.
 
 ## Since v480 — 18 commits, 5 prestige cycles
 
