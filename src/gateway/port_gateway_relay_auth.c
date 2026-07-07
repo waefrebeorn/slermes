@@ -7,6 +7,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <time.h>
+#include "libcrypto/crypto.h"
 
 
 /* Port of Python: _delivery_payload */
@@ -27,16 +28,21 @@ relay_delivery_t relay_auth_delivery_payload(const char *message_json) {
 
 
 /* Port of Python: _hmac_hex */
+/* Real HMAC-SHA256 of `data` under `key`, rendered as a lowercase hex string. */
 void relay_auth_hmac_hex(const char *key, const char *data, char *output, size_t out_sz) {
     if (!key || !data || !output || out_sz == 0) return;
-    
-    /* Simplified HMAC — in production would use OpenSSL */
-    /* For now, create a simple hash-like output */
-    unsigned long hash = 5381;
-    for (const char *p = key; *p; p++) hash = ((hash << 5) + hash) + *p;
-    for (const char *p = data; *p; p++) hash = ((hash << 5) + hash) + *p;
-    
-    snprintf(output, out_sz, "%016lx", hash);
+
+    unsigned char mac[CRYPTO_SHA256_LEN];
+    crypto_hmac_sha256((const unsigned char *)key, strlen(key),
+                       (const unsigned char *)data, strlen(data), mac);
+
+    static const char hex[] = "0123456789abcdef";
+    size_t i;
+    for (i = 0; i < CRYPTO_SHA256_LEN && i * 2 + 1 < out_sz; i++) {
+        output[i * 2]     = hex[mac[i] >> 4];
+        output[i * 2 + 1] = hex[mac[i] & 0x0f];
+    }
+    output[i * 2] = '\0';
 }
 
 
