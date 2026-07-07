@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <pthread.h>
+#include "libhttp/http.h"
 
 /* ── Constants ───────────────────────────────────────────────────────── */
 #define ANTIGRAVITY_ENDPOINT "https://daily-cloudcode-pa.sandbox.googleapis.com"
@@ -115,18 +116,30 @@ typedef struct {
 static http_response_t antigravity_post_json(const char *url, const char *body_json,
                                               const char *access_token) {
     http_response_t resp = {0};
+    if (!url || !body_json) return resp;
 
-    /* In production: perform actual HTTP POST via libcurl or raw sockets */
-    /* Simplified: simulate successful response */
-    (void)url;
-    (void)body_json;
-    (void)access_token;
+    /* Real HTTPS POST via the in-tree libhttp client. http_post_json_auth
+     * sets the JSON content-type and appends our bearer auth header, then
+     * returns a resp with status + body we map into http_response_t. */
+    http_t *h = http_new(HTTP_TIMEOUT_MS / 1000);
+    if (!h) return resp;
 
-    resp.data = strdup("{}");
-    resp.len = 2;
-    resp.status_code = 200;
-    resp.success = true;
+    char auth_header[2048];
+    const char *auth = "";
+    if (access_token && access_token[0]) {
+        snprintf(auth_header, sizeof(auth_header), "Authorization: Bearer %s", access_token);
+        auth = auth_header;
+    }
 
+    http_resp_t *r = http_post_json_auth(h, url, body_json, auth);
+    if (r) {
+        resp.status_code = r->status;
+        resp.success = (r->status >= 200 && r->status < 300) && r->body != NULL;
+        resp.data = r->body ? strdup(r->body) : NULL;
+        resp.len = resp.data ? strlen(resp.data) : 0;
+        http_resp_free(r); /* frees r but NOT r->body (caller owns data copy) */
+    }
+    http_free(h);
     return resp;
 }
 
