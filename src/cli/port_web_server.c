@@ -6,6 +6,7 @@
 
 #include "hermes_logger.h"
 #include "hermes_json.h"
+#include "libbase64/base64.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,6 +14,7 @@
 #include <ctype.h>
 #include <time.h>
 #include <limits.h>
+#include <libgen.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>
@@ -596,6 +598,176 @@ bool fire_cron_job_for_profile_bridge(void *ctx, void *profile, void *job_id)
 /* Port of Python: _persist_active_session_before_close */
 /* Forward declaration - defined in port_cli_extra.c */
 extern void persist_active_session_before_close(void *ctx);
+
+/* PoP: _fs_path @ hermes_cli/web_server.py:_fs_path
+ * Resolve a raw path string to a canonical absolute path. Returns 0 on success
+ * (writes resolved path to out, up to out_sz), or an HTTP-ish status:
+ * 400 invalid/empty, 414 too long. Honors file:// URLs (localhost only). */
+int fs_path(const char *raw_path, char *out, size_t out_sz)
+{
+    if (!raw_path) return 400;
+    char raw[PATH_MAX];
+    snprintf(raw, sizeof(raw), "%s", raw_path);
+    /* strip + trim */
+    char *p = raw;
+    while (*p == ' ' || *p == '\t') p++;
+    size_t rl = strlen(p);
+    while (rl > 0 && (p[rl-1] == ' ' || p[rl-1] == '\t')) p[--rl] = '\0';
+    if (rl == 0) return 400;
+    if (strchr(p, '\0')) return 400;
+    if (strncasecmp(p, "file://", 7) == 0) {
+        /* file://localhost/... or file:///... */
+        char *host = p + 7;
+        char *slash = strchr(host, '/');
+        if (slash && host != slash) {
+            size_t hlen = slash - host;
+            if (hlen != 0 && !(hlen == 9 && strncmp(host, "localhost", 9) == 0))
+                return 400; /* remote host rejected */
+        }
+        p = slash ? slash : (char*)"";
+    }
+    char candidate[PATH_MAX];
+    if (p[0] == '/') snprintf(candidate, sizeof(candidate), "%s", p);
+    else {
+        char cwd[PATH_MAX];
+        if (!getcwd(cwd, sizeof(cwd))) return 400;
+        snprintf(candidate, sizeof(candidate), "%s/%s", cwd, p);
+    }
+    char resolved[PATH_MAX];
+    if (!realpath(candidate, resolved)) {
+        /* Python resolve(strict=False) keeps the path even if missing. */
+        if (!realpath(dirname(candidate), resolved)) snprintf(resolved, sizeof(resolved), "%s", candidate);
+    }
+    snprintf(out, out_sz, "%s", resolved);
+    return 0;
+}
+
+/* PoP: _canonical_path @ hermes_cli/web_server.py:_canonical_path */
+int canonical_path(const char *path, int require_exists, char *out, size_t out_sz)
+{
+    if (!path) return 400;
+    char expanded[PATH_MAX];
+    snprintf(expanded, sizeof(expanded), "%s", path);
+    /* expanduser: only ~ and ~user handled minimally; ~ → HOME */
+    if (expanded[0] == '~') {
+        const char *home = getenv("HOME");
+        if (home) {
+            char tmp[PATH_MAX];
+            if (expanded[1] == '/' || expanded[1] == '\0')
+                snprintf(tmp, sizeof(tmp), "%s%s", home, expanded + 1);
+            else
+                snprintf(tmp, sizeof(tmp), "%s", expanded); /* ~user unsupported */
+            snprintf(expanded, sizeof(expanded), "%s", tmp);
+        }
+    }
+    char resolved[PATH_MAX];
+    if (!realpath(expanded, resolved)) {
+        if (require_exists) return 404;
+        /* keep best-effort */
+        snprintf(resolved, sizeof(resolved), "%s", expanded);
+    }
+    snprintf(out, out_sz, "%s", resolved);
+    return 0;
+}
+
+/* PoP: _ensure_managed_root @ hermes_cli/web_server.py:_ensure_managed_root
+ * Creates the directory tree if missing; returns 0 + resolved path, or
+ * 500-style -1 if unusable. */
+int ensure_managed_root(const char *raw_path, char *out, size_t out_sz)
+{
+    if (!raw_path) return -1;
+    char expanded[PATH_MAX];
+    snprintf(expanded, sizeof(expanded), "%s", raw_path);
+    if (expanded[0] == '~') {
+        const char *home = getenv("HOME");
+        if (home) { char t[PATH_MAX]; snprintf(t, sizeof(t), "%s%s", home, expanded+1); snprintf(expanded, sizeof(expanded), "%s", t); }
+    }
+    if (mkdir(expanded, 0755) != 0 && errno != EEXIST) return -1;
+    char resolved[PATH_MAX];
+    if (!realpath(expanded, resolved)) snprintf(resolved, sizeof(resolved), "%s", expanded);
+    struct stat st;
+    if (stat(resolved, &st) != 0 || !S_ISDIR(st.st_mode)) return -1;
+    snprintf(out, out_sz, "%s", resolved);
+    return 0;
+}
+
+/* PoP: _path_is_under @ hermes_cli/web_server.py:_path_is_under
+ * True if target equals root or is nested under root. Both must be absolute,
+ * canonical paths (NUL-terminated C strings). */
+int path_is_under(const char *root, const char *target)
+{
+    if (!root || !target) return 0;
+    size_t rl = strlen(root);
+    if (strcmp(target, root) == 0) return 1;
+    if (strncmp(target, root, rl) != 0) return 0;
+    char c = target[rl];
+    return (c == '/' || c == '\0');
+}
+
+/* PoP: _path_text @ hermes_cli/web_server.py:_path_text */
+int path_text(const char *raw_path, char *out, size_t out_sz)
+{
+    if (!raw_path) { if (out && out_sz) out[0]='\0'; return 0; }
+    if (strchr(raw_path, '\0')) return 400;
+    size_t i = 0, o = 0;
+    while (raw_path[i] == ' ' || raw_path[i] == '\t') i++;
+    size_t j = strlen(raw_path);
+    while (j > i && (raw_path[j-1]==' '||raw_path[j-1]=='\t')) j--;
+    if (out && out_sz) {
+        size_t k = 0;
+        while (i < j && k < out_sz - 1) out[k++] = raw_path[i++];
+        out[k] = '\0';
+    }
+    return 0;
+}
+
+/* PoP: _local_dashboard_request @ hermes_cli/web_server.py:_local_dashboard_request
+ * True if the request is a local-origin dashboard request. auth_required and
+ * request objects are passed as flags/strings for the C port. */
+int local_dashboard_request(int auth_required, const char *host, const char *client_host)
+{
+    if (auth_required) return 0;
+    static const char *local[] = {"", "localhost", "127.0.0.1", "::1", "testserver", "testclient", NULL};
+    const char *h = host ? host : "";
+    const char *c = client_host ? client_host : "";
+    for (int i = 0; local[i]; i++) {
+        if (strcasecmp(h, local[i]) == 0) return 1;
+        if (strcasecmp(c, local[i]) == 0) return 1;
+    }
+    return 0;
+}
+
+/* PoP: _decode_data_url @ hermes_cli/web_server.py:_decode_data_url
+ * Decodes a base64 data URL. Writes decoded bytes (caller-free via out) and
+ * mime type. Returns 0 on success, or HTTP-ish status: 400 bad, 413 too large.
+ * Caller frees *out_data. */
+int decode_data_url(const char *data_url, unsigned char **out_data, size_t *out_len, char *out_mime, size_t mime_sz)
+{
+    if (!data_url) return 400;
+    const char *s = data_url;
+    while (*s == ' ' || *s == '\t') s++;
+    if (strncmp(s, "data:", 5) != 0 || !strchr(s, ',')) return 400;
+    const char *comma = strchr(s, ',');
+    size_t header_len = comma - s;
+    if (header_len + 1 >= 6) {
+        size_t mlen = header_len - 5;
+        char mime[128];
+        size_t cp = 0;
+        const char *m = s + 5;
+        while (cp < mlen && m[cp] && m[cp] != ';' && cp < sizeof(mime)-1) mime[cp++] = m[cp];
+        mime[cp] = '\0';
+        if (out_mime) snprintf(out_mime, mime_sz, "%s", mime[0] ? mime : "application/octet-stream");
+    } else if (out_mime) snprintf(out_mime, mime_sz, "application/octet-stream");
+    if (strstr(s, ";base64") == NULL) return 400;
+    const char *encoded = comma + 1;
+    size_t dlen = 0;
+    unsigned char *dec = base64_decode(encoded, &dlen);
+    if (!dec) return 400;
+    if (dlen > (32 * 1024 * 1024)) { free(dec); return 413; } /* _MANAGED_FILE_MAX_BYTES guard */
+    *out_data = dec;
+    *out_len = dlen;
+    return 0;
+}
 
 void _persist_active_session_before_close(void *ctx)
 {
