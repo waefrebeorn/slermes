@@ -15,8 +15,8 @@
 #include <unistd.h>
 #include <libgen.h>
 #include "pet.h"
-#include "hermes.h"
 #include "hermes_http.h"
+#include "hermes_json.h"
 #include "hermes_logger.h"
 
 /* PoP: pet_safe_slug @ agent/pet/store.py:_safe_slug */

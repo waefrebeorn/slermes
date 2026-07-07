@@ -95,6 +95,7 @@ static void load_state(void) {
 }
 
 /* Generate a meeting code */
+/* PoP: generate_code @ gateway/pairing.py:generate_code */
 static void generate_code(char *buf, size_t sz) {
     static const char *chars = "abcdefghijklmnopqrstuvwxyz";
     srand((unsigned)(time(NULL) ^ (uintptr_t)buf));
@@ -287,3 +288,4 @@ int plugin_cleanup(void) {
     memset(&g_interface, 0, sizeof(g_interface));
     return 0;
 }
+

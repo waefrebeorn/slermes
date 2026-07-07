@@ -902,6 +902,7 @@ char *model_short(const char *model) {
  * Port of Python gateway/delivery.py _looks_like_telegram_private_chat_id().
  * AG26: Port of Python gateway/delivery.py:_looks_like_telegram_private_chat_id().
  */
+/* PoP: looks_like_telegram_private_chat_id @ gateway/delivery.py:looks_like_telegram_private_chat_id */
 bool looks_like_telegram_private_chat_id(const char *chat_id) {
     if (!chat_id || !*chat_id) return false;
     char *end = NULL;
@@ -1232,3 +1233,4 @@ bool is_fresh_gateway_interruption(double timestamp, double now, double window_s
     if (window_secs <= 0.0) return true;
     return (now - timestamp) <= window_secs;
 }
+

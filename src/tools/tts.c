@@ -35,6 +35,7 @@ static const char *SCHEMA = "{"
  */
 
 /* Generate default output path if none provided */
+/* PoP: tts_default_path @ tools/tts_tool.py:_get_default_output_dir */
 static const char *tts_default_path(char *buf, size_t buf_size) {
     const char *home = getenv("HOME");
     if (!home) home = "/tmp";
@@ -47,6 +48,7 @@ static const char *tts_default_path(char *buf, size_t buf_size) {
 }
 
 /* Escape single quotes for shell command */
+/* PoP: tts_escape_text @ tools/tts_tool.py:_quote_command_tts_placeholder */
 static void tts_escape_text(const char *text, char *out, size_t out_size) {
     size_t pos = 0;
     for (const char *p = text; *p && pos < out_size - 4; p++) {
@@ -67,6 +69,7 @@ static void tts_escape_text(const char *text, char *out, size_t out_size) {
 /* === API-based TTS backends (elevenlabs, openai, xai) === */
 
 /* ElevenLabs TTS: POST https://api.elevenlabs.io/v1/text-to-speech/{voice_id} */
+/* PoP: tts_elevenlabs @ tools/tts_tool.py:_generate_elevenlabs */
 static bool tts_elevenlabs(const char *text, const char *voice, const char *output_path) {
     const char *api_key = tool_config_get("elevenlabs", "api_key");
     if (!api_key) api_key = getenv("ELEVENLABS_API_KEY");
@@ -118,6 +121,7 @@ static bool tts_elevenlabs(const char *text, const char *voice, const char *outp
 }
 
 /* OpenAI TTS: POST https://api.openai.com/v1/audio/speech */
+/* PoP: tts_openai @ tools/tts_tool.py:_generate_openai_tts */
 static bool tts_openai(const char *text, const char *voice, const char *output_path) {
     const char *api_key = tool_config_get("openai", "api_key");
     if (!api_key) api_key = getenv("OPENAI_API_KEY");
@@ -168,6 +172,7 @@ static bool tts_openai(const char *text, const char *voice, const char *output_p
 }
 
 /* xAI TTS: POST https://api.x.ai/v1/audio/speech (OpenAI-compatible) */
+/* PoP: tts_xai @ tools/tts_tool.py:_generate_xai_tts */
 static bool tts_xai(const char *text, const char *voice, const char *output_path) {
     const char *api_key = tool_config_get("xai", "api_key");
     if (!api_key) api_key = getenv("XAI_API_KEY");
@@ -217,6 +222,7 @@ static bool tts_xai(const char *text, const char *voice, const char *output_path
 }
 
 /* D02: Azure TTS: POST https://{region}.tts.speech.microsoft.com/cognitiveservices/v1 */
+/* PoP: tts_azure @ tools/tts_tool.py:_generate_azure_tts */
 static bool tts_azure(const char *text, const char *voice, const char *output_path) {
     const char *api_key = tool_config_get("azure", "tts_key");
     if (!api_key) api_key = getenv("AZURE_TTS_KEY");
@@ -277,6 +283,7 @@ static bool tts_azure(const char *text, const char *voice, const char *output_pa
 /* L10: Split text into chunks at sentence boundaries.
  * Returns array of strings (caller must free each + the array).
  * chunk_chars: approximate max characters per chunk (~15 chars/sec speech). */
+/* PoP: tts_chunk_text @ tools/tts_tool.py:_split_text_for_tts */
 static char **tts_chunk_text(const char *text, int chunk_chars, int *nchunks) {
     *nchunks = 0;
     if (!text || !*text) return NULL;
@@ -346,6 +353,7 @@ static char **tts_chunk_text(const char *text, int chunk_chars, int *nchunks) {
     return chunks;
 }
 
+/* PoP: tts_handler @ tools/tts_tool.py:text_to_speech_tool */
 char *tts_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     if (!args_json) return strdup("{\"error\":\"No args\"}");
@@ -498,6 +506,7 @@ static struct {
 static int g_tts_provider_count = 0;
 
 /* Port of Python agent/tts_registry.py:register_provider(). */
+/* PoP: tts_register_provider @ tools/tts_tool.py:register_tts_provider */
 bool tts_register_provider(const char *name, const char *provider_type) {
     if (!name || !name[0]) return false;
 
@@ -537,6 +546,7 @@ bool tts_register_provider(const char *name, const char *provider_type) {
 }
 
 /* Port of Python agent/tts_registry.py:list_providers(). */
+/* PoP: tts_list_providers @ tools/tts_tool.py:list_tts_providers */
 char *tts_list_providers(void) {
     if (g_tts_provider_count == 0) return strdup("");
     size_t total = 0;

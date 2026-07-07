@@ -285,6 +285,7 @@ int skill_usage_find(const skill_usage_map_t *map, const char *skill_name)
 
 /* PoP: get_record @ skill_usage:skill_usage_get_record */
 /* PoP: skill_usage_get_record @ skill_usage:get_record */
+/* PoP: skill_usage_get_record @ tools/skill_usage.py:get_record */
 void skill_usage_get_record(const skill_usage_map_t *map,
                              const char *skill_name,
                              skill_usage_record_t *out_record)
@@ -341,6 +342,7 @@ static int _mutate_save(const char *hermes_home,
 
 /* PoP: bump_view @ skill_usage:skill_usage_bump_view */
 /* PoP: skill_usage_bump_view @ skill_usage:bump_view */
+/* PoP: skill_usage_bump_view @ tools/skill_usage.py:bump_view */
 int skill_usage_bump_view(const char *hermes_home, const char *skill_name)
 {
     skill_usage_map_t map;
@@ -356,6 +358,7 @@ int skill_usage_bump_view(const char *hermes_home, const char *skill_name)
 
 /* PoP: bump_use @ skill_usage:skill_usage_bump_use */
 /* PoP: skill_usage_bump_use @ skill_usage:bump_use */
+/* PoP: skill_usage_bump_use @ tools/skill_usage.py:bump_use */
 int skill_usage_bump_use(const char *hermes_home, const char *skill_name)
 {
     skill_usage_map_t map;
@@ -371,6 +374,7 @@ int skill_usage_bump_use(const char *hermes_home, const char *skill_name)
 
 /* PoP: bump_patch @ skill_usage:skill_usage_bump_patch */
 /* PoP: skill_usage_bump_patch @ skill_usage:bump_patch */
+/* PoP: skill_usage_bump_patch @ tools/skill_usage.py:bump_patch */
 int skill_usage_bump_patch(const char *hermes_home, const char *skill_name)
 {
     skill_usage_map_t map;
@@ -390,6 +394,7 @@ int skill_usage_bump_patch(const char *hermes_home, const char *skill_name)
 
 /* PoP: mark_agent_created @ skill_usage:skill_usage_mark_agent_created */
 /* PoP: skill_usage_mark_agent_created @ skill_usage:mark_agent_created */
+/* PoP: skill_usage_mark_agent_created @ tools/skill_usage.py:mark_agent_created */
 int skill_usage_mark_agent_created(const char *hermes_home, const char *skill_name)
 {
     skill_usage_map_t map;
@@ -430,6 +435,7 @@ int skill_usage_set_state(const char *hermes_home, const char *skill_name,
 
 /* PoP: set_pinned @ skill_usage:skill_usage_set_pinned */
 /* PoP: skill_usage_set_pinned @ skill_usage:set_pinned */
+/* PoP: skill_usage_set_pinned @ tools/skill_usage.py:set_pinned */
 int skill_usage_set_pinned(const char *hermes_home, const char *skill_name,
                             bool pinned)
 {
@@ -444,6 +450,7 @@ int skill_usage_set_pinned(const char *hermes_home, const char *skill_name,
 
 /* PoP: forget @ skill_usage:skill_usage_forget */
 /* PoP: skill_usage_forget @ skill_usage:forget */
+/* PoP: skill_usage_forget @ tools/skill_usage.py:forget */
 int skill_usage_forget(const char *hermes_home, const char *skill_name)
 {
     if (!skill_name || !*skill_name) return -1;
@@ -837,3 +844,10 @@ int skill_usage_activity_count(const skill_usage_record_t *record)
 {
     return record->use_count + record->view_count + record->patch_count;
 }
+
+
+
+
+
+
+

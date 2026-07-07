@@ -72,6 +72,8 @@ static int g_dynamic_count = 0;
 
 /* Generic handler that dispatches to the right MCP server by looking up
  * the registered tool name in g_dynamic_tools table */
+/* PoP: mcp_dynamic_handler @ tools/mcp_tool.py:_make_tool_handler */
+/* PoP: mcp_dynamic_handler @ tools/mcp_tool.py:_make_tool_handler */
 static char *mcp_dynamic_handler(const char *args_json, const char *task_id) {
     (void)args_json;
     (void)task_id;
@@ -93,10 +95,12 @@ static char *mcp_dynamic_handler(const char *args_json, const char *task_id) {
 
 /* Connect an MCP server via SSE (HTTP/SSE) transport */
 /* Forward declarations */
+/* PoP: mcp_sampling_handler_impl @ tools/mcp_tool.py:SamplingHandler */
 static bool mcp_sampling_handler(const char *server_name,
                                   const mcp_sampling_params_t *params,
                                   mcp_sampling_content_t *result,
                                   void *userdata);
+/* PoP: connect_sse_server @ tools/mcp_tool.py:_connect_server */
 static bool connect_sse_server(const char *name, const char *url, int timeout,
                                 const mcp_root_t *roots, int root_count) {
     if (g_server_count >= MAX_MCP_SERVERS) return false;
@@ -215,6 +219,7 @@ static bool connect_sse_server(const char *name, const char *url, int timeout,
 
 /* Sampling callback: called when an MCP server sends sampling/createMessage.
  * Calls the LLM and returns the response to the server. */
+/* PoP: mcp_sampling_handler_impl @ tools/mcp_tool.py:SamplingHandler */
 static bool mcp_sampling_handler(const char *server_name,
                                   const mcp_sampling_params_t *params,
                                   mcp_sampling_content_t *result,
@@ -339,6 +344,7 @@ static bool mcp_sampling_handler(const char *server_name,
 }
 
 /* Connect an MCP server using Streamable HTTP transport */
+/* PoP: connect_http_server @ tools/mcp_tool.py:_connect_server */
 static bool connect_http_server(const char *name, const char *url, int timeout,
                                  const mcp_root_t *roots, int root_count) {
     if (g_server_count >= MAX_MCP_SERVERS) return false;
@@ -451,6 +457,7 @@ static bool connect_http_server(const char *name, const char *url, int timeout,
 
 /* Connect an MCP server from config */
 
+/* PoP: connect_stdio_server @ tools/mcp_tool.py:_connect_server */
 static bool connect_stdio_server(const char *name, const char *command,
                                   char **args, int arg_count, int timeout,
                                   const mcp_root_t *roots, int root_count) {
@@ -630,6 +637,8 @@ static bool connect_stdio_server(const char *name, const char *command,
  *  MCP call tool — call any MCP tool by server + tool name
  * ================================================================ */
 
+/* PoP: mcp_call_handler @ tools/mcp_tool.py:probe_mcp_server_tools */
+/* PoP: mcp_call_handler @ tools/mcp_tool.py:_make_tool_handler */
 static char *mcp_call_handler(const char *args_json, const char *task_id) {
     (void)task_id;
 
@@ -679,6 +688,8 @@ static char *mcp_call_handler(const char *args_json, const char *task_id) {
  *  MCP status tool
  * ================================================================ */
 
+/* PoP: mcp_status_handler @ tools/mcp_tool.py:get_mcp_status */
+/* PoP: mcp_status_handler @ tools/mcp_tool.py:get_mcp_status */
 static char *mcp_status_handler(const char *args_json, const char *task_id) {
     (void)args_json;
     (void)task_id;
@@ -737,6 +748,7 @@ static char *mcp_status_handler(const char *args_json, const char *task_id) {
  *  Initialization — connect configured MCP servers from config
  * ================================================================ */
 
+/* PoP: mcp_init_all @ tools/mcp_tool.py:refresh_agent_mcp_tools */
 void mcp_init_all(void) {
     /* Read config to find mcp_servers section */
     char config_path[HERMES_PATH_MAX];
@@ -1118,6 +1130,7 @@ void mcp_init_all(void) {
 /* Load stored credentials from mcp_auth.json.
  * Format: { "server_name": { "access_token": "...", "expires_at": 1234567890 } }
  * Returns true if file loaded successfully (may be empty). */
+/* PoP: credential_store_load @ tools/mcp_tool.py:_load_mcp_config */
 static bool credential_store_load(const char *server_name, char *token_out,
                                    size_t token_sz, long long *expires_at) {
     if (!g_credential_store_path[0]) return false;
@@ -1158,6 +1171,7 @@ static bool credential_store_load(const char *server_name, char *token_out,
 }
 
 /* Save credentials for a server to mcp_auth.json */
+/* PoP: credential_store_save @ tools/mcp_tool.py:_load_mcp_config */
 static bool credential_store_save(const char *server_name,
                                    const char *access_token,
                                    long long expires_at) {
@@ -1221,6 +1235,7 @@ static bool credential_store_save(const char *server_name,
 
 /* Perform OAuth client_credentials grant to get a new token.
  * Returns malloc'd access_token on success, NULL on error. */
+/* PoP: oauth_refresh_token @ tools/mcp_tool.py:_handle_auth_error_and_retry */
 static char *oauth_refresh_token(mcp_auth_t *auth) {
     if (!auth || !auth->token_url[0] || !auth->client_id[0]) {
         fprintf(stderr, "MCP OAuth: missing token_url or client_id\n");
@@ -1279,6 +1294,8 @@ static char *oauth_refresh_token(mcp_auth_t *auth) {
 }
 
 /* Refresh token for a specific server if it's near expiry */
+/* PoP: mcp_auth_refresh_if_needed @ tools/mcp_tool.py:_handle_auth_error_and_retry */
+/* PoP: mcp_auth_refresh_if_needed @ tools/mcp_tool.py:_reset_server_error */
 static bool mcp_auth_refresh_if_needed(int server_idx) {
     if (server_idx < 0 || server_idx >= g_server_count) return false;
     if (strcmp(g_server_auth[server_idx].type, "oauth") != 0) return false;
@@ -1420,6 +1437,8 @@ static bool mcp_auth_refresh_if_needed(int server_idx) {
  *  P64: mcp_auth_reconfigure tool handler
  * ================================================================ */
 
+/* PoP: mcp_auth_handler @ tools/mcp_tool.py:_handle_auth_error_and_retry */
+/* PoP: mcp_auth_handler @ tools/mcp_tool.py:probe_mcp_server_tools */
 static char *mcp_auth_handler(const char *args_json, const char *task_id) {
     (void)task_id;
 
@@ -1528,6 +1547,8 @@ static char *mcp_auth_handler(const char *args_json, const char *task_id) {
  *  P67: MCP resource handler
  * ================================================================ */
 
+/* PoP: mcp_resource_list_handler @ tools/mcp_tool.py:_make_list_resources_handler */
+/* PoP: mcp_resource_list_handler @ tools/mcp_tool.py:discover_mcp_tools */
 static char *mcp_resource_list_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     json_t *args = json_parse(args_json, NULL);
@@ -1569,6 +1590,8 @@ static char *mcp_resource_list_handler(const char *args_json, const char *task_i
     return s;
 }
 
+/* PoP: mcp_resource_read_handler @ tools/mcp_tool.py:_make_read_resource_handler */
+/* PoP: mcp_resource_read_handler @ tools/mcp_tool.py:discover_mcp_tools */
 static char *mcp_resource_read_handler(const char *args_json, const char *task_id) {
     (void)task_id;
 
@@ -1632,6 +1655,8 @@ static char *mcp_resource_read_handler(const char *args_json, const char *task_i
  *  P69: MCP prompt handlers
  * ================================================================ */
 
+/* PoP: mcp_prompt_list_handler @ tools/mcp_tool.py:_make_list_prompts_handler */
+/* PoP: mcp_prompt_list_handler @ tools/mcp_tool.py:discover_mcp_tools */
 static char *mcp_prompt_list_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     (void)args_json;
@@ -1670,6 +1695,8 @@ static char *mcp_prompt_list_handler(const char *args_json, const char *task_id)
     return s;
 }
 
+/* PoP: mcp_prompt_get_handler @ tools/mcp_tool.py:_make_get_prompt_handler */
+/* PoP: mcp_prompt_get_handler @ tools/mcp_tool.py:discover_mcp_tools */
 static char *mcp_prompt_get_handler(const char *args_json, const char *task_id) {
     (void)task_id;
 
@@ -1840,6 +1867,8 @@ void registry_init_mcp(void) {
  * ================================================================ */
 
 /* Add a stdio-based MCP server at runtime */
+/* PoP: mcp_add_stdio_server @ tools/mcp_tool.py:register_mcp_servers */
+/* PoP: mcp_add_stdio_server @ tools/mcp_tool.py:register_mcp_servers */
 bool mcp_add_stdio_server(const char *name, const char *command,
                            char **args, int arg_count) {
     if (!name || !command || g_server_count >= MAX_MCP_SERVERS)
@@ -1848,6 +1877,8 @@ bool mcp_add_stdio_server(const char *name, const char *command,
 }
 
 /* Add an SSE-based MCP server at runtime */
+/* PoP: mcp_add_sse_server @ tools/mcp_tool.py:register_mcp_servers */
+/* PoP: mcp_add_sse_server @ tools/mcp_tool.py:register_mcp_servers */
 bool mcp_add_sse_server(const char *name, const char *url) {
     if (!name || !url || g_server_count >= MAX_MCP_SERVERS)
         return false;
@@ -1856,6 +1887,8 @@ bool mcp_add_sse_server(const char *name, const char *url) {
 }
 
 /* Remove a connected MCP server by name */
+/* PoP: mcp_remove_server @ tools/mcp_tool.py:register_mcp_servers */
+/* PoP: mcp_remove_server @ tools/mcp_tool.py:shutdown_mcp_servers */
 bool mcp_remove_server(const char *name) {
     if (!name) return false;
     for (int i = 0; i < g_server_count; i++) {

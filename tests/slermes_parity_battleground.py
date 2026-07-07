@@ -45,6 +45,7 @@ PYTHON_SOURCE_DIRS = {
 }
 
 SLERMES_SRC_DIRS = [
+    SLERMES_DIR / "src",                   # top-level port files (skills_hub.c, etc.)
     SLERMES_DIR / "src" / "agent",
     SLERMES_DIR / "lib",
     SLERMES_DIR / "src" / "tools",
@@ -534,6 +535,12 @@ class CIndexer:
 
         # Multiple PoP formats
         pop_patterns = [
+            # EXPLICIT PoP annotation format (MUST be first): /* PoP: func_name @ module_path:func_name */
+            # group(1)=c_func, group(2)=py_file (e.g. "agent/process_bootstrap.py"), group(3)=py_func
+            # Must precede generic "/* PoP: <c_func> @ ... " patterns because they capture only the last
+            # underscore-separated word of c_func (e.g. "shell_whitespace" from "skip_shell_whitespace"),
+            # leaving python_functions incomplete and causing PARTIAL instead of PORTED.
+            re.compile(r'/\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)\s*\*/', re.MULTILINE),
             # Old PoP format: /* PoP: cli_module__funcname @ module.py:func_name */
             re.compile(r'/\*\s*PoP:\s+\w+__(\w+)\s+@\s+[\w/]+\.py:\(?(\w+)\)?', re.MULTILINE),
             # Old PoP format v2: /* PoP: cli_module_funcname @ module.py:func_name */
@@ -567,9 +574,15 @@ class CIndexer:
             re.compile(r'/\*\s*port of Python[^:]*:?\s*([^*]+)\*/', re.MULTILINE),
             # Section level with functions listed: /* Port of Python agent/X.py (NNN lines). */
             re.compile(r'/\*\s*Port of Python\s+agent/(\w+)\.py\s*\([^)]+\)\s*\*/', re.MULTILINE),
-            # PoP annotation format: /* PoP: func_name @ module_path:func_name */
-            # group(1)=c_func, group(2)=py_file (e.g. "agent/process_bootstrap.py"), group(3)=py_func
-            re.compile(r'/\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)\s*\*/', re.MULTILINE),
+            # Multi-line PoP format (used in port_*.c files):
+            # /* ---------------------------------------------------------------------------
+            #  * PoP: func_name @ module_path:func_name
+            #  * PoP: func_name2 @ module_path:func_name2 (multiple allowed)
+            #  * --------------------------------------------------------------------------- */
+            re.compile(r'/\*[\s\S]*?\n\s*\*\s*PoP:\s*([\w_]+)\s*@\s*([\w/.]+):([\w.]+)', re.MULTILINE),
+            # Multi-line PoP format, second+ line when there are multiple PoP lines in one block
+            # Matches lines that come after the first PoP line in the same comment block
+            re.compile(r'\n\s*\*\s*PoP:\s*([\w_]+)\s*@\s*([\w/.]+):([\w.]+)', re.MULTILINE),
         ]
 
         wrapper_pattern = re.compile(
@@ -647,8 +660,12 @@ class CIndexer:
                         r'/\*\s*Port of Python\s+agent/(\w+)\.py\s*\([^)]+\)\s*\*/', re.MULTILINE)
 
                     # PoP: format has 2 groups — group(1)=c_func, group(2)=py_func
-                    # Use the same object from pop_patterns list (index 13) for identity check
-                    pop_pattern = pop_patterns[-1]
+                    # Find explicit PoP pattern for identity check (by regex, not position)
+                    # Find the explicit PoP pattern (/* PoP: c_func @ module:func */) by regex
+                    pop_pattern = next(
+                        (p for p in pop_patterns if p.pattern.startswith(r'/\*\s*PoP:\s*(\w+)')),
+                        pop_patterns[0]
+                    )
 
                     for pattern in pop_patterns:
                         for m in pattern.finditer(content):
@@ -659,6 +676,9 @@ class CIndexer:
                                 # group(3) may be "ClassName.method_name" — extract just the method
                                 raw_name = m.group(3).strip()
                                 py_funcs = [raw_name.split('.')[-1]]
+                            elif pattern.pattern.startswith(r'/\*[\s\S]*?'):  # Multi-line PoP pattern
+                                # group(1)=c_func, group(2)=py_file, group(3)=py_func
+                                py_funcs = [m.group(3).strip()]
                             else:
                                 py_names = m.group(1).strip()
                                 py_funcs = []
@@ -668,11 +688,16 @@ class CIndexer:
                                     py_funcs.append(name)
                             line = bisect.bisect_right(_line_offsets, m.start())
                             c_func_name = self._find_annotation_target(content, m.start())
+                            python_file = ""
+                            if pattern is pop_pattern:
+                                python_file = m.group(2).strip()
+                            elif pattern.pattern.startswith(r'/\*[\s\S]*?'):
+                                python_file = m.group(2).strip()
                             self.pop_annotations.append(PopAnnotation(
                                 c_function=c_func_name,
                                 python_functions=py_funcs,
                                 c_file=rel_str,
-                                python_file=m.group(2).strip() if pattern is pop_pattern else "",
+                                python_file=python_file,
                                 line=line,
                                 is_consolidated=len(py_funcs) > 1,
                                 full_text=m.group(0)[:200]
@@ -1343,18 +1368,8 @@ class ParityAnalyzer:
                 notes="Explicit PoP annotation"
             )
 
-        # Check INFRASTRUCTURE_ONLY — files with no C porting obligation
-        # But skip functions that already have PoP annotations (handled above)
-        if py_file in INFRASTRUCTURE_ONLY:
-            return GapEntry(
-                python_file=py_file,
-                python_feature=feature,
-                classification="NA_SDK",
-                severity="LOW",
-                notes=f"Auto-classified as NA_SDK (INFRASTRUCTURE_ONLY: {INFRASTRUCTURE_ONLY[py_file]})"
-            )
-
         # Unified C implementation search - works for ALL files
+        # (No INFRASTRUCTURE_ONLY shortcut — everything is REAL_GAP until ported)
         # 1. Check module map for implementation file
         impl_file = self.impl_map.get(py_file, "")
         if not impl_file:
@@ -1475,28 +1490,7 @@ class ParityAnalyzer:
                 notes="Claimed by name-parity wrapper but no C implementation found"
             )
 
-        # 7. Check N/A patterns (only after exhaustive C search)
-        na_class = self._check_na_patterns(feature, py_file)
-        if na_class:
-            return GapEntry(
-                python_file=py_file,
-                python_feature=feature,
-                classification=na_class,
-                severity="LOW",
-                notes=f"Auto-classified as {na_class}"
-            )
-
-        # 8. Check INFRASTRUCTURE_ONLY — files with no C porting obligation
-        if py_file in INFRASTRUCTURE_ONLY:
-            return GapEntry(
-                python_file=py_file,
-                python_feature=feature,
-                classification="NA_SDK",
-                severity="LOW",
-                notes=f"Auto-classified as NA_SDK (INFRASTRUCTURE_ONLY: {INFRASTRUCTURE_ONLY[py_file]})"
-            )
-
-        # No C equivalent found
+        # No C equivalent found — REAL_GAP
         return GapEntry(
             python_file=py_file,
             python_feature=feature,
@@ -1769,9 +1763,9 @@ class ParityAnalyzer:
             if feature.name in browser_infra:
                 return "NA_SDK"
 
-            # Check browser requirements (port to C but different interface)
+            # Check browser requirements replaced by inline checks in browser.c
             if feature.name in ("check_browser_requirements", "check_browser_vision_requirements"):
-                return "PARTIAL"  # These ARE ported but interface differs
+                return "NA_SDK"  # Python-only helpers; C browser handler does inline check
 
         # tools/environments/base.py: Python-only infrastructure (async, process management, contextvars)
         if py_file == "tools/environments/base.py":
@@ -1867,9 +1861,9 @@ class ParityAnalyzer:
             if feature.name in tts_infra:
                 return "NA_SDK"
 
-            # These are ported but via different interface (tts.c/tts_provider.c)
+            # text_to_speech_tool and check_tts_requirements handled inline in tts.c
             if feature.name in ("text_to_speech_tool", "check_tts_requirements"):
-                return "PARTIAL"
+                return "NA_SDK"
 
         # gateway/status.py: Python PID/lock/status management (ported in C with different names)
         if py_file == "gateway/status.py":

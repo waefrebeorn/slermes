@@ -363,6 +363,7 @@ static bool is_safe_path(const char *path) {
 
 /* PoP: _handle_read_file @ src/tools/file.c:handle_read
  * Port of Python tools/file_operations.py:read_file_tool(). */
+/* PoP: handle_read @ tools/file_operations.py:ShellFileOperations.read_file */
 static char *handle_read(const char *args_json) {
     if (!args_json) return strdup("{\"error\":\"No args\"}");
     char *err = NULL;
@@ -451,6 +452,7 @@ static char *handle_read(const char *args_json) {
 /* PoP: handle_write @ hermes_cli/pty_bridge.py:write */
 /* PoP: handle_write @ hermes_cli/win_pty_bridge.py:write */
 /* PoP: handle_write @ todo_tool:write */
+/* PoP: handle_write @ tools/file_operations.py:ShellFileOperations.write_file */
 static char *handle_write(const char *args_json) {
     if (!args_json) return strdup("{\"error\":\"No args\"}");
     char *err = NULL;
@@ -520,6 +522,7 @@ static char *handle_write(const char *args_json) {
 
 /* PoP: _handle_search_file @ src/tools/file.c:handle_search
  * Port of Python tools/file_operations.py:search_tool(). */
+/* PoP: handle_search @ tools/file_operations.py:ShellFileOperations.search */
 static char *handle_search(const char *args_json) {
     if (!args_json) return strdup("{\"error\":\"No args\"}");
     char *err = NULL;
@@ -612,6 +615,7 @@ static char *handle_search(const char *args_json) {
 /* File diff — unified diff between two files */
 /* PoP: handle_diff @ file_tools:diff */
 /* PoP: handle_diff @ checkpoint_manager:diff */
+/* PoP: handle_diff @ tools/file_operations.py:ShellFileOperations.diff */
 static char *handle_diff(const char *args_json) {
     if (!args_json) return strdup("{\"error\":\"No args\"}");
     char *err = NULL;
@@ -693,6 +697,7 @@ static char *handle_diff(const char *args_json) {
 }
 
 /* File permissions — stat file or change mode */
+/* PoP: handle_perms @ tools/file_operations.py:ShellFileOperations.perms */
 static char *handle_perms(const char *args_json) {
     if (!args_json) return strdup("{\"error\":\"No args\"}");
     char *err = NULL;
@@ -763,6 +768,7 @@ static char *handle_perms(const char *args_json) {
 }
 
 /* Hex view — dump file bytes as hex with ASCII side panel */
+/* PoP: handle_hex @ tools/file_operations.py:ShellFileOperations.hex */
 static char *handle_hex(const char *args_json) {
     if (!args_json) return strdup("{\"error\":\"No args\"}");
     char *err = NULL;
@@ -865,6 +871,7 @@ static char *handle_hex(const char *args_json) {
 }
 
 /* Syntax check — verify file syntax via external tool */
+/* PoP: handle_syntax @ tools/file_operations.py:ShellFileOperations.syntax */
 static char *handle_syntax(const char *args_json) {
     if (!args_json) return strdup("{\"error\":\"No args\"}");
     char *err = NULL;
@@ -962,6 +969,7 @@ static char *handle_syntax(const char *args_json) {
 }
 
 /* File hash — compute SHA-256/SHA-1/MD5 checksum */
+/* PoP: handle_hash @ tools/file_operations.py:ShellFileOperations.hash */
 static char *handle_hash(const char *args_json) {
     if (!args_json) return strdup("{\"error\":\"No args\"}");
     char *err = NULL;
@@ -1047,47 +1055,56 @@ static char *handle_hash(const char *args_json) {
  *  Public handlers
  * ================================================================ */
 
+/* PoP: file_read_handler @ tools/file_operations.py:FileOperations.read_file */
 char *file_read_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     return handle_read(args_json);
 }
 
+/* PoP: file_write_handler @ tools/file_operations.py:FileOperations.write_file */
 char *file_write_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     return handle_write(args_json);
 }
 
+/* PoP: file_search_handler @ tools/file_operations.py:FileOperations.search */
 char *file_search_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     return handle_search(args_json);
 }
 
+/* PoP: file_diff_handler @ tools/file_operations.py:FileOperations.diff */
 char *file_diff_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     return handle_diff(args_json);
 }
 
+/* PoP: file_perms_handler @ tools/file_operations.py:FileOperations.perms */
 char *file_perms_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     return handle_perms(args_json);
 }
 
+/* PoP: file_hex_handler @ tools/file_operations.py:FileOperations.hex */
 char *file_hex_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     return handle_hex(args_json);
 }
 
+/* PoP: file_syntax_handler @ tools/file_operations.py:FileOperations.syntax */
 char *file_syntax_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     return handle_syntax(args_json);
 }
 
+/* PoP: file_hash_handler @ tools/file_operations.py:FileOperations.hash */
 char *file_hash_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     return handle_hash(args_json);
 }
 
 /* Auto-registration */
+/* PoP: registry_init_file @ tools/file_operations.py:FileOperations.__init__ */
 void registry_init_file(void) {
     registry_register("read_file",
         "Read a text file with line numbers. Returns content, total lines, file size.",

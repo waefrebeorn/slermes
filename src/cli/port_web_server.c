@@ -19,6 +19,9 @@
 
 /* ── Helper: get HERMES_HOME from environment or default ───────────────── */
 
+/* PoP: get_hermes_home @ cron/scheduler.py:_get_hermes_home */
+/* PoP: get_hermes_home @ tools/tirith_security.py:_get_hermes_home */
+
 static const char *get_hermes_home(void) {
     const char *home = getenv("HERMES_HOME");
     if (!home) home = getenv("HOME");

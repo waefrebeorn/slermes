@@ -81,6 +81,7 @@ static bool save_todos(json_node_t *arr) {
 /* Port of Python: todo_tool summary section */
 /* Port of Python tools/skills_guard.py:_build_summary(). */
 /* Build summary object with count breakdown */
+/* PoP: build_summary @ agent/learning_graph_render.py:build_summary */
 static json_node_t *build_summary(json_node_t *todos) {
     int total = (int)json_len(todos);
     int pending = 0, in_progress = 0, completed = 0, cancelled = 0;

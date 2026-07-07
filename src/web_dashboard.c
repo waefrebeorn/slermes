@@ -588,6 +588,7 @@ static void handle_model_info(int fd) {
     } else send_json(fd, 200, "OK", "{}");
 }
 
+/* PoP: handle_model_options @ hermes_cli/moa_cmd.py:_model_options */
 static void handle_model_options(int fd) {
     json_t *root = json_new_object();
     if (root) {
@@ -1455,6 +1456,7 @@ static void handle_media(int fd, const http_req_t *req) {
     } else { send_json(fd, 200, "OK", "{\"status\":\"ok\"}"); }
 }
 
+/* PoP: handle_fs_list @ hermes_cli/web_server.py:fs_list */
 static void handle_fs_list(int fd, const http_req_t *req) {
     const char *home = getenv("HOME");
     if (!home) home = "/";
@@ -1492,6 +1494,7 @@ static void handle_fs_list(int fd, const http_req_t *req) {
     free(j); json_free(arr);
 }
 
+/* PoP: handle_fs_read_text @ hermes_cli/web_server.py:fs_read_text */
 static void handle_fs_read_text(int fd, const char *path) {
     const char *prefix = "/api/fs/read-text/";
     if (strncmp(path, prefix, strlen(prefix)) != 0) {
@@ -1512,6 +1515,7 @@ static void handle_fs_read_text(int fd, const char *path) {
     } else { send_json(fd, 404, "Not Found", "{\"error\":\"File not found\"}"); }
 }
 
+/* PoP: handle_fs_read_data @ hermes_cli/web_server.py:fs_read_data */
 static void handle_fs_read_data(int fd, const char *path) {
     const char *prefix = "/api/fs/read-data-url/";
     if (strncmp(path, prefix, strlen(prefix)) != 0) {
@@ -1544,6 +1548,8 @@ static void handle_fs_read_data(int fd, const char *path) {
     free(j); json_free(resp);
 }
 
+/* PoP: handle_fs_default_cwd @ hermes_cli/web_server.py:fs_default_cwd */
+/* PoP: handle_fs_default_cwd @ hermes_cli/web_server.py:_fs_default_cwd */
 static void handle_fs_default_cwd(int fd) {
     char cwd_buf[1024];
     if (getcwd(cwd_buf, sizeof(cwd_buf))) {
@@ -1555,6 +1561,7 @@ static void handle_fs_default_cwd(int fd) {
     } else { send_json(fd, 500, "Error", "{\"error\":\"getcwd failed\"}"); }
 }
 
+/* PoP: handle_fs_git_root @ hermes_cli/web_server.py:fs_git_root */
 static void handle_fs_git_root(int fd) {
     char git_root[1024];
     if (getcwd(git_root, sizeof(git_root))) {

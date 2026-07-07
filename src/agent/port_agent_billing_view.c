@@ -8,7 +8,6 @@
 #ifndef SRC_AGENT_PORT_AGENT_BILLING_VIEW_C
 #define SRC_AGENT_PORT_AGENT_BILLING_VIEW_C
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include "hermes_json.h"
 #include "hermes_billing.h"

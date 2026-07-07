@@ -2018,6 +2018,34 @@ json_t *anthropic_extract_preserved_thinking_blocks(const json_t *message) {
  * Takes a raw message dict with optional fields:
  *   content, tool_calls, reasoning_details, reasoning_content,
  *   _extracted_thinking (cache_control passthrough on content). */
+/* PoP: anthropic_apply_assistant_cache_control_to_last_cacheable_block @ agent/anthropic_adapter.py:_apply_assistant_cache_control_to_last_cacheable_block
+ * Port of Python agent/anthropic_adapter.py:_apply_assistant_cache_control_to_last_cacheable_block().
+ * Mirrors the Python helper that walks `blocks` from the end and applies
+ * `cache_control` (deep-copied) to the last block whose `type` is either
+ * "text" or "tool_use". When cache_control is not a dict the call is a no-op
+ * (matches Python's `if not isinstance(cache_control, dict): return`).
+ * Mutates `blocks` in place; the caller still owns the array. */
+void anthropic_apply_assistant_cache_control_to_last_cacheable_block(json_t *blocks,
+                                                                      const json_t *cache_control) {
+    if (!blocks || blocks->type != JSON_ARRAY) return;
+    if (!cache_control || cache_control->type != JSON_OBJECT) return;
+
+    size_t n = json_len(blocks);
+    for (size_t i = n; i-- > 0; ) {
+        json_t *block = json_get(blocks, i);
+        if (!block || block->type != JSON_OBJECT) continue;
+        const char *t = json_get_str(block, "type", "");
+        if (t && (strcmp(t, "text") == 0 || strcmp(t, "tool_use") == 0)) {
+            /* setdefault semantics: only attach if not already present — match Python's
+             * `block.setdefault("cache_control", dict(cache_control))`. */
+            if (!json_obj_get(block, "cache_control")) {
+                json_set(block, "cache_control", json_copy(cache_control));
+            }
+            return;
+        }
+    }
+}
+
 json_t *anthropic_convert_assistant_message(const json_t *m) {
     json_t *assistant_msg = json_object();
     json_set(assistant_msg, "role", json_string("assistant"));
@@ -2132,6 +2160,9 @@ json_t *anthropic_convert_assistant_message(const json_t *m) {
         json_set(tb, "text", json_string("(empty)"));
         json_append(blocks, tb);
     }
+
+    /* Python parity: apply cache_control to the last cacheable text/tool_use block. */
+    anthropic_apply_assistant_cache_control_to_last_cacheable_block(blocks, json_obj_get(m, "cache_control"));
 
     json_set(assistant_msg, "content", blocks);
     return assistant_msg;
@@ -3161,42 +3192,68 @@ json_t *anthropic_read_creds_from_keychain(void) {
 #endif
 }
 
-/* Port of Python anthropic_adapter.py:read_claude_code_credentials().
- * Read Claude Code credentials from ~/.claude/.credentials.json.
- * Falls back from keychain to JSON file.
- * Returns json_t* dict with accessToken/refreshToken/expiresAt, or NULL. */
-json_t *anthropic_read_claude_code_creds(void) {
-    /* Try macOS Keychain first */
-    json_t *kc = anthropic_read_creds_from_keychain();
-    if (kc) return kc;
-
-    /* Fall back to ~/.claude/.credentials.json */
+/* PoP: anthropic_read_claude_code_creds_from_file @ agent/anthropic_adapter.py:_read_claude_code_credentials_from_file
+ * Port of Python agent/anthropic_adapter.py:_read_claude_code_credentials_from_file().
+ * Read Claude Code OAuth credentials from ~/.claude/.credentials.json.
+ * Mirrors the Python helper that builds the file path via Path.home() / ".claude" / ".credentials.json",
+ * gracefully returns NULL when the file is missing, unparseable, has no claudeAiOauth object,
+ * or has an empty accessToken.
+ * Returns json_t* dict with accessToken/refreshToken/expiresAt/source, or NULL. */
+json_t *anthropic_read_claude_code_creds_from_file(void) {
     const char *home = getenv("HOME");
-    if (!home) return NULL;
-    char path[4096];
-    snprintf(path, sizeof(path), "%s/.claude/.credentials.json", home);
+    if (!home || !*home) return NULL;
+    char cred_path[4096];
+    snprintf(cred_path, sizeof(cred_path), "%s/.claude/.credentials.json", home);
 
-    json_t *parsed = json_parse_file(path, NULL);
-    if (!parsed || parsed->type != JSON_OBJECT) {
-        if (parsed) json_free(parsed);
+    /* Existence check — Python: if not cred_path.exists(): return None */
+    struct stat st;
+    if (stat(cred_path, &st) != 0 || !S_ISREG(st.st_mode)) return NULL;
+
+    /* Load + parse JSON, silently ignore malformed files / IO errors —
+     * Python catches (json.JSONDecodeError, OSError, IOError) and logs at debug. */
+    json_t *data = json_parse_file(cred_path, NULL);
+    if (!data || data->type != JSON_OBJECT) {
+        if (data) json_free(data);
         return NULL;
     }
-    json_t *oauth = json_obj_get(parsed, "claudeAiOauth");
+
+    json_t *oauth = json_obj_get(data, "claudeAiOauth");
     if (!oauth || oauth->type != JSON_OBJECT) {
-        json_free(parsed);
+        json_free(data);
         return NULL;
     }
     const char *access = json_get_str(oauth, "accessToken", "");
-    if (!*access) { json_free(parsed); return NULL; }
+    if (!access || !*access) {
+        json_free(data);
+        return NULL;
+    }
 
     json_t *result = json_object();
     json_set(result, "accessToken", json_string(access));
     json_set(result, "refreshToken", json_string(json_get_str(oauth, "refreshToken", "")));
     json_t *expires = json_obj_get(oauth, "expiresAt");
-    if (expires) json_set(result, "expiresAt", json_copy(expires));
+    if (expires) {
+        json_set(result, "expiresAt", json_copy(expires));
+    } else {
+        json_set(result, "expiresAt", json_int(0));
+    }
     json_set(result, "source", json_string("claude_code_credentials_file"));
-    json_free(parsed);
+    json_free(data);
     return result;
+}
+
+/* PoP: anthropic_read_claude_code_creds @ agent/anthropic_adapter.py:read_claude_code_credentials
+ * Port of Python anthropic_adapter.py:read_claude_code_credentials().
+ * Read refreshable Claude Code credentials, preferring macOS Keychain on Darwin
+ * and falling back to ~/.claude/.credentials.json elsewhere.
+ * Returns json_t* dict with accessToken/refreshToken/expiresAt/source, or NULL. */
+json_t *anthropic_read_claude_code_creds(void) {
+    /* Try macOS Keychain first */
+    json_t *kc = anthropic_read_creds_from_keychain();
+    if (kc) return kc;
+
+    /* Fall back to ~/.claude/.credentials.json via the dedicated helper */
+    return anthropic_read_claude_code_creds_from_file();
 }
 
 /* Port of Python anthropic_adapter.py:_write_claude_code_credentials().
