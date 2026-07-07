@@ -9,6 +9,7 @@
 
 #include "hermes.h"
 #include "hermes_json.h"
+#include "libhttp/http.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -131,8 +132,30 @@ bool is_platform_supported(void) {
 
 /* PoP: _download_file @ tirith_security:_download_file */
 bool _download_file(const char *url, const char *dest, int timeout) {
-    (void)url; (void)dest; (void)timeout;
-    return false; /* Not implemented in C */
+    if (!url || !url[0] || !dest || !dest[0]) return false;
+
+    http_t *http = http_new(timeout > 0 ? timeout : 30);
+    if (!http) return false;
+
+    http_resp_t *resp = http_get(http, url, NULL);
+    if (!resp || resp->status < 200 || resp->status >= 300) {
+        http_resp_free(resp);
+        http_free(http);
+        return false;
+    }
+
+    FILE *f = fopen(dest, "wb");
+    if (!f) {
+        http_resp_free(resp);
+        http_free(http);
+        return false;
+    }
+    size_t written = fwrite(resp->body, 1, resp->body_len, f);
+    fclose(f);
+
+    http_resp_free(resp);
+    http_free(http);
+    return written == resp->body_len;
 }
 
 /* PoP: _verify_cosign @ tirith_security:_verify_cosign */
