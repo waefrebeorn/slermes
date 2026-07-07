@@ -10,7 +10,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <ctype.h>
 #include <time.h>
+#include <limits.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>
@@ -599,4 +601,166 @@ void _persist_active_session_before_close(void *ctx)
 {
     if (!ctx) return;
     persist_active_session_before_close(ctx);
+}
+
+/* ===========================================================================
+ *  Filesystem helpers — ported from hermes_cli/web_server.py (_fs_*)
+ *  These were flagged as REAL_GAP; now implemented faithfully.
+ * =========================================================================== */
+
+/* _FS_MIME_TYPES — explicit suffix→mime overrides (Python _FS_MIME_TYPES). */
+static const struct { const char *suffix; const char *mime; } g_fs_mime_types[] = {
+    {".avi",  "video/x-msvideo"},
+    {".bmp",  "image/bmp"},
+    {".flac", "audio/flac"},
+    {".gif",  "image/gif"},
+    {".jpeg", "image/jpeg"},
+    {".jpg",  "image/jpeg"},
+    {".m4a",  "audio/mp4"},
+    {".mkv",  "video/x-matroska"},
+    {".mov",  "video/quicktime"},
+    {".mp3",  "audio/mpeg"},
+    {".mp4",  "video/mp4"},
+    {".ogg",  "audio/ogg"},
+    {".opus", "audio/ogg; codecs=opus"},
+    {".png",  "image/png"},
+    {".svg",  "image/svg+xml"},
+    {".wav",  "audio/wav"},
+    {".webm", "video/webm"},
+    {".webp", "image/webp"},
+};
+
+/* PoP: _fs_mime_type @ hermes_cli/web_server.py:_fs_mime_type */
+const char *fs_mime_type(const char *path)
+{
+    static char buf[128];
+    (void)buf;
+    const char *dot = strrchr(path ? path : "", '.');
+    if (dot) {
+        char suf[32];
+        size_t i;
+        for (i = 0; dot[i] && i < sizeof(suf) - 1; i++) suf[i] = (char)tolower((unsigned char)dot[i]);
+        suf[i] = '\0';
+        for (size_t k = 0; k < sizeof(g_fs_mime_types)/sizeof(g_fs_mime_types[0]); k++) {
+            if (strcmp(suf, g_fs_mime_types[k].suffix) == 0)
+                return g_fs_mime_types[k].mime;
+        }
+    }
+    if (dot) {
+        if (!strcmp(dot, ".txt") || !strcmp(dot, ".md") || !strcmp(dot, ".py") ||
+            !strcmp(dot, ".c") || !strcmp(dot, ".h") || !strcmp(dot, ".json") ||
+            !strcmp(dot, ".yaml") || !strcmp(dot, ".yml") || !strcmp(dot, ".csv"))
+            return "text/plain";
+        if (!strcmp(dot, ".html") || !strcmp(dot, ".htm")) return "text/html";
+        if (!strcmp(dot, ".css")) return "text/css";
+        if (!strcmp(dot, ".js")) return "application/javascript";
+        if (!strcmp(dot, ".pdf")) return "application/pdf";
+    }
+    return "application/octet-stream";
+}
+
+/* PoP: _fs_looks_binary @ hermes_cli/web_server.py:_fs_looks_binary */
+bool fs_looks_binary(const unsigned char *data, size_t len)
+{
+    if (!data || len == 0) return false;
+    if (memchr(data, '\0', len)) return true;
+    size_t suspicious = 0;
+    for (size_t i = 0; i < len; i++) {
+        unsigned char b = data[i];
+        if (b < 32 && b != 9 && b != 10 && b != 13) suspicious++;
+    }
+    return ((double)suspicious / (double)len) > 0.12;
+}
+
+/* PoP: _fs_regular_file @ hermes_cli/web_server.py:_fs_regular_file
+ * Returns 0 on success (fills out_path + *out_mode/*out_size), else an HTTP-ish
+ * status code: 400 invalid, 403 unreadable, 404 missing. */
+int fs_regular_file(const char *raw_path, char *out_path, size_t out_sz,
+                    mode_t *out_mode, long *out_size)
+{
+    if (!raw_path || !raw_path[0]) return 400;
+    struct stat st;
+    if (stat(raw_path, &st) != 0) {
+        if (errno == ENOENT) return 404;
+        if (errno == EACCES) return 403;
+        return 400;
+    }
+    if (S_ISDIR(st.st_mode)) return 400;
+    if (!S_ISREG(st.st_mode)) return 400;
+    if (out_path && out_sz) snprintf(out_path, out_sz, "%s", raw_path);
+    if (out_mode) *out_mode = st.st_mode;
+    if (out_size) *out_size = (long)st.st_size;
+    return 0;
+}
+
+/* PoP: _fs_find_git_root @ hermes_cli/web_server.py:_fs_find_git_root */
+char *fs_find_git_root(const char *start)
+{
+    if (!start || !start[0]) return NULL;
+    char cur[PATH_MAX];
+    snprintf(cur, sizeof(cur), "%s", start);
+    for (int i = 0; i < 50; i++) {
+        char probe[PATH_MAX];
+        snprintf(probe, sizeof(probe), "%s/.git", cur);
+        struct stat st;
+        if (stat(probe, &st) == 0 && S_ISDIR(st.st_mode))
+            return strdup(cur);
+        char *slash = strrchr(cur, '/');
+        if (!slash || slash == cur) return NULL;
+        *slash = '\0';
+    }
+    return NULL;
+}
+
+/* PoP: _fs_git_branch @ hermes_cli/web_server.py:_fs_git_branch */
+char *fs_git_branch(const char *cwd)
+{
+    char cmd[PATH_MAX + 64];
+    snprintf(cmd, sizeof(cmd), "git -C %s rev-parse --abbrev-ref HEAD 2>/dev/null",
+             cwd ? cwd : ".");
+    FILE *p = popen(cmd, "r");
+    if (!p) return strdup("");
+    char branch[256];
+    if (!fgets(branch, sizeof(branch), p)) { pclose(p); return strdup(""); }
+    pclose(p);
+    size_t n = strlen(branch);
+    while (n > 0 && (branch[n-1] == '\n' || branch[n-1] == '\r')) branch[--n] = '\0';
+    return strdup(branch);
+}
+
+/* PoP: _audio_extension_for_mime @ hermes_cli/web_server.py:_audio_extension_for_mime */
+const char *audio_extension_for_mime(const char *mime_type)
+{
+    static const struct { const char *mime; const char *ext; } map[] = {
+        {"audio/flac", ".flac"},
+        {"audio/mp4",  ".m4a"},
+        {"audio/mpeg", ".mp3"},
+        {"audio/ogg",  ".ogg"},
+        {"audio/ogg; codecs=opus", ".opus"},
+        {"audio/wav",  ".wav"},
+        {"audio/webm", ".webm"},
+        {"audio/x-wav", ".wav"},
+    };
+    char norm[128];
+    size_t i = 0;
+    const char *s = mime_type ? mime_type : "";
+    while (*s && *s != ';' && i < sizeof(norm) - 1) norm[i++] = (char)tolower((unsigned char)*s++);
+    norm[i] = '\0';
+    for (size_t k = 0; k < sizeof(map)/sizeof(map[0]); k++)
+        if (strcmp(norm, map[k].mime) == 0) return map[k].ext;
+    return ".webm";
+}
+
+/* PoP: _infer_type @ hermes_cli/web_server.py:_infer_type
+ * Classify a JSON value type into a UI field type string. */
+const char *infer_type(int json_type_tag)
+{
+    switch (json_type_tag) {
+        case 1: return "boolean";
+        case 2: return "number";
+        case 3: return "number";
+        case 4: return "list";
+        case 5: return "object";
+        default: return "string";
+    }
 }
