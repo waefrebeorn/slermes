@@ -78,6 +78,7 @@ PORT_OBJ = \
     src/cli/port_yuanbao_proto_helpers.o \
     src/cli/port_learning_graph_render_helpers.o \
     src/cli/port_lazy_deps_helpers.o \
+    src/cli/port_skill_usage_helpers.o \
     src/cli/port_tools_blueprints.o \
     src/cli/port_tools_browser_cdp_tool.o \
     src/cli/port_tools_checkpoint_manager.o \
