@@ -7,6 +7,7 @@
 
 #include "hermes.h"
 #include "hermes_logger.h"
+#include "slermes_home.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -234,12 +235,65 @@ int cli_tools_blueprints_create_blueprint_job(
 {
     if (!skill_name || !schedule || !job_id_out || id_size == 0) return -1;
 
-    /* In a real implementation, this would call cron.jobs.create_job() */
-    /* For the port, we generate a job ID */
-    snprintf(job_id_out, id_size, "bp_%s_%ld", skill_name, (long)time(NULL));
+    /* Real blueprint job creation: generate a unique id, validate the cron
+     * schedule, and persist the job spec to the blueprints store. */
+    char raw_uuid[40];
+    snprintf(raw_uuid, sizeof(raw_uuid), "%ld%ld", (long)time(NULL), (long)getpid());
+    char *uuid = malloc(33);
+    for (int i = 0; i < 32 && raw_uuid[i]; i++)
+        uuid[i] = raw_uuid[i];
+    uuid[32] = '\0';
+    snprintf(job_id_out, id_size, "bp_%s", uuid);
 
-    hermes_log(LOG_INFO, "blueprints", "create_job: %s schedule=%s id=%s",
-               skill_name, schedule, job_id_out);
+    /* Validate the schedule is a 5-field crontab expression. */
+    int fields = 0;
+    for (const char *p = schedule; *p; ) {
+        while (*p == ' ' || *p == '\t') p++;
+        if (!*p) break;
+        while (*p && *p != ' ' && *p != '\t') p++;
+        fields++;
+    }
+    if (fields != 5) {
+        hermes_log(LOG_WARNING, "blueprints",
+                   "create_job: schedule '%s' is not a 5-field crontab expression", schedule);
+    }
+
+    /* Persist the job spec. */
+    const char *home = slermes_home();
+    char dir[1024];
+    snprintf(dir, sizeof(dir), "%s/blueprints", home);
+    mkdir(dir, 0700);
+    char path[1024];
+    snprintf(path, sizeof(path), "%s/%s.json", dir, job_id_out);
+
+    /* JSON-escape the prompt. */
+    const char *p_in = prompt ? prompt : "";
+    char *esc = malloc(strlen(p_in) * 2 + 8);
+    size_t e = 0;
+    for (const char *q = p_in; *q; q++) {
+        if (*q == '"' || *q == '\\' || *q == '\n' || *q == '\r') esc[e++] = '\\';
+        esc[e++] = *q;
+    }
+    esc[e] = '\0';
+
+    FILE *f = fopen(path, "w");
+    if (f) {
+        fprintf(f,
+            "{\"id\":\"%s\",\"skill\":\"%s\",\"schedule\":\"%s\",\"deliver\":\"%s\","
+            "\"no_agent\":%d,\"prompt\":\"%s\"}\n",
+            job_id_out, skill_name, schedule, deliver ? deliver : "origin",
+            no_agent, esc);
+        fclose(f);
+        hermes_log(LOG_INFO, "blueprints", "create_job: wrote %s (%s schedule=%s)",
+                   path, job_id_out, schedule);
+    } else {
+        hermes_log(LOG_ERROR, "blueprints", "create_job: cannot write %s", path);
+        free(esc);
+        free(uuid);
+        return -1;
+    }
+    free(esc);
+    free(uuid);
     return 0;
 }
 
@@ -255,12 +309,27 @@ int cli_tools_blueprints_register_blueprint_suggestion(
 
     *registered_out = 0;
 
-    /* In a real implementation, this would call cron.suggestions.add_suggestion() */
-    /* For the port, we simulate successful registration */
-    *registered_out = 1;
+    /* Real suggestion registration: append the blueprint as a pending suggested
+     * cron job in the blueprints suggestions store. */
+    const char *home = slermes_home();
+    char dir[1024];
+    snprintf(dir, sizeof(dir), "%s/blueprints", home);
+    mkdir(dir, 0700);
+    char path[1024];
+    snprintf(path, sizeof(path), "%s/suggestions.jsonl", dir);
 
-    hermes_log(LOG_INFO, "blueprints", "register_suggestion: %s schedule=%s",
-               skill_name, schedule);
+    FILE *f = fopen(path, "a");
+    if (!f) {
+        hermes_log(LOG_ERROR, "blueprints", "register_suggestion: cannot open %s", path);
+        return -1;
+    }
+    fprintf(f, "{\"skill\":\"%s\",\"schedule\":\"%s\",\"deliver\":\"%s\"}\n",
+            skill_name, schedule, deliver ? deliver : "origin");
+    fclose(f);
+
+    *registered_out = 1;
+    hermes_log(LOG_INFO, "blueprints", "register_suggestion: %s schedule=%s -> %s",
+               skill_name, schedule, path);
     return 0;
 }
 
