@@ -1,109 +1,182 @@
 /*
- * port_gateway_platforms_qqbot_onboard.c — C port of gateway/platforms/qqbot/onboard.py
+ * port_gateway_platforms_qqbot_onboard.c — C port of
+ * gateway/platforms/qqbot/onboard.py
  *
- * QQBot scan-to-configure (QR code onboard) module.
+ * QQBot scan-to-configure (QR code onboard) module. Real HTTP calls to the
+ * q.qq.com create_bind_task / poll_bind_result APIs (faithful to the Python).
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
+#include "libjson/json.h"
+#include "libhttp/http.h"
+#include "libbase64/base64.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
 #include <time.h>
 
-#define ONBOARD_API_TIMEOUT 30.0
-#define ONBOARD_POLL_INTERVAL 3
+#define QQ_PORTAL_HOST_ENV "QQ_PORTAL_HOST"
+#define QQ_ONBOARD_CREATE_PATH "/lite/create_bind_task"
+#define QQ_ONBOARD_POLL_PATH "/lite/poll_bind_result"
+#define QQ_ONBOARD_API_TIMEOUT 10
 #define MAX_REFRESHES 3
+#define ONBOARD_POLL_INTERVAL 2
 
 /* PoP: qqbot_onboard__render_qr @ gateway/platforms/qqbot/onboard.py:_render_qr */
-
-/* Port of Python gateway/platforms/qqbot/onboard.py:_render_qr */
-/* Try to render a QR code in the terminal. Returns 1 if successful, 0 if not. */
+/* No qrcode library in the C tree; return 0 so the caller prints the URL. */
 int qqbot_onboard__render_qr(const char *url)
 {
     if (!url || !url[0]) return 0;
-    /* In C, we don't have qrcode library, so we can't render QR codes */
-    /* Return 0 to indicate the caller should show the URL instead */
     hermes_log(LOG_DEBUG, "qqbot_onboard", "QR rendering not available, use URL: %s", url);
     return 0;
 }
 
 /* PoP: qqbot_onboard__create_bind_task @ gateway/platforms/qqbot/onboard.py:_create_bind_task */
-
-/* Port of Python gateway/platforms/qqbot/onboard.py:_create_bind_task */
-/* Create a bind task and return task_id and aes_key. Returns 0 on success. */
+/* Real POST to q.qq.com create_bind_task. Generates the AES key client-side
+ * (base64 of 32 random bytes) and returns the server-issued task_id. */
 int qqbot_onboard__create_bind_task(char *task_id, size_t task_id_len,
                                       char *aes_key, size_t key_len)
 {
     if (!task_id || !aes_key) return -1;
 
-    /* In a real implementation, this would POST to the QQ API */
-    /* Generate a placeholder task ID */
-    snprintf(task_id, task_id_len, "task_%08x", rand());
-
-    /* Generate a random AES key (32 hex chars) */
-    const char *hex = "0123456789abcdef";
-    for (int i = 0; i < 32 && i < (int)key_len - 1; i++) {
-        aes_key[i] = hex[rand() % 16];
+    /* Generate the bind key: base64(32 random bytes) from /dev/urandom. */
+    unsigned char raw[32];
+    int ur = open("/dev/urandom", O_RDONLY);
+    if (ur < 0 || read(ur, raw, sizeof(raw)) != (ssize_t)sizeof(raw)) {
+        if (ur >= 0) close(ur);
+        return -1;
     }
-    aes_key[32 < (int)key_len - 1 ? 32 : key_len - 1] = '\0';
+    close(ur);
+    char *key_b64 = base64_encode(raw, sizeof(raw));
+    if (!key_b64) return -1;
+    snprintf(aes_key, key_len, "%s", key_b64);
+    free(key_b64);
 
-    hermes_log(LOG_INFO, "qqbot_onboard", "Created bind task: %s", task_id);
-    return 0;
+    const char *host = getenv(QQ_PORTAL_HOST_ENV);
+    if (!host) host = "q.qq.com";
+
+    char url[512];
+    snprintf(url, sizeof(url), "https://%s%s", host, QQ_ONBOARD_CREATE_PATH);
+
+    char body[256];
+    snprintf(body, sizeof(body), "{\"key\":\"%s\"}", aes_key);
+
+    char headers[256];
+    snprintf(headers, sizeof(headers),
+             "Content-Type: application/json\r\nAccept: application/json\r\nUser-Agent: QQBotAdapter/1.0.0 (Hermes/slermes)");
+
+    http_t *http = http_new(QQ_ONBOARD_API_TIMEOUT);
+    if (!http) return -1;
+
+    http_resp_t *res = http_request(http, HTTP_POST, url, headers, body, strlen(body));
+    int rc = -1;
+    if (res && res->status >= 200 && res->status < 300 && res->body) {
+        json_t *doc = json_parse(res->body, NULL);
+        if (doc && doc->type == JSON_OBJECT) {
+            int retcode = (int)json_get_num(doc, "retcode", -1);
+            if (retcode == 0) {
+                json_t *data = json_obj_get(doc, "data");
+                const char *tid = data ? json_get_str(data, "task_id", NULL) : NULL;
+                if (tid && tid[0]) {
+                    snprintf(task_id, task_id_len, "%s", tid);
+                    rc = 0;
+                }
+            } else {
+                const char *msg = json_get_str(doc, "msg", "create_bind_task failed");
+                hermes_log(LOG_ERROR, "qqbot_onboard", "create_bind_task: %s", msg);
+            }
+        }
+        if (doc) json_free(doc);
+    }
+    if (res) http_resp_free(res);
+    http_free(http);
+
+    if (rc == 0)
+        hermes_log(LOG_INFO, "qqbot_onboard", "Created bind task: %s", task_id);
+    return rc;
 }
 
 /* PoP: qqbot_onboard__poll_bind_result @ gateway/platforms/qqbot/onboard.py:_poll_bind_result */
-
-/* Port of Python gateway/platforms/qqbot/onboard.py:_poll_bind_result */
-/* Poll the bind result for a task. Returns status code (0=none, 1=pending, 2=completed, 3=expired). */
+/* Real POST to poll_bind_result; returns status + bot_appid/secret/openid. */
 int qqbot_onboard__poll_bind_result(const char *task_id, char *bot_appid, size_t appid_len,
                                       char *encrypted_secret, size_t secret_len,
                                       char *user_openid, size_t openid_len)
 {
     if (!task_id || !task_id[0]) return -1;
+    if (bot_appid && appid_len) bot_appid[0] = '\0';
+    if (encrypted_secret && secret_len) encrypted_secret[0] = '\0';
+    if (user_openid && openid_len) user_openid[0] = '\0';
 
-    /* In a real implementation, this would POST to the QQ API */
-    /* For now, return PENDING status */
-    if (bot_appid && appid_len > 0) bot_appid[0] = '\0';
-    if (encrypted_secret && secret_len > 0) encrypted_secret[0] = '\0';
-    if (user_openid && openid_len > 0) user_openid[0] = '\0';
+    const char *host = getenv(QQ_PORTAL_HOST_ENV);
+    if (!host) host = "q.qq.com";
 
-    hermes_log(LOG_DEBUG, "qqbot_onboard", "Polling bind result for task: %s", task_id);
-    return 1; /* PENDING */
+    char url[512];
+    snprintf(url, sizeof(url), "https://%s%s", host, QQ_ONBOARD_POLL_PATH);
+
+    char body[256];
+    snprintf(body, sizeof(body), "{\"task_id\":\"%s\"}", task_id);
+
+    char headers[256];
+    snprintf(headers, sizeof(headers),
+             "Content-Type: application/json\r\nAccept: application/json\r\nUser-Agent: QQBotAdapter/1.0.0 (Hermes/slermes)");
+
+    http_t *http = http_new(QQ_ONBOARD_API_TIMEOUT);
+    if (!http) return -1;
+
+    int status = 1; /* PENDING default */
+    http_resp_t *res = http_request(http, HTTP_POST, url, headers, body, strlen(body));
+    if (res && res->status >= 200 && res->status < 300 && res->body) {
+        json_t *doc = json_parse(res->body, NULL);
+        if (doc && doc->type == JSON_OBJECT) {
+            int retcode = (int)json_get_num(doc, "retcode", -1);
+            if (retcode == 0) {
+                json_t *d = json_obj_get(doc, "data");
+                if (d) {
+                    status = (int)json_get_num(d, "status", 1);
+                    const char *appid = json_get_str(d, "bot_appid", NULL);
+                    const char *secret = json_get_str(d, "bot_encrypt_secret", NULL);
+                    const char *openid = json_get_str(d, "user_openid", NULL);
+                    if (appid && bot_appid) snprintf(bot_appid, appid_len, "%s", appid);
+                    if (secret && encrypted_secret) snprintf(encrypted_secret, secret_len, "%s", secret);
+                    if (openid && user_openid) snprintf(user_openid, openid_len, "%s", openid);
+                }
+            } else {
+                const char *msg = json_get_str(doc, "msg", "poll_bind_result failed");
+                hermes_log(LOG_WARNING, "qqbot_onboard", "poll_bind_result: %s", msg);
+            }
+        }
+        if (doc) json_free(doc);
+    }
+    if (res) http_resp_free(res);
+    http_free(http);
+
+    hermes_log(LOG_DEBUG, "qqbot_onboard", "Polled bind result for %s: status=%d", task_id, status);
+    return status;
 }
 
 /* PoP: qqbot_onboard_build_connect_url @ gateway/platforms/qqbot/onboard.py:build_connect_url */
-
-/* Port of Python gateway/platforms/qqbot/onboard.py:build_connect_url */
-/* Build the QR-code target URL for a given task_id. */
 char *qqbot_onboard_build_connect_url(const char *task_id)
 {
     if (!task_id || !task_id[0]) return strdup("");
-
-    char *url = (char *)malloc(256);
-    if (url) {
-        snprintf(url, 256, "https://q.qq.com/connect?task_id=%s", task_id);
-    }
-    hermes_log(LOG_DEBUG, "qqbot_onboard", "Built connect URL for task: %s", task_id);
+    char *url = malloc(512);
+    if (url)
+        snprintf(url, 512, "https://q.qq.com/qqbot/openclaw/connect.html?task_id=%s&_wv=2&source=hermes", task_id);
     return url;
 }
 
 /* PoP: qqbot_onboard_qr_register @ gateway/platforms/qqbot/onboard.py:qr_register */
-
-/* Port of Python gateway/platforms/qqbot/onboard.py:qr_register */
-/* Run the QQBot scan-to-configure QR registration flow. Returns 0 on success. */
 int qqbot_onboard_qr_register(int timeout_seconds)
 {
     if (timeout_seconds <= 0) timeout_seconds = 600;
 
     char task_id[128];
     char aes_key[64];
-    char url[256];
+    char url[512];
     char *connect_url = NULL;
 
-    printf("\n");
-    printf("  QQBot QR Registration\n");
-    printf("  ======================\n\n");
+    printf("\n  QQBot QR Registration\n  ======================\n\n");
 
     for (int refresh = 0; refresh <= MAX_REFRESHES; refresh++) {
         if (qqbot_onboard__create_bind_task(task_id, sizeof(task_id), aes_key, sizeof(aes_key)) != 0) {
@@ -119,11 +192,9 @@ int qqbot_onboard_qr_register(int timeout_seconds)
 
         if (!qqbot_onboard__render_qr(url)) {
             printf("  Open this URL in QQ on your phone:\n  %s\n", url);
-            printf("  Tip: pip install qrcode to display a scannable QR code here\n");
         }
         printf("\n");
 
-        /* Poll loop */
         time_t deadline = time(NULL) + timeout_seconds;
         while (time(NULL) < deadline) {
             char bot_appid[128] = {0};
