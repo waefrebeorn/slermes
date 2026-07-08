@@ -82,6 +82,7 @@ PORT_OBJ = \
     src/cli/port_model_switch_helpers.o \
     src/cli/port_learning_graph_helpers.o \
     src/cli/port_file_state_helpers.o \
+    src/cli/port_fuzzy_match_helpers.o \
     src/cli/port_tools_blueprints.o \
     src/cli/port_tools_browser_cdp_tool.o \
     src/cli/port_tools_checkpoint_manager.o \
