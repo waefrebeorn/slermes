@@ -29,12 +29,12 @@
 #define AGE_MID     0.52
 #define LEAD_IN     0.06
 
-/* ---- private helpers (static, not registered with the scanner) ---- */
-static double _clamp(double v, double lo, double hi)
+/* ---- private helpers (re-used by the PoP public wrappers below) ---- */
+static double _clamp_impl(double v, double lo, double hi)
 { return v < lo ? lo : (v > hi ? hi : v); }
 
-static double _smoothstep(double p)
-{ p = _clamp(p, 0.0, 1.0); return p * p * (3.0 - 2.0 * p); }
+static double _smoothstep_impl(double p)
+{ p = _clamp_impl(p, 0.0, 1.0); return p * p * (3.0 - 2.0 * p); }
 
 /* ---- rgb triple helper ---- */
 typedef struct { int r, g, b; } rgb_t;
@@ -67,10 +67,10 @@ static rgb_t hex_to_rgb_impl(const char *s)
 /* PoP: recency_ink @ agent/learning_graph_render.py:recency_ink */
 double learning_graph_render_recency_ink(double rec)
 {
-    double t = _clamp(rec, 0.0, 1.0);
+    double t = _clamp_impl(rec, 0.0, 1.0);
     if (t <= AGE_MID)
-        return AGE_OLD_INK + (AGE_MID_INK - AGE_OLD_INK) * _smoothstep(t / AGE_MID);
-    return AGE_MID_INK + (AGE_NEW_INK - AGE_MID_INK) * _smoothstep((t - AGE_MID) / (1.0 - AGE_MID));
+        return AGE_OLD_INK + (AGE_MID_INK - AGE_OLD_INK) * _smoothstep_impl(t / AGE_MID);
+    return AGE_MID_INK + (AGE_NEW_INK - AGE_MID_INK) * _smoothstep_impl((t - AGE_MID) / (1.0 - AGE_MID));
 }
 
 /* ---------------------------------------------------------------------- */
@@ -88,7 +88,7 @@ char *learning_graph_render_hex_to_rgb(const char *s)
 /* PoP: rgb_to_hex @ agent/learning_graph_render.py:rgb_to_hex */
 char *learning_graph_render_rgb_to_hex(int r, int g, int b)
 {
-    int cr = (int)_clamp(r,0,255), cg=(int)_clamp(g,0,255), cb=(int)_clamp(b,0,255);
+    int cr = (int)_clamp_impl(r,0,255), cg=(int)_clamp_impl(g,0,255), cb=(int)_clamp_impl(b,0,255);
     char *out = malloc(8);
     snprintf(out, 8, "#%02X%02X%02X", cr, cg, cb);
     return out;
@@ -99,7 +99,7 @@ char *learning_graph_render_rgb_to_hex(int r, int g, int b)
 /* returns malloc'd "r,g,b" string */
 char *learning_graph_render_mix_rgb(int ar, int ag, int ab, int br, int bg, int bb, double t)
 {
-    double p = _clamp(t, 0.0, 1.0);
+    double p = _clamp_impl(t, 0.0, 1.0);
     int r = (int)round(ar + (br - ar) * p);
     int g = (int)round(ag + (bg - ag) * p);
     int b = (int)round(ab + (bb - ab) * p);
@@ -109,7 +109,7 @@ char *learning_graph_render_mix_rgb(int ar, int ag, int ab, int br, int bg, int 
 }
 
 /* ---- HSL round-trip (private, used by complementary_ink / derive_palette) ---- */
-static void _rgb_to_hsl(rgb_t c, double *h, double *s, double *l)
+static void _rgb_to_hsl_impl(rgb_t c, double *h, double *s, double *l)
 {
     double r=c.r/255.0, g=c.g/255.0, b=c.b/255.0;
     double mx=fmax(r,fmax(g,b)), mn=fmin(r,fmin(g,b));
@@ -122,7 +122,7 @@ static void _rgb_to_hsl(rgb_t c, double *h, double *s, double *l)
     else *h=(r-g)/d + 4.0;
     *h *= 60.0;
 }
-static rgb_t _hsl_to_rgb(double h, double s, double l)
+static rgb_t _hsl_to_rgb_impl(double h, double s, double l)
 {
     double hue = fmod(h,360.0); if (hue<0) hue+=360.0;
     double c=(1.0-fabs(2.0*l-1.0))*s;
@@ -137,10 +137,10 @@ static rgb_t _hsl_to_rgb(double h, double s, double l)
     else { r=c; g=0; b=x; }
     return (rgb_t){(int)round((r+m)*255),(int)round((g+m)*255),(int)round((b+m)*255)};
 }
-static rgb_t _complementary_ink(rgb_t c)
+static rgb_t _complementary_ink_impl(rgb_t c)
 {
-    double h,s,l; _rgb_to_hsl(c,&h,&s,&l);
-    return _hsl_to_rgb(h+165.0, fmax(s,0.5), _clamp(l,0.5,0.7));
+    double h,s,l; _rgb_to_hsl_impl(c,&h,&s,&l);
+    return _hsl_to_rgb_impl(h+165.0, fmax(s,0.5), _clamp_impl(l,0.5,0.7));
 }
 
 /* ---------------------------------------------------------------------- */
@@ -157,7 +157,7 @@ char *learning_graph_render_derive_palette(const char *primary_hex, int dark)
     int mg = (int)round(primary.g+(base.g-primary.g)*mp);
     int mb = (int)round(primary.b+(base.b-primary.b)*mp);
     /* skill = mix(complement, bg, 0.45) */
-    rgb_t comp = _complementary_ink(primary);
+    rgb_t comp = _complementary_ink_impl(primary);
     int sr=(int)round(comp.r+(bg.r-comp.r)*0.45);
     int sg=(int)round(comp.g+(bg.g-comp.g)*0.45);
     int sb=(int)round(comp.b+(bg.b-comp.b)*0.45);
@@ -209,5 +209,80 @@ char *learning_graph_render_node_label(const char *label, const char *id)
         out = malloc(n + 4);
         snprintf(out, n+4, "%s…", tmp);
     }
+    return out;
+}
+
+/* ---------------------------------------------------------------------- */
+/* PoP: _clamp @ agent/learning_graph_render.py:_clamp */
+double learning_graph_render_clamp(double v, double lo, double hi)
+{
+    return _clamp_impl(v, lo, hi);
+}
+
+/* ---------------------------------------------------------------------- */
+/* PoP: _smoothstep @ agent/learning_graph_render.py:_smoothstep */
+double learning_graph_render_smoothstep(double p)
+{
+    return _smoothstep_impl(p);
+}
+
+/* ---------------------------------------------------------------------- */
+/* PoP: _rgb_to_hsl @ agent/learning_graph_render.py:_rgb_to_hsl */
+/* returns malloc'd "h,s,l" string (h rounded to 2dp, s/l to 4dp) */
+char *learning_graph_render_rgb_to_hsl(int r, int g, int b)
+{
+    rgb_t c = {(int)_clamp_impl(r,0,255), (int)_clamp_impl(g,0,255), (int)_clamp_impl(b,0,255)};
+    double h, s, l;
+    _rgb_to_hsl_impl(c, &h, &s, &l);
+    char *out = malloc(48);
+    snprintf(out, 48, "%.2f,%.4f,%.4f", h, s, l);
+    return out;
+}
+
+/* ---------------------------------------------------------------------- */
+/* PoP: _hsl_to_rgb @ agent/learning_graph_render.py:_hsl_to_rgb */
+/* returns malloc'd "r,g,b" string */
+char *learning_graph_render_hsl_to_rgb(double h, double s, double l)
+{
+    rgb_t c = _hsl_to_rgb_impl(h, s, l);
+    char *out = malloc(16);
+    snprintf(out, 16, "%d,%d,%d", c.r, c.g, c.b);
+    return out;
+}
+
+/* ---------------------------------------------------------------------- */
+/* PoP: _complementary_ink @ agent/learning_graph_render.py:_complementary_ink */
+/* returns malloc'd "r,g,b" string */
+char *learning_graph_render_complementary_ink(int r, int g, int b)
+{
+    rgb_t c = {(int)_clamp_impl(r,0,255), (int)_clamp_impl(g,0,255), (int)_clamp_impl(b,0,255)};
+    rgb_t o = _complementary_ink_impl(c);
+    char *out = malloc(16);
+    snprintf(out, 16, "%d,%d,%d", o.r, o.g, o.b);
+    return out;
+}
+
+/* ---------------------------------------------------------------------- */
+/* PoP: format_date @ agent/learning_graph_render.py:format_date */
+/* UTC "%-d %b %Y" (glibc supports the BSD '-' flag; on platforms that don't
+ * we strip the leading zero by hand). Returns malloc'd string, caller frees.
+ * Python: None/falsy/unrepresentable -> "unknown". */
+char *learning_graph_render_format_date(double ts)
+{
+    if (!ts || !isfinite(ts)) return strdup("unknown");
+    /* guard against overflow that would make gmtime return NULL */
+    if (ts > 253402300799.0 || ts < -62167219200.0) return strdup("unknown");
+    time_t t = (time_t)ts;
+    struct tm tm;
+    if (gmtime_r(&t, &tm) == NULL) return strdup("unknown");
+    char buf[32];
+    size_t n = strftime(buf, sizeof(buf), "%d %b %Y", &tm);
+    if (n == 0) return strdup("unknown");
+    /* strip a possible leading zero on the day (handles non-BSD strftime) */
+    if (buf[0] == '0' && buf[1] != ' ') {
+        memmove(buf, buf + 1, strlen(buf) + 1);
+    }
+    char *out = malloc(strlen(buf) + 1);
+    strcpy(out, buf);
     return out;
 }
