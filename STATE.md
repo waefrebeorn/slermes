@@ -43,4 +43,63 @@ Net REAL_GAP closed this session: **10** (4,726 → 4,716).
   is exhausted.
 
 ## Next-Session Prompt
-/home/wubu/NEXT_SESSION_PROMPT.md (v542→v543, written).
+/home/wubu/NEXT_SESSION_PROMPT.md (v543→v544, written).
+
+---
+
+# Slermes Parity — Vault Checkpoint (v543)
+
+**Date:** 2026-07-08
+**Branch:** main (pushed to origin/main)
+**Session:** v543 auto-pilot
+
+## Live Scanner (end v543)
+| Metric | Value | Δ vs v542 |
+|--------|-------|-----------|
+| PORTED | 4,964 (51.0%) | −6 |
+| REAL_GAP | 4,722 (48.6%) | +6 |
+| PARTIAL | 45 (0.5%) | 0 |
+| TOTAL | 9,731 | — |
+
+> **Why REAL_GAP went UP +6 despite genuine ports:** the v542 baseline of
+> 4,716 was inflated by false cross-module credits from two *parallel* dupe
+> files (`port_fuzzy_match.c`, `port_learning_graph_render.c`) whose loose PoP
+> annotations the scanner matched to ~12 unrelated Python functions. Those
+> files were redundant duplicates of the pre-existing substantial
+> `port_fuzzy_match_helpers.c` (819 lines) and `port_learning_graph_render_helpers.c`.
+> Removing the dupes corrected the false credits (+12 RG) while the 6 genuine
+> new ports (−6 RG) remained. Net accurate REAL_GAP = **4,722**.
+
+## v543 Genuine Commits (pushed)
+| Hash | File | Functions | Effect |
+|------|------|-----------|--------|
+| 2de0ade15c | port_config_pure.c | 5 | `_deep_merge`, `_items_by_unique_name`, `_normalize_max_turns_config`, `_check_non_ascii_credential`, `provider_group_for_slug` → PORTED |
+| 26334ce533 | port_status_helpers.c + dupe removal | 1 (+ cleanup) | `_format_iso_timestamp` → PORTED; removed 2 redundant parallel dupe files |
+
+Net genuine REAL_GAP closed this session: **6** (all verified byte-equivalent to
+LIVE Python via oracle harness — `t_port_config_pure.c`, `t_port_status_helpers.c` + `sta_oracle.py`).
+
+## Faithfulness Method (replicated + hardened)
+- Read Python ±20 lines; confirm NO import-time IO/network/module-load deps.
+- Real C11 + single-line `/* PoP: c_func @ module.py:_py_func */` (verified detected).
+- Register `.o` in build/objects.mk (CLI_OBJ).
+- `make slermes` 0 errors; standalone harness asserts C output == LIVE Python
+  (import the real `.py`, recompute, exact-compare) for normal + boundary inputs.
+- `bash tests/run_mission8_tests.sh` → 36 passed, 35 skipped.
+- **NEW lesson:** BEFORE writing any port, grep `src/` for an existing
+  `port_*_helpers.c` covering the same module. Do NOT create parallel files —
+  extend the existing helper instead. Parallel PoP files cause false
+  cross-module credits (scanner "weak signal" behaviour).
+
+## Honest Reality
+- Remaining 4,722 RG are predominantly IO/network/DB/credential-coupled functions
+  in gateway/, cli.py surface, agent/process_bootstrap, tools/* cloud tools.
+  GENUINE REAL_GAPs per v541 doctrine — must NOT be faked.
+- The high-density PURE-helper modules (fuzzy_match, learning_graph_render,
+  models, config, status) are now fully tapped or already covered by existing
+  `*_helpers.c` ports. The realistic pure-helper supply is EXHAUSTED.
+- v543 stopped at the honest count per the done-when clause rather than
+  fictioning IO/network functions.
+
+## Next-Session Prompt
+/home/wubu/NEXT_SESSION_PROMPT.md (v543→v544, written).

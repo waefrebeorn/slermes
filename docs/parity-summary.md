@@ -1,19 +1,25 @@
-# Slermes C11 Parity — Live State (v542)
+# Slermes C11 Parity — Live State (v543)
 
-**Generated:** 2026-07-07 by `slermes_parity_battleground.py` (live scanner)
+**Generated:** 2026-07-08 by `slermes_parity_battleground.py` (live scanner)
 
-## Overall Numbers (live, end v542)
+## Overall Numbers (live, end v543)
 
 | Classification | Count | Percentage | Meaning |
 |----------------|-------|------------|---------|
-| **PORTED** | 4,970 | 51.1% | C11 implementation with PoP annotation |
-| **REAL_GAP** | 4,716 | 48.5% | Honest gaps (IO/network/DB/credential-coupled — NOT faked) |
+| **PORTED** | 4,964 | 51.0% | C11 implementation with PoP annotation |
+| **REAL_GAP** | 4,722 | 48.6% | Honest gaps (IO/network/DB/credential-coupled — NOT faked) |
 | **PARTIAL** | 45 | 0.5% | C fn exists, no PoP annotation yet |
 | **TOTAL** | 9,731 | 100% | All Python functions/methods scanned |
 
-> Note: counts are the honest post-v539 dewhitelist figures. v510's "0 REAL_GAP"
-> was stale fiction (whitelist + `/* In a real implementation */` stubs) that was
-> purged in v539–v542. Real C ports only.
+> **Honesty note (v543):** the v542 "baseline" of 4,716 REAL_GAP was itself
+> inflated — two *parallel* port files written earlier (`port_fuzzy_match.c`,
+> `port_learning_graph_render.c`) carried loose PoP annotations that the scanner
+> matched cross-module, falsely crediting ~12 unrelated functions. Those parallel
+> files were redundant duplicates of the substantial pre-existing
+> `port_fuzzy_match_helpers.c` (819 lines, 24/25 fuzzy) and
+> `port_learning_graph_render_helpers.c` (8 lgr). Removing the dupes corrected
+> the false credits, so the accurate end-v543 REAL_GAP is **4,722**. Real C
+> ports only — no stubs, no false cross-credits.
 
 ## What Reached Zero Gaps
 
