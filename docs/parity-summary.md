@@ -1,25 +1,26 @@
-# Slermes C11 Parity — Live State (v543)
+# Slermes C11 Parity — Live State (v544)
 
 **Generated:** 2026-07-08 by `slermes_parity_battleground.py` (live scanner)
 
-## Overall Numbers (live, end v543)
+## Overall Numbers (live, end v544)
 
 | Classification | Count | Percentage | Meaning |
 |----------------|-------|------------|---------|
-| **PORTED** | 4,964 | 51.0% | C11 implementation with PoP annotation |
-| **REAL_GAP** | 4,722 | 48.6% | Honest gaps (IO/network/DB/credential-coupled — NOT faked) |
+| **PORTED** | 4,970 | 51.1% | C11 implementation with PoP annotation |
+| **REAL_GAP** | 4,716 | 48.5% | Honest gaps (IO/network/DB/credential-coupled — NOT faked) |
 | **PARTIAL** | 45 | 0.5% | C fn exists, no PoP annotation yet |
 | **TOTAL** | 9,731 | 100% | All Python functions/methods scanned |
 
-> **Honesty note (v543):** the v542 "baseline" of 4,716 REAL_GAP was itself
-> inflated — two *parallel* port files written earlier (`port_fuzzy_match.c`,
-> `port_learning_graph_render.c`) carried loose PoP annotations that the scanner
-> matched cross-module, falsely crediting ~12 unrelated functions. Those parallel
-> files were redundant duplicates of the substantial pre-existing
-> `port_fuzzy_match_helpers.c` (819 lines, 24/25 fuzzy) and
-> `port_learning_graph_render_helpers.c` (8 lgr). Removing the dupes corrected
-> the false credits, so the accurate end-v543 REAL_GAP is **4,722**. Real C
-> ports only — no stubs, no false cross-credits.
+> **Honesty note (v544):** the v544 work extended the existing
+> `port_learning_graph_render_helpers.c` (the v543 helper) with 6 genuine,
+> oracle-verified leaf ports — `_clamp`, `_smoothstep`, `_rgb_to_hsl`,
+> `_hsl_to_rgb`, `_complementary_ink` (all of which already had faithful logic
+> as private statics but were never PoP-tagged, so the scanner still counted
+> them) plus the genuinely-missing `format_date`. No new files, no parallel
+> dupes, no false cross-credits. End-v544 REAL_GAP: **4,716** (down 6 from
+> v543's 4,722), PORTED 4,970 (up 6). Every port verified byte-equivalent to
+> LIVE Python via `t_port_learning_graph_render_helpers.c` + `sta_oracle_lgr.py`
+> (35/35 cases: normal + boundary inputs).
 
 ## What Reached Zero Gaps
 
