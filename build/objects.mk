@@ -86,6 +86,7 @@ PORT_OBJ = \
     src/cli/port_file_tools_helpers.o \
     src/cli/port_cua_backend_helpers.o \
     src/cli/port_delegate_tool_helpers.o \
+    src/cli/port_profiles_helpers.o \
     src/cli/port_tools_blueprints.o \
     src/cli/port_tools_browser_cdp_tool.o \
     src/cli/port_tools_checkpoint_manager.o \
