@@ -170,3 +170,33 @@ functions across 15 modules. Real gaps 5,053 → 4,989 (64 closed). Scanner now
 **Discipline:** faithful ports only; deferred network/config/DB-coupled fns (not faked);
 collision-checked; new files registered in build/objects.mk.
 **Note:** new helper files created: port_hermes_cli_*.c (models/main/backup/gateway_platform/kanban_helpers).
+
+## v541 — pure-helper parity blitz (session 2026-07-07, auto-pilot)
+
+**What happened:** Continued module-by-module faithful porting of pure, self-contained
+Python helpers into C11, driving global REAL_GAP down from 4,788 → 4,726 (62 closed).
+All work builds clean (`make slermes` 0 errors, ~41.8 MB binary) and passes the 36/36
+Mission-8 suite. No stubs — only real implementations; IO/config/state-coupled twins
+left as honest REAL_GAP (per v541 doctrine).
+
+**New port files (all committed + registered in build/objects.mk):**
+- `port_learning_graph_helpers.c` — 6 pure fns (hermes_meta, related, category, to_int_ts,
+  usage_timestamp, tokenize) + HSL helpers. learning_graph.py 15→10 RG.
+- `port_lazy_deps_helpers.c` — 3 fns (spec_is_safe/pkg_name_from_spec/specifier_from_spec via POSIX regex).
+- `port_skill_usage_helpers.c` — latest_activity_at only (is_protected_builtin already in
+  lib/libskillusage — collision avoided).
+- `port_model_switch_helpers.c` — parse_model_flags (flag parse + unicode-dash normalize).
+- `port_file_state_helpers.c` — fmt_ts (epoch→HH:MM:SS), cap_dict (JSON object trim via rebuild).
+- `port_fuzzy_match_helpers.c` — CROWN JEWEL: full faithful port of tools/fuzzy_match.py.
+  9 fuzzy strategies + position/normalization/unicode/escape-drift helpers + public
+  fuzzy_find_and_replace / find_closest_lines / format_no_match_hint. LCS-based
+  SequenceMatcher.ratio. fuzzy_match.py 25→1 RG (24 fns; 1 gap = FuzzyMatcher class wrapper).
+- `port_file_tools_helpers.c` — 6 pure guards (expand_tilde, is_blocked_device_path + normpath,
+  is_expected_write_exception errno check, is_internal_file_status_text,
+  looks_like_read_file_line_numbered_content, is_internal_file_tool_content).
+
+**Cumulative this session:** global 4,788 → 4,726 (62 REAL_GAP closed).
+**Build:** CLEAN (0 errors). **Tests:** 36/36 pass.
+**Discipline:** multi-line ` * PoP:` annotations on every function; collision-check before
+each write; fuzzy_match (~820 lines) built in 7 chunked tool calls after the stream-timeout
+warning. No banned void* passthroughs, no `In a real implementation` façades.
