@@ -1,7 +1,7 @@
 # State — Slermes C Translation (v541)
 
 - Build: `make slermes` = 0 errors, binary links clean (~41 MB)
-- **Scanner (real, this session):** 4,700 PORTED (48.3%), 4,989 REAL_GAP (51.2%), 42 PARTIAL, 9,731 total features
+- **Scanner (real, this session):** 4,957 PORTED (50.9%), 4,726 REAL_GAP (48.6%), 48 PARTIAL, 9,731 total features
 - Tests: `bash tests/run_mission8_tests.sh` → 36 passed, 0 failed, 35 skipped
 - **Façade audit COMPLETE (v541):** all 18 audited files / 52 fake-looking stubs rewritten as REAL ports. No `In a real implementation` comments remain in src/cli/port_*.c. Binary links; 36/36 tests pass.
 - Desktop parity: 111 features mapped, ~99 missing (4% complete) — separate workstream
