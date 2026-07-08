@@ -78,8 +78,21 @@ int coerce_config_version(const char *value, int is_bool)
  * =========================================================================== */
 
 static const char *ENV_DENYLIST[] = {
-    "LD_PRELOAD", "LD_LIBRARY_PATH", "PYTHONPATH", "PATH", "EDITOR",
-    "VISUAL", "SHELL", "HERMES_HOME", "HERMES_PROFILE", "HERMES_ROOT",
+    /* Loader / linker */
+    "LD_PRELOAD", "LD_LIBRARY_PATH", "LD_AUDIT", "LD_DEBUG",
+    "DYLD_INSERT_LIBRARIES", "DYLD_LIBRARY_PATH", "DYLD_FRAMEWORK_PATH",
+    "DYLD_FALLBACK_LIBRARY_PATH", "DYLD_FALLBACK_FRAMEWORK_PATH",
+    /* Python */
+    "PYTHONPATH", "PYTHONHOME", "PYTHONSTARTUP", "PYTHONUSERBASE",
+    "PYTHONEXECUTABLE", "PYTHONNOUSERSITE",
+    /* Node */
+    "NODE_OPTIONS", "NODE_PATH",
+    /* General */
+    "PATH", "SHELL", "BROWSER", "EDITOR", "VISUAL", "PAGER",
+    /* Git */
+    "GIT_SSH_COMMAND", "GIT_EXEC_PATH", "GIT_SHELL",
+    /* Hermes runtime location */
+    "HERMES_HOME", "HERMES_PROFILE", "HERMES_CONFIG", "HERMES_ENV",
     NULL
 };
 
