@@ -1,21 +1,23 @@
 /*
  * port_profiles_helpers.c
  *
- * Pure, portable helper functions ported from hermes_cli/profiles.py.
- * Ported helpers: normalize_profile_name, validate_profile_name,
- * validate_alias_name, check_alias_collision (pure checks only — the PATH
- * "which" probe in check_alias_collision is OS-coupled and left as honest NA:
- * when the pure checks pass we return NULL, meaning "no pure collision found").
+ * Pure, portable helpers ported from hermes_cli/profiles.py. These are the
+ * name normalization / validation / archive-path-safety helpers that touch
+ * no filesystem, no network, and no env — only string + path-shaped logic:
+ *   - normalize_profile_name       (canonical on-disk id; "default" passes
+ *                                   through; lowercase + strip)
+ *   - validate_profile_name        (regex [a-z0-9][a-z0-9_-]{0,63} + reserved
+ *                                   names; "default" is a valid special alias)
+ *   - validate_alias_name          (same regex; used as a bare filename)
+ *   - normalize_profile_archive_parts (safe posix path parts; rejects
+ *                                   absolute / ".." / empty — mirrors the
+ *                                   PurePosixPath/PureWindowsPath checks)
  *
- * Filesystem-coupled helpers (get_profile_dir, profile_exists, find_alias_for_profile,
- * build_alias_map, read/write_profile_meta, profiles_to_serve, seed_profile_skills)
- * are intentionally NOT ported — they hit the profile tree / spawn subprocesses.
+ * The IO-coupled functions (get_profile_dir, create_profile, export/import,
+ * wrapper scripts, gateway service registration) are honest REAL_GAPs and are
+ * NOT ported here.
  *
  * Module prefix used by the scanner for hermes_cli/profiles.py is "profiles_".
- *
- * C name <- python name (profiles_ prefix):
- *   profiles_normalize_profile_name, profiles_validate_profile_name,
- *   profiles_validate_alias_name, profiles_check_alias_collision
  */
 
 #include <stdio.h>
@@ -23,113 +25,172 @@
 #include <string.h>
 #include <strings.h>
 #include <ctype.h>
-#include <stdbool.h>
-#include "hermes_json.h"
 
-/* Profile id regex: ^[a-z0-9][a-z0-9_-]{0,63}$ (anchored, lowercase only) */
-static int profile_id_matches(const char *s)
+/* --- normalize_profile_name ------------------------------------------- */
+/* PoP: normalize_profile_name @ hermes_cli/profiles.py:normalize_profile_name */
+/*
+ * Canonical profile id: strip, reject empty (return -1), "default" (any case)
+ * -> "default", else lowercase. On success fill out (malloc'd by caller or
+ * static). We return the length written into out (excluding NUL), or -1 for
+ * empty. Caller provides out of size >= 64.
+ */
+int profiles_normalize_profile_name(const char *name, char *out, size_t outsz)
+{
+    if (!name) { if (out && outsz) out[0] = '\0'; return -1; }
+    /* strip leading/trailing whitespace */
+    const char *p = name;
+    while (*p == ' ' || *p == '\t') p++;
+    const char *e = p + strlen(p);
+    while (e > p && (e[-1] == ' ' || e[-1] == '\t')) e--;
+    size_t n = (size_t)(e - p);
+    if (n == 0) { if (out && outsz) out[0] = '\0'; return -1; }
+
+    /* casefold comparison with "default" */
+    if (n == 7) {
+        char buf[8];
+        for (size_t i = 0; i < n; i++) buf[i] = (char)tolower((unsigned char)p[i]);
+        buf[n] = '\0';
+        if (strcmp(buf, "default") == 0) {
+            if (out && outsz) { strncpy(out, "default", outsz - 1); out[outsz - 1] = '\0'; }
+            return 7;
+        }
+    }
+    /* lowercase copy (cap at outsz-1) */
+    size_t w = 0;
+    for (size_t i = 0; i < n && w + 1 < outsz; i++) {
+        out[w++] = (char)tolower((unsigned char)p[i]);
+    }
+    out[w] = '\0';
+    return (int)w;
+}
+
+/* --- validation regex equivalent -------------------------------------- */
+/* Python: ^[a-z0-9][a-z0-9_-]{0,63}$ */
+static int profiles_id_valid(const char *s)
 {
     size_t n = strlen(s);
     if (n < 1 || n > 64) return 0;
     for (size_t i = 0; i < n; i++) {
         char c = s[i];
-        int ok = islower((unsigned char)c) || isdigit((unsigned char)c) ||
-                 (i > 0 && (c == '-' || c == '_'));
+        int ok = isalnum((unsigned char)c) || c == '_' || c == '-';
         if (!ok) return 0;
+        if (i == 0 && !isalnum((unsigned char)c)) return 0; /* first must be alnum */
     }
     return 1;
 }
 
-static int in_json_array(const char *arr_json, const char *val)
+static int profiles_is_reserved(const char *s)
 {
-    if (!arr_json || !arr_json[0] || !val) return 0;
-    json_t *a = json_parse(arr_json, NULL);
-    if (!a || a->type != JSON_ARRAY) { if (a) json_free(a); return 0; }
-    int found = 0;
-    for (size_t i = 0; i < json_array_size(a); i++) {
-        json_t *e = json_array_get(a, i);
-        if (e && e->type == JSON_STRING && strcmp(json_string_value(e), val) == 0) { found = 1; break; }
-    }
-    json_free(a);
-    return found;
+    static const char *RES[] = {
+        "hermes", "default", "test", "tmp", "root", "sudo", NULL
+    };
+    for (int i = 0; RES[i]; i++)
+        if (strcasecmp(s, RES[i]) == 0) return 1;
+    return 0;
 }
 
-/* ---------------------------------------------------------------------- */
-/* PoP: normalize_profile_name @ hermes_cli/profiles.py:normalize_profile_name */
-char *profiles_normalize_profile_name(const char *name)
+/* --- validate_profile_name -------------------------------------------- */
+/* PoP: validate_profile_name @ hermes_cli/profiles.py:validate_profile_name */
+/* Returns 0 if valid; -1 and fills err otherwise. "default" is always valid. */
+int profiles_validate_profile_name(const char *name, char *err, size_t errsz)
 {
-    if (!name) return strdup("");
-    /* strip */
-    while (*name && isspace((unsigned char)*name)) name++;
-    size_t L = strlen(name);
-    while (L > 0 && isspace((unsigned char)name[L-1])) L--;
-    if (L == 0) return strdup("");
-    char *tmp = malloc(L + 1);
-    memcpy(tmp, name, L); tmp[L] = '\0';
-    /* casefold == "default" (ASCII, case-insensitive) */
-    char low[256]; size_t k = 0;
-    for (size_t i = 0; i < L && k < sizeof(low)-1; i++) low[k++] = (char)tolower((unsigned char)tmp[i]);
-    low[k] = '\0';
-    char *out;
-    if (strcasecmp(low, "default") == 0) out = strdup("default");
-    else {
-        for (size_t i = 0; i < L; i++) tmp[i] = (char)tolower((unsigned char)tmp[i]);
-        out = tmp;
+    if (err) err[0] = '\0';
+    if (name && strcasecmp(name, "default") == 0) return 0;
+    if (!name || !profiles_id_valid(name)) {
+        if (err) snprintf(err, errsz,
+            "Invalid profile name '%s'. Must match [a-z0-9][a-z0-9_-]{0,63}",
+            name ? name : "");
+        return -1;
     }
-    return out;
+    if (profiles_is_reserved(name)) {
+        if (err) snprintf(err, errsz,
+            "Profile name '%s' is reserved -- it collides with either the "
+            "Hermes installation itself or a common system binary.  Pick a "
+            "different name.", name);
+        return -1;
+    }
+    return 0;
 }
 
-/* ---------------------------------------------------------------------- */
-/* PoP: validate_profile_name @ hermes_cli/profiles.py:validate_profile_name
- * Returns NULL if valid, else malloc'd error message. "default" is a pass-through. */
-char *profiles_validate_profile_name(const char *name)
+/* --- validate_alias_name ---------------------------------------------- */
+/* PoP: validate_alias_name @ hermes_cli/profiles.py:validate_alias_name */
+/* Same regex as profile id (forbids '/', '.', '..'); no reserved-name check. */
+int profiles_validate_alias_name(const char *name, char *err, size_t errsz)
 {
-    if (name && strcmp(name, "default") == 0) return NULL;
-    if (!profile_id_matches(name)) {
-        return strdup("Invalid profile name. Must match [a-z0-9][a-z0-9_-]{0,63}");
+    if (err) err[0] = '\0';
+    if (!name || !profiles_id_valid(name)) {
+        if (err) snprintf(err, errsz,
+            "Invalid alias name '%s'. Must match [a-z0-9][a-z0-9_-]{0,63}",
+            name ? name : "");
+        return -1;
     }
-    static const char *reserved[] = {"hermes","default","test","tmp","root","sudo",NULL};
-    for (int i = 0; reserved[i]; i++)
-        if (strcmp(name, reserved[i]) == 0)
-            return strdup("is reserved — it collides with either the Hermes installation itself or a common system binary. Pick a different name.");
-    return NULL;
+    return 0;
 }
 
-/* ---------------------------------------------------------------------- */
-/* PoP: validate_alias_name @ hermes_cli/profiles.py:validate_alias_name
- * Returns NULL if valid, else malloc'd error message. */
-char *profiles_validate_alias_name(const char *name)
+/* --- normalize_profile_archive_parts ---------------------------------- */
+/* PoP: _normalize_profile_archive_parts @ hermes_cli/profiles.py:_normalize_profile_archive_parts */
+/*
+ * Split an archive member name into safe posix path parts. Rejects:
+ *   - empty / None
+ *   - absolute posix path (leading '/') or any component ".."
+ *   - windows absolute (drive letter, leading backslash) — detected by a
+ *     ':' before any '/' or a leading '\\'
+ * Returns the number of parts written into parts[] (max maxparts), or -1 on
+ * unsafe input (and fills err). parts entries are malloc'd; caller frees.
+ */
+int profiles_normalize_profile_archive_parts(const char *member,
+                                             char **parts, int maxparts,
+                                             char *err, size_t errsz)
 {
-    if (!profile_id_matches(name)) {
-        return strdup("Invalid alias name. Must match [a-z0-9][a-z0-9_-]{0,63}");
+    if (err) err[0] = '\0';
+    if (!member || !*member) {
+        if (err) snprintf(err, errsz, "Unsafe archive member path: %s", member ? member : "(null)");
+        return -1;
     }
-    return NULL;
-}
-
-/* ---------------------------------------------------------------------- */
-/* PoP: check_alias_collision @ hermes_cli/profiles.py:check_alias_collision
- * reserved_json / subcommands_json: JSON arrays of strings.
- * Returns malloc'd collision message, or NULL if no PURE collision found.
- * (The PATH "which" probe is OS-coupled and intentionally omitted — pure
- * checks only, matching the documented NA boundary.) */
-char *profiles_check_alias_collision(const char *name, const char *reserved_json, const char *subcommands_json)
-{
-    char *canon = profiles_normalize_profile_name(name);
-    char *err = profiles_validate_alias_name(canon);
-    if (err) { char *out = err; free(canon); return out; }
-    static const char *reserved[] = {"hermes","default","test","tmp","root","sudo",NULL};
-    for (int i = 0; reserved[i]; i++) {
-        if (strcmp(canon, reserved[i]) == 0) {
-            char *out = malloc(strlen(canon) + 32);
-            sprintf(out, "'%s' is a reserved name", canon);
-            free(canon); return out;
+    /* windows drive detection: a ':' with no preceding '/' and no '/' before it */
+    int has_drive = 0;
+    for (const char *q = member; *q; q++) {
+        if (*q == ':') { has_drive = 1; break; }
+        if (*q == '/') { has_drive = 0; break; }
+    }
+    /* backslash => treat as windows separator; presence of leading '\\' or ':' => absolute */
+    const char *scan = member;
+    int lead_bslash = (scan[0] == '\\');
+    if (has_drive || lead_bslash) {
+        if (err) snprintf(err, errsz, "Unsafe archive member path: %s", member);
+        return -1;
+    }
+    /* posix absolute */
+    if (member[0] == '/') {
+        if (err) snprintf(err, errsz, "Unsafe archive member path: %s", member);
+        return -1;
+    }
+    /* split on / and \\ */
+    int cnt = 0;
+    const char *seg = member;
+    while (*seg && cnt < maxparts) {
+        /* skip separators */
+        while (*seg == '/' || *seg == '\\') seg++;
+        if (!*seg) break;
+        const char *end = seg;
+        while (*end && *end != '/' && *end != '\\') end++;
+        size_t len = (size_t)(end - seg);
+        if (len == 1 && seg[0] == '.') { seg = end; continue; } /* '.' skip */
+        if (len == 2 && seg[0] == '.' && seg[1] == '.') {
+            if (err) snprintf(err, errsz, "Unsafe archive member path: %s", member);
+            /* free already-allocated */
+            for (int i = 0; i < cnt; i++) free(parts[i]);
+            return -1;
         }
+        parts[cnt] = malloc(len + 1);
+        memcpy(parts[cnt], seg, len);
+        parts[cnt][len] = '\0';
+        cnt++;
+        seg = end;
     }
-    if (in_json_array(subcommands_json, canon)) {
-        char *out = malloc(strlen(canon) + 48);
-        sprintf(out, "'%s' conflicts with a hermes subcommand", canon);
-        free(canon); return out;
+    if (cnt == 0) {
+        if (err) snprintf(err, errsz, "Unsafe archive member path: %s", member);
+        return -1;
     }
-    free(canon);
-    return NULL; /* pure checks pass; PATH probe is OS-coupled (NA) */
+    return cnt;
 }
