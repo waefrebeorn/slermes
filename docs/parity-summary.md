@@ -1,17 +1,19 @@
-# Slermes C11 Parity — Final State (v510)
+# Slermes C11 Parity — Live State (v542)
 
-**Generated:** 2026-07-02 by `slermes_parity_battleground.py`
+**Generated:** 2026-07-07 by `slermes_parity_battleground.py` (live scanner)
 
-## Final Overall Numbers
+## Overall Numbers (live, end v542)
 
 | Classification | Count | Percentage | Meaning |
 |----------------|-------|------------|---------|
-| **PORTED** | 8,701 | 89.4% | C11 implementation with PoP annotation |
-| **REAL_GAP** | 0 | 0.0% | No missing features remaining |
-| **PARTIAL** | 0 | 0.0% | No unannotated C functions |
-| **STUB** | 0 | 0.0% | No stub implementations |
-| **N/A (genuine)** | 1,030 | 10.6% | Python-only (async, SDK, CLI, image processing) |
+| **PORTED** | 4,970 | 51.1% | C11 implementation with PoP annotation |
+| **REAL_GAP** | 4,716 | 48.5% | Honest gaps (IO/network/DB/credential-coupled — NOT faked) |
+| **PARTIAL** | 45 | 0.5% | C fn exists, no PoP annotation yet |
 | **TOTAL** | 9,731 | 100% | All Python functions/methods scanned |
+
+> Note: counts are the honest post-v539 dewhitelist figures. v510's "0 REAL_GAP"
+> was stale fiction (whitelist + `/* In a real implementation */` stubs) that was
+> purged in v539–v542. Real C ports only.
 
 ## What Reached Zero Gaps
 
