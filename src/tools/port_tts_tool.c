@@ -88,28 +88,13 @@ bool tts_tool_import_piper(void)
  * ================================================================ */
 
 /* Port of Python: _config_bool */
-/* PoP: tts_tool_config_bool @ tools/tts_tool.py:_config_bool */
-bool tts_tool_config_bool(const char *section, const char *key, bool def)
-{
-    (void)section; (void)key;
-    hermes_log(LOG_DEBUG, "port", "_config_bool: %s.%s def=%d", section ? section : "", key ? key : "", def);
-    return def;
-}
+
 
 /* Port of Python: _resolve_max_text_length */
-/* PoP: tts_tool_resolve_max_text_length @ tools/tts_tool.py:_resolve_max_text_length */
-int tts_tool_resolve_max_text_length(const char *provider, int configured, int default_max)
-{
-    (void)provider; (void)configured;
-    return default_max;
-}
+
 
 /* Port of Python: _load_tts_config */
-/* PoP: tts_tool_load_tts_config @ tools/tts_tool.py:_load_tts_config */
-char *tts_tool_load_tts_config(void)
-{
-    return strdup("{}");
-}
+
 
 /* Port of Python: _get_provider_section */
 /* PoP: tts_tool_get_provider_section @ tools/tts_tool.py:_get_provider_section */
@@ -120,12 +105,7 @@ char *tts_tool_get_provider_section(const char *provider)
 }
 
 /* Port of Python: _get_named_provider_config */
-/* PoP: tts_tool_get_named_provider_config @ tools/tts_tool.py:_get_named_provider_config */
-char *tts_tool_get_named_provider_config(const char *provider, const char *name)
-{
-    (void)provider; (void)name;
-    return strdup("{}");
-}
+
 
 /* Port of Python: _is_command_provider_config */
 /* PoP: tts_tool_is_command_provider_config @ tools/tts_tool.py:_is_command_provider_config */
@@ -154,11 +134,7 @@ char *tts_tool_resolve_command_provider_config(const char *provider, const char 
 /* Port of Python: _plugin_provider_is_voice_compatible */
 
 /* Port of Python: _iter_command_providers */
-/* PoP: tts_tool_iter_command_providers @ tools/tts_tool.py:_iter_command_providers */
-char *tts_tool_iter_command_providers(void)
-{
-    return strdup("[]");
-}
+
 
 /* Port of Python: _get_command_tts_timeout */
 /* PoP: tts_tool_get_command_tts_timeout @ tools/tts_tool.py:_get_command_tts_timeout */
@@ -194,28 +170,13 @@ int tts_tool_get_command_tts_timeout(const char *config_json)
 /* Port of Python: _has_ffmpeg */
 
 /* Port of Python: _convert_to_opus */
-/* PoP: tts_tool_convert_to_opus @ tools/tts_tool.py:_convert_to_opus */
-char *tts_tool_convert_to_opus(const char *input_path, const char *output_path)
-{
-    (void)input_path; (void)output_path;
-    return strdup(output_path ? output_path : "/tmp/output.opus");
-}
+
 
 /* Port of Python: _generate_edge_tts */
-/* PoP: tts_tool_generate_edge_tts @ tools/tts_tool.py:_generate_edge_tts */
-char *tts_tool_generate_edge_tts(const char *text, const char *voice)
-{
-    (void)text; (void)voice;
-    return strdup("{}");
-}
+
 
 /* Port of Python: _xai_bool_config */
-/* PoP: tts_tool_xai_bool_config @ tools/tts_tool.py:_xai_bool_config */
-bool tts_tool_xai_bool_config(const char *key, bool def)
-{
-    (void)key;
-    return def;
-}
+
 
 /* Port of Python: _apply_xai_auto_speech_tags */
 /* PoP: tts_tool_apply_xai_auto_speech_tags @ tools/tts_tool.py:_apply_xai_auto_speech_tags */
@@ -226,28 +187,13 @@ char *tts_tool_apply_xai_auto_speech_tags(const char *text)
 }
 
 /* Port of Python: _generate_minimax_tts */
-/* PoP: tts_tool_generate_minimax_tts @ tools/tts_tool.py:_generate_minimax_tts */
-char *tts_tool_generate_minimax_tts(const char *text, const char *voice)
-{
-    (void)text; (void)voice;
-    return strdup("{}");
-}
+
 
 /* Port of Python: _generate_mistral_tts */
-/* PoP: tts_tool_generate_mistral_tts @ tools/tts_tool.py:_generate_mistral_tts */
-char *tts_tool_generate_mistral_tts(const char *text, const char *voice)
-{
-    (void)text; (void)voice;
-    return strdup("{}");
-}
+
 
 /* Port of Python: _wrap_pcm_as_wav */
-/* PoP: tts_tool_wrap_pcm_as_wav @ tools/tts_tool.py:_wrap_pcm_as_wav */
-char *tts_tool_wrap_pcm_as_wav(const void *pcm_data, size_t len, int sample_rate, int channels)
-{
-    (void)pcm_data; (void)len; (void)sample_rate; (void)channels;
-    return strdup("/tmp/wrapped.wav");
-}
+
 
 /* Port of Python: _resolve_gemini_persona_prompt_path */
 /* PoP: tts_tool_resolve_gemini_persona_prompt_path @ tools/tts_tool.py:_resolve_gemini_persona_prompt_path */
@@ -281,12 +227,7 @@ char *tts_tool_read_gemini_persona_prompt(const char *path)
 }
 
 /* Port of Python: _gemini_model_supports_audio_tags */
-/* PoP: tts_tool_gemini_model_supports_audio_tags @ tools/tts_tool.py:_gemini_model_supports_audio_tags */
-bool tts_tool_gemini_model_supports_audio_tags(const char *model)
-{
-    (void)model;
-    return true;
-}
+
 
 /* Port of Python: _gemini_audio_tags_enabled */
 
@@ -301,18 +242,10 @@ bool tts_tool_gemini_model_supports_audio_tags(const char *model)
 /* Port of Python: _generate_gemini_tts */
 
 /* Port of Python: _check_neutts_available */
-/* PoP: tts_tool_check_neutts_available @ tools/tts_tool.py:_check_neutts_available */
-bool tts_tool_check_neutts_available(void)
-{
-    return true;
-}
+
 
 /* Port of Python: _check_kittentts_available */
-/* PoP: tts_tool_check_kittentts_available @ tools/tts_tool.py:_check_kittentts_available */
-bool tts_tool_check_kittentts_available(void)
-{
-    return true;
-}
+
 
 /* Port of Python: _default_neutts_ref_audio */
 
@@ -321,18 +254,10 @@ bool tts_tool_check_kittentts_available(void)
 /* Port of Python: _generate_neutts */
 
 /* Port of Python: _check_piper_available */
-/* PoP: tts_tool_check_piper_available @ tools/tts_tool.py:_check_piper_available */
-bool tts_tool_check_piper_available(void)
-{
-    return true;
-}
+
 
 /* Port of Python: _get_piper_voices_dir */
-/* PoP: tts_tool_get_piper_voices_dir @ tools/tts_tool.py:_get_piper_voices_dir */
-char *tts_tool_get_piper_voices_dir(void)
-{
-    return strdup("/usr/share/piper/voices");
-}
+
 
 /* Port of Python: _resolve_piper_voice_path */
 /* PoP: tts_tool_resolve_piper_voice_path @ tools/tts_tool.py:_resolve_piper_voice_path */
@@ -347,20 +272,10 @@ char *tts_tool_resolve_piper_voice_path(const char *voice)
 }
 
 /* Port of Python: _generate_piper_tts */
-/* PoP: tts_tool_generate_piper_tts @ tools/tts_tool.py:_generate_piper_tts */
-char *tts_tool_generate_piper_tts(const char *text, const char *voice)
-{
-    (void)text; (void)voice;
-    return strdup("{}");
-}
+
 
 /* Port of Python: _generate_kittentts */
-/* PoP: tts_tool_generate_kittentts @ tools/tts_tool.py:_generate_kittentts */
-char *tts_tool_generate_kittentts(const char *text, const char *voice)
-{
-    (void)text; (void)voice;
-    return strdup("{}");
-}
+
 
 /* Port of Python: check_tts_requirements */
 /* PoP: tts_tool_check_tts_requirements @ tools/tts_tool.py:check_tts_requirements */

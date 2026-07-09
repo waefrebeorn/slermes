@@ -75,18 +75,7 @@ void cli_tools_env_passthrough_register_env_passthrough(const char **names, int 
     }
 }
 
-/* PoP: cli_tools_env_passthrough__load_config_passthrough @ tools/env_passthrough.py:_load_config_passthrough */
 
-/* Port of Python tools/env_passthrough.py:_load_config_passthrough */
-/* Load tools.env_passthrough from config.yaml (cached). Returns count loaded. */
-int cli_tools_env_passthrough__load_config_passthrough(void)
-{
-    /* Config loading is handled by config.c which populates cfg.terminal.env_passthrough */
-    /* This function signals that config should be consulted; actual passthrough */
-    /* checks go through is_env_passthrough which consults both session + config. */
-    hermes_log(LOG_DEBUG, "env_passthrough", "Config passthrough requested (handled by config.c)");
-    return 0;
-}
 
 /* PoP: cli_tools_env_passthrough_is_env_passthrough @ tools/env_passthrough.py:is_env_passthrough */
 

@@ -137,39 +137,20 @@ char *skills_hub_inspect_petdex(const char *identifier)
 /* Port of Python: _download_directory_recursive */
 
 /* Port of Python: _find_skill_in_repo_tree */
-/* PoP: skills_hub_find_skill_in_repo_tree @ tools/skills_hub.py:_find_skill_in_repo_tree */
-char *skills_hub_find_skill_in_repo_tree(github_source_t *src, const char *repo, const char *skill_name)
-{
-    (void)src; (void)repo; (void)skill_name;
-    return github_source_find_skill_in_repo_tree(src, repo, skill_name);
-}
+
 
 /* Port of Python: _fetch_file_content */
-/* PoP: skills_hub_fetch_file_content @ tools/skills_hub.py:_fetch_file_content */
-char *skills_hub_fetch_file_content(github_source_t *src, const char *repo, const char *path)
-{
-    (void)src; (void)repo; (void)path;
-    return github_source_fetch_file_content(src, repo, path);
-}
+
 
 /* ================================================================
  *  Marketplace operations
  * ================================================================ */
 
 /* Port of Python: _get_skillsh_groupings */
-/* PoP: skills_hub_get_skillsh_groupings @ tools/skills_hub.py:_get_skillsh_groupings */
-char *skills_hub_get_skillsh_groupings(void)
-{
-    return strdup("{\"groupings\":{}}");
-}
+
 
 /* Port of Python: _parse_skillsh_groupings */
-/* PoP: skills_hub_parse_skillsh_groupings @ tools/skills_hub.py:_parse_skillsh_groupings */
-char *skills_hub_parse_skillsh_groupings(const char *json_str)
-{
-    (void)json_str;
-    return strdup("{}");
-}
+
 
 /* ================================================================
  *  Cache operations
@@ -389,12 +370,7 @@ char *skills_hub_resolve_github_meta(const char *repo)
 /* Port of Python: _extract_weekly_installs */
 
 /* Port of Python: _extract_security_audits */
-/* PoP: skills_hub_extract_security_audits @ tools/skills_hub.py:_extract_security_audits */
-char *skills_hub_extract_security_audits(const char *meta_json)
-{
-    (void)meta_json;
-    return strdup("[]");
-}
+
 
 /* ================================================================
  *  String helpers
@@ -450,20 +426,10 @@ char *skills_hub_wrap_identifier_v2(const char *identifier, const char *source)
 }
 
 /* Port of Python: _normalize_tags */
-/* PoP: skills_hub_normalize_tags @ tools/skills_hub.py:_normalize_tags */
-char *skills_hub_normalize_tags(const char *tags_json)
-{
-    (void)tags_json;
-    return strdup("[]");
-}
+
 
 /* Port of Python: _coerce_skill_payload */
-/* PoP: skills_hub_coerce_skill_payload @ tools/skills_hub.py:_coerce_skill_payload */
-char *skills_hub_coerce_skill_payload(const char *payload_json)
-{
-    (void)payload_json;
-    return strdup("{}");
-}
+
 
 /* ================================================================
  *  Search scoring
@@ -493,12 +459,7 @@ char *skills_hub_query_terms(const char *query)
 }
 
 /* Port of Python: _search_score */
-/* PoP: skills_hub_search_score @ tools/skills_hub.py:_search_score */
-int skills_hub_search_score(const char *query, const char *meta_json)
-{
-    (void)query; (void)meta_json;
-    return 100;
-}
+
 
 /* Port of Python: _dedupe_results */
 
@@ -511,21 +472,12 @@ int skills_hub_search_score(const char *query, const char *meta_json)
  * ================================================================ */
 
 /* Port of Python: _load_catalog_index */
-/* PoP: skills_hub_load_catalog_index @ tools/skills_hub.py:_load_catalog_index */
-char *skills_hub_load_catalog_index(void)
-{
-    return strdup("{}");
-}
+
 
 /* Port of Python: _get_json */
 
 /* Port of Python: _resolve_latest_version */
-/* PoP: skills_hub_resolve_latest_version @ tools/skills_hub.py:_resolve_latest_version */
-char *skills_hub_resolve_latest_version(const char *repo)
-{
-    (void)repo;
-    return strdup("v1.0.0");
-}
+
 
 /* ================================================================
  *  File extraction
@@ -578,11 +530,7 @@ char *skills_hub_resolve_skill_md_url(const char *identifier)
 /* Port of Python: _scan_all */
 
 /* Port of Python: _ensure_loaded */
-/* PoP: skills_hub_ensure_loaded @ tools/skills_hub.py:_ensure_loaded */
-bool skills_hub_ensure_loaded(void)
-{
-    return true;
-}
+
 
 /* Port of Python: _get_github */
 

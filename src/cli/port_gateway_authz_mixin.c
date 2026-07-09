@@ -142,16 +142,4 @@ int cli_gateway_authz_mixin__is_user_authorized(
     return 0;
 }
 
-/* PoP: cli_gateway_authz_mixin__get_unauthorized_dm_behavior @ gateway/authz_mixin.py:_get_unauthorized_dm_behavior */
 
-/* Port of Python gateway/authz_mixin.py:_get_unauthorized_dm_behavior */
-/* Returns how unauthorized DMs should be handled: "pair" or "ignore". */
-const char *cli_gateway_authz_mixin__get_unauthorized_dm_behavior(
-    void *self, const char *platform_name)
-{
-    (void)self;
-    (void)platform_name;
-    /* Default behavior: pair (open-gateway default). */
-    /* If an allowlist is configured, the caller should use "ignore". */
-    return "pair";
-}

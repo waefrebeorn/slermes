@@ -123,20 +123,26 @@ def collect_defs(text):
 
 
 def associate(text, defs, pop_pos):
-    """Pick the def that this PoP comment annotates:
-    containing def (def_start <= pos <= body_end) wins;
-    else nearest preceding def (greatest def_start <= pos);
-    else nearest following def (smallest def_start > pos)."""
+    """Pick the def that this PoP comment annotates.
+
+    Project convention is the BRIDGE pattern: the /* PoP: */ comment sits
+    IMMEDIATELY ABOVE the function it documents (def_start > pop_pos). So the
+    correct def is almost always the FIRST def whose start is after the comment.
+    Only fall back to 'containing' (PoP inside a def body) or 'preceding' (PoP
+    trailing a def, no following def) when no following def exists.
+    """
+    # 1) PoP inside a def body -> that def
     containing = [d for d in defs if d[0] <= pop_pos <= d[3]]
     if containing:
-        # the innermost containing def (smallest span)
         return min(containing, key=lambda d: (d[3] - d[0]))
-    preceding = [d for d in defs if d[0] <= pop_pos]
-    if preceding:
-        return max(preceding, key=lambda d: d[0])
+    # 2) bridge convention: first def AFTER the comment
     following = [d for d in defs if d[0] > pop_pos]
     if following:
         return min(following, key=lambda d: d[0])
+    # 3) last resort: nearest preceding def
+    preceding = [d for d in defs if d[0] <= pop_pos]
+    if preceding:
+        return max(preceding, key=lambda d: d[0])
     return None
 
 

@@ -42,7 +42,6 @@ void port_web_tools_state_cleanup(port_web_tools_state_t *state)
 /* Forward declarations */
 char *web_env_value(const char *name);
 bool web_has_env(const char *name);
-char *web_load_web_config(void);
 /* PoP: web_get_backend @ tools/computer_use/tool.py:_get_backend */
 char *web_get_backend(void);
 char *web_get_search_backend(void);
@@ -55,7 +54,6 @@ int web_get_extract_char_limit(void);
 char *web_convert_base64_images_to_links(const char *text);
 char *web_store_full_text(const char *url, const char *content);
 bool web_truncate_with_footer(const char *content, const char *url, int char_limit, char **out_text, bool *out_truncated);
-void web_ensure_web_plugins_loaded(void);
 char *web_search_tool(const char *query, int limit);
 bool web_check_web_api_key(void);
 
@@ -80,19 +78,11 @@ bool web_has_env(const char *name)
     return exists;
 }
 
-/* PoP: web_load_web_config @ tools/web_tools.py:_load_web_config */
-char *web_load_web_config(void)
-{
-    /* In C we'd load from hermes config - for now return empty JSON object */
-    return strdup("{}");
-}
+
 
 /* PoP: web_get_backend @ tools/web_tools.py:_get_backend */
 char *web_get_backend(void)
 {
-    char *config = web_load_web_config();
-    /* Parse config for "backend" key - simplified */
-    free(config);
 
     /* Fallback priority order */
     if (web_has_env("TAVILY_API_KEY")) return strdup("tavily");
@@ -110,10 +100,6 @@ char *web_get_backend(void)
 char *web_get_capability_backend(const char *capability)
 {
     if (!capability) return web_get_backend();
-
-    char *config = web_load_web_config();
-    /* Parse config for capability-specific backend */
-    free(config);
 
     char key[64];
     snprintf(key, sizeof(key), "%s_backend", capability);
@@ -198,9 +184,6 @@ char **web_web_requires_env(int *out_count)
 /* PoP: web_get_extract_char_limit @ tools/web_tools.py:_get_extract_char_limit */
 int web_get_extract_char_limit(void)
 {
-    char *config = web_load_web_config();
-    /* Parse config for extract_char_limit */
-    free(config);
 
     /* Default: 15000, clamped to [2000, 500000] */
     return 15000;
@@ -329,11 +312,7 @@ bool web_truncate_with_footer(const char *content, const char *url, int char_lim
     return true;
 }
 
-/* PoP: web_ensure_web_plugins_loaded @ tools/web_tools.py:_ensure_web_plugins_loaded */
-void web_ensure_web_plugins_loaded(void)
-{
-    hermes_log(LOG_DEBUG, "port", "web_ensure_web_plugins_loaded: plugin discovery triggered");
-}
+
 
 /* PoP: web_search_tool @ tools/web_tools.py:web_search_tool */
 char *web_search_tool(const char *query, int limit)

@@ -126,13 +126,4 @@ int todo_tool__dedupe_by_id(TodoItem *items, int count)
     return write;
 }
 
-/* PoP: todo_tool_check_todo_requirements @ tools/todo_tool.py:check_todo_requirements */
 
-/* Port of Python tools/todo_tool.py:check_todo_requirements */
-/* Check if the todo tool requirements are met. Returns 0 if OK. */
-int todo_tool_check_todo_requirements(void)
-{
-    hermes_log(LOG_DEBUG, "todo_tool", "Checking todo tool requirements");
-    /* In C, the todo tool is always available */
-    return 0;
-}

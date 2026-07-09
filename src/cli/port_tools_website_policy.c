@@ -122,10 +122,7 @@ int cli_tools_website_policy_load_website_blocklist(const char *config_path) {
     return 0;
 }
 
-/* PoP: cli_tools_website_policy_invalidate_cache @ tools/website_policy.py:invalidate_cache */
-void cli_tools_website_policy_invalidate_cache(void) {
-    hermes_log(LOG_DEBUG, "website_policy", "invalidate_cache called");
-}
+
 
 /* PoP: cli_tools_website_policy__match_host_against_rule @ tools/website_policy.py:_match_host_against_rule */
 int cli_tools_website_policy__match_host_against_rule(const char *host, const char *pattern) {

@@ -160,19 +160,4 @@ int cli_tools_osv_check__parse_pypi_package(
     return 0;
 }
 
-/* PoP: cli_tools_osv_check__query_osv @ tools/osv_check.py:_query_osv */
 
-/* Port of Python tools/osv_check.py:_query_osv */
-/* Queries the OSV API for MAL-* advisories. Returns count of malware vulns. */
-int cli_tools_osv_check__query_osv(
-    const char *package, const char *ecosystem, const char *version)
-{
-    (void)package;
-    (void)ecosystem;
-    (void)version;
-    /* CLI port: HTTP API query not available. Return 0 (no malware found). */
-    hermes_log(LOG_DEBUG, "osv",
-               "OSV: API query for %s/%s not available in CLI port",
-               ecosystem, package);
-    return 0;
-}

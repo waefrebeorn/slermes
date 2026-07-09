@@ -18,17 +18,7 @@ int cli_hermes_cli_prompt_size__bytes(const char *s)
     return (int)strlen(s);
 }
 
-/* PoP: cli_hermes_cli_prompt_size__build_inspection_agent @ hermes_cli/prompt_size.py:_build_inspection_agent */
 
-/* Port of Python hermes_cli/prompt_size.py:_build_inspection_agent */
-/* Constructs an offline AIAgent for prompt inspection. */
-/* CLI port: returns NULL since agent construction requires full runtime. */
-void *cli_hermes_cli_prompt_size__build_inspection_agent(const char *platform)
-{
-    (void)platform;
-    /* CLI port: AIAgent construction requires full hermes runtime. */
-    return NULL;
-}
 
 /* PoP: cli_hermes_cli_prompt_size_compute_prompt_breakdown @ hermes_cli/prompt_size.py:compute_prompt_breakdown */
 

@@ -97,11 +97,4 @@ const char *cron_resolve_scheduler(const char *config_json) {
 }
 
 
-/* PoP: cron_is_available @ cron/scheduler_provider.py:is_available */
-bool cron_is_available(void)
-{
-    /* Whether this scheduler provider can run in the current environment.
-     * The builtin is always available.
-     * Port of Python cron/scheduler_provider.py:SchedulerProvider.is_available(). */
-    return true;
-}
+

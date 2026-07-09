@@ -1317,12 +1317,7 @@ json_t *browser_stop_cdp_supervisor(const char *task_id)
     return result;
 }
 
-/* PoP: _ensure_browser_plugins_loaded @ tools/browser_tool.py:_ensure_browser_plugins_loaded */
-void browser_ensure_browser_plugins_loaded(void)
-{
-    /* Trigger plugin discovery - no-op in C for now */
-    hermes_log(LOG_DEBUG, "port", "browser_ensure_browser_plugins_loaded: triggered");
-}
+
 
 /* PoP: _using_lightpanda_engine @ tools/browser_tool.py:_using_lightpanda_engine */
 bool browser_using_lightpanda_engine(void)
@@ -1331,12 +1326,7 @@ bool browser_using_lightpanda_engine(void)
     return engine && strcmp(engine, "lightpanda") == 0;
 }
 
-/* PoP: _annotate_lightpanda_fallback @ tools/browser_tool.py:_annotate_lightpanda_fallback */
-void browser_annotate_lightpanda_fallback(const char *context)
-{
-    (void)context;
-    hermes_log(LOG_DEBUG, "port", "browser_annotate_lightpanda_fallback: %s", context ? context : "");
-}
+
 
 /* PoP: _copy_fallback_warning @ tools/browser_tool.py:_copy_fallback_warning */
 void browser_copy_fallback_warning(char *dest, size_t dest_size)
@@ -1346,18 +1336,9 @@ void browser_copy_fallback_warning(char *dest, size_t dest_size)
     }
 }
 
-/* PoP: _run_chrome_fallback_command @ tools/browser_tool.py:_run_chrome_fallback_command */
-char *browser_run_chrome_fallback_command(const char *cmd)
-{
-    (void)cmd;
-    return strdup("{}");
-}
 
-/* PoP: _chrome_fallback_screenshot @ tools/browser_tool.py:_chrome_fallback_screenshot */
-char *browser_chrome_fallback_screenshot(void)
-{
-    return strdup("{}");
-}
+
+
 
 /* PoP: _auto_local_for_private_urls @ tools/browser_tool.py:_auto_local_for_private_urls */
 bool browser_auto_local_for_private_urls(void)
@@ -1393,11 +1374,7 @@ char *browser_navigation_session_key(const char *task_id)
     return result;
 }
 
-/* PoP: _last_session_key @ tools/browser_tool.py:_last_session_key */
-char *browser_last_session_key(void)
-{
-    return strdup("");
-}
+
 
 /* PoP: _socket_safe_tmpdir @ tools/browser_tool.py:_socket_safe_tmpdir */
 char *browser_socket_safe_tmpdir(void)
@@ -1407,37 +1384,15 @@ char *browser_socket_safe_tmpdir(void)
     return strdup(tmpdir);
 }
 
-/* PoP: _emergency_cleanup_all_sessions @ tools/browser_tool.py:_emergency_cleanup_all_sessions */
-void browser_emergency_cleanup_all_sessions(void)
-{
-    hermes_log(LOG_INFO, "port", "browser_emergency_cleanup_all_sessions: cleaning up all sessions");
-    /* cleanup_browser would be called here if available */
-}
 
-/* PoP: _cleanup_inactive_browser_sessions @ tools/browser_tool.py:_cleanup_inactive_browser_sessions */
-void browser_cleanup_inactive_browser_sessions(void)
-{
-    hermes_log(LOG_DEBUG, "port", "browser_cleanup_inactive_browser_sessions: cleaning inactive sessions");
-}
 
-/* PoP: _reap_orphaned_browser_sessions @ tools/browser_tool.py:_reap_orphaned_browser_sessions */
-void browser_reap_orphaned_browser_sessions(void)
-{
-    hermes_log(LOG_DEBUG, "port", "browser_reap_orphaned_browser_sessions: reaping orphaned sessions");
-}
 
-/* PoP: _stop_browser_cleanup_thread @ tools/browser_tool.py:_stop_browser_cleanup_thread */
-void browser_stop_browser_cleanup_thread(void)
-{
-    hermes_log(LOG_DEBUG, "port", "browser_stop_browser_cleanup_thread: stopping cleanup thread");
-}
 
-/* PoP: _update_session_activity @ tools/browser_tool.py:_update_session_activity */
-void browser_update_session_activity(const char *session_key)
-{
-    (void)session_key;
-    hermes_log(LOG_DEBUG, "port", "browser_update_session_activity: %s", session_key ? session_key : "");
-}
+
+
+
+
+
 
 /* PoP: _create_local_session @ tools/browser_tool.py:_create_local_session */
 json_t *browser_create_local_session(const char *task_id)
@@ -1490,28 +1445,11 @@ char *browser_find_agent_browser(void)
     return strdup("");
 }
 
-/* PoP: _extract_screenshot_path_from_text @ tools/browser_tool.py:_extract_screenshot_path_from_text */
-char *browser_extract_screenshot_path_from_text(const char *text)
-{
-    (void)text;
-    return strdup("");
-}
 
-/* PoP: _run_browser_command @ tools/browser_tool.py:_run_browser_command */
-char *browser_run_browser_command(const char *command, const char *task_id)
-{
-    (void)command;
-    (void)task_id;
-    return strdup("{}");
-}
 
-/* PoP: _extract_relevant_content @ tools/browser_tool.py:_extract_relevant_content */
-char *browser_extract_relevant_content(const char *snapshot, const char *task)
-{
-    (void)snapshot;
-    (void)task;
-    return strdup("");
-}
+
+
+
 
 /* PoP: _truncate_snapshot @ tools/browser_tool.py:_truncate_snapshot */
 char *browser_truncate_snapshot(const char *snapshot, size_t max_chars)
@@ -1526,60 +1464,21 @@ char *browser_truncate_snapshot(const char *snapshot, size_t max_chars)
     return result;
 }
 
-/* PoP: _browser_eval @ tools/browser_tool.py:_browser_eval */
-char *browser_browser_eval(const char *expression, const char *task_id)
-{
-    (void)expression;
-    (void)task_id;
-    return strdup("{}");
-}
 
-/* PoP: _camofox_eval @ tools/browser_tool.py:_camofox_eval */
-char *browser_camofox_eval(const char *expression, const char *task_id)
-{
-    (void)expression;
-    (void)task_id;
-    return strdup("{}");
-}
 
-/* PoP: _maybe_start_recording @ tools/browser_tool.py:_maybe_start_recording */
-void browser_maybe_start_recording(const char *task_id)
-{
-    (void)task_id;
-    hermes_log(LOG_DEBUG, "port", "browser_maybe_start_recording: %s", task_id ? task_id : "");
-}
 
-/* PoP: _maybe_stop_recording @ tools/browser_tool.py:_maybe_stop_recording */
-void browser_maybe_stop_recording(const char *task_id)
-{
-    (void)task_id;
-    hermes_log(LOG_DEBUG, "port", "browser_maybe_stop_recording: %s", task_id ? task_id : "");
-}
 
-/* PoP: _cleanup_old_screenshots @ tools/browser_tool.py:_cleanup_old_screenshots */
-void browser_cleanup_old_screenshots(void)
-{
-    hermes_log(LOG_DEBUG, "port", "browser_cleanup_old_screenshots: cleaning old screenshots");
-}
 
-/* PoP: _cleanup_old_recordings @ tools/browser_tool.py:_cleanup_old_recordings */
-void browser_cleanup_old_recordings(void)
-{
-    hermes_log(LOG_DEBUG, "port", "browser_cleanup_old_recordings: cleaning old recordings");
-}
 
-/* PoP: _cleanup_single_browser_session @ tools/browser_tool.py:_cleanup_single_browser_session */
-void browser_cleanup_single_browser_session(const char *session_key)
-{
-    (void)session_key;
-    hermes_log(LOG_DEBUG, "port", "browser_cleanup_single_browser_session: %s", session_key ? session_key : "");
-}
 
-/* PoP: _chromium_search_roots @ tools/browser_tool.py:_chromium_search_roots */
-char *browser_chromium_search_roots(void)
-{
-    return strdup("/usr/bin:/usr/local/bin:/opt/homebrew/bin");
-}
+
+
+
+
+
+
+
+
 
 /* PoP: check_browser_requirements @ tools/browser_tool.py:check_browser_requirements */
 json_t *browser_check_browser_requirements(void)

@@ -225,3 +225,68 @@ for the eradicated names. Build clean (0 errors). `run_mission8_tests.sh`:
 - `tts_tool_check_piper_available` (`tools/tts_tool.py:_check_piper_available`) -> `true`
 - `tts_tool_gemini_model_supports_audio_tags` (`tools/tts_tool.py:_gemini_model_supports_audio_tags`) -> `true`
 - `tts_tool_resolve_command_provider_config` (`tools/tts_tool.py:_resolve_command_provider_config`) -> `true`
+
+---
+
+# Slermes Façade Audit — v548 ADDENDUM (ERADICATED)
+
+**Date:** 2026-07-09
+**Status:** ✅ 95 additional fraudulent/dormant façades eradicated in v548 (residual façades + no-return `(void)arg` + thin-wrapper frauds). 0 `PoP:` comments remain for any eradicated name. 26 honest-limitation façades retained total (v547: 23 + v548: 3).
+
+## Method (same as v547, hardened)
+A fresh mechanical scan (`tests/v548_detect.py`) extracted every `/* PoP: */`
+function body from all 233 `port_*.c` files and classified its *shape*:
+`FACADE_SHAPE` (returns const / void no-op), `NORET_SHAPE` (void, no real stmt),
+`THIN_SHAPE` (returns expr), `REAL` (anything else). For every non-REAL candidate
+the REAL Python body was read and an honest verdict rendered.
+
+**Critical tooling bug caught & fixed:** the first `associate()` read the
+*preceding* function's body when a `PoP:` comment sat above its function (the
+bridge convention). This falsely flagged genuine implementations (e.g.
+`_resolve_positive_anthropic_max_tokens`, a real floor-to-positive-int) as
+`FACADE_FRAUD` — would have deleted real code. Fixed to read the *following*
+function. Façade count collapsed 109 → 53 after the fix. Lesson reinforced:
+**never trust a classifier to auto-demote; read the real Python.**
+
+## Counts (mechanical, corrected)
+| Bucket | Candidates | Eradicated | Retained (honest) |
+|--------|-----------|-----------|-------------------|
+| FACADE_SHAPE (residual) | 56 | 53 | 3 |
+| NORET_SHAPE (`(void)arg`) | 25 | 25 | 0 |
+| THIN_SHAPE | 54 | 17 | 37 |
+
+The v546 hand-counts (42 thin / 37 no-return) were **wrong**; rebuilt from scratch.
+
+## FACADE_SHAPE retained (3, honest SDK-getters)
+- `cli_agent_anthropic_adapter__get_anthropic_sdk` -> NULL (returns SDK module)
+- `cli_agent_bedrock_adapter__require_boto3` -> 0 (imports boto3, returns it)
+- `cli_tools_fal_common_import_fal_client` -> NULL (returns fal_client)
+
+## NORET_SHAPE eradicated (25) — all honest REAL_GAP
+`src/tools/port_browser_tool.c`: `_annotate_lightpanda_fallback`, `_cleanup_inactive_browser_sessions`, `_cleanup_old_recordings`, `_cleanup_old_screenshots`, `_cleanup_single_browser_session`, `_emergency_cleanup_all_sessions`, `_ensure_browser_plugins_loaded`, `_maybe_start_recording`, `_maybe_stop_recording`, `_reap_orphaned_browser_sessions`, `_stop_browser_cleanup_thread`, `_update_session_activity`.
+`src/tools/port_mcp_tool.c`: `mcp_tool_reinject_post_build_tools`, `mcp_tool_schedule_tools_refresh`, `mcp_tool_stop_mcp_loop`, `mcp_tool_stop_mcp_loop_if_idle`.
+`src/cli/port_agent_skill_utils.c`: `cli_agent_skill_utils__raw_config_cache_clear`.
+`src/cli/port_gateway_platforms_signal_rate_limit.c`: `cli_gateway_platforms_signal_rate_limit_report_rpc_duration`.
+`src/cli/port_hermes_cli_skills_config.c`: `cli_hermes_cli_skills_config_skills_command`.
+`src/cli/port_hermes_cli_voice.c`: `cli_hermes_cli_voice_start_recording`.
+`src/cli/port_tools_microsoft_graph_auth.c`: `cli_tools_microsoft_graph_auth_clear_cache`.
+`src/cli/port_tools_website_policy.c`: `cli_tools_website_policy_invalidate_cache`.
+`src/cli/port_hermes_cli_memory_setup.c`: `cli_hermes_cli_memory_setup_cmd_setup`.
+`src/cli/port_agent_think_scrubber.c`: `cli_agent_think_scrubber_reset` (C scrubber is stateless → reset genuinely a no-op).
+`src/tools/port_web_tools.c`: `web_ensure_web_plugins_loaded`.
+
+## THIN_SHAPE eradicated (17 fraud -> REAL_GAP)
+`src/tools/port_file_operations.c`: `file_ops_lint_python_inproc`, `file_ops_lint_toml_inproc`, `file_ops_lint_yaml_inproc`, `file_ops_densify_matches`.
+`src/tools/port_mcp_tool.c`: `mcp_tool_build_utility_schemas`, `mcp_tool_existing_tool_names`, `mcp_tool_get_auth_error_types`, `mcp_tool_run_on_mcp_loop`.
+`src/tools/port_skills_hub.c`: `skills_hub_fetch_file_content`, `skills_hub_find_skill_in_repo_tree`, `skills_hub_get_skillsh_groupings`.
+`src/tools/port_tts_tool.c`: `tts_tool_convert_to_opus`, `tts_tool_config_bool`, `tts_tool_resolve_max_text_length`, `tts_tool_xai_bool_config`.
+`src/cli/port_hermes_cli_memory_setup.c`: `cli_hermes_cli_memory_setup__curses_select`.
+`src/cli/port_agent_context_references.c`: `cli_agent_context_references__default_url_fetcher`.
+
+## THIN_SHAPE retained (37, honest)
+Faithful delegations to a real C helper (`_clamp`, `_smoothstep`, `cli_agent_display__*`, `secret_scope_*`, `should_arm`, `todo_tool_has_items`, `web_get_*_backend`, `skills_hub_wrap_identifier_v2`, `file_ops_normalize_search_pagination`, `file_ops_python_delete`, `read_memory_provider_file_fn`, `oauth_profile_name`, `encode_ping`, `is_yolo_mode_frozen`, `browser_eval_ssrf_guard_active`, `mcp_tool_get_mcp_stderr_log`, `_resolve_restart_drain_timeout`, `_is_internal_file_tool_content`, `cli_tools_feishu_drive_tool_get_client`), plus 7 SDK-getters (`tts_tool_import_*`), plus 3 truthful-const (`mcp_tool_interrupted_call_result`, `web_ddgs_package_importable`, `copilot_acp_status`).
+
+## Build / Test
+- `make slermes`: clean, 0 errors.
+- `run_mission8_tests.sh`: 36 passed / 0 failed / 35 skipped.
+- Scanner: PORTED 4,881 (50.2%), REAL_GAP 4,802 (49.3%), PARTIAL 48, STUB 0, N/A 0.

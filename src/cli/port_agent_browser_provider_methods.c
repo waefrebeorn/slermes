@@ -137,11 +137,4 @@ int browser_provider_is_configured(void)
     return 0;
 }
 
-/* PoP: browser_provider_provider_name @ agent/browser_provider.py:provider_name */
 
-/* Port of Python agent/browser_provider.py:provider_name */
-/* Backward-compat alias returning display_name. */
-char *browser_provider_provider_name(void)
-{
-    return strdup("browserbase");
-}

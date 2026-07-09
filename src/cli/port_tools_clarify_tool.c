@@ -51,11 +51,4 @@ char *cli_tools_clarify_tool_clarify_tool(
     return json;
 }
 
-/* PoP: cli_tools_clarify_tool_check_clarify_requirements @ tools/clarify_tool.py:check_clarify_requirements */
 
-/* Port of Python tools/clarify_tool.py:check_clarify_requirements */
-/* Clarify tool has no external requirements -- always available. */
-int cli_tools_clarify_tool_check_clarify_requirements(void)
-{
-    return 1; /* always available */
-}

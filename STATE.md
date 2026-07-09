@@ -365,3 +365,73 @@ The genuine v543–v546 oracle-verified leaf closures stay untouched.
 
 ## Next-Session Prompt
 /home/wubu/NEXT_SESSION_PROMPT.md (v547→v548, written).
+
+---
+
+# Slermes Parity — Vault Checkpoint (v548)
+
+**Date:** 2026-07-09
+**Branch:** main (pushed to origin/main)
+**Session:** v548 residual-façade + no-return + thin-wrapper eradication
+
+## Live Scanner (end v548)
+| Metric | Value | Δ vs v547 |
+|--------|-------|-----------|
+| PORTED | 4,881 (50.2%) | −50 |
+| REAL_GAP | 4,802 (49.3%) | +48 |
+| PARTIAL | 48 (0.5%) | +2 |
+| TOTAL | 9,731 | — |
+| STUB | 0 | 0 |
+| N/A | 0 | 0 |
+
+## What got done (v548)
+Eradicated **95 fraudulent / dormant façades** across three buckets, all via the
+v547 edict-#2 method (read REAL Python → honest verdict → delete fake `PoP:` +
+no-op/const body → honest REAL_GAP). Verified programmatically: **0 `PoP:`
+comments remain** for any eradicated name.
+
+| Bucket | Candidates (mechanical) | Eradicated | Retained (honest) |
+|--------|------------------------|------------|-------------------|
+| Residual façades (`return <const>`/`void` no-op) | 56 | 53 | 3 (SDK-getters: `_get_anthropic_sdk`, `_require_boto3`, `import_fal_client`) |
+| No-return bodies (`(void)arg` no-ops) | 25 | 25 | 0 (C scrubber is stateless → reset is genuinely a no-op) |
+| Thin wrappers (fraudulent canned return) | 54 | 17 | 37 (faithful delegations / SDK-getters / truthful consts) |
+
+**Tooling built (and kept):** `tests/v548_detect.py` (C-aware body extractor +
+classifier), `tests/v548_adjudicate_all.py`, `tests/v548_delete_facades.py`,
+`tests/v548_delete_noret.py`, `tests/v548_delete_thin.py`. The detector caught a
+critical mis-attribution bug mid-session (bridge pattern: PoP sits ABOVE its fn;
+my first `associate()` read the PRECEDING fn's body, falsely flagging real
+implementations as fraud). After the fix the façade count collapsed 109→53. All
+deletions were reference-checked: only UNREFERENCED functions were deleted;
+referenced callers were rewired (memory_setup dispatcher, web_tools decl) so the
+build stayed green.
+
+**Honest reality:** the v546 audit's "42 thin + 37 no-return" counts were wrong
+(mechanical pass found 54 thin + 25 no-return). v548 rebuilt the inventory from
+scratch rather than trusting the stale counts.
+
+## Build / Test
+- `make slermes`: **clean, 0 errors**.
+- `bash tests/run_mission8_tests.sh`: **36 passed / 0 failed / 35 skipped**.
+- 0 STUB, 0 N/A — every remaining gap is a genuine REAL_GAP.
+
+## Honest-limitation façades (26 total retained: v547's 23 + v548's 3)
+SDK-getter → NULL / `__enter__`/`__exit__` → 0 / stateless reset. Not touched.
+
+## Files touched (23 .c files)
+`src/cli/port_agent_browser_provider_methods.c`, `src/cli/port_agent_display.c`,
+`src/cli/port_gateway_authz_mixin.c`, `src/cli/port_gateway_platform_registry.c`,
+`src/cli/port_hermes_cli_memory_setup.c`, `src/cli/port_hermes_cli_prompt_size.c`,
+`src/cli/port_hermes_cli_skills_config.c`, `src/cli/port_tools_clarify_tool.c`,
+`src/cli/port_tools_env_passthrough.c`, `src/cli/port_tools_osv_check.c`,
+`src/cli/port_tools_todo_tool.c`, `src/cli/port_agent_skill_utils.c`,
+`src/cli/port_gateway_platforms_signal_rate_limit.c`,
+`src/cli/port_hermes_cli_voice.c`, `src/cli/port_tools_microsoft_graph_auth.c`,
+`src/cli/port_tools_website_policy.c`, `src/cli/port_agent_think_scrubber.c`,
+`src/cron/port_cron_scheduler_provider.c`, `src/tools/port_browser_tool.c`,
+`src/tools/port_file_operations.c`, `src/tools/port_mcp_tool.c`,
+`src/tools/port_skills_hub.c`, `src/tools/port_tts_tool.c`,
+`src/tools/port_web_tools.c`.
+
+## Next-Session Prompt
+/home/wubu/NEXT_SESSION_PROMPT.md (v548→v549, written).
