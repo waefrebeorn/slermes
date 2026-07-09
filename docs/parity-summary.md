@@ -11,6 +11,18 @@
 | **PARTIAL** | 45 | 0.5% | C fn exists, no PoP annotation yet |
 | **TOTAL** | 9,731 | 100% | All Python functions/methods scanned |
 
+> **⚠ FACADE WARNING (v546 checkpoint):** the 4,994 PORTED count is INFLATED.
+> An automated audit of all 233 `port_*.c` found **133 PoP-annotated functions
+> whose entire body is `hermes_log(...) + (void)arg + return <hardcoded const>`**
+> — they pass the scanner AND the semantic depth-check but do NONE of the
+> Python's real work. **110 are fraudulent** (caller lied to / real work
+> skipped), concentrated in `tools/skills_hub.py` (38), `tools/tts_tool.py`
+> (19), `tools/browser_tool.py` (13), `tools/mcp_tool.py` (10),
+> `tools/file_operations.py` (10). 23 are honest-limitation (SDK getter → NULL,
+> `__enter__`/`__exit__` → 0). Itemized in `docs/facade_audit.md`. These were
+> bulk-credited in v541/v542 and are NOT honest ports. The genuine leaf closures
+> (v543–v546, incl. v546's 11 oracle-verified ports) are real and must stay.
+
 > **Honesty note (v545):** v545 resumed auto-pilot and ran the real re-scan
 > the v544 prompt demanded. The "exhausted pure supply" assumption was WRONG —
 > 69 single-gap pure-leaf candidates remained. v545 closed 6 genuine gaps with
