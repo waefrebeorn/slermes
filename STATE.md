@@ -494,3 +494,64 @@ PENDING monolith with a god header) into a new **self-contained** module:
 
 ## Next-Session Prompt
 /home/wubu/NEXT_SESSION_PROMPT.md (v549→v550, written).
+
+---
+
+# Slermes Parity — Vault Checkpoint (v550, residual façade eradication)
+**Date:** 2026-07-09
+**Branch:** main (pushed to origin/main)
+**Session:** v550 — continue NEW EDICT: no fake-success stubs; read Python,
+implement real C or honestly demote.
+
+## What got done (v550)
+Fixed 3 genuine façades (functions that returned plausible-looking success
+without doing the work):
+- `src/tools/port_browser_supervisor.c`:
+  - `respond_to_dialog` — was a fake (logged, returned `ok:true` with NO CDP
+    command sent). Now sends the REAL `Page.handleJavaScriptDialog` via the
+    tree's existing CDP client (`browser_cdp_tool__cdp_call`) with
+    accept/promptText params; `ok:true` on success, `ok:false` + real error on
+    failure. No CDP endpoint -> honest `ok:false` (matches Python's
+    "supervisor loop is not running" branch).
+  - `evaluate_runtime` — was a fake returning `"[Runtime evaluation result]"`.
+    Now sends the REAL `Runtime.evaluate` (expression/returnByValue/
+    awaitPromise/userGesture) and faithfully unwraps the CDP response:
+    `exceptionDetails` -> `ok:false` error; else `ok:true` + real result JSON +
+    `result_type`. No endpoint -> honest `ok:false`.
+- `src/tools/port_web_tools.c`: `web_extract_tool` — was a FRAUD (`success:true`
+  + fake `"[Content extracted via <url> using <backend>]"` content even when a
+  backend was configured). Now returns honest per-URL `success:false` error
+  ("no extract client for backend") and sets overall `success:false`. Python
+  calls a remote provider API (firecrawl/tavily/exa); C-unimplementable at call
+  time without a real extract client — faking success was the violation.
+- `include/port_tools_browser_cdp_tool.h` (NEW) — focused module header
+  declaring `browser_cdp_tool__resolve_cdp_endpoint()` and
+  `browser_cdp_tool__cdp_call()`, replacing implicit-declaration debt and
+  letting the supervisor call the CDP client cleanly (no god header).
+
+## Residual-façade sweep
+Grepped all 233 `port_*.c` for banned phrases ("placeholder"/"not implemented"/
+"in a real implementation"/"stub"). 80 hits; MOST benign (config/template
+"placeholder" terminology, secret-value placeholder *detection*, comments about
+unrelated Python core stubs). Genuine placeholder/stub returns needing
+per-function Python adjudication (~12) catalogued in NEXT_SESSION_PROMPT (v551):
+read_terminal_tool, main_na, agent_plugin_llm, agent_copilot_acp_client,
+managed_modal/modal_utils (exec/sandbox placeholders), video_generation,
+yuanbao, cronjob_tools (stub dispatch), kanban_tools, image_generation,
+process_registry (Windows gap). NOT auto-fixed — each needs a Python read to
+decide implement-for-real vs honest demotion.
+
+## Verification
+- `make slermes`: clean, 0 errors, no implicit-declaration warnings.
+- `bash tests/run_mission8_tests.sh`: 36 passed / 0 failed / 35 skipped.
+- Scanner: PORTED 4,881 / REAL_GAP 4,802 / PARTIAL 48 / STUB 0 / N/A 0
+  unchanged (the fixed fns are infra/SDK-class, not in PORTED/REAL_GAP).
+
+## Files touched
+`src/tools/port_browser_supervisor.c`, `src/tools/port_web_tools.c`,
+`include/port_tools_browser_cdp_tool.h` (NEW),
+`src/cli/port_tools_browser_cdp_tool.c` (header include),
+`NEXT_SESSION_PROMPT.md`, `BANNER.md`.
+
+## Next-Session Prompt
+/home/wubu/NEXT_SESSION_PROMPT.md (v550→v551, written).
