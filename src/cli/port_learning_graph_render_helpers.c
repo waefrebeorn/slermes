@@ -286,3 +286,109 @@ char *learning_graph_render_format_date(double ts)
     strcpy(out, buf);
     return out;
 }
+
+/* ---------------------------------------------------------------------- */
+/* PoP: _to_ts @ agent/learning_graph_render.py:_to_ts */
+/* Returns 1 on success (writes *out_ts) or 0 if not a finite number. */
+int learning_graph_render_to_ts(const void *value, double *out_ts)
+{
+    if (value == NULL) return 0;
+    /* accept a double passed by the caller (nodes store numeric timestamps) */
+    double d = *(const double *)value;
+    if (!isfinite(d)) return 0;
+    *out_ts = d;
+    return 1;
+}
+
+/* ---------------------------------------------------------------------- */
+/* PoP: _period_key @ agent/learning_graph_render.py:_period_key */
+/* Returns malloc'd "y", "y,m", or "y,m,d" string for the given ts+granularity. */
+char *learning_graph_render_period_key(double ts, const char *granularity)
+{
+    time_t t = (time_t)ts;
+    struct tm tm;
+    if (gmtime_r(&t, &tm) == NULL) return strdup("0");
+    char *out = malloc(32);
+    if (granularity && strcmp(granularity, "day") == 0)
+        snprintf(out, 32, "%d,%d,%d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday);
+    else if (granularity && strcmp(granularity, "month") == 0)
+        snprintf(out, 32, "%d,%d", tm.tm_year + 1900, tm.tm_mon + 1);
+    else
+        snprintf(out, 32, "%d", tm.tm_year + 1900);
+    return out;
+}
+
+/* ---------------------------------------------------------------------- */
+/* PoP: _period_label @ agent/learning_graph_render.py:_period_label */
+/* Returns malloc'd label string (e.g. "14 Nov", "Nov 2023", "2023"). */
+char *learning_graph_render_period_label(double ts, const char *granularity)
+{
+    time_t t = (time_t)ts;
+    struct tm tm;
+    if (gmtime_r(&t, &tm) == NULL) return strdup("unknown");
+    char buf[32];
+    size_t n;
+    if (granularity && strcmp(granularity, "day") == 0)
+        n = strftime(buf, sizeof(buf), "%d %b", &tm);
+    else if (granularity && strcmp(granularity, "month") == 0)
+        n = strftime(buf, sizeof(buf), "%b %Y", &tm);
+    else
+        n = strftime(buf, sizeof(buf), "%Y", &tm);
+    if (n == 0) return strdup("unknown");
+    if (buf[0] == '0' && buf[1] != ' ') memmove(buf, buf + 1, strlen(buf) + 1);
+    char *out = malloc(strlen(buf) + 1);
+    strcpy(out, buf);
+    return out;
+}
+
+/* ---------------------------------------------------------------------- */
+/* PoP: _node_score @ agent/learning_graph_render.py:_node_score */
+/* node is a json_t* with optional keys: kind, useCount, pinned, id. */
+double learning_graph_render_node_score(const json_t *node, double rec)
+{
+    if (json_get_str(node, "kind", NULL) &&
+        strcmp(json_get_str(node, "kind", ""), "memory") == 0)
+        return 3.5 + rec;
+    double use = json_get_num(node, "useCount", 0.0);
+    if (use == 0.0) use = 0.0;  /* (x or 0) */
+    double pinned = json_get_bool(node, "pinned", 0) ? 2.0 : 0.0;
+    return rec * 2.0 + sqrt(fmax(0.0, use)) + pinned;
+}
+
+/* ---------------------------------------------------------------------- */
+/* PoP: _node_meta @ agent/learning_graph_render.py:_node_meta */
+/* node is a json_t*; returns malloc'd "·"-joined metadata string. */
+char *learning_graph_render_node_meta(const json_t *node)
+{
+    const char *kind = json_get_str(node, "kind", NULL);
+    if (kind && strcmp(kind, "memory") == 0) {
+        const char *src = json_get_str(node, "memorySource", NULL);
+        const char *source = (src && strcmp(src, "profile") == 0) ? "profile memory" : "memory";
+        double ts = json_get_num(node, "timestamp", 0.0);
+        char *date = learning_graph_render_format_date(ts);
+        size_t len = strlen(source) + strlen(date) + 8;
+        char *out = malloc(len);
+        snprintf(out, len, "%s · %s", source, date);
+        free(date);
+        return out;
+    }
+    const char *cat = json_get_str(node, "category", NULL);
+    if (!cat) cat = "skill";
+    double ts = json_get_num(node, "timestamp", 0.0);
+    char *date = learning_graph_render_format_date(ts);
+    int count = (int)json_get_num(node, "useCount", 0.0);
+    int pinned = json_get_bool(node, "pinned", 0);
+    /* worst case size */
+    size_t len = strlen(cat) + strlen(date) + 64;
+    char *out = malloc(len);
+    if (count && pinned)
+        snprintf(out, len, "%s · %s · x%d · pinned", cat, date, count);
+    else if (count)
+        snprintf(out, len, "%s · %s · x%d", cat, date, count);
+    else if (pinned)
+        snprintf(out, len, "%s · %s · pinned", cat, date);
+    else
+        snprintf(out, len, "%s · %s", cat, date);
+    free(date);
+    return out;
+}
