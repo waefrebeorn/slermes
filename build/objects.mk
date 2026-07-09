@@ -19,6 +19,7 @@ PORT_OBJ = \
     src/cli/port_agent_credits_tracker.o \
     src/cli/port_agent_display.o \
     src/cli/port_agent_error_classifier.o \
+    src/cli/port_agent_oneshot.o \
     src/cli/port_agent_google_oauth.o \
     src/cli/port_agent_image_gen_provider.o \
     src/cli/port_agent_insights.o \

@@ -198,3 +198,129 @@ char *cli_agent_error_classifier__extract_message(const char *error_json)
 
     return strdup("Unknown error");
 }
+
+/* PoP: cli_agent_error_classifier__is_openrouter_upstream_error @ agent/error_classifier.py:_is_openrouter_upstream_error */
+
+/* Port of Python agent/error_classifier.py:_is_openrouter_upstream_error */
+/* Detect OpenRouter's aggregator-wrapped upstream provider errors.
+ * body is a JSON object string; provider is the configured provider slug. */
+int cli_agent_error_classifier__is_openrouter_upstream_error(
+    const char *body_json, const char *provider)
+{
+    if (!body_json) return 0;
+
+    /* Cheap prefix check: body must contain an "error" object. */
+    const char *err = strstr(body_json, "\"error\"");
+    if (!err) return 0;
+    /* The "error" we want must be an object (followed by '{'). A bare
+     * "error_code"/"error_message" key would be a false positive, but the
+     * Python check requires err to be a dict, so we require a '{'. */
+    const char *p = err + 7; /* skip '"error"' */
+    while (*p == ' ' || *p == '\t' || *p == ':') p++;
+    if (*p != '{') return 0;
+
+    /* Walk to the error object's "message" field. */
+    const char *msg = strstr(p, "\"message\"");
+    if (!msg) return 0;
+    msg += 9; /* skip '"message"' */
+    while (*msg == ' ' || *msg == '\t' || *msg == ':') msg++;
+    if (*msg != '"') return 0;
+    msg++; /* skip opening quote */
+
+    /* Extract the outer message, lower-cased for comparison. */
+    char buf[512];
+    size_t i = 0;
+    while (*msg && *msg != '"' && i + 1 < sizeof(buf)) {
+        buf[i++] = (char)tolower((unsigned char)*msg);
+        msg++;
+    }
+    buf[i] = '\0';
+    if (strcmp(buf, "provider returned error") != 0) {
+        return 0;
+    }
+
+    /* Require either the explicit OpenRouter provider OR the metadata shape. */
+    const char *provider_lower = provider ? provider : "";
+    /* lower-case the provider slug */
+    char pl[128];
+    size_t j = 0;
+    for (; provider_lower[j] && j + 1 < sizeof(pl); j++) {
+        pl[j] = (char)tolower((unsigned char)provider_lower[j]);
+    }
+    pl[j] = '\0';
+    if (strcmp(pl, "openrouter") == 0) {
+        return 1;
+    }
+
+    /* Look for metadata with "raw" or "provider_name". */
+    const char *metadata = strstr(p, "\"metadata\"");
+    if (metadata) {
+        metadata += 10; /* skip '"metadata"' */
+        while (*metadata == ' ' || *metadata == '\t' || *metadata == ':') metadata++;
+        if (*metadata == '{') {
+            const char *end = metadata;
+            int depth = 0;
+            for (; *end; end++) {
+                if (*end == '{') depth++;
+                else if (*end == '}') {
+                    depth--;
+                    if (depth == 0) { end++; break; }
+                }
+            }
+            size_t meta_len = (size_t)(end - metadata);
+            /* Check for "raw" or "provider_name" inside the metadata object. */
+            if (meta_len > 0) {
+                char *meta = (char *)malloc(meta_len + 1);
+                if (meta) {
+                    memcpy(meta, metadata, meta_len);
+                    meta[meta_len] = '\0';
+                    int found = (strstr(meta, "\"raw\"") != NULL)
+                                || (strstr(meta, "\"provider_name\"") != NULL);
+                    free(meta);
+                    if (found) return 1;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+/* PoP: cli_agent_error_classifier__extract_upstream_provider_name @ agent/error_classifier.py:_extract_upstream_provider_name */
+
+/* Port of Python agent/error_classifier.py:_extract_upstream_provider_name */
+/* Pull the upstream provider name out of OpenRouter's error metadata.
+ * Returns a malloc'd string (caller frees) or NULL. */
+char *cli_agent_error_classifier__extract_upstream_provider_name(
+    const char *body_json)
+{
+    if (!body_json) return NULL;
+    const char *err = strstr(body_json, "\"error\"");
+    if (!err) return NULL;
+    err += 7;
+    while (*err == ' ' || *err == '\t' || *err == ':') err++;
+    if (*err != '{') return NULL;
+
+    /* Find metadata object. */
+    const char *metadata = strstr(err, "\"metadata\"");
+    if (!metadata) return NULL;
+    metadata += 10;
+    while (*metadata == ' ' || *metadata == '\t' || *metadata == ':') metadata++;
+    if (*metadata != '{') return NULL;
+
+    /* Find provider_name inside metadata. */
+    const char *pn = strstr(metadata, "\"provider_name\"");
+    if (!pn) return NULL;
+    pn += 15;
+    while (*pn == ' ' || *pn == '\t' || *pn == ':') pn++;
+    if (*pn != '"') return NULL;
+    pn++; /* skip opening quote */
+    char buf[256];
+    size_t i = 0;
+    while (*pn && *pn != '"' && i + 1 < sizeof(buf)) {
+        buf[i++] = *pn;
+        pn++;
+    }
+    buf[i] = '\0';
+    if (buf[0] == '\0') return NULL;
+    return strdup(buf);
+}

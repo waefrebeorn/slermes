@@ -189,3 +189,84 @@ LIVE Python via oracle harnesses).
 
 ## Next-Session Prompt
 /home/wubu/NEXT_SESSION_PROMPT.md (v545→v546, written).
+
+---
+
+# Slermes Parity — Vault Checkpoint (v546)
+
+**Date:** 2026-07-08
+**Branch:** main (to be pushed to origin/main)
+**Session:** v546 auto-pilot (resumed from v545)
+
+## Live Scanner (end v546)
+| Metric | Value | Δ vs v545 |
+|--------|-------|-----------|
+| PORTED | 4,994 (51.3%) | +11 |
+| REAL_GAP | 4,692 (48.2%) | −11 |
+| PARTIAL | 45 (0.5%) | 0 |
+| TOTAL | 9,731 | — |
+
+> **Why REAL_GAP went DOWN 11 (genuine):** v546 re-ran the REAL re-scan and
+> continued pure-leaf closure, extending EXISTING port files (no parallel
+> dupes) plus one legit new file for a module with no prior port. All 11 ports
+> are oracle-verified byte-equivalent to LIVE Python (75 cases, 0 mismatches):
+> - `agent/error_classifier.py`: `_is_openrouter_upstream_error`,
+>   `_extract_upstream_provider_name` (JSON-dict traversal + string logic) — 13/13.
+> - `tools/tool_result_storage.py`: `_safe_result_filename` (re + SHA256 +
+>   stem normalization; digest is `hexdigest()[:12]` = 12 hex chars) — 8/8.
+> - `agent/model_metadata.py`: `is_output_cap_error` (substring classifier) — 12/12.
+> - `agent/display.py`: `_split_shell_words`, `_strip_shell_pipe_tail`,
+>   `_split_shell_compound`, `_clean_shell_segment`, `_is_shell_boundary_echo`
+>   (shell quoting/redirection summarization cluster) — 19/19.
+> - `tools/xai_http.py`: `_coerce_expires_after` (TTL normalizer) — 14/14.
+> - `agent/oneshot.py`: `_strip_code_fence` (new file `port_agent_oneshot.c`;
+>   pure str fence stripper, splitlines semantics) — 9/9.
+
+## v546 Genuine Commits (local, to push)
+| File | Functions | Effect |
+|------|-----------|--------|
+| src/cli/port_agent_error_classifier.c | 2 | `_is_openrouter_upstream_error`, `_extract_upstream_provider_name` |
+| src/cli/port_tools_tool_result_storage.c | 1 | `_safe_result_filename` (uses OpenSSL `crypto_sha256`) |
+| src/cli/port_agent_model_metadata.c | 1 | `is_output_cap_error` (+`<ctype.h>`) |
+| src/cli/port_agent_display.c | 5 | shell-summarization cluster |
+| src/cli/port_tools_xai_http.c | 1 | `_coerce_expires_after` |
+| src/cli/port_agent_oneshot.c (+ build/objects.mk) | 1 | `_strip_code_fence` (new file) |
+| tests/t_port_*.c + tests/sta_oracle_*.py (6 pairs) | — | oracles: 75 cases, 0 mismatches |
+
+Net genuine REAL_GAP closed this session: **11** (all verified byte-equivalent
+to LIVE Python via harness + oracle).
+
+## Faithfulness Method (replicated + hardened)
+- Read Python body; confirm PURE STDLIB (no IO/network/object coupling) BEFORE
+  porting. Skip argparse parsers, object-state readers, FS/SHA/network callers.
+- Real C11 + single-line `/* PoP: c_func @ module.py:_py_func */` IMMEDIATELY
+  preceding the function (verified credited by live re-scan each time).
+- Extend the EXISTING `port_X.c`/`port_X_helpers.c` — NEVER create a parallel
+  file for a module that already has one (rule 1). v546 touched 6 existing
+  files and added exactly 1 new file for a module (`agent/oneshot.py`) that had
+  no prior port.
+- Diff every credited port against LIVE Python including exact input TYPE
+  (string vs bool) — caught `normalise_display_value` drift in v545; this
+  session caught a SHA256 digest-length bug (24→12 hex chars) and a
+  `splitlines()` trailing-newline bug before oracle sign-off.
+- `make slermes` 0 errors; standalone harness asserts C output == LIVE Python
+  (import the real `.py`, recompute, exact-compare) for normal + boundary
+  inputs; oracle confirms.
+- `bash tests/run_mission8_tests.sh` → 36 passed, 35 skipped.
+
+## Honest Reality
+- Remaining 4,692 RG are predominantly IO/network/DB/credential-coupled
+  functions — GENUINE REAL_GAPs, must NOT be faked.
+- v546 again proved the "pure supply exhausted" claim FALSE: 7 modules with
+  existing port files still held pure-leaf candidates; sampled the rest
+  (`_is_under_root` uses `Path.resolve()`/tempfile → FS-coupled;
+  `is_dead_error_kind` reads module-global set but is bound to
+  `DeadTargetRegistry` state; `summarize_shell_command` is the orchestrator
+  over the now-ported leaves) and left them as genuine REAL_GAP.
+- Fully closed this session: `agent/error_classifier.py` (2→0 of its 2 RG
+  leaves done), `tools/tool_result_storage.py`, `agent/model_metadata.py`,
+  `agent/display.py` (5 leaves), `tools/xai_http.py`, `agent/oneshot.py`
+  (`_strip_code_fence` only — `run_oneshot`/`_render_template` remain coupled).
+
+## Next-Session Prompt
+/home/wubu/NEXT_SESSION_PROMPT.md (v546→v547, written).

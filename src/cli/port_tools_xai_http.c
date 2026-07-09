@@ -72,3 +72,60 @@ char *cli_tools_xai_http_resolve_xai_http_credentials(int force_refresh)
 
     return result ? result : strdup("{\"provider\":\"xai\",\"api_key\":\"\",\"base_url\":\"https://api.x.ai/v1\"}");
 }
+
+/* PoP: cli_tools_xai_http__coerce_expires_after @ tools/xai_http.py:_coerce_expires_after */
+
+/* Port of Python tools/xai_http.py:_coerce_expires_after.
+ * Normalize an xAI storage TTL: int seconds, or None for permanent.
+ * Returns malloc'd string: the decimal seconds, or "null" for permanent. */
+char *cli_tools_xai_http__coerce_expires_after(const char *value)
+{
+    /* MAX_XAI_STORAGE_EXPIRES_AFTER_SECONDS = 30*24*60*60 = 2592000
+     * SAFE_XAI_STORAGE_EXPIRES_AFTER_SECONDS = 2*24*60*60 = 172800 */
+    const long MAX_EXP = 30L * 24 * 60 * 60;   /* 2592000 */
+    const long SAFE_EXP = 2L * 24 * 60 * 60;    /* 172800 */
+
+    /* None -> None (permanent) */
+    if (!value) {
+        return strdup("null");
+    }
+    /* str(value) normalization; if value already numeric string, use it. */
+    char buf[256];
+    /* Convert the input to a normalized lowercase string for the keyword checks. */
+    size_t j = 0;
+    for (const char *s = value; *s && j + 1 < sizeof(buf); s++) {
+        unsigned char c = (unsigned char)*s;
+        buf[j++] = (char)tolower(c);
+    }
+    buf[j] = '\0';
+    /* strip surrounding whitespace */
+    char *b = buf;
+    while (*b == ' ' || *b == '\t') b++;
+    size_t L = strlen(b);
+    while (L > 0 && (b[L - 1] == ' ' || b[L - 1] == '\t')) b[--L] = '\0';
+
+    if (b[0] == '\0' || strcmp(b, "default") == 0
+        || strcmp(b, "none") == 0 || strcmp(b, "null") == 0
+        || strcmp(b, "never") == 0 || strcmp(b, "permanent") == 0
+        || strcmp(b, "forever") == 0 || strcmp(b, "0") == 0) {
+        return strdup("null");
+    }
+
+    /* Try int parse */
+    char *endp = NULL;
+    long seconds = strtol(b, &endp, 10);
+    if (endp != b && (*endp == '\0' || *endp == ' ' || *endp == '\t')) {
+        if (seconds <= 0) {
+            return strdup("null");
+        }
+        if (seconds > MAX_EXP) seconds = MAX_EXP;
+        char out[32];
+        snprintf(out, sizeof(out), "%ld", seconds);
+        return strdup(out);
+    }
+
+    /* Unparseable -> SAFE default */
+    char out[32];
+    snprintf(out, sizeof(out), "%ld", SAFE_EXP);
+    return strdup(out);
+}

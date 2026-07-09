@@ -180,3 +180,105 @@ int cli_tools_tool_result_storage_enforce_turn_budget(
                "turn budget exceeded: %d > %d chars", total, turn_budget);
     return 0;
 }
+
+/* PoP: cli_tools_tool_result_storage__safe_result_filename @ tools/tool_result_storage.py:_safe_result_filename */
+
+/* Port of Python tools/tool_result_storage.py:_safe_result_filename.
+ * Returns a single safe filename for a tool result id. Caller frees. */
+char *cli_tools_tool_result_storage__safe_result_filename(const char *tool_use_id)
+{
+    /* Mirror of Python:
+     *   raw_id = str(tool_use_id or "tool_result")
+     *   safe_stem = _UNSAFE_RESULT_FILENAME_CHARS.sub("_", raw_id).strip("._-")
+     *   changed = safe_stem != raw_id
+     *   if not safe_stem: safe_stem = "tool_result"; changed = True
+     *   if changed or len(safe_stem) > 120:
+     *       digest = sha256(raw_id)[:12]
+     *       safe_stem = safe_stem[:120].rstrip("._-") or "tool_result"
+     *       safe_stem = f"{safe_stem}_{digest}"
+     *   return f"{safe_stem}.txt"
+     */
+    const char *raw_id = tool_use_id ? tool_use_id : "tool_result";
+
+    /* Build safe_stem: replace any char not in [A-Za-z0-9_.-] with '_',
+     * then strip leading/trailing '.', '_', '-'. */
+    char stem[1024];
+    size_t n = 0;
+    for (const char *s = raw_id; *s && n + 1 < sizeof(stem); s++) {
+        unsigned char c = (unsigned char)*s;
+        int ok = (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')
+               || (c >= '0' && c <= '9') || c == '.' || c == '_' || c == '-';
+        stem[n++] = ok ? (char)c : '_';
+    }
+    stem[n] = '\0';
+
+    /* changed flags any divergence from raw_id: either an unsafe char was
+     * substituted for '_', or leading/trailing '.', '_', '-' were stripped. */
+    int changed = 0;
+    for (size_t k = 0; raw_id[k]; k++) {
+        unsigned char c = (unsigned char)raw_id[k];
+        int ok = (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')
+               || (c >= '0' && c <= '9') || c == '.' || c == '_' || c == '-';
+        if (!ok) { changed = 1; break; }
+    }
+
+    /* strip leading '.', '_', '-' */
+    size_t start = 0;
+    while (stem[start] == '.' || stem[start] == '_' || stem[start] == '-') { start++; changed = 1; }
+    /* strip trailing '.', '_', '-' */
+    size_t end = n;
+    while (end > start && (stem[end - 1] == '.' || stem[end - 1] == '_' || stem[end - 1] == '-')) {
+        end--; changed = 1;
+    }
+    char safe_stem[1024];
+    size_t m = 0;
+    for (size_t k = start; k < end && m + 1 < sizeof(safe_stem); k++) {
+        safe_stem[m++] = stem[k];
+    }
+    safe_stem[m] = '\0';
+
+    if (m == 0) {
+        strcpy(safe_stem, "tool_result");
+        m = strlen(safe_stem);
+        changed = 1;
+    }
+
+    const int MAX_STEM = 120;
+    if (changed || (int)m > MAX_STEM) {
+        /* sha256(raw_id)[:12] — hexdigest()[:12] is 12 hex chars (6 bytes). */
+        unsigned char hash[32];
+        crypto_sha256((const unsigned char *)raw_id, strlen(raw_id), hash);
+        char digest[13];
+        for (int d = 0; d < 6; d++) {
+            sprintf(digest + d * 2, "%02x", hash[d]);
+        }
+        digest[12] = '\0';
+
+        /* truncate safe_stem to 120 and rstrip '.', '_', '-', fallback. */
+        if ((int)m > MAX_STEM) {
+            m = MAX_STEM;
+            safe_stem[m] = '\0';
+        }
+        while (m > 0 && (safe_stem[m - 1] == '.' || safe_stem[m - 1] == '_' || safe_stem[m - 1] == '-')) {
+            m--;
+            safe_stem[m] = '\0';
+        }
+        if (m == 0) {
+            strcpy(safe_stem, "tool_result");
+            m = strlen(safe_stem);
+        }
+        char out[1024];
+        snprintf(out, sizeof(out), "%s_%s", safe_stem, digest);
+        size_t need = strlen(out) + 5; /* + ".txt" + NUL */
+        char *result = (char *)malloc(need);
+        if (!result) return NULL;
+        snprintf(result, need, "%s.txt", out);
+        return result;
+    }
+
+    size_t need = m + 5; /* + ".txt" + NUL */
+    char *result = (char *)malloc(need);
+    if (!result) return NULL;
+    snprintf(result, need, "%s.txt", safe_stem);
+    return result;
+}
