@@ -453,8 +453,11 @@ json_t *cron_prompt_sanitize_strip_invisible(const char *prompt)
                 /* legitimate emoji joiner — keep it */
                 for (int k = 0; k < w; k++) out_buf[oi++] = prompt[i + k];
             } else {
-                /* strip and record */
-                if (removed_n < plen) removed_cps[removed_n++] = cp;
+                /* strip and record (de-duplicated — Python returns a set) */
+                bool seen = false;
+                for (size_t s = 0; s < removed_n; s++)
+                    if (removed_cps[s] == cp) { seen = true; break; }
+                if (!seen && removed_n < plen) removed_cps[removed_n++] = cp;
             }
         } else {
             for (int k = 0; k < w; k++) out_buf[oi++] = prompt[i + k];

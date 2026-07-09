@@ -23,9 +23,10 @@ extern "C" {
  * Faithful to tools/file_operations.py:_strip_terminal_fence_leaks. */
 char *file_text_ops_strip_terminal_fence_leaks(const char *text);
 
-/* Detect dominant line ending in `sample`. Returns malloc'd "crlf", "lf", or
- * "cr" — faithful to tools/file_operations.py:_detect_line_ending (None ->
- * "lf" here since C callers need a concrete default). */
+/* Detect dominant line ending in `sample`. Returns malloc'd "crlf" or "lf".
+ * Faithful to tools/file_operations.py:_detect_line_ending — Python returns
+ * "\r\n" / "\n" / None; None (no newline present) maps to "lf" here since C
+ * callers need a concrete default. Python never yields a bare-CR "cr" token. */
 char *file_text_ops_detect_line_ending(const char *sample);
 
 /* Normalize all line endings in `text` to `target` ("\n" or "\r\n"). Idempotent.
