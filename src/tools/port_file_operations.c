@@ -283,36 +283,6 @@ bool file_ops_looks_like_linter_unusable(const char *output)
             strstr(output, "not installed") != NULL);
 }
 
-/* Port of Python: _lint_json_inproc */
-/* PoP: file_ops_lint_json_inproc @ tools/file_operations.py:_lint_json_inproc */
-char *file_ops_lint_json_inproc(const char *content)
-{
-    if (!content) return strdup("{\"errors\":[]}");
-    char *err = NULL;
-    json_t *j = json_parse(content, &err);
-    free(err);
-    json_t *root = json_object();
-    if (j) {
-        json_set(root, "valid", json_bool(true));
-        json_free(j);
-    } else {
-        json_set(root, "valid", json_bool(false));
-        json_set(root, "error", json_string("Parse error"));
-    }
-    char *s = json_serialize(root);
-    json_free(root);
-    return s;
-}
-
-/* Port of Python: _lint_yaml_inproc */
-
-
-/* Port of Python: _lint_toml_inproc */
-
-
-/* Port of Python: _lint_python_inproc */
-
-
 /* ================================================================
  *  Pagination helpers
  * ================================================================ */
