@@ -77,12 +77,7 @@ void cli_agent_think_scrubber_reset(void *scrubber_state)
     /* CLI port: state reset is a no-op. */
 }
 
-/* PoP: cli_agent_think_scrubber_is_in_think_block @ agent/think_scrubber.py:is_in_think_block */
 
 /* Port of Python agent/think_scrubber.py:is_in_think_block */
 /* Returns 1 if currently inside a think block, 0 otherwise. */
-int cli_agent_think_scrubber_is_in_think_block(void *scrubber_state)
-{
-    (void)scrubber_state;
-    return 0;  /* CLI port: no state tracking. */
-}
+

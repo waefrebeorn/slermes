@@ -77,16 +77,6 @@ json_node_t* cli_tools_environments_modal_utils_execute(const char *sandbox_id, 
     return result;
 }
 
-/* PoP: cli_tools_environments_modal_utils__before_execute @ tools/environments/modal_utils.py:_before_execute */
-int cli_tools_environments_modal_utils__before_execute(void) {
-    /*
-     * Pre-execution hook: sync rate-limited state, prepare environment.
-     * Returns 0 on success.
-     */
-    hermes_log(LOG_DEBUG, "modal_utils", "_before_execute: pre-execution hook");
-    return 0;
-}
-
 /* PoP: cli_tools_environments_modal_utils__prepare_modal_exec @ tools/environments/modal_utils.py:_prepare_modal_exec */
 json_node_t* cli_tools_environments_modal_utils__prepare_modal_exec(const char *command, const char *cwd, int timeout, const char *stdin_data) {
     /*

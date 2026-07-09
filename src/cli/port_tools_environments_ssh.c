@@ -289,19 +289,6 @@ int cli_tools_environments_ssh__ssh_delete(const char *user, const char *host,
     return ssh_run(cmd);
 }
 
-/* PoP: cli_tools_environments_ssh__before_execute @ tools/environments/ssh.py:_before_execute */
-int cli_tools_environments_ssh__before_execute(void) {
-    /*
-     * Sync files to remote via FileSyncManager (rate-limited internally).
-     * Called before each execute() to ensure remote has latest files.
-     */
-    hermes_log(LOG_DEBUG, "ssh_env", "_before_execute: file sync handled by file_sync module");
-    /* Remote file sync lives in the file_sync module; this hook is a
-     * class-level pre-exec callback with no connection state in the C port,
-     * so there is no standalone work to do here. */
-    return 0;
-}
-
 /* PoP: cli_tools_environments_ssh__run_bash @ tools/environments/ssh.py:_run_bash */
 int cli_tools_environments_ssh__run_bash(const char *user, const char *host,
                                           const char *cmd_string, int login_shell,

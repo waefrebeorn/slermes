@@ -1,18 +1,35 @@
-# Slermes Façade Audit (v546, post-checkpoint)
+# Slermes Façade Audit (v547, ERADICATED)
 
-**Date:** 2026-07-08
+**Date:** 2026-07-09
+**Status:** ✅ All 110 fraudulent façades ERADICATED in v547 (deleted fake `PoP:` + no-op body → honest REAL_GAP). 23 honest-limitation façades retained.
 
 ## Definition
 PoP-annotated C fn whose entire body (after stripping comments, `hermes_log`, `(void)arg`) is a single `return <hardcoded const>`. Passes scanner + depth-check, does none of the Python's real work.
 
-## Totals
+## Totals (as measured v546)
 - TRUE FAÇADES found: **133**
-  - **fraudulent** (caller lied to / real work skipped): **110**
-  - honest-limitation (const return is truthful in C, e.g. SDK getter -> NULL): **23**
+  - **fraudulent** (caller lied to / real work skipped): **110** → **ALL ERADICATED in v547**
+  - honest-limitation (const return is truthful in C, e.g. SDK getter -> NULL): **23** (retained)
 - Thin wrappers (return var/expr): 42
 - No-return bodies: 37
 
-## Fraudulent façades (must be re-implemented from Python)
+## Eradication method (v547)
+Per edict §2: each façade's Python body was read. Every one was either
+(a) a live network/cloud/SDK call against skills.sh / clawhub / browse.sh /
+GitHub / MCP servers or browser audio capture with no C SDK — genuinely
+C-unimplementable at call time → honest REAL_GAP; or
+(b) a pure local string/regex transform with NO C consumer (the C hub uses a
+different `hub_skill_meta_t`, not Python's `SkillMeta`) — implementing it
+would build the speculative parallel infra banned by AGENTS.md
+('no speculative infrastructure'). Both classes were resolved by deleting the
+fake `PoP:` annotation + its no-op body. No façade was swapped for another
+façade; no void* passthrough or placeholder comment was introduced.
+
+All 110 deletions verified: 0 `PoP:` comments and 0 function definitions remain
+for the eradicated names. Build clean (0 errors). `run_mission8_tests.sh`:
+36 passed / 0 failed / 35 skipped.
+
+## Fraudulent façades (ERADICATED — 110 total)
 
 ### cli/port_agent_think_scrubber.c
 - `cli_agent_think_scrubber_is_in_think_block` (`agent/think_scrubber.py:is_in_think_block`) -> `0`

@@ -451,34 +451,10 @@ bool mcp_tool_keepalive_probe(const char *server_name)
 }
 
 /* Port of Python: _wait_for_lifecycle_event */
-/* PoP: mcp_tool_wait_for_lifecycle_event @ tools/mcp_tool.py:_wait_for_lifecycle_event */
-int mcp_tool_wait_for_lifecycle_event(const char *server_name, int timeout_ms)
-{
-    (void)server_name; (void)timeout_ms;
-    hermes_log(LOG_DEBUG, "port", "_wait_for_lifecycle_event: %s timeout=%dms",
-               server_name ? server_name : "unknown", timeout_ms);
-    return 0; /* Success */
-}
 
 /* Port of Python: _wait_for_reconnect_or_shutdown */
-/* PoP: mcp_tool_wait_for_reconnect_or_shutdown @ tools/mcp_tool.py:_wait_for_reconnect_or_shutdown */
-int mcp_tool_wait_for_reconnect_or_shutdown(const char *server_name, int timeout_ms)
-{
-    (void)server_name; (void)timeout_ms;
-    hermes_log(LOG_DEBUG, "port", "_wait_for_reconnect_or_shutdown: %s timeout=%dms",
-               server_name ? server_name : "unknown", timeout_ms);
-    return 0;
-}
 
 /* Port of Python: _run_stdio */
-/* PoP: mcp_tool_run_stdio @ tools/mcp_tool.py:_run_stdio */
-int mcp_tool_run_stdio(const char *server_name, const char *command, char **args, char **env)
-{
-    (void)server_name; (void)command; (void)args; (void)env;
-    hermes_log(LOG_DEBUG, "port", "_run_stdio: %s", server_name ? server_name : "unknown");
-    /* Delegate to libmcp stdio transport */
-    return 0;
-}
 
 /* Port of Python: _preflight_content_type */
 /* PoP: mcp_tool_preflight_content_type @ tools/mcp_tool.py:_preflight_content_type */
@@ -489,14 +465,6 @@ bool mcp_tool_preflight_content_type(const char *content_type)
 }
 
 /* Port of Python: _run_http */
-/* PoP: mcp_tool_run_http @ tools/mcp_tool.py:_run_http */
-int mcp_tool_run_http(const char *server_name, const char *url, const char *headers)
-{
-    (void)server_name; (void)url; (void)headers;
-    hermes_log(LOG_DEBUG, "port", "_run_http: %s", server_name ? server_name : "unknown");
-    /* Delegate to libmcp HTTP transport */
-    return 0;
-}
 
 /* Port of Python: _discover_tools */
 /* PoP: mcp_tool_discover_tools @ tools/mcp_tool.py:_discover_tools */
@@ -549,13 +517,6 @@ bool mcp_tool_is_session_expired_error(const char *error)
 }
 
 /* Port of Python: _handle_session_expired_and_retry */
-/* PoP: mcp_tool_handle_session_expired_and_retry @ tools/mcp_tool.py:_handle_session_expired_and_retry */
-bool mcp_tool_handle_session_expired_and_retry(const char *server_name, const char *error)
-{
-    (void)server_name; (void)error;
-    hermes_log(LOG_DEBUG, "port", "_handle_session_expired_and_retry: %s", server_name ? server_name : "unknown");
-    return true;
-}
 
 /* Port of Python: _snapshot_child_pids */
 /* PoP: mcp_tool_snapshot_child_pids @ tools/mcp_tool.py:_snapshot_child_pids */
@@ -789,12 +750,6 @@ bool mcp_tool_discover_and_register_server(const char *server_name, const char *
 }
 
 /* Port of Python: has_registered_mcp_tools */
-/* PoP: mcp_tool_has_registered_mcp_tools @ tools/mcp_tool.py:has_registered_mcp_tools */
-bool mcp_tool_has_registered_mcp_tools(void)
-{
-    /* Check if any MCP tools are registered */
-    return true; /* pending */
-}
 
 /* Port of Python: _reinject_post_build_tools */
 /* PoP: mcp_tool_reinject_post_build_tools @ tools/mcp_tool.py:_reinject_post_build_tools */
@@ -804,12 +759,6 @@ void mcp_tool_reinject_post_build_tools(void)
 }
 
 /* Port of Python: _kill_orphaned_mcp_children */
-/* PoP: mcp_tool_kill_orphaned_mcp_children @ tools/mcp_tool.py:_kill_orphaned_mcp_children */
-int mcp_tool_kill_orphaned_mcp_children(void)
-{
-    hermes_log(LOG_DEBUG, "port", "_kill_orphaned_mcp_children");
-    return 0;
-}
 
 /* Port of Python: _stop_mcp_loop_if_idle */
 /* PoP: mcp_tool_stop_mcp_loop_if_idle @ tools/mcp_tool.py:_stop_mcp_loop_if_idle */
@@ -826,34 +775,10 @@ void mcp_tool_stop_mcp_loop(void)
 }
 
 /* Port of Python: _run_sse */
-/* PoP: mcp_tool_run_sse @ tools/mcp_tool.py:_run_sse */
-int mcp_tool_run_sse(const char *server_name, const char *url, const char *headers)
-{
-    (void)server_name; (void)url; (void)headers;
-    hermes_log(LOG_DEBUG, "port", "_run_sse: %s", server_name ? server_name : "unknown");
-    /* Delegate to libmcp SSE transport */
-    return 0;
-}
 
 /* Port of Python: _run_ws */
-/* PoP: mcp_tool_run_ws @ tools/mcp_tool.py:_run_ws */
-int mcp_tool_run_ws(const char *server_name, const char *url, const char *headers)
-{
-    (void)server_name; (void)url; (void)headers;
-    hermes_log(LOG_DEBUG, "port", "_run_ws: %s", server_name ? server_name : "unknown");
-    /* Delegate to libmcp WebSocket transport */
-    return 0;
-}
 
 /* Port of Python: _run_streamable_http */
-/* PoP: mcp_tool_run_streamable_http @ tools/mcp_tool.py:_run_streamable_http */
-int mcp_tool_run_streamable_http(const char *server_name, const char *url, const char *headers)
-{
-    (void)server_name; (void)url; (void)headers;
-    hermes_log(LOG_DEBUG, "port", "_run_streamable_http: %s", server_name ? server_name : "unknown");
-    /* Delegate to libmcp Streamable HTTP transport */
-    return 0;
-}
 
 /* Port of Python: _read_sse_events */
 /* PoP: mcp_tool_read_sse_events @ tools/mcp_tool.py:_read_sse_events */

@@ -157,18 +157,6 @@ json_node_t* cli_tools_environments_managed_modal__create_sandbox(const char *im
     return result;
 }
 
-/* PoP: cli_tools_environments_managed_modal__guard_unsupported_credential_passthrough @ tools/environments/managed_modal.py:_guard_unsupported_credential_passthrough */
-int cli_tools_environments_managed_modal__guard_unsupported_credential_passthrough(void) {
-    /*
-     * Managed Modal does not sync or mount host credential files.
-     * Returns 0 if no credential mounts are configured, -1 if they are.
-     */
-    hermes_log(LOG_DEBUG, "managed_modal",
-               "_guard_unsupported_credential_passthrough: checking credential mounts");
-    /* In C, credential mounts are not used — return 0 (OK) */
-    return 0;
-}
-
 /* PoP: cli_tools_environments_managed_modal__cancel_exec @ tools/environments/managed_modal.py:_cancel_exec */
 void cli_tools_environments_managed_modal__cancel_exec(const char *sandbox_id, const char *exec_id) {
     /*

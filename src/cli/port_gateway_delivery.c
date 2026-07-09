@@ -72,29 +72,3 @@ int cli_gateway_delivery__save_full_output(
     return 0;
 }
 
-/* PoP: cli_gateway_delivery__filter_silence_narration_enabled @ gateway/delivery.py:_filter_silence_narration_enabled */
-
-/* Port of Python gateway/delivery.py:_filter_silence_narration_enabled */
-/* Checks if silence narration filtering is enabled. */
-int cli_gateway_delivery__filter_silence_narration_enabled(
-    const char *config_json)
-{
-    (void)config_json;
-    /* CLI port: default to enabled. */
-    return 1;
-}
-
-/* PoP: cli_gateway_delivery__deliver_to_platform @ gateway/delivery.py:_deliver_to_platform */
-
-/* Port of Python gateway/delivery.py:_deliver_to_platform */
-/* Delivers a message to a specific platform. */
-int cli_gateway_delivery__deliver_to_platform(
-    const char *message, const char *platform, const char *chat_id)
-{
-    if (!message || !platform || !chat_id) {
-        return -1;
-    }
-    hermes_log(LOG_DEBUG, "delivery", "deliver to %s/%s: %.50s",
-               platform, chat_id, message);
-    return 0;
-}

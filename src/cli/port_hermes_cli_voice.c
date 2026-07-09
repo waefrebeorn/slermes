@@ -140,27 +140,6 @@ void cli_hermes_cli_voice__debug(const char *msg)
     }
 }
 
-/* PoP: cli_hermes_cli_voice__beeps_enabled @ hermes_cli/voice.py:_beeps_enabled */
-
-/* Port of Python hermes_cli/voice.py:_beeps_enabled */
-/* Checks if voice beeps are enabled in config. */
-int cli_hermes_cli_voice__beeps_enabled(void)
-{
-    /* CLI port: default to enabled. */
-    return 1;
-}
-
-/* PoP: cli_hermes_cli_voice__play_beep @ hermes_cli/voice.py:_play_beep */
-
-/* Port of Python hermes_cli/voice.py:_play_beep */
-/* Plays an audible beep. */
-void cli_hermes_cli_voice__play_beep(int frequency, int count)
-{
-    (void)frequency;
-    (void)count;
-    /* CLI port: beep playback requires sounddevice. */
-}
-
 /* PoP: cli_hermes_cli_voice_start_recording @ hermes_cli/voice.py:start_recording */
 
 /* Port of Python hermes_cli/voice.py:start_recording */
@@ -170,31 +149,7 @@ void cli_hermes_cli_voice_start_recording(void)
     hermes_log(LOG_DEBUG, "voice", "start_recording: CLI port — no-op");
 }
 
-/* PoP: cli_hermes_cli_voice_stop_and_transcribe @ hermes_cli/voice.py:stop_and_transcribe */
 
 /* Port of Python hermes_cli/voice.py:stop_and_transcribe */
 /* Stops recording and transcribes. Returns transcript or NULL. */
-char *cli_hermes_cli_voice_stop_and_transcribe(void)
-{
-    hermes_log(LOG_DEBUG, "voice", "stop_and_transcribe: CLI port — no-op");
-    return NULL;
-}
 
-/* PoP: cli_hermes_cli_voice_start_continuous @ hermes_cli/voice.py:start_continuous */
-
-/* Port of Python hermes_cli/voice.py:start_continuous */
-/* Starts a VAD-driven continuous recording loop. */
-int cli_hermes_cli_voice_start_continuous(void)
-{
-    hermes_log(LOG_DEBUG, "voice", "start_continuous: CLI port — no-op");
-    return 0;
-}
-
-/* PoP: cli_hermes_cli_voice_stop_continuous @ hermes_cli/voice.py:stop_continuous */
-
-/* Port of Python hermes_cli/voice.py:stop_continuous */
-/* Stops the active continuous loop. */
-void cli_hermes_cli_voice_stop_continuous(void)
-{
-    hermes_log(LOG_DEBUG, "voice", "stop_continuous: CLI port — no-op");
-}

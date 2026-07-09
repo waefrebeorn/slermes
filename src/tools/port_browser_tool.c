@@ -476,19 +476,6 @@ int browser_get_session_inactivity_timeout(void)
     return result;
 }
 
-/* PoP: browser_verify_reapable_browser_daemon @ tools/browser_tool.py:_verify_reapable_browser_daemon */
-bool browser_verify_reapable_browser_daemon(int daemon_pid, const char *socket_dir, const char *session_name)
-{
-    /* In C we don't have psutil - this is a best-effort check.
-     * For production, would need libproc or similar. */
-    (void)daemon_pid;
-    (void)socket_dir;
-    (void)session_name;
-
-    hermes_log(LOG_WARNING, "port", "browser_verify_reapable_browser_daemon: psutil not available in C port, refusing to reap");
-    return false;
-}
-
 /* PoP: browser_agent_browser_candidate_present @ tools/browser_tool.py:_agent_browser_candidate_present */
 bool browser_agent_browser_candidate_present(const char *path)
 {
@@ -1330,13 +1317,6 @@ json_t *browser_stop_cdp_supervisor(const char *task_id)
     return result;
 }
 
-/* PoP: _is_legacy_provider_registry_overridden @ tools/browser_tool.py:_is_legacy_provider_registry_overridden */
-bool browser_is_legacy_provider_registry_overridden(void)
-{
-    /* Check if test has monkeypatched the provider registry */
-    return false; /* Simplified - not testable in C */
-}
-
 /* PoP: _ensure_browser_plugins_loaded @ tools/browser_tool.py:_ensure_browser_plugins_loaded */
 void browser_ensure_browser_plugins_loaded(void)
 {
@@ -1344,77 +1324,11 @@ void browser_ensure_browser_plugins_loaded(void)
     hermes_log(LOG_DEBUG, "port", "browser_ensure_browser_plugins_loaded: triggered");
 }
 
-/* PoP: _get_cloud_provider @ tools/browser_tool.py:_get_cloud_provider */
-char *browser_get_cloud_provider(void)
-{
-    /* Check for cloud provider credentials */
-    if (getenv("BROWSERBASE_API_KEY") && getenv("BROWSERBASE_PROJECT_ID")) {
-        return strdup("browserbase");
-    }
-    if (getenv("BROWSER_USE_API_KEY")) {
-        return strdup("browser-use");
-    }
-    if (getenv("FIRECRAWL_API_KEY") || getenv("FIRECRAWL_API_URL")) {
-        return strdup("firecrawl");
-    }
-    return strdup("local");
-}
-
-/* PoP: _browser_install_hint @ tools/browser_tool.py:_browser_install_hint */
-char *browser_browser_install_hint(void)
-{
-    char *result = malloc(1024);
-    if (!result) return strdup("");
-    snprintf(result, 1024,
-        "Browser not installed. Run: npx agent-browser install --with-deps");
-    return result;
-}
-
-/* PoP: _requires_real_termux_browser_install @ tools/browser_tool.py:_requires_real_termux_browser_install */
-bool browser_requires_real_termux_browser_install(void)
-{
-    /* Check if running in Termux without proper browser setup */
-    return false; /* Simplified */
-}
-
-/* PoP: _termux_browser_install_error @ tools/browser_tool.py:_termux_browser_install_error */
-char *browser_termux_browser_install_error(void)
-{
-    return strdup("Termux browser install required");
-}
-
-/* PoP: _get_browser_engine @ tools/browser_tool.py:_get_browser_engine */
-char *browser_get_browser_engine(void)
-{
-    const char *engine = getenv("HERMES_BROWSER_ENGINE");
-    if (engine && engine[0]) return strdup(engine);
-    return strdup("chromium");
-}
-
-/* PoP: _should_inject_engine @ tools/browser_tool.py:_should_inject_engine */
-bool browser_should_inject_engine(void)
-{
-    /* Check if engine injection is needed */
-    return false;
-}
-
 /* PoP: _using_lightpanda_engine @ tools/browser_tool.py:_using_lightpanda_engine */
 bool browser_using_lightpanda_engine(void)
 {
     const char *engine = getenv("HERMES_BROWSER_ENGINE");
     return engine && strcmp(engine, "lightpanda") == 0;
-}
-
-/* PoP: _lightpanda_fallback_reason @ tools/browser_tool.py:_lightpanda_fallback_reason */
-char *browser_lightpanda_fallback_reason(void)
-{
-    return strdup("Lightpanda fallback not configured");
-}
-
-/* PoP: _needs_lightpanda_fallback @ tools/browser_tool.py:_needs_lightpanda_fallback */
-bool browser_needs_lightpanda_fallback(void)
-{
-    return false;
 }
 
 /* PoP: _annotate_lightpanda_fallback @ tools/browser_tool.py:_annotate_lightpanda_fallback */
@@ -1506,33 +1420,10 @@ void browser_cleanup_inactive_browser_sessions(void)
     hermes_log(LOG_DEBUG, "port", "browser_cleanup_inactive_browser_sessions: cleaning inactive sessions");
 }
 
-/* PoP: _write_owner_pid @ tools/browser_tool.py:_write_owner_pid */
-bool browser_write_owner_pid(const char *session_key)
-{
-    (void)session_key;
-    /* Write current PID to session directory */
-    return true;
-}
-
 /* PoP: _reap_orphaned_browser_sessions @ tools/browser_tool.py:_reap_orphaned_browser_sessions */
 void browser_reap_orphaned_browser_sessions(void)
 {
     hermes_log(LOG_DEBUG, "port", "browser_reap_orphaned_browser_sessions: reaping orphaned sessions");
-}
-
-/* PoP: _browser_cleanup_thread_worker @ tools/browser_tool.py:_browser_cleanup_thread_worker */
-void *browser_cleanup_thread_worker(void *arg)
-{
-    (void)arg;
-    hermes_log(LOG_DEBUG, "port", "browser_cleanup_thread_worker: started");
-    return NULL;
-}
-
-/* PoP: _start_browser_cleanup_thread @ tools/browser_tool.py:_start_browser_cleanup_thread */
-bool browser_start_browser_cleanup_thread(void)
-{
-    hermes_log(LOG_DEBUG, "port", "browser_start_browser_cleanup_thread: starting cleanup thread");
-    return true;
 }
 
 /* PoP: _stop_browser_cleanup_thread @ tools/browser_tool.py:_stop_browser_cleanup_thread */

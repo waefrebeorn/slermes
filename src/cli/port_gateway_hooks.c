@@ -8,29 +8,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: cli_gateway_hooks_loaded_hooks @ gateway/hooks.py:loaded_hooks */
-
-/* Port of Python gateway/hooks.py:loaded_hooks */
-/* Returns metadata about all loaded hooks. */
-int cli_gateway_hooks_loaded_hooks(char *names[], int max_names)
-{
-    /* CLI port: no hooks loaded. Return 0. */
-    (void)names;
-    (void)max_names;
-    return 0;
-}
-
-/* PoP: cli_gateway_hooks__register_builtin_hooks @ gateway/hooks.py:_register_builtin_hooks */
-
-/* Port of Python gateway/hooks.py:_register_builtin_hooks */
-/* Registers built-in hooks that are always active. */
-void cli_gateway_hooks__register_builtin_hooks(void *registry)
-{
-    (void)registry;
-    /* CLI port: no built-in hooks to register. */
-    hermes_log(LOG_DEBUG, "hooks", "no built-in hooks registered (CLI port)");
-}
-
 /* PoP: cli_gateway_hooks_discover_and_load @ gateway/hooks.py:discover_and_load */
 
 /* Port of Python gateway/hooks.py:discover_and_load */

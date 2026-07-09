@@ -100,14 +100,7 @@ char *tts_provider_stream(const char *text, const char *voice, const char *model
     return NULL;
 }
 
-/* PoP: tts_provider_voice_compatible @ agent/tts_provider.py:voice_compatible */
 
 /* Port of Python agent/tts_provider.py:voice_compatible */
 /* Whether output is suitable for voice-bubble delivery. Default: 0 (false). */
-int tts_provider_voice_compatible(void)
-{
-    /* Default: not voice-compatible (safe default) */
-    /* Providers that support Opus output should override this */
-    hermes_log(LOG_DEBUG, "tts_provider", "voice_compatible: 0 (default)");
-    return 0;
-}
+

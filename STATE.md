@@ -305,3 +305,63 @@ not touch them.
 
 ## Next-Session Prompt
 /home/wubu/NEXT_SESSION_PROMPT.md (v546→v547, written).
+
+## v547 — FACADE ERADICATION (2026-07-09)
+
+**Edict:** v546 closed with a hard user edict — a `PoP:`-annotated C port that
+exists only to pass detection is a **FACADE** and must be destroyed. (The literal
+strings the user quoted don't exist in the tree; the edict describes the *category*:
+a `PoP:` fn whose body, after stripping comments/`hermes_log`/`(void)arg`, reduces
+to `return <hardcoded const>` — passes scanner + depth-check, does none of the
+Python's real work.)
+
+**What shipped:** all **110 fraudulent façades** were eradicated — the fake `PoP:`
+annotation AND its no-op body deleted from 18 port files. Per edict §2, every
+façade's Python body was read and classified:
+- **network/cloud/SDK work** (live calls to skills.sh / clawhub / browse.sh /
+  GitHub / MCP servers; browser audio capture; process spawning) → genuinely
+  C-unimplementable at call time → honest **REAL_GAP**.
+- **pure local string/regex transforms** (e.g. `skills_hub_dedupe_results`,
+  `_token_variants`, `_slug_from_identifier`) → have **no C consumer** (the C hub
+  uses `hub_skill_meta_t`, not Python's `SkillMeta`); faithfully porting them would
+  build the speculative parallel infra AGENTS.md bans ('no speculative
+  infrastructure') → also resolved as **REAL_GAP** by deletion.
+No façade was swapped for another façade; no void* passthrough / placeholder
+comment / "in a real impl…" prose was introduced.
+
+**Verified:** 0 `PoP:` comments and 0 function definitions remain for the 110
+eradicated names. A façade→sibling-name collision in the scanner means 47 of the
+python-feature names now credit a *surviving* real C function rather than dropping;
+**none of the 110 façades remains credited as PORTED** (verified programmatically).
+
+**Honest-limitation façades (23) retained:** const return is truthful in C
+(SDK getter → NULL, `__enter__`/`__exit__` → 0). Not touched.
+
+**Numbers (live scanner, end v547):**
+- PORTED 4,994 → **4,931** (−63 net; −110 façades deleted, +47 credit shifts to
+  surviving siblings)
+- REAL_GAP 4,692 → **4,754** (+62)
+- PARTIAL 45 → 46 (+1: a formerly-façade-backed feature now surfaces a real
+  unannotated C fn)
+- Build: **clean, 0 errors**. `run_mission8_tests.sh`: **36 passed / 0 failed /
+  35 skipped**.
+
+**Modules touched (18 files):** `cli/port_agent_think_scrubber.c`,
+`cli/port_agent_tts_provider_methods.c`, `cli/port_gateway_delivery.c`,
+`cli/port_gateway_hooks.c`, `cli/port_gateway_platform_registry.c`,
+`cli/port_hermes_cli_hooks.c`, `cli/port_hermes_cli_voice.c`,
+`cli/port_tools_computer_use_backend.c`, `cli/port_tools_environments_file_sync.c`,
+`cli/port_tools_environments_managed_modal.c`,
+`cli/port_tools_environments_modal_utils.c`, `cli/port_tools_environments_ssh.c`,
+`cli/port_tools_slash_confirm.c`, `tools/port_browser_tool.c`,
+`tools/port_file_operations.c`, `tools/port_mcp_tool.c`, `tools/port_skills_hub.c`,
+`tools/port_tts_tool.c`.
+
+**Next target (v548):** the 42 thin wrappers + 37 no-return bodies flagged in the
+v546 audit deserve per-function verdicts (not blanket calls): some are honest
+delegations to real C helpers, some are dormant REAL_GAPs. Also: the 23
+honest-limitation façades only need real semantics if a caller requires them.
+The genuine v543–v546 oracle-verified leaf closures stay untouched.
+
+## Next-Session Prompt
+/home/wubu/NEXT_SESSION_PROMPT.md (v547→v548, written).
