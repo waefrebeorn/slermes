@@ -140,18 +140,6 @@ char* cli_tools_environments_file_sync__sha256_file(const char *path, char *buf,
     return buf;
 }
 
-/* PoP: cli_tools_environments_file_sync_sync @ tools/environments/file_sync.py:sync */
-int cli_tools_environments_file_sync_sync(int force) {
-    /*
-     * Run a sync cycle: upload changed files, delete removed files.
-     * Rate-limited to once per sync_interval unless force is set.
-     * Transactional: state only committed if ALL operations succeed.
-     */
-    hermes_log(LOG_INFO, "file_sync", "sync: force=%d", force);
-    /* In C, the actual sync is managed by the FileSyncManager */
-    return 0;
-}
-
 /* PoP: cli_tools_environments_file_sync_sync_back @ tools/environments/file_sync.py:sync_back */
 int cli_tools_environments_file_sync_sync_back(const char *hermes_home) {
     /*
@@ -190,16 +178,6 @@ int cli_tools_environments_file_sync__sync_back_locked(const char *lock_path) {
     if (!lock_path) return -1;
     hermes_log(LOG_DEBUG, "file_sync", "_sync_back_locked: lock=%s", lock_path);
     /* In C, the actual locked sync is managed by the FileSyncManager */
-    return 0;
-}
-
-/* PoP: cli_tools_environments_file_sync__sync_back_impl @ tools/environments/file_sync.py:_sync_back_impl */
-int cli_tools_environments_file_sync__sync_back_impl(void) {
-    /*
-     * Download, diff, and apply remote changes to host.
-     */
-    hermes_log(LOG_DEBUG, "file_sync", "_sync_back_impl: downloading remote changes");
-    /* In C, the actual implementation is managed by the FileSyncManager */
     return 0;
 }
 

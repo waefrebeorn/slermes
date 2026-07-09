@@ -542,92 +542,32 @@ bool file_ops_file_has_bom(const char *path)
 }
 
 /* Port of Python: _unified_diff */
-/* PoP: file_ops_unified_diff @ tools/file_operations.py:_unified_diff */
-char *file_ops_unified_diff(const char *old_content, const char *new_content)
-{
-    (void)old_content; (void)new_content;
-    return strdup("@@ -1 +1 @@\n- old\n+ new\n");
-}
 
 /* ================================================================
  *  File similarity & search
  * ================================================================ */
 
 /* Port of Python: _suggest_similar_files */
-/* PoP: file_ops_suggest_similar_files @ tools/file_operations.py:_suggest_similar_files */
-char *file_ops_suggest_similar_files(const char *path, const char *dir)
-{
-    (void)path; (void)dir;
-    return strdup("[]");
-}
 
 /* Port of Python: _search_files */
-/* PoP: file_ops_search_files @ tools/file_operations.py:_search_files */
-char *file_ops_search_files(const char *pattern, const char *dir)
-{
-    (void)pattern; (void)dir;
-    return strdup("[]");
-}
 
 /* Port of Python: _search_files_rg */
-/* PoP: file_ops_search_files_rg @ tools/file_operations.py:_search_files_rg */
-char *file_ops_search_files_rg(const char *pattern, const char *dir)
-{
-    (void)pattern; (void)dir;
-    return strdup("[]");
-}
 
 /* Port of Python: _search_content */
-/* PoP: file_ops_search_content @ tools/file_operations.py:_search_content */
-char *file_ops_search_content(const char *pattern, const char *dir)
-{
-    (void)pattern; (void)dir;
-    return strdup("[]");
-}
 
 /* Port of Python: _search_with_rg */
-/* PoP: file_ops_search_with_rg @ tools/file_operations.py:_search_with_rg */
-char *file_ops_search_with_rg(const char *pattern, const char *dir)
-{
-    (void)pattern; (void)dir;
-    return strdup("[]");
-}
 
 /* Port of Python: _search_with_grep */
-/* PoP: file_ops_search_with_grep @ tools/file_operations.py:_search_with_grep */
-char *file_ops_search_with_grep(const char *pattern, const char *dir)
-{
-    (void)pattern; (void)dir;
-    return strdup("[]");
-}
 
 /* ================================================================
  *  LSP helpers
  * ================================================================ */
 
 /* Port of Python: _lsp_local_only */
-/* PoP: file_ops_lsp_local_only @ tools/file_operations.py:_lsp_local_only */
-bool file_ops_lsp_local_only(const char *config_json)
-{
-    (void)config_json;
-    return true;
-}
 
 /* Port of Python: _lsp_handles_extension */
-/* PoP: file_ops_lsp_handles_extension @ tools/file_operations.py:_lsp_handles_extension */
-bool file_ops_lsp_handles_extension(const char *ext, const char *config_json)
-{
-    (void)ext; (void)config_json;
-    return true;
-}
 
 /* Port of Python: _lsp_will_handle */
-/* PoP: file_ops_lsp_will_handle @ tools/file_operations.py:_lsp_will_handle */
-bool file_ops_lsp_will_handle(const char *path, const char *config_json)
-{
-    (void)path; (void)config_json;
-    return true;
-}
 
 /* Port of Python: _snapshot_lsp_baseline */
 /* PoP: file_ops_snapshot_lsp_baseline @ tools/file_operations.py:_snapshot_lsp_baseline */

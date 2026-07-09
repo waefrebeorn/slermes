@@ -2,7 +2,7 @@
 # ║           Slermes — C Translation                            ║
 # ║         of Hermes Agent (Nous Research)                      ║
 # ║                                                              ║
-# ║  Build: Clean  │  v546 │  Tests: 36/36  │  Desktop GUI: ENHANCED  ║
-# ║  Ported: 4,994/9,731 (51.3%)  REAL_GAP: 4,692 (48.2%)  PARTIAL: 45  ║
-# ║  ⚠ 110 FACADE PORTS DETECTED — see docs/facade_audit.md (not honest) ║
+# ║  Build: Clean  │  v547 │  Tests: 36/36  │  Desktop GUI: ENHANCED  ║
+# ║  Ported: 4,931/9,731 (50.7%)  REAL_GAP: 4,754 (48.9%)  PARTIAL: 46  ║
+# ║  ✓ 110 FACADE PORTS ERADICATED → honest REAL_GAP (v547)        ║
 # ╚══════════════════════════════════════════════════════════════╝

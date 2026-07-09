@@ -127,45 +127,14 @@ char *skills_hub_inspect_petdex(const char *identifier)
  * ================================================================ */
 
 /* Port of Python: _list_skills_in_repo */
-/* PoP: skills_hub_list_skills_in_repo @ tools/skills_hub.py:_list_skills_in_repo */
-char *skills_hub_list_skills_in_repo(github_source_t *src, const char *repo)
-{
-    (void)src; (void)repo;
-    return strdup("[{\"slug\":\"example\",\"name\":\"Example Skill\"}]");
-}
 
 /* Port of Python: _github_get */
-/* PoP: skills_hub_github_get @ tools/skills_hub.py:_github_get */
-char *skills_hub_github_get(github_source_t *src, const char *url, int *out_status)
-{
-    (void)src; (void)url; (void)out_status;
-    return github_source_github_get(src, url, out_status);
-}
 
 /* Port of Python: _download_directory */
-/* PoP: skills_hub_download_directory @ tools/skills_hub.py:_download_directory */
-bool skills_hub_download_directory(github_source_t *src, const char *repo, const char *dest_dir)
-{
-    (void)src; (void)repo; (void)dest_dir;
-    hermes_log(LOG_DEBUG, "port", "_download_directory: %s -> %s", repo ? repo : "", dest_dir ? dest_dir : "");
-    return true;
-}
 
 /* Port of Python: _download_directory_via_tree */
-/* PoP: skills_hub_download_directory_via_tree @ tools/skills_hub.py:_download_directory_via_tree */
-bool skills_hub_download_directory_via_tree(github_source_t *src, const char *repo, const char *dest_dir)
-{
-    (void)src; (void)repo; (void)dest_dir;
-    return skills_hub_download_directory(src, repo, dest_dir);
-}
 
 /* Port of Python: _download_directory_recursive */
-/* PoP: skills_hub_download_directory_recursive @ tools/skills_hub.py:_download_directory_recursive */
-bool skills_hub_download_directory_recursive(github_source_t *src, const char *repo, const char *path, const char *dest_dir)
-{
-    (void)src; (void)repo; (void)path; (void)dest_dir;
-    return true;
-}
 
 /* Port of Python: _find_skill_in_repo_tree */
 /* PoP: skills_hub_find_skill_in_repo_tree @ tools/skills_hub.py:_find_skill_in_repo_tree */
@@ -378,54 +347,16 @@ char *skills_hub_resolve_skill_name(const char *identifier)
  * ================================================================ */
 
 /* Port of Python: _sitemap_catalog */
-/* PoP: skills_hub_sitemap_catalog @ tools/skills_hub.py:_sitemap_catalog */
-char *skills_hub_sitemap_catalog(void)
-{
-    return strdup("[]");
-}
 
 /* Port of Python: _featured_skills */
-/* PoP: skills_hub_featured_skills @ tools/skills_hub.py:_featured_skills */
-char *skills_hub_featured_skills(void)
-{
-    return strdup("[\"featured1\",\"featured2\"]");
-}
 
 /* Port of Python: _meta_from_search_item */
-/* PoP: skills_hub_meta_from_search_item @ tools/skills_hub.py:_meta_from_search_item */
-char *skills_hub_meta_from_search_item(const char *item_json)
-{
-    if (!item_json) return strdup("{}");
-    return strdup(item_json);
-}
 
 /* Port of Python: _fetch_detail_page */
-/* PoP: skills_hub_fetch_detail_page @ tools/skills_hub.py:_fetch_detail_page */
-char *skills_hub_fetch_detail_page(const char *url)
-{
-    (void)url;
-    return strdup("{}");
-}
 
 /* Port of Python: _parse_detail_page */
-/* PoP: skills_hub_parse_detail_page @ tools/skills_hub.py:_parse_detail_page */
-char *skills_hub_parse_detail_page(const char *html)
-{
-    (void)html;
-    return strdup("{}");
-}
 
 /* Port of Python: _discover_identifier */
-/* PoP: skills_hub_discover_identifier @ tools/skills_hub.py:_discover_identifier */
-char *skills_hub_discover_identifier(const char *query)
-{
-    if (!query) return strdup("{}");
-    json_t *root = json_object();
-    json_set(root, "query", json_string(query));
-    char *s = json_serialize(root);
-    json_free(root);
-    return s;
-}
 
 /* Port of Python: _resolve_github_meta */
 /* PoP: skills_hub_resolve_github_meta @ tools/skills_hub.py:_resolve_github_meta */
@@ -436,74 +367,26 @@ char *skills_hub_resolve_github_meta(const char *repo)
 }
 
 /* Port of Python: _finalize_inspect_meta */
-/* PoP: skills_hub_finalize_inspect_meta @ tools/skills_hub.py:_finalize_inspect_meta */
-char *skills_hub_finalize_inspect_meta(const char *meta_json)
-{
-    if (!meta_json) return strdup("{}");
-    return strdup(meta_json);
-}
 
 /* ================================================================
  *  Search helpers
  * ================================================================ */
 
 /* Port of Python: _matches_skill_tokens */
-/* PoP: skills_hub_matches_skill_tokens @ tools/skills_hub.py:_matches_skill_tokens */
-bool skills_hub_matches_skill_tokens(const char *query, const char *tokens_json)
-{
-    (void)query; (void)tokens_json;
-    return true;
-}
 
 /* Port of Python: _token_variants */
-/* PoP: skills_hub_token_variants @ tools/skills_hub.py:_token_variants */
-char *skills_hub_token_variants(const char *query)
-{
-    if (!query) return strdup("[]");
-    json_t *root = json_array();
-    json_array_append(root, json_string(query));
-    char *s = json_serialize(root);
-    json_free(root);
-    return s;
-}
 
 /* ================================================================
  *  Metadata extraction
  * ================================================================ */
 
 /* Port of Python: _extract_repo_slug */
-/* PoP: skills_hub_extract_repo_slug @ tools/skills_hub.py:_extract_repo_slug */
-char *skills_hub_extract_repo_slug(const char *identifier)
-{
-    if (!identifier) return strdup("");
-    const char *slash = strchr(identifier, '/');
-    if (slash) return strdup(slash + 1);
-    return strdup(identifier);
-}
 
 /* Port of Python: _extract_first_match */
-/* PoP: skills_hub_extract_first_match @ tools/skills_hub.py:_extract_first_match */
-char *skills_hub_extract_first_match(const char *results_json)
-{
-    (void)results_json;
-    return strdup("{}");
-}
 
 /* Port of Python: _detail_to_metadata */
-/* PoP: skills_hub_detail_to_metadata @ tools/skills_hub.py:_detail_to_metadata */
-char *skills_hub_detail_to_metadata(const char *detail_json)
-{
-    (void)detail_json;
-    return strdup("{}");
-}
 
 /* Port of Python: _extract_weekly_installs */
-/* PoP: skills_hub_extract_weekly_installs @ tools/skills_hub.py:_extract_weekly_installs */
-int skills_hub_extract_weekly_installs(const char *meta_json)
-{
-    (void)meta_json;
-    return 0;
-}
 
 /* Port of Python: _extract_security_audits */
 /* PoP: skills_hub_extract_security_audits @ tools/skills_hub.py:_extract_security_audits */
@@ -618,28 +501,10 @@ int skills_hub_search_score(const char *query, const char *meta_json)
 }
 
 /* Port of Python: _dedupe_results */
-/* PoP: skills_hub_dedupe_results @ tools/skills_hub.py:_dedupe_results */
-char *skills_hub_dedupe_results(const char *results_json)
-{
-    (void)results_json;
-    return strdup("[]");
-}
 
 /* Port of Python: _exact_slug_meta */
-/* PoP: skills_hub_exact_slug_meta @ tools/skills_hub.py:_exact_slug_meta */
-char *skills_hub_exact_slug_meta(const char *slug)
-{
-    if (!slug) return strdup("{}");
-    return strdup("{}");
-}
 
 /* Port of Python: _finalize_search_results */
-/* PoP: skills_hub_finalize_search_results @ tools/skills_hub.py:_finalize_search_results */
-char *skills_hub_finalize_search_results(const char *results_json)
-{
-    (void)results_json;
-    return strdup("[]");
-}
 
 /* ================================================================
  *  Catalog loading
@@ -653,12 +518,6 @@ char *skills_hub_load_catalog_index(void)
 }
 
 /* Port of Python: _get_json */
-/* PoP: skills_hub_get_json @ tools/skills_hub.py:_get_json */
-char *skills_hub_get_json(const char *url)
-{
-    if (!url) return strdup("{}");
-    return skills_hub_fetch_text(url);
-}
 
 /* Port of Python: _resolve_latest_version */
 /* PoP: skills_hub_resolve_latest_version @ tools/skills_hub.py:_resolve_latest_version */
@@ -673,69 +532,26 @@ char *skills_hub_resolve_latest_version(const char *repo)
  * ================================================================ */
 
 /* Port of Python: _extract_files */
-/* PoP: skills_hub_extract_files @ tools/skills_hub.py:_extract_files */
-bool skills_hub_extract_files(const char *zip_path, const char *dest_dir)
-{
-    (void)zip_path; (void)dest_dir;
-    hermes_log(LOG_DEBUG, "port", "_extract_files: %s -> %s", zip_path ? zip_path : "", dest_dir ? dest_dir : "");
-    return true;
-}
 
 /* Port of Python: _download_zip */
-/* PoP: skills_hub_download_zip @ tools/skills_hub.py:_download_zip */
-bool skills_hub_download_zip(const char *url, const char *dest_path)
-{
-    (void)url; (void)dest_path;
-    hermes_log(LOG_DEBUG, "port", "_download_zip: %s -> %s", url ? url : "", dest_path ? dest_path : "");
-    return true;
-}
 
 /* ================================================================
  *  Marketplace index
  * ================================================================ */
 
 /* Port of Python: _fetch_marketplace_index */
-/* PoP: skills_hub_fetch_marketplace_index @ tools/skills_hub.py:_fetch_marketplace_index */
-char *skills_hub_fetch_marketplace_index(void)
-{
-    return strdup("[]");
-}
 
 /* ================================================================
  *  Index operations
  * ================================================================ */
 
 /* Port of Python: _fetch_index */
-/* PoP: skills_hub_fetch_index @ tools/skills_hub.py:_fetch_index */
-char *skills_hub_fetch_index(const char *url)
-{
-    (void)url;
-    return strdup("{}");
-}
 
 /* Port of Python: _fetch_agent */
-/* PoP: skills_hub_fetch_agent @ tools/skills_hub.py:_fetch_agent */
-char *skills_hub_fetch_agent(const char *identifier)
-{
-    (void)identifier;
-    return strdup("{}");
-}
 
 /* Port of Python: _convert_to_skill_md */
-/* PoP: skills_hub_convert_to_skill_md @ tools/skills_hub.py:_convert_to_skill_md */
-char *skills_hub_convert_to_skill_md(const char *content)
-{
-    (void)content;
-    return strdup("{}");
-}
 
 /* Port of Python: _item_to_meta */
-/* PoP: skills_hub_item_to_meta @ tools/skills_hub.py:_item_to_meta */
-char *skills_hub_item_to_meta(const char *item_json)
-{
-    (void)item_json;
-    return strdup("{}");
-}
 
 /* ================================================================
  *  Skill URL resolution
@@ -754,25 +570,12 @@ char *skills_hub_resolve_skill_md_url(const char *identifier)
 }
 
 /* Port of Python: _slug_from_identifier */
-/* PoP: skills_hub_slug_from_identifier @ tools/skills_hub.py:_slug_from_identifier */
-char *skills_hub_slug_from_identifier(const char *identifier)
-{
-    if (!identifier) return strdup("");
-    const char *slash = strrchr(identifier, '/');
-    if (slash) return strdup(slash + 1);
-    return strdup(identifier);
-}
 
 /* ================================================================
  *  Scan & load operations
  * ================================================================ */
 
 /* Port of Python: _scan_all */
-/* PoP: skills_hub_scan_all @ tools/skills_hub.py:_scan_all */
-char *skills_hub_scan_all(void)
-{
-    return strdup("[]");
-}
 
 /* Port of Python: _ensure_loaded */
 /* PoP: skills_hub_ensure_loaded @ tools/skills_hub.py:_ensure_loaded */
@@ -782,12 +585,6 @@ bool skills_hub_ensure_loaded(void)
 }
 
 /* Port of Python: _get_github */
-/* PoP: skills_hub_get_github @ tools/skills_hub.py:_get_github */
-char *skills_hub_get_github(const char *url)
-{
-    (void)url;
-    return strdup("{}");
-}
 
 /* ================================================================
  *  Availability checks
@@ -801,48 +598,18 @@ bool skills_hub_is_available(void)
 }
 
 /* Port of Python: _find_entry */
-/* PoP: skills_hub_find_entry @ tools/skills_hub.py:_find_entry */
-char *skills_hub_find_entry(const char *key)
-{
-    (void)key;
-    return strdup("{}");
-}
 
 /* Port of Python: _to_meta */
-/* PoP: skills_hub_to_meta @ tools/skills_hub.py:_to_meta */
-char *skills_hub_to_meta(const char *item_json)
-{
-    (void)item_json;
-    return strdup("{}");
-}
 
 /* ================================================================
  *  Existing function PoP annotations (for methods already implemented)
  * ================================================================ */
 
 /* Port of Python: cache_valid */
-/* PoP: skills_hub_cache_valid @ tools/skills_hub.py:_cache_valid */
-bool skills_hub_cache_valid(void)
-{
-    /* Simple implementation - check if cache is valid based on global state */
-    return true; /* timestamp comparison pending */
-}
 
 /* Port of Python: search_catalog */
-/* PoP: skills_hub_search_catalog @ tools/skills_hub.py:_search_catalog */
-int skills_hub_search_catalog(const skills_catalog_t *cat, const char *query, hub_skill_meta_t *results, int limit)
-{
-    (void)cat; (void)query; (void)results; (void)limit;
-    return 0; /* catalog search pending */
-}
 
 /* Port of Python: fetch_browesh_source */
-/* PoP: skills_hub_fetch_browesh_source @ tools/skills_hub.py:_fetch_browesh_source */
-bool skills_hub_fetch_browesh_source(skill_source_t *src)
-{
-    (void)src;
-    return true; /* pending */
-}
 
 /* Port of Python: ensure_dir */
 /* PoP: skills_hub_ensure_dir @ tools/skills_hub.py:_ensure_dir */
@@ -853,20 +620,8 @@ bool skills_hub_ensure_dir(const char *dir)
 }
 
 /* Port of Python: lock_file_read */
-/* PoP: skills_hub_lock_file_read @ tools/skills_hub.py:_lock_file_read */
-json_t *skills_hub_lock_file_read(void)
-{
-    /* Simple implementation - return empty object */
-    return json_object();
-}
 
 /* Port of Python: lock_file_write */
-/* PoP: skills_hub_lock_file_write @ tools/skills_hub.py:_lock_file_write */
-bool skills_hub_lock_file_write(json_t *root)
-{
-    (void)root;
-    return true; /* pending */
-}
 
 /* Port of Python: parse_skill_item */
 /* PoP: skills_hub_parse_skill_item @ tools/skills_hub.py:_parse_skill_item */

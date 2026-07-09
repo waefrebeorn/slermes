@@ -152,12 +152,6 @@ char *tts_tool_resolve_command_provider_config(const char *provider, const char 
 }
 
 /* Port of Python: _plugin_provider_is_voice_compatible */
-/* PoP: tts_tool_plugin_provider_is_voice_compatible @ tools/tts_tool.py:_plugin_provider_is_voice_compatible */
-bool tts_tool_plugin_provider_is_voice_compatible(const char *provider, const char *voice)
-{
-    (void)provider; (void)voice;
-    return true;
-}
 
 /* Port of Python: _iter_command_providers */
 /* PoP: tts_tool_iter_command_providers @ tools/tts_tool.py:_iter_command_providers */
@@ -182,100 +176,22 @@ int tts_tool_get_command_tts_timeout(const char *config_json)
 }
 
 /* Port of Python: _get_command_tts_output_format */
-/* PoP: tts_tool_get_command_tts_output_format @ tools/tts_tool.py:_get_command_tts_output_format */
-char *tts_tool_get_command_tts_output_format(const char *config_json)
-{
-    if (!config_json) return strdup("wav");
-    return strdup("wav");
-}
 
 /* Port of Python: _is_command_tts_voice_compatible */
-/* PoP: tts_tool_is_command_tts_voice_compatible @ tools/tts_tool.py:_is_command_tts_voice_compatible */
-bool tts_tool_is_command_tts_voice_compatible(const char *config_json, const char *voice)
-{
-    (void)config_json; (void)voice;
-    return true;
-}
 
 /* Port of Python: _render_command_tts_template */
-/* PoP: tts_tool_render_command_tts_template @ tools/tts_tool.py:_render_command_tts_template */
-char *tts_tool_render_command_tts_template(const char *template_str, const char *text, const char *voice)
-{
-    if (!template_str) return NULL;
-    if (!text) text = "";
-    if (!voice) voice = "default";
-    
-    size_t len = strlen(template_str) + strlen(text) + strlen(voice) + 64;
-    char *result = malloc(len);
-    if (!result) return NULL;
-    
-    /* Simple template substitution: {text} -> text, {voice} -> voice */
-    const char *src = template_str;
-    char *dst = result;
-    while (*src && (dst - result) < (long)len - 1) {
-        if (strncmp(src, "{text}", 6) == 0) {
-            strcpy(dst, text);
-            dst += strlen(text);
-            src += 6;
-        } else if (strncmp(src, "{voice}", 7) == 0) {
-            strcpy(dst, voice);
-            dst += strlen(voice);
-            src += 7;
-        } else {
-            *dst++ = *src++;
-        }
-    }
-    *dst = '\0';
-    return result;
-}
 
 /* Port of Python: _terminate_command_tts_process_tree */
-/* PoP: tts_tool_terminate_command_tts_process_tree @ tools/tts_tool.py:_terminate_command_tts_process_tree */
-bool tts_tool_terminate_command_tts_process_tree(pid_t pid)
-{
-    (void)pid;
-    hermes_log(LOG_DEBUG, "port", "_terminate_command_tts_process_tree");
-    return true;
-}
 
 /* Port of Python: _run_command_tts */
-/* PoP: tts_tool_run_command_tts @ tools/tts_tool.py:_run_command_tts */
-char *tts_tool_run_command_tts(const char *command, const char *text, const char *voice)
-{
-    (void)command; (void)text; (void)voice;
-    hermes_log(LOG_DEBUG, "port", "_run_command_tts");
-    return strdup("{}");
-}
 
 /* Port of Python: _configured_command_tts_output_path */
-/* PoP: tts_tool_configured_command_tts_output_path @ tools/tts_tool.py:_configured_command_tts_output_path */
-char *tts_tool_configured_command_tts_output_path(const char *config_json)
-{
-    (void)config_json;
-    return strdup("/tmp/tts_output.wav");
-}
 
 /* Port of Python: _generate_command_tts */
-/* PoP: tts_tool_generate_command_tts @ tools/tts_tool.py:_generate_command_tts */
-char *tts_tool_generate_command_tts(const char *provider, const char *text, const char *voice)
-{
-    (void)provider; (void)text; (void)voice;
-    return strdup("{}");
-}
 
 /* Port of Python: _has_any_command_tts_provider */
-/* PoP: tts_tool_has_any_command_tts_provider @ tools/tts_tool.py:_has_any_command_tts_provider */
-bool tts_tool_has_any_command_tts_provider(void)
-{
-    return true;
-}
 
 /* Port of Python: _has_ffmpeg */
-/* PoP: tts_tool_has_ffmpeg @ tools/tts_tool.py:_has_ffmpeg */
-bool tts_tool_has_ffmpeg(void)
-{
-    return true;
-}
 
 /* Port of Python: _convert_to_opus */
 /* PoP: tts_tool_convert_to_opus @ tools/tts_tool.py:_convert_to_opus */
@@ -373,57 +289,16 @@ bool tts_tool_gemini_model_supports_audio_tags(const char *model)
 }
 
 /* Port of Python: _gemini_audio_tags_enabled */
-/* PoP: tts_tool_gemini_audio_tags_enabled @ tools/tts_tool.py:_gemini_audio_tags_enabled */
-bool tts_tool_gemini_audio_tags_enabled(const char *config_json)
-{
-    (void)config_json;
-    return true;
-}
 
 /* Port of Python: _clean_gemini_audio_tag_rewrite */
-/* PoP: tts_tool_clean_gemini_audio_tag_rewrite @ tools/tts_tool.py:_clean_gemini_audio_tag_rewrite */
-char *tts_tool_clean_gemini_audio_tag_rewrite(const char *text)
-{
-    if (!text) return strdup("");
-    return strdup(text);
-}
 
 /* Port of Python: _extract_auxiliary_message_content */
-/* PoP: tts_tool_extract_auxiliary_message_content @ tools/tts_tool.py:_extract_auxiliary_message_content */
-char *tts_tool_extract_auxiliary_message_content(const char *msg_json)
-{
-    if (!msg_json) return strdup("");
-    return strdup(msg_json);
-}
 
 /* Port of Python: _rewrite_gemini_tts_audio_tags */
-/* PoP: tts_tool_rewrite_gemini_tts_audio_tags @ tools/tts_tool.py:_rewrite_gemini_tts_audio_tags */
-char *tts_tool_rewrite_gemini_tts_audio_tags(const char *text)
-{
-    if (!text) return strdup("");
-    return strdup(text);
-}
 
 /* Port of Python: _compose_gemini_tts_prompt */
-/* PoP: tts_tool_compose_gemini_tts_prompt @ tools/tts_tool.py:_compose_gemini_tts_prompt */
-char *tts_tool_compose_gemini_tts_prompt(const char *text, const char *voice, const char *persona)
-{
-    (void)voice; (void)persona;
-    if (!text) return strdup("");
-    size_t len = strlen(text) + 64;
-    char *result = malloc(len);
-    if (!result) return NULL;
-    snprintf(result, len, "Say: %s", text);
-    return result;
-}
 
 /* Port of Python: _generate_gemini_tts */
-/* PoP: tts_tool_generate_gemini_tts @ tools/tts_tool.py:_generate_gemini_tts */
-char *tts_tool_generate_gemini_tts(const char *text, const char *voice)
-{
-    (void)text; (void)voice;
-    return strdup("{}");
-}
 
 /* Port of Python: _check_neutts_available */
 /* PoP: tts_tool_check_neutts_available @ tools/tts_tool.py:_check_neutts_available */
@@ -440,26 +315,10 @@ bool tts_tool_check_kittentts_available(void)
 }
 
 /* Port of Python: _default_neutts_ref_audio */
-/* PoP: tts_tool_default_neutts_ref_audio @ tools/tts_tool.py:_default_neutts_ref_audio */
-char *tts_tool_default_neutts_ref_audio(void)
-{
-    return strdup("/usr/share/neutts/ref.wav");
-}
 
 /* Port of Python: _default_neutts_ref_text */
-/* PoP: tts_tool_default_neutts_ref_text @ tools/tts_tool.py:_default_neutts_ref_text */
-char *tts_tool_default_neutts_ref_text(void)
-{
-    return strdup("Reference text for NeUTTS");
-}
 
 /* Port of Python: _generate_neutts */
-/* PoP: tts_tool_generate_neutts @ tools/tts_tool.py:_generate_neutts */
-char *tts_tool_generate_neutts(const char *text, const char *voice)
-{
-    (void)text; (void)voice;
-    return strdup("{}");
-}
 
 /* Port of Python: _check_piper_available */
 /* PoP: tts_tool_check_piper_available @ tools/tts_tool.py:_check_piper_available */

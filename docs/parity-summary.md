@@ -1,27 +1,29 @@
-# Slermes C11 Parity — Live State (v546)
+# Slermes C11 Parity — Live State (v547)
 
 **Generated:** 2026-07-08 by `slermes_parity_battleground.py` (live scanner)
 
-## Overall Numbers (live, end v546)
+## Overall Numbers (live, end v547)
 
 | Classification | Count | Percentage | Meaning |
 |----------------|-------|------------|---------|
-| **PORTED** | 4,994 | 51.3% | C11 implementation with PoP annotation |
-| **REAL_GAP** | 4,692 | 48.2% | Honest gaps (IO/network/DB/credential-coupled — NOT faked) |
-| **PARTIAL** | 45 | 0.5% | C fn exists, no PoP annotation yet |
+| **PORTED** | 4,931 | 50.7% | C11 implementation with PoP annotation |
+| **REAL_GAP** | 4,754 | 48.9% | Honest gaps (IO/network/DB/credential-coupled — NOT faked) |
+| **PARTIAL** | 46 | 0.5% | C fn exists, no PoP annotation yet |
 | **TOTAL** | 9,731 | 100% | All Python functions/methods scanned |
 
-> **⚠ FACADE WARNING (v546 checkpoint):** the 4,994 PORTED count is INFLATED.
-> An automated audit of all 233 `port_*.c` found **133 PoP-annotated functions
-> whose entire body is `hermes_log(...) + (void)arg + return <hardcoded const>`**
-> — they pass the scanner AND the semantic depth-check but do NONE of the
-> Python's real work. **110 are fraudulent** (caller lied to / real work
-> skipped), concentrated in `tools/skills_hub.py` (38), `tools/tts_tool.py`
-> (19), `tools/browser_tool.py` (13), `tools/mcp_tool.py` (10),
-> `tools/file_operations.py` (10). 23 are honest-limitation (SDK getter → NULL,
-> `__enter__`/`__exit__` → 0). Itemized in `docs/facade_audit.md`. These were
-> bulk-credited in v541/v542 and are NOT honest ports. The genuine leaf closures
-> (v543–v546, incl. v546's 11 oracle-verified ports) are real and must stay.
+> **✓ FACADE ERADICATION COMPLETE (v547):** the v546 audit found **110 fraudulent
+> façades** (PoP-annotated functions whose body was `hermes_log(...) + (void)arg +
+> return <hardcoded const>` — passing the scanner + depth-check but doing NONE of
+> the Python's real work). v547 **deleted all 110 fake `PoP:` annotations and their
+> no-op bodies** across 18 port files. Result: PORTED 4,994 → **4,931** (−63 net;
+> the apparent −63 vs −110 gap is because 47 of the façade python-feature names
+> collide in the scanner with *surviving sibling* C functions, so the credit
+> shifted to a real function rather than to the deleted façade — none of the 110
+> façades remains credited as PORTED, verified). REAL_GAP 4,692 → **4,754** (+62).
+> Build: clean (0 errors), `run_mission8_tests.sh`: **36 passed / 0 failed / 35
+> skipped**. The 23 honest-limitation façades (SDK getter → NULL, `__enter__`/
+> `__exit__` → 0) were left intact — their const return is *truthful in C*.
+> The v543–v546 oracle-verified leaf closures are untouched and remain genuine.
 
 > **Honesty note (v545):** v545 resumed auto-pilot and ran the real re-scan
 > the v544 prompt demanded. The "exhausted pure supply" assumption was WRONG —
