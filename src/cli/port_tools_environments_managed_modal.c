@@ -58,26 +58,16 @@ json_node_t* cli_tools_environments_managed_modal__start_modal_exec(const char *
         }
         return err;
     }
-    hermes_log(LOG_INFO, "managed_modal",
-               "_start_modal_exec: sandbox=%s starting exec", sandbox_id);
-    /* Build exec payload from prepared command */
-    json_node_t *payload = json_new_object();
-    if (payload) {
-        json_object_set(payload, "execId", json_new_string("exec-placeholder"));
-        json_node_t *cmd = json_object_get(prepared, "command");
-        json_object_set(payload, "command", cmd ? cmd : json_new_string(""));
-        json_node_t *cwd = json_object_get(prepared, "cwd");
-        json_object_set(payload, "cwd", cwd ? cwd : json_new_string("/root"));
-        json_object_set(payload, "timeoutMs", json_new_number(60000));
+    hermes_log(LOG_WARNING, "managed_modal",
+               "_start_modal_exec: sandbox=%s — exec not implemented in C port (managed gateway POST not wired)",
+               sandbox_id);
+    json_node_t *err = json_new_object();
+    if (err) {
+        json_object_set(err, "error",
+            json_new_string("Managed Modal exec not implemented in C port: gateway transport not wired"));
+        json_object_set(err, "returncode", json_new_number(1));
     }
-    /* Return handle for polling */
-    json_node_t *result = json_new_object();
-    if (result) {
-        json_object_set(result, "status", json_new_string("running"));
-        json_object_set(result, "execId", json_new_string("exec-placeholder"));
-        json_object_set(result, "sandboxId", json_new_string(sandbox_id));
-    }
-    return result;
+    return err;
 }
 
 /* PoP: cli_tools_environments_managed_modal__poll_modal_exec @ tools/environments/managed_modal.py:_poll_modal_exec */
@@ -145,16 +135,15 @@ json_node_t* cli_tools_environments_managed_modal__create_sandbox(const char *im
         }
         return err;
     }
-    hermes_log(LOG_INFO, "managed_modal",
-               "_create_sandbox: image=%s cwd=%s timeout=%d", image, cwd ? cwd : "/root", timeout);
-    json_node_t *result = json_new_object();
-    if (result) {
-        json_object_set(result, "id", json_new_string("sandbox-placeholder"));
-        json_object_set(result, "image", json_new_string(image));
-        json_object_set(result, "cwd", json_new_string(cwd ? cwd : "/root"));
-        json_object_set(result, "status", json_new_string("created"));
+    hermes_log(LOG_WARNING, "managed_modal",
+               "_create_sandbox: image=%s — sandbox creation not implemented in C port",
+               image);
+    json_node_t *err = json_new_object();
+    if (err) {
+        json_object_set(err, "error",
+            json_new_string("Managed Modal sandbox creation not implemented in C port: gateway transport not wired"));
     }
-    return result;
+    return err;
 }
 
 /* PoP: cli_tools_environments_managed_modal__cancel_exec @ tools/environments/managed_modal.py:_cancel_exec */

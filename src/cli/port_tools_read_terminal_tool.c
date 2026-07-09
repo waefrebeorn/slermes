@@ -16,21 +16,13 @@
 char *cli_tools_read_terminal_tool_read_terminal_tool(
     int start_line, int count, int use_callback)
 {
-    if (!use_callback) {
-        return strdup("{\"error\":\"read_terminal is only available in the Hermes desktop app.\"}");
-    }
+    (void)start_line; (void)count; (void)use_callback;
 
-    /* In a full implementation, this would call the desktop GUI callback
-     * to get the terminal contents. For now, return a placeholder JSON. */
-    char *json = (char *)malloc(512);
-    if (!json) return NULL;
-
-    snprintf(json, 512,
-        "{\"total_lines\":0,\"start\":%d,\"end\":%d,\"viewport_rows\":0,"
-        "\"cursor_row\":0,\"text\":\"\"}",
-        start_line, start_line + count);
-
-    return json;
+    /* The Hermes desktop app round-trips terminal reads through the GUI
+     * renderer's callback. That renderer is not present in the C port, so
+     * there is no terminal to read. Report it honestly rather than returning
+     * empty/placeholder contents that would look like a successful read. */
+    return strdup("{\"error\":\"read_terminal is only available in the Hermes desktop app.\"}");
 }
 
 /* PoP: cli_tools_read_terminal_tool_check_read_terminal_requirements @ tools/read_terminal_tool.py:check_read_terminal_requirements */

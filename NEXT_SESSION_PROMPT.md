@@ -1,91 +1,94 @@
-# Slermes v551 Session Prompt — RESIDUAL FACADE SWEEP + MONOLITH SPLIT
-Branch: main (v550 HEAD bf8cce32ff pushed to origin/main)
+# 📋 Next-Session Prompt (copy-paste ready)
+# Slermes v552 Session Prompt -- MONOLITH SPLIT CONTINUATION + ORACLE-DRIVEN FIDELITY
+Branch: main (v551 HEAD pushed to origin/main)
 Working dir: /home/wubu/hermes-agent-dev/slermes
-Python sources: /home/wubu/hermes-agent-dev/  (parent repo — NOT inside slermes/)
+Python sources: /home/wubu/hermes-agent-dev/  (parent repo -- NOT inside slermes/)
 Date anchor: 2026-07-09
 
-## Context (what v550 delivered)
-v550 continued the NEW EDICT (no fake-success stubs; read Python, implement
-real C or honestly demote). Fixed 3 genuine façades:
-- `port_browser_supervisor.c`: `respond_to_dialog` + `evaluate_runtime` were
-  fakes (logged, returned ok:true with no CDP call / '[Runtime evaluation
-  result]'). Now send the REAL Page.handleJavaScriptDialog / Runtime.evaluate
-  commands via the tree's existing CDP client (browser_cdp_tool__cdp_call).
-- NEW `include/port_tools_browser_cdp_tool.h` — focused module header declaring
-  the CDP client API (kills the implicit-declaration debt; supervisor calls it
-  cleanly, no god header).
-- `port_web_tools.c`: `web_extract_tool` was a FRAUD (success:true + fake
-  '[Content extracted via ...]' content). Now returns honest per-URL
-  success:false error + overall success:false. Python calls a remote provider
-  API (firecrawl/tavily/exa) — C-unimplementable at call time without a real
-  extract client; faking success was the violation.
-Build: clean (0 errors). mission8: 36/0/35. Scanner unchanged (these are
-infra/SDK-class, not in PORTED/REAL_GAP movement).
+## Context (what v551 delivered)
+v551 ran the residual-façade adjudication (the v550 ~12 backlog) AND continued
+the refactor-first monolith split:
+- **Residual façades:** read REAL Python for each of the ~12 candidates; 11/12
+  honestly demoted (no fake success — returned honest error/NULL/claimed:false);
+  1 retained as a genuine platform gap (process_registry Windows branch).
+  0 genuine fakes remain (banned-phrase grep: 15 benign anti-placeholder /
+  secret-detection hits only).
+- **Monolith split x2 (oracle-verified):** `cron_prompt_sanitize.{h,c}` and
+  `file_text_ops.{h,c}` extracted as self-contained C11 modules. Each is
+  verified C == LIVE Python (0 mismatches): cron oracle 19/0, file_text oracle
+  23/0. The oracles caught and we fixed REAL bugs in both (ZWJ byte-offset
+  decode, dangling pointer, CSI over-strip, detect_line_ending lone-CR,
+  add_line_numbers gutter, escape_shell_arg quoting, parse_search_context_line
+  regex, threat-matcher fidelity, GitHub-auth strip, frozenset iteration order).
+- Build: clean (0 errors). mission8: 36 passed / 0 failed / 35 skipped.
+- Scanner PORTED/REAL_GAP unchanged (demotions + splits are SDK/platform-class,
+  classified NA_SDK by the scanner).
 
-## Residual-façade sweep — remaining backlog (from v550 grep)
-80 banned-phrase hits across 233 port_*.c. MOST ARE BENIGN (config/template
-"placeholder" terminology, secret-value placeholder detection, comments about
-unrelated Python core stubs). The GENUINE placeholder/stub returns needing
-per-function Python adjudication (real gap vs implementable):
-- src/cli/port_tools_read_terminal_tool.c:24 — "return a placeholder JSON"
-- src/cli/port_main_na.c:48 — "create a placeholder" version
-- src/cli/port_agent_plugin_llm.c:33 — "return a placeholder"
-- src/cli/port_agent_copilot_acp_client.c:65 — "return a placeholder indicating the subprocess"
-- src/cli/port_tools_environments_managed_modal.c:66,77,152 — "exec-placeholder"/"sandbox-placeholder"
-- src/cli/port_tools_environments_modal_utils.c:155 — "exec-placeholder"
-- src/cli/port_tools_video_generation_tool.c:14,16,221 — "Stub: provider resolution not ported yet" / result placeholder
-- src/cli/port_tools_yuanbao_tools.c:19 — "Stub: adapter resolution not ported yet"
-- src/tools/port_cronjob_tools.c:904,908,974 — "cronjob stub: dispatch not fully ported" / "execute_job_now: C port stub"
-- src/tools/port_kanban_tools.c:156,164 — "stub that logs the attempt"
-- src/tools/port_image_generation_tool.c:1412 — "deprecated stub" returning error (mostly honest)
-- src/tools/port_process_registry.c:460 — "Not implemented for Windows in this port" (platform gap)
+## v552 Mission (continue; do NOT regress the v551 oracle gates)
+The codebase must keep shedding monoliths. Remaining PENDING monoliths
+(line counts at v551 start):
+- src/tools/port_browser_supervisor.c (~609)
+- src/tools/port_web_tools.c (~451)
+- src/tools/port_skills_sync.c (~1723)
+- src/tools/port_image_generation_tool.c (~1508)
+- src/tools/port_send_message_tool.c (~886)
+- src/tools/port_file_operations.c — already shrunk by file_text_ops split
+  (~30 -> ~19 fns); extract the next cohesive cluster (file read/write/patch
+  ops: read_file_raw, delete_path, patch_replace, patch_v4a, is_likely_binary,
+  is_image, detect_file_line_ending, file_has_bom) into `file_fs_ops.{h,c}`.
 
-## The Mission (v551)
-Per-function adjudication — for EACH genuine candidate above: read the real
-Python, decide HONESTLY:
-- Real work fallible in C with an available C backend/capability → implement
-  for real (like the browser CDP fix).
-- Genuinely C-unimplementable at call time (remote cloud/SDK, live browser
-  session C doesn't reach, platform gap) → return an honest error / NULL
-  (like the v547 SDK-getter → NULL truthful returns), NOT fake success.
-- Delete any no-op that only hermes_log/(void)arg with no Python-equivalent
-  work.
-
-ALSO continue the refactor-first monolith split (v550's other half):
-extract cohesive concerns from PENDING monoliths (port_file_operations.c
-residual, port_browser_supervisor.c ~600, port_web_tools.c ~450,
-port_skills_sync.c ~1600, port_image_generation_tool.c ~1400,
-port_cronjob_tools.c ~1000, port_send_message_tool.c ~480) into self-contained
-opaque-struct C11 modules. No god headers, no void* passthrough.
+For EACH monolith you touch:
+1. Identify a cohesive, oracle-verifiable concern (pure functions first).
+2. Extract into `src/tools/<name>.{h,c}` with opaque-or-stateless API, focused
+   includes, NO hermes.h god header, NO void* passthrough, a /* PoP: c @
+   module.py:_py */ on every public fn.
+3. Factor shared logic into static helpers; delete the dead duplicate cluster
+   from the monolith (leave thin delegates where the public symbol is still
+   referenced elsewhere).
+4. Register the new .o in build/objects.mk (TOOLS_OBJ).
+5. Write a tests/t_port_<name>.c + tests/sta_oracle_<name>.py that proves
+   C == LIVE Python (0 mismatches). Pin PYTHONHASHSEED=0 for any set-order-
+   dependent fn. Run `python3 <module>.py` against the REAL parent-repo Python.
+6. `make slermes` 0 errors; `bash tests/run_mission8_tests.sh` -> 36 passed / 0 failed.
 
 ## Hard rules (unchanged + reinforced)
-- Opaque struct in .h, private fields in .c. NO hermes.h god header in
-  port_*.c. NO void* passthrough. NO "In a real implementation" / "not fully
-  implemented" / placeholder-success comments — implement the actual function
-  or return an honest error.
-- Every public function gets a `/* PoP: c @ module.py:_py */` annotation.
+- Opaque struct in .h, private fields in .c. NO hermes.h god header in port_*.c.
+  NO void* passthrough. NO "In a real implementation" / "not fully implemented"
+  / placeholder-success comments — implement the actual function or return an
+  honest error.
+- Every public function gets a /* PoP: c @ module.py:_py */ annotation.
 - Reuse: factor shared logic into static helpers (don't duplicate).
 - Per closure: read REAL Python, implement real C, ORACLE-verify (C == LIVE
-  Python, 0 mismatches) where a live-equivalent exists. If the project's C lib
-  is lenient where Python is strict, delegate to python3 for the strict check
-  rather than ship a fidelity gap.
-- make slermes 0 errors. bash tests/run_mission8_tests.sh → 36/35.
-- v543–v546 oracle-verified leaf closures stay untouched.
+  Python, 0 mismatches). If the project's C lib is lenient where Python is
+  strict, delegate to python3 for the strict check rather than ship a fidelity
+  gap.
+- The v551 oracles (tests/sta_oracle_cron_prompt_sanitize.py,
+  tests/sta_oracle_file_text_ops.py) MUST keep passing (0 mismatches) after
+  your changes — re-run them in CI before commit.
+- make slermes 0 errors. bash tests/run_mission8_tests.sh -> 36/0.
+- v543-v546 oracle-verified leaf closures stay untouched.
 
-## Done-when for v551
-- Every genuine placeholder/stub return in the backlog above is adjudicated:
-  implemented for real OR honestly demoted (no fake-success remains).
-- At least 1 more PENDING monolith has a cohesive concern extracted into a
-  self-contained module.
+## Done-when for v552
+- At least 2 more PENDING monoliths have a cohesive concern extracted into a
+  self-contained module (oracle-verified, 0 mismatches).
+- All new + existing oracles pass (0 mismatches).
 - Build clean, mission8 green, residual-façade grep shows 0 genuine fakes.
+- process_registry Windows branch: either implement the real Windows path or
+  leave an honest platform-gap comment (no fake success).
 
 ## Prestige (session end)
-Update BANNER.md + docs/parity-summary.md + append v551 to STATE.md +
-write NEXT_SESSION_PROMPT.md (v551→v552) + commit + push.
-Report: facades fixed/demoted, modules extracted, build/test/oracle, what's left.
+Update BANNER.md + docs/parity-summary.md + append v552 to STATE.md +
+write NEXT_SESSION_PROMPT.md (v552->v553) + commit + push.
+Report: modules extracted, oracle results (cases/mismatches), build/test,
+what's left.
 
 ## Copy-paste ready
-Slermes v551: adjudicate the residual-façade backlog (read each Python, implement
-real C or honestly demote — no fake success) AND continue refactor-first
-monolith split into self-contained opaque-struct C11 modules; build 0 errors,
-36/35 mission8, no god headers, no void* passthrough.
+Slermes v552: continue refactor-first monolith split into self-contained
+opaque-struct/oracle-verified C11 modules (no god headers, no void*
+passthrough, every fn PoP-annotated); keep build 0 errors, 36/0 mission8, and
+the v551 oracles at 0 mismatches.
+
+The prompt is also saved at NEXT_SESSION_PROMPT.md (repo) and
+/home/wubu/NEXT_SESSION_PROMPT.md.
+Goal status: NOT complete — the monolith-split continuation (4+ pending
+monoliths) and the v552 oracle gates are explicitly carried to v552.

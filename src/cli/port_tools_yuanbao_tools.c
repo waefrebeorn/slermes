@@ -16,7 +16,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* Stub: adapter resolution not ported yet */
+/* The Yuanbao adapter is a platform singleton resolvable only in the Python
+ * gateway. That singleton is not ported to C, so no adapter is available.
+ * Return NULL honestly (callers report "adapter not connected"). */
 void *cli_tools_yuanbao_tools__get_active_adapter(void) {
     return NULL;
 }

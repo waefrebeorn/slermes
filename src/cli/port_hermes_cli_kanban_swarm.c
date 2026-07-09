@@ -69,12 +69,15 @@ int cli_hermes_cli_kanban_swarm_create_swarm(
         return -1;
     }
     (void)root_title;
-    /* CLI port: kanban DB operations require the kanban_db module. */
-    /* Generate a placeholder root ID. */
-    snprintf(root_id_out, root_id_size, "swarm-root-%ld", (long)time(NULL));
-    hermes_log(LOG_DEBUG, "kanban_swarm",
-               "create_swarm: root=%s goal=%.40s", root_id_out, goal);
-    return 0;
+    (void)root_id_out;
+    /* Python inserts a real swarm graph (root + worker + verifier +
+     * synthesizer tasks, idempotency, blackboard) into the kanban DB.
+     * That kanban_db write is not ported to C, so we cannot create the
+     * swarm. Report failure honestly rather than fabricating a root id and
+     * returning success. */
+    hermes_log(LOG_WARNING, "kanban_swarm",
+        "create_swarm: not implemented in C port (kanban DB write not wired)");
+    return -1;
 }
 
 /* PoP: cli_hermes_cli_kanban_swarm_post_blackboard_update @ hermes_cli/kanban_swarm.py:post_blackboard_update */
@@ -88,10 +91,12 @@ int cli_hermes_cli_kanban_swarm_post_blackboard_update(
     if (!root_id || !author || !key || !value_json) {
         return -1;
     }
-    hermes_log(LOG_DEBUG, "kanban_swarm",
-               "blackboard_update: root=%s author=%s key=%s",
-               root_id, author, key);
-    return 0;
+    /* Python appends a structured comment to the kanban root card. That DB
+     * write is not ported to C, so we cannot post the update. Report failure
+     * honestly rather than returning success with no write performed. */
+    hermes_log(LOG_WARNING, "kanban_swarm",
+        "blackboard_update: not implemented in C port (kanban DB write not wired)");
+    return -1;
 }
 
 /* PoP: cli_hermes_cli_kanban_swarm_latest_blackboard @ hermes_cli/kanban_swarm.py:latest_blackboard */

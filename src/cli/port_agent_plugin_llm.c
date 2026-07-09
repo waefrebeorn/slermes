@@ -24,14 +24,9 @@ char *cli_agent_plugin_llm_acomplete(
     hermes_log(LOG_DEBUG, "plugin_llm", "acomplete: provider=%s model=%s",
         provider ? provider : "(default)", model ? model : "(default)");
 
-    /* In a full implementation, this would:
-     * 1. Load the plugin policy
-     * 2. Check provider/model overrides
-     * 3. Call the LLM via auxiliary_client
-     * 4. Return the response
-     *
-     * For now, return a placeholder.
-     */
+    /* The plugin LLM requires the async client integration that is not present
+     * in the C port. Return an honest not_implemented status rather than fake
+     * completions. */
     size_t buf_size = 512;
     char *result = (char *)malloc(buf_size);
     if (!result) return NULL;
@@ -87,8 +82,8 @@ char *cli_agent_plugin_llm__invoke_async(
         provider_override ? provider_override : "(none)",
         model_override ? model_override : "(none)");
 
-    /* In a full implementation, this would call async_call_llm
-     * from the auxiliary_client module. */
+    /* The plugin LLM's async invocation requires auxiliary_client, which is
+     * not ported to C. Return an honest not_implemented status. */
     size_t buf_size = 512;
     char *result = (char *)malloc(buf_size);
     if (!result) return NULL;

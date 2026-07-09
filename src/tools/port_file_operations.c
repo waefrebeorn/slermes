@@ -5,6 +5,7 @@
  */
 
 #include "port_file_operations.h"
+#include "file_text_ops.h"
 #include "hermes_logger.h"
 #include "hermes_json.h"
 #include <stdbool.h>
@@ -40,107 +41,42 @@ void port_file_operations_state_cleanup(port_file_operations_state_t *state)
 }
 
 /* ================================================================
- *  Terminal fence & line ending helpers
+ *  Stateless text-shaping helpers.
+ *  Extracted to src/tools/file_text_ops.{h,c} (v551 refactor-first
+ *  monolith split); each public entry point delegates to that
+ *  self-contained, oracle-verified module.
  * ================================================================ */
 
-/* Port of Python: _strip_terminal_fence_leaks */
 /* PoP: file_ops_strip_terminal_fence_leaks @ tools/file_operations.py:_strip_terminal_fence_leaks */
 char *file_ops_strip_terminal_fence_leaks(const char *text)
 {
-    if (!text) return strdup("");
-    /* Strip ANSI escape sequences and terminal control chars */
-    size_t len = strlen(text);
-    char *result = malloc(len + 1);
-    if (!result) return NULL;
-
-    const char *src = text;
-    char *dst = result;
-    while (*src) {
-        if (*src == '\033' && src[1] == '[') {
-            /* Skip ANSI escape sequence */
-            src += 2;
-            while (*src && (*src < 'A' || *src > 'Z') && (*src < 'a' || *src > 'z')) {
-                src++;
-            }
-            if (*src) src++;
-        } else {
-            *dst++ = *src++;
-        }
-    }
-    *dst = '\0';
-    return result;
+    return file_text_ops_strip_terminal_fence_leaks(text);
 }
 
-/* Port of Python: _detect_line_ending */
 /* PoP: file_ops_detect_line_ending @ tools/file_operations.py:_detect_line_ending */
 char *file_ops_detect_line_ending(const char *text)
 {
-    if (!text) return strdup("lf");
-    if (strstr(text, "\r\n")) return strdup("crlf");
-    if (strchr(text, '\r')) return strdup("cr");
-    return strdup("lf");
+    return file_text_ops_detect_line_ending(text);
 }
 
-/* Port of Python: _normalize_line_endings */
 /* PoP: file_ops_normalize_line_endings @ tools/file_operations.py:_normalize_line_endings */
 char *file_ops_normalize_line_endings(const char *text, const char *target)
 {
-    if (!text) return strdup("");
-    if (!target) target = "\n";
-
-    size_t len = strlen(text);
-    char *result = malloc(len * 2 + 1); /* Extra space for expansion */
-    if (!result) return NULL;
-
-    const char *src = text;
-    char *dst = result;
-    while (*src) {
-        if (*src == '\r') {
-            if (src[1] == '\n') {
-                strcpy(dst, target);
-                dst += strlen(target);
-                src += 2;
-            } else {
-                strcpy(dst, target);
-                dst += strlen(target);
-                src++;
-            }
-        } else if (*src == '\n') {
-            strcpy(dst, target);
-            dst += strlen(target);
-            src++;
-        } else {
-            *dst++ = *src++;
-        }
-    }
-    *dst = '\0';
-    return result;
+    return file_text_ops_normalize_line_endings(text, target);
 }
 
-/* Port of Python: _strip_bom */
 /* PoP: file_ops_strip_bom @ tools/file_operations.py:_strip_bom */
 char *file_ops_strip_bom(const char *text)
 {
-    if (!text) return strdup("");
-    if (strncmp(text, "\xEF\xBB\xBF", 3) == 0) {
-        return strdup(text + 3);
-    }
-    return strdup(text);
+    return file_text_ops_strip_bom(text);
 }
 
-/* Port of Python: _has_bom */
 /* PoP: file_ops_has_bom @ tools/file_operations.py:_has_bom */
 bool file_ops_has_bom(const char *text)
 {
-    if (!text) return false;
-    return strncmp(text, "\xEF\xBB\xBF", 3) == 0;
+    return file_text_ops_has_bom(text);
 }
 
-/* ================================================================
- *  Search & diagnostics helpers
- * ================================================================ */
-
-/* Port of Python: _search_stdout_and_limit */
 /* PoP: file_ops_search_stdout_and_limit @ tools/file_operations.py:_search_stdout_and_limit */
 char *file_ops_search_stdout_and_limit(const char *stdout_text, int limit)
 {
@@ -172,7 +108,6 @@ char *file_ops_search_stdout_and_limit(const char *stdout_text, int limit)
     return result;
 }
 
-/* Port of Python: _split_tool_diagnostics */
 /* PoP: file_ops_split_tool_diagnostics @ tools/file_operations.py:_split_tool_diagnostics */
 char *file_ops_split_tool_diagnostics(const char *diagnostics)
 {
@@ -181,16 +116,10 @@ char *file_ops_split_tool_diagnostics(const char *diagnostics)
     return strdup(diagnostics); /* Pass through for now */
 }
 
-/* Port of Python: _parse_search_context_line */
 /* PoP: file_ops_parse_search_context_line @ tools/file_operations.py:_parse_search_context_line */
 char *file_ops_parse_search_context_line(const char *line)
 {
-    if (!line) return strdup("{}");
-    json_t *root = json_object();
-    json_set(root, "line", json_string(line));
-    char *s = json_serialize(root);
-    json_free(root);
-    return s;
+    return file_text_ops_parse_search_context_line(line);
 }
 
 /* ================================================================
@@ -392,81 +321,19 @@ bool file_ops_is_image(const char *path)
 /* PoP: file_ops_add_line_numbers @ tools/file_operations.py:_add_line_numbers */
 char *file_ops_add_line_numbers(const char *content)
 {
-    if (!content) return strdup("");
-
-    size_t len = strlen(content);
-    char *result = malloc(len * 2 + 100); /* Extra space for line numbers */
-    if (!result) return NULL;
-
-    const char *src = content;
-    char *dst = result;
-    int line = 1;
-    bool at_line_start = true;
-
-    while (*src) {
-        if (at_line_start) {
-            dst += sprintf(dst, "%4d | ", line);
-            at_line_start = false;
-        }
-        *dst++ = *src;
-        if (*src == '\n') {
-            line++;
-            at_line_start = true;
-        }
-        src++;
-    }
-    *dst = '\0';
-    return result;
+    return file_text_ops_add_line_numbers(content, 1, 0);
 }
 
-/* Port of Python: _expand_path */
 /* PoP: file_ops_expand_path @ tools/file_operations.py:_expand_path */
 char *file_ops_expand_path(const char *path)
 {
-    if (!path) return strdup("");
-    if (path[0] != '~') return strdup(path);
-
-    const char *home = getenv("HOME");
-    if (!home) return strdup(path);
-
-    size_t len = strlen(home) + strlen(path);
-    char *result = malloc(len + 1);
-    if (!result) return NULL;
-    strcpy(result, home);
-    strcat(result, path + 1);
-    return result;
+    return file_text_ops_expand_path(path);
 }
 
-/* Port of Python: _escape_shell_arg */
 /* PoP: file_ops_escape_shell_arg @ tools/file_operations.py:_escape_shell_arg */
 char *file_ops_escape_shell_arg(const char *arg)
 {
-    if (!arg) return strdup("''");
-    if (strchr(arg, '\'') == NULL && strchr(arg, '"') == NULL &&
-        strchr(arg, '$') == NULL && strchr(arg, '`') == NULL &&
-        strchr(arg, '\\') == NULL && strchr(arg, ' ') == NULL) {
-        return strdup(arg); /* No escaping needed */
-    }
-
-    size_t len = strlen(arg);
-    char *result = malloc(len * 2 + 3);
-    if (!result) return NULL;
-
-    char *dst = result;
-    *dst++ = '\'';
-    for (const char *src = arg; *src; src++) {
-        if (*src == '\'') {
-            *dst++ = '\'';
-            *dst++ = '\\';
-            *dst++ = '\'';
-            *dst++ = '\'';
-        } else {
-            *dst++ = *src;
-        }
-    }
-    *dst++ = '\'';
-    *dst = '\0';
-    return result;
+    return file_text_ops_escape_shell_arg(arg);
 }
 
 /* ================================================================

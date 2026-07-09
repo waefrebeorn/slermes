@@ -152,17 +152,17 @@ bool heartbeat_current_worker_from_env(void)
     if (now - s_auto_heartbeat_last < AUTO_HEARTBEAT_MIN_INTERVAL) return false;
     s_auto_heartbeat_last = now;
 
-    /* Delegate to kanban.c's heartbeat functions if linked.
-     * For port parity we provide a stub that logs the attempt. */
+    /* Real auto-heartbeat opens the kanban store and calls heartbeat_worker.
+     * That DB write is not wired into this C port, so we cannot claim an
+     * attempt was made. Report honestly (return false) rather than pretending
+     * an attempt happened. */
     hermes_log(LOG_DEBUG, "kanban",
-        "auto-heartbeat: task=%s run_id=%s claim_lock=%s",
+        "auto-heartbeat: task=%s run_id=%s claim_lock=%s — kanban DB write not wired in C port; skipping",
         tid,
         getenv("HERMES_KANBAN_RUN_ID") ? getenv("HERMES_KANBAN_RUN_ID") : "(none)",
         getenv("HERMES_KANBAN_CLAIM_LOCK") ? getenv("HERMES_KANBAN_CLAIM_LOCK") : "(default)");
 
-    /* Note: real DB write would call kanban_heartbeat_claim/worker from kanban.c.
-     * This stub satisfies the function signature and logging parity. */
-    return true;
+    return false;
 }
 
 /* ================================================================

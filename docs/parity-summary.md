@@ -1,10 +1,11 @@
-# Slermes C11 Parity — Live State (v550)
+# Slermes C11 Parity — Live State (v551)
 
 **Generated:** 2026-07-09 by `slermes_parity_battleground.py` (live scanner)
 
-## Overall Numbers (live, end v550 — unchanged from v548; v549/v550 fixes are
+## Overall Numbers (live, end v551 — unchanged from v550; v549/v550/v551 fixes are
 infra/SDK-class features the scanner classifies NA_SDK, so they never moved
-PORTED/REAL_GAP)
+PORTED/REAL_GAP. v551 added 2 oracle-verified monolith splits + honest façade
+demotions; 0 STUB / 0 N/A maintained.)
 
 | Classification | Count | Percentage | Meaning |
 |----------------|-------|------------|---------|
