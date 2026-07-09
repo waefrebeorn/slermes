@@ -9,6 +9,7 @@
 #include <string.h>
 #include <time.h>
 #include <sys/stat.h>
+#include <ctype.h>
 
 /* PoP: cli_agent_model_metadata__get_model_metadata_cache_path @ agent/model_metadata.py:_get_model_metadata_cache_path */
 
@@ -89,4 +90,54 @@ int cli_agent_model_metadata__save_model_metadata_disk_cache(
     }
     fclose(f);
     return 0;
+}
+
+/* PoP: cli_agent_model_metadata_is_output_cap_error @ agent/model_metadata.py:is_output_cap_error */
+
+/* Port of Python agent/model_metadata.py:is_output_cap_error.
+ * Returns 1 if a 400 is about the OUTPUT cap (max_tokens) being too large. */
+int cli_agent_model_metadata_is_output_cap_error(const char *error_msg)
+{
+    if (!error_msg) return 0;
+    /* error_lower = error_msg.lower() — build a lower-cased copy. */
+    char lower[4096];
+    size_t n = 0;
+    for (const char *s = error_msg; *s && n + 1 < sizeof(lower); s++) {
+        unsigned char c = (unsigned char)*s;
+        lower[n++] = (char)tolower(c);
+        if (c == '\n') break; /* safety: bound length */
+    }
+    lower[n] = '\0';
+
+    /* mentions_output_param */
+    int mentions_output_param =
+        (strstr(lower, "max_tokens") != NULL) ||
+        (strstr(lower, "max_output_tokens") != NULL) ||
+        (strstr(lower, "max_completion_tokens") != NULL);
+    if (!mentions_output_param) return 0;
+
+    /* output_cap_signal — any of these substrings present. */
+    int output_cap_signal =
+        (strstr(lower, "range of max_tokens should be") != NULL) ||
+        (strstr(lower, "available_tokens") != NULL) ||
+        (strstr(lower, "available tokens") != NULL) ||
+        ((strstr(lower, "in the output") != NULL) &&
+         (strstr(lower, "maximum context length") != NULL)) ||
+        ((strstr(lower, "requested") != NULL) &&
+         (strstr(lower, "output tokens") != NULL)) ||
+        (strstr(lower, "should be") != NULL) ||
+        (strstr(lower, "less than or equal") != NULL) ||
+        (strstr(lower, "must be") != NULL);
+    if (!output_cap_signal) return 0;
+
+    /* input_overflow_signal — if present, it's a real context overflow. */
+    int input_overflow_signal =
+        (strstr(lower, "prompt is too long") != NULL) ||
+        (strstr(lower, "prompt too long") != NULL) ||
+        (strstr(lower, "input is too long") != NULL) ||
+        (strstr(lower, "input token") != NULL) ||
+        (strstr(lower, "prompt length") != NULL) ||
+        (strstr(lower, "prompt contains") != NULL) ||
+        (strstr(lower, "reduce the length") != NULL);
+    return input_overflow_signal ? 0 : 1;
 }

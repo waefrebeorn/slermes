@@ -1,13 +1,13 @@
-# Slermes C11 Parity — Live State (v545)
+# Slermes C11 Parity — Live State (v546)
 
 **Generated:** 2026-07-08 by `slermes_parity_battleground.py` (live scanner)
 
-## Overall Numbers (live, end v545)
+## Overall Numbers (live, end v546)
 
 | Classification | Count | Percentage | Meaning |
 |----------------|-------|------------|---------|
-| **PORTED** | 4,983 | 51.2% | C11 implementation with PoP annotation |
-| **REAL_GAP** | 4,703 | 48.3% | Honest gaps (IO/network/DB/credential-coupled — NOT faked) |
+| **PORTED** | 4,994 | 51.3% | C11 implementation with PoP annotation |
+| **REAL_GAP** | 4,692 | 48.2% | Honest gaps (IO/network/DB/credential-coupled — NOT faked) |
 | **PARTIAL** | 45 | 0.5% | C fn exists, no PoP annotation yet |
 | **TOTAL** | 9,731 | 100% | All Python functions/methods scanned |
 
@@ -38,6 +38,23 @@
 > 4,722), PORTED 4,977 (up 13). Every port verified byte-equivalent to LIVE
 > Python via harness + oracle (learning_graph_render 35/35, response_filters
 > 38/38, signal_format 16/16).
+
+> **Honesty note (v546):** v546 re-ran the live re-scan and continued pure-leaf
+> closure, extending EXISTING port files (no parallel dupes) plus one legit new
+> file (`port_agent_oneshot.c` — `agent/oneshot.py` had no prior port). All 11
+> ports oracle-verified byte-equivalent to LIVE Python (75 cases, 0 mismatches):
+> `agent/error_classifier.py` (`_is_openrouter_upstream_error`,
+> `_extract_upstream_provider_name`, 13/13), `tools/tool_result_storage.py`
+> (`_safe_result_filename` — re + SHA256, 8/8), `agent/model_metadata.py`
+> (`is_output_cap_error`, 12/12), `agent/display.py` (shell-summarization
+> cluster `_split_shell_words`/`_strip_shell_pipe_tail`/`_split_shell_compound`/
+> `_clean_shell_segment`/`_is_shell_boundary_echo`, 19/19),
+> `tools/xai_http.py` (`_coerce_expires_after`, 14/14), `agent/oneshot.py`
+> (`_strip_code_fence`, 9/9). Two bugs were caught against LIVE Python BEFORE
+> sign-off: a SHA256 digest length (24→12 hex chars) and a `splitlines()`
+> trailing-newline mismatch. End-v546 REAL_GAP: **4,692** (down 11 from v545's
+> 4,703), PORTED 4,994 (up 11). The "pure supply exhausted" claim was again
+> proven FALSE — 7 modules with existing port files still held pure leaves.
 
 ## What Reached Zero Gaps
 
