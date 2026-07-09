@@ -6,21 +6,24 @@
 
 | Classification | Count | Percentage | Meaning |
 |----------------|-------|------------|---------|
-| **PORTED** | 4,970 | 51.1% | C11 implementation with PoP annotation |
-| **REAL_GAP** | 4,716 | 48.5% | Honest gaps (IO/network/DB/credential-coupled — NOT faked) |
+| **PORTED** | 4,977 | 51.1% | C11 implementation with PoP annotation |
+| **REAL_GAP** | 4,709 | 48.4% | Honest gaps (IO/network/DB/credential-coupled — NOT faked) |
 | **PARTIAL** | 45 | 0.5% | C fn exists, no PoP annotation yet |
 | **TOTAL** | 9,731 | 100% | All Python functions/methods scanned |
 
-> **Honesty note (v544):** the v544 work extended the existing
-> `port_learning_graph_render_helpers.c` (the v543 helper) with 6 genuine,
-> oracle-verified leaf ports — `_clamp`, `_smoothstep`, `_rgb_to_hsl`,
-> `_hsl_to_rgb`, `_complementary_ink` (all of which already had faithful logic
-> as private statics but were never PoP-tagged, so the scanner still counted
-> them) plus the genuinely-missing `format_date`. No new files, no parallel
-> dupes, no false cross-credits. End-v544 REAL_GAP: **4,716** (down 6 from
-> v543's 4,722), PORTED 4,970 (up 6). Every port verified byte-equivalent to
-> LIVE Python via `t_port_learning_graph_render_helpers.c` + `sta_oracle_lgr.py`
-> (35/35 cases: normal + boundary inputs).
+> **Honesty note (v544):** the v544 work extended existing `*_helpers.c`
+> files with genuine, oracle-verified leaf ports — no new parallel files, no
+> false cross-credits. Closures: `port_learning_graph_render_helpers.c`
+> (+5 leaves: `_to_ts`, `_period_key`, `_period_label`, `_node_score`,
+> `_node_meta`, on top of v543's 6), `port_gateway_response_filters.c`
+> (`is_partial_silence_marker` + a marker-set fix to match LIVE Python's
+> `LIVE_GATEWAY_SILENT_MARKERS` exactly), and `port_gateway_signal_format.c`
+> (new `markdown_to_signal` faithful port, PCRE2-backed). Also found and fixed
+> a pre-existing faithfulness bug in `response_filters` (its marker set had 7
+> entries vs Python's 4). End-v544 REAL_GAP: **4,709** (down 13 from v543's
+> 4,722), PORTED 4,977 (up 13). Every port verified byte-equivalent to LIVE
+> Python via harness + oracle (learning_graph_render 35/35, response_filters
+> 38/38, signal_format 16/16).
 
 ## What Reached Zero Gaps
 

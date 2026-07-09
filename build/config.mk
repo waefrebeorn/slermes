@@ -40,7 +40,7 @@ ifeq ($(UNAME_S),Linux)
 # Standard Linux (glibc)
         SSL_CFLAGS := $(shell pkg-config --cflags openssl 2>/dev/null || echo "")
         SSL_LDFLAGS := $(shell pkg-config --libs openssl 2>/dev/null || echo "-lssl -lcrypto")
-        PLATFORM_LDFLAGS := -ldl -lpthread -lz
+        PLATFORM_LDFLAGS := -ldl -lpthread -lz -lpcre2-8
         PLATFORM_LDFLAGS += $(shell pkg-config --libs wayland-client wayland-egl xkbcommon gbm EGL GLESv2 2>/dev/null || echo "-lwayland-client -lwayland-egl -lxkbcommon -lgbm -lEGL -lGLESv2")
         OS_DEF :=
     endif
@@ -48,7 +48,7 @@ else ifeq ($(UNAME_S),Darwin)
     BREW_SSL := $(shell brew --prefix openssl 2>/dev/null || echo /usr/local/opt/openssl)
     SSL_CFLAGS := -I$(BREW_SSL)/include
     SSL_LDFLAGS := -L$(BREW_SSL)/lib -lssl -lcrypto
-    PLATFORM_LDFLAGS := -ldl -lpthread -lz
+    PLATFORM_LDFLAGS := -ldl -lpthread -lz -lpcre2-8
     OS_DEF := -D__APPLE__
 else
 # musl/Alpine (non-Linux) or fallback

@@ -56,29 +56,39 @@ Net REAL_GAP closed this session: **10** (4,726 → 4,716).
 ## Live Scanner (end v544)
 | Metric | Value | Δ vs v543 |
 |--------|-------|-----------|
-| PORTED | 4,970 (51.1%) | +6 |
-| REAL_GAP | 4,716 (48.5%) | −6 |
+| PORTED | 4,977 (51.1%) | +13 |
+| REAL_GAP | 4,709 (48.4%) | −13 |
 | PARTIAL | 45 (0.5%) | 0 |
 | TOTAL | 9,731 | — |
 
-> **Why REAL_GAP went DOWN 6 (genuine):** v544 extended the existing
-> `port_learning_graph_render_helpers.c` with 6 oracle-verified leaf ports.
-> Five of them — `_clamp`, `_smoothstep`, `_rgb_to_hsl`, `_hsl_to_rgb`,
-> `_complementary_ink` — already had faithful logic as private static helpers
-> inside the v543 file but were never PoP-tagged, so the scanner still counted
-> them as REAL_GAP. The sixth, `format_date`, was genuinely missing and is now
-> implemented (UTC `%d %b %Y`, "unknown" on falsy/overflow, byte-equal to the
-> LIVE Python). No new files, no parallel dupes, no false cross-credits.
+> **Why REAL_GAP went DOWN 13 (genuine):** v544 extended existing `*_helpers.c`
+> files with oracle-verified leaf ports — no new parallel files, no false
+> cross-credits:
+> - `port_learning_graph_render_helpers.c` (+11 total: v543's 6 + 5 new leaves
+>   `_to_ts`, `_period_key`, `_period_label`, `_node_score`, `_node_meta`).
+> - `port_gateway_response_filters.c` (+1 `is_partial_silence_marker`) AND a
+>   marker-set fix so the already-credited `is_intentional_silence_response`
+>   matches LIVE Python's `LIVE_GATEWAY_SILENT_MARKERS` exactly (the legacy
+>   `SILENT_MARKERS[]` had 7 entries incl. `[SILENCE]`/`NO_RESPONSE` which Python
+>   does NOT treat as silence — a pre-existing faithfulness bug).
+> - `port_gateway_signal_format.c` (new file, +1 `markdown_to_signal` — a
+>   PCRE2-backed faithful port of the Signal markdown→bodyRanges transform,
+>   byte-equal to LIVE Python for both text and style strings).
+> Every port verified byte-equivalent to LIVE Python via a harness + oracle.
 
 ## v544 Genuine Commits (pushed)
 | Hash | File | Functions | Effect |
 |------|------|-----------|--------|
-| (pending push) | port_learning_graph_render_helpers.c | 6 | `_clamp`, `_smoothstep`, `_rgb_to_hsl`, `_hsl_to_rgb`, `_complementary_ink` (exposed faithful statics), `format_date` (new) → PORTED |
-| (new) | tests/t_port_learning_graph_render_helpers.c + tests/sta_oracle_lgr.py | — | Oracle harness: C output == LIVE Python, 35/35 cases (normal + boundary) |
+| 37aeaac720 | port_learning_graph_render_helpers.c | 6 | `_clamp`, `_smoothstep`, `_rgb_to_hsl`, `_hsl_to_rgb`, `_complementary_ink` (exposed faithful statics), `format_date` (new) → PORTED |
+| 065f7d4aee | port_learning_graph_render_helpers.c | 5 | `_to_ts`, `_period_key`, `_period_label`, `_node_score`, `_node_meta` → PORTED |
+| 2b47ceb19b | port_gateway_response_filters.c | 1 | `is_partial_silence_marker` + marker-set fix to match LIVE Python |
+| (new) | port_gateway_signal_format.c + build/objects.mk + build/config.mk | 1 | `markdown_to_signal` (PCRE2); +`-lpcre2-8` link |
+| (new) | tests/t_port_learning_graph_render_helpers.c + tests/sta_oracle_lgr.py | — | Oracle: 35/35 cases |
+| (new) | tests/t_port_gateway_response_filters.c + tests/sta_oracle_response_filters.py | — | Oracle: 38/38 cases |
+| (new) | tests/t_port_gateway_signal_format.c + tests/sta_oracle_signal_format.py | — | Oracle: 16/16 cases |
 
-Net genuine REAL_GAP closed this session: **6** (all verified byte-equivalent to
-LIVE Python via oracle harness — `t_port_learning_graph_render_helpers.c` +
-`sta_oracle_lgr.py`).
+Net genuine REAL_GAP closed this session: **13** (all verified byte-equivalent to
+LIVE Python via oracle harnesses).
 
 ## Faithfulness Method (replicated + hardened)
 - Read Python ±20 lines; confirm NO import-time IO/network/module-load deps.
@@ -92,18 +102,28 @@ LIVE Python via oracle harness — `t_port_learning_graph_render_helpers.c` +
   those with a PoP annotation is a genuine closure (the scanner credits the PoP,
   not the static) and costs zero new files. The "extend, don't duplicate" + "no
   speculative infrastructure" rules from AGENTS.md are exactly this.
+- **NEW lesson (v544):** a CREDITED port that diverges from LIVE Python is still a
+  façade. While porting `response_filters` I found the existing
+  `SILENT_MARKERS[]` had 7 entries vs Python's 4 — fixing it was mandatory, not
+  optional, to honor the no-fabrication edict.
+- **NEW lesson (v544):** PCRE2 is required for faithful `re` ports (lookbehind/
+  lookahead/`*?` lazy). The project's `hermes_regex` is POSIX-ERE only and would
+  silently diverge — do NOT use it for `re` semantics. `-lpcre2-8` is now a
+  project link dependency.
 
 ## Honest Reality
-- Remaining 4,716 RG are predominantly IO/network/DB/credential-coupled functions
+- Remaining 4,709 RG are predominantly IO/network/DB/credential-coupled functions
   in gateway/, cli.py surface, agent/process_bootstrap, tools/* cloud tools.
   GENUINE REAL_GAPs per v541 doctrine — must NOT be faked.
-- `agent/learning_graph_render.py` now sits at 14/37 PORTED, 23 REAL_GAP — all
-  remaining 23 are dict-in/out or graph-state functions (compute_recency,
+- `agent/learning_graph_render.py` now sits at 19/37 PORTED, 18 REAL_GAP — all
+  remaining 18 are dict-in/out or graph-state functions (compute_recency,
   render_graph, render_frames, _build_chart_buckets, category_color_map, etc.)
   that are NOT honest leaf ports and were correctly left as REAL_GAP.
-- The high-density PURE-helper modules (fuzzy_match, learning_graph_render,
-  models, config, status) are now fully tapped or already covered by existing
-  `*_helpers.c` ports. The realistic pure-helper supply is EXHAUSTED.
+- `gateway/response_filters.py` is FULLY closed (4/4). `gateway/platforms/
+  signal_format.py` is FULLY closed (1/1).
+- The realistic pure-helper supply is EXHAUSTED: every pure-stdlib module with
+  an existing helper has been tapped down to its genuine leaf functions; the
+  remaining candidates are class/object/dict renderers or IO-coupled.
 - v544 stopped at the honest count per the done-when clause rather than
   fictioning IO/network functions.
 
