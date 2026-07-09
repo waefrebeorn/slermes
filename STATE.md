@@ -268,5 +268,40 @@ to LIVE Python via harness + oracle).
   `agent/display.py` (5 leaves), `tools/xai_http.py`, `agent/oneshot.py`
   (`_strip_code_fence` only — `run_oneshot`/`_render_template` remain coupled).
 
+## NEW EDICT — Façade Audit (post-session checkpoint, 2026-07-08)
+
+The user issued a hard edict (v541-flavored, escalated): **a `PoP:`-annotated
+C port that "just exists to pass detection" is a façade and must be fixed by
+reading the Python and implementing the real behavior.** The literal
+`/* Process function call */` / `/* Apply boolean logic */` strings the user
+quoted do NOT exist anywhere in the tree (searched both repos, 0 hits) — so
+the edict describes the *category*: boilerplate no-op ports.
+
+**Actual façade signature found:** a `PoP:`-annotated function whose entire
+body, after stripping comments / `hermes_log(...)` / `(void)arg;`, reduces to a
+single `return <hardcoded constant>`. It passes the parity scanner AND the
+semantic depth-check (it contains a project call) — but performs NONE of the
+Python function's real work. Worst stub class.
+
+**Measured scope (automated scan of all 233 `port_*.c`):**
+- **133 true façades** (body = `hermes_log` + `(void)arg` + `return <const>`):
+  - **110 fraudulent** — caller is lied to / real work skipped (e.g. `mcp_tool_*`
+    returns `true`/`0` for functions that spawn processes, `tts_tool_*` returns
+    `true` for real TTS generation, `browser_tool` SSRF/daemon checks).
+  - 23 honest-limitation — const return is *truthful in C* (SDK getter → NULL,
+    `__enter__`/`__exit__` → 0). Revisit only if a caller needs real semantics.
+- 42 thin wrappers (return a var/expr — review per-function, not auto-façade).
+- 37 no-return bodies (review per-function).
+
+**Fraudulent façades by module:** `tools/skills_hub.py` (38), `tools/tts_tool.py`
+(19), `tools/browser_tool.py` (13), `tools/mcp_tool.py` (10),
+`tools/file_operations.py` (10), `hermes_cli/voice.py` (3),
+`tools/computer_use/backend.py` (3), then singletons across gateway/agent/tools.
+
+Full itemized list: `docs/facade_audit.md`. These were bulk-credited in the
+v541/v542 era to inflate PORTED; they are NOT honest ports. The v543–v546
+leaf closures (incl. this session's 11) are genuine and oracle-verified — do
+not touch them.
+
 ## Next-Session Prompt
 /home/wubu/NEXT_SESSION_PROMPT.md (v546→v547, written).
