@@ -59,10 +59,7 @@ int cli_tools_microsoft_graph_auth_expires_in_seconds(time_t expires_at) {
     return remaining;
 }
 
-/* PoP: cli_tools_microsoft_graph_auth_clear_cache @ tools/microsoft_graph_auth.py:clear_cache */
-void cli_tools_microsoft_graph_auth_clear_cache(void) {
-    hermes_log(LOG_DEBUG, "graph_auth", "clear_cache: token cache cleared (no-op in C)");
-}
+
 
 /* PoP: cli_tools_microsoft_graph_auth_inspect_token_health @ tools/microsoft_graph_auth.py:inspect_token_health */
 int cli_tools_microsoft_graph_auth_inspect_token_health(char *buf, size_t bufsize) {

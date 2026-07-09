@@ -55,15 +55,7 @@ int cli_agent_context_references__fetch_url_content(
     return 0;
 }
 
-/* PoP: cli_agent_context_references__default_url_fetcher @ agent/context_references.py:_default_url_fetcher */
 
-/* Port of Python agent/context_references.py:_default_url_fetcher */
-/* Default URL fetcher using httpx. */
-int cli_agent_context_references__default_url_fetcher(
-    const char *url, char *output, size_t output_size)
-{
-    return cli_agent_context_references__fetch_url_content(url, output, output_size);
-}
 
 /* PoP: cli_agent_context_references__human_bytes @ agent/context_references.py:_human_bytes */
 

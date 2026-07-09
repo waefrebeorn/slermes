@@ -140,16 +140,6 @@ void cli_hermes_cli_voice__debug(const char *msg)
     }
 }
 
-/* PoP: cli_hermes_cli_voice_start_recording @ hermes_cli/voice.py:start_recording */
-
-/* Port of Python hermes_cli/voice.py:start_recording */
-/* Begins capturing from the default input device (push-to-talk). */
-void cli_hermes_cli_voice_start_recording(void)
-{
-    hermes_log(LOG_DEBUG, "voice", "start_recording: CLI port — no-op");
-}
-
-
 /* Port of Python hermes_cli/voice.py:stop_and_transcribe */
 /* Stops recording and transcribes. Returns transcript or NULL. */
 

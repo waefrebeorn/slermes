@@ -8,20 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: cli_hermes_cli_memory_setup__curses_select @ hermes_cli/memory_setup.py:_curses_select */
 
-/* Port of Python hermes_cli/memory_setup.py:_curses_select */
-/* Interactive single-select with arrow keys. */
-int cli_hermes_cli_memory_setup__curses_select(
-    const char *title, const char *items[], int item_count,
-    int default_idx)
-{
-    (void)title;
-    (void)items;
-    (void)item_count;
-    /* CLI port: interactive UI handled by curses_ui. Return default. */
-    return default_idx;
-}
 
 /* PoP: cli_hermes_cli_memory_setup__prompt @ hermes_cli/memory_setup.py:_prompt */
 
@@ -59,18 +46,7 @@ int cli_hermes_cli_memory_setup__install_dependencies(
     return 0;
 }
 
-/* PoP: cli_hermes_cli_memory_setup__get_available_providers @ hermes_cli/memory_setup.py:_get_available_providers */
 
-/* Port of Python hermes_cli/memory_setup.py:_get_available_providers */
-/* Discovers memory providers from plugins/memory/. */
-int cli_hermes_cli_memory_setup__get_available_providers(
-    char *names[], int max_names)
-{
-    (void)names;
-    (void)max_names;
-    /* CLI port: provider discovery requires plugin system. */
-    return 0;
-}
 
 /* PoP: cli_hermes_cli_memory_setup_cmd_setup_provider @ hermes_cli/memory_setup.py:cmd_setup_provider */
 
@@ -86,15 +62,7 @@ void cli_hermes_cli_memory_setup_cmd_setup_provider(const char *provider_name)
                provider_name);
 }
 
-/* PoP: cli_hermes_cli_memory_setup_cmd_setup @ hermes_cli/memory_setup.py:cmd_setup */
 
-/* Port of Python hermes_cli/memory_setup.py:cmd_setup */
-/* Interactive memory provider setup wizard. */
-void cli_hermes_cli_memory_setup_cmd_setup(void)
-{
-    hermes_log(LOG_DEBUG, "memory_setup",
-               "cmd_setup: CLI port — interactive UI required");
-}
 
 /* PoP: cli_hermes_cli_memory_setup__write_env_vars @ hermes_cli/memory_setup.py:_write_env_vars */
 
@@ -140,9 +108,7 @@ void cli_hermes_cli_memory_setup_memory_command(const char *subcommand)
         cli_hermes_cli_memory_setup_cmd_status();
         return;
     }
-    if (strcmp(subcommand, "setup") == 0) {
-        cli_hermes_cli_memory_setup_cmd_setup();
-    } else if (strcmp(subcommand, "status") == 0) {
+    if (strcmp(subcommand, "status") == 0) {
         cli_hermes_cli_memory_setup_cmd_status();
     } else {
         hermes_log(LOG_DEBUG, "memory_setup",

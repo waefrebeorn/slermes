@@ -73,17 +73,6 @@ int cli_hermes_cli_skills_config__get_categories(
     return 0;
 }
 
-/* PoP: cli_hermes_cli_skills_config__select_platform @ hermes_cli/skills_config.py:_select_platform */
-
-/* Port of Python hermes_cli/skills_config.py:_select_platform */
-/* Asks user which platform to configure, or global. */
-/* CLI port: returns NULL (global) since interactive UI is handled elsewhere. */
-const char *cli_hermes_cli_skills_config__select_platform(void)
-{
-    /* CLI port: interactive platform selection handled by curses_ui. */
-    return NULL;
-}
-
 /* PoP: cli_hermes_cli_skills_config__toggle_by_category @ hermes_cli/skills_config.py:_toggle_by_category */
 
 /* Port of Python hermes_cli/skills_config.py:_toggle_by_category */
@@ -103,14 +92,4 @@ int cli_hermes_cli_skills_config__toggle_by_category(
     return 0;
 }
 
-/* PoP: cli_hermes_cli_skills_config_skills_command @ hermes_cli/skills_config.py:skills_command */
 
-/* Port of Python hermes_cli/skills_config.py:skills_command */
-/* Entry point for `hermes skills`. */
-void cli_hermes_cli_skills_config_skills_command(const char *platform)
-{
-    (void)platform;
-    /* CLI port: interactive skills command handled by curses_ui. */
-    hermes_log(LOG_DEBUG, "skills_config",
-               "skills_command: CLI port — interactive UI not available");
-}

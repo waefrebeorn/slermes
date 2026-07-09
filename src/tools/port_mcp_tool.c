@@ -254,15 +254,7 @@ double mcp_tool_safe_numeric(const char *str, double def)
 }
 
 /* Port of Python: _check_rate_limit */
-/* PoP: mcp_tool_check_rate_limit @ tools/mcp_tool.py:_check_rate_limit */
-bool mcp_tool_check_rate_limit(const char *server_name, int max_requests, int window_sec)
-{
-    (void)server_name; (void)max_requests; (void)window_sec;
-    hermes_log(LOG_DEBUG, "port", "_check_rate_limit: %s max=%d window=%ds",
-               server_name ? server_name : "unknown", max_requests, window_sec);
-    /* request counter pending */
-    return true;
-}
+
 
 /* Port of Python: _extract_tool_result_text */
 /* PoP: mcp_tool_extract_tool_result_text @ tools/mcp_tool.py:_extract_tool_result_text */
@@ -412,13 +404,7 @@ void mcp_tool_refresh_tools_task(const char *server_name)
 }
 
 /* Port of Python: _schedule_tools_refresh */
-/* PoP: mcp_tool_schedule_tools_refresh @ tools/mcp_tool.py:_schedule_tools_refresh */
-void mcp_tool_schedule_tools_refresh(const char *server_name, int interval_sec)
-{
-    (void)server_name; (void)interval_sec;
-    hermes_log(LOG_DEBUG, "port", "_schedule_tools_refresh: %s every %ds",
-               server_name ? server_name : "unknown", interval_sec);
-}
+
 
 /* Port of Python: _make_message_handler */
 /* PoP: mcp_tool_make_message_handler @ tools/mcp_tool.py:_make_message_handler */
@@ -501,11 +487,7 @@ void mcp_tool_signal_reconnect(const char *server_name)
 }
 
 /* Port of Python: _get_auth_error_types */
-/* PoP: mcp_tool_get_auth_error_types @ tools/mcp_tool.py:_get_auth_error_types */
-char *mcp_tool_get_auth_error_types(void)
-{
-    return strdup("[\"unauthorized\",\"forbidden\",\"authentication required\"]");
-}
+
 
 /* Port of Python: _is_session_expired_error */
 /* PoP: mcp_tool_is_session_expired_error @ tools/mcp_tool.py:_is_session_expired_error */
@@ -519,11 +501,7 @@ bool mcp_tool_is_session_expired_error(const char *error)
 /* Port of Python: _handle_session_expired_and_retry */
 
 /* Port of Python: _snapshot_child_pids */
-/* PoP: mcp_tool_snapshot_child_pids @ tools/mcp_tool.py:_snapshot_child_pids */
-char *mcp_tool_snapshot_child_pids(void)
-{
-    return strdup("[]"); /* pending */
-}
+
 
 /* Port of Python: _filter_mcp_children */
 /* PoP: mcp_tool_filter_mcp_children @ tools/mcp_tool.py:_filter_mcp_children */
@@ -541,12 +519,7 @@ void mcp_tool_mcp_loop_exception_handler(const char *error)
 }
 
 /* Port of Python: _ensure_mcp_loop */
-/* PoP: mcp_tool_ensure_mcp_loop @ tools/mcp_tool.py:_ensure_mcp_loop */
-bool mcp_tool_ensure_mcp_loop(void)
-{
-    hermes_log(LOG_DEBUG, "port", "_ensure_mcp_loop");
-    return true; /* Already running in C model */
-}
+
 
 /* Port of Python: _wrap_with_home_override */
 /* PoP: mcp_tool_wrap_with_home_override @ tools/mcp_tool.py:_wrap_with_home_override */
@@ -563,13 +536,7 @@ char *mcp_tool_wrap_with_home_override(const char *command, const char *home)
 }
 
 /* Port of Python: _run_on_mcp_loop */
-/* PoP: mcp_tool_run_on_mcp_loop @ tools/mcp_tool.py:_run_on_mcp_loop */
-char *mcp_tool_run_on_mcp_loop(const char *server_name, const char *operation_json)
-{
-    (void)server_name; (void)operation_json;
-    hermes_log(LOG_DEBUG, "port", "_run_on_mcp_loop: %s", server_name ? server_name : "unknown");
-    return strdup("{\"status\":\"completed\"}");
-}
+
 
 /* Port of Python: _interrupted_call_result */
 /* PoP: mcp_tool_interrupted_call_result @ tools/mcp_tool.py:_interrupted_call_result */
@@ -629,13 +596,7 @@ char *mcp_tool_filter_suspicious_mcp_servers(const char *servers_json)
 }
 
 /* Port of Python: _make_check_fn */
-/* PoP: mcp_tool_make_check_fn @ tools/mcp_tool.py:_make_check_fn */
-void *mcp_tool_make_check_fn(const char *fn_name)
-{
-    (void)fn_name;
-    hermes_log(LOG_DEBUG, "port", "_make_check_fn: %s", fn_name ? fn_name : "unknown");
-    return NULL; /* function pointer stub */
-}
+
 
 /* Port of Python: _normalize_mcp_input_schema */
 /* PoP: mcp_tool_normalize_mcp_input_schema @ tools/mcp_tool.py:_normalize_mcp_input_schema */
@@ -673,12 +634,7 @@ char *mcp_tool_convert_mcp_schema(const char *schema_json)
 }
 
 /* Port of Python: _build_utility_schemas */
-/* PoP: mcp_tool_build_utility_schemas @ tools/mcp_tool.py:_build_utility_schemas */
-char *mcp_tool_build_utility_schemas(const char *server_name)
-{
-    (void)server_name;
-    return strdup("{\"utility\":{\"type\":\"object\",\"properties\":{}}}");
-}
+
 
 /* Port of Python: _normalize_name_filter */
 /* PoP: mcp_tool_normalize_name_filter @ tools/mcp_tool.py:_normalize_name_filter */
@@ -724,12 +680,7 @@ char *mcp_tool_select_utility_schemas(const char *schemas_json, const char *filt
 }
 
 /* Port of Python: _existing_tool_names */
-/* PoP: mcp_tool_existing_tool_names @ tools/mcp_tool.py:_existing_tool_names */
-char *mcp_tool_existing_tool_names(void)
-{
-    /* Return JSON array of registered tool names */
-    return strdup("[\"tool1\",\"tool2\"]"); /* pending */
-}
+
 
 /* Port of Python: _register_server_tools */
 /* PoP: mcp_tool_register_server_tools @ tools/mcp_tool.py:_register_server_tools */
@@ -752,27 +703,15 @@ bool mcp_tool_discover_and_register_server(const char *server_name, const char *
 /* Port of Python: has_registered_mcp_tools */
 
 /* Port of Python: _reinject_post_build_tools */
-/* PoP: mcp_tool_reinject_post_build_tools @ tools/mcp_tool.py:_reinject_post_build_tools */
-void mcp_tool_reinject_post_build_tools(void)
-{
-    hermes_log(LOG_DEBUG, "port", "_reinject_post_build_tools");
-}
+
 
 /* Port of Python: _kill_orphaned_mcp_children */
 
 /* Port of Python: _stop_mcp_loop_if_idle */
-/* PoP: mcp_tool_stop_mcp_loop_if_idle @ tools/mcp_tool.py:_stop_mcp_loop_if_idle */
-void mcp_tool_stop_mcp_loop_if_idle(void)
-{
-    hermes_log(LOG_DEBUG, "port", "_stop_mcp_loop_if_idle");
-}
+
 
 /* Port of Python: _stop_mcp_loop */
-/* PoP: mcp_tool_stop_mcp_loop @ tools/mcp_tool.py:_stop_mcp_loop */
-void mcp_tool_stop_mcp_loop(void)
-{
-    hermes_log(LOG_DEBUG, "port", "_stop_mcp_loop");
-}
+
 
 /* Port of Python: _run_sse */
 

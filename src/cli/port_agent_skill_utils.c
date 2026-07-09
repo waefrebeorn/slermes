@@ -8,17 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: cli_agent_skill_utils__raw_config_cache_clear @ agent/skill_utils.py:_raw_config_cache_clear */
 
-/* Port of Python agent/skill_utils.py:_raw_config_cache_clear */
-/* Test hook — drop the shared raw config cache. */
-void cli_agent_skill_utils__raw_config_cache_clear(void)
-{
-    /* In C, config caching is handled by the hermes_cli_config module.
-     * This is a no-op placeholder — the cache is cleared by
-     * re-reading config.yaml on the next access. */
-    hermes_log(LOG_DEBUG, "skill_utils", "raw config cache clear requested (no-op in C)");
-}
 
 /* PoP: cli_agent_skill_utils__load_raw_config @ agent/skill_utils.py:_load_raw_config */
 

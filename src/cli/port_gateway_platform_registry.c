@@ -21,15 +21,4 @@ int cli_gateway_platform_registry_unregister(const char *platform_name)
     return 0;
 }
 
-/* PoP: cli_gateway_platform_registry_create_adapter @ gateway/platform_registry.py:create_adapter */
 
-/* Port of Python gateway/platform_registry.py:create_adapter */
-/* Creates a platform adapter instance. */
-void *cli_gateway_platform_registry_create_adapter(
-    const char *platform_name, const char *config_json)
-{
-    (void)platform_name;
-    (void)config_json;
-    /* CLI port: adapter creation requires full gateway runtime. */
-    return NULL;
-}

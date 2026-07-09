@@ -120,15 +120,7 @@ int cli_gateway_platforms_signal_rate_limit_acquire(int *bucket, int tokens_need
     return 0;
 }
 
-/* PoP: cli_gateway_platforms_signal_rate_limit_report_rpc_duration @ gateway/platforms/signal_rate_limit.py:report_rpc_duration */
-void cli_gateway_platforms_signal_rate_limit_report_rpc_duration(int duration_ms) {
-    /*
-     * Report an RPC duration for rate limit tracking.
-     * Used to adjust the rate limiter based on actual API response times.
-     */
-    hermes_log(LOG_DEBUG, "signal_rl", "report_rpc_duration: %d ms", duration_ms);
-    /* In C, duration tracking is managed by the rate limiter */
-}
+
 
 /* PoP: cli_gateway_platforms_signal_rate_limit_feedback @ gateway/platforms/signal_rate_limit.py:feedback */
 void cli_gateway_platforms_signal_rate_limit_feedback(int was_throttled, int retry_after) {

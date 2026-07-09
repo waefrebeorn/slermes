@@ -67,15 +67,7 @@ int cli_agent_think_scrubber_flush(
     return 0;
 }
 
-/* PoP: cli_agent_think_scrubber_reset @ agent/think_scrubber.py:reset */
 
-/* Port of Python agent/think_scrubber.py:reset */
-/* Resets the scrubber state for a new turn. */
-void cli_agent_think_scrubber_reset(void *scrubber_state)
-{
-    (void)scrubber_state;
-    /* CLI port: state reset is a no-op. */
-}
 
 
 /* Port of Python agent/think_scrubber.py:is_in_think_block */

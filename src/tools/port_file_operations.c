@@ -305,28 +305,13 @@ char *file_ops_lint_json_inproc(const char *content)
 }
 
 /* Port of Python: _lint_yaml_inproc */
-/* PoP: file_ops_lint_yaml_inproc @ tools/file_operations.py:_lint_yaml_inproc */
-char *file_ops_lint_yaml_inproc(const char *content)
-{
-    (void)content;
-    return strdup("{\"valid\":true}");
-}
+
 
 /* Port of Python: _lint_toml_inproc */
-/* PoP: file_ops_lint_toml_inproc @ tools/file_operations.py:_lint_toml_inproc */
-char *file_ops_lint_toml_inproc(const char *content)
-{
-    (void)content;
-    return strdup("{\"valid\":true}");
-}
+
 
 /* Port of Python: _lint_python_inproc */
-/* PoP: file_ops_lint_python_inproc @ tools/file_operations.py:_lint_python_inproc */
-char *file_ops_lint_python_inproc(const char *content)
-{
-    (void)content;
-    return strdup("{\"valid\":true}");
-}
+
 
 /* ================================================================
  *  Pagination helpers
@@ -570,48 +555,23 @@ bool file_ops_file_has_bom(const char *path)
 /* Port of Python: _lsp_will_handle */
 
 /* Port of Python: _snapshot_lsp_baseline */
-/* PoP: file_ops_snapshot_lsp_baseline @ tools/file_operations.py:_snapshot_lsp_baseline */
-char *file_ops_snapshot_lsp_baseline(const char *path)
-{
-    (void)path;
-    return strdup("{}");
-}
+
 
 /* Port of Python: _maybe_lsp_diagnostics */
-/* PoP: file_ops_maybe_lsp_diagnostics @ tools/file_operations.py:_maybe_lsp_diagnostics */
-char *file_ops_maybe_lsp_diagnostics(const char *path, const char *config_json)
-{
-    (void)path; (void)config_json;
-    return strdup("[]");
-}
+
 
 /* Port of Python: _check_lint */
-/* PoP: file_ops_check_lint @ tools/file_operations.py:_check_lint */
-char *file_ops_check_lint(const char *content, const char *config_json)
-{
-    (void)content; (void)config_json;
-    return strdup("{}");
-}
+
 
 /* Port of Python: _check_lint_delta */
-/* PoP: file_ops_check_lint_delta @ tools/file_operations.py:_check_lint_delta */
-char *file_ops_check_lint_delta(const char *old_content, const char *new_content, const char *config_json)
-{
-    (void)old_content; (void)new_content; (void)config_json;
-    return strdup("{}");
-}
+
 
 /* ================================================================
  *  Existing functions (with proper PoP annotations)
  * ================================================================ */
 
 /* Port of Python: _densify_matches */
-/* PoP: file_ops_densify_matches @ tools/file_operations.py:_densify_matches */
-char *file_ops_densify_matches(void)
-{
-    hermes_log(LOG_DEBUG, "port", "densify_matches: called");
-    return strdup("{\"matches\": [], \"densified\": true}");
-}
+
 
 /* Port of Python: _is_line_oriented_newline_error */
 /* PoP: file_ops_is_line_oriented_newline_error @ tools/file_operations.py:_is_line_oriented_newline_error */
