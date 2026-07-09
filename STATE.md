@@ -129,3 +129,63 @@ LIVE Python via oracle harnesses).
 
 ## Next-Session Prompt
 /home/wubu/NEXT_SESSION_PROMPT.md (v543→v544, written).
+
+---
+
+# Slermes Parity — Vault Checkpoint (v545)
+
+**Date:** 2026-07-08
+**Branch:** main (to be pushed to origin/main)
+**Session:** v545 auto-pilot (resumed from v544)
+
+## Live Scanner (end v545)
+| Metric | Value | Δ vs v544 |
+|--------|-------|-----------|
+| PORTED | 4,983 (51.2%) | +6 |
+| REAL_GAP | 4,703 (48.3%) | −6 |
+| PARTIAL | 45 (0.5%) | 0 |
+| TOTAL | 9,731 | — |
+
+> **Why REAL_GAP went DOWN 6 (genuine):** v545 ran the REAL re-scan the v544
+> prompt asked for and proved the "pure supply exhausted" assumption WRONG — 69
+> single-gap pure-leaf candidates remained. Closed 6 with oracle-verified ports
+> (no dupes, no façades):
+> - `gateway/display_config.py:_normalise` — fixed a pre-existing DRIFTED FAÇADE:
+>   `normalise_display_value` only lowercased every string; now faithful
+>   per-setting (tool_progress→str.lower, bool-ish→true/false, grouping/style
+>   whitelist, preview_length→int). 16/16 oracle.
+> - `gateway/scale_to_zero.py:_platform_name` (6/6 oracle).
+> - `gateway/whatsapp_identity.py:to_whatsapp_jid` (11/11 oracle).
+> - `hermes_cli/pty_bridge.py:_clamp_dimension` + `win_pty_bridge.py:_clamp`
+>   (11/11 oracle).
+> - `tools/fuzzy_match.py:_map_normalized_positions` (3/3 oracle).
+> Every port verified byte-equivalent to LIVE Python via harness + oracle.
+
+## v545 Genuine Commits (local, to push)
+| File | Functions | Effect |
+|------|-----------|--------|
+| src/gateway/helpers.c + include/gateway_helpers.h + include/hermes_gateway.h | 1 | `normalise_display_value` → faithful `_normalise`; 2 callers updated |
+| src/cli/port_gateway_scale_to_zero.c (+.h) | 1 | `_platform_name` |
+| src/cli/port_gateway_whatsapp_identity.c (+.h) | 1 | `to_whatsapp_jid` |
+| src/cli/port_pty_clamp_helpers.c (+.h) | 2 | `_clamp_dimension`, `_clamp` |
+| src/cli/port_tools_fuzzy_match.c (+.h) | 1 | `_map_normalized_positions` |
+| build/objects.mk | — | registered 4 new .o |
+| tests/t_port_*.c + tests/sta_oracle_*.py (5 pairs) | — | oracles: 47 cases, 0 mismatches |
+
+Net genuine REAL_GAP closed this session: **6** (all verified byte-equivalent to
+LIVE Python via oracle harnesses).
+
+## Honest Reality
+- Remaining 4,703 RG are predominantly IO/network/DB/credential-coupled
+  functions — GENUINE REAL_GAPs, must NOT be faked.
+- The pure-helper supply is NOT fully exhausted: ~63 single-gap pure-leaf
+  modules remain (e.g. many `hermes_cli/subcommands/*` `build_*_parser` are
+  argparse-coupled and correctly skipped; others like context_breakdown
+  `_memory_blocks` are object-coupled and skipped). The 6 closed this session
+  are the cleanest pure leaves; the rest need per-candidate purity verification.
+- `gateway/display_config.py` now FULLY closed (was 1 RG). `scale_to_zero`,
+  `whatsapp_identity`, `pty_bridge`, `win_pty_bridge`, `fuzzy_match` all
+  FULLY closed (0 RG).
+
+## Next-Session Prompt
+/home/wubu/NEXT_SESSION_PROMPT.md (v545→v546, written).

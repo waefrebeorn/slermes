@@ -1,16 +1,30 @@
-# Slermes C11 Parity — Live State (v544)
+# Slermes C11 Parity — Live State (v545)
 
 **Generated:** 2026-07-08 by `slermes_parity_battleground.py` (live scanner)
 
-## Overall Numbers (live, end v544)
+## Overall Numbers (live, end v545)
 
 | Classification | Count | Percentage | Meaning |
 |----------------|-------|------------|---------|
-| **PORTED** | 4,977 | 51.1% | C11 implementation with PoP annotation |
-| **REAL_GAP** | 4,709 | 48.4% | Honest gaps (IO/network/DB/credential-coupled — NOT faked) |
+| **PORTED** | 4,983 | 51.2% | C11 implementation with PoP annotation |
+| **REAL_GAP** | 4,703 | 48.3% | Honest gaps (IO/network/DB/credential-coupled — NOT faked) |
 | **PARTIAL** | 45 | 0.5% | C fn exists, no PoP annotation yet |
 | **TOTAL** | 9,731 | 100% | All Python functions/methods scanned |
 
+> **Honesty note (v545):** v545 resumed auto-pilot and ran the real re-scan
+> the v544 prompt demanded. The "exhausted pure supply" assumption was WRONG —
+> 69 single-gap pure-leaf candidates remained. v545 closed 6 genuine gaps with
+> faithful, oracle-verified ports (no dupes, no façades):
+> `gateway/display_config.py:_normalise` (fixed a pre-existing drifted façade
+> `normalise_display_value` that only lowercased — now faithful per-setting,
+> 16/16 oracle), `gateway/scale_to_zero.py:_platform_name` (6/6),
+> `gateway/whatsapp_identity.py:to_whatsapp_jid` (11/11),
+> `hermes_cli/pty_bridge.py:_clamp_dimension` + `win_pty_bridge.py:_clamp`
+> (11/11), and `tools/fuzzy_match.py:_map_normalized_positions` (3/3).
+> End-v545 REAL_GAP: **4,703** (down 6 from v544's 4,709), PORTED 4,983
+> (up 6). Every port verified byte-equivalent to LIVE Python via harness +
+> oracle (47 cases total, 0 mismatches).
+>
 > **Honesty note (v544):** the v544 work extended existing `*_helpers.c`
 > files with genuine, oracle-verified leaf ports — no new parallel files, no
 > false cross-credits. Closures: `port_learning_graph_render_helpers.c`

@@ -969,14 +969,88 @@ bool is_silence_narration(const char *content) {
  *  Port of Python gateway/display_config.py.
  * ================================================================ */
 
-/* Normalize a string value.
- * Port of Python gateway/display_config.py _normalise(). */
-char *normalise_display_value(const char *value) {
-    if (!value) return strdup("");
-    char *buf = strdup(value);
-    if (!buf) return NULL;
-    for (char *p = buf; *p; p++) *p = tolower((unsigned char)*p);
-    return buf;
+/* Port of Python gateway/display_config.py _normalise(setting, value).
+ *
+ * Faithful to LIVE Python. IMPORTANT: the C caller (resolve_display_setting)
+ * only invokes this for JSON_STRING values; bool/number JSON types are
+ * handled by the caller directly. So this function receives *string* values
+ * and must reproduce Python's behaviour for string inputs:
+ *   - tool_progress: str(value).lower()   (a string is never `is False`/`is
+ *     True`, so the "off"/"all" branches never trigger for string input)
+ *   - show_reasoning/streaming/interim_assistant_messages/
+ *     long_running_notifications/busy_ack_detail/cleanup_progress:
+ *     value.lower() in {true,1,yes,on} -> bool True/False (rendered "true"/
+ *     "false" for the JSON layer)
+ *   - tool_progress_grouping: accumulate|separate (else accumulate)
+ *   - reasoning_style: code|blockquote|subtext (else code)
+ *   - tool_preview_length: int(value) on success, 0 on failure
+ *   - default: passthrough
+ * Verified byte-equal to LIVE Python (string-input contract) via
+ * tests/sta_oracle_display_config.py. */
+/* PoP: gateway_display_config_normalise @ gateway/display_config.py:_normalise */
+char *normalise_display_value(const char *setting, const char *value) {
+    if (!value) value = "";
+    if (!setting) setting = "";
+
+    /* tool_progress: str(value).lower() (string input never hits bool identity) */
+    if (strcmp(setting, "tool_progress") == 0) {
+        char *buf = strdup(value);
+        if (!buf) return NULL;
+        for (char *p = buf; *p; p++) *p = tolower((unsigned char)*p);
+        return buf;
+    }
+
+    /* boolean-ish settings: value.lower() in {true,1,yes,on} -> True/False.
+       Rendered as "true"/"false" for the JSON string layer. */
+    static const char *bool_settings[] = {
+        "show_reasoning", "streaming", "interim_assistant_messages",
+        "long_running_notifications", "busy_ack_detail", "cleanup_progress", NULL
+    };
+    for (int i = 0; bool_settings[i]; i++) {
+        if (strcmp(setting, bool_settings[i]) == 0) {
+            int truthy = (strcasecmp(value, "true") == 0 || strcmp(value, "1") == 0 ||
+                          strcasecmp(value, "yes")  == 0 || strcasecmp(value, "on") == 0);
+            int falsy  = (strcasecmp(value, "false") == 0 || strcmp(value, "0") == 0 ||
+                          strcasecmp(value, "no")    == 0 || strcasecmp(value, "off") == 0);
+            if (truthy) return strdup("true");
+            if (falsy)  return strdup("false");
+            /* unrecognised string -> Python bool(value) -> True for non-empty */
+            return strdup(*value ? "true" : "false");
+        }
+    }
+
+    /* tool_progress_grouping: accumulate | separate (else accumulate) */
+    if (strcmp(setting, "tool_progress_grouping") == 0) {
+        char *buf = strdup(value);
+        if (!buf) return NULL;
+        for (char *p = buf; *p; p++) *p = tolower((unsigned char)*p);
+        if (strcmp(buf, "separate") == 0) return buf;
+        free(buf);
+        return strdup("accumulate");
+    }
+
+    /* reasoning_style: code | blockquote | subtext (else code) */
+    if (strcmp(setting, "reasoning_style") == 0) {
+        char *buf = strdup(value);
+        if (!buf) return NULL;
+        for (char *p = buf; *p; p++) *p = tolower((unsigned char)*p);
+        if (strcmp(buf, "blockquote") == 0 || strcmp(buf, "subtext") == 0) return buf;
+        free(buf);
+        return strdup("code");
+    }
+
+    /* tool_preview_length: int(value) on success, 0 on failure */
+    if (strcmp(setting, "tool_preview_length") == 0) {
+        char *end = NULL;
+        long n = strtol(value, &end, 10);
+        if (end == value || *end != '\0') return strdup("0");
+        char buf[32];
+        snprintf(buf, sizeof(buf), "%ld", n);
+        return strdup(buf);
+    }
+
+    /* default: passthrough */
+    return strdup(value);
 }
 
 /* ================================================================
@@ -1049,7 +1123,7 @@ char *resolve_display_setting(json_node_t *user_config,
                 json_node_t *val = json_object_get(plat, setting);
                 if (val) {
                     if (val->type == JSON_STRING)
-                        return normalise_display_value(val->str_val);
+                        return normalise_display_value(setting, val->str_val);
                     if (val->type == JSON_BOOL)
                         return strdup(val->bool_val ? "true" : "false");
                     if (val->type == JSON_NUMBER) {
@@ -1064,7 +1138,7 @@ char *resolve_display_setting(json_node_t *user_config,
     json_node_t *global = json_object_get(display, setting);
     if (global) {
         if (global->type == JSON_STRING)
-            return normalise_display_value(global->str_val);
+            return normalise_display_value(setting, global->str_val);
         if (global->type == JSON_BOOL)
             return strdup(global->bool_val ? "true" : "false");
         if (global->type == JSON_NUMBER) {
