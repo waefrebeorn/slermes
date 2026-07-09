@@ -1,8 +1,10 @@
-# Slermes C11 Parity — Live State (v548)
+# Slermes C11 Parity — Live State (v550)
 
 **Generated:** 2026-07-09 by `slermes_parity_battleground.py` (live scanner)
 
-## Overall Numbers (live, end v548)
+## Overall Numbers (live, end v550 — unchanged from v548; v549/v550 fixes are
+infra/SDK-class features the scanner classifies NA_SDK, so they never moved
+PORTED/REAL_GAP)
 
 | Classification | Count | Percentage | Meaning |
 |----------------|-------|------------|---------|
