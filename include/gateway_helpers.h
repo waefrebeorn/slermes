@@ -228,7 +228,7 @@ bool is_silence_narration(const char *content);
  * ================================================================ */
 
 /* Normalize a display value (lowercase). Returns malloc'd string. */
-char *normalise_display_value(const char *value);
+char *normalise_display_value(const char *setting, const char *value);
 
 /* ================================================================
  *  Auto-continue and timestamp helpers

@@ -1398,7 +1398,7 @@ char *resolve_display_setting(json_node_t *user_config,
 
 /* Normalize a display value string (lowercase).
  * Returns malloc'd string. Caller must free. */
-char *normalise_display_value(const char *value);
+char *normalise_display_value(const char *setting, const char *value);
 
 /* ================================================================
  *  Runtime Footer

@@ -52,13 +52,16 @@ PORT_OBJ = \
     src/cli/port_gateway_platforms_yuanbao_media.o \
     src/cli/port_gateway_platforms_yuanbao_sticker.o \
     src/cli/port_gateway_response_filters.o \
+    src/cli/port_gateway_scale_to_zero.o \
     src/cli/port_gateway_signal_format.o \
+    src/cli/port_gateway_whatsapp_identity.o \
     src/cli/port_gateway_shutdown_forensics.o \
     src/cli/port_gateway_slash_access.o \
     src/cli/port_gateway_sticker_cache.o \
     src/cli/port_hermes_cli_models.o \
     src/cli/port_hermes_cli_main_helpers.o \
     src/cli/port_hermes_cli_backup.o \
+    src/cli/port_pty_clamp_helpers.o \
     src/cli/port_hermes_cli_gateway_platform.o \
     src/cli/port_hermes_cli_kanban_helpers.o \
     src/cli/port_config_helpers.o \
@@ -127,6 +130,7 @@ PORT_OBJ = \
     src/cli/port_tools_tool_backend_helpers.o \
     src/cli/port_tools_tool_output_limits.o \
     src/cli/port_tools_tool_result_storage.o \
+    src/cli/port_tools_fuzzy_match.o \
     src/cli/port_tools_tool_search.o \
     src/cli/port_tools_url_safety.o \
     src/cli/port_tools_video_generation_tool.o \
