@@ -52,6 +52,7 @@ PORT_OBJ = \
     src/cli/port_gateway_platforms_yuanbao_media.o \
     src/cli/port_gateway_platforms_yuanbao_sticker.o \
     src/cli/port_gateway_response_filters.o \
+    src/cli/port_gateway_signal_format.o \
     src/cli/port_gateway_shutdown_forensics.o \
     src/cli/port_gateway_slash_access.o \
     src/cli/port_gateway_sticker_cache.o \
