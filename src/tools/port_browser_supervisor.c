@@ -8,6 +8,7 @@
 #define SRC_TOOLS_PORT_BROWSER_SUPERVISOR_C
 
 #include "port_browser_supervisor.h"
+#include "port_tools_browser_cdp_tool.h"
 #include "hermes_logger.h"
 #include "hermes_json.h"
 #include <stdbool.h>
@@ -147,46 +148,134 @@ json_t *browser_supervisor_respond_to_dialog(const char *session_key, bool accep
     json_t *result = json_object();
     if (!result) return NULL;
 
-    if (!session_key) {
+    if (!session_key || !session_key[0]) {
         json_set(result, "ok", json_bool(false));
         json_set(result, "error", json_string("session_key required"));
         return result;
     }
 
-    hermes_log(LOG_INFO, "browser_supervisor", "respond_to_dialog: session=%s accept=%d prompt_text=%s",
-               session_key, accept, prompt_text ? prompt_text : "");
+    char *endpoint = browser_cdp_tool__resolve_cdp_endpoint();
+    if (!endpoint || !endpoint[0]) {
+        free(endpoint);
+        json_set(result, "ok", json_bool(false));
+        json_set(result, "error",
+                 json_string("no CDP endpoint available (set BROWSER_CDP_URL or config browser.cdp_url)"));
+        return result;
+    }
 
-    /* Send Page.handleJavaScriptDialog CDP command via libhttp */
-    /* This is a simplified synchronous implementation - real version would use WebSocket */
-    json_set(result, "ok", json_bool(true));
+    /* Page.handleJavaScriptDialog params (matches Python _handle_dialog_cdp). */
+    json_t *p = json_object();
+    json_set(p, "accept", json_bool(accept));
+    if (prompt_text && prompt_text[0])
+        json_set(p, "promptText", json_string(prompt_text));
+    else
+        json_set(p, "promptText", json_null());
+    char *params = json_serialize(p);
+    json_free(p);
+
+    char *raw = browser_cdp_tool__cdp_call(endpoint, "Page.handleJavaScriptDialog",
+                                           params, session_key, 10.0);
+    free(params);
+    free(endpoint);
+
+    if (!raw) {
+        json_set(result, "ok", json_bool(false));
+        json_set(result, "error", json_string("CDP handleJavaScriptDialog failed (no response)"));
+        return result;
+    }
+
+    json_t *raw_obj = json_parse(raw, NULL);
+    bool ok = raw_obj ? json_get_bool(raw_obj, "success", false) : false;
+    json_set(result, "ok", json_bool(ok));
     json_set(result, "accepted", json_bool(accept));
     json_set(result, "session_key", json_string(session_key));
+    if (!ok)
+        json_set(result, "error", json_string("CDP handleJavaScriptDialog returned failure"));
+    if (raw_obj) json_free(raw_obj);
+    free(raw);
     return result;
 }
 
 /* PoP: evaluate_runtime @ tools/browser_supervisor.py:evaluate_runtime
  * Port of Python tools/browser_supervisor.py:evaluate_runtime().
- * Evaluate JavaScript in the browser context. */
+ * Evaluate JavaScript in the page's Runtime context over the live CDP session. */
 json_t *browser_supervisor_evaluate_runtime(const char *session_key, const char *expression,
                                              bool return_by_value, bool await_promise)
 {
     json_t *result = json_object();
     if (!result) return NULL;
 
-    if (!session_key || !expression) {
+    if (!session_key || !session_key[0] || !expression || !expression[0]) {
         json_set(result, "ok", json_bool(false));
         json_set(result, "error", json_string("session_key and expression required"));
         return result;
     }
 
-    hermes_log(LOG_INFO, "browser_supervisor", "evaluate_runtime: expression=%.100s return_by_value=%d await_promise=%d",
-               expression, return_by_value, await_promise);
+    char *endpoint = browser_cdp_tool__resolve_cdp_endpoint();
+    if (!endpoint || !endpoint[0]) {
+        free(endpoint);
+        json_set(result, "ok", json_bool(false));
+        json_set(result, "error",
+                 json_string("no CDP endpoint available (set BROWSER_CDP_URL or config browser.cdp_url)"));
+        return result;
+    }
 
-    /* Send Runtime.evaluate CDP command via the supervisor's persistent WebSocket */
+    /* Runtime.evaluate params (matches Python evaluate_runtime). */
+    json_t *p = json_object();
+    json_set(p, "expression", json_string(expression));
+    json_set(p, "returnByValue", json_bool(return_by_value));
+    json_set(p, "awaitPromise", json_bool(await_promise));
+    json_set(p, "userGesture", json_bool(true));
+    char *params = json_serialize(p);
+    json_free(p);
+
+    char *raw = browser_cdp_tool__cdp_call(endpoint, "Runtime.evaluate",
+                                           params, session_key, 10.0);
+    free(params);
+    free(endpoint);
+
+    if (!raw) {
+        json_set(result, "ok", json_bool(false));
+        json_set(result, "error", json_string("CDP Runtime.evaluate failed (no response)"));
+        return result;
+    }
+
+    json_t *raw_obj = json_parse(raw, NULL);
+    bool ok = raw_obj ? json_get_bool(raw_obj, "success", false) : false;
+    if (!ok) {
+        json_set(result, "ok", json_bool(false));
+        json_set(result, "error", json_string("CDP Runtime.evaluate returned failure"));
+        if (raw_obj) json_free(raw_obj);
+        free(raw);
+        return result;
+    }
+
+    /* Unwrap: raw.result -> {result:{result:{type,value}, exceptionDetails}} */
+    json_t *cdp_resp = json_obj_get(raw_obj, "result");
+    json_t *inner    = cdp_resp ? json_obj_get(cdp_resp, "result") : NULL;
+    json_t *exception = inner ? json_obj_get(inner, "exceptionDetails") : NULL;
+    if (exception) {
+        const char *exc_text = json_get_str(exception, "text", "JavaScript exception");
+        const char *desc = json_get_str(exception, "description", NULL);
+        char msg[512];
+        snprintf(msg, sizeof(msg), "%s%s%s",
+                 exc_text, desc ? ": " : "", desc ? desc : "");
+        json_set(result, "ok", json_bool(false));
+        json_set(result, "error", json_string(msg));
+        json_free(raw_obj);
+        free(raw);
+        return result;
+    }
+
+    json_t *result_obj = inner ? json_obj_get(inner, "result") : NULL;
+    const char *result_type = result_obj ? json_get_str(result_obj, "type", "undefined") : "undefined";
+    char *val_json = result_obj ? json_serialize(result_obj) : NULL;
     json_set(result, "ok", json_bool(true));
-    json_set(result, "result", json_string("[Runtime evaluation result]"));
-    json_set(result, "result_type", json_string("string"));
-    json_set(result, "session_key", json_string(session_key));
+    json_set(result, "result", json_string(val_json ? val_json : "null"));
+    json_set(result, "result_type", json_string(result_type));
+    free(val_json);
+    json_free(raw_obj);
+    free(raw);
     return result;
 }
 
