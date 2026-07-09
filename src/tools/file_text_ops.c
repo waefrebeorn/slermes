@@ -69,11 +69,20 @@ char *file_text_ops_strip_terminal_fence_leaks(const char *text)
             if (c == '\007') continue;  /* bell */
             if (strncmp(line_start + i, "__HERMES_FENCE_", 15) == 0) {
                 i += 15;
+                size_t j = i;
                 while (i < line_len && ((line_start[i] >= 'A' && line_start[i] <= 'Z') ||
                        (line_start[i] >= 'a' && line_start[i] <= 'z') ||
                        (line_start[i] >= '0' && line_start[i] <= '9'))) i++;
-                if (i + 1 < line_len && line_start[i] == '_' && line_start[i + 1] == '_') i += 2;
-                i--;  /* loop will ++ */
+                /* Python _FENCE_MARKER_RE requires [A-Za-z0-9]+__ (closing __).
+                 * If no closing '__', the marker is incomplete -> keep the
+                 * literal prefix and continue scanning the rest (no strip). */
+                if (i > j && i + 1 < line_len && line_start[i] == '_' && line_start[i + 1] == '_') {
+                    i += 1;  /* past first '_'; loop's i++ lands after '__' */
+                } else {
+                    memcpy(clean + ci, "__HERMES_FENCE_", 15);
+                    ci += 15;
+                    i = j - 1;  /* loop re-processes the alnum tail, no rewind */
+                }
                 continue;
             }
             clean[ci++] = c;
