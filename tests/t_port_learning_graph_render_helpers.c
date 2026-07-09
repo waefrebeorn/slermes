@@ -132,6 +132,58 @@ int main(void)
         }
     }
 
+    /* ---- _to_ts ---- */
+    {
+        double vals[] = {1700000000.0, 0.0, -1.0, 123456.789, 4102444800.0};
+        for (size_t i=0; i<sizeof(vals)/sizeof(vals[0]); i++) {
+            double out = 0; int ok = learning_graph_render_to_ts(&vals[i], &out);
+            char inbuf[40]; snprintf(inbuf,sizeof(inbuf),"[%g]",vals[i]);
+            char bout[16]; snprintf(bout,sizeof(bout),"%d,%.6g",ok,ok?out:0.0);
+            emit_str("_to_ts", inbuf, bout);
+            printf("  EMIT  _to_ts %s -> ok=%d out=%.6g\n", inbuf, ok, out);
+        }
+    }
+
+    /* ---- _period_key / _period_label ---- */
+    {
+        double ts[] = {1700000000.0, 1609459200.0, 4102444800.0, 0.0};
+        const char *gran[] = {"day","month","year"};
+        for (size_t i=0; i<sizeof(ts)/sizeof(ts[0]); i++) {
+            for (size_t j=0; j<3; j++) {
+                char *k = learning_graph_render_period_key(ts[i], gran[j]);
+                char *l = learning_graph_render_period_label(ts[i], gran[j]);
+                char inbuf[64]; snprintf(inbuf,sizeof(inbuf),"[%.6f,\"%s\"]",ts[i],gran[j]);
+                emit_str("_period_key", inbuf, k);
+                emit_str("_period_label", inbuf, l);
+                printf("  EMIT  _period_key/_period_label %s -> key=%s label=%s\n", inbuf, k, l);
+                free(k); free(l);
+            }
+        }
+    }
+
+    /* ---- _node_score / _node_meta ---- */
+    {
+        /* build small json nodes */
+        const char *nodes[] = {
+            "{\"kind\":\"memory\",\"timestamp\":1700000000.0,\"memorySource\":\"profile\",\"id\":\"a\"}",
+            "{\"kind\":\"memory\",\"timestamp\":1700000000.0,\"id\":\"b\"}",
+            "{\"category\":\"skill\",\"useCount\":5,\"pinned\":true,\"timestamp\":1700000000.0,\"id\":\"c\"}",
+            "{\"category\":\"tool\",\"useCount\":0,\"timestamp\":1700000000.0,\"id\":\"d\"}",
+            "{\"category\":\"reasoning\",\"timestamp\":1700000000.0,\"id\":\"e\"}",
+        };
+        for (size_t i=0; i<sizeof(nodes)/sizeof(nodes[0]); i++) {
+            json_t *node = json_parse(nodes[i], NULL);
+            double score = learning_graph_render_node_score(node, 0.7);
+            char *meta = learning_graph_render_node_meta(node);
+            char inbuf[200]; snprintf(inbuf,sizeof(inbuf),"[%s,0.7]",nodes[i]);
+            char sbout[32]; snprintf(sbout,sizeof(sbout),"%.10g",score);
+            emit_num("_node_score", inbuf, sbout);
+            emit_str("_node_meta", inbuf, meta);
+            printf("  EMIT  _node_score/_node_meta %s -> score=%.6f meta=%s\n", inbuf, score, meta);
+            free(meta); json_free(node);
+        }
+    }
+
     printf("\nC HARNESS (%d failures)\n", failures);
     return failures ? 1 : 0;
 }

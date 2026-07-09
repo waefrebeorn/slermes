@@ -25,6 +25,7 @@ sys.path.insert(0, "/home/wubu/hermes-agent-dev")
 from agent.learning_graph_render import (
     _clamp, _smoothstep, format_date,
     _rgb_to_hsl, _hsl_to_rgb, _complementary_ink,
+    _to_ts, _period_key, _period_label, _node_score, _node_meta,
 )
 
 ok = True
@@ -72,6 +73,25 @@ for line in sys.stdin:
             r, g, b = args
             rr, gg, bb = _complementary_ink((r, g, b))
             exp = "%d,%d,%d" % (rr, gg, bb)       # string compare
+        elif fn == "_to_ts":
+            ts = float(args[0])
+            res = _to_ts(ts)
+            ok_flag = 1 if res is not None else 0
+            out_val = res if res is not None else 0.0
+            exp = "%d,%.6g" % (ok_flag, out_val)  # string compare (matches C "ok,out")
+        elif fn == "_period_key":
+            ts, gran = args
+            exp = ",".join(str(x) for x in _period_key(float(ts), gran))
+        elif fn == "_period_label":
+            ts, gran = args
+            exp = _period_label(float(ts), gran)
+        elif fn == "_node_score":
+            node = args[0]; rec = float(args[1])   # args[0] already a parsed dict
+            exp = float("%.10g" % _node_score(node, rec))
+            got = float(got)   # numeric compare
+        elif fn == "_node_meta":
+            node = args[0]     # args[0] already a parsed dict
+            exp = _node_meta(node)
         else:
             print("UNKNOWN FN", fn); continue
     except Exception as e:
