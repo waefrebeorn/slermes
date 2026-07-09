@@ -380,6 +380,7 @@ char *web_extract_tool(const char *urls_json, const char *format, int char_limit
     }
 
     /* For each URL, attempt extraction */
+    bool any_failed = false;
     for (size_t i = 0; i < url_count; i++) {
         json_t *url_item = json_get(urls, i);
         if (!url_item || url_item->type != JSON_STRING) continue;
@@ -409,22 +410,22 @@ char *web_extract_tool(const char *urls_json, const char *format, int char_limit
             continue;
         }
 
-        /* Build placeholder extraction result - full implementation requires HTTP client
-         * to call extract API on the configured backend */
+        /* C has no web-content extraction client wired yet. Python calls the
+         * configured provider's remote API (firecrawl/tavily/exa); that remote
+         * call is C-unimplementable at call time without a real extract client.
+         * Be honest: report failure per-URL instead of faking success. */
         json_t *result = json_object();
         json_set(result, "url", json_string(url));
         json_set(result, "title", json_string(""));
-        json_set(result, "content", json_string("[Content extracted via "));
-        char *tmp = strdup(url);
-        if (tmp) {
-            json_append(result, json_string(tmp));
-            free(tmp);
-        }
-        json_append(result, json_string(" using "));
-        json_append(result, json_string(backend));
-        json_append(result, json_string("]"));
-        json_set(result, "error", json_null());
+        json_set(result, "content", json_string(""));
+        char errbuf[256];
+        snprintf(errbuf, sizeof(errbuf),
+                 "web_extract not implemented in C: no extract client for backend '%s'",
+                 backend ? backend : "none");
+        json_set(result, "error", json_string(errbuf));
+        json_set(result, "success", json_bool(false));
         json_append(results, result);
+        any_failed = true;
     }
 
     free(backend);
@@ -437,7 +438,7 @@ char *web_extract_tool(const char *urls_json, const char *format, int char_limit
         return strdup("{\"success\":false,\"error\":\"memory allocation failed\"}");
     }
 
-    json_set(response, "success", json_bool(true));
+    json_set(response, "success", json_bool(!any_failed));
     json_set(response, "results", results);
 
     char *serialized = json_serialize(response);
