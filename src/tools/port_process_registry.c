@@ -456,8 +456,9 @@ long process_registry_safe_host_start_time(pid_t pid)
 {
     if (!pid) return 0;
     #ifdef _WIN32
-    /* Windows: use GetProcessTimes via OpenProcess */
-    return 0;  /* Not implemented for Windows in this port */
+    /* On Windows the kernel start time requires GetProcessTimes via
+     * OpenProcess, which is not wired in this C port; 0 means "unavailable". */
+    return 0;
     #else
     char path[256];
     snprintf(path, sizeof(path), "/proc/%d/stat", pid);

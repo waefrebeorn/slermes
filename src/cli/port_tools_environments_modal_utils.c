@@ -148,14 +148,16 @@ json_node_t* cli_tools_environments_modal_utils__start_modal_exec(const char *sa
     if (!sandbox_id || !prepared) {
         return cli_tools_environments_modal_utils__error_result("NULL sandbox_id or prepared");
     }
-    hermes_log(LOG_INFO, "modal_utils", "_start_modal_exec: sandbox=%s", sandbox_id);
-    json_node_t *result = json_new_object();
-    if (result) {
-        json_object_set(result, "status", json_new_string("running"));
-        json_object_set(result, "execId", json_new_string("exec-placeholder"));
-        json_object_set(result, "sandboxId", json_new_string(sandbox_id));
+    hermes_log(LOG_WARNING, "modal_utils",
+               "_start_modal_exec: sandbox=%s — exec not implemented in C port (transport not wired)",
+               sandbox_id);
+    json_node_t *err = json_new_object();
+    if (err) {
+        json_object_set(err, "error",
+            json_new_string("Modal exec not implemented in C port: transport not wired"));
+        json_object_set(err, "returncode", json_new_number(1));
     }
-    return result;
+    return err;
 }
 
 /* PoP: cli_tools_environments_modal_utils__poll_modal_exec @ tools/environments/modal_utils.py:_poll_modal_exec */

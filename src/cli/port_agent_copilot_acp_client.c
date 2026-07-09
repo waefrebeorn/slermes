@@ -56,16 +56,12 @@ int cli_agent_copilot_acp_client__run_prompt(
 {
     if (!prompt_text || !*prompt_text) return -1;
 
-    /* In a full implementation, this would:
-     * 1. Start the ACP subprocess (codex CLI)
-     * 2. Send the prompt via stdin
-     * 3. Read stdout/stderr with timeout
-     * 4. Return the response
-     *
-     * For now, return a placeholder indicating the subprocess
-     * integration is needed.
-     */
-    hermes_log(LOG_DEBUG, "copilot_acp", "run_prompt: timeout=%.1f", timeout_seconds);
+    /* The Copilot ACP client drives an external subprocess (the codex CLI)
+     * over a JSON-RPC session. Neither the subprocess spawn config nor the
+     * ACP session transport is ported to C, so we cannot run the prompt.
+     * Return an error code (not 0/success) with an honest message. */
+    hermes_log(LOG_WARNING, "copilot_acp",
+        "run_prompt: Copilot ACP subprocess integration not available in C");
 
     if (stdout_out && stdout_size > 0) {
         snprintf(stdout_out, stdout_size,
@@ -75,7 +71,7 @@ int cli_agent_copilot_acp_client__run_prompt(
         stderr_out[0] = '\0';
     }
 
-    return 0;
+    return -1;
 }
 
 /* PoP: cli_agent_copilot_acp_client__handle_server_message @ agent/copilot_acp_client.py:_handle_server_message */

@@ -1409,7 +1409,8 @@ char *build_fal_edit_payload(const char *model_id, const char *prompt,
 {
     (void)model_id; (void)prompt; (void)image_urls; (void)aspect_ratio;
     (void)seed; (void)overrides;
-    hermes_log(LOG_WARNING, "port", "build_fal_edit_payload: deprecated stub");
+    hermes_log(LOG_WARNING, "port",
+        "build_fal_edit_payload: deprecated; use image_gen_build_fal_edit_payload");
     return strdup("{\"error\": \"use image_gen_build_fal_edit_payload\"}");
 }
 

@@ -11,9 +11,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* Stub: provider resolution not ported yet */
+/* The active video-gen provider is a plugin singleton resolved at runtime in
+ * Python. That plugin registry is not ported to C, so no provider is available
+ * here. Return NULL honestly (callers handle "no provider" with a missing-
+ * provider error). */
 void *cli_tools_video_generation_tool__resolve_active_provider(void) {
-    hermes_log(LOG_DEBUG, "video_gen", "_resolve_active_provider stub");
+    hermes_log(LOG_DEBUG, "video_gen", "_resolve_active_provider: provider registry not ported to C");
     return NULL;
 }
 
@@ -210,7 +213,11 @@ json_node_t* cli_tools_video_generation_tool__handle_video_generate(json_node_t 
         return err;
     }
     hermes_log(LOG_INFO, "video_gen", "_handle_video_generate: prompt=%.60s...", prompt);
-    /* Check provider availability */
+    /* Resolve the configured video-gen provider. In this C port the provider
+     * registry is not implemented, so _resolve_active_provider returns NULL and
+     * we report "no provider" honestly below. If a non-NULL provider were
+     * present, Python would call provider.generate() — that async generation
+     * path is also not ported, so we must not fabricate a "queued" result. */
     void *provider = cli_tools_video_generation_tool__resolve_active_provider();
     if (!provider) {
         char provider_buf[256];
@@ -218,15 +225,15 @@ json_node_t* cli_tools_video_generation_tool__handle_video_generate(json_node_t 
             provider_buf, sizeof(provider_buf));
         return cli_tools_video_generation_tool__missing_provider_error(configured);
     }
-    /* Build result placeholder — actual generation is async via provider plugin */
-    json_node_t *result = json_new_object();
-    if (result) {
-        json_object_set(result, "status", json_new_string("queued"));
-        json_object_set(result, "prompt", json_new_string(prompt));
-        json_object_set(result, "video", json_new_null());
-        json_object_set(result, "message", json_new_string("Video generation queued (provider plugin handles async execution)"));
+    /* Provider present but generation not ported: honest error, not fake "queued". */
+    json_node_t *err = json_new_object();
+    if (err) {
+        json_object_set(err, "success", json_new_bool(0));
+        json_object_set(err, "error",
+            json_new_string("Video generation not implemented in C port: provider.generate not wired"));
+        json_object_set(err, "video", json_new_null());
     }
-    return result;
+    return err;
 }
 
 /* PoP: cli_tools_video_generation_tool__format_model_caveats @ tools/video_generation_tool.py:_format_model_caveats */

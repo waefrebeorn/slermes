@@ -41,26 +41,12 @@ bool _redownload_electron_dist(const char* project_root, const char* env)
     if (!home) home = ".";
 
     char cmd[4096];
-    snprintf(cmd, sizeof(cmd), "mkdir -p \"%s/.hermes/electron\"", home);
-    system(cmd);
-
-    /* In a full implementation, this would download the electron distribution
-     * from the configured URL. For now, create a placeholder. */
-    char version_path[4096];
-    snprintf(version_path, sizeof(version_path), "%s/.hermes/electron/.version", home);
-
-    FILE* f = fopen(version_path, "w");
-    if (f) {
-        fprintf(f, "electron-redownloaded\n");
-        fclose(f);
-    }
-
-    hermes_log(LOG_INFO, "port", "redownload_electron_dist: downloaded electron to %s/.hermes/electron", home);
-
-    /* Verify the download succeeded */
-    char dist_path[4096];
-    snprintf(dist_path, sizeof(dist_path), "%s/.hermes/electron/dist", home);
-    return (access(dist_path, F_OK) == 0);
+    /* A real redownload fetches the electron distribution over HTTP from the
+     * configured URL. That network fetch is not implemented in the C port, so
+     * we must not claim success or fabricate a version marker. */
+    hermes_log(LOG_WARNING, "port",
+        "_redownload_electron_dist: electron distribution download not implemented in C port");
+    return false;
 }
 
 /* Port of Python: _try_redownload_electron_dist */

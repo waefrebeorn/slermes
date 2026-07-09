@@ -555,3 +555,72 @@ decide implement-for-real vs honest demotion.
 
 ## Next-Session Prompt
 /home/wubu/NEXT_SESSION_PROMPT.md (v550→v551, written).
+
+## v551 — Residual-Façade Adjudication + Monolith Split (2026-07-09)
+
+**Branch:** main (pushed to origin/main)
+**Build:** clean, 0 errors · **mission8:** 36 passed / 0 failed / 35 skipped
+**Oracle:** cron_prompt_sanitize 19/0 + file_text_ops 23/0 mismatches (C == LIVE Python)
+
+### Residual-façade backlog (the v550 ~12 candidates)
+Read REAL Python for each; adjudicated. **11/12 honestly demoted** (no fake
+success — returned honest error/NULL/claimed:false), 1 retained as a genuine
+platform gap (process_registry Windows branch, honest comment). Every site now
+returns honest state; 0 fake-success remain. Demotions:
+- read_terminal_tool → honest "desktop app only" error (was fake empty-JSON)
+- main_na `_redownload_electron_dist` → honest false (no fake .version write)
+- copilot_acp `_run_prompt` → return -1 (was success:0 + error string)
+- managed_modal/modal_utils `_start_modal_exec`/`_create_sandbox` → honest error
+  (no fake `running`/`exec-placeholder` ids)
+- video_generation → dead "result placeholder" block replaced with honest
+  missing-provider error
+- cronjob_tools `dispatch`/`execute_job_now` → success:false / claimed:false
+- kanban_tools `heartbeat_*` + kanban_swarm `create_swarm`/`post_blackboard_update`
+  → honest false / -1 (were fabricating swarm ids / 0-DB-write success)
+- Comments cleaned in plugin_llm / yuanbao / image_gen / process_registry
+  (removed façade-looking "Stub:"/"in a real implementation" wording; kept
+  honest NULL/error returns explaining the missing C backend).
+
+### Monolith split (refactor-first, v550's other half)
+1. **cron_prompt_sanitize.{h,c}** (NEW) — emoji/ZWJ unicode surgery +
+   invisible-unicode detection/removal + threat scanning extracted from
+   port_cronjob_tools.c. Oracle-verified C == LIVE Python (fixed 2 real bugs
+   surfaced by the oracle: ZWJ-emoji byte-offset decode, dangling-pointer in
+   scan_cron_skill_assembled; plus faithful rework of the 4 skill-assembled
+   threat matchers and GitHub-auth strip, and table-order alignment to Python's
+   frozenset iteration under PYTHONHASHSEED=0). port_cronjob_tools.c now holds
+   only 3 thin delegates.
+2. **file_text_ops.{h,c}** (NEW) — stateless text shapers (fence-strip, BOM,
+   line-ending, line-numbers, shell-arg-escape, path-expand, context-parse)
+   extracted from port_file_operations.c. Oracle-verified C == LIVE Python
+   (fixed 4 real divergences: CSI over-strip in fence-leaks, detect_line_ending
+   lone-CR, add_line_numbers empty/last-line gutter, escape_shell_arg quoting
+   style, parse_search_context_line regex semantics).
+
+### Verification
+- `make slermes`: clean, 0 errors.
+- `bash tests/run_mission8_tests.sh`: 36 passed / 0 failed / 35 skipped.
+- `tests/sta_oracle_cron_prompt_sanitize.py`: 19/0 mismatches.
+- `tests/sta_oracle_file_text_ops.py`: 23/0 mismatches.
+- Banned-phrase grep: 0 genuine fakes (15 benign anti-placeholder/secret-detect
+  hits only).
+- Scanner PORTED/REAL_GAP unchanged (demotions are SDK/platform-class features
+  the scanner classifies NA_SDK).
+
+### Files touched
+`src/tools/cron_prompt_sanitize.{h,c}` (NEW), `src/tools/file_text_ops.{h,c}`
+(NEW), `src/tools/port_cronjob_tools.c`, `src/tools/port_file_operations.c`,
+`src/cli/port_tools_read_terminal_tool.c`, `src/cli/port_main_na.c`,
+`src/cli/port_agent_copilot_acp_client.c`, `src/cli/port_agent_plugin_llm.c`,
+`src/cli/port_tools_environments_managed_modal.c`,
+`src/cli/port_tools_environments_modal_utils.c`,
+`src/cli/port_tools_video_generation_tool.c`, `src/cli/port_tools_yuanbao_tools.c`,
+`src/cli/port_hermes_cli_kanban_swarm.c`, `src/tools/port_kanban_tools.c`,
+`src/tools/port_image_generation_tool.c`, `src/tools/port_process_registry.c`,
+`build/objects.mk`, `tests/t_port_cron_prompt_sanitize.c`,
+`tests/sta_oracle_cron_prompt_sanitize.py`, `tests/t_port_file_text_ops.c`,
+`tests/sta_oracle_file_text_ops.py`, `BANNER.md`, `STATE.md`,
+`docs/parity-summary.md`.
+
+## Next-Session Prompt
+/home/wubu/NEXT_SESSION_PROMPT.md (v551→v552, written).
