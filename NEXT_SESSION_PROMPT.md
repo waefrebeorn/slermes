@@ -1,59 +1,45 @@
 # 📋 Next-Session Prompt (copy-paste ready)
-# Slermes v555 Session Prompt -- MONOLITH SPLIT CONTINUATION (browser/web/skills)
-Branch: main (v554 HEAD pushed to origin/main)
+# Slermes v556 Session Prompt -- MONOLITH SPLIT CONTINUATION (web/skills/image/send)
+Branch: main (v555 HEAD b384e2e66c pushed to origin/main)
 Working dir: /home/wubu/hermes-agent-dev/slermes
 Python sources: /home/wubu/hermes-agent-dev/  (parent repo -- NOT inside slermes/)
-Date anchor: 2026-07-09
+Date anchor: 2026-07-10
 
-## Context (what v554 delivered)
-v554 finished the port_file_operations.c split and closed more hidden
-faithful-port divergences:
-- **NEW src/tools/file_pagination_ops.{h,c}** — extracted normalize_read/
-  search_pagination, is_line_oriented_newline_error, pattern_has_regex_newline,
-  maybe_warn_line_oriented_newline_pattern. Monolith now holds thin delegates.
-- **Faithful normalize_read_pagination** — Python clamps offset≥1, limit∈[1,2000];
-  old C used offset≥0, cap 10000, and wrongly swapped default_limit for any
-  non-positive limit. Fixed.
-- **Faithful normalize_search_pagination** — offset≥0 (not ≥1), no upper cap.
-- **Faithful is_line_oriented_newline_error** — exact pair check (literal "\n"
-  is not allowed AND --multiline); old C matched loose keywords -> false positives.
-- **Faithful pattern_has_regex_newline** — odd-backslash \n regex; old C matched
-  bare $/^ (false positives) AND had an off-by-one in the backslash count that
-  inverted odd/even. Fixed both.
-- **Faithful maybe_warn_*** — only warns when total_count==0 AND regex-newline
-  AND (no error OR line-oriented error); clears error + sets specific warning.
-  Return type corrected to json_t*.
-- **cron oracle flakiness fixed** (pre-existing, surfaced in v554 regression):
-  check_invisible_unicode names whichever codepoint Python's invisible-char SET
-  iterates first (PYTHONHASHSEED-dependent) -> nondeterministic. Oracle now
-  asserts the behavior contract ("did it block?") for that fn. C was correct.
-- New oracle tests/t_port_file_pagination_ops.c + sta_oracle_*: **22/0**.
-- Build clean; mission8 36/0/35.
+## Context (what v555 delivered)
+v555 finished the port_browser_supervisor.c redaction split and closed hidden
+faithful-port divergences against LIVE agent/redact.py:
+- **NEW src/tools/browser_redact.{h,c}** — faithful POSIX-ERE port of
+  agent.redact.redact_sensitive_text + redact_cdp_url (vendor prefixes partial
+  mask; Authorization/x-api-key/DB-url/private-key full mask; telegram; bare-token
+  URL; JWT partial; CDP-URL query-param + user:pass@). The old C fns were crude
+  memset-to-* fakes covering only token=/user:pass@ — a silent fidelity gap;
+  bodies removed, replaced by PoP delegates to the new module.
+- **NEW src/tools/browser_supervisor_redact.{h,c}** — backend delegating to
+  browser_redact.
+- **NEW tests/t_port_browser_redact.c + sta_oracle_browser_redact.py: 22/0.**
+- Push protection: fixtures use scanner-safe FAKE token shapes; no real secrets.
 
-### Hard-won lessons (carry forward)
-1. Implicit declaration in oracle HARNESS (missing header include -> assumed int
-   return vs real bool/_Bool) corrupts results. Always #include the declaring
-   header.
-2. Oracle maps that coerce a divergence to "match" (e.g. None->"lf") HIDE bugs.
-   Fix the C; never patch the oracle to agree. Exception: when Python's result is
-   itself nondeterministic (set iteration), assert the BEHAVIOR CONTRACT, not an
-   exact value (AGENTS.md: behavior contracts over snapshots) — and note it.
-3. Rebuild the SPECIFIC .o you changed before relinking the oracle harness; a
-   stale .o produces phantom mismatches. The run scripts in /tmp rebuild the .o
-   first for exactly this reason.
+## Verification gates (ALL green at end v555 — do NOT regress)
+- make slermes: clean, 0 errors (slermes 41M with whisper).
+- bash tests/run_mission8_tests.sh -> 36 passed / 0 failed / 35 skipped.
+- Oracles 0 mismatches: file_text_ops (23/0), cron (19/0), file_ops_lint (11/0),
+  file_fs_ops (18/0), file_pagination_ops (22/0), browser_redact (22/0),
+  plumber fuzz (1611/0).
+- 0 STUB / 0 N/A.
 
-## v555 Mission (continue; do NOT regress the oracle gates)
-port_file_operations.c is now ~fully split (only patch_v4a [abstract in Python,
-no-op passthrough is acceptable], _exec/_has_command [POSIX primitives, leave],
-and thin delegates remain). Move to the next monoliths:
-- src/tools/port_browser_supervisor.c  (already has CDP-client + 3 real fns from
-  v550; extract the dialog/respond + runtime-eval + the remaining helpers into a
-  focused module, keep the CDP-client header from v550)
+## v556 Mission (continue the monolith-split discipline; do NOT regress gates)
+port_file_operations.c is fully split (v552-v554) and browser redaction is split
+(v555). Next monoliths to extract focused, oracle-verified modules from:
 - src/tools/port_web_tools.c  (web_extract honest-demote done v550; extract the
-  remaining real helpers)
-- src/tools/port_skills_sync.c
-- src/tools/port_image_generation_tool.c
-- src/tools/port_send_message_tool.c
+  remaining real helpers — web_search sanitize, url-normalize, fetch headers, etc.)
+- src/tools/port_skills_sync.c  (skill metadata, dedup, slugify — pure string/regex
+  cluster; the v547 audit found these have NO C consumer, so read Python first:
+  if genuinely C-unimplementable / no consumer, honestly demote rather than build
+  speculative parallel infra — AGENTS.md bans that)
+- src/tools/port_image_generation_tool.c  (provider dispatch is SDK-coupled; the
+  pure prompt/seed normalizers may be extractable — verify per-function)
+- src/tools/port_send_message_tool.c  (recipient/body shaping helpers; extract the
+  pure ones)
 
 For EACH monolith you touch:
 1. Identify a cohesive, oracle-verifiable concern (pure fns first, then I/O fns
@@ -70,6 +56,34 @@ For EACH monolith you touch:
    behavior; when C disagrees, FIX THE C.
 6. `make slermes` 0 errors; `bash tests/run_mission8_tests.sh` -> 36 passed / 0 failed.
 
+## Hard-won lessons (carry forward)
+1. Implicit declaration in oracle HARNESS (missing header include -> assumed int
+   return vs real bool/_Bool) corrupts results. Always #include the declaring
+   header in the harness.
+2. Oracle maps that coerce a divergence to "match" HIDE bugs. Fix the C; never
+   patch the oracle to agree. Exception: when Python's result is itself
+   nondeterministic (set iteration / fresh-process vs continuing-process state in
+   the instrumented agent.redact), assert the BEHAVIOR CONTRACT, not an exact
+   value, and note it.
+3. Rebuild the SPECIFIC .o you changed before relinking the oracle harness; a
+   stale .o produces phantom mismatches.
+4. POSIX-ERE GOTCHAS (bit v555 hard — record so v556 doesn't relearn):
+   - `(?:...)` NON-capturing groups FAIL to compile under this glibc (regcomp
+     error 13). Use capturing `(...)` and count groups, OR use the redact_subst()
+     helper (src/tools/browser_redact.c) which takes a template with \1..\n
+     backrefs + a \M masked-group sentinel — mirrors Python's re.sub lambdas and
+     eliminates manual group-index counting.
+   - Negated classes containing a POSIX class FAIL: `[^[:space:]]` and
+     `[^ \t]`-style negated-with-whitespace error 13. Use literal `[^ \t\"']`
+     (add a non-whitespace char so the negated class is accepted).
+   - No lookbehind/lookahead: emulate `(?<!...)`/`(?!...)` boundaries with a
+     manual char check.
+5. COMMIT-PROTECTION: GitHub push protection blocks real-looking secret prefixes
+   (sk-, ghp_, AKIA, xox, AIza) even inside «redacted:...» wrappers in test
+   fixtures. Use scanner-safe FAKE shapes that still match the C regex branch
+   (e.g. sk-ZZZ...(≥10 but <32 chars), ghp_ZZZ...(≥10 but <36), AIzaZZ...(30),
+   slackplaceholder-...) — never commit a real token.
+
 ## Hard rules (unchanged)
 - Opaque struct in .h, private fields in .c. NO hermes.h god header in port_*.c.
   NO void* passthrough. NO placeholder-success comments; implement or honestly
@@ -82,5 +96,6 @@ For EACH monolith you touch:
 - make slermes 0 errors
 - bash tests/run_mission8_tests.sh -> 36 passed / 0 failed / 35 skipped
 - All oracles 0 mismatches: file_text_ops (23/0), cron (19/0), file_ops_lint
-  (11/0), file_fs_ops (18/0), file_pagination_ops (22/0), plumber fuzz (1611/0)
+  (11/0), file_fs_ops (18/0), file_pagination_ops (22/0), browser_redact (22/0),
+  plumber fuzz (1611/0)
 - git commit + push origin main; record in STATE.md + BANNER.md
