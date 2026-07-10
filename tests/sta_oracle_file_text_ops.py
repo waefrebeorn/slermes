@@ -21,7 +21,7 @@ def py_strip_fence(t):
     return fo._strip_terminal_fence_leaks(t)
 def py_detect(sample):
     r = fo._detect_line_ending(sample)
-    return {None: "lf", "\n": "lf", "\r\n": "crlf", "\r": "cr"}.get(r, "lf")
+    return {None: "unknown", "\n": "lf", "\r\n": "crlf", "\r": "cr"}.get(r, "unknown")
 # Library-of-hand-coded expectations for the deterministic fns the C harness
 # exercises. For normalize_line_endings the C harness emits `in`=text with a
 # fixed target; we map input-text -> (input, target) here.

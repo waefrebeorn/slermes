@@ -622,6 +622,47 @@ returns honest state; 0 fake-success remain. Demotions:
 `tests/sta_oracle_file_text_ops.py`, `BANNER.md`, `STATE.md`,
 `docs/parity-summary.md`.
 
+## v553 — file_fs_ops monolith split + faithful-binary-detection fix (2026-07-09)
+
+### Goal
+Continue the monolith split from port_file_operations.c (the FS cluster) into a
+focused module, and fix the faithful-port divergences the split surfaced.
+
+### What landed
+- **NEW `src/tools/file_fs_ops.{h,c}`** — extracted the filesystem
+  read/write/type-detection cluster out of port_file_operations.c:
+  read_file_raw, delete_path, python_delete, patch_replace,
+  is_likely_binary, is_image, detect_file_line_ending, file_has_bom.
+  port_file_operations.c now holds thin delegates to file_fs_ops_* (no god
+  header, focused includes, opaque struct stays private). Registered
+  file_fs_ops.o in build/objects.mk (TOOLS_OBJ).
+- **Faithful `is_image`** — now matches Python's IMAGE_EXTENSIONS (added
+  `.ico`, which the old C omitted).
+- **Faithful `is_likely_binary`** — ported Python's real heuristic:
+  ext in BINARY_EXTENSIONS (the full ~80-entry set from
+  tools/binary_extensions.py) OR >30% non-printable in first 1000
+  bytes. The old C only checked for a NUL byte — a silent wrong result
+  on binary-looking text.
+- **Faithful `detect_file_line_ending`** — fixed a divergence the v551
+  oracle had been PAPERING OVER: for content with no newline (empty /
+  single-line file) Python's _detect_line_ending returns None ->
+  "unknown", but the C returned "lf". Now returns "unknown". Updated
+  the v551 file_text_ops oracle (and the new fs oracle) to expect
+  "unknown" — no more fake parity.
+
+### Verification
+- New tests/t_port_file_fs_ops.c + sta_oracle_file_fs_ops.py: **18/0** vs
+  LIVE tools/file_operations.py (+ agent.file_safety).
+- file_text_ops 23/0 (regression: now expects "unknown" for no-eol).
+- cron 19/0, lint 11/0 (unchanged).
+- make slermes 0 errors / 0 warnings on new modules; mission8 36/0/35.
+- Each file_ops_* symbol defined exactly once across the split (no dup defs).
+
+### Lesson reinforced (from v552)
+Always #include the module header that DECLARES the fn under test in the
+oracle harness — an implicit declaration (assumed int return vs real bool)
+corrupts the result and looks like a codegen bug.
+
 ## v552 — residual-façade sweep + monolith split, cont. (2026-07-09)
 
 ### Goal
