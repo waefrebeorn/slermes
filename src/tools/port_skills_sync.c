@@ -5,6 +5,7 @@
  */
 
 #include "port_skills_sync.h"
+#include "skills_sync_fs.h"
 #include "hermes_logger.h"
 #include "hermes_json.h"
 #include <stdbool.h>
@@ -494,78 +495,18 @@ json_t *discover_bundled_skills(const char *bundled_dir)
     return arr;
 }
 
-/* PoP: _compute_relative_dest @ tools/skills_sync.py:_compute_relative_dest
- * Port of Python tools/skills_sync.py:_compute_relative_dest().
- * Computes the destination path in SKILLS_DIR preserving category structure.
- * Returns malloc'd string (caller must free) or NULL. */
+/* PoP: _compute_relative_dest @ tools/skills_sync.py:_compute_relative_dest */
+/* Delegate to the focused skills_sync_fs module. */
 char *compute_relative_dest(const char *skill_dir, const char *bundled_dir)
 {
-    if (!skill_dir || !bundled_dir) return NULL;
-
-    /* Find skill_dir relative to bundled_dir */
-    size_t bundled_len = strlen(bundled_dir);
-    if (strncmp(skill_dir, bundled_dir, bundled_len) != 0) return NULL;
-    if (skill_dir[bundled_len] != '/' && skill_dir[bundled_len] != '\\') return NULL;
-
-    const char *rel = skill_dir + bundled_len + 1;
-    const char *home = getenv("HERMES_HOME");
-    if (!home) home = "/tmp/.hermes";
-
-    size_t needed = strlen(home) + 8 + strlen(rel) + 1;
-    char *dest = malloc(needed);
-    if (!dest) return NULL;
-
-    snprintf(dest, needed, "%s/skills/%s", home, rel);
-    return dest;
+    return skills_sync_fs_compute_relative_dest(skill_dir, bundled_dir);
 }
 
-/* PoP: _safe_rel_install_path @ tools/skills_sync.py:_safe_rel_install_path
- * Port of Python tools/skills_sync.py:_safe_rel_install_path().
- * Returns normalized relative POSIX path, rejecting traversal/absolute paths.
- * Returns malloc'd string (caller must free) or NULL on error. */
+/* PoP: _safe_rel_install_path @ tools/skills_sync.py:_safe_rel_install_path */
+/* Delegate to the focused skills_sync_fs module. */
 char *safe_rel_install_path(const char *path, const char *base)
 {
-    if (!path || !base) return NULL;
-
-    size_t base_len = strlen(base);
-    if (strncmp(path, base, base_len) != 0) return NULL;
-    if (path[base_len] != '/' && path[base_len] != '\\') return NULL;
-
-    const char *rel = path + base_len + 1;
-
-    /* Normalize: split by / or \, filter out empty and . and .. */
-    char *rel_copy = strdup(rel);
-    if (!rel_copy) return NULL;
-
-    char *parts[256];
-    int part_count = 0;
-    char *saveptr = NULL;
-    char *tok = strtok_r(rel_copy, "/\\", &saveptr);
-    while (tok && part_count < 256) {
-        if (strcmp(tok, "") != 0 && strcmp(tok, ".") != 0) {
-            if (strcmp(tok, "..") == 0) {
-                free(rel_copy);
-                return NULL;  /* traversal detected */
-            }
-            parts[part_count++] = tok;
-        }
-        tok = strtok_r(NULL, "/\\", &saveptr);
-    }
-
-    /* Build POSIX path */
-    size_t total = 1;
-    for (int i = 0; i < part_count; i++) total += strlen(parts[i]) + 1;
-    char *result = malloc(total);
-    if (!result) { free(rel_copy); return NULL; }
-
-    result[0] = '\0';
-    for (int i = 0; i < part_count; i++) {
-        if (i > 0) strcat(result, "/");
-        strcat(result, parts[i]);
-    }
-
-    free(rel_copy);
-    return result;
+    return skills_sync_fs_safe_rel_install_path(path, base);
 }
 
 /* PoP: _skill_file_list @ tools/skills_sync.py:_skill_file_list
@@ -641,72 +582,10 @@ char *content_hash(const char *directory)
 }
 
 /* PoP: _dir_hash @ tools/skills_sync.py:_dir_hash
- * Port of Python tools/skills_sync.py:_dir_hash().
- * Computes MD5 hash of all file contents in a directory for change detection.
- * Returns malloc'd hex string (caller must free) or NULL on error. */
+ * Delegate to the focused skills_sync_fs module. */
 char *dir_hash(const char *directory)
 {
-    if (!directory || !directory[0]) return NULL;
-
-    unsigned char digest[MD5_DIGEST_LENGTH];
-    MD5_CTX ctx;
-    MD5_Init(&ctx);
-
-    struct stack_entry { char path[4096]; } *stack = malloc(1024 * sizeof(struct stack_entry));
-    if (!stack) return NULL;
-    int stack_top = 0;
-    strncpy(stack[stack_top++].path, directory, 4095);
-    stack[stack_top - 1].path[4095] = '\0';
-
-    while (stack_top > 0) {
-        struct stack_entry cur = stack[--stack_top];
-        DIR *dir = opendir(cur.path);
-        if (!dir) continue;
-
-        struct dirent *entry;
-        while ((entry = readdir(dir)) != NULL) {
-            if (entry->d_name[0] == '.') continue;
-
-            char full_path[4096];
-            snprintf(full_path, sizeof(full_path), "%s/%s", cur.path, entry->d_name);
-
-            struct stat st;
-            if (stat(full_path, &st) != 0) continue;
-
-            if (S_ISDIR(st.st_mode)) {
-                if (stack_top < 1023) {
-                    strncpy(stack[stack_top++].path, full_path, 4095);
-                    stack[stack_top - 1].path[4095] = '\0';
-                }
-            } else if (S_ISREG(st.st_mode)) {
-                /* Hash the relative path */
-                const char *rel = full_path + strlen(directory) + 1;
-                MD5_Update(&ctx, rel, strlen(rel));
-
-                /* Hash the file contents */
-                FILE *f = fopen(full_path, "rb");
-                if (f) {
-                    char buf[4096];
-                    size_t n;
-                    while ((n = fread(buf, 1, sizeof(buf), f)) > 0) {
-                        MD5_Update(&ctx, buf, n);
-                    }
-                    fclose(f);
-                }
-            }
-        }
-        closedir(dir);
-    }
-    free(stack);
-
-    MD5_Final(digest, &ctx);
-
-    char *hex = malloc(2 * MD5_DIGEST_LENGTH + 1);
-    if (!hex) return NULL;
-    for (int i = 0; i < MD5_DIGEST_LENGTH; i++) {
-        snprintf(hex + 2 * i, 3, "%02x", digest[i]);
-    }
-    return hex;
+    return skills_sync_fs_dir_hash(directory);
 }
 
 /* PoP: _optional_skill_index @ tools/skills_sync.py:_optional_skill_index
