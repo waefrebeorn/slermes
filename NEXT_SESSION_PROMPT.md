@@ -29,18 +29,23 @@ v556 extracted TWO monolith clusters into oracle-verified focused modules:
 - 0 STUB / 0 N/A.
 
 ## v557 Mission (continue the monolith-split discipline; do NOT regress gates)
-web_tools (v556a) and skills_sync (v556b) are DONE. Next monoliths to extract
-focused, oracle-verified modules from:
-- src/tools/port_image_generation_tool.c  (1508 lines; provider dispatch is
-  SDK-coupled, but the pure prompt/seed/aspect-ratio normalizers + the FAKE-shape
-  fixture guards may be extractable — read Python first, verify per-function)
+web_tools (v556a), skills_sync (v556b), image_gen_path (v557a) are DONE.
+Next monolith to extract focused, oracle-verified modules from:
 - src/tools/port_send_message_tool.c  (886 lines; recipient/body shaping,
-  platform formatting helpers — extract the pure ones)
+  platform formatting helpers — extract the pure ones, oracle-verify)
 Then residual-façade sweep on ~12 catalogued genuine stub returns (read_terminal_
 tool, main_na, agent_plugin_llm, agent_copilot_acp_client, managed_modal/
 modal_utils, video_generation, yuanbao, cronjob_tools, kanban_tools,
 image_generation, process_registry) — each needs Python read to decide
 implement-for-real vs honest demotion.
+
+IMPORTANT scope note from v557a: a monolith function is only worth extracting
+if it is oracle-VERIFIABLE 1:1 against live Python. Config/mount-coupled fns
+(e.g. image_gen's agent_cache_base_for_env / visible_cache_path / postprocess,
+which route through tools.credential_files.map_cache_path_to_container +
+env.__class__.__name__) are NON-DETERMINISTIC without a real mount table —
+leave them in the port file as documented PoP ports rather than faking a
+half-port. Extract only the pure, deterministic helpers.
 
 For EACH monolith you touch:
 1. Identify a cohesive, oracle-verifiable concern (pure fns first).

@@ -867,5 +867,36 @@ build/objects.mk, tests/t_port_skills_sync_fs.c (NEW),
 tests/sta_oracle_skills_sync_fs.py (NEW). BANNER.md, STATE.md,
 NEXT_SESSION_PROMPT.md updated for v557.
 
+## v557a (2026-07-10) — monolith split x7: image_gen_path
+Extracted the ONE genuinely pure, oracle-verifiable helper from the
+1508-line `port_image_generation_tool.c` monolith into a focused module.
+
+**What was extracted (faithful, oracle-verified 16/0):**
+- `image_gen_path_looks_like_absolute_file_path` — pure POSIX/Windows-drive
+  classifier. Faithful port of `_looks_like_absolute_file_path`:
+  `os.path.isabs` (POSIX = leading `/`) OR `X:/`/`X:\` Windows drive.
+
+**What was deliberately NOT extracted (honest scope boundary):**
+- `_agent_cache_base_for_env`, `_agent_visible_cache_path`,
+  `_postprocess_image_generate_result` are **config/mount-coupled** in live
+  Python: they route through `tools.credential_files.map_cache_path_to_
+  container` (a config-driven mount table) + `env.__class__.__name__` backend
+  dispatch. Non-deterministic without a real `HERMES_HOME` + mount config —
+  NOT a clean 1:1 port. They stay in `port_image_generation_tool.c` as
+  documented PoP ports. This prevented a fake-faithful half-port.
+
+**Real bugs found + fixed this window:**
+- C mis-classified a lone `\` as absolute (was `value[0]=='\\'`). POSIX
+  `os.path.isabs` returns False for `\` → fixed to leading `/` only.
+- Harness `js()` `sizeof(char*)` truncation — recurred; fixed with JS_CAP.
+- Oracle compared `cout` (JSON bool) `== "true"` (string) → always False;
+  fixed to `bool(cout)`.
+- Module fn renamed to `image_gen_path_` prefix; port name kept as delegate.
+
+**Gates (all green, v557a pushed):** `make` clean · mission8 36/0 · parity
+`image_generation_tool.py` REAL_GAP=0 · 6 oracles 0 mismatch (file_text_ops
+23, browser_redact 22, file_pagination_ops 22, web_base64_img 12,
+skills_sync_fs 4, image_gen_path 16) · 0 STUB / 0 N/A.
+
 ## Next-Session Prompt
 /home/wubu/NEXT_SESSION_PROMPT.md (v555→v556, written).
