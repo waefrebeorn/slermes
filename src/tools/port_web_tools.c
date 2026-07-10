@@ -8,6 +8,8 @@
 #define SRC_TOOLS_PORT_WEB_TOOLS_C
 
 #include "port_web_tools.h"
+#include "web_base64_img.h"
+#include "hermes_url_safety.h"
 #include "hermes_logger.h"
 #include "hermes_json.h"
 #include <stdbool.h>
@@ -190,13 +192,10 @@ int web_get_extract_char_limit(void)
 }
 
 /* PoP: web_convert_base64_images_to_links @ tools/web_tools.py:convert_base64_images_to_links */
+/* Delegate to the focused web_base64_img module (faithful POSIX-ERE port). */
 char *web_convert_base64_images_to_links(const char *text)
 {
-    if (!text) return strdup("");
-
-    /* Simplified: just return the text as-is.
-     * A full implementation would use regex to find and replace base64 image data. */
-    return strdup(text);
+    return web_base64_img_convert(text);
 }
 
 /* PoP: web_store_full_text @ tools/web_tools.py:_store_full_text */
@@ -387,20 +386,9 @@ char *web_extract_tool(const char *urls_json, const char *format, int char_limit
         const char *url = url_item->str_val;
         if (!url || !url[0]) continue;
 
-        /* SSRF check - simplified */
-        bool is_private = false;
-        if (strncmp(url, "http://10.", 10) == 0) is_private = true;
-        else if (strncmp(url, "http://192.168.", 13) == 0) is_private = true;
-        else if (strncmp(url, "http://172.16.", 12) == 0) is_private = true;
-        else if (strncmp(url, "http://127.", 11) == 0) is_private = true;
-        else if (strncmp(url, "http://localhost", 16) == 0) is_private = true;
-        else if (strncmp(url, "https://10.", 11) == 0) is_private = true;
-        else if (strncmp(url, "https://192.168.", 14) == 0) is_private = true;
-        else if (strncmp(url, "https://172.16.", 13) == 0) is_private = true;
-        else if (strncmp(url, "https://127.", 12) == 0) is_private = true;
-        else if (strncmp(url, "https://localhost", 17) == 0) is_private = true;
-
-        if (is_private) {
+        /* SSRF check — reuse the focused url_safety module (no duplicate
+         * inline IP-range matching; that logic lives in url_safety.c). */
+        if (!url_is_safe(url)) {
             json_t *blocked = json_object();
             json_set(blocked, "url", json_string(url));
             json_set(blocked, "title", json_string(""));
