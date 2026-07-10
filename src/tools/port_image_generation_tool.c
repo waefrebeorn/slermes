@@ -8,6 +8,7 @@
 #define SRC_TOOLS_PORT_IMAGE_GENERATION_TOOL_C
 
 #include "port_image_generation_tool.h"
+#include "image_gen_path.h"
 #include "hermes_logger.h"
 #include "hermes_json.h"
 #include "fal_common.h"
@@ -680,34 +681,12 @@ json_t *image_gen_upscale_image(const char *image_url, const char *original_prom
 }
 
 /* ---------------------------------------------------------------------------
- * PoP: _looks_like_absolute_file_path @ tools/image_generation_tool.py:_looks_like_absolute_file_path
- * --------------------------------------------------------------------------- */
-
-bool image_gen_looks_like_absolute_file_path(const char *value)
-{
-    if (!value || !*value) return false;
-
-    const char *lower = value;
-    char *lower_buf = strdup(value);
-    if (!lower_buf) return false;
-    for (char *p = lower_buf; *p; p++) *p = tolower(*p);
-    lower = lower_buf;
-
-    bool result = false;
-    if (strncmp(lower, "http://", 7) == 0 ||
-        strncmp(lower, "https://", 8) == 0 ||
-        strncmp(lower, "data:", 5) == 0) {
-        result = false;
-    } else if (value[0] == '/' || value[0] == '\\') {
-        result = true;
-    } else if (strlen(value) >= 3 && value[1] == ':' &&
-               (value[2] == '/' || value[2] == '\\')) {
-        result = true;  /* Windows drive letter */
-    }
-
-    free(lower_buf);
-    return result;
-}
+ /* PoP: _looks_like_absolute_file_path @ tools/image_generation_tool.py:_looks_like_absolute_file_path
+  * Delegate to the focused image_gen_path module. */
+ bool image_gen_looks_like_absolute_file_path(const char *value)
+ {
+     return image_gen_path_looks_like_absolute_file_path(value);
+ }
 
 /* ---------------------------------------------------------------------------
  * PoP: _active_terminal_env @ tools/image_generation_tool.py:_active_terminal_env
@@ -746,7 +725,7 @@ json_t *image_gen_active_terminal_env(const char *task_id)
 }
 
 /* ---------------------------------------------------------------------------
- * PoP: _agent_cache_base_for_env @ tools/image_generation_tool.py:_agent_cache_base_for_env
+/* PoP: _agent_cache_base_for_env @ tools/image_generation_tool.py:_agent_cache_base_for_env
  * --------------------------------------------------------------------------- */
 
 char *image_gen_agent_cache_base_for_env(json_t *env)
@@ -862,7 +841,7 @@ void image_gen_force_artifact_sync(json_t *env)
 }
 
 /* ---------------------------------------------------------------------------
- * PoP: _postprocess_image_generate_result @ tools/image_generation_tool.py:_postprocess_image_generate_result
+/* PoP: _postprocess_image_generate_result @ tools/image_generation_tool.py:_postprocess_image_generate_result
  * --------------------------------------------------------------------------- */
 
 char *image_gen_postprocess_image_generate_result(const char *raw, const char *task_id)
