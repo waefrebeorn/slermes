@@ -8,6 +8,7 @@
 #include "file_text_ops.h"
 #include "hermes_logger.h"
 #include "hermes_json.h"
+#include "hermes_file_safety.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -147,11 +148,20 @@ char *file_ops_read_file_raw(const char *path)
     return buf;
 }
 
-/* Port of Python: delete_path */
-/* PoP: file_ops_delete_path @ tools/file_operations.py:delete_path */
+/* Port of Python: delete_path / _python_delete
+ * PoP: file_ops_delete_path @ tools/file_operations.py:delete_path
+ * Faithful: Python's delete_path -> _python_delete first calls
+ * _is_write_denied(path) and returns WriteResult(error="Delete denied: ...")
+ * for protected paths. The C backend is POSIX-only (no Windows rm), so it
+ * unlinks a file or rmdirs an empty dir; a denied path returns false (the
+ * honest equivalent of Python's error-carrying result). */
 bool file_ops_delete_path(const char *path)
 {
-    if (!path) return false;
+    if (!path || !*path) return false;
+    if (is_write_denied(path)) {
+        hermes_log(2, "delete_path denied by write-deny list: %s", path);
+        return false;
+    }
     return unlink(path) == 0 || rmdir(path) == 0;
 }
 
@@ -200,17 +210,9 @@ char *file_ops_patch_v4a(const char *content, const char *patch_text)
 }
 
 /* ================================================================
- *  Linting helpers
+ *  Linting helpers  (extracted → src/tools/file_ops_lint.c)
  * ================================================================ */
-
-/* Port of Python: _looks_like_linter_unusable */
-/* PoP: file_ops_looks_like_linter_unusable @ tools/file_operations.py:_looks_like_linter_unusable */
-bool file_ops_looks_like_linter_unusable(const char *output)
-{
-    if (!output) return false;
-    return (strstr(output, "command not found") != NULL ||
-            strstr(output, "not installed") != NULL);
-}
+/* file_ops_looks_like_linter_unusable moved to file_ops_lint.c */
 
 /* ================================================================
  *  Pagination helpers
