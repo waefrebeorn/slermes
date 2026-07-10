@@ -757,5 +757,61 @@ correct header were 100% correct; only the mis-including harness was wrong.)
 `tests/t_port_file_ops_lint.c` (NEW), `tests/sta_oracle_file_ops_lint.py` (NEW),
 `BANNER.md`, `STATE.md`.
 
+## v555 — browser_redact monolith split + faithful agent.redact port (2026-07-09)
+
+### Goal
+Continue the monolith split from port_browser_supervisor.c (the two pure
+redaction helpers) into a focused module, and fix the faithful-port
+divergences the split surfaced against LIVE `agent/redact.py`.
+
+### What landed
+- **NEW `src/tools/browser_redact.{h,c}`** — faithful POSIX-ERE port of
+  `agent.redact.redact_sensitive_text` + `redact_cdp_url`. Covers: known
+  vendor secret prefixes (partial head6/tail4 mask), Authorization/x-api-key
+  headers (full mask), private-key blocks, DB connection-string passwords
+  (full), Telegram bot tokens, bare-token URL userinfo (partial), JWT (partial),
+  and CDP-URL query-param + `user:pass@` redaction. Opaque state stays private;
+  focused include set; no god header.
+- **NEW `src/tools/browser_supervisor_redact.{h,c}`** — the backend for
+  `_redact_cdp_error_text` / `_redact_supervisor_text`; delegates to
+  `browser_redact`. The two redaction function bodies were REMOVED from
+  `port_browser_supervisor.c` (they had been crude `memset`-to-`*` fakes that
+  only handled `token=`/`user:pass@` — a silent fidelity gap); the file now
+  holds PoP-annotated thin delegates.
+- `build/objects.mk`: registered `browser_redact.o` + `browser_supervisor_redact.o`.
+- `tests/t_port_browser_redact.c` + `tests/sta_oracle_browser_redact.py`:
+  22-case oracle proving C == LIVE `agent.redact` over 22 fixtures
+  (vendor prefixes, auth headers, DB urls, JWT, telegram, bare-token URL,
+  CDP query-param + userinfo, passthrough). **22/0.**
+
+### POSIX-ERE gotchas discovered & handled (would bite any future `re` port)
+1. **`(?:...)` non-capturing groups FAIL to compile** under this glibc
+   (`regcomp` → error 13). Use capturing `(...)` instead and count groups.
+2. **Negated classes containing a POSIX class FAIL** — `[^[:space:]]` and
+   `[^ \t]`-style negated-with-whitespace-classes error 13. Use literal
+   `[^ \t\"']` (add a non-whitespace char so the negated class is accepted).
+3. **Lookbehind/lookahead boundaries emulated** with a manual char check
+   (no `[A-Za-z0-9_-]` immediately before/after the match), not `(?<!...)`/`(?!...)`.
+4. **`redact_subst()` helper** added: mirrors Python's `re.sub` lambdas via
+   `\1..\n` backrefs in a template plus a `\M` sentinel for the masked group —
+   eliminates manual group-index counting and the off-by-one class of bug that
+   consumed most of this session.
+
+### Verification
+- `make slermes`: clean, 0 errors (slermes binary 41M with whisper).
+- All oracles stable: file_text_ops **23/0**, cron **19/0**, fs **18/0**,
+  pagination **22/0**, browser_redact **22/0**, mission8 **36/0/35**.
+- 0 STUB / 0 N/A — every remaining gap is a genuine REAL_GAP.
+- Push protection: test fixtures use scanner-safe FAKE token shapes
+  (`sk-ZZZ...`, `ghp_ZZZ...`, `AIzaZZ...`, `sk_live_ZZZ...`,
+  `slackplaceholder-...`); no real credentials committed.
+
+### Files touched
+`src/tools/browser_redact.{h,c}` (NEW),
+`src/tools/browser_supervisor_redact.{h,c}` (NEW),
+`src/tools/port_browser_supervisor.c` (redaction bodies removed; PoP delegates),
+`build/objects.mk`, `tests/t_port_browser_redact.c` (NEW),
+`tests/sta_oracle_browser_redact.py` (NEW), `BANNER.md`, `STATE.md`.
+
 ## Next-Session Prompt
-/home/wubu/NEXT_SESSION_PROMPT.md (v552→v553, written).
+/home/wubu/NEXT_SESSION_PROMPT.md (v555→v556, written).
