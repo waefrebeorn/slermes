@@ -9,6 +9,7 @@
 
 #include "port_browser_supervisor.h"
 #include "port_tools_browser_cdp_tool.h"
+#include "browser_supervisor_redact.h"
 #include "hermes_logger.h"
 #include "hermes_json.h"
 #include <stdbool.h>
@@ -55,90 +56,12 @@ void port_browser_supervisor_cleanup(port_browser_supervisor_state_t *state)
 }
 
 /* PoP: _redact_cdp_error_text @ tools/browser_supervisor.py:_redact_cdp_error_text
- * Port of Python tools/browser_supervisor.py:_redact_cdp_error_text().
- * Redact any CDP endpoint credentials from an error's string form. */
-char *browser_supervisor_redact_cdp_error_text(const char *error_text)
-{
-    if (!error_text) return strdup("<error redacted>");
-
-    /* Redact CDP URLs that contain tokens/credentials */
-    char *result = strdup(error_text);
-    if (!result) return strdup("<error redacted>");
-
-    /* Pattern: ws://...token=... or wss://...token=... */
-    char *token = strstr(result, "token=");
-    while (token) {
-        char *end = strchr(token, '&');
-        if (!end) end = token + strlen(token);
-        size_t token_len = end - (token + 6);
-        if (token_len > 0) {
-            memset(token + 6, '*', token_len);
-        }
-        token = strstr(end, "token=");
-    }
-
-    /* Pattern: user:pass@ in URL */
-    char *at = strstr(result, "@");
-    while (at) {
-        /* Find start of userinfo (after // or wss:// or ws://) */
-        char *colon = NULL;
-        for (char *p = at - 1; p >= result; p--) {
-            if (*p == ':') {
-                colon = p;
-                break;
-            }
-            if (*p == '/' && p > result && *(p-1) == '/') break;
-        }
-        if (colon && colon < at) {
-            size_t len = at - (colon + 1);
-            if (len > 0) {
-                memset(colon + 1, '*', len);
-            }
-        }
-        at = strstr(at + 1, "@");
-    }
-
-    return result;
-}
+ * Implementation extracted to browser_supervisor_redact.c (faithful agent.redact
+ * port in browser_redact.c). This file's body is in that module. */
 
 /* PoP: _redact_supervisor_text @ tools/browser_supervisor.py:_redact_supervisor_text
- * Port of Python tools/browser_supervisor.py:_redact_supervisor_text().
- * Redact page-originated text before exposing supervisor snapshots. */
-char *browser_supervisor_redact_supervisor_text(const char *value)
-{
-    if (!value) return strdup("");
-
-    /* Redact sensitive text using patterns from agent.redact */
-    char *result = strdup(value);
-    if (!result) return strdup("");
-
-    /* Common secret patterns */
-    const char *patterns[] = {
-        "sk-ant-", "sk-", "ghp_", "gho_", "ghu_", "ghs_", "ghr_",
-        "Bearer ", "bearer ", "api_key", "apikey", "secret", "token",
-        NULL
-    };
-
-    for (int i = 0; patterns[i]; i++) {
-        char *pos = result;
-        size_t plen = strlen(patterns[i]);
-        while ((pos = strstr(pos, patterns[i]))) {
-            /* Find end of token (whitespace, quote, comma, brace) */
-            char *end = pos + plen;
-            while (*end && *end != ' ' && *end != '\t' && *end != '\n' &&
-                   *end != '"' && *end != '\'' && *end != ',' && *end != '}' && *end != ']') {
-                end++;
-            }
-            size_t token_len = end - (pos + plen);
-            if (token_len > 0) {
-                memset(pos + plen, '*', token_len);
-            }
-            pos = end;
-        }
-    }
-
-    return result;
-}
+ * Implementation extracted to browser_supervisor_redact.c (faithful agent.redact
+ * port in browser_redact.c). This file's body is in that module. */
 
 /* PoP: respond_to_dialog @ tools/browser_supervisor.py:respond_to_dialog
  * Port of Python tools/browser_supervisor.py:respond_to_dialog().
