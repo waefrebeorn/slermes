@@ -5,6 +5,7 @@
  */
 
 #include "port_send_message_tool.h"
+#include "send_message_target.h"
 #include "hermes_logger.h"
 #include "hermes_json.h"
 #include "hermes_http.h"
@@ -105,132 +106,28 @@ static json_t *send_message_handle_send(json_t *args);
 #include <sys/types.h>
 
 /* PoP: _display_chat_id @ tools/send_message_tool.py:_display_chat_id
- * Port of Python tools/send_message_tool.py:_display_chat_id().
- * Return a result-safe chat identifier for tool transcripts/log consumers. */
+ * Delegate to the focused send_message_target module. */
 char *send_message_display_chat_id(const char *platform_name, const char *chat_id)
 {
-    if (!platform_name) return strdup("unknown:unknown");
-
-    if (strcmp(platform_name, "signal") == 0 && chat_id && strncmp(chat_id, "group:", 6) == 0) {
-        return strdup("group:***");
-    }
-    return strdup(chat_id ? chat_id : "default");
+    return send_message_target_display_chat_id(platform_name, chat_id);
 }
 
-/* PoP: _telegram_retry_delay @ tools/send_message_tool.py:_telegram_retry_delay
- * Port of Python tools/send_message_tool.py:_telegram_retry_delay().
- * Compute retry delay for Telegram API errors. Returns -1 if no retry. */
+/* PoP: _telegram_retry_delay @ tools/send_message_tool.py:_telegram_retry_delay */
+/* Delegate to the focused send_message_target module. */
 double send_message_telegram_retry_delay(const char *error_text, int attempt)
 {
-    if (!error_text) return -1;
-
-    /* Check for retry_after in exception (simulated) */
-    char *retry_after_str = strstr(error_text, "retry_after=");
-    if (retry_after_str) {
-        retry_after_str += 12;  /* skip "retry_after=" */
-        double retry_after = atof(retry_after_str);
-        if (retry_after > 0) return fmax(retry_after, 0.0);
-    }
-
-    char *text = strdup(error_text);
-    for (char *p = text; *p; p++) *p = tolower((unsigned char)*p);
-
-    if (strstr(text, "timed out") || strstr(text, "timeout")) {
-        free(text);
-        return -1;  /* Don't retry timeouts */
-    }
-
-    double delay = -1;
-    if (strstr(text, "bad gateway") || strstr(text, "502") ||
-        strstr(text, "too many requests") || strstr(text, "429") ||
-        strstr(text, "service unavailable") || strstr(text, "503") ||
-        strstr(text, "gateway timeout") || strstr(text, "504")) {
-        delay = pow(2.0, attempt);
-    }
-
-    free(text);
-    return delay;
+    return send_message_target_telegram_retry_delay(error_text, attempt);
 }
 
-/* PoP: _parse_target_ref @ tools/send_message_tool.py:_parse_target_ref
- * Port of Python tools/send_message_tool.py:_parse_target_ref().
- * Parse a tool target into chat_id/thread_id and whether it is explicit. */
+/* PoP: _parse_target_ref @ tools/send_message_tool.py:_parse_target_ref */
+/* Delegate to the focused send_message_target module. */
 int send_message_parse_target_ref(const char *platform_name, const char *target_ref,
                                    char *chat_id_out, size_t chat_id_size,
                                    char *thread_id_out, size_t thread_id_size)
 {
-    if (!platform_name || !target_ref) return 0;
-
-    if (strcmp(platform_name, "telegram") == 0) {
-        /* Telegram topic target: chat_id:thread_id */
-        char *colon = strchr(target_ref, ':');
-        if (colon) {
-            size_t chat_len = colon - target_ref;
-            if (chat_len < chat_id_size) {
-                strncpy(chat_id_out, target_ref, chat_len);
-                chat_id_out[chat_len] = '\0';
-            }
-            if (thread_id_out && thread_id_size > 0) {
-                strncpy(thread_id_out, colon + 1, thread_id_size - 1);
-                thread_id_out[thread_id_size - 1] = '\0';
-            }
-            return 1;  /* explicit */
-        }
-        /* Username target: @username */
-        if (target_ref[0] == '@') {
-            if (chat_id_size > 1) {
-                strncpy(chat_id_out, target_ref, chat_id_size - 1);
-                chat_id_out[chat_id_size - 1] = '\0';
-            }
-            return 1;
-        }
-    } else if (strcmp(platform_name, "feishu") == 0) {
-        /* Feishu target format */
-        char *colon = strchr(target_ref, ':');
-        if (colon) {
-            size_t chat_len = colon - target_ref;
-            if (chat_len < chat_id_size) {
-                strncpy(chat_id_out, target_ref, chat_len);
-                chat_id_out[chat_len] = '\0';
-            }
-            if (thread_id_out && thread_id_size > 0) {
-                strncpy(thread_id_out, colon + 1, thread_id_size - 1);
-                thread_id_out[thread_id_size - 1] = '\0';
-            }
-            return 1;
-        }
-    } else if (strcmp(platform_name, "discord") == 0) {
-        /* Discord numeric topic: chat_id:thread_id */
-        char *colon = strchr(target_ref, ':');
-        if (colon) {
-            size_t chat_len = colon - target_ref;
-            if (chat_len < chat_id_size) {
-                strncpy(chat_id_out, target_ref, chat_len);
-                chat_id_out[chat_len] = '\0';
-            }
-            if (thread_id_out && thread_id_size > 0) {
-                strncpy(thread_id_out, colon + 1, thread_id_size - 1);
-                thread_id_out[thread_id_size - 1] = '\0';
-            }
-            return 1;
-        }
-    } else if (strcmp(platform_name, "slack") == 0) {
-        /* Slack thread target: channel_id:thread_ts */
-        char *colon = strchr(target_ref, ':');
-        if (colon) {
-            size_t chat_len = colon - target_ref;
-            if (chat_len < chat_id_size) {
-                strncpy(chat_id_out, target_ref, chat_len);
-                chat_id_out[chat_len] = '\0';
-            }
-            if (thread_id_out && thread_id_size > 0) {
-                strncpy(thread_id_out, colon + 1, thread_id_size - 1);
-                thread_id_out[thread_id_size - 1] = '\0';
-            }
-            return 1;
-        }
-    }
-    return 0;  /* Not an explicit target reference */
+    return send_message_target_parse_target_ref(platform_name, target_ref,
+                                                 chat_id_out, chat_id_size,
+                                                 thread_id_out, thread_id_size);
 }
 
 /* PoP: _describe_media_for_mirror @ tools/send_message_tool.py:_describe_media_for_mirror
