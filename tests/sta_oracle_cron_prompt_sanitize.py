@@ -56,6 +56,20 @@ for line in sys.stdin:
         total += 1
         continue
     total += 1
+
+    # check_invisible_unicode returns a plaintext Blocked/empty message. When the
+    # input holds multiple invisible codepoints (e.g. bidi U+202E + U+202C), Python
+    # iterates a *set* whose order depends on PYTHONHASHSEED, so the exact codepoint
+    # in the message is nondeterministic. The faithful invariant is "did it block?":
+    # both C and Python must agree on blocked-vs-clean for the SAME input.
+    if fn == "check_invisible_unicode":
+        c_blocked = "Blocked: prompt contains invisible unicode" in (out_s or "")
+        p_blocked = "Blocked: prompt contains invisible unicode" in (exp or "")
+        if c_blocked != p_blocked:
+            mismatches += 1
+            print(f"MISMATCH {fn} in={in_s!r}\n  C  ={out_s!r}\n  PY ={exp!r}")
+        continue
+
     # Structural comparison: both C `out` and Python `exp` are JSON strings.
     try:
         c_json = json.loads(out_s) if out_s else None

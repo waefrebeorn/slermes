@@ -622,6 +622,50 @@ returns honest state; 0 fake-success remain. Demotions:
 `tests/sta_oracle_file_text_ops.py`, `BANNER.md`, `STATE.md`,
 `docs/parity-summary.md`.
 
+## v554 — file_pagination_ops monolith split + faithful newline/pagination fixes (2026-07-09)
+
+### Goal
+Continue the monolith split from port_file_operations.c (pagination + newline-regex
+helpers) and fix the faithful-port divergences the split surfaced.
+
+### What landed
+- **NEW src/tools/file_pagination_ops.{h,c}** — extracted normalize_read/
+  search_pagination, is_line_oriented_newline_error, pattern_has_regex_newline,
+  maybe_warn_line_oriented_newline_pattern. port_file_operations.c now holds
+  thin delegates; file_pagination_ops.o registered in build/objects.mk.
+- **Faithful normalize_read_pagination** — Python clamps offset to max(1,.) and
+  limit to [1, MAX_LINES=2000]; the old C used offset>=0 and cap 10000, and
+  (bug) swapped in default_limit for any non-positive limit. Now matches Python
+  exactly (a negative limit clamps to 1, not to default_limit).
+- **Faithful normalize_search_pagination** — offset max(0,.) (NOT max(1,.)),
+  limit max(1,.) with NO upper cap (Python has none).
+- **Faithful is_line_oriented_newline_error** — Python checks the EXACT pair
+  (`literal "\n" is not allowed` AND `--multiline`); the old C matched loose
+  keywords ("newline"/"CRLF"/"line-oriented") -> false positives. Fixed.
+- **Faithful pattern_has_regex_newline** — Python's odd-backslash \n regex
+  (even backslashes => literal backslash+n, no warn). The old C matched bare
+  "$"/"^" -> false positives, and had an OFF-BY-ONE in the backslash count
+  (missed the backslash AT the \n position) that inverted odd/even. Fixed both.
+- **Faithful maybe_warn_line_oriented_newline_pattern** — only warns when
+  total_count==0 AND pattern has a regex newline AND (no error OR error is the
+  line-oriented error); clears error and sets the specific warning string. Old
+  C warned on any "$"/"^"/\n and set a wrong warning key. Return type corrected
+  to json_t* (Python returns the mutated SearchResult).
+
+### Also fixed (pre-existing, surfaced during v554 regression run)
+- **cron oracle flakiness**: check_invisible_unicode returns a Blocked message
+  that names whichever invisible codepoint Python's _CRON_INVISIBLE_CHARS SET
+  iterates first — order depends on PYTHONHASHSEED, so the exact codepoint was
+  nondeterministic (oracle flaked 0/0/1 across runs). Changed the cron oracle to
+  assert the BEHAVIOR CONTRACT ("did it block?") for check_invisible_unicode
+  instead of an exact codepoint (AGENTS.md: behavior contracts over snapshots).
+  C is correct (blocks); this makes the gate stable. Not a v554 code regression.
+
+### Verification
+- New tests/t_port_file_pagination_ops.c + sta_oracle_file_pagination_ops.py: **22/0**.
+- file_text_ops 23/0, cron 19/0 (stable), lint 11/0, fs 18/0 (unchanged).
+- make slermes 0 errors; mission8 36/0/35. All oracles stable across 3 repeated runs.
+
 ## v553 — file_fs_ops monolith split + faithful-binary-detection fix (2026-07-09)
 
 ### Goal
