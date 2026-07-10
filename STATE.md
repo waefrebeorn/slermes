@@ -898,5 +898,39 @@ Extracted the ONE genuinely pure, oracle-verifiable helper from the
 23, browser_redact 22, file_pagination_ops 22, web_base64_img 12,
 skills_sync_fs 4, image_gen_path 16) · 0 STUB / 0 N/A.
 
+## v557b (2026-07-10) — monolith split x8: send_message_target
+Extracted the pure, oracle-verifiable target/display/retry helpers from the
+886-line `port_send_message_tool.c` into a focused module.
+
+**Extracted (faithful, oracle-verified 21/0):**
+- `send_message_target_parse_target_ref` — regex-faithful port of
+  `_parse_target_ref` for telegram/discord/feishu/slack (POSIX ERE mirroring
+  the LIVE Python *_TARGET_RE: `@username` + digits:digits + slack
+  channel:thread_ts + bare-channel fallback). Removed the naive colon-split
+  approximation (diverged on malformed + slack thread_ts inputs).
+- `send_message_target_display_chat_id` — signal group -> `group:***` (1:1).
+- `send_message_target_telegram_retry_delay` — retryable-error backoff.
+
+**Real bugs found + fixed this window:**
+- FABRICATED `retry_after=` string-parse removed: Python reads `retry_after`
+  from the EXCEPTION ATTRIBUTE, not the error text. C now returns -1 (None)
+  for `retry_after=`-in-text inputs, matching Python.
+- parse_target_ref regex groups: thread group must EXCLUDE the `:` (Python's
+  `(?::(\d+))?` keeps `:` outside the capture; my first POSIX port captured
+  `:789`). Fixed pattern to `(-?[0-9]+):?([0-9]+)?`.
+- Dead-hybrid PoP trap (x2) on the delegate lines for `_telegram_retry_delay`
+  + `_parse_target_ref` regressed them to REAL_GAP; fixed to single-line
+  `/* PoP: c @ m.py:f */` + separate comment line. Re-scanned: parity
+  send_message_tool.py back to REAL_GAP=1 (`_send_yuanbao`, pre-existing).
+
+**Reused / verified:** grep whole tree — no overlap with gateway/* or other
+modules. The port file's `display_chat_id` (line ~62, unprefixed) is a stale
+non-PoP duplicate of `send_message_display_chat_id`; left as-is (out of scope).
+
+**Gates (all green, v557b pushed):** `make` clean · mission8 36/0 · parity
+send_message_tool.py REAL_GAP=1 · 7 oracles 0 mismatch (file_text_ops 23,
+browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
+4, image_gen_path 16, send_message_target 21) · 0 STUB / 0 N/A.
+
 ## Next-Session Prompt
 /home/wubu/NEXT_SESSION_PROMPT.md (v555→v556, written).
