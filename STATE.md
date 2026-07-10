@@ -813,5 +813,59 @@ divergences the split surfaced against LIVE `agent/redact.py`.
 `build/objects.mk`, `tests/t_port_browser_redact.c` (NEW),
 `tests/sta_oracle_browser_redact.py` (NEW), `BANNER.md`, `STATE.md`.
 
+## v556 (2026-07-10) — monolith split x2: web_base64_img + skills_sync_fs
+Two monolith clusters extracted into oracle-verified focused modules.
+
+### v556a: web_base64_img (from port_web_tools.c)
+- **NEW src/tools/web_base64_img.{h,c}** — faithful POSIX-ERE 3-pass port of
+  tools/web_tools.py:convert_base64_images_to_links (was a `strdup(text)` silent
+  stub covering only the no-op case). Uses capturing groups + a `subst()` helper
+  (mirrors Python re.sub). Fixed a real C bug: double-offset group capture on
+  the 2nd+ markdown image (g1 offsets relative to `p`, not `p+m[0].rm_so`).
+- port_web_tools.c: `web_convert_base64_images_to_links` -> PoP delegate to the
+  new module; inline SSRF `strncmp` block in web_extract_tool REPLACED with a
+  delegate to the EXISTING url_safety.c::url_is_safe() (no double-coding).
+- **tests/t_port_web_base64_img.c + sta_oracle_web_base64_img.py: 12/0.**
+- objects.mk: +web_base64_img.o.
+
+### v556b: skills_sync_fs (from port_skills_sync.c, 1723 lines)
+- **NEW src/tools/skills_sync_fs.{h,c}** — consolidated 3 pure helpers:
+  skills_sync_fs_dir_hash (MD5 of dir contents, sorted traversal; replaces the
+  port file's inline MD5), skills_sync_fs_safe_rel_install_path (traversal +
+  absolute-path rejection), skills_sync_fs_compute_relative_dest.
+- port_skills_sync.c: dir_hash / safe_rel_install_path / compute_relative_dest ->
+  thin PoP delegates. Orphaned inline MD5 body deleted.
+- **tests/t_port_skills_sync_fs.c + sta_oracle_skills_sync_fs.py: 4/0**
+  (dir_hash md5 vs live Python; traversal + absolute rejected; valid join).
+- objects.mk: +skills_sync_fs.o.
+- NOTE: lib/libskillsync/skills_sync.c ALSO has skills_sync_dir_hash but it is
+  NOT in objects.mk/Makefile (dead/unlinked, 0 callers in src/). Left as-is;
+  the live consolidated dir_hash is skills_sync_fs_dir_hash.
+
+### Verification
+- `make slermes`: clean, 0 errors.
+- mission8: 36 passed / 0 failed / 35 skipped.
+- All oracles 0 mismatch: file_text_ops 23/0, cron 19/0, file_fs_ops 18/0,
+  file_pagination_ops 22/0, browser_redact 22/0, web_base64_img 12/0,
+  skills_sync_fs 4/0 (new), plumber fuzz 1611/0 (unchanged).
+- skills_sync.py parity: REAL_GAP 0 (two dead-hybrid PoP lines fixed).
+- 0 STUB / 0 N/A.
+
+### Hard-won lessons reinforced
+- PoP DEAD-HYBRID (`/* PoP: c @ m.py:f` w/o `*/` on same line) -> phantom
+  REAL_GAP; always single-line `/* PoP: ... */`. Re-run scanner after PoP edits.
+- Oracle harness JSON escaper: use fixed CAP constant, NOT `sizeof(char*)`.
+- Double-coding trap: grep whole tree (incl lib/*) before extracting; reuse
+  existing modules (url_safety.c, skills_sync_fs.c).
+
+### Files touched
+v556a: src/tools/web_base64_img.{h,c} (NEW), src/tools/port_web_tools.c,
+build/objects.mk, tests/t_port_web_base64_img.c (NEW),
+tests/sta_oracle_web_base64_img.py (NEW).
+v556b: src/tools/skills_sync_fs.{h,c} (NEW), src/tools/port_skills_sync.c,
+build/objects.mk, tests/t_port_skills_sync_fs.c (NEW),
+tests/sta_oracle_skills_sync_fs.py (NEW). BANNER.md, STATE.md,
+NEXT_SESSION_PROMPT.md updated for v557.
+
 ## Next-Session Prompt
 /home/wubu/NEXT_SESSION_PROMPT.md (v555→v556, written).
