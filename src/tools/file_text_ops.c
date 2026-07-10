@@ -106,12 +106,13 @@ char *file_text_ops_strip_terminal_fence_leaks(const char *text)
 /* ---- detect_line_ending ------------------------------------------------- */
 
 /* PoP: file_text_ops_detect_line_ending @ tools/file_operations.py:_detect_line_ending
- * Returns malloc'd "crlf" / "lf". Python returns None for content without a
- * newline (undetermined); we surface "lf" as the concrete default so C
- * callers don't need a sentinel. Python never returns a bare "cr" string. */
+ * Returns malloc'd "crlf" / "lf" / "unknown". Python's _detect_line_ending
+ * returns None for content without a newline (undetermined: new/empty/
+ * single-line file), and the FS wrapper _detect_file_line_ending surfaces
+ * that as None -> "unknown". Python never returns a bare "cr" string. */
 char *file_text_ops_detect_line_ending(const char *sample)
 {
-    if (!sample || !*sample) return dup_str("lf");
+    if (!sample || !*sample) return dup_str("unknown");
     size_t head = strlen(sample);
     if (head > 4096) head = 4096;
     if (memchr(sample, '\r', head) && memchr(sample, '\n', head) &&
@@ -119,8 +120,8 @@ char *file_text_ops_detect_line_ending(const char *sample)
         return dup_str("crlf");
     }
     if (memchr(sample, '\n', head)) return dup_str("lf");
-    /* No newline present -> Python returns None (undetermined) -> "lf". */
-    return dup_str("lf");
+    /* No newline present -> Python returns None (undetermined) -> "unknown". */
+    return dup_str("unknown");
 }
 
 /* ---- normalize_line_endings --------------------------------------------- */

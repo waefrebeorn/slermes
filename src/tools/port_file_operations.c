@@ -6,6 +6,7 @@
 
 #include "port_file_operations.h"
 #include "file_text_ops.h"
+#include "file_fs_ops.h"
 #include "hermes_logger.h"
 #include "hermes_json.h"
 #include "hermes_file_safety.h"
@@ -124,52 +125,22 @@ char *file_ops_parse_search_context_line(const char *line)
 }
 
 /* ================================================================
- *  File read/write operations
+ *  File read/write operations  (extracted → src/tools/file_fs_ops.c)
  * ================================================================ */
 
-/* Port of Python: read_file_raw */
 /* PoP: file_ops_read_file_raw @ tools/file_operations.py:read_file_raw */
 char *file_ops_read_file_raw(const char *path)
 {
-    if (!path) return NULL;
-    FILE *f = fopen(path, "rb");
-    if (!f) return NULL;
-
-    fseek(f, 0, SEEK_END);
-    long sz = ftell(f);
-    fseek(f, 0, SEEK_SET);
-
-    char *buf = malloc(sz + 1);
-    if (!buf) { fclose(f); return NULL; }
-
-    size_t read = fread(buf, 1, sz, f);
-    buf[read] = '\0';
-    fclose(f);
-    return buf;
+    return file_fs_ops_read_file_raw(path);
 }
 
-/* Port of Python: delete_path / _python_delete
- * PoP: file_ops_delete_path @ tools/file_operations.py:delete_path
- * Faithful: Python's delete_path -> _python_delete first calls
- * _is_write_denied(path) and returns WriteResult(error="Delete denied: ...")
- * for protected paths. The C backend is POSIX-only (no Windows rm), so it
- * unlinks a file or rmdirs an empty dir; a denied path returns false (the
- * honest equivalent of Python's error-carrying result). */
-bool file_ops_delete_path(const char *path)
-{
-    if (!path || !*path) return false;
-    if (is_write_denied(path)) {
-        hermes_log(2, "delete_path denied by write-deny list: %s", path);
-        return false;
-    }
-    return unlink(path) == 0 || rmdir(path) == 0;
-}
+/* PoP: file_ops_delete_path @ tools/file_operations.py:delete_path */
+char *file_ops_delete_path(const char *path) { return (char*)file_fs_ops_delete_path(path); }
 
-/* Port of Python: _python_delete */
 /* PoP: file_ops_python_delete @ tools/file_operations.py:_python_delete */
 bool file_ops_python_delete(const char *path)
 {
-    return file_ops_delete_path(path);
+    return file_fs_ops_python_delete(path);
 }
 
 /* ================================================================
@@ -177,27 +148,11 @@ bool file_ops_python_delete(const char *path)
  * ================================================================ */
 
 /* Port of Python: patch_replace */
-/* PoP: file_ops_patch_replace @ tools/file_operations.py:patch_replace */
+/* PoP: file_ops_patch_replace @ tools/file_operations.py:patch_replace
+ * delegates to the first-occurrence replace primitive in file_fs_ops.c */
 char *file_ops_patch_replace(const char *content, const char *old_text, const char *new_text)
 {
-    if (!content || !old_text || !new_text) return strdup(content ? content : "");
-
-    const char *pos = strstr(content, old_text);
-    if (!pos) return strdup(content);
-
-    size_t before_len = pos - content;
-    size_t old_len = strlen(old_text);
-    size_t new_len = strlen(new_text);
-    size_t result_len = before_len + new_len + (strlen(content) - before_len - old_len) + 1;
-
-    char *result = malloc(result_len);
-    if (!result) return NULL;
-
-    memcpy(result, content, before_len);
-    memcpy(result + before_len, new_text, new_len);
-    strcpy(result + before_len + new_len, pos + old_len);
-
-    return result;
+    return file_fs_ops_patch_replace(content, old_text, new_text);
 }
 
 /* Port of Python: patch_v4a */
@@ -286,33 +241,19 @@ bool file_ops_has_command(const char *cmd)
  * ================================================================ */
 
 /* Port of Python: _is_likely_binary */
-/* PoP: file_ops_is_likely_binary @ tools/file_operations.py:_is_likely_binary */
+/* PoP: file_ops_is_likely_binary @ tools/file_operations.py:_is_likely_binary
+ * delegates to file_fs_ops_is_likely_binary (faithful BINARY_EXTENSIONS + 30% rule) */
 bool file_ops_is_likely_binary(const char *path)
 {
-    if (!path) return false;
-    FILE *f = fopen(path, "rb");
-    if (!f) return false;
-
-    unsigned char buf[512];
-    size_t read = fread(buf, 1, sizeof(buf), f);
-    fclose(f);
-
-    for (size_t i = 0; i < read; i++) {
-        if (buf[i] == 0) return true;
-    }
-    return false;
+    return file_fs_ops_is_likely_binary(path);
 }
 
 /* Port of Python: _is_image */
-/* PoP: file_ops_is_image @ tools/file_operations.py:_is_image */
+/* PoP: file_ops_is_image @ tools/file_operations.py:_is_image
+ * delegates to file_fs_ops_is_image (faithful IMAGE_EXTENSIONS, includes .ico) */
 bool file_ops_is_image(const char *path)
 {
-    if (!path) return false;
-    const char *ext = strrchr(path, '.');
-    if (!ext) return false;
-    return (strcasecmp(ext, ".png") == 0 || strcasecmp(ext, ".jpg") == 0 ||
-            strcasecmp(ext, ".jpeg") == 0 || strcasecmp(ext, ".gif") == 0 ||
-            strcasecmp(ext, ".bmp") == 0 || strcasecmp(ext, ".webp") == 0);
+    return file_fs_ops_is_image(path);
 }
 
 /* ================================================================
@@ -343,26 +284,18 @@ char *file_ops_escape_shell_arg(const char *arg)
  * ================================================================ */
 
 /* Port of Python: _detect_file_line_ending */
-/* PoP: file_ops_detect_file_line_ending @ tools/file_operations.py:_detect_file_line_ending */
+/* PoP: file_ops_detect_file_line_ending @ tools/file_operations.py:_detect_file_line_ending
+ * delegates to file_fs_ops_detect_file_line_ending */
 char *file_ops_detect_file_line_ending(const char *path)
 {
-    char *content = file_ops_read_file_raw(path);
-    if (!content) return strdup("unknown");
-    char *ending = file_ops_detect_line_ending(content);
-    free(content);
-    return ending;
+    return file_fs_ops_detect_file_line_ending(path);
 }
 
-/* Port of Python: _file_has_bom */
-/* PoP: file_ops_file_has_bom @ tools/file_operations.py:_file_has_bom */
+/* PoP: file_ops_file_has_bom @ tools/file_operations.py:_file_has_bom
+ * delegates to file_fs_ops_file_has_bom */
 bool file_ops_file_has_bom(const char *path)
 {
-    FILE *f = fopen(path, "rb");
-    if (!f) return false;
-    unsigned char bom[3];
-    size_t read = fread(bom, 1, 3, f);
-    fclose(f);
-    return (read == 3 && bom[0] == 0xEF && bom[1] == 0xBB && bom[2] == 0xBF);
+    return file_fs_ops_file_has_bom(path);
 }
 
 /* Port of Python: _unified_diff */

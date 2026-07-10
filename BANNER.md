@@ -2,7 +2,7 @@
 # ║           Slermes — C Translation                            ║
 # ║         of Hermes Agent (Nous Research)                      ║
 # ║                                                              ║
-# ║  Build: Clean  │  v552 │  Tests: 36/36  │  Oracle: 42/0 + 11/0 + 1611/0 fuzz ║
+# ║  Build: Clean  │  v553 │  Tests: 36/36  │  Oracle: 42/0 + 11/0 + 18/0 + 1611/0 fuzz ║
 # ║  Ported: 4,881/9,731 (50.2%)  REAL_GAP: 4,802 (49.3%)  PARTIAL: 48  ║
 # ║  ✓ residual-façade backlog: 11/12 honest demotions (no fake   ║
 # ║    success); every remaining gap is genuine REAL_GAP         ║
