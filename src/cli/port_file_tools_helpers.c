@@ -38,11 +38,11 @@ static void ft_normpath2(const char *in, char *out);
     "still current — refer to that instead of re-reading."
 
 /* --- minimal normpath ------------------------------------------------- */
-/* Writes normalized path into out (must be >= strlen(in)+1). */
+/* Writes normalized path into out (caller guarantees >= strlen(in)+1, but we
+ * bound every write with snprintf to avoid overflow on hostile/long paths). */
 static void ft_normpath2(const char *in, char *out)
 {
     char tmp[4096];
-    /* tokenize into a copy */
     char *parts[512]; int cnt = 0;
     int abs = (in[0]=='/');
     const char *p = in;
@@ -54,7 +54,7 @@ static void ft_normpath2(const char *in, char *out)
         if (len==1 && s[0]=='.') continue;
         if (len==2 && s[0]=='.' && s[1]=='.'){
             if (cnt>0) cnt--;
-            else if (!abs){ parts[cnt]=(char*)malloc(3); strcpy(parts[cnt],".."); cnt++; }
+            else if (!abs){ parts[cnt]=(char*)malloc(3); snprintf(parts[cnt],3,".."); cnt++; }
             continue;
         }
         parts[cnt]=(char*)malloc(len+1); memcpy(parts[cnt],s,len); parts[cnt][len]='\0'; cnt++;
@@ -63,12 +63,13 @@ static void ft_normpath2(const char *in, char *out)
     if (abs) tmp[pos++]='/';
     for (int k=0;k<cnt;k++){
         if (k) tmp[pos++]='/';
-        memcpy(tmp+pos,parts[k],strlen(parts[k])); pos+=strlen(parts[k]);
+        size_t plen=strlen(parts[k]);
+        if (pos + plen < sizeof(tmp)-1) { memcpy(tmp+pos,parts[k],plen); pos+=plen; }
         free(parts[k]);
     }
     if (pos==0) tmp[pos++]='/';
     tmp[pos]='\0';
-    strcpy(out,tmp);
+    snprintf(out, strlen(in)+1, "%s", tmp);
 }
 
 /* ---------------------------------------------------------------------- */

@@ -622,5 +622,55 @@ returns honest state; 0 fake-success remain. Demotions:
 `tests/sta_oracle_file_text_ops.py`, `BANNER.md`, `STATE.md`,
 `docs/parity-summary.md`.
 
+## v552 — residual-façade sweep + monolith split, cont. (2026-07-09)
+
+### Goal
+Address the 3 pre-existing HIGH devil's-advocate flags on v551's file-ops
+cluster AND continue the monolith-split discipline. All 3 flags fixed with
+faithful 1:1 parity, oracle-verified against LIVE Python.
+
+### What got done (3 HIGH flags → fixed)
+1. **`ft_normpath2` strcpy / unbounded memcpy** (`src/cli/port_file_tools_helpers.c`)
+   — the DA "unsafe string op" flag. Replaced `strcpy`/`memcpy`-into-fixed-
+   buffer with `snprintf`-bounded writes (no behavior change; same
+   `file_tools_is_blocked_device_path` results: /dev/zero=1, /proc/1/fd/0=1,
+   home/x=0, /etc/passwd=0). Eliminates a real path-length buffer-overflow.
+2. **`file_ops_looks_like_linter_unusable` was a wrong port** — ignored the
+   linter `base_cmd` and hard-coded two substrings. Faithfully ported
+   `tools/file_operations.py:_looks_like_linter_unusable` (base_cmd-keyed
+   `_LINTER_UNUSABLE_PATTERNS`: npx / rustfmt / go). **Extracted to its own
+   focused module** `src/tools/file_ops_lint.{h,c}` (the v552 monolith split)
+   with a clean opaque declaration — kills the implicit-declaration / god-file
+   coupling.
+3. **`file_ops_delete_path` missing write-deny guard** — Python's
+   `delete_path → _python_delete → _is_write_denied` returns `WriteResult(
+   error="Delete denied: ...")`. Added `is_write_denied(path)` (already ported
+   in `src/agent/file_safety.c`) guard; denied paths return false. POSIX-only
+   unlink/rmdir backend preserved.
+
+### Verification
+- New oracle `tests/t_port_file_ops_lint.c` + `sta_oracle_file_ops_lint.py`:
+  **11/0 mismatches** vs LIVE `tools/file_operations.py` (linter) and
+  `agent.file_safety.is_write_denied` (delete guard).
+- Build `make slermes`: 0 errors. mission8: 36/0/35.
+- Regression: original oracles still 23/0 (file_text_ops) + 19/0 (cron) +
+  1611/0 (plumber fuzz). `ft_normpath2` consumer results unchanged.
+
+### Hard-won lesson (recorded for future sessions)
+A "C returns wrong results but identical isolated code is correct" symptom was
+NOT a codegen bug — it was an **implicit function declaration** in the TEST
+HARNESS: the harness called `file_ops_looks_like_linter_unusable` without
+including `file_ops_lint.h`, so the compiler assumed `int` return (default
+arg promotion) while the real function returns `bool` (`_Bool`, 1 byte) →
+calling-convention mismatch corrupted the return value. Always `#include` the
+module header that declares the function under test. (dbg5/lint_only with the
+correct header were 100% correct; only the mis-including harness was wrong.)
+
+### Files touched
+`src/cli/port_file_tools_helpers.c`, `src/tools/port_file_operations.c`,
+`src/tools/file_ops_lint.{h,c}` (NEW), `build/objects.mk`,
+`tests/t_port_file_ops_lint.c` (NEW), `tests/sta_oracle_file_ops_lint.py` (NEW),
+`BANNER.md`, `STATE.md`.
+
 ## Next-Session Prompt
-/home/wubu/NEXT_SESSION_PROMPT.md (v551→v552, written).
+/home/wubu/NEXT_SESSION_PROMPT.md (v552→v553, written).
