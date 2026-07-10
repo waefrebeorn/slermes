@@ -7,6 +7,7 @@
 #include "port_file_operations.h"
 #include "file_text_ops.h"
 #include "file_fs_ops.h"
+#include "file_pagination_ops.h"
 #include "hermes_logger.h"
 #include "hermes_json.h"
 #include "hermes_file_safety.h"
@@ -173,27 +174,18 @@ char *file_ops_patch_v4a(const char *content, const char *patch_text)
  *  Pagination helpers
  * ================================================================ */
 
-/* Port of Python: normalize_read_pagination */
-/* PoP: file_ops_normalize_read_pagination @ tools/file_operations.py:normalize_read_pagination */
+/* PoP: file_ops_normalize_read_pagination @ tools/file_operations.py:normalize_read_pagination
+ * delegates to file_pagination_ops_normalize_read_pagination */
 char *file_ops_normalize_read_pagination(int offset, int limit, int default_limit)
 {
-    if (limit <= 0) limit = default_limit;
-    if (limit > 10000) limit = 10000;
-    if (offset < 0) offset = 0;
-
-    json_t *root = json_object();
-    json_set(root, "offset", json_new_number(offset));
-    json_set(root, "limit", json_new_number(limit));
-    char *s = json_serialize(root);
-    json_free(root);
-    return s;
+    return file_pagination_ops_normalize_read_pagination(offset, limit, default_limit);
 }
 
-/* Port of Python: normalize_search_pagination */
-/* PoP: file_ops_normalize_search_pagination @ tools/file_operations.py:normalize_search_pagination */
+/* PoP: file_ops_normalize_search_pagination @ tools/file_operations.py:normalize_search_pagination
+ * delegates to file_pagination_ops_normalize_search_pagination */
 char *file_ops_normalize_search_pagination(int offset, int limit, int default_limit)
 {
-    return file_ops_normalize_read_pagination(offset, limit, default_limit);
+    return file_pagination_ops_normalize_search_pagination(offset, limit, default_limit);
 }
 
 /* ================================================================
@@ -345,50 +337,23 @@ bool file_ops_file_has_bom(const char *path)
 /* Port of Python: _densify_matches */
 
 
-/* Port of Python: _is_line_oriented_newline_error */
-/* PoP: file_ops_is_line_oriented_newline_error @ tools/file_operations.py:_is_line_oriented_newline_error */
+/* PoP: file_ops_is_line_oriented_newline_error @ tools/file_operations.py:_is_line_oriented_newline_error
+ * delegates to file_pagination_ops_is_line_oriented_newline_error */
 bool file_ops_is_line_oriented_newline_error(const char *error)
 {
-    if (!error) {
-        return false;
-    }
-    if (strstr(error, "newline") || strstr(error, "line ending") ||
-        strstr(error, "\\n") || strstr(error, "CRLF") ||
-        strstr(error, "line-oriented")) {
-        hermes_log(LOG_DEBUG, "port", "is_line_oriented_newline_error: detected");
-        return true;
-    }
-    return false;
+    return file_pagination_ops_is_line_oriented_newline_error(error);
 }
 
-/* Port of Python: _maybe_warn_line_oriented_newline_pattern */
-/* PoP: file_ops_maybe_warn_line_oriented_newline_pattern @ tools/file_operations.py:_maybe_warn_line_oriented_newline_pattern */
-char *file_ops_maybe_warn_line_oriented_newline_pattern(json_t *result, const char *pattern)
+/* PoP: file_ops_maybe_warn_line_oriented_newline_pattern @ tools/file_operations.py:_maybe_warn_line_oriented_newline_pattern
+ * delegates to file_pagination_ops_maybe_warn_line_oriented_newline_pattern */
+json_t *file_ops_maybe_warn_line_oriented_newline_pattern(json_t *result, const char *pattern)
 {
-    if (!result || !pattern) {
-        hermes_log(LOG_WARNING, "port", "maybe_warn_line_oriented_newline_pattern: null parameter");
-        return strdup("{\"warning\": \"null parameter\"}");
-    }
-    if (strstr(pattern, "\\n") || strstr(pattern, "$") || strstr(pattern, "^")) {
-        hermes_log(LOG_WARNING, "port",
-                   "maybe_warn_line_oriented_newline_pattern: line-oriented pattern detected: %s",
-                   pattern);
-        json_object_set(result, "warning",
-                        json_new_string("line_oriented_newline_pattern"));
-    }
-    return result;
+    return file_pagination_ops_maybe_warn_line_oriented_newline_pattern(result, pattern);
 }
 
-/* Port of Python: _pattern_has_regex_newline */
-/* PoP: file_ops_pattern_has_regex_newline @ tools/file_operations.py:_pattern_has_regex_newline */
+/* PoP: file_ops_pattern_has_regex_newline @ tools/file_operations.py:_pattern_has_regex_newline
+ * delegates to file_pagination_ops_pattern_has_regex_newline */
 bool file_ops_pattern_has_regex_newline(const char *pattern)
 {
-    if (!pattern) {
-        return false;
-    }
-    if (strstr(pattern, "\\n") || strstr(pattern, "$") || strstr(pattern, "^")) {
-        hermes_log(LOG_DEBUG, "port", "pattern_has_regex_newline: detected in '%s'", pattern);
-        return true;
-    }
-    return false;
+    return file_pagination_ops_pattern_has_regex_newline(pattern);
 }
