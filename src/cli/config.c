@@ -55,6 +55,7 @@
  */
 
 #include "hermes.h"
+#include "config_schema.h"
 #include "hermes_yaml.h"
 #include "hermes_json.h"
 #include "hermes_auth.h"
@@ -2938,19 +2939,6 @@ bool hermes_config_diff(const hermes_config_t *active, cfg_diff_t *diff) {
  *  P20: Config Export
  * ================================================================ */
 
-/* Helper: write a config value line */
-static void exp_str(FILE *f, const char *key, const char *val) {
-    if (val && val[0]) fprintf(f, "%s: %s\n", key, val);
-}
-static void exp_int(FILE *f, const char *key, int val) {
-    fprintf(f, "%s: %d\n", key, val);
-}
-static void exp_bool(FILE *f, const char *key, bool val) {
-    fprintf(f, "%s: %s\n", key, val ? "true" : "false");
-}
-static void exp_float(FILE *f, const char *key, float val) {
-    fprintf(f, "%s: %.2f\n", key, (double)val);
-}
 
 bool hermes_config_export(const hermes_config_t *cfg, const char *path) {
     FILE *f = stdout;
@@ -3549,49 +3537,6 @@ void hermes_config_merge(hermes_config_t *dst, const hermes_config_t *src) {
  *  P24: Config Schema Generation — build JSON Schema from config_t
  * ================================================================ */
 
-/* Helper: create schema property definition */
-static json_t *schema_prop(const char *type, const char *desc, const char *default_val) {
-    json_t *prop = json_object();
-    json_set(prop, "type", json_string(type));
-    if (desc && desc[0]) json_set(prop, "description", json_string(desc));
-    if (default_val && default_val[0]) json_set(prop, "default", json_string(default_val));
-    return prop;
-}
-
-static json_t *schema_prop_int(const char *desc, int def, int min, int max) {
-    json_t *prop = json_object();
-    json_set(prop, "type", json_string("integer"));
-    if (desc) json_set(prop, "description", json_string(desc));
-    json_set(prop, "default", json_number((double)def));
-    json_set(prop, "minimum", json_number((double)min));
-    json_set(prop, "maximum", json_number((double)max));
-    return prop;
-}
-
-static json_t *schema_prop_num(const char *desc, double def, double min, double max) {
-    json_t *prop = json_object();
-    json_set(prop, "type", json_string("number"));
-    if (desc) json_set(prop, "description", json_string(desc));
-    json_set(prop, "default", json_number(def));
-    json_set(prop, "minimum", json_number(min));
-    json_set(prop, "maximum", json_number(max));
-    return prop;
-}
-
-static json_t *schema_prop_bool(const char *desc, bool def) {
-    json_t *prop = json_object();
-    json_set(prop, "type", json_string("boolean"));
-    if (desc) json_set(prop, "description", json_string(desc));
-    json_set(prop, "default", json_bool(def));
-    return prop;
-}
-
-static void schema_add_enum(json_t *prop, const char **values, int count) {
-    json_t *arr = json_array();
-    for (int i = 0; i < count; i++)
-        json_append(arr, json_string(values[i]));
-    json_set(prop, "enum", arr);
-}
 
 /* Build JSON Schema for the entire config struct */
 char *hermes_config_schema(void) {
