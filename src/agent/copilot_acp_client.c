@@ -2,7 +2,7 @@
  * copilot_acp_client.c — GitHub Copilot ACP client helpers.
  *
  * Port of Python agent/copilot_acp_client.py (686 lines).
- * 11 stateless functions + 3 classes (N/A for C: _ACPChatCompletions,
+ * 13 stateless functions + 3 classes (N/A for C: _ACPChatCompletions,
  * _ACPChatNamespace, CopilotACPClient — Python SDK wrappers).
  *
  * MIT License — WuBu Slermes Project
@@ -28,6 +28,8 @@
  * Port of Python: _render_message_content()
  * Port of Python: _extract_tool_calls_from_text()
  * Port of Python: _ensure_path_within_cwd()
+ * Port of Python: _build_openai_tool_call()
+ * Port of Python: _completion_to_stream_chunks()
  *
  * N/A: _ACPChatCompletions, _ACPChatNamespace, CopilotACPClient — Python SDK classes
  */
@@ -397,4 +399,112 @@ bool ensure_path_within_cwd(const char *path, const char *cwd) {
         return false;
     }
     return true;
+}
+
+/* Port of Python: _build_openai_tool_call() — builds a ChatCompletionMessageToolCall
+ * equivalent (OpenAI-compatible tool-call object) for downstream handling. Mirrors
+ * ChatCompletionMessageToolCall(id=call_id, call_id=call_id,
+ * response_item_id=None, type="function", function=Function(name, arguments)). */
+json_t *copilot_build_openai_tool_call(const char *call_id,
+                                        const char *name,
+                                        const char *arguments)
+{
+    json_t *tc = json_object();
+    if (!tc) return NULL;
+    json_set(tc, "id", json_string(call_id ? call_id : ""));
+    json_set(tc, "call_id", json_string(call_id ? call_id : ""));
+    json_set(tc, "response_item_id", json_null());
+    json_set(tc, "type", json_string("function"));
+    json_t *fn = json_object();
+    json_set(fn, "name", json_string(name ? name : ""));
+    json_set(fn, "arguments", json_string(arguments ? arguments : ""));
+    json_set(tc, "function", fn);
+    return tc;
+}
+
+/* Port of Python: _completion_to_stream_chunks() — converts a one-shot ACP response
+ * (a completion json_t mirroring SimpleNamespace: choices[0].message.{content,
+ * tool_calls[], reasoning_content, reasoning}, model, usage) into OpenAI-style
+ * stream chunks. Returns a 2-element json array: [data_chunk, usage_chunk].
+ *   data_chunk  = {"choices":[{"index":0,"delta":{...},"finish_reason":...}],
+ *                  "model":..., "usage":null}
+ *   usage_chunk = {"choices":[], "model":..., "usage":<usage or null>} */
+json_t *copilot_completion_to_stream_chunks(const json_t *completion)
+{
+    json_t *out = json_array();
+    if (!out) return NULL;
+    if (!completion) return out;
+
+    const char *model = json_get_str(completion, "model", NULL);
+
+    json_t *choices = json_obj_get(completion, "choices");
+    json_t *msg = NULL;
+    json_t *finish_reason = NULL;
+    if (choices && json_is_array(choices) && json_array_size(choices) > 0) {
+        json_t *choice0 = json_array_get(choices, 0);
+        if (choice0) {
+            msg = json_obj_get(choice0, "message");
+            finish_reason = json_obj_get(choice0, "finish_reason");
+        }
+    }
+
+    /* ---- data_chunk.delta ---- */
+    json_t *delta = json_object();
+    json_set(delta, "role", json_string("assistant"));
+    const char *content = msg ? json_get_str(msg, "content", NULL) : NULL;
+    json_set(delta, "content", content ? json_string(content) : json_null());
+
+    /* tool_calls delta: list of {index,id,type,function:{name,arguments}} or null */
+    json_t *py_tool_calls = msg ? json_obj_get(msg, "tool_calls") : NULL;
+    if (py_tool_calls && json_is_array(py_tool_calls) && json_array_size(py_tool_calls) > 0) {
+        json_t *deltas = json_array();
+        for (size_t i = 0; i < json_array_size(py_tool_calls); i++) {
+            json_t *tc = json_array_get(py_tool_calls, i);
+            json_t *d = json_object();
+            json_set(d, "index", json_number((double)i));
+            /* json_copy yields an OWNED deep copy so json_set can take ownership
+             * (json_obj_get only borrows, and double-transferring would double-free). */
+            json_set(d, "id", tc ? json_copy(json_obj_get(tc, "id")) : json_null());
+            const char *tctype = tc ? json_get_str(tc, "type", "function") : "function";
+            json_set(d, "type", json_string(tctype));
+            json_t *tcfn = tc ? json_obj_get(tc, "function") : NULL;
+            json_t *dfn = json_object();
+            json_set(dfn, "name", tcfn ? json_copy(json_obj_get(tcfn, "name")) : json_null());
+            json_set(dfn, "arguments", tcfn ? json_copy(json_obj_get(tcfn, "arguments")) : json_null());
+            json_set(d, "function", dfn);
+            json_append(deltas, d);
+        }
+        json_set(delta, "tool_calls", deltas);
+    } else {
+        json_set(delta, "tool_calls", json_null());
+    }
+
+    const char *reasoning_content = msg ? json_get_str(msg, "reasoning_content", NULL) : NULL;
+    json_set(delta, "reasoning_content",
+             reasoning_content ? json_string(reasoning_content) : json_null());
+    const char *reasoning = msg ? json_get_str(msg, "reasoning", NULL) : NULL;
+    json_set(delta, "reasoning", reasoning ? json_string(reasoning) : json_null());
+
+    json_t *data_choice = json_object();
+    json_set(data_choice, "index", json_number(0.0));
+    json_set(data_choice, "delta", delta);
+    json_set(data_choice, "finish_reason",
+             finish_reason ? json_copy(finish_reason) : json_null());
+
+    json_t *data_chunk = json_object();
+    json_t *data_choices = json_array();
+    json_append(data_choices, data_choice);
+    json_set(data_chunk, "choices", data_choices);
+    json_set(data_chunk, "model", model ? json_string(model) : json_null());
+    json_set(data_chunk, "usage", json_null());
+
+    /* ---- usage_chunk ---- */
+    json_t *usage_chunk = json_object();
+    json_set(usage_chunk, "choices", json_array());
+    json_set(usage_chunk, "model", model ? json_string(model) : json_null());
+    json_set(usage_chunk, "usage", json_copy(json_obj_get(completion, "usage")));
+
+    json_append(out, data_chunk);
+    json_append(out, usage_chunk);
+    return out;
 }

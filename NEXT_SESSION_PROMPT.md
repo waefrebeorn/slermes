@@ -71,7 +71,20 @@ Findings / doctrine:
   first whether the real C port ALREADY EXISTS (as port_scheduler.o did) before
   demoting — orphaned real code must be WIRED, not demoted.
 - 2 remaining copilot_acp_client gaps (_build_openai_tool_call,
-  _completion_to_stream_chunks) are pure struct-builders — implement if touched.
+  _completion_to_stream_chunks) are pure struct-builders — DONE in v560
+  (oracle 4/0; copilot_acp_client.py REAL_GAP=0). The remaining 19 "gaps" are
+  the SDK wrapper classes (CopilotACPClient / _ACPChatCompletions /
+  _ACPChatNamespace — Python JSON-RPC/network client boundary) — legitimate
+  honest-NA boundary, not failable helper logic.
+- RESIDUAL-FAÇADE CAMPAIGN CLOSED (v558–v560). The tractable pure gaps are all
+  done; the remaining REAL_GAP items across the tree are genuinely-un-C-able
+  subsystems (yuanbao gateway SignManager async token fetch/pipeline, managed_modal
+  cloud exec POST, main_na electron redownload, async network middleware) — honest
+  NA boundaries requiring external runtime / full subsystem ports, not fake-success.
+  NOTE: managed_modal._request_timeout_env was ALREADY ported
+  (cli_tools_environments_managed_modal__request_timeout_env) — a scanner
+  symbol-prefix false-positive, not a real gap. Always verify the C port actually
+  exists before treating a scanner gap as unported.
 
 DOCTRINE (carry forward, hard): a function that *should* be in C is REAL_GAP.
 Implement it (often by delegating to an EXISTING C subsystem — never re-invent).
