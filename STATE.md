@@ -1103,5 +1103,27 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
 - Gates: make clean · mission8 36/0 · 12 oracles 0 mismatch (added cli_logs
   20/0) · 0 STUB / 0 N/A.
 
+## v564 (2026-07-11) — agent/learning_graph.py +3 pure transforms
+- EXTENDED existing src/cli/port_learning_graph_helpers.c (not a new module —
+  reused per no-double-coding rule) with 3 pure data-transform ports that the
+  file's old header wrongly declared "un-portable REAL_GAP":
+  learning_graph_build_edges, learning_graph_density_stats,
+  learning_graph_memory_skill_edges. Operate on JSON representations of the
+  SkillNode dataclass. Corrected the header comment per doctrine.
+- build_edges: undirected related_skills edges, sorted (a,b), deduped, both
+  endpoints present, no self-loops, iteration-order preserving.
+- density_stats: nodes/related_edges/edges_per_node(round-3)/linked_nodes/
+  isolated_pct(round-1)/categories/agent_created/used/top_categories(top-8 by
+  count desc, first-seen tie-break) — matches Python dict exactly.
+- _memory_skill_edges: lexical overlap (name substring +6, |name∩text tokens|),
+  top-4 per card sorted (-score, name asc), mem_id "memory:<source>:<idx>".
+- Oracle tests/t_port_learning_graph.c + sta_oracle_learning_graph.py: 6/0 vs
+  LIVE Python.
+- Scanner: agent/learning_graph.py ported 6->9, real_gaps 10->7. The 7
+  remaining are filesystem-coupled (rglob SKILL.md, file reads, HERMES_HOME) —
+  real fixture-driven work for a future session, honestly classified.
+- Gates: make slermes clean · mission8 36/0 · 13 oracles 0 mismatch (added
+  learning_graph 6/0) · 0 STUB / 0 N/A.
+
 ## Next-Session Prompt
 /home/wubu/NEXT_SESSION_PROMPT.md (v558 residual-façade findings recorded).

@@ -11,9 +11,17 @@
  *   - _usage_timestamp(rec)   -> first non-null activity timestamp field
  *   - _tokenize(text)         -> set of tokens len>=3 (returned as JSON array)
  *
- * The two struct-coupled functions (density_stats, build_edges) are left as
- * honest REAL_GAP: they require reconstructing the SkillNode dataclass, which
- * is out of scope for a pure-helper port.
+ * Pure data-transform ports (operate on JSON representations of the SkillNode
+ * dataclass — a node is {"name","category","source","use_count","created_by",
+ * "related":[...]}), added per the "rewrite in C is the point" doctrine:
+ *   - build_edges(nodes)               -> undirected related_skills edges
+ *   - density_stats(nodes, edges)      -> graph density metrics
+ *   - _memory_skill_edges(cards,skills)-> lexical memory↔skill edges
+ *
+ * Filesystem-coupled functions (build_skill_nodes, _iter_skill_files,
+ * _load_usage, _memory_cards, _skill_roots, build_learning_graph, _frontmatter)
+ * remain REAL_GAP pending fixture-driven ports; they compose the pure ones
+ * below with parse_frontmatter / skill_usage_* (both already in the C tree).
  *
  * Module prefix used by the scanner for agent/learning_graph.py is
  * "learning_graph_".
@@ -252,5 +260,308 @@ char *learning_graph_tokenize(const char *text)
     char *ret = strdup(out ? out : "[]");
     free(out);
     json_free(arr);
+    return ret;
+}
+
+/* ====================================================================== */
+/* Pure data-transform ports (JSON-in / JSON-out).                        */
+/* ====================================================================== */
+
+/* internal: build a sorted, de-duplicated token set from text (len>=3). */
+static char **lg_token_set(const char *text, int *out_n)
+{
+    *out_n = 0;
+    char *js = learning_graph_tokenize(text);
+    json_t *arr = json_parse(js ? js : "[]", NULL);
+    free(js);
+    if (!arr || arr->type != JSON_ARRAY) { if (arr) json_free(arr); return NULL; }
+    size_t n = json_array_size(arr);
+    char **toks = (char **)calloc(n ? n : 1, sizeof(char *));
+    int cnt = 0;
+    for (size_t i = 0; i < n; i++) {
+        json_t *e = json_array_get(arr, i);
+        if (!e || e->type != JSON_STRING) continue;
+        const char *sv = json_string_value(e);
+        if (!sv) continue;
+        int dup = 0;
+        for (int j = 0; j < cnt; j++) if (strcmp(toks[j], sv) == 0) { dup = 1; break; }
+        if (!dup) toks[cnt++] = strdup(sv);
+    }
+    json_free(arr);
+    *out_n = cnt;
+    return toks;
+}
+
+static void lg_free_set(char **toks, int n)
+{
+    for (int i = 0; i < n; i++) free(toks[i]);
+    free(toks);
+}
+
+static int lg_set_intersect_count(char **a, int an, char **b, int bn)
+{
+    int c = 0;
+    for (int i = 0; i < an; i++)
+        for (int j = 0; j < bn; j++)
+            if (strcmp(a[i], b[j]) == 0) { c++; break; }
+    return c;
+}
+
+/* PoP: learning_graph_build_edges @ agent/learning_graph.py:build_edges */
+/* nodes_json: JSON array of {"name":str,"related":[str,...]}. Returns a
+ * malloc'd JSON array of [a,b] sorted, deduped undirected edges (endpoints
+ * both present, no self-loops). Preserves node/related iteration order. */
+char *learning_graph_build_edges(const char *nodes_json)
+{
+    json_t *nodes = json_parse(nodes_json ? nodes_json : "[]", NULL);
+    json_t *out = json_new_array();
+    if (!nodes || nodes->type != JSON_ARRAY) { if (nodes) json_free(nodes); goto done; }
+
+    size_t nn = json_array_size(nodes);
+    /* collect names for membership */
+    char **names = (char **)calloc(nn ? nn : 1, sizeof(char *));
+    int ncnt = 0;
+    for (size_t i = 0; i < nn; i++) {
+        json_t *nd = json_array_get(nodes, i);
+        if (!nd || nd->type != JSON_OBJECT) continue;
+        json_t *nm = json_object_get(nd, "name");
+        if (nm && nm->type == JSON_STRING && json_string_value(nm))
+            names[ncnt++] = strdup(json_string_value(nm));
+    }
+    /* dedup set of "a\x01b" edge keys */
+    char **seen = (char **)calloc(64, sizeof(char *));
+    int seen_cap = 64, seen_n = 0;
+
+    for (size_t i = 0; i < nn; i++) {
+        json_t *nd = json_array_get(nodes, i);
+        if (!nd || nd->type != JSON_OBJECT) continue;
+        json_t *nm = json_object_get(nd, "name");
+        if (!nm || nm->type != JSON_STRING || !json_string_value(nm)) continue;
+        const char *self = json_string_value(nm);
+        json_t *rel = json_object_get(nd, "related");
+        if (!rel || rel->type != JSON_ARRAY) continue;
+        size_t rn = json_array_size(rel);
+        for (size_t r = 0; r < rn; r++) {
+            json_t *te = json_array_get(rel, r);
+            if (!te || te->type != JSON_STRING) continue;
+            const char *tgt = json_string_value(te);
+            if (!tgt || strcmp(tgt, self) == 0) continue;
+            /* target must exist among names */
+            int found = 0;
+            for (int k = 0; k < ncnt; k++) if (strcmp(names[k], tgt) == 0) { found = 1; break; }
+            if (!found) continue;
+            /* sorted (a,b) */
+            const char *a = self, *b = tgt;
+            if (strcmp(a, b) > 0) { const char *t = a; a = b; b = t; }
+            /* dedup key */
+            size_t kl = strlen(a) + strlen(b) + 2;
+            char *key = (char *)malloc(kl);
+            snprintf(key, kl, "%s\x01%s", a, b);
+            int dup = 0;
+            for (int s = 0; s < seen_n; s++) if (strcmp(seen[s], key) == 0) { dup = 1; break; }
+            if (dup) { free(key); continue; }
+            if (seen_n >= seen_cap) { seen_cap *= 2; seen = (char **)realloc(seen, seen_cap * sizeof(char *)); }
+            seen[seen_n++] = key;
+            json_t *pair = json_new_array();
+            json_array_append(pair, json_string(a));
+            json_array_append(pair, json_string(b));
+            json_array_append(out, pair);
+        }
+    }
+    for (int k = 0; k < ncnt; k++) free(names[k]);
+    free(names);
+    for (int s = 0; s < seen_n; s++) free(seen[s]);
+    free(seen);
+    json_free(nodes);
+done:;
+    char *dump = json_dumps(out, 0);
+    char *ret = strdup(dump ? dump : "[]");
+    free(dump);
+    json_free(out);
+    return ret;
+}
+
+/* PoP: learning_graph_density_stats @ agent/learning_graph.py:density_stats */
+/* nodes_json: JSON array of node objects (name,category,use_count,created_by).
+ * edges_json: JSON array of [a,b] pairs. Returns malloc'd JSON object of graph
+ * density metrics matching the Python dict (edges_per_node round-3,
+ * isolated_pct round-1, top_categories top-8 by count desc / first-seen). */
+char *learning_graph_density_stats(const char *nodes_json, const char *edges_json)
+{
+    json_t *nodes = json_parse(nodes_json ? nodes_json : "[]", NULL);
+    json_t *edges = json_parse(edges_json ? edges_json : "[]", NULL);
+    json_t *res = json_new_object();
+
+    int node_count = (nodes && nodes->type == JSON_ARRAY) ? (int)json_array_size(nodes) : 0;
+    int edge_count = (edges && edges->type == JSON_ARRAY) ? (int)json_array_size(edges) : 0;
+
+    /* linked node set */
+    char **linked = (char **)calloc(edge_count * 2 + 1, sizeof(char *));
+    int linked_n = 0;
+    for (int i = 0; i < edge_count; i++) {
+        json_t *e = json_array_get(edges, i);
+        if (!e || e->type != JSON_ARRAY || json_array_size(e) < 2) continue;
+        for (int p = 0; p < 2; p++) {
+            json_t *ep = json_array_get(e, p);
+            if (!ep || ep->type != JSON_STRING) continue;
+            const char *sv = json_string_value(ep);
+            int dup = 0;
+            for (int j = 0; j < linked_n; j++) if (strcmp(linked[j], sv) == 0) { dup = 1; break; }
+            if (!dup) linked[linked_n++] = strdup(sv);
+        }
+    }
+
+    /* categories in first-seen order; agent_created; used */
+    char **cats = (char **)calloc(node_count ? node_count : 1, sizeof(char *));
+    int *cat_counts = (int *)calloc(node_count ? node_count : 1, sizeof(int));
+    int cat_n = 0, agent_created = 0, used = 0;
+    for (int i = 0; i < node_count; i++) {
+        json_t *nd = json_array_get(nodes, i);
+        if (!nd || nd->type != JSON_OBJECT) continue;
+        const char *cat = json_object_get_string(nd, "category", "general");
+        if (!cat) cat = "general";
+        int idx = -1;
+        for (int j = 0; j < cat_n; j++) if (strcmp(cats[j], cat) == 0) { idx = j; break; }
+        if (idx < 0) { cats[cat_n] = strdup(cat); cat_counts[cat_n] = 1; cat_n++; }
+        else cat_counts[idx]++;
+        const char *cb = json_object_get_string(nd, "created_by", NULL);
+        if (cb && strcmp(cb, "agent") == 0) agent_created++;
+        double uc = json_object_get_number(nd, "use_count", 0);
+        if (uc > 0) used++;
+    }
+
+    int denom = node_count ? node_count : 1;
+    double epn = (double)edge_count / denom;
+    double iso = 100.0 * (denom - linked_n) / denom;
+
+    json_object_set(res, "nodes", json_int(node_count));
+    json_object_set(res, "related_edges", json_int(edge_count));
+    json_object_set(res, "edges_per_node", json_number(epn));
+    json_object_set(res, "linked_nodes", json_int(linked_n));
+    json_object_set(res, "isolated_pct", json_number(iso));
+    json_object_set(res, "categories", json_int(cat_n));
+    json_object_set(res, "agent_created", json_int(agent_created));
+    json_object_set(res, "used", json_int(used));
+
+    /* top_categories: stable sort by count desc (first-seen tie-break), top 8 */
+    int *order = (int *)calloc(cat_n ? cat_n : 1, sizeof(int));
+    for (int i = 0; i < cat_n; i++) order[i] = i;
+    for (int i = 0; i < cat_n; i++)
+        for (int j = i + 1; j < cat_n; j++)
+            if (cat_counts[order[j]] > cat_counts[order[i]]) { int t = order[i]; order[i] = order[j]; order[j] = t; }
+    json_t *top = json_new_array();
+    int limit = cat_n < 8 ? cat_n : 8;
+    for (int i = 0; i < limit; i++) {
+        json_t *pair = json_new_array();
+        json_array_append(pair, json_string(cats[order[i]]));
+        json_array_append(pair, json_int(cat_counts[order[i]]));
+        json_array_append(top, pair);
+    }
+    json_object_set(res, "top_categories", top);
+    free(order);
+
+    for (int i = 0; i < linked_n; i++) free(linked[i]);
+    free(linked);
+    for (int i = 0; i < cat_n; i++) free(cats[i]);
+    free(cats); free(cat_counts);
+    if (nodes) json_free(nodes);
+    if (edges) json_free(edges);
+
+    char *dump = json_dumps(res, 0);
+    char *ret = strdup(dump ? dump : "{}");
+    free(dump);
+    json_free(res);
+    return ret;
+}
+
+/* PoP: learning_graph_memory_skill_edges @ agent/learning_graph.py:_memory_skill_edges */
+/* cards_json: array of {"source","title","body"}; skills_json: array of {"name"}.
+ * Returns malloc'd JSON array of [mem_id, skill_name] lexical-overlap edges
+ * (score = 6 if skill name substring in text, + |name_tokens ∩ text_tokens|;
+ * top 4 per card, sorted by score desc then name asc). */
+char *learning_graph_memory_skill_edges(const char *cards_json, const char *skills_json)
+{
+    json_t *cards = json_parse(cards_json ? cards_json : "[]", NULL);
+    json_t *skills = json_parse(skills_json ? skills_json : "[]", NULL);
+    json_t *out = json_new_array();
+
+    int scount = (skills && skills->type == JSON_ARRAY) ? (int)json_array_size(skills) : 0;
+    /* precompute per-skill: name, name_lower, name_token_set */
+    char **snames = (char **)calloc(scount ? scount : 1, sizeof(char *));
+    char **slower = (char **)calloc(scount ? scount : 1, sizeof(char *));
+    char ***stoks = (char ***)calloc(scount ? scount : 1, sizeof(char **));
+    int *stok_n = (int *)calloc(scount ? scount : 1, sizeof(int));
+    int sn = 0;
+    for (int i = 0; i < scount; i++) {
+        json_t *sk = json_array_get(skills, i);
+        if (!sk || sk->type != JSON_OBJECT) continue;
+        const char *nm = json_object_get_string(sk, "name", NULL);
+        if (!nm) continue;
+        snames[sn] = strdup(nm);
+        char *lo = strdup(nm);
+        for (char *p = lo; *p; p++) *p = (char)tolower((unsigned char)*p);
+        slower[sn] = lo;
+        stoks[sn] = lg_token_set(nm, &stok_n[sn]);
+        sn++;
+    }
+
+    int ccount = (cards && cards->type == JSON_ARRAY) ? (int)json_array_size(cards) : 0;
+    for (int ci = 0; ci < ccount; ci++) {
+        json_t *card = json_array_get(cards, ci);
+        if (!card || card->type != JSON_OBJECT) continue;
+        const char *src = json_object_get_string(card, "source", "");
+        const char *title = json_object_get_string(card, "title", "");
+        const char *body = json_object_get_string(card, "body", "");
+        /* mem_id = "memory:<source>:<idx>" */
+        char mem_id[512];
+        snprintf(mem_id, sizeof(mem_id), "memory:%s:%d", src ? src : "", ci);
+        /* text = lower("title\nbody") */
+        size_t tl = strlen(title ? title : "") + strlen(body ? body : "") + 2;
+        char *text = (char *)malloc(tl);
+        snprintf(text, tl, "%s\n%s", title ? title : "", body ? body : "");
+        for (char *p = text; *p; p++) *p = (char)tolower((unsigned char)*p);
+        int ttn = 0;
+        char **ttoks = lg_token_set(text, &ttn);
+
+        /* score each skill */
+        int *scores = (int *)calloc(sn ? sn : 1, sizeof(int));
+        int *idxs = (int *)calloc(sn ? sn : 1, sizeof(int));
+        int scored_n = 0;
+        for (int s = 0; s < sn; s++) {
+            int score = 0;
+            if (slower[s][0] && strstr(text, slower[s])) score += 6;
+            score += lg_set_intersect_count(stoks[s], stok_n[s], ttoks, ttn);
+            if (score > 0) { scores[scored_n] = score; idxs[scored_n] = s; scored_n++; }
+        }
+        /* stable sort by (-score, name asc) */
+        for (int i = 0; i < scored_n; i++)
+            for (int j = i + 1; j < scored_n; j++) {
+                int swap = 0;
+                if (scores[idxs[j]] > scores[idxs[i]]) swap = 1;
+                else if (scores[idxs[j]] == scores[idxs[i]] &&
+                         strcmp(snames[idxs[j]], snames[idxs[i]]) < 0) swap = 1;
+                if (swap) { int t = idxs[i]; idxs[i] = idxs[j]; idxs[j] = t; }
+            }
+        int lim = scored_n < 4 ? scored_n : 4;
+        for (int i = 0; i < lim; i++) {
+            json_t *pair = json_new_array();
+            json_array_append(pair, json_string(mem_id));
+            json_array_append(pair, json_string(snames[idxs[i]]));
+            json_array_append(out, pair);
+        }
+        free(scores); free(idxs);
+        lg_free_set(ttoks, ttn);
+        free(text);
+    }
+
+    for (int i = 0; i < sn; i++) { free(snames[i]); free(slower[i]); lg_free_set(stoks[i], stok_n[i]); }
+    free(snames); free(slower); free(stoks); free(stok_n);
+    if (cards) json_free(cards);
+    if (skills) json_free(skills);
+
+    char *dump = json_dumps(out, 0);
+    char *ret = strdup(dump ? dump : "[]");
+    free(dump);
+    json_free(out);
     return ret;
 }
