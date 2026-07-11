@@ -33,16 +33,31 @@ web_tools (v556a), skills_sync (v556b), image_gen_path (v557a),
 send_message_target (v557b) monolith splits are DONE — 8 focused modules
 extracted, all oracle-verified 1:1 vs LIVE Python, 0 regression.
 
-NEXT CAMPAIGN: residual-façade sweep. Close the ~12 catalogued genuine stub
-returns by reading the LIVE Python for each and deciding implement-for-real
-vs honest demotion:
-- read_terminal_tool, main_na, agent_plugin_llm, agent_copilot_acp_client,
-  managed_modal/modal_utils, video_generation, yuanbao, cronjob_tools,
-  kanban_tools, image_generation, process_registry
-Each needs Python read to decide implement-for-real vs honest demotion. NO
+NEXT CAMPAIGN: residual-façade sweep (v558 STARTED). Findings so far:
+- MOST "catalogued stubs" were ALREADY fully ported (scanner RG=0):
+  read_terminal_tool, agent_plugin_llm, kanban_tools, process_registry,
+  image_generation_tool, port_cronjob_tools.c (16 fns), copilot_acp_client
+  (most fns). The banned v541 anti-patterns ("not fully implemented",
+  "In a real implementation") are ABSENT from the tree — C port is disciplined.
+- v558 CLOSED the real residual gap: port_cronjob_tools.c was (a) corrupted with
+  `N|` line-number prefixes on 276 lines AND truncated (missing closing brace for
+  normalize_deliver_param) — hidden because make reused a stale .o; (b) missing
+  7 functions flagged REAL_GAP. Repaired the file, implemented 4 faithfully
+  (check_cronjob_requirements, validate_cron_script_path [security], format_job,
+  validate_cron_base_url [fail-closed]) + honestly demoted 3 (notify_provider_jobs_changed_safe
+  no-op, execute_job_now + cronjob_dispatch return honest error, not fake-success).
+  Wired into build/objects.mk. Oracle 21/0. cronjob_tools.py now REAL_GAP=0.
+- 2 remaining copilot_acp_client gaps (_build_openai_tool_call,
+  _completion_to_stream_chunks) are pure struct-builders — implement if touched.
+- Genuinely-un-C-able (honest NA, NOT failable-in-C): cron scheduler CRUD+delivery
+  subsystem (cronjob dispatcher / execute_job_now fire path), managed_modal gateway
+  / modal_utils (cloud runtime), video_generation provider wiring, yuanbao gateway,
+  main_na electron redownload (external download). These need external runtime /
+  full subsystem ports — demote honestly, do not fake.
+
+For EACH item: read LIVE Python, decide implement-for-real vs honest demotion. NO
 fake-success stubs, NO "not fully implemented" log-and-return-NULL, NO
-"In a real implementation" comment-façades. When C and Python disagree, FIX
-THE C.
+"In a real implementation" comment-façades. When C and Python disagree, FIX THE C.
 
 IMPORTANT scope note (carried): a monolith function is only worth extracting
 if it is oracle-VERIFIABLE 1:1 vs live Python. Config/mount-coupled fns
