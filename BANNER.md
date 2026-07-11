@@ -9,14 +9,16 @@
 # ║    already ported (scanner prefix false-pos). ║
 # ║  ✓ v561 DOCTRINE CORRECTION: "un-C-able" dismissals are WRONG — everything ║
 # ║    is REAL_GAP work. Verified yuanbao MarkdownProcessor 9 helpers ARE ║
-# ║  Build: Clean  │  v564 │  Tests: 36/36  │  Oracle: 13 suites 0 mismatch (…+ cli_logs 20/0 + learning_graph 6/0) + 1611/0 fuzz ║
-# ║  Ported: 4,893/9,731  REAL_GAP: 4,776  PARTIAL: 48  ║
+# ║  Build: Clean  │  v565 │  Tests: 36/36  │  Oracle: 14 suites 0 mismatch + 1611/0 fuzz ║
+# ║  Ported: 4,894/9,731  REAL_GAP: 4,775  PARTIAL: 48  ║
 # ║  ✓ v562: cron/suggestions.py FULLY PORTED (10 fns) oracle 15/0. ║
 # ║  ✓ v563: hermes_cli/logs.py FULLY PORTED (11 fns) oracle 20/0. ║
 # ║  ✓ v564: agent/learning_graph.py +3 pure transforms (build_edges, ║
-# ║    density_stats, _memory_skill_edges) extended into existing ║
-# ║    port_learning_graph_helpers.c — corrects the old \"un-portable ║
-# ║    REAL_GAP\" header claim per doctrine. Oracle 6/0 vs LIVE Python. ║
-# ║    ported 6->9; 7 remaining gaps are filesystem-coupled (rglob/reads). ║
+# ║    density_stats, _memory_skill_edges) oracle 6/0 — corrects old ║
+# ║    "un-portable REAL_GAP" header claim per doctrine. ║
+# ║  ✓ v565: agent/message_sanitization.py FULLY PORTED (11/11) — ║
+# ║    added close_interrupted_tool_sequence (message_sanitize_close_ ║
+# ║    interrupted, in agent_message_sanitize.c). Oracle 5/0 vs LIVE. ║
+# ║    Module REAL_GAP=0. ║
 # ║  ✓ 0 STUB / 0 N/A  — no god headers, no void* passthrough    ║
 # ╚══════════════════════════════════════════════════════════════╝
