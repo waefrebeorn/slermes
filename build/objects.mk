@@ -2,7 +2,7 @@
 # All source file objects organized by subsystem
 # Included by top-level Makefile
 
-CLI_OBJ = src/cli/cli.o src/cli/commands.o src/cli/config.o src/cli/paths.o src/cli/display.o src/cli/display_core.o src/cli/main.o src/cli/doctor.o src/cli/setup_wizard.o src/cli/cli_gaps.o src/cli/port_context_switch_guard.o src/cli/port_gateway_windows.o src/cli/port_nous_billing.o src/cli/port_voice.o src/cli/port_config_pure.o src/cli/port_status_helpers.o
+CLI_OBJ = src/cli/cli.o src/cli/commands.o src/cli/config.o src/cli/paths.o src/cli/display.o src/cli/display_core.o src/cli/main.o src/cli/doctor.o src/cli/setup_wizard.o src/cli/cli_gaps.o src/cli/port_context_switch_guard.o src/cli/port_gateway_windows.o src/cli/port_nous_billing.o src/cli/port_voice.o src/cli/port_config_pure.o src/cli/port_status_helpers.o src/cli/port_cli_logs.o
 
 # Auto-generated hermes_cli/ port objects (empty — placeholder)
 HERMES_CLI_PORT_OBJ = \

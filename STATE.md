@@ -1076,5 +1076,32 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
   gaps — yuanbao token-fetch, managed_modal cloud exec, cli/main electron — are
   REAL work, not demotable "un-C-able" boundaries.)
 
+## v563 (2026-07-11) — hermes_cli/logs.py fully ported (11 fns)
+- PORTED hermes_cli/logs.py end-to-end: new src/cli/port_cli_logs.c +
+  include/port_cli_logs.h (11 functions: _parse_since, _parse_line_timestamp,
+  _extract_level, _extract_logger_name, _line_matches_component,
+  _matches_filters, _read_last_n_lines, _read_tail, tail_log, _follow_log,
+  list_logs). Fully self-contained pure module (file read + POSIX-ERE regex +
+  filtering + tail); no network/external backends. Embedded the static
+  COMPONENT_PREFIXES map verbatim from hermes_logging.py.
+- WIRED into build/objects.mk (CLI_OBJ). Scanner now shows
+  hermes_cli/logs.py ported=11 real_gaps=0.
+- BUILT oracle tests/t_port_cli_logs.c + sta_oracle_cli_logs.py (20/0 vs LIVE
+  Python: parse_since/ts, extract level/logger, component/session/since/level
+  filters, raw + filtered read_tail, and the list_logs listing block).
+- CRITICAL bug caught + fixed: hermes_regex.regex_match() NEVER sets
+  group_count (calloc'd to 0), so `m->group_count >= N` checks always failed
+  (returned NULL/empty) — _extract_logger_name and _parse_since were broken.
+  Fixed by testing groups[i] != NULL instead.
+- Used the project's real json API (json_array/json_string/json_serialize) in
+  the harness so emitted JSON is always valid — hand-rolled escaping had been
+  producing malformed arrays.
+- Deferred: hermes_cli/env_loader.py is an integration HUB (bitwarden /
+  managed_scope / config._sanitize_env_lines / yaml) — a faithful port needs a
+  C Bitwarden client (major network integration), so it is NOT tractable to
+  oracle-verify this window; left as a real upcoming cluster, not demoted.
+- Gates: make clean · mission8 36/0 · 12 oracles 0 mismatch (added cli_logs
+  20/0) · 0 STUB / 0 N/A.
+
 ## Next-Session Prompt
 /home/wubu/NEXT_SESSION_PROMPT.md (v558 residual-façade findings recorded).
