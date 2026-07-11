@@ -932,5 +932,27 @@ send_message_tool.py REAL_GAP=1 · 7 oracles 0 mismatch (file_text_ops 23,
 browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
 4, image_gen_path 16, send_message_target 21) · 0 STUB / 0 N/A.
 
+## v558 (2026-07-10) — residual-façade closure: port_cronjob_tools repair + 7 gaps
+- Repaired port_cronjob_tools.c: corrupted with `N|` line-number prefixes on 276/283
+  lines AND truncated (normalize_deliver_param missing closing brace). Corruption
+  HIDDEN because `make` reused a stale .o (file was never in build/objects.mk — an
+  orphan like dead lib/libskillsync). Fixed via prefix-strip + brace recovery; full
+  build now compiles it cleanly.
+- Closed the 7 scanner-flagged REAL_GAP fns for tools/cronjob_tools.py:
+  * Faithful: check_cronjob_requirements (env truthiness), validate_cron_script_path
+    (security: rejects abs/~/drive + `..` traversal, matches Python's quoted path +
+    `: 'path'` suffix), format_job (full field formatter, 103-char preview truncation),
+    validate_cron_base_url (FAIL-CLOSED: blocks named custom providers + no-provider
+    overrides; allows only bare "custom" BYOK — preserves CWE-200/522 exfil protection
+    without the C-absent provider-registry host-match).
+  * Honest NA (clear error / safe no-op — never fake-success):
+    notify_provider_jobs_changed_safe (no-op), execute_job_now + cronjob_dispatch
+    (honest "not implemented" error; need the scheduler CRUD+delivery subsystem).
+- Wired src/tools/port_cronjob_tools.o into build/objects.mk (no symbol conflicts).
+- Oracle tests/t_port_cronjob_tools_gap.c + sta_oracle_cronjob_tools_gap.py: 21/0 vs
+  LIVE Python. cronjob_tools.py now PORTED=22, REAL_GAP=0.
+- Re-hit + fixed dead-hybrid PoP trap (/* PoP: ... line 1, */ line 2) → converted all
+  15 multi-line PoP comments to single-line. Re-ran scanner.
+
 ## Next-Session Prompt
-/home/wubu/NEXT_SESSION_PROMPT.md (v555→v556, written).
+/home/wubu/NEXT_SESSION_PROMPT.md (v558 residual-façade findings recorded).

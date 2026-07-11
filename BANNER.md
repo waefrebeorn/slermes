@@ -2,7 +2,7 @@
 # ║           Slermes — C Translation                            ║
 # ║         of Hermes Agent (Nous Research)                      ║
 # ║                                                              ║
-# ║  Build: Clean  │  v557b │  Tests: 36/36  │  Oracle: 23/0 + 19/0 + 18/0 + 22/0 + 22/0 + 12/0 + 4/0 + 16/0 + 21/0 + 1611/0 fuzz ║
+# ║  Build: Clean  │  v558 │  Tests: 36/36  │  Oracle: 23/0 + 19/0 + 18/0 + 22/0 + 22/0 + 12/0 + 4/0 + 16/0 + 21/0 + 21/0 + 1611/0 fuzz ║
 # ║  Ported: 4,881/9,731 (50.2%)  REAL_GAP: 4,802 (49.3%)  PARTIAL: 48  ║
 # ║  ✓ monolith split x8 (oracle-verified, no double-coding):     ║
 # ║    cron_prompt_sanitize + file_text_ops + file_fs_ops +        ║
