@@ -470,6 +470,28 @@ static char *video_gen_make_cache_path(const char *hermes_home,
     return path;
 }
 
+/* Return $HERMES_HOME/cache/videos/, creating parents as needed.
+ * Port of Python video_gen_provider.py:_videos_cache_dir().
+ * Caller frees the returned malloc'd string. */
+/* PoP: video_gen_cache_dir @ agent/video_gen_provider.py:_videos_cache_dir */
+char *video_gen_cache_dir(void)
+{
+    char cache[4096];
+    hermes_cache_dir(cache, sizeof(cache));
+    /* strip trailing '/' if present for clean join */
+    size_t cl = strlen(cache);
+    if (cl > 0 && cache[cl - 1] == '/') cache[cl - 1] = '\0';
+    char *dir = (char *)malloc(4096);
+    if (!dir) return NULL;
+    int n = snprintf(dir, 4096, "%s/videos", cache);
+    if (n < 0 || (size_t)n >= 4096) { free(dir); return NULL; }
+    /* mkdir -p */
+    char mkcmd[4160];
+    snprintf(mkcmd, sizeof(mkcmd), "mkdir -p '%s'", dir);
+    (void)system(mkcmd);
+    return dir;
+}
+
 /* Decode base64 video data and save to cache/videos/.
  * Port of Python video_gen_provider.py:save_b64_video(). */
 char *video_gen_save_b64_video(const char *b64_data, const char *prefix,

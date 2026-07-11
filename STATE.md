@@ -1103,6 +1103,21 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
 - Gates: make clean · mission8 36/0 · 12 oracles 0 mismatch (added cli_logs
   20/0) · 0 STUB / 0 N/A.
 
+## v566 (2026-07-11) — agent/video_gen_provider.py FULLY PORTED (13/13)
+- ADDED video_gen_cache_dir to existing src/tools/video_gen.c (no new module;
+  reuses video_gen_make_cache_path + hermes_cache_dir). Port of
+  _videos_cache_dir: returns $HERMES_HOME/cache/videos, mkdir -p parents.
+- Single-line PoP comment `video_gen_cache_dir @
+  agent/video_gen_provider.py:_videos_cache_dir`.
+- Oracle tests/t_port_video_gen_cache_dir.c + sta_oracle_video_gen_cache_dir.py:
+  1/0. Filesystem-coupled: harness aligns SLERMES_HOME=HERMES_HOME so C's C-root
+  resolver and Python's HERMES_HOME resolver hit the same temp dir; verified
+  hermetic with an explicit HERMES_HOME (both resolve to <tmp>/cache/videos).
+- Scanner: agent/video_gen_provider.py ported 12 -> 13, real_gaps 1 -> 0
+  (module 100% closed).
+- Gates: make slermes clean · mission8 36/0 · 15 oracles 0 mismatch (added
+  video_gen_cache_dir 1/0) · 0 STUB / 0 N/A.
+
 ## v565 (2026-07-11) — agent/message_sanitization.py FULLY PORTED (11/11)
 - ADDED message_sanitize_close_interrupted to existing
   src/agent/agent_message_sanitize.c (no new module; reuses json_t pipeline).
