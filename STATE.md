@@ -1103,6 +1103,23 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
 - Gates: make clean · mission8 36/0 · 12 oracles 0 mismatch (added cli_logs
   20/0) · 0 STUB / 0 N/A.
 
+## v567 (2026-07-11) — agent/file_safety.py FULLY PORTED (15/15)
+- ADDED file_safety_get_safe_write_roots to existing src/agent/file_safety.c
+  (no new module; reuses the file's resolve_path() helper for ~ expansion +
+  realpath). Port of get_safe_write_roots: split HERMES_WRITE_SAFE_ROOT on
+  os.pathsep (':'), resolve each non-empty entry, dedupe, sort for
+  deterministic JSON output.
+- Single-line PoP comment `file_safety_get_safe_write_roots @
+  agent/file_safety.py:get_safe_write_roots`.
+- Oracle tests/t_port_file_safety_roots.c + sta_oracle_file_safety_roots.py:
+  1/0 vs LIVE Python across cases (multi-root, ~ expansion, nonexistent paths,
+  empty env). The oracle needs HERMES_WRITE_SAFE_ROOT exported to both the C
+  harness and the Python replay (run_one_oracle.sh forwards the parent env).
+- Scanner: agent/file_safety.py ported 14 -> 15, real_gaps 1 -> 0
+  (module 100% closed).
+- Gates: make slermes clean · mission8 36/0 · 16 oracles 0 mismatch (added
+  file_safety_roots 1/0) · 0 STUB / 0 N/A.
+
 ## v566 (2026-07-11) — agent/video_gen_provider.py FULLY PORTED (13/13)
 - ADDED video_gen_cache_dir to existing src/tools/video_gen.c (no new module;
   reuses video_gen_make_cache_path + hermes_cache_dir). Port of

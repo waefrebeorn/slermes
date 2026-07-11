@@ -9,15 +9,16 @@
 # ║    already ported (scanner prefix false-pos). ║
 # ║  ✓ v561 DOCTRINE CORRECTION: "un-C-able" dismissals are WRONG — everything ║
 # ║    is REAL_GAP work. Verified yuanbao MarkdownProcessor 9 helpers ARE ║
-# ║  Build: Clean  │  v566 │  Tests: 36/36  │  Oracle: 15 suites 0 mismatch + 1611/0 fuzz ║
-# ║  Ported: 4,895/9,731  REAL_GAP: 4,774  PARTIAL: 48  ║
+# ║  Build: Clean  │  v567 │  Tests: 36/36  │  Oracle: 16 suites 0 mismatch + 1611/0 fuzz ║
+# ║  Ported: 4,896/9,731  REAL_GAP: 4,773  PARTIAL: 48  ║
 # ║  ✓ v562: cron/suggestions.py FULLY PORTED (10 fns) oracle 15/0. ║
 # ║  ✓ v563: hermes_cli/logs.py FULLY PORTED (11 fns) oracle 20/0. ║
 # ║  ✓ v564: agent/learning_graph.py +3 pure transforms oracle 6/0. ║
 # ║  ✓ v565: agent/message_sanitization.py FULLY PORTED (11/11) oracle 5/0. ║
-# ║  ✓ v566: agent/video_gen_provider.py FULLY PORTED (13/13) — added ║
-# ║    _videos_cache_dir (video_gen_cache_dir, in tools/video_gen.c). ║
-# ║    Oracle 1/0 (temp HERMES_HOME; env-aligned SLERMES_HOME). Module ║
-# ║    REAL_GAP=0. ║
+# ║  ✓ v566: agent/video_gen_provider.py FULLY PORTED (13/13) oracle 1/0. ║
+# ║  ✓ v567: agent/file_safety.py FULLY PORTED (15/15) — added ║
+# ║    get_safe_write_roots (file_safety_get_safe_write_roots, in ║
+# ║    agent/file_safety.c). Oracle 1/0 vs LIVE (env HERMES_WRITE_SAFE_ROOT). ║
+# ║    Module REAL_GAP=0. ║
 # ║  ✓ 0 STUB / 0 N/A  — no god headers, no void* passthrough    ║
 # ╚══════════════════════════════════════════════════════════════╝
