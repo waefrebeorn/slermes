@@ -76,15 +76,17 @@ Findings / doctrine:
   the SDK wrapper classes (CopilotACPClient / _ACPChatCompletions /
   _ACPChatNamespace — Python JSON-RPC/network client boundary) — legitimate
   honest-NA boundary, not failable helper logic.
-- RESIDUAL-FAÇADE CAMPAIGN CLOSED (v558–v560). The tractable pure gaps are all
-  done; the remaining REAL_GAP items across the tree are genuinely-un-C-able
-  subsystems (yuanbao gateway SignManager async token fetch/pipeline, managed_modal
-  cloud exec POST, main_na electron redownload, async network middleware) — honest
-  NA boundaries requiring external runtime / full subsystem ports, not fake-success.
-  NOTE: managed_modal._request_timeout_env was ALREADY ported
-  (cli_tools_environments_managed_modal__request_timeout_env) — a scanner
-  symbol-prefix false-positive, not a real gap. Always verify the C port actually
-  exists before treating a scanner gap as unported.
+- RESIDUAL-FAÇADE CAMPAIGN (v558–v560): tractable pure gaps done (copilot,
+  cronjob, markdown helpers). The remaining tree-wide REAL_GAPs are REAL WORK
+  (yuanbao async token-fetch + streaming InboundPipeline middleware, managed_modal
+  cloud exec POST, cli/main electron redownload, async network middleware) —
+  all C-rewritable (libcurl + event loop / managed subprocess), NOT demotable
+  "un-C-able" boundaries. NOTE: managed_modal._request_timeout_env was a genuine
+  scanner symbol-prefix false-positive (already ported as
+  cli_tools_environments_managed_modal__request_timeout_env); yuanbao's 9 markdown
+  helpers were ALREADY correctly PORTED (yuanbao_md_*) — v561 verified them with
+  an 18/0 oracle and fixed 3 real C divergences. The 148 yuanbao REAL_GAPs are the
+  async network pipeline, still to be ported as real work.
 
 DOCTRINE (carry forward, hard): a function that *should* be in C is REAL_GAP.
 Implement it (often by delegating to an EXISTING C subsystem — never re-invent).

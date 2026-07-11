@@ -984,7 +984,11 @@ char **yuanbao_md_split_into_atoms(const char *text)
             for (size_t _i = 0; _i < buf_len; _i++) if (!isspace((unsigned char)buf[_i])) { has_content = true; break; } \
             if (has_content) { \
                 if (count >= cap - 1) { cap *= 2; atoms = realloc(atoms, cap * sizeof(char*)); } \
-                atoms[count++] = strndup(buf, buf_len); \
+                /* Python joins lines with '\n' and the atom itself has NO trailing \
+                 * newline, so strip the trailing '\n' that YB_APPEND_LINE added. */ \
+                size_t out_len = buf_len; \
+                if (out_len > 0 && buf[out_len - 1] == '\n') out_len--; \
+                atoms[count++] = strndup(buf, out_len); \
             } \
             buf_len = 0; \
         } \
@@ -1194,26 +1198,27 @@ char *yuanbao_md_sanitize_markdown_table(const char *text)
                 if (c != '-' && c != ':' && c != ' ' && c != '\t' && c != '|') is_sep = false;
             }
             if (is_sep) {
-                /* Normalize: split by |, strip cells, rejoin */
-                /* Count cells */
+                /* Normalize: split by |, strip cells, rejoin, preserving the
+                 * leading/trailing pipe (Python's stripped.split('|') keeps the
+                 * empty edge cells, so the result is |cell|cell|...|). */
                 char *scopy = strndup(ls, ls_len);
                 char *norm = malloc(ls_len + 1);
                 size_t nlen = 0;
+                norm[nlen++] = '|';  /* leading pipe */
                 char *save = NULL;
                 char *tok = strtok_r(scopy, "|", &save);
                 bool first = true;
                 while (tok) {
-                    /* strip whitespace */
-                    char *ts = tok;
-                    while (*ts == ' ' || *ts == '\t') ts++;
+                    char *ts = tok; while (*ts == ' ' || *ts == '\t') ts++;
                     char *te = ts + strlen(ts);
                     while (te > ts && (te[-1] == ' ' || te[-1] == '\t')) te--;
                     if (!first) norm[nlen++] = '|';
-                    memcpy(norm + nlen, ts, te - ts);
-                    nlen += te - ts;
+                    memcpy(norm + nlen, ts, te - ts); nlen += te - ts;
                     first = false;
                     tok = strtok_r(NULL, "|", &save);
                 }
+                norm[nlen++] = '|';  /* trailing pipe */
+                norm[nlen] = '\0';
                 free(scopy);
                 /* Append normalized line */
                 if (rlen + nlen + 1 > cap) { cap = (rlen + nlen + 1) * 2; result = realloc(result, cap); }
@@ -1259,8 +1264,8 @@ char *yuanbao_md_sanitize_markdown_table(const char *text)
 const char *yuanbao_md_markdown_hint_system_prompt(void)
 {
     return "The current platform supports Markdown rendering. You can use the following formats:\n"
-           "- Code blocks: ```language\ncode\n```\n"
-           "- Tables: | col1 | col2 |\n|---|---|\n| val1 | val2 |\n"
+           "- Code blocks: ```language\\ncode\\n```\n"
+           "- Tables: | col1 | col2 |\\n|---|---|\\n| val1 | val2 |\n"
            "- Bold: **text** / Italic: *text*\n"
            "Please use Markdown formatting when appropriate to improve readability.";
 }
