@@ -362,6 +362,35 @@
 #include "hermes_auth.h"
 #include <ctype.h>
 
+/* Partial-compress keep-count clamp.
+ * Port of Python hermes_cli/partial_compress.py:_coerce_keep.
+ * Clamps a keep-count token to [1, MAX_KEEP_LAST]; falls back to
+ * DEFAULT_KEEP_LAST on non-integer input. */
+#define CMD_COMPRESS_DEFAULT_KEEP_LAST 2
+#define CMD_COMPRESS_MAX_KEEP_LAST 100
+/* PoP: cmd_compress_coerce_keep @ hermes_cli/partial_compress.py:_coerce_keep */
+int cmd_compress_coerce_keep(const char *value)
+{
+    if (!value) return CMD_COMPRESS_DEFAULT_KEEP_LAST;
+    /* trim leading/trailing whitespace */
+    while (*value && isspace((unsigned char)*value)) value++;
+    const char *end = value + strlen(value);
+    while (end > value && isspace((unsigned char)end[-1])) end--;
+    if (end == value) return CMD_COMPRESS_DEFAULT_KEEP_LAST;
+    char buf[32];
+    size_t n = (size_t)(end - value);
+    if (n >= sizeof(buf)) return CMD_COMPRESS_DEFAULT_KEEP_LAST;
+    memcpy(buf, value, n);
+    buf[n] = '\0';
+    char *pend = NULL;
+    long v = strtol(buf, &pend, 10);
+    if (pend == buf || *pend != '\0')
+        return CMD_COMPRESS_DEFAULT_KEEP_LAST;
+    if (v < 1) return 1;
+    if (v > CMD_COMPRESS_MAX_KEEP_LAST) return CMD_COMPRESS_MAX_KEEP_LAST;
+    return (int)v;
+}
+
 /* Tool handler declarations (used by session commands) */
 extern char *session_search_handler(const char *args_json, const char *task_id);
 extern char *session_crud_handler(const char *args_json, const char *task_id);

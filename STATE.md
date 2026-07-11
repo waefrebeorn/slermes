@@ -1103,6 +1103,21 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
 - Gates: make clean · mission8 36/0 · 12 oracles 0 mismatch (added cli_logs
   20/0) · 0 STUB / 0 N/A.
 
+## v568 (2026-07-11) — hermes_cli/partial_compress.py FULLY PORTED (4/4)
+- ADDED cmd_compress_coerce_keep to existing src/cli/commands.c (no new module;
+  partial_compress already partially ported there). Port of _coerce_keep: parse
+  a keep-count token, clamp to [1, MAX_KEEP_LAST=100], DEFAULT_KEEP_LAST=2 on
+  non-integer/empty/None input. Trims surrounding whitespace first.
+- Single-line PoP comment `cmd_compress_coerce_keep @
+  hermes_cli/partial_compress.py:_coerce_keep`.
+- Oracle tests/t_port_partial_compress_keep.c + sta_oracle_partial_compress_keep.py:
+  11/0 vs LIVE Python (valid, zero->1, over-max->100, non-int->default,
+  whitespace, empty, null, negative, boundaries, over-by-one).
+- Scanner: hermes_cli/partial_compress.py ported 3 -> 4, real_gaps 1 -> 0
+  (module 100% closed).
+- Gates: make slermes clean · mission8 36/0 · 17 oracles 0 mismatch (added
+  partial_compress_keep 11/0) · 0 STUB / 0 N/A.
+
 ## v567 (2026-07-11) — agent/file_safety.py FULLY PORTED (15/15)
 - ADDED file_safety_get_safe_write_roots to existing src/agent/file_safety.c
   (no new module; reuses the file's resolve_path() helper for ~ expansion +
