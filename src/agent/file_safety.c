@@ -282,6 +282,65 @@ static bool outside_safe_root(const char *resolved)
     return true;
 }
 
+/* Return the resolved set of HERMES_WRITE_SAFE_ROOT paths as a malloc'd JSON
+ * array of strings (sorted for deterministic output). Mirrors Python's
+ * get_safe_write_roots(): split on os.pathsep, resolve (~ expansion +
+ * realpath) each non-empty entry, drop failures.
+ * Port of Python: agent/file_safety.py:get_safe_write_roots */
+/* PoP: file_safety_get_safe_write_roots @ agent/file_safety.py:get_safe_write_roots */
+char *file_safety_get_safe_write_roots(void)
+{
+    const char *env = getenv("HERMES_WRITE_SAFE_ROOT");
+    char resolved[64][PATH_MAX];
+    int n = 0;
+    if (env && *env) {
+        /* split on ':' (Unix pathsep); mirrors os.pathsep split */
+        char *buf = strdup(env);
+        char *save = NULL;
+        char *tok = strtok_r(buf, ":", &save);
+        while (tok && n < 64) {
+            if (*tok) {
+                char out[PATH_MAX];
+                resolve_path(tok, out, sizeof(out));
+                if (out[0]) {
+                    /* dedupe (case: exact string) */
+                    int dup = 0;
+                    for (int i = 0; i < n; i++)
+                        if (strcmp(resolved[i], out) == 0) { dup = 1; break; }
+                    if (!dup) {
+                        strncpy(resolved[n], out, PATH_MAX - 1);
+                        resolved[n][PATH_MAX - 1] = '\0';
+                        n++;
+                    }
+                }
+            }
+            tok = strtok_r(NULL, ":", &save);
+        }
+        free(buf);
+    }
+    /* insertion sort by string for deterministic output */
+    for (int i = 1; i < n; i++)
+        for (int j = i; j > 0 && strcmp(resolved[j - 1], resolved[j]) > 0; j--) {
+            char t[PATH_MAX];
+            memcpy(t, resolved[j - 1], PATH_MAX);
+            memcpy(resolved[j - 1], resolved[j], PATH_MAX);
+            memcpy(resolved[j], t, PATH_MAX);
+        }
+    /* build JSON array */
+    size_t cap = 4;
+    for (int i = 0; i < n; i++) cap += strlen(resolved[i]) + 4;
+    char *out = malloc(cap);
+    if (!out) return strdup("[]");
+    int off = 0;
+    off += snprintf(out + off, cap - off, "[");
+    for (int i = 0; i < n; i++) {
+        off += snprintf(out + off, cap - off, "%s\"%s\"", (i ? "," : ""),
+                        resolved[i]);
+    }
+    snprintf(out + off, cap - off, "]");
+    return out;
+}
+
 /* ================================================================
  *  Public API
  * ================================================================ */
