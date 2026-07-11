@@ -976,5 +976,36 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
 - Gates: make clean · mission8 36/0 · 8 oracles 0 mismatch (cron gap now 25/0) ·
   0 STUB / 0 N/A.
 
+## v560 (2026-07-11) — copilot_acp_client struct-builders + residual-façade close
+- Scanner re-run found the tractable pure gaps: copilot_acp_client (2),
+  managed_modal (1), video_generation (0 — already done), yuanbao (148 = async
+  network/gateway pipeline, not a focused pass), cli/main (electron redownload =
+  external download, genuinely un-C-able here).
+- copilot_acp_client.py: implemented the 2 missing pure struct-builders
+  faithfully in src/agent/copilot_acp_client.c:
+  * copilot_build_openai_tool_call(call_id,name,arguments) -> JSON
+    ChatCompletionMessageToolCall (id,call_id,response_item_id=null,type=
+    "function",function={name,arguments}).
+  * copilot_completion_to_stream_chunks(completion) -> 2-element JSON array
+    [data_chunk, usage_chunk] mirroring OpenAI SSE chunk shape (delta.role/
+    content/tool_calls[index,id,type,function={name,arguments}]/reasoning_*
+    + finish_reason, plus usage chunk). Used json_copy() for forwarded sub-nodes
+    to avoid the json_obj_get-borrowed -> json_set-owned DOUBLE-FREE trap.
+- New oracle (copilot_acp_toolcall): 4/0 vs LIVE Python (structurally compared,
+  not byte-identical — key order differs). Harness emitted JSON; oracle recomputes
+  via LIVE Python and asserts field equality.
+- managed_modal._request_timeout_env: ALREADY ported (as
+  cli_tools_environments_managed_modal__request_timeout_env) — the scanner
+  flagged it only due to symbol-prefix mangling (false positive), NOT a real gap.
+- copilot_acp_client.py now REAL_GAP=0. The 19 remaining "gaps" are the SDK
+  wrapper classes (CopilotACPClient / _ACPChatCompletions / _ACPChatNamespace —
+  Python JSON-RPC/network client boundary) = legitimate honest-NA boundary.
+- Gates: make clean · mission8 36/0 · 9 oracles 0 mismatch (added copilot 4/0) ·
+  0 STUB / 0 N/A.
+- Helper fix: tests/run_one_oracle.sh now extracts -I flags from build/libs-config.mk
+  via `grep -oE 'lib/lib[a-z0-9_]+' | sed 's#^#-I #'` (the old `-I[a-zA-Z...]`
+  regex missed multi-char lib dirs + the plugin include, causing
+  `plugin.h: No such file` compile failures in standalone harness builds).
+
 ## Next-Session Prompt
 /home/wubu/NEXT_SESSION_PROMPT.md (v558 residual-façade findings recorded).

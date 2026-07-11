@@ -50,6 +50,18 @@ json_node_t *copilot_extract_tool_calls(const char *text, char **cleaned_out);
 /** Port of Python: _ensure_path_within_cwd() — line 308 */
 bool ensure_path_within_cwd(const char *path, const char *cwd);
 
+/** Port of Python: _build_openai_tool_call() — line 236 — returns malloc'd json_t*
+ *  (ChatCompletionMessageToolCall equivalent: id, call_id, response_item_id=null,
+ *  type="function", function={name, arguments}). Caller frees. */
+json_t *copilot_build_openai_tool_call(const char *call_id,
+                                        const char *name,
+                                        const char *arguments);
+
+/** Port of Python: _completion_to_stream_chunks() — line 252 — converts a one-shot
+ *  ACP completion json_t into OpenAI-style stream chunks. Returns a malloc'd
+ *  json_t* array [data_chunk, usage_chunk]. Caller frees. */
+json_t *copilot_completion_to_stream_chunks(const json_t *completion);
+
 #ifdef __cplusplus
 }
 #endif
