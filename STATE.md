@@ -1103,6 +1103,26 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
 - Gates: make clean · mission8 36/0 · 12 oracles 0 mismatch (added cli_logs
   20/0) · 0 STUB / 0 N/A.
 
+## v569 (2026-07-11) — agent/nous_rate_guard.py FULLY PORTED (10/10)
+- ADDED nous_has_exhausted_bucket_in_object to existing
+  src/agent/nous_rate_guard.c (no new module). Port of
+  _has_exhausted_bucket_in_object: walks the four bucket attributes
+  (requests_min/requests_hour/tokens_min/tokens_hour) off a state object; for
+  each bucket with limit>0 and remaining==0 and reset (remaining_seconds_now
+  else reset_seconds) >= 60s, returns true. Graceful attr fallback.
+- NOTE: the file already had has_exhausted_bucket(json_t *buckets) which takes a
+  FLAT buckets dict — a DIFFERENT signature; the _in_object variant reads named
+  attributes off a state object, so it was a genuine gap (not the same fn).
+- Single-line PoP comment `nous_has_exhausted_bucket_in_object @
+  agent/nous_rate_guard.py:_has_exhausted_bucket_in_object`.
+- Oracle tests/t_port_nous_exhausted.c + sta_oracle_nous_exhausted.py: 6/0 vs
+  LIVE Python (no buckets, all-remaining, zero-limit skipped, exhausted+ok,
+  short-reset false, remaining_seconds_now path).
+- Scanner: agent/nous_rate_guard.py ported 9 -> 10, real_gaps 1 -> 0
+  (module 100% closed).
+- Gates: make slermes clean · mission8 36/0 · 18 oracles 0 mismatch (added
+  nous_exhausted 6/0) · 0 STUB / 0 N/A.
+
 ## v568 (2026-07-11) — hermes_cli/partial_compress.py FULLY PORTED (4/4)
 - ADDED cmd_compress_coerce_keep to existing src/cli/commands.c (no new module;
   partial_compress already partially ported there). Port of _coerce_keep: parse

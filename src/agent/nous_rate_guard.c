@@ -297,6 +297,35 @@ bool has_exhausted_bucket(json_t *buckets) {
     return false;
 }
 
+/* Port of Python agent/nous_rate_guard.py:_has_exhausted_bucket_in_object().
+ * Accepts a state object (JSON) exposing up to four bucket sub-objects under
+ * the keys requests_min / requests_hour / tokens_min / tokens_hour. Each bucket
+ * has limit/remaining/reset_seconds/remaining_seconds_now. Returns true if any
+ * bucket has limit>0, remaining==0, and a reset window >= MIN. Mirrors the
+ * attribute-walk (getattr with graceful fallback) of the Python original. */
+/* PoP: nous_has_exhausted_bucket_in_object @ agent/nous_rate_guard.py:_has_exhausted_bucket_in_object */
+bool nous_has_exhausted_bucket_in_object(json_t *state)
+{
+    if (!state || state->type != JSON_OBJECT) return false;
+    static const char *attrs[4] = {
+        "requests_min", "requests_hour", "tokens_min", "tokens_hour"
+    };
+    for (int a = 0; a < 4; a++) {
+        json_t *bucket = json_object_get(state, attrs[a]);
+        if (!bucket || bucket->type != JSON_OBJECT) continue;
+        double limit = json_get_num(bucket, "limit", 0.0);
+        if (limit <= 0.0) continue;
+        double remaining = json_get_num(bucket, "remaining", 0.0);
+        if (remaining > 0.0) continue;
+        double reset = json_get_num(bucket, "remaining_seconds_now", -1.0);
+        if (reset < 0.0)
+            reset = json_get_num(bucket, "reset_seconds", 0.0);
+        if (reset >= MIN_RESET_FOR_BREAKER_SECONDS)
+            return true;
+    }
+    return false;
+}
+
 /* Port of Python agent/nous_rate_guard.py:is_genuine_nous_rate_limit().
  * Decide whether a 429 from Nous Portal is a real account rate limit.
  * Checks current response headers for exhausted buckets with meaningful
