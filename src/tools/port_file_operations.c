@@ -80,51 +80,15 @@ bool file_ops_has_bom(const char *text)
     return file_text_ops_has_bom(text);
 }
 
-/* PoP: file_ops_search_stdout_and_limit @ tools/file_operations.py:_search_stdout_and_limit */
-char *file_ops_search_stdout_and_limit(const char *stdout_text, int limit)
-{
-    if (!stdout_text) return strdup("[]");
-    if (limit <= 0) limit = 100;
-
-    /* Simple implementation: split by lines and take first N */
-    char *result = malloc(1024);
-    if (!result) return NULL;
-    strcpy(result, "[");
-
-    int count = 0;
-    const char *line = stdout_text;
-    while (*line && count < limit) {
-        const char *end = strchr(line, '\n');
-        if (!end) end = line + strlen(line);
-        size_t linelen = end - line;
-
-        if (count > 0) strcat(result, ",");
-        strcat(result, "\"");
-        strncat(result, line, linelen < 256 ? linelen : 256);
-        strcat(result, "\"");
-        count++;
-
-        if (*end == '\n') line = end + 1;
-        else break;
-    }
-    strcat(result, "]");
-    return result;
-}
-
-/* PoP: file_ops_split_tool_diagnostics @ tools/file_operations.py:_split_tool_diagnostics */
-char *file_ops_split_tool_diagnostics(const char *diagnostics)
-{
-    if (!diagnostics) return strdup("{}");
-    /* Split diagnostics by tool */
-    return strdup(diagnostics); /* Pass through for now */
-}
+/* ================================================================
+ *  Search context line parsing  (delegates → src/tools/file_text_ops.c)
+ * ================================================================ */
 
 /* PoP: file_ops_parse_search_context_line @ tools/file_operations.py:_parse_search_context_line */
 char *file_ops_parse_search_context_line(const char *line)
 {
     return file_text_ops_parse_search_context_line(line);
 }
-
 /* ================================================================
  *  File read/write operations  (extracted → src/tools/file_fs_ops.c)
  * ================================================================ */
@@ -156,14 +120,10 @@ char *file_ops_patch_replace(const char *content, const char *old_text, const ch
     return file_fs_ops_patch_replace(content, old_text, new_text);
 }
 
-/* Port of Python: patch_v4a */
-/* PoP: file_ops_patch_v4a @ tools/file_operations.py:patch_v4a */
-char *file_ops_patch_v4a(const char *content, const char *patch_text)
-{
-    if (!content || !patch_text) return strdup(content ? content : "");
-    /* V4A patch format application - simplified */
-    return strdup(content); /* pending */
-}
+/* NOTE: tools/file_operations.py:patch_v4a (V4A patch applier) is NOT yet
+ * ported. The earlier stub (return strdup(content)) was removed because it
+ * faked a working port. This is an honest REAL_GAP: the C file tool does not
+ * yet apply V4A-format patches. Tracked as a gap, not a phantom port. */
 
 /* ================================================================
  *  Linting helpers  (extracted → src/tools/file_ops_lint.c)
