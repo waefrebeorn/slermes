@@ -1014,3 +1014,49 @@ bool strip_images_from_messages(json_t *messages) {
     }
     return found;
 }
+
+/* ================================================================
+ *  close_interrupted_tool_sequence
+ *
+ *  Port of Python agent/message_sanitization.close_interrupted_tool_sequence.
+ *  If messages (a json_t array) ends on a "tool" role message, append a
+ *  synthetic assistant turn (text.trim() or "Operation interrupted.") and
+ *  return 1. Returns 0 otherwise (empty, or tail not a tool message).
+ *  Mutates the array in place (mirrors Python in-place behaviour).
+ * ================================================================ */
+
+/* PoP: message_sanitize_close_interrupted @ agent/message_sanitization.py:close_interrupted_tool_sequence */
+bool message_sanitize_close_interrupted(json_t *messages, const char *final_response)
+{
+    if (!messages || messages->type != JSON_ARRAY || json_len(messages) == 0)
+        return 0;
+    json_t *last = messages->c.items[json_len(messages) - 1];
+    if (!last || last->type != JSON_OBJECT)
+        return 0;
+    json_t *role_node = json_obj_get(last, "role");
+    const char *role = role_node ? role_node->str_val : NULL;
+    if (!role || strcmp(role, "tool") != 0)
+        return 0;
+
+    const char *text = (final_response && *final_response) ? final_response : NULL;
+    char *trimmed = NULL;
+    if (text) {
+        /* strip leading/trailing whitespace */
+        while (*text && isspace((unsigned char)*text)) text++;
+        const char *end = text + strlen(text);
+        while (end > text && isspace((unsigned char)end[-1])) end--;
+        size_t n = (size_t)(end - text);
+        trimmed = (char *)malloc(n + 1);
+        memcpy(trimmed, text, n);
+        trimmed[n] = '\0';
+    }
+    const char *content = (trimmed && trimmed[0]) ? trimmed : "Operation interrupted.";
+
+    json_t *turn = json_object();
+    json_set(turn, "role", json_string("assistant"));
+    json_set(turn, "content", json_string(content));
+    json_append(messages, turn);
+    /* ownership: json_set/json_append steal, turn is now owned by array */
+    if (trimmed) free(trimmed);
+    return 1;
+}

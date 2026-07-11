@@ -1103,6 +1103,23 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
 - Gates: make clean · mission8 36/0 · 12 oracles 0 mismatch (added cli_logs
   20/0) · 0 STUB / 0 N/A.
 
+## v565 (2026-07-11) — agent/message_sanitization.py FULLY PORTED (11/11)
+- ADDED message_sanitize_close_interrupted to existing
+  src/agent/agent_message_sanitize.c (no new module; reuses json_t pipeline).
+  Port of close_interrupted_tool_sequence: if the messages array ends on a
+  "tool" role, append a synthetic assistant turn (final_response.strip() or
+  "Operation interrupted.") and return 1; else return 0. Mutates array in place
+  (mirrors Python), uses json_copy for oracle emission to avoid double-free.
+- Single-line PoP comment `message_sanitize_close_interrupted @
+  agent/message_sanitization.py:close_interrupted_tool_sequence`.
+- Oracle tests/t_port_message_sanitize_close.c + sta_oracle_message_sanitize_
+  close.py: 5/0 vs LIVE Python (tool+response, tool+whitespace-strip, ends-on-
+  user no-op, empty no-op, tool+empty-response).
+- Scanner: agent/message_sanitization.py ported 10 -> 11, real_gaps 1 -> 0
+  (module 100% closed).
+- Gates: make slermes clean · mission8 36/0 · 14 oracles 0 mismatch (added
+  message_sanitize_close 5/0) · 0 STUB / 0 N/A.
+
 ## v564 (2026-07-11) — agent/learning_graph.py +3 pure transforms
 - EXTENDED existing src/cli/port_learning_graph_helpers.c (not a new module —
   reused per no-double-coding rule) with 3 pure data-transform ports that the
