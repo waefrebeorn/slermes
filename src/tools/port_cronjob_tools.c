@@ -43,6 +43,16 @@ void port_cronjob_tools_state_cleanup(port_cronjob_tools_state_t *state)
 
 #include "cron_prompt_sanitize.h"
 
+/* Cron scheduler subsystem front door (src/cron/cron_cli.c). The full CRUD +
+ * fire path (list/add/edit/remove/pause/resume/run-now over the sqlite job
+ * store, firing via run_one_job) already exists there as cron_cmd_handler().
+ * cronjob_dispatch and cronjob_execute_job_now delegate to it rather than
+ * re-implementing scheduler state here — reusing the one shared fire path so
+ * behaviour cannot drift and no struct/ABI is duplicated. notify is exposed by
+ * src/cron/port_scheduler.c. */
+char *cron_cmd_handler(const char *args_json, const char *task_id);
+void notify_provider_jobs_changed(void);
+
 /* The emoji/ZWJ unicode surgery + invisible-unicode detection + threat
  * scanning cluster was extracted to src/tools/cron_prompt_sanitize.c (v551
  * refactor-first monolith split). The public sanitize entry points below
@@ -50,7 +60,7 @@ void port_cronjob_tools_state_cleanup(port_cronjob_tools_state_t *state)
 
 /* ================================================================ */
 /* PoP: check_invisible_unicode @ tools/cronjob_tools.py:_check_invisible_unicode */
-* Delegates to the self-contained cron_prompt_sanitize module (v551 split). */
+/* Delegates to the self-contained cron_prompt_sanitize module (v551 split). */
 char *check_invisible_unicode(const char *prompt)
 {
     return cron_prompt_sanitize_check_invisible(prompt);
@@ -62,7 +72,7 @@ char *check_invisible_unicode(const char *prompt)
  *  Caller owns the returned json_t*.
  * ================================================================ */
 /* PoP: strip_invisible_unicode @ tools/cronjob_tools.py:_strip_invisible_unicode */
-* Delegates to the self-contained cron_prompt_sanitize module (v551 split). */
+/* Delegates to the self-contained cron_prompt_sanitize module (v551 split). */
 json_t *strip_invisible_unicode(const char *prompt)
 {
     return cron_prompt_sanitize_strip_invisible(prompt);
@@ -74,7 +84,7 @@ json_t *strip_invisible_unicode(const char *prompt)
  *  Returns json_t* {cleaned, error} where error is empty string on pass.
  * ================================================================ */
 /* PoP: scan_cron_skill_assembled @ tools/cronjob_tools.py:_scan_cron_skill_assembled */
-* Delegates to the self-contained cron_prompt_sanitize module (v551 split). */
+/* Delegates to the self-contained cron_prompt_sanitize module (v551 split). */
 json_t *scan_cron_skill_assembled(const char *assembled)
 {
     return cron_prompt_sanitize_scan_skill_assembled(assembled);
@@ -86,7 +96,7 @@ json_t *scan_cron_skill_assembled(const char *assembled)
  *  Returns json_t* object or NULL if env vars not set.
  * ================================================================ */
 /* PoP: origin_from_env @ tools/cronjob_tools.py:_origin_from_env */
-* Port of Python tools/cronjob_tools.py:_origin_from_env().
+/* Port of Python tools/cronjob_tools.py:_origin_from_env().
  * Reads HERMES_SESSION_PLATFORM, HERMES_SESSION_CHAT_ID, HERMES_SESSION_THREAD_ID,
  * HERMES_SESSION_CHAT_NAME, HERMES_SESSION_USER_ID from environment.
  * Returns json_t* object with platform, chat_id, thread_id, chat_name, user_id,
@@ -116,7 +126,7 @@ json_t *origin_from_env(void)
  *  and will not be delivered back to the session.
  * ================================================================ */
 /* PoP: local_delivery_notice @ tools/cronjob_tools.py:_local_delivery_notice */
-* Port of Python tools/cronjob_tools.py:_local_delivery_notice().
+/* Port of Python tools/cronjob_tools.py:_local_delivery_notice().
  * Returns malloc'd notice string when a created job won't deliver anywhere
  * (CLI/TUI sessions have no live-delivery channel). Returns NULL when
  * user explicitly requested "local" or job resolves to a real delivery target.
@@ -152,7 +162,7 @@ char *local_delivery_notice(const json_t *job, const char *user_deliver)
  *  Returns a malloc'd string describing the repeat state.
  * ================================================================ */
 /* PoP: repeat_display @ tools/cronjob_tools.py:_repeat_display */
-* Port of Python tools/cronjob_tools.py:_repeat_display().
+/* Port of Python tools/cronjob_tools.py:_repeat_display().
  * Formats the repeat configuration: "forever", "once", "1/1", "N times", "X/Y". */
 char *repeat_display(const json_t *job)
 {
@@ -185,7 +195,7 @@ char *repeat_display(const json_t *job)
  *  Pins provider to config main provider if model given but provider omitted.
  * ================================================================ */
 /* PoP: resolve_model_override @ tools/cronjob_tools.py:_resolve_model_override */
-* Port of Python tools/cronjob_tools.py:_resolve_model_override().
+/* Port of Python tools/cronjob_tools.py:_resolve_model_override().
  * Resolves a model override object into (provider, model) for job storage.
  * If provider is omitted, pins the current main provider from config so the
  * job doesn't drift when the user later changes their default via hermes model.
@@ -252,7 +262,7 @@ static char *normalize_optional_job_value(const char *value, bool strip_trailing
  *  Flattens list/tuple deliver values to comma-separated string.
  * ================================================================ */
 /* PoP: normalize_deliver_param @ tools/cronjob_tools.py:_normalize_deliver_param */
-* Port of Python tools/cronjob_tools.py:_normalize_deliver_param().
+/* Port of Python tools/cronjob_tools.py:_normalize_deliver_param().
  * Normalizes a user-supplied "deliver" value to canonical string form.
  * Flattens arrays/tuples to comma-separated string. Returns malloc'd string
  * or NULL for None/empty. */
@@ -294,7 +304,7 @@ static char *normalize_deliver_param(const json_t *value)
  * ======================================================================== */
 
 /* PoP: check_cronjob_requirements @ tools/cronjob_tools.py:check_cronjob_requirements */
-* Pure env-var truthiness check (mirrors utils.env_var_enabled: 1/true/yes/on). */
+/* Pure env-var truthiness check (mirrors utils.env_var_enabled: 1/true/yes/on). */
 bool cronjob_check_cronjob_requirements(void)
 {
     static const char *flags[] = {
@@ -314,7 +324,7 @@ bool cronjob_check_cronjob_requirements(void)
 }
 
 /* PoP: _validate_cron_script_path @ tools/cronjob_tools.py:_validate_cron_script_path */
-* API-boundary guard: scripts must be relative paths within HERMES_HOME/scripts/.
+/* API-boundary guard: scripts must be relative paths within HERMES_HOME/scripts/.
  * Rejects absolute / ~ / Windows-drive prefixes and `..` traversal. */
 char *cronjob_validate_cron_script_path(const char *script)
 {
@@ -350,7 +360,7 @@ char *cronjob_validate_cron_script_path(const char *script)
 }
 
 /* PoP: _format_job @ tools/cronjob_tools.py:_format_job */
-* Pure job-dict -> display-dict formatter. */
+/* Pure job-dict -> display-dict formatter. */
 json_t *cronjob_format_job(const json_t *job)
 {
     if (!job) return NULL;
@@ -429,7 +439,7 @@ json_t *cronjob_format_job(const json_t *job)
 }
 
 /* PoP: _validate_cron_base_url @ tools/cronjob_tools.py:_validate_cron_base_url */
-* SECURITY: rejects pairing a named provider's stored credential with an
+/* SECURITY: rejects pairing a named provider's stored credential with an
  * off-host base_url (credential exfil, CWE-200/522). Python host-matches
  * against the provider registry; this C port has no provider-registry, so it
  * FAILS CLOSED: any base_url with a non-custom provider is refused. provider
@@ -468,39 +478,124 @@ char *cronjob_validate_cron_base_url(const char *provider, const char *base_url)
 }
 
 /* PoP: _notify_provider_jobs_changed_safe @ tools/cronjob_tools.py:_notify_provider_jobs_changed_safe */
-* Best-effort scheduler notification. The built-in JSON scheduler ticks
- * internally, so this is a safe no-op in the C port. */
+/* Best-effort scheduler-provider notification. Mirrors Python: delegate to
+ * notify_provider_jobs_changed() (src/cron/port_scheduler.c) and never let a
+ * provider error propagate out of the tool. */
 void cronjob_notify_provider_jobs_changed_safe(void)
 {
-    /* no-op: built-in scheduler ticks on its own */
+    notify_provider_jobs_changed();
 }
 
 /* PoP: _execute_job_now @ tools/cronjob_tools.py:_execute_job_now */
-* HONEST NA: delegates to the scheduler's run_one_job fire path (claim+CAS).
- * That fire path is not wired into this C port, so this is honestly
- * unavailable rather than faked. */
+/* Execute a cron job immediately, outside the scheduler tick. Mirrors the
+ * Python contract: returns {"claimed": bool, "success": bool, "error": str|null}.
+ * Delegates to the shared C fire path cron_cmd_handler(action="run-now"), which
+ * looks the job up in g_cron_store and fires it via run_one_job — the same body
+ * the ticker uses, so failure/delivery behaviour cannot drift. The built-in C
+ * scheduler has no separate CAS store, so an inline run IS the claim: a found +
+ * triggered job maps to claimed=true; a missing/failed lookup to claimed=false. */
 json_t *cronjob_execute_job_now(const json_t *job)
 {
-    (void)job;
-    json_t *e = json_object();
-    if (!e) return NULL;
-    json_set(e, "error",
-             json_string("execute_job_now not implemented in C port: scheduler "
-                         "fire path (run_one_job) not wired"));
-    return e;
+    json_t *out = json_object();
+    if (!out) return NULL;
+
+    const char *job_id = json_get_str(job, "id", NULL);
+    const char *job_name = json_get_str(job, "name", NULL);
+    const char *key = (job_name && *job_name) ? job_name : job_id;
+    if (!key || !*key) {
+        json_set(out, "claimed", json_bool(false));
+        json_set(out, "success", json_bool(false));
+        json_set(out, "error", json_string("job has no id or name"));
+        return out;
+    }
+
+    /* Build the run-now request for the shared handler. */
+    json_t *req = json_object();
+    json_set(req, "action", json_string("run-now"));
+    json_set(req, "name", json_string(key));
+    char *req_json = json_serialize(req);
+    json_free(req);
+    if (!req_json) {
+        json_set(out, "claimed", json_bool(false));
+        json_set(out, "success", json_bool(false));
+        json_set(out, "error", json_string("failed to serialize run-now request"));
+        return out;
+    }
+
+    char *res_json = cron_cmd_handler(req_json, NULL);
+    free(req_json);
+    if (!res_json) {
+        json_set(out, "claimed", json_bool(false));
+        json_set(out, "success", json_bool(false));
+        json_set(out, "error", json_string("cron handler returned no result"));
+        return out;
+    }
+
+    char *perr = NULL;
+    json_t *res = json_parse(res_json, &perr);
+    free(res_json);
+    free(perr);
+    if (!res) {
+        json_set(out, "claimed", json_bool(false));
+        json_set(out, "success", json_bool(false));
+        json_set(out, "error", json_string("cron handler result parse error"));
+        return out;
+    }
+
+    /* Handler returns {"status":"triggered"} on success, or
+     * {"status":"error","error":"Job not found"} otherwise. */
+    const char *status = json_get_str(res, "status", "");
+    const char *herr = json_get_str(res, "error", NULL);
+    bool triggered = (strcmp(status, "triggered") == 0);
+    json_set(out, "claimed", json_bool(triggered));
+    json_set(out, "success", json_bool(triggered));
+    json_set(out, "error", herr ? json_string(herr) : json_null());
+    json_free(res);
+    return out;
 }
 
 /* PoP: cronjob @ tools/cronjob_tools.py:cronjob */
-* HONEST NA: the top-level cron tool dispatcher (create/list/delete/pause/
- * resume/run-now) requires the full scheduler CRUD + delivery subsystem,
- * which is not in this C port. Returns a clear error rather than fake success. */
+/* Unified cron management dispatcher. The full CRUD + fire subsystem already
+ * exists in the C port as cron_cmd_handler() (src/cron/cron_cli.c), wired to
+ * g_cron_store, run_one_job, and the sqlite job store. This is the tool-schema
+ * front door: it forwards the parsed tool args to that handler and returns the
+ * parsed JSON result object (caller owns it). Returns an {"error": ...} object
+ * rather than faking success when the handler cannot be reached. */
 json_t *cronjob_dispatch(const json_t *args)
 {
-    (void)args;
-    json_t *e = json_object();
-    if (!e) return NULL;
-    json_set(e, "error",
-             json_string("cronjob dispatcher not implemented in C port: scheduler "
-                         "CRUD + delivery subsystem not wired"));
-    return e;
+    char *args_json = args ? json_serialize(args) : strdup("{}");
+    if (!args_json) {
+        json_t *e = json_object();
+        if (e) json_set(e, "error", json_string("failed to serialize cron args"));
+        return e;
+    }
+
+    char *result_json = cron_cmd_handler(args_json, NULL);
+    free(args_json);
+    if (!result_json) {
+        json_t *e = json_object();
+        if (e) json_set(e, "error", json_string("cron handler returned no result"));
+        return e;
+    }
+
+    char *perr = NULL;
+    json_t *result = json_parse(result_json, &perr);
+    free(result_json);
+    if (!result) {
+        json_t *e = json_object();
+        if (e) {
+            char *msg;
+            if (asprintf(&msg, "cron handler result parse error: %s",
+                         perr ? perr : "unknown") >= 0) {
+                json_set(e, "error", json_string(msg));
+                free(msg);
+            } else {
+                json_set(e, "error", json_string("cron handler result parse error"));
+            }
+        }
+        free(perr);
+        return e;
+    }
+    free(perr);
+    return result;
 }
