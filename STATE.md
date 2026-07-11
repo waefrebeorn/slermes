@@ -1007,5 +1007,36 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
   regex missed multi-char lib dirs + the plugin include, causing
   `plugin.h: No such file` compile failures in standalone harness builds).
 
+## v561 (2026-07-11) — doctrine correction + yuanbao markdown verification/fix
+- USER DOCTRINE (hard, restated): "rewriting in scratch in C is the point of the
+  project, so ANYTHING that falls under that is REAL_GAP work." There is no
+  "genuinely-un-C-able" demotion category. My v560 summary wrongly called
+  yuanbao (148 gaps) and cli/main (electron redownload) "un-C-able boundaries" —
+  that framing is INVALID. Async/network/cloud code IS rewritable in C
+  (libcurl + event loop, managed subprocess); it is large work, not demotable.
+- Corroboration: the parity scanner's 148 yuanbao "gaps" are REAL classifications
+  (async token-fetch + streaming InboundPipeline middleware). The 9 pure
+  MarkdownProcessor staticmethods are ALREADY correctly classified PORTED
+  (yuanbao_md_* with explicit PoP). My v560 "scanner false-positive" claim about
+  yuanbao was WRONG — only managed_modal._request_timeout_env was a genuine
+  prefix false-positive (different scanner behavior). Corrected.
+- BUILT oracle harness tests/t_port_yuanbao_markdown.c + sta_oracle_yuanbao_markdown.py
+  (18/0 vs LIVE Python) PROVING the 9 markdown helpers are faithfully ported.
+  FIXED 3 real C divergences the oracle caught:
+  * split_into_atoms: C appended trailing '\n' to each atom; Python strips it
+    (joins lines, atom has no trailing newline). Now strips the YB_APPEND_LINE
+    newline in YB_FLUSH.
+  * sanitize_markdown_table: C dropped leading/trailing '|' on separator rows
+    (strtok_r drops empty edge cells). Now emits explicit leading+trailing '|'.
+  * markdown_hint_system_prompt: C string had real newlines where Python's source
+    has LITERAL backslash-n (inside the ``` and table examples). Fixed literals
+    to match Python byte-for-byte (was 278/283, now 282 = exact).
+- Gates: make clean · mission8 36/0 · 10 oracles 0 mismatch (added yuanbao 18/0) ·
+  0 STUB / 0 N/A.
+- Next tractable REAL_GAP clusters (pure helpers, async=0): cron/suggestions.py
+  (10), hermes_cli/env_loader.py (10), hermes_cli/logs.py (10), hermes_cli/curator.py
+  (9), tools/xai_video_tools.py (7), agent/learning_graph.py (10), cron/suggestions.py.
+  These are the next closing targets — each a focused module port + oracle.
+
 ## Next-Session Prompt
 /home/wubu/NEXT_SESSION_PROMPT.md (v558 residual-façade findings recorded).
