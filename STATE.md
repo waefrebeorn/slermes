@@ -954,5 +954,27 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
 - Re-hit + fixed dead-hybrid PoP trap (/* PoP: ... line 1, */ line 2) → converted all
   15 multi-line PoP comments to single-line. Re-ran scanner.
 
+## v559 (2026-07-11) — doctrine correction: no fake-success "honest NA" for failable fns
+- DOCTRINE (user): "rewriting in scratch in C is the point of the project, so
+  anything that *should* exist in C is REAL_GAP work, NOT an honest NA demotion."
+- v558 had wrongly left cronjob_execute_job_now + cronjob_dispatch as
+  "honest NA" returning a `not implemented in C port` error string — this is the
+  BANNED v541 fake-success pattern. Corrected in v559:
+  * cronjob_dispatch delegates to cron_cmd_handler (real C scheduler: CRUD+fire
+    over the sqlite store) → add/list/run-now/remove all verified live.
+  * cronjob_execute_job_now delegates to cron_cmd_handler(action="run-now"),
+    returns {claimed, success, error} contract (claimed=false for missing/no-id).
+  * cronjob_notify_provider_jobs_changed_safe calls the REAL
+    notify_provider_jobs_changed().
+  * WIRED src/cron/port_scheduler.o (orphaned: run_one_job,
+    notify_provider_jobs_changed, summarize_cron_failure_for_delivery,
+    confirm_adapter_delivery) into CRON_OBJ — no symbol clash; closes orphan.
+- New oracle cases (total 25/0): dispatch_add/list/remove, execnow_real/missing/
+  noid — all asserted against LIVE Python's behavior contract.
+- Lesson: before demoting a "missing" fn to honest-NA, check build/objects.mk
+  membership + the whole tree for an EXISTING (possibly orphaned) C impl.
+- Gates: make clean · mission8 36/0 · 8 oracles 0 mismatch (cron gap now 25/0) ·
+  0 STUB / 0 N/A.
+
 ## Next-Session Prompt
 /home/wubu/NEXT_SESSION_PROMPT.md (v558 residual-façade findings recorded).

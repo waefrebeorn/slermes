@@ -130,19 +130,90 @@ int main(void)
     json_free(fj);
     json_free(job);
 
-    /* ---- honest-NA behaviors ---- */
-    cronjob_notify_provider_jobs_changed_safe();
-    printf("{\"fn\":\"notify\",\"out\":\"noop\"}\n");
+    /* ---- REAL dispatcher + execute_job_now lifecycle (contract assertions) ----
+     * These delegate to the real C scheduler (cron_cmd_handler over g_cron_store,
+     * firing via run_one_job). We drive a full create -> list -> run-now -> remove
+     * lifecycle in an isolated SLERMES_HOME temp dir and assert the behaviour
+     * contract (LIVE Python uses a different store backend, so we assert shape,
+     * not byte-identical JSON — same rule as the cron oracle). */
 
-    json_t *ej = cronjob_execute_job_now(NULL);
-    printf("{\"fn\":\"execnow\",\"has_error\":%s}\n",
-           json_obj_get(ej, "error") ? "true" : "false");
+    /* notify: real best-effort provider notification, returns void, must not crash */
+    cronjob_notify_provider_jobs_changed_safe();
+    printf("{\"fn\":\"notify\",\"out\":\"ok\"}\n");
+
+    /* Create a job via the dispatcher. Use a harmless command. */
+    json_t *cargs = json_object();
+    json_set(cargs, "action", json_string("add"));
+    json_set(cargs, "name", json_string("gap_test_job"));
+    json_set(cargs, "schedule", json_string("*/5 * * * *"));
+    json_set(cargs, "command", json_string("true"));
+    json_t *cres = cronjob_dispatch(cargs);
+    json_free(cargs);
+    const char *cstatus = json_get_str(cres, "status", "");
+    printf("{\"fn\":\"dispatch_add\",\"status\":");
+    esc_print(cstatus);
+    printf(",\"has_error\":%s}\n", json_obj_get(cres, "error") ? "true" : "false");
+    json_free(cres);
+
+    /* list should include the created job */
+    json_t *largs = json_object();
+    json_set(largs, "action", json_string("list"));
+    json_t *lres = cronjob_dispatch(largs);
+    json_free(largs);
+    json_t *jobs = json_obj_get(lres, "jobs");
+    int found = 0, count = 0;
+    if (jobs && json_is_array(jobs)) {
+        count = json_array_size(jobs);
+        for (int i = 0; i < count; i++) {
+            json_t *j = json_array_get(jobs, i);
+            const char *nm = json_get_str(j, "name", "");
+            if (strcmp(nm, "gap_test_job") == 0) found = 1;
+        }
+    }
+    printf("{\"fn\":\"dispatch_list\",\"count\":%d,\"found\":%s}\n",
+           count, found ? "true" : "false");
+    json_free(lres);
+
+    /* execute_job_now on the real job -> claimed+success true (runs `true`) */
+    json_t *jref = json_object();
+    json_set(jref, "id", json_string("gap_test_job"));
+    json_set(jref, "name", json_string("gap_test_job"));
+    json_t *ej = cronjob_execute_job_now(jref);
+    json_free(jref);
+    printf("{\"fn\":\"execnow_real\",\"claimed\":%s,\"success\":%s}\n",
+           json_is_true(json_obj_get(ej, "claimed")) ? "true" : "false",
+           json_is_true(json_obj_get(ej, "success")) ? "true" : "false");
     json_free(ej);
 
-    json_t *cd = cronjob_dispatch(NULL);
-    printf("{\"fn\":\"dispatch\",\"has_error\":%s}\n",
-           json_obj_get(cd, "error") ? "true" : "false");
-    json_free(cd);
+    /* execute_job_now on a MISSING job -> claimed=false (nothing fired) */
+    json_t *jmiss = json_object();
+    json_set(jmiss, "id", json_string("no_such_job_xyz"));
+    json_set(jmiss, "name", json_string("no_such_job_xyz"));
+    json_t *ejm = cronjob_execute_job_now(jmiss);
+    json_free(jmiss);
+    printf("{\"fn\":\"execnow_missing\",\"claimed\":%s}\n",
+           json_is_true(json_obj_get(ejm, "claimed")) ? "true" : "false");
+    json_free(ejm);
+
+    /* execute_job_now with no id/name -> claimed=false + error */
+    json_t *jempty = json_object();
+    json_t *eje = cronjob_execute_job_now(jempty);
+    json_free(jempty);
+    printf("{\"fn\":\"execnow_noid\",\"claimed\":%s,\"has_error\":%s}\n",
+           json_is_true(json_obj_get(eje, "claimed")) ? "true" : "false",
+           json_obj_get(eje, "error") ? "true" : "false");
+    json_free(eje);
+
+    /* remove the job -> status removed */
+    json_t *rargs = json_object();
+    json_set(rargs, "action", json_string("remove"));
+    json_set(rargs, "name", json_string("gap_test_job"));
+    json_t *rres = cronjob_dispatch(rargs);
+    json_free(rargs);
+    printf("{\"fn\":\"dispatch_remove\",\"status\":");
+    esc_print(json_get_str(rres, "status", ""));
+    printf("}\n");
+    json_free(rres);
 
     return 0;
 }

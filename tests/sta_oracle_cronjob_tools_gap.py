@@ -107,14 +107,42 @@ def main():
                 else:
                     detail = "fields match"
         elif fn == "notify":
-            ok = True
-            detail = "no-op (honest)"
-        elif fn == "execnow":
-            ok = (c.get("has_error") is True)
-            detail = f"has_error={c.get('has_error')}"
-        elif fn == "dispatch":
-            ok = (c.get("has_error") is True)
-            detail = f"has_error={c.get('has_error')}"
+            # Python _notify_provider_jobs_changed_safe returns None (best-effort,
+            # never raises). C mirrors: void, must not crash. Reaching here = ok.
+            ok = (c.get("out") == "ok")
+            detail = "best-effort notify (returned cleanly)"
+        elif fn == "dispatch_add":
+            # LIVE Python cronjob(action='create',...) returns success=True with a
+            # job_id. The C dispatcher uses action='add' over its own store and
+            # returns status='added'. Different backend, same CONTRACT: the create
+            # succeeds without error. (Oracle-rule: assert contract when backends
+            # differ — Python's create also returns no error for a valid job.)
+            ok = (c.get("status") == "added" and c.get("has_error") is False)
+            detail = f"status={c.get('status')} has_error={c.get('has_error')}"
+        elif fn == "dispatch_list":
+            # Python cronjob(action='list') returns {'success':True,'jobs':[...]}.
+            # Contract: the just-created job appears in the listing.
+            ok = (c.get("found") is True and c.get("count", 0) >= 1)
+            detail = f"count={c.get('count')} found={c.get('found')}"
+        elif fn == "execnow_real":
+            # Python _execute_job_now(job) for an active job returns
+            # claimed=True and success reflects the run. C runs `true` -> success.
+            ok = (c.get("claimed") is True and c.get("success") is True)
+            detail = f"claimed={c.get('claimed')} success={c.get('success')}"
+        elif fn == "execnow_missing":
+            # Python: a job that can't be claimed/found does not fire ->
+            # claimed=False. C mirrors for an unknown job.
+            ok = (c.get("claimed") is False)
+            detail = f"claimed={c.get('claimed')}"
+        elif fn == "execnow_noid":
+            # No id/name: nothing to fire -> claimed=False with an error string.
+            ok = (c.get("claimed") is False and c.get("has_error") is True)
+            detail = f"claimed={c.get('claimed')} has_error={c.get('has_error')}"
+        elif fn == "dispatch_remove":
+            # Python cronjob(action='remove') returns success=True; C returns
+            # status='removed'. Contract: the removal reports success.
+            ok = (c.get("status") == "removed")
+            detail = f"status={c.get('status')}"
         else:
             ok = False
             detail = f"unknown fn {fn}"
