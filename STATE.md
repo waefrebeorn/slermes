@@ -1038,5 +1038,43 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
   (9), tools/xai_video_tools.py (7), agent/learning_graph.py (10), cron/suggestions.py.
   These are the next closing targets — each a focused module port + oracle.
 
+## v562 (2026-07-11) — cron/suggestions.py fully ported (10 fns)
+- PORTED cron/suggestions.py end-to-end: new src/cron/cron_suggestions.c +
+  include/cron_suggestions.h (10 functions: _secure_file, _ensure_dir,
+  _load_raw, _save_raw, load_suggestions, list_pending, add_suggestion,
+  get_suggestion, _set_status, dismiss_suggestion, accept_suggestion,
+  clear_resolved). JSON file store (~/.hermes/cron/suggestions.json) mirroring
+  cron/jobs.py: atomic temp-write + rename + 0600, in-process pthread mutex
+  for load->modify->save. accept_suggestion delegates to the REAL scheduler
+  (cron_add_job) — no fake-success.
+- WIRED into build/objects.mk (CRON_OBJ) — was an orphaned/unported module
+  (scanner had it at real_gaps=10). After PoP annotations, scanner now shows
+  cron/suggestions.py ported=12 real_gaps=0.
+- BUILT oracle tests/t_port_cron_suggestions.c + sta_oracle_cron_suggestions.py
+  (15/0 vs LIVE Python lifecycle: add/dedup-skip/backlog-cap/get by id|index|
+  title/dismiss-latched/accept->create_job/clear_resolved/invalid-source).
+- CRITICAL bugs caught + fixed during port (libjson uses ALIASING ownership,
+  no refcount — json_set/json_append STEAL, json_get returns BORROWED):
+  1. DEADLOCK: cron_sugg_add success path returned WITHOUT pthread_mutex_unlock
+     → second add blocked forever. Fixed (unlock before return).
+  2. USE-AFTER-FREE in get(): for a uuid starting with a digit, the
+     `!(ref[0]>='0'&&ref[0]<='9')` guard SKIPPED the json_copy, returning a
+     borrowed ref that json_free(all) then freed. Fixed (always copy).
+  3. DOUBLE-FREE x3 from aliasing: save_raw consumed caller's list (json_set
+     steals) → callers' later json_free double-freed; add()/clear() freed rec/
+     kept after aliasing into parent. Fixed by json_copy-ing before consuming
+     and returning json_copy before freeing parent.
+  Verified clean under AddressSanitizer (no heap errors; only benign leaks in
+  the throwaway harness).
+- Gates: make clean · mission8 36/0 · 11 oracles 0 mismatch (added cron_sugg
+  15/0) · 0 STUB / 0 N/A.
+- NEXT tractable REAL_GAP clusters (pure helpers, async=0, from v561 scan):
+  hermes_cli/env_loader.py (10), hermes_cli/logs.py (10), hermes_cli/curator.py
+  (9), tools/xai_video_tools.py (7), agent/learning_graph.py (10),
+  hermes_cli/dump.py (9), hermes_cli/fallback_cmd.py (9). Each: focused module
+  port + oracle vs LIVE Python. (The doctrine stands: remaining async/network
+  gaps — yuanbao token-fetch, managed_modal cloud exec, cli/main electron — are
+  REAL work, not demotable "un-C-able" boundaries.)
+
 ## Next-Session Prompt
 /home/wubu/NEXT_SESSION_PROMPT.md (v558 residual-façade findings recorded).
