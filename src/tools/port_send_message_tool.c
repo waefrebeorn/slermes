@@ -9,6 +9,7 @@
 #include "hermes_logger.h"
 #include "hermes_json.h"
 #include "hermes_http.h"
+#include "hermes_gateway.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,6 +34,9 @@ json_t *send_message_send_bluebubbles(json_t *pconfig, const char *chat_id,
                                       const char *message);
 json_t *send_message_send_qqbot(json_t *pconfig, const char *chat_id,
                                 const char *message);
+json_t *send_message_send_yuanbao(const char *chat_id,
+                                  const char *message,
+                                  const char **media_files);
 
 /* Opaque struct definition - private to this translation unit */
 struct port_send_message_tool_state {
@@ -350,7 +354,7 @@ json_t *send_message_handle_react(json_t *args, bool remove)
 
     /* Call gateway adapter's add_reaction/remove_reaction via libhttp */
     json_t *result = json_object();
-    json_set(result, "success", json_bool(true));
+    json_set(result, "success", json_new_bool(true));
     json_set(result, "action", json_string(remove ? "unreact" : "react"));
     json_set(result, "platform", json_string(platform));
     json_set(result, "chat_id", json_string(chat_id));
@@ -474,7 +478,7 @@ json_t *send_message_send_telegram_message_with_retry(const char *token, const c
         free(body);
 
         if (http_res && http_res->body && strstr(http_res->body, "\"ok\":true")) {
-            json_set(result, "success", json_bool(true));
+            json_set(result, "success", json_new_bool(true));
             json_set(result, "raw", json_string(http_res->body));
             hermes_log(LOG_INFO, "port", "send_telegram: sent successfully");
             http_resp_free(http_res);
@@ -535,6 +539,8 @@ json_t *send_message_send_via_adapter(const char *platform, json_t *pconfig,
         return send_message_send_bluebubbles(pconfig, chat_id, message);
     } else if (strcmp(platform, "qqbot") == 0) {
         return send_message_send_qqbot(pconfig, chat_id, message);
+    } else if (strcmp(platform, "yuanbao") == 0) {
+        return send_message_send_yuanbao(chat_id, message, NULL);
     }
 
     json_set(result, "error", json_string("unsupported platform for standalone send"));
@@ -634,7 +640,7 @@ json_t *send_message_send_telegram(const char *token, const char *chat_id,
     /* http_post would go here — for now build result from the request */
 
     json_t *result = json_object();
-    json_set(result, "success", json_bool(true));
+    json_set(result, "success", json_new_bool(true));
     json_set(result, "platform", json_string("telegram"));
     json_set(result, "chat_id", json_string(chat_id));
     json_set(result, "message_id", json_string("tg_sent"));
@@ -662,7 +668,7 @@ json_t *send_message_send_signal(json_t *pconfig, const char *chat_id,
     }
 
     hermes_log(LOG_INFO, "port", "send_signal: chat=%s", chat_id ? chat_id : "unknown");
-    json_set(result, "success", json_bool(true));
+    json_set(result, "success", json_new_bool(true));
     json_set(result, "platform", json_string("signal"));
     json_set(result, "chat_id", json_string(chat_id ? chat_id : ""));
     json_set(result, "message_id", json_string("signal_sent"));
@@ -686,7 +692,7 @@ json_t *send_message_send_matrix_via_adapter(json_t *pconfig, const char *chat_i
 
     hermes_log(LOG_INFO, "port", "send_matrix: chat=%s thread=%s", chat_id ? chat_id : "unknown",
                thread_id ? thread_id : "none");
-    json_set(result, "success", json_bool(true));
+    json_set(result, "success", json_new_bool(true));
     json_set(result, "platform", json_string("matrix"));
     json_set(result, "chat_id", json_string(chat_id ? chat_id : ""));
     json_set(result, "message_id", json_string("matrix_sent"));
@@ -710,7 +716,7 @@ json_t *send_message_matrix_send_core(json_t *adapter, const char *chat_id,
     const char *thread_id = metadata ? json_get_str(json_obj_get(metadata, "thread_id"), NULL, "") : "";
 
     hermes_log(LOG_INFO, "port", "matrix_send_core: chat=%s thread=%s", chat_id, thread_id);
-    json_set(result, "success", json_bool(true));
+    json_set(result, "success", json_new_bool(true));
     json_set(result, "event_id", json_string("event_matrix"));
     json_set(result, "room_id", json_string(chat_id));
     return result;
@@ -729,7 +735,7 @@ json_t *send_message_send_weixin(json_t *pconfig, const char *chat_id,
     if (!result) return NULL;
 
     hermes_log(LOG_INFO, "port", "send_weixin: chat=%s", chat_id ? chat_id : "unknown");
-    json_set(result, "success", json_bool(true));
+    json_set(result, "success", json_new_bool(true));
     json_set(result, "platform", json_string("weixin"));
     json_set(result, "chat_id", json_string(chat_id ? chat_id : ""));
     json_set(result, "message_id", json_string("weixin_sent"));
@@ -754,7 +760,7 @@ json_t *send_message_send_bluebubbles(json_t *pconfig, const char *chat_id,
     }
 
     hermes_log(LOG_INFO, "port", "send_bluebubbles: chat=%s server=%s", chat_id ? chat_id : "unknown", server_url);
-    json_set(result, "success", json_bool(true));
+    json_set(result, "success", json_new_bool(true));
     json_set(result, "platform", json_string("bluebubbles"));
     json_set(result, "chat_id", json_string(chat_id ? chat_id : ""));
     json_set(result, "message_id", json_string("bb_sent"));
@@ -775,9 +781,72 @@ json_t *send_message_send_qqbot(json_t *pconfig, const char *chat_id,
     (void)appid;
 
     hermes_log(LOG_INFO, "port", "send_qqbot: chat=%s", chat_id ? chat_id : "unknown");
-    json_set(result, "success", json_bool(true));
+    json_set(result, "success", json_new_bool(true));
     json_set(result, "platform", json_string("qqbot"));
     json_set(result, "chat_id", json_string(chat_id ? chat_id : ""));
     json_set(result, "message_id", json_string("qqbot_sent"));
+    return result;
+}
+
+/* PoP: send_message_send_yuanbao @ tools/send_message_tool.py:_send_yuanbao */
+/* Send via Yuanbao using the running gateway adapter's WebSocket connection.
+ * Mirrors Python: resolve group: vs direct:/bare-uid chat_id, dispatch to the
+ * live adapter. The C port exposes yuanbao_send_dm (DM path); group send uses
+ * the same adapter boundary. Returns the standard {success,platform,...} JSON.
+ * The Python import-failure / adapter-not-running cases map to an error JSON. */
+json_t *send_message_send_yuanbao(const char *chat_id,
+                                  const char *message,
+                                  const char **media_files)
+{
+    (void)media_files;
+    json_t *result = json_object();
+    if (!result) return NULL;
+
+    if (!chat_id || !chat_id[0]) {
+        json_set(result, "success", json_new_bool(false));
+        json_set(result, "error", json_string("Yuanbao adapter is not running. Start the gateway with yuanbao platform enabled first."));
+        return result;
+    }
+
+    /* chat_id: "group:<group_code>" | "direct:<account_id>" | bare uid. */
+    const char *target = chat_id;
+    bool is_group = false;
+    if (strncmp(chat_id, "group:", 6) == 0) {
+        is_group = true;
+        target = chat_id + 6;
+    } else if (strncmp(chat_id, "direct:", 7) == 0) {
+        target = chat_id + 7;
+    }
+
+    hermes_log(LOG_INFO, "port", "send_yuanbao: %s target=%s",
+               is_group ? "group" : "dm", target);
+
+    /* DM path is fully wired through yuanbao_send_dm. Group sends require the
+     * live adapter's group websocket; route through it when available. */
+    if (!is_group) {
+        char *resp = yuanbao_send_dm(target, message ? message : "");
+        if (resp) {
+            json_t *parsed = json_parse(resp, NULL);
+            free(resp);
+            if (parsed) {
+                json_free(result);
+                return parsed;
+            }
+            json_set(result, "success", json_new_bool(true));
+            json_set(result, "platform", json_string("yuanbao"));
+            json_set(result, "chat_id", json_string(chat_id));
+            return result;
+        }
+        json_set(result, "success", json_new_bool(false));
+        json_set(result, "error", json_string("Yuanbao send failed: adapter not connected"));
+        return result;
+    }
+
+    /* Group send boundary: the live adapter handles group websocket sends.
+     * Surface a clear error rather than silently dropping the message. */
+    json_set(result, "success", json_new_bool(false));
+    json_set(result, "error",
+             json_string("Yuanbao group send requires the live gateway adapter (WebSocket). "
+                         "Start the gateway with yuanbao platform enabled."));
     return result;
 }

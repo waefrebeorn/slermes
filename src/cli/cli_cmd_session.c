@@ -1569,3 +1569,29 @@ void print_messages(const agent_state_t *state, size_t start, size_t count,
         printf("  (no matching messages)\n");
 }
 
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/pt_input_extras.py:install_ignored_terminal_sequences */
+/* Port of Python install_ignored_terminal_sequences(). The C terminal stack has
+ * no prompt_toolkit ANSI_SEQUENCES registry, so we keep our own registry of
+ * ignored (parser-dropped) terminal sequences. Returns the number of sequences
+ * whose mapping was *changed* (i.e. newly registered) — faithful to the Python
+ * return value, where setdefault() only counts first-time insertions. */
+static const char *g_ignored_sequences[16];
+static int g_ignored_count = 0;
+
+int cli_pt_input_extras_install_ignored_terminal_sequences(void)
+{
+    static const char *seqs[2] = { "\x1b[I", "\x1b[O" };
+    int changed = 0;
+    for (int i = 0; i < 2; i++) {
+        bool found = false;
+        for (int j = 0; j < g_ignored_count; j++) {
+            if (strcmp(g_ignored_sequences[j], seqs[i]) == 0) { found = true; break; }
+        }
+        if (!found && g_ignored_count < 16) {
+            g_ignored_sequences[g_ignored_count++] = seqs[i];
+            changed++;
+        }
+    }
+    return changed;
+}
+

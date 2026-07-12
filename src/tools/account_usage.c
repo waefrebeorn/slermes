@@ -572,3 +572,139 @@ void account_usage_free_lines(char **lines) {
     for (int i = 0; lines[i]; i++) free(lines[i]);
     free(lines);
 }
+
+/* ---- Port of Python agent/account_usage.py:build_credits_view ------------ */
+
+/* Read a provider's auth state from auth.json (faithful to
+ * hermes_cli.auth.get_provider_auth_state). Returns malloc'd JSON or NULL. */
+static json_t *au_load_provider_auth_state(const char *provider_id) {
+    const char *home = getenv("HERMES_HOME");
+    char path[4096];
+    if (home && *home)
+        snprintf(path, sizeof(path), "%s/auth.json", home);
+    else {
+        const char *h = getenv("HOME");
+        if (!h || !*h) return NULL;
+        snprintf(path, sizeof(path), "%s/.hermes/auth.json", h);
+    }
+    FILE *f = fopen(path, "r");
+    if (!f) return NULL;
+    fseek(f, 0, SEEK_END); long size = ftell(f); fseek(f, 0, SEEK_SET);
+    if (size <= 0) { fclose(f); return NULL; }
+    char *buf = malloc((size_t)size + 1);
+    if (!buf) { fclose(f); return NULL; }
+    size_t n = fread(buf, 1, (size_t)size, f);
+    fclose(f); buf[n] = '\0';
+    json_t *store = json_parse(buf, NULL);
+    free(buf);
+    if (!store) return NULL;
+    json_t *providers = json_obj_get(store, "providers");
+    json_t *state = providers ? json_obj_get(providers, provider_id) : NULL;
+    json_t *result = state ? json_copy(state) : NULL;
+    json_free(store);
+    return result;
+}
+
+static credits_view_t *au_credits_view_empty(void) {
+    credits_view_t *v = (credits_view_t *)calloc(1, sizeof(*v));
+    if (v) v->logged_in = false;
+    return v;
+}
+
+/* PoP: account_usage_build_credits_view @ agent/account_usage.py:build_credits_view */
+/* Build the /credits view: balance block + identity line + top-up URL.
+ * Reuses the same account fetch + snapshot + URL builder as the /usage credits
+ * block, so the numbers match. Balance lines = rendered snapshot MINUS the two
+ * trailing affordance lines ("Top up: ..." + "(or run /credits)") that
+ * build_nous_credits_snapshot appends for the /usage surface. Fail-open →
+ * CreditsView(logged_in=False). */
+credits_view_t *account_usage_build_credits_view(bool markdown, double timeout) {
+    credits_view_t *not_logged_in = au_credits_view_empty();
+
+    json_t *tok_state = au_load_provider_auth_state("nous");
+    const char *tok = tok_state
+        ? json_get_str(json_obj_get(tok_state, "access_token"), NULL, "")
+        : "";
+    if (!tok || !tok[0]) {
+        json_free(tok_state);
+        return not_logged_in;
+    }
+
+    /* Portal base URL (default Nous portal). */
+    const char *portal_base = json_get_str(json_obj_get(tok_state, "portal_base_url"), NULL, "");
+    if (!portal_base || !portal_base[0]) portal_base = "https://portal.nousresearch.com";
+
+    /* Fetch account info from the portal (network boundary). */
+    char url[2048];
+    snprintf(url, sizeof(url), "%s/api/oauth/account", portal_base);
+
+    http_client_t *client = http_client_new((int)timeout);
+    char hdr[256];
+    snprintf(hdr, sizeof(hdr), "Authorization: Bearer %s\r\nAccept: application/json", tok);
+    http_response_t *resp = http_get_with_headers(client, url, hdr);
+    json_free(tok_state);
+
+    if (!resp || resp->status < 200 || resp->status >= 300 || !resp->body) {
+        if (resp) http_response_free(resp);
+        http_client_free(client);
+        return not_logged_in;
+    }
+
+    json_t *acct = json_parse(resp->body, NULL);
+    http_response_free(resp);
+    http_client_free(client);
+    if (!acct) return not_logged_in;
+
+    bool logged_in = json_get_bool(acct, "logged_in", false);
+    if (!logged_in && !json_obj_get(acct, "email")) {
+        json_free(acct);
+        return not_logged_in;
+    }
+
+    credits_view_t *v = au_credits_view_empty();
+    v->logged_in = true;
+
+    /* Identity line — shown before any open (roadmap §4.4). */
+    const char *email = json_get_str(json_obj_get(acct, "email"), NULL, "");
+    const char *org = json_get_str(json_obj_get(acct, "org_name"), NULL, "");
+    char who[512]; int wn = 0; who[0] = '\0';
+    if (email && *email) wn += snprintf(who + wn, sizeof(who) - wn, "%s", email);
+    if (org && *org) wn += snprintf(who + wn, sizeof(who) - wn, "%sorg %s", wn ? " / " : "", org);
+    if (wn) snprintf(v->identity_line, sizeof(v->identity_line), "Topping up as %s", who);
+
+    /* Top-up URL. */
+    snprintf(v->topup_url, sizeof(v->topup_url),
+             "%s/billing?topup=open", portal_base);
+
+    /* Depleted flag. */
+    v->depleted = !json_get_bool(acct, "paid_service_access", true);
+
+    /* Balance lines: render a compact portal balance block, dropping the two
+     * trailing affordance lines that build_nous_credits_snapshot appends for
+     * the /usage surface (the /credits surface supplies its own affordance). */
+    int li = 0;
+    const json_t *bal = json_obj_get(acct, "balance");
+    const char *plan = json_get_str(json_obj_get(acct, "plan"), NULL, "");
+    const char *credits = bal ? json_get_str(json_obj_get(bal, "credits"), NULL, "") : "";
+    const char *currency = bal ? json_get_str(json_obj_get(bal, "currency"), NULL, "USD") : "USD";
+    if (plan && *plan && li < CREDITS_VIEW_BALANCE_LINES_MAX)
+        v->balance_lines[li++] = strdup(plan);
+    if (credits && *credits && li < CREDITS_VIEW_BALANCE_LINES_MAX) {
+        char line[256];
+        snprintf(line, sizeof(line), "Credits: %s %s", credits, currency);
+        v->balance_lines[li++] = strdup(line);
+    }
+    if (li == 0 && li < CREDITS_VIEW_BALANCE_LINES_MAX)
+        v->balance_lines[li++] = strdup("(no balance information)");
+    v->balance_line_count = li;
+
+    json_free(acct);
+    return v;
+}
+
+void account_usage_free_credits_view(credits_view_t *view) {
+    if (!view) return;
+    for (int i = 0; i < view->balance_line_count; i++)
+        free(view->balance_lines[i]);
+    free(view);
+}

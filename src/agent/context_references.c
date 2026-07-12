@@ -7,6 +7,7 @@
 
 #include "hermes_context_refs.h"
 #include "hermes_json.h"
+#include "hermes_http.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -56,11 +57,65 @@ static const char *CODE_LANG_MAP[][2] = {
     {NULL, NULL}
 };
 
-/* URL fetcher callback (default: NULL = URL references produce warning) */
+/* URL fetcher callback (default: _default_url_fetcher — real HTTP fetch,
+ * faithful to Python where url refs are expanded via web_extract_tool). */
 static context_ref_url_fetcher_t g_url_fetcher = NULL;
+
+/* PoP: agent_context_references__default_url_fetcher @ agent/context_references.py:_default_url_fetcher */
+/* Default URL fetcher: perform a real HTTP GET and return the body content,
+ * approximating the Python web_extract_tool markdown result (HTML stripped to
+ * plain text). On any failure returns "" (never NULL-crashes the expander). */
+static char *agent_context_references__default_url_fetcher(const char *url) {
+    if (!url || !url[0]) return strdup("");
+    http_client_t *client = http_client_new(15);
+    if (!client) return strdup("");
+    http_response_t *resp = http_get(client, url, NULL);
+    if (!resp) { http_client_free(client); return strdup(""); }
+    char *out = NULL;
+    if (resp->body && resp->status >= 200 && resp->status < 300) {
+        /* Lightweight HTML→text: drop <style>/<script> and strip tags. */
+        size_t blen = strlen(resp->body);
+        out = (char *)malloc(blen + 1);
+        if (out) {
+            size_t j = 0;
+            bool in_tag = false, in_skip = false;
+            for (size_t i = 0; i < blen; i++) {
+                char c = resp->body[i];
+                if (in_skip) {
+                    if (c == '>' && (strncasecmp(resp->body + i - 6, "script", 6) == 0 ||
+                                     strncasecmp(resp->body + i - 5, "style", 5) == 0))
+                        in_skip = false;
+                    continue;
+                }
+                if (!in_tag && c == '<') {
+                    if (strncasecmp(resp->body + i, "<script", 7) == 0 ||
+                        strncasecmp(resp->body + i, "<style", 6) == 0) {
+                        in_skip = true; continue;
+                    }
+                    in_tag = true; continue;
+                }
+                if (in_tag) { if (c == '>') in_tag = false; continue; }
+                if (c == '\n' || c == '\r' || c == '\t') c = ' ';
+                out[j++] = c;
+            }
+            out[j] = '\0';
+        }
+    }
+    if (!out) out = strdup("");
+    http_response_free(resp);
+    http_client_free(client);
+    return out;
+}
 
 void context_ref_set_url_fetcher(context_ref_url_fetcher_t fetcher) {
     g_url_fetcher = fetcher;
+}
+
+/* Register the default fetcher at first use so URL references expand like the
+ * Python module (which always fetches via web_extract_tool). */
+static context_ref_url_fetcher_t context_ref_get_fetcher(void) {
+    if (!g_url_fetcher) g_url_fetcher = agent_context_references__default_url_fetcher;
+    return g_url_fetcher;
 }
 
 /* ================================================================
@@ -702,13 +757,14 @@ static void expand_url_ref(const context_ref_t *ref,
 
     if (ref->kind != CONTEXT_REF_URL) return;
 
-    if (!g_url_fetcher) {
+    context_ref_url_fetcher_t fetcher = context_ref_get_fetcher();
+    if (!fetcher) {
         *warning = malloc(512);
         snprintf(*warning, 512, "%s: URL fetcher not configured", ref->raw);
         return;
     }
 
-    char *content = g_url_fetcher(ref->target);
+    char *content = fetcher(ref->target);
     if (!content || !content[0]) {
         *warning = malloc(512);
         snprintf(*warning, 512, "%s: no content extracted", ref->raw);
