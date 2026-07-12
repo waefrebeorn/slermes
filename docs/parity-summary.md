@@ -1,20 +1,27 @@
-# Slermes C11 Parity — Live State (v551)
+# Slermes C11 Parity — Live State
 
-**Generated:** 2026-07-09 by `slermes_parity_battleground.py` (live scanner)
+**Generated:** 2026-07-12 by `slermes_parity_battleground.py` (live scanner)
 
-## Overall Numbers (live, end v551 — unchanged from v550; v549/v550/v551 fixes are
-infra/SDK-class features the scanner classifies NA_SDK, so they never moved
-PORTED/REAL_GAP. v551 added 2 oracle-verified monolith splits + honest façade
-demotions; 0 STUB / 0 N/A maintained.)
+## Overall Numbers (live)
 
 | Classification | Count | Percentage | Meaning |
 |----------------|-------|------------|---------|
-| **PORTED** | 4,881 | 50.2% | C11 implementation with PoP annotation |
-| **REAL_GAP** | 4,802 | 49.3% | Honest gaps (IO/network/DB/credential-coupled — NOT faked) |
-| **PARTIAL** | 48 | 0.5% | C fn exists, no PoP annotation yet |
+| **PORTED** | 4,924 | 50.6% | C11 implementation with PoP annotation |
+| **REAL_GAP** | 4,732 | 48.6% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |
+| **PARTIAL** | 75 | 0.8% | C fn exists, no PoP annotation yet |
 | **STUB** | 0 | 0.0% | No stub functions remain |
 | **N/A** | 0 | 0.0% | No un-C-able runtime deps mislabeled |
 | **TOTAL** | 9,731 | 100% | All Python functions/methods scanned |
+
+> **This is a partial port, ~half done.** REAL_GAP is the honest count of Python
+> features not yet reimplemented in C — it is not zero and the docs do not claim
+> otherwise. Regenerate anytime with `python3 tests/slermes_parity_battleground.py
+> --json`; this table is the single source of truth for completeness.
+
+## History (older scans, for context)
+
+Older overall snapshot (end v551): PORTED 4,881 (50.2%), REAL_GAP 4,802 (49.3%),
+PARTIAL 48, STUB 0, N/A 0.
 
 > **✓ RESIDUAL FACADE + NO-RETURN + THIN-FRAUD ERADICATION COMPLETE (v548):** on
 > top of v547's 110, v548 eradicated **95 more** fraudulent/dormant ports found by
