@@ -1,6 +1,6 @@
 # Slermes — We SLERMEd Hermes Agent into C11
 
-We took Hermes Agent — Nous Research's Python/Electron AI agent — and **SLERMEd** it: ripped the entire thing out and rebuilt it from scratch in C11. Not a wrapper. Not a thin translation layer. A complete reimplementation that runs as a single 46 MB binary with zero Python dependency.
+We took Hermes Agent — Nous Research's Python/Electron AI agent — and **SLERMed** it: started ripping the whole thing out and rebuilding it from scratch in C11. Not a wrapper. Not a thin translation layer. A ground-up reimplementation that runs as a single native binary with zero Python dependency. It's an in-progress port — see [parity-summary.md](parity-summary.md) for exactly how much is done.
 
 **SLERM** (verb): to take someone's full work and make your own version from scratch. Not a fork — a ground-up reimplementation that represents your own work.
 

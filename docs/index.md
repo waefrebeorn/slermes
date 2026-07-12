@@ -1,27 +1,25 @@
 # Slermes Documentation
 
-**Slermes** is a complete C11 reimplementation of Hermes Agent — Nous Research's AI agent framework. One binary, zero Python dependencies.
+**Slermes** is an in-progress C11 reimplementation of Hermes Agent — Nous
+Research's AI agent framework. One binary, zero Python dependencies.
 
 ## Quick Links
 
 - **[Getting Started](getting-started.md)** — Build, configure, run in 2 minutes
 - **[Architecture](architecture/index.md)** — System overview, directory layout, build system
-- **[CLI Commands](cli/index.md)** — All 95 slash commands with examples
+- **[CLI Commands](cli/index.md)** — Slash commands with examples
 - **[TUI Reference](tui/index.md)** — Terminal UI features and RPC methods
 - **[Pet System](pet/index.md)** — Petdex mascot installation and configuration
 - **[Development](dev/index.md)** — Building, testing, contributing
 
-## Project Status (v510)
+## Project Status
 
-| Metric | Value |
-|--------|-------|
-| **PORTED** | 8,701 / 9,731 (89.4%) |
-| **REAL_GAP** | 0 |
-| **CLI Commands** | 95 (all real C11 handlers) |
-| **TUI RPC Methods** | 92 registered |
-| **Binary Size** | ~47 MB |
-| **Source Files** | 352 C files + 127 headers |
-| **Libraries** | 73 sub-libraries |
+This is a partial, actively-progressing port — roughly half of the upstream
+Python surface is implemented in C so far, with the rest tracked as honest gaps.
+The **[Parity Summary](parity-summary.md)** is the single source of truth: it is
+regenerated from the live scanner (`tests/slermes_parity_battleground.py`) and
+gives the exact PORTED / REAL_GAP / PARTIAL breakdown per module. Any completion
+figure not in that file is stale — trust the scanner, not prose.
 
 ## Quick Start
 
