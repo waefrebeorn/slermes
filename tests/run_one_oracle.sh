@@ -10,7 +10,7 @@ LIBINCS=$(grep -oE 'lib/lib[a-z0-9_]+' build/libs-config.mk | sed 's#^#-I #' | t
 OBJSET=$(find src lib -name '*.o' ! -name 'main.o' | tr '\n' ' ')
 TMPH=$(mktemp -d)
 mkdir -p "$TMPH/.hermes/cron"
-gcc -O2 -std=gnu11 -D_GNU_SOURCE -I include $LIBINCS \
+gcc -O2 -std=gnu11 -D_GNU_SOURCE -I include -I src $LIBINCS \
   "tests/t_port_$NAME.c" $OBJSET -o /tmp/tt_$NAME \
   -lstdc++ -lm -ldl -lpthread -lz -lpcre2-8 -lssl -lcrypto \
   -Wl,--allow-multiple-definition 2>&1 | grep -iE 'error|undefined' || true
