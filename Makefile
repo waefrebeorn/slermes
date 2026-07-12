@@ -27,7 +27,7 @@ include build/clean.mk
 
 # ── Legacy alias / backward compatibility ───────────────────────────
 
-.PHONY: help
+.PHONY: help parity-walkway
 
 help:
 	@echo "Slermes Build System -- modular Makefile"
@@ -84,3 +84,10 @@ help:
 	@echo "  make test PREFIX=~/.local               # test + custom prefix"
 	@echo "  make clean all CC=clang                 # clean build with clang"
 	@echo "  make asan-test COVERAGE_THRESHOLD=10.0  # asan + 10%% coverage gate"
+
+# ── Parity walkway generation (kills barnacles) ──────────────────
+# Regenerates the PORTED/REAL_GAP/PARTIAL count blocks in all walkway files
+# from the live parity scanner. The prestige ritual now calls this instead of
+# a manual barnacle hunt — counts are never hand-copied, so they cannot drift.
+parity-walkway:
+	@python3 scripts/gen_parity_walkway.py

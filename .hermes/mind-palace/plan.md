@@ -19,3 +19,12 @@
 3. P1 desktop features (profiles, models, settings, sessions)
 4. P1 web app features (auth, config, updates)
 5. P2 desktop features (marketplace, haptics, translucency)
+
+<!-- PARITY:AUTO -->
+| PORTED  | 4,924 / 9,731 (50.6%) |
+| REAL_GAP| 4,732 (48.6%) — no N/A |
+| PARTIAL | 75 (0.8%) |
+| STUB    | 0 |
+
+_Generated from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+<!-- /PARITY:AUTO -->
