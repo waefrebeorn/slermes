@@ -12,6 +12,7 @@
 
 #include "hermes_core_types.h"
 #include "hermes_logger.h"
+#include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -330,4 +331,184 @@ llm_response_t *interruptible_streaming_api_call(agent_state_t *agent, json_node
         agent->message_count,
         tools_json,
         noop_token_cb, NULL);
+}
+
+/* ── Small helpers ported from chat_completion_helpers.py ──────── */
+
+/* strip+lower a string into caller buffer; returns buf. */
+static char *cch_strip_lower(const char *s, char *buf, size_t cap) {
+    if (!s) { buf[0] = '\0'; return buf; }
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    size_t n = strlen(s);
+    while (n > 0 && (s[n-1]==' '||s[n-1]=='\t'||s[n-1]=='\n'||s[n-1]=='\r')) n--;
+    if (n >= cap) n = cap - 1;
+    size_t i;
+    for (i = 0; i < n; i++) buf[i] = (char)tolower((unsigned char)s[i]);
+    buf[i] = '\0';
+    return buf;
+}
+
+/* strip only (no case change) into caller buffer. */
+static char *cch_strip(const char *s, char *buf, size_t cap) {
+    if (!s) { buf[0] = '\0'; return buf; }
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    size_t n = strlen(s);
+    while (n > 0 && (s[n-1]==' '||s[n-1]=='\t'||s[n-1]=='\n'||s[n-1]=='\r')) n--;
+    if (n >= cap) n = cap - 1;
+    memcpy(buf, s, n); buf[n] = '\0';
+    return buf;
+}
+
+/* PoP: chat_completion_helpers__validated_openrouter_provider_sort @ agent/chat_completion_helpers.py:_validated_openrouter_provider_sort */
+/* Return a normalized OpenRouter provider.sort value ("throughput"|"latency"|
+ * "price") or NULL. Invalid non-empty values log a warning. Result is a static
+ * string — do NOT free. */
+const char *chat_completion_helpers__validated_openrouter_provider_sort(const char *raw_sort)
+{
+    if (!raw_sort) return NULL;
+    char buf[64];
+    cch_strip_lower(raw_sort, buf, sizeof(buf));
+    if (!buf[0]) return NULL;
+    if (strcmp(buf, "throughput") == 0) return "throughput";
+    if (strcmp(buf, "latency") == 0) return "latency";
+    if (strcmp(buf, "price") == 0) return "price";
+    hermes_log(LOG_WARNING, "chat_completion",
+               "Ignoring invalid OpenRouter provider.sort value '%s' (allowed: latency, price, throughput)",
+               raw_sort);
+    return NULL;
+}
+
+/* PoP: chat_completion_helpers__rewrite_prompt_model_identity @ agent/chat_completion_helpers.py:rewrite_prompt_model_identity */
+/* Rewrite the LAST "Model: ..." and "Provider: ..." lines of the cached system
+ * prompt in place, pointing them at the active runtime after a provider switch.
+ * Takes the prompt string and returns a freshly-allocated rewritten copy
+ * (caller frees). Empty/NULL prompt returns a copy of the input (or NULL). */
+char *chat_completion_helpers__rewrite_prompt_model_identity(const char *sp, const char *model, const char *provider)
+{
+    if (!sp || !sp[0]) return sp ? strdup(sp) : NULL;
+    char *cur = strdup(sp);
+    const char *labels[2] = {"Model", "Provider"};
+    const char *values[2] = {model, provider};
+    for (int li = 0; li < 2; li++) {
+        const char *value = values[li];
+        if (!value || !value[0]) continue;
+        char prefix[32];
+        snprintf(prefix, sizeof(prefix), "%s: ", labels[li]);
+        size_t plen = strlen(prefix);
+        /* Find the LAST line that starts (at BOL) with "<label>: " */
+        size_t curlen = strlen(cur);
+        long best_start = -1, best_end = -1;
+        for (size_t i = 0; i < curlen; i++) {
+            int at_bol = (i == 0) || (cur[i-1] == '\n');
+            if (!at_bol) continue;
+            if (strncmp(cur + i, prefix, plen) == 0) {
+                /* line runs to next '\n' or end */
+                size_t j = i;
+                while (j < curlen && cur[j] != '\n') j++;
+                best_start = (long)i;
+                best_end = (long)j;
+            }
+        }
+        if (best_start >= 0) {
+            /* rebuild: cur[:best_start] + "<label>: <value>" + cur[best_end:] */
+            size_t vlen = strlen(value);
+            size_t tail = curlen - (size_t)best_end;
+            char *out = malloc((size_t)best_start + plen + vlen + tail + 1);
+            memcpy(out, cur, (size_t)best_start);
+            memcpy(out + best_start, prefix, plen);
+            memcpy(out + best_start + plen, value, vlen);
+            memcpy(out + best_start + plen + vlen, cur + best_end, tail);
+            out[(size_t)best_start + plen + vlen + tail] = '\0';
+            free(cur);
+            cur = out;
+        }
+    }
+    return cur;
+}
+
+/* PoP: chat_completion_helpers__fallback_entry_key @ agent/chat_completion_helpers.py:_fallback_entry_key */
+/* Build the (provider_lower, model, base_url_no_trailing_slash) identity key for
+ * a fallback entry. Writes the three parts to caller buffers. */
+void chat_completion_helpers__fallback_entry_key(const json_t *fb,
+    char *provider_out, size_t pcap,
+    char *model_out, size_t mcap,
+    char *base_url_out, size_t bcap)
+{
+    const char *p = "", *m = "", *b = "";
+    if (fb && fb->type == JSON_OBJECT) {
+        const json_t *jp = json_obj_get(fb, "provider");
+        const json_t *jm = json_obj_get(fb, "model");
+        const json_t *jb = json_obj_get(fb, "base_url");
+        if (jp && jp->type == JSON_STRING) p = jp->str_val;
+        if (jm && jm->type == JSON_STRING) m = jm->str_val;
+        if (jb && jb->type == JSON_STRING) b = jb->str_val;
+    }
+    cch_strip_lower(p, provider_out, pcap);
+    cch_strip(m, model_out, mcap);
+    cch_strip(b, base_url_out, bcap);
+    /* rstrip("/") on base_url */
+    size_t bl = strlen(base_url_out);
+    while (bl > 0 && base_url_out[bl-1] == '/') base_url_out[--bl] = '\0';
+}
+
+/* Reads the persisted auth store (~/.hermes/auth.json) provider state for
+ * provider_id. Returns a malloc'd JSON object (caller json_free) or NULL. */
+static json_t *cch_load_provider_auth_state(const char *provider_id)
+{
+    const char *home = getenv("HERMES_HOME");
+    char path[4096];
+    if (home && *home)
+        snprintf(path, sizeof(path), "%s/auth.json", home);
+    else {
+        const char *h = getenv("HOME");
+        if (!h || !*h) return NULL;
+        snprintf(path, sizeof(path), "%s/.hermes/auth.json", h);
+    }
+    FILE *f = fopen(path, "r");
+    if (!f) return NULL;
+    fseek(f, 0, SEEK_END); long size = ftell(f); fseek(f, 0, SEEK_SET);
+    if (size <= 0) { fclose(f); return NULL; }
+    char *buf = malloc((size_t)size + 1);
+    if (!buf) { fclose(f); return NULL; }
+    size_t n = fread(buf, 1, (size_t)size, f);
+    fclose(f); buf[n] = '\0';
+    json_t *store = json_parse(buf, NULL);
+    free(buf);
+    if (!store) return NULL;
+    json_t *providers = json_obj_get(store, "providers");
+    json_t *state = providers ? json_obj_get(providers, provider_id) : NULL;
+    json_t *result = state ? json_copy(state) : NULL;
+    json_free(store);
+    return result;
+}
+
+/* PoP: chat_completion_helpers__fallback_entry_unavailable_without_network @ agent/chat_completion_helpers.py:_fallback_entry_unavailable_without_network */
+/* Return a malloc'd skip reason for fallback entries known to be unusable
+ * locally (currently only Nous without any token), or NULL when usable. */
+char *chat_completion_helpers__fallback_entry_unavailable_without_network(const json_t *fb)
+{
+    if (!fb || fb->type != JSON_OBJECT) return NULL;
+    const json_t *jp = json_obj_get(fb, "provider");
+    char prov[64];
+    cch_strip_lower(jp && jp->type == JSON_STRING ? jp->str_val : "", prov, sizeof(prov));
+    if (strcmp(prov, "nous") != 0) return NULL;
+
+    json_t *state = cch_load_provider_auth_state("nous");
+    /* Python: get_provider_auth_state("nous") or {}; exception → auth_unreadable.
+     * A missing/unparseable store here maps to an empty state (no tokens). */
+    int has_access = 0, has_refresh = 0;
+    if (state) {
+        const json_t *acc = json_obj_get(state, "access_token");
+        const json_t *ref = json_obj_get(state, "refresh_token");
+        if (acc && acc->type == JSON_STRING) {
+            has_access = (acc->str_val[0] != '\0') && (strspn(acc->str_val, " \t\n\r") != strlen(acc->str_val));
+        }
+        if (ref && ref->type == JSON_STRING) {
+            has_refresh = (ref->str_val[0] != '\0') && (strspn(ref->str_val, " \t\n\r") != strlen(ref->str_val));
+        }
+        json_free(state);
+    }
+    if (!(has_access || has_refresh))
+        return strdup("nous_token_missing");
+    return NULL;
 }
