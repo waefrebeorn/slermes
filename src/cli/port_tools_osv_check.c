@@ -3,6 +3,8 @@
  */
 
 #include "hermes_logger.h"
+#include "hermes_http.h"
+#include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,6 +15,65 @@ int cli_tools_osv_check__parse_npm_package(
     const char *token, char *name_out, size_t name_size);
 int cli_tools_osv_check__parse_pypi_package(
     const char *token, char *name_out, size_t name_size);
+
+/* PoP: cli_tools_osv_check__query_osv @ tools/osv_check.py:_query_osv */
+/* Query the OSV API for MAL-* advisories. POSTs {"package":{"name","ecosystem"}
+ * [,"version"]} to $OSV_ENDPOINT (default https://api.osv.dev/v1/query) and
+ * returns a malloc'd JSON array string of vulns whose id starts with "MAL-"
+ * (caller frees). Returns NULL on any transport/parse error. */
+char *cli_tools_osv_check__query_osv(const char *package, const char *ecosystem, const char *version)
+{
+    if (!package || !ecosystem) return NULL;
+    const char *endpoint = getenv("OSV_ENDPOINT");
+    if (!endpoint || !endpoint[0]) endpoint = "https://api.osv.dev/v1/query";
+
+    /* Build request payload. */
+    json_t *payload = json_object();
+    json_t *pkg = json_object();
+    json_set(pkg, "name", json_string(package));
+    json_set(pkg, "ecosystem", json_string(ecosystem));
+    json_set(payload, "package", pkg);
+    if (version && version[0])
+        json_set(payload, "version", json_string(version));
+    char *body = json_serialize(payload);
+    json_free(payload);
+    if (!body) return NULL;
+
+    http_t *http = http_client_new(10 /* _TIMEOUT */);
+    if (!http) { free(body); return NULL; }
+    http_resp_t *resp = http_request(http, HTTP_POST, endpoint,
+        "Content-Type: application/json\r\nUser-Agent: hermes-agent-osv-check/1.0\r\nAccept: application/json",
+        body, strlen(body));
+    free(body);
+    if (!resp || resp->status < 200 || resp->status >= 300 || !resp->body) {
+        if (resp) http_response_free(resp);
+        http_client_free(http);
+        return NULL;
+    }
+
+    json_t *result = json_parse(resp->body, NULL);
+    http_response_free(resp);
+    http_client_free(http);
+    if (!result) return NULL;
+
+    json_t *vulns = json_obj_get(result, "vulns");
+    json_t *out = json_array();
+    if (vulns && vulns->type == JSON_ARRAY) {
+        size_t n = json_len(vulns);
+        for (size_t i = 0; i < n; i++) {
+            json_t *v = json_get(vulns, i);
+            if (!v || v->type != JSON_OBJECT) continue;
+            json_t *id = json_obj_get(v, "id");
+            const char *ids = (id && id->type == JSON_STRING) ? id->str_val : "";
+            if (strncmp(ids, "MAL-", 4) == 0)
+                json_append(out, json_copy(v));
+        }
+    }
+    json_free(result);
+    char *out_str = json_serialize(out);
+    json_free(out);
+    return out_str;
+}
 
 /* PoP: cli_tools_osv_check_check_package_for_malware @ tools/osv_check.py:check_package_for_malware */
 
