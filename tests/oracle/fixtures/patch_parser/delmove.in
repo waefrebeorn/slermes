@@ -1,0 +1,4 @@
+*** Begin Patch
+*** Delete File: old.py
+*** Move File: a.py -> b.py
+*** End Patch

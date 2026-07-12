@@ -1,0 +1,7 @@
+*** Begin Patch
+*** Update File: foo.py
+@@ def hello @@
+ def hello():
+-    print("old")
++    print("new")
+*** End Patch
