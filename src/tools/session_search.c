@@ -8,7 +8,7 @@
 
 /* PoP: session search (port of tools/session_search_tool) */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>

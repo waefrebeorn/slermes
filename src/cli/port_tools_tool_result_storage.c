@@ -2,7 +2,7 @@
  * port_tools_tool_result_storage.c — C port of tools/tool_result_storage.py
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

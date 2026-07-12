@@ -23,4 +23,4 @@
  *   singularity.py → N/A, Python singularity SDK wrapper (262 lines)
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"

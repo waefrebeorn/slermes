@@ -5,7 +5,7 @@
  * Port of Python tool registration system.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 
 /* P168: File sandbox init */
 void sandbox_init(void);

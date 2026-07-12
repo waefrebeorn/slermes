@@ -9,7 +9,7 @@
  */
 
 #include "image_routing.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "provider_metadata.h"
 #include "../lib/libbase64/base64.h"
 

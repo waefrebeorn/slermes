@@ -3,7 +3,7 @@
  * Sends messages to platforms. Supports: local (stdout/file), telegram with inline buttons.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_http.h"
 #include "hermes_gateway.h"

@@ -13,4 +13,4 @@
  * Key functions ported:
  *   browser integration, CDP-based Camofox state management
  */
-#include "hermes.h"
+#include "hermes_core_types.h"

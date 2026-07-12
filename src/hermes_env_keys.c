@@ -14,7 +14,7 @@
 /* PoP: environment variable keys (port of hermes_constants) */
 
 #include "hermes_env_keys.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

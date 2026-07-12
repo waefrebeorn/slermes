@@ -13,7 +13,7 @@
  */
 
 #include "chat_composer.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 
 #include <stdio.h>
 #include <stdlib.h>

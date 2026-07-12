@@ -6,7 +6,7 @@
  * Mirrors video_gen_registry.c in structure and fallback logic.
  */
 #include "image_gen_registry.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_tool_config.h"
 #include <stdio.h>
 #include <stdlib.h>

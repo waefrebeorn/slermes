@@ -6,7 +6,7 @@
  * Mirrors image_gen_registry.py in structure and fallback logic.
  */
 #include "video_gen_registry.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_tool_config.h"
 #include <stdio.h>
 #include <stdlib.h>

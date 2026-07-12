@@ -23,4 +23,4 @@
  * N/A: cleanup() — sandbox.stop() / daytona.delete() SDK calls + FileSyncManager.sync_back()
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"

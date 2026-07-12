@@ -13,4 +13,4 @@ N/A: Python media file I/O — C uses stdio + libhttp.
 The actual Yuanbao platform adapter is in src/gateway/platforms/yuanbao.c.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"

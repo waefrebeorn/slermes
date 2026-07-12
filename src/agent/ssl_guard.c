@@ -7,7 +7,7 @@
  */
 
 #include "ssl_guard.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_error.h"
 #include "hermes_logger.h"
 #include <stdlib.h>

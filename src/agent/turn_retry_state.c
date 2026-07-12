@@ -7,4 +7,4 @@
  * N/A: TurnRetryState — Python dataclass (C uses inline retry state in agent_loop.c)
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"

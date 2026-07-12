@@ -28,7 +28,7 @@
  * Port of Python: _run_comment_agent — N/A, agent dispatch
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_feishu_rules.h"
 #include "hermes_json.h"
 #include <sys/stat.h>

@@ -1,7 +1,7 @@
 #ifndef SRC_TOOLS_PORT_ENVIRONMENTS_BASE_C
 #define SRC_TOOLS_PORT_ENVIRONMENTS_BASE_C
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_logger.h"
 #include <stdlib.h>
 #include <string.h>

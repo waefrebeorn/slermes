@@ -3,7 +3,7 @@
  * Port of Python hermes_cli/copilot_auth.py.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>

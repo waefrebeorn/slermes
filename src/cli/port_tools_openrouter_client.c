@@ -2,7 +2,7 @@
  * port_tools_openrouter_client.c — C port of tools/openrouter_client.py
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

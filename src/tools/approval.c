@@ -4,7 +4,7 @@
  * Mirrors Python's tools/approval.py (~1393 LOC).
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_url_safety.h"
 #include "hermes_tirith.h"

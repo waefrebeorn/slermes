@@ -6,7 +6,7 @@
 
 /* PoP: file watch (port of tools/file_state) */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>

@@ -7,7 +7,7 @@
  * PoP annotations link each C function to its Python counterpart.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "env_passthrough.h"
 #include "file_sync.h"

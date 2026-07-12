@@ -11,7 +11,7 @@
 
 /* PoP: OAuth token exchange (port of plugins/model-providers/oauth) */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_auth.h"
 #include "hermes_crypto.h"
 #include "hermes_http.h"

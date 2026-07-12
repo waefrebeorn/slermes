@@ -13,4 +13,4 @@ N/A: Python sticker pack download logic — C uses libhttp.
 The actual Yuanbao platform adapter is in src/gateway/platforms/yuanbao.c.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"

@@ -6,7 +6,7 @@
 
 /* PoP: video generation tool (port of tools/video_generation_tool) */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>

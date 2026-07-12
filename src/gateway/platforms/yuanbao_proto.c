@@ -13,4 +13,4 @@ N/A: Python protobuf class definitions — C uses manual ser/deser.
 The actual Yuanbao platform adapter is in src/gateway/platforms/yuanbao.c.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"

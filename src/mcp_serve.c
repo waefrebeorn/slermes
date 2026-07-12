@@ -17,7 +17,7 @@
 /* PoP:
  * Port of Python hermes_cli/mcp_startup.py (MCP server init). MCP server serve (port of mcp_client) */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_agent.h"
 #include "hermes_json.h"
 #include <stdio.h>

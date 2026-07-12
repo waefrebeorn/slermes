@@ -34,4 +34,4 @@
  * Port of Python: build_bearer_http_client — N/A, Python httpx.Client wrapper
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"

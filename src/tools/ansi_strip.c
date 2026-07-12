@@ -5,7 +5,7 @@
  *
  * Port of Python tools/ansi_strip.py.
  */
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "ansi_strip.h"
 #include <stdio.h>

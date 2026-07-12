@@ -37,4 +37,4 @@
  *   config.py → N/A, Python gateway config loader (PyYAML + plugin discovery)
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"

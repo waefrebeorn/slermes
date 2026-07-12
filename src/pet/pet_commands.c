@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "pet.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_logger.h"
 
 /* ── Global pet state ───────────────────────────────────────────────── */

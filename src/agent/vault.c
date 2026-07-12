@@ -9,7 +9,7 @@
 
 /* PoP: encrypted credential vault (port of agent/vault) */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_crypto.h"
 #include "hermes_json.h"
 #include <stdio.h>

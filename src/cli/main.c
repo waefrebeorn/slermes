@@ -7,7 +7,7 @@
 
 /* PoP: CLI entry point (port of cli.py) */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_display.h"
 #include "hermes_logger.h"
 #include <stdio.h>

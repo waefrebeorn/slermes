@@ -20,7 +20,7 @@
  * MIT License — WuBu Slermes Project
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_crypto.h"
 #include "hermes_yuanbao_media.h"

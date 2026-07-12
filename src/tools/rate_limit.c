@@ -8,7 +8,7 @@
  * limiting from tools/terminal_tool.py, tools/code_execution_tool.py, etc.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -7,7 +7,7 @@
  * cache directories are mounted or synced into those sandboxes.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

@@ -13,4 +13,4 @@
  * Key functions ported:
  *   is_binary_extension(), is_text_extension()
  */
-#include "hermes.h"
+#include "hermes_core_types.h"

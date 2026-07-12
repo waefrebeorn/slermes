@@ -12,7 +12,7 @@
  */
 
 #include "file_ops.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "base64.h"
 
 #include <stdio.h>

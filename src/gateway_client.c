@@ -13,7 +13,7 @@
  */
 
 #include "gateway_client.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "json.h"
 
 #include <stdio.h>

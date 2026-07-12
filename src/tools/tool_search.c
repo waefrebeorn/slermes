@@ -11,7 +11,7 @@
  * MIT License — WuBu Slermes Project
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_tool_search.h"
 #include "hermes_json.h"
 

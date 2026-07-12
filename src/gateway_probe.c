@@ -8,7 +8,7 @@
  */
 
 #include "gateway_probe.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "http.h"
 
 #include <stdio.h>

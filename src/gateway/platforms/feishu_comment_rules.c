@@ -17,4 +17,4 @@ N/A: JSON file hot-reload with mtime caching — C uses config.c pattern.
 N/A: frozenset allow_from — C uses comma-separated string or array.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
