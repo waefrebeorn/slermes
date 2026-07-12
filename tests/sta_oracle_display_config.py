@@ -1,30 +1,48 @@
+#!/usr/bin/env python3
+"""Oracle: gateway/display_config.py (_normalise / resolve_display_setting)
+vs LIVE Python. Reads the same self-describing fixture JSON from argv[1].
+
+Both sides emit canonical JSON: json.dumps(value, ensure_ascii=False).
 """
-sta_oracle_display_config.py — oracle for port_gateway_display_config (_normalise).
+import json
+import sys
+import importlib.util
 
-The C caller (resolve_display_setting) only invokes _normalise for JSON_STRING
-values, so we feed the LIVE Python _normalise a *string* value (matching the C
-contract) and compare the C's returned string to Python's logical result,
-rendered as a string the JSON layer would carry:
-  - Python returns a bool (True/False) -> render "true"/"false"
-  - Python returns a string -> use it directly
-"""
-import sys, json, os
-sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
-from gateway.display_config import _normalise
+SPEC = "/home/wubu/hermes-agent-dev/gateway/display_config.py"
 
-def py_to_c_str(v):
-    if isinstance(v, bool):
-        return "true" if v else "false"
-    return str(v)
 
-lines = [l for l in sys.stdin if l.strip().startswith("{")]
-mism = 0
-for ln in lines:
-    rec = json.loads(ln)
-    setting = rec["setting"]; value = rec["value"]; got = rec["out"]
-    exp = py_to_c_str(_normalise(setting, value))
-    if got != exp:
-        mism += 1
-        print(f"MISMATCH setting={setting!r} value={value!r} got={got!r} exp={exp!r}")
-print(f"DISPLAY_CONFIG oracle: {len(lines)} cases, {mism} mismatches")
-sys.exit(1 if mism else 0)
+def load_module():
+    spec = importlib.util.spec_from_file_location("display_config", SPEC)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def main():
+    path = sys.argv[1]
+    with open(path, "r", encoding="utf-8") as f:
+        fx = json.load(f)
+
+    mod = load_module()
+
+    if fx.get("mode") == "normalise":
+        value = fx.get("value")
+        result = mod._normalise(fx.get("setting"), value)
+    elif fx.get("mode") == "resolve":
+        result = mod.resolve_display_setting(
+            fx.get("user_config") or {},
+            fx.get("platform_key"),
+            fx.get("setting"),
+            fx.get("fallback"),
+        )
+    else:
+        sys.stderr.write("unknown mode %r\n" % fx.get("mode"))
+        return 1
+
+    sys.stdout.write(json.dumps(result, ensure_ascii=False))
+    sys.stdout.write("\n")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
