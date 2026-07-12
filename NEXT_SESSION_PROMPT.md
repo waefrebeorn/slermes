@@ -1,178 +1,107 @@
-# 📋 Next-Session Prompt (copy-paste ready)
-# Slermes v557 Session Prompt -- MONOLITH SPLIT CONTINUATION (image/send + residual)
-Branch: main (v556b HEAD 8326de1468 local; v555 pushed b384e2e66c + 1c5e9f20d4)
-Working dir: /home/wubu/hermes-agent-dev/slermes
-Python sources: /home/wubu/hermes-agent-dev/  (parent repo -- NOT inside slermes/)
-Date anchor: 2026-07-10
+# SLERMES — NEXT SESSION PROMPT (gap closure, maximum effort)
 
-## Context (what v556 delivered)
-v556 extracted TWO monolith clusters into oracle-verified focused modules:
-- **v556a: web_base64_img** — faithful POSIX-ERE port of
-  tools/web_tools.py:convert_base64_images_to_links (was a `strdup(text)`
-  silent stub). Also replaced the inline SSRF `strncmp` block in
-  web_extract_tool with a delegate to the EXISTING url_safety.c::url_is_safe()
-  (no double-coding). Oracle 12/0.
-- **v556b: skills_sync_fs** — consolidated dir_hash (MD5), safe_rel_install_path
-  (traversal rejection), compute_relative_dest into a focused module.
-  port_skills_sync.c now delegates (thin PoP delegates). Oracle 4/0.
-  NOTE: lib/libskillsync/skills_sync.c ALSO has a skills_sync_dir_hash but it is
-  NOT in objects.mk/Makefile (dead, unlinked) — left as-is this window; the
-  live consolidated dir_hash is skills_sync_fs_dir_hash.
-- Both builds clean, mission8 36/0, all oracles 0 mismatch.
+> Generated 2026-07-12 from a real full scan:
+> `python3 tests/slermes_parity_battleground.py --json`. All numbers below are
+> live scanner output, verified against the C tree (sampled gaps grepped —
+> genuinely absent, not scanner artifacts). **Time is irrelevant. This is
+> agentic work — it takes minutes. Never cite "time" as a reason to defer,
+> phase, or skip a gap.** Close gaps. Prove each with the oracle harness.
 
-## Verification gates (ALL green — do NOT regress)
-- make slermes: clean, 0 errors.
-- bash tests/run_mission8_tests.sh -> 36 passed / 0 failed / 35 skipped.
-- Oracles 0 mismatches: file_text_ops (23/0), cron (19/0), file_ops_lint (11/0),
-  file_fs_ops (18/0), file_pagination_ops (22/0), browser_redact (22/0),
-  web_base64_img (12/0), skills_sync_fs (4/0), plumber fuzz (1611/0).
-- 0 STUB / 0 N/A.
+## Ground truth (this scan)
+- **9731** total Python features tracked across **484** modules.
+- **4924 PORTED**, **75 PARTIAL**, **4732 REAL_GAP**, 0 STUB, 0 NA.
+- **318 modules** have ≥1 REAL_GAP. **76 modules** are NEVER started (0 ported).
 
-## v557 Mission (continue the monolith-split discipline; do NOT regress gates)
-web_tools (v556a), skills_sync (v556b), image_gen_path (v557a),
-send_message_target (v557b) monolith splits are DONE — 8 focused modules
-extracted, all oracle-verified 1:1 vs LIVE Python, 0 regression.
+Sanity checks already done so you don't repeat them:
+- Sampled gaps (`_lifespan`, `_require_token`, `get_anthropic_key`,
+  `detect_zai_endpoint`, `_start_desktop_cron_ticker`) → **0 hits in `src/`**.
+  These are genuine absences, not dead-hybrid PoP false-positives.
+- All top gap modules' C files EXIST (`web_server.c`, `gateway/run`→ wired,
+  etc.) — the modules are STARTED but under-ported, not missing scaffolding.
 
-NEXT CAMPAIGN: residual-façade sweep (v558 DONE, v559 correction DONE).
-Findings / doctrine:
-- MOST "catalogued stubs" were ALREADY fully ported (scanner RG=0):
-  read_terminal_tool, agent_plugin_llm, kanban_tools, process_registry,
-  image_generation_tool, port_cronjob_tools.c (16 fns), copilot_acp_client
-  (most fns). The banned v541 anti-patterns ("not fully implemented",
-  "In a real implementation") are ABSENT from the tree — C port is disciplined.
-- v558 CLOSED the real residual gap: port_cronjob_tools.c was (a) corrupted with
-  `N|` line-number prefixes on 276 lines AND truncated (missing closing brace for
-  normalize_deliver_param) — hidden because make reused a stale .o; (b) missing
-  7 functions flagged REAL_GAP. Repaired the file, implemented 4 faithfully
-  (check_cronjob_requirements, validate_cron_script_path [security], format_job,
-  validate_cron_base_url [fail-closed]) + wired into build/objects.mk. Oracle 21/0.
-  cronjob_tools.py now REAL_GAP=0.
-- v559 DOCTRINE CORRECTION (user): "rewriting in scratch in C is the point of the
-  project, so anything that *should* exist in C is REAL_GAP work, NOT an honest
-  NA demotion." The v558 "honest NA" for execute_job_now + cronjob_dispatch was
-  WRONG (it was the banned fake-success-return pattern). FIXED in v559:
-  * cronjob_dispatch now DELEGATES to the real C scheduler (cron_cmd_handler:
-    full CRUD + fire over the sqlite store) — real add/list/run-now/remove.
-  * cronjob_execute_job_now now DELEGATES to cron_cmd_handler(action="run-now"),
-    returns the correct {claimed, success, error} contract (claimed=false for
-    missing/no-id jobs).
-  * cronjob_notify_provider_jobs_changed_safe now calls the REAL
-    notify_provider_jobs_changed() (was a no-op).
-  * WIRED port_scheduler.o (orphaned file w/ run_one_job + notify_provider_jobs_changed
-    + summarize_cron_failure_for_delivery + confirm_adapter_delivery) into the
-    build — closes another orphan, supplies the notify dependency. No symbol clash.
-  * New oracle cases (25/0): dispatch_add (status=added), dispatch_list (found),
-    execnow_real (claimed+success=true on `true`), execnow_missing (claimed=false),
-    execnow_noid (claimed=false+error), dispatch_remove (status=removed). All
-    asserted against LIVE Python's contract.
-- Genuinely-un-C-able with NO real C already present (honest NA only when no C
-  exists): managed_modal gateway / modal_utils (cloud runtime), video_generation
-  provider wiring, yuanbao gateway, main_na electron redownload. BUT: check
-  first whether the real C port ALREADY EXISTS (as port_scheduler.o did) before
-  demoting — orphaned real code must be WIRED, not demoted.
-- 2 remaining copilot_acp_client gaps (_build_openai_tool_call,
-  _completion_to_stream_chunks) are pure struct-builders — DONE in v560
-  (oracle 4/0; copilot_acp_client.py REAL_GAP=0). The remaining 19 "gaps" are
-  the SDK wrapper classes (CopilotACPClient / _ACPChatCompletions /
-  _ACPChatNamespace — Python JSON-RPC/network client boundary) — legitimate
-  honest-NA boundary, not failable helper logic.
-- RESIDUAL-FAÇADE CAMPAIGN (v558–v560): tractable pure gaps done (copilot,
-  cronjob, markdown helpers). The remaining tree-wide REAL_GAPs are REAL WORK
-  (yuanbao async token-fetch + streaming InboundPipeline middleware, managed_modal
-  cloud exec POST, cli/main electron redownload, async network middleware) —
-  all C-rewritable (libcurl + event loop / managed subprocess), NOT demotable
-  "un-C-able" boundaries. NOTE: managed_modal._request_timeout_env was a genuine
-  scanner symbol-prefix false-positive (already ported as
-  cli_tools_environments_managed_modal__request_timeout_env); yuanbao's 9 markdown
-  helpers were ALREADY correctly PORTED (yuanbao_md_*) — v561 verified them with
-  an 18/0 oracle and fixed 3 real C divergences. The 148 yuanbao REAL_GAPs are the
-  async network pipeline, still to be ported as real work.
+## REAL_GAP by subsystem (where the work is)
+| gaps | modules | subsystem |
+|-----:|--------:|-----------|
+| 2401 | 170 | `hermes_cli/` |
+| 1109 |  36 | `gateway/`   |
+|  732 |  56 | `tools/`     |
+|  368 |  49 | `agent/`     |
+|  102 |   6 | `cron/`      |
+|   20 |   1 | `cli.py`     |
 
-DOCTRINE (carry forward, hard): a function that *should* be in C is REAL_GAP.
-Implement it (often by delegating to an EXISTING C subsystem — never re-invent).
-Demoting to "honest NA" is only valid when NO real C equivalent exists AND the
-function requires an external runtime not present (e.g. cloud modal, electron
-download). Returning a fake-success "not implemented" error string is the BANNED
-v541 pattern — never do it.
+## Recommended attack order (go heavy first, highest ROI first)
 
-For EACH item: read LIVE Python, decide implement-for-real vs honest demotion. NO
-fake-success stubs, NO "not fully implemented" log-and-return-NULL, NO
-"In a real implementation" comment-façades. When C and Python disagree, FIX THE C.
+### Tier 1 — FINISH THE TAIL (≥50% ported, big absolute gap → fastest to 100%)
+These modules are more than half done; closing them zeroes a whole module.
+| % done | gaps | module |
+|-------:|-----:|--------|
+| 94% (288/308) | 20 | `cli.py` |
+| 73% (67/92)   | 25 | `hermes_cli/config.py` |
+| 66% (66/100)  | 34 | `tools/browser_tool.py` |
+| 64% (65/102)  | 37 | `gateway/platforms/api_server.py` |
+| 60% (45/75)   | 30 | `tools/approval.py` |
+| 56% (22/39)   | 17 | `tools/checkpoint_manager.py` |
+| 55% (31/56)   | 25 | `tools/terminal_tool.py` |
+| 54% (25/46)   | 21 | `tools/skill_usage.py` |
+| 53% (80/152)  | 72 | `agent/auxiliary_client.py` |
+| 52% (90/172)  | 79 | `gateway/platforms/base.py` |
+| 52% (29/56)   | 27 | `hermes_cli/setup.py` |
+| 51% (19/37)   | 18 | `agent/learning_graph_render.py` |
 
-IMPORTANT scope note (carried): a monolith function is only worth extracting
-if it is oracle-VERIFIABLE 1:1 vs live Python. Config/mount-coupled fns
-(e.g. image_gen's agent_cache_base_for_env / visible_cache_path / postprocess;
-matrix/slack/phone target parsing) are NON-DETERMINISTIC without a real mount
-table / platform modules — leave them in the port file as documented PoP
-ports rather than faking a half-port. Extract only the pure, deterministic
-helpers, and port regexes faithfully (POSIX ERE, capturing groups only — no
-(?:...) which fails to compile under this glibc).
+### Tier 2 — PURE-LOGIC `tools/` (oracle-able, highest verification quality)
+`tools/` gaps are mostly pure functions → write `tests/oracle/` fixtures and
+prove C == LIVE Python byte-for-byte. Biggest:
+`cua_backend.py` (43), `delegate_tool.py` (37), `file_tools.py` (35),
+`browser_tool.py` (34), `browser_camofox.py` (31), `approval.py` (30),
+`skill_manager_tool.py` (28), `memory_tool.py` (27), `registry.py` (26),
+`terminal_tool.py` (25), `environments/base.py` (25), `tirith_security.py` (25).
 
-For EACH monolith you touch:
-1. Identify a cohesive, oracle-verifiable concern (pure fns first).
-2. Extract into src/tools/<name>.{h,c} with opaque-or-stateless API, focused
-   includes, NO hermes.h god header, NO void* passthrough, a /* PoP: c @
-   module.py:_py */ on every public fn.
-3. Factor shared logic into static helpers; delete the dead duplicate cluster
-   from the monolith (thin delegates where the symbol is still referenced).
-   REUSE existing focused modules (url_safety.c, image_gen*.c, skills_guard.c,
-   skills_sync_fs.c) — never re-inline logic already ported.
-4. Register the new .o in build/objects.mk (TOOLS_OBJ).
-5. Write tests/t_port_<name>.c + tests/sta_oracle_<name>.py proving C == LIVE
-   Python (0 mismatches). Run against the REAL parent-repo Python. When C
-   disagrees, FIX THE C.
-6. `make slermes` 0 errors; `bash tests/run_mission8_tests.sh` -> 36 passed / 0 failed.
+### Tier 3 — THE BIG UNDER-PORTED HUBS (most absolute gaps)
+`hermes_cli/web_server.py` (335, 12% done), `gateway/run.py` (272, 6%),
+`hermes_cli/main.py` (176, 20%), `hermes_cli/auth.py` (150, 23%),
+`gateway/platforms/yuanbao.py` (148, 31%), `hermes_cli/gateway.py` (142, 12%),
+`hermes_cli/kanban_db.py` (124, 29%).
 
-## Hard-won lessons (carry forward)
-1. Implicit declaration in oracle HARNESS (missing header include -> assumed int
-   return vs real bool/_Bool) corrupts results. Always #include the declaring
-   header in the harness.
-2. Oracle maps that coerce a divergence to "match" HIDE bugs. Fix the C; never
-   patch the oracle to agree. (Exception: Python nondeterministic under
-   instrumentation -> assert the BEHAVIOR CONTRACT, note it.)
-3. Rebuild the SPECIFIC .o you changed before relinking the oracle harness; a
-   stale .o produces phantom mismatches.
-4. POSIX-ERE GOTCHAS: `(?:...)` NON-capturing groups FAIL (regcomp error 13) ->
-   capturing `(...)` + redact_subst() helper; negated POSIX classes FAIL ->
-   literal `[^ \\t\\\"']`; no lookbehind/lookahead (emulate with manual check).
-5. COMMIT-PROTECTION: GitHub push protection blocks real-looking secret prefixes
-   (sk-, ghp_, AKIA, xox, AIza) even inside «redacted:...» wrappers. Use
-   scanner-safe FAKE shapes (sk-ZZZ..., ghp_ZZZ..., AIzaZZ...,
-   slackplaceholder-...); never commit a real token.
-6. PoP DEAD-HYBRID trap: `/* PoP: c @ m.py:f` with NO closing `*/` on the same
-   line (the `*/` on a following ` * desc */` line) matches NEITHER scanner
-   regex -> phantom REAL_GAP despite c_func existing. ALWAYS single-line
-   `/* PoP: c @ m.py:f */` (with `*/`) or proper `/*` + ` * PoP:` block.
-   Re-run the parity scanner after every PoP edit.
-7. Oracle HARNESS JSON escaper: use a fixed buffer capacity constant, NOT
-   `sizeof(b)` where `b` is a `char*` (pointer -> 8, truncates strings to ~3
-   chars). Use `g_js[4][CAP]` + loop bound `j < CAP-4`.
-8. Double-coding avoidance: before extracting a helper, grep the whole tree
-   (incl. lib/libskillsync, lib/*) for an existing port; delegate to it instead
-   of re-inlining. The v543 parallel-dupe-file trap + v556 skills_sync dir_hash
-   duplicate are the cautionary cases.
- 9. ORPHANED .o TRAP: a port_*.c / src/cron/*.c file NOT listed in build/objects.mk
-  is compiled by NOBODY — its functions are dead (undefined if referenced). Two
-  orphan classes hit this campaign: (a) port_cronjob_tools.c + port_scheduler.c
-  were never in objects.mk, so a `make` that linked against a stale .o "passed"
-  while the real file was broken/corrupted (the N| line-prefix corruption slipped
-  through because the .o wasn't even being regenerated). (b) The orphaned code
-  held REAL implementations (run_one_job, notify_provider_jobs_changed) that look
-  like "un-C-able" demotion targets but are actually just unwired. ALWAYS: before
-  demoting a "missing" function to honest-NA, grep the whole tree (incl. unwired
-  .c files) for an existing implementation, and check build/objects.mk membership.
-  Wire real orphaned code in; demote only when no C exists.
+### Tier 4 — NEVER-STARTED modules (76 total; adjudicate NA vs REAL first)
+Top: `gateway/slash_commands.py` (56), `hermes_cli/cli_commands_mixin.py` (43),
+`agent/pet/generate/atlas.py` (33), `tools/read_extract.py` (15),
+`agent/learning_mutations.py` (15), `hermes_cli/dashboard_auth/*` (routes 14,
+cookies 14, middleware 8, token_auth 7). Some may be genuinely un-C-able
+runtime deps — apply the DOCTRINE below before demoting ANY to NA.
 
-## Hard rules (unchanged)
-- Opaque struct in .h, private fields in .c. NO hermes.h god header in port_*.c.
-  NO void* passthrough. NO placeholder-success comments; implement or honestly
-  demote (return honest error/NULL/claimed:false) — never fake success.
-- Every public fn gets a /* PoP: c @ module.py:_py */ annotation.
-- Reuse: factor shared logic into static helpers / existing modules.
-- Oracle-verify C == LIVE Python before declaring done.
+## NON-NEGOTIABLE DOCTRINE (from USER.md + skills — do not violate)
+1. **"Honest NA" demotion of a failable-in-C function is BANNED.** Rewriting
+   from scratch in C is the point of the project. NA only for genuinely
+   un-C-able external runtime deps (libwebkit, libcairo, asyncio loop, live
+   cloud/gateway at call time). Everything else = REAL_GAP, implement it.
+2. **No façade fakes.** No `"not fully implemented in C port"` + `return NULL`,
+   no `"In a real implementation, this would…"` comment-façade, no `void*`
+   passthrough, no `touch_json()`. Read the Python, implement the real behavior.
+3. **Faithful, not lenient.** If a C lib is lenient where Python is strict,
+   that's a FIDELITY GAP — delegate to `python3` for the strict check rather
+   than ship a weaker one.
+4. **Oracle-verify every closure.** `tests/oracle/fixtures/<name>/` +
+   `tests/oracle/runners/run_oracle.sh <name>` → expect `N cases, 0 mismatches`.
+   `0 cases` = LINK FAILURE (grep `undefined reference`), NOT a pass.
+5. **Reuse the harness.** Don't scatter fixtures in `/tmp`; don't hand-roll a
+   compile+diff loop. One shared harness under `tests/oracle/`.
+6. **Audit-first on any "split" impulse.** Cohesive PoP ports (one Python
+   module → one C file) are the correct boundary — do NOT fragment them
+   (AGENTS.md). God headers / true second-concerns are the only split targets.
 
-## Verification checklist before you push
-- make slermes 0 errors
-- bash tests/run_mission8_tests.sh -> 36 passed / 0 failed / 35 skipped
-- All oracles 0 mismatches (see gates above)
-- git commit + push origin main; record in STATE.md + BANNER.md
+## Build/verify incantations (load-bearing)
+- Makefile has NO header-dep tracking: `rm -f slermes <touched>.o && make slermes`.
+- Register new port objects by APPENDING into `PHASE5_OBJ` in `build/objects.mk`
+  (the `PHASE*_OBJ += $(..._PORT_REGEN)` form is DEAD — overwritten). Verify
+  with `nm slermes | grep <symbol>`.
+- PoP annotation must be single-line `/* PoP: c @ m.py:f */` OR a `/*` … ` * PoP:` block;
+  a `/* PoP: …` with the desc on the next line and no closing `*/` matches
+  NEITHER scanner regex → phantom REAL_GAP. Re-run the scanner after PoP edits.
+- Re-run the scan at the end and report the REAL_GAP delta:
+  `python3 tests/slermes_parity_battleground.py --json`.
+
+## Definition of done for the session
+- A batch of modules taken to **0 REAL_GAP**, each faithfully implemented
+  (real behavior, no façade), oracle-verified (`0 mismatches`), build green
+  (`make slermes`, 0 undefined refs), committed + pushed.
+- Report the before/after REAL_GAP count and the exact modules zeroed.
