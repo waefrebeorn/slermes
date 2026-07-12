@@ -3,6 +3,7 @@
  */
 
 #include "hermes_logger.h"
+#include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -137,6 +138,56 @@ void cli_hermes_cli_voice__debug(const char *msg)
     if (getenv("HERMES_VOICE_DEBUG") && strcmp(getenv("HERMES_VOICE_DEBUG"), "1") == 0) {
         fprintf(stderr, "[voice] %s\n", msg);
     }
+}
+
+/* PoP: cli_hermes_cli_voice__beeps_enabled @ hermes_cli/voice.py:_beeps_enabled */
+/* CLI parity: voice.beep_enabled in config.yaml (default True). The C port
+ * takes the already-loaded config as a JSON string (same shape as the rest of
+ * this file's config helpers) and reads voice.beep_enabled, defaulting True.
+ * On any parse failure, returns True (matches the Python fail-open path). */
+int cli_hermes_cli_voice__beeps_enabled(const char *config_json, int *out)
+{
+    if (!out) return -1;
+    *out = 1;  /* default True */
+    if (!config_json || !config_json[0]) return 0;
+    char *err = NULL;
+    json_t *doc = json_parse(config_json, &err);
+    if (err) { free(err); return 0; }
+    if (!doc) return 0;
+    int result = 1;
+    json_t *voice = json_obj_get(doc, "voice");
+    if (voice && voice->type == JSON_OBJECT) {
+        /* Read via the object-level accessors (json_t node values are opaque).
+         * beep_enabled default True; honour bool/number/string-y truthiness. */
+        const char *raw = json_get_str(voice, "beep_enabled", NULL);
+        if (raw) {
+            char low[32];
+            size_t i, n = 0;
+            for (i = 0; raw[i] && n < sizeof(low) - 1; i++) {
+                char c = raw[i];
+                if (c >= 'A' && c <= 'Z') c = c - 'A' + 'a';
+                low[n++] = c;
+            }
+            low[n] = '\0';
+            if (strcmp(low, "false") == 0 || strcmp(low, "0") == 0 ||
+                strcmp(low, "no") == 0 || strcmp(low, "off") == 0) {
+                result = 0;
+            } else if (strcmp(low, "true") == 0 || strcmp(low, "1") == 0 ||
+                       strcmp(low, "yes") == 0 || strcmp(low, "on") == 0) {
+                result = 1;
+            } else {
+                /* numeric string (lax) */
+                result = (strtod(low, NULL) != 0.0) ? 1 : 0;
+            }
+        } else {
+            /* Key absent → JSON_BOOL/number path via num (default 1). */
+            double num = json_get_num(voice, "beep_enabled", 1.0);
+            result = (num != 0.0) ? 1 : 0;
+        }
+    }
+    json_free(doc);
+    *out = result;
+    return 0;
 }
 
 /* Port of Python hermes_cli/voice.py:stop_and_transcribe */

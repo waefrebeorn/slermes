@@ -7,6 +7,7 @@
 
 #include "hermes_core_types.h"
 #include "hermes_logger.h"
+#include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,22 +34,50 @@ int cli_gateway_platforms_signal_rate_limit__extract_retry_after_seconds(const c
 }
 
 /* PoP: cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error @ gateway/platforms/signal_rate_limit.py:_is_signal_rate_limit_error */
-int cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error(int status_code, const char *body) {
-    /*
-     * Check if an HTTP response indicates a Signal rate limit error.
-     * Signal returns 429 with a specific error body.
-     */
-    if (status_code != 429) return 0;
-    if (!body || !body[0]) {
-        hermes_log(LOG_DEBUG, "signal_rl", "_is_rate_limit: 429 with empty body");
-        return 1; /* 429 is always rate limit */
+int cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error(const char *err) {
+    /* Faithful port of the Python _is_signal_rate_limit_error(err):
+     *   - typed RATELIMIT_ERROR code (signal-cli >= v0.14.3)
+     *   - legacy "[429]" / "RateLimitException" substrings
+     *   - libsignal-net "RetryLaterException" / "Retry after N seconds"
+     *     surfaced inside AttachmentInvalidException (never re-tagged as
+     *     RateLimitException), so substring is the only signal.
+     * `err` is either a JSON object {"code":..,"message":..} or a plain
+     * string. */
+    if (!err || !err[0]) return 0;
+
+    const char *message = err;
+    long code = -1;
+    char *parse_err = NULL;
+    json_t *doc = json_parse(err, &parse_err);
+    if (parse_err) free(parse_err);
+    if (doc) {
+        json_t *c = json_obj_get(doc, "code");
+        if (c && c->type == JSON_NUMBER) code = (long)c->num_val;
+        const char *m = json_get_str(doc, "message", NULL);
+        if (m) message = m;
     }
-    /* Check for Signal-specific rate limit indicators */
-    int is_limit = (strstr(body, "rate limit") != NULL ||
-                    strstr(body, "Rate Limit") != NULL ||
-                    strstr(body, "429") != NULL);
-    hermes_log(LOG_DEBUG, "signal_rl", "_is_rate_limit: status=%d is_limit=%d", status_code, is_limit);
-    return is_limit;
+
+    if (code == 429) {            /* SIGNAL_RPC_ERROR_RATELIMIT */
+        if (doc) json_free(doc);
+        return 1;
+    }
+
+    /* Case-insensitive substring match (Python str(err).lower()). */
+    char low[2048];
+    size_t i, n = 0;
+    for (i = 0; err[i] && n < sizeof(low) - 1; i++) {
+        char ch = err[i];
+        if (ch >= 'A' && ch <= 'Z') ch = ch - 'A' + 'a';
+        low[n++] = ch;
+    }
+    low[n] = '\0';
+
+    int hit = (strstr(low, "[429]") != NULL ||
+               strstr(low, "ratelimit") != NULL ||
+               strstr(low, "retrylaterexception") != NULL ||
+               strstr(low, "retry after") != NULL);
+    if (doc) json_free(doc);
+    return hit;
 }
 
 /* PoP: cli_gateway_platforms_signal_rate_limit__format_wait @ gateway/platforms/signal_rate_limit.py:_format_wait */
@@ -186,4 +215,29 @@ void cli_gateway_platforms_signal_rate_limit__update_from_response(json_node_t *
     } else if (status_code == 200) {
         hermes_log(LOG_DEBUG, "signal_rl", "_update_from_response: success");
     }
+}
+
+/* PoP: cli_gateway_platforms_signal_rate_limit_report_rpc_duration @ gateway/platforms/signal_rate_limit.py:report_rpc_duration */
+/* Record an attachment-send RPC that just completed: deduct n_attachments
+ * tokens WITHOUT crediting upload-time refill (Signal checks the bucket at RPC
+ * start and does not refill during processing — crediting it causes drift →
+ * 429s), and advance last_refill to now so the next acquire/_refill counts
+ * from this point. n_attachments <= 0 is a no-op (faithful to Python). */
+void cli_gateway_platforms_signal_rate_limit_report_rpc_duration(
+    json_node_t *bucket, double rpc_duration, int n_attachments)
+{
+    if (!bucket || !json_node_is_object(bucket)) return;
+    if (n_attachments <= 0) return;
+
+    double token_before = json_object_get_number(bucket, "tokens", 0.0);
+    double token_after = token_before - (double)n_attachments;
+    if (token_after < 0.0) token_after = 0.0;
+    json_object_set(bucket, "tokens", json_new_number(token_after));
+    json_object_set(bucket, "last_refill", json_new_number((double)time(NULL)));
+
+    double refill_rate = json_object_get_number(bucket, "tokens_per_second", 0.0);
+    int level = (rpc_duration > 10.0 && n_attachments > 5) ? LOG_INFO : LOG_DEBUG;
+    hermes_log(level, "signal_rl",
+        "report_rpc_duration: RPC for %d att took %.1fs — tokens %.1f -> %.1f (deducted=%d, no upload refill credited, refill=%.4f/s)",
+        n_attachments, rpc_duration, token_before, token_after, n_attachments, refill_rate);
 }
