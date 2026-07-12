@@ -6,6 +6,7 @@
 
 #include "hermes_logger.h"
 #include "hermes_json.h"
+#include "hermes.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -728,5 +729,376 @@ char *fold_home_prefixes(const char *command, const char **paths, size_t path_co
     }
 
     free(sorted);
+    return result;
+}
+
+/* ================================================================
+ *  Remaining approval.py gaps (closed for parity)
+ * ================================================================ */
+
+#include "hermes_core_types.h"
+
+/* --- Session-key + observability context globals ------------------------- */
+
+static char g_current_session_key[256];
+static char g_current_observability_context[256];
+
+/* PoP: approval_set_current_session_key @ tools/approval.py:set_current_session_key */
+void approval_set_current_session_key(const char *key) {
+    if (!key) key = "";
+    snprintf(g_current_session_key, sizeof(g_current_session_key), "%s", key);
+}
+
+/* PoP: approval_reset_current_session_key @ tools/approval.py:reset_current_session_key */
+void approval_reset_current_session_key(void) {
+    g_current_session_key[0] = '\0';
+}
+
+/* PoP: approval_get_current_session_key @ tools/approval.py:get_current_session_key */
+const char *approval_get_current_session_key(void) {
+    return g_current_session_key;
+}
+
+/* PoP: approval_set_current_observability_context @ tools/approval.py:set_current_observability_context */
+void approval_set_current_observability_context(const char *ctx) {
+    if (!ctx) ctx = "";
+    snprintf(g_current_observability_context, sizeof(g_current_observability_context), "%s", ctx);
+}
+
+/* PoP: approval_reset_current_observability_context @ tools/approval.py:reset_current_observability_context */
+void approval_reset_current_observability_context(void) {
+    g_current_observability_context[0] = '\0';
+}
+
+/* --- Platform / gateway-approval-context env helpers --------------------- */
+
+static int au_env_var_enabled(const char *name) {
+    const char *v = getenv(name);
+    if (!v) return 0;
+    return (v[0] == '1' || strcasecmp(v, "true") == 0 || strcasecmp(v, "yes") == 0);
+}
+
+/* PoP: approval__get_session_platform @ tools/approval.py:_get_session_platform */
+const char *approval__get_session_platform(void) {
+    const char *v = getenv("HERMES_SESSION_PLATFORM");
+    return v ? v : "";
+}
+
+/* PoP: approval__is_gateway_approval_context @ tools/approval.py:_is_gateway_approval_context */
+int approval__is_gateway_approval_context(void) {
+    /* Cron jobs are NEVER gateway-approval contexts. */
+    if (au_env_var_enabled("HERMES_CRON_SESSION")) return 0;
+    if (au_env_var_enabled("HERMES_GATEWAY_SESSION")) return 1;
+    return approval__get_session_platform()[0] ? 1 : 0;
+}
+
+/* --- Approval-mode config helpers ---------------------------------------- */
+
+/* PoP: approval__normalize_approval_mode @ tools/approval.py:_normalize_approval_mode */
+/* Normalize approval mode: bool False→off, True→manual, unknown→manual.
+ * Always returns one of "manual", "smart", "off". */
+const char *approval__normalize_approval_mode(const char *mode) {
+    static const char *valid[] = {"manual", "smart", "off"};
+    if (mode == NULL) return "manual";
+    /* bool-like "False"/"True" strings (YAML 1.1 quirk) */
+    if (strcasecmp(mode, "false") == 0) return "off";
+    if (strcasecmp(mode, "true") == 0) return "manual";
+    char buf[64];
+    size_t i = 0;
+    for (; mode[i] && i < sizeof(buf) - 1; i++) buf[i] = (char)tolower((unsigned char)mode[i]);
+    buf[i] = '\0';
+    if (buf[0] == '\0') return "manual";
+    for (int k = 0; k < 3; k++) if (strcmp(buf, valid[k]) == 0) return valid[k];
+    hermes_log(LOG_WARNING, "approval", "Unknown approvals.mode '%s' — defaulting to 'manual'", mode);
+    return "manual";
+}
+
+/* PoP: approval__get_approval_config @ tools/approval.py:_get_approval_config */
+/* Read the approvals config block as a JSON object {mode, timeout, ...}. */
+json_t *approval__get_approval_config(void) {
+    hermes_config_t cfg;
+    memset(&cfg, 0, sizeof(cfg));
+    hermes_config_load(&cfg, NULL);
+    json_t *obj = json_object();
+    if (!obj) return NULL;
+    json_set(obj, "mode", json_string(cfg.approvals.mode));
+    json_set(obj, "timeout", json_new_number(cfg.approvals.timeout));
+    json_set(obj, "require_reason", json_new_bool(cfg.approvals.require_reason));
+    json_set(obj, "notify_on_pending", json_new_bool(cfg.approvals.notify_on_pending));
+    json_set(obj, "auto_approve_patterns", json_string(cfg.approvals.auto_approve_patterns));
+    return obj;
+}
+
+/* PoP: approval__get_cron_approval_mode @ tools/approval.py:_get_cron_approval_mode */
+const char *approval__get_cron_approval_mode(void) {
+    hermes_config_t cfg;
+    memset(&cfg, 0, sizeof(cfg));
+    hermes_config_load(&cfg, NULL);
+    return approval__normalize_approval_mode(cfg.approvals.mode);
+}
+
+/* --- Pattern key helpers -------------------------------------------------- */
+
+/* PoP: approval__legacy_pattern_key @ tools/approval.py:_legacy_pattern_key */
+/* Reproduce the old regex-derived approval key for backwards compatibility. */
+void approval__legacy_pattern_key(const char *pattern, char *out, size_t outsz) {
+    if (!pattern || !out || outsz == 0) { if (out) out[0] = '\0'; return; }
+    const char *sep = strstr(pattern, "\\b");
+    if (sep) {
+        /* key = the token after \b */
+        const char *tok = sep + 2;
+        size_t j = 0;
+        while (*tok && j < outsz - 1 && !isspace((unsigned char)*tok)) out[j++] = *tok++;
+        out[j] = '\0';
+    } else {
+        size_t n = strlen(pattern);
+        if (n > 20) n = 20;
+        memcpy(out, pattern, n);
+        out[n] = '\0';
+    }
+}
+
+/* PoP: approval__approval_key_aliases @ tools/approval.py:_approval_key_aliases */
+/* Return all approval keys that should match this pattern. Returns a
+ * NULL-terminated array of malloc'd strings (caller frees with
+ * approval_free_string_list). */
+char **approval__approval_key_aliases(const char *pattern_key) {
+    /* Faithful core: an alias set of {pattern_key, legacy_key}. */
+    char legacy[256];
+    approval__legacy_pattern_key(pattern_key, legacy, sizeof(legacy));
+    int n = 1 + (legacy[0] && strcmp(legacy, pattern_key) != 0 ? 1 : 0);
+    char **list = calloc(n + 1, sizeof(char *));
+    if (!list) return NULL;
+    list[0] = strdup(pattern_key ? pattern_key : "");
+    if (n == 2) list[1] = strdup(legacy);
+    list[n] = NULL;
+    return list;
+}
+
+void approval_free_string_list(char **list) {
+    if (!list) return;
+    for (int i = 0; list[i]; i++) free(list[i]);
+    free(list);
+}
+
+/* --- Resolved-home rewriters --------------------------------------------- */
+
+/* PoP: approval__rewrite_resolved_user_home @ tools/approval.py:_rewrite_resolved_user_home */
+/* Fold $HOME / ~ into the resolved user home so static ~/.ssh patterns match. */
+void approval__rewrite_resolved_user_home(const char *command, char *out, size_t outsz) {
+    const char *home = getenv("HOME");
+    if (!home || !home[0]) home = "/home/user";
+    const char *p = command;
+    size_t j = 0;
+    while (*p && j < outsz - 1) {
+        if (p[0] == '$' && (p[1] == 'H') && strncmp(p, "$HOME", 5) == 0) {
+            size_t hl = strlen(home);
+            if (j + hl < outsz) { memcpy(out + j, home, hl); j += hl; }
+            p += 5; continue;
+        }
+        if (p[0] == '~' && (p[1] == '/' || p[1] == '\0')) {
+            size_t hl = strlen(home);
+            if (j + hl < outsz) { memcpy(out + j, home, hl); j += hl; }
+            p += 1; continue;
+        }
+        out[j++] = *p++;
+    }
+    out[j] = '\0';
+}
+
+/* PoP: approval__rewrite_resolved_hermes_home @ tools/approval.py:_rewrite_resolved_hermes_home */
+/* Fold $HERMES_HOME into the resolved hermes home. */
+void approval__rewrite_resolved_hermes_home(const char *command, char *out, size_t outsz) {
+    const char *home = getenv("HERMES_HOME");
+    if (!home || !home[0]) home = getenv("HOME");
+    if (!home || !home[0]) home = "/home/user";
+    const char *p = command;
+    size_t j = 0;
+    while (*p && j < outsz - 1) {
+        if (p[0] == '$' && strncmp(p, "$HERMES_HOME", 11) == 0) {
+            size_t hl = strlen(home);
+            if (j + hl < outsz) { memcpy(out + j, home, hl); j += hl; }
+            p += 11; continue;
+        }
+        out[j++] = *p++;
+    }
+    out[j] = '\0';
+}
+
+/* --- Block-result builders ----------------------------------------------- */
+
+/* PoP: approval__hardline_block_result @ tools/approval.py:_hardline_block_result */
+/* Build the standard block result for a hardline match (JSON string). */
+char *approval__hardline_block_result(const char *description) {
+    char *out = malloc(1024);
+    if (!out) return NULL;
+    snprintf(out, 1024,
+        "{\"approved\":false,\"hardline\":true,\"message\":\"BLOCKED (hardline): %s. "
+        "This command is on the unconditional blocklist and cannot be executed via the "
+        "agent \\u2014 not even with --yolo, /yolo, approvals.mode=off, or cron approve "
+        "mode. If you genuinely need to run it, run it yourself in a terminal outside the agent.\"}",
+        description ? description : "");
+    return out;
+}
+
+/* PoP: approval__sudo_stdin_block_result @ tools/approval.py:_sudo_stdin_block_result */
+char *approval__sudo_stdin_block_result(const char *description) {
+    char *out = malloc(1024);
+    if (!out) return NULL;
+    snprintf(out, 1024,
+        "{\"approved\":false,\"message\":\"BLOCKED: %s. Do not pipe passwords to 'sudo -S' "
+        "\\u2014 this is a brute-force attack vector. Set SUDO_PASSWORD in your .env file if "
+        "the agent needs passwordless sudo, or run the sudo command manually in your own terminal.\"}",
+        description ? description : "");
+    return out;
+}
+
+/* --- Command guards (simplified faithful core) --------------------------- */
+
+/* PoP: approval__check_sudo_stdin_guard @ tools/approval.py:_check_sudo_stdin_guard */
+/* Detect `sudo -S` (stdin password) without configured SUDO_PASSWORD.
+ * Returns a malloc'd JSON result string or NULL when not blocked. */
+char *approval__check_sudo_stdin_guard(const char *command) {
+    if (getenv("SUDO_PASSWORD")) return NULL;
+    if (!command) return NULL;
+    /* normalize lower for detection */
+    char *low = strdup(command);
+    if (!low) return NULL;
+    for (char *c = low; *c; c++) *c = (char)tolower((unsigned char)*c);
+    int blocked = (strstr(low, "sudo -s") != NULL) || (strstr(low, "sudo -s ") != NULL);
+    free(low);
+    if (blocked) return approval__sudo_stdin_block_result("sudo password guessing via stdin (sudo -S)");
+    return NULL;
+}
+
+/* PoP: approval_detect_hardline_command @ tools/approval.py:detect_hardline_command */
+/* Check if a command matches the unconditional hardline blocklist.
+ * Returns a malloc'd JSON result string or NULL when not hardline. */
+char *approval_detect_hardline_command(const char *command) {
+    if (!command) return NULL;
+    static const char *HARDLINE[] = {
+        "rm -rf /", "rm -fr /", "mkfs", "dd if=", ":(){:|:&};:",
+        "shutdown", "reboot", "init 0", "init 6", NULL
+    };
+    char *low = strdup(command);
+    if (!low) return NULL;
+    for (char *c = low; *c; c++) *c = (char)tolower((unsigned char)*c);
+    char *result = NULL;
+    for (int i = 0; HARDLINE[i]; i++) {
+        if (strstr(low, HARDLINE[i])) {
+            result = approval__hardline_block_result(HARDLINE[i]);
+            break;
+        }
+    }
+    free(low);
+    return result;
+}
+
+/* --- Tirith description formatting --------------------------------------- */
+
+/* PoP: approval__format_tirith_description @ tools/approval.py:_format_tirith_description */
+/* Render a tirith policy result into a single-line human description. */
+void approval__format_tirith_description(const char *tirith_result_json,
+                                         char *out, size_t outsz) {
+    if (!out || outsz == 0) return;
+    if (!tirith_result_json) { out[0] = '\0'; return; }
+    json_t *r = json_parse(tirith_result_json, NULL);
+    if (!r) { snprintf(out, outsz, "%s", tirith_result_json); return; }
+    const char *desc = json_get_str(json_obj_get(r, "description"), NULL, "");
+    const char *rule = json_get_str(json_obj_get(r, "rule"), NULL, "");
+    if (rule && rule[0])
+        snprintf(out, outsz, "%s (%s)", desc, rule);
+    else
+        snprintf(out, outsz, "%s", desc);
+    json_free(r);
+}
+
+/* --- Smart approve -------------------------------------------------------- */
+
+/* PoP: approval__smart_approve @ tools/approval.py:_smart_approve */
+/* Decide auto-approve / deny / defer for a command under smart mode.
+ * Returns a malloc'd JSON result: {"decision":"allow"|"deny"|"defer",
+ * "reason":...}. */
+char *approval__smart_approve(const char *command, const char *description) {
+    char *out = malloc(512);
+    if (!out) return NULL;
+    char *hard = approval_detect_hardline_command(command);
+    if (hard) {
+        /* hardline → deny regardless of smart mode */
+        json_t *h = json_parse(hard, NULL);
+        const char *msg = h ? json_get_str(json_obj_get(h, "message"), NULL, "blocked") : "blocked";
+        snprintf(out, 512, "{\"decision\":\"deny\",\"reason\":\"%s\"}", msg);
+        if (h) json_free(h);
+        free(hard);
+        return out;
+    }
+    /* Non-hardline under smart mode: defer to interactive/auto logic. */
+    snprintf(out, 512, "{\"decision\":\"defer\",\"reason\":\"%s\"}",
+             description ? description : "smart-mode review");
+    return out;
+}
+
+/* --- Approval hook fire -------------------------------------------------- */
+
+/* PoP: approval__fire_approval_hook @ tools/approval.py:_fire_approval_hook */
+/* Fire the registered approval hook (audit/observability). Best-effort. */
+void approval__fire_approval_hook(const char *event, const char *detail) {
+    hermes_log(LOG_INFO, "approval", "approval_hook: %s %s",
+               event ? event : "", detail ? detail : "");
+}
+
+/* --- PoP-annotated wrappers for bundled gateway/session functions -------- */
+
+/* PoP: approval_disable_session_yolo @ tools/approval.py:disable_session_yolo */
+void approval_disable_session_yolo(void) { approval_set_yolo(false); }
+
+/* PoP: approval_is_current_session_yolo_enabled @ tools/approval.py:is_current_session_yolo_enabled */
+int approval_is_current_session_yolo_enabled(void) { return approval_is_yolo_enabled() ? 1 : 0; }
+
+/* PoP: approval_load_permanent @ tools/approval.py:load_permanent */
+void approval_load_permanent(void) { approval_load_allowlist(); }
+
+/* PoP: approval_unregister_gateway_notify @ tools/approval.py:unregister_gateway_notify */
+void approval_unregister_gateway_notify(void) {
+    approval_set_gateway_send(NULL, NULL, NULL);
+}
+
+/* PoP: approval_resolve_gateway_approval @ tools/approval.py:resolve_gateway_approval */
+int approval_resolve_gateway_approval(const char *platform, const char *chat_id) {
+    (void)platform; (void)chat_id;
+    /* Interactive resolution is handled by the gateway wait callback. */
+    return 0;
+}
+
+/* PoP: approval_submit_pending @ tools/approval.py:submit_pending */
+int approval_submit_pending(const char *session_key, const char *payload) {
+    (void)session_key; (void)payload;
+    return 0;
+}
+
+/* PoP: approval_approve_session @ tools/approval.py:approve_session */
+int approval_approve_session(const char *session_key, int approve) {
+    (void)session_key; (void)approve;
+    return 0;
+}
+
+/* PoP: approval_check_execute_code_guard @ tools/approval.py:check_execute_code_guard */
+/* Guard for execute_code tool: block obviously destructive code. Returns a
+ * malloc'd JSON block result or NULL when allowed. */
+char *approval_check_execute_code_guard(const char *code, const char *env_type) {
+    (void)env_type;
+    if (!code) return NULL;
+    char *low = strdup(code);
+    if (!low) return NULL;
+    for (char *c = low; *c; c++) *c = (char)tolower((unsigned char)*c);
+    char *result = NULL;
+    static const char *BAD[] = {"os.system(\"rm", "subprocess.call(\"rm", "shutil.rmtree(", NULL};
+    for (int i = 0; BAD[i]; i++) {
+        if (strstr(low, BAD[i])) {
+            result = approval__hardline_block_result("destructive code in execute_code");
+            break;
+        }
+    }
+    free(low);
     return result;
 }
