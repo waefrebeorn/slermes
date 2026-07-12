@@ -8,6 +8,20 @@
 #include <string.h>
 #include <time.h>
 
+/* Module-level cached access token (mirrors MicrosoftGraphTokenProvider
+ * ._cached_token). A provider instance in C is represented by process-global
+ * state; clear_cache() drops the cached token so the next get_access_token()
+ * forces a fresh fetch. */
+static char  *_msgraph_cached_token = NULL;
+
+/* PoP: cli_tools_microsoft_graph_auth_clear_cache @ tools/microsoft_graph_auth.py:clear_cache */
+/* Drop the cached token (self._cached_token = None). Idempotent. */
+void cli_tools_microsoft_graph_auth_clear_cache(void) {
+    free(_msgraph_cached_token);
+    _msgraph_cached_token = NULL;
+    hermes_log(LOG_DEBUG, "graph_auth", "clear_cache: cached token dropped");
+}
+
 /* PoP: cli_tools_microsoft_graph_auth_token_url @ tools/microsoft_graph_auth.py:token_url */
 int cli_tools_microsoft_graph_auth_token_url(const char *tenant_id, const char *authority, char *buf, size_t bufsize) {
     if (!tenant_id || !buf || bufsize == 0) {

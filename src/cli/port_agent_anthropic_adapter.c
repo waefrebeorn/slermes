@@ -3,10 +3,16 @@
  */
 
 #include "hermes_logger.h"
+#include "hermes_json.h"
+#include "credential_pool.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+
+/* Declared in src/cli/port_auth_na.c (no dedicated header). Resolves the
+ * active HERMES_HOME auth.json path. */
+extern char *auth_file_path(void);
 
 /* PoP: cli_agent_anthropic_adapter__get_anthropic_sdk @ agent/anthropic_adapter.py:_get_anthropic_sdk */
 const char* cli_agent_anthropic_adapter__get_anthropic_sdk(void) {
@@ -171,4 +177,49 @@ int cli_agent_anthropic_adapter_sanitize_anthropic_kwargs(const char *model, int
     snprintf(buf, bufsize, "{\"model\":\"%s\",\"forbid_sampling\":%d}", model, forbid_sampling);
     hermes_log(LOG_DEBUG, "anthropic_adapter", "sanitize_anthropic_kwargs: model=%s forbid=%d", model, forbid_sampling);
     return 0;
+}
+
+/* PoP: cli_agent_anthropic_adapter__resolve_anthropic_pool_token @ agent/anthropic_adapter.py:_resolve_anthropic_pool_token */
+/* Return the first available Anthropic OAuth token from credential_pool
+ * (read-only: never clears expired entries or triggers a network refresh, so a
+ * bare resolve never mutates ~/.hermes/auth.json). Faithful to the Python
+ * resolver: load_pool("anthropic")._available_entries(clear_expired=False,
+ * refresh=False), filter auth_type == "oauth", coerce access_token (may be an
+ * explicit null in a partially-written entry) then strip; return the first
+ * non-empty token. Returns a malloc'd token (caller frees) or NULL. */
+char *cli_agent_anthropic_adapter__resolve_anthropic_pool_token(void) {
+    char *path = auth_file_path();
+    if (!path) return NULL;
+    char *err = NULL;
+    json_t *doc = json_parse_file(path, &err);
+    free(path);
+    if (err) free(err);
+    if (!doc) return NULL;
+
+    char *result = NULL;
+    json_t *pool = json_obj_get(doc, "credential_pool");
+    if (pool && pool->type == JSON_OBJECT) {
+        json_t *anthropic = json_obj_get(pool, "anthropic");
+        if (anthropic && anthropic->type == JSON_ARRAY) {
+            size_t n = json_len(anthropic);
+            for (size_t i = 0; i < n && !result; i++) {
+                json_t *entry = json_get(anthropic, i);
+                if (!entry || entry->type != JSON_OBJECT) continue;
+                const char *at = json_get_str(entry, "auth_type", "");
+                if (strcmp(at, "oauth") != 0) continue;
+                /* str(key or "") — coerce a persisted null before strip */
+                const char *raw = json_get_str(entry, "access_token", "");
+                char buf[8192];
+                snprintf(buf, sizeof(buf), "%s", raw ? raw : "");
+                /* strip */
+                char *s = buf;
+                while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+                size_t L = strlen(s);
+                while (L > 0 && (s[L-1]==' '||s[L-1]=='\t'||s[L-1]=='\n'||s[L-1]=='\r')) { s[L-1]='\0'; L--; }
+                if (*s) result = strdup(s);
+            }
+        }
+    }
+    json_free(doc);
+    return result;
 }

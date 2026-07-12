@@ -78,8 +78,36 @@ static int g_hook_count = 0;
 
 /* ── Config parsing ─────────────────────────────────────────────── */
 
+/* PoP: agent_shell_hooks_spec_post_init @ agent/shell_hooks.py:__post_init__ */
+/* ShellHookSpec.__post_init__: strip whitespace from the matcher (YAML folding
+ * can introduce leading/trailing spaces that would silently break matching),
+ * treat an empty result as "no matcher", and compile the matcher as a regex.
+ * On a regex compile error, warn and fall back to literal equality
+ * (matcher_valid stays false). Operates in place on the spec's matcher[] field. */
+static void shell_hook_spec_post_init(shell_hook_spec_t *h) {
+    if (!h) return;
+    h->matcher_valid = false;
+    /* strip() the matcher */
+    char *s = h->matcher;
+    size_t l = strlen(s);
+    size_t start = 0;
+    while (start < l && (s[start]==' '||s[start]=='\t'||s[start]=='\n'||s[start]=='\r')) start++;
+    size_t end = l;
+    while (end > start && (s[end-1]==' '||s[end-1]=='\t'||s[end-1]=='\n'||s[end-1]=='\r')) end--;
+    if (start > 0 || end < l) {
+        size_t n = end - start;
+        memmove(h->matcher, s + start, n);
+        h->matcher[n] = '\0';
+    }
+    if (!h->matcher[0]) return;   /* empty after strip → no matcher */
+    if (regcomp(&h->matcher_re, h->matcher, REG_EXTENDED | REG_NOSUB) == 0) {
+        h->matcher_valid = true;
+    } else {
+        fprintf(stderr, "[shell_hooks] matcher '%s' is invalid — treating as literal equality\n", h->matcher);
+    }
+}
+
 /**
- * Parse a single shell hook spec from a JSON node.
  * node is an object with "command", "matcher", "timeout" keys.
  * Returns 1 on success, 0 on skip.
  * Port of Python agent/shell_hooks.py:_parse_single_entry(). */
@@ -96,11 +124,13 @@ static int parse_single_hook(const char *event, const json_t *node) {
     snprintf(h->command, sizeof(h->command), "%s", cmd);
 
     const char *matcher = json_get_str(node, "matcher", NULL);
+    h->matcher[0] = '\0';
+    h->matcher_valid = false;
     if (matcher && matcher[0]) {
         snprintf(h->matcher, sizeof(h->matcher), "%s", matcher);
-        if (regcomp(&h->matcher_re, matcher, REG_EXTENDED | REG_NOSUB) == 0)
-            h->matcher_valid = true;
     }
+    /* ShellHookSpec.__post_init__: strip + compile matcher (fallback literal). */
+    shell_hook_spec_post_init(h);
 
     double priority_val = json_get_num(node, "priority", 100);
     h->priority = (int)priority_val;

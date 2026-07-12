@@ -5,6 +5,8 @@
 
 #include "gateway_helpers.h"
 #include "hermes_json.h"
+#include "hermes_gateway.h"
+#include "hermes_system_prompt.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -778,6 +780,33 @@ void clear_session_vars(void) {
     char *old = pthread_getspecific(g_session_key);
     free(old);
     pthread_setspecific(g_session_key, NULL);
+}
+
+/* PoP: reset_session_vars @ gateway/session_context.py:reset_session_vars */
+/* Reset every session context variable to the "never bound in this context"
+ * state (Python's _UNSET sentinel). Distinct from clear_session_vars(), which
+ * marks vars "explicitly cleared" (""); in the C env-var model both collapse to
+ * unsetenv (env vars carry no _UNSET/"" distinction), but reset additionally
+ * restores the async-delivery capability to unset and clears the session cwd —
+ * the freshly-spawned-task baseline that prevents cross-session ContextVar
+ * inheritance leaks (see the Python docstring / test_session_context_inheritance). */
+void reset_session_vars(void) {
+    unsetenv("HERMES_SESSION_PLATFORM");
+    unsetenv("HERMES_SESSION_CHAT_ID");
+    unsetenv("HERMES_SESSION_CHAT_NAME");
+    unsetenv("HERMES_SESSION_THREAD_ID");
+    unsetenv("HERMES_SESSION_USER_ID");
+    unsetenv("HERMES_SESSION_USER_NAME");
+    unsetenv("HERMES_SESSION_KEY");
+    unsetenv("HERMES_SESSION_MESSAGE_ID");
+    pthread_once(&g_session_once, session_key_init);
+    char *old = pthread_getspecific(g_session_key);
+    free(old);
+    pthread_setspecific(g_session_key, NULL);
+    /* _SESSION_ASYNC_DELIVERY.set(_UNSET) — restore "never bound here". */
+    gw_session_reset_async_delivery();
+    /* clear_session_cwd() — drop any inherited per-session working directory. */
+    clear_session_cwd();
 }
 
 /* Read a session context variable with env fallback.
