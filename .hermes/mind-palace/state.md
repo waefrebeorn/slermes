@@ -1,7 +1,7 @@
-# State — Slermes C Translation (v570)
+# State — Slermes C Translation (v571)
 
-- Build: `make slermes` = 0 errors, binary links clean (~41 MB)
-- **Scanner (real, this session):** 4,884 PORTED (50.2%), 4,774 REAL_GAP (49.1%), 73 PARTIAL, 9,731 total features
+- Build: `make slermes` = 0 errors, binary links clean (~42 MB)
+- **Scanner (real, this session):** 4,901 PORTED (50.4%), 4,757 REAL_GAP (48.9%), 73 PARTIAL, 9,731 total features
 - Tests: `bash tests/run_mission8_tests.sh` → 36 passed, 0 failed, 35 skipped
 - **CLI dispatch-hub split COMPLETE (v570):** the prior session extracted `src/cli/commands.c` (7.8k lines) into 14 `cli_cmd_<cat>.c/.h` modules but left it unbuildable. This session finished it — `make slermes` links clean (42 MB binary), `/help` dispatch renders, 36/36 M8 tests pass, parity scanner unchanged (PoP annotations preserved).
 - Prior walkway claims of "8,688/8,688 100% PORTED" are stale/v398-era fiction; corrected to live scanner output above
@@ -65,4 +65,20 @@ Modules ported (commits):
 - `49a1c859c9` backup — 2 exclude/skip
 - `b21caa411c` gateway — 5 platform/env (uname/sha256)
 - `9f3a620f81` kanban — 4 CLI/time helpers
+
+## This Session (v571) — Pure-Transform Gap Closure (17 funcs)
+
+Ported 17 REAL_GAP functions across 6 modules with faithful C11 + `/* PoP: */`
+annotations, each backed by an oracle harness (`t_port_*.c` + `sta_oracle_*.py`)
+verified 0 mismatches vs live Python. Build links clean, Mission 8: 36/0/35.
+
+- agent/reasoning_timeouts.py (3): `_get_pattern`, `_match_any`, `get_reasoning_stale_timeout_floor`
+- agent/replay_cleanup.py (4): `is_interrupted_tool_result`, `strip_interrupted_tool_tails`, `strip_dangling_tool_call_tail`, `sanitize_replay_history`
+- agent/retry_utils.py (3): `_error_text`, `is_zai_coding_overload_error`, `adaptive_rate_limit_backoff`
+- agent/thinking_timeout_guidance.py (2): `is_thinking_timeout`, `build_thinking_timeout_guidance`
+- agent/agent_runtime_helpers.py (2): `intent_ack_continuation_mode`, `intent_ack_continuation_enabled`
+- gateway/cgroup_cleanup.py (3): `_own_cgroup_path`, `_read_cgroup_pids`, `reap_cgroup`
+
+Scanner: 4,884 → 4,901 PORTED (+17); 4,774 → 4,757 REAL_GAP (−17). All 17 target funcs flipped to PORTED.
+Fixed `tests/run_one_oracle.sh` (added `-I src`) so port headers resolve.
 
