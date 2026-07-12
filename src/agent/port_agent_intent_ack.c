@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include <ctype.h>
 
 /* PoP: agent_intent_ack_continuation_mode @ agent/agent_runtime_helpers.py:intent_ack_continuation_mode */
 void agent_intent_ack_continuation_mode(const char *mode, const char *api_mode, const char *model, char *out, size_t outsz)
@@ -46,4 +47,15 @@ void agent_intent_ack_continuation_mode(const char *mode, const char *api_mode, 
         tok = strtok(NULL, ";");
     }
     snprintf(out, outsz, "off");
+}
+
+/* PoP: agent_intent_ack_continuation_enabled @ agent/agent_runtime_helpers.py:intent_ack_continuation_enabled */
+/* Whether intent-ack continuation should fire at all for this turn: the on/off
+ * gate only (the per-turn cap and codex-intermediate-ack detector are applied by
+ * the caller). True iff the resolved continuation mode is not "off". */
+bool agent_intent_ack_continuation_enabled(const char *mode, const char *api_mode, const char *model)
+{
+    char resolved[32];
+    agent_intent_ack_continuation_mode(mode, api_mode, model, resolved, sizeof(resolved));
+    return strcmp(resolved, "off") != 0;
 }
