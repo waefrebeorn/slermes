@@ -881,6 +881,64 @@ int parse_structured_summary(const char *llm_final,
 /* AG26: Port of Python agent/curator.py:run_curator_review() */
 /* AG26: Port of Python agent/curator.py:_run_llm_review() */
 
+/* PoP: agent_curator__cron_referenced_skills @ agent/curator.py:_cron_referenced_skills */
+/* Skill names referenced by any cron job (incl. paused/disabled). Best-effort:
+ * any failure yields an empty set. Returns a malloc'd array of malloc'd strings
+ * via *out_names (caller frees each + the array) and the count. On failure
+ * writes NULL/0. Names are stripped and leading '/' removed. */
+extern char *cron_list_jobs(void);
+
+size_t agent_curator_cron_referenced_skills(char ***out_names) {
+    if (out_names) *out_names = NULL;
+    char *jobs_json = cron_list_jobs();
+    if (!jobs_json) return 0;
+    json_t *arr = json_parse(jobs_json, NULL);
+    free(jobs_json);
+    if (!arr || arr->type != JSON_ARRAY) { if (arr) json_free(arr); return 0; }
+
+    /* collect unique cleaned names */
+    char **names = NULL;
+    size_t count = 0, cap = 0;
+    size_t njobs = json_len(arr);
+    for (size_t j = 0; j < njobs; j++) {
+        const json_t *job = json_get(arr, j);
+        if (!job || job->type != JSON_OBJECT) continue;
+        /* gather from both "skill" (scalar or list) and "skills" (list) */
+        const char *keys[2] = {"skill", "skills"};
+        for (int ki = 0; ki < 2; ki++) {
+            const json_t *node = json_obj_get(job, keys[ki]);
+            if (!node) continue;
+            /* normalize to a list of strings */
+            size_t nitems = (node->type == JSON_ARRAY) ? json_len(node) : 1;
+            for (size_t it = 0; it < nitems; it++) {
+                const json_t *sv = (node->type == JSON_ARRAY) ? json_get(node, it) : node;
+                if (!sv || sv->type != JSON_STRING || !sv->str_val) continue;
+                /* strip() + lstrip("/") */
+                const char *s = sv->str_val;
+                while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+                size_t l = strlen(s);
+                while (l > 0 && (s[l-1]==' '||s[l-1]=='\t'||s[l-1]=='\n'||s[l-1]=='\r')) l--;
+                const char *start = s;
+                size_t len = l;
+                while (len > 0 && *start == '/') { start++; len--; }
+                if (len == 0) continue;
+                char *cleaned = malloc(len + 1);
+                memcpy(cleaned, start, len); cleaned[len] = '\0';
+                /* dedupe */
+                int dup = 0;
+                for (size_t d = 0; d < count; d++) if (strcmp(names[d], cleaned) == 0) { dup = 1; break; }
+                if (dup) { free(cleaned); continue; }
+                if (count == cap) { cap = cap ? cap*2 : 8; names = realloc(names, cap*sizeof(char*)); }
+                names[count++] = cleaned;
+            }
+        }
+    }
+    json_free(arr);
+    if (out_names) *out_names = names;
+    else { for (size_t d = 0; d < count; d++) free(names[d]); free(names); }
+    return count;
+}
+
 /* Port of Python: get_consolidate */
 bool curator_get_consolidate(void) {
     const char *val = getenv("CURATOR_CONSOLIDATE");
