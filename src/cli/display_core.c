@@ -352,6 +352,22 @@ void display_spinner_stop(display_spinner_t *sp, const char *done_msg) {
     fflush(stdout);
 }
 
+/* PoP: display_spinner_enter @ agent/display.py:KawaiiSpinner.__enter__ */
+/* Context-manager entry: start the spinner and return the spinner handle
+ * (mirrors Python `with KawaiiSpinner(...) as sp:` returning self). */
+display_spinner_t *display_spinner_enter(display_spinner_t *sp, const char *label) {
+    display_spinner_start(sp, label);
+    return sp;
+}
+
+/* PoP: display_spinner_exit @ agent/display.py:KawaiiSpinner.__exit__ */
+/* Context-manager exit: stop the spinner. Returns 0 (Python __exit__ returns
+ * False, i.e. does not suppress exceptions). */
+int display_spinner_exit(display_spinner_t *sp) {
+    display_spinner_stop(sp, NULL);
+    return 0;
+}
+
 /* ================================================================
  *  Kawaii Spinner — animated faces for LLM wait
  * ================================================================ */

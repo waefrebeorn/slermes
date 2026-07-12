@@ -105,6 +105,8 @@ typedef struct {
 void display_spinner_start(display_spinner_t *sp, const char *label);
 void display_spinner_tick(display_spinner_t *sp);
 void display_spinner_stop(display_spinner_t *sp, const char *done_msg);
+display_spinner_t *display_spinner_enter(display_spinner_t *sp, const char *label);
+int display_spinner_exit(display_spinner_t *sp);
 
 /* Spinner type enum — mirrors Python KawaiiSpinner.SPINNERS */
 typedef enum {

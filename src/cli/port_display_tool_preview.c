@@ -299,6 +299,95 @@ char *cli_agent_display__build_tool_preview(const char *tool_name, const char *a
     return result;
 }
 
+/* ---- redact_browser_typed_text_for_display ---- */
+
+/* Recursively replace every occurrence of `needle` with `redacted` in a JSON
+ * value (strings replaced in-place substring-wise; dicts/arrays recursed).
+ * Mirrors Python's recursive walk over str/dict/list (tuples become arrays in
+ * JSON so are covered by the array branch). Mutates `node` in place. */
+static char *str_replace_all(const char *hay, const char *needle, const char *repl)
+{
+    size_t nlen = strlen(needle);
+    if (nlen == 0) return strdup(hay);
+    size_t rlen = strlen(repl);
+    /* count occurrences */
+    size_t count = 0;
+    for (const char *p = hay; (p = strstr(p, needle)); p += nlen) count++;
+    if (count == 0) return strdup(hay);
+    size_t outlen = strlen(hay) + count * (rlen > nlen ? rlen - nlen : 0) + 1;
+    char *out = malloc(outlen);
+    char *w = out;
+    const char *p = hay;
+    while (1) {
+        const char *hit = strstr(p, needle);
+        if (!hit) { strcpy(w, p); break; }
+        size_t pre = (size_t)(hit - p);
+        memcpy(w, p, pre); w += pre;
+        memcpy(w, repl, rlen); w += rlen;
+        p = hit + nlen;
+    }
+    return out;
+}
+
+static void redact_typed_walk(json_t *node, const char *needle, const char *redacted)
+{
+    if (!node) return;
+    if (node->type == JSON_STRING && node->str_val) {
+        char *rep = str_replace_all(node->str_val, needle, redacted);
+        free(node->str_val);
+        node->str_val = rep;
+    } else if (node->type == JSON_OBJECT) {
+        size_t n = json_len(node);
+        for (size_t i = 0; i < n; i++)
+            redact_typed_walk(json_object_get_at(node, i), needle, redacted);
+    } else if (node->type == JSON_ARRAY) {
+        size_t n = json_len(node);
+        for (size_t i = 0; i < n; i++)
+            redact_typed_walk(json_get(node, i), needle, redacted);
+    }
+}
+
+/* PoP: cli_agent_display__redact_browser_typed_text_for_display @ agent/display.py:redact_browser_typed_text_for_display
+ * value_json is a serialized JSON value; typed_text is the raw typed string.
+ * Returns a freshly-allocated serialized JSON value with every occurrence of the
+ * raw typed secret replaced by its redacted form. When typed_text is NULL/empty
+ * or contains nothing secret-looking, returns an unmodified copy. Caller frees. */
+char *cli_agent_display__redact_browser_typed_text_for_display(const char *value_json, const char *typed_text)
+{
+    if (!value_json) return strdup("null");
+    if (!typed_text || !typed_text[0]) return strdup(value_json);
+    char *redacted = browser_redact_sensitive_text(typed_text);
+    if (!redacted || strcmp(redacted, typed_text) == 0) {
+        /* Nothing secret-looking; leave payload untouched. */
+        free(redacted);
+        return strdup(value_json);
+    }
+    char *err = NULL;
+    json_t *node = json_parse(value_json, &err);
+    if (!node) { if (err) free(err); free(redacted); return strdup(value_json); }
+    redact_typed_walk(node, typed_text, redacted);
+    char *out = json_serialize(node);
+    json_free(node);
+    free(redacted);
+    return out ? out : strdup(value_json);
+}
+
+/* ---- friendly tool labels global state + accessors ---- */
+
+static int s_friendly_tool_labels = 1;
+
+/* PoP: cli_agent_display__set_friendly_tool_labels @ agent/display.py:set_friendly_tool_labels */
+void cli_agent_display__set_friendly_tool_labels(int enabled)
+{
+    s_friendly_tool_labels = enabled ? 1 : 0;
+}
+
+/* PoP: cli_agent_display__get_friendly_tool_labels @ agent/display.py:get_friendly_tool_labels */
+int cli_agent_display__get_friendly_tool_labels(void)
+{
+    return s_friendly_tool_labels;
+}
+
 /* ---- build_tool_label ---- */
 
 /* PoP: cli_agent_display__build_tool_label @ agent/display.py:build_tool_label */
@@ -323,11 +412,33 @@ static const char *TOOL_VERBS(const char *tool)
     for (int i = 0; m[i].k; i++) if (strcmp(m[i].k, tool) == 0) return m[i].v;
     return NULL;
 }
+/* PoP: cli_agent_display__get_tool_verb @ agent/display.py:get_tool_verb
+ * Returns the friendly verb for a built-in tool, or NULL when friendly labels
+ * are disabled or the tool has no curated verb. Returned pointer is static. */
+const char *cli_agent_display__get_tool_verb(const char *tool_name)
+{
+    if (!s_friendly_tool_labels) return NULL;
+    return TOOL_VERBS(tool_name);
+}
+
+/* PoP: cli_agent_display__verb_drops_preview @ agent/display.py:verb_drops_preview */
+int cli_agent_display__verb_drops_preview(const char *tool_name) {
+    if (!tool_name) return 0;
+    return strcmp(tool_name,"skills_list")==0 || strcmp(tool_name,"session_search")==0;
+}
 static int verb_no_preview(const char *tool) {
-    return strcmp(tool,"skills_list")==0 || strcmp(tool,"session_search")==0;
+    return cli_agent_display__verb_drops_preview(tool);
+}
+
+/* PoP: cli_agent_display__tool_verb_connector @ agent/display.py:tool_verb_connector
+ * Returns the connector between a verb and its preview (" for " or " "). */
+const char *cli_agent_display__tool_verb_connector(const char *tool_name) {
+    if (tool_name && (strcmp(tool_name,"web_search")==0 || strcmp(tool_name,"search_files")==0))
+        return " for ";
+    return " ";
 }
 static int verb_for_connector(const char *tool) {
-    return strcmp(tool,"web_search")==0 || strcmp(tool,"search_files")==0;
+    return tool && strcmp(cli_agent_display__tool_verb_connector(tool), " for ") == 0;
 }
 
 char *cli_agent_display__build_tool_label(const char *tool_name, const char *args_json, int max_len, int friendly)
