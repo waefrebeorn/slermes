@@ -1,0 +1,8 @@
+Some prose before.
+
+Not a table: | a | b
+Also not: just text without pipes on this line.
+
+| This is a table | row |
+|------|-----|
+| data | here |
