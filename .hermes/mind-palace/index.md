@@ -17,11 +17,12 @@ Anything the Nous Research team produces — **code AND documents** — is upstr
 
 | Metric | Value |
 |--------|-------|
-| **Version** | v541 |
+| **Version** | v570 |
 | **Checkpoint** | 117+ |
-| **PORTED** | 8,688 (100% of Python functions) |
-| **REAL_GAP** | Missions 5-8 now ✅ (see below) |
-| **Build** | Clean, 0 errors |
+| **PORTED** | 4,884 (50.2% of 9,731 features) |
+| **REAL_GAP** | 4,774 (49.1%) |
+| **PARTIAL** | 73 |
+| **Build** | Clean, 0 errors (slermes 42 MB) |
 | **Tests** | 26 pass + 63 new Mission 8 tests (API/CLI/state_db/UI) |
 | Binary | 46 MB (slermes) + 5.4 MB (slermes-desktop-gui) + ~150 KB (web_server) |
 | **C source files** | 1,107 files, ~497K LOC |

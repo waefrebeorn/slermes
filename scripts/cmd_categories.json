@@ -1,0 +1,124 @@
+{
+ "System": [
+  "cmd_approve",
+  "cmd_browser",
+  "cmd_busy",
+  "cmd_clear",
+  "cmd_commands",
+  "cmd_completions",
+  "cmd_compress_coerce_keep",
+  "cmd_copy",
+  "cmd_cron",
+  "cmd_dashboard",
+  "cmd_debug",
+  "cmd_deny",
+  "cmd_deps",
+  "cmd_doctor",
+  "cmd_dump",
+  "cmd_exit",
+  "cmd_handoff",
+  "cmd_indicator",
+  "cmd_logs",
+  "cmd_paste",
+  "cmd_platforms",
+  "cmd_profile",
+  "cmd_redraw",
+  "cmd_reload",
+  "cmd_send",
+  "cmd_sethome",
+  "cmd_skin",
+  "cmd_statusbar",
+  "cmd_stop",
+  "cmd_tools",
+  "cmd_tools_verify",
+  "cmd_toolsets",
+  "cmd_update",
+  "cmd_verbose",
+  "cmd_whoami"
+ ],
+ "Help": [
+  "cmd_help"
+ ],
+ "Session": [
+  "cmd_agents",
+  "cmd_background",
+  "cmd_branch",
+  "cmd_compress",
+  "cmd_conv",
+  "cmd_goal",
+  "cmd_history",
+  "cmd_insights",
+  "cmd_load",
+  "cmd_new",
+  "cmd_queue",
+  "cmd_recap",
+  "cmd_reset",
+  "cmd_resume",
+  "cmd_retry",
+  "cmd_rollback",
+  "cmd_save",
+  "cmd_session_export",
+  "cmd_session_import",
+  "cmd_session_search",
+  "cmd_sessions",
+  "cmd_snapshot",
+  "cmd_stats",
+  "cmd_status",
+  "cmd_steer",
+  "cmd_subgoal",
+  "cmd_title",
+  "cmd_undo",
+  "cmd_usage"
+ ],
+ "Config": [
+  "cmd_backup",
+  "cmd_config",
+  "cmd_fast",
+  "cmd_footer",
+  "cmd_model",
+  "cmd_personality",
+  "cmd_reasoning",
+  "cmd_setup",
+  "cmd_topic",
+  "cmd_uninstall",
+  "cmd_voice",
+  "cmd_yolo"
+ ],
+ "Misc": [
+  "cmd_plugins"
+ ],
+ "Gateway": [
+  "cmd_gateway",
+  "cmd_platform",
+  "cmd_restart",
+  "cmd_webhook"
+ ],
+ "Skills": [
+  "cmd_bundles",
+  "cmd_curator",
+  "cmd_reload_skills",
+  "cmd_skills",
+  "cmd_skills_hub"
+ ],
+ "Tools": [
+  "cmd_image"
+ ],
+ "MCP": [
+  "cmd_mcp",
+  "cmd_reload_mcp"
+ ],
+ "Kanban": [
+  "cmd_kanban"
+ ],
+ "Security": [
+  "cmd_auth",
+  "cmd_key",
+  "cmd_secrets"
+ ],
+ "Memory": [
+  "cmd_memory"
+ ],
+ "Display": [
+  "cmd_pet"
+ ]
+}
