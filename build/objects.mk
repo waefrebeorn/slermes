@@ -27,7 +27,11 @@ PORT_OBJ = \
     src/cli/port_agent_onboarding.o \
     src/cli/port_agent_plugin_llm.o \
     src/cli/port_agent_skill_utils.o \
+    src/cli/port_agent_replay_cleanup.o \
+    src/cli/port_agent_retry_utils.o \
     src/cli/port_agent_reasoning_timeouts.o \
+    src/cli/port_agent_thinking_timeout_guidance.o \
+    src/cli/port_agent_intent_ack.o \
     src/cli/port_agent_tool_executor.o \
     src/cli/port_agent_tool_guardrails.o \
     src/cli/port_agent_transcription_provider.o \
@@ -76,6 +80,7 @@ PORT_OBJ = \
     src/cli/port_blueprint_catalog_helpers.o \
     src/cli/port_vertex_adapter_helpers.o \
     src/cli/port_drain_control_helpers.o \
+    src/cli/port_gateway_cgroup_cleanup.o \
     src/cli/port_platforms_base_helpers.o \
     src/cli/port_auth_helpers.o \
     src/cli/port_scale_to_zero_helpers.o \
