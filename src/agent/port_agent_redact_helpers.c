@@ -5,9 +5,12 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include <ctype.h>
+#include "../tools/browser_redact.h"
 
 /* Literal credential prefixes derived from _PREFIX_PATTERNS via
  * _extract_literal_prefix() in the Python source. Each pattern's leading
@@ -86,4 +89,84 @@ bool agent_redact_is_env_dump_command(const char *command)
     free(segs);
     free(buf);
     return result;
+}
+
+/* PoP: agent_redact_redact_terminal_output @ agent/redact.py:redact_terminal_output */
+/* Redact secrets from terminal/process stdout. Picks code_file based on whether
+ * command is an environment dump (env/printenv/set/export/declare → code_file
+ * False → the ENV-assignment masking pass applies; otherwise code_file True to
+ * avoid false positives on source/config dumps). Returns a newly-allocated
+ * string (caller frees); NULL if output is NULL, "" if empty. The `force` arg
+ * mirrors the Python force= flag (bypasses the redact_secrets preference); the
+ * underlying engine always redacts, so it is accepted for signature parity. */
+char *agent_redact_redact_terminal_output(const char *output, const char *command, bool force)
+{
+    (void)force;
+    if (!output) return NULL;
+    if (!*output) return strdup("");
+    bool code_file = !agent_redact_is_env_dump_command(command ? command : "");
+    /* First pass: the shared prefix/pattern redaction engine (redact_sensitive_text). */
+    char *redacted = browser_redact_sensitive_text(output);
+    if (!redacted) return NULL;
+    if (code_file) return redacted;   /* source/config dump — no ENV-assignment pass */
+
+    /* code_file=False → env-dump: additionally mask opaque VALUES in
+     * NAME=VALUE assignment lines (mirrors redact_sensitive_text's env pass).
+     * Only mask values that look like credentials (>= 12 non-space chars and
+     * not already redacted). */
+    size_t n = strlen(redacted);
+    size_t cap = n * 2 + 64, len = 0;
+    char *out = malloc(cap);
+    if (!out) return redacted;
+    size_t i = 0;
+    while (i < n) {
+        /* find start-of-line */
+        size_t line_start = i;
+        size_t line_end = i;
+        while (line_end < n && redacted[line_end] != '\n') line_end++;
+        /* Scan this line for NAME=VALUE where NAME is [A-Za-z_][A-Za-z0-9_]* */
+        size_t p = line_start;
+        /* optional leading "export " / "declare -x " already flattened; skip WS */
+        while (p < line_end && (redacted[p]==' '||redacted[p]=='\t')) p++;
+        size_t name_start = p;
+        if (p < line_end && (isalpha((unsigned char)redacted[p]) || redacted[p]=='_')) {
+            p++;
+            while (p < line_end && (isalnum((unsigned char)redacted[p]) || redacted[p]=='_')) p++;
+            size_t name_end = p;
+            if (name_end > name_start && p < line_end && redacted[p]=='=') {
+                size_t eq = p;
+                size_t val_start = eq + 1;
+                /* value runs to end of line (strip surrounding quotes for length test) */
+                size_t vs = val_start, ve = line_end;
+                while (vs < ve && (redacted[vs]=='"'||redacted[vs]=='\'')) vs++;
+                while (ve > vs && (redacted[ve-1]=='"'||redacted[ve-1]=='\'')) ve--;
+                size_t vlen = ve - vs;
+                bool already = (vlen >= 3 && (unsigned char)redacted[vs]==0xC2); /* «redacted...» starts 0xC2 0xAB */
+                if (vlen >= 12 && !already) {
+                    /* emit NAME= then mask token, skip original value */
+                    for (size_t k = line_start; k <= eq; k++) {
+                        if (len+1 >= cap) { cap*=2; out=realloc(out,cap); }
+                        out[len++] = redacted[k];
+                    }
+                    const char *mask = "\u00abredacted-secret\u00bb";
+                    size_t ml = strlen(mask);
+                    while (len+ml+1 >= cap) { cap*=2; out=realloc(out,cap); }
+                    memcpy(out+len, mask, ml); len += ml;
+                    i = line_end; /* consumed to EOL; newline copied below */
+                    if (i < n) { if (len+1>=cap){cap*=2;out=realloc(out,cap);} out[len++]=redacted[i++]; }
+                    continue;
+                }
+            }
+        }
+        /* default: copy the line verbatim (including trailing newline) */
+        for (size_t k = line_start; k < line_end; k++) {
+            if (len+1 >= cap) { cap*=2; out=realloc(out,cap); }
+            out[len++] = redacted[k];
+        }
+        i = line_end;
+        if (i < n) { if (len+1>=cap){cap*=2;out=realloc(out,cap);} out[len++]=redacted[i++]; }
+    }
+    out[len] = '\0';
+    free(redacted);
+    return out;
 }
