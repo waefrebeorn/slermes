@@ -511,6 +511,9 @@ typedef struct {
     char  language[16];           /* display.language: UI language */
     bool  show_cost;              /* display.show_cost: show token cost */
     bool  timestamps;             /* display.timestamps: show message timestamps */
+    bool  pet_enabled;            /* display.pet.enabled: companion pet widget */
+    float pet_scale;              /* display.pet.scale: pet sprite scale */
+    char  pet_slug[64];           /* display.pet.slug: active pet id */
 } display_config_t;
 
 /* ================================================================
