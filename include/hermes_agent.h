@@ -17,7 +17,14 @@ streaming, and interrupt handling.
  * Extends the types in hermes.h with agent-specific functions.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
+
+/* session_meta_t is a complete type defined in lib/libdb/db.h
+ * (anonymous-struct typedef, cannot be forward-declared by tag).
+ * session_entry_t is also provided by lib/libdb/db.h (forward-declared
+ * there). Pulling in db.h keeps hermes_agent.h self-contained — no
+ * god-header pull-in. */
+#include "libdb/db.h"
 
 #ifdef __cplusplus
 extern "C" {
