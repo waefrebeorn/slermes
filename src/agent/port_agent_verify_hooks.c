@@ -6,8 +6,9 @@
 #include <string.h>
 #include <strings.h>
 #include <ctype.h>
+#include <stdio.h>
 #include <regex.h>
-
+#include "hermes_json.h"
 #define VERIFY_HOOKS_DEFAULT_MAX_VERIFY_NUDGES 3
 static const char *VERIFY_HOOKS_CODING_VERIFY_GUIDANCE =
     "[Coding] Before you run tests/linters or call this done: if this is "
@@ -82,6 +83,31 @@ int agent_verify_hooks_max_verify_nudges(const char *config_json)
     int ret = (end == raw) ? VERIFY_HOOKS_DEFAULT_MAX_VERIFY_NUDGES : (v < 0 ? 0 : (int)v);
     free(raw);
     return ret;
+}
+
+/* PoP: agent_verify_hooks__agent_cfg @ agent/verify_hooks.py:_agent_cfg */
+/* Extract the "agent" sub-config object from a config dict and return it as a
+ * malloc'd JSON string. Mirrors Python: config.get("agent") if it's a dict,
+ * else {}. On parse failure or missing config, returns a malloc'd "{}" (the
+ * empty agent_cfg). Caller frees. */
+char *agent_verify_hooks__agent_cfg(const char *config_json)
+{
+    if (!config_json || !config_json[0])
+        return strdup("{}");
+    char *err = NULL;
+    json_t *doc = json_parse(config_json, &err);
+    if (err) free(err);
+    if (!doc) return strdup("{}");
+    char *result = NULL;
+    json_t *agent = json_obj_get(doc, "agent");
+    if (agent && agent->type == JSON_OBJECT) {
+        char *ser = json_serialize(agent);
+        result = ser ? ser : strdup("{}");
+    } else {
+        result = strdup("{}");
+    }
+    json_free(doc);
+    return result;
 }
 
 /* PoP: agent_verify_hooks_coding_verify_guidance @ agent/verify_hooks.py:coding_verify_guidance */

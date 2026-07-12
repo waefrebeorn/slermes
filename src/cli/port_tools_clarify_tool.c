@@ -6,6 +6,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+
+/* PoP: cli_tools_clarify_tool_check_clarify_requirements @ tools/clarify_tool.py:check_clarify_requirements */
+/* Clarify tool has no external requirements — always available. */
+bool cli_tools_clarify_tool_check_clarify_requirements(void) {
+    return true;
+}
 
 #define MAX_CHOICES 4
 
