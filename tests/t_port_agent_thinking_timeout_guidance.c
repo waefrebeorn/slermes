@@ -1,39 +1,33 @@
-/* t_port_agent_thinking_timeout_guidance.c — oracle harness for
- * agent/thinking_timeout_guidance.py:is_thinking_timeout
- * Emits {"reason":..,"model":..,"err":..,"out":<bool>}. */
+/* Oracle harness: agent/thinking_timeout_guidance.py vs LIVE Python. */
 #include <stdio.h>
-#include "cli/port_agent_thinking_timeout_guidance.h"
+#include "agent/port_agent_thinking_timeout_guidance.h"
 
-static const char *js(const char *s) {
-    static char bufs[8][4096];
-    static int bi = 0;
-    char *b = bufs[bi];
-    bi = (bi + 1) % 8;
-    char *q = b;
-    *q++ = '"';
-    for (const char *p = s; p && *p && q - b < 4000; p++) {
-        unsigned char c = (unsigned char)*p;
-        if (c == '"' || c == '\\') { *q++ = '\\'; *q++ = c; }
-        else *q++ = c;
+static const char *jstr(const char *s){
+    static char b[4][1024]; static int bi=0; int idx=bi; char *q=b[idx]; bi=(bi+1)&3; *q++='"';
+    for(const char *p=s;p&&*p&&(q-b[idx])<1000;p++){
+        unsigned char c=*p;
+        if(c=='"'||c=='\\'){*q++='\\';*q++=c;}
+        else if(c<0x20){*q++='\\';*q++='u';*q++='0';*q++='0';*q++="0123456789abcdef"[c>>4];*q++="0123456789abcdef"[c&0xf];}
+        else *q++=c;
     }
-    *q++ = '"'; *q = '\0';
-    return b;
+    *q++='"';*q='\0';return b[idx];
 }
-
-static void emit(const char *reason, const char *model, const char *err) {
-    int r = thinking_timeout_is(reason, model, err);
-    printf("{\"reason\":%s,\"model\":%s,\"err\":%s,\"out\":%s}\n",
-           js(reason), js(model), js(err), r ? "true" : "false");
-}
-
 int main(void) {
-    emit("timeout", "nvidia/nemotron-3-ultra-550b-a55b", "broken pipe from upstream");
-    emit("timeout", "openai/o3-mini", "remote protocol error");
-    emit("auth", "openai/o3-mini", "broken pipe");
-    emit("timeout", "gpt-4o", "broken pipe");
-    emit("timeout", "nvidia/nemotron-3-ultra", "rate limited 429");
-    emit("timeout", "x-ai/grok-4-fast-reasoning", "errno 32");
-    emit("timeout", "deepseek/deepseek-r1", "connection reset by peer");
-    emit("timeout", "anthropic/claude-opus-4-6", "all good");
+    struct { const char *reason; const char *model; const char *err; } c[] = {
+        {"timeout", "openai/o3-mini", "broken pipe"},
+        {"timeout", "openai/o3-mini", "http 429 rate limit"},
+        {"timeout", "gpt-4o", "broken pipe"},
+        {"context_overflow", "openai/o3-mini", "broken pipe"},
+        {"timeout", "anthropic/claude-opus-4-6", "errno 32 connection reset"},
+        {"timeout", "deepseek/deepseek-r1", "server disconnected peer closed"},
+        {"timeout", "qwen/qwen3-235b-thinking", "remote protocol error"},
+        {"timeout", "x-ai/grok-4-fast-non-reasoning", "broken pipe"},
+    };
+    int n = sizeof(c)/sizeof(c[0]);
+    for (int i = 0; i < n; i++) {
+        int r = agent_thinking_timeout_is_thinking_timeout(c[i].reason, c[i].model, c[i].err) ? 1 : 0;
+        printf("{\"reason\":%s,\"model\":%s,\"err\":%s,\"out\":%d}\n",
+               jstr(c[i].reason), jstr(c[i].model), jstr(c[i].err), r);
+    }
     return 0;
 }

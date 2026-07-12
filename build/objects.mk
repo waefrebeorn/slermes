@@ -27,11 +27,6 @@ PORT_OBJ = \
     src/cli/port_agent_onboarding.o \
     src/cli/port_agent_plugin_llm.o \
     src/cli/port_agent_skill_utils.o \
-    src/cli/port_agent_replay_cleanup.o \
-    src/cli/port_agent_retry_utils.o \
-    src/cli/port_agent_reasoning_timeouts.o \
-    src/cli/port_agent_thinking_timeout_guidance.o \
-    src/cli/port_agent_intent_ack.o \
     src/cli/port_agent_tool_executor.o \
     src/cli/port_agent_tool_guardrails.o \
     src/cli/port_agent_transcription_provider.o \
@@ -80,7 +75,6 @@ PORT_OBJ = \
     src/cli/port_blueprint_catalog_helpers.o \
     src/cli/port_vertex_adapter_helpers.o \
     src/cli/port_drain_control_helpers.o \
-    src/cli/port_gateway_cgroup_cleanup.o \
     src/cli/port_platforms_base_helpers.o \
     src/cli/port_auth_helpers.o \
     src/cli/port_scale_to_zero_helpers.o \
@@ -252,9 +246,11 @@ GATEWAY_OBJ = src/gateway/server.o src/gateway/gateway_runtime.o src/gateway/con
 AGENT_PORT_NEW = src/agent/port_agent_redact_helpers.o src/agent/port_agent_tool_dispatch_helpers.o src/agent/port_agent_verify_hooks.o src/agent/port_agent_ssl_verify.o src/agent/port_agent_turn_context.o
 TOOLS_PORT_NEW = src/tools/port_file_operations_search.o src/tools/port_tools_slash_confirm.o
 GATEWAY_PORT_NEW = src/gateway/port_gateway_platforms_helpers.o src/gateway/port_gateway_drain_control.o
-PHASE2_OBJ += $(AGENT_PORT_NEW)
+AGENT_PORT_REGEN = src/agent/port_agent_reasoning_timeouts.o src/agent/port_agent_replay_cleanup.o src/agent/port_agent_retry_utils.o src/agent/port_agent_thinking_timeout_guidance.o src/agent/port_agent_intent_ack.o
+GATEWAY_PORT_REGEN = src/gateway/port_gateway_cgroup_cleanup.o
+PHASE2_OBJ += $(AGENT_PORT_NEW) $(AGENT_PORT_REGEN)
 PHASE3_OBJ += $(TOOLS_PORT_NEW)
-PHASE4_OBJ += $(GATEWAY_PORT_NEW)
+PHASE4_OBJ += $(GATEWAY_PORT_NEW) $(GATEWAY_PORT_REGEN)
 CRON_OBJ = src/cron/scheduler.o src/cron/jobs.o src/cron/cron_extras.o src/cron/cron_sqlite.o src/cron/cron_cli.o src/cron/port_cron_scheduler_provider.o src/cron/port_cron_scheduler_helpers.o src/cron/port_scheduler.o src/cron/cron_suggestions.o src/cron/port_jobs.o
 
 # Progressively larger builds
