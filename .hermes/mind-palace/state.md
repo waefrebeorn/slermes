@@ -1,13 +1,12 @@
-# State — Slermes C Translation (v541)
+# State — Slermes C Translation (v570)
 
 - Build: `make slermes` = 0 errors, binary links clean (~41 MB)
-- **Scanner (real, this session):** 4,957 PORTED (50.9%), 4,726 REAL_GAP (48.6%), 48 PARTIAL, 9,731 total features
+- **Scanner (real, this session):** 4,884 PORTED (50.2%), 4,774 REAL_GAP (49.1%), 73 PARTIAL, 9,731 total features
 - Tests: `bash tests/run_mission8_tests.sh` → 36 passed, 0 failed, 35 skipped
-- **Façade audit COMPLETE (v541):** all 18 audited files / 52 fake-looking stubs rewritten as REAL ports. No `In a real implementation` comments remain in src/cli/port_*.c. Binary links; 36/36 tests pass.
-- Desktop parity: 111 features mapped, ~99 missing (4% complete) — separate workstream
+- **CLI dispatch-hub split COMPLETE (v570):** the prior session extracted `src/cli/commands.c` (7.8k lines) into 14 `cli_cmd_<cat>.c/.h` modules but left it unbuildable. This session finished it — `make slermes` links clean (42 MB binary), `/help` dispatch renders, 36/36 M8 tests pass, parity scanner unchanged (PoP annotations preserved).
 - Prior walkway claims of "8,688/8,688 100% PORTED" are stale/v398-era fiction; corrected to live scanner output above
 
-## This Session (v541) — Façade Audit Closure
+## This Session (v570) — Façade Audit Closure
 
 All 18 files ported to real implementations (per-file commits, no god-header):
 
@@ -40,7 +39,7 @@ Extended the façade sweep to the 7 residual `simulate`/fake-comment files. Outc
 - **shell_hooks / image_generation / browser / port_send_message_tool** — `simulate` comments were misworded; behavior already real (env-var dispatch, lazy-load flag, text-browser UI text, retry_after parse). Reworded; left honest UI/help text in browser.c.
 - 36/36 tests still pass; full tree now free of fake-looking stub code.
 
-## This Session (v541) — Parity Gap Closure (post-façade)
+## This Session (v570) — Parity Gap Closure (post-façade)
 
 Continued the gap-closure pass: ported 70 REAL_GAP functions across 15 modules, all
 committed + pushed, build clean, 36/36 tests green. Real gaps dropped 5,053 → 4,989

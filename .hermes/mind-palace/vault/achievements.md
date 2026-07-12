@@ -150,7 +150,7 @@ SSRF blocks incl. CGNAT 100.64/10).
 (v398-era) to live scanner output. NOT YET COMMITTED — dirty tree carries
 prior-session uncommitted work; commit pending next session.
 
-## v541 — Parity Gap Closure (post-façade), 70 functions / 15 modules
+## v570 — Parity Gap Closure (post-façade), 70 functions / 15 modules
 
 **What happened:** Continued gap-closure pass after façade audit. Ported 70 REAL_GAP
 functions across 15 modules. Real gaps 5,053 → 4,989 (64 closed). Scanner now
@@ -171,13 +171,13 @@ functions across 15 modules. Real gaps 5,053 → 4,989 (64 closed). Scanner now
 collision-checked; new files registered in build/objects.mk.
 **Note:** new helper files created: port_hermes_cli_*.c (models/main/backup/gateway_platform/kanban_helpers).
 
-## v541 — pure-helper parity blitz (session 2026-07-07, auto-pilot)
+## v570 — pure-helper parity blitz (session 2026-07-07, auto-pilot)
 
 **What happened:** Continued module-by-module faithful porting of pure, self-contained
 Python helpers into C11, driving global REAL_GAP down from 4,788 → 4,726 (62 closed).
 All work builds clean (`make slermes` 0 errors, ~41.8 MB binary) and passes the 36/36
 Mission-8 suite. No stubs — only real implementations; IO/config/state-coupled twins
-left as honest REAL_GAP (per v541 doctrine).
+left as honest REAL_GAP (per v570 doctrine).
 
 **New port files (all committed + registered in build/objects.mk):**
 - `port_learning_graph_helpers.c` — 6 pure fns (hermes_meta, related, category, to_int_ts,
@@ -200,3 +200,21 @@ left as honest REAL_GAP (per v541 doctrine).
 **Discipline:** multi-line ` * PoP:` annotations on every function; collision-check before
 each write; fuzzy_match (~820 lines) built in 7 chunked tool calls after the stream-timeout
 warning. No banned void* passthroughs, no `In a real implementation` façades.
+
+## v570 — CLI dispatch-hub split FINISHED (builds + links + runs)
+
+**What happened:** Prior session (v570 work) split `src/cli/commands.c` (7,825 → ~1,000 lines) into 14 `cli_cmd_<cat>.c/.h` modules but left the tree unbuildable. This session fixed it end-to-end via angel-coder discipline (finish the artifact, diagnose before patching, no stubs).
+
+**Root causes fixed (file:line evidence):**
+- `commands_shared.h` made the convergence point for shared includes (`dirent.h`, `errno.h`, `sys/stat.h`, `sys/wait.h`) + shared type headers (`mcp.h`, `hermes_auth.h`, `hermes_skills_hub.h`, `hermes_curator.h`, `skill_usage.h`, `usage_pricing.h`, `pet.h` via display.c) + shared `extern` globals + shared config-display helpers.
+- Promoted 10 `static` CLI globals in `commands.c` to external linkage (mirrors `g_busy_mode` precedent): `g_yolo_mode`, `g_verbose`, `g_current_skin`, `g_fast_mode`, `g_queued_prompt`, `g_home_channel`, `g_indicator_style`, `g_statusbar_on`, `g_footer_on`, `g_voice_mode`.
+- Removed orphaned duplicate defs the split left behind: `show_config_section`/`config_set_key`/`CFG_CATEGORIES`/`show_section_*` in `commands.c`; `commands_get_all`/`commands_resolve` in `cli_cmd_help.c`. Canonical owners: `cli_cmd_config.c` (`show_config_section`, `config_set_key`, `CFG_CATEGORIES`, `show_section_*`) + `commands.c` (`commands_get_all`/`commands_resolve`/`commands_count`, `show_cfg_val*`).
+- Renamed genuine name clash: `partial_compress._coerce_keep` helper → `cmd_compress_coerce_keep_value` (the `.h` had a ghost `cmd_compress_coerce_keep(args,state)` handler decl that was never defined/called).
+- Recovered `show_section_voice` / `show_section_memory` (dropped during split) verbatim into `cli_cmd_config.c` from git HEAD.
+- Added `pet.h` to `cli_cmd_display.c` for `PET_MIN/MAX_SCALE`.
+
+**Build:** `make slermes` → EXIT=0, 42 MB binary linked. `./slermes --version` → `v0.18.0-slermes`; `/help` dispatch renders command list.
+**Tests:** Mission 8 → 36 passed / 0 failed / 35 skipped (no regression).
+**Parity:** scanner unchanged 4,884 PORTED / 4,774 REAL_GAP / 73 PARTIAL (all PoP annotations preserved); `COMMANDS[]` table intact (1 occurrence).
+**Commit:** `d562a040da` — pushed to `origin/main`.
+**Discipline:** real fixes only, no stubs, no void* passthroughs.

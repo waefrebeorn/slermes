@@ -1,7 +1,7 @@
-# Goal & Mantra — Slermes C Translation (v541)
+# Goal & Mantra — Slermes C Translation (v570)
 
 ## Core Directive
-All Python functions ported to C (8,688/8,688, 100%). Now: triple-check everything, then build desktop.
+All Python functions ported to C — live scanner: 4,884/9,731 (50.2%) PORTED, 4,774 REAL_GAP, 73 PARTIAL. Now: keep closing REAL_GAPs, then build desktop.
 
 ## Mantra
 "Rewriting from scratch in C is the point." Every function must have real logic.
