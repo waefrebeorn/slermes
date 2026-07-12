@@ -10,6 +10,7 @@
 
 #include "image_routing.h"
 #include "hermes_core_types.h"
+#include "hermes_json.h"
 #include "provider_metadata.h"
 #include "../lib/libbase64/base64.h"
 
@@ -726,4 +727,180 @@ bool image_routing_notify_error(void *state, const char *error_text) {
     }
 
     return false;
+}
+
+/* ── Inference base-URL resolution (JSON-config faithful port) ──── */
+
+/* strip() helper — returns a malloc'd trimmed copy (never NULL). */
+static char *ir_strip_dup(const char *s) {
+    if (!s) return strdup("");
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    size_t n = strlen(s);
+    while (n > 0 && (s[n-1]==' '||s[n-1]=='\t'||s[n-1]=='\n'||s[n-1]=='\r')) n--;
+    char *out = malloc(n + 1);
+    memcpy(out, s, n); out[n] = '\0';
+    return out;
+}
+
+static char *ir_lower_dup(const char *s) {
+    char *d = strdup(s ? s : "");
+    for (char *p = d; *p; p++) *p = (char)tolower((unsigned char)*p);
+    return d;
+}
+
+/* Runtime override accessor from auxiliary_client.c */
+extern const char *get_runtime_main_base_url(void);
+
+/* PoP: image_routing__resolve_inference_base_url @ agent/image_routing.py:_resolve_inference_base_url */
+/* Best-effort base URL for the active inference provider. cfg is a parsed JSON
+ * config object (or NULL). Returns a malloc'd string (caller frees), "" when
+ * nothing resolves. Mirrors Python's precedence: runtime override → model.base_url
+ * → providers[candidate].base_url → custom_providers[].base_url. */
+char *image_routing__resolve_inference_base_url(const json_t *cfg, const char *provider)
+{
+    /* 1. Runtime main base URL override */
+    const char *runtime = get_runtime_main_base_url();
+    char *rt = ir_strip_dup(runtime);
+    if (rt[0]) return rt;
+    free(rt);
+
+    if (!cfg || cfg->type != JSON_OBJECT) return strdup("");
+
+    /* 2. model.base_url */
+    const json_t *model_cfg = json_obj_get(cfg, "model");
+    const char *model_provider_raw = NULL;
+    if (model_cfg && model_cfg->type == JSON_OBJECT) {
+        const json_t *bu = json_obj_get(model_cfg, "base_url");
+        if (bu && bu->type == JSON_STRING) {
+            char *b = ir_strip_dup(bu->str_val);
+            if (b[0]) return b;
+            free(b);
+        }
+        const json_t *mp = json_obj_get(model_cfg, "provider");
+        if (mp && mp->type == JSON_STRING) model_provider_raw = mp->str_val;
+    }
+
+    /* Build candidate provider name set: {provider, config_provider} plus
+     * their custom:/bare variants. */
+    char *config_provider = ir_strip_dup(model_provider_raw);
+    const char *inputs[2];
+    int ninputs = 0;
+    char *prov_stripped = ir_strip_dup(provider);
+    if (prov_stripped[0]) inputs[ninputs++] = prov_stripped;
+    if (config_provider[0]) inputs[ninputs++] = config_provider;
+
+    /* candidate list (up to 4 per input) */
+    char *cands[8]; int ncands = 0;
+    for (int i = 0; i < ninputs; i++) {
+        const char *p = inputs[i];
+        /* dedupe helper inline */
+        int dup = 0;
+        for (int k = 0; k < ncands; k++) if (strcmp(cands[k], p) == 0) { dup = 1; break; }
+        if (!dup && ncands < 8) cands[ncands++] = strdup(p);
+        char *pl = ir_lower_dup(p);
+        if (strncmp(pl, "custom:", 7) == 0) {
+            const char *bare = p + 7; /* after "custom:" in original case */
+            /* find the colon in original to preserve case of the part */
+            const char *colon = strchr(p, ':');
+            if (colon) bare = colon + 1;
+            int d2 = 0;
+            for (int k = 0; k < ncands; k++) if (strcmp(cands[k], bare) == 0) { d2 = 1; break; }
+            if (!d2 && ncands < 8) cands[ncands++] = strdup(bare);
+        } else {
+            char withpfx[256];
+            snprintf(withpfx, sizeof(withpfx), "custom:%s", p);
+            int d2 = 0;
+            for (int k = 0; k < ncands; k++) if (strcmp(cands[k], withpfx) == 0) { d2 = 1; break; }
+            if (!d2 && ncands < 8) cands[ncands++] = strdup(withpfx);
+        }
+        free(pl);
+    }
+
+    char *result = NULL;
+
+    /* 3. providers[name].base_url for any candidate */
+    const json_t *providers_cfg = json_obj_get(cfg, "providers");
+    if (providers_cfg && providers_cfg->type == JSON_OBJECT) {
+        for (int i = 0; i < ncands && !result; i++) {
+            const json_t *entry = json_obj_get(providers_cfg, cands[i]);
+            if (entry && entry->type == JSON_OBJECT) {
+                const json_t *bu = json_obj_get(entry, "base_url");
+                if (bu && bu->type == JSON_STRING) {
+                    char *b = ir_strip_dup(bu->str_val);
+                    if (b[0]) result = b; else free(b);
+                }
+            }
+        }
+    }
+
+    /* 4. custom_providers[] list, matched by name (exact or case-insensitive) */
+    if (!result) {
+        const json_t *custom = json_obj_get(cfg, "custom_providers");
+        if (custom && custom->type == JSON_ARRAY) {
+            /* lowered candidate set */
+            size_t clen = json_len(custom);
+            for (size_t e = 0; e < clen && !result; e++) {
+                const json_t *entry = json_get(custom, e);
+                if (!entry || entry->type != JSON_OBJECT) continue;
+                const json_t *nm = json_obj_get(entry, "name");
+                char *entry_name = ir_strip_dup(nm && nm->type == JSON_STRING ? nm->str_val : "");
+                char *entry_lower = ir_lower_dup(entry_name);
+                int match = 0;
+                for (int i = 0; i < ncands; i++) {
+                    if (strcmp(entry_name, cands[i]) == 0) { match = 1; break; }
+                    char *cl = ir_lower_dup(cands[i]);
+                    int hit = strcmp(entry_lower, cl) == 0;
+                    free(cl);
+                    if (hit) { match = 1; break; }
+                }
+                if (match) {
+                    const json_t *bu = json_obj_get(entry, "base_url");
+                    if (bu && bu->type == JSON_STRING) {
+                        char *b = ir_strip_dup(bu->str_val);
+                        if (b[0]) result = b; else free(b);
+                    }
+                }
+                free(entry_name); free(entry_lower);
+            }
+        }
+    }
+
+    for (int i = 0; i < ncands; i++) free(cands[i]);
+    free(prov_stripped); free(config_provider);
+    return result ? result : strdup("");
+}
+
+/* PoP: image_routing__should_probe_ollama_vision @ agent/image_routing.py:_should_probe_ollama_vision */
+/* True when the active provider likely fronts a local Ollama server. */
+bool image_routing__should_probe_ollama_vision(const char *provider, const char *base_url)
+{
+    char *p = ir_strip_dup(provider);
+    char *pl = ir_lower_dup(p);
+    int is_ollama = (strcmp(pl, "ollama") == 0);
+    free(p); free(pl);
+    if (is_ollama) return true;
+    if (!base_url || !base_url[0]) return false;
+    /* detect_local_server_type(base_url, api_key) == "ollama" */
+    char *stype = detect_local_server_type(base_url, NULL);
+    bool result = (stype && strcmp(stype, "ollama") == 0);
+    free(stype);
+    return result;
+}
+
+/* PoP: image_routing__transcode_to_png @ agent/image_routing.py:_transcode_to_png */
+/* Decode arbitrary image bytes and re-encode as PNG. There is no in-tree image
+ * codec (Python relies on the optional Pillow dependency, plus optional
+ * pillow-heif / pillow-avif plugins). Faithful to Python's ImportError branch:
+ * when no decoder is available this logs an informational message and returns
+ * NULL so the caller skips the image and the rest of the turn still works.
+ * *out_len is set to 0. Returns NULL. */
+unsigned char *image_routing__transcode_to_png(const unsigned char *raw, size_t raw_len, size_t *out_len)
+{
+    (void)raw; (void)raw_len;
+    if (out_len) *out_len = 0;
+    fprintf(stderr,
+        "[image_routing] no image codec available; cannot transcode "
+        "non-standard image format to PNG. (Python path uses Pillow "
+        "with pillow-heif / pillow-avif plugins.)\n");
+    return NULL;
 }

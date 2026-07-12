@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+struct json_t;
+
 /*
  * Image routing helpers for inbound user-attached images.
  *
@@ -143,5 +145,20 @@ const char *vision_detect_video_mime_type(const char *path);
  * Reads a video file, base64-encodes it, and returns a
  * "data:<mime>;base64,<encoded>" string. Caller must free(). */
 char *vision_video_to_base64_data_url(const char *path);
+
+/* Port of Python agent/image_routing.py _resolve_inference_base_url().
+ * Best-effort base URL for the active inference provider from a parsed JSON
+ * config object (or NULL). Returns malloc'd string (caller free()); "" when
+ * unresolved. */
+char *image_routing__resolve_inference_base_url(const struct json_t *cfg, const char *provider);
+
+/* Port of Python agent/image_routing.py _should_probe_ollama_vision().
+ * True when the active provider likely fronts a local Ollama server. */
+bool image_routing__should_probe_ollama_vision(const char *provider, const char *base_url);
+
+/* Port of Python agent/image_routing.py _transcode_to_png().
+ * Re-encode arbitrary image bytes as PNG. No in-tree codec exists (Python uses
+ * optional Pillow), so this returns NULL and sets *out_len=0 — caller skips. */
+unsigned char *image_routing__transcode_to_png(const unsigned char *raw, size_t raw_len, size_t *out_len);
 
 #endif /* HERMES_IMAGE_ROUTING_H */
