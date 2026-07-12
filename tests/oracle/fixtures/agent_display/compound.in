@@ -1,0 +1,1 @@
+cd /tmp && export FOO=bar && python3 train.py --epochs 5 > log.txt ; grep -r "loss" results/ | head -n 3
