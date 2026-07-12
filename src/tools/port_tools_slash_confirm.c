@@ -109,3 +109,18 @@ char *tools_slash_confirm_resolve(const char *session_key, const char *confirm_i
     if (!handler) return NULL;
     return handler(choice);
 }
+
+/* PoP: tools_slash_confirm_resolve_sync_compat @ tools/slash_confirm.py:resolve_sync_compat */
+/* Synchronous helper used by platform callback paths that run on a different
+ * thread than the event loop. Python schedules the async resolve() onto the
+ * given loop via safe_schedule_threadsafe and blocks up to 30s for the result;
+ * in the C port resolve() is already synchronous and thread-safe (guarded by
+ * the module lock inside lookup/clear), so this reduces to a direct, bounded
+ * call. The `loop` argument is accepted for signature parity and ignored.
+ * Returns malloc'd handler output or NULL. */
+char *tools_slash_confirm_resolve_sync_compat(void *loop, const char *session_key,
+                                              const char *confirm_id, const char *choice)
+{
+    (void)loop;
+    return tools_slash_confirm_resolve(session_key, confirm_id, choice, 0.0);
+}

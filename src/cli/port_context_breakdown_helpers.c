@@ -17,11 +17,14 @@
  */
 
 #include "hermes_json.h"
+#include "hermes_core_types.h"
+#include "hermes_memory.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
 #include <stdbool.h>
+#include <sys/stat.h>
 
 static char *json_escape_string(const char *s)
 {
@@ -298,4 +301,49 @@ char *context_breakdown_compute(const char *messages_json,
     free(system_prompt_text); free(split);
     if (splitj) json_free(splitj);
     return out;
+}
+
+/* PoP: context_breakdown__memory_blocks @ agent/context_breakdown.py:_memory_blocks */
+/* Extract (memory_block, user_block) from the agent for breakdown accounting.
+ * memory_block = the memory manager's system-prompt snapshot (when a memory
+ * store is attached); user_block = the USER.md profile content under
+ * hermes_home (when present). Both out params receive malloc'd strings (caller
+ * frees); each is set to a malloc'd "" when the corresponding source is empty
+ * or absent. Fail-open: any error leaves the block empty rather than raising. */
+void context_breakdown__memory_blocks(const agent_state_t *agent,
+                                      char **memory_block_out,
+                                      char **user_block_out)
+{
+    char *memory_block = NULL;
+    char *user_block = NULL;
+
+    if (agent) {
+        /* memory scope: format the attached memory store's snapshot. */
+        if (agent->memory) {
+            char *snap = memory_format_snapshot(agent->memory, agent->memory->search_limit);
+            if (snap) memory_block = snap;
+        }
+        /* user scope: read USER.md from hermes_home. */
+        if (agent->hermes_home[0]) {
+            char path[HERMES_PATH_MAX + 16];
+            snprintf(path, sizeof(path), "%s/USER.md", agent->hermes_home);
+            struct stat st;
+            if (stat(path, &st) == 0 && st.st_size > 0) {
+                FILE *fp = fopen(path, "rb");
+                if (fp) {
+                    user_block = malloc((size_t)st.st_size + 1);
+                    if (user_block) {
+                        size_t n = fread(user_block, 1, (size_t)st.st_size, fp);
+                        user_block[n] = '\0';
+                    }
+                    fclose(fp);
+                }
+            }
+        }
+    }
+
+    if (memory_block_out) *memory_block_out = memory_block ? memory_block : strdup("");
+    else free(memory_block);
+    if (user_block_out) *user_block_out = user_block ? user_block : strdup("");
+    else free(user_block);
 }
