@@ -330,6 +330,19 @@ char *build_memory_context_block(const char *raw_context);
  *  Built-in Storage Backend Constructors
  * ================================================================ */
 
+/* Storage backend vtable instances — defined in memory_storage.c,
+ * referenced by the manager constructors in memory.c. Declared extern
+ * so the storage-module split links. */
+extern memory_storage_vtable_t inmem_vtable;
+extern memory_storage_vtable_t file_vtable;
+extern memory_storage_vtable_t sqlite_vtable;
+
+/* Backend-internal search helper (defined in memory_storage.c, used by the
+ * manager's search path). Promoted from static for the split. */
+extern memory_entry_t *inmem_search_internal(memory_storage_t *st,
+                                           const char *query, int limit,
+                                           size_t *out_count);
+
 /* Initialize in-memory storage */
 bool memory_storage_inmem_init(memory_storage_t *st);
 
