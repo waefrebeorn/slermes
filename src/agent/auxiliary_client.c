@@ -1037,6 +1037,13 @@ void clear_runtime_main(void) {
     _rt_api_mode[0] = '\0';
 }
 
+/* Read-only accessor for the process-local runtime main base URL override.
+ * Mirrors Python agent/auxiliary_client._RUNTIME_MAIN_BASE_URL. Returns "" when
+ * unset. The returned pointer aliases module-static storage — do not free. */
+const char *get_runtime_main_base_url(void) {
+    return _rt_base_url;
+}
+
 /* Port of Python: _log_skip_unhealthy() (line 2284) */
 /* Rate-limited logging — emits at most once per 60s per label. */
 static struct { char label[64]; time_t last_logged; } _aux_skip_log[16];
