@@ -8,9 +8,71 @@
 
 #include "hermes_logger.h"
 #include "env_passthrough.h"
+#include "hermes_core_types.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+/* Cache for _load_config_passthrough (mirrors Python module global
+ * _config_passthrough — None until first load). */
+static char **_config_passthrough = NULL;
+static int   _config_passthrough_count = -1;   /* -1 => not yet loaded */
+
+int cli_tools_env_passthrough__is_hermes_provider_credential(const char *name);
+
+/* PoP: cli_tools_env_passthrough__load_config_passthrough @ tools/env_passthrough.py:_load_config_passthrough */
+/* Load tools.env_passthrough (terminal.env_passthrough) from config.yaml,
+ * filtering out Hermes-managed provider credentials, and cache the result.
+ * Returns the cached array via *out and count via *out_count. */
+void cli_tools_env_passthrough__load_config_passthrough(char ***out, int *out_count)
+{
+    if (out) *out = NULL;
+    if (out_count) *out_count = 0;
+    if (_config_passthrough_count >= 0) {
+        if (out) *out = _config_passthrough;
+        if (out_count) *out_count = _config_passthrough_count;
+        return;
+    }
+
+    /* First load: read terminal.env_passthrough (comma-separated). */
+    char **result = NULL;
+    int rcount = 0, rcap = 0;
+
+    hermes_config_t cfg;
+    memset(&cfg, 0, sizeof(cfg));
+    if (hermes_config_load(&cfg, NULL)) {
+        const char *raw = cfg.terminal.env_passthrough;
+        if (raw && raw[0]) {
+            char *buf = strdup(raw);
+            char *saveptr = NULL;
+            for (char *tok = strtok_r(buf, ",", &saveptr); tok; tok = strtok_r(NULL, ",", &saveptr)) {
+                /* strip whitespace */
+                while (*tok == ' ' || *tok == '\t') tok++;
+                size_t l = strlen(tok);
+                while (l > 0 && (tok[l-1]==' '||tok[l-1]=='\t'||tok[l-1]=='\n'||tok[l-1]=='\r')) tok[--l]='\0';
+                if (l == 0) continue;
+                /* Refuse Hermes-managed provider credentials (GHSA-rhgp-j443-p4rf). */
+                if (cli_tools_env_passthrough__is_hermes_provider_credential(tok)) {
+                    hermes_log(LOG_WARNING, "env_passthrough",
+                        "refusing to register Hermes provider credential from config: %s", tok);
+                    continue;
+                }
+                /* dedupe */
+                int dup = 0;
+                for (int d = 0; d < rcount; d++) if (strcmp(result[d], tok) == 0) { dup = 1; break; }
+                if (dup) continue;
+                if (rcount == rcap) { rcap = rcap ? rcap*2 : 8; result = realloc(result, rcap*sizeof(char*)); }
+                result[rcount++] = strdup(tok);
+            }
+            free(buf);
+        }
+    }
+
+    _config_passthrough = result;
+    _config_passthrough_count = rcount;
+    if (out) *out = _config_passthrough;
+    if (out_count) *out_count = _config_passthrough_count;
+}
 
 /* PoP: cli_tools_env_passthrough__get_allowed @ tools/env_passthrough.py:_get_allowed */
 
