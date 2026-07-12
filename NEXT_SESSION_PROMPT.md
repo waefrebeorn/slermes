@@ -62,18 +62,26 @@ prove C == LIVE Python byte-for-byte. Biggest:
 `gateway/platforms/yuanbao.py` (148, 31%), `hermes_cli/gateway.py` (142, 12%),
 `hermes_cli/kanban_db.py` (124, 29%).
 
-### Tier 4 — NEVER-STARTED modules (76 total; adjudicate NA vs REAL first)
+### Tier 4 — NEVER-STARTED modules (76 total — all REAL_GAP work)
 Top: `gateway/slash_commands.py` (56), `hermes_cli/cli_commands_mixin.py` (43),
 `agent/pet/generate/atlas.py` (33), `tools/read_extract.py` (15),
 `agent/learning_mutations.py` (15), `hermes_cli/dashboard_auth/*` (routes 14,
-cookies 14, middleware 8, token_auth 7). Some may be genuinely un-C-able
-runtime deps — apply the DOCTRINE below before demoting ANY to NA.
+cookies 14, middleware 8, token_auth 7). **There is no NA.** Every one of these
+is a rewrite-from-scratch-in-C task — that is the entire point of the project.
+Do not adjudicate anything as "not applicable"; implement it.
 
 ## NON-NEGOTIABLE DOCTRINE (from USER.md + skills — do not violate)
-1. **"Honest NA" demotion of a failable-in-C function is BANNED.** Rewriting
-   from scratch in C is the point of the project. NA only for genuinely
-   un-C-able external runtime deps (libwebkit, libcairo, asyncio loop, live
-   cloud/gateway at call time). Everything else = REAL_GAP, implement it.
+1. **THERE IS NO N/A.** Rewriting from scratch in C is the point of the project,
+   so nothing is "not applicable." Every Python feature not yet in C is
+   **REAL_GAP work** — implement it faithfully. This includes things earlier
+   revisions parked as "Python-only infra", "async", "SDK", "ABC", or
+   "un-C-able runtime dep": port the behavior (spawn a real thread for async,
+   call the real C SSL/socket/lib for a client, build the real vtable for an
+   ABC). If a genuine external runtime component cannot exist in the binary
+   (e.g. a live cloud endpoint that only exists at call time), you still port
+   ALL the surrounding logic and only the final syscall/handoff is the boundary
+   — never demote the whole function. NA is not a valid classification; the
+   scanner no longer emits it.
 2. **No façade fakes.** No `"not fully implemented in C port"` + `return NULL`,
    no `"In a real implementation, this would…"` comment-façade, no `void*`
    passthrough, no `touch_json()`. Read the Python, implement the real behavior.

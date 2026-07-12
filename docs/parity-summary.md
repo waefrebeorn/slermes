@@ -10,7 +10,6 @@
 | **REAL_GAP** | 4,732 | 48.6% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |
 | **PARTIAL** | 75 | 0.8% | C fn exists, no PoP annotation yet |
 | **STUB** | 0 | 0.0% | No stub functions remain |
-| **N/A** | 0 | 0.0% | No un-C-able runtime deps mislabeled |
 | **TOTAL** | 9,731 | 100% | All Python functions/methods scanned |
 
 > **This is a partial port, ~half done.** REAL_GAP is the honest count of Python
@@ -21,7 +20,7 @@
 ## History (older scans, for context)
 
 Older overall snapshot (end v551): PORTED 4,881 (50.2%), REAL_GAP 4,802 (49.3%),
-PARTIAL 48, STUB 0, N/A 0.
+PARTIAL 48, STUB 0 (N/A category since removed — there is no N/A).
 
 > **✓ RESIDUAL FACADE + NO-RETURN + THIN-FRAUD ERADICATION COMPLETE (v548):** on
 > top of v547's 110, v548 eradicated **95 more** fraudulent/dormant ports found by
@@ -83,26 +82,16 @@ PARTIAL 48, STUB 0, N/A 0.
 > 4,703), PORTED 4,994 (up 11). The "pure supply exhausted" claim was again
 > proven FALSE — 7 modules with existing port files still held pure leaves.
 
-## What Reached Zero Gaps
+## There is no N/A
 
-| Category | Previous Gaps | Previous Modules | Final State |
-|----------|--------------|-----------------|-------------|
-| **Pet system** | 77 gaps (8 modules) | constants, store, render, atlas, imagegen, etc. | ✅ 100% PORTED or N/A |
-| **Agent modules** | ~140 gaps (34 modules) | learning_graph, moa, verification, display, etc. | ✅ N/A (Python-only infra) |
-| **Gateway modules** | ~40 gaps (7 modules) | drain_control, scale_to_zero, relay, etc. | ✅ N/A (async Python infra) |
-| **Tool modules** | ~25 gaps (5 modules) | cu_doctor, permissions, project_tools, etc. | ✅ N/A (Python-specific) |
-| **CLI modules** | 10 gaps (3 modules) | journey.py, pets.py | ✅ 4 PoP annotations added |
-| **Cron modules** | 4 gaps | lifecycle_guard.py | ✅ N/A (cron guard) |
+Rewriting from scratch in C **is** the point of this project, so nothing is
+"not applicable." Every Python feature that is not yet reimplemented in C is
+**REAL_GAP work** — including modules that earlier revisions parked as
+"Python-only infra", "async Python", or "SDK/ABC". The scanner no longer emits
+an N/A class at all; it reports only PORTED / PARTIAL / STUB / REAL_GAP. Any
+older note below that called a subsystem "N/A" was reclassified as REAL_GAP.
 
-## How Gaps Were Closed
-
-### Batch 1 — Pet System (77 gaps closed)
-- 7 new C11 functions implemented: `pet_thumbs_dir`, `pet_is_petdex_host`, `pet_download_json`, `pet_write_spritesheet`, `pet_register_local_pet`, `pet_is_generated`, `pet_export_pet`
-- 6 Python-only modules marked INFRASTRUCTURE_ONLY (atlas, imagegen, orchestrate, prompts, render)
-
-### Batch 2 — Python-only Infra (272 gaps closed)
-- 49 modules added to INFRASTRUCTURE_ONLY in the scanner
-- 22 function-level NA patterns for auxiliary_client, api_server, base.py
+## How Gaps Were Closed (historical)
 
 ### Batch 3 — Missing PoP Annotations (8 gaps closed)
 - `json_obj_get` → auxiliary_client `_obj_get`
