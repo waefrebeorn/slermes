@@ -3,9 +3,36 @@
  */
 
 #include "hermes_logger.h"
+#include "hermes_agent.h"
+#include "hermes_core_types.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+/* PoP: cli_hermes_cli_prompt_size__build_inspection_agent @ hermes_cli/prompt_size.py:_build_inspection_agent */
+/* Construct an offline AIAgent for prompt inspection. Dummy api_key + base_url
+ * force the direct-construction path (no provider auto-detection, no network),
+ * matching the Python module: toolsets/platform come from the caller so the
+ * breakdown matches a real session. Returns a malloc'd agent_state_t or NULL. */
+agent_state_t *cli_hermes_cli_prompt_size__build_inspection_agent(const char *platform)
+{
+    hermes_config_t cfg;
+    memset(&cfg, 0, sizeof(cfg));
+    hermes_config_load(&cfg, NULL);
+
+    agent_state_t *agent = (agent_state_t *)calloc(1, sizeof(agent_state_t));
+    if (!agent) return NULL;
+
+    agent_configure_from_config(agent, &cfg);
+
+    /* Dummy credentials force the offline direct-construction path. */
+    snprintf(agent->llm.api_key, sizeof(agent->llm.api_key), "inspect-only");
+    snprintf(agent->llm.base_url, sizeof(agent->llm.base_url), "https://openrouter.ai/api/v1");
+    if (platform) {
+        snprintf(agent->platform, sizeof(agent->platform), "%s", platform);
+    }
+    return agent;
+}
 
 /* PoP: cli_hermes_cli_prompt_size__bytes @ hermes_cli/prompt_size.py:_bytes */
 

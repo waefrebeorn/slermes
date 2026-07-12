@@ -49,6 +49,24 @@ typedef struct {
 account_usage_snapshot_t *fetch_account_usage(const char *provider,
     const char *base_url, const char *api_key);
 
+/* Port of Python: agent/account_usage.py:CreditsView (dataclass) */
+#define CREDITS_VIEW_BALANCE_LINES_MAX 32
+typedef struct {
+    bool logged_in;
+    char *balance_lines[CREDITS_VIEW_BALANCE_LINES_MAX];
+    int balance_line_count;
+    char identity_line[512];   /* may be empty */
+    char topup_url[512];
+    bool depleted;
+} credits_view_t;
+
+/* Build the /credits view: balance block + identity line + top-up URL.
+ * Fetches the Nous portal account info (network boundary) and renders.
+ * Fail-open returns a view with logged_in=false. Caller must free via
+ * account_usage_free_credits_view(). */
+credits_view_t *account_usage_build_credits_view(bool markdown, double timeout);
+void account_usage_free_credits_view(credits_view_t *view);
+
 /* Free a snapshot returned by fetch_account_usage() */
 void account_usage_free(account_usage_snapshot_t *snap);
 
