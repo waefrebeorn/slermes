@@ -13,6 +13,7 @@
  * N/A: _require_azure_identity() — Python lazy install
  * N/A: reset_credential_cache() — Python lru_cache clear
  * N/A: EntraIdentityConfig dataclass — Python frozen dataclass
+ *      (EXCEPT __post_init__ — ported below as pure logic)
  * N/A: _build_default_credential() — Azure SDK DefaultAzureCredential constructor
  * N/A: build_credential() — Azure SDK + lru_cache wrapper
  * N/A: build_token_provider() — Azure SDK get_bearer_token_provider
@@ -35,3 +36,30 @@
  */
 
 #include "hermes_core_types.h"
+#include <string.h>
+#include <ctype.h>
+
+/* PoP: agent_azure_identity_adapter_entra_identity_config_post_init @ agent/azure_identity_adapter.py:EntraIdentityConfig.__post_init__ */
+/* Frozen-dataclass __post_init__: normalize scope — strip() it, falling back to
+ * the documented Foundry default when empty/None. The C port takes the raw
+ * scope string and writes the normalized form into out[] (caller-allocated). */
+void agent_azure_identity_adapter_entra_identity_config_post_init(
+    const char *scope, char *out, size_t outsz)
+{
+    static const char *DEFAULT = "https://ai.azure.com/.default";
+    if (!out || outsz == 0) return;
+
+    /* str(scope or "") */
+    const char *s = scope ? scope : "";
+    /* strip() leading/trailing whitespace */
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    size_t L = strlen(s);
+    while (L > 0 && (s[L-1]==' '||s[L-1]=='\t'||s[L-1]=='\n'||s[L-1]=='\r')) L--;
+    if (L == 0) {
+        snprintf(out, outsz, "%s", DEFAULT);
+        return;
+    }
+    if (L >= outsz) L = outsz - 1;
+    memcpy(out, s, L);
+    out[L] = '\0';
+}
