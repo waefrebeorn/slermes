@@ -75,6 +75,7 @@ const char *commands_list_json(void);
 int approval_check(const char *tool_name, const char *args_json);
 void approval_reset_session(void);
 void approval_set_yolo(bool enabled);  /* When true, skip all approval prompts */
+bool approval_is_yolo_enabled(void);   /* PoP: tools/approval.py:is_current_session_yolo_enabled */
 void approval_set_allowlist_path(const char *path);
 void approval_load_allowlist(void);
 void approval_save_allowlist(void);

@@ -94,6 +94,12 @@ void approval_set_yolo(bool enabled) {
     g_yolo_approval = enabled;
 }
 
+/* PoP: approval_is_yolo_enabled @ tools/approval.py:is_current_session_yolo_enabled */
+/* Returns whether yolo (skip-all-approvals) mode is active for the session. */
+bool approval_is_yolo_enabled(void) {
+    return g_yolo_approval;
+}
+
 /* Set allowlist file path (called during init) */
 /* AG26: Port of Python tools/approval.py:load_permanent_allowlist() / save_permanent_allowlist() (path config). */
 void approval_set_allowlist_path(const char *path) {
@@ -541,6 +547,14 @@ typedef struct {
     const char *tool_name;
     const char *args_json;
 } tool_invocation_t;
+
+/* PoP: approval_check_all_command_guards @ tools/approval.py:check_all_command_guards */
+/* Run all command guards (hardline, sudo-stdin, sensitive-path) for a tool
+ * invocation. The C implementation folds this into approval_check, so we
+ * delegate. Returns 1=approved, 0=denied, -1=not dangerous. */
+int approval_check_all_command_guards(const char *tool_name, const char *args_json) {
+    return approval_check(tool_name, args_json);
+}
 
 /* Check if a tool invocation needs approval.
    Returns: 1 = approved, 0 = denied, -1 = not dangerous */
