@@ -11,6 +11,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* Declared in port_tools_credential_files.c (no dedicated header). Returns a
+ * JSON array of registered host credential-file mounts (empty when none). */
+extern json_node_t *cli_tools_credential_files_get_credential_file_mounts(void);
+
 /* Timeout configuration defaults */
 static double g_connect_timeout = 1.0;
 static double g_poll_read_timeout = 5.0;
@@ -175,4 +179,25 @@ json_node_t* cli_tools_environments_managed_modal__format_error(const char *pref
     hermes_log(LOG_WARNING, "managed_modal",
                "_format_error: %s (HTTP %d)", prefix ? prefix : "Error", status_code);
     return err;
+}
+
+/* PoP: cli_tools_environments_managed_modal__guard_unsupported_credential_passthrough @ tools/environments/managed_modal.py:_guard_unsupported_credential_passthrough */
+/* Managed Modal does not sync or mount host credential files. If any host
+ * credential-file mounts are registered, refuse (the Python raises ValueError).
+ * Returns 0 when safe to proceed, -1 when passthrough is unsupported (caller
+ * should surface the guidance to use TERMINAL_MODAL_MODE=direct). */
+int cli_tools_environments_managed_modal__guard_unsupported_credential_passthrough(void)
+{
+    json_node_t *mounts = cli_tools_credential_files_get_credential_file_mounts();
+    if (!mounts) return 0;  /* couldn't enumerate → fail open, matching Python */
+    int count = json_array_count(mounts);
+    json_free(mounts);
+    if (count > 0) {
+        hermes_log(LOG_ERROR, "managed_modal",
+            "Managed Modal does not support host credential-file passthrough. "
+            "Use TERMINAL_MODAL_MODE=direct when skills or config require "
+            "credential files inside the sandbox.");
+        return -1;
+    }
+    return 0;
 }
