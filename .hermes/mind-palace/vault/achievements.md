@@ -218,3 +218,25 @@ warning. No banned void* passthroughs, no `In a real implementation` façades.
 **Parity:** scanner unchanged 4,884 PORTED / 4,774 REAL_GAP / 73 PARTIAL (all PoP annotations preserved); `COMMANDS[]` table intact (1 occurrence).
 **Commit:** `d562a040da` — pushed to `origin/main`.
 **Discipline:** real fixes only, no stubs, no void* passthroughs.
+
+## v571 — Pure-Transform Gap Closure (17 funcs / 6 modules)
+
+**What happened:** Continued the REAL_GAP closure pass with pure-transform modules
+(no config/network/async deps). Ported 17 functions with faithful C11 + `/* PoP: */`
+annotations, each with an oracle harness (`t_port_*.c` + `sta_oracle_*.py`) verified
+0 mismatches vs live Python.
+
+**Modules + functions:**
+- agent/reasoning_timeouts.py (3): `_get_pattern`, `_match_any`, `get_reasoning_stale_timeout_floor`
+- agent/replay_cleanup.py (4): `is_interrupted_tool_result`, `strip_interrupted_tool_tails`, `strip_dangling_tool_call_tail`, `sanitize_replay_history`
+- agent/retry_utils.py (3): `_error_text`, `is_zai_coding_overload_error`, `adaptive_rate_limit_backoff`
+- agent/thinking_timeout_guidance.py (2): `is_thinking_timeout` (reuses reasoning_timeouts floor), `build_thinking_timeout_guidance`
+- agent/agent_runtime_helpers.py (2): `intent_ack_continuation_mode`, `intent_ack_continuation_enabled` — refactored to explicit (mode/api_mode/model) args
+- gateway/cgroup_cleanup.py (3): `_own_cgroup_path`, `_read_cgroup_pids`, `reap_cgroup`
+
+**Build:** `make slermes` → EXIT=0, 42 MB binary. **Tests:** Mission 8 → 36/0/35.
+**Parity:** 4,884 → 4,901 PORTED (+17); 4,774 → 4,757 REAL_GAP (−17). All 17 target funcs flipped to PORTED.
+**Tooling fix:** `tests/run_one_oracle.sh` gained `-I src` so port headers (cli/port_*.h) resolve for oracle harnesses.
+**Commits:** `4f251d383a`, `5e2207647d` — pushed to `origin/main`.
+**Discipline:** faithful ports, no stubs, no `In a real implementation` façades; oracles prove behavior matches Python exactly.
+
