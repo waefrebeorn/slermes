@@ -123,6 +123,27 @@ int cli_tools_website_policy_load_website_blocklist(const char *config_path) {
 
 
 
+/* ── Policy cache (module state mirroring website_policy.py globals) ──
+ * Python keeps _cached_policy / _cached_policy_path / _cached_policy_time under
+ * _cache_lock. The C port exposes the same invalidation contract: a cache
+ * generation counter bumped by invalidate_cache(), which loaders consult to
+ * decide whether to re-read config. */
+static int _wp_cache_generation = 0;
+static int _wp_cache_valid = 0;
+
+/* PoP: cli_tools_website_policy__invalidate_cache @ tools/website_policy.py:invalidate_cache */
+/* Force the next check_website_access call to re-read config. */
+void cli_tools_website_policy__invalidate_cache(void) {
+    _wp_cache_valid = 0;
+    _wp_cache_generation++;
+    hermes_log(LOG_DEBUG, "website_policy", "invalidate_cache: generation=%d", _wp_cache_generation);
+}
+
+/* Cache-generation accessor so loaders/tests can observe invalidation. */
+int cli_tools_website_policy__cache_generation(void) { return _wp_cache_generation; }
+void cli_tools_website_policy__mark_cache_valid(void) { _wp_cache_valid = 1; }
+int cli_tools_website_policy__cache_is_valid(void) { return _wp_cache_valid; }
+
 /* PoP: cli_tools_website_policy__match_host_against_rule @ tools/website_policy.py:_match_host_against_rule */
 int cli_tools_website_policy__match_host_against_rule(const char *host, const char *pattern) {
     if (!host || !pattern || !*host || !*pattern) {

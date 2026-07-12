@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define MAX_TODO_CONTENT_CHARS 4000
 #define MAX_TODO_ITEMS 256
@@ -23,6 +24,12 @@ typedef struct {
 
 static TodoItem _items[MAX_ITEMS];
 static int _item_count = 0;
+
+/* PoP: todo_tool_check_requirements @ tools/todo_tool.py:check_todo_requirements */
+/* Todo tool has no external requirements — always available. */
+bool todo_tool_check_requirements(void) {
+    return true;
+}
 
 /* PoP: todo_tool_has_items @ tools/todo_tool.py:has_items */
 

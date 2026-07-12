@@ -46,8 +46,8 @@ void hermes_cli_mcp_security_inline_script(const char *args_json, char *out, siz
     snprintf(out, outsz, "%s", args_json);
 }
 
-/* PoP: hermes_cli_mcp_security__entry_text @ hermes_cli/mcp_security.py:_entry_text
- * entry is passed as "command\x1fargs\x1fenv1\x1fenv2..." (unit sep between fields). */
+/* PoP: hermes_cli_mcp_security__entry_text @ hermes_cli/mcp_security.py:_entry_text */
+/* entry is passed as "command\x1fargs\x1fenv1\x1fenv2..." (unit sep between fields). */
 void hermes_cli_mcp_security_entry_text(const char *entry, char *out, size_t outsz)
 {
     if (!entry) { if (outsz) out[0] = '\0'; return; }
