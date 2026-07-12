@@ -358,3 +358,198 @@ char *cli_tools_schema_sanitizer_strip_nullable_unions(const char *json_input)
     json_free(copy);
     return result ? result : strdup("{}");
 }
+
+/* PoP: cli_tools_schema_sanitizer__strip_pattern_and_format @ tools/schema_sanitizer.py:strip_pattern_and_format */
+
+/* Port of Python tools/schema_sanitizer.py:strip_pattern_and_format
+ * Recursively rebuild the JSON tree, dropping "pattern"/"format" keywords
+ * only when their containing object is itself a schema node (has a "type",
+ * "anyOf", "oneOf" or "allOf" sibling key). Returns the (rebuilt)
+ * serialized tools JSON; *out_stripped receives the removal count.
+ * Caller frees the returned string. */
+static json_t *strip_pf_walk(json_t *node, int *stripped)
+{
+    if (!node) return NULL;
+    if (node->type == JSON_OBJECT) {
+        int is_schema = 0;
+        for (size_t i = 0; i < node->c.count; i++) {
+            const char *k = node->c.keys[i];
+            if (k && (strcmp(k, "type") == 0 || strcmp(k, "anyOf") == 0 ||
+                      strcmp(k, "oneOf") == 0 || strcmp(k, "allOf") == 0)) {
+                is_schema = 1; break;
+            }
+        }
+        json_t *out = json_object();
+        for (size_t i = 0; i < node->c.count; i++) {
+            const char *k = node->c.keys[i];
+            if (!k) continue;
+            if (is_schema &&
+                (strcmp(k, "pattern") == 0 || strcmp(k, "format") == 0)) {
+                (*stripped)++;
+                continue;
+            }
+            json_t *v = strip_pf_walk(node->c.items[i], stripped);
+            json_set(out, k, v ? v : json_null());
+        }
+        return out;
+    }
+    if (node->type == JSON_ARRAY) {
+        json_t *out = json_array();
+        size_t n = json_len(node);
+        for (size_t i = 0; i < n; i++) {
+            json_t *v = strip_pf_walk(json_get(node, i), stripped);
+            json_append(out, v ? v : json_null());
+        }
+        return out;
+    }
+    return json_copy(node);
+}
+
+char *cli_tools_schema_sanitizer__strip_pattern_and_format(const char *tools_json, int *out_stripped)
+{
+    if (out_stripped) *out_stripped = 0;
+    if (!tools_json || !tools_json[0]) return strdup("[]");
+
+    char *err = NULL;
+    json_t *root = json_parse(tools_json, &err);
+    if (!root) { if (err) free(err); return strdup("[]"); }
+
+    int stripped = 0;
+    json_t *out = json_array();
+    if (root->type == JSON_ARRAY) {
+        size_t n = json_len(root);
+        for (size_t i = 0; i < n; i++) {
+            json_t *tool = json_get(root, i);
+            if (!tool || tool->type != JSON_OBJECT) {
+                json_append(out, json_copy(tool));
+                continue;
+            }
+            json_t *params = NULL;
+            json_t *fn = json_obj_get(tool, "function");
+            if (fn && fn->type == JSON_OBJECT) {
+                params = json_obj_get(fn, "parameters");
+            }
+            if (!params) params = json_obj_get(tool, "parameters");
+            if (params && params->type == JSON_OBJECT) {
+                json_t *walked = strip_pf_walk(params, &stripped);
+                json_t *new_tool = json_copy(tool);
+                if (fn && fn->type == JSON_OBJECT) {
+                    json_t *nf = json_obj_get(new_tool, "function");
+                    json_set(nf, "parameters", walked ? walked : json_object());
+                } else {
+                    json_set(new_tool, "parameters", walked ? walked : json_object());
+                }
+                json_append(out, new_tool);
+            } else {
+                json_append(out, json_copy(tool));
+            }
+        }
+    }
+    json_free(root);
+    char *result = json_serialize(out);
+    json_free(out);
+    if (out_stripped) *out_stripped = stripped;
+    return result ? result : strdup("[]");
+}
+
+/* PoP: cli_tools_schema_sanitizer__strip_slash_enum @ tools/schema_sanitizer.py:strip_slash_enum */
+
+/* Port of Python tools/schema_sanitizer.py:strip_slash_enum
+ * Recursively rebuild, dropping any "enum" array that contains a string
+ * value with a '/'. Returns serialized tools JSON; *out_stripped gets the
+ * removal count. Caller frees the returned string. */
+static int json_array_contains_slash_string(json_t *arr)
+{
+    if (!arr || arr->type != JSON_ARRAY) return 0;
+    size_t n = json_len(arr);
+    for (size_t i = 0; i < n; i++) {
+        json_t *v = json_get(arr, i);
+        if (v && v->type == JSON_STRING && v->str_val && strchr(v->str_val, '/'))
+            return 1;
+    }
+    return 0;
+}
+
+static json_t *strip_se_walk(json_t *node, int *stripped)
+{
+    if (!node) return NULL;
+    if (node->type == JSON_OBJECT) {
+        json_t *enum_node = json_obj_get(node, "enum");
+        if (enum_node && json_array_contains_slash_string(enum_node)) {
+            (*stripped)++;
+            json_t *out = json_object();
+            for (size_t i = 0; i < node->c.count; i++) {
+                const char *k = node->c.keys[i];
+                if (!k) continue;
+                if (strcmp(k, "enum") == 0) continue;
+                json_t *v = strip_se_walk(node->c.items[i], stripped);
+                json_set(out, k, v ? v : json_null());
+            }
+            return out;
+        }
+        json_t *out = json_object();
+        for (size_t i = 0; i < node->c.count; i++) {
+            const char *k = node->c.keys[i];
+            if (!k) continue;
+            json_t *v = strip_se_walk(node->c.items[i], stripped);
+            json_set(out, k, v ? v : json_null());
+        }
+        return out;
+    }
+    if (node->type == JSON_ARRAY) {
+        json_t *out = json_array();
+        size_t n = json_len(node);
+        for (size_t i = 0; i < n; i++) {
+            json_t *v = strip_se_walk(json_get(node, i), stripped);
+            json_append(out, v ? v : json_null());
+        }
+        return out;
+    }
+    return json_copy(node);
+}
+
+char *cli_tools_schema_sanitizer__strip_slash_enum(const char *tools_json, int *out_stripped)
+{
+    if (out_stripped) *out_stripped = 0;
+    if (!tools_json || !tools_json[0]) return strdup("[]");
+
+    char *err = NULL;
+    json_t *root = json_parse(tools_json, &err);
+    if (!root) { if (err) free(err); return strdup("[]"); }
+
+    int stripped = 0;
+    json_t *out = json_array();
+    if (root->type == JSON_ARRAY) {
+        size_t n = json_len(root);
+        for (size_t i = 0; i < n; i++) {
+            json_t *tool = json_get(root, i);
+            if (!tool || tool->type != JSON_OBJECT) {
+                json_append(out, json_copy(tool));
+                continue;
+            }
+            json_t *params = NULL;
+            json_t *fn = json_obj_get(tool, "function");
+            if (fn && fn->type == JSON_OBJECT)
+                params = json_obj_get(fn, "parameters");
+            if (!params) params = json_obj_get(tool, "parameters");
+            if (params && params->type == JSON_OBJECT) {
+                json_t *walked = strip_se_walk(params, &stripped);
+                json_t *new_tool = json_copy(tool);
+                if (fn && fn->type == JSON_OBJECT) {
+                    json_t *nf = json_obj_get(new_tool, "function");
+                    json_set(nf, "parameters", walked ? walked : json_object());
+                } else {
+                    json_set(new_tool, "parameters", walked ? walked : json_object());
+                }
+                json_append(out, new_tool);
+            } else {
+                json_append(out, json_copy(tool));
+            }
+        }
+    }
+    json_free(root);
+    char *result = json_serialize(out);
+    json_free(out);
+    if (out_stripped) *out_stripped = stripped;
+    return result ? result : strdup("[]");
+}

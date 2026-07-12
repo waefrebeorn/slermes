@@ -28,7 +28,7 @@ LIBINCS=$(grep -oE 'lib/lib[a-z0-9_]+' build/libs-config.mk | sed 's#^#-I #' | t
 OBJSET=$(find src lib -name '*.o' ! -name 'main.o' | tr '\n' ' ')
 TMPH=$(mktemp -d); mkdir -p "$TMPH/.hermes/cron"
 
-gcc -O2 -std=gnu11 -D_GNU_SOURCE -I include -I src $LIBINCS \
+gcc -O2 -std=gnu11 -D_GNU_SOURCE -I include -I src -I src/cli -I src/agent $LIBINCS \
   "$HARNESS" $OBJSET -o "/tmp/tt_$NAME" \
   -lstdc++ -lm -ldl -lpthread -lz -lpcre2-8 -lssl -lcrypto \
   -Wl,--allow-multiple-definition 2>&1 | grep -iE 'error|undefined' || true
@@ -36,8 +36,10 @@ gcc -O2 -std=gnu11 -D_GNU_SOURCE -I include -I src $LIBINCS \
 FAIL=0
 for f in "$FIX"/*.in; do
   case="$(basename "$f" .in)"
-  SLERMES_HOME="$TMPH" HOME="$TMPH" "/tmp/tt_$NAME" "$f" > "/tmp/oracle_${NAME}_c_${case}.json" 2>/dev/null
-  python3 "$ORACLE" "$f" > "/tmp/oracle_${NAME}_py_${case}.json" 2>/dev/null
+  extra=""
+  [ -f "$FIX/args.$case" ] && extra="$(cat "$FIX/args.$case")"
+  SLERMES_HOME="$TMPH" HOME="$TMPH" "/tmp/tt_$NAME" "$f" $extra > "/tmp/oracle_${NAME}_c_${case}.json" 2>/dev/null
+  python3 "$ORACLE" "$f" $extra > "/tmp/oracle_${NAME}_py_${case}.json" 2>/dev/null
   if diff -q "/tmp/oracle_${NAME}_c_${case}.json" "/tmp/oracle_${NAME}_py_${case}.json" >/dev/null; then
     echo "$case: MATCH"
   else

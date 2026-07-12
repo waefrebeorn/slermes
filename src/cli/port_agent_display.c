@@ -300,3 +300,127 @@ int cli_agent_display__is_shell_boundary_echo(const char *segment)
 {
     return _cli_is_shell_boundary_echo(segment);
 }
+
+/* PoP: cli_agent_display__oneline @ agent/display.py:_oneline */
+/* Collapse all whitespace (incl. newlines) to single spaces between runs,
+ * matching Python " ".join(text.split()). Caller frees. */
+static char *_cli_oneline(const char *text)
+{
+    if (!text) return strdup("");
+    size_t len = strlen(text);
+    char *out = malloc(len + 1);
+    size_t o = 0;
+    int need_space = 0; /* a space is due before the next non-ws char */
+    for (size_t i = 0; i < len; i++) {
+        char c = text[i];
+        if (c == ' ' || c == '\t' || c == '\n' ||
+            c == '\r' || c == '\f' || c == '\v') {
+            need_space = 1;
+            continue;
+        }
+        if (need_space && o > 0) out[o++] = ' ';
+        out[o++] = c;
+        need_space = 0;
+    }
+    out[o] = '\0';
+    return out;
+}
+
+/* PoP: cli_agent_display__shell_head_word @ agent/display.py:_shell_head_word */
+/* First non-KEY= word, reduced to its basename. Caller frees. */
+static char *_cli_shell_head_word(const char *segment)
+{
+    if (!segment) return strdup("");
+    int n = 0;
+    char **words = _cli_split_shell_words(segment, &n);
+    int index = 0;
+    while (index < n) {
+        char *w = words[index];
+        /* matches regex ^[A-Za-z_]\w*= (a VAR= assignment) */
+        int is_assign = 0;
+        if (w && w[0] && ((w[0] >= 'A' && w[0] <= 'Z') || (w[0] >= 'a' && w[0] <= 'z') || w[0] == '_')) {
+            size_t k = 1;
+            for (; w[k] && w[k] != '='; k++) {
+                char c = w[k];
+                if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
+                      (c >= '0' && c <= '9') || c == '_')) break;
+            }
+            if (w[k] == '=') is_assign = 1;
+        }
+        if (!is_assign) break;
+        index++;
+    }
+    const char *chosen = (index < n) ? words[index] : "";
+    char *bn = _shell_basename(chosen);
+    for (int i = 0; i < n; i++) free(words[i]);
+    free(words);
+    return bn; /* bn is a fresh strdup, caller frees */
+}
+
+/* PoP: cli_agent_display__summarize_shell_command @ agent/display.py:summarize_shell_command */
+
+/* Silent compound-command heads (see _SHELL_SILENT_HEADS). */
+static const char *CLI_SHELL_SILENT_HEADS[] = {
+    "cd", "pushd", "popd", "export", "set", "unset", "source", ".", "true", "false", ":", NULL
+};
+static int _cli_is_silent_head(const char *h)
+{
+    if (!h) return 0;
+    for (int i = 0; CLI_SHELL_SILENT_HEADS[i]; i++)
+        if (strcmp(h, CLI_SHELL_SILENT_HEADS[i]) == 0) return 1;
+    return 0;
+}
+
+/* Compact shell wrapper/plumbing for display while preserving raw command
+ * elsewhere. Caller frees the returned string. */
+char *cli_agent_display__summarize_shell_command(const char *command)
+{
+    char *original = _cli_oneline(command ? command : "");
+    if (!original || !original[0]) { free(original); return strdup(""); }
+
+    int nseg = 0;
+    char **segments = _cli_split_shell_compound(original, &nseg);
+    if (nseg <= 1) {
+        char *cleaned = (nseg == 1) ? _cli_clean_shell_segment(segments[0]) : strdup(original);
+        char *res = (cleaned && cleaned[0]) ? cleaned : strdup(original);
+        for (int i = 0; i < nseg; i++) free(segments[i]);
+        free(segments); free(original);
+        return res;
+    }
+
+    char **core = malloc((size_t)nseg * sizeof(char *));
+    int core_n = 0;
+    for (int s = 0; s < nseg; s++) {
+        char *cleaned = _cli_clean_shell_segment(segments[s]);
+        char *head = _cli_shell_head_word(cleaned);
+        int keep = cleaned && cleaned[0] && !_cli_is_silent_head(head) &&
+                   !_cli_is_shell_boundary_echo(cleaned);
+        if (keep) core[core_n++] = cleaned;
+        else free(cleaned);
+        free(head);
+    }
+    for (int i = 0; i < nseg; i++) free(segments[i]);
+    free(segments); free(original);
+
+    if (core_n == 0) { free(core); return strdup(""); }
+
+    char *res;
+    if (core_n == 1) {
+        res = core[0]; /* transfer ownership */
+    } else {
+        int count = core_n - 1;
+        size_t cap = 0;
+        for (int i = 0; i < core_n; i++) cap += strlen(core[i]) + 1;
+        cap += 32;
+        res = malloc(cap);
+        res[0] = '\0';
+        strcat(res, core[0]);
+        char num[16];
+        snprintf(num, sizeof(num), " + %d ", count);
+        strcat(res, num);
+        strcat(res, (count == 1) ? "command" : "commands");
+        for (int i = 1; i < core_n; i++) free(core[i]);
+    }
+    free(core);
+    return res;
+}
