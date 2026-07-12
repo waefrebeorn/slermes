@@ -27,6 +27,7 @@ PORT_OBJ = \
     src/cli/port_agent_onboarding.o \
     src/cli/port_agent_plugin_llm.o \
     src/cli/port_agent_skill_utils.o \
+    src/cli/port_agent_reasoning_timeouts.o \
     src/cli/port_agent_tool_executor.o \
     src/cli/port_agent_tool_guardrails.o \
     src/cli/port_agent_transcription_provider.o \
