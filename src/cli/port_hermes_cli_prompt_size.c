@@ -2,7 +2,6 @@
  * port_hermes_cli_prompt_size.c — C port of hermes_cli/prompt_size.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

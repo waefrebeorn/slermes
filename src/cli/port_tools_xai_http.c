@@ -2,7 +2,6 @@
  * port_tools_xai_http.c — C port of tools/xai_http.c
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

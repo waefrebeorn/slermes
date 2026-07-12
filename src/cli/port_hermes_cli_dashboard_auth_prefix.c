@@ -2,7 +2,6 @@
  * port_hermes_cli_dashboard_auth_prefix.c — C port of hermes_cli/dashboard_auth/prefix.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

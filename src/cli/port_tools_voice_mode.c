@@ -4,8 +4,8 @@
  * Voice mode audio capture and processing.
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

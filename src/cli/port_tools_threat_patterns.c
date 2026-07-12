@@ -2,7 +2,6 @@
  * port_tools_threat_patterns.c — C port of tools/threat_patterns.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

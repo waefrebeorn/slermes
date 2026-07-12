@@ -2,7 +2,6 @@
  * port_agent_tool_executor.c — C port of agent/tool_executor.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

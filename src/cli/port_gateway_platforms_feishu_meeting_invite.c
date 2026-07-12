@@ -5,7 +5,6 @@
  * Processes vc.bot.meeting_invited_v1 events into synthetic gateway MessageEvents.
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

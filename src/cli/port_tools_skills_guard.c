@@ -2,7 +2,6 @@
  * port_tools_skills_guard.c — C port of tools/skills_guard.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

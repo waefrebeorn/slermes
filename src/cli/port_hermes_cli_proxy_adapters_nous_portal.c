@@ -2,7 +2,6 @@
  * port_hermes_cli_proxy_adapters_nous_portal.c — C port of hermes_cli/proxy/adapters/nous_portal.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

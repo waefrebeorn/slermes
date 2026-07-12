@@ -2,7 +2,6 @@
  * port_tools_website_policy.c — C port of tools/website_policy.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

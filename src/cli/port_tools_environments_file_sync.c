@@ -6,8 +6,8 @@
  * and syncs to remote environments transactionally.
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
+#include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

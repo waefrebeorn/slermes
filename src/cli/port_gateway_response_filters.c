@@ -2,7 +2,6 @@
  * port_gateway_response_filters.c — C port of gateway/response_filters.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

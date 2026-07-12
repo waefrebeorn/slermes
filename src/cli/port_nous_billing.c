@@ -7,7 +7,6 @@
 #ifndef SRC_CLI_PORT_NOUS_BILLING_C
 #define SRC_CLI_PORT_NOUS_BILLING_C
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include "hermes_json.h"
 #include "hermes_billing.h"

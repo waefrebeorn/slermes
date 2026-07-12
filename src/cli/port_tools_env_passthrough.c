@@ -6,7 +6,6 @@
  * Hermes provider credentials are blocked to prevent credential exfiltration.
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include "env_passthrough.h"
 #include <stdio.h>

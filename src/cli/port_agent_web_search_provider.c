@@ -2,7 +2,6 @@
  * port_agent_web_search_provider.c — C port of agent/web_search_provider.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

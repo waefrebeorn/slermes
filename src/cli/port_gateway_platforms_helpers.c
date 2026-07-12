@@ -4,7 +4,6 @@
  * Shared helper classes for gateway platform adapters.
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

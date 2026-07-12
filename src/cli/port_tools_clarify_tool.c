@@ -2,7 +2,6 @@
  * port_tools_clarify_tool.c — C port of tools/clarify_tool.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

@@ -2,7 +2,6 @@
  * port_gateway_channel_directory.c — C port of gateway/channel_directory.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

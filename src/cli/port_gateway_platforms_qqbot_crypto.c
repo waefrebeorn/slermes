@@ -2,7 +2,6 @@
  * port_gateway_platforms_qqbot_crypto.c — C port of gateway/platforms/qqbot/crypto.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include "libbase64/base64.h"
 #include "libcrypto/crypto.h"

@@ -2,7 +2,6 @@
  * port_tools_osv_check.c — C port of tools/osv_check.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

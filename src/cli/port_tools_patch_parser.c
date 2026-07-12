@@ -2,7 +2,6 @@
  * port_tools_patch_parser.c — C port of tools/patch_parser.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

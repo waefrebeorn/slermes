@@ -2,7 +2,6 @@
  * port_agent_onboarding.c — C port of agent/onboarding.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

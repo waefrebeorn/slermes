@@ -2,7 +2,6 @@
  * port_agent_transcription_provider.c — C port of agent/transcription_provider.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

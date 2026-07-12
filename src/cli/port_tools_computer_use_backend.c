@@ -2,7 +2,6 @@
  * port_tools_computer_use_backend.c — C port of tools/computer_use/backend.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

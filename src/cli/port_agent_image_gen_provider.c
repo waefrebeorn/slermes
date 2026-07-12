@@ -2,7 +2,6 @@
  * port_agent_image_gen_provider.c — C port of agent/image_gen_provider.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

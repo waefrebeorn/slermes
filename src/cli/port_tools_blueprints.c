@@ -5,7 +5,6 @@
  * A blueprint is an ordinary skill that declares an automation schedule.
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include "slermes_home.h"
 #include <stdio.h>

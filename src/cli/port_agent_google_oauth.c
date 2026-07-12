@@ -5,7 +5,6 @@
  * Implements OAuth flow for Google/Gemini API access.
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include "libhttp/http.h"
 #include "libjson/json.h"

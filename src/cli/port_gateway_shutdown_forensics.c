@@ -2,7 +2,6 @@
  * port_gateway_shutdown_forensics.c — C port of gateway/shutdown_forensics.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include "hermes_json.h"
 #include <stdio.h>

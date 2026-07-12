@@ -5,7 +5,6 @@
  * Connects to Twilio REST API for outbound SMS and webhook server for inbound.
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include "libbase64/base64.h"
 #include "libcrypto/crypto.h"

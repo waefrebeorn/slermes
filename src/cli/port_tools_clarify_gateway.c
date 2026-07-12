@@ -15,7 +15,6 @@
  *   2. Text fallback — adapters without rich UI render a numbered list.
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

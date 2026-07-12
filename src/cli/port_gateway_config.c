@@ -2,7 +2,6 @@
  * port_gateway_config.c — C port of gateway/config.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include "hermes_gateway_config.h"
 #include <stdio.h>

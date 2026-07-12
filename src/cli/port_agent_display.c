@@ -2,7 +2,6 @@
  * port_agent_display.c — C port of agent/display.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

@@ -5,8 +5,8 @@
  * Fixes known-hostile constructs that cause strict backends to reject tool schemas.
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
+#include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

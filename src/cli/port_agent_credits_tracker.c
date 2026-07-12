@@ -2,7 +2,6 @@
  * port_agent_credits_tracker.c — C port of agent/credits_tracker.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

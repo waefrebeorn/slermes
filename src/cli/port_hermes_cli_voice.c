@@ -2,7 +2,6 @@
  * port_hermes_cli_voice.c — C port of hermes_cli/voice.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

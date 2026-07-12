@@ -6,7 +6,7 @@
  * _read_cgroup_pids, reap_cgroup.
  */
 
-#include "hermes.h"
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

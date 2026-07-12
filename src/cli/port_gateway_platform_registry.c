@@ -2,7 +2,6 @@
  * port_gateway_platform_registry.c — C port of gateway/platform_registry.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

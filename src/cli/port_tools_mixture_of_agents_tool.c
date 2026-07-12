@@ -2,7 +2,6 @@
  * port_tools_mixture_of_agents_tool.c — C port of tools/mixture_of_agents_tool.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

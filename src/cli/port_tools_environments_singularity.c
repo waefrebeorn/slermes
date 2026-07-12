@@ -2,7 +2,6 @@
  * port_tools_environments_singularity.c — C port of tools/environments/singularity.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

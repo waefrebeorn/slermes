@@ -2,7 +2,6 @@
  * port_hermes_cli_skills_config.c — C port of hermes_cli/skills_config.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

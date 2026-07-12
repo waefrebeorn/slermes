@@ -5,7 +5,6 @@
  * Uses the Daytona Python SDK to run commands in cloud sandboxes.
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

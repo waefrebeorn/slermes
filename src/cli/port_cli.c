@@ -2,7 +2,6 @@
  * port_cli.c — C port of cli.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include "hermes_skill_commands.h"
 #include <stdio.h>

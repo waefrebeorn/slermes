@@ -2,7 +2,6 @@
  * port_agent_tool_guardrails.c — C port of agent/tool_guardrails.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

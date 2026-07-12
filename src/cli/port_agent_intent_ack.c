@@ -8,7 +8,8 @@
  * intent_ack_continuation_mode / intent_ack_continuation_enabled.
  */
 
-#include "hermes.h"
+#include <stdbool.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
