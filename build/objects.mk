@@ -258,7 +258,7 @@ PHASE4_OBJ += $(GATEWAY_PORT_NEW)
 CRON_OBJ = src/cron/scheduler.o src/cron/jobs.o src/cron/cron_extras.o src/cron/cron_sqlite.o src/cron/cron_cli.o src/cron/port_cron_scheduler_provider.o src/cron/port_cron_scheduler_helpers.o src/cron/port_scheduler.o src/cron/cron_suggestions.o src/cron/port_jobs.o
 
 # Progressively larger builds
-PHASE1_OBJ = $(DEPS_OBJ)
+PHASE1_OBJ = $(DEPS_OBJ) $(CLI_PORT_NEW2)
 PHASE2_OBJ = $(PHASE1_OBJ) src/main.o $(AGENT_OBJ) $(CLI_OBJ)
 PHASE3_OBJ = $(PHASE2_OBJ) $(TOOLS_OBJ)
 PHASE4_OBJ = $(PHASE3_OBJ) $(GATEWAY_OBJ)
