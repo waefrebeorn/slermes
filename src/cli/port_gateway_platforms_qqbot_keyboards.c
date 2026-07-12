@@ -23,7 +23,7 @@ static const char *UPDATE_PROMPT_PREFIX = "update_prompt:";
 json_node_t* cli_gateway_platforms_qqbot_keyboards__build_exec_text(json_node_t *req);
 json_node_t* cli_gateway_platforms_qqbot_keyboards__build_plugin_text(json_node_t *req);
 
-/* PoP: cli_gateway_platforms_qqbot_keyboards_parse_approval_button_data */
+/* PoP: cli_gateway_platforms_qqbot_keyboards_parse_approval_button_data @ gateway/platforms/qqbot/keyboards.py:parse_approval_button_data */
 json_node_t* cli_gateway_platforms_qqbot_keyboards_parse_approval_button_data(const char *button_data) {
     /*
      * Parse approval button_data into (session_key, decision).

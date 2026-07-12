@@ -1021,6 +1021,24 @@ char *llm_compress_context(agent_state_t *state, size_t max_tokens,
         compress_count, &state->llm);
 }
 
+/* PoP: llm_conversation_history_after_compression @ agent/conversation_compression.py:conversation_history_after_compression */
+/* Return the correct flush baseline after a compression boundary.
+ * Legacy compression rotates to a fresh child session, so callers must clear
+ * conversation_history to NULL and let the next persistence call write the
+ * whole compacted list. In-place compaction already soft-archived the previous
+ * rows and inserted `messages` as the new live transcript under the same
+ * session id — returning them again would double-append. A shallow copy is
+ * intentional: it captures the current compacted dict identities as history
+ * while later same-turn appends stay new. Returns a json_copy of messages when
+ * last_compaction_in_place is set, else NULL. */
+json_t *llm_conversation_history_after_compression(
+    bool last_compaction_in_place, const json_t *messages)
+{
+    if (!last_compaction_in_place) return NULL;
+    if (!messages) return NULL;
+    return json_copy(messages);
+}
+
 /* ================================================================
  *  LLM API call
  * ================================================================ */
