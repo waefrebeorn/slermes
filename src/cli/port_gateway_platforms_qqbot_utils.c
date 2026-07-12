@@ -2,7 +2,6 @@
  * port_gateway_platforms_qqbot_utils.c — C port of gateway/platforms/qqbot/utils.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

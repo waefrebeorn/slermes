@@ -2,7 +2,6 @@
  * port_agent_model_metadata.c — C port of agent/model_metadata.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

@@ -5,7 +5,6 @@
  * Drives Codex app-server turns and SSE event stream consumption.
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include "libhttp/http.h"
 #include "libjson/json.h"

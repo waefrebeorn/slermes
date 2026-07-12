@@ -2,7 +2,6 @@
  * port_agent_think_scrubber.c — C port of agent/think_scrubber.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

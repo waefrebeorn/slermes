@@ -2,7 +2,6 @@
  * port_tools_path_security.c — C port of tools/path_security.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

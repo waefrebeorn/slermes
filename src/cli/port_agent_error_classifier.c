@@ -2,7 +2,6 @@
  * port_agent_error_classifier.c — C port of agent/error_classifier.c
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

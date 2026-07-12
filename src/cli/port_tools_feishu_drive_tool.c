@@ -5,7 +5,6 @@
  * map to this file since the feishu drive tool provides the client infrastructure.
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

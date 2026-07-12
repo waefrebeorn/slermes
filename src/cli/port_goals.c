@@ -1,7 +1,6 @@
 #ifndef SRC_CLI_PORT_GOALS_C
 #define SRC_CLI_PORT_GOALS_C
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdlib.h>
 #include <string.h>

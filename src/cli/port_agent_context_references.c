@@ -2,7 +2,6 @@
  * port_agent_context_references.c — C port of agent/context_references.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

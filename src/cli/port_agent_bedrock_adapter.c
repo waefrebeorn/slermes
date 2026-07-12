@@ -2,7 +2,6 @@
  * port_agent_bedrock_adapter.c — C port of agent/bedrock_adapter.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

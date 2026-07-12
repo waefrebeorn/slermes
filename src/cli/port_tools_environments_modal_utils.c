@@ -4,8 +4,8 @@
  * Modal execution environment utilities — prepare/execute/result helpers.
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
+#include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

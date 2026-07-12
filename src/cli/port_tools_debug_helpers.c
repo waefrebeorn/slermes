@@ -2,7 +2,6 @@
  * port_tools_debug_helpers.c — C port of tools/debug_helpers.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include "debug_helpers.h"
 #include <stdio.h>

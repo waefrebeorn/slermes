@@ -2,7 +2,6 @@
  * port_agent_oneshot.c — C port of agent/oneshot.py (pure-leaf helpers).
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

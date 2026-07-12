@@ -2,7 +2,6 @@
  * port_hermes_cli_kanban_swarm.c — C port of hermes_cli/kanban_swarm.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

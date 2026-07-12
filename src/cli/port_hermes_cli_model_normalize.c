@@ -2,7 +2,6 @@
  * port_hermes_cli_model_normalize.c — C port of hermes_cli/model_normalize.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

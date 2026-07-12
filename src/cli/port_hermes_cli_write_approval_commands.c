@@ -2,7 +2,6 @@
  * port_hermes_cli_write_approval_commands.c — C port of hermes_cli/write_approval_commands.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

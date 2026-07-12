@@ -2,7 +2,6 @@
  * port_tools_fal_common.c — C port of tools/fal_common.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include "libhttp/http.h"
 #include <stdio.h>

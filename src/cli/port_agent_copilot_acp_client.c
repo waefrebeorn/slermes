@@ -2,7 +2,6 @@
  * port_agent_copilot_acp_client.c — C port of agent/copilot_acp_client.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

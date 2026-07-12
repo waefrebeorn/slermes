@@ -4,7 +4,6 @@
  * Raw Chrome DevTools Protocol (CDP) passthrough tool.
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include "libwebsocket/websocket.h"
 #include "port_tools_browser_cdp_tool.h"

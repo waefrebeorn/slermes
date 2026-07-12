@@ -2,7 +2,6 @@
  * port_agent_context_compressor.c — C port of agent/context_compressor.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

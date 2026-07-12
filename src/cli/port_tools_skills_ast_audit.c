@@ -2,7 +2,6 @@
  * port_tools_skills_ast_audit.c — C port of tools/skills_ast_audit.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

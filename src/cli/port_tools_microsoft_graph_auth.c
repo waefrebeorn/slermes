@@ -2,7 +2,6 @@
  * port_tools_microsoft_graph_auth.c — C port of tools/microsoft_graph_auth.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

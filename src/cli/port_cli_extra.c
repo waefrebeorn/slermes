@@ -9,7 +9,6 @@
 #ifndef SRC_CLI_PORT_CLI_EXTRA_C
 #define SRC_CLI_PORT_CLI_EXTRA_C
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include "hermes_json.h"
 #include "hermes_billing.h"

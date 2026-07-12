@@ -2,7 +2,6 @@
  * port_gateway_platforms_wecom_crypto.c — C port of gateway/platforms/wecom_crypto.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include "libcrypto/crypto.h"
 #include "libbase64/base64.h"

@@ -2,7 +2,6 @@
  * port_gateway_delivery.c — C port of gateway/delivery.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

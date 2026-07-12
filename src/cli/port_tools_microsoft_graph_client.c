@@ -2,7 +2,6 @@
  * port_tools_microsoft_graph_client.c — C port of tools/microsoft_graph_client.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

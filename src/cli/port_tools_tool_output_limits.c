@@ -2,7 +2,6 @@
  * port_tools_tool_output_limits.c — C port of tools/tool_output_limits.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

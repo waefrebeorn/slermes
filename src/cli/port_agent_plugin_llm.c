@@ -2,7 +2,6 @@
  * port_agent_plugin_llm.c — C port of agent/plugin_llm.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

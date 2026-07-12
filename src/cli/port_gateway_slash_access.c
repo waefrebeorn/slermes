@@ -2,7 +2,6 @@
  * port_gateway_slash_access.c — C port of gateway/slash_access.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

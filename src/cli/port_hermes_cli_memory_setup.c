@@ -2,7 +2,6 @@
  * port_hermes_cli_memory_setup.c — C port of hermes_cli/memory_setup.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

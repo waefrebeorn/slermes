@@ -2,7 +2,6 @@
  * port_agent_usage_pricing.c — C port of agent/usage_pricing.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

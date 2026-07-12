@@ -6,7 +6,6 @@
  * file-mutating operations, provides rollback to any previous checkpoint.
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include "hermes_agent.h"
 #include <stdio.h>

@@ -2,7 +2,6 @@
  * port_agent_anthropic_adapter.c — C port of agent/anthropic_adapter.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

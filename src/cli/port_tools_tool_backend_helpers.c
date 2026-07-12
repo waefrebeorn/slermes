@@ -2,7 +2,6 @@
  * port_tools_tool_backend_helpers.c — C port of tools/tool_backend_helpers.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

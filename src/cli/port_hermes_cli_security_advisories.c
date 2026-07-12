@@ -2,7 +2,6 @@
  * port_hermes_cli_security_advisories.c — C port of hermes_cli/security_advisories.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

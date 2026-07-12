@@ -2,7 +2,6 @@
  * port_gateway_platforms_yuanbao_media.c — C port of gateway/platforms/yuanbao_media.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

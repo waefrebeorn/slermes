@@ -2,7 +2,6 @@
  * port_gateway_authz_mixin.c — C port of gateway/authz_mixin.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

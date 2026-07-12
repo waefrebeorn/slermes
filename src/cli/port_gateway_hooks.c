@@ -2,7 +2,6 @@
  * port_gateway_hooks.c — C port of gateway/hooks.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

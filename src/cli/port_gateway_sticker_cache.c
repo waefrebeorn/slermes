@@ -2,7 +2,6 @@
  * port_gateway_sticker_cache.c — C port of gateway/sticker_cache.py
  */
 
-#include "hermes.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>
