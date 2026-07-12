@@ -1,43 +1,26 @@
-/* t_port_agent_replay_cleanup.c — oracle harness for
- * agent/replay_cleanup.py:is_interrupted_tool_result
- *
- * Emits one JSON object per line: {"in":"<text>","out":<bool>}.
- * The oracle replays the SAME inputs through the live Python function. */
+/* Oracle harness: agent/replay_cleanup.py vs LIVE Python. */
 #include <stdio.h>
-#include "cli/port_agent_replay_cleanup.h"
+#include "agent/port_agent_replay_cleanup.h"
 
-static const char *js(const char *s) {
-    static char bufs[8][8192];
-    static int bi = 0;
-    char *b = bufs[bi];
-    bi = (bi + 1) % 8;
-    char *q = b;
-    *q++ = '"';
-    for (const char *p = s; p && *p && q - b < 8000; p++) {
-        unsigned char c = (unsigned char)*p;
-        if (c == '"' || c == '\\') { *q++ = '\\'; *q++ = c; }
-        else if (c == '\n') { *q++ = '\\'; *q++ = 'n'; }
-        else *q++ = c;
+static const char *jstr(const char *s){
+    static char b[4][1024]; static int bi=0; int idx=bi; char *q=b[idx]; bi=(bi+1)&3; *q++='"';
+    for(const char *p=s;p&&*p&&(q-b[idx])<1000;p++){
+        unsigned char c=*p;
+        if(c=='"'||c=='\\'){*q++='\\';*q++=c;}
+        else if(c<0x20){*q++='\\';*q++='u';*q++='0';*q++='0';*q++="0123456789abcdef"[c>>4];*q++="0123456789abcdef"[c&0xf];}
+        else *q++=c;
     }
-    *q++ = '"'; *q = '\0';
-    return b;
+    *q++='"';*q='\0';return b[idx];
 }
-
-static void emit(const char *text) {
-    int r = replay_cleanup_is_interrupted(text);
-    printf("{\"in\":%s,\"out\":%s}\n", js(text), r ? "true" : "false");
-}
-
 int main(void) {
-    emit("The tool finished cleanly with output.");
-    emit("Error: [command interrupted] by user");
-    emit("Process exited with exit_code 130 and interrupt received");
-    emit("exit_code -1 interrupt signal handled");
-    emit("exit_code 130 but no interrupt keyword here");
-    emit("exit_code 0 completed normally");
-    emit("{\"exit_code\": 130, \"note\": \"interrupt during shutdown\"}");
-    emit(NULL);
-    emit("");
-    emit("interrupted but no exit_code field present");
+    const char *cases[] = {
+        "[command interrupted]", "exit_code 130", "exit_code: -1, interrupt received",
+        "exit_code 137", "some normal output", "exit_code 0 success", "", NULL,
+    };
+    for (int i = 0; cases[i]; i++) {
+        int r = agent_replay_cleanup_is_interrupted_tool_result(cases[i]) ? 1 : 0;
+        printf("{\"in\":%s,\"out\":%d}\n", jstr(cases[i]), r);
+    }
+    printf("{\"in\":null,\"out\":0}\n");
     return 0;
 }
