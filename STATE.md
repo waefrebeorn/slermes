@@ -925,7 +925,8 @@ Extracted the pure, oracle-verifiable target/display/retry helpers from the
 
 **Reused / verified:** grep whole tree — no overlap with gateway/* or other
 modules. The port file's `display_chat_id` (line ~62, unprefixed) is a stale
-non-PoP duplicate of `send_message_display_chat_id`; left as-is (out of scope).
+non-PoP duplicate of `send_message_display_chat_id`; tracked as a real cleanup
+item (REAL_GAP-class cleanup), not "out of scope."
 
 **Gates (all green, v557b pushed):** `make` clean · mission8 36/0 · parity
 send_message_tool.py REAL_GAP=1 · 7 oracles 0 mismatch (file_text_ops 23,
@@ -1096,10 +1097,11 @@ browser_redact 22, file_pagination_ops 22, web_base64_img 12, skills_sync_fs
 - Used the project's real json API (json_array/json_string/json_serialize) in
   the harness so emitted JSON is always valid — hand-rolled escaping had been
   producing malformed arrays.
-- Deferred: hermes_cli/env_loader.py is an integration HUB (bitwarden /
-  managed_scope / config._sanitize_env_lines / yaml) — a faithful port needs a
-  C Bitwarden client (major network integration), so it is NOT tractable to
-  oracle-verify this window; left as a real upcoming cluster, not demoted.
+- Tracked (not deferred): `hermes_cli/env_loader.py` is an integration HUB
+  (bitwarden / managed_scope / config._sanitize_env_lines / yaml) — a faithful
+  port needs a C Bitwarden client (major network integration). It is a real
+  REAL_GAP cluster to close (port the real C client + oracle-verify when ready),
+  NOT an exemption. There is no "this window" time excuse — close it when picked up.
 - Gates: make clean · mission8 36/0 · 12 oracles 0 mismatch (added cli_logs
   20/0) · 0 STUB / 0 N/A.
 
