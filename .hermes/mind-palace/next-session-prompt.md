@@ -3,46 +3,50 @@
 ---
 
 ```
-Goal: Full app parity — desktop app, web app, all code types, all docs
+Goal: Close function-level parity gaps (REAL_GAP) across ALL Python modules —
+and continue feature/API parity for desktop, web, skills, docs, scripts, tests,
+configs. Rewriting from scratch in C is the point; there is NO N/A.
 
-State: Function-level parity 100% (8,688/8,688 PORTED). Desktop GUI at ~30/111 features (27%). Web-server ~99% real. ALL upstream code types reclassified as REAL_GAP: 470 desktop TS/TSX files, 212 TUI TS/TSX files, 311 skill .md files, 749 upstream .md docs, 26 scripts, 30 packaging files, 200+ test files, 855 JSON configs.
+State (live scanner 2026-07-12):
+- PORTED: 4,924 / 9,731 (50.6%)
+- REAL_GAP: 4,732 (48.6%)  ← all real work, no exemptions
+- PARTIAL: 75 (0.8%)  STUB: 0  N/A: 0
+- Build: clean, single native binary (~40MB)
+- Tests: mission8 36/0 green; oracles 0 mismatch on ported modules
 
-Build: Clean. Last commit: prestige ritual needed.
+Where the gaps are (by subsystem, 318 modules with ≥1 gap, 76 never-started):
+- hermes_cli/: 2,401 gaps across 170 modules
+- gateway/:     1,109 gaps across 36 modules
+- tools/:         732 gaps across 56 modules
+- agent/:         368 gaps across 49 modules
+- cron/:          102 gaps across 6 modules
 
-The Loop:
-1. Pick next undone cell from battleship index (mind-palace/index.md)
-   Priority order: Desktop P2 features → Documentation serving (Mission 5) → Skills system (Mission 6) → Distribution (Mission 7) → Test parity (Mission 8)
-2. Verify claim against source before implementing
-3. Implement real C logic — no stubs, no hermes_log+return NULL
-4. Build: make -j$(nproc)
-5. Test: curl web endpoints / interact with desktop UI / ./slermes <command> to verify
-6. Triple DA check:
-   - Plumber: Does the code exist in C? (file search)
-   - Painter: Does it work? (build + test)
-   - Devil: Does it 1:1 match upstream? (diff against source file)
-7. Commit: git add -f .hermes/ src/ && PRE_COMMIT_ALLOW_NO_CONFIG=1 git commit -m "vXXX: area — what changed"
-8. Update mind-palace/index.md — move items from 🔲 to ✅
-9. Repeat until battleship is ALL ✅
+The Loop (no stops, no "time" excuses — agentic work takes minutes):
+1. Pick next REAL_GAP (Tier 1 tail modules first: ≥50% ported, big absolute
+   gap → fastest to 0 REAL_GAP). Read the Python source, implement real C.
+2. Add /* PoP: c_func @ module.py:py_func */ before the C function.
+3. Register the .o in build/objects.mk (append var into PHASE5_OBJ; do NOT use
+   PHASE*_OBJ += — dead).
+4. make slermes clean + build; oracle-verify (tests/oracle/runners/run_oracle.sh).
+5. Commit + push. Pick next gap. Never pause between gaps.
 
-Key rules:
-- ALL code types Nous produces are REAL_GAP — TS, TSX, Python, JS, shell, PS1, MD, HTML, CSS, JSON, YAML
-- Rewriting in scratch in C is the point of the project
-- Real implementations only — no hardcoded empty responses, no hermes_log+return NULL
-- Build must pass before committing
-- After every 5 commits: full prestige ritual (barnacle hunt, vault, version bump, push)
+Highest-ROI pure-logic targets (oracle-able): tools/ (cua_backend 43,
+delegate_tool 37, file_tools 35, skills 32, terminal_tool 31, patch 28,
+transcription 27, voice_mode 26, skills_hub 25, computer_use 24, project 22,
+approval 21, browser_tool 21, shell 20, threat 20).
 
-Project root: /home/wubu/hermes-agent-dev/slermes
-Battleship index: .hermes/mind-palace/index.md
-Web server: src/web_server.c
-Desktop GUI: src/desktop_gui.c + src/gui_core.c
-TUI: src/tui_fullscreen.c
-State DB: src/agent/state_db.c
+Tier 2 tail modules (finish to 0): cli.py 94% (20 gaps), hermes_cli/config.py
+73% (25), browser_tool.py 66% (34), gateway/platforms/base.py 52% (79),
+agent/account_usage.py 94% (1), etc.
 
-Desktop app upstream: /home/wubu/hermes-agent-dev/apps/desktop/src/ (470 files)
-TUI upstream: /home/wubu/hermes-agent-dev/ui-tui/src/ (212 files)
-Skills upstream: /home/wubu/hermes-agent-dev/skills/ (72 skills)
-Docs upstream: /home/wubu/hermes-agent-dev/docs/ + website/
-TUI Gateway: /home/wubu/hermes-agent-dev/tui_gateway/
-
-No choices. No questions. Never stop between gaps.
+There is no "defer"/"out of scope"/"too big". Big modules get finished.
 ```
+
+<!-- PARITY:AUTO -->
+| PORTED  | 4,924 / 9,731 (50.6%) |
+| REAL_GAP| 4,732 (48.6%) — no N/A |
+| PARTIAL | 75 (0.8%) |
+| STUB    | 0 |
+
+_Generated from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+<!-- /PARITY:AUTO -->

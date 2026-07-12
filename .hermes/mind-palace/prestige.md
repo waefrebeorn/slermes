@@ -26,10 +26,11 @@ Mission 2 COMPLETE — Desktop parity 95/111 features
 
 | Metric | Value |
 |--------|-------|
-| PORTED | 8,688 (100% of Python functions) |
-| REAL_GAP | ALL upstream code types |
+| PORTED | 4,924 / 9,731 (50.6%) |
+| REAL_GAP | 4,732 (48.6%) — every un-ported feature, no NA |
+| PARTIAL | 75 (0.8%) |
 | Build | Clean, 0 errors |
-| Tests | 33/33 pass |
+| Tests | 36/36 mission8 pass |
 | Binary | 46 MB (slermes) + 5.4 MB (slermes-desktop-gui) + 5 MB (web-server) |
 | C source files | 1,107 |
 | C LOC | ~497K |
@@ -40,3 +41,12 @@ Mission 2 COMPLETE — Desktop parity 95/111 features
 ## Next Mission
 
 Mission 5: Documentation serving (serve ALL 749 upstream .md files via web_server.c)
+
+<!-- PARITY:AUTO -->
+| PORTED  | 4,924 / 9,731 (50.6%) |
+| REAL_GAP| 4,732 (48.6%) — no N/A |
+| PARTIAL | 75 (0.8%) |
+| STUB    | 0 |
+
+_Generated from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+<!-- /PARITY:AUTO -->

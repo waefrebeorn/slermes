@@ -1,103 +1,61 @@
-# Next Session: Full App Parity — Steamroll All Remaining Missions
+# Next Session: Function + Feature Parity — Steamroll All Remaining REAL_GAPs
 
-## Goal: Complete Missions 5-8. Full app parity across ALL code types.
+## Goal: Close the 4,732 REAL_GAPs. Rewriting from scratch in C is the point;
+there is NO N/A and no "out of scope". Agentic work takes minutes.
 
-## State at Start
-- **Version:** v500, pushed to origin/main
-- **Build:** Clean, 0 errors (desktop-gui + slermes + web-server)
-- **Function parity:** 8,688/8,688 (100%) ✅
-- **Desktop:** 95/111 features (100% actionable) ✅
-- **Web API:** ~50 REST endpoints (~99% real) ✅
-- **Platform backends:** Linux + Win32 + macOS ✅
-- **Mission 5:** Route stubs added to web_server.c (`/api/docs`, `/api/docs/architecture`, `/api/docs/contributing`, `/api/docs/readme`) — handlers NOT IMPLEMENTED yet (declarations only, calls will segfault)
-- **Missions 6-8:** Not started
+## State at Start (live, 2026-07-12)
+- Version: v572-era (NA machinery deleted; honesty + no-time-excuse sweep done)
+- Build: Clean, 0 errors (single native `slermes` binary, ~40MB)
+- Function parity: 4,924 / 9,731 PORTED (50.6%) — NOT complete
+- REAL_GAP: 4,732 (48.6%)  PARTIAL: 75  STUB: 0  N/A: 0
+- Tests: mission8 36/0 green; oracles 0 mismatch on ported modules
 
-## The Missions (Priority Order)
+## Gap distribution (318 modules with ≥1 gap; 76 never-started)
+- hermes_cli/: 2,401 gaps / 170 modules
+- gateway/:    1,109 gaps / 36 modules
+- tools/:        732 gaps / 56 modules
+- agent/:        368 gaps / 49 modules
+- cron/:         102 gaps / 6 modules
 
-### Mission 5: Documentation & Web Content → NEXT
-**Goal:** Serve key upstream documentation through web_server.c
-**Scope:**
-1. Implement the 4 declared handler bodies (`h_docs`, `h_docs_architecture`, `h_docs_contributing`, `h_docs_readme`) in `src/web_server.c`
-2. Serve README.md, DESIGN.md, architecture docs as HTML-converted responses
-3. Add `/api/docs/*` wildcard route for serving all embedded doc pages
-4. Embed key .md files as static char arrays in the binary (or load from disk at startup)
-**Upstream source:** `/home/wubu/hermes-agent-dev/docs/` + `/home/wubu/hermes-agent-dev/website/docs/` (670 .md files)
-**Priority doc files to embed:**
-- README.md (root)
-- DESIGN.md
-- docs/session-lifecycle.md
-- docs/security/ (all)
-- docs/design/ (all)
-- docs/kanban/ (all)
-- website/docs/ (top-level pages: intro, getting-started, installation)
-
-### Mission 6: Skills System
-**Goal:** C-side skill loader + port all 72 upstream skills
-**Scope:**
-1. Implement skill parser for SKILL.md format in C
-2. Create `src/skills/` directory with skill loader
-3. Port 72 skill definitions from upstream `/home/wubu/hermes-agent-dev/skills/`
-4. Add `/api/skills` endpoint to list/execute skills via web server
-5. Skills should be parseable executable (display instructions, not actually run shell commands for safety)
-**Upstream source:** `/home/wubu/hermes-agent-dev/skills/` (72 skill directories with SKILL.md)
-
-### Mission 7: Distribution
-**Goal:** Installable packages for all platforms
-**Scope:**
-1. AppImage build script (Linux)
-2. Homebrew formula (macOS)
-3. NSIS installer config (Windows)
-4. Docker multi-stage build
-5. Nix flake
-6. Makefile `install` target that works properly
-**Key files:** Create `packaging/` directory with all platform configs
-
-### Mission 8: Test Parity
-**Goal:** C-side tests for UI features
-**Scope:**
-1. Desktop GUI test harness (test desktop_gui.c rendering pipeline)
-2. Web endpoint integration tests (curl-based test script)
-3. CLI command tests (test all hermes_cli_* commands return correct output)
-4. State DB tests (test CRUD operations)
-5. Create `tests/ui/` directory with test files
+## Missions in order (steamroll, no stops)
+1. Tier 1 tail modules → 0 REAL_GAP (fastest wins):
+   cli.py (94%, 20), hermes_cli/config.py (73%, 25), browser_tool.py (66%, 34),
+   gateway/platforms/base.py (52%, 79), agent/account_usage.py (94%, 1), …
+2. Pure-logic tools/ (oracle-able, highest quality):
+   cua_backend 43, delegate_tool 37, file_tools 35, skills 32, terminal_tool 31,
+   patch 28, transcription 27, voice_mode 26, skills_hub 25, computer_use 24, …
+3. Big under-ported hubs:
+   web_server.py 335, gateway/run.py 272, main.py 176, auth.py 150, pet/store 142
+4. 76 never-started modules (all REAL_GAP work):
+   gateway/slash_commands.py 56, hermes_cli/cli_commands_mixin.py 43,
+   agent/pet/generate/atlas.py 33, tools/read_extract.py 31, …
 
 ## Execution Rules
-
-1. **Pick next undone cell** — Mission 5 → 6 → 7 → 8, in that order
-2. **Verify claim against source** — read the upstream file BEFORE implementing
-3. **Real implementations only** — no `hermes_log("TODO"); return NULL;` stubs
-4. **Build must pass** before committing: `make -j$(nproc)`
-5. **Test:** curl web endpoints, interact with desktop UI, run `./slermes <command>` to verify
-6. **Triple DA check** before marking done:
-   - Plumber: Does the code exist in C? (grep/glob)
-   - Painter: Does it work? (build + curl/test)
-   - Devil: Does it 1:1 match upstream? (diff against source)
-7. **Commit** after each meaningful unit: `git add -f .hermes/ src/ && PRE_COMMIT_ALLOW_NO_CONFIG=1 git commit -m "vXXX: area — what changed"`
-8. **Update battleship index** — move items from 🔲 to ✅
-9. **Prestige ritual** every ~5 commits: barnacle hunt, vault, version bump, push
+1. Pick next REAL_GAP. Read Python source; implement real C (no stubs, no
+   void* passthrough, no "not implemented in C" strings).
+2. Add /* PoP: c_func @ module.py:py_func */ immediately before the C function.
+3. Register .o in build/objects.mk — append into PHASE5_OBJ (NOT PHASE*_OBJ +=).
+4. `rm -f slermes <touched>.o && make slermes`; oracle-verify via
+   `bash tests/oracle/runners/run_oracle.sh <name>` → 0 mismatches.
+5. Commit after each module; push. Update walkway state.md to live numbers.
+6. No "defer"/"for now"/"out of scope"/"too big" — finish the module.
 
 ## Key Project Info
-- **Project root:** `/home/wubu/hermes-agent-dev/slermes`
-- **Battleship index:** `.hermes/mind-palace/index.md`
-- **Web server:** `src/web_server.c`
-- **Desktop GUI:** `src/desktop_gui.c` + `src/gui_core.c`
-- **TUI:** `src/tui_fullscreen.c`
-- **State DB:** `src/agent/state_db.c`
-- **Upstream docs:** `/home/wubu/hermes-agent-dev/docs/` + `/home/wubu/hermes-agent-dev/website/`
-- **Upstream skills:** `/home/wubu/hermes-agent-dev/skills/`
-- **Upstream desktop:** `/home/wubu/hermes-agent-dev/apps/desktop/src/`
-- **Branch:** main
-- **Current version:** v500
+- Root: /home/wubu/hermes-agent-dev/slermes/   Branch: main
+- Scanner: python3 tests/slermes_parity_battleground.py --json
+- Oracle harness: tests/oracle/ (fixtures + run_oracle.sh)
+- Pre-commit workaround: PRE_COMMIT_ALLOW_NO_CONFIG=1 git commit …
 
 ## What "Done" Looks Like
-- Mission 5: All 4 `/api/docs/*` endpoints return real HTML content from embedded docs
-- Mission 6: `/api/skills` returns JSON list of all 72 skills with parsed metadata
-- Mission 7: `make appimage` / `make homebrew` / `make nsis` all produce working packages
-- Mission 8: `make test` runs UI + endpoint + CLI tests, all pass
+- Every Python function has a real C implementation with a PoP annotation.
+- Scanner reads 0 REAL_GAP, 0 PARTIAL, 0 STUB (N/A does not exist).
+- Build clean; oracles 0 mismatch; committed + pushed.
 
-## Rules
-- No choices. No questions. Never stop between gaps.
-- ALL upstream code types are REAL_GAP until slermed to C
-- Real implementations only — no hardcoded empty responses
-- Build must pass before committing
-- After every 5 commits: full prestige ritual
+<!-- PARITY:AUTO -->
+| PORTED  | 4,924 / 9,731 (50.6%) |
+| REAL_GAP| 4,732 (48.6%) — no N/A |
+| PARTIAL | 75 (0.8%) |
+| STUB    | 0 |
+
+_Generated from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+<!-- /PARITY:AUTO -->

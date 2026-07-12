@@ -1,13 +1,30 @@
-# State — Slermes C Translation (v414)
+# State — Slermes C Translation (live, 2026-07-12)
 
-**All Gaps Eliminated — 0 PARTIAL, 0 REAL_GAP**
+**Honest parity (live scanner `slermes_parity_battleground.py`):**
 
-- Build: `make -j$(nproc)` = 0 errors || `make tui` = 0 errors
-- Tests: 33/33 pass
-- PoP annotations: 2,751 PORTED (30.4%), 0 PARTIAL, 0 STUB, 6,284 REAL_GAP (69.6%)
-- **Scanner Bug Fixes:** pop_pattern identity, INFRASTRUCTURE_ONLY reordering, third-party exclusion
-- **PoP Annotations Added:** 23 new across file.c, delegate.c, browser.c, approval.c, voice_mode.c, debug_helpers.c, transcribe.c, terminal.c, base_ext.c, skill_usage.c, patch.c, credits_tracker.c
-- **Build Fixes:** tirith.c enum (TIRITH_VERDICT_ALLOW→TIRITH_ALLOW), 3 linker stubs (run_status_new, skill_usage_restore, g_plugin_registry)
-- **Classification:** 972 REAL_GAPs + 27 PARTIALs reclassified as N/A (hermes_cli/ CLI-only modules)
+- PORTED: 4,924 / 9,731 (50.6%)
+- REAL_GAP: 4,732 (48.6%)
+- PARTIAL: 75 (0.8%)
+- STUB: 0
+- N/A: 0 — **there is no N/A** (the NA machinery was deleted; rewriting from scratch in C is the point, so every un-ported feature is REAL_GAP work)
 
-**What Changed:** Scanner was over-reporting gaps due to 3 bugs. Fixed: (1) pop_pattern identity check (separate re.compile() objects never matched), (2) INFRASTRUCTURE_ONLY check moved to step 2 (before C function search, preventing false PARTIAL), (3) third-party lib dirs excluded from scan. Result: all 972 REAL_GAPs and 27 PARTIALs were false positives — all hermes_cli/ modules are N/A by design.
+- Build: `make -j$(nproc)` clean, single native binary (~40MB)
+- Tests: mission8 36/0 green; oracles 0 mismatch on ported modules
+- Scanner emits ONLY PORTED / PARTIAL / STUB / REAL_GAP.
+
+**This session (2026-07-12): honesty + no-NA + no-time-excuse sweep.**
+- Removed all NA classification machinery from the scanner (dead `_check_na_patterns`, `NA_PATTERNS`, `INFRASTRUCTURE_ONLY`, `na_total`/`na_breakdown`).
+- Corrected project docs (README, docs/parity-summary, BANNER, NEXT_SESSION_PROMPT) to state-free, honest numbers; GitHub repo description made state-free.
+- Purged NA / "out of scope" / "deferred" / time-skip framing from the gap-classification skills (slermes-pop-parity, slermes-gap-closure, slermes-depth-check, slermes-name-parity, slermes-monolithic-refactor) and from SOUL.md ("Time Scale Is Irrelevant" edict) and USER.md memory.
+- STATE.md project log reworded to track REAL_GAP-class work, not "out of scope"/"deferred".
+
+**Do NOT trust any walkway file that still claims 100% PORTED / 8,688/8,688 / 0 REAL_GAP — that is v398-era fiction. The port is ~half done.**
+
+<!-- PARITY:AUTO -->
+| PORTED  | 4,924 / 9,731 (50.6%) |
+| REAL_GAP| 4,732 (48.6%) — no N/A |
+| PARTIAL | 75 (0.8%) |
+| STUB    | 0 |
+
+_Generated from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+<!-- /PARITY:AUTO -->

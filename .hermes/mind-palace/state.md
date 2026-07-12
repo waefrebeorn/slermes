@@ -1,7 +1,7 @@
 # State — Slermes C Translation (v571)
 
 - Build: `make slermes` = 0 errors, binary links clean (~42 MB)
-- **Scanner (real, this session):** 4,901 PORTED (50.4%), 4,757 REAL_GAP (48.9%), 73 PARTIAL, 9,731 total features
+- **Scanner (real, live 2026-07-12):** 4,924 PORTED (50.6%), 4,732 REAL_GAP (48.6%), 75 PARTIAL, 9,731 total features. N/A: 0 (deleted).
 - Tests: `bash tests/run_mission8_tests.sh` → 36 passed, 0 failed, 35 skipped
 - **CLI dispatch-hub split COMPLETE (v570):** the prior session extracted `src/cli/commands.c` (7.8k lines) into 14 `cli_cmd_<cat>.c/.h` modules but left it unbuildable. This session finished it — `make slermes` links clean (42 MB binary), `/help` dispatch renders, 36/36 M8 tests pass, parity scanner unchanged (PoP annotations preserved).
 - Prior walkway claims of "8,688/8,688 100% PORTED" are stale/v398-era fiction; corrected to live scanner output above
@@ -82,3 +82,11 @@ verified 0 mismatches vs live Python. Build links clean, Mission 8: 36/0/35.
 Scanner: 4,884 → 4,901 PORTED (+17); 4,774 → 4,757 REAL_GAP (−17). All 17 target funcs flipped to PORTED.
 Fixed `tests/run_one_oracle.sh` (added `-I src`) so port headers resolve.
 
+<!-- PARITY:AUTO -->
+| PORTED  | 4,924 / 9,731 (50.6%) |
+| REAL_GAP| 4,732 (48.6%) — no N/A |
+| PARTIAL | 75 (0.8%) |
+| STUB    | 0 |
+
+_Generated from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+<!-- /PARITY:AUTO -->
