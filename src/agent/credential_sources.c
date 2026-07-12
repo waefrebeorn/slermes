@@ -8,7 +8,7 @@
  */
 
 #include "credential_sources.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_logger.h"
 #include <stdio.h>

@@ -3,7 +3,7 @@
  * Converts text to speech audio using espeak-ng or edge-tts.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_http.h"
 #include "hermes_tool_config.h"

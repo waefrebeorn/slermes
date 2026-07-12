@@ -12,4 +12,4 @@
  * patterns. Process management is ported in process_bootstrap.c.
  */
 
-#include "hermes.h"   /* process_bootstrap types and helpers */
+#include "hermes_core_types.h"   /* process_bootstrap types and helpers */

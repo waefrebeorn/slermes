@@ -13,4 +13,4 @@
  * Key functions ported:
  *   tool_output_limit_get, tool_output_truncate
  */
-#include "hermes.h"
+#include "hermes_core_types.h"

@@ -5,7 +5,7 @@
  * Manages pending write requests and approval gates.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

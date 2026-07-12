@@ -2,7 +2,7 @@
  * port_hermes_cli_hooks.c — C port of hermes_cli/hooks.py
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_logger.h"
 #include "hermes_hooks.h"
 #include "hermes_json.h"

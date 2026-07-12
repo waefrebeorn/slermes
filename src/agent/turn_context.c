@@ -12,4 +12,4 @@
  *   no intermediate dataclass needed — state lives on the struct)
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"

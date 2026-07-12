@@ -7,7 +7,7 @@
  * appends it to the FINAL message of an agent turn when enabled.  Off by default.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_gateway.h"
 #include <stdio.h>

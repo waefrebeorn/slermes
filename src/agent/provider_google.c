@@ -12,7 +12,7 @@
  *  - functionDeclarations tool format
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_http.h"
 #include "provider.h"

@@ -10,7 +10,7 @@
 
 /* PoP: Mattermost gateway platform (port of gateway/platforms/mattermost) */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_http.h"
 #include <stdio.h>

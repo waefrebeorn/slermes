@@ -68,4 +68,4 @@
  *   C has sync compression via context_compressor.c + conversation_compression.c
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"

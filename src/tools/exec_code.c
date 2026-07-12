@@ -16,7 +16,7 @@
  *   - build_execute_code_schema (returns schema dict, C has static SCHEMA)
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_sandbox.h"
 #include <stdio.h>

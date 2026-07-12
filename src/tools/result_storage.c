@@ -4,7 +4,7 @@
  * Auto-truncates results exceeding max_result_size.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

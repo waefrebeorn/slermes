@@ -12,7 +12,7 @@
  *   pin_message, unpin_message, create_thread, add_role, remove_role
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_tool_helpers.h"
 #include "hermes_tool_config.h"

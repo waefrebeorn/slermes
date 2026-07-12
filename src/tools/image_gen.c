@@ -4,7 +4,7 @@
  * Reads FAL_API_KEY from config/env via libfalcommon.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_http.h"
 #include "fal_common.h"

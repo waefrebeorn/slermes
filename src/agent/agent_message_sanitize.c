@@ -10,7 +10,7 @@
  *   3. Secret redaction                   (hermes_redact)
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_think_scrubber.h"
 #include <string.h>
 #include <ctype.h>

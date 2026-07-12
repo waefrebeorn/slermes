@@ -8,7 +8,7 @@
  * Port of Python: filesystem snapshot store (~85% of Python LOC).
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_agent.h"
 #include <stdio.h>

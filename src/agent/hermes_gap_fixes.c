@@ -9,7 +9,7 @@
  */
 
 #include "hermes_gap_fixes.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "json.h"
 #include "hermes_logger.h"
 #include "budget_tracker.h"

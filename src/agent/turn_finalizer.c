@@ -10,7 +10,7 @@
  * Split from agent_loop.c: post-loop finalization (original lines 2263-2399).
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_agent.h"
 #include "hermes_logger.h"
 #include "hermes_trajectory.h"

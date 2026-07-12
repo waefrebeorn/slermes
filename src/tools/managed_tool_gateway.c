@@ -13,4 +13,4 @@
  * Key functions ported:
  *   gateway dispatch, tool backend selection helpers
  */
-#include "hermes.h"
+#include "hermes_core_types.h"

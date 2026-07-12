@@ -12,7 +12,7 @@
  *   - user_allowed_commands — slash command names non-admin users may run
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_gateway.h"
 #include <stdio.h>

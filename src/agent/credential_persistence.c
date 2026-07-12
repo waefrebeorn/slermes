@@ -6,7 +6,7 @@
  * used by credential_pool.c's sanitize_borrowed_credential_payload().
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include <ctype.h>
 #include <stdio.h>

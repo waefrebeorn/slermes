@@ -6,7 +6,7 @@
 
 /* PoP: provider base (port of plugins/model-providers/base) */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "provider.h"
 #include "hermes_http.h"
 #include <stdio.h>

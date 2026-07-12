@@ -12,7 +12,7 @@
  *   - model: Bedrock model ID e.g. "anthropic.claude-3-sonnet-20240229-v1:0"
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_logger.h"
 #include "hermes_json.h"
 #include "hermes_http.h"

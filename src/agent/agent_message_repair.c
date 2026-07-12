@@ -14,7 +14,7 @@
  * struct array), matching agent_state_t.messages layout.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_agent.h"
 #include <string.h>
 #include <stdio.h>

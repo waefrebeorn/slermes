@@ -13,7 +13,7 @@
  * below provide the core functionality in C.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_gateway.h"
 #include <stdio.h>

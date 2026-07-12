@@ -13,4 +13,4 @@
  * Key functions ported:
  *   ms_graph_auth_init, ms_graph_token_acquire
  */
-#include "hermes.h"
+#include "hermes_core_types.h"

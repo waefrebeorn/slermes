@@ -9,7 +9,7 @@
  * Uses SSH ControlMaster for connection reuse.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

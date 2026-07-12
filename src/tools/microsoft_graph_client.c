@@ -13,4 +13,4 @@
  * Key functions ported:
  *   ms_graph_request, ms_graph_get_user, ms_graph_send_mail
  */
-#include "hermes.h"
+#include "hermes_core_types.h"

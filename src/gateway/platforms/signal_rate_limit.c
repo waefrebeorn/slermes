@@ -13,4 +13,4 @@ N/A: Python datetime arithmetic for backoff window calculation.
 N/A: RateLimitState dataclass — C uses struct with timestamps.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"

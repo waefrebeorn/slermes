@@ -7,7 +7,7 @@
  * tool that dispatches to FAL.ai video endpoints.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_http.h"
 #include "fal_common.h"

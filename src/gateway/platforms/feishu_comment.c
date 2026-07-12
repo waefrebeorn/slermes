@@ -15,4 +15,4 @@ N/A: Feishu OpenAPI SDK calls — C uses libhttp directly.
 N/A: Document comment reply formatting — C uses sprintf patterns.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"

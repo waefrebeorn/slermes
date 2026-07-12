@@ -5,7 +5,7 @@
  * JSON interface: { "action": "start", "goal": "...", "context": "...", "subtasks": [...], "max_concurrent_children": N, "child_max_turns": M, "orchestrator": true }
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>

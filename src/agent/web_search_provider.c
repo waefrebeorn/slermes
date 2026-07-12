@@ -16,4 +16,4 @@
  * N/A: get_setup_schema() — plugin config schema
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"

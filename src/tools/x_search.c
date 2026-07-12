@@ -7,7 +7,7 @@
 
 /* PoP: X/Twitter search (port of tools/x_search_tool) */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_http.h"
 #include <ctype.h>

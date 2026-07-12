@@ -10,7 +10,7 @@
 
 /* PoP: Feishu tools (port of tools/feishu_doc_tool, feishu_drive_tool) */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_http.h"
 #include <string.h>

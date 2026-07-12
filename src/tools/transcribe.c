@@ -4,7 +4,7 @@
  * Port of Python tools/transcription_tools.py tool registration.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_transcription.h"
 #include "transcribe.h"

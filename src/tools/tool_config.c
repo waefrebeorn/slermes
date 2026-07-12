@@ -10,7 +10,7 @@
  */
 
 #include "hermes_tool_config.h"
-#include "hermes.h"             /* for vault_retrieve */
+#include "hermes_core_types.h"             /* for vault_retrieve */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

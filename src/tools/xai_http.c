@@ -6,7 +6,7 @@
 
 /* PoP: xAI HTTP client (port of tools/xai_http) */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "xai_http.h"
 #include <stdio.h>
