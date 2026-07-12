@@ -581,7 +581,7 @@ int skill_usage_archive(const char *hermes_home, const char *skill_name,
                              NULL
                          };
 
-                         /* PoP: is_protected_builtin @ skill_usage:skill_usage_is_protected_builtin */
+                         /* PoP: skill_usage_is_protected_builtin @ tools/skill_usage.py:is_protected_builtin */
                          int skill_usage_is_protected_builtin(const char *skill_name) {
                              if (!skill_name || !*skill_name) return 0;
                              for (int i = 0; g_protected_builtins[i]; i++) {
