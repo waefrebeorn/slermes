@@ -25,7 +25,7 @@ Backed by the honcho plugin (in-memory array store).
  * MIT License — WuBu Slermes Project
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "plugin.h"
 #include <time.h>

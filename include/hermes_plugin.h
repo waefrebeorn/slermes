@@ -20,7 +20,7 @@ support.
  * that the agent uses to discover, configure, load, and manage plugins.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "plugin.h"
 
 #ifdef __cplusplus
