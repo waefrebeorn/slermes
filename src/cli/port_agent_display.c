@@ -304,7 +304,7 @@ int cli_agent_display__is_shell_boundary_echo(const char *segment)
 /* PoP: cli_agent_display__oneline @ agent/display.py:_oneline */
 /* Collapse all whitespace (incl. newlines) to single spaces between runs,
  * matching Python " ".join(text.split()). Caller frees. */
-static char *_cli_oneline(const char *text)
+char *cli_agent_display__oneline(const char *text)
 {
     if (!text) return strdup("");
     size_t len = strlen(text);
@@ -375,7 +375,7 @@ static int _cli_is_silent_head(const char *h)
  * elsewhere. Caller frees the returned string. */
 char *cli_agent_display__summarize_shell_command(const char *command)
 {
-    char *original = _cli_oneline(command ? command : "");
+    char *original = cli_agent_display__oneline(command ? command : "");
     if (!original || !original[0]) { free(original); return strdup(""); }
 
     int nseg = 0;

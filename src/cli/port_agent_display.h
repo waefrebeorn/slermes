@@ -12,5 +12,6 @@ char **cli_agent_display__split_shell_compound(const char *command, int *count);
 char *cli_agent_display__clean_shell_segment(const char *segment);
 int cli_agent_display__is_shell_boundary_echo(const char *segment);
 char *cli_agent_display__summarize_shell_command(const char *command);
+char *cli_agent_display__oneline(const char *text);
 
 #endif
