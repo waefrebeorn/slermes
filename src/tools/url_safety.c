@@ -1006,14 +1006,133 @@ static bool _parse_webp_size(const unsigned char *data, size_t len,
     return false;
 }
 
-/* Parse image dimensions from raw bytes. Supports PNG, JPEG, GIF, WebP.
- * Returns true on success and sets *width and *height.
- * Mirrors Python yuanbao_media.parse_image_size(). */
-bool url_parse_image_size(const unsigned char *data, size_t len,
-                          int *width, int *height) {
-    if (!data || !len || !width || !height) return false;
-    return _parse_png_size(data, len, width, height)
-        || _parse_jpeg_size(data, len, width, height)
-        || _parse_gif_size(data, len, width, height)
-        || _parse_webp_size(data, len, width, height);
+/* ================================================================
+ * PoP: url_safety_sensitive_query_param_name @ tools/url_safety.py:sensitive_query_param_name
+ * PoP: url_safety_has_sensitive_query_params   @ tools/url_safety.py:has_sensitive_query_params
+ * PoP: url_safety_redirect_target_from_response @ tools/url_safety.py:redirect_target_from_response
+ *
+ * Pure URL helpers. No DNS, no network, no httpx. Faithful to the Python
+ * implementations (see tools/url_safety.py). redirect_target_from_response is
+ * expressed as a pure function over the exact response fields the Python reads
+ * (is_redirect, current url, Location header, next_request url).
+ * ================================================================ */
+
+/* Sensitive query-param names (lowercased). Mirrors _SENSITIVE_QUERY_PARAM_NAMES. */
+static const char *URL_SENSITIVE_QP[] = {
+    "access_token", "api_key", "apikey", "auth_token", "authorization",
+    "awsaccesskeyid", "client_secret", "credential", "credentials", "jwt",
+    "password", "passwd", "secret", "session_id", "signature", "token",
+    "x_amz_security_token", "x_amz_signature", "x-amz-security-token",
+    "x-amz-signature", NULL
+};
+
+/* URL-decode a %XX sequence in place (single pass, len-limited). */
+static void url_safe_urldecode(char *s) {
+    char *o = s;
+    for (char *p = s; *p; ) {
+        if (*p == '%' && p[1] && p[2] &&
+            isxdigit((unsigned char)p[1]) && isxdigit((unsigned char)p[2])) {
+            int hi = (p[1] >= '0' && p[1] <= '9') ? p[1]-'0'
+                    : (tolower((unsigned char)p[1]) - 'a' + 10);
+            int lo = (p[2] >= '0' && p[2] <= '9') ? p[2]-'0'
+                    : (tolower((unsigned char)p[2]) - 'a' + 10);
+            *o++ = (char)(hi*16 + lo);
+            p += 3;
+        } else {
+            *o++ = *p++;
+        }
+    }
+    *o = '\0';
+}
+
+/* Return malloc'd first sensitive query-param NAME, or NULL.
+ * Mirrors sensitive_query_param_name: returns the key (not value). */
+char *url_safety_sensitive_query_param_name(const char *url) {
+    if (!url || !*url) return NULL;
+    /* find '?' */
+    const char *q = strchr(url, '?');
+    if (!q) return NULL;
+    /* scheme check: must be http/https before ':' */
+    char scheme[16];
+    const char *col = strchr(url, ':');
+    if (!col || col > q) return NULL;
+    size_t sl = (size_t)(col - url);
+    if (sl == 0 || sl >= sizeof(scheme)) return NULL;
+    memcpy(scheme, url, sl); scheme[sl] = '\0';
+    for (char *s = scheme; *s; s++) *s = (char)tolower((unsigned char)*s);
+    if (strcmp(scheme, "http") != 0 && strcmp(scheme, "https") != 0) return NULL;
+
+    const char *query = q + 1;
+    /* iterate key=value pairs split on '&' and ';' (parse_qsl uses '&'; we
+     * accept both for robustness, keep_blank_values=True) */
+    char *qbuf = strdup(query);
+    if (!qbuf) return NULL;
+    char *save = NULL;
+    char *pair = strtok_r(qbuf, "&", &save);
+    char *result = NULL;
+    while (pair) {
+        char *eq = strchr(pair, '=');
+        char *key = pair;
+        char *val = "";
+        if (eq) { *eq = '\0'; val = eq + 1; }
+        /* Python iterates parse_qsl(key, value); value must be non-empty */
+        if (val && *val) {
+            char *kdec = strdup(key);
+            if (kdec) {
+                url_safe_urldecode(kdec);
+                for (char *k = kdec; *k; k++) *k = (char)tolower((unsigned char)*k);
+                for (int i = 0; URL_SENSITIVE_QP[i]; i++) {
+                    if (strcmp(kdec, URL_SENSITIVE_QP[i]) == 0) {
+                        result = strdup(key); /* return the ORIGINAL key name */
+                        free(kdec);
+                        goto done;
+                    }
+                }
+                free(kdec);
+            }
+        }
+        pair = strtok_r(NULL, "&", &save);
+    }
+done:
+    free(qbuf);
+    return result;
+}
+
+bool url_safety_has_sensitive_query_params(const char *url) {
+    char *r = url_safety_sensitive_query_param_name(url);
+    bool has = (r != NULL);
+    free(r);
+    return has;
+}
+
+/* Resolve a redirect target from response fields, mimicking
+ * redirect_target_from_response. relative Locations resolved against the
+ * current url (urljoin). Returns malloc'd target or NULL. */
+char *url_safety_redirect_target_from_response(bool is_redirect,
+                                               const char *current_url,
+                                               const char *location_header,
+                                               const char *next_request_url) {
+    if (!is_redirect) return NULL;
+    if (location_header && *location_header) {
+        /* urljoin(current_url, location) — resolve relative paths */
+        char *base = current_url ? strdup(current_url) : strdup("");
+        if (!base) return NULL;
+        /* urljoin: if location is absolute (has scheme://), use it directly */
+        if (strstr(location_header, "://")) {
+            free(base);
+            return strdup(location_header);
+        }
+        /* resolve relative to base path */
+        char *slash = strrchr(base, '/');
+        if (slash) *slash = '\0';
+        size_t need = strlen(base) + 1 + strlen(location_header) + 1;
+        char *out = malloc(need);
+        if (out) snprintf(out, need, "%s/%s", base, location_header);
+        free(base);
+        return out ? out : strdup(location_header);
+    }
+    if (next_request_url && *next_request_url) {
+        return strdup(next_request_url);
+    }
+    return NULL;
 }
