@@ -232,6 +232,7 @@ void cmd_reload_skills(const char *args, agent_state_t *state) {
     printf("Found %d skill(s). Use /skills search-hub <query> to find more.\n", count);
 }
 
+/* PoP: cli_hermes_cli_skills_config_skills_command @ hermes_cli/skills_config.py:skills_command */
 /* /skills: List installed skills */
 void cmd_skills(const char *args, agent_state_t *state) {
     (void)state;

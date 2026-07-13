@@ -91,4 +91,50 @@ int cli_hermes_cli_skills_config__toggle_by_category(
     return 0;
 }
 
+/* PoP: cli_hermes_cli_skills_config__select_platform @ hermes_cli/skills_config.py:_select_platform */
+/*
+ * Port of Python hermes_cli/skills_config.py:_select_platform().
+ * The Python version prompts via TTY input(); the C port takes the selection
+ * from `args` ("--platform <name>") or, failing that, a single line read from
+ * stdin (so piped/non-interactive callers work). Returns a heap-allocated
+ * platform key (caller frees), or NULL for "global"/no selection.
+ */
+char *cli_hermes_cli_skills_config__select_platform(const char *args)
+{
+    static const char *PLATFORMS[] = {
+        "telegram", "discord", "slack", "matrix", "mattermost",
+        "whatsapp", "signal", "webhook", "feishu", "weixin", "yuanbao",
+        "bluebubbles", "dingtalk", "wecom", "qqbot", "sms", "email", "mcp", NULL
+    };
+    char pick[64] = "";
+    if (args && *args) {
+        /* Try "--platform <name>" */
+        const char *p = strstr(args, "--platform");
+        if (p) {
+            p += strlen("--platform");
+            while (*p == ' ' || *p == '\t') p++;
+            if (*p) {
+                int i = 0;
+                while (*p && *p != ' ' && *p != '\t' && i < 63) pick[i++] = *p++;
+                pick[i] = '\0';
+            }
+        }
+    }
+    if (!pick[0]) {
+        /* Fall back to a single line from stdin (non-interactive prompt). */
+        if (fgets(pick, sizeof(pick), stdin)) {
+            pick[strcspn(pick, "\r\n")] = '\0';
+        }
+    }
+    if (!pick[0]) return NULL; /* global / no selection */
+
+    /* Match against known platform keys. */
+    for (int i = 0; PLATFORMS[i]; i++) {
+        if (strcasecmp(pick, PLATFORMS[i]) == 0) {
+            return strdup(PLATFORMS[i]);
+        }
+    }
+    /* Unknown token -> treat as no selection (global). */
+    return NULL;
+}
 
