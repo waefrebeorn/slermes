@@ -21,8 +21,8 @@
 5. P2 desktop features (marketplace, haptics, translucency)
 
 <!-- PARITY:AUTO -->
-| PORTED  | 4,924 / 9,731 (50.6%) |
-| REAL_GAP| 4,732 (48.6%) — no N/A |
+| PORTED  | 5,262 / 9,731 (54.1%) |
+| REAL_GAP| 4,394 (45.2%) — no N/A |
 | PARTIAL | 75 (0.8%) |
 | STUB    | 0 |
 

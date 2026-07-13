@@ -21,8 +21,8 @@
 **Do NOT trust any walkway file that still claims 100% PORTED / 8,688/8,688 / 0 REAL_GAP — that is v398-era fiction. The port is ~half done.**
 
 <!-- PARITY:AUTO -->
-| PORTED  | 4,924 / 9,731 (50.6%) |
-| REAL_GAP| 4,732 (48.6%) — no N/A |
+| PORTED  | 5,262 / 9,731 (54.1%) |
+| REAL_GAP| 4,394 (45.2%) — no N/A |
 | PARTIAL | 75 (0.8%) |
 | STUB    | 0 |
 

@@ -8,6 +8,7 @@
 #include "file_text_ops.h"
 #include "file_fs_ops.h"
 #include "file_pagination_ops.h"
+#include "patch.h"
 #include "hermes_logger.h"
 #include "hermes_json.h"
 #include "hermes_file_safety.h"
@@ -120,10 +121,12 @@ char *file_ops_patch_replace(const char *content, const char *old_text, const ch
     return file_fs_ops_patch_replace(content, old_text, new_text);
 }
 
-/* NOTE: tools/file_operations.py:patch_v4a (V4A patch applier) is NOT yet
- * ported. The earlier stub (return strdup(content)) was removed because it
- * faked a working port. This is an honest REAL_GAP: the C file tool does not
- * yet apply V4A-format patches. Tracked as a gap, not a phantom port. */
+/* PoP: file_ops_patch_v4a @ tools/file_operations.py:patch_v4a */
+char *file_ops_patch_v4a(const char *patch_content)
+{
+    if (!patch_content) return strdup("{\"error\":\"patch content required\"}");
+    return patch_apply_v4a(patch_content, false);
+}
 
 /* ================================================================
  *  Linting helpers  (extracted → src/tools/file_ops_lint.c)

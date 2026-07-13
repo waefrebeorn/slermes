@@ -7,6 +7,7 @@
 
 #include "hermes_core_types.h"
 #include "hermes_json.h"
+#include "patch.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -636,8 +637,8 @@ static void free_v4a_operations(v4a_operation_t *ops, int nops)
     free(ops);
 }
 
-/* Apply a V4A patch — main entry point */
-static char *apply_v4a_patch(const char *patch_content, bool dry_run)
+/* Apply a V4A patch — main entry point (now public; reused by file_operations.patch_v4a) */
+char *patch_apply_v4a(const char *patch_content, bool dry_run)
 {
     v4a_operation_t *ops = NULL;
     int nops = 0;
@@ -1123,7 +1124,7 @@ char *patch_handler(const char *args_json, const char *task_id) {
         if (!patch_dup) {
             return strdup("{\"error\":\"patch content required for mode='patch'\"}");
         }
-        char *result = apply_v4a_patch(patch_dup, dry_run);
+        char *result = patch_apply_v4a(patch_dup, dry_run);
         free(patch_dup);
         return result;
     }
