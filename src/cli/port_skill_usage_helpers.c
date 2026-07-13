@@ -85,7 +85,6 @@ char *skill_usage_latest_activity_at(const char *record_json)
 #include <fcntl.h>
 #include "hermes_logger.h"
 #include "hermes_core_types.h"
-#include "hermes.h"
 #include "port_skills_sync.h"
 #include "libskillusage/skill_usage.h"
 

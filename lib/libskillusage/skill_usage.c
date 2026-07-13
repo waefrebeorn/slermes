@@ -1,6 +1,6 @@
-/*
 #define _XOPEN_SOURCE 700
 #define _POSIX_C_SOURCE 200809L
+/*
  * skill_usage.c — Skill usage telemetry + provenance tracking for Hermes C.
  * Port of Python tools/skill_usage.py.
  *
