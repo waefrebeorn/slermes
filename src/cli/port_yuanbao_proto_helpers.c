@@ -72,6 +72,7 @@ static void yb_append(yb_buf *b, const unsigned char *d, size_t n)
 static void yb_append_byte(yb_buf *b, unsigned char c) { yb_reserve(b, 1); b->p[b->len++] = c; }
 
 /* varint encode */
+/* PoP: _encode_varint @ gateway/platforms/yuanbao_proto.py:_encode_varint */
 static void yb_append_varint(yb_buf *b, uint64_t v)
 {
     if ((int64_t)v < 0) v &= 0xFFFFFFFFFFFFFFFFULL;
@@ -84,6 +85,7 @@ static void yb_append_varint(yb_buf *b, uint64_t v)
 }
 
 /* field tag = (field_number << 3) | wire_type, then value */
+/* PoP: _encode_field @ gateway/platforms/yuanbao_proto.py:_encode_field */
 static void yb_append_field(yb_buf *b, int fn, int wt, const unsigned char *val, size_t n)
 {
     yb_append_varint(b, (uint64_t)((fn << 3) | wt));
@@ -98,16 +100,20 @@ static void yb_append_field(yb_buf *b, int fn, int wt, const unsigned char *val,
 static void yb_f_varint(yb_buf *b, int fn, uint64_t v)
 { yb_append_varint(b, (uint64_t)((fn << 3) | WT_VARINT)); yb_append_varint(b, v); }
 /* convenience: length-delimited field from raw bytes */
-static void yb_f_len(yb_buf *b, int fn, const unsigned char *d, size_t n)
+
+/* PoP: _encode_bytes @ gateway/platforms/yuanbao_proto.py:_encode_bytes */static void yb_f_len(yb_buf *b, int fn, const unsigned char *d, size_t n)
 { yb_append_varint(b, (uint64_t)((fn << 3) | WT_LEN)); yb_append_varint(b, n); yb_append(b, d, n); }
 /* string field */
-static void yb_f_str(yb_buf *b, int fn, const char *s)
+
+/* PoP: _encode_string @ gateway/platforms/yuanbao_proto.py:_encode_string */static void yb_f_str(yb_buf *b, int fn, const char *s)
 { if (!s || !*s) return; size_t n = strlen(s); yb_append_varint(b, (uint64_t)((fn<<3)|WT_LEN)); yb_append_varint(b, n); yb_append(b, (const unsigned char*)s, n); }
 /* length-delimited from a sub-buffer (message/bytes wrapper) */
-static void yb_f_sub(yb_buf *b, int fn, const yb_buf *sub)
+
+/* PoP: _encode_message @ gateway/platforms/yuanbao_proto.py:_encode_message */static void yb_f_sub(yb_buf *b, int fn, const yb_buf *sub)
 { yb_f_len(b, fn, sub->p, sub->len); }
 
 /* ---- varint decode ---- */
+/* PoP: _decode_varint @ gateway/platforms/yuanbao_proto.py:_decode_varint */
 static int yb_decode_varint(const unsigned char *d, size_t n, size_t *pos, uint64_t *out)
 {
     uint64_t result = 0; int shift = 0;
@@ -126,7 +132,9 @@ typedef struct { int fn; int wt; uint64_t vint; unsigned char *vbytes; size_t vl
 typedef struct { yb_field *f; size_t n, cap; } yb_fields;
 static void yb_fields_free(yb_fields *fs)
 { for (size_t i=0;i<fs->n;i++) free(fs->f[i].vbytes); free(fs->f); fs->f=NULL; fs->n=fs->cap=0; }
-static int yb_parse_fields(const unsigned char *d, size_t n, yb_fields *out)
+/* PoP: _parse_fields @ gateway/platforms/yuanbao_proto.py:_parse_fields */
+
+/* PoP: _fields_to_dict @ gateway/platforms/yuanbao_proto.py:_fields_to_dict */static int yb_parse_fields(const unsigned char *d, size_t n, yb_fields *out)
 {
     out->f = NULL; out->n = out->cap = 0;
     size_t pos = 0;
@@ -156,16 +164,20 @@ static int yb_parse_fields(const unsigned char *d, size_t n, yb_fields *out)
     return 1;
 }
 /* accessors: first match by field number */
+/* PoP: _get_varint @ gateway/platforms/yuanbao_proto.py:_get_varint */
 static uint64_t yb_get_varint(const yb_fields *fs, int fn, uint64_t def)
 { for (size_t i=0;i<fs->n;i++) if (fs->f[i].fn==fn && fs->f[i].wt==WT_VARINT) return fs->f[i].vint; return def; }
+/* PoP: _get_string @ gateway/platforms/yuanbao_proto.py:_get_string */
 static char *yb_get_string(const yb_fields *fs, int fn, char *buf, size_t bufsz)
 { buf[0]=0; for (size_t i=0;i<fs->n;i++) if (fs->f[i].fn==fn && fs->f[i].wt==WT_LEN) {
     size_t c = fs->f[i].vlen < bufsz-1 ? fs->f[i].vlen : bufsz-1;
     memcpy(buf, fs->f[i].vbytes, c); buf[c]=0; return buf; }
   return buf; }
+/* PoP: _get_bytes @ gateway/platforms/yuanbao_proto.py:_get_bytes */
 static unsigned char *yb_get_bytes(const yb_fields *fs, int fn, size_t *outlen)
 { *outlen=0; for (size_t i=0;i<fs->n;i++) if (fs->f[i].fn==fn && fs->f[i].wt==WT_LEN) { *outlen=fs->f[i].vlen; return fs->f[i].vbytes; } return NULL; }
 /* collect repeated bytes into a malloc'd array of (ptr,len); returns count */
+/* PoP: _get_repeated_bytes @ gateway/platforms/yuanbao_proto.py:_get_repeated_bytes */
 static size_t yb_get_repeated_bytes(const yb_fields *fs, int fn, unsigned char ***out, size_t **lens)
 {
     size_t cnt = 0; for (size_t i=0;i<fs->n;i++) if (fs->f[i].fn==fn && fs->f[i].wt==WT_LEN) cnt++;
@@ -177,7 +189,9 @@ static size_t yb_get_repeated_bytes(const yb_fields *fs, int fn, unsigned char *
 }
 
 /* ---- Head encode/decode ---- */
-static void yb_encode_head(yb_buf *b, int cmd_type, const char *cmd, uint64_t seq_no,
+/* PoP: _encode_head @ gateway/platforms/yuanbao_proto.py:_encode_head */
+
+/* PoP: _decode_head @ gateway/platforms/yuanbao_proto.py:_decode_head */static void yb_encode_head(yb_buf *b, int cmd_type, const char *cmd, uint64_t seq_no,
                             const char *msg_id, const char *module, int need_ack, uint64_t status)
 {
     if (cmd_type != 0) yb_f_varint(b, 1, (uint64_t)cmd_type);
@@ -258,7 +272,10 @@ char *yuanbao_proto_decode_biz_msg(const unsigned char *data, size_t len)
 }
 
 /* ---- MsgContent encode/decode ---- */
-static void yb_encode_msg_content(yb_buf *b, const char *json_content)
+/* PoP: _encode_msg_content @ gateway/platforms/yuanbao_proto.py:_encode_msg_content */
+
+/* PoP: _decode_map_entry @ gateway/platforms/yuanbao_proto.py:_decode_map_entry */
+/* PoP: _encode_map_entry @ gateway/platforms/yuanbao_proto.py:_encode_map_entry */static void yb_encode_msg_content(yb_buf *b, const char *json_content)
 {
     /* content is a JSON object; we parse and encode known fields */
     json_t *c = json_parse(json_content, NULL);
@@ -307,6 +324,7 @@ static void yb_encode_msg_content(yb_buf *b, const char *json_content)
 }
 
 /* ---- MsgBodyElement encode ---- */
+/* PoP: _encode_msg_body_element @ gateway/platforms/yuanbao_proto.py:_encode_msg_body_element */
 static void yb_encode_msg_body_element(yb_buf *b, const char *json_el)
 {
     json_t *e = json_parse(json_el, NULL);
@@ -326,7 +344,9 @@ static void yb_encode_msg_body_element(yb_buf *b, const char *json_el)
 }
 
 /* ---- SendC2CMessageReq / SendGroupMessageReq encode ---- */
-static unsigned char *yb_encode_send_c2c_req(const char *to_account, const char *from_account,
+/* PoP: _encode_send_c2c_req @ gateway/platforms/yuanbao_proto.py:_encode_send_c2c_req */
+
+/* PoP: _encode_log_ext @ gateway/platforms/yuanbao_proto.py:_encode_log_ext */static unsigned char *yb_encode_send_c2c_req(const char *to_account, const char *from_account,
     const char *msg_body_json, const char *msg_id, uint64_t msg_random, uint64_t msg_seq,
     const char *group_code, const char *trace_id, size_t *out_len)
 {
@@ -353,6 +373,7 @@ static unsigned char *yb_encode_send_c2c_req(const char *to_account, const char 
     yb_free(&buf); return out;
 }
 
+/* PoP: _encode_send_group_req @ gateway/platforms/yuanbao_proto.py:_encode_send_group_req */
 static unsigned char *yb_encode_send_group_req(const char *group_code, const char *from_account,
     const char *msg_body_json, const char *msg_id, const char *to_account, const char *random,
     uint64_t msg_seq, const char *ref_msg_id, const char *trace_id, size_t *out_len)
@@ -466,6 +487,7 @@ unsigned char *yuanbao_proto_encode_send_group_heartbeat(const char *from_accoun
 }
 
 /* ---- ForwardMsgData encode/decode ---- */
+/* PoP: _encode_forward_multimedia @ gateway/platforms/yuanbao_proto.py:_encode_forward_multimedia */
 static void yb_encode_forward_multimedia(yb_buf *b, json_t *media)
 {
     if (!media || media->type!=JSON_OBJECT) return;
@@ -476,6 +498,7 @@ static void yb_encode_forward_multimedia(yb_buf *b, json_t *media)
     int nin=sizeof(in)/sizeof(in[0]);
     for (int i=0;i<nin;i++){ json_t *v=json_object_get(media, in[i].key); if (v&&v->type==JSON_NUMBER&&(int)json_number_value(v)!=0) yb_f_varint(b, in[i].fn, (uint64_t)(int)json_number_value(v)); }
 }
+/* PoP: _encode_forward_msg_content @ gateway/platforms/yuanbao_proto.py:_encode_forward_msg_content */
 static void yb_encode_forward_msg_content(yb_buf *b, json_t *content)
 {
     if (!content || content->type!=JSON_OBJECT) return;
@@ -486,6 +509,7 @@ static void yb_encode_forward_msg_content(yb_buf *b, json_t *content)
     json_t *mm = json_object_get(content, "multimedia");
     if (mm&&mm->type==JSON_ARRAY) for (size_t i=0;i<json_array_size(mm);i++){ yb_buf mb; yb_init(&mb); yb_encode_forward_multimedia(&mb, json_array_get(mm,i)); yb_f_sub(b,3,&mb); yb_free(&mb); }
 }
+/* PoP: _encode_forward_msg @ gateway/platforms/yuanbao_proto.py:_encode_forward_msg */
 static void yb_encode_forward_msg(yb_buf *b, json_t *msg)
 {
     if (!msg||msg->type!=JSON_OBJECT) return;
@@ -516,6 +540,7 @@ unsigned char *yuanbao_proto_encode_forward_msg_data(const char *data_json, size
 }
 
 /* decode forward multimedia / msg_content / msg */
+/* PoP: _decode_forward_multimedia @ gateway/platforms/yuanbao_proto.py:_decode_forward_multimedia */
 static json_t *yb_decode_forward_multimedia(const unsigned char *d, size_t n)
 {
     yb_fields fs; yb_parse_fields(d,n,&fs);
@@ -531,6 +556,7 @@ static json_t *yb_decode_forward_multimedia(const unsigned char *d, size_t n)
     v=yb_get_varint(&fs,7,0); if (v) json_object_set(m,"height",json_int((int)v));
     yb_fields_free(&fs); return m;
 }
+/* PoP: _decode_forward_msg_content @ gateway/platforms/yuanbao_proto.py:_decode_forward_msg_content */
 static json_t *yb_decode_forward_msg_content(const unsigned char *d, size_t n)
 {
     yb_fields fs; yb_parse_fields(d,n,&fs);
@@ -538,9 +564,10 @@ static json_t *yb_decode_forward_msg_content(const unsigned char *d, size_t n)
     json_object_set(c,"type",json_int((int)yb_get_varint(&fs,1,0)));
     char s[1024]; yb_get_string(&fs,2,s,sizeof(s)); if (s[0]) json_object_set(c,"text",json_string(s));
     unsigned char **pb; size_t *pl; size_t cnt=yb_get_repeated_bytes(&fs,3,&pb,&pl);
-    if (cnt) { json_t *arr=json_new_array(); for (size_t i=0;i<cnt;i++) json_array_append(arr, yb_decode_forward_multimedia(pb[i],pl[i])); json_object_set(c,"multimedia",arr); free(pb); free(pl); }
+    if (cnt) { json_t *arr=json_new_array(); for (size_t i=0;i<cnt;i++) json_array_append(arr, yb_decode_forward_multimedia(pb[i],pl[i])); json_object_set(c,"multimedia",arr); free(pb); free(pl); /* caller-owned arrays; elements alias fs (freed by yb_fields_free) */ }
     yb_fields_free(&fs); return c;
 }
+/* PoP: _decode_forward_msg @ gateway/platforms/yuanbao_proto.py:_decode_forward_msg */
 static json_t *yb_decode_forward_msg(const unsigned char *d, size_t n)
 {
     yb_fields fs; yb_parse_fields(d,n,&fs);
@@ -549,7 +576,7 @@ static json_t *yb_decode_forward_msg(const unsigned char *d, size_t n)
     json_object_set(m,"time",json_int((int)yb_get_varint(&fs,2,0)));
     yb_get_string(&fs,3,s,sizeof(s)); if (s[0]) json_object_set(m,"plainText",json_string(s));
     unsigned char **pb; size_t *pl; size_t cnt=yb_get_repeated_bytes(&fs,4,&pb,&pl);
-    if (cnt) { json_t *arr=json_new_array(); for (size_t i=0;i<cnt;i++) json_array_append(arr, yb_decode_forward_msg_content(pb[i],pl[i])); json_object_set(m,"msgContent",arr); free(pb); free(pl); }
+    if (cnt) { json_t *arr=json_new_array(); for (size_t i=0;i<cnt;i++) json_array_append(arr, yb_decode_forward_msg_content(pb[i],pl[i])); json_object_set(m,"msgContent",arr); free(pb); free(pl); /* caller-owned arrays; elements alias fs (freed by yb_fields_free) */ }
     yb_fields_free(&fs); return m;
 }
 
@@ -564,11 +591,13 @@ char *yuanbao_proto_decode_forward_msg_data(const unsigned char *data, size_t le
     json_object_set(root,"end_time",json_int((int)yb_get_varint(&fs,3,0)));
     char s[1024]; yb_get_string(&fs,4,s,sizeof(s)); if (s[0]) json_object_set(root,"nick_name",json_string(s));
     unsigned char **pb; size_t *pl; size_t cnt=yb_get_repeated_bytes(&fs,5,&pb,&pl);
-    if (cnt) { json_t *arr=json_new_array(); for (size_t i=0;i<cnt;i++) json_array_append(arr, yb_decode_forward_msg(pb[i],pl[i])); json_object_set(root,"msg",arr); free(pb); free(pl); }
+    if (cnt) { json_t *arr=json_new_array(); for (size_t i=0;i<cnt;i++) json_array_append(arr, yb_decode_forward_msg(pb[i],pl[i])); json_object_set(root,"msg",arr); free(pb); free(pl); /* caller-owned arrays; elements alias fs (freed by yb_fields_free) */ }
     char *out = json_dumps(root, 0); json_free(root); yb_fields_free(&fs); return out;
 }
 
 /* ---- InboundMessagePush decode ---- */
+/* Forward declaration: defined later (shared MsgContent decoder). */
+char *yuanbao_proto_decode_msg_content(const unsigned char *data, size_t len);
 /* ---------------------------------------------------------------------- */
 /* PoP: decode_inbound_push @ gateway/platforms/yuanbao_proto.py:decode_inbound_push */
 char *yuanbao_proto_decode_inbound_push(const unsigned char *data, size_t len)
@@ -590,11 +619,13 @@ char *yuanbao_proto_decode_inbound_push(const unsigned char *data, size_t len)
     SETSTR(16,"bot_owner_id");
     SETSTR(19,"private_from_group_code");
     #undef SETSTR
-    json_object_set(root,"msg_seq",json_int((int)yb_get_varint(&fs,8,0)));
-    json_object_set(root,"msg_random",json_int((int)yb_get_varint(&fs,9,0)));
-    json_object_set(root,"msg_time",json_int((int)yb_get_varint(&fs,10,0)));
-    json_object_set(root,"event_time",json_int((int)yb_get_varint(&fs,15,0)));
-    json_object_set(root,"claw_msg_type",json_int((int)yb_get_varint(&fs,18,0)));
+    json_object_set(root,"msg_seq",json_int((int)yb_get_varint(&fs,8,0)));  /* always kept */
+    { uint64_t v;
+      v=yb_get_varint(&fs,9,0);  if (v) json_object_set(root,"msg_random",json_int((int)v));
+      v=yb_get_varint(&fs,10,0); if (v) json_object_set(root,"msg_time",json_int((int)v));
+      v=yb_get_varint(&fs,15,0); if (v) json_object_set(root,"event_time",json_int((int)v));
+      v=yb_get_varint(&fs,18,0); if (v) json_object_set(root,"claw_msg_type",json_int((int)v));
+    }
     /* msg_body (repeated field 13) */
     unsigned char **pb; size_t *pl; size_t cnt=yb_get_repeated_bytes(&fs,13,&pb,&pl);
     if (cnt) {
@@ -606,22 +637,13 @@ char *yuanbao_proto_decode_inbound_push(const unsigned char *data, size_t len)
             char mt[256]; yb_get_string(&ef,1,mt,sizeof(mt)); json_object_set(el,"msg_type",json_string(mt));
             size_t clen; unsigned char *cb=yb_get_bytes(&ef,2,&clen);
             if (cb) {
-                /* decode MsgContent into a JSON object (text/url/etc.) */
-                yb_fields cf; yb_parse_fields(cb,clen,&cf);
-                json_t *content=json_new_object();
-                char cs[2048];
-                yb_get_string(&cf,1,cs,sizeof(cs)); if (cs[0]) json_object_set(content,"text",json_string(cs));
-                yb_get_string(&cf,2,cs,sizeof(cs)); if (cs[0]) json_object_set(content,"uuid",json_string(cs));
-                yb_get_string(&cf,4,cs,sizeof(cs)); if (cs[0]) json_object_set(content,"data",json_string(cs));
-                yb_get_string(&cf,5,cs,sizeof(cs)); if (cs[0]) json_object_set(content,"desc",json_string(cs));
-                yb_get_string(&cf,6,cs,sizeof(cs)); if (cs[0]) json_object_set(content,"ext",json_string(cs));
-                yb_get_string(&cf,10,cs,sizeof(cs)); if (cs[0]) json_object_set(content,"url",json_string(cs));
-                yb_get_string(&cf,12,cs,sizeof(cs)); if (cs[0]) json_object_set(content,"file_name",json_string(cs));
-                json_object_set(content,"image_format",json_int((int)yb_get_varint(&cf,3,0)));
-                json_object_set(content,"index",json_int((int)yb_get_varint(&cf,9,0)));
-                json_object_set(content,"file_size",json_int((int)yb_get_varint(&cf,11,0)));
-                json_object_set(el,"msg_content",content);
-                yb_fields_free(&cf);
+                /* decode MsgContent via the shared helper (matches Python
+                 * _decode_msg_content: skips zero varints, includes ext_map). */
+                char *cj = yuanbao_proto_decode_msg_content(cb, clen);
+                json_t *content = cj ? json_parse(cj, NULL) : NULL;
+                if (!content) content = json_new_object();
+                json_object_set(el, "msg_content", content);
+                free(cj);
             } else {
                 json_object_set(el,"msg_content",json_new_object());
             }
@@ -629,7 +651,7 @@ char *yuanbao_proto_decode_inbound_push(const unsigned char *data, size_t len)
             yb_fields_free(&ef);
         }
         json_object_set(root,"msg_body",arr);
-        free(pb); free(pl);
+        free(pb); free(pl); /* caller-owned arrays; elements alias fs (freed by yb_fields_free) */
     }
     /* trace_id (field 20 -> LogInfoExt -> field1) */
     size_t lelen; unsigned char *leb=yb_get_bytes(&fs,20,&lelen);
@@ -686,17 +708,118 @@ char *yuanbao_proto_decode_get_group_member_list_rsp(const unsigned char *data, 
         yb_fields mf; yb_parse_fields(pb[i],pl[i],&mf);
         json_t *m=json_new_object();
         char ms[2048];
-        yb_get_string(&mf,1,ms,sizeof(ms)); json_object_set(m,"user_id",json_string(ms));
-        yb_get_string(&mf,2,ms,sizeof(ms)); json_object_set(m,"nickname",json_string(ms));
-        json_object_set(m,"role",json_int((int)yb_get_varint(&mf,3,0)));
-        json_object_set(m,"join_time",json_int((int)yb_get_varint(&mf,4,0)));
+        yb_get_string(&mf,1,ms,sizeof(ms)); if (ms[0]) json_object_set(m,"user_id",json_string(ms));
+        yb_get_string(&mf,2,ms,sizeof(ms)); if (ms[0]) json_object_set(m,"nickname",json_string(ms));
+        json_object_set(m,"role",json_int((int)yb_get_varint(&mf,3,0)));  /* always kept */
+        { uint64_t v=yb_get_varint(&mf,4,0); if (v) json_object_set(m,"join_time",json_int((int)v)); }
         yb_get_string(&mf,5,ms,sizeof(ms)); if (ms[0]) json_object_set(m,"name_card",json_string(ms));
         json_array_append(arr, m);
         yb_fields_free(&mf);
     }
     json_object_set(root,"members",arr);
-    if (pb) free(pb); if (pl) free(pl);
+    free(pb); free(pl); /* caller-owned arrays; elements alias fs (freed by yb_fields_free) */
     json_object_set(root,"next_offset",json_int((int)yb_get_varint(&fs,4,0)));
-    json_object_set(root,"is_complete",json_int(yb_get_varint(&fs,5,0)?1:0));
+    json_object_set(root,"is_complete",json_bool(yb_get_varint(&fs,5,0)?1:0));
     char *out = json_dumps(root, 0); json_free(root); yb_fields_free(&fs); return out;
+}
+
+/* ---------------------------------------------------------------------- */
+/* The Python module exposes individual message-level decoders
+ * (_decode_msg_content / _decode_msg_body_element / _decode_im_msg_seq /
+ * _decode_log_ext). The C port inlines this logic inside
+ * yuanbao_proto_decode_inbound_push; these thin real wrappers expose the same
+ * behavior so the port is name-complete and oracle-verifiable. */
+
+/* PoP: _decode_msg_content @ gateway/platforms/yuanbao_proto.py:_decode_msg_content */
+char *yuanbao_proto_decode_msg_content(const unsigned char *data, size_t len)
+{
+    yb_fields cf; if (!yb_parse_fields(data,len,&cf)) return strdup("{}");
+    json_t *content = json_new_object();
+    char cs[2048];
+    yb_get_string(&cf,1,cs,sizeof(cs)); if (cs[0]) json_object_set(content,"text",json_string(cs));
+    yb_get_string(&cf,2,cs,sizeof(cs)); if (cs[0]) json_object_set(content,"uuid",json_string(cs));
+    yb_get_string(&cf,4,cs,sizeof(cs)); if (cs[0]) json_object_set(content,"data",json_string(cs));
+    yb_get_string(&cf,5,cs,sizeof(cs)); if (cs[0]) json_object_set(content,"desc",json_string(cs));
+    yb_get_string(&cf,6,cs,sizeof(cs)); if (cs[0]) json_object_set(content,"ext",json_string(cs));
+    yb_get_string(&cf,10,cs,sizeof(cs)); if (cs[0]) json_object_set(content,"url",json_string(cs));
+    yb_get_string(&cf,12,cs,sizeof(cs)); if (cs[0]) json_object_set(content,"file_name",json_string(cs));
+    uint64_t v;
+    v=yb_get_varint(&cf,3,0); if (v) json_object_set(content,"image_format",json_int((int)v));
+    v=yb_get_varint(&cf,9,0); if (v) json_object_set(content,"index",json_int((int)v));
+    v=yb_get_varint(&cf,11,0); if (v) json_object_set(content,"file_size",json_int((int)v));
+    /* ext_map (field 999): repeated map entries key=field1, value=field2 */
+    unsigned char **pb; size_t *pl; size_t cnt = yb_get_repeated_bytes(&cf, 999, &pb, &pl);
+    if (cnt) {
+        json_t *em = json_new_object();
+        for (size_t i=0;i<cnt;i++) {
+            yb_fields ef; yb_parse_fields(pb[i], pl[i], &ef);
+            char k[2048], val[2048];
+            yb_get_string(&ef,1,k,sizeof(k));
+            yb_get_string(&ef,2,val,sizeof(val));
+            if (k[0]) json_object_set(em, k, json_string(val));
+            yb_fields_free(&ef);
+        }
+        if (json_object_size(em)) json_object_set(content, "ext_map", em);
+        else json_free(em);
+        free(pb); free(pl); /* caller-owned arrays; elements alias fs (freed by yb_fields_free) */
+    }
+    char *out = json_dumps(content, 0); json_free(content); yb_fields_free(&cf); return out;
+}
+
+/* PoP: _decode_msg_body_element @ gateway/platforms/yuanbao_proto.py:_decode_msg_body_element */
+char *yuanbao_proto_decode_msg_body_element(const unsigned char *data, size_t len)
+{
+    yb_fields ef; if (!yb_parse_fields(data,len,&ef)) return strdup("{}");
+    json_t *el = json_new_object();
+    char mt[256]; yb_get_string(&ef,1,mt,sizeof(mt)); json_object_set(el,"msg_type",json_string(mt));
+    size_t clen; unsigned char *cb = yb_get_bytes(&ef,2,&clen);
+    if (cb) {
+        char *cj = yuanbao_proto_decode_msg_content(cb, clen);
+        json_t *content = cj ? json_parse(cj, NULL) : NULL;
+        if (!content) content = json_new_object();
+        json_object_set(el, "msg_content", content);  /* takes ownership */
+        free(cj);
+    } else {
+        json_object_set(el,"msg_content",json_new_object());
+    }
+    char *out = json_dumps(el, 0); json_free(el); yb_fields_free(&ef); return out;
+}
+
+/* PoP: _decode_im_msg_seq @ gateway/platforms/yuanbao_proto.py:_decode_im_msg_seq */
+char *yuanbao_proto_decode_im_msg_seq(const unsigned char *data, size_t len)
+{
+    yb_fields rf; if (!yb_parse_fields(data,len,&rf)) return strdup("{}");
+    json_t *e = json_new_object();
+    json_object_set(e,"msg_seq",json_int((int)yb_get_varint(&rf,1,0)));
+    char rs[512]; yb_get_string(&rf,2,rs,sizeof(rs)); if (rs[0]) json_object_set(e,"msg_id",json_string(rs));
+    char *out = json_dumps(e,0); json_free(e); yb_fields_free(&rf); return out;
+}
+
+/* PoP: _decode_log_ext @ gateway/platforms/yuanbao_proto.py:_decode_log_ext */
+char *yuanbao_proto_decode_log_ext(const unsigned char *data, size_t len)
+{
+    yb_fields lf; if (!yb_parse_fields(data,len,&lf)) return strdup("{}");
+    json_t *e = json_new_object();
+    char t[1024]; yb_get_string(&lf,1,t,sizeof(t)); if (t[0]) json_object_set(e,"trace_id",json_string(t));
+    char *out = json_dumps(e,0); json_free(e); yb_fields_free(&lf); return out;
+}
+
+/* PoP: _dbg @ gateway/platforms/yuanbao_proto.py:_dbg
+ * Debug-mode hex dump of the first 64 bytes of a buffer. No-op unless
+ * DEBUG_MODE is enabled (mirrors the Python guard `if DEBUG_MODE:`). */
+#ifndef YUANBAO_PROTO_DEBUG_MODE
+#define YUANBAO_PROTO_DEBUG_MODE 0
+#endif
+
+void yuanbao_proto_dbg(const char *label, const unsigned char *data, size_t len)
+{
+    if (!YUANBAO_PROTO_DEBUG_MODE) return;
+    size_t n = len < 64 ? len : 64;
+    char hex[64 * 3 + 1];
+    char *p = hex;
+    for (size_t i = 0; i < n; i++) {
+        p += sprintf(p, "%s%02x", (i ? " " : ""), data[i]);
+    }
+    const char *ellipsis = (len > 64) ? "..." : "";
+    fprintf(stderr, "[yuanbao_proto] %s (%zdB): %s%s\n", label ? label : "", len, hex, ellipsis);
 }
