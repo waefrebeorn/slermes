@@ -511,9 +511,10 @@ typedef struct {
     char  language[16];           /* display.language: UI language */
     bool  show_cost;              /* display.show_cost: show token cost */
     bool  timestamps;             /* display.timestamps: show message timestamps */
-    bool  pet_enabled;            /* display.pet.enabled: companion pet widget */
-    float pet_scale;              /* display.pet.scale: pet sprite scale */
-    char  pet_slug[64];           /* display.pet.slug: active pet id */
+    bool  pet_enabled;            /* display.pet_enabled */
+    int   pet_scale;              /* display.pet_scale (0=auto) */
+    char  pet_slug[64];           /* display.pet (slug) */
+    int   ephemeral_system_ttl;   /* display.ephemeral_system_ttl (s, 0=disabled) */
 } display_config_t;
 
 /* ================================================================
