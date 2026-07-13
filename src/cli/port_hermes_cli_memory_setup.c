@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 
 
@@ -113,6 +114,91 @@ void cli_hermes_cli_memory_setup_memory_command(const char *subcommand)
         hermes_log(LOG_DEBUG, "memory_setup",
                    "unknown subcommand: %s", subcommand);
     }
+}
+
+/* PoP: cli_hermes_cli_memory_setup__get_available_providers @ hermes_cli/memory_setup.py:_get_available_providers */
+/*
+ * Port of Python hermes_cli/memory_setup.py:_get_available_providers().
+ * The Python version dynamically imports providers from plugins/memory/. The
+ * C port has a fixed, built-in provider set (no plugin loader), so it returns
+ * the known providers with their setup hints. Each result is a heap-allocated
+ * cli_memory_provider_info_t (caller frees via
+ * cli_hermes_cli_memory_setup_free_providers). Returns count, or -1 on error.
+ */
+typedef struct {
+    char name[64];
+    char setup_hint[64];
+    bool available;
+} cli_memory_provider_info_t;
+
+int cli_hermes_cli_memory_setup__get_available_providers(
+    cli_memory_provider_info_t **out, int *out_count)
+{
+    static const cli_memory_provider_info_t KNOWN[] = {
+        {"builtin", "no setup needed", true},
+        {"sqlite",  "local",           true},
+        {"faiss",    "local",           false},
+        {"chromadb", "requires API key", false},
+        {"pinecone", "requires API key", false},
+        {"qdrant",   "local",           false},
+        {"weaviate", "requires API key", false},
+        {"pgvector", "requires API key", false},
+        {"milvus",   "requires API key", false},
+    };
+    if (!out || !out_count) return -1;
+    size_t n = sizeof(KNOWN) / sizeof(KNOWN[0]);
+    cli_memory_provider_info_t *arr = calloc(n, sizeof(*arr));
+    if (!arr) return -1;
+    memcpy(arr, KNOWN, n * sizeof(*arr));
+    *out = arr;
+    *out_count = (int)n;
+    return (int)n;
+}
+
+void cli_hermes_cli_memory_setup_free_providers(cli_memory_provider_info_t *p)
+{
+    free(p);
+}
+
+/* PoP: cli_hermes_cli_memory_setup__curses_select @ hermes_cli/memory_setup.py:_curses_select */
+/*
+ * Port of Python hermes_cli/memory_setup.py:_curses_select().
+ * The Python version renders a curses selection menu; the C port takes the
+ * selection from `args` ("--select <value>" or a bare token) or, failing that,
+ * a single line from stdin (non-interactive). Returns the chosen string
+ * (caller frees) or NULL on no selection / cancel.
+ */
+char *cli_hermes_cli_memory_setup__curses_select(
+    const char *prompt, const char *options[], int option_count, const char *args)
+{
+    (void)prompt;
+    (void)options;
+    (void)option_count;
+    char pick[256] = "";
+    if (args && *args) {
+        const char *p = strstr(args, "--select");
+        if (p) {
+            p += strlen("--select");
+            while (*p == ' ' || *p == '\t') p++;
+            if (*p) {
+                int i = 0;
+                while (*p && *p != ' ' && *p != '\t' && i < 255) pick[i++] = *p++;
+                pick[i] = '\0';
+            }
+        } else {
+            /* bare token */
+            int i = 0;
+            while (*args && *args != ' ' && *args != '\t' && i < 255) pick[i++] = *args++;
+            pick[i] = '\0';
+        }
+    }
+    if (!pick[0]) {
+        if (fgets(pick, sizeof(pick), stdin)) {
+            pick[strcspn(pick, "\r\n")] = '\0';
+        }
+    }
+    if (!pick[0]) return NULL;
+    return strdup(pick);
 }
 
 /* Port of Python hermes_cli/memory_setup.py:_print_cancelled_setup */
