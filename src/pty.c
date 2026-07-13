@@ -66,6 +66,7 @@ static void pty_setup_slave(int slave_fd, int master_fd) {
 
 /* PoP: pty_allocate @ electron/main.cjs:terminal:start */
 /* PoP: pty_bridge__enter @ hermes_cli/pty_bridge.py:__enter__ */
+/* PoP: win_pty_bridge__enter @ hermes_cli/win_pty_bridge.py:__enter__ */
 /* Context-manager enter: spawns the PTY and returns the bridge (self). */
 pty_t *pty_allocate(const char *shell, char *const env[], int cols, int rows) {
     pty_t *pty = calloc(1, sizeof(pty_t));
@@ -235,6 +236,7 @@ int pty_write(pty_t *pty, const char *buf, size_t len) {
 
 /* PoP: pty_dispose @ electron/main.cjs:terminal:dispose */
 /* PoP: pty_bridge__exit @ hermes_cli/pty_bridge.py:__exit__ */
+/* PoP: win_pty_bridge__exit @ hermes_cli/win_pty_bridge.py:__exit__ */
 /* Context-manager exit: closes the PTY (Python __exit__ delegates to close()). */
 void pty_dispose(pty_t *pty) {
     if (!pty) return;
