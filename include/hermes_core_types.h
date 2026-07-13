@@ -578,6 +578,11 @@ typedef struct {
     char  child_model[128];        /* delegation.model */
     char  child_provider[64];      /* delegation.provider */
     int   child_max_turns;         /* delegation.max_iterations */
+    bool  subagent_auto_approve;   /* delegation.subagent_auto_approve */
+    bool  orchestrator_enabled;    /* delegation.orchestrator_enabled */
+    int   max_async_children;      /* delegation.max_async_children */
+    bool  inherit_mcp_toolsets;    /* delegation.inherit_mcp_toolsets */
+    int   max_summary_chars;       /* delegation.max_summary_chars (0 = disabled) */
 } delegation_config_t;
 
 /* ================================================================
