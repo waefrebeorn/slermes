@@ -50,6 +50,7 @@ typedef struct {
     long long quota_limit;        /* -1 = unlimited */
     time_t   last_used;           /* epoch seconds of last use */
     double   lease_expiry;        /* epoch seconds; >now means leased exclusively */
+    char     source[CREDENTIAL_POOL_NAME_MAX]; /* origin of the key (e.g. env var, file, manual) */
 } credential_entry_t;
 
 /* ================================================================

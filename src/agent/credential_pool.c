@@ -103,6 +103,7 @@ int credential_pool_add_key(credential_pool_t *pool,
     e->quota_limit = -1;
     e->last_used = 0;
     e->weight = 1;  /* B11: default weight = normal */
+    e->source[0] = '\0';  /* no provenance unless caller sets it */
 
     pool->entry_count++;
     return idx;
@@ -744,11 +745,12 @@ bool has_available(const credential_pool_t *pool) {
  * Returns the entry index or -1 on failure. */
 int add_entry(credential_pool_t *pool, const char *api_key, const char *label, const char *source) {
     if (!pool || !api_key) return -1;
-    
+
     int idx = credential_pool_add_key(pool, api_key, label);
-    if (idx >= 0 && source) {
-        /* Could store source in extra metadata if needed */
-        (void)source; /* TODO: store source in entry metadata */
+    if (idx >= 0 && source && source[0]) {
+        /* Store provenance of the key in entry metadata. */
+        snprintf(pool->entries[idx].source, sizeof(pool->entries[idx].source),
+                 "%s", source);
     }
     return idx;
 }
@@ -758,15 +760,26 @@ int add_entry(credential_pool_t *pool, const char *api_key, const char *label, c
  * Returns true if the pool was modified. */
 bool _upsert_entry(credential_pool_t *pool, const char *source, const char *api_key, const char *label) {
     if (!pool || !source || !api_key) return false;
-    
-    /* Search for existing entry with same source */
+
+    /* Find an existing entry with the same provenance (source). */
     for (int i = 0; i < pool->entry_count; i++) {
-        /* TODO: match by source metadata */
-        (void)source;
+        if (pool->entries[i].source[0] && strcmp(pool->entries[i].source, source) == 0) {
+            /* Update in place — keep usage/status history intact. */
+            snprintf(pool->entries[i].api_key, sizeof(pool->entries[i].api_key),
+                     "%s", api_key);
+            if (label && label[0])
+                snprintf(pool->entries[i].label, sizeof(pool->entries[i].label),
+                         "%s", label);
+            return true;
+        }
     }
-    
-    /* Add as new entry */
+
+    /* No match — add as a new entry. */
     int idx = credential_pool_add_key(pool, api_key, label);
+    if (idx >= 0) {
+        snprintf(pool->entries[idx].source, sizeof(pool->entries[idx].source),
+                 "%s", source);
+    }
     return idx >= 0;
 }
 
@@ -774,12 +787,12 @@ bool _upsert_entry(credential_pool_t *pool, const char *source, const char *api_
  * Get the configured pool selection strategy for a provider.
  * Returns strategy string (e.g., "fill_first", "round_robin", "random", "least_used"). */
 const char *get_pool_strategy(const char *provider) {
-    if (!provider) return "fill_first";
-    
-    static const char *default_strategy = "fill_first";
-    
-    /* TODO: Read from config.yaml */
     (void)provider;
+    /* The C config schema (hermes_core_types.h) exposes per-platform config
+     * but no per-provider credential-pool strategy key, so the documented
+     * default is returned. The Python original reads this from config.yaml;
+     * wiring a new yaml key is out of scope until the schema gains one. */
+    static const char *default_strategy = "fill_first";
     return default_strategy;
 }
 
