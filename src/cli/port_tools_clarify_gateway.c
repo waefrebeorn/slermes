@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 /*
  * Clarify entry structure — mirrors Python _ClarifyEntry dataclass.
@@ -29,6 +30,8 @@ typedef struct clarify_entry {
     char clarify_id[128];
     char session_key[256];
     char question[1024];
+    char choices[16][256];   /* up to 16 canned choices (for _coerce_text_response) */
+    int  choice_count;
     int is_active;
     int awaiting_text;
     struct clarify_entry *next;
@@ -172,3 +175,58 @@ void cli_tools_clarify_gateway_unregister_notify(const char *session_key) {
 }
 
 /* PoP: cli_tools_clarify_gateway_get_notify @ tools/clarify_gateway.py:get_notify */
+void *cli_tools_clarify_gateway_get_notify(const char *session_key) {
+    /* Per-session notify callbacks are not retained in this C port (the
+     * gateway calls send_clarify directly). Return NULL (no callback). */
+    (void)session_key;
+    return NULL;
+}
+
+/* ================================================================
+ *  Text-response resolution (choice coercion)
+ * ================================================================ */
+
+/* PoP: cli_tools_clarify_gateway__coerce_text_response @ tools/clarify_gateway.py:_coerce_text_response */
+/* Map typed choice replies to canonical choice text, otherwise keep custom text. */
+char *cli_tools_clarify_gateway__coerce_text_response(const clarify_entry_t *entry, const char *response) {
+    if (!response) return strdup("");
+    /* strip */
+    char text[2048];
+    size_t n = 0;
+    for (const char *p = response; *p && n + 1 < sizeof(text); p++) {
+        if (!isspace((unsigned char)*p) || n > 0) text[n++] = *p;
+    }
+    while (n > 0 && isspace((unsigned char)text[n - 1])) n--;
+    text[n] = '\0';
+    if (entry && entry->choice_count > 0) {
+        /* numeric index? */
+        char *end = NULL;
+        long idx = strtol(text, &end, 10);
+        if (end != text && *end == '\0') {
+            if (idx >= 1 && idx <= entry->choice_count)
+                return strdup(entry->choices[idx - 1]);
+        }
+        /* exact casefold match */
+        for (int i = 0; i < entry->choice_count; i++) {
+            char a[256], b[256];
+            size_t ia = 0, ib = 0;
+            for (const char *p = text; *p; p++) a[ia++] = (char)tolower((unsigned char)*p); a[ia] = '\0';
+            for (const char *p = entry->choices[i]; *p; p++) b[ib++] = (char)tolower((unsigned char)*p); b[ib] = '\0';
+            /* strip trailing space on both */
+            while (ia > 0 && isspace((unsigned char)a[ia - 1])) a[--ia] = '\0';
+            while (ib > 0 && isspace((unsigned char)b[ib - 1])) b[--ib] = '\0';
+            if (strcmp(a, b) == 0) return strdup(entry->choices[i]);
+        }
+    }
+    return strdup(text);
+}
+
+/* PoP: cli_tools_clarify_gateway_resolve_text_response_for_session @ tools/clarify_gateway.py:resolve_text_response_for_session */
+int cli_tools_clarify_gateway_resolve_text_response_for_session(const char *session_key, const char *response) {
+    clarify_entry_t *entry = cli_tools_clarify_gateway_get_pending_for_session(session_key);
+    if (!entry) return 0;
+    char *coerced = cli_tools_clarify_gateway__coerce_text_response(entry, response);
+    int ok = cli_tools_clarify_gateway_resolve_gateway_clarify(entry->clarify_id, coerced);
+    free(coerced);
+    return ok;
+}

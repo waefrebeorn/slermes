@@ -62,11 +62,11 @@ void web_search_set_configured(const char *capability, const char *backend_name)
  * Falls back per module docstring. */
 const web_search_provider_t *web_search_get_active(const char *capability);
 
-/* Convenience: get active search provider */
-#define web_search_get_active_search() web_search_get_active("search")
+/* PoP: web_search_get_active_search_provider @ agent/web_search_registry.py:get_active_search_provider */
+const web_search_provider_t *web_search_get_active_search_provider(void);
 
-/* Convenience: get active extract provider */
-#define web_search_get_active_extract() web_search_get_active("extract")
+/* PoP: web_search_get_active_extract_provider @ agent/web_search_registry.py:get_active_extract_provider */
+const web_search_provider_t *web_search_get_active_extract_provider(void);
 
 /* Convenience: get active crawl provider */
 #define web_search_get_active_crawl() web_search_get_active("crawl")

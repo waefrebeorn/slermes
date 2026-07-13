@@ -232,6 +232,22 @@ const web_search_provider_t *web_search_get_active(const char *capability) {
 
     return NULL;
 }
+/* ================================================================
+ *  Active provider resolution (capability-specific entry points)
+ * ================================================================ */
+
+/* PoP: web_search_get_active_search_provider @ agent/web_search_registry.py:get_active_search_provider */
+const web_search_provider_t *web_search_get_active_search_provider(void) {
+    /* Reads web.search_backend (preferred) or web.backend fallback — handled
+     * inside get_configured_name("search") which also checks WEB_SEARCH_BACKEND /
+     * WEB_BACKEND env and the shared backend override. */
+    return web_search_get_active("search");
+}
+
+/* PoP: web_search_get_active_extract_provider @ agent/web_search_registry.py:get_active_extract_provider */
+const web_search_provider_t *web_search_get_active_extract_provider(void) {
+    return web_search_get_active("extract");
+}
 
 /* Port of Python agent/web_search_registry.py:_reset_for_tests(). */
 void web_search_reset_registry(void) {
