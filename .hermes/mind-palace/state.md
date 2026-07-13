@@ -83,8 +83,8 @@ Scanner: 4,884 → 4,901 PORTED (+17); 4,774 → 4,757 REAL_GAP (−17). All 17 
 Fixed `tests/run_one_oracle.sh` (added `-I src`) so port headers resolve.
 
 <!-- PARITY:AUTO -->
-| PORTED  | 4,924 / 9,731 (50.6%) |
-| REAL_GAP| 4,732 (48.6%) — no N/A |
+| PORTED  | 5,262 / 9,731 (54.1%) |
+| REAL_GAP| 4,394 (45.2%) — no N/A |
 | PARTIAL | 75 (0.8%) |
 | STUB    | 0 |
 
