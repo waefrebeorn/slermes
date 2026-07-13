@@ -1,0 +1,4 @@
+# ── Sheet: People ──
+Name	Alice
+Bob	Bob
+42	TRUE

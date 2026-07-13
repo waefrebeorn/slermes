@@ -41,6 +41,17 @@ lib/libtextwrap/textwrap.o: lib/libtextwrap/textwrap.c lib/libtextwrap/textwrap.
 lib/libglob/glob.o: lib/libglob/glob.c lib/libglob/hermes_glob.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
+# WuBuOffice (vendored OOXML toolkit): needs POSIX feature macros for
+# strdup/strstr under -std=c11 (mirrors its own CMake add_compile_definitions).
+lib/libwubuoffice/%.o: lib/libwubuoffice/%.c
+	$(CC) $(CFLAGS) -D_POSIX_C_SOURCE=200809L -I lib/libwubuoffice/src/wubuzip -I lib/libwubuoffice/src/wubuoxml -c $< -o $@
+
+# The read_extract port consumes the same wubuoxml headers via
+# "wubuoxml/reader.h" / "wubuoxml/docx_text.h", which live under
+# lib/libwubuoffice/src. Add that include root for this one TU.
+src/tools/port_tools_read_extract.o: src/tools/port_tools_read_extract.c
+	$(CC) $(CFLAGS) $(TUI_INC) -I include -I lib -I lib/libwubuoffice/src -c -o $@ $<
+
 lib/libdifflib/difflib.o: lib/libdifflib/difflib.c lib/libdifflib/difflib.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
