@@ -31,8 +31,10 @@ src/%.o: src/%.m
 	$(CC) $(CFLAGS) $(TUI_INC) -c -o $@ $<
 
 # Library pattern rule — standalone libs
+# NOTE: -I lib is required so lib/*.c files that include hermes.h can resolve
+# prefixed vendored headers like "libdb/db.h" (same as the src/%.o rule).
 lib/%.o: lib/%.c
-	$(CC) $(CFLAGS) $(LIB_INCS) -c -o $@ $<
+	$(CC) $(CFLAGS) $(LIB_INCS) -I lib -c -o $@ $<
 
 # Special rules for libs that need extra includes
 lib/libtextwrap/textwrap.o: lib/libtextwrap/textwrap.c lib/libtextwrap/textwrap.h
