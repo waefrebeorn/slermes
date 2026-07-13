@@ -147,6 +147,7 @@ PORT_OBJ = \
     src/gateway/platforms/port_signal_na.o \
     src/cli/port_tools_yuanbao_tools.o \
     src/cli/port_hermes_cli_memory_setup.o \
+    src/cli/port_hermes_cli_toolset_validation.o \
     src/cli/port_tools_checkpoint_manager.o \
     src/cli/port_tools_write_approval.o \
     src/tools/environments.o \
@@ -178,7 +179,7 @@ PORT_OBJ = \
     src/gateway/port_signal.o \
     src/gateway/port_signal_rate_limit.o \
     src/gateway/port_webhook.o \
-    src/tools/port_browser_tool.o \
+    src/tools/browser_camofox.o src/tools/browser_camofox_state.o \
     src/tools/port_browser_supervisor.o \
     src/tools/port_environments/base.o \
     src/agent/anthropic_adapter.o

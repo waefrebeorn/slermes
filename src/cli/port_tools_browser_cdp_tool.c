@@ -230,3 +230,24 @@ char *browser_cdp_tool__browser_cdp_check(void)
     hermes_log(LOG_DEBUG, "browser_cdp", "CDP availability check completed");
     return result;
 }
+
+/* PoP: browser_dialog_tool__browser_dialog_check @ tools/browser_dialog_tool.py:_browser_dialog_check */
+/*
+ * Port of Python tools/browser_dialog_tool.py:_browser_dialog_check().
+ * Gate: same as browser_cdp — the dialog tool is offered only when CDP is
+ * reachable. Returns a heap-allocated JSON bool {"available":true/false}
+ * (caller frees), mirroring the Python version which delegates to
+ * _browser_cdp_check().
+ */
+char *browser_dialog_tool__browser_dialog_check(void)
+{
+    char *cdp = browser_cdp_tool__browser_cdp_check();
+    int available = 0;
+    if (cdp) {
+        available = (strstr(cdp, "\"available\":true") != NULL);
+        free(cdp);
+    }
+    char *out = malloc(32);
+    if (out) snprintf(out, 32, "{\"available\":%s}", available ? "true" : "false");
+    return out;
+}
