@@ -477,6 +477,11 @@ bool hermes_config_load(hermes_config_t *cfg, const char *config_dir) {
     cfg->delegation.max_spawn_depth = 1;
     cfg->delegation.child_timeout = 600;
     cfg->delegation.child_max_turns = 50;
+    cfg->delegation.subagent_auto_approve = false;
+    cfg->delegation.orchestrator_enabled = true;
+    cfg->delegation.max_async_children = 3;
+    cfg->delegation.inherit_mcp_toolsets = true;
+    cfg->delegation.max_summary_chars = 24000;
 
     cfg->browser_cfg.headless = true;
     cfg->browser_cfg.viewport_width = 1280;
@@ -1268,6 +1273,13 @@ bool hermes_config_load(hermes_config_t *cfg, const char *config_dir) {
     if (dcp) snprintf(cfg->delegation.child_provider, sizeof(cfg->delegation.child_provider), "%s", dcp);
     int dmt = yaml_get_int(doc, "delegation.max_iterations", 0);
     if (dmt > 0) cfg->delegation.child_max_turns = dmt;
+    cfg->delegation.subagent_auto_approve = yaml_get_bool(doc, "delegation.subagent_auto_approve", false);
+    cfg->delegation.orchestrator_enabled = yaml_get_bool(doc, "delegation.orchestrator_enabled", true);
+    int dmac = yaml_get_int(doc, "delegation.max_async_children", 0);
+    if (dmac > 0) cfg->delegation.max_async_children = dmac;
+    cfg->delegation.inherit_mcp_toolsets = yaml_get_bool(doc, "delegation.inherit_mcp_toolsets", true);
+    int dmsc = yaml_get_int(doc, "delegation.max_summary_chars", 0);
+    if (dmsc > 0) cfg->delegation.max_summary_chars = dmsc;
 
     /* P7: Memory section */
     const char *mp = yaml_get_string(doc, "memory.provider");
