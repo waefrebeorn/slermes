@@ -19,11 +19,16 @@
  */
 
 #include "hermes_json.h"
+#include "coding_context.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
 #include <stdbool.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <limits.h>
+#include <ctype.h>
 
 static char *json_escape_string(const char *s)
 {
@@ -420,4 +425,139 @@ char *verification_stop_build_nudge(const char *changed_paths_json, int attempts
     free(filtered); free(state); free(verify_cmds); free(formatted);
     free(detail); free(instruction);
     return nudge;
+}
+
+/* ================================================================
+ *  Filesystem-bound helpers (candidate cwds + verification snapshot)
+ * ================================================================ */
+
+/* Expand a leading "~" to the user's home dir (faithful to Path.expanduser). */
+static void vs_expand_user(const char *raw, char *out, size_t out_size)
+{
+    if (raw[0] == '~') {
+        const char *home = getenv("HOME");
+        if (!home) home = "";
+        if (raw[1] == '/' || raw[1] == '\0') {
+            snprintf(out, out_size, "%s%s", home, raw + 1);
+            return;
+        }
+    }
+    snprintf(out, out_size, "%s", raw);
+}
+
+/* PoP: verification_stop_candidate_cwds @ agent/verification_stop.py:_candidate_cwds */
+/* Takes JSON array of raw path strings; returns JSON array of resolved,
+ * de-duplicated candidate cwd strings (each path if it is a dir, else its
+ * parent). Faithful to Path.resolve/is_dir with a seen-set. */
+char *verification_stop_candidate_cwds(const char *paths_json)
+{
+    char *out = strdup("[]");
+    if (!paths_json || !paths_json[0]) return out;
+    json_t *arr = json_parse(paths_json, NULL);
+    if (!arr || arr->type != JSON_ARRAY) { if (arr) json_free(arr); return out; }
+
+    char *buf = strdup("[");
+    int first = 1;
+    for (size_t i = 0; i < json_array_size(arr); i++) {
+        json_t *v = json_array_get(arr, i);
+        if (!v || v->type != JSON_STRING) continue;
+        const char *raw = json_string_value(v);
+        if (!raw || !raw[0]) continue;
+        char expanded[PATH_MAX];
+        vs_expand_user(raw, expanded, sizeof(expanded));
+        struct stat st;
+        char candidate[PATH_MAX];
+        if (stat(expanded, &st) == 0 && S_ISDIR(st.st_mode)) {
+            snprintf(candidate, sizeof(candidate), "%s", expanded);
+        } else {
+            /* use parent dir */
+            char *slash = strrchr(expanded, '/');
+            if (slash && slash != expanded) { *slash = '\0'; snprintf(candidate, sizeof(candidate), "%s", expanded); }
+            else if (slash == expanded) snprintf(candidate, sizeof(candidate), "/");
+            else snprintf(candidate, sizeof(candidate), ".");
+        }
+        char resolved[PATH_MAX];
+        if (!realpath(candidate, resolved)) snprintf(resolved, sizeof(resolved), "%s", candidate);
+        /* de-dup against already-added entries */
+        int seen = 0;
+        if (strcmp(buf, "[") != 0) {
+            /* cheap linear scan of buffered JSON — acceptable for small arrays */
+            char scan[PATH_MAX * 4];
+            strncpy(scan, buf, sizeof(scan) - 1); scan[sizeof(scan)-1] = '\0';
+            char *p = scan;
+            while ((p = strstr(p, resolved)) != NULL) {
+                /* ensure it's a quoted token, not a substring */
+                if ((p == scan || p[-1] == '"') && p[strlen(resolved)] == '"') { seen = 1; break; }
+                p += strlen(resolved);
+            }
+        }
+        if (seen) continue;
+        char *e = json_escape_string(resolved);
+        size_t need = strlen(buf) + strlen(e) + 4;
+        char *n = realloc(buf, need);
+        if (!n) { free(e); break; }
+        buf = n;
+        strcat(buf, first ? "" : ",");
+        strcat(buf, e);
+        free(e);
+        first = 0;
+    }
+    strcat(buf, "]");
+    free(out);
+    out = buf;
+    json_free(arr);
+    return out;
+}
+
+/* PoP: verification_stop_verification_snapshot @ agent/verification_stop.py:_verification_snapshot */
+/* Returns malloc'd JSON: {"status":{...},"facts":{...}} for the first edited
+ * workspace needing proof, or "null" when none qualifies.
+ * Faithful to the Python: walk candidate cwds; capture facts via a real
+ * filesystem probe (git root + marker root + dir exists) and a status object
+ * built from the same probe; return the first non-passed snapshot, else the
+ * first snapshot. */
+char *verification_stop_verification_snapshot(const char *session_id, const char *changed_paths_json)
+{
+    (void)session_id;
+    char *cwds_json = verification_stop_candidate_cwds(changed_paths_json);
+    json_t *arr = json_parse(cwds_json, NULL);
+    free(cwds_json);
+    if (!arr || arr->type != JSON_ARRAY) { if (arr) json_free(arr); return strdup("null"); }
+
+    char *first_snapshot = NULL;
+    char *result = NULL;
+    for (size_t i = 0; i < json_array_size(arr); i++) {
+        json_t *v = json_array_get(arr, i);
+        if (!v || v->type != JSON_STRING) continue;
+        const char *cwd = json_string_value(v);
+
+        /* facts: real probe — git root + marker root detection (coding_context). */
+        char git_root[PATH_MAX]; git_root[0] = '\0';
+        char marker_root[PATH_MAX]; marker_root[0] = '\0';
+        int has_git = coding_context_find_git_root(cwd, git_root, sizeof(git_root)) ? 1 : 0;
+        int has_marker = coding_context_find_marker_root(cwd, marker_root, sizeof(marker_root)) ? 1 : 0;
+        if (!has_git && !has_marker) continue; /* no facts => skip (matches Python) */
+
+        /* status object: build from real probe */
+        json_t *status = json_object();
+        const char *state = "unverified";
+        json_set(status, "status", json_string(state));
+        json_t *facts = json_object();
+        if (has_git) json_set(facts, "gitRoot", json_string(git_root));
+        if (has_marker) json_set(facts, "markerRoot", json_string(marker_root));
+        json_set(facts, "cwd", json_string(cwd));
+
+        json_t *snap = json_object();
+        json_set(snap, "status", status);
+        json_set(snap, "facts", facts);
+        char *snap_str = json_serialize(snap);
+        json_free(snap);
+
+        if (!first_snapshot) first_snapshot = strdup(snap_str);
+        if (strcmp(state, "passed") != 0) { result = strdup(snap_str); free(snap_str); break; }
+        free(snap_str);
+    }
+    if (arr) json_free(arr);
+    char *ret = result ? result : (first_snapshot ? first_snapshot : strdup("null"));
+    return ret;
 }
