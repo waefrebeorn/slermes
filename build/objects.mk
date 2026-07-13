@@ -226,7 +226,7 @@ endif
 DESKTOP_OBJ = $(DESKTOP_CORE_OBJ) $(DESKTOP_WINDOW_OBJ)
 
 # Desktop app (ncurses-based, PoP replacement)
-DESKTOP_APP_OBJ = src/main_desktop.o src/app_desktop.o src/chat_render.o src/chat_composer.o \
+DESKTOP_APP_OBJ = src/main_desktop.o src/app_desktop.o src/desktop_ui_layout.o src/desktop_ui_lifecycle.o src/desktop_ui_chrome.o src/desktop_ui_overlays.o src/desktop_input.o src/desktop_pty.o src/chat_render.o src/chat_composer.o \
     src/desktop_app_common.o src/desktop_sessions.o src/desktop_models.o src/desktop_profiles.o src/desktop_settings.o src/gateway_probe.o src/window_stubs.o \
     src/hermes_env_keys.o src/file_ops.o \
     src/agent/logger.o src/pty.o src/clipboard.o
