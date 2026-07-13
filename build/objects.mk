@@ -228,7 +228,7 @@ DESKTOP_OBJ = $(DESKTOP_CORE_OBJ) $(DESKTOP_WINDOW_OBJ)
 # Desktop app (ncurses-based, PoP replacement)
 DESKTOP_APP_OBJ = src/main_desktop.o src/app_desktop.o src/chat_render.o src/chat_composer.o \
     src/desktop_app_common.o src/desktop_sessions.o src/desktop_models.o src/desktop_profiles.o src/desktop_settings.o src/gateway_probe.o src/window_stubs.o \
-    src/hermes_env_keys.o src/file_ops.o src/cli/port_hermes_logging.o \
+    src/hermes_env_keys.o src/file_ops.o \
     src/agent/logger.o src/pty.o src/clipboard.o
 DESKTOP_LIBS_FILTER = lib/libdb/sqlite3.o lib/libtranscribe/transcribe.o
 
