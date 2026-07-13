@@ -43,9 +43,9 @@ There is no "defer"/"out of scope"/"too big". Big modules get finished.
 ```
 
 <!-- PARITY:AUTO -->
-| PORTED  | 5,262 / 9,731 (54.1%) |
-| REAL_GAP| 4,394 (45.2%) — no N/A |
-| PARTIAL | 75 (0.8%) |
+| PORTED  | 5,385 / 9,731 (55.3%) |
+| REAL_GAP| 4,270 (43.9%) — no N/A |
+| PARTIAL | 76 (0.8%) |
 | STUB    | 0 |
 
 _Generated from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
