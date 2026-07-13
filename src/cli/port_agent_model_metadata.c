@@ -3,6 +3,9 @@
  */
 
 #include "hermes_logger.h"
+#include "hermes_json.h"
+#include "hermes_http.h"
+#include "provider_metadata.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -139,4 +142,130 @@ int cli_agent_model_metadata_is_output_cap_error(const char *error_msg)
         (strstr(lower, "prompt contains") != NULL) ||
         (strstr(lower, "reduce the length") != NULL);
     return input_overflow_signal ? 0 : 1;
+}
+
+/* ---- helpers mirroring Python module-internal helpers ---- */
+
+/* Strip a leading "provider/" prefix from a model id, mirroring _strip_provider_prefix. */
+static const char *mm_strip_provider_prefix(const char *model)
+{
+    if (!model) return "";
+    const char *slash = strchr(model, '/');
+    return slash ? slash + 1 : model;
+}
+
+/* Detect whether base_url points at an Ollama server, mirroring
+ * detect_local_server_type(...) == "ollama". Heuristic: the host must look
+ * local AND the path must not be an OpenAI-style /v1. Good enough to gate the
+ * Ollama-native /api/show query (the Python version uses the same detection). */
+static int mm_is_ollama(const char *base_url)
+{
+    if (!base_url || !base_url[0]) return 0;
+    /* Must be http(s) and not an OpenAI /v1 endpoint. */
+    if (strstr(base_url, "/v1") != NULL) return 0;
+    if (strncmp(base_url, "http://", 7) != 0 && strncmp(base_url, "https://", 8) != 0)
+        return 0;
+    const char *host = base_url;
+    if (strncmp(host, "https://", 8) == 0) host += 8;
+    else if (strncmp(host, "http://", 7) == 0) host += 7;
+    /* local hosts */
+    if (strncmp(host, "localhost", 9) == 0 || strncmp(host, "127.0.0.1", 9) == 0 ||
+        strncmp(host, "0.0.0.0", 7) == 0 || strncmp(host, "[::1]", 5) == 0)
+        return 1;
+    /* plain hostname with no dot (e.g. "ollama") */
+    const char *slash = strchr(host, '/');
+    size_t hlen = slash ? (size_t)(slash - host) : strlen(host);
+    if (hlen > 0 && strchr(host, '.') == NULL) return 1;
+    return 0;
+}
+
+/* PoP: cli_agent_model_metadata_query_ollama_supports_vision @ agent/model_metadata.py:query_ollama_supports_vision */
+/*
+ * Port of Python query_ollama_supports_vision(model, base_url, api_key).
+ * POSTs {name: model} to <server>/api/show and inspects the "capabilities"
+ * list (case-insensitive "vision") or any model_info key containing
+ * "vision.block_count". Returns 1 (true), 0 (false), or -1 (unknown/unreachable).
+ * Caller treats -1 as "no opinion" (matches Python None).
+ */
+int cli_agent_model_metadata_query_ollama_supports_vision(
+    const char *model, const char *base_url, const char *api_key)
+{
+    const char *bare = mm_strip_provider_prefix(model);
+    if (!bare || !bare[0] || !base_url || !base_url[0]) return -1;
+    if (!mm_is_ollama(base_url)) return -1;
+
+    char server[2048];
+    snprintf(server, sizeof(server), "%s", base_url);
+    /* strip trailing slash */
+    size_t sl = strlen(server);
+    while (sl > 0 && server[sl - 1] == '/') server[--sl] = '\0';
+    /* strip a trailing /v1 if present (already gated by mm_is_ollama, defensive) */
+    if (sl >= 3 && strcmp(server + sl - 3, "/v1") == 0) server[sl - 3] = '\0';
+
+    char url[2560];
+    snprintf(url, sizeof(url), "%s/api/show", server);
+
+    /* Build JSON body {"name": "<bare>"} */
+    char body[1024];
+    snprintf(body, sizeof(body), "{\"name\":\"%s\"}", bare);
+
+    http_client_t *http = http_client_new(3);
+    if (!http) return -1;
+    http_response_t *resp = (api_key && api_key[0])
+        ? http_post_json_auth(http, url, body, api_key)
+        : http_request_json(http, HTTP_POST, url, body);
+    int result = -1;
+    if (resp && resp->status == 200 && resp->body) {
+        json_t *data = json_parse(resp->body, NULL);
+        if (data) {
+            json_t *caps = json_obj_get(data, "capabilities");
+            if (caps && caps->type == JSON_ARRAY && caps->c.count > 0) {
+                int has_vision = 0;
+                for (size_t i = 0; i < caps->c.count; i++) {
+                    json_t *c = caps->c.items[i];
+                    if (c && c->type == JSON_STRING) {
+                        char buf[64];
+                        snprintf(buf, sizeof(buf), "%s", c->str_val);
+                        for (char *p = buf; *p; p++) *p = (char)tolower((unsigned char)*p);
+                        if (strcmp(buf, "vision") == 0) has_vision = 1;
+                    }
+                }
+                result = has_vision ? 1 : 0;
+            }
+            if (result == -1) {
+                json_t *mi = json_obj_get(data, "model_info");
+                if (mi && mi->type == JSON_OBJECT) {
+                    for (size_t i = 0; i < mi->c.count; i++) {
+                        const char *k = mi->c.keys[i];
+                        if (k && strstr(k, "vision.block_count") != NULL) { result = 1; break; }
+                    }
+                }
+            }
+            json_free(data);
+        }
+    }
+    if (resp) http_response_free(resp);
+    http_free(http);
+    return result;
+}
+
+/* PoP: cli_agent_model_metadata_get_model_context_length_async @ agent/model_metadata.py:get_model_context_length_async */
+/*
+ * Port of Python get_model_context_length_async(...). The Python version simply
+ * offloads the synchronous resolution chain to a background thread via
+ * asyncio.to_thread. The C runtime is already synchronous (no event loop to
+ * freeze), so this delegates directly to the sync resolver
+ * (get_model_context_length in model_metadata.c / provider_metadata.c).
+ * Returns the resolved context length (int), or the configured/default value
+ * when resolution fails — identical observable behavior.
+ */
+extern int get_model_context_length(const char *model, const char *base_url,
+                                     const char *api_key, int config_context_length,
+                                     const char *provider);
+
+int cli_agent_model_metadata_get_model_context_length_async(
+    const char *model, const char *base_url, const char *api_key,
+    int config_context_length, const char *provider)
+{
+    return get_model_context_length(model, base_url, api_key, config_context_length, provider);
 }
