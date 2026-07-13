@@ -108,6 +108,12 @@ void skill_usage_get_record(const skill_usage_map_t *map,
 int skill_usage_find(const skill_usage_map_t *map, const char *skill_name);
 
 /**
+ * Returns 1 if the named skill is a protected builtin (must not be
+ * auto-transitioned/forgotten), 0 otherwise.
+ */
+int skill_usage_is_protected_builtin(const char *skill_name);
+
+/**
  * Bump view_count and last_viewed_at for a skill.
  * Loads, mutates, saves atomically.
  * @return 0 on success, -1 on error.
