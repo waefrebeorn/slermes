@@ -24,14 +24,25 @@ ORACLE="tests/sta_oracle_$NAME.py"
 [ -f "$ORACLE" ]  || { echo "MISSING $ORACLE"; exit 2; }
 [ -d "$FIX" ]     || { echo "MISSING fixture dir $FIX"; exit 2; }
 
-LIBINCS=$(grep -oE 'lib/lib[a-z0-9_]+' build/libs-config.mk | sed 's#^#-I #' | tr '\n' ' ')
-OBJSET=$(find src lib -name '*.o' ! -name 'main.o' | tr '\n' ' ')
+# Extract the EXACT link command `make` uses for the real `slermes` binary and
+# adapt it for the oracle harness. This guarantees the oracle links the same
+# resolvable object/lib/static-archive closure the shipped binary uses — no
+# missing whisper .a, no SDL/orphan-object drag-in, no hand-maintained lib list.
+# We grab the gcc link recipe (from the `gcc ... -o slermes` line through the
+# final `libwhisper.a` static archive — the true end of the link command), drop
+# the output target, and swap src/main.o for the oracle harness .c. make -n
+# escapes quotes for display, so we strip \" and join continuations.
+LINKCMD=$(make -B -n slermes 2>/dev/null \
+  | awk '/ -o slermes /{f=1} f{print} /libwhisper\.a/{exit}' \
+  | tr -d '\\\n' | sed 's/  */ /g; s/\\"//g')
+# Normalize: replace the output target and the main object.
+LINKCMD=${LINKCMD// -o slermes / -o \/tmp\/tt_$NAME }
+LINKCMD=${LINKCMD//src\/main.o /$HARNESS }
+# CFLAGS in the captured command use -O2 -g etc.; keep them. Build it.
 TMPH=$(mktemp -d); mkdir -p "$TMPH/.hermes/cron"
 
-gcc -O2 -std=gnu11 -D_GNU_SOURCE -I include -I src -I src/cli -I src/agent $LIBINCS \
-  "$HARNESS" $OBJSET -o "/tmp/tt_$NAME" \
-  -lstdc++ -lm -ldl -lpthread -lz -lpcre2-8 -lssl -lcrypto \
-  -Wl,--allow-multiple-definition 2>&1 | grep -iE 'error|undefined' || true
+# shellcheck disable=SC2086
+bash -c "$LINKCMD -Wl,--allow-multiple-definition" 2>&1 | grep -iE 'error|undefined' || true
 
 FAIL=0
 for f in "$FIX"/*.in; do
