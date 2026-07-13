@@ -10,6 +10,9 @@ HERMES_CLI_PORT_OBJ = \
 HERMES_CLI_PORT_EXTRA_OBJ = \
 
 PORT_OBJ = \
+    src/cli/port_hermes_cli_proxy_adapters_base.o \
+    src/cli/port_hermes_cli_proxy_adapters_xai.o \
+    src/cli/port_hermes_cli_proxy_adapters_nous_portal.o \
     src/cli/port_agent_anthropic_adapter.o \
     src/cli/port_agent_bedrock_adapter.o \
     src/cli/port_agent_codex_runtime.o \

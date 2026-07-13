@@ -100,3 +100,57 @@ int cli_hermes_cli_proxy_adapters_nous_portal__save_state(
     fclose(f);
     return 0;
 }
+
+/* PoP: cli_hermes_cli_proxy_adapters_nous_portal_allowed_paths @ hermes_cli/proxy/adapters/nous_portal.py:allowed_paths */
+/*
+ * Port of Python hermes_cli/proxy/adapters/nous_portal.py:allowed_paths.
+ * Returns the set of relative request paths the Nous Portal upstream accepts
+ * (relative to the proxy's /v1 mount). Faithful: chat + completions + the
+ * standard OpenAI-compatible endpoints. Returns a heap-allocated JSON array
+ * string (caller frees), or NULL on OOM.
+ */
+char *cli_hermes_cli_proxy_adapters_nous_portal_allowed_paths(void)
+{
+    const char *json =
+        "[\"/chat/completions\",\"/completions\",\"/embeddings\","
+        "\"/models\",\"/responses\",\"/audio/speech\",\"/audio/transcriptions\"]";
+    return strdup(json);
+}
+
+/* PoP: cli_hermes_cli_proxy_adapters_nous_portal__get_credential @ hermes_cli/proxy/adapters/nous_portal.py:_get_credential */
+/*
+ * Port of Python hermes_cli/proxy/adapters/nous_portal.py:_get_credential().
+ * Resolves the bearer token + base URL from the saved OAuth state. Returns 0
+ * on success (bearer_out/base_url_out populated), -1 on failure.
+ */
+int cli_hermes_cli_proxy_adapters_nous_portal__get_credential(
+    const char *auth_path, char *bearer_out, size_t bearer_size,
+    char *base_url_out, size_t url_size)
+{
+    if (!bearer_out || bearer_size == 0 || !base_url_out || url_size == 0) {
+        return -1;
+    }
+    bearer_out[0] = '\0';
+    strncpy(base_url_out, "https://inference-api.nousresearch.com/v1", url_size - 1);
+    base_url_out[url_size - 1] = '\0';
+    if (!auth_path) return 0;
+    /* Pull an access_token / agent_key out of the saved state if present. */
+    char state[4096];
+    if (cli_hermes_cli_proxy_adapters_nous_portal__read_state(auth_path, state, sizeof(state)) == 0) {
+        const char *tok = strstr(state, "\"access_token\"");
+        if (!tok) tok = strstr(state, "\"agent_key\"");
+        if (tok) {
+            const char *q1 = strchr(tok, '"');
+            if (q1) { q1 = strchr(q1 + 1, '"'); if (q1) {
+                const char *q2 = strchr(q1 + 1, '"');
+                if (q2) {
+                    size_t len = (size_t)(q2 - (q1 + 1));
+                    if (len >= bearer_size) len = bearer_size - 1;
+                    memcpy(bearer_out, q1 + 1, len);
+                    bearer_out[len] = '\0';
+                }
+            }}
+        }
+    }
+    return 0;
+}
