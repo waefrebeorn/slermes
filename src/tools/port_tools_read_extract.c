@@ -160,6 +160,111 @@ bool read_extract_is_extractable_document(const char *path)
 static char *read_extract_notebook(const char *path, char *errbuf, size_t errsz);
 static char *read_extract_docx(const uint8_t *xml, size_t len, char *errbuf, size_t errsz);
 static char *read_extract_xlsx(const wubuoxml_package *pkg, char *errbuf, size_t errsz);
+/* Forward decl: defined further below, used by read_extract_workbook_rels. */
+static void read_extract_parse_rels(const char *rels, size_t len,
+                                    char ***out_ids, char ***out_tgts, size_t *out_n);
+
+/* Sheet descriptor collected from xl/workbook.xml — mirrors Python
+ * _workbook_sheets() which returns (name, state, rId) tuples. */
+typedef struct { char *name; char *state; char *rid; } re_sheet_t;
+
+/* PoP: _zip_xml @ tools/read_extract.py:_zip_xml */
+/* Python _zip_xml(zf, name) reads+parses a package part into an Element. The
+ * C port works on inflated raw XML, so we return the part (NULL if absent —
+ * Python would raise ExtractionError on a missing part). */
+static const wubuoxml_part *read_extract_zip_xml(const wubuoxml_package *pkg, const char *name)
+{
+    return wubuoxml_part_find(pkg, name);
+}
+
+/* PoP: _shared_strings @ tools/read_extract.py:_shared_strings */
+static char **read_extract_shared_strings(const wubuoxml_package *pkg, size_t *out_n)
+{
+    char **shared = NULL;
+    size_t shared_n = 0;
+    const wubuoxml_part *ss = read_extract_zip_xml(pkg, "xl/sharedStrings.xml");
+    if (ss) {
+        const char *s = (const char *)ss->bytes, *e = s + ss->len;
+        const char *p = s;
+        while (p < e) {
+            if (*p == '<' && p[1] != '/' && re_xml_is_local(p, "si")) {
+                const char *q = p + 1; while (q < e && *q != '>') q++;
+                const char *body = q + 1;
+                const char *close = body;
+                while (close < e) {
+                    if (*close == '<' && close[1] == '/' && re_xml_is_local(close, "si")) break;
+                    close++;
+                }
+                char *text = strdup("");
+                const char *r = body;
+                while (r < close) {
+                    if (*r == '<' && r[1] != '/' && re_xml_is_local(r, "t")) {
+                        const char *te = r + 1; while (te < close && *te != '>') te++;
+                        const char *ve = te + 1;
+                        const char *vt = ve;
+                        while (vt < close && !(*vt == '<' && vt[1] == '/' && re_xml_is_local(vt, "t"))) vt++;
+                        char *tx = re_xml_text_content(ve, vt);
+                        char *n = (char *)realloc(text, strlen(text) + strlen(tx) + 1);
+                        if (n) { text = n; strcat(text, tx); }
+                        free(tx);
+                        r = vt;
+                    } else r++;
+                }
+                shared = (char **)realloc(shared, (shared_n + 1) * sizeof(char *));
+                if (shared) shared[shared_n++] = text;
+                p = close;
+                continue;
+            }
+            p++;
+        }
+    }
+    *out_n = shared_n;
+    return shared;
+}
+
+/* PoP: _workbook_rels @ tools/read_extract.py:_workbook_rels */
+static void read_extract_workbook_rels(const wubuoxml_package *pkg,
+                                       char ***out_ids, char ***out_tgts, size_t *out_n)
+{
+    *out_ids = NULL; *out_tgts = NULL; *out_n = 0;
+    const wubuoxml_part *wbrels = read_extract_zip_xml(pkg, "xl/_rels/workbook.xml.rels");
+    if (wbrels) read_extract_parse_rels((const char *)wbrels->bytes, wbrels->len, out_ids, out_tgts, out_n);
+}
+
+/* PoP: _workbook_sheets @ tools/read_extract.py:_workbook_sheets */
+static re_sheet_t *read_extract_workbook_sheets(const wubuoxml_package *pkg, size_t *out_n)
+{
+    re_sheet_t *sheets = NULL;
+    size_t n = 0;
+    const wubuoxml_part *wb = read_extract_zip_xml(pkg, "xl/workbook.xml");
+    if (wb) {
+        const char *s = (const char *)wb->bytes, *e = s + wb->len;
+        const char *p = s;
+        while (p < e) {
+            if (*p == '<' && p[1] != '/' && re_xml_is_local(p, "sheet")) {
+                const char *te = p + 1; while (te < e && *te != '>') te++;
+                if (te < e) {
+                    char *name = strdup("Sheet"); char *state = strdup("visible"); char *rid = strdup("");
+                    const char *a = p;
+                    while (a < te) {
+                        if (strncmp(a, "name=", 5) == 0) { a+=5; if(*a=='"'||*a=='\''){char q=*a;a++;char b[256];int bi=0;while(*a&&*a!=q&&bi<255)b[bi++]=*a++;b[bi]=0;free(name);name=strdup(b);} }
+                        else if (strncmp(a, "state=", 6) == 0) { a+=6; if(*a=='"'||*a=='\''){char q=*a;a++;char b[64];int bi=0;while(*a&&*a!=q&&bi<63)b[bi++]=*a++;b[bi]=0;free(state);state=strdup(b);} }
+                        else if ((a[0]=='r'&&a[1]==':') && strncmp(a+2,"id=",3)==0) { a+=5; if(*a=='"'||*a=='\''){char q=*a;a++;char b[64];int bi=0;while(*a&&*a!=q&&bi<63)b[bi++]=*a++;b[bi]=0;free(rid);rid=strdup(b);} }
+                        a++;
+                    }
+                    sheets = (re_sheet_t *)realloc(sheets, (n + 1) * sizeof(re_sheet_t));
+                    if (sheets) { sheets[n].name = name; sheets[n].state = state; sheets[n].rid = rid; n++; }
+                    else { free(name); free(state); free(rid); }
+                    p = te + 1;
+                    continue;
+                }
+            }
+            p++;
+        }
+    }
+    *out_n = n;
+    return sheets;
+}
 
 /* PoP: extract_document_text @ tools/read_extract.py:extract_document_text */
 char *read_extract_document_text(const char *path, char *errbuf, size_t errsz)
@@ -428,48 +533,12 @@ static char *read_extract_cell_value(const char *cell_start, const char *cell_en
 static char *read_extract_xlsx(const wubuoxml_package *pkg, char *errbuf, size_t errsz)
 {
     /* shared strings */
-    char **shared = NULL; size_t shared_n = 0;
-    const wubuoxml_part *ss = wubuoxml_part_find(pkg, "xl/sharedStrings.xml");
-    if (ss) {
-        const char *s = (const char *)ss->bytes, *e = s + ss->len;
-        const char *p = s;
-        while (p < e) {
-            if (*p == '<' && p[1] != '/' && re_xml_is_local(p, "si")) {
-                const char *q = p + 1; while (q < e && *q != '>') q++;
-                const char *body = q + 1;
-                const char *close = body;
-                while (close < e) {
-                    if (*close == '<' && close[1] == '/' && re_xml_is_local(close, "si")) break;
-                    close++;
-                }
-                char *text = strdup("");
-                const char *r = body;
-                while (r < close) {
-                    if (*r == '<' && r[1] != '/' && re_xml_is_local(r, "t")) {
-                        const char *te = r + 1; while (te < close && *te != '>') te++;
-                        const char *ve = te + 1;
-                        const char *vt = ve;
-                        while (vt < close && !(*vt == '<' && vt[1] == '/' && re_xml_is_local(vt, "t"))) vt++;
-                        char *tx = re_xml_text_content(ve, vt);
-                        char *n = (char *)realloc(text, strlen(text) + strlen(tx) + 1);
-                        if (n) { text = n; strcat(text, tx); }
-                        free(tx);
-                        r = vt;
-                    } else r++;
-                }
-                shared = (char **)realloc(shared, (shared_n + 1) * sizeof(char *));
-                if (shared) shared[shared_n++] = text;
-                p = close;
-                continue;
-            }
-            p++;
-        }
-    }
+    size_t shared_n = 0;
+    char **shared = read_extract_shared_strings(pkg, &shared_n);
 
     /* workbook rels (rId -> target) */
     char **rels_ids = NULL, **rels_tgts = NULL; size_t rels_n = 0;
-    const wubuoxml_part *wbrels = wubuoxml_part_find(pkg, "xl/_rels/workbook.xml.rels");
-    if (wbrels) read_extract_parse_rels((const char *)wbrels->bytes, wbrels->len, &rels_ids, &rels_tgts, &rels_n);
+    read_extract_workbook_rels(pkg, &rels_ids, &rels_tgts, &rels_n);
 
     size_t cap = 8192, len = 0;
     char *out = (char *)malloc(cap);
@@ -477,110 +546,92 @@ static char *read_extract_xlsx(const wubuoxml_package *pkg, char *errbuf, size_t
     out[0] = '\0';
     int any = 0;
 
-    const wubuoxml_part *wb = wubuoxml_part_find(pkg, "xl/workbook.xml");
-    if (wb) {
-        const char *s = (const char *)wb->bytes, *e = s + wb->len;
-        const char *p = s;
-        while (p < e) {
-            if (*p == '<' && p[1] != '/' && re_xml_is_local(p, "sheet")) {
-                const char *te = p + 1; while (te < e && *te != '>') te++;
-                if (te < e && re_xml_is_local(p, "sheet")) {
-                    char *name = strdup("Sheet"); char *state = strdup("visible"); char *rid = strdup("");
-                    const char *a = p;
-                    while (a < te) {
-                        if (strncmp(a, "name=", 5) == 0) { a+=5; if(*a=='"'||*a=='\''){char q=*a;a++;char b[256];int bi=0;while(*a&&*a!=q&&bi<255)b[bi++]=*a++;b[bi]=0;free(name);name=strdup(b);} }
-                        else if (strncmp(a, "state=", 6) == 0) { a+=6; if(*a=='"'||*a=='\''){char q=*a;a++;char b[64];int bi=0;while(*a&&*a!=q&&bi<63)b[bi++]=*a++;b[bi]=0;free(state);state=strdup(b);} }
-                        else if ((a[0]=='r'&&a[1]==':') && strncmp(a+2,"id=",3)==0) { a+=5; if(*a=='"'||*a=='\''){char q=*a;a++;char b[64];int bi=0;while(*a&&*a!=q&&bi<63)b[bi++]=*a++;b[bi]=0;free(rid);rid=strdup(b);} }
-                        a++;
+    /* iterate sheets (mirrors Python _extract_xlsx) */
+    size_t sheet_n = 0;
+    re_sheet_t *sheets = read_extract_workbook_sheets(pkg, &sheet_n);
+    for (size_t si = 0; si < sheet_n; si++) {
+        re_sheet_t *sh = &sheets[si];
+        if (strcmp(sh->state, "hidden") == 0 || strcmp(sh->state, "veryHidden") == 0) continue;
+        char *target = strdup("");
+        for (size_t k = 0; k < rels_n; k++) {
+            if (strcmp(rels_ids[k], sh->rid) == 0) { free(target); target = strdup(rels_tgts[k]); break; }
+        }
+        char part[1024];
+        read_extract_sheet_part(target, part, sizeof(part));
+        free(target);
+        const wubuoxml_part *sheet_part = wubuoxml_part_find(pkg, part);
+        if (!sheet_part) continue;
+        {
+            char hdr[512];
+            int hl = snprintf(hdr, sizeof(hdr), "# ── Sheet: %s ──\n", sh->name);
+            (void)hl;
+            if (len + strlen(hdr) + 1 > cap) { cap = len + strlen(hdr) + 1024; char *n = realloc(out, cap); if (!n) { for (size_t i=0;i<shared_n;i++) free(shared[i]); free(shared); for (size_t i=0;i<rels_n;i++){free(rels_ids[i]);free(rels_tgts[i]);} free(rels_ids); free(rels_tgts); free(out); return NULL; } out = n; }
+            strcat(out + len, hdr); len += strlen(hdr);
+            const char *rs = (const char *)sheet_part->bytes, *re_ = rs + sheet_part->len;
+            const char *rp = rs;
+            int row_count = 0;
+            while (rp < re_ && row_count < RE_MAX_XLSX_ROWS_PER_SHEET) {
+                /* PoP: _sheet_rows @ tools/read_extract.py:_sheet_rows */
+                if (*rp == '<' && rp[1] != '/' && re_xml_is_local(rp, "row")) {
+                    const char *rte = rp + 1; while (rte < re_ && *rte != '>') rte++;
+                    const char *rbody = rte + 1;
+                    const char *rclose = rbody;
+                    while (rclose < re_) {
+                        if (*rclose=='<'&&rclose[1]=='/'&&re_xml_is_local(rclose,"row")) break;
+                        rclose++;
                     }
-                    if (strcmp(state, "hidden") != 0 && strcmp(state, "veryHidden") != 0) {
-                        char *target = strdup("");
-                        for (size_t k = 0; k < rels_n; k++) {
-                            if (strcmp(rels_ids[k], rid) == 0) { free(target); target = strdup(rels_tgts[k]); break; }
-                        }
-                        char part[1024];
-                        read_extract_sheet_part(target, part, sizeof(part));
-                        free(target);
-                        const wubuoxml_part *sheet_part = wubuoxml_part_find(pkg, part);
-                        if (sheet_part) {
-                            char hdr[512];
-                            int hl = snprintf(hdr, sizeof(hdr), "# ── Sheet: %s ──\n", name);
-                            (void)hl;
-                            if (len + strlen(hdr) + 1 > cap) { cap = len + strlen(hdr) + 1024; char *n = realloc(out, cap); if (!n) { free(name); free(state); free(rid); for (size_t i=0;i<shared_n;i++) free(shared[i]); free(shared); for (size_t i=0;i<rels_n;i++){free(rels_ids[i]);free(rels_tgts[i]);} free(rels_ids); free(rels_tgts); free(out); return NULL; } out = n; }
-                            strcat(out + len, hdr); len += strlen(hdr);
-                            const char *rs = (const char *)sheet_part->bytes, *re_ = rs + sheet_part->len;
-                            const char *rp = rs;
-                            int row_count = 0;
-                            while (rp < re_ && row_count < RE_MAX_XLSX_ROWS_PER_SHEET) {
-                                /* PoP: _sheet_rows @ tools/read_extract.py:_sheet_rows */
-                                if (*rp == '<' && rp[1] != '/' && re_xml_is_local(rp, "row")) {
-                                    const char *rte = rp + 1; while (rte < re_ && *rte != '>') rte++;
-                                    const char *rbody = rte + 1;
-                                    const char *rclose = rbody;
-                                    while (rclose < re_) {
-                                        if (*rclose=='<'&&rclose[1]=='/'&&re_xml_is_local(rclose,"row")) break;
-                                        rclose++;
-                                    }
-                                    char **cells = NULL; int max_col = -1;
-                                    const char *cp = rbody;
-                                    while (cp < rclose) {
-                                        if (*cp == '<' && cp[1] != '/' && re_xml_is_local(cp, "c")) {
-                                            const char *cte = cp + 1; while (cte < rclose && *cte != '>') cte++;
-                                            const char *cbody = cte + 1;
-                                            const char *cclose = cbody;
-                                            while (cclose < rclose) { if (*cclose=='<'&&cclose[1]=='/'&&re_xml_is_local(cclose,"c")) break; cclose++; }
-                                            int col = max_col + 1;
-                                            const char *a = cp;
-                                            while (a < cte) {
-                                                if (strncmp(a, "r=", 2) == 0) { a+=2; if(*a=='"'||*a=='\''){char q=*a;a++;char b[32];int bi=0;while(*a&&*a!=q&&bi<31)b[bi++]=*a++;b[bi]=0;col=read_extract_col_index(b);} break; }
-                                                a++;
-                                            }
-                                            if (col >= RE_MAX_XLSX_COLS) { cp = cclose; continue; }
-                                            char *cv = read_extract_cell_value(cp, cclose, shared, shared_n);
-                                            if (col >= (int)(max_col + 1)) {
-                                                cells = (char **)realloc(cells, (col + 1) * sizeof(char *));
-                                                for (int ii = max_col + 1; ii <= col; ii++) cells[ii] = strdup("");
-                                                max_col = col;
-                                            }
-                                            free(cells[col]); cells[col] = cv;
-                                            cp = cclose;
-                                            continue;
-                                        }
-                                        cp++;
-                                    }
-                                    if (max_col >= 0) {
-                                        for (int ci = 0; ci <= max_col; ci++) {
-                                            const char *cv = cells[ci] ? cells[ci] : "";
-                                            if (len + strlen(cv) + 2 > cap) { cap = len + strlen(cv) + 256; char *n = realloc(out, cap); if (!n) { for (int ii=0;ii<=max_col;ii++) free(cells[ii]); free(cells); for (size_t i=0;i<shared_n;i++) free(shared[i]); free(shared); for (size_t i=0;i<rels_n;i++){free(rels_ids[i]);free(rels_tgts[i]);} free(rels_ids); free(rels_tgts); free(out); return NULL; } out = n; }
-                                            if (ci) strcat(out + len, "\t");
-                                            strcat(out + len, cv);
-                                            len += strlen(cv) + (ci ? 1 : 0);
-                                        }
-                                        for (int ci = 0; ci <= max_col; ci++) free(cells[ci]);
-                                        free(cells);
-                                    }
-                                    out[len++] = '\n'; out[len] = '\0';
-                                    row_count++;
-                                    rp = rclose;
-                                    continue;
-                                }
-                                rp++;
+                    char **cells = NULL; int max_col = -1;
+                    const char *cp = rbody;
+                    while (cp < rclose) {
+                        if (*cp == '<' && cp[1] != '/' && re_xml_is_local(cp, "c")) {
+                            const char *cte = cp + 1; while (cte < rclose && *cte != '>') cte++;
+                            const char *cbody = cte + 1;
+                            const char *cclose = cbody;
+                            while (cclose < rclose) { if (*cclose=='<'&&cclose[1]=='/'&&re_xml_is_local(cclose,"c")) break; cclose++; }
+                            int col = max_col + 1;
+                            const char *a = cp;
+                            while (a < cte) {
+                                if (strncmp(a, "r=", 2) == 0) { a+=2; if(*a=='"'||*a=='\''){char q=*a;a++;char b[32];int bi=0;while(*a&&*a!=q&&bi<31)b[bi++]=*a++;b[bi]=0;col=read_extract_col_index(b);} break; }
+                                a++;
                             }
-                            if (row_count == 0) {
-                                if (len + 9 > cap) { cap = len + 32; char *n = realloc(out, cap); if (n) out = n; }
-                                strcat(out + len, "(empty)\n"); len += 8;
+                            if (col >= RE_MAX_XLSX_COLS) { cp = cclose; continue; }
+                            char *cv = read_extract_cell_value(cp, cclose, shared, shared_n);
+                            if (col >= (int)(max_col + 1)) {
+                                cells = (char **)realloc(cells, (col + 1) * sizeof(char *));
+                                for (int ii = max_col + 1; ii <= col; ii++) cells[ii] = strdup("");
+                                max_col = col;
                             }
-                            any = 1;
-                            if (len + 2 > cap) { cap = len + 8; char *n = realloc(out, cap); if (n) out = n; }
-                            out[len++] = '\n'; out[len] = '\0';
+                            free(cells[col]); cells[col] = cv;
+                            cp = cclose;
+                            continue;
                         }
+                        cp++;
                     }
-                    free(name); free(state); free(rid);
-                    p = te + 1;
+                    if (max_col >= 0) {
+                        for (int ci = 0; ci <= max_col; ci++) {
+                            const char *cv = cells[ci] ? cells[ci] : "";
+                            if (len + strlen(cv) + 2 > cap) { cap = len + strlen(cv) + 256; char *n = realloc(out, cap); if (!n) { for (int ii=0;ii<=max_col;ii++) free(cells[ii]); free(cells); for (size_t i=0;i<shared_n;i++) free(shared[i]); free(shared); for (size_t i=0;i<rels_n;i++){free(rels_ids[i]);free(rels_tgts[i]);} free(rels_ids); free(rels_tgts); free(out); return NULL; } out = n; }
+                            if (ci) strcat(out + len, "\t");
+                            strcat(out + len, cv);
+                            len += strlen(cv) + (ci ? 1 : 0);
+                        }
+                        for (int ci = 0; ci <= max_col; ci++) free(cells[ci]);
+                        free(cells);
+                    }
+                    out[len++] = '\n'; out[len] = '\0';
+                    row_count++;
+                    rp = rclose;
                     continue;
                 }
-                p = te + 1;
-            } else p++;
+                rp++;
+            }
+            if (row_count == 0) {
+                if (len + 9 > cap) { cap = len + 32; char *n = realloc(out, cap); if (n) out = n; }
+                strcat(out + len, "(empty)\n"); len += 8;
+            }
+            any = 1;
+            if (len + 2 > cap) { cap = len + 8; char *n = realloc(out, cap); if (n) out = n; }
+            out[len++] = '\n'; out[len] = '\0';
         }
     }
 
@@ -588,6 +639,8 @@ static char *read_extract_xlsx(const wubuoxml_package *pkg, char *errbuf, size_t
     free(shared);
     for (size_t i = 0; i < rels_n; i++) { free(rels_ids[i]); free(rels_tgts[i]); }
     free(rels_ids); free(rels_tgts);
+    for (size_t i = 0; i < sheet_n; i++) { free(sheets[i].name); free(sheets[i].state); free(sheets[i].rid); }
+    free(sheets);
 
     if (!any) { free(out); if (errbuf) snprintf(errbuf, errsz, "XLSX has no visible sheets with content"); return NULL; }
     while (len > 0 && out[len-1] == '\n') len--;
