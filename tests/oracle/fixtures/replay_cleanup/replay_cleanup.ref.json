@@ -1,0 +1,370 @@
+{
+  "clean": {
+    "input": [
+      {
+        "content": "hi",
+        "role": "user"
+      },
+      {
+        "content": "ok",
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "1"
+          }
+        ]
+      },
+      {
+        "content": "done",
+        "role": "tool",
+        "tool_call_id": "1"
+      }
+    ],
+    "sanitize": [
+      {
+        "content": "hi",
+        "role": "user"
+      },
+      {
+        "content": "ok",
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "1"
+          }
+        ]
+      },
+      {
+        "content": "done",
+        "role": "tool",
+        "tool_call_id": "1"
+      }
+    ],
+    "strip_dangling": [
+      {
+        "content": "hi",
+        "role": "user"
+      },
+      {
+        "content": "ok",
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "1"
+          }
+        ]
+      },
+      {
+        "content": "done",
+        "role": "tool",
+        "tool_call_id": "1"
+      }
+    ],
+    "strip_interrupted": [
+      {
+        "content": "hi",
+        "role": "user"
+      },
+      {
+        "content": "ok",
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "1"
+          }
+        ]
+      },
+      {
+        "content": "done",
+        "role": "tool",
+        "tool_call_id": "1"
+      }
+    ]
+  },
+  "completed_pair": {
+    "input": [
+      {
+        "content": "do",
+        "role": "user"
+      },
+      {
+        "content": "",
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "c"
+          }
+        ]
+      },
+      {
+        "content": "result",
+        "role": "tool",
+        "tool_call_id": "c"
+      }
+    ],
+    "sanitize": [
+      {
+        "content": "do",
+        "role": "user"
+      },
+      {
+        "content": "",
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "c"
+          }
+        ]
+      },
+      {
+        "content": "result",
+        "role": "tool",
+        "tool_call_id": "c"
+      }
+    ],
+    "strip_dangling": [
+      {
+        "content": "do",
+        "role": "user"
+      },
+      {
+        "content": "",
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "c"
+          }
+        ]
+      },
+      {
+        "content": "result",
+        "role": "tool",
+        "tool_call_id": "c"
+      }
+    ],
+    "strip_interrupted": [
+      {
+        "content": "do",
+        "role": "user"
+      },
+      {
+        "content": "",
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "c"
+          }
+        ]
+      },
+      {
+        "content": "result",
+        "role": "tool",
+        "tool_call_id": "c"
+      }
+    ]
+  },
+  "dangling_tail": {
+    "input": [
+      {
+        "content": "restart gateway",
+        "role": "user"
+      },
+      {
+        "content": "",
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "z"
+          }
+        ]
+      }
+    ],
+    "sanitize": [
+      {
+        "content": "restart gateway",
+        "role": "user"
+      }
+    ],
+    "strip_dangling": [
+      {
+        "content": "restart gateway",
+        "role": "user"
+      }
+    ],
+    "strip_interrupted": [
+      {
+        "content": "restart gateway",
+        "role": "user"
+      },
+      {
+        "content": "",
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "z"
+          }
+        ]
+      }
+    ]
+  },
+  "interrupted_mid": {
+    "input": [
+      {
+        "content": "run it",
+        "role": "user"
+      },
+      {
+        "content": "",
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "a"
+          }
+        ]
+      },
+      {
+        "content": "[command interrupted]",
+        "role": "tool",
+        "tool_call_id": "a"
+      },
+      {
+        "content": "still there?",
+        "role": "user"
+      },
+      {
+        "content": "yes",
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "b"
+          }
+        ]
+      },
+      {
+        "content": "ok",
+        "role": "tool",
+        "tool_call_id": "b"
+      }
+    ],
+    "sanitize": [
+      {
+        "content": "run it",
+        "role": "user"
+      },
+      {
+        "content": "still there?",
+        "role": "user"
+      },
+      {
+        "content": "yes",
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "b"
+          }
+        ]
+      },
+      {
+        "content": "ok",
+        "role": "tool",
+        "tool_call_id": "b"
+      }
+    ],
+    "strip_dangling": [
+      {
+        "content": "run it",
+        "role": "user"
+      },
+      {
+        "content": "",
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "a"
+          }
+        ]
+      },
+      {
+        "content": "[command interrupted]",
+        "role": "tool",
+        "tool_call_id": "a"
+      },
+      {
+        "content": "still there?",
+        "role": "user"
+      },
+      {
+        "content": "yes",
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "b"
+          }
+        ]
+      },
+      {
+        "content": "ok",
+        "role": "tool",
+        "tool_call_id": "b"
+      }
+    ],
+    "strip_interrupted": [
+      {
+        "content": "run it",
+        "role": "user"
+      },
+      {
+        "content": "still there?",
+        "role": "user"
+      },
+      {
+        "content": "yes",
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "id": "b"
+          }
+        ]
+      },
+      {
+        "content": "ok",
+        "role": "tool",
+        "tool_call_id": "b"
+      }
+    ]
+  },
+  "orphan_tool": {
+    "input": [
+      {
+        "content": "x",
+        "role": "user"
+      },
+      {
+        "content": "exit_code 130 interrupt",
+        "role": "tool"
+      }
+    ],
+    "sanitize": [
+      {
+        "content": "x",
+        "role": "user"
+      }
+    ],
+    "strip_dangling": [
+      {
+        "content": "x",
+        "role": "user"
+      },
+      {
+        "content": "exit_code 130 interrupt",
+        "role": "tool"
+      }
+    ],
+    "strip_interrupted": [
+      {
+        "content": "x",
+        "role": "user"
+      }
+    ]
+  }
+}
