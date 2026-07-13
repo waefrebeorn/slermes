@@ -6,6 +6,7 @@
  */
 
 #include "hermes.h"
+#include "gw_server_internals.h"
 #include "hermes_agent.h"
 #include "hermes_gateway.h"
 #include "hermes_json.h"
@@ -38,14 +39,8 @@ gateway_state_t g_gw;
  *  P101: Monotonic time helper
  * ================================================================ */
 
-static double gw_mono_time(void) {
-    struct timespec ts;
-    clock_gettime(CLOCK_MONOTONIC, &ts);
-    return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
-}
 
 /* Forward declaration for gw_queue_drain_all */
-static void process_update(const char *platform, const char *chat_id, const char *text);
 
 /* GW13: Kanban notifier thread — polls kanban events and delivers to subscribers */
 static void *thread_kanban_notifier(void *arg);
@@ -54,184 +49,29 @@ static void *thread_kanban_notifier(void *arg);
  *  P101: Message queue (thread-safe, bounded circular buffer)
  * ================================================================ */
 
-void gw_queue_init(void) {
-    g_gw.msg_queue_head = 0;
-    g_gw.msg_queue_tail = 0;
-    pthread_mutex_init(&g_gw.queue_mutex, NULL);
-    pthread_cond_init(&g_gw.queue_cond, NULL);
-}
-
-bool gw_queue_push(const char *platform, const char *chat_id,
-                    const char *text, const char *thread_id) {
-    if (!platform || !chat_id || !text) return false;
-
-    pthread_mutex_lock(&g_gw.queue_mutex);
-
-    /* Check if queue is full */
-    int next = (g_gw.msg_queue_head + 1) % GW_QUEUE_MAX;
-    if (next == g_gw.msg_queue_tail) {
-        /* Queue full — drop oldest */
-        g_gw.msg_queue_tail = (g_gw.msg_queue_tail + 1) % GW_QUEUE_MAX;
-    }
-
-    gateway_msg_t *slot = &g_gw.msg_queue[g_gw.msg_queue_head];
-    snprintf(slot->platform, sizeof(slot->platform), "%s", platform);
-    snprintf(slot->chat_id, sizeof(slot->chat_id), "%s", chat_id);
-    snprintf(slot->text, sizeof(slot->text), "%s", text);
-    if (thread_id)
-        snprintf(slot->thread_id, sizeof(slot->thread_id), "%s", thread_id);
-    else
-        slot->thread_id[0] = '\0';
-    slot->timestamp = gw_mono_time();
-
-    g_gw.msg_queue_head = next;
-
-    pthread_cond_signal(&g_gw.queue_cond);
-    pthread_mutex_unlock(&g_gw.queue_mutex);
-    return true;
-}
-
-bool gw_queue_pop(gateway_msg_t *msg) {
-    if (!msg) return false;
-
-    pthread_mutex_lock(&g_gw.queue_mutex);
-    if (g_gw.msg_queue_head == g_gw.msg_queue_tail) {
-        pthread_mutex_unlock(&g_gw.queue_mutex);
-        return false; /* empty */
-    }
-
-    *msg = g_gw.msg_queue[g_gw.msg_queue_tail];
-    g_gw.msg_queue_tail = (g_gw.msg_queue_tail + 1) % GW_QUEUE_MAX;
-    pthread_mutex_unlock(&g_gw.queue_mutex);
-    return true;
-}
-
-int gw_queue_depth(void) {
-    pthread_mutex_lock(&g_gw.queue_mutex);
-    int depth = (g_gw.msg_queue_head - g_gw.msg_queue_tail + GW_QUEUE_MAX) % GW_QUEUE_MAX;
-    pthread_mutex_unlock(&g_gw.queue_mutex);
-    return depth;
-}
 
 /* Drain all queued messages — called periodically from polling threads.
    Each message goes through process_update() which re-checks rate limits.
    If still rate-limited, the message gets re-pushed and picked up next cycle. */
-void gw_queue_drain_all(void) {
-    gateway_msg_t msgs[GW_QUEUE_MAX];
-    int count = 0;
-    pthread_mutex_lock(&g_gw.queue_mutex);
-    while (g_gw.msg_queue_head != g_gw.msg_queue_tail && count < GW_QUEUE_MAX) {
-        msgs[count++] = g_gw.msg_queue[g_gw.msg_queue_tail];
-        g_gw.msg_queue_tail = (g_gw.msg_queue_tail + 1) % GW_QUEUE_MAX;
-    }
-    pthread_mutex_unlock(&g_gw.queue_mutex);
-    for (int i = 0; i < count; i++)
-        process_update(msgs[i].platform, msgs[i].chat_id, msgs[i].text);
-}
 
 /* ================================================================
  *  Gateway Clarify — async clarify prompt response collector
  * ================================================================ */
 
 /* Pending clarify state — set when clarify prompt sent via gateway */
-static struct {
-    bool            pending;
-    char            platform[32];
-    char            chat_id[128];
-    char            session_key[256];
-    char            clarify_id[64];
-    char            response[4096];
-    pthread_mutex_t mutex;
-    pthread_cond_t  cond;   /* signaled when response received */
-    /* Optional: poll function for same-platform response capture */
-    char *(*poll_fn)(const char *chat_id);
-    int           poll_interval;
-    /* Choices sent (for matching numeric replies like "1", "2") */
-    char            choices[4][256];
-    int             n_choices;
-    bool            has_choices;
-} g_gw_clarify = {false, "", "", "", "", "", PTHREAD_MUTEX_INITIALIZER, PTHREAD_COND_INITIALIZER, NULL, 0, {{0}}, 0, false};
+gw_clarify_state_t g_gw_clarify = {false, "", "", "", "", "", PTHREAD_MUTEX_INITIALIZER, PTHREAD_COND_INITIALIZER, NULL, 0, {{0}}, 0, false};
 
 /* Register a platform poll function to use during clarify wait */
-void gw_clarify_set_poll(char *(*fn)(const char *chat_id), int interval_sec) {
-    g_gw_clarify.poll_fn = fn;
-    g_gw_clarify.poll_interval = interval_sec > 0 ? interval_sec : 1;
-}
 
 /* Begin waiting for clarify response — must be called before gw_clarify_wait_response.
    Sets the platform, chat_id, session_key context and marks pending. Thread-safe. */
-void gw_clarify_begin(const char *platform, const char *chat_id,
-                      const char *session_key, const char *clarify_id,
-                      const char (*choices)[256], int n_choices) {
-    pthread_mutex_lock(&g_gw_clarify.mutex);
-    g_gw_clarify.pending = true;
-    g_gw_clarify.response[0] = '\0';
-    snprintf(g_gw_clarify.platform, sizeof(g_gw_clarify.platform), "%s", platform ? platform : "");
-    snprintf(g_gw_clarify.chat_id, sizeof(g_gw_clarify.chat_id), "%s", chat_id ? chat_id : "");
-    snprintf(g_gw_clarify.session_key, sizeof(g_gw_clarify.session_key), "%s", session_key ? session_key : "");
-    snprintf(g_gw_clarify.clarify_id, sizeof(g_gw_clarify.clarify_id), "%s", clarify_id ? clarify_id : "");
-    g_gw_clarify.n_choices = 0;
-    g_gw_clarify.has_choices = (choices != NULL && n_choices > 0);
-    if (choices && n_choices > 0) {
-        for (int i = 0; i < n_choices && i < 4; i++) {
-            snprintf(g_gw_clarify.choices[i], sizeof(g_gw_clarify.choices[i]), "%s", choices[i]);
-            g_gw_clarify.n_choices = i + 1;
-        }
-    }
-    pthread_mutex_unlock(&g_gw_clarify.mutex);
-}
 
 /* Internal: check if a message matches pending clarify and capture response.
    Returns true if consumed. Caller must hold g_gw_clarify.mutex. */
-static bool gw_clarify_match(const char *platform, const char *chat_id, const char *text) {
-    if (!platform || !chat_id || !text) return false;
-    if (!g_gw_clarify.pending) return false;
-    if (strcmp(g_gw_clarify.platform, platform) != 0 ||
-        strcmp(g_gw_clarify.chat_id, chat_id) != 0) return false;
-
-    const char *trimmed = text;
-    while (*trimmed == ' ' || *trimmed == '\t') trimmed++;
-
-    /* If we have choices, accept a number (1-4) as a choice selection */
-    if (g_gw_clarify.has_choices && trimmed[0] >= '1' && trimmed[0] <= '4' &&
-        (trimmed[1] == '\0' || trimmed[1] == ' ' || trimmed[1] == '\t')) {
-        int idx = trimmed[0] - '1';
-        if (idx >= 0 && idx < g_gw_clarify.n_choices) {
-            snprintf(g_gw_clarify.response, sizeof(g_gw_clarify.response), "%s", g_gw_clarify.choices[idx]);
-            g_gw_clarify.pending = false;
-            pthread_cond_signal(&g_gw_clarify.cond);
-            printf("[gateway] Clarify response from %s/%s: %s (choice %d)\n", platform, chat_id, g_gw_clarify.response, idx + 1);
-            return true;
-        }
-    }
-
-    /* Any non-empty text is a valid clarify response (open-ended or free-form) */
-    snprintf(g_gw_clarify.response, sizeof(g_gw_clarify.response), "%s", trimmed);
-    g_gw_clarify.pending = false;
-    pthread_cond_signal(&g_gw_clarify.cond);
-    printf("[gateway] Clarify response from %s/%s: %.80s\n", platform, chat_id, trimmed);
-    return true;
-}
 
 /* Check if an incoming message is a clarify response.
    Called from platform message handler threads.
    Returns true if consumed. */
-static bool gw_clarify_check_response(const char *platform, const char *chat_id,
-                                        const char *text) {
-    pthread_mutex_lock(&g_gw_clarify.mutex);
-    if (!g_gw_clarify.pending) {
-        pthread_mutex_unlock(&g_gw_clarify.mutex);
-        return false;
-    }
-    if (strcmp(g_gw_clarify.platform, platform) != 0 ||
-        strcmp(g_gw_clarify.chat_id, chat_id) != 0) {
-        pthread_mutex_unlock(&g_gw_clarify.mutex);
-        return false;
-    }
-    bool consumed = gw_clarify_match(platform, chat_id, text);
-    pthread_mutex_unlock(&g_gw_clarify.mutex);
-    return consumed;
-}
 
 /* Called by clarify.c (via callback) to wait for user's response.
    Runs inside agent_chat() — blocks until resolved or timeout. */
@@ -294,69 +134,17 @@ static char *gw_clarify_wait_response(int timeout_sec) {
  * ================================================================ */
 
 /* Pending approval state — set when approval prompt sent via gateway */
-static struct {
-    bool            pending;
-    char            platform[32];
-    char            chat_id[128];
-    char            response[64];
-    pthread_mutex_t mutex;
-    pthread_cond_t  cond;   /* signaled when response received */
-    /* Optional: poll function for same-platform response capture.
-       Polls for a message from chat_id, returns response text or NULL.
-       Must free returned string. */
-    char *(*poll_fn)(const char *chat_id);
-    int           poll_interval;
-} g_gw_approval = {false, "", "", "", PTHREAD_MUTEX_INITIALIZER, PTHREAD_COND_INITIALIZER, NULL, 0};
+gw_approval_state_t g_gw_approval = {false, "", "", "", PTHREAD_MUTEX_INITIALIZER, PTHREAD_COND_INITIALIZER, NULL, 0};
 
 /* Register a platform poll function to use during approval wait */
-void gw_approval_set_poll(char *(*fn)(const char *chat_id), int interval_sec) {
-    g_gw_approval.poll_fn = fn;
-    g_gw_approval.poll_interval = interval_sec > 0 ? interval_sec : 1;
-}
 
 /* Set context for pending approval — called from approval.c */
-void gw_approval_set_context(const char *platform, const char *chat_id) {
-    pthread_mutex_lock(&g_gw_approval.mutex);
-    snprintf(g_gw_approval.platform, sizeof(g_gw_approval.platform), "%s", platform ? platform : "");
-    snprintf(g_gw_approval.chat_id, sizeof(g_gw_approval.chat_id), "%s", chat_id ? chat_id : "");
-    pthread_mutex_unlock(&g_gw_approval.mutex);
-}
 
 /* Begin waiting for approval response — must be called before gw_approval_wait_response.
    Sets the platform, chat_id context and marks pending. Thread-safe. */
-void gw_approval_begin(const char *platform, const char *chat_id) {
-    pthread_mutex_lock(&g_gw_approval.mutex);
-    g_gw_approval.pending = true;
-    g_gw_approval.response[0] = '\0';
-    snprintf(g_gw_approval.platform, sizeof(g_gw_approval.platform), "%s", platform ? platform : "");
-    snprintf(g_gw_approval.chat_id, sizeof(g_gw_approval.chat_id), "%s", chat_id ? chat_id : "");
-    pthread_mutex_unlock(&g_gw_approval.mutex);
-}
 
 /* Internal: check if a message matches pending approval and capture response.
    Returns true if consumed. Caller must hold g_gw_approval.mutex. */
-static bool gw_approval_match(const char *platform, const char *chat_id, const char *text) {
-    if (!platform || !chat_id || !text) return false;
-
-    const char *trimmed = text;
-    while (*trimmed == ' ' || *trimmed == '\t') trimmed++;
-
-    /* Short responses only: y, n, a, yes, no, always */
-    if (strlen(trimmed) > 16) return false;
-
-    char lower[64];
-    snprintf(lower, sizeof(lower), "%s", trimmed);
-    for (char *p = lower; *p; p++) *p = (char)tolower((unsigned char)*p);
-
-    /* Only consume if it looks like an approval response */
-    if (lower[0] != 'y' && lower[0] != 'n' && lower[0] != 'a') return false;
-
-    snprintf(g_gw_approval.response, sizeof(g_gw_approval.response), "%s", lower);
-    g_gw_approval.pending = false;
-    pthread_cond_signal(&g_gw_approval.cond);
-    printf("[gateway] Approval response from %s/%s: %s\n", platform, chat_id, trimmed);
-    return true;
-}
 
 /* Called by approval.c (via callback) to wait for user's y/n/a response.
    Runs inside agent_chat() — the poll thread that sent the prompt.
@@ -436,87 +224,22 @@ static char *gw_approval_wait_response(int timeout_sec) {
 /* Check if an incoming message is an approval response.
    Called from other platform threads (not the one that sent the prompt).
    Returns true if consumed. */
-static bool gw_approval_check_response(const char *platform, const char *chat_id,
-                                         const char *text) {
-    pthread_mutex_lock(&g_gw_approval.mutex);
-    if (!g_gw_approval.pending) {
-        pthread_mutex_unlock(&g_gw_approval.mutex);
-        return false;
-    }
-    if (strcmp(g_gw_approval.platform, platform) != 0 ||
-        strcmp(g_gw_approval.chat_id, chat_id) != 0) {
-        pthread_mutex_unlock(&g_gw_approval.mutex);
-        return false;
-    }
-    bool consumed = gw_approval_match(platform, chat_id, text);
-    pthread_mutex_unlock(&g_gw_approval.mutex);
-    return consumed;
-}
 
 /* ================================================================
  *  Gateway stderr log-to-file with rotation (B15)
  * ================================================================ */
 
-#define GW_LOG_MAX_BYTES (10 * 1024 * 1024)  /* 10 MB before rotation */
-#define GW_LOG_PATH_MAX 512
 
-static FILE *g_gw_log_fp = NULL;
-static char  g_gw_log_path[GW_LOG_PATH_MAX] = {0};
+FILE *g_gw_log_fp = NULL;
+char  g_gw_log_path[GW_LOG_PATH_MAX] = {0};
 
 /** Open gateway log file, rotate if >10 MB, for persistent log capture. */
-static void gw_log_open(void) {
-    const char *home = getenv("SLERMES_HOME");
-    if (!home) home = getenv("HOME");
-    if (!home) return;
 
-    snprintf(g_gw_log_path, sizeof(g_gw_log_path),
-             "%s/.slermes/logs/gateway.log", home);
-
-    struct stat st;
-    if (stat(g_gw_log_path, &st) == 0 && st.st_size > GW_LOG_MAX_BYTES) {
-        char old[GW_LOG_PATH_MAX];
-        snprintf(old, sizeof(old), "%s.1", g_gw_log_path);
-        rename(g_gw_log_path, old);
-    }
-
-    g_gw_log_fp = fopen(g_gw_log_path, "a");
-}
-
-static void gw_log_close(void) {
-    if (g_gw_log_fp) { fclose(g_gw_log_fp); g_gw_log_fp = NULL; }
-}
 
 /* ================================================================
  *  P101: Rate limiter (token bucket)
  * ================================================================ */
 
-void gw_rate_limit_init(int idx, double tokens_per_sec, double max_burst) {
-    if (idx < 0 || idx >= GW_MAX_PLATFORMS) return;
-    g_gw.rate_limiters[idx].tokens_per_sec = tokens_per_sec;
-    g_gw.rate_limiters[idx].max_tokens = max_burst;
-    g_gw.rate_limiters[idx].tokens = max_burst;
-    g_gw.rate_limiters[idx].last_refill = gw_mono_time();
-}
-
-bool gw_rate_limit_check(int idx) {
-    if (idx < 0 || idx >= GW_MAX_PLATFORMS) return true; /* no limit if out of range */
-
-    gw_rate_limiter_t *rl = &g_gw.rate_limiters[idx];
-    double now = gw_mono_time();
-
-    /* Refill tokens based on elapsed time */
-    double elapsed = now - rl->last_refill;
-    rl->tokens += elapsed * rl->tokens_per_sec;
-    if (rl->tokens > rl->max_tokens)
-        rl->tokens = rl->max_tokens;
-    rl->last_refill = now;
-
-    if (rl->tokens >= 1.0) {
-        rl->tokens -= 1.0;
-        return true; /* allowed */
-    }
-    return false; /* rate-limited */
-}
 
 /* ================================================================
  *  P101: HTTP connection pool
@@ -551,127 +274,20 @@ http_client_t *gw_pool_get_client(const char *endpoint) {
     return http_client_new(30);
 }
 
-void gw_pool_return_client(http_client_t *client, const char *endpoint) {
-    if (!client) return;
-
-    pthread_mutex_lock(&g_gw.pool_mutex);
-
-    for (int i = 0; i < g_gw.pool_count; i++) {
-        if (g_gw.http_pool[i].client == client) {
-            g_gw.http_pool[i].in_use = false;
-            g_gw.http_pool[i].last_used = gw_mono_time();
-            pthread_mutex_unlock(&g_gw.pool_mutex);
-            return;
-        }
-    }
-
-    /* Not found in pool — free it */
-    pthread_mutex_unlock(&g_gw.pool_mutex);
-    http_client_free(client);
-}
-
-void gw_pool_cleanup(void) {
-    pthread_mutex_lock(&g_gw.pool_mutex);
-    double now = gw_mono_time();
-    double expiry = g_gw.pool_keepalive_expiry > 0 ? g_gw.pool_keepalive_expiry : 300.0;
-    for (int i = 0; i < g_gw.pool_count; i++) {
-        if (!g_gw.http_pool[i].in_use &&
-            (now - g_gw.http_pool[i].last_used) > expiry) {
-            http_client_free(g_gw.http_pool[i].client);
-            if (i < g_gw.pool_count - 1) {
-                g_gw.http_pool[i] = g_gw.http_pool[g_gw.pool_count - 1];
-            }
-            g_gw.pool_count--;
-            i--;
-        }
-    }
-    pthread_mutex_unlock(&g_gw.pool_mutex);
-}
 
 /* ================================================================
  *  E27: HTTP keepalive per-platform (set via config)
  * ================================================================ */
 
-void gw_set_keepalive(int plat_idx, double keepalive_sec) {
-    if (plat_idx >= 0 && plat_idx < GW_MAX_PLATFORMS)
-        g_gw.platform_keepalive_sec[plat_idx] = keepalive_sec;
-}
 
 /* E28: Message deduplication (TTL-based ring buffer) */
 /* Forward declaration for process_update (defined below) */
-static void process_update(const char *platform, const char *chat_id, const char *text);
 
-bool gw_dedup_check(const char *message_id) {
-    if (!message_id || !*message_id) return false;
-    double now = gw_mono_time();
-
-    /* Prune expired entries */
-    while (g_gw.dedup_count > 0 &&
-           (now - g_gw.dedup_timestamps[g_gw.dedup_head]) > g_gw.dedup_ttl) {
-        g_gw.dedup_head = (g_gw.dedup_head + 1) % 64;
-        g_gw.dedup_count--;
-    }
-
-    /* Linear scan for match (small ring, <64 entries) */
-    for (int i = 0; i < g_gw.dedup_count; i++) {
-        int idx = (g_gw.dedup_head + i) % 64;
-        if (strcmp(g_gw.dedup_ids[idx], message_id) == 0)
-            return true; /* duplicate */
-    }
-    return false;
-}
-
-void gw_dedup_add(const char *message_id) {
-    if (!message_id || !*message_id) return;
-    if (g_gw.dedup_count >= 64) return; /* ring full, skip */
-
-    int idx = (g_gw.dedup_head + g_gw.dedup_count) % 64;
-    snprintf(g_gw.dedup_ids[idx], sizeof(g_gw.dedup_ids[idx]), "%s", message_id);
-    g_gw.dedup_timestamps[idx] = gw_mono_time();
-    g_gw.dedup_count++;
-}
 
 /* ================================================================
  *  E29: Batch aggregation — coalesce fragmented messages
  * ================================================================ */
 
-void gw_batch_accumulate(const char *platform, const char *chat_id, const char *fragment) {
-    if (!platform || !chat_id || !fragment) return;
-
-    double now = gw_mono_time();
-    double BATCH_TIMEOUT = 2.0; /* seconds to wait for more fragments */
-
-    /* If no active batch or different source, flush first */
-    if (g_gw.batch_active &&
-        (strcmp(g_gw.batch_platform, platform) != 0 ||
-         strcmp(g_gw.batch_chat_id, chat_id) != 0 ||
-         (now - g_gw.batch_start_time) > BATCH_TIMEOUT)) {
-        gw_batch_flush();
-    }
-
-    /* Start or continue batch */
-    if (!g_gw.batch_active) {
-        snprintf(g_gw.batch_platform, sizeof(g_gw.batch_platform), "%s", platform);
-        snprintf(g_gw.batch_chat_id, sizeof(g_gw.batch_chat_id), "%s", chat_id);
-        g_gw.batch_buf[0] = '\0';
-        g_gw.batch_start_time = now;
-        g_gw.batch_active = true;
-    }
-
-    size_t remaining = sizeof(g_gw.batch_buf) - strlen(g_gw.batch_buf) - 1;
-    if (remaining > 0) {
-        strncat(g_gw.batch_buf, fragment, remaining);
-    }
-}
-
-void gw_batch_flush(void) {
-    if (!g_gw.batch_active) return;
-    if (g_gw.batch_buf[0]) {
-        process_update(g_gw.batch_platform, g_gw.batch_chat_id, g_gw.batch_buf);
-    }
-    g_gw.batch_buf[0] = '\0';
-    g_gw.batch_active = false;
-}
 
 /* ================================================================
  *  E30: Markdown stripping per-platform
@@ -707,105 +323,25 @@ static char *gw_strip_markdown(const char *text, bool strip_code, bool strip_bol
  *  E31: Per-platform cooldown
  * ================================================================ */
 
-double gw_cooldown_remaining(int plat_idx) {
-    if (plat_idx < 0 || plat_idx >= GW_MAX_PLATFORMS) return 0.0;
-    double remaining = g_gw.platform_cooldown_sec[plat_idx] -
-        (gw_mono_time() - g_gw.platform_last_action[plat_idx]);
-    return remaining > 0.0 ? remaining : 0.0;
-}
-
-void gw_cooldown_mark(int plat_idx) {
-    if (plat_idx >= 0 && plat_idx < GW_MAX_PLATFORMS)
-        g_gw.platform_last_action[plat_idx] = gw_mono_time();
-}
 
 /* ================================================================
  *  E32: Reconnect backoff (exponential with jitter)
  * ================================================================ */
 
-double gw_reconnect_delay(int plat_idx) {
-    if (plat_idx < 0 || plat_idx >= GW_MAX_PLATFORMS) return GW_RECONNECT_BASE_SEC;
-
-    g_gw.reconnect_attempt[plat_idx]++;
-
-    /* Exponential: base * 2 ^ (attempt - 1) with jitter */
-    double base = GW_RECONNECT_BASE_SEC *
-        (1 << (g_gw.reconnect_attempt[plat_idx] - 1));
-    if (base > GW_RECONNECT_MAX_SEC) base = GW_RECONNECT_MAX_SEC;
-
-    /* Add random jitter ±10% */
-    double jitter = ((double)rand() / RAND_MAX) * 2.0 * GW_RECONNECT_JITTER * base
-        - GW_RECONNECT_JITTER * base;
-    double delay = base + jitter;
-    if (delay < GW_RECONNECT_BASE_SEC) delay = GW_RECONNECT_BASE_SEC;
-
-    g_gw.reconnect_delay_sec[plat_idx] = delay;
-    return delay;
-}
-
-void gw_reconnect_reset(int plat_idx) {
-    if (plat_idx >= 0 && plat_idx < GW_MAX_PLATFORMS) {
-        g_gw.reconnect_attempt[plat_idx] = 0;
-        g_gw.reconnect_delay_sec[plat_idx] = 0.0;
-    }
-}
 
 /* ================================================================
  *  E33: Proxy support per-platform
  * ================================================================ */
 
-bool gw_set_proxy(int plat_idx, const char *proxy_url) {
-    if (plat_idx < 0 || plat_idx >= GW_MAX_PLATFORMS) return false;
-    if (!proxy_url || !*proxy_url) {
-        g_gw.proxy_enabled[plat_idx] = false;
-        g_gw.platform_proxy[plat_idx][0] = '\0';
-        return true;
-    }
-    snprintf(g_gw.platform_proxy[plat_idx], sizeof(g_gw.platform_proxy[plat_idx]),
-             "%s", proxy_url);
-    g_gw.proxy_enabled[plat_idx] = true;
-    return true;
-}
 
 /* ================================================================
  *  E34: Group observe — observe unmentioned group messages
  * ================================================================ */
 
 /* Forward declarations for functions defined later */
-static void gateway_send(const char *platform, const char *target, const char *text);
-static void gateway_send_fallback(const char *platform, const char *target,
-                                   const char *text);
 
-void gw_set_group_observe(const char *prefix, bool enabled) {
-    if (prefix)
-        snprintf(g_gw.group_observe_prefix, sizeof(g_gw.group_observe_prefix), "%s", prefix);
-    g_gw.group_observe_enabled = enabled;
-}
 
 /* L08: Append message to observe buffer (thread-safe, rolling). */
-void gw_observe_append(const char *platform, const char *chat_id, const char *text) {
-    if (!platform || !chat_id || !text || !*text) return;
-    pthread_mutex_lock(&g_gw.observe_mutex);
-    size_t cur = strlen(g_gw.observe_buffer);
-    size_t add = strlen(platform) + 1 + strlen(chat_id) + 2 + strlen(text) + 3;
-    if (cur + add >= sizeof(g_gw.observe_buffer)) {
-        /* Buffer full — trim from front */
-        char *nl = strchr(g_gw.observe_buffer, '\n');
-        if (nl) {
-            size_t remain = strlen(nl + 1);
-            memmove(g_gw.observe_buffer, nl + 1, remain + 1);
-            cur = remain;
-        } else {
-            g_gw.observe_buffer[0] = '\0';
-            cur = 0;
-        }
-    }
-    char entry[2048];
-    snprintf(entry, sizeof(entry), "[%s:%s] %s\n", platform, chat_id, text);
-    strncat(g_gw.observe_buffer, entry,
-            sizeof(g_gw.observe_buffer) - strlen(g_gw.observe_buffer) - 1);
-    pthread_mutex_unlock(&g_gw.observe_mutex);
-}
 
 /* L08: Consume and clear observe buffer for a given platform+chat. */
 char *gw_observe_consume(const char *platform, const char *chat_id) {
@@ -828,69 +364,19 @@ char *gw_observe_consume(const char *platform, const char *chat_id) {
 /* Hook function types */
 typedef json_node_t *(*gw_hook_t)(json_node_t *data, void *userdata);
 
-#define GW_HOOKS_MAX 16
 
-static struct {
-    gw_hook_t pre_send[GW_HOOKS_MAX];      /* E35: transform outgoing messages */
-    void     *pre_send_data[GW_HOOKS_MAX];
-    int       pre_send_count;
+gw_hooks_t gw_hooks;
 
-    gw_hook_t post_receive[GW_HOOKS_MAX];  /* E36: process incoming */
-    void     *post_receive_data[GW_HOOKS_MAX];
-    int       post_receive_count;
-
-    gw_hook_t interceptor[GW_HOOKS_MAX];   /* E37: censor/modify in transit */
-    void     *interceptor_data[GW_HOOKS_MAX];
-    int       interceptor_count;
-} gw_hooks;
-
-void gw_register_pre_send(gw_hook_t hook, void *userdata) {
-    if (gw_hooks.pre_send_count >= GW_HOOKS_MAX) return;
-    gw_hooks.pre_send[gw_hooks.pre_send_count] = hook;
-    gw_hooks.pre_send_data[gw_hooks.pre_send_count] = userdata;
-    gw_hooks.pre_send_count++;
-}
-
-void gw_register_post_receive(gw_hook_t hook, void *userdata) {
-    if (gw_hooks.post_receive_count >= GW_HOOKS_MAX) return;
-    gw_hooks.post_receive[gw_hooks.post_receive_count] = hook;
-    gw_hooks.post_receive_data[gw_hooks.post_receive_count] = userdata;
-    gw_hooks.post_receive_count++;
-}
-
-void gw_register_interceptor(gw_hook_t hook, void *userdata) {
-    if (gw_hooks.interceptor_count >= GW_HOOKS_MAX) return;
-    gw_hooks.interceptor[gw_hooks.interceptor_count] = hook;
-    gw_hooks.interceptor_data[gw_hooks.interceptor_count] = userdata;
-    gw_hooks.interceptor_count++;
-}
 
 /* E38: Event bus — broadcast a JSON event to all registered listeners */
-#define GW_EVENT_LISTENERS_MAX 16
 
 typedef void (*gw_event_listener_t)(const char *event_type, json_node_t *data, void *userdata);
 
-static struct {
-    gw_event_listener_t listeners[GW_EVENT_LISTENERS_MAX];
-    void               *data[GW_EVENT_LISTENERS_MAX];
-    int                 count;
-} gw_event_bus;
+gw_event_bus_t gw_event_bus;
 
-void gw_event_register(gw_event_listener_t listener, void *userdata) {
-    if (gw_event_bus.count >= GW_EVENT_LISTENERS_MAX) return;
-    gw_event_bus.listeners[gw_event_bus.count] = listener;
-    gw_event_bus.data[gw_event_bus.count] = userdata;
-    gw_event_bus.count++;
-}
-
-void gw_event_emit(const char *event_type, json_node_t *data) {
-    for (int i = 0; i < gw_event_bus.count; i++) {
-        gw_event_bus.listeners[i](event_type, data, gw_event_bus.data[i]);
-    }
-}
 
 /* E35: Apply pre-send hooks to a message before sending */
-static char *gw_apply_pre_send_hooks(const char *platform, const char *text) {
+char *gw_apply_pre_send_hooks(const char *platform, const char *text) {
     if (!text) return NULL;
 
     json_node_t *data = json_new_object();
@@ -941,8 +427,8 @@ static char *gw_apply_post_receive_hooks(const char *platform, const char *chat_
 }
 
 /* E37: Apply interceptors — can return NULL to drop message */
-static char *gw_apply_interceptors(const char *platform, const char *chat_id,
-                                    const char *text) {
+char *gw_apply_interceptors(const char *platform, const char *chat_id,
+                            const char *text) {
     if (!text) return NULL;
 
     json_node_t *data = json_new_object();
@@ -1047,7 +533,7 @@ char *gw_markdown_v2_escape(const char *text) {
 }
 
 /* E42: Strip all formatting for plain text platforms */
-static char *gw_strip_all_formatting(const char *text) {
+char *gw_strip_all_formatting(const char *text) {
     return gw_strip_markdown(text, true, true, true);
 }
 
@@ -1079,51 +565,11 @@ char *gw_truncate_message(const char *text, size_t max_len) {
 
 /* E44: Retry an API call with exponential backoff on 429/5xx.
  * Returns true if at least one attempt succeeded. */
-bool gw_retry_with_backoff(bool (*api_call)(void *ctx), void *ctx,
-                                   int max_retries, int base_delay_ms) {
-    for (int attempt = 0; attempt <= max_retries; attempt++) {
-        if (api_call(ctx)) return true;
-        if (attempt < max_retries) {
-            int delay = base_delay_ms * (1 << attempt); /* exponential */
-            /* Add jitter ±20% */
-            delay += (int)(((double)rand() / RAND_MAX) * 2.0 * 0.2 * delay - 0.2 * delay);
-            usleep(delay * 1000);
-        }
-    }
-    return false;
-}
 
 /* E45: Token refresh — re-init platform when token expires.
  * Checks platform state and re-runs setup. */
-bool gw_refresh_token(int plat_idx) {
-    if (plat_idx < 0 || plat_idx >= GW_MAX_PLATFORMS) return false;
-    /* Re-initialize the platform's HTTP client */
-    if (g_gw.platform_http[plat_idx]) {
-        http_client_free(g_gw.platform_http[plat_idx]);
-    }
-    g_gw.platform_http[plat_idx] = http_client_new(30);
-    /* Apply proxy if configured */
-    if (g_gw.proxy_enabled[plat_idx] && g_gw.platform_proxy[plat_idx][0]) {
-        http_client_set_proxy(g_gw.platform_http[plat_idx],
-                              g_gw.platform_proxy[plat_idx]);
-    }
-    gw_reconnect_reset(plat_idx);
-    return true;
-}
 
 /* E47: Send a plain text fallback when rich formatting fails */
-static void gateway_send_fallback(const char *platform, const char *target,
-                                   const char *text) {
-    if (!platform || !target || !text) return;
-    /* Strip all formatting and truncate */
-    char *plain = gw_strip_all_formatting(text);
-    char *truncated = gw_truncate_message(plain ? plain : text, 4000);
-    if (truncated) {
-        gateway_send(platform, target, truncated);
-        free(truncated);
-    }
-    free(plain);
-}
 
 /* ================================================================
  *  Thread-safe agent chat
@@ -1142,106 +588,19 @@ char *gateway_agent_chat(const char *message) {
  */
 
 /* Forward declarations for session management functions (defined below) */
-static int session_find(const char *platform, const char *chat_id);
 
-int session_source_description(const gw_session_source_t *src,
-                                char *buf, size_t sz) {
-    if (!src || !buf || sz == 0) return 0;
-
-    if (!src->has_data) {
-        return snprintf(buf, sz, "session (%s:%s)",
-                        src->platform[0] ? src->platform : "?",
-                        src->chat_id[0] ? src->chat_id : "?");
-    }
-
-    if (strcmp(src->chat_type, "dm") == 0) {
-        const char *who = src->user_name[0] ? src->user_name
-                       : src->user_id[0]    ? src->user_id
-                       :                        "user";
-        return snprintf(buf, sz, "DM with %s (%s)", who, src->platform);
-    } else if (strcmp(src->chat_type, "group") == 0) {
-        const char *name = src->chat_name[0] ? src->chat_name : src->chat_id;
-        int n = snprintf(buf, sz, "group: %s", name);
-        if (src->guild_id[0])
-            n += snprintf(buf + n, sz - (size_t)n > 0 ? sz - (size_t)n : 0,
-                          " guild:%s", src->guild_id);
-        if (src->thread_id[0])
-            n += snprintf(buf + n, sz - (size_t)n > 0 ? sz - (size_t)n : 0,
-                          " thread:%s", src->thread_id);
-        n += snprintf(buf + n, sz - (size_t)n > 0 ? sz - (size_t)n : 0,
-                      " (%s)", src->platform);
-        return n;
-    } else if (strcmp(src->chat_type, "channel") == 0) {
-        return snprintf(buf, sz, "channel: %s (%s)",
-                        src->chat_name[0] ? src->chat_name : src->chat_id,
-                        src->platform);
-    }
-    return snprintf(buf, sz, "%s (%s:%s)",
-                    src->chat_name[0] ? src->chat_name : src->chat_id,
-                    src->platform, src->chat_id);
-}
 
 /* Populate session source struct with the given values.
  * Strings are truncated to fit their fixed-size fields.
  * v306: added chat_topic, user_id_alt, chat_id_alt, guild_id, parent_chat_id, message_id */
-void session_source_set(gw_session_source_t *src,
-                         const char *platform,
-                         const char *chat_id,
-                         const char *chat_name,
-                         const char *chat_type,
-                         const char *user_id,
-                         const char *user_name,
-                         const char *thread_id,
-                         const char *chat_topic,
-                         const char *user_id_alt,
-                         const char *chat_id_alt,
-                         const char *guild_id,
-                         const char *parent_chat_id,
-                         const char *message_id,
-                         bool is_bot) {
-    if (!src) return;
-    snprintf(src->platform, sizeof(src->platform), "%s", platform ? platform : "");
-    snprintf(src->chat_id, sizeof(src->chat_id), "%s", chat_id ? chat_id : "");
-    snprintf(src->chat_name, sizeof(src->chat_name), "%s", chat_name ? chat_name : "");
-    snprintf(src->chat_type, sizeof(src->chat_type), "%s", chat_type ? chat_type : "dm");
-    snprintf(src->user_id, sizeof(src->user_id), "%s", user_id ? user_id : "");
-    snprintf(src->user_name, sizeof(src->user_name), "%s", user_name ? user_name : "");
-    snprintf(src->thread_id, sizeof(src->thread_id), "%s", thread_id ? thread_id : "");
-    snprintf(src->chat_topic, sizeof(src->chat_topic), "%s", chat_topic ? chat_topic : "");
-    snprintf(src->user_id_alt, sizeof(src->user_id_alt), "%s", user_id_alt ? user_id_alt : "");
-    snprintf(src->chat_id_alt, sizeof(src->chat_id_alt), "%s", chat_id_alt ? chat_id_alt : "");
-    snprintf(src->guild_id, sizeof(src->guild_id), "%s", guild_id ? guild_id : "");
-    snprintf(src->parent_chat_id, sizeof(src->parent_chat_id), "%s", parent_chat_id ? parent_chat_id : "");
-    snprintf(src->message_id, sizeof(src->message_id), "%s", message_id ? message_id : "");
-    src->is_bot = is_bot;
-    src->has_data = true;
-}
 
 /* GW15: forward declarations for static LRU cache functions */
 static gw_session_source_t *source_cache_get(const char *key);
-static void source_cache_put(const char *key, const gw_session_source_t *source);
 
 /* Thread-safe: set session source metadata for an existing session.
  * Platform threads call this after session_get_or_create() when they
  * have the metadata (chat_name, user_id, etc.) from their poll data.
  * Returns true if session was found and updated. */
-bool gw_session_set_source(const char *platform, const char *chat_id,
-                            const gw_session_source_t *source) {
-    if (!platform || !chat_id || !source) return false;
-    pthread_mutex_lock(&g_gw.session_mutex);
-    int idx = session_find(platform, chat_id);
-    if (idx >= 0) {
-        g_gw.sessions[idx].source = *source;
-        pthread_mutex_unlock(&g_gw.session_mutex);
-        /* GW15: Update LRU cache */
-        char key[192];
-        snprintf(key, sizeof(key), "%s:%s", platform, chat_id);
-        source_cache_put(key, source);
-        return true;
-    }
-    pthread_mutex_unlock(&g_gw.session_mutex);
-    return false;
-}
 
 /* ================================================================
  * GW15: Session sources LRU cache
@@ -1280,48 +639,6 @@ static gw_session_source_t *source_cache_get(const char *key) {
 }
 
 /* Insert or update a source in the cache. Evicts LRU entry if full. */
-static void source_cache_put(const char *key, const gw_session_source_t *source) {
-    if (!key || !source) return;
-    pthread_mutex_lock(&g_gw.source_cache_mutex);
-
-    /* Check if already present (update in place, move to MRU) */
-    int i;
-    for (i = 0; i < g_gw.source_cache_count; i++) {
-        if (g_gw.source_cache[i].occupied &&
-            strcmp(g_gw.source_cache[i].key, key) == 0) {
-            g_gw.source_cache[i].source = *source;
-            /* Move to MRU */
-            if (i != g_gw.source_cache_count - 1) {
-                int last = g_gw.source_cache_count - 1;
-                struct { char key[192]; gw_session_source_t source; bool occupied; }
-                    tmp = {0};
-                memcpy(&tmp, &g_gw.source_cache[i], sizeof(tmp));
-                memcpy(&g_gw.source_cache[i], &g_gw.source_cache[last], sizeof(tmp));
-                memcpy(&g_gw.source_cache[last], &tmp, sizeof(tmp));
-            }
-            pthread_mutex_unlock(&g_gw.source_cache_mutex);
-            return;
-        }
-    }
-
-    /* Evict LRU (index 0) if full */
-    if (g_gw.source_cache_count >= g_gw.source_cache_max) {
-        /* Shift all entries left by 1 (evict index 0) */
-        memmove(&g_gw.source_cache[0], &g_gw.source_cache[1],
-                (g_gw.source_cache_count - 1) * sizeof(g_gw.source_cache[0]));
-        g_gw.source_cache_count--;
-    }
-
-    /* Insert at MRU position (end) */
-    int idx = g_gw.source_cache_count;
-    strncpy(g_gw.source_cache[idx].key, key, sizeof(g_gw.source_cache[idx].key) - 1);
-    g_gw.source_cache[idx].key[sizeof(g_gw.source_cache[idx].key) - 1] = '\0';
-    g_gw.source_cache[idx].source = *source;
-    g_gw.source_cache[idx].occupied = true;
-    g_gw.source_cache_count++;
-
-    pthread_mutex_unlock(&g_gw.source_cache_mutex);
-}
 
 /* Public: get session source with LRU cache.
  * Checks cache first, falls back to session DB, populates cache on miss. */
@@ -1351,28 +668,10 @@ gw_session_source_t *gw_session_get_source(const char *platform, const char *cha
 }
 
 /* PII-safe hash helper: deterministic 8-char hex via FNV-1a */
-static void pii_hash(const char *input, char *out, size_t out_sz) {
-    if (!input || !*input) { out[0] = '\0'; return; }
-    uint32_t hash = 2166136261u;
-    while (*input) {
-        hash ^= (unsigned char)*input++;
-        hash *= 16777619u;
-    }
-    snprintf(out, out_sz, "%08x", hash);
-}
 
 /* Port of Python gateway/session.py:_discord_tools_loaded
  * Returns true when Discord tools (discord/discord_admin) are available.
  * Checks: DISCORD_BOT_TOKEN in env + discord in gateway_platforms. */
-static bool discord_tools_loaded(void) {
-    const char *token = getenv("DISCORD_BOT_TOKEN");
-    if (!token || !token[0]) return false;
-    for (int i = 0; i < g_gw.platform_count; i++) {
-        if (strcasecmp(g_gw.platforms[i], "discord") == 0)
-            return true;
-    }
-    return false;
-}
 
 /* Build a ## Current Session Context block for system prompt injection.
  * Port of Python gateway/session.py:build_session_context_prompt.
@@ -1522,54 +821,9 @@ char *build_session_context_prompt(const gw_session_source_t *src) {
  * Returns true if the session has expired (idle timeout or daily boundary).
  * Mirrors Python SessionStore._is_session_expired().
  * session_sec: seconds since last activity (monotonic time). */
-static bool session_should_reset(double session_sec) {
-    const char *mode = g_gw.reset_policy_mode;
-
-    if (strcmp(mode, "none") == 0)
-        return false;
-
-    /* Idle check: used in "idle" and "both" modes */
-    if (strcmp(mode, "idle") == 0 || strcmp(mode, "both") == 0) {
-        double idle_sec = (double)g_gw.reset_policy_idle_min * 60.0;
-        if (session_sec > idle_sec)
-            return true;
-    }
-
-    /* Daily check: used in "daily" and "both" modes.
-     * A session that was last active before today's reset hour is expired.
-     * We approximate by checking if idle time exceeds the time from
-     * the reset hour to now (with wraparound). */
-    if (strcmp(mode, "daily") == 0 || strcmp(mode, "both") == 0) {
-        time_t now_raw = time(NULL);
-        struct tm *now_tm = localtime(&now_raw);
-        int reset_hour = g_gw.reset_policy_at_hour;
-
-        /* Seconds since today's reset hour */
-        int sec_since_reset = (now_tm->tm_hour - reset_hour) * 3600
-                            + now_tm->tm_min * 60
-                            + now_tm->tm_sec;
-        if (sec_since_reset < 0)
-            sec_since_reset += 86400;  /* wrapped to previous day */
-
-        if (session_sec > (double)sec_since_reset)
-            return true;
-    }
-
-    return false;
-}
 
 /* Free a session entry (save, close DB, free agent, zero out).
  * Does NOT update session_count. */
-static void session_free(int idx) {
-    if (idx < 0 || idx >= GW_SESSIONS_MAX) return;
-    if (!g_gw.sessions[idx].in_use) return;
-    if (g_gw.sessions[idx].db) {
-        db_save(g_gw.sessions[idx].db, g_gw.sessions[idx].session_id, NULL);
-        db_close(g_gw.sessions[idx].db);
-    }
-    agent_free(&g_gw.sessions[idx].agent);
-    memset(&g_gw.sessions[idx], 0, sizeof(g_gw.sessions[idx]));
-}
 
 /* ================================================================
  *  P102: Per-chat session management
@@ -1582,283 +836,42 @@ static void session_free(int idx) {
  *   - Threads are shared unless thread_sessions_per_user is true.
  *   - Non-thread group/channel sessions are shared unless
  *     group_sessions_per_user is true (default: true = isolated per user). */
-static bool __attribute__((unused)) is_shared_multi_user_session(const gw_session_source_t *src,
-                                          bool group_sessions_per_user,
-                                          bool thread_sessions_per_user) {
-    if (!src) return false;
-    if (strcmp(src->chat_type, "dm") == 0) return false;
-    if (src->thread_id[0]) return !thread_sessions_per_user;
-    return !group_sessions_per_user;
-}
 
 /* Port of Python gateway/session.py:build_session_key(). */
-static void build_session_key(char *buf, size_t sz,
-                               const char *platform, const char *chat_id) {
-    snprintf(buf, sz, "%s:%s", platform ? platform : "?", chat_id ? chat_id : "?");
-}
 
 /* Find existing session entry by platform+chat_id. Returns index or -1. */
-static int session_find(const char *platform, const char *chat_id) {
-    char key[192];
-    build_session_key(key, sizeof(key), platform, chat_id);
-    for (int i = 0; i < g_gw.session_count; i++) {
-        if (strcmp(g_gw.sessions[i].key, key) == 0 && g_gw.sessions[i].in_use)
-            return i;
-    }
-    return -1;
-}
 
 /* Port of Python agent/auxiliary_client.py:create(). */
 /* Create a new session for a platform:chat_id pair. Returns index or -1. */
-static int session_create(const char *platform, const char *chat_id) {
-    /* M13: Check configurable max concurrent sessions cap */
-    if (g_gw.max_concurrent_sessions > 0) {
-        int active_count = 0;
-        for (int i = 0; i < g_gw.session_count; i++) {
-            if (g_gw.sessions[i].in_use) active_count++;
-        }
-        if (active_count >= g_gw.max_concurrent_sessions) {
-            printf("[gateway] Rejecting new session %s:%s: "
-                   "max_concurrent_sessions (%d) reached\n",
-                   platform ? platform : "?", chat_id ? chat_id : "?",
-                   g_gw.max_concurrent_sessions);
-            return -1;
-        }
-    }
-    if (g_gw.session_count >= GW_SESSIONS_MAX) {
-        /* Evict oldest inactive session */
-        int oldest = -1;
-        double oldest_time = 1e18;
-        for (int i = 0; i < g_gw.session_count; i++) {
-            if (g_gw.sessions[i].last_active < oldest_time) {
-                oldest_time = g_gw.sessions[i].last_active;
-                oldest = i;
-            }
-        }
-        if (oldest < 0) return -1;
-        /* Save and free */
-        if (g_gw.sessions[oldest].db)
-            agent_save_session(&g_gw.sessions[oldest].agent);
-        agent_free(&g_gw.sessions[oldest].agent);
-        g_gw.sessions[oldest].in_use = false;
-    }
-
-    int idx = -1;
-    for (int i = 0; i < GW_SESSIONS_MAX; i++) {
-        if (!g_gw.sessions[i].in_use) {
-            idx = i;
-            break;
-        }
-    }
-    if (idx < 0) idx = g_gw.session_count; /* fallback: use next slot */
-
-    gw_session_entry_t *se = &g_gw.sessions[idx];
-    memset(se, 0, sizeof(*se));
-    build_session_key(se->key, sizeof(se->key), platform, chat_id);
-    se->in_use = true;
-    se->last_active = gw_mono_time();
-    /* Seed the source with identifying fields (platform+chat_id always available).
-     * Platform threads fill in the rest via gw_session_set_source(). */
-    snprintf(se->source.platform, sizeof(se->source.platform), "%s",
-             platform ? platform : "");
-    snprintf(se->source.chat_id, sizeof(se->source.chat_id), "%s",
-             chat_id ? chat_id : "");
-    se->source.has_data = false;  /* not fully populated yet */
-
-    /* Initialize agent */
-    init_agent(&se->agent);
-
-    /* Copy config from main agent */
-    memcpy(&se->agent.llm, &g_gw.agent.llm, sizeof(se->agent.llm));
-    se->agent.max_iterations = g_gw.agent.max_iterations;
-    se->agent.compress_enabled = g_gw.agent.compress_enabled;
-
-    /* Open session DB (persistent) */
-    if (g_gw.session_db_path[0]) {
-        se->db = db_open(g_gw.session_db_path, NULL);
-    }
-
-    if (idx >= g_gw.session_count)
-        g_gw.session_count = idx + 1;
-
-    return idx;
-}
 
 /* Get or create a session for platform:chat_id. Returns index or -1. */
-int session_get_or_create(const char *platform, const char *chat_id) {
-    int idx = session_find(platform, chat_id);
-    if (idx >= 0) {
-        double idle = gw_mono_time() - g_gw.sessions[idx].last_active;
-        /* Check auto-continue freshness window first (faster check) */
-        if (g_gw.auto_continue_freshness_secs > 0.0 &&
-            idle > g_gw.auto_continue_freshness_secs) {
-            session_free(idx);
-            return session_create(platform, chat_id);
-        }
-        /* Check configurable reset policy (daily/idle/both/none) */
-        if (session_should_reset(idle)) {
-            session_free(idx);
-            return session_create(platform, chat_id);
-        }
-        g_gw.sessions[idx].last_active = gw_mono_time();
-        return idx;
-    }
-    return session_create(platform, chat_id);
-}
 
 /* Auto-save all active sessions */
-static void session_save_all(void) {
-    for (int i = 0; i < g_gw.session_count; i++) {
-        if (g_gw.sessions[i].in_use && g_gw.sessions[i].db) {
-            agent_save_session(&g_gw.sessions[i].agent);
-        }
-    }
-}
 
 /* Clean up expired sessions based on configured reset policy.
  * Called by cleanup thread. Replaces hardcoded 30-min idle TTL. */
-static void session_cleanup_idle(void) {
-    double now = gw_mono_time();
-    for (int i = 0; i < g_gw.session_count; i++) {
-        if (g_gw.sessions[i].in_use) {
-            double idle = now - g_gw.sessions[i].last_active;
-            if (session_should_reset(idle))
-                session_free(i);
-        }
-    }
-}
 
 /* ================================================================
  *  P186: MEDIA: prefix handling — route file paths to platform media APIs
  * ================================================================ */
 
 /* Try to send a file via MEDIA: prefix. Returns true if handled. */
-static bool gw_try_send_media(const char *platform, const char *target, const char *text) {
-    if (!text || strncmp(text, "MEDIA:", 6) != 0) return false;
-
-    const char *path = text + 6;
-    if (!path[0]) return false;
-
-    /* Determine file type from extension */
-    const char *ext = strrchr(path, '.');
-    if (!ext) return false;
-
-    /* Check if file exists */
-    struct stat st;
-    if (stat(path, &st) != 0 || !S_ISREG(st.st_mode))
-        return false;
-
-    if (strcmp(platform, "telegram") == 0) {
-        /* Image extensions */
-        if (strcasecmp(ext, ".png") == 0 || strcasecmp(ext, ".jpg") == 0 ||
-            strcasecmp(ext, ".jpeg") == 0 || strcasecmp(ext, ".webp") == 0) {
-            return telegram_send_photo(g_gw.http, target, path, NULL, NULL);
-        }
-        /* Audio extensions */
-        if (strcasecmp(ext, ".ogg") == 0 || strcasecmp(ext, ".opus") == 0) {
-            return telegram_send_voice(g_gw.http, target, path, NULL, NULL);
-        }
-        /* Video extensions */
-        if (strcasecmp(ext, ".mp4") == 0 || strcasecmp(ext, ".mov") == 0 ||
-            strcasecmp(ext, ".avi") == 0 || strcasecmp(ext, ".mkv") == 0) {
-            return telegram_send_video(g_gw.http, target, path, NULL, NULL);
-        }
-        /* GIF/animation */
-        if (strcasecmp(ext, ".gif") == 0) {
-            return telegram_send_animation(g_gw.http, target, path, NULL, NULL);
-        }
-        /* Default: send as document */
-        return telegram_send_document(g_gw.http, target, path, NULL, NULL);
-    }
-
-    /* For platforms without media APIs, fall back to text with path info */
-    return false;
-}
 
 /* ================================================================
  *  Platform-aware message send
  * ================================================================ */
 
-static void gateway_send(const char *platform, const char *target, const char *text) {
-    if (!platform || !target || !text) return;
-
-    /* Apply registered message interceptors */
-    char *intercepted = gw_apply_interceptors(platform, target, text);
-    const char *send_text = intercepted ? intercepted : text;
-
-    /* P186: Try MEDIA: prefix for file/media sends */
-    if (gw_try_send_media(platform, target, send_text)) {
-        free(intercepted);
-        return;
-    }
-
-    /* P103: Try registered platform interface first */
-    if (gw_platform_send(platform, target, send_text)) {
-        free(intercepted);
-        return;
-    }
-
-    /* Legacy fallback for unregistered platforms */
-    bool sent = false;
-    if (strcmp(platform, "telegram") == 0) {
-        size_t len = strlen(send_text);
-        if (len > 4000) {
-            char chunk[4001];
-            memcpy(chunk, send_text, 4000);
-            chunk[4000] = '\0';
-            telegram_send_message(g_gw.http, target, chunk, "Markdown", NULL, false, false, NULL);
-            if (len > 4000)
-                telegram_send_message(g_gw.http, target, send_text + 4000, "Markdown", NULL, false, false, NULL);
-        } else {
-            telegram_send_message(g_gw.http, target, send_text, "Markdown", NULL, false, false, NULL);
-        }
-        sent = true;
-    } else if (strcmp(platform, "discord") == 0) {
-        discord_send_message(g_gw.http, send_text);
-        sent = true;
-    } else if (strcmp(platform, "mattermost") == 0) {
-        mattermost_send_message(g_gw.http, send_text);
-        sent = true;
-    }
-
-    /* Fallback: if primary platform send failed, use plain-text fallback */
-    if (!sent && send_text && *send_text)
-        gateway_send_fallback(platform, target, send_text);
-
-    free(intercepted);
-}
 
 /* Port of Python gateway/platforms/base.py:send_typing().
  * AG26: Port of Python gateway/platforms/base.py:_send_typing().
  */
-static void gateway_send_typing(const char *platform, const char *target) {
-    if (!platform) return;
-
-    /* P103: Try registered platform interface first */
-    gw_platform_send_typing(platform, target);
-
-    /* Legacy fallback */
-    if (strcmp(platform, "telegram") == 0)
-        telegram_send_chat_action(g_gw.http, target, "typing");
-    else if (strcmp(platform, "discord") == 0)
-        discord_send_typing(g_gw.http);
-}
 
 /* ================================================================
  *  P103: Platform interface implementation
  * ================================================================ */
 
-void gw_platform_register(const gw_platform_t *plat) {
-    if (!plat || !plat->name) return;
-    if (g_gw.platform_def_count >= GW_MAX_PLATFORMS) return;
-    g_gw.platform_defs[g_gw.platform_def_count++] = *plat;
-}
 
-int gw_platform_get_count(void) {
-    return g_gw.platform_def_count;
-}
-
-static gw_platform_t *gw_platform_find(const char *name) {
+gw_platform_t *gw_platform_find(const char *name) {
     if (!name) return NULL;
     for (int i = 0; i < g_gw.platform_def_count; i++) {
         if (strcasecmp(g_gw.platform_defs[i].name, name) == 0)
@@ -1867,128 +880,35 @@ static gw_platform_t *gw_platform_find(const char *name) {
     return NULL;
 }
 
-bool gw_platform_send(const char *platform_name, const char *chat_id, const char *text) {
-    gw_platform_t *p = gw_platform_find(platform_name);
-    if (!p || !p->send) return false;
-    /* Apply pre-send hooks (may modify text) */
-    if (gw_hooks.pre_send_count > 0) {
-        char *modified = gw_apply_pre_send_hooks(platform_name, text);
-        if (modified) {
-            bool ok = p->send(chat_id, modified);
-            free(modified);
-            return ok;
-        }
-    }
-    return p->send(chat_id, text);
-}
-
-void gw_platform_send_typing(const char *platform_name, const char *chat_id) {
-    gw_platform_t *p = gw_platform_find(platform_name);
-    if (p && p->send_typing)
-        p->send_typing(chat_id);
-}
 
 /* 5C-252: Send emoji reaction (optional — NULL if platform doesn't support) */
-bool gw_platform_send_reaction(const char *platform_name, const char *chat_id,
-                                const char *message_id, const char *emoji) {
-    gw_platform_t *p = gw_platform_find(platform_name);
-    if (p && p->send_reaction)
-        return p->send_reaction(chat_id, message_id, emoji);
-    return false;
-}
 
 /* P103: Vtable wrappers — these bridge the gw_platform_t signature
    (no http_client_t parameter) to the platform-specific functions
    (which need http). The http client is captured from g_gw.http. */
 
-static bool telegram_vtable_send_reaction(const char *chat_id,
-                                           const char *message_id,
-                                           const char *emoji) {
-    return telegram_set_message_reaction(g_gw.http, chat_id, message_id, emoji);
-}
 
 /* Generic shutdown for polling-based platforms.
    Threads have already exited via g_gw.running flag + pthread_join by the
    time this is called.  Per-platform cleanup (HTTP pool, sessions) is
    handled by the global cleanup path — this just logs the event. */
-static void poll_platform_shutdown(void) {
-    printf("[gateway] Polling platform shutdown\n");
-}
 
-void gw_platform_shutdown_all(void) {
-    for (int i = 0; i < g_gw.platform_def_count; i++) {
-        if (g_gw.platform_defs[i].shutdown)
-            g_gw.platform_defs[i].shutdown();
-    }
-}
 
 /* Context for tool event callback — passes platform + chat_id */
 /* Also carries stream callback state for progressive response delivery */
-typedef struct {
-    const char *platform;
-    const char *chat_id;
-    double      last_status_ts; /* monotonic time of last status send */
-    double      last_stream_ts; /* monotonic time of last stream update */
-    char        stream_buf[512]; /* accumulated stream tokens (truncated) */
-    int         stream_len;      /* total chars accumulated so far */
-} gw_status_ctx_t;
+/* gw_status_ctx_t is defined in gw_server_internals.h (shared across modules). */
 
 /* Gateway tool event callback — sends status messages during agent processing */
-static int gateway_tool_event_cb(const char *event_type, const char *tool_name,
-                                  const char *tool_args, void *user_data) {
-    (void)tool_args;
-    gw_status_ctx_t *ctx = (gw_status_ctx_t *)user_data;
-    if (!ctx || !ctx->platform || !ctx->chat_id) return 0;
-
-    if (strcmp(event_type, "tool.started") == 0) {
-        /* Throttle: don't send more than one status per 2 seconds */
-        double now = gw_mono_time();
-        if (now - ctx->last_status_ts < 2.0) return 0;
-        ctx->last_status_ts = now;
-
-        char msg[512];
-        snprintf(msg, sizeof(msg), "⚙️ Running *%s*... ", tool_name ? tool_name : "tool");
-        /* P161: Filter/sanitize status messages before platform delivery.
-           Mirrors Python _prepare_gateway_status_message(). */
-        char *filtered = gateway_prepare_status_message(ctx->platform, msg);
-        if (filtered) {
-            gateway_send(ctx->platform, ctx->chat_id, filtered);
-            free(filtered);
-        }
-    }
-    return 0;
-}
 
 /* Gateway stream callback — accumulates tokens and periodically
  * updates typing indicator to show the agent is generating.
  * Port of Python gateway/stream_consumer.py (minimal sync version). */
-static int gateway_stream_cb(const char *token, void *user_data) {
-    gw_status_ctx_t *ctx = (gw_status_ctx_t *)user_data;
-    if (!ctx || !ctx->platform || !ctx->chat_id || !token) return 0;
-
-    /* Accumulate token into buffer (truncated) */
-    size_t tlen = strlen(token);
-    if (ctx->stream_len + (int)tlen < (int)sizeof(ctx->stream_buf) - 1) {
-        memcpy(ctx->stream_buf + ctx->stream_len, token, tlen);
-        ctx->stream_len += (int)tlen;
-        ctx->stream_buf[ctx->stream_len] = '\0';
-    }
-    ctx->stream_len += (int)tlen; /* always count total */
-
-    /* Throttle: send typing indicator every ~5 seconds during streaming */
-    double now = gw_mono_time();
-    if (now - ctx->last_stream_ts >= 5.0) {
-        ctx->last_stream_ts = now;
-        gw_platform_send_typing(ctx->platform, ctx->chat_id);
-    }
-    return 0;
-}
 
 /* ================================================================
  *  Process a single update (called from platform threads)
  * ================================================================ */
 
-static void process_update(const char *platform, const char *chat_id, const char *text) {
+void process_update(const char *platform, const char *chat_id, const char *text) {
     if (!platform || !chat_id || !text || !*text) return;
 
     /* SK06: Update platform scope — invalidates skill cache if platform changed */
@@ -2537,11 +1457,6 @@ static void *thread_webhook(void *arg) {
  *  Signal handler
  * ================================================================ */
 
-static void handle_signal(int sig) {
-    (void)sig;
-    printf("\n[gateway] Shutting down...\n");
-    g_gw.running = false;
-}
 
 /* ================================================================
  *  Platform setup helpers
@@ -2554,152 +1469,13 @@ typedef struct {
     int arg_int; /* For port numbers etc. */
 } platform_def_t;
 
-static bool setup_telegram(void) {
-    const hermes_platform_cfg_t *pc = hermes_config_get_platform("telegram");
-    const char *token = NULL;
-    if (pc && pc->token[0]) token = pc->token;
-    if (!token) token = pc && pc->api_key[0] ? pc->api_key : NULL;
-    if (!token) token = getenv("TELEGRAM_BOT_TOKEN");
-    if (!token) token = getenv("HERMES_TELEGRAM_TOKEN");
-    if (!token) { fprintf(stderr, "Warning: TELEGRAM_BOT_TOKEN not set (set gateway.platforms.telegram.token in config.yaml or TELEGRAM_BOT_TOKEN env)\\n"); return false; }
-    telegram_set_token(token);
-    return true;
-}
-
-static bool setup_discord(void) {
-    const hermes_platform_cfg_t *pc = hermes_config_get_platform("discord");
-    const char *token = NULL;
-    if (pc && pc->token[0]) token = pc->token;
-    if (!token) token = pc && pc->api_key[0] ? pc->api_key : NULL;
-    if (!token) token = getenv("DISCORD_BOT_TOKEN");
-    const char *channel = getenv("DISCORD_CHANNEL_ID");
-    if (!token || !channel) {
-        fprintf(stderr, "Warning: DISCORD_BOT_TOKEN or DISCORD_CHANNEL_ID not set\n");
-        return false;
-    }
-    discord_set_token(token);
-    discord_set_channel(channel);
-    return true;
-}
-
-static bool setup_slack(void) {
-    const hermes_platform_cfg_t *pc = hermes_config_get_platform("slack");
-    const char *token = NULL;
-    if (pc && pc->token[0]) token = pc->token;
-    if (!token) token = pc && pc->api_key[0] ? pc->api_key : NULL;
-    if (!token) token = getenv("SLACK_BOT_TOKEN");
-    const char *channel = getenv("SLACK_CHANNEL_ID");
-    if (!token || !channel) {
-        fprintf(stderr, "Warning: SLACK_BOT_TOKEN or SLACK_CHANNEL_ID not set\n");
-        return false;
-    }
-    slack_set_token(token);
-    slack_set_channel(channel);
-    return true;
-}
-
-static bool setup_matrix(void) {
-    const char *hs = getenv("MATRIX_HOMESERVER");
-    const hermes_platform_cfg_t *pc = hermes_config_get_platform("matrix");
-    const char *token = NULL;
-    if (pc && pc->token[0]) token = pc->token;
-    if (!token) token = pc && pc->api_key[0] ? pc->api_key : NULL;
-    if (!token) token = getenv("MATRIX_ACCESS_TOKEN");
-    const char *room = getenv("MATRIX_ROOM_ID");
-    if (!token) { fprintf(stderr, "Warning: MATRIX_ACCESS_TOKEN not set\n"); return false; }
-    matrix_set_homeserver(hs && hs[0] ? hs : "https://matrix.org");
-    matrix_set_token(token);
-    if (room) matrix_set_room(room);
-    return true;
-}
-
-static bool setup_mattermost(void) {
-    const char *url = getenv("MATTERMOST_URL");
-    const char *token = getenv("MATTERMOST_TOKEN");
-    const char *channel = getenv("MATTERMOST_CHANNEL_ID");
-    if (!token || !channel) {
-        fprintf(stderr, "Warning: MATTERMOST_TOKEN or MATTERMOST_CHANNEL_ID not set\n");
-        return false;
-    }
-    mattermost_set_url(url && url[0] ? url : "http://localhost:8065");
-    mattermost_set_token(token);
-    mattermost_set_channel(channel);
-    return true;
-}
-
-static bool setup_webhook(void) {
-    const char *secret = getenv("WEBHOOK_SECRET");
-    if (secret && *secret) {
-        webhook_set_verify_secret(secret);
-        printf("[webhook] HMAC verification: enabled\n");
-    } else {
-        printf("[webhook] HMAC verification: disabled (no WEBHOOK_SECRET)\n");
-    }
-    return true;
-}
 
 /* Port of Python hermes_cli/gateway.py:_setup_whatsapp(). */
-static bool setup_whatsapp(void) {
-    const hermes_platform_cfg_t *pc = hermes_config_get_platform("whatsapp");
-    const char *token = NULL;
-    if (pc && pc->token[0]) token = pc->token;
-    if (!token) token = pc && pc->api_key[0] ? pc->api_key : NULL;
-    if (!token) token = getenv("WHATSAPP_TOKEN");
-    const char *phone = getenv("WHATSAPP_PHONE_NUMBER_ID");
-    const char *verify = getenv("WHATSAPP_VERIFY_TOKEN");
-    if (!token || !phone) {
-        fprintf(stderr, "Warning: WHATSAPP_TOKEN or WHATSAPP_PHONE_NUMBER_ID not set\n");
-        return false;
-    }
-    whatsapp_set_token(token);
-    whatsapp_set_phone_id(phone);
-    if (verify) whatsapp_set_verify_token(verify);
-    return true;
-}
 
-static bool setup_email(void) {
-    const char *from = getenv("EMAIL_FROM");
-    if (from) email_set_from(from);
-
-    /* Validate: email needs IMAP (for incoming) or SMTP/sendmail (for outgoing) */
-    const char *imap = getenv("EMAIL_IMAP_SERVER");
-    const char *smtp = getenv("EMAIL_SMTP_SERVER");
-    const char *cmd = getenv("EMAIL_SEND_CMD");
-    if (!imap && !smtp && !cmd) {
-        fprintf(stderr, "Warning: neither EMAIL_IMAP_SERVER nor EMAIL_SMTP_SERVER nor"
-                        " EMAIL_SEND_CMD set. Email will not function.\n");
-        return false;
-    }
-    return true;
-}
 
 /* Port of Python hermes_cli/gateway.py:_setup_signal(). */
-static bool setup_signal(void) {
-    const char *number = getenv("SIGNAL_NUMBER");
-    const char *cli_path = getenv("SIGNAL_CLI_PATH");
-    if (!number) {
-        fprintf(stderr, "Warning: SIGNAL_NUMBER not set\n");
-        return false;
-    }
-    signal_set_number(number);
-    if (cli_path) signal_set_cli_path(cli_path);
-    return true;
-}
 
 /* Setup for API Server platform */
-static bool setup_api_server(void) {
-    const hermes_platform_cfg_t *pc = hermes_config_get_platform("api_server");
-    const char *api_key = NULL;
-    if (pc && pc->api_key[0]) api_key = pc->api_key;
-    if (!api_key) api_key = getenv("API_SERVER_KEY");
-    if (!api_key) {
-        fprintf(stderr, "Warning: API_SERVER_KEY not set (set gateway.platforms.api_server.key in config.yaml or API_SERVER_KEY env)\n");
-        return false;
-    }
-    /* The API server adapter is now registered via register_api_server_platform()
-     * in api_server_adapter.c. The connect() call in init will start the server thread. */
-    return true;
-}
 
 /* Email poll thread */
 static void *thread_poll_email(void *arg) {
@@ -2750,19 +1526,6 @@ static void *thread_poll_signal(void *arg) {
 }
 
 /* HomeAssistant setup + thread */
-static bool setup_ha(void) {
-    const char *url = getenv("HA_URL");
-    const char *token = getenv("HA_TOKEN");
-    if (!url || !token) {
-        fprintf(stderr, "Warning: HA_URL and HA_TOKEN must be set\n");
-        return false;
-    }
-    ha_set_url(url);
-    ha_set_token(token);
-    const char *entity = getenv("HA_NOTIFY_ENTITY");
-    if (entity) ha_set_notify_entity(entity);
-    return true;
-}
 
 static void *thread_poll_ha(void *arg) {
     (void)arg;
@@ -2785,30 +1548,6 @@ static void *thread_poll_ha(void *arg) {
 }
 
 /* SMS setup + thread */
-static bool setup_sms(void) {
-    const char *sid = getenv("TWILIO_ACCOUNT_SID");
-    const char *token = getenv("TWILIO_AUTH_TOKEN");
-    const char *from = getenv("TWILIO_FROM_NUMBER");
-    if (!sid || !from) {
-        fprintf(stderr, "Warning: TWILIO_ACCOUNT_SID and TWILIO_FROM_NUMBER must be set\n");
-        return false;
-    }
-    sms_set_twilio(sid, token, from);
-
-    /* P111: Optional status callback URL for delivery status */
-    const char *cb = getenv("TWILIO_STATUS_CALLBACK");
-    if (cb) {
-        sms_set_status_callback(cb);
-        printf("[gateway] SMS status callbacks configured\n");
-    }
-
-    /* P111: Optional webhook path (default /sms-webhook on the webhook server) */
-    const char *wh = getenv("TWILIO_WEBHOOK_PATH");
-    if (wh) {
-        sms_set_webhook_url(wh);
-    }
-    return true;
-}
 
 static void *thread_poll_sms(void *arg) {
     (void)arg;
@@ -2834,15 +1573,6 @@ static void *thread_poll_sms(void *arg) {
 
 /* Port of Python hermes_cli/gateway.py:_setup_feishu(). */
 /* Feishu setup */
-static bool setup_feishu(void) {
-    const char *url = getenv("FEISHU_WEBHOOK_URL");
-    if (!url) {
-        fprintf(stderr, "Warning: FEISHU_WEBHOOK_URL not set\n");
-        return false;
-    }
-    feishu_set_webhook(url);
-    return true;
-}
 
 static void *thread_poll_feishu(void *arg) {
     (void)arg;
@@ -2853,15 +1583,6 @@ static void *thread_poll_feishu(void *arg) {
 
 /* Port of Python hermes_cli/gateway.py:_setup_wecom(). */
 /* WeCom setup */
-static bool setup_wecom(void) {
-    const char *url = getenv("WECOM_WEBHOOK_URL");
-    if (!url) {
-        fprintf(stderr, "Warning: WECOM_WEBHOOK_URL not set\n");
-        return false;
-    }
-    wecom_set_webhook(url);
-    return true;
-}
 
 static void *thread_poll_wecom(void *arg) {
     (void)arg;
@@ -2887,15 +1608,6 @@ static void *thread_poll_wecom(void *arg) {
 
 /* Port of Python hermes_cli/gateway.py:_setup_dingtalk(). */
 /* DingTalk setup */
-static bool setup_dingtalk(void) {
-    const char *url = getenv("DINGTALK_WEBHOOK_URL");
-    if (!url) {
-        fprintf(stderr, "Warning: DINGTALK_WEBHOOK_URL not set\n");
-        return false;
-    }
-    dingtalk_set_webhook(url);
-    return true;
-}
 
 static void *thread_poll_dingtalk(void *arg) {
     (void)arg;
@@ -2920,17 +1632,6 @@ static void *thread_poll_dingtalk(void *arg) {
 }
 
 /* QQ Bot setup */
-static bool setup_qqbot(void) {
-    const char *url = getenv("QQ_BOT_WEBHOOK_URL");
-    const char *token = getenv("QQ_BOT_TOKEN");
-    if (!url) {
-        fprintf(stderr, "Warning: QQ_BOT_WEBHOOK_URL not set\n");
-        return false;
-    }
-    qqbot_set_webhook(url);
-    if (token) qqbot_set_token(token);
-    return true;
-}
 
 static void *thread_poll_qqbot(void *arg) {
     (void)arg;
@@ -2955,17 +1656,6 @@ static void *thread_poll_qqbot(void *arg) {
 }
 
 /* BlueBubbles setup */
-static bool setup_bluebubbles(void) {
-    const char *url = getenv("BLUEBUBBLES_URL");
-    const char *pwd = getenv("BLUEBUBBLES_PASSWORD");
-    if (!url || !pwd) {
-        fprintf(stderr, "Warning: BLUEBUBBLES_URL and BLUEBUBBLES_PASSWORD must be set\n");
-        return false;
-    }
-    bluebubbles_set_url(url);
-    bluebubbles_set_password(pwd);
-    return true;
-}
 
 static void *thread_poll_bluebubbles(void *arg) {
     (void)arg;
@@ -3004,30 +1694,11 @@ static void *thread_poll_bluebubbles(void *arg) {
  *  Get port from env with HERMES_ or SLERMES_ prefix
  * ================================================================ */
 
-static int get_webhook_port(void) {
-    /* 1. Config value (from YAML) takes priority */
-    if (g_gw.config.webhook_port > 0 && g_gw.config.webhook_port <= 65535)
-        return g_gw.config.webhook_port;
-    /* 2. Env vars */
-    const char *port_str = getenv("SLERMES_WEBHOOK_PORT");
-    if (!port_str) port_str = getenv("HERMES_WEBHOOK_PORT");
-    if (!port_str) port_str = getenv("WEBHOOK_PORT");
-    int port = port_str ? atoi(port_str) : 8080;
-    if (port <= 0 || port > 65535) port = 8080;
-    return port;
-}
 
 /* ================================================================
  *  Gateway entry point
  * ================================================================ */
 
-static bool setup_msgraph_webhook(void) {
-    const char *port_str = getenv("MSGRAPH_WEBHOOK_PORT");
-    int port = port_str ? atoi(port_str) : 8646;
-    if (port <= 0 || port > 65535) port = 8646;
-    msgraph_webhook_init(NULL, NULL, port);
-    return true;
-}
 
 static void *thread_msgraph_webhook(void *arg) {
     (void)arg;
@@ -3041,16 +1712,6 @@ extern void weixin_start(void);
 extern void weixin_stop(void);
 
 /* Port of Python hermes_cli/gateway.py:_setup_weixin(). */
-static bool setup_weixin(void) {
-    const char *token = getenv("WEIXIN_TOKEN");
-    const char *account_id = getenv("WEIXIN_ACCOUNT_ID");
-    if (!token || !account_id) {
-        fprintf(stderr, "Warning: WEIXIN_TOKEN and WEIXIN_ACCOUNT_ID must be set\n");
-        return false;
-    }
-    weixin_init(token, account_id);
-    return true;
-}
 
 static void *thread_weixin(void *arg) {
     (void)arg;
@@ -3065,18 +1726,6 @@ extern bool yuanbao_init(const char *app_id, const char *app_secret,
 extern void yuanbao_start(void);
 extern void yuanbao_stop(void);
 
-static bool setup_yuanbao(void) {
-    const char *app_id = getenv("YUANBAO_APP_ID");
-    const char *app_secret = getenv("YUANBAO_APP_SECRET");
-    const char *bot_id = getenv("YUANBAO_BOT_ID");
-    const char *ws_url = getenv("YUANBAO_WS_URL");
-    const char *api_domain = getenv("YUANBAO_API_DOMAIN");
-    if (!app_id || !app_secret) {
-        fprintf(stderr, "Warning: YUANBAO_APP_ID and YUANBAO_APP_SECRET must be set\n");
-        return false;
-    }
-    return yuanbao_init(app_id, app_secret, bot_id, ws_url, api_domain);
-}
 
 static void *thread_yuanbao(void *arg) {
     (void)arg;
@@ -3086,81 +1735,9 @@ static void *thread_yuanbao(void *arg) {
 
 /* Port of Python hermes_cli/dump.py:_gateway_status(). */
 /* ── Gateway subcommand: status ───────────────────────────────── */
-static int cmd_gateway_status(void) {
-    hermes_config_t cfg;
-    if (!hermes_config_load(&cfg, NULL)) {
-        printf("No config loaded\n");
-        return 1;
-    }
-
-    printf("=== Gateway Status ===\n\n");
-
-    printf("Configured platforms: ");
-    if (cfg.gateway_platforms[0])
-        printf("%s\n", cfg.gateway_platforms);
-    else
-        printf("(none in config)\n");
-
-    printf("Env HERMES_GATEWAY_PLATFORMS: ");
-    const char *env = getenv("HERMES_GATEWAY_PLATFORMS");
-    if (env) printf("%s\n", env); else printf("(not set)\n");
-
-    printf("Default platform: telegram\n");
-
-    /* Check key env vars per platform type */
-    static const char *platform_keys[][2] = {
-        {"telegram", "TELEGRAM_BOT_TOKEN"},
-        {"discord",  "DISCORD_BOT_TOKEN"},
-        {"slack",    "SLACK_BOT_TOKEN"},
-        {"signal",   "SIGNAL_NUMBER"},
-        {"sms",      "TWILIO_ACCOUNT_SID"},
-        {"matrix",   "MATRIX_HOMESERVER"},
-        {NULL, NULL}
-    };
-
-    printf("\nCredentials check:\n");
-    for (int i = 0; platform_keys[i][0]; i++) {
-        const char *val = getenv(platform_keys[i][1]);
-        printf("  %-12s %s %s\n", platform_keys[i][0],
-               val ? "✅" : "❌", val ? "(found)" : "missing");
-    }
-
-    printf("\nGateway: ready to start with `slermes gateway start`\n");
-    return 0;
-}
 
 /* Port of Python hermes_cli/gateway.py:_gateway_list(). */
 /* ── Gateway subcommand: list ─────────────────────────────────── */
-static int cmd_gateway_list(void) {
-    static const char *platforms[] = {
-        "telegram", "discord", "slack", "matrix", "mattermost",
-        "webhook", "whatsapp", "email", "signal", "homeassistant",
-        "sms", "api_server", "feishu", "wecom", "dingtalk",
-        "qqbot", "bluebubbles", "msgraph_webhook", "weixin", "yuanbao",
-        NULL
-    };
-    static const char *descriptions[] = {
-        "Telegram bot API polling", "Discord gateway bot", "Slack RTM/Events API",
-        "Matrix client-server API", "Mattermost webhooks",
-        "Generic HTTP webhook receiver", "WhatsApp Cloud API webhook",
-        "IMAP/SMTP email client", "Signal CLI over dbus",
-        "Home Assistant long-lived token API",
-        "Twilio SMS gateway", "REST API server",
-        "Feishu/Lark bot API", "WeCom (WeChat Work) bot API",
-        "DingTalk bot API",
-        "QQ Bot API (OneBot/QQ Guild)", "BlueBubbles iMessage API",
-        "Microsoft Graph API webhook", "Weixin Official Account",
-        "Yuanbao (Tencent) protobuf protocol",
-        NULL
-    };
-
-    printf("=== Available Gateway Platforms ===\n\n");
-    for (int i = 0; platforms[i]; i++)
-        printf("  %-20s %s\n", platforms[i], descriptions[i]);
-    printf("\n%d platform types available\n", 20);
-    printf("Usage: slermes gateway [start|--platform <name>]\n");
-    return 0;
-}
 
 /* Periodic cleanup thread — evicts idle sessions every 60s */
 /* GW13: Kanban notifier thread function
