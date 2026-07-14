@@ -11,6 +11,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
+
+/* Defined in port_tools_credential_files.c — returns a json_node_t* array of
+ * {host_path, container_path} mount entries. */
+extern json_node_t *cli_tools_credential_files_get_credential_file_mounts(void);
 
 /* Sync constants */
 static const int SYNC_INTERVAL_SECONDS = 5;
@@ -192,4 +197,90 @@ char* cli_tools_environments_file_sync__infer_host_path(const char *remote_path,
     hermes_log(LOG_DEBUG, "file_sync", "_infer_host_path: remote=%s", remote_path);
     /* In C, the actual path inference is managed by the FileSyncManager */
     return NULL;
+}
+
+/*
+ * Resolve a host path the way Python Path(host_path).expanduser().resolve()
+ * does: expand a leading "~" against HOME, then canonicalize via realpath().
+ * Returns a malloc'd string (caller frees) or NULL on failure.
+ */
+static char *file_sync_resolve_host_path(const char *host_path) {
+    if (!host_path) return NULL;
+    char expanded[4096];
+    if (host_path[0] == '~') {
+        const char *home = getenv("HOME");
+        if (!home) home = "";
+        if (host_path[1] == '/' || host_path[1] == '\0') {
+            snprintf(expanded, sizeof(expanded), "%s%s", home, host_path + 1);
+        } else {
+            /* "~otheruser" — C has no getpwent guarantee; treat literally */
+            snprintf(expanded, sizeof(expanded), "%s", host_path);
+        }
+    } else {
+        snprintf(expanded, sizeof(expanded), "%s", host_path);
+    }
+    char resolved[4096];
+    if (realpath(expanded, resolved) == NULL) {
+        /* fall back to the un-canonicalized expansion (mirrors Python OSError branch) */
+        return strdup(expanded);
+    }
+    return strdup(resolved);
+}
+
+/* PoP: cli_tools_environments_file_sync__credential_host_paths @ tools/environments/file_sync.py:_credential_host_paths */
+json_node_t* cli_tools_environments_file_sync__credential_host_paths(void) {
+    /*
+     * Return the credential files that are upload-only for remote sandboxes.
+     * Mirrors Python: call get_credential_file_mounts(), collect each entry's
+     * host_path, expanduser()+resolve() it, and return the set of resolved paths.
+     */
+    json_node_t *paths = json_new_array();
+    if (!paths) return json_new_array();
+    json_node_t *mounts = NULL;
+    if (cli_tools_credential_files_get_credential_file_mounts) {
+        mounts = cli_tools_credential_files_get_credential_file_mounts();
+    }
+    if (!mounts || !json_node_is_array(mounts)) {
+        return paths;
+    }
+    int n = json_array_count(mounts);
+    for (int i = 0; i < n; i++) {
+        json_node_t *entry = json_array_get(mounts, i);
+        if (!entry || !json_node_is_object(entry)) continue;
+        json_node_t *hp = json_object_get(entry, "host_path");
+        if (!hp || !json_node_is_string(hp)) continue;
+        const char *raw = json_string_value(hp);
+        if (!raw || !*raw) continue;
+        char *resolved = file_sync_resolve_host_path(raw);
+        if (!resolved) continue;
+        json_node_t *s = json_new_string(resolved);
+        if (s) json_array_append(paths, s);
+        free(resolved);
+    }
+    hermes_log(LOG_DEBUG, "file_sync", "_credential_host_paths: %zu path(s)", json_array_count(paths));
+    return paths;
+}
+
+/* PoP: cli_tools_environments_file_sync__is_upload_only_host_path @ tools/environments/file_sync.py:_is_upload_only_host_path */
+bool cli_tools_environments_file_sync__is_upload_only_host_path(const char *host_path,
+                                                                json_node_t *upload_only_host_paths) {
+    /*
+     * Return True when the (resolved) host_path is a member of the
+     * upload_only_host_paths set. Mirrors Python: resolve then membership test.
+     */
+    if (!host_path) return false;
+    char *resolved = file_sync_resolve_host_path(host_path);
+    if (!resolved) return false;
+    bool found = false;
+    if (upload_only_host_paths && json_node_is_array(upload_only_host_paths)) {
+        int n = json_array_count(upload_only_host_paths);
+        for (int i = 0; i < n; i++) {
+            json_node_t *e = json_array_get(upload_only_host_paths, i);
+            if (!e || !json_node_is_string(e)) continue;
+            const char *s = json_string_value(e);
+            if (s && strcmp(s, resolved) == 0) { found = true; break; }
+        }
+    }
+    free(resolved);
+    return found;
 }
