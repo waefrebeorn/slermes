@@ -3,7 +3,10 @@
  * Central registry of all slash commands. Phase 51-60: CLI parity.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
+#include "hermes_cron.h"
+#include "hermes_skills.h"
+#include "hermes_cli.h"
 #include "cli_cmd_system.h"
 #include "cli_cmd_help.h"
 #include "cli_cmd_session.h"

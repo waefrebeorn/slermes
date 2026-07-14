@@ -5,7 +5,8 @@
 
 #include "cli_cmd_skills.h"
 #include "commands_shared.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
+#include "hermes_skills.h"
 
 /* /bundles: List skill bundles. Reads yaml files from skill-bundles dir. */
 void cmd_bundles(const char *args, agent_state_t *state) {

@@ -9,7 +9,9 @@
 
 /* PoP: cron scheduler (port of cron/scheduler) */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
+#include "hermes_cron.h"
+#include "hermes_skills.h"
 #include "hermes_json.h"
 #include "hermes_skill_commands.h"
 #include "../cron/scheduler.h"

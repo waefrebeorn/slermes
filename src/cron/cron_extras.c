@@ -2,7 +2,9 @@
  * cron_extras.c — P172-P175: Job retry, notification, chaining, templating.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
+#include "hermes_cron.h"
+#include "hermes_skills.h"
 #include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>

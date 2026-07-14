@@ -8,7 +8,9 @@
 
 /* PoP: web dashboard (C infrastructure) */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
+#include "hermes_cron.h"
+#include "hermes_skills.h"
 #include "hermes_json.h"
 #include "hermes_agent.h"
 #include "hermes_gateway.h"

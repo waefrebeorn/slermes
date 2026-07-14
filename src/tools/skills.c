@@ -4,7 +4,8 @@
  * usage tracking, caching, search, curator, and dependencies.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
+#include "hermes_skills.h"
 #include "hermes_json.h"
 #include "hermes_yaml.h"
 #include "hermes_http.h"
