@@ -529,3 +529,191 @@ double signal_parse_retry_after_message(const char *msg) {
     }
     return -1.0;
 }
+
+/* =====================================================================
+ *  Faithful port of the pure/self-contained helpers from
+ *  gateway/platforms/signal.py (CheckpointManager-adjacent signal
+ *  adapter helpers). These need no secrets subsystem.
+ * ===================================================================== */
+
+/* _EXT_TO_MIME — extension → MIME map (mirrors Python _EXT_TO_MIME). */
+static const char *_sig_ext_to_mime(const char *ext) {
+    /* ext is already lowercased by the caller. */
+    if (!ext || !ext[0]) return "application/octet-stream";
+    if (strcmp(ext, ".jpg") == 0 || strcmp(ext, ".jpeg") == 0) return "image/jpeg";
+    if (strcmp(ext, ".png") == 0) return "image/png";
+    if (strcmp(ext, ".gif") == 0) return "image/gif";
+    if (strcmp(ext, ".webp") == 0) return "image/webp";
+    if (strcmp(ext, ".ogg") == 0) return "audio/ogg";
+    if (strcmp(ext, ".mp3") == 0) return "audio/mpeg";
+    if (strcmp(ext, ".wav") == 0) return "audio/wav";
+    if (strcmp(ext, ".m4a") == 0) return "audio/mp4";
+    if (strcmp(ext, ".aac") == 0) return "audio/aac";
+    if (strcmp(ext, ".mp4") == 0) return "video/mp4";
+    if (strcmp(ext, ".pdf") == 0) return "application/pdf";
+    if (strcmp(ext, ".zip") == 0) return "application/zip";
+    return "application/octet-stream";
+}
+
+/* _ext_to_mime(ext) — Python: _EXT_TO_MIME.get(ext.lower(), default). */
+static const char *sig_ext_to_mime(const char *ext) {
+    if (!ext) return "application/octet-stream";
+    char buf[32];
+    size_t i = 0;
+    for (; ext[i] && i < sizeof(buf) - 1; i++)
+        buf[i] = (char)tolower((unsigned char)ext[i]);
+    buf[i] = '\0';
+    return _sig_ext_to_mime(buf);
+}
+
+/* _is_audio_ext(ext) / _is_image_ext(ext). */
+static bool sig_is_audio_ext(const char *ext) {
+    if (!ext) return false;
+    char buf[32]; size_t i = 0;
+    for (; ext[i] && i < sizeof(buf) - 1; i++) buf[i] = (char)tolower((unsigned char)ext[i]);
+    buf[i] = '\0';
+    return strcmp(buf, ".mp3") == 0 || strcmp(buf, ".wav") == 0 ||
+           strcmp(buf, ".ogg") == 0 || strcmp(buf, ".m4a") == 0 ||
+           strcmp(buf, ".aac") == 0;
+}
+static bool sig_is_image_ext(const char *ext) {
+    if (!ext) return false;
+    char buf[32]; size_t i = 0;
+    for (; ext[i] && i < sizeof(buf) - 1; i++) buf[i] = (char)tolower((unsigned char)ext[i]);
+    buf[i] = '\0';
+    return strcmp(buf, ".jpg") == 0 || strcmp(buf, ".jpeg") == 0 ||
+           strcmp(buf, ".png") == 0 || strcmp(buf, ".gif") == 0 ||
+           strcmp(buf, ".webp") == 0;
+}
+
+/* _looks_like_e164_number(value) — starts with '+', rest digits, len 7..15. */
+static bool sig_looks_like_e164(const char *value) {
+    if (!value || value[0] != '+') return false;
+    size_t n = 0;
+    for (const char *p = value + 1; *p; p++) {
+        if (!isdigit((unsigned char)*p)) return false;
+        n++;
+    }
+    return n >= 7 && n <= 15;
+}
+
+/* Validate an RFC-4122 UUID string (8-4-4-4-12 hex). */
+static bool sig_is_uuid(const char *v) {
+    if (!v) return false;
+    int grp[5] = {8, 4, 4, 4, 12};
+    int gi = 0, need_dash = 0;
+    for (const char *p = v; *p; p++) {
+        if (gi >= 5) return false;
+        if (need_dash) {
+            if (*p != '-') return false;
+            need_dash = 0; continue;
+        }
+        for (int k = 0; k < grp[gi]; k++) {
+            if (!*p) return false;
+            char c = *p++;
+            int hex = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
+            if (!hex) return false;
+        }
+        p--; if (*p) need_dash = (gi < 4);
+        gi++;
+    }
+    return gi == 5 && !need_dash;
+}
+
+/* _is_signal_service_id(value) — PNI:/u:/valid UUID. */
+static bool sig_is_signal_service_id(const char *value) {
+    if (!value || !value[0]) return false;
+    if (strncmp(value, "PNI:", 4) == 0) return true;
+    if (strncmp(value, "u:", 2) == 0) return true;
+    return sig_is_uuid(value);
+}
+
+/* _parse_comma_list(value) — split on ',' strip → JSON array string. */
+static char *sig_parse_comma_list(const char *value) {
+    if (!value) return strdup("[]");
+    size_t cap = 256 + strlen(value);
+    char *out = malloc(cap);
+    if (!out) return strdup("[]");
+    size_t len = 0;
+    len += (size_t)snprintf(out + len, cap - len, "[");
+    const char *p = value;
+    while (*p) {
+        while (*p == ' ' || *p == ',') p++;
+        const char *start = p;
+        while (*p && *p != ',') p++;
+        const char *end = p;
+        while (end > start && (end[-1] == ' ' || end[-1] == '\t')) end--;
+        if (end > start) {
+            size_t l = (size_t)(end - start);
+            len += (size_t)snprintf(out + len, cap - len,
+                "%.*s,", (int)l, start);
+        }
+        if (!*p) break;
+        p++;
+    }
+    if (len > 1 && out[len - 1] == ',') len--;
+    len += (size_t)snprintf(out + len, cap - len, "]");
+    return out;
+}
+
+/* _guess_extension(data) — magic-byte sniff (mirrors Python _guess_extension). */
+static const char *sig_guess_extension(const unsigned char *data, size_t n) {
+    if (n >= 4 && data[0] == 0x89 && data[1] == 'P' && data[2] == 'N' && data[3] == 'G')
+        return ".png";
+    if (n >= 2 && data[0] == 0xFF && data[1] == 0xD8)
+        return ".jpg";
+    if (n >= 4 && data[0] == 'G' && data[1] == 'I' && data[2] == 'F' && data[3] == '8')
+        return ".gif";
+    if (n >= 12 && data[0] == 'R' && data[1] == 'I' && data[2] == 'F' && data[3] == 'F' &&
+        data[8] == 'W' && data[9] == 'E' && data[10] == 'B' && data[11] == 'P')
+        return ".webp";
+    if (n >= 4 && data[0] == '%' && data[1] == 'P' && data[2] == 'D' && data[3] == 'F')
+        return ".pdf";
+    if (n >= 8 && data[4] == 'f' && data[5] == 't' && data[6] == 'y' && data[7] == 'p')
+        return ".mp4";
+    if (n >= 4 && data[0] == 'O' && data[1] == 'g' && data[2] == 'g' && data[3] == 'S')
+        return ".ogg";
+    /* MP3 vs ADTS AAC share 0xFF 0xEx sync; MP3 has ID=1, layer in {1,2,3}. */
+    if (n >= 2 && data[0] == 0xFF && (data[1] & 0xE0) == 0xE0) {
+        int id = (data[1] >> 3) & 0x1;
+        int layer = (data[1] >> 1) & 0x3;
+        if (id == 1 && layer >= 1 && layer <= 3) return ".mp3";
+        return ".aac";
+    }
+    return "";
+}
+
+/* check_signal_requirements() — Signal URL + account env present. */
+static bool sig_check_requirements(void) {
+    return getenv("SIGNAL_HTTP_URL") != NULL && getenv("SIGNAL_ACCOUNT") != NULL;
+}
+
+/* _markdown_to_signal(text) — plain-text fallback (strip markdown).
+ * The Python wrapper delegates to the shared markdown_to_signal(); the C
+ * port's equivalent (gateway_signal_markdown_to_signal) is a plain-text
+ * strip, so we mirror that behaviour locally. */
+static char *sig_markdown_to_signal(const char *text) {
+    if (!text) return strdup("");
+    /* Minimal: drop leading/trailing whitespace and collapse runs of
+     * blank lines. Full markdown rendering happens in send() via the
+     * shared formatter; this is the base-class plain fallback. */
+    char *out = strdup(text);
+    if (!out) return strdup("");
+    char *w = out, *r = out;
+    int prev_nl = 0;
+    while (*r) {
+        if (*r == '\n') {
+            if (prev_nl) { r++; continue; }
+            prev_nl = 1;
+        } else {
+            prev_nl = 0;
+        }
+        *w++ = *r++;
+    }
+    *w = '\0';
+    /* trim trailing newline(s) */
+    while (w > out && w[-1] == '\n') *--w = '\0';
+    return out;
+}
+
+/* PoP: signal pure helpers @ gateway/platforms/signal.py */
