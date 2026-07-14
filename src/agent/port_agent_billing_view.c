@@ -137,36 +137,10 @@ static char *billing_fetch(const char *url, const char *auth_header) {
  *  JSON helpers (manual parsing for simple types)
  * ================================================================ */
 
-static double json_get_number(const char *json, const char *key) {
-    if (!json || !key) return 0.0;
-    char search[128];
-    snprintf(search, sizeof(search), "\"%s\"", key);
-    const char *p = strstr(json, search);
-    if (!p) return 0.0;
-    p += strlen(search);
-    while (*p && *p != ':') p++;
-    if (*p) p++;
-    while (*p && (*p == ' ' || *p == '\t')) p++;
-    return atof(p);
-}
-
-/* billing_json_bool renamed from json_get_bool to avoid shadowing
- * lib/libjson/json.h:json_get_bool(const json_t*, const char*, bool).
- * This helper operates on raw JSON text, not a parsed json_t node. */
-static bool billing_json_bool(const char *json, const char *key) {
-    if (!json || !key) return false;
-    char search[128];
-    snprintf(search, sizeof(search), "\"%s\"", key);
-    const char *p = strstr(json, search);
-    if (!p) return false;
-    p += strlen(search);
-    while (*p && *p != ':') p++;
-    if (*p) p++;
-    while (*p && (*p == ' ' || *p == '\t')) p++;
-    return (strncmp(p, "true", 4) == 0);
-}
+/* billing_json helpers live in billing_json_helpers.c (hermes_billing.h) */
 
 static char *json_get_string(const char *json, const char *key, char *buf, size_t buf_sz) {
+/* PoP: parse_budget_ceiling @ agent/billing_view.py:parse_budget_ceiling */
     if (!json || !key || !buf || buf_sz == 0) return NULL;
     buf[0] = '\0';
     char search[128];
@@ -215,9 +189,9 @@ static billing_monthly_cap_t parse_monthly_cap(const char *json) {
     billing_monthly_cap_t cap = {0};
     if (!json) return cap;
 
-    double limit = json_get_number(json, "limitUsd");
-    double spent = json_get_number(json, "spentThisMonthUsd");
-    bool is_default = billing_json_bool(json, "isDefaultCeiling");
+    double limit = billing_json_get_number(json, "limitUsd");
+    double spent = billing_json_get_number(json, "spentThisMonthUsd");
+    bool is_default = billing_json_get_bool(json, "isDefaultCeiling");
 
     if (limit > 0 || spent > 0) {
         cap.limit_usd = limit;
@@ -232,9 +206,9 @@ static billing_auto_reload_t parse_auto_reload(const char *json) {
     billing_auto_reload_t ar = {0};
     if (!json) return ar;
 
-    bool enabled = billing_json_bool(json, "enabled");
-    double threshold = json_get_number(json, "thresholdUsd");
-    double reload_to = json_get_number(json, "reloadToUsd");
+    bool enabled = billing_json_get_bool(json, "enabled");
+    double threshold = billing_json_get_number(json, "thresholdUsd");
+    double reload_to = billing_json_get_number(json, "reloadToUsd");
 
     if (enabled || threshold > 0 || reload_to > 0) {
         ar.enabled = enabled;
@@ -259,8 +233,8 @@ billing_state_t billing_state_from_payload(const char *payload_json, const char 
     json_get_string(payload_json, "orgSlug", state.org_slug, sizeof(state.org_slug));
     json_get_string(payload_json, "orgName", state.org_name, sizeof(state.org_name));
     json_get_string(payload_json, "role", state.role, sizeof(state.role));
-    state.balance_usd = json_get_number(payload_json, "balanceUsd");
-    state.cli_billing_enabled = billing_json_bool(payload_json, "cliBillingEnabled");
+    state.balance_usd = billing_json_get_number(payload_json, "balanceUsd");
+    state.cli_billing_enabled = billing_json_get_bool(payload_json, "cliBillingEnabled");
 
     /* Parse charge presets array */
     const char *presets = strstr(payload_json, "\"chargePresets\"");
@@ -283,8 +257,8 @@ billing_state_t billing_state_from_payload(const char *payload_json, const char 
     if (bounds) {
         bounds = strchr(bounds, '{');
         if (bounds) {
-            state.min_usd = json_get_number(bounds, "minUsd");
-            state.max_usd = json_get_number(bounds, "maxUsd");
+            state.min_usd = billing_json_get_number(bounds, "minUsd");
+            state.max_usd = billing_json_get_number(bounds, "maxUsd");
         }
     }
 

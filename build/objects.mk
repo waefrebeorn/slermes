@@ -173,7 +173,7 @@ PORT_OBJ = \
     src/cli/port_memory_providers.o \
     src/cli/port_model_normalize.o \
     src/cli/port_model_switch.o \
-    src/cli/port_nous_billing.o \
+    src/cli/port_nous_billing.o src/cli/billing_json_helpers.o \
     src/cli/port_runtime_provider.o \
     src/cli/port_voice.o \
     src/cli/port_web_server.o \

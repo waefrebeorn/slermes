@@ -253,33 +253,7 @@ static char *billing_fetch(const char *url, const char *auth_header) {
  *  JSON helpers
  * ================================================================ */
 
-static double json_get_number(const char *json, const char *key) {
-    if (!json || !key) return 0.0;
-    char search[128];
-    snprintf(search, sizeof(search), "\"%s\"", key);
-    const char *p = strstr(json, search);
-    if (!p) return 0.0;
-    p += strlen(search);
-    while (*p && *p != ':') p++;
-    if (*p) p++;
-    while (*p && (*p == ' ' || *p == '\t')) p++;
-    return atof(p);
-}
-
-/* billing_json_bool renamed from json_get_bool to avoid shadowing
- * lib/libjson/json.h:json_get_bool(const json_t*, const char*, bool). */
-static bool billing_json_bool(const char *json, const char *key) {
-    if (!json || !key) return false;
-    char search[128];
-    snprintf(search, sizeof(search), "\"%s\"", key);
-    const char *p = strstr(json, search);
-    if (!p) return false;
-    p += strlen(search);
-    while (*p && *p != ':') p++;
-    if (*p) p++;
-    while (*p && (*p == ' ' || *p == '\t')) p++;
-    return (strncmp(p, "true", 4) == 0);
-}
+/* billing_json helpers live in billing_json_helpers.c (hermes_billing.h) */
 
 static char *json_get_string(const char *json, const char *key, char *buf, size_t buf_sz) {
     if (!json || !key || !buf || buf_sz == 0) return NULL;
