@@ -28,6 +28,11 @@ bool credential_pool_get_prune_env_sources(void);
  * Caller must free() the returned string. */
 char *cp_auth_json_path(void);
 
+/* Load config.yaml as a whole-document JSON object (caller json_free's), or
+ * NULL on any error. Port of Python agent/credential_pool.py:_load_config_safe.
+ * Defined in credential_pool_custom.c; reused by cp_read_custom_providers. */
+json_t *credential_pool_load_config_safe(void);
+
 /* Shared internal helpers (defined in credential_pool_engine.c). */
 bool entry_usable(const credential_entry_t *e, time_t now);
 
