@@ -7,7 +7,7 @@
  * Extended with full Python voice_mode.py parity (29 additional functions).
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "transcribe.h"
 #include <stdio.h>

@@ -5,7 +5,7 @@
 
 #include "cli_cmd_system.h"
 #include "commands_shared.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 
 /* Forward declarations for helpers defined later in this file but called by
  * earlier handlers (the split preserved their original intra-file ordering). */

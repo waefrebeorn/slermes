@@ -5,7 +5,7 @@
 
 #include "cli_cmd_gateway.h"
 #include "commands_shared.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 
 /* /gateway: Gateway management command with subcommands */
 void cmd_gateway(const char *args, agent_state_t *state) {

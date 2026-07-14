@@ -5,7 +5,7 @@
 
 #include "cli_cmd_session.h"
 #include "commands_shared.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 
 /* PoP: cmd_agents @ hermes_cli/main.py:cmd_agents */
 void cmd_agents(const char *args, agent_state_t *state) {

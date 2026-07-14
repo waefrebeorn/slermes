@@ -5,7 +5,7 @@
 
 #include "cli_cmd_misc.h"
 #include "commands_shared.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 
 /* /plugins: List installed plugins and their status */
 void cmd_plugins(const char *args, agent_state_t *state) {

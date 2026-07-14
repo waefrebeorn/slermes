@@ -6,7 +6,7 @@
  *
  * MIT License — WuBu Slermes Project
  */
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_hooks.h"
 #include <stdio.h>

@@ -5,7 +5,7 @@
 
 #include "cli_cmd_security.h"
 #include "commands_shared.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 
 /* /auth: Provider auth status overview */
 void cmd_auth(const char *args, agent_state_t *state) {

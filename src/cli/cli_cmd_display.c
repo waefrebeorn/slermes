@@ -5,7 +5,7 @@
 
 #include "cli_cmd_display.h"
 #include "commands_shared.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "pet.h"
 
 /* ─── /pet — Petdex pet management ─── */

@@ -6,7 +6,7 @@
  * _OpenAIProxy and _SafeWriter classes are Python-only (NA_SDK).
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>

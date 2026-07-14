@@ -12,7 +12,7 @@
  */
 
 #include "codex_app_server_client.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 
 #include <stdio.h>

@@ -5,7 +5,7 @@
 
 #include "cli_cmd_config.h"
 #include "commands_shared.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 
 /* P23: Config category groups — /config groups lists all.
  * Canonical definition (shared by the facade via commands_shared.h extern).

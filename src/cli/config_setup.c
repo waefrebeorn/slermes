@@ -12,7 +12,7 @@
  * focused on load/validate/diff/merge/migrate, and this file on user onboarding.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "config_schema.h"
 #include "hermes_yaml.h"
 #include "hermes_json.h"
