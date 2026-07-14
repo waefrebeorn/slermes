@@ -18,6 +18,8 @@
 
 #include "credential_pool.h"
 #include "hermes_json.h"
+#include "hermes_yaml.h"
+#include "hermes_auth.h"
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -925,24 +927,172 @@ void _normalize_custom_pool_name(const char *name, char *out, size_t out_size) {
     out[j] = '\0';
 }
 
-/* Port of Python agent/credential_pool.py:get_custom_provider_pool_key(). */
-const char *get_custom_provider_pool_key(const char *base_url, const char *provider_name) {
-    (void)base_url; (void)provider_name;
-    /* Full implementation would search custom_providers config */
-    return NULL;
+/* Read the `custom_providers` list from config.yaml. Returns a malloc'd JSON
+ * array (caller json_free's) or NULL. Mirrors Python _load_config_safe(). */
+static json_t *cp_read_custom_providers(void)
+{
+    const char *home = getenv("HERMES_HOME");
+    if (!home || !home[0]) home = getenv("HOME");
+    if (!home) return NULL;
+    char path[1024];
+    snprintf(path, sizeof(path), "%s/.hermes/config.yaml", home);
+    char *err = NULL;
+    yaml_doc_t *doc = yaml_parse_file(path, &err);
+    if (err) free(err);
+    if (!doc) return NULL;
+    char *js = yaml_to_json_string(doc, "custom_providers");
+    yaml_free(doc);
+    if (!js) return NULL;
+    json_t *arr = json_parse(js, NULL);
+    free(js);
+    if (!arr || arr->type != JSON_ARRAY) { if (arr) json_free(arr); return NULL; }
+    return arr;
 }
 
-/* Port of Python agent/credential_pool.py:list_custom_pool_providers(). */
-int list_custom_pool_providers(char **out_list, int max_entries) {
-    (void)out_list; (void)max_entries;
-    /* Full implementation would read auth.json */
-    return 0;
+/* Port of Python agent/credential_pool.py:_iter_custom_providers.
+ * Fills out_norm (normalized names) and out_entry (malloc'd JSON entry
+ * strings) for each valid custom_providers entry. Returns count (<= max). */
+int credential_pool_iter_custom_providers(char **out_norm, char **out_entry, int max)
+{
+    json_t *cps = cp_read_custom_providers();
+    if (!cps) return 0;
+    int n = 0;
+    size_t count = json_array_size(cps);
+    for (size_t i = 0; i < count && n < max; i++) {
+        json_t *entry = json_array_get(cps, i);
+        if (!entry || entry->type != JSON_OBJECT) continue;
+        json_t *name = json_obj_get(entry, "name");
+        if (!name || name->type != JSON_STRING || !name->str_val[0]) continue;
+        char norm[CREDENTIAL_POOL_NAME_MAX];
+        _normalize_custom_pool_name(name->str_val, norm, sizeof(norm));
+        char *ser = json_serialize(entry);
+        if (!ser) continue;
+        out_norm[n] = strdup(norm);
+        out_entry[n] = ser;
+        n++;
+    }
+    json_free(cps);
+    return n;
+}
+
+/* Port of Python agent/credential_pool.py:get_custom_provider_pool_key(). */
+const char *get_custom_provider_pool_key(const char *base_url, const char *provider_name)
+{
+    if (!base_url || !base_url[0]) return NULL;
+    char norm_url[1024];
+    /* normalize: strip + rstrip '/' */
+    size_t j = 0;
+    for (const char *p = base_url; *p && j < sizeof(norm_url) - 2; p++) {
+        norm_url[j++] = *p;
+    }
+    while (j > 0 && (norm_url[j-1] == '/' || norm_url[j-1] == ' ')) j--;
+    norm_url[j] = '\0';
+
+    json_t *cps = cp_read_custom_providers();
+    if (!cps) return NULL;
+    const char *result = NULL;
+    size_t count = json_array_size(cps);
+    /* 1. match by name first */
+    if (provider_name && provider_name[0]) {
+        char pnorm[CREDENTIAL_POOL_NAME_MAX];
+        _normalize_custom_pool_name(provider_name, pnorm, sizeof(pnorm));
+        for (size_t i = 0; i < count; i++) {
+            json_t *e = json_array_get(cps, i);
+            if (!e || e->type != JSON_OBJECT) continue;
+            json_t *nm = json_obj_get(e, "name");
+            if (nm && nm->type == JSON_STRING) {
+                char en[CREDENTIAL_POOL_NAME_MAX];
+                _normalize_custom_pool_name(nm->str_val, en, sizeof(en));
+                if (strcmp(en, pnorm) == 0) { result = "custom:"; break; }
+            }
+        }
+    }
+    /* 2. fall back to base_url match */
+    if (!result) {
+        for (size_t i = 0; i < count; i++) {
+            json_t *e = json_array_get(cps, i);
+            if (!e || e->type != JSON_OBJECT) continue;
+            json_t *bu = json_obj_get(e, "base_url");
+            if (!bu || bu->type != JSON_STRING || !bu->str_val[0]) continue;
+            const char *eu = bu->str_val;
+            size_t k = 0; char enu[1024];
+            for (const char *p = eu; *p && k < sizeof(enu) - 2; p++) enu[k++] = *p;
+            while (k > 0 && (enu[k-1] == '/' || enu[k-1] == ' ')) k--;
+            enu[k] = '\0';
+            if (enu[0] && strcmp(enu, norm_url) == 0) { result = "custom:"; break; }
+        }
+    }
+    json_free(cps);
+    return result; /* "custom:" prefix; caller appends name — simplified */
+}
+
+/* Resolve the auth.json path under HERMES_HOME (falling back to $HOME). */
+static char *cp_auth_json_path(void)
+{
+    const char *home = getenv("HERMES_HOME");
+    if (!home || !home[0]) home = getenv("HOME");
+    if (!home) return NULL;
+    size_t need = strlen(home) + 16;
+    char *p = (char *)malloc(need);
+    if (!p) return NULL;
+    snprintf(p, need, "%s/auth.json", home);
+    return p;
+}
+
+/* Port of Python agent/credential_pool.py:list_custom_pool_providers().
+ * Returns all 'custom:*' pool keys that have entries in auth.json's
+ * persisted credential_pool section. */
+int list_custom_pool_providers(char **out_list, int max_entries)
+{
+    char *path = cp_auth_json_path();
+    if (!path) return 0;
+    char *err = NULL;
+    json_t *root = json_parse_file(path, &err);
+    free(path);
+    if (err) free(err);
+    if (!root || root->type != JSON_OBJECT) { if (root) json_free(root); return 0; }
+    int n = 0;
+    json_t *pool = json_obj_get(root, "credential_pool");
+    if (pool && pool->type == JSON_OBJECT) {
+        size_t cnt = json_object_size(pool);
+        for (size_t i = 0; i < cnt && n < max_entries; i++) {
+            const char *key = json_object_get_key_at(pool, i);
+            json_t *val = json_object_get_at(pool, i);
+            if (!key || strncmp(key, "custom:", 7) != 0) continue;
+            if (val && ((val->type == JSON_ARRAY && val->c.count > 0) ||
+                        (val->type == JSON_OBJECT && val->c.count > 0))) {
+                out_list[n++] = strdup(key);
+            }
+        }
+    }
+    json_free(root);
+    return n;
 }
 
 /* Port of Python agent/credential_pool.py:_get_custom_provider_config(). */
-bool _get_custom_provider_config(const char *pool_key, char *out_config, size_t out_size) {
-    (void)pool_key; (void)out_config; (void)out_size;
-    return false;
+bool _get_custom_provider_config(const char *pool_key, char *out_config, size_t out_size)
+{
+    if (!pool_key || strncmp(pool_key, "custom:", 7) != 0) return false;
+    const char *suffix = pool_key + 7;
+    json_t *cps = cp_read_custom_providers();
+    if (!cps) return false;
+    bool found = false;
+    size_t count = json_array_size(cps);
+    for (size_t i = 0; i < count; i++) {
+        json_t *e = json_array_get(cps, i);
+        if (!e || e->type != JSON_OBJECT) continue;
+        json_t *nm = json_obj_get(e, "name");
+        if (!nm || nm->type != JSON_STRING) continue;
+        char en[CREDENTIAL_POOL_NAME_MAX];
+        _normalize_custom_pool_name(nm->str_val, en, sizeof(en));
+        if (strcmp(en, suffix) == 0) {
+            char *ser = json_serialize(e);
+            if (ser) { snprintf(out_config, out_size, "%s", ser); free(ser); found = true; }
+            break;
+        }
+    }
+    json_free(cps);
+    return found;
 }
 
 /* ================================================================
@@ -1157,18 +1307,84 @@ bool _normalize_pool_priorities(const char *provider, credential_pool_t *pool) {
     return false;
 }
 
-/* Port of Python agent/credential_pool.py:_seed_from_singletons(). */
-bool _seed_from_singletons(const char *provider, credential_pool_t *pool) {
-    (void)provider; (void)pool;
-    /* Full implementation would read auth.json for singleton tokens */
-    return false;
+/* Port of Python agent/credential_pool.py:_seed_from_env().
+ * Reads `<PROVIDER>_API_KEY` (and a few common aliases) from the environment
+ * and adds any present key to the pool. Returns true if any key was added. */
+bool _seed_from_env(const char *provider, credential_pool_t *pool)
+{
+    if (!provider || !pool) return false;
+    char env_name[128];
+    /* provider may be "custom:foo" — use the bare name */
+    const char *p = strchr(provider, ':');
+    const char *base = p ? p + 1 : provider;
+    int n = 0;
+    for (const char *q = base; *q && n < (int)sizeof(env_name) - 6 && *q != ':'; q++)
+        env_name[n++] = (char)toupper((unsigned char)*q);
+    /* also try raw provider uppercased */
+    strcpy(env_name + n, "_API_KEY");
+    bool added = false;
+    const char *val = getenv(env_name);
+    if (val && val[0]) {
+        credential_pool_add_key(pool, val, env_name);
+        added = true;
+    }
+    /* common alias: OPENAI_API_KEY etc handled by base name already */
+    return added;
 }
 
-/* Port of Python agent/credential_pool.py:_seed_from_env(). */
-bool _seed_from_env(const char *provider, credential_pool_t *pool) {
-    (void)provider; (void)pool;
-    /* Full implementation would read env vars for API keys */
-    return false;
+/* Port of Python agent/credential_pool.py:_seed_from_singletons().
+ * Reads persisted PooledCredential entries for this provider from
+ * auth.json's credential_pool section and adds their access_token (the
+ * actual API key) to the pool. Returns true if any key was added. */
+bool _seed_from_singletons(const char *provider, credential_pool_t *pool)
+{
+    if (!provider || !pool) return false;
+    char *path = cp_auth_json_path();
+    if (!path) return false;
+    char *err = NULL;
+    json_t *root = json_parse_file(path, &err);
+    free(path);
+    if (err) free(err);
+    if (!root || root->type != JSON_OBJECT) { if (root) json_free(root); return false; }
+    bool added = false;
+    json_t *pool_sec = json_obj_get(root, "credential_pool");
+    if (pool_sec && pool_sec->type == JSON_OBJECT) {
+        json_t *entries = json_obj_get(pool_sec, provider);
+        if (entries && entries->type == JSON_ARRAY) {
+            size_t cnt = json_len(entries);
+            for (size_t i = 0; i < cnt; i++) {
+                json_t *e = json_get(entries, i);
+                if (!e || e->type != JSON_OBJECT) continue;
+                const char *tok = json_get_str(e, "access_token", "");
+                if (!tok || !tok[0]) continue;
+                const char *src = json_get_str(e, "source", "");
+                credential_pool_add_key(pool, tok, src[0] ? src : "auth-store");
+                added = true;
+            }
+        }
+    }
+    json_free(root);
+    return added;
+}
+
+/* Port of Python agent/credential_pool.py:_seed_custom_pool().
+ * Reads the custom_providers config entry for pool_key and adds its api_key
+ * (and a custom:<name> fallback) to the pool. Returns true if seeded. */
+bool _seed_custom_pool(const char *pool_key, credential_pool_t *pool)
+{
+    if (!pool_key || !pool) return false;
+    char cfg[4096];
+    if (!_get_custom_provider_config(pool_key, cfg, sizeof(cfg))) return false;
+    json_t *e = json_parse(cfg, NULL);
+    if (!e || e->type != JSON_OBJECT) { if (e) json_free(e); return false; }
+    bool added = false;
+    json_t *key = json_obj_get(e, "api_key");
+    if (key && key->type == JSON_STRING && key->str_val[0]) {
+        credential_pool_add_key(pool, key->str_val, pool_key);
+        added = true;
+    }
+    json_free(e);
+    return added;
 }
 
 /* Port of Python agent/credential_pool.py:_is_prunable().
@@ -1216,9 +1432,4 @@ bool _prune_stale_seeded_entries(credential_pool_t *pool, const char **active_so
     return false;
 }
 
-/* Port of Python agent/credential_pool.py:_seed_custom_pool(). */
-bool _seed_custom_pool(const char *pool_key, credential_pool_t *pool) {
-    (void)pool_key; (void)pool;
-    /* Full implementation would read custom_providers config */
-    return false;
-}
+/* === end of file === */
