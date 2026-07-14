@@ -323,6 +323,9 @@ char *browser_redact_sensitive_text(const char *value)
     return t;
 }
 
+/*
+ * PoP: redact_cdp_url @ agent/redact.py:redact_cdp_url
+ * Mask secrets in a CDP/browser endpoint URL before it is logged. */
 char *browser_redact_cdp_url(const char *value)
 {
     if (!value) return NULL;
