@@ -11,6 +11,8 @@
 #include <openssl/evp.h>
 #include <openssl/hmac.h>
 #include <openssl/rand.h>
+#include <openssl/pem.h>
+#include <openssl/rsa.h>
 
 /* ================================================================
  *  SHA-256
@@ -557,4 +559,40 @@ char *crypto_pkce_challenge(const char *code_verifier) {
     crypto_sha256((const unsigned char *)code_verifier,
                   strlen(code_verifier), hash);
     return crypto_base64url_encode(hash, 32);
+}
+
+/* ================================================================
+ *  RSA SHA-256 signing (RS256) — GCP service-account JWT auth
+ * ================================================================ */
+
+char *crypto_rs256_sign_b64url(const char *pem_key,
+                               const unsigned char *data, size_t data_len)
+{
+    if (!pem_key || !data) return NULL;
+
+    BIO *bio = BIO_new_mem_buf(pem_key, (int)strlen(pem_key));
+    if (!bio) return NULL;
+    EVP_PKEY *pkey = PEM_read_bio_PrivateKey(bio, NULL, NULL, NULL);
+    BIO_free(bio);
+    if (!pkey) return NULL;
+
+    EVP_MD_CTX *ctx = EVP_MD_CTX_new();
+    if (!ctx) { EVP_PKEY_free(pkey); return NULL; }
+
+    char *sig_b64 = NULL;
+    do {
+        if (EVP_DigestSignInit(ctx, NULL, EVP_sha256(), NULL, pkey) != 1) break;
+        if (EVP_DigestSignUpdate(ctx, data, data_len) != 1) break;
+        size_t siglen = 0;
+        if (EVP_DigestSignFinal(ctx, NULL, &siglen) != 1) break;
+        unsigned char *sig = (unsigned char *)OPENSSL_malloc(siglen ? siglen : 1);
+        if (!sig) break;
+        if (EVP_DigestSignFinal(ctx, sig, &siglen) != 1) { OPENSSL_free(sig); break; }
+        sig_b64 = crypto_base64url_encode(sig, siglen);
+        OPENSSL_free(sig);
+    } while (0);
+
+    EVP_MD_CTX_free(ctx);
+    EVP_PKEY_free(pkey);
+    return sig_b64;
 }
