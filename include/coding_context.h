@@ -87,4 +87,20 @@ coding_runtime_mode_t *coding_context_resolve_runtime_mode(
     const hermes_config_t *config,
     const char *model);
 
+/* Git / workspace probe (Port of Python _git / _parse_status / _read_small /
+ * _project_facts / build_coding_workspace_block). */
+int   coding_context_run_git(const char *cwd, char *out, size_t out_size, const char *fmt, ...);
+char *coding_context_parse_git_status(const char *porcelain);
+int   coding_context_read_small(const char *path, char *out, size_t out_size, size_t max_bytes);
+char *coding_context_project_facts(const char *root);
+char *coding_context_build_workspace_block(const char *cwd);
+
+/* Module-level convenience wrappers (Port of Python coding_selection etc.) */
+const char **coding_context_coding_selection(const char *platform, const char *cwd, const hermes_config_t *config);
+char **coding_context_coding_system_blocks(const char *platform, const char *cwd, const hermes_config_t *config, const char *model, int *out_count);
+const char **coding_context_coding_compact_skill_categories(const char *platform, const char *cwd, const hermes_config_t *config);
+char **coding_context_enabled_mcp_servers(const hermes_config_t *config);
+bool  coding_context_has_code_files(const char *root);
+char *coding_context_coding_instructions(const hermes_config_t *config);
+
 #endif /* CODING_CONTEXT_H */
