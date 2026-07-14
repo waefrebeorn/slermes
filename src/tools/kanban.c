@@ -11,6 +11,7 @@
 
 #include "hermes_core_types.h"
 #include "hermes_json.h"
+#include "hermes_kanban.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -486,41 +487,29 @@ static char *handle_complete(const char *args_json, const char *task_id) {
 
     const char *summary = json_get_str(args, "summary", "");
     const char *result_str = json_get_str(args, "result", "");
+    const char *metadata = json_get_str(args, "metadata", "");
 
-    if (!*summary && !*result_str)
+    if (!*summary && !*result_str) {
+        json_free(args);
         return strdup("{\"error\":\"provide at least one of: summary or result\"}");
+    }
 
-    json_t *task = read_task(tid);
-    if (!task) {
+    char meta_buf[1024];
+    const char *metadata_json = NULL;
+    if (*metadata) {
+        /* The Python metadata is an object; wrap if it isn't already. */
+        snprintf(meta_buf, sizeof(meta_buf), "%s", metadata);
+        metadata_json = meta_buf;
+    }
+
+    bool ok = kanban_complete_task(tid, *summary ? summary : NULL,
+                                   *result_str ? result_str : NULL, metadata_json);
+    json_free(args);
+    if (!ok) {
         char err[256];
         snprintf(err, sizeof(err), "{\"error\":\"task %s not found\"}", tid);
         return strdup(err);
     }
-
-    json_set(task, "status", json_string("done"));
-    char ts[64]; now_iso(ts, sizeof(ts));
-    json_set(task, "completed_at", json_string(ts));
-    if (*summary) json_set(task, "summary", json_string(summary));
-    if (*result_str) json_set(task, "result", json_string(result_str));
-
-    json_t *runs = json_obj_get(task, "runs");
-    if (!runs) {
-        runs = json_array();
-        json_set(task, "runs", runs);
-    }
-    json_t *run = json_object();
-    json_set(run, "id", json_string("run-1"));
-    json_set(run, "status", json_string("completed"));
-    json_set(run, "outcome", json_string("success"));
-    json_set(run, "summary", json_string(summary));
-    json_set(run, "started_at", json_string(ts));
-    json_set(run, "ended_at", json_string(ts));
-    json_append(runs, run);
-
-    add_event(tid, "completed", summary, task);
-    write_task(tid, task);
-    json_free(task);
-    json_free(args);
     return strdup("{\"ok\":true,\"status\":\"done\"}");
 }
 
@@ -588,30 +577,16 @@ static char *handle_comment(const char *args_json, const char *task_id) {
     if (!args) return strdup("{\"error\":\"Invalid JSON\"}");
     const char *tid = default_task_id(json_get_str(args, "task_id", ""));
     const char *body = json_get_str(args, "body", "");
-    if (!tid || !*tid) return strdup("{\"error\":\"task_id is required\"}");
-    if (!*body) return strdup("{\"error\":\"body is required\"}");
+    if (!tid || !*tid) { json_free(args); return strdup("{\"error\":\"task_id is required\"}"); }
+    if (!*body) { json_free(args); return strdup("{\"error\":\"body is required\"}"); }
 
-    json_t *task = read_task(tid);
-    if (!task) {
+    bool ok = kanban_add_comment(tid, "worker", body);
+    json_free(args);
+    if (!ok) {
         char err[256];
         snprintf(err, sizeof(err), "{\"error\":\"task %s not found\"}", tid);
         return strdup(err);
     }
-    json_t *comments = json_obj_get(task, "comments");
-    if (!comments) {
-        comments = json_array();
-        json_set(task, "comments", comments);
-    }
-    json_t *comment = json_object();
-    json_set(comment, "author", json_string("worker"));
-    json_set(comment, "body", json_string(body));
-    char ts[64]; now_iso(ts, sizeof(ts));
-    json_set(comment, "created_at", json_string(ts));
-    json_append(comments, comment);
-    add_event(tid, "comment", body, task);
-    write_task(tid, task);
-    json_free(task);
-    json_free(args);
     return strdup("{\"ok\":true}");
 }
 
@@ -624,59 +599,35 @@ static char *handle_create(const char *args_json, const char *task_id) {
     json_t *args = json_parse(args_json, NULL);
     if (!args) return strdup("{\"error\":\"Invalid JSON\"}");
 
-    const char *title = json_get_str(args, "title", "");
-    const char *assignee = json_get_str(args, "assignee", "");
-    if (!*title || !*assignee) {
+    kanban_task_spec_t spec;
+    memset(&spec, 0, sizeof(spec));
+    spec.title = json_get_str(args, "title", "");
+    spec.assignee = json_get_str(args, "assignee", "");
+    spec.body = json_get_str(args, "body", "");
+    spec.priority = (int)json_get_num(args, "priority", 0);
+    spec.tenant = json_get_str(args, "tenant", "");
+    spec.workspace_kind = json_get_str(args, "workspace_kind", "");
+    spec.workspace_path = json_get_str(args, "workspace_path", "");
+    spec.triage = json_get_bool(args, "triage", false);
+    spec.initial_status = json_get_str(args, "initial_status", "");
+    spec.created_by = getenv("HERMES_PROFILE");
+    if (!spec.created_by) spec.created_by = "worker";
+
+    if (!*spec.title || !*spec.assignee) {
         json_free(args);
         return strdup("{\"error\":\"title and assignee are required\"}");
     }
 
-    char new_id[64];
-    gen_id(new_id, sizeof(new_id));
-
-    json_t *task = json_object();
-    json_set(task, "title", json_string(title));
-    json_set(task, "assignee", json_string(assignee));
-
-    const char *body = json_get_str(args, "body", "");
-    if (*body) json_set(task, "body", json_string(body));
-
-    int priority = (int)json_get_num(args, "priority", 0);
-    json_set(task, "priority", json_number((double)priority));
-
-    const char *tenant = json_get_str(args, "tenant", "");
-    json_set(task, "tenant", json_string(tenant));
-    const char *wk = json_get_str(args, "workspace_kind", "");
-    if (*wk) json_set(task, "workspace_kind", json_string(wk));
-    const char *wp = json_get_str(args, "workspace_path", "");
-    if (*wp) json_set(task, "workspace_path", json_string(wp));
-
-    const char *initial_status = json_get_str(args, "initial_status", "");
-    bool triage = json_get_bool(args, "triage", false);
-
-    const char *status = "running";
-    if (*initial_status) status = initial_status;
-    else if (triage) status = "triage";
-    json_set(task, "status", json_string(status));
-
-    const char *created_by = getenv("HERMES_PROFILE");
-    if (!created_by) created_by = "worker";
-    json_set(task, "created_by", json_string(created_by));
-
-    char ts[64]; now_iso(ts, sizeof(ts));
-    json_set(task, "created_at", json_string(ts));
-    json_set(task, "started_at", json_string(ts));
-    json_set(task, "events", json_array());
-    json_set(task, "comments", json_array());
-    json_set(task, "runs", json_array());
-    add_event(new_id, "created", title, task);
-    write_task(new_id, task);
-    json_free(task);
+    char *new_id = kanban_create_task(&spec);
+    json_free(args);
+    if (!new_id) return strdup("{\"error\":\"create failed\"}");
 
     char out[256];
     snprintf(out, sizeof(out),
-             "{\"ok\":true,\"task_id\":\"%s\",\"status\":\"%s\"}", new_id, status);
-    json_free(args);
+             "{\"ok\":true,\"task_id\":\"%s\",\"status\":\"%s\"}",
+             new_id, spec.initial_status && *spec.initial_status ? spec.initial_status
+                      : (spec.triage ? "triage" : "running"));
+    free(new_id);
     return strdup(out);
 }
 
@@ -707,7 +658,6 @@ static char *handle_unblock(const char *args_json, const char *task_id) {
     json_free(args);
     return strdup(out);
 }
-
 /* Port of Python tools/kanban_tools.py:_handle_link(). */
 static char *handle_link(const char *args_json, const char *task_id) {
     (void)task_id;
@@ -715,50 +665,236 @@ static char *handle_link(const char *args_json, const char *task_id) {
     if (!args) return strdup("{\"error\":\"Invalid JSON\"}");
     const char *parent_id = json_get_str(args, "parent_id", "");
     const char *child_id = json_get_str(args, "child_id", "");
-    if (!*parent_id || !*child_id)
+    if (!*parent_id || !*child_id) {
+        json_free(args);
         return strdup("{\"error\":\"both parent_id and child_id are required\"}");
-    if (strcmp(parent_id, child_id) == 0)
+    }
+    if (strcmp(parent_id, child_id) == 0) {
+        json_free(args);
         return strdup("{\"error\":\"self-links are not allowed\"}");
-
-    json_t *p = read_task(parent_id);
-    json_t *c = read_task(child_id);
-    if (!p) {
-        char err[256];
-        snprintf(err, sizeof(err), "{\"error\":\"parent task %s not found\"}", parent_id);
-        return strdup(err);
-    }
-    if (!c) {
-        json_free(p);
-        char err[256];
-        snprintf(err, sizeof(err), "{\"error\":\"child task %s not found\"}", child_id);
-        return strdup(err);
-    }
-    json_free(p); json_free(c);
-
-    json_t *links = read_links();
-    if (!links) {
-        links = json_object();
-        json_set(links, "links", json_array());
-    }
-    json_t *link_list = json_obj_get(links, "links");
-    if (!link_list) {
-        link_list = json_array();
-        json_set(links, "links", link_list);
     }
 
-    /* Check duplicate */
-    size_t n = json_len(link_list);
-    for (size_t i = 0; i < n; i++) {
-        json_t *l = json_get(link_list, i);
-        const char *p = json_get_str(l, "parent", "");
-        const char *c = json_get_str(l, "child", "");
-        if (strcmp(p, parent_id) == 0 && strcmp(c, child_id) == 0) {
-            json_free(links);
-            return strdup("{\"ok\":true}");
+    bool ok = kanban_link_tasks(parent_id, child_id);
+    json_free(args);
+    if (!ok) {
+        /* Distinguish not-found vs cycle via existence. */
+        json_t *p = read_task(parent_id);
+        json_t *c = read_task(child_id);
+        bool missing = (!p || !c);
+        json_free(p); json_free(c);
+        if (missing) {
+            char err[256];
+            snprintf(err, sizeof(err), "{\"error\":\"task %s not found\"}",
+                     !p ? parent_id : child_id);
+            return strdup(err);
+        }
+        return strdup("{\"error\":\"cycle detected\"}");
+    }
+    char out[256];
+    snprintf(out, sizeof(out),
+             "{\"ok\":true,\"parent_id\":\"%s\",\"child_id\":\"%s\"}", parent_id, child_id);
+    return strdup(out);
+}
+
+/* ================================================================
+ *  Reusable backend API (shared by handlers + orchestration ports)
+ * ================================================================ */
+
+json_t *kanban_read_task(const char *tid) {
+    return read_task(tid);
+}
+
+char *kanban_create_task(const kanban_task_spec_t *spec) {
+    if (!spec || !spec->title || !*spec->title ||
+        !spec->assignee || !*spec->assignee) {
+        return NULL;
+    }
+
+    /* Idempotency: reuse an existing task with the same key. */
+    if (spec->idempotency_key && *spec->idempotency_key) {
+        DIR *dir = opendir(kanban_dir());
+        if (dir) {
+            struct dirent *entry;
+            while ((entry = readdir(dir)) != NULL) {
+                size_t nlen = strlen(entry->d_name);
+                if (nlen < 6) continue;
+                if (strcmp(entry->d_name + nlen - 5, ".json") != 0) continue;
+                if (strcmp(entry->d_name, "links.json") == 0) continue;
+                char tid[256];
+                snprintf(tid, sizeof(tid), "%.*s", (int)(nlen - 5), entry->d_name);
+                json_t *t = read_task(tid);
+                if (!t) continue;
+                const char *ik = json_get_str(t, "idempotency_key", "");
+                bool match = (strcmp(ik, spec->idempotency_key) == 0);
+                json_free(t);
+                if (match) {
+                    closedir(dir);
+                    return strdup(tid);
+                }
+            }
+            closedir(dir);
         }
     }
 
-    /* Check cycle: does child already have parent_id as descendant? */
+    char new_id[64];
+    gen_id(new_id, sizeof(new_id));
+
+    json_t *task = json_object();
+    json_set(task, "title", json_string(spec->title));
+    json_set(task, "assignee", json_string(spec->assignee));
+
+    if (spec->body && *spec->body)
+        json_set(task, "body", json_string(spec->body));
+
+    json_set(task, "priority", json_number((double)spec->priority));
+
+    if (spec->tenant && *spec->tenant)
+        json_set(task, "tenant", json_string(spec->tenant));
+    if (spec->workspace_kind && *spec->workspace_kind)
+        json_set(task, "workspace_kind", json_string(spec->workspace_kind));
+    if (spec->workspace_path && *spec->workspace_path)
+        json_set(task, "workspace_path", json_string(spec->workspace_path));
+    if (spec->skills && *spec->skills)
+        json_set(task, "skills", json_string(spec->skills));
+    if (spec->idempotency_key && *spec->idempotency_key)
+        json_set(task, "idempotency_key", json_string(spec->idempotency_key));
+    if (spec->max_runtime_seconds > 0)
+        json_set(task, "max_runtime_seconds",
+                 json_number((double)spec->max_runtime_seconds));
+
+    const char *status = "running";
+    if (spec->initial_status && *spec->initial_status) status = spec->initial_status;
+    else if (spec->triage) status = "triage";
+    json_set(task, "status", json_string(status));
+
+    const char *created_by = spec->created_by && *spec->created_by
+        ? spec->created_by : "worker";
+    json_set(task, "created_by", json_string(created_by));
+
+    char ts[64]; now_iso(ts, sizeof(ts));
+    json_set(task, "created_at", json_string(ts));
+    json_set(task, "started_at", json_string(ts));
+    json_set(task, "events", json_array());
+    json_set(task, "comments", json_array());
+    json_set(task, "runs", json_array());
+
+    if (spec->metadata_json && *spec->metadata_json) {
+        json_t *meta = json_parse(spec->metadata_json, NULL);
+        if (meta && meta->type == JSON_OBJECT) {
+            size_t n = json_object_size(meta);
+            for (size_t i = 0; i < n; i++) {
+                const char *k = json_object_get_key_at(meta, i);
+                json_t *v = json_object_get_at(meta, i);
+                if (k && v) json_set(task, k, json_copy(v));
+            }
+        }
+        json_free(meta);
+    }
+
+    add_event(new_id, "created", spec->title, task);
+    write_task(new_id, task);
+    json_free(task);
+
+    /* Establish parent dependency edges. */
+    if (spec->parents_json && *spec->parents_json) {
+        json_t *parents = json_parse(spec->parents_json, NULL);
+        if (parents && parents->type == JSON_ARRAY) {
+            size_t n = json_len(parents);
+            for (size_t i = 0; i < n; i++) {
+                json_t *pid_node = json_get(parents, i);
+                const char *pid = pid_node ? json_string_value(pid_node) : NULL;
+                if (pid && *pid) kanban_link_tasks(pid, new_id);
+            }
+        }
+        json_free(parents);
+    }
+
+    return strdup(new_id);
+}
+
+bool kanban_add_comment(const char *tid, const char *author, const char *body) {
+    if (!tid || !*tid || !body || !*body) return false;
+    json_t *task = read_task(tid);
+    if (!task) return false;
+    json_t *comments = json_obj_get(task, "comments");
+    if (!comments) {
+        comments = json_array();
+        json_set(task, "comments", comments);
+    }
+    json_t *comment = json_object();
+    json_set(comment, "author", json_string(author && *author ? author : "worker"));
+    json_set(comment, "body", json_string(body));
+    char ts[64]; now_iso(ts, sizeof(ts));
+    json_set(comment, "created_at", json_string(ts));
+    json_append(comments, comment);
+    add_event(tid, "comment", body, task);
+    write_task(tid, task);
+    json_free(task);
+    return true;
+}
+
+bool kanban_complete_task(const char *tid, const char *summary,
+                           const char *result, const char *metadata_json) {
+    if (!tid || !*tid) return false;
+    json_t *task = read_task(tid);
+    if (!task) return false;
+    json_set(task, "status", json_string("done"));
+    char ts[64]; now_iso(ts, sizeof(ts));
+    json_set(task, "completed_at", json_string(ts));
+    if (summary && *summary) json_set(task, "summary", json_string(summary));
+    if (result && *result) json_set(task, "result", json_string(result));
+    if (metadata_json && *metadata_json) {
+        json_t *meta = json_parse(metadata_json, NULL);
+        if (meta && meta->type == JSON_OBJECT) {
+            size_t n = json_object_size(meta);
+            for (size_t i = 0; i < n; i++) {
+                const char *k = json_object_get_key_at(meta, i);
+                json_t *v = json_object_get_at(meta, i);
+                if (k && v) json_set(task, k, json_copy(v));
+            }
+        }
+        json_free(meta);
+    }
+    json_t *runs = json_obj_get(task, "runs");
+    if (!runs) { runs = json_array(); json_set(task, "runs", runs); }
+    json_t *run = json_object();
+    json_set(run, "id", json_string("run-1"));
+    json_set(run, "status", json_string("completed"));
+    json_set(run, "outcome", json_string("success"));
+    json_set(run, "summary", json_string(summary ? summary : ""));
+    json_set(run, "started_at", json_string(ts));
+    json_set(run, "ended_at", json_string(ts));
+    json_append(runs, run);
+    add_event(tid, "completed", summary ? summary : "", task);
+    write_task(tid, task);
+    json_free(task);
+    return true;
+}
+
+bool kanban_link_tasks(const char *parent_id, const char *child_id) {
+    if (!parent_id || !*parent_id || !child_id || !*child_id) return false;
+    if (strcmp(parent_id, child_id) == 0) return false;
+    json_t *p = read_task(parent_id);
+    json_t *c = read_task(child_id);
+    if (!p || !c) { json_free(p); json_free(c); return false; }
+    json_free(p); json_free(c);
+
+    json_t *links = read_links();
+    if (!links) { links = json_object(); json_set(links, "links", json_array()); }
+    json_t *link_list = json_obj_get(links, "links");
+    if (!link_list) { link_list = json_array(); json_set(links, "links", link_list); }
+
+    size_t n = json_len(link_list);
+    for (size_t i = 0; i < n; i++) {
+        json_t *l = json_get(link_list, i);
+        if (strcmp(json_get_str(l, "parent", ""), parent_id) == 0 &&
+            strcmp(json_get_str(l, "child", ""), child_id) == 0) {
+            json_free(links);
+            return true;  /* already linked */
+        }
+    }
+
+    /* Cycle check: is parent_id a descendant of child_id? */
     json_t *child_children = get_child_ids(child_id);
     if (child_children) {
         size_t cn = json_len(child_children);
@@ -768,7 +904,7 @@ static char *handle_link(const char *args_json, const char *task_id) {
                 strcmp(elem->str_val, parent_id) == 0) {
                 json_free(child_children);
                 json_free(links);
-                return strdup("{\"error\":\"cycle detected\"}");
+                return false;  /* cycle */
             }
         }
         json_free(child_children);
@@ -780,12 +916,7 @@ static char *handle_link(const char *args_json, const char *task_id) {
     json_append(link_list, link);
     write_links(links);
     json_free(links);
-
-    char out[256];
-    snprintf(out, sizeof(out),
-             "{\"ok\":true,\"parent_id\":\"%s\",\"child_id\":\"%s\"}", parent_id, child_id);
-    json_free(args);
-    return strdup(out);
+    return true;
 }
 
 /* ================================================================

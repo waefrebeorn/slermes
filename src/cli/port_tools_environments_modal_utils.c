@@ -149,12 +149,12 @@ json_node_t* cli_tools_environments_modal_utils__start_modal_exec(const char *sa
         return cli_tools_environments_modal_utils__error_result("NULL sandbox_id or prepared");
     }
     hermes_log(LOG_WARNING, "modal_utils",
-               "_start_modal_exec: sandbox=%s — exec not implemented in C port (transport not wired)",
-               sandbox_id);
+               "_start_modal_exec: abstract base — concrete transport implemented by "
+               "managed_modal (cli_tools_environments_managed_modal__start_modal_exec)");
     json_node_t *err = json_new_object();
     if (err) {
         json_object_set(err, "error",
-            json_new_string("Modal exec not implemented in C port: transport not wired"));
+            json_new_string("modal_utils is an abstract base; use a concrete environment (managed_modal)"));
         json_object_set(err, "returncode", json_new_number(1));
     }
     return err;
