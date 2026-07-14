@@ -7,7 +7,6 @@
 #include "hermes_logger.h"
 #include "libwebsocket/websocket.h"
 #include "port_tools_browser_cdp_tool.h"
-#include "hermes.h"
 #include "tools/browser_tool_cdp.h"
 #include "tools/browser_tool_eval.h"
 #include "tools/browser_tool_install.h"

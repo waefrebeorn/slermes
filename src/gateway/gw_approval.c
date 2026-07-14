@@ -5,7 +5,7 @@
  * module statics are in include/gw_server_internals.h.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_agent.h"
 #include "hermes_gateway.h"
 #include "hermes_json.h"

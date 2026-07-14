@@ -27,7 +27,7 @@
  */
 
 #include "image_gen_provider.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>

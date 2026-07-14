@@ -8,7 +8,7 @@
 
 /* PoP: URL safety checking (port of tools/url_safety) */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_url_safety.h"
 #include <string.h>
 #include <stdlib.h>

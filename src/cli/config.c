@@ -54,7 +54,7 @@
  * PoP: get_missing_skill_config_vars @ hermes_cli/config.py:get_missing_skill_config_vars
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "config_schema.h"
 #include "hermes_yaml.h"
 #include "hermes_json.h"

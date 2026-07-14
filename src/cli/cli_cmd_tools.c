@@ -5,7 +5,7 @@
 
 #include "cli_cmd_tools.h"
 #include "commands_shared.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 
 /* /image: Attach a local image file */
 void cmd_image(const char *args, agent_state_t *state) {

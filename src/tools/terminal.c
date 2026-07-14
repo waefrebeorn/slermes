@@ -4,7 +4,7 @@
  * Wraps popen() with timeout and size limits.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_tool_config.h"
 #include "hermes_sandbox.h"

@@ -4,7 +4,7 @@
  * Read, write, search files. Path security checks.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "sandbox.h"
 #include "hermes_json.h"
 #include <stdio.h>

@@ -5,7 +5,7 @@
 
 #include "cli_cmd_memory.h"
 #include "commands_shared.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
 
 /* /memory: Memory setup, status, and provider management */
 /* AG26: Port of Python hermes_cli/main.py:cmd_memory(). */
