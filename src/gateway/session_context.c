@@ -161,3 +161,21 @@ void gw_session_reset_async_delivery(void)
 {
     _session_async_delivery = -1;
 }
+
+/* PoP: gw_session_context_engaged @ gateway/session_context.py:session_context_engaged */
+/* True if any session has been bound via set_session_vars in this process
+ * (mirrors Python _session_context_engaged process-global flag). */
+int gw_session_context_engaged(void)
+{
+    return _session_context_engaged;
+}
+
+/* PoP: gw_session_async_delivery_supported @ gateway/session_context.py:async_delivery_supported */
+/* Whether the current session can deliver a background completion later.
+ * Returns true unless the active session was bound by a stateless adapter
+ * (value explicitly set false). -1 (UNSET) means "never bound" -> true. */
+int gw_session_async_delivery_supported(void)
+{
+    if (_session_async_delivery < 0) return 1;
+    return _session_async_delivery ? 1 : 0;
+}
