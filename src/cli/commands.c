@@ -760,8 +760,8 @@ const command_def_t *commands_get_all(void) {
  * ================================================================ */
 
 /* Helper: print messages with role filtering and count limit */
-static void print_messages(const agent_state_t *state, size_t start, size_t count,
-                           const char *filter_role, bool show_full) {
+void print_messages(const agent_state_t *state, size_t start, size_t count,
+                     const char *filter_role, bool show_full) {
     size_t printed = 0;
     size_t skip_role = 0;
     message_role_t filter = 255; /* no filter */
@@ -901,13 +901,11 @@ static void list_free(list_t *l) {
     l->count = l->capacity = 0;
 }
 
-static void handoff_write_request(const char *handoff_id, const char *platform,
-                                   const char *session_id, const char *requester);
 static void handoff_read_dir(list_t *entries);
 
-/* Write a handoff request JSON file */
-static void handoff_write_request(const char *handoff_id, const char *platform,
-                                   const char *session_id, const char *requester) {
+/* Write a handoff request JSON file (declared in commands_shared.h) */
+void handoff_write_request(const char *handoff_id, const char *platform,
+                           const char *session_id, const char *requester) {
     const char *home = getenv("HERMES_HOME");
     if (!home) home = getenv("HOME");
     if (!home) home = "/tmp";

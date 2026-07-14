@@ -99,6 +99,13 @@ void show_section_mcp(const hermes_config_t *cfg);
 
 extern const command_def_t COMMANDS[];
 
+/* Shared message/handoff helpers (defined non-static in commands.c facade;
+ * used by cli_cmd_session.c and cli_cmd_system.c). */
+void print_messages(const agent_state_t *state, size_t start, size_t count,
+                    const char *filter_role, bool show_full);
+void handoff_write_request(const char *handoff_id, const char *platform,
+                           const char *session_id, const char *requester);
+
 /* Command dispatch API (defined non-static in commands.c facade). */
 extern const command_def_t *commands_get_all(void);
 extern const command_def_t *commands_resolve(const char *input);
