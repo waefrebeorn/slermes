@@ -53,6 +53,14 @@ static char *json_escape_string(const char *s)
     return out;
 }
 
+/* Array-index string accessor (json_get_str is key-based; this is index-based). */
+static const char *json_arr_str(json_t *arr, size_t idx)
+{
+    if (!arr || arr->type != JSON_ARRAY) return NULL;
+    json_t *e = json_get(arr, idx);
+    return (e && e->type == JSON_STRING) ? json_string_value(e) : NULL;
+}
+
 /* look up a slot's attribute from the slots JSON array */
 static const char *slot_attr(json_t *slots, const char *name, const char *attr)
 {
@@ -409,4 +417,472 @@ char *blueprint_catalog_resolve_schedule(const char *schedule_template, const ch
     if (slots) json_free(slots);
     if (vals) json_free(vals);
     return result;
+}
+
+/* ===========================================================================
+ *  Catalog + entry renderers + fill/validate (Port of cron/blueprint_catalog.py)
+ *  Reuses blueprint_catalog_resolve_schedule / _slash_command / _deeplink /
+ *  _humanize_schedule above. The curated CATALOG is baked as JSON (no file IO).
+ * =========================================================================== */
+
+/* Slot types the renderers understand (Python _SLOT_TYPES). */
+static const char *BLUEPRINT_SLOT_TYPES[] = {
+    "time", "enum", "text", "weekdays", NULL
+};
+
+/*
+ * PoP: __post_init__ @ cron/blueprint_catalog.py:__post_init__
+ * Validates a slot type — Python BlueprintSlot.__post_init__ equivalent. */
+int blueprint_catalog_validate_slot_type(const char *type)
+{
+    if (!type) return 0;
+    for (int i = 0; BLUEPRINT_SLOT_TYPES[i]; i++)
+        if (strcmp(type, BLUEPRINT_SLOT_TYPES[i]) == 0) return 1;
+    return 0;
+}
+
+/* Curated in-repo catalog (Python CATALOG). One JSON object per blueprint,
+ * with slots as JSON objects carrying name/type/label/default/options/
+ * optional/strict/help. Keep in lock-step with cron/blueprint_catalog.py. */
+static const char *BLUEPRINT_CATALOG_JSON =
+"[{"
+  "\"key\":\"morning-brief\",\"title\":\"Morning briefing\","
+  "\"description\":\"A short daily briefing: today's calendar, weather, and anything urgent waiting on you.\","
+  "\"category\":\"daily\","
+  "\"schedule_template\":\"{minute} {hour} * * *\","
+  "\"prompt_template\":\"Produce a concise morning briefing for the user: today's calendar events, the local weather, and any urgent items. Keep it short and scannable. If no data sources are connected, give a brief good-morning with the date and offer to connect calendar/email.\","
+  "\"deliver_default\":\"origin\","
+  "\"slots\":[{\"name\":\"time\",\"type\":\"time\",\"label\":\"What time?\",\"default\":\"08:00\",\"options\":[],\"optional\":false,\"strict\":true,\"help\":\"24h local time, e.g. 08:00\"},"
+  "{\"name\":\"deliver\",\"type\":\"enum\",\"label\":\"Where to deliver?\",\"default\":\"origin\",\"options\":[\"origin\",\"local\",\"telegram\",\"discord\",\"email\"],\"optional\":false,\"strict\":false,\"help\":\"origin = the chat you set this up from\"}],"
+  "\"skills\":[],\"tags\":[\"daily\",\"briefing\"]"
+"},{"
+  "\"key\":\"important-mail\",\"title\":\"Important-mail monitor\","
+  "\"description\":\"Check your inbox periodically and ping you ONLY about mail that actually needs attention.\","
+  "\"category\":\"email\","
+  "\"schedule_template\":\"*/{interval_min} * * * *\","
+  "\"prompt_template\":\"Check the user's inbox for new messages since the last run. Surface ONLY mail matching: {criteria}. Score candidates with the urgency classifier and deliver only what clears the bar; if nothing does, respond with [SILENT]. Requires a connected mail source; if none is configured, explain how to connect one and stop.\","
+  "\"deliver_default\":\"origin\","
+  "\"slots\":[{\"name\":\"interval_min\",\"type\":\"enum\",\"label\":\"How often?\",\"default\":\"30\",\"options\":[\"15\",\"30\",\"60\"],\"optional\":false,\"strict\":true,\"help\":\"minutes between checks\"},"
+  "{\"name\":\"criteria\",\"type\":\"text\",\"label\":\"Only notify me if the mail…\",\"default\":\"needs a reply today, is from my manager or family, or mentions a deadline\",\"options\":[],\"optional\":false,\"strict\":true,\"help\":\"\"},"
+  "{\"name\":\"deliver\",\"type\":\"enum\",\"label\":\"Where to deliver?\",\"default\":\"origin\",\"options\":[\"origin\",\"local\",\"telegram\",\"discord\",\"email\"],\"optional\":false,\"strict\":false,\"help\":\"\"}],"
+  "\"skills\":[],\"tags\":[\"email\",\"monitor\"]"
+"},{"
+  "\"key\":\"weekly-review\",\"title\":\"Weekly review\","
+  "\"description\":\"A weekly recap: what got done, what's still open, and what's coming up.\","
+  "\"category\":\"weekly\","
+  "\"schedule_template\":\"{minute} {hour} * * {dow}\","
+  "\"prompt_template\":\"Produce a weekly review for the user: what was accomplished this week, still-open items, and next week's calendar. Pull from connected sources. Keep it tight.\","
+  "\"deliver_default\":\"origin\","
+  "\"slots\":[{\"name\":\"time\",\"type\":\"time\",\"label\":\"What time?\",\"default\":\"18:00\",\"options\":[],\"optional\":false,\"strict\":true,\"help\":\"24h local time\"},"
+  "{\"name\":\"day\",\"type\":\"enum\",\"label\":\"Which day?\",\"default\":\"sunday\",\"options\":[\"sunday\",\"monday\",\"friday\",\"saturday\"],\"optional\":false,\"strict\":true,\"help\":\"\"},"
+  "{\"name\":\"deliver\",\"type\":\"enum\",\"label\":\"Where to deliver?\",\"default\":\"origin\",\"options\":[\"origin\",\"local\",\"telegram\",\"discord\",\"email\"],\"optional\":false,\"strict\":false,\"help\":\"\"}],"
+  "\"skills\":[],\"tags\":[\"weekly\",\"review\"]"
+"},{"
+  "\"key\":\"workday-start\",\"title\":\"Workday start reminder\","
+  "\"description\":\"A weekday nudge with your agenda and top priorities.\","
+  "\"category\":\"daily\","
+  "\"schedule_template\":\"{minute} {hour} * * 1-5\","
+  "\"prompt_template\":\"Give the user a brief weekday start-of-day nudge: today's calendar and the 1-3 highest-priority things to focus on, inferred from recent context and any task tools. Encouraging, short, one message.\","
+  "\"deliver_default\":\"origin\","
+  "\"slots\":[{\"name\":\"time\",\"type\":\"time\",\"label\":\"What time?\",\"default\":\"09:00\",\"options\":[],\"optional\":false,\"strict\":true,\"help\":\"24h local time\"},"
+  "{\"name\":\"deliver\",\"type\":\"enum\",\"label\":\"Where to deliver?\",\"default\":\"origin\",\"options\":[\"origin\",\"local\",\"telegram\",\"discord\",\"email\"],\"optional\":false,\"strict\":false,\"help\":\"\"}],"
+  "\"skills\":[],\"tags\":[\"daily\",\"focus\"]"
+"},{"
+  "\"key\":\"custom-reminder\",\"title\":\"Custom reminder\","
+  "\"description\":\"A recurring reminder in your own words, on your schedule.\","
+  "\"category\":\"general\","
+  "\"schedule_template\":\"{minute} {hour} * * {dow}\","
+  "\"prompt_template\":\"Remind the user: {what}\","
+  "\"deliver_default\":\"origin\","
+  "\"slots\":[{\"name\":\"what\",\"type\":\"text\",\"label\":\"Remind me to…\",\"default\":\"take a break and stretch\",\"options\":[],\"optional\":false,\"strict\":true,\"help\":\"\"},"
+  "{\"name\":\"time\",\"type\":\"time\",\"label\":\"What time?\",\"default\":\"14:00\",\"options\":[],\"optional\":false,\"strict\":true,\"help\":\"24h local time\"},"
+  "{\"name\":\"recurrence\",\"type\":\"weekdays\",\"label\":\"Repeat on\",\"default\":\"everyday\",\"options\":[\"everyday\",\"weekdays\",\"weekends\"],\"optional\":false,\"strict\":true,\"help\":\"\"},"
+  "{\"name\":\"deliver\",\"type\":\"enum\",\"label\":\"Where to deliver?\",\"default\":\"origin\",\"options\":[\"origin\",\"local\",\"telegram\",\"discord\",\"email\"],\"optional\":false,\"strict\":false,\"help\":\"\"}],"
+  "\"skills\":[],\"tags\":[\"reminder\"]"
+"},{"
+  "\"key\":\"evening-winddown\",\"title\":\"Evening wind-down\","
+  "\"description\":\"An end-of-day check-in: tomorrow's calendar at a glance and anything you should prep tonight.\","
+  "\"category\":\"daily\","
+  "\"schedule_template\":\"{minute} {hour} * * *\","
+  "\"prompt_template\":\"Give the user a short evening wind-down: tomorrow's calendar, any early commitments to prep for, and one gentle nudge to wrap up loose ends from today. Keep it calm and brief — one message. If no calendar is connected, just offer a friendly sign-off and the weather for tomorrow.\","
+  "\"deliver_default\":\"origin\","
+  "\"slots\":[{\"name\":\"time\",\"type\":\"time\",\"label\":\"What time?\",\"default\":\"21:00\",\"options\":[],\"optional\":false,\"strict\":true,\"help\":\"24h local time\"},"
+  "{\"name\":\"deliver\",\"type\":\"enum\",\"label\":\"Where to deliver?\",\"default\":\"origin\",\"options\":[\"origin\",\"local\",\"telegram\",\"discord\",\"email\"],\"optional\":false,\"strict\":false,\"help\":\"\"}],"
+  "\"skills\":[],\"tags\":[\"daily\",\"evening\"]"
+"},{"
+  "\"key\":\"news-digest\",\"title\":\"Topic news digest\","
+  "\"description\":\"A recurring digest on a topic you care about — deduped against what was already sent, so only genuinely new items land.\","
+  "\"category\":\"general\","
+  "\"schedule_template\":\"{minute} {hour} * * {dow}\","
+  "\"prompt_template\":\"Search the web for new and noteworthy items about: {topic}. Dedupe against what you sent in previous runs — only include genuinely new developments. Deliver a tight digest of at most {count} bullets, each one line with a link. If nothing new since last run, respond with [SILENT].\","
+  "\"deliver_default\":\"origin\","
+  "\"slots\":[{\"name\":\"topic\",\"type\":\"text\",\"label\":\"What topic?\",\"default\":\"AI and technology\",\"options\":[],\"optional\":false,\"strict\":true,\"help\":\"a subject, product, person, or search phrase\"},"
+  "{\"name\":\"time\",\"type\":\"time\",\"label\":\"What time?\",\"default\":\"18:00\",\"options\":[],\"optional\":false,\"strict\":true,\"help\":\"24h local time\"},"
+  "{\"name\":\"recurrence\",\"type\":\"weekdays\",\"label\":\"Repeat on\",\"default\":\"weekdays\",\"options\":[\"everyday\",\"weekdays\",\"weekends\"],\"optional\":false,\"strict\":true,\"help\":\"\"},"
+  "{\"name\":\"count\",\"type\":\"enum\",\"label\":\"How many bullets?\",\"default\":\"5\",\"options\":[\"3\",\"5\",\"8\"],\"optional\":false,\"strict\":true,\"help\":\"\"},"
+  "{\"name\":\"deliver\",\"type\":\"enum\",\"label\":\"Where to deliver?\",\"default\":\"origin\",\"options\":[\"origin\",\"local\",\"telegram\",\"discord\",\"email\"],\"optional\":false,\"strict\":false,\"help\":\"\"}],"
+  "\"skills\":[],\"tags\":[\"digest\",\"research\"]"
+"},{"
+  "\"key\":\"bill-renewal-watch\",\"title\":\"Bills & renewals reminder\","
+  "\"description\":\"A heads-up before a recurring payment, subscription renewal, or due date — so nothing auto-charges by surprise.\","
+  "\"category\":\"general\","
+  "\"schedule_template\":\"{minute} {hour} * * {dow}\","
+  "\"prompt_template\":\"Remind the user about an upcoming payment or renewal: {what}. Phrase it as an actionable heads-up (e.g. 'review or cancel before it renews'), not just a notification. One short message.\","
+  "\"deliver_default\":\"origin\","
+  "\"slots\":[{\"name\":\"what\",\"type\":\"text\",\"label\":\"What's due?\",\"default\":\"my streaming subscription renews soon\",\"options\":[],\"optional\":false,\"strict\":true,\"help\":\"\"},"
+  "{\"name\":\"time\",\"type\":\"time\",\"label\":\"What time?\",\"default\":\"10:00\",\"options\":[],\"optional\":false,\"strict\":true,\"help\":\"24h local time\"},"
+  "{\"name\":\"recurrence\",\"type\":\"weekdays\",\"label\":\"Repeat on\",\"default\":\"everyday\",\"options\":[\"everyday\",\"weekdays\",\"weekends\"],\"optional\":false,\"strict\":true,\"help\":\"\"},"
+  "{\"name\":\"deliver\",\"type\":\"enum\",\"label\":\"Where to deliver?\",\"default\":\"origin\",\"options\":[\"origin\",\"local\",\"telegram\",\"discord\",\"email\"],\"optional\":false,\"strict\":false,\"help\":\"\"}],"
+  "\"skills\":[],\"tags\":[\"reminder\",\"finance\"]"
+"},{"
+  "\"key\":\"habit-checkin\",\"title\":\"Habit check-in\","
+  "\"description\":\"A recurring nudge to keep a habit on track and reflect on whether you did it.\","
+  "\"category\":\"general\","
+  "\"schedule_template\":\"{minute} {hour} * * {dow}\","
+  "\"prompt_template\":\"Nudge the user about their habit: {habit}. Ask whether they did it today, keep it warm and non-judgmental, and offer a one-line word of encouragement. One short message.\","
+  "\"deliver_default\":\"origin\","
+  "\"slots\":[{\"name\":\"habit\",\"type\":\"text\",\"label\":\"Which habit?\",\"default\":\"20 minutes of reading\",\"options\":[],\"optional\":false,\"strict\":true,\"help\":\"\"},"
+  "{\"name\":\"time\",\"type\":\"time\",\"label\":\"What time?\",\"default\":\"20:00\",\"options\":[],\"optional\":false,\"strict\":true,\"help\":\"24h local time\"},"
+  "{\"name\":\"recurrence\",\"type\":\"weekdays\",\"label\":\"Repeat on\",\"default\":\"everyday\",\"options\":[\"everyday\",\"weekdays\",\"weekends\"],\"optional\":false,\"strict\":true,\"help\":\"\"},"
+  "{\"name\":\"deliver\",\"type\":\"enum\",\"label\":\"Where to deliver?\",\"default\":\"origin\",\"options\":[\"origin\",\"local\",\"telegram\",\"discord\",\"email\"],\"optional\":false,\"strict\":false,\"help\":\"\"}],"
+  "\"skills\":[],\"tags\":[\"habit\",\"wellbeing\"]"
+"},{"
+  "\"key\":\"hydration-move\",\"title\":\"Hydration & movement nudge\","
+  "\"description\":\"A periodic nudge during the day to drink water, stand up, and stretch.\","
+  "\"category\":\"general\","
+  "\"schedule_template\":\"0 {start_hour}-{end_hour}/{interval_hours} * * 1-5\","
+  "\"prompt_template\":\"Send the user a brief, friendly nudge to drink some water, stand up, and stretch for a moment. Vary the wording each time so it doesn't feel robotic. One short line.\","
+  "\"deliver_default\":\"origin\","
+  "\"slots\":[{\"name\":\"interval_hours\",\"type\":\"enum\",\"label\":\"How often?\",\"default\":\"1\",\"options\":[\"1\",\"2\",\"3\"],\"optional\":false,\"strict\":true,\"help\":\"hours between nudges\"},"
+  "{\"name\":\"start_hour\",\"type\":\"enum\",\"label\":\"Start hour\",\"default\":\"9\",\"options\":[\"7\",\"8\",\"9\",\"10\"],\"optional\":false,\"strict\":true,\"help\":\"first hour of the active window (24h)\"},"
+  "{\"name\":\"end_hour\",\"type\":\"enum\",\"label\":\"End hour\",\"default\":\"17\",\"options\":[\"16\",\"17\",\"18\",\"19\"],\"optional\":false,\"strict\":true,\"help\":\"last hour of the active window (24h)\"},"
+  "{\"name\":\"deliver\",\"type\":\"enum\",\"label\":\"Where to deliver?\",\"default\":\"origin\",\"options\":[\"origin\",\"local\",\"telegram\",\"discord\",\"email\"],\"optional\":false,\"strict\":false,\"help\":\"\"}],"
+  "\"skills\":[],\"tags\":[\"wellbeing\",\"focus\"]"
+"},{"
+  "\"key\":\"meal-plan\",\"title\":\"Weekly meal plan\","
+  "\"description\":\"A weekly meal plan plus a consolidated grocery list, tuned to your diet and how much time you have to cook.\","
+  "\"category\":\"weekly\","
+  "\"schedule_template\":\"{minute} {hour} * * {dow}\","
+  "\"prompt_template\":\"Build the user a meal plan for the coming week: {meals} per day, suited to a {diet} diet and roughly {effort} cooking effort. Include a consolidated grocery list grouped by aisle. Keep blueprints simple and skimmable.\","
+  "\"deliver_default\":\"origin\","
+  "\"slots\":[{\"name\":\"diet\",\"type\":\"enum\",\"label\":\"Diet?\",\"default\":\"no restrictions\",\"options\":[\"no restrictions\",\"vegetarian\",\"vegan\",\"high-protein\",\"low-carb\"],\"optional\":false,\"strict\":true,\"help\":\"\"},"
+  "{\"name\":\"meals\",\"type\":\"enum\",\"label\":\"Meals per day?\",\"default\":\"dinner only\",\"options\":[\"dinner only\",\"lunch and dinner\",\"all three\"],\"optional\":false,\"strict\":true,\"help\":\"\"},"
+  "{\"name\":\"effort\",\"type\":\"enum\",\"label\":\"Cooking effort?\",\"default\":\"quick\",\"options\":[\"quick\",\"medium\",\"ambitious\"],\"optional\":false,\"strict\":true,\"help\":\"\"},"
+  "{\"name\":\"time\",\"type\":\"time\",\"label\":\"What time?\",\"default\":\"17:00\",\"options\":[],\"optional\":false,\"strict\":true,\"help\":\"24h local time\"},"
+  "{\"name\":\"day\",\"type\":\"enum\",\"label\":\"Which day?\",\"default\":\"sunday\",\"options\":[\"sunday\",\"monday\",\"friday\",\"saturday\"],\"optional\":false,\"strict\":true,\"help\":\"\"},"
+  "{\"name\":\"deliver\",\"type\":\"enum\",\"label\":\"Where to deliver?\",\"default\":\"origin\",\"options\":[\"origin\",\"local\",\"telegram\",\"discord\",\"email\"],\"optional\":false,\"strict\":false,\"help\":\"\"}],"
+  "\"skills\":[],\"tags\":[\"weekly\",\"food\"]"
+"},{"
+  "\"key\":\"learn-daily\",\"title\":\"Daily learning drip\","
+  "\"description\":\"One bite-sized lesson a day on a topic you want to learn, building progressively over time.\","
+  "\"category\":\"daily\","
+  "\"schedule_template\":\"{minute} {hour} * * {dow}\","
+  "\"prompt_template\":\"Teach the user one bite-sized lesson about: {topic}. Build on earlier lessons so it progresses rather than repeating. Keep it to a couple of short paragraphs with one concrete example, and end with a single question to check understanding.\","
+  "\"deliver_default\":\"origin\","
+  "\"slots\":[{\"name\":\"topic\",\"type\":\"text\",\"label\":\"Learn about…\",\"default\":\"Spanish vocabulary\",\"options\":[],\"optional\":false,\"strict\":true,\"help\":\"\"},"
+  "{\"name\":\"time\",\"type\":\"time\",\"label\":\"What time?\",\"default\":\"08:30\",\"options\":[],\"optional\":false,\"strict\":true,\"help\":\"24h local time\"},"
+  "{\"name\":\"recurrence\",\"type\":\"weekdays\",\"label\":\"Repeat on\",\"default\":\"weekdays\",\"options\":[\"everyday\",\"weekdays\",\"weekends\"],\"optional\":false,\"strict\":true,\"help\":\"\"},"
+  "{\"name\":\"deliver\",\"type\":\"enum\",\"label\":\"Where to deliver?\",\"default\":\"origin\",\"options\":[\"origin\",\"local\",\"telegram\",\"discord\",\"email\"],\"optional\":false,\"strict\":false,\"help\":\"\"}],"
+  "\"skills\":[],\"tags\":[\"learning\",\"daily\"]"
+"},{"
+  "\"key\":\"gratitude-journal\",\"title\":\"Gratitude & reflection prompt\","
+  "\"description\":\"A gentle evening prompt to reflect on the day and note what went well.\","
+  "\"category\":\"general\","
+  "\"schedule_template\":\"{minute} {hour} * * {dow}\","
+  "\"prompt_template\":\"Send the user a short, warm reflection prompt for the end of the day — invite them to note one thing that went well, one thing they are grateful for, and one small win. If they reply, acknowledge it kindly. One message.\","
+  "\"deliver_default\":\"origin\","
+  "\"slots\":[{\"name\":\"time\",\"type\":\"time\",\"label\":\"What time?\",\"default\":\"21:30\",\"options\":[],\"optional\":false,\"strict\":true,\"help\":\"24h local time\"},"
+  "{\"name\":\"recurrence\",\"type\":\"weekdays\",\"label\":\"Repeat on\",\"default\":\"everyday\",\"options\":[\"everyday\",\"weekdays\",\"weekends\"],\"optional\":false,\"strict\":true,\"help\":\"\"},"
+  "{\"name\":\"deliver\",\"type\":\"enum\",\"label\":\"Where to deliver?\",\"default\":\"origin\",\"options\":[\"origin\",\"local\",\"telegram\",\"discord\",\"email\"],\"optional\":false,\"strict\":false,\"help\":\"\"}],"
+  "\"skills\":[],\"tags\":[\"wellbeing\",\"reflection\"]"
+"},{"
+  "\"key\":\"on-this-day\",\"title\":\"On-this-day discovery\","
+  "\"description\":\"A daily dose of curiosity: a notable historical event, fact, or word for the day.\","
+  "\"category\":\"daily\","
+  "\"schedule_template\":\"{minute} {hour} * * *\","
+  "\"prompt_template\":\"Give the user one interesting '{flavor}' item for today — keep it short, surprising, and genuinely interesting. One or two sentences, no filler.\","
+  "\"deliver_default\":\"origin\","
+  "\"slots\":[{\"name\":\"flavor\",\"type\":\"enum\",\"label\":\"What kind?\",\"default\":\"on this day in history\",\"options\":[\"on this day in history\",\"word of the day\",\"science fact\",\"quote of the day\"],\"optional\":false,\"strict\":true,\"help\":\"\"},"
+  "{\"name\":\"time\",\"type\":\"time\",\"label\":\"What time?\",\"default\":\"07:30\",\"options\":[],\"optional\":false,\"strict\":true,\"help\":\"24h local time\"},"
+  "{\"name\":\"deliver\",\"type\":\"enum\",\"label\":\"Where to deliver?\",\"default\":\"origin\",\"options\":[\"origin\",\"local\",\"telegram\",\"discord\",\"email\"],\"optional\":false,\"strict\":false,\"help\":\"\"}],"
+  "\"skills\":[],\"tags\":[\"daily\",\"curiosity\"]"
+"}]";
+
+/*
+ * PoP: get_blueprint @ cron/blueprint_catalog.py:get_blueprint
+ * Returns a malloc'd copy of the blueprint JSON object (caller json_free's),
+ * or NULL if key not found. */
+json_t *blueprint_catalog_get(const char *key)
+{
+    if (!key || !*key) return NULL;
+    json_t *cat = json_parse(BLUEPRINT_CATALOG_JSON, NULL);
+    if (!cat || cat->type != JSON_ARRAY) { if (cat) json_free(cat); return NULL; }
+    json_t *found = NULL;
+    for (size_t i = 0; i < json_array_size(cat) && !found; i++) {
+        json_t *bp = json_array_get(cat, i);
+        if (!bp || bp->type != JSON_OBJECT) continue;
+        const char *k = json_get_str(bp, "key", NULL);
+        if (k && strcmp(k, key) == 0) found = bp;
+    }
+    if (found) {
+        char *ser = json_serialize(found);
+        json_free(cat);
+        if (!ser) return NULL;
+        json_t *copy = json_parse(ser, NULL);
+        free(ser);
+        return copy;
+    }
+    json_free(cat);
+    return NULL;
+}
+
+/*
+ * PoP: blueprint_form_schema @ cron/blueprint_catalog.py:blueprint_form_schema
+ * Emits the JSON a form renderer needs for this blueprint. Returns malloc'd
+ * string (caller frees) or NULL on error. */
+char *blueprint_catalog_form_schema(json_t *bp)
+{
+    if (!bp || bp->type != JSON_OBJECT) return NULL;
+    json_t *schema = json_object();
+    json_set(schema, "key", json_string(json_get_str(bp, "key", "")));
+    json_set(schema, "title", json_string(json_get_str(bp, "title", "")));
+    json_set(schema, "description", json_string(json_get_str(bp, "description", "")));
+    json_set(schema, "category", json_string(json_get_str(bp, "category", "")));
+    json_t *tags = json_object_get(bp, "tags");
+    json_t *ftags = json_array();
+    if (tags && tags->type == JSON_ARRAY)
+        for (size_t i = 0; i < json_array_size(tags); i++) {
+            const char *t = json_arr_str(tags, i);
+            if (t) json_append(ftags, json_string(t));
+        }
+    json_set(schema, "tags", ftags);
+    json_t *flds = json_array();
+    json_t *slots = json_object_get(bp, "slots");
+    if (slots && slots->type == JSON_ARRAY)
+        for (size_t i = 0; i < json_array_size(slots); i++) {
+            json_t *s = json_array_get(slots, i);
+            if (!s || s->type != JSON_OBJECT) continue;
+            json_t *f = json_object();
+            json_set(f, "name", json_string(json_get_str(s, "name", "")));
+            json_set(f, "type", json_string(json_get_str(s, "type", "")));
+            json_set(f, "label", json_string(json_get_str(s, "label", "")));
+            json_set(f, "default", json_string(json_get_str(s, "default", "")));
+            json_t *fopts = json_array();
+            json_t *opts = json_object_get(s, "options");
+            if (opts && opts->type == JSON_ARRAY)
+                for (size_t j = 0; j < json_array_size(opts); j++) {
+                    const char *o = json_arr_str(opts, j);
+                    if (o) json_append(fopts, json_string(o));
+                }
+            json_set(f, "options", fopts);
+            json_set(f, "optional", json_bool(json_get_bool(s, "optional", 0)));
+            json_set(f, "strict", json_bool(json_get_bool(s, "strict", 1)));
+            json_set(f, "help", json_string(json_get_str(s, "help", "")));
+            json_append(flds, f);
+        }
+    json_set(schema, "fields", flds);
+    char *ser = json_serialize(schema);
+    json_free(schema);
+    return ser;
+}
+
+/*
+ * PoP: blueprint_catalog_entry @ cron/blueprint_catalog.py:blueprint_catalog_entry
+ * Combines form schema + schedule + scheduleHuman + command + appUrl. */
+char *blueprint_catalog_entry(json_t *bp)
+{
+    if (!bp || bp->type != JSON_OBJECT) return NULL;
+    const char *key = json_get_str(bp, "key", "");
+    const char *sched = json_get_str(bp, "schedule_template", "");
+    json_t *schema = json_parse(blueprint_catalog_form_schema(bp), NULL);
+    char *human = blueprint_catalog_humanize_schedule(sched,
+        bp ? json_serialize(json_object_get(bp, "slots")) : "[]");
+    char *cmd = blueprint_catalog_slash_command(key,
+        bp ? json_serialize(json_object_get(bp, "slots")) : "[]", "");
+    char *dl = blueprint_catalog_deeplink(key,
+        bp ? json_serialize(json_object_get(bp, "slots")) : "[]", "");
+
+    json_t *entry = json_object();
+    if (schema) {
+        /* merge form schema fields into entry */
+        size_t nkeys = json_object_size(schema);
+        for (size_t i = 0; i < nkeys; i++) {
+            const char *k = json_object_get_key_at(schema, i);
+            if (!k) continue;
+            json_set(entry, k, json_copy(json_object_get(schema, k)));
+        }
+        json_free(schema);
+    }
+    json_set(entry, "schedule", json_string(sched));
+    json_set(entry, "scheduleHuman", json_string(human ? human : ""));
+    json_set(entry, "command", json_string(cmd ? cmd : ""));
+    json_set(entry, "appUrl", json_string(dl ? dl : ""));
+    char *ser = json_serialize(entry);
+    json_free(entry);
+    free(human); free(cmd); free(dl);
+    return ser;
+}
+
+/*
+ * PoP: fill_blueprint @ cron/blueprint_catalog.py:fill_blueprint
+ * Validates values and returns a cron.jobs.create_job kwargs JSON string.
+ * On error returns NULL and writes a BlueprintFillError-style message to
+ * err_out (err_sz bytes). */
+char *blueprint_catalog_fill(json_t *bp, const char *values_json,
+                              const char *origin_json, char *err_out, size_t err_sz)
+{
+    if (err_out && err_sz) err_out[0] = '\0';
+    if (!bp || bp->type != JSON_OBJECT) {
+        if (err_out) snprintf(err_out, err_sz, "blueprint is null");
+        return NULL;
+    }
+    json_t *vals = json_parse(values_json && *values_json ? values_json : "{}", NULL);
+    if (!vals || vals->type != JSON_OBJECT) {
+        if (err_out) snprintf(err_out, err_sz, "values must be a JSON object");
+        if (vals) json_free(vals);
+        return NULL;
+    }
+    json_t *slots = json_object_get(bp, "slots");
+    if (!slots || slots->type != JSON_ARRAY) {
+        if (err_out) snprintf(err_out, err_sz, "blueprint has no slots");
+        json_free(vals);
+        return NULL;
+    }
+
+    /* Validate slot types (Python BlueprintSlot.__post_init__). */
+    for (size_t i = 0; i < json_array_size(slots); i++) {
+        json_t *s = json_array_get(slots, i);
+        if (!s || s->type != JSON_OBJECT) continue;
+        const char *tp = json_get_str(s, "type", NULL);
+        if (tp && !blueprint_catalog_validate_slot_type(tp)) {
+            const char *nm = json_get_str(s, "name", "?");
+            if (err_out) snprintf(err_out, err_sz, "unknown slot type %s (slot %s)", tp, nm);
+            json_free(vals);
+            return NULL;
+        }
+    }
+
+    /* Reject unknown slot names (typo guard). */
+    size_t nkeys = json_object_size(vals);
+    for (size_t i = 0; i < nkeys; i++) {
+        const char *k = json_object_get_key_at(vals, i);
+        if (!k) continue;
+        int known = 0;
+        for (size_t j = 0; j < json_array_size(slots); j++) {
+            json_t *s = json_array_get(slots, j);
+            if (s && json_get_str(s, "name", NULL) &&
+                strcmp(json_get_str(s, "name", ""), k) == 0) { known = 1; break; }
+        }
+        if (!known && strcmp(k, "schedule") != 0) {
+            if (err_out) snprintf(err_out, err_sz,
+                "unknown slot: %s — valid: <see blueprint slots>", k);
+            json_free(vals);
+            return NULL;
+        }
+    }
+
+    /* Resolve each slot: default or supplied; check required + enum strict. */
+    json_t *resolved = json_object();
+    for (size_t i = 0; i < json_array_size(slots); i++) {
+        json_t *s = json_array_get(slots, i);
+        if (!s || s->type != JSON_OBJECT) continue;
+        const char *nm = json_get_str(s, "name", "");
+        int optional = json_get_bool(s, "optional", 0);
+        const char *raw = json_get_str(vals, nm, NULL);
+        if (!raw || !*raw) {
+            raw = json_get_str(s, "default", NULL);
+            if ((!raw || !*raw) && !optional) {
+                if (err_out) snprintf(err_out, err_sz,
+                    "missing required value: %s", nm);
+                json_free(resolved); json_free(vals);
+                return NULL;
+            }
+            if (!raw) raw = "";
+        }
+        const char *tp = json_get_str(s, "type", "");
+        int strict = json_get_bool(s, "strict", 1);
+        json_t *opts = json_object_get(s, "options");
+        if (strict && opts && opts->type == JSON_ARRAY && json_array_size(opts) > 0) {
+            int ok = (strcmp(tp, "weekdays") == 0); /* weekdays allows preset set, checked in resolve */
+            if (!ok) {
+                for (size_t j = 0; j < json_array_size(opts); j++) {
+                    const char *o = json_arr_str(opts, j);
+                    if (o && strcmp(o, raw) == 0) { ok = 1; break; }
+                }
+            }
+            if (!ok) {
+                if (err_out) snprintf(err_out, err_sz,
+                    "%s=%s not allowed — one of the slot options", nm, raw);
+                json_free(resolved); json_free(vals);
+                return NULL;
+            }
+        }
+        json_set(resolved, nm, json_string(raw));
+    }
+
+    const char *sched_tmpl = json_get_str(bp, "schedule_template", "");
+    char *schedule = blueprint_catalog_resolve_schedule(sched_tmpl,
+        json_serialize(slots), json_serialize(resolved));
+    if (!schedule) {
+        if (err_out) snprintf(err_out, err_sz, "failed to resolve schedule (invalid slot values)");
+        json_free(resolved); json_free(vals);
+        return NULL;
+    }
+
+    /* Render prompt. */
+    const char *prompt_tmpl = json_get_str(bp, "prompt_template", "");
+    char *prompt = NULL;
+    if (prompt_tmpl && *prompt_tmpl) {
+        /* simple {name} substitution from resolved */
+        size_t plen = strlen(prompt_tmpl) + 1024;
+        prompt = malloc(plen);
+        size_t po = 0;
+        const char *p = prompt_tmpl;
+        while (*p) {
+            if (*p == '{') {
+                const char *q = strchr(p, '}');
+                if (q) {
+                    char nm[64]; size_t nl = (size_t)(q - p - 1);
+                    if (nl < sizeof(nm)) {
+                        memcpy(nm, p + 1, nl); nm[nl] = '\0';
+                        const char *rv = json_get_str(resolved, nm, "");
+                        size_t rvl = strlen(rv);
+                        if (po + rvl < plen) { memcpy(prompt + po, rv, rvl); po += rvl; }
+                        p = q + 1;
+                        continue;
+                    }
+                }
+            }
+            if (po + 1 < plen) prompt[po++] = *p;
+            p++;
+        }
+        prompt[po] = '\0';
+    } else {
+        prompt = strdup("");
+    }
+
+    json_t *spec = json_object();
+    json_set(spec, "prompt", json_string(prompt));
+    json_set(spec, "schedule", json_string(schedule));
+    json_set(spec, "name", json_string(json_get_str(bp, "title", "")));
+    const char *deliver = json_get_str(resolved, "deliver", NULL);
+    if (!deliver || !*deliver) deliver = json_get_str(bp, "deliver_default", "origin");
+    json_set(spec, "deliver", json_string(deliver ? deliver : "origin"));
+    json_t *skills = json_object_get(bp, "skills");
+    if (skills && skills->type == JSON_ARRAY && json_array_size(skills) > 0) {
+        json_t *out_skills = json_array();
+        for (size_t i = 0; i < json_array_size(skills); i++) {
+            const char *sk = json_arr_str(skills, i);
+            if (sk) json_append(out_skills, json_string(sk));
+        }
+        json_set(spec, "skills", out_skills);
+    }
+    if (origin_json && *origin_json) {
+        json_t *origin = json_parse(origin_json, NULL);
+        if (origin) { json_set(spec, "origin", origin); json_free(origin); }
+    }
+    char *ser = json_serialize(spec);
+    json_free(spec);
+    free(prompt); free(schedule); json_free(resolved); json_free(vals);
+    return ser;
 }
