@@ -5,7 +5,8 @@
 
 #include "cli_cmd_help.h"
 #include "commands_shared.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
+#include "hermes_cli.h"
 
 void cmd_help(const char *args, agent_state_t *state) {
     (void)state;

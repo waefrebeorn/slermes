@@ -8,7 +8,8 @@
 
 /* PoP: cron CLI (port of cron) */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
+#include "hermes_cron.h"
 #include "hermes_json.h"
 #include "../cron/scheduler.h" /* Internal header for scheduler state */
 #include <stdio.h>

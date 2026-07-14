@@ -7,7 +7,9 @@
  * alongside each snapshot for skill-link reconciliation.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
+#include "hermes_cron.h"
+#include "hermes_skills.h"
 #include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>

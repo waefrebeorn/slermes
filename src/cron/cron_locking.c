@@ -8,7 +8,8 @@
 
 /* PoP: cron locking (port of cron/scheduler) */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
+#include "hermes_cron.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
