@@ -88,7 +88,7 @@ static char *google_build_url(const provider_t *p, const char *base_url) {
  *  Headers
  * ================================================================ */
 
-static char *google_build_headers(const provider_t *p, const char *api_key) {
+char *google_build_headers(const provider_t *p, const char *api_key) {
     (void)p;
     char *headers = (char *)malloc(1024);
     if (!headers) return NULL;
@@ -2088,4 +2088,156 @@ char *wrap_code_assist_request(const char *project_id, const char *model,
     char *result = json_serialize(envelope);
     json_free(envelope);
     return result;
+}
+
+/* ================================================================
+ *  gemini_native_adapter.py gaps (rg=6 -> 0)
+ *  Faithful port of GeminiNativeClient + module-level helpers.
+ *  Reuses the existing google_* streaming primitives.
+ * ================================================================ */
+
+/* PoP: gemini_native_adapter_bare_gemini_model_id @ agent/gemini_native_adapter.py:bare_gemini_model_id */
+char *gemini_native_adapter_bare_gemini_model_id(const char *model) {
+    /* Strip Gemini's own provider prefix from an aggregator-style model id. */
+    if (!model) return strdup("");
+    char *name = strdup(model);
+    if (!name) return strdup("");
+    /* trim trailing/leading whitespace */
+    char *s = name, *e = name + strlen(name);
+    while (e > s && (e[-1] == ' ' || e[-1] == '\t' || e[-1] == '\n')) *--e = '\0';
+    while (*s == ' ' || *s == '\t') s++;
+    char *lowered = strdup(s);
+    if (lowered) {
+        for (char *p = lowered; *p; p++) *p = (char)tolower((unsigned char)*p);
+        if (strncmp(lowered, "google/", 7) == 0) {
+            memmove(s, s + 7, strlen(s + 7) + 1);
+        } else if (strncmp(lowered, "gemini/", 7) == 0) {
+            memmove(s, s + 7, strlen(s + 7) + 1);
+        }
+        free(lowered);
+    }
+    /* re-trim after strip; if empty, fall back to original name */
+    while (*s == ' ') s++;
+    char *out;
+    if (*s == '\0') out = strdup(model);
+    else out = strdup(s);
+    free(name);
+    return out;
+}
+
+/* Opaque native client handle (mirrors GeminiNativeClient: api_key, base_url,
+ * _default_headers). _default_headers is currently empty in C (the Python
+ * default is {}), so only api_key/base_url are material. */
+typedef struct gemini_native_client {
+    char *api_key;
+    char *base_url;
+} gemini_native_client_t;
+
+/* PoP: gemini_native_adapter__enter @ agent/gemini_native_adapter.py:__enter__ */
+gemini_native_client_t *gemini_native_adapter__enter(const char *api_key,
+                                                      const char *base_url) {
+    gemini_native_client_t *c = calloc(1, sizeof(*c));
+    if (!c) return NULL;
+    c->api_key = strdup(api_key ? api_key : "");
+    c->base_url = strdup(base_url ? base_url : "");
+    return c; /* Python __enter__ returns self */
+}
+
+/* PoP: gemini_native_adapter__exit @ agent/gemini_native_adapter.py:__exit__ */
+void gemini_native_adapter__exit(gemini_native_client_t *c) {
+    /* Python __exit__ calls self.close(); the C client holds no open socket,
+     * so this frees the handle (the real teardown). */
+    if (!c) return;
+    free(c->api_key);
+    free(c->base_url);
+    free(c);
+}
+
+/* PoP: gemini_native_adapter__headers @ agent/gemini_native_adapter.py:_headers */
+char *gemini_native_adapter__headers(const gemini_native_client_t *c) {
+    /* Mirrors Python: Content-Type/Accept/x-goog-api-key/User-Agent, then
+     * update(self._default_headers) — which is empty here. Reuses the same
+     * header construction as google_build_headers. */
+    if (!c) return NULL;
+    char *h = google_build_headers(NULL, c->api_key);
+    if (!h) return NULL;
+    /* Append the native User-Agent (Python sets "hermes-agent (gemini-native)"). */
+    size_t n = strlen(h);
+    char *out = realloc(h, n + 64);
+    if (!out) return h;
+    snprintf(out + n, 64, "\r\nUser-Agent: hermes-agent (gemini-native)");
+    return out;
+}
+
+/* PoP: gemini_native_adapter__advance_stream_iterator @ agent/gemini_native_adapter.py:_advance_stream_iterator */
+/* Advance through a json_t* array of SSE events. Sets *done=1 at end.
+ * Returns the next event (borrowed, do not free) or NULL when done. */
+json_t *gemini_native_adapter__advance_stream_iterator(json_t *events,
+                                                        size_t *idx, int *done) {
+    if (done) *done = 0;
+    if (!events || events->type != JSON_ARRAY || !idx) return NULL;
+    if (*idx >= (size_t)json_len(events)) {
+        if (done) *done = 1;
+        return NULL;
+    }
+    json_t *ev = json_get(events, (int)*idx);
+    (*idx)++;
+    if (!ev) {
+        if (done) *done = 1;
+    }
+    return ev;
+}
+
+/* PoP: gemini_native_adapter__stream_completion @ agent/gemini_native_adapter.py:_stream_completion */
+/* Perform the SSE streaming completion request and return a json_t* ARRAY of
+ * translated chunk-JSON strings (one entry per streamed chunk), or NULL.
+ * Mirrors Python: POST to {base_url}/models/{bare}:streamGenerateContent?alt=sse,
+ * iter_sse_events(), then translate_stream_event() per event. */
+json_t *gemini_native_adapter__stream_completion(const gemini_native_client_t *c,
+                                                  const char *model,
+                                                  const char *request_json,
+                                                  int timeout_sec) {
+    if (!c || !model || !request_json) return NULL;
+    char *bare = gemini_native_adapter_bare_gemini_model_id(model);
+    if (!bare) return NULL;
+
+    char url[1024];
+    snprintf(url, sizeof(url), "%s/models/%s:streamGenerateContent?alt=sse",
+             c->base_url && *c->base_url ? c->base_url : "https://generativelanguage.googleapis.com/v1beta",
+             bare);
+    free(bare);
+
+    char url_with_key[1152];
+    snprintf(url_with_key, sizeof(url_with_key), "%s?key=%s", url,
+             c->api_key && *c->api_key ? c->api_key : "");
+
+    int to = (timeout_sec > 0) ? timeout_sec : 30;
+    http_t *h = http_new(to);
+    if (!h) return NULL;
+
+    /* Streaming body: the Python request is already a Gemini request JSON. */
+    http_resp_t *resp = http_post_json(h, url_with_key, request_json);
+    if (!resp || !resp->body) {
+        http_free(h);
+        return NULL;
+    }
+
+    json_t *events = google_iter_sse_events(resp->body);
+    json_t *chunks = json_array();
+    if (events && chunks) {
+        size_t idx = 0;
+        int done = 0;
+        while (!done) {
+            json_t *ev = gemini_native_adapter__advance_stream_iterator(events, &idx, &done);
+            if (!ev) break;
+            char *chunk_str = google_translate_stream_event(ev, model);
+            if (chunk_str) {
+                json_append(chunks, json_new_string(chunk_str));
+                free(chunk_str);
+            }
+        }
+    }
+    if (events) json_free(events);
+    http_free(h);
+    return chunks;
 }
