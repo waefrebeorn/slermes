@@ -125,4 +125,17 @@ char *absolutize_portal_url(void *ctx, const char *raw_portal_url);
 /* Step up OAuth scope for billing */
 bool step_up_nous_billing_scope(void *ctx, bool open_browser);
 
+/* ================================================================
+ *  Shared raw-JSON text scrapers (used by billing port modules)
+ *  Defined in src/cli/billing_json_helpers.c. These parse flat
+ *  key/value pairs out of a raw JSON *text* string (the billing
+ *  portal returns unstructured JSON we only need a few scalars from).
+ * ================================================================ */
+
+/* Extract a numeric value for `key` from raw JSON text. Returns 0.0 if absent. */
+double billing_json_get_number(const char *json, const char *key);
+
+/* Extract a boolean (true/false) value for `key` from raw JSON text. */
+bool billing_json_get_bool(const char *json, const char *key);
+
 #endif /* HERMES_BILLING_H */
