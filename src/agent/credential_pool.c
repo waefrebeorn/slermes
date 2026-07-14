@@ -34,6 +34,22 @@
 #define DEFAULT_COOLOFF_SECONDS 300
 #define DEFAULT_RETRIES_PER_KEY 1
 
+/* When true, env:* entries may be pruned from the on-disk pool. Mirrors the
+ * Python module global `prune_env_sources`. Normally false: an env-backed
+ * entry is re-hydrated from the environment on every load, so a process that
+ * merely lacks the env var must NOT delete the on-disk entry for every other
+ * process (that destructive read is the bug behind #9331). Only set it when an
+ * explicit `hermes auth` action has confirmed the source is gone. */
+static bool prune_env_sources = false;
+
+void credential_pool_set_prune_env_sources(bool enable) {
+    prune_env_sources = enable;
+}
+
+bool credential_pool_get_prune_env_sources(void) {
+    return prune_env_sources;
+}
+
 static bool entry_usable(const credential_entry_t *e, time_t now) {
     switch (e->status) {
     case CRED_OK:
@@ -1152,6 +1168,45 @@ bool _seed_from_singletons(const char *provider, credential_pool_t *pool) {
 bool _seed_from_env(const char *provider, credential_pool_t *pool) {
     (void)provider; (void)pool;
     /* Full implementation would read env vars for API keys */
+    return false;
+}
+
+/* Port of Python agent/credential_pool.py:_is_prunable().
+ * Decide whether a persisted entry may be removed during a prune pass.
+ * `env:*` entries are references re-hydrated from the environment on every
+ * load; a process that merely lacks the env var must NOT delete the on-disk
+ * entry for every other process (that destructive read is bug #9331). Only
+ * prune an env source when `prune_env_sources` is explicitly enabled. */
+static bool _is_prunable(const credential_entry_t *entry) {
+    if (!entry) return false;
+    if (entry->source[0] && strncmp(entry->source, "env:", 4) == 0) {
+        return prune_env_sources;
+    }
+    /* File-backed singletons (device-code OAuth, claude_code) and Hermes
+     * PKCE should disappear from the pool when their backing file is gone. */
+    if (is_borrowed_credential_source(entry->source, NULL)
+        || strcmp(entry->source, "hermes_pkce") == 0) {
+        return true;
+    }
+    return false;
+}
+
+/* Public wrapper (declared in credential_pool.h). */
+bool credential_pool_is_prunable(const credential_entry_t *entry) {
+    return _is_prunable(entry);
+}
+
+/* Port of Python agent/credential_pool.py:_is_suppressed().
+ * Suppression hooks are disabled in the C port (no consumer); an entry is
+ * never suppressed by source. */
+static bool _is_suppressed(const char *provider, const char *source) {
+    (void)provider; (void)source;
+    return false;
+}
+
+/* Port of Python agent/credential_pool.py:_is_source_suppressed(). */
+static bool _is_source_suppressed(const char *provider, const char *source) {
+    (void)provider; (void)source;
     return false;
 }
 

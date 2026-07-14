@@ -141,6 +141,17 @@ int credential_pool_tick(credential_pool_t *pool);
 bool is_borrowed_credential_source(const char *source, const char *provider_id);
 json_node_t *sanitize_borrowed_credential_payload(const json_node_t *payload, const char *provider_id);
 
+/* === Prune control (port of Python credential_pool._is_prunable + module global) ===
+ * `env:*` entries are re-hydrated from the environment on every load; a process
+ * that merely lacks the env var must NOT delete the on-disk entry for every other
+ * process (that destructive read is bug #9331). Pruning an env source is only
+ * allowed when explicitly enabled (e.g. an `hermes auth` action confirmed gone). */
+void credential_pool_set_prune_env_sources(bool enable);
+bool credential_pool_get_prune_env_sources(void);
+
+/* Returns true if the persisted entry may be removed during a prune pass. */
+bool credential_pool_is_prunable(const credential_entry_t *entry);
+
 #ifdef __cplusplus
 }
 #endif
