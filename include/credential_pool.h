@@ -11,6 +11,7 @@
 #define CREDENTIAL_POOL_H
 
 #include "hermes.h"
+#include "hermes_json.h"
 #include <time.h>
 
 #ifdef __cplusplus
@@ -32,7 +33,7 @@ typedef enum {
 } credential_status_t;
 
 typedef struct {
-    char  api_key[2048];           /* The actual key */
+    char  api_key[2048];           /* The actual key (api_key auth_type) */
     char  label[64];              /* Human label (e.g. "prod-1", "backup") */
     credential_status_t status;
     int   weight;                 /* B11: selection weight (1=normal, higher=more likely) */
@@ -51,6 +52,20 @@ typedef struct {
     time_t   last_used;           /* epoch seconds of last use */
     double   lease_expiry;        /* epoch seconds; >now means leased exclusively */
     char     source[CREDENTIAL_POOL_NAME_MAX]; /* origin of the key (e.g. env var, file, manual) */
+
+    /* === PooledCredential parity fields (agent/credential_pool.py) ===
+     * The C pool originally tracked only api_key; the Python PooledCredential
+     * carries OAuth token state. These fields let the runtime_* helpers and the
+     * anthropic/claude_code sync path behave faithfully. */
+    char     access_token[2048];  /* OAuth access token (also used as the pool key) */
+    char     refresh_token[2048]; /* OAuth refresh token (single-use per grant) */
+    long long expires_at_ms;      /* access_token expiry (epoch ms), 0 = unknown */
+    char     agent_key[2048];     /* Nous NAS invoke JWT */
+    char     agent_key_expires_at[64]; /* Nous agent_key expiry (ISO or epoch) */
+    char     base_url[512];       /* provider base URL */
+    char     inference_base_url[512]; /* Nous inference base URL */
+    char     scope[256];          /* OAuth scope */
+    json_node_t *extra;           /* _EXTRA_KEYS round-trip dict (NULL if empty) */
 } credential_entry_t;
 
 /* ================================================================
@@ -151,6 +166,46 @@ bool credential_pool_get_prune_env_sources(void);
 
 /* Returns true if the persisted entry may be removed during a prune pass. */
 bool credential_pool_is_prunable(const credential_entry_t *entry);
+
+/* ================================================================
+ *  PooledCredential runtime helpers (agent/credential_pool.py gaps)
+ *  Close the remaining REAL_GAPs on credential_pool.py by extending the
+ *  simpler C entry with the PooledCredential fields above.
+ * ================================================================ */
+
+/* Nous NAS invoke-JWT usability check: decode the JWT `exp` claim and verify
+ * it is still valid for `scope` and not past `expires_at`. Returns true if the
+ * token can be used as a runtime inference credential. Mirrors
+ * hermes_cli.auth._nous_invoke_jwt_is_usable(). */
+bool nous_invoke_jwt_is_usable(const char *token, const char *scope, const char *expires_at);
+
+/* PooledCredential.runtime_api_key — Nous uses the agent_key (NAS invoke JWT)
+ * when usable, else the access_token; other providers return access_token. */
+char *credential_entry_runtime_api_key(const credential_entry_t *e, const char *provider);
+
+/* PooledCredential.runtime_base_url — Nous uses inference_base_url or base_url;
+ * other providers return base_url. Caller must free the result. */
+char *credential_entry_runtime_base_url(const credential_entry_t *e, const char *provider);
+
+/* PooledCredential.__getattr__ — resolve a key from the entry's `extra` dict.
+ * Returns a malloc'd string (caller frees) or NULL if absent. */
+char *credential_entry_get_extra(const credential_entry_t *e, const char *key);
+
+/* _write_through_provider_state_to_global_root — best-effort write of a
+ * rotated provider `state` JSON object into the global-root auth.json
+ * providers.<provider_id> section. Swallows all errors. Mirrors the Python fn. */
+void credential_pool_write_through_provider_state_to_global_root(const char *provider_id,
+                                                                  const char *state_json);
+
+/* _sync_anthropic_entry_from_credentials_file — if the entry is an anthropic
+ * claude_code entry, sync its tokens from ~/.claude/.credentials.json when they
+ * differ. Mutates *e in place. Returns true if a sync was applied. */
+bool credential_pool_sync_anthropic_entry_from_credentials_file(credential_entry_t *e);
+
+/* _refresh_entry_impl — refresh a pool entry's tokens per provider, adopting
+ * fresher tokens from the auth store first where applicable. force=true skips
+ * the expiry short-circuit. Returns true if the entry was refreshed in place. */
+bool credential_pool_refresh_entry_impl(credential_pool_t *pool, int entry_index, bool force);
 
 #ifdef __cplusplus
 }
