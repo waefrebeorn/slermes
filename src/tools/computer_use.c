@@ -84,6 +84,7 @@ static cu_action_t *noop_click(int element, int x, int y,
                              x, y, button ? button : "left", click_count);
 }
 
+/* PoP: noop_drag @ tools/computer_use/backend.py:ComputerUseBackend.drag */
 static cu_action_t *noop_drag(int from_e, int to_e,
                                int fx, int fy, int tx, int ty,
                                const char *button, const char *modifiers) {
@@ -103,6 +104,7 @@ static cu_action_t *noop_scroll(const char *dir, int amount,
                              dir ? dir : "down", amount > 0 ? amount : 3);
 }
 
+/* PoP: noop_type_text @ tools/computer_use/backend.py:ComputerUseBackend.type_text */
 static cu_action_t *noop_type_text(const char *text) {
     return noop_make_action("type", true, "typed %zu chars",
                              text ? strlen(text) : 0);
@@ -112,10 +114,12 @@ static cu_action_t *noop_key(const char *keys) {
     return noop_make_action("key", true, "sent key %s", keys ? keys : "?");
 }
 
+/* PoP: noop_list_apps @ tools/computer_use/backend.py:ComputerUseBackend.list_apps */
 static cu_action_t *noop_list_apps(void) {
     return noop_make_action("list_apps", true, "3 apps running");
 }
 
+/* PoP: noop_focus_app @ tools/computer_use/backend.py:ComputerUseBackend.focus_app */
 static cu_action_t *noop_focus_app(const char *app, bool raise) {
     return noop_make_action("focus_app", true, "focused %s%s",
                              app ? app : "(frontmost)",
@@ -300,6 +304,7 @@ static cu_action_t *x11_click(int element, int x, int y,
         x, y);
 }
 
+/* PoP: x11_type_text @ tools/computer_use/backend.py:ComputerUseBackend.type_text */
 static cu_action_t *x11_type_text(const char *text) {
     if (!_has_cmd("xdotool")) {
         return x11_make_action("type", false, "xdotool not available");
@@ -353,6 +358,7 @@ static cu_action_t *x11_scroll(const char *dir, int amount,
         dir ? dir : "down");
 }
 
+/* PoP: x11_list_apps @ tools/computer_use/backend.py:ComputerUseBackend.list_apps */
 static cu_action_t *x11_list_apps(void) {
     if (!_has_cmd("xdotool")) {
         return x11_make_action("list_apps", false, "xdotool not available");
@@ -373,6 +379,7 @@ static cu_action_t *x11_list_apps(void) {
         "active window: %s", win_name[0] ? win_name : "(unknown)");
 }
 
+/* PoP: x11_focus_app @ tools/computer_use/backend.py:ComputerUseBackend.focus_app */
 static cu_action_t *x11_focus_app(const char *app, bool raise) {
     (void)raise;
     if (!_has_cmd("xdotool")) {
@@ -388,6 +395,7 @@ static cu_action_t *x11_focus_app(const char *app, bool raise) {
         app ? app : "", app ? app : "");
 }
 
+/* PoP: x11_drag @ tools/computer_use/backend.py:ComputerUseBackend.drag */
 static cu_action_t *x11_drag(int from_e, int to_e,
                               int fx, int fy, int tx, int ty,
                               const char *button, const char *modifiers) {
