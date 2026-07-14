@@ -15,7 +15,6 @@
 #define HERMES_GATEWAY_CONFIG_H
 
 #include "hermes_json.h"
-#include "hermes_gateway.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -105,6 +104,7 @@ typedef struct {
     bool enabled;
     char token[512];
     char api_key[512];
+    char name[32];               /**< platform key (e.g. "telegram") */
     gw_home_channel_t home_channel;
     bool has_home_channel;
     char reply_to_mode[16];    /**< "off", "first", "all" */
@@ -184,6 +184,30 @@ int gateway_config_coerce_optional_positive_int(const json_node_t *value, const 
 /** Port of Python: _normalize_unauthorized_dm_behavior
  * Normalize unauthorized DM behavior to a supported value ("pair" or "ignore"). */
 const char *gateway_config_normalize_unauthorized_dm_behavior(const char *value, const char *default_val);
+
+/** Port of Python gateway/config.py:get_unauthorized_dm_behavior()
+ * Return the configured unauthorized-DM behavior for the first enabled
+ * platform (pair | ignore | challenge | disconnect), defaulting to "pair". */
+const char *gateway_config_get_unauthorized_dm_behavior(const gateway_config_t *cfg);
+
+/* ---- Global (runtime) gateway config instance ----
+ * config.c loads the gateway config once at startup into a private static and
+ * exposes these accessors so other modules (e.g. the authz mixin) can read
+ * per-platform `extra` settings without config.c's local gateway_config_t type
+ * leaking across the header boundary. */
+void gateway_config_load_global(void);
+const char *gateway_config_get_unauthorized_dm_behavior_global(void);
+
+/* Find a platform config by (case-insensitive) name in the loaded global
+ * gateway config. Returns a pointer into the loaded config, or NULL if the
+ * global config is not loaded or the platform is absent. Defined in
+ * config.c; the authz mixin and other gateway modules reuse it. */
+const gw_platform_config_t *gateway_config_find_platform(const char *name);
+
+/* Read a boolean `extra` setting for a platform by name (case-insensitive).
+ * Returns false if the platform/key is absent. Env overrides are the caller's
+ * responsibility (matching Python's config.extra + <PLATFORM>_* env folding). */
+bool gateway_config_platform_extra_bool(const char *platform, const char *key);
 
 /** Port of Python: _normalize_notice_delivery
  * Normalize notice delivery mode to a supported value ("public" or "private"). */

@@ -11,10 +11,15 @@
  * - Streaming configuration
  */
 
+#ifndef _POSIX_C_SOURCE
+#define _POSIX_C_SOURCE 200809L
+#endif
+
 #include "hermes_json.h"
 #include "hermes_core_types.h"
 #include "hermes_logger.h"
 #include <string.h>
+#include <strings.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdbool.h>
@@ -741,6 +746,7 @@ bool gateway_config_load(const char *config_dir, gateway_config_t *out_cfg) {
 
     json_free(yaml_doc);
     return true;
+}
 
 /* Port of Python: _validate_gateway_config */
 bool gateway_config_validate(const gateway_config_t *cfg, json_node_t *issues_obj) {
@@ -815,9 +821,11 @@ void gateway_config_apply_env_overrides(gateway_config_t *cfg) {
         char *endptr;
         long val = strtol(env_mcs, &endptr, 10);
         if (endptr != env_mcs) {
-            cfg->max_concurrent_sessions = (int)val;
+                    cfg->max_concurrent_sessions = (int)val;
         }
     }
+}
+}
 
 /* Check if a platform is connected */
 bool gateway_config_platform_connected(const gateway_config_t *cfg, int platform_idx) {
@@ -863,7 +871,7 @@ bool gateway_config_platform_connected(const gateway_config_t *cfg, int platform
             /* Generic: token or api_key */
             return pc->token[0] != '\0' || pc->api_key[0] != '\0';
     }
-
+}
 
 /* ================================================================
  *  GatewayConfig helper functions (Port of Python gateway/config.py)
@@ -891,11 +899,13 @@ json_node_t *gateway_config_get_connected_platforms(const gateway_config_t *cfg)
         }
     }
     return arr;
+}
 
 /* Port of Python gateway/config.py:_is_platform_connected() */
 bool gateway_config_is_platform_connected(const gateway_config_t *cfg, int platform_idx)
 {
     return gateway_config_platform_connected(cfg, platform_idx);
+}
 
 /* Port of Python: get_home_channel
  * Get the home channel for a platform. Returns malloc'd JSON, caller must free. */
@@ -916,6 +926,7 @@ json_node_t *gateway_config_get_home_channel(const gateway_config_t *cfg, int pl
 
     gw_home_channel_to_json(&pc->home_channel, obj);
     return obj;
+}
 
 /* Port of Python: get_reset_policy
  * Get the session reset policy as JSON. Returns malloc'd JSON, caller must free. */
@@ -929,7 +940,7 @@ json_node_t *gateway_config_get_reset_policy(const gateway_config_t *cfg)
 
     gw_session_reset_policy_to_json(&cfg->reset_policy, obj);
     return obj;
-
+}
 
 /* Port of Python gateway/config.py:get_unauthorized_dm_behavior() */
 const char *gateway_config_get_unauthorized_dm_behavior(const gateway_config_t *cfg)
@@ -947,22 +958,8 @@ const char *gateway_config_get_unauthorized_dm_behavior(const gateway_config_t *
         }
     }
     return "pair";
+}
 
-/* Port of Python gateway/config.py:get_notice_delivery() */
-const char *gateway_config_get_notice_delivery(const gateway_config_t *cfg)
-{
-    if (!cfg) return "public";
-
-    /* Check the first enabled platform's extra settings for notice_delivery */
-    for (int i = 0; i < cfg->platform_count; i++) {
-        const gw_platform_config_t *pc = &cfg->platforms[i];
-        if (pc->enabled && pc->extra) {
-            const json_node_t *val = json_obj_get(pc->extra, "notice_delivery");
-            if (val && json_node_is_string(val)) {
-                return json_node_get_string(val);
-            }
-        }
-    }
 /* Port of Python gateway/config.py:get_notice_delivery() */
 const char *gateway_config_get_notice_delivery(const gateway_config_t *cfg)
 {
@@ -1108,34 +1105,6 @@ bool gateway_config_from_json(const json_node_t *obj, gateway_config_t *cfg)
  *  Platform enum helpers (Port of Python gateway/config.py Platform enum)
  * ================================================================ */
 
-/* Port of Python: Platform._missing_ */
-int gateway_config_platform_missing(const char *value, char *out_value)
-{
-    (void)value;
-    (void)out_value;
-    /* In C, platforms are fixed enum values - no dynamic member creation */
-    return 0;
-}
-
-/* Port of Python: Platform._scan_bundled_plugin_platforms */
-int gateway_config_scan_bundled_plugin_platforms(char *names[], int max_names)
-{
-    (void)names;
-    (void)max_names;
-    /* In C, platforms are compiled in via gw_platform_type_t enum */
-    return 0;
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-
 /* Platform name table for _missing_ lookup (Port of Python Platform._missing_) */
 static const struct { const char *name; gw_platform_type_t type; } g_platform_table[] = {
     {"telegram",           GW_PLATFORM_TELEGRAM},
@@ -1215,4 +1184,68 @@ int gateway_config_scan_bundled_plugin_platforms(char *names[], int max_names)
     }
     closedir(d);
     return count;
+}
+
+/* ================================================================
+ *  Global (runtime) gateway config instance
+ *  Loaded once at gateway startup into a private static so other modules
+ *  (e.g. the authz mixin) can read per-platform `extra` settings via the
+ *  accessors below — without config.c's gateway_config_t details leaking
+ *  across the header boundary. The canonical platform-name table (index-
+ *  aligned with platforms[]) is reused so name lookups need no duplicated
+ *  per-platform index.
+ * ================================================================ */
+
+static gateway_config_t g_gw_config;
+static bool g_gw_config_loaded = false;
+
+/* Canonical gateway platform-name list, index-aligned with platforms[] and
+ * with the platform_names[] tables used inside gateway_config_load / _from_json. */
+static const char *g_gw_platform_names[] = {
+    "telegram", "discord", "whatsapp", "whatsapp_cloud", "slack",
+    "signal", "mattermost", "matrix", "homeassistant", "email",
+    "sms", "dingtalk", "api_server", "webhook", "msgraph_webhook",
+    "feishu", "wecom", "wecom_callback", "weixin", "bluebubbles",
+    "qqbot", "yuanbao", "local", NULL
+};
+
+void gateway_config_load_global(void) {
+    memset(&g_gw_config, 0, sizeof(g_gw_config));
+    g_gw_config_loaded = gateway_config_load(NULL, &g_gw_config);
+}
+
+const char *gateway_config_get_unauthorized_dm_behavior_global(void) {
+    if (!g_gw_config_loaded) return "pair";
+    return gateway_config_get_unauthorized_dm_behavior(&g_gw_config);
+}
+
+/* Shared lookup: find a loaded platform config by (case-insensitive) name.
+ * Returns a pointer into the loaded global config, or NULL. Declared in
+ * hermes_gateway_config.h so the authz mixin (and other gateway modules)
+ * can reuse it without re-deriving the platform-name index. */
+const gw_platform_config_t *gateway_config_find_platform(const char *name) {
+    if (!name || !*name || !g_gw_config_loaded) return NULL;
+    for (int i = 0; g_gw_platform_names[i]; i++) {
+        if (strcasecmp(g_gw_platform_names[i], name) == 0) {
+            if (i < g_gw_config.platform_count) {
+                return &g_gw_config.platforms[i];
+            }
+            return NULL;
+        }
+    }
+    return NULL;
+}
+
+/* Read a boolean `extra` setting for a platform by name (case-insensitive).
+ * Returns false if the platform/key is absent. Env overrides are the
+ * caller's responsibility (matching Python's config.extra + <PLATFORM>_*
+ * env folding). */
+bool gateway_config_platform_extra_bool(const char *platform, const char *key) {
+    if (!platform || !key) return false;
+    const gw_platform_config_t *pc = gateway_config_find_platform(platform);
+    if (pc && pc->extra) {
+        json_node_t *v = json_obj_get(pc->extra, key);
+        if (v && json_node_is_bool(v)) return json_node_get_bool(v);
+    }
+    return false;
 }

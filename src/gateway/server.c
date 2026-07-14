@@ -2000,6 +2000,10 @@ int hermes_gateway_main(int argc, char **argv) {
     /* Load config to get gateway settings (overrides defaults below) */
     hermes_config_load(&g_gw.config, NULL);
     hermes_config_load_env(&g_gw.config);
+    /* Load the authoritative gateway_config_t (per-platform `extra` settings
+     * such as authorization_is_upstream / dm_policy / unauthorized_dm_behavior)
+     * that the authz mixin reads. */
+    gateway_config_load_global();
 
     g_gw.auto_continue_freshness_secs = g_gw.config.gateway_auto_continue_freshness > 0.0
         ? g_gw.config.gateway_auto_continue_freshness : 3600.0;  /* default 1h, 0=disabled */
