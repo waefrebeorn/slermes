@@ -14,6 +14,13 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+/* Defined in port_tools_environments_file_sync.c; applies a downloaded
+ * remote .hermes/ tar to the host via the real FileSyncManager sync-back. */
+int cli_tools_environments_file_sync__sync_back_locked(
+    const char *hermes_home,
+    bool (*download_fn)(const char *local_tar_path, void *ctx),
+    void *download_ctx);
+
 /* PoP: cli_tools_environments_daytona__daytona_upload @ tools/environments/daytona.py:_daytona_upload */
 
 /* Port of Python tools/environments/daytona.py:_daytona_upload */
@@ -205,6 +212,11 @@ int cli_tools_environments_daytona__before_execute(
         snprintf(local_dest, sizeof(local_dest), "/tmp/daytona_%s_hermes.tar", sandbox_id);
         cli_tools_environments_daytona__daytona_bulk_download(
             sandbox_id, ".hermes", local_dest);
+        /* Actually apply the downloaded tar to the host via the real
+         * FileSyncManager sync-back (extract -> sha256 diff -> apply). */
+        cli_tools_environments_file_sync__sync_back_locked(
+            NULL, cli_tools_environments_daytona__daytona_bulk_download,
+            (void *)sandbox_id);
     }
 
     hermes_log(LOG_DEBUG, "daytona", "before_execute: %s (restarted=%d, sync=%s)",
