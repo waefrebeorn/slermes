@@ -1771,39 +1771,6 @@ void handoff_read_dir(list_t *entries) {
 }
 
 /* Write a handoff request JSON file */
-void handoff_write_request(const char *handoff_id, const char *platform,
-                                   const char *session_id, const char *requester) {
-    const char *home = getenv("HERMES_HOME");
-    if (!home) home = getenv("HOME");
-    if (!home) home = "/tmp";
-    char handoff_dir[8192];
-    snprintf(handoff_dir, sizeof(handoff_dir), "%s/.hermes/handoffs", home);
-
-    /* Ensure directory exists */
-    char mkdir_cmd[8192];
-    snprintf(mkdir_cmd, sizeof(mkdir_cmd), "mkdir -p %s", handoff_dir);
-    system(mkdir_cmd);
-
-    json_node_t *req = json_new_object();
-    json_object_set(req, "id", json_new_string(handoff_id));
-    json_object_set(req, "platform", json_new_string(platform));
-    json_object_set(req, "session_id", json_new_string(session_id));
-    json_object_set(req, "requester", json_new_string(requester));
-    json_object_set(req, "status", json_new_string("pending"));
-    json_object_set(req, "created_at", json_new_number((double)time(NULL)));
-
-    char *json_str = json_serialize(req);
-    json_free(req);
-
-    if (json_str) {
-        char path[8192];
-        snprintf(path, sizeof(path), "%s/%s.json", handoff_dir, handoff_id);
-        FILE *f = fopen(path, "w");
-        if (f) { fputs(json_str, f); fclose(f); }
-        free(json_str);
-    }
-}
-
 void list_append(list_t *l, void *item) {
     if (l->count >= l->capacity) {
         l->capacity = l->capacity ? l->capacity * 2 : 8;

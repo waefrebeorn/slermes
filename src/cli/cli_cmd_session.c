@@ -1519,56 +1519,6 @@ void cmd_usage(const char *args, agent_state_t *state) {
 /* PoP: cmd_memory @ hermes_cli/memory_setup.py:cmd_setup */
 
 /* Helper: print messages with role filtering and count limit */
-void print_messages(const agent_state_t *state, size_t start, size_t count,
-                           const char *filter_role, bool show_full) {
-    size_t printed = 0;
-    size_t skip_role = 0;
-    message_role_t filter = 255; /* no filter */
-    if (filter_role) {
-        if (strcmp(filter_role, "system") == 0 || strcmp(filter_role, "sys") == 0) filter = MSG_SYSTEM;
-        else if (strcmp(filter_role, "user") == 0 || strcmp(filter_role, "usr") == 0) filter = MSG_USER;
-        else if (strcmp(filter_role, "assistant") == 0 || strcmp(filter_role, "asm") == 0) filter = MSG_ASSISTANT;
-        else if (strcmp(filter_role, "tool") == 0) filter = MSG_TOOL;
-    }
-
-    for (size_t i = start; i < state->message_count && printed < count; i++) {
-        if (filter != 255 && state->messages[i]->role != filter) {
-            skip_role++;
-            continue;
-        }
-        const char *role_str;
-        switch (state->messages[i]->role) {
-            case MSG_SYSTEM:    role_str = "sys";  break;
-            case MSG_USER:      role_str = "usr";  break;
-            case MSG_ASSISTANT: role_str = "asm";  break;
-            case MSG_TOOL:      role_str = "tool"; break;
-            default:            role_str = "?";    break;
-        }
-        const char *content = state->messages[i]->content;
-        if (content) {
-            if (show_full) {
-                printf("  [%s] %s\n", role_str, content);
-            } else {
-                char preview[81];
-                size_t clen = strlen(content);
-                if (clen > 80) {
-                    memcpy(preview, content, 77);
-                    preview[77] = '.'; preview[78] = '.'; preview[79] = '.';
-                    preview[80] = '\0';
-                } else {
-                    memcpy(preview, content, clen + 1);
-                }
-                printf("  [%s] %s\n", role_str, preview);
-            }
-        } else {
-            printf("  [%s] (no content)\n", role_str);
-        }
-        printed++;
-    }
-    if (printed == 0)
-        printf("  (no matching messages)\n");
-}
-
 /* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/pt_input_extras.py:install_ignored_terminal_sequences */
 /* Port of Python install_ignored_terminal_sequences(). The C terminal stack has
  * no prompt_toolkit ANSI_SEQUENCES registry, so we keep our own registry of
