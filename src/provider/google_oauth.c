@@ -10,7 +10,8 @@
  */
 
 #include "google_oauth.h"
-#include "hermes.h"
+#include "hermes_core_types.h"
+#include "hermes_http.h"
 #include "hermes_auth.h"
 #include "hermes_json.h"
 #include <stdio.h>

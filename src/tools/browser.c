@@ -7,7 +7,8 @@
  * Uses direct HTTP + HTML parsing (no Playwright dependency).
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
+#include "browser_tool_cdp.h"
 #include "hermes_json.h"
 #include "hermes_http.h"
 #include "hermes_url_safety.h"

@@ -10,7 +10,8 @@
 
 /* PoP: Discord gateway platform (port of gateway/platforms/discord) */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
+#include <pthread.h>
 #include "hermes_json.h"
 #include "hermes_http.h"
 #include <stdio.h>
