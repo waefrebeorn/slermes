@@ -138,4 +138,28 @@ double billing_json_get_number(const char *json, const char *key);
 /* Extract a boolean (true/false) value for `key` from raw JSON text. */
 bool billing_json_get_bool(const char *json, const char *key);
 
+/* Extract a (malloc'd) string value for `key` from raw JSON text.
+ * Returns NULL if absent or not a quoted string. Caller frees. */
+char *billing_json_get_string(const char *json, const char *key);
+
+/* ================================================================
+ *  Billing auth helpers (Port of hermes_cli/nous_billing.py)
+ * ================================================================ */
+
+/* Read the current Nous access token into buf (real resolver: env override
+ * then auth.json provider state). Returns 0 on success, -1 if none. */
+int cli_tools_managed_tool_gateway_peek_nous_access_token(char *buf, size_t bufsize);
+
+/* Build the canonical "not logged in" billing auth error as malloc'd JSON
+ * (status=401, error="invalid_token"). Caller frees. */
+char *billing_not_logged_in_json(void);
+
+/* Resolve (access_token, portal_base_url). token_out/base_out are malloc'd
+ * (caller frees). Returns 0 on success, -1 if no usable Nous session. */
+int billing_resolve_token_and_base(char **token_out, char **base_out, bool use_cache);
+
+/* Map an HTTP error response to the right typed billing error as malloc'd
+ * JSON (status -> auth/scope/rate_limited/generic). Caller frees. */
+char *billing_raise_for_error(int status, const char *payload_json, const char *headers);
+
 #endif /* HERMES_BILLING_H */
