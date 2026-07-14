@@ -139,10 +139,13 @@ void _normalize_custom_pool_name(const char *name, char *out, size_t out_size) {
     out[j] = '\0';
 }
 
-/* Read the `custom_providers` list from config.yaml. Returns a malloc'd JSON
- * array (caller json_free's) or NULL. Mirrors Python _load_config_safe(). */
-static json_t *cp_read_custom_providers(void)
-{
+/* PoP: credential_pool_load_config_safe @ agent/credential_pool.py:_load_config_safe */
+/* Port of Python agent/credential_pool.py:_load_config_safe.
+ * Loads config.yaml and returns the WHOLE document as a json_t* (caller
+ * json_free's) or NULL on any error — mirroring the Python fn's try/except
+ * that swallows all exceptions and returns None. Returns whole-doc JSON via
+ * yaml_to_json_string(doc, "") (empty path navigates to root). */
+json_t *credential_pool_load_config_safe(void) {
     const char *home = getenv("HERMES_HOME");
     if (!home || !home[0]) home = getenv("HOME");
     if (!home) return NULL;
@@ -150,14 +153,27 @@ static json_t *cp_read_custom_providers(void)
     snprintf(path, sizeof(path), "%s/.hermes/config.yaml", home);
     char *err = NULL;
     yaml_doc_t *doc = yaml_parse_file(path, &err);
-    if (err) free(err);
+    if (err) { free(err); return NULL; }
     if (!doc) return NULL;
-    char *js = yaml_to_json_string(doc, "custom_providers");
+    char *js = yaml_to_json_string(doc, "");
     yaml_free(doc);
     if (!js) return NULL;
-    json_t *arr = json_parse(js, NULL);
+    json_t *root = json_parse(js, NULL);
     free(js);
-    if (!arr || arr->type != JSON_ARRAY) { if (arr) json_free(arr); return NULL; }
+    if (!root || root->type != JSON_OBJECT) { if (root) json_free(root); return NULL; }
+    return root;
+}
+
+/* Read the `custom_providers` list from config.yaml. Returns a malloc'd JSON
+ * array (caller json_free's) or NULL. Reuses credential_pool_load_config_safe. */
+static json_t *cp_read_custom_providers(void)
+{
+    json_t *cfg = credential_pool_load_config_safe();
+    if (!cfg) return NULL;
+    json_t *cps = json_obj_get(cfg, "custom_providers");
+    if (!cps || cps->type != JSON_ARRAY) { json_free(cfg); return NULL; }
+    json_t *arr = json_copy(cps);
+    json_free(cfg);
     return arr;
 }
 

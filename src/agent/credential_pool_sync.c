@@ -281,7 +281,7 @@ bool nous_invoke_jwt_is_usable(const char *token, const char *scope, const char 
     return exp > now;
 }
 
-/* PoP: agent/credential_pool.py:runtime_api_key */
+/* PoP: credential_entry_runtime_api_key @ agent/credential_pool.py:runtime_api_key */
 /* PooledCredential.runtime_api_key — Nous prefers the agent_key (NAS invoke
  * JWT) when usable, otherwise the access_token; all other providers use the
  * access_token. Caller must free the result. */
@@ -294,7 +294,7 @@ char *credential_entry_runtime_api_key(const credential_entry_t *e, const char *
     return e->access_token[0] ? strdup(e->access_token) : NULL;
 }
 
-/* PoP: agent/credential_pool.py:runtime_base_url */
+/* PoP: credential_entry_runtime_base_url @ agent/credential_pool.py:runtime_base_url */
 /* PooledCredential.runtime_base_url — Nous uses inference_base_url or
  * base_url; other providers use base_url. Caller must free the result. */
 char *credential_entry_runtime_base_url(const credential_entry_t *e, const char *provider) {
@@ -306,7 +306,7 @@ char *credential_entry_runtime_base_url(const credential_entry_t *e, const char 
     return e->base_url[0] ? strdup(e->base_url) : NULL;
 }
 
-/* PoP: agent/credential_pool.py:__getattr__ */
+/* PoP: credential_entry_get_extra @ agent/credential_pool.py:__getattr__ */
 /* PooledCredential.__getattr__ — resolve a key from the entry's `extra` dict. */
 char *credential_entry_get_extra(const credential_entry_t *e, const char *key) {
     if (!e || !e->extra || !key) return NULL;
