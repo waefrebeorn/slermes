@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "hermes_yaml.h"
 
 /* PoP: sta_format_iso_timestamp @ hermes_cli/status.py:_format_iso_timestamp */
 void sta_format_iso_timestamp(const char *value, char out[64])
@@ -95,4 +96,64 @@ void sta_format_iso_timestamp(const char *value, char out[64])
     struct tm local;
     localtime_r(&epoch, &local);
     strftime(out, 64, "%Y-%m-%d %H:%M:%S %Z", &local);
+}
+
+/* ------------------------------------------------------------------ */
+/* Provider/model label helpers (hermes_cli/status.py)               */
+/* ------------------------------------------------------------------ */
+
+/* Parse config.yaml minimally and return the model.default / model.name /
+ * model.provider string into out (caller provides >=256 bytes). Returns the
+ * populated out, or "(not set)"/"(auto)" on missing values. Used by the two
+ * label helpers below so they stay pure (config passed implicitly via the
+ * file, mirroring Python's config dict). */
+static const char *sta_load_config_str(const char *path, char *out, size_t outsz)
+{
+    out[0] = '\0';
+    const char *home = getenv("HERMES_HOME");
+    if (!home || !home[0]) home = getenv("HOME");
+    if (!home) return out;
+    char cfgpath[1024];
+    snprintf(cfgpath, sizeof(cfgpath), "%s/.hermes/config.yaml", home);
+    char *err = NULL;
+    yaml_doc_t *doc = yaml_parse_file(cfgpath, &err);
+    if (err) { free(err); return out; }
+    if (!doc) return out;
+    const char *v = yaml_get_string(doc, path);
+    if (v && *v) snprintf(out, outsz, "%s", v);
+    yaml_free(doc);
+    return out;
+}
+
+/* PoP: sta_configured_model_label @ hermes_cli/status.py:_configured_model_label */
+/* Return the configured default model from config.yaml. */
+void sta_configured_model_label(char out[256])
+{
+    char def[256], name[256];
+    sta_load_config_str("model.default", def, sizeof(def));
+    sta_load_config_str("model.name", name, sizeof(name));
+    const char *model = def[0] ? def : (name[0] ? name : "");
+    if (!*model) { strcpy(out, "(not set)"); return; }
+    snprintf(out, 256, "%s", model);
+}
+
+/* PoP: sta_effective_provider_label @ hermes_cli/status.py:_effective_provider_label */
+/* Return the provider label matching current CLI config resolution.
+ * Mirrors the Python: take model.provider (the effective provider in C),
+ * then apply the openrouter + OPENAI_BASE_URL -> custom rule. */
+void sta_effective_provider_label(char out[256])
+{
+    char prov[256];
+    sta_load_config_str("model.provider", prov, sizeof(prov));
+    const char *effective = prov[0] ? prov : "auto";
+
+    if (strcmp(effective, "openrouter") == 0 && getenv("OPENAI_BASE_URL"))
+        effective = "custom";
+
+    /* provider_label(): capitalize first letter for display. */
+    if (!*effective) { strcpy(out, "(auto)"); return; }
+    char label[256];
+    snprintf(label, sizeof(label), "%s", effective);
+    label[0] = (char)toupper((unsigned char)label[0]);
+    snprintf(out, 256, "%s", label);
 }
