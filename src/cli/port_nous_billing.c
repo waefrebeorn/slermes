@@ -513,6 +513,108 @@ char *absolutize_portal_url(void *ctx, const char *raw_portal_url) {
     return result;
 }
 
+/* ================================================================
+ *  Port of Python hermes_cli/nous_billing.py: billing auth helpers
+ * ================================================================ */
+
+/* PoP: billing_not_logged_in_json @ hermes_cli/nous_billing.py:_billing_not_logged_in */
+/* Build the canonical "not logged in" billing auth error as a malloc'd JSON
+ * string, mirroring Python BillingAuthError(status=401, error="invalid_token").
+ * Caller frees. */
+char *billing_not_logged_in_json(void) {
+    return strdup("{\"status\":401,\"error\":\"invalid_token\","
+                  "\"message\":\"Not logged into Nous Portal \\u2014 run `hermes portal` to log in.\"}");
+}
+
+/* PoP: billing_resolve_token_and_base @ hermes_cli/nous_billing.py:_resolve_token_and_base */
+/* Resolve (access_token, portal_base_url) for billing calls.
+ * token_out receives the token (caller frees), base_out receives the base URL
+ * (caller frees). Returns 0 on success, -1 if no usable Nous session.
+ * Mirrors Python: uses the refresh-aware token resolver + resolve_portal_base_url,
+ * with a short TTL cache to avoid re-reading the auth store every poll tick. */
+static char g_token_cache_token[2048];
+static char g_token_cache_base[1024];
+static double g_token_cache_at = -1.0;
+#define BILLING_TOKEN_CACHE_TTL 120.0
+
+int billing_resolve_token_and_base(char **token_out, char **base_out, bool use_cache) {
+    double now = (double)time(NULL);
+    if (use_cache && g_token_cache_at > 0 && (now - g_token_cache_at) < BILLING_TOKEN_CACHE_TTL
+        && g_token_cache_token[0]) {
+        *token_out = strdup(g_token_cache_token);
+        *base_out = strdup(g_token_cache_base);
+        return 0;
+    }
+
+    char tok[2048];
+    if (cli_tools_managed_tool_gateway_peek_nous_access_token(tok, sizeof(tok)) != 0 || !tok[0]) {
+        return -1;
+    }
+
+    char *base = resolve_portal_base_url(NULL, NULL);
+    if (!base) base = strdup(billing_fallback_portal_url());
+
+    strncpy(g_token_cache_token, tok, sizeof(g_token_cache_token) - 1);
+    g_token_cache_token[sizeof(g_token_cache_token) - 1] = '\0';
+    strncpy(g_token_cache_base, base, sizeof(g_token_cache_base) - 1);
+    g_token_cache_base[sizeof(g_token_cache_base) - 1] = '\0';
+    g_token_cache_at = now;
+
+    *token_out = strdup(tok);
+    *base_out = base; /* transfers ownership */
+    return 0;
+}
+
+/* PoP: billing_raise_for_error @ hermes_cli/nous_billing.py:_raise_for_error */
+/* Map an HTTP error response to the right typed billing error, returned as a
+ * malloc'd JSON string (caller frees). Mirrors Python's status->BillingError
+ * dispatch: 401 -> auth, 403+insufficient_scope -> scope, 429/503 -> rate
+ * limited, else generic. Returns NULL only on alloc failure (it always
+ * returns an error payload, since it is only called on error). */
+char *billing_raise_for_error(int status, const char *payload_json, const char *headers) {
+    const char *error = billing_json_get_string(payload_json, "error");
+    const char *message = billing_json_get_string(payload_json, "message");
+    char *portal_url = absolutize_portal_url(NULL, billing_json_get_string(payload_json, "portalUrl"));
+    int retry_after = retry_after_seconds((void *)headers);
+
+    const char *kind = "error";
+    const char *msg = message ? message : (error ? error : "");
+    if (status == 401) { kind = "auth"; if (!msg[0]) msg = "Authentication required."; }
+    else if (status == 403 && error && strcmp(error, "insufficient_scope") == 0) {
+        kind = "scope"; if (!msg[0]) msg = "This action needs the billing:manage scope.";
+    }
+    else if (status == 429 || status == 503) {
+        kind = "rate_limited"; if (!msg[0]) msg = "Rate limited \\u2014 try again shortly.";
+    }
+    if (!msg[0]) { msg = "Billing request failed."; }
+
+    size_t cap = 1024;
+    char *out = malloc(cap);
+    if (!out) { free(portal_url); return NULL; }
+    int n = snprintf(out, cap,
+        "{\"status\":%d,\"error\":%s,\"kind\":\"%s\",\"message\":\"%s\",\"portalUrl\":%s%s%s}",
+        status,
+        error ? error : "null",
+        kind,
+        msg,
+        portal_url ? "\"" : "",
+        portal_url ? portal_url : "null",
+        portal_url ? "\"" : "");
+    if (retry_after > 0) {
+        /* append retry_after (best-effort; keep simple) */
+        size_t len = strlen(out);
+        snprintf(out + len, cap - len, ",\"retryAfter\":%d}", retry_after);
+    } else {
+        size_t len = strlen(out);
+        if (len > 0 && out[len-1] == '}') {
+            out[len-1] = '\0';
+            snprintf(out + len - 1, cap - (len - 1), ",\"retryAfter\":null}");
+        }
+    }
+    free(portal_url);
+    return out;
+}
+
 /* step_up_nous_billing_scope: real implementation lives in port_auth_na.c
  * (matches Python's step_up_nous_billing_scope: checks nous_token_has_billing_scope
  *  and logs manual re-login if absent). This file no longer duplicates it. */

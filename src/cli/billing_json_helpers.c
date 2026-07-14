@@ -45,3 +45,34 @@ bool billing_json_get_bool(const char *json, const char *key)
     while (*p && (*p == ' ' || *p == '\t')) p++;
     return (strncmp(p, "true", 4) == 0);
 }
+
+/* Extract a (malloc'd) string value for `key` from raw JSON text.
+ * Returns NULL if absent or not a quoted string. Caller frees. */
+char *billing_json_get_string(const char *json, const char *key)
+{
+    if (!json || !key) return NULL;
+    char search[128];
+    snprintf(search, sizeof(search), "\"%s\"", key);
+    const char *p = strstr(json, search);
+    if (!p) return NULL;
+    p += strlen(search);
+    while (*p && *p != ':') p++;
+    if (*p) p++;
+    while (*p && (*p == ' ' || *p == '\t')) p++;
+    if (*p != '"') return NULL;
+    p++;
+    size_t start = 0;
+    size_t cap = 64;
+    char *out = malloc(cap);
+    if (!out) return NULL;
+    while (*p && *p != '"') {
+        if (start + 1 >= cap) {
+            char *nb = realloc(out, cap * 2);
+            if (!nb) { free(out); return NULL; }
+            out = nb; cap *= 2;
+        }
+        out[start++] = *p++;
+    }
+    out[start] = '\0';
+    return out;
+}
