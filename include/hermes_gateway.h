@@ -1519,5 +1519,12 @@ void gw_session_set_async_delivery(int supported);
 /* Reset async delivery to unset state (used in cleanup / session clear). */
 void gw_session_reset_async_delivery(void);
 
+/* True if any session has been bound via set_session_vars in this process. */
+int gw_session_context_engaged(void);
+
+/* Whether the current session can deliver a background completion later.
+ * Returns 1 unless the active session was bound by a stateless adapter. */
+int gw_session_async_delivery_supported(void);
+
 /** @} */ /* end of hermes_gateway group */
 #endif /* HERMES_GATEWAY_H */
