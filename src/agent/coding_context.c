@@ -37,7 +37,8 @@
  * Port of Python agent/coding_context.py:resolve_runtime_mode() — consolidated in coding_context_resolve_runtime_mode()
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
+#include "hermes_yaml.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>

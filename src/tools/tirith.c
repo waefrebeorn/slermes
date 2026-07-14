@@ -7,7 +7,8 @@
  * PoP annotations link each C function to its Python counterpart.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
+#include "hermes_tirith.h"
 #include "hermes_json.h"
 #include "libhttp/http.h"
 #include <stdio.h>

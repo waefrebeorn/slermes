@@ -21,7 +21,7 @@
 /* PoP: TUI fullscreen mode (TypeScript-based) */
 
 #define _GNU_SOURCE
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "tui_fullscreen.h"
 
 #include <curses.h>
@@ -48,6 +48,31 @@
 #include "tui_slash_worker.h"
 #include "chat_render.h"
 #include "chat_composer.h"
+
+/* ── Forward definitions (hoisted; used by early helpers below, defined
+ *    in full further down the file). Kept here so the translation unit is
+ *    self-contained without relying on the hermes.h god header. ──────────── */
+#define MAX_MESSAGES_DISPLAY 4096
+#define MODEL_PICKER_MAX 256
+#define MODEL_NAME_MAX 128
+
+/* Slash command entry for autocomplete (full table defined below).
+ * Named tui_slash_cmd_t to avoid colliding with the slash_cmd_t ENUM in
+ * chat_composer.h (used by tui_composer_detect_slash). */
+typedef struct {
+    const char *cmd;
+    const char *desc;
+    const char *args; /* arg hints */
+} tui_slash_cmd_t;
+
+/* Model picker overlay state (instance + logic defined below). */
+typedef struct {
+    char names[MODEL_PICKER_MAX][MODEL_NAME_MAX];
+    int  count;
+    int  selected;
+    int  scroll_offset;
+} model_picker_state_t;
+
 
 /* ── TUI Chat Render Integration ────────────────────────────────────────── */
 /* Uses chat_render.c for message display with markdown + syntax highlighting */
@@ -111,7 +136,6 @@ static void tui_composer_init(void) {
     tui_composer = composer_create();
     if (tui_composer) {
         tui_composer->multiline = true;
-        tui_composer->echo = true;
         memset(&tui_slash_ctx, 0, sizeof(tui_slash_ctx));
         tui_slash_ctx.composer = tui_composer;
         tui_slash_ctx.app_ctx = NULL;
@@ -213,29 +237,12 @@ static void tui_session_switch(int fkey) {
 }
 
 /* ── Model Picker Overlay ───────────────────────────────────────────────── */
-
-static model_picker_state_t tui_model_picker;
-static int tui_model_picker_visible = 0;
-
-static void tui_model_picker_init(void) {
-    memset(&tui_model_picker, 0, sizeof(tui_model_picker));
-    /* Populate with common models */
-    const char *models[] = {
-        "openrouter/owl-alpha",
-        "anthropic/claude-sonnet-4",
-        "openai/gpt-4o",
-        "google/gemini-2.0-flash",
-        NULL
-    };
-    for (int i = 0; models[i] && i < MODEL_PICKER_MAX; i++) {
-        strncpy(tui_model_picker.names[i], models[i], MODEL_NAME_MAX - 1);
-        tui_model_picker.count++;
-    }
-}
-
-static void tui_model_picker_toggle(void) {
-    tui_model_picker_visible = !tui_model_picker_visible;
-}
+/* NOTE: the real model-picker state lives in the main `tui` struct
+ * (tui.model_picker) and its init/draw/input live further down the file
+ * (see tui_model_picker_init at the T13 section). The earlier standalone
+ * tui_model_picker global + toggle was dead duplicate code (never wired to
+ * the draw/input path) and has been removed to fix the duplicate-symbol
+ * build break. */
 
 /* ── Notification Display in Status Bar ─────────────────────────────────── */
 
@@ -603,14 +610,8 @@ typedef struct {
 #define AUTOCOMPLETE_MAX 32
 #define EMOJI_MAX 50
 
-/* Slash command definitions for autocomplete */
-typedef struct {
-    const char *cmd;
-    const char *desc;
-    const char *args; /* arg hints */
-} slash_cmd_t;
-
-static const slash_cmd_t slash_commands[] = {
+/* Slash command definitions for autocomplete (slash_cmd_t hoisted above) */
+static const tui_slash_cmd_t slash_commands[] = {
     {"/help",    "Show help message", ""},
     {"/quit",    "Exit the TUI", ""},
     {"/exit",    "Exit the TUI", ""},
@@ -705,7 +706,6 @@ static const char *emoji_list[][2] = {
  * ================================================================== */
 /* Port of Python: tui_gateway.render — role-colored message rendering */
 
-#define MAX_MESSAGES_DISPLAY 4096
 #define MAX_LINE_LENGTH 4096
 
 typedef enum {
@@ -867,15 +867,7 @@ typedef struct {
  *  T13: MODEL PICKER — interactive model selection overlay
  * ================================================================== */
 
-#define MODEL_PICKER_MAX 256
-#define MODEL_NAME_MAX 128
-
-typedef struct {
-    char names[MODEL_PICKER_MAX][MODEL_NAME_MAX];
-    int  count;
-    int  selected;
-    int  scroll_offset;
-} model_picker_state_t;
+/* MODEL_PICKER_MAX / MODEL_NAME_MAX / model_picker_state_t hoisted above. */
 
 /* T15: Todo panel state */
 #define TODO_PANEL_MAX 128

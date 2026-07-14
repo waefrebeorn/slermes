@@ -15,7 +15,8 @@
  *   openai/gpt-5.4-pro, deepseek/deepseek-v3.2
  * Aggregator: anthropic/claude-opus-4.6
  */
-#include "hermes.h"
+#include "hermes_core_types.h"
+#include "hermes_http.h"
 #include "hermes_json.h"
 #include <string.h>
 #include <stdlib.h>

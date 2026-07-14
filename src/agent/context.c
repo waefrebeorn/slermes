@@ -4,7 +4,8 @@
  * Provides: push, pop, get, truncate, eviction strategies, system prompt injection.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
+#include "hermes_agent.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -39,9 +39,10 @@ slermes: $(PHASE5_OBJ) src/main.o $(HERMES_CLI_PORT_OBJ) $(HERMES_CLI_PORT_EXTRA
 
 # ncurses full-screen TUI build (shared libs from system)
 TUI_LIB_OBJ = $(filter-out lib/libcurses_widget/curses_widget.o, $(LIB_OBJ_FILTERED)) lib/libcurses_widget/curses_widget_tui.o
-tui: $(PHASE5_OBJ) $(TUI_OBJ) src/main.o $(TUI_LIB_OBJ) $(WHISPER_EXTRA_OBJ)
+tui: $(PHASE5_OBJ) $(TUI_OBJ) src/main.o $(HERMES_CLI_PORT_OBJ) $(HERMES_CLI_PORT_EXTRA_OBJ) $(PORT_OBJ) $(PET_OBJ) $(DESKTOP_CORE_OBJ) src/chat_render.o src/chat_composer.o $(TUI_LIB_OBJ) $(WHISPER_EXTRA_OBJ)
 	$(CC) $(CFLAGS) -DHAS_NCURSES_TUI -o slermes-tui $^ $(LDFLAGS) $(PLATFORM_LDFLAGS) $(LIBS) \
-		-L lib/syslib -L lib/libncurses/lib -lncursesw -ltinfo -lstdc++ \
+		-L lib/syslib -L lib/libncurses/lib \
+		$(if $(NCURSES_LIBS),$(NCURSES_LIBS),-lncursesw) $(if $(PANEL_LIBS),$(PANEL_LIBS)) $(if $(TINFO_LIBS),$(TINFO_LIBS),-ltinfo) -lstdc++ \
 		$(if $(WHISPER_LIBS),$(WHISPER_LIBS))
 	@echo "slermes-tui built with ncurses TUI support"
 

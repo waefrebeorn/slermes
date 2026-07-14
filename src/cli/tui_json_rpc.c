@@ -1156,6 +1156,20 @@ void tui_rpc_register(const char *method, tui_rpc_handler_t handler,
  * Returns NULL for notifications (no response needed).
  * Returns allocated response string for requests (caller must free).
  */
+/* Extract the JSON-RPC request "id" as an int.
+ * Returns the numeric id when present, or -1 when absent/null (which the
+ * dispatcher treats as a notification requiring no response). */
+static int extract_id(const json_t *root) {
+    if (!root) return -1;
+    json_t *id = json_obj_get((json_t *)root, "id");
+    if (!id || id->type == JSON_NULL) return -1;
+    if (id->type == JSON_NUMBER) return (int)id->num_val;
+    /* String ids are uncommon here; fall back to numeric parse, else notify. */
+    if (id->type == JSON_STRING && id->str_val && id->str_val[0])
+        return atoi(id->str_val);
+    return -1;
+}
+
 /* Port of Python: tui_gateway.server.dispatch — JSON-RPC dispatch: parse → lookup → call → respond */
 const char *tui_rpc_dispatch(const char *request_json,
                               char *out_response, size_t out_sz) {

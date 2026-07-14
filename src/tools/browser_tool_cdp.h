@@ -31,4 +31,8 @@ char *browser_truncate_snapshot(const char *snapshot, size_t max_chars);
 json_t *browser_check_browser_requirements(void);
 json_t *browser_check_browser_vision_requirements(void);
 
+/* Global CDP endpoint URL accessors (defined in browser.c). */
+void cdp_set_url(const char *url);
+const char *cdp_get_url(void);
+
 #endif /* SLERMES_BROWSER_TOOL_CDP_H */
