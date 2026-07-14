@@ -7,6 +7,10 @@
 #include "hermes_logger.h"
 #include "libwebsocket/websocket.h"
 #include "port_tools_browser_cdp_tool.h"
+#include "hermes.h"
+#include "tools/browser_tool_cdp.h"
+#include "tools/browser_tool_eval.h"
+#include "tools/browser_tool_install.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -250,4 +254,49 @@ char *browser_dialog_tool__browser_dialog_check(void)
     char *out = malloc(32);
     if (out) snprintf(out, 32, "{\"available\":%s}", available ? "true" : "false");
     return out;
+}
+
+/* ================================================================
+ *  Browser-safety guards (Port of tools/browser_cdp_tool.py)
+ *  The real implementations already exist in the browser_tool_* modules;
+ *  these wrappers bind them to the browser_cdp_tool.py method names so the
+ *  parity port is honest (no stubs):
+ *    _redact_cdp_output        -> hermes_redact()
+ *    _private_page_guard_error -> browser_blocked_private_page_action()
+ *    _browser_cdp_private_guard -> browser_url_is_private() +
+ *                                 browser_is_always_blocked_url() /
+ *                                 browser_is_safe_url()
+ * ================================================================ */
+
+/* PoP: browser_cdp_tool__redact_cdp_output @ tools/browser_cdp_tool.py:_redact_cdp_output */
+/* Redact sensitive text from a CDP/HTML payload before it is surfaced.
+ * Returns a malloc'd redacted string (caller frees); NULL on alloc failure.
+ * When redaction is disabled hermes_redact returns a copy of the input. */
+char *browser_cdp_tool__redact_cdp_output(const char *html) {
+    if (!html) return NULL;
+    return hermes_redact(html);
+}
+
+/* PoP: browser_cdp_tool__private_page_guard_error @ tools/browser_cdp_tool.py:_private_page_guard_error */
+/* Build the canonical "private page / SSRF guard" error for a blocked action.
+ * Returns a malloc'd error string (caller frees). */
+char *browser_cdp_tool__private_page_guard_error(const char *effective_task_id,
+                                                  const char *action) {
+    return browser_blocked_private_page_action(effective_task_id, action);
+}
+
+/* PoP: browser_cdp_tool__browser_cdp_private_guard @ tools/browser_cdp_tool.py:_browser_cdp_private_guard */
+/* Guard: refuse to navigate/act on a private/blocked URL. Returns a malloc'd
+ * error string (caller frees) when blocked, else NULL. Mirrors Python: blocked
+ * if the URL is a private-range address, on the always-blocked list, or
+ * otherwise unsafe. */
+char *browser_cdp_tool__browser_cdp_private_guard(const char *effective_task_id,
+                                                   const char *url) {
+    if (!url) return NULL;
+    if (browser_url_is_private(url) ||
+        browser_is_always_blocked_url(url) ||
+        !browser_is_safe_url(url)) {
+        return browser_blocked_private_page_action(effective_task_id, url);
+    }
+    return NULL;
 }
