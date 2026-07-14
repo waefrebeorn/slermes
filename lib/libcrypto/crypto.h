@@ -113,6 +113,13 @@ unsigned char *crypto_aes_decrypt(const unsigned char *input, size_t input_len,
                                    const unsigned char *key, size_t key_len,
                                    size_t *out_len);
 
+/* === RSA SHA-256 signing (RS256, for GCP service-account JWT auth) === */
+/* Sign `data` (data_len bytes) with the RSA private key in PEM `pem_key`,
+ * producing a SHA-256 signature. Output is written as a malloc'd base64url
+ * string (no padding). Returns the string (caller frees) or NULL on error. */
+char *crypto_rs256_sign_b64url(const char *pem_key,
+                               const unsigned char *data, size_t data_len);
+
 #ifdef __cplusplus
 }
 #endif
