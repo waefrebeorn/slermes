@@ -8,10 +8,17 @@
 
 #include "hermes_logger.h"
 #include "hermes_json.h"
+#include "file_sync.h"
+#include "crypto.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <sys/file.h>
+#include <unistd.h>
+#include <openssl/evp.h>
 
 /* Defined in port_tools_credential_files.c — returns a json_node_t* array of
  * {host_path, container_path} mount entries. */
@@ -111,7 +118,8 @@ json_node_t* cli_tools_environments_file_sync_unique_parent_dirs(json_node_t *fi
 char* cli_tools_environments_file_sync__sha256_file(const char *path, char *buf, size_t bufsz) {
     /*
      * Return hex SHA-256 digest of a file.
-     * Reads the file in 64KB chunks and computes the hash.
+     * Reads the file fully and computes the digest via libcrypto (real hash,
+     * not a placeholder). Returns malloc-free static-free buffer owned by caller.
      */
     if (!path || !buf || bufsz < 65) {
         hermes_log(LOG_WARNING, "file_sync", "_sha256_file: invalid parameters");
@@ -122,23 +130,21 @@ char* cli_tools_environments_file_sync__sha256_file(const char *path, char *buf,
         hermes_log(LOG_WARNING, "file_sync", "_sha256_file: cannot open %s", path);
         return NULL;
     }
-    /* Simple hash computation - in C this uses the crypto library */
-    unsigned char hash[32];
-    memset(hash, 0, sizeof(hash));
     unsigned char chunk[65536];
     size_t bytes_read;
-    while ((bytes_read = fread(chunk, 1, sizeof(chunk), f)) > 0) {
-        /* Hash update - simplified for C port */
-        int i;
-        for (i = 0; i < (int)bytes_read && i < 32; i++) {
-            hash[i] ^= chunk[i];
-        }
-    }
+    EVP_MD_CTX *ctx = EVP_MD_CTX_new();
+    if (!ctx) { fclose(f); return NULL; }
+    EVP_DigestInit_ex(ctx, EVP_sha256(), NULL);
+    while ((bytes_read = fread(chunk, 1, sizeof(chunk), f)) > 0)
+        EVP_DigestUpdate(ctx, chunk, bytes_read);
+    unsigned char hash[32];
+    EVP_DigestFinal_ex(ctx, hash, NULL);
+    EVP_MD_CTX_free(ctx);
     fclose(f);
-    /* Convert to hex string */
-    int i;
-    for (i = 0; i < 32 && (size_t)i * 2 + 1 < bufsz; i++) {
-        sprintf(buf + i * 2, "%02x", hash[i]);
+    static const char *hex = "0123456789abcdef";
+    for (int i = 0; i < 32; i++) {
+        buf[i * 2]     = hex[(hash[i] >> 4) & 0xf];
+        buf[i * 2 + 1] = hex[hash[i] & 0xf];
     }
     buf[64] = '\0';
     hermes_log(LOG_DEBUG, "file_sync", "_sha256_file: %s -> %.16s...", path, buf);
@@ -146,44 +152,82 @@ char* cli_tools_environments_file_sync__sha256_file(const char *path, char *buf,
 }
 
 /* PoP: cli_tools_environments_file_sync_sync_back @ tools/environments/file_sync.py:sync_back */
-int cli_tools_environments_file_sync_sync_back(const char *hermes_home) {
+int cli_tools_environments_file_sync_sync_back(const char *hermes_home,
+                                                file_sync_bulk_download_fn download_fn,
+                                                void *download_ctx) {
     /*
      * Pull remote changes back to the host filesystem.
-     * Downloads the remote .hermes/ directory as a tar archive,
-     * unpacks it, and applies only files that differ from what was pushed.
+     * Builds a real FileSyncManager from the collected file map, runs the
+     * real sync-back (download tar -> extract -> sha256 diff -> apply), and
+     * returns 0 on success. Mirrors Python FileSyncManager.sync_back.
      */
-    if (!hermes_home) {
-        hermes_log(LOG_WARNING, "file_sync", "sync_back: NULL hermes_home");
+    file_sync_list_t *files = file_sync_collect(NULL);
+    if (!files) {
+        hermes_log(LOG_WARNING, "file_sync", "sync_back: collect failed");
         return -1;
     }
-    hermes_log(LOG_INFO, "file_sync", "sync_back: hermes_home=%s", hermes_home);
-    /* In C, the actual sync_back is managed by the FileSyncManager */
-    return 0;
+    file_sync_manager_t *m = file_sync_manager_create(files, download_fn, download_ctx);
+    file_sync_list_free(files);
+    if (!m) return -1;
+    int rc = file_sync_manager_sync_back(m, hermes_home);
+    file_sync_manager_free(m);
+    return rc;
 }
 
 /* PoP: cli_tools_environments_file_sync__sync_back_once @ tools/environments/file_sync.py:_sync_back_once */
-int cli_tools_environments_file_sync__sync_back_once(const char *lock_path) {
+int cli_tools_environments_file_sync__sync_back_once(const char *hermes_home,
+                                                      file_sync_bulk_download_fn download_fn,
+                                                      void *download_ctx) {
     /*
-     * Single sync-back attempt with SIGINT protection and file lock.
+     * Single sync-back attempt. The lib implementation already performs the
+     * download/extract/apply atomically; we expose it directly (SIGINT
+     * deferral is handled at the caller's thread boundary in C).
      */
-    if (!lock_path) {
-        hermes_log(LOG_WARNING, "file_sync", "_sync_back_once: NULL lock_path");
-        return -1;
-    }
-    hermes_log(LOG_DEBUG, "file_sync", "_sync_back_once: lock=%s", lock_path);
-    /* In C, the actual sync_back_once is managed by the FileSyncManager */
-    return 0;
+    return cli_tools_environments_file_sync_sync_back(hermes_home, download_fn, download_ctx);
 }
 
 /* PoP: cli_tools_environments_file_sync__sync_back_locked @ tools/environments/file_sync.py:_sync_back_locked */
-int cli_tools_environments_file_sync__sync_back_locked(const char *lock_path) {
+int cli_tools_environments_file_sync__sync_back_locked(const char *hermes_home,
+                                                        file_sync_bulk_download_fn download_fn,
+                                                        void *download_ctx) {
     /*
-     * Sync-back under file lock (serializes concurrent gateways).
+     * Sync-back under an exclusive file lock so concurrent gateways serialize.
+     * Mirrors Python FileSyncManager._sync_back_locked (fcntl.flock LOCK_EX).
      */
-    if (!lock_path) return -1;
-    hermes_log(LOG_DEBUG, "file_sync", "_sync_back_locked: lock=%s", lock_path);
-    /* In C, the actual locked sync is managed by the FileSyncManager */
-    return 0;
+    char lock_path[2048];
+    const char *home = hermes_home && hermes_home[0] ? hermes_home : getenv("HOME");
+    if (!home) home = "/root/.hermes";
+    snprintf(lock_path, sizeof(lock_path), "%s/.sync.lock", home);
+    int fd = open(lock_path, O_WRONLY | O_CREAT, 0600);
+    if (fd < 0)
+        return cli_tools_environments_file_sync__sync_back_once(hermes_home, download_fn, download_ctx);
+    flock(fd, LOCK_EX);
+    int rc = cli_tools_environments_file_sync__sync_back_once(hermes_home, download_fn, download_ctx);
+    flock(fd, LOCK_UN);
+    close(fd);
+    return rc;
+}
+
+/* PoP: cli_tools_environments_file_sync__sync_back_impl @ tools/environments/file_sync.py:_sync_back_impl */
+int cli_tools_environments_file_sync__sync_back_impl(const char *hermes_home,
+                                                      file_sync_bulk_download_fn download_fn,
+                                                      void *download_ctx) {
+    /*
+     * Download, diff, and apply remote changes to the host.
+     * This is the real FileSyncManager._sync_back_impl: it delegates to the
+     * lib's file_sync_manager_sync_back, which extracts the downloaded tar,
+     * SHA-256-diffs each entry against the pushed hashes, and applies only
+     * changed, non-upload-only files (honoring the <2 GiB tar cap). No new
+     * logic here — reuse, don't duplicate.
+     */
+    file_sync_list_t *files = file_sync_collect(NULL);
+    if (!files) return -1;
+    file_sync_manager_t *m = file_sync_manager_create(files, download_fn, download_ctx);
+    file_sync_list_free(files);
+    if (!m) return -1;
+    int rc = file_sync_manager_sync_back(m, hermes_home);
+    file_sync_manager_free(m);
+    return rc;
 }
 
 /* PoP: cli_tools_environments_file_sync__infer_host_path @ tools/environments/file_sync.py:_infer_host_path */
