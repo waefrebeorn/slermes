@@ -70,7 +70,7 @@ HERMES_VERSION_STR := $(HERMES_VERSION)-slermes
 HERMES_RELEASE_DATE_STR := $(HERMES_RELEASE_DATE)
 DATADIR_STR := $(PREFIX)/share/slermes/docs
 
-CFLAGS = -O2 -g -Wall -Wno-pedantic -Wno-attributes -Wno-unused-result -Wno-format-truncation -Wstringop-truncation -Wno-misleading-indentation -Wno-discarded-qualifiers -Wno-unused-parameter -Wno-missing-field-initializers -Wno-format-extra-args -Wno-comment -Wno-format-zero-length -Wno-address -Wno-maybe-uninitialized -Wno-unused-function -I include -I src $(SSL_CFLAGS) $(OS_DEF) $(CFLAGS_EXTRA)
+CFLAGS = -O2 -g -Wall -Werror=implicit-function-declaration -Wno-pedantic -Wno-attributes -Wno-unused-result -Wno-format-truncation -Wstringop-truncation -Wno-misleading-indentation -Wno-discarded-qualifiers -Wno-unused-parameter -Wno-missing-field-initializers -Wno-format-extra-args -Wno-comment -Wno-format-zero-length -Wno-address -Wno-maybe-uninitialized -Wno-unused-function -I include -I src $(SSL_CFLAGS) $(OS_DEF) $(CFLAGS_EXTRA)
 CFLAGS += -DHERMES_VERSION=\"$(HERMES_VERSION_STR)\" -DHERMES_RELEASE_DATE=\"$(HERMES_RELEASE_DATE_STR)\" -DATADIR=\"$(DATADIR_STR)\"
 LDFLAGS = $(SSL_LDFLAGS) $(PLATFORM_LDFLAGS)
 LIBS = -lm

@@ -1,0 +1,15 @@
+{
+  "ops": [
+    {"op": "create", "id": "T0", "title": "root", "assignee": "alice", "created_by": "alice"},
+    {"op": "create", "id": "T1", "title": "child", "assignee": "bob", "created_by": "alice"},
+    {"op": "create", "id": "T2", "title": "orphan", "assignee": "carol", "created_by": "carol"},
+    {"op": "link", "parent": "T0", "child": "T1"},
+    {"op": "find_missing_parents", "parents": ["T0", "T1", "T2", "T_NOPE"]},
+    {"op": "scan_prose", "text": "did T0 and T1 but referenced t_deadbeef and T_NOPE and t_cafef00d"},
+    {"op": "verify_created_cards", "completing": "T0", "claimed": ["T1", "T2", "T_GHOST"]},
+    {"op": "is_managed_scratch", "path": "KANBAN_HOME/kanban/workspaces/T1"},
+    {"op": "is_managed_scratch_bad", "path": "KANBAN_HOME/kanban"},
+    {"op": "has_spawnable_ready"},
+    {"op": "has_spawnable_review"}
+  ]
+}

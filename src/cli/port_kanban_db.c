@@ -6,6 +6,7 @@
 
 #include "hermes_logger.h"
 #include "hermes_json.h"
+#include "kanban_db.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -575,6 +576,22 @@ char *kanban_db_path(const char *board)
     }
     free(slug);
     return strdup(out);
+}
+
+/* PoP: profile_exists @ hermes_cli/profiles.py:profile_exists
+ * True iff a profile directory named `name` exists on disk. Shared by all
+ * kanban concern modules (decompose, util) — promoted from a static helper so
+ * there is a single source of truth. */
+int profile_exists(const char *name)
+{
+    if (!name || !*name) return 0;
+    char **profs = kdb_list_profiles_on_disk();
+    if (!profs) return 0;
+    for (int i = 0; profs[i]; i++) {
+        if (strcmp(profs[i], name) == 0) { kdb_strv_free(profs); return 1; }
+    }
+    kdb_strv_free(profs);
+    return 0;
 }
 
 /*

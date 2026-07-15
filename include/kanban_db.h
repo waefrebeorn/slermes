@@ -465,6 +465,63 @@ char *kdb_write_board_metadata(const char *board,
  * raising ValueError — caller should treat NULL as error). */
 char *kdb_remove_board(const char *slug, int archive);
 
+/* Returns malloc'd workspaces dir for board. Caller frees.
+ * (port_kanban_db.c) */
+char *workspaces_root(const char *board);
+
+/* True iff a profile directory named `name` exists on disk.
+ * (port_kanban_db.c — shared by decompose/util concern modules.) */
+int  profile_exists(const char *name);
+
+/* =========================================================================
+ * Utilities  (kanban_util.c)  — portable DB/logic helpers
+ * ========================================================================= */
+
+/* Generate a short URL-safe task id ("t_" + 4 hex bytes). Caller frees. */
+char *kdb_new_task_id(void);
+
+/* Return a "host:pid" claimer string. Caller frees. */
+char *kdb_claimer_id(void);
+
+/* Of `parents` (NULL-terminated), return the subset that do NOT exist in the
+ * tasks table. Caller frees the returned NULL-terminated array. */
+char **kdb_find_missing_parents(sqlite3 *conn, char **parents, int n);
+
+/* Partition `claimed_ids` (NULL-terminated) into (verified, phantom) JSON
+ * arrays describing which exist+trusted vs don't. Writes malloc'd JSON to
+ * *out_verified / *out_phantom (caller frees). Returns 1 on success. */
+int  kdb_verify_created_cards(sqlite3 *conn, const char *completing_task_id,
+                               char **claimed_ids, int n,
+                               char **out_verified, char **out_phantom);
+
+/* Free the arrays returned by kdb_find_missing_parents / kdb_verify_created_cards. */
+void kdb_strv_free(char **list);
+
+/* Regex-scan free-form `text` for t_<hex> references that do NOT exist in
+ * tasks. Returns a malloc'd JSON array of phantom ids; caller frees. */
+char *kdb_scan_prose_for_phantom_ids(sqlite3 *conn, const char *text);
+
+/* True iff `path` is a STRICT descendant of a kanban-managed scratch root
+ * (workspaces/, per-board workspaces/, or the HERMES_KANBAN_WORKSPACES_ROOT
+ * override). Refuses paths equal to a root or outside managed storage. */
+int  kdb_is_managed_scratch_path(const char *path);
+
+/* Resolve (and create if needed) the workspace for a task, returning the
+ * absolute path as a malloc'd string. `kind` is "scratch"|"dir"|"worktree";
+ * `board` optional. Caller frees. Returns NULL on a bad/non-absolute path. */
+char *kdb_resolve_workspace(const char *kind, const char *workspace_path,
+                             const char *task_id, const char *board);
+
+/* Persist a workspace path back onto a task row. Returns 1 on success. */
+int  kdb_set_workspace_path(sqlite3 *conn, const char *task_id, const char *path);
+
+/* True iff there is at least one ready+assigned+unclaimed task whose assignee
+ * maps to a real profile. */
+int  kdb_has_spawnable_ready(sqlite3 *conn);
+
+/* Same, for the `review` status column. */
+int  kdb_has_spawnable_review(sqlite3 *conn);
+
 #ifdef __cplusplus
 }
 #endif

@@ -177,6 +177,7 @@ PORT_OBJ = \
     src/cli/kanban_stats.o \
     src/cli/kanban_runs.o \
     src/cli/kanban_query.o \
+    src/cli/kanban_util.o \
     src/cli/kanban_boards.o \
     src/cli/kanban_decompose.o \
     src/cli/port_main.o \
