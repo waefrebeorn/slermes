@@ -175,6 +175,9 @@ PORT_OBJ = \
     src/cli/kanban_lifecycle.o \
     src/cli/kanban_notify.o \
     src/cli/kanban_stats.o \
+    src/cli/kanban_runs.o \
+    src/cli/kanban_query.o \
+    src/cli/kanban_boards.o \
     src/cli/port_main.o \
     src/cli/port_memory_providers.o \
     src/cli/port_model_normalize.o \

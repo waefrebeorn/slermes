@@ -14,22 +14,6 @@
  *       add_attachment / list_attachments / get_attachment /
  *       delete_attachment / _append_event / list_events /
  *       list_runs / get_run / latest_summary).
- * PoP: kdb_create_task @ hermes_cli/kanban_db.py:create_task
- * PoP: kdb_task_get @ hermes_cli/kanban_db.py:get_task
- * PoP: kdb_list_tasks @ hermes_cli/kanban_db.py:list_tasks
- * PoP: kdb_assign_task @ hermes_cli/kanban_db.py:assign_task
- * PoP: kdb_add_comment @ hermes_cli/kanban_db.py:add_comment
- * PoP: kdb_add_attachment @ hermes_cli/kanban_db.py:add_attachment
- * PoP: kdb_list_comments @ hermes_cli/kanban_db.py:add_comment
- * PoP: kdb_list_attachments @ hermes_cli/kanban_db.py:add_attachment
- * PoP: kdb_append_event @ hermes_cli/kanban_db.py:append_event
- * PoP: kdb_list_events @ hermes_cli/kanban_db.py:append_event
- * PoP: kdb_list_runs @ hermes_cli/kanban_db.py:list_runs
- * PoP: kdb_delete_task @ hermes_cli/kanban_db.py:delete_task
- * PoP: kdb_delete_archived_task @ hermes_cli/kanban_db.py:delete_archived_task
- * PoP: kdb_child_ids @ hermes_cli/kanban_db.py:link_tasks
- * PoP: kdb_parent_ids @ hermes_cli/kanban_db.py:link_tasks
- * PoP: kdb_latest_summary @ hermes_cli/kanban_db.py:complete_task
  */
 
 #include "kanban_db.h"
@@ -44,6 +28,7 @@
  * require hermes_cli.profiles; we keep a faithful local lowercasing normaliser
  * (the C port's assignee normalisation matches the Python profile-name
  * canonical form which is a lowercased slug). */
+/* PoP: kdb_canon_assignee @ hermes_cli/kanban_db.py:_canonical_assignee */
 void kdb_canon_assignee(const char *in, char *out, size_t sz)
 {
     size_t i = 0, j = 0;
@@ -233,6 +218,7 @@ char *kdb_create_task(sqlite3 *conn, const kdb_create_spec_t *spec, char **paren
 
 /* ---- list tasks ---- */
 
+/* PoP: kdb_list_tasks @ hermes_cli/kanban_db.py:list_tasks */
 kanban_task_t **kdb_list_tasks(sqlite3 *conn, const char *status_filter,
                                   const char *assignee_filter, const char *tenant_filter,
                                   const char *session_filter, int include_archived,
@@ -354,6 +340,7 @@ static int kanban_would_cycle(sqlite3 *conn, const char *parent_id, const char *
     return found;
 }
 
+/* PoP: kdb_link_tasks @ hermes_cli/kanban_db.py:link_tasks */
 int kdb_link_tasks(sqlite3 *conn, const char *parent_id, const char *child_id)
 {
     if (!conn || !parent_id || !child_id) return 0;
@@ -398,6 +385,7 @@ int kdb_link_tasks(sqlite3 *conn, const char *parent_id, const char *child_id)
     return 1;
 }
 
+/* PoP: kdb_unlink_tasks @ hermes_cli/kanban_db.py:unlink_tasks */
 int kdb_unlink_tasks(sqlite3 *conn, const char *parent_id, const char *child_id)
 {
     if (!conn || !parent_id || !child_id) return 0;
@@ -418,6 +406,7 @@ int kdb_unlink_tasks(sqlite3 *conn, const char *parent_id, const char *child_id)
     return removed;
 }
 
+/* PoP: kdb_parent_ids @ hermes_cli/kanban_db.py:parent_ids */
 char **kdb_parent_ids(sqlite3 *conn, const char *task_id, int *out_n)
 {
     *out_n = 0;
@@ -440,6 +429,7 @@ char **kdb_parent_ids(sqlite3 *conn, const char *task_id, int *out_n)
     return out;
 }
 
+/* PoP: kdb_child_ids @ hermes_cli/kanban_db.py:child_ids */
 char **kdb_child_ids(sqlite3 *conn, const char *task_id, int *out_n)
 {
     *out_n = 0;
@@ -493,6 +483,14 @@ int kdb_add_comment(sqlite3 *conn, const char *task_id, const char *author, cons
     sqlite3_bind_int64(st, 4, now);
     int ok = (sqlite3_step(st) == SQLITE_DONE);
     sqlite3_finalize(st);
+    if (ok) {
+        char payload[256];
+        int blen = body ? (int)strlen(body) : 0;
+        snprintf(payload, sizeof(payload),
+                 "{\"author\":%s,\"len\":%d}",
+                 author && *author ? author : "", blen);
+        kdb_append_event(conn, task_id, -1, "commented", payload);
+    }
     return ok;
 }
 
@@ -549,6 +547,7 @@ int kdb_add_attachment(sqlite3 *conn, const char *task_id, const char *filename,
     return ok;
 }
 
+/* PoP: kdb_list_attachments @ hermes_cli/kanban_db.py:list_attachments */
 kanban_attach_t **kdb_list_attachments(sqlite3 *conn, const char *task_id, int *out_n)
 {
     *out_n = 0;
@@ -569,6 +568,7 @@ kanban_attach_t **kdb_list_attachments(sqlite3 *conn, const char *task_id, int *
     return out;
 }
 
+/* PoP: kdb_get_attachment @ hermes_cli/kanban_db.py:get_attachment */
 kanban_attach_t *kdb_get_attachment(sqlite3 *conn, long attach_id)
 {
     if (!conn) return NULL;
@@ -583,6 +583,7 @@ kanban_attach_t *kdb_get_attachment(sqlite3 *conn, long attach_id)
     return a;
 }
 
+/* PoP: kdb_delete_attachment @ hermes_cli/kanban_db.py:delete_attachment */
 int kdb_delete_attachment(sqlite3 *conn, long attach_id)
 {
     if (!conn) return 0;
@@ -624,6 +625,7 @@ int kdb_append_event(sqlite3 *conn, const char *task_id, long run_id,
     return ok;
 }
 
+/* PoP: kdb_list_events @ hermes_cli/kanban_db.py:list_events */
 kanban_event_t **kdb_list_events(sqlite3 *conn, const char *task_id, int *out_n)
 {
     *out_n = 0;
@@ -683,6 +685,7 @@ void kdb_run_list_free(kanban_run_t **list)
     free(list);
 }
 
+/* PoP: kdb_get_run @ hermes_cli/kanban_db.py:get_run */
 kanban_run_t *kdb_get_run(sqlite3 *conn, long run_id)
 {
     if (!conn) return NULL;

@@ -242,6 +242,72 @@ kanban_run_t **kdb_list_runs(sqlite3 *conn, const char *task_id,
 void kdb_run_list_free(kanban_run_t **list);
 kanban_run_t *kdb_get_run(sqlite3 *conn, long run_id);
 char *kdb_latest_summary(sqlite3 *conn, const char *task_id);  /* malloc'd */
+kanban_run_t *kdb_latest_run(sqlite3 *conn, const char *task_id);
+
+/* Run lifecycle (kanban_runs.c). */
+int  kdb_current_run_id(sqlite3 *conn, const char *task_id);
+int  kdb_end_run(sqlite3 *conn, const char *task_id, const char *outcome,
+                 const char *summary, const char *error, const char *metadata,
+                 const char *status);
+int  kdb_synthesize_ended_run(sqlite3 *conn, const char *task_id,
+                              const char *outcome, const char *summary,
+                              const char *error, const char *metadata);
+int  kdb_has_sticky_block(sqlite3 *conn, const char *task_id);
+int  kdb_would_cycle(sqlite3 *conn, const char *parent_id, const char *child_id);
+int  kdb_parent_results(sqlite3 *conn, const char *task_id,
+                         char ***out_parents, char ***out_results);
+void kdb_parent_results_free(char **parents, char **results);
+int  kdb_reclaim_task(sqlite3 *conn, const char *task_id, const char *reason);
+
+/* =========================================================================
+ * Notify  (kanban_notify.c)
+ * ========================================================================= */
+
+/* Subscribe a (task, platform, chat_id, thread_id) to task events. */
+int  kdb_add_notify_sub(sqlite3 *conn, const char *task_id,
+                         const char *platform, const char *chat_id,
+                         const char *thread_id, const char *user_id,
+                         const char *notifier_profile);
+int  kdb_remove_notify_sub(sqlite3 *conn, const char *task_id,
+                           const char *platform, const char *chat_id,
+                           const char *thread_id);
+/* Advance / rewind a subscription's event cursor (after / on failed delivery). */
+int  kdb_advance_notify_cursor(sqlite3 *conn, const char *task_id,
+                                const char *platform, const char *chat_id,
+                                const char *thread_id, int new_cursor);
+int  kdb_rewind_notify_cursor(sqlite3 *conn, const char *task_id,
+                              const char *platform, const char *chat_id,
+                              const char *thread_id, int claimed_cursor, int old_cursor);
+
+/* Listing / claiming unseen events. */
+char **kdb_list_notify_subs(sqlite3 *conn, const char *task_id, int *out_n); /* NULL-term rows as JSON */
+int  kdb_unseen_events_for_sub(sqlite3 *conn, const char *task_id,
+                               const char *platform, const char *chat_id,
+                               const char *thread_id, char **kinds, int n_kinds,
+                               int *out_new_cursor, kanban_event_t ***out_events, int *out_n);
+int  kdb_claim_unseen_events_for_sub(sqlite3 *conn, const char *task_id,
+                                     const char *platform, const char *chat_id,
+                                     const char *thread_id, char **kinds, int n_kinds,
+                                     int *out_old_cursor, int *out_new_cursor,
+                                     kanban_event_t ***out_events, int *out_n);
+void kdb_event_list_free(kanban_event_t **list);
+
+/* =========================================================================
+ * Query / analytics  (kanban_query.c)
+ * ========================================================================= */
+
+/* Garbage-collect events for terminal-state tasks older than the cutoff. */
+int  kdb_gc_events(sqlite3 *conn, int older_than_seconds);
+/* Discover profile names on disk (mirrors list_profiles_on_disk). Returns a
+ * NULL-terminated malloc'd array (caller frees with kdb_strv_free). */
+char **kdb_list_profiles_on_disk(void);
+void   kdb_strv_free(char **v);
+/* Enumerate assignees: returns malloc'd JSON array of
+ * {"name","on_disk","counts":{status:n}} objects (caller frees). */
+char *kdb_known_assignees(sqlite3 *conn);
+/* Board-level run summary for a set of task ids (NULL-term). Returns malloc'd
+ * JSON dict {task_id: summary}. Caller frees. */
+char *kdb_latest_summaries_json(sqlite3 *conn, char **task_ids, int n_ids);
 
 /* =========================================================================
  * Lifecycle  (kanban_lifecycle.c)
@@ -310,24 +376,10 @@ int  kdb_edit_completed_task_result(sqlite3 *conn, const char *task_id,
  * Notifications  (kanban_notify.c)
  * ========================================================================= */
 
-int  kdb_add_notify_sub(sqlite3 *conn, const char *task_id,
-                           const char *platform, const char *chat_id,
-                           const char *thread_id, const char *user_id,
-                           const char *notifier_profile);
-int  kdb_remove_notify_sub(sqlite3 *conn, const char *task_id,
-                              const char *platform, const char *chat_id,
-                              const char *thread_id);
-/* Advance / rewind the subscription cursor. */
-int  kdb_advance_notify_cursor(sqlite3 *conn, const char *task_id,
-                                  const char *platform, const char *chat_id,
-                                  const char *thread_id, long new_cursor);
-int  kdb_rewind_notify_cursor(sqlite3 *conn, const char *task_id,
-                                 const char *platform, const char *chat_id,
-                                 const char *thread_id,
-                                 long claimed_cursor, long old_cursor);
+/* (subscriptions declared in the Notification section below) */
 
 /* =========================================================================
- * Stats / age  (kanban_stats.c)
+ * Notify  (kanban_notify.c)
  * ========================================================================= */
 
 /* Board statistics. Returns a malloc'd JSON string (caller frees) shaped
@@ -339,6 +391,51 @@ char *kdb_board_stats(sqlite3 *conn);
  * {"created_age_seconds":N|null,"started_age_seconds":N|null,
  * "time_to_complete_seconds":N|null}. */
 char *kdb_task_age(sqlite3 *conn, const char *task_id);
+
+/* =========================================================================
+ * Boards  (kanban_boards.c)
+ * ========================================================================= */
+
+/* Path helpers (implemented in port_kanban_db.c). Caller frees the result. */
+char *kanban_home(void);
+char *kanban_db_path(const char *board);
+char *board_dir(const char *board);          /* <home>/kanban/boards/<slug>/  */
+char *kanban_boards_root(void);              /* <home>/kanban/boards          */
+char *board_metadata_path(const char *board);/* board_dir(slug)/board.json    */
+char *normalize_board_slug(const char *slug);
+char *get_current_board(void);
+#define KB_DEFAULT_BOARD "default"
+
+/* True if the board has persisted metadata or a DB on disk.
+ * "default" always exists. */
+int  kdb_board_exists(const char *board);
+
+/* Create a board dir + board.json + touch the DB. Idempotent.
+ * Returns a malloc'd metadata JSON string (caller frees); NULL on bad slug. */
+char *kdb_create_board(const char *slug,
+                       const char *name, const char *description,
+                       const char *icon, const char *color,
+                       const char *default_workdir);
+
+/* Enumerate boards on disk. Returns a malloc'd JSON array of metadata
+ * objects (default first, rest alpha). Caller frees. */
+char *kdb_list_boards(int include_archived);
+
+/* Read board.json (or synthesized defaults). Returns malloc'd JSON; caller frees. */
+char *kdb_read_board_metadata(const char *board);
+
+/* Write board.json, preserving existing fields. Returns malloc'd JSON; caller frees. */
+char *kdb_write_board_metadata(const char *board,
+                               const char *name, const char *description,
+                               const char *icon, const char *color,
+                               int archived_set, int archived,
+                               const char *default_workdir);
+
+/* Remove or archive a board. action = "archive" (default) or "delete".
+ * Returns malloc'd JSON summary {slug,action,new_path}; caller frees.
+ * Returns NULL for the default board or a non-existent board (matches Python
+ * raising ValueError — caller should treat NULL as error). */
+char *kdb_remove_board(const char *slug, int archive);
 
 #ifdef __cplusplus
 }

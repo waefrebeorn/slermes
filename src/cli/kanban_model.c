@@ -147,6 +147,7 @@ kanban_task_t *kdb_task_from_row(sqlite3_stmt *st)
     return t;
 }
 
+/* PoP: kdb_task_get @ hermes_cli/kanban_db.py:get_task */
 kanban_task_t *kdb_task_get(sqlite3 *conn, const char *task_id)
 {
     if (!conn || !task_id) return NULL;
@@ -172,26 +173,47 @@ void kdb_task_free(kanban_task_t *t)
     free(t);
 }
 
+/* PoP: kdb_task_id @ hermes_cli/kanban_db.py:id */
 const char *kdb_task_id(const kanban_task_t *t)            { return t ? t->id : NULL; }
+/* PoP: kdb_task_title @ hermes_cli/kanban_db.py:title */
 const char *kdb_task_title(const kanban_task_t *t)         { return t ? t->title : NULL; }
+/* PoP: kdb_task_status @ hermes_cli/kanban_db.py:status */
 const char *kdb_task_status(const kanban_task_t *t)        { return t ? t->status : NULL; }
+/* PoP: kdb_task_priority @ hermes_cli/kanban_db.py:priority */
 int         kdb_task_priority(const kanban_task_t *t)      { return t ? t->priority : 0; }
+/* PoP: kdb_task_assignee @ hermes_cli/kanban_db.py:assignee */
 const char *kdb_task_assignee(const kanban_task_t *t)      { return t ? t->assignee : NULL; }
+/* PoP: kdb_task_body @ hermes_cli/kanban_db.py:body */
 const char *kdb_task_body(const kanban_task_t *t)          { return t ? t->body : NULL; }
+/* PoP: kdb_task_workspace_kind @ hermes_cli/kanban_db.py:workspace_kind */
 const char *kdb_task_workspace_kind(const kanban_task_t *t){ return t ? t->workspace_kind : NULL; }
+/* PoP: kdb_task_workspace_path @ hermes_cli/kanban_db.py:workspace_path */
 const char *kdb_task_workspace_path(const kanban_task_t *t){ return t ? t->workspace_path : NULL; }
+/* PoP: kdb_task_tenant @ hermes_cli/kanban_db.py:tenant */
 const char *kdb_task_tenant(const kanban_task_t *t)        { return t ? t->tenant : NULL; }
+/* PoP: kdb_task_created_by @ hermes_cli/kanban_db.py:created_by */
 const char *kdb_task_created_by(const kanban_task_t *t)    { return t ? t->created_by : NULL; }
+/* PoP: kdb_task_created_at @ hermes_cli/kanban_db.py:created_at */
 long        kdb_task_created_at(const kanban_task_t *t)    { return t ? t->created_at : 0; }
+/* PoP: kdb_task_started_at @ hermes_cli/kanban_db.py:started_at */
 long        kdb_task_started_at(const kanban_task_t *t)    { return t ? t->started_at : 0; }
+/* PoP: kdb_task_completed_at @ hermes_cli/kanban_db.py:completed_at */
 long        kdb_task_completed_at(const kanban_task_t *t)  { return t ? t->completed_at : 0; }
+/* PoP: kdb_task_claim_expires @ hermes_cli/kanban_db.py:claim_expires */
 long        kdb_task_claim_expires(const kanban_task_t *t) { return t ? t->claim_expires : 0; }
+/* PoP: kdb_task_branch_name @ hermes_cli/kanban_db.py:branch_name */
 const char *kdb_task_branch_name(const kanban_task_t *t)   { return t ? t->branch_name : NULL; }
+/* PoP: kdb_task_result @ hermes_cli/kanban_db.py:result */
 const char *kdb_task_result(const kanban_task_t *t)        { return t ? t->result : NULL; }
+/* PoP: kdb_task_consecutive_failures @ hermes_cli/kanban_db.py:consecutive_failures */
 int         kdb_task_consecutive_failures(const kanban_task_t *t){ return t ? t->consecutive_failures : 0; }
+/* PoP: kdb_task_last_failure_error @ hermes_cli/kanban_db.py:last_failure_error */
 const char *kdb_task_last_failure_error(const kanban_task_t *t){ return NULL; /* stored separately */ }
+/* PoP: kdb_task_current_run_id @ hermes_cli/kanban_db.py:current_run_id */
 long        kdb_task_current_run_id(const kanban_task_t *t){ return t ? t->current_run_id : 0; }
+/* PoP: kdb_task_block_kind @ hermes_cli/kanban_db.py:block_kind */
 const char *kdb_task_block_kind(const kanban_task_t *t)    { return t ? t->block_kind : NULL; }
+/* PoP: kdb_task_block_recurrences @ hermes_cli/kanban_db.py:block_recurrences */
 int         kdb_task_block_recurrences(const kanban_task_t *t){ return t ? t->block_recurrences : 0; }
 
 /* ---- Run ---- */
@@ -228,10 +250,15 @@ void kdb_run_free(kanban_run_t *r)
     free(r);
 }
 
+/* PoP: kdb_run_outcome @ hermes_cli/kanban_db.py:outcome */
 const char *kdb_run_outcome(const kanban_run_t *r)   { return r ? r->outcome : NULL; }
+/* PoP: kdb_run_summary @ hermes_cli/kanban_db.py:summary */
 const char *kdb_run_summary(const kanban_run_t *r)   { return r ? r->summary : NULL; }
+/* PoP: kdb_run_error @ hermes_cli/kanban_db.py:error */
 const char *kdb_run_error(const kanban_run_t *r)     { return r ? r->error : NULL; }
+/* PoP: kdb_run_id @ hermes_cli/kanban_db.py:id */
 long        kdb_run_id(const kanban_run_t *r)        { return r ? r->id : 0; }
+/* PoP: kdb_run_status @ hermes_cli/kanban_db.py:status */
 const char *kdb_run_status(const kanban_run_t *r)    { return r ? r->status : NULL; }
 
 /* ---- Comment ---- */
@@ -254,8 +281,11 @@ void kdb_comment_free(kanban_comment_t *c)
     free(c->task_id); free(c->author); free(c->body); free(c);
 }
 
+/* PoP: kdb_comment_author @ hermes_cli/kanban_db.py:author */
 const char *kdb_comment_author(const kanban_comment_t *c){ return c ? c->author : NULL; }
+/* PoP: kdb_comment_body @ hermes_cli/kanban_db.py:body */
 const char *kdb_comment_body(const kanban_comment_t *c){ return c ? c->body : NULL; }
+/* PoP: kdb_comment_created_at @ hermes_cli/kanban_db.py:created_at */
 long        kdb_comment_created_at(const kanban_comment_t *c){ return c ? c->created_at : 0; }
 
 /* ---- Attachment ---- */
@@ -308,7 +338,11 @@ void kdb_event_free(kanban_event_t *e)
     free(e->task_id); free(e->kind); free(e->payload_json); free(e);
 }
 
+/* PoP: kdb_event_kind @ hermes_cli/kanban_db.py:kind */
 const char *kdb_event_kind(const kanban_event_t *e){ return e ? e->kind : NULL; }
+/* PoP: kdb_event_payload_json @ hermes_cli/kanban_db.py:payload */
 const char *kdb_event_payload_json(const kanban_event_t *e){ return e ? e->payload_json : NULL; }
+/* PoP: kdb_event_id @ hermes_cli/kanban_db.py:id */
 long        kdb_event_id(const kanban_event_t *e){ return e ? e->id : 0; }
+/* PoP: kdb_event_created_at @ hermes_cli/kanban_db.py:created_at */
 long        kdb_event_created_at(const kanban_event_t *e){ return e ? e->created_at : 0; }
