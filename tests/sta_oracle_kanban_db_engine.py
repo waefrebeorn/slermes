@@ -156,6 +156,69 @@ for op in root.get("ops", []):
         t = kb.get_task(conn, subst(a["task_id"]))
         s = kb.task_age(t) if t else {}
         results.append({"op": "age", "value": json.dumps(s, sort_keys=True, separators=(",", ":"))})
+    elif name == "latest_sum":
+        t = kb.get_task(conn, subst(a["task_id"]))
+        s = kb.latest_summary(conn, subst(a["task_id"])) if t else None
+        results.append({"op": "latest_sum", "value": s if s is not None else None})
+    elif name == "run_lifecycle":
+        tid = subst(a["task_id"])
+        rid = kb._current_run_id(conn, tid) or 0
+        ended = kb._end_run(conn, tid, outcome="completed", summary="run done") or 0
+        syn = kb._synthesize_ended_run(conn, tid, outcome="reclaimed", summary="synthetic") or 0
+        ls = kb.latest_summary(conn, tid)
+        results.append({"op": "run_lifecycle", "cur_run": int(rid),
+                        "ended": int(ended), "synth": int(syn),
+                        "latest_summary": ls})
+    elif name == "would_cycle":
+        cyc = kb._would_cycle(conn, subst(a["parent_id"]), subst(a["child_id"]))
+        results.append({"op": "would_cycle", "cycle": bool(cyc)})
+    elif name == "parent_results":
+        pr = kb.parent_results(conn, subst(a["task_id"]))
+        parents = [norm_id(p) for p, _ in pr]
+        results.append({"op": "parent_results", "n": len(pr),
+                        "parents": parents})
+    elif name == "unseen_claim":
+        old, new, evs = kb.claim_unseen_events_for_sub(
+            conn, task_id=subst(a["task_id"]), platform=a["platform"], chat_id=a["chat_id"])
+        results.append({"op": "unseen_claim", "old": int(old),
+                        "new": int(new), "n": len(evs)})
+    elif name == "gc":
+        n = kb.gc_events(conn, older_than_seconds=0)
+        results.append({"op": "gc", "deleted": int(n)})
+    elif name == "assignees":
+        s = kb.known_assignees(conn)
+        results.append({"op": "assignees", "value": json.dumps(s, separators=(",", ":"))})
+    elif name == "create_board":
+        m = kb.create_board(a["slug"], name=a.get("name"), description=a.get("description"),
+                             icon=a.get("icon"), color=a.get("color"),
+                             default_workdir=a.get("default_workdir"))
+        m.pop("db_path", None)
+        results.append({"op": "create_board", "value": json.dumps(m, separators=(",", ":"))})
+    elif name == "write_board_metadata":
+        arch = a.get("archived")
+        m = kb.write_board_metadata(a["board"], name=a.get("name"),
+                                    description=a.get("description"), icon=a.get("icon"),
+                                    color=a.get("color"),
+                                    archived=None if arch is None else bool(arch),
+                                    default_workdir=a.get("default_workdir"))
+        m.pop("db_path", None)
+        results.append({"op": "write_board_metadata", "value": json.dumps(m, separators=(",", ":"))})
+    elif name == "read_board_metadata":
+        m = kb.read_board_metadata(a["board"])
+        m.pop("db_path", None)
+        results.append({"op": "read_board_metadata", "value": json.dumps(m, separators=(",", ":"))})
+    elif name == "list_boards":
+        inc = a.get("include_archived", True)
+        ms = kb.list_boards(include_archived=bool(inc))
+        for _m in ms:
+            _m.pop("db_path", None)
+        results.append({"op": "list_boards", "value": json.dumps(ms, separators=(",", ":"))})
+    elif name == "remove_board":
+        arch = bool(a.get("archive", True))
+        m = kb.remove_board(a["slug"], archive=arch)
+        m.pop("db_path", None)
+        m.pop("new_path", None)
+        results.append({"op": "remove_board", "value": json.dumps(m, separators=(",", ":"))})
     elif name == "delete":
         ok = kb.delete_task(conn, subst(a["task_id"]))
         results.append({"op": "delete", "ok": bool(ok)})
@@ -170,8 +233,21 @@ for r in results:
     elif r["op"] == "list":
         ids = '[' + ','.join(jprint_str(x) for x in r["ids"]) + ']'
         parts.append('{"op":"list","count":%d,"ids":%s}' % (r["count"], ids))
-    elif r["op"] == "stats" or r["op"] == "age":
+    elif r["op"] == "stats" or r["op"] == "age" or r["op"] == "latest_sum" or r["op"] == "assignees" or r["op"] == "create_board" or r["op"] == "write_board_metadata" or r["op"] == "read_board_metadata" or r["op"] == "list_boards" or r["op"] == "remove_board":
         parts.append('{"op":"%s","value":%s}' % (r["op"], jprint_str(r["value"])))
+    elif r["op"] == "run_lifecycle":
+        parts.append('{"op":"run_lifecycle","cur_run":%d,"ended":%d,"synth":%d,"latest_summary":%s}'
+                     % (r["cur_run"], r["ended"], r["synth"], jprint_str(r["latest_summary"])))
+    elif r["op"] == "would_cycle":
+        parts.append('{"op":"would_cycle","cycle":%s}' % ("true" if r["cycle"] else "false"))
+    elif r["op"] == "parent_results":
+        pp = '[' + ','.join(jprint_str(x) for x in r["parents"]) + ']'
+        parts.append('{"op":"parent_results","n":%d,"parents":%s}' % (r["n"], pp))
+    elif r["op"] == "unseen_claim":
+        parts.append('{"op":"unseen_claim","old":%d,"new":%d,"n":%d}'
+                     % (r["old"], r["new"], r["n"]))
+    elif r["op"] == "gc":
+        parts.append('{"op":"gc","deleted":%d}' % r["deleted"])
     elif r["op"] == "recompute":
         parts.append('{"op":"recompute","promoted":%d}' % r["promoted"])
     else:

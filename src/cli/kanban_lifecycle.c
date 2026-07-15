@@ -11,22 +11,6 @@
  * Minimal includes. No god header.
  *
  * PoP: exact port. Semantic source of truth = hermes_cli/kanban_db.py.
- * PoP: kdb_link_tasks @ hermes_cli/kanban_db.py:link_tasks
- * PoP: kdb_unlink_tasks @ hermes_cli/kanban_db.py:unlink_tasks
- * PoP: kdb_complete_task @ hermes_cli/kanban_db.py:complete_task
- * PoP: kdb_block_task @ hermes_cli/kanban_db.py:block_task
- * PoP: kdb_unblock_task @ hermes_cli/kanban_db.py:unblock_task
- * PoP: kdb_recompute_ready @ hermes_cli/kanban_db.py:recompute_ready
- * PoP: kdb_claim_task @ hermes_cli/kanban_db.py:claim_task
- * PoP: kdb_reassign_task @ hermes_cli/kanban_db.py:reassign_task
- * PoP: kdb_schedule_task @ hermes_cli/kanban_db.py:schedule_task
- * PoP: kdb_promote_task @ hermes_cli/kanban_db.py:promote_task
- * PoP: kdb_archive_task @ hermes_cli/kanban_db.py:archive_task
- * PoP: kdb_release_stale_claims @ hermes_cli/kanban_db.py:release_stale_claims
- * PoP: kdb_heartbeat_claim @ hermes_cli/kanban_db.py:heartbeat_claim
- * PoP: kdb_claim_review_task @ hermes_cli/kanban_db.py:claim_review_task
- * PoP: kdb_specify_triage_task @ hermes_cli/kanban_db.py:specify_triage_task
- * PoP: kdb_edit_completed_task_result @ hermes_cli/kanban_db.py:edit_completed_task_result
  */
 
 #include "kanban_db.h"
@@ -192,6 +176,7 @@ int kdb_recompute_ready(sqlite3 *conn, int failure_limit)
                 sqlite3_step(up); sqlite3_finalize(up);
             }
         }
+/* PoP: kdb_append_event @ hermes_cli/kanban_db.py:_append_event */
         kdb_append_event(conn, task_id, -1, "promoted", NULL);
         promoted++;
     }
@@ -768,6 +753,7 @@ int kdb_archive_task(sqlite3 *conn, const char *task_id)
     return ok;
 }
 
+/* PoP: kdb_delete_archived_task @ hermes_cli/kanban_db.py:delete_archived_task */
 int kdb_delete_archived_task(sqlite3 *conn, const char *task_id)
 {
     if (!conn || !task_id) return 0;
@@ -801,6 +787,7 @@ int kdb_delete_archived_task(sqlite3 *conn, const char *task_id)
     return ok;
 }
 
+/* PoP: kdb_delete_task @ hermes_cli/kanban_db.py:delete_task */
 int kdb_delete_task(sqlite3 *conn, const char *task_id)
 {
     if (!conn || !task_id) return 0;

@@ -34,6 +34,34 @@ static void jprint_str(const char *s) {
     printf("\"");
 }
 
+/* Remove every environment-specific "db_path":"..." and "new_path":"..."
+ * field from a board metadata / list JSON so the oracle comparison is
+ * home-dir independent. Returns a newly malloc'd string (caller frees);
+ * frees the input. */
+static char *strip_db_path(char *m)
+{
+    if (!m) return NULL;
+    char *out = malloc(strlen(m) + 1);
+    size_t o = 0;
+    const char *p = m;
+    const char *needle = ",\"db_path\":\"";
+    const char *needle2 = ",\"new_path\":\"";
+    while (*p) {
+        const char *hit = strstr(p, needle);
+        if (!hit) hit = strstr(p, needle2);
+        if (!hit) { strcpy(out + o, p); break; }
+        size_t pre = (size_t)(hit - p);
+        memcpy(out + o, p, pre);
+        o += pre;
+        const char *q = hit + (hit == strstr(p, needle2) ? strlen(needle2) : strlen(needle));
+        while (*q && *q != '"') { if (*q == '\\') q++; q++; }
+        if (*q == '"') q++;  /* skip closing quote */
+        p = q;               /* continue after the removed field */
+    }
+    free(m);
+    return out;
+}
+
 int main(int argc, char **argv)
 {
     /* Oracle isolation: each side (C harness + Python oracle) must start from
@@ -215,10 +243,112 @@ int main(int argc, char **argv)
             printf("%s{\"op\":\"age\",\"value\":", i?",":"");
             jprint_str(s); printf("}"); free(s);
         }
+        else if (strcmp(name, "run_lifecycle") == 0) {
+            const char *tid = subst(json_get_str(a, "task_id", NULL));
+            int rid = kdb_current_run_id(conn, tid);
+            int ended = kdb_end_run(conn, tid, "completed", "run done", NULL, NULL, "completed");
+            int syn = kdb_synthesize_ended_run(conn, tid, "reclaimed", "synthetic", NULL, NULL);
+            char *ls = kdb_latest_summary(conn, tid);
+            printf("%s{\"op\":\"run_lifecycle\",\"cur_run\":%d,\"ended\":%d,\"synth\":%d,\"latest_summary\":",
+                   i?",":"", rid, ended, syn);
+            jprint_str(ls); printf("}"); if (ls) free(ls);
+        }
+        else if (strcmp(name, "would_cycle") == 0) {
+            const char *p = subst(json_get_str(a, "parent_id", NULL));
+            const char *c = subst(json_get_str(a, "child_id", NULL));
+            int cyc = kdb_would_cycle(conn, p, c);
+            printf("%s{\"op\":\"would_cycle\",\"cycle\":%s}", i?",":"", cyc?"true":"false");
+        }
+        else if (strcmp(name, "parent_results") == 0) {
+            const char *tid = subst(json_get_str(a, "task_id", NULL));
+            char **ps = NULL, **rs = NULL;
+            int n = kdb_parent_results(conn, tid, &ps, &rs);
+            printf("%s{\"op\":\"parent_results\",\"n\":%d,\"parents\":[", i?",":"", n);
+            for (int j=0;j<n;j++){
+                if(j)printf(",");
+                const char *nid = norm_id(ps[j]);
+                jprint_str(nid ? nid : ps[j]);
+            }
+            printf("]}");
+            kdb_parent_results_free(ps, rs);
+        }
+        else if (strcmp(name, "unseen_claim") == 0) {
+            const char *tid = subst(json_get_str(a, "task_id", NULL));
+            const char *pf = json_get_str(a, "platform", NULL);
+            const char *cid = json_get_str(a, "chat_id", NULL);
+            int old=0, neu=0, n=0; kanban_event_t **ev=NULL;
+            n = kdb_claim_unseen_events_for_sub(conn, tid, pf, cid, NULL, NULL, 0,
+                                                &old, &neu, &ev, &n);
+            printf("%s{\"op\":\"unseen_claim\",\"old\":%d,\"new\":%d,\"n\":%d}", i?",":"", old, neu, n);
+            kdb_event_list_free(ev);
+        }
+        else if (strcmp(name, "gc") == 0) {
+            int n = kdb_gc_events(conn, 0);  /* cutoff=now -> only terminal, aged */
+            printf("%s{\"op\":\"gc\",\"deleted\":%d}", i?",":"", n);
+        }
+        else if (strcmp(name, "assignees") == 0) {
+            char *s = kdb_known_assignees(conn);
+            printf("%s{\"op\":\"assignees\",\"value\":", i?",":"");
+            jprint_str(s); printf("}"); if (s) free(s);
+        }
+        else if (strcmp(name, "latest_sum") == 0) {
+            const char *tid = subst(json_get_str(a, "task_id", NULL));
+            char *s = kdb_latest_summary(conn, tid);
+            printf("%s{\"op\":\"latest_sum\",\"value\":", i?",":"");
+            jprint_str(s); printf("}"); if (s) free(s);
+        }
         else if (strcmp(name, "delete") == 0) {
             const char *tid = subst(json_get_str(a, "task_id", NULL));
             int ok = kdb_delete_task(conn, tid);
             printf("%s{\"op\":\"delete\",\"ok\":%s}", i?",":"", ok?"true":"false");
+        }
+        else if (strcmp(name, "create_board") == 0) {
+            const char *slug = json_get_str(a, "slug", NULL);
+            const char *nm = json_get_str(a, "name", NULL);
+            const char *ds = json_get_str(a, "description", NULL);
+            const char *ic = json_get_str(a, "icon", NULL);
+            const char *cl = json_get_str(a, "color", NULL);
+            const char *dw = json_get_str(a, "default_workdir", NULL);
+            char *m = kdb_create_board(slug, nm, ds, ic, cl, dw);
+            m = strip_db_path(m);
+            printf("%s{\"op\":\"create_board\",\"value\":", i?",":"");
+            jprint_str(m); printf("}"); if (m) free(m);
+        }
+        else if (strcmp(name, "write_board_metadata") == 0) {
+            const char *b = json_get_str(a, "board", NULL);
+            const char *nm = json_get_str(a, "name", NULL);
+            const char *ds = json_get_str(a, "description", NULL);
+            const char *ic = json_get_str(a, "icon", NULL);
+            const char *cl = json_get_str(a, "color", NULL);
+            int arch_set = (json_obj_get(a, "archived") != NULL);
+            int arch = (int)json_get_num(a, "archived", 0);
+            const char *dw = json_get_str(a, "default_workdir", NULL);
+            char *m = kdb_write_board_metadata(b, nm, ds, ic, cl, arch_set, arch, dw);
+            m = strip_db_path(m);
+            printf("%s{\"op\":\"write_board_metadata\",\"value\":", i?",":"");
+            jprint_str(m); printf("}"); if (m) free(m);
+        }
+        else if (strcmp(name, "read_board_metadata") == 0) {
+            const char *b = json_get_str(a, "board", NULL);
+            char *m = kdb_read_board_metadata(b);
+            m = strip_db_path(m);
+            printf("%s{\"op\":\"read_board_metadata\",\"value\":", i?",":"");
+            jprint_str(m); printf("}"); if (m) free(m);
+        }
+        else if (strcmp(name, "list_boards") == 0) {
+            int inc = (int)json_get_num(a, "include_archived", 1);
+            char *m = kdb_list_boards(inc);
+            m = strip_db_path(m);
+            printf("%s{\"op\":\"list_boards\",\"value\":", i?",":"");
+            jprint_str(m); printf("}"); if (m) free(m);
+        }
+        else if (strcmp(name, "remove_board") == 0) {
+            const char *slug = json_get_str(a, "slug", NULL);
+            int arch = (int)json_get_num(a, "archive", 1);
+            char *m = kdb_remove_board(slug, arch);
+            m = strip_db_path(m);
+            printf("%s{\"op\":\"remove_board\",\"value\":", i?",":"");
+            jprint_str(m); printf("}"); if (m) free(m);
         }
         else {
             printf("%s{\"op\":\"%s\",\"ok\":false}", i?",":"", name);
