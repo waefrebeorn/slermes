@@ -124,17 +124,7 @@ static char *json_get_field_str(const char *json, const char *key)
 }
 
 /* Is `name` an installed profile? Uses the on-disk profile registry. */
-static int profile_exists(const char *name)
-{
-    if (!name || !*name) return 0;
-    char **profs = kdb_list_profiles_on_disk();
-    if (!profs) return 0;
-    for (int i = 0; profs[i]; i++) {
-        if (strcmp(profs[i], name) == 0) { kdb_strv_free(profs); return 1; }
-    }
-    kdb_strv_free(profs);
-    return 0;
-}
+/* profile_exists is now a shared public symbol in port_kanban_db.c. */
 
 /* Active profile name (falls back to "default"). The engine has no notion of
  * a "current" selection beyond the on-disk default; "default" is the oracle
