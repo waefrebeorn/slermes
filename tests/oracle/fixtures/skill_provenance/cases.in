@@ -1,0 +1,22 @@
+{
+  "ops": [
+    {"op": "get"},
+    {"op": "is_bg"},
+    {"op": "set", "origin": "background_review"},
+    {"op": "get"},
+    {"op": "is_bg"},
+    {"op": "set", "origin": ""},
+    {"op": "get"},
+    {"op": "reset"},
+    {"op": "get"},
+    {"op": "reset"},
+    {"op": "get"},
+    {"op": "set", "origin": "background_review"},
+    {"op": "set", "origin": "foreground"},
+    {"op": "is_bg"},
+    {"op": "reset"},
+    {"op": "is_bg"},
+    {"op": "reset"},
+    {"op": "get"}
+  ]
+}
