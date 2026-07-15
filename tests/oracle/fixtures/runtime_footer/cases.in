@@ -1,0 +1,23 @@
+{
+  "cases": [
+    {"fn": "model_short", "model": "openai/gpt-5.4"},
+    {"fn": "model_short", "model": "claude-sonnet-4"},
+    {"fn": "model_short", "model": ""},
+    {"fn": "home_relative_cwd", "cwd": "/home/oracle/projects/slermes"},
+    {"fn": "home_relative_cwd", "cwd": "/home/oracle"},
+    {"fn": "home_relative_cwd", "cwd": "/tmp/other"},
+    {"fn": "home_relative_cwd", "cwd": ""},
+    {"fn": "format_runtime_footer", "model": "openai/gpt-5.4", "context_tokens": 5000, "context_length": 20000, "cwd": "/home/oracle/x", "fields": ["model", "context_pct", "cwd"]},
+    {"fn": "format_runtime_footer", "model": "vendor/m", "context_tokens": 0, "context_length": 0, "cwd": "/home/oracle/x", "fields": ["model", "context_pct", "cwd"]},
+    {"fn": "format_runtime_footer", "model": "vendor/m", "context_tokens": 15000, "context_length": 20000, "cwd": "/home/oracle/x", "fields": ["context_pct"]},
+    {"fn": "format_runtime_footer", "model": "vendor/m", "context_tokens": 1, "context_length": 8, "cwd": "/home/oracle/x", "fields": ["context_pct"]},
+    {"fn": "format_runtime_footer", "model": "vendor/m", "context_tokens": 3, "context_length": 8, "cwd": "/home/oracle/x", "fields": ["context_pct"]},
+    {"fn": "format_runtime_footer", "model": null, "context_tokens": 100, "context_length": 200, "cwd": "", "fields": ["model", "context_pct", "cwd"]},
+    {"fn": "format_runtime_footer", "model": "a/b", "context_tokens": 100, "context_length": 200, "cwd": "/home/oracle/x", "fields": ["unknown_field", "model"]},
+    {"fn": "build_footer_line", "user_config": null, "platform_key": null, "model": "a/b", "context_tokens": 100, "context_length": 200, "cwd": "/home/oracle/x"},
+    {"fn": "build_footer_line", "user_config": {"display": {"runtime_footer": {"enabled": true}}}, "platform_key": null, "model": "openai/gpt-5.4", "context_tokens": 5000, "context_length": 20000, "cwd": "/home/oracle/x"},
+    {"fn": "build_footer_line", "user_config": {"display": {"runtime_footer": {"enabled": true, "fields": ["model"]}}}, "platform_key": null, "model": "openai/gpt-5.4", "context_tokens": 5000, "context_length": 20000, "cwd": "/home/oracle/x"},
+    {"fn": "build_footer_line", "user_config": {"display": {"runtime_footer": {"enabled": false}, "platforms": {"telegram": {"runtime_footer": {"enabled": true, "fields": ["cwd"]}}}}}, "platform_key": "telegram", "model": "openai/gpt-5.4", "context_tokens": 5000, "context_length": 20000, "cwd": "/home/oracle/deep/dir"},
+    {"fn": "build_footer_line", "user_config": {"display": {"runtime_footer": {"enabled": true}, "platforms": {"telegram": {"runtime_footer": {"enabled": false}}}}}, "platform_key": "telegram", "model": "openai/gpt-5.4", "context_tokens": 5000, "context_length": 20000, "cwd": "/home/oracle/x"}
+  ]
+}
