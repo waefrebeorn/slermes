@@ -1,0 +1,18 @@
+{
+  "c_path": "/tmp/oracle_dt_c/dt.json",
+  "py_path": "/tmp/oracle_dt_py/dt.json",
+  "ops": [
+    {"op": "is_dead_error_kind", "chat_id": "forbidden"},
+    {"op": "is_dead_error_kind", "chat_id": "not_found"},
+    {"op": "is_dead_error_kind", "chat_id": "rate_limit"},
+    {"op": "mark", "platform": "Telegram", "chat_id": " -123 ", "reason": "the group chat was deleted"},
+    {"op": "is_dead", "platform": "telegram", "chat_id": "-123"},
+    {"op": "mark", "platform": "telegram", "chat_id": "-123", "reason": "again"},
+    {"op": "mark", "platform": "discord", "chat_id": "999", "reason": ""},
+    {"op": "is_dead", "platform": "discord", "chat_id": "999"},
+    {"op": "is_dead", "platform": "discord", "chat_id": "000"},
+    {"op": "clear", "platform": "telegram", "chat_id": "-123"},
+    {"op": "is_dead", "platform": "telegram", "chat_id": "-123"},
+    {"op": "clear", "platform": "telegram", "chat_id": "-123"}
+  ]
+}
