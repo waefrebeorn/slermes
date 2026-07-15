@@ -39,6 +39,10 @@ int main(int argc, char **argv) {
     if (!root || root->type != JSON_OBJECT) { free(src); return 1; }
 
     const char *dbpath = json_string_value(json_object_get(root, "db"));
+    /* Mirror the Python oracle: start from a clean fixture DB so the run is
+     * deterministic across invocations (otherwise columns accumulate and
+     * "add" ops read as EXISTS on the second+ run). */
+    remove(dbpath);
     sqlite3 *db = open_db(dbpath);
     if (!db) { fprintf(stderr, "cannot open %s\n", dbpath); return 1; }
     /* create a seed table for column-add tests */

@@ -1,0 +1,26 @@
+{
+  "now": 1700000000,
+  "ops": [
+    {"op": "create", "args": {"name": "ROOT", "title": "Root task", "assignee": "Worker1", "created_by": "spec", "workspace_kind": "scratch"}},
+    {"op": "create", "args": {"name": "CHILDA", "title": "Child A", "assignee": "Worker2", "parents": ["<ROOT>"], "created_by": "spec"}},
+    {"op": "create", "args": {"name": "CHILDB", "title": "Child B no parent", "assignee": "Worker3"}},
+    {"op": "list", "args": {}},
+    {"op": "list", "args": {"status": "todo"}},
+    {"op": "recompute", "args": {}},
+    {"op": "list", "args": {"status": "ready"}},
+    {"op": "claim", "args": {"task_id": "<CHILDB>"}},
+    {"op": "complete", "args": {"task_id": "<CHILDB>", "result": "done", "summary": "finished child b"}},
+    {"op": "comment", "args": {"task_id": "<CHILDB>", "author": "rev", "body": "looks good"}},
+    {"op": "notify_add", "args": {"task_id": "<CHILDB>", "platform": "telegram", "chat_id": "chat1"}},
+    {"op": "link", "args": {"parent_id": "<CHILDB>", "child_id": "<ROOT>"}},
+    {"op": "claim", "args": {"task_id": "<ROOT>"}},
+    {"op": "block", "args": {"task_id": "<ROOT>", "kind": "needs_input"}},
+    {"op": "unblock", "args": {"task_id": "<ROOT>"}},
+    {"op": "reassign", "args": {"task_id": "<ROOT>", "profile": "WorkerX"}},
+    {"op": "claim", "args": {"task_id": "<ROOT>"}},
+    {"op": "complete", "args": {"task_id": "<ROOT>", "result": "all done", "summary": "root complete"}},
+    {"op": "stats", "args": {}},
+    {"op": "age", "args": {"task_id": "<ROOT>"}},
+    {"op": "delete", "args": {"task_id": "<CHILDA>"}}
+  ]
+}

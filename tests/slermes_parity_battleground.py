@@ -937,7 +937,7 @@ class ParityAnalyzer:
             "hermes_cli/goals.py": "src/cli/goals.c",
             "hermes_cli/gui_uninstall.py": "src/cli/gui_uninstall.c",
             "hermes_cli/kanban.py": "src/cli/kanban.c",
-            "hermes_cli/kanban_db.py": "src/cli/kanban_db.c",
+            "hermes_cli/kanban_db.py": "src/cli/kanban_db_engine.c",
             "hermes_cli/kanban_decompose.py": "src/cli/kanban_decompose.c",
             "hermes_cli/kanban_diagnostics.py": "src/cli/kanban_diagnostics.c",
             "hermes_cli/kanban_specify.py": "src/cli/kanban_specify.c",
