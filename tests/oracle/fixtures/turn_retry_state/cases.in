@@ -1,0 +1,13 @@
+{
+  "ops": [
+    {"op": "get", "field": "codex_auth_retry_attempted"},
+    {"op": "set", "field": "codex_auth_retry_attempted", "val": true},
+    {"op": "get", "field": "codex_auth_retry_attempted"},
+    {"op": "set", "field": "has_retried_429", "val": true},
+    {"op": "set", "field": "restart_with_compressed_messages", "val": true},
+    {"op": "set", "field": "nous_paid_entitlement_refresh_attempted", "val": true},
+    {"op": "get", "field": "has_retried_429"},
+    {"op": "get", "field": "restart_with_length_continuation"},
+    {"op": "iter"}
+  ]
+}
