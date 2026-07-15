@@ -73,6 +73,16 @@ bool kanban_complete_task(const char *tid, const char *summary,
  * true on success or when the edge already exists. */
 bool kanban_link_tasks(const char *parent_id, const char *child_id);
 
+/* Block / unblock / heartbeat a task by id (engine-backed). */
+bool kanban_block_task(const char *tid, const char *reason, const char *kind);
+bool kanban_unblock_task(const char *tid);
+bool kanban_heartbeat(const char *tid);
+
+/* List all task ids on the default board. Returns a NULL-terminated array
+ * (caller frees with kanban_all_task_ids_free). `limit` <= 0 => no cap. */
+char **kanban_all_task_ids(int *limit);
+void kanban_all_task_ids_free(char **list);
+
 #ifdef __cplusplus
 }
 #endif
