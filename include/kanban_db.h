@@ -309,6 +309,34 @@ char *kdb_known_assignees(sqlite3 *conn);
  * JSON dict {task_id: summary}. Caller frees. */
 char *kdb_latest_summaries_json(sqlite3 *conn, char **task_ids, int n_ids);
 
+/* ---- kanban_decompose concern: pure triage/roster helpers ---- */
+
+/* Extract the first {...} JSON object blob from an LLM reply, stripping
+ * ```fence``` markers. Returns malloc'd JSON string or NULL on no/!dict. */
+char *kdb_extract_json_blob(const char *raw);
+
+/* Resolve which profile owns the orchestration task after fan-out. Mirrors
+ * _resolve_orchestrator_profile: honors kanban.orchestrator_profile when the
+ * profile exists, else the active/default profile ("default"). */
+char *kdb_resolve_orchestrator_profile(const char *kanban_cfg_json);
+/* Resolve the default assignee for fan-out children (kanban.default_assignee
+ * if it exists, else active/default). */
+char *kdb_resolve_default_assignee(const char *kanban_cfg_json);
+
+/* Return a malloc'd JSON roster of installed profiles:
+ * [{"name","description","has_description"}]. Caller frees. */
+char *kdb_build_roster(void);
+/* Format a roster (from kdb_build_roster output) into the prompt string.
+ * Returns malloc'd string; "" -> "(no profiles installed ...)". Caller frees. */
+char *kdb_format_roster(const char *roster_json);
+
+/* Normalize an assignee choice to a valid name, falling back to
+ * default_assignee. valid_names is a NULL-terminated list. Returns malloc'd
+ * chosen name (never NULL). */
+char *kdb_normalize_assignee_choice(const char *assignee,
+                                    const char *default_assignee,
+                                    char **valid_names);
+
 /* =========================================================================
  * Lifecycle  (kanban_lifecycle.c)
  * ========================================================================= */

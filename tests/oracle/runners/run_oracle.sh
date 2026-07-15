@@ -49,8 +49,14 @@ for f in "$FIX"/*.in; do
   case="$(basename "$f" .in)"
   extra=""
   [ -f "$FIX/args.$case" ] && extra="$(cat "$FIX/args.$case")"
-  SLERMES_HOME="$TMPH" HOME="$TMPH" "/tmp/tt_$NAME" "$f" $extra > "/tmp/oracle_${NAME}_c_${case}.json" 2>/dev/null
-  python3 "$ORACLE" "$f" $extra > "/tmp/oracle_${NAME}_py_${case}.json" 2>/dev/null
+  # The C engine resolves its home via SLERMES_HOME (kanban_home()), while the
+  # Python profiles module resolves via HERMES_HOME (get_default_hermes_root()).
+  # They honor DIFFERENT env vars, so we export BOTH to the same temp dir for
+  # BOTH the harness and the oracle. That gives each side a single, shared,
+  # isolated home so profiles the harness writes are exactly what the oracle
+  # reads (and neither ever touches the developer's real ~/.hermes).
+  SLERMES_HOME="$TMPH" HERMES_HOME="$TMPH" HOME="$TMPH" "/tmp/tt_$NAME" "$f" $extra > "/tmp/oracle_${NAME}_c_${case}.json" 2>/dev/null
+  SLERMES_HOME="$TMPH" HERMES_HOME="$TMPH" HOME="$TMPH" python3 "$ORACLE" "$f" $extra > "/tmp/oracle_${NAME}_py_${case}.json" 2>/dev/null
   if diff -q "/tmp/oracle_${NAME}_c_${case}.json" "/tmp/oracle_${NAME}_py_${case}.json" >/dev/null; then
     echo "$case: MATCH"
   else

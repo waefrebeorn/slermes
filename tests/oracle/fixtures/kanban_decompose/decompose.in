@@ -1,0 +1,21 @@
+{
+  "ops": [
+    {"op": "extract", "raw": "Sure! {\"fanout\": true, \"tasks\": [{\"title\": \"a\"}]}"},
+    {"op": "extract", "raw": "```json\n{\"fanout\": false, \"title\": \"x\"}\n```"},
+    {"op": "extract", "raw": "no json here at all"},
+    {"op": "extract", "raw": "prefix {\"a\":1} suffix {\"b\":2} tail"},
+    {"op": "resolve_orch", "cfg": "{}"},
+    {"op": "resolve_orch", "cfg": "{\"orchestrator_profile\": \"alice\"}"},
+    {"op": "resolve_orch", "cfg": "{\"orchestrator_profile\": \"ghost\"}"},
+    {"op": "resolve_def", "cfg": "{}"},
+    {"op": "resolve_def", "cfg": "{\"default_assignee\": \"bob\"}"},
+    {"op": "resolve_def", "cfg": "{\"default_assignee\": \"ghost\"}"},
+    {"op": "normalize", "assignee": "alice", "default_assignee": "default", "valid_names": ["alice", "bob"]},
+    {"op": "normalize", "assignee": "carol", "default_assignee": "default", "valid_names": ["alice", "bob"]},
+    {"op": "normalize", "assignee": "  ", "default_assignee": "default", "valid_names": ["alice", "bob"]},
+    {"op": "normalize", "assignee": "BOB", "default_assignee": "default", "valid_names": ["alice", "bob"]},
+    {"op": "build_roster"},
+    {"op": "format_roster", "roster": []},
+    {"op": "format_roster", "roster": [{"name": "alice", "description": "lead", "has_description": true}, {"name": "bob", "description": "", "has_description": false}]}
+  ]
+}
