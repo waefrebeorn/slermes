@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 /*
  * port_tools_managed_tool_gateway.c — C port of tools/managed_tool_gateway.py
  */
@@ -8,6 +9,8 @@
 #include <string.h>
 #include <time.h>
 #include <sys/stat.h>
+
+#include <ctype.h>
 
 /* PoP: cli_tools_managed_tool_gateway_auth_json_path @ tools/managed_tool_gateway.py:auth_json_path */
 const char* cli_tools_managed_tool_gateway_auth_json_path(void) {

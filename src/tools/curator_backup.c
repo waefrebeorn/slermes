@@ -8,6 +8,7 @@
  */
 
 #include "hermes_core_types.h"
+#include "hermes_agent.h"
 #include "hermes_cron.h"
 #include "hermes_skills.h"
 #include "hermes_json.h"

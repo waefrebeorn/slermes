@@ -7,10 +7,13 @@
 
 #include "hermes_core_types.h"
 #include "hermes_json.h"
+#include "hermes_redact.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+
+#include "hermes_sanitize.h"
 
 /* ================================================================
  *  Sanitization Rules

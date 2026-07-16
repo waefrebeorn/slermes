@@ -12,6 +12,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "port_tools_environments_modal_utils.h"
+#include "port_tools_environments_managed_modal.h"
+
 /* Declared in port_tools_credential_files.c (no dedicated header). Returns a
  * JSON array of registered host credential-file mounts (empty when none). */
 extern json_node_t *cli_tools_credential_files_get_credential_file_mounts(void);

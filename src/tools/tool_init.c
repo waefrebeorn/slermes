@@ -7,6 +7,8 @@
 
 #include "hermes_core_types.h"
 
+#include "registry.h"
+
 /* P168: File sandbox init */
 void sandbox_init(void);
 

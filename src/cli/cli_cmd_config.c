@@ -7,6 +7,9 @@
 #include "commands_shared.h"
 #include "hermes_core_types.h"
 
+#include "cli.h"
+#include <ctype.h>
+
 /* P23: Config category groups — /config groups lists all.
  * Canonical definition (shared by the facade via commands_shared.h extern).
  * The cfg_category_t type lives in commands_shared.h. */

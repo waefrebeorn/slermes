@@ -24,6 +24,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <ctype.h>
 
 /* ------------------------------------------------------------------ */
 /* small JSON helpers (board.json is flat; we hand-roll to avoid a dep) */

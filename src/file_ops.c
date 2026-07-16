@@ -26,6 +26,8 @@
 #include <libgen.h>
 #include <pwd.h>
 
+#include "hermes_logger.h"
+
 /* ── Internal helpers ────────────────────────────────────────────────────── */
 
 static void file_entry_init(file_entry_t *e, const char *name, const char *path,
@@ -49,7 +51,7 @@ char *file_read_text(const char *path, size_t *out_len) {
 
     FILE *fp = fopen(path, "rb");
     if (!fp) {
-        hermes_log("file_read_text: cannot open '%s': %s", path, strerror(errno));
+        hermes_log(LOG_ERROR, "file_ops", "file_read_text: cannot open '%s': %s", path, strerror(errno));
         return NULL;
     }
 
@@ -150,7 +152,7 @@ bool file_write_text(const char *path, const char *text) {
 
     FILE *fp = fopen(path, "wb");
     if (!fp) {
-        hermes_log("file_write_text: cannot open '%s': %s", path, strerror(errno));
+        hermes_log(LOG_ERROR, "file_ops", "file_write_text: cannot open '%s': %s", path, strerror(errno));
         return false;
     }
 
@@ -227,7 +229,7 @@ dir_listing_t *dir_list(const char *path) {
 
     DIR *dir = opendir(path);
     if (!dir) {
-        hermes_log("dir_list: cannot open '%s': %s", path, strerror(errno));
+        hermes_log(LOG_ERROR, "file_ops", "dir_list: cannot open '%s': %s", path, strerror(errno));
         free(listing);
         return NULL;
     }

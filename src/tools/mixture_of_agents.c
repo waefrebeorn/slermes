@@ -18,6 +18,8 @@
 #include "hermes_core_types.h"
 #include "hermes_http.h"
 #include "hermes_json.h"
+#include "hermes_agent.h"
+#include "registry.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>

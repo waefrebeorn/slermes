@@ -202,7 +202,7 @@ static void delegate_status(int session_id, json_node_t *result) {
 
 /* PoP: interrupt_subagent @ src/tools/delegate.c:delegate_kill
  * Port of Python tools/delegate_tool.py:interrupt_subagent(). */
-/* PoP: delegate_kill @ delegate_tool:kill */
+/* PoP: delegate_kill @ tools/delegate_tool.py:kill */
 /* PoP: delegate_kill @ environments/base:kill */
 static void delegate_kill(int session_id, json_node_t *result) {
     int slot = find_child_by_session(session_id);
@@ -244,8 +244,8 @@ void delegate_list(json_node_t *result) {
 
 /* PoP: set_spawn_paused @ src/tools/delegate.c:delegate_pause
  * Port of Python tools/delegate_tool.py:set_spawn_paused(). */
-/* PoP: delegate_pause @ delegate_tool:pause */
-/* PoP: delegate_pause @ goals:pause */
+/* PoP: delegate_pause @ tools/delegate_tool.py:pause */
+/* PoP: delegate_pause @ hermes_cli/goals.py:pause */
 static void delegate_pause(bool paused, json_node_t *result) {
     json_object_set(result, "paused", json_new_bool(paused));
     json_object_set(result, "message", json_new_string(paused ? "Delegation spawning paused" : "Delegation spawning resumed"));

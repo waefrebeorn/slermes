@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include "hermes.h"
+#include "commands_shared.h"
 
 void cmd_approve(const char *args, agent_state_t *state);
 void cmd_browser(const char *args, agent_state_t *state);
@@ -41,3 +42,6 @@ void cmd_verbose(const char *args, agent_state_t *state);
 void cmd_whoami(const char *args, agent_state_t *state);
 
 #endif /* SLERMES_CLI_CMD_SYSTEM_H */
+
+/* Forward declaration (defined in cli_cmd_system.c). */
+void handoff_read_dir(list_t *entries);

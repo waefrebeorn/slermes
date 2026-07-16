@@ -7,6 +7,8 @@
 #include "commands_shared.h"
 #include "hermes_core_types.h"
 
+#include "mcp_tool.h"
+
 /* /mcp: MCP server status and management */
 void cmd_mcp(const char *args, agent_state_t *state) {
     (void)state;

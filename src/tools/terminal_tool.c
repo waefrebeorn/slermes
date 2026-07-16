@@ -42,7 +42,7 @@
 #define MAX_ENV_LIFETIME 300
 #define MAX_COMMAND_LEN 16384
 
-/* PoP: _safe_command_preview @ terminal_tool:_safe_command_preview */
+/* PoP: _safe_command_preview @ tools/terminal_tool.py:_safe_command_preview */
 static const char *_safe_command_preview(const char *command, int limit) {
     static char buf[512];
     if (!command) return "<None>";
@@ -55,7 +55,7 @@ static const char *_safe_command_preview(const char *command, int limit) {
     return buf;
 }
 
-/* PoP: _looks_like_env_assignment @ terminal_tool:_looks_like_env_assignment */
+/* PoP: _looks_like_env_assignment @ tools/terminal_tool.py:_looks_like_env_assignment */
 static bool _looks_like_env_assignment(const char *token) {
     if (!token) return false;
     const char *eq = strchr(token, '=');
@@ -68,7 +68,7 @@ static bool _looks_like_env_assignment(const char *token) {
     return true;
 }
 
-/* PoP: _read_shell_token @ terminal_tool:_read_shell_token */
+/* PoP: _read_shell_token @ tools/terminal_tool.py:_read_shell_token */
 static int _read_shell_token(const char *command, int start, char *out_token, int max_len) {
     int i = start;
     int len = strlen(command);
@@ -105,7 +105,7 @@ static int _read_shell_token(const char *command, int start, char *out_token, in
     return out_i;
 }
 
-/* PoP: _rewrite_compound_background @ terminal_tool:_rewrite_compound_background */
+/* PoP: _rewrite_compound_background @ tools/terminal_tool.py:_rewrite_compound_background */
 char* _rewrite_compound_background(const char *command) {
     if (!command) return NULL;
     
@@ -122,14 +122,14 @@ char* _rewrite_compound_background(const char *command) {
     return result;
 }
 
-/* PoP: _sudo_nopasswd_works @ terminal_tool:_sudo_nopasswd_works */
+/* PoP: _sudo_nopasswd_works @ tools/terminal_tool.py:_sudo_nopasswd_works */
 static bool _sudo_nopasswd_works(void) {
     FILE *fp = popen("sudo -n true 2>/dev/null", "r");
     if (fp) pclose(fp);
     return true; /* Simplified */
 }
 
-/* PoP: _transform_sudo_command @ terminal_tool:_transform_sudo_command */
+/* PoP: _transform_sudo_command @ tools/terminal_tool.py:_transform_sudo_command */
 void _transform_sudo_command(const char *command, char **out_cmd, char **out_sudo_pass) {
     if (!command || !strncmp(command, "sudo ", 5)) {
         *out_cmd = strdup(command ? command : "");
@@ -148,38 +148,38 @@ void _transform_sudo_command(const char *command, char **out_cmd, char **out_sud
     }
 }
 
-/* PoP: _maybe_reap_docker_orphans @ terminal_tool:_maybe_reap_docker_orphans */
+/* PoP: _maybe_reap_docker_orphans @ tools/terminal_tool.py:_maybe_reap_docker_orphans */
 void _maybe_reap_docker_orphans(const char *container_config_json) {
     /* Simplified - no Docker in C core */
     (void)container_config_json;
 }
 
-/* PoP: _get_env_config @ terminal_tool:_get_env_config */
+/* PoP: _get_env_config @ tools/terminal_tool.py:_get_env_config */
 char* _get_env_config(void) {
     return strdup("{\"backend\":\"local\"}");
 }
 
-/* PoP: _create_environment @ terminal_tool:_create_environment */
+/* PoP: _create_environment @ tools/terminal_tool.py:_create_environment */
 char* _create_environment(const char *env_type, const char *image, const char *cwd,
                           int timeout, const char *task_id, const char *env_vars_json) {
     (void)env_type; (void)image; (void)cwd; (void)timeout; (void)task_id; (void)env_vars_json;
     return strdup("{\"status\":\"created\",\"type\":\"local\"}");
 }
 
-/* PoP: _cleanup_inactive_envs @ terminal_tool:_cleanup_inactive_envs */
+/* PoP: _cleanup_inactive_envs @ tools/terminal_tool.py:_cleanup_inactive_envs */
 void _cleanup_inactive_envs(int lifetime_seconds) {
     (void)lifetime_seconds;
     /* No-op in C - cleanup handled by tool caller */
 }
 
-/* PoP: get_active_env @ terminal_tool:get_active_env */
+/* PoP: get_active_env @ tools/terminal_tool.py:get_active_env */
 char* get_active_env(const char *task_id) {
     (void)task_id;
     return strdup("{}");
 }
 
 
-/* PoP: _interpret_exit_code @ terminal_tool:_interpret_exit_code */
+/* PoP: _interpret_exit_code @ tools/terminal_tool.py:_interpret_exit_code */
 const char* _interpret_exit_code(const char *command, int exit_code) {
     (void)command;
     if (exit_code == 0) return "success";
@@ -188,13 +188,13 @@ const char* _interpret_exit_code(const char *command, int exit_code) {
     return "error";
 }
 
-/* PoP: _command_requires_pipe_stdin @ terminal_tool:_command_requires_pipe_stdin */
+/* PoP: _command_requires_pipe_stdin @ tools/terminal_tool.py:_command_requires_pipe_stdin */
 bool _command_requires_pipe_stdin(const char *command) {
     (void)command;
     return false;
 }
 
-/* PoP: _strip_quotes @ terminal_tool:_strip_quotes */
+/* PoP: _strip_quotes @ tools/terminal_tool.py:_strip_quotes */
 char* _strip_quotes(const char *command) {
     if (!command) return NULL;
     char *result = strdup(command);
@@ -210,31 +210,31 @@ char* _strip_quotes(const char *command) {
     return result;
 }
 
-/* PoP: _looks_like_help_or_version_command @ terminal_tool:_looks_like_help_or_version_command */
+/* PoP: _looks_like_help_or_version_command @ tools/terminal_tool.py:_looks_like_help_or_version_command */
 bool _looks_like_help_or_version_command(const char *command) {
     if (!command) return false;
     return (strstr(command, "--help") != NULL) || (strstr(command, "--version") != NULL) ||
            (strstr(command, "-h") != NULL && strlen(command) < 10);
 }
 
-/* PoP: _foreground_background_guidance @ terminal_tool:_foreground_background_guidance */
+/* PoP: _foreground_background_guidance @ tools/terminal_tool.py:_foreground_background_guidance */
 const char* _foreground_background_guidance(const char *command) {
     (void)command;
     return NULL;
 }
 
-/* PoP: _resolve_notification_flag_conflict @ terminal_tool:_resolve_notification_flag_conflict */
+/* PoP: _resolve_notification_flag_conflict @ tools/terminal_tool.py:_resolve_notification_flag_conflict */
 void _resolve_notification_flag_conflict(bool *notify_on_complete, bool *watch_interval) {
     (void)notify_on_complete; (void)watch_interval;
 }
 
-/* PoP: _resolve_command_cwd @ terminal_tool:_resolve_command_cwd */
+/* PoP: _resolve_command_cwd @ tools/terminal_tool.py:_resolve_command_cwd */
 char* _resolve_command_cwd(const char *command, const char *workdir) {
     (void)command;
     return workdir ? strdup(workdir) : strdup(".");
 }
 
-/* PoP: terminal_tool @ terminal_tool:terminal_tool */
+/* PoP: terminal_tool @ tools/terminal_tool.py:terminal_tool */
 char* terminal_tool(const char *command, int timeout, bool pty, bool force,
                     const char *env_vars, const char *workdir, const char *backend,
                     const char *docker_image, const char *task_id) {
@@ -310,7 +310,7 @@ char* terminal_tool(const char *command, int timeout, bool pty, bool force,
 }
 
 
-/* PoP: _handle_terminal @ terminal_tool:_handle_terminal */
+/* PoP: _handle_terminal @ tools/terminal_tool.py:_handle_terminal */
 char* _handle_terminal(const char *args_json) {
     char *error_msg = NULL;
     json_t *args = json_parse(args_json, &error_msg);

@@ -6,6 +6,7 @@
  */
 
 #include "hermes_core_types.h"
+#include "hermes_agent.h"
 #include "hermes_json.h"
 #include "patch.h"
 #include <stdio.h>

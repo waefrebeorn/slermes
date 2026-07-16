@@ -15,6 +15,8 @@
 
 #include "hermes_core_types.h"
 #include "hermes_json.h"
+#include "registry.h"
+#include "hermes_agent.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,6 +28,8 @@
 #include "skill_provenance.h"
 #include "difflib.h"
 #include "skill_usage.h"
+
+#include "registry.h"
 
 /* ================================================================
  *  Constants

@@ -12,9 +12,11 @@
 /* PoP: MCP tool (port of tools/mcp_tool) */
 
 #include "hermes_core_types.h"
+#include "hermes_agent.h"
 #include "hermes_http.h"
 #include "hermes_json.h"
 #include "hermes_yaml.h"
+#include "registry.h"
 #include "mcp.h"
 #include "mcp_oauth.h"
 #include "osv.h"

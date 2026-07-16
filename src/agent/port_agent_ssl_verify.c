@@ -8,6 +8,8 @@
 #include <ctype.h>
 #include <unistd.h>
 
+#include <stdio.h>
+
 static bool is_falsey_string(const char *s)
 {
     if (!s) return false;

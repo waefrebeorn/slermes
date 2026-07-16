@@ -20,6 +20,8 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
+#include "browser_tool_platform.h"
+
 struct browser_tool_env {
     int unused;
 };

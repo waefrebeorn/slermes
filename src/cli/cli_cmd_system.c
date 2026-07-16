@@ -7,6 +7,10 @@
 #include "commands_shared.h"
 #include "hermes_core_types.h"
 
+#include "hermes_web_dashboard.h"
+#include "send_message.h"
+#include <ctype.h>
+
 /* Forward declarations for helpers defined later in this file but called by
  * earlier handlers (the split preserved their original intra-file ordering). */
 int  cmd_compress_coerce_keep_value(const char *value);

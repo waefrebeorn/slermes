@@ -18,6 +18,8 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
+#include <ctype.h>
+
 /* ================================================================
  *  Internal: get sessions index path
  *  Port of Python _SESSIONS_DIR / _SESSIONS_INDEX

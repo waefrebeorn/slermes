@@ -3,6 +3,7 @@
  */
 
 #include "hermes_logger.h"
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -136,6 +137,8 @@ char *cli_tools_xai_http__coerce_expires_after(const char *value)
  * ================================================================ */
 
 #include "hermes_yaml.h"
+
+#include <sys/stat.h>
 
 /* Resolve the config.yaml path: $HERMES_HOME/config.yaml or $HOME/config.yaml. */
 static void xai_http_config_path(char *out, size_t out_size)

@@ -19,3 +19,6 @@ void cmd_voice(const char *args, agent_state_t *state);
 void cmd_yolo(const char *args, agent_state_t *state);
 
 #endif /* SLERMES_CLI_CMD_CONFIG_H */
+
+/* Forward declaration (defined in cli_cmd_config.c). */
+void list_config_groups(void);

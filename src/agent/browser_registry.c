@@ -1,3 +1,4 @@
+#include "hermes_agent.h"
 /*
  * browser_registry.c — Browser Provider Registry for Hermes C.
  *

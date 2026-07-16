@@ -22,6 +22,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "registry.h"
+
 #ifndef HAVE_STRCASESTR
 /* Portable strcasestr replacement */
 static const char *portable_strcasestr(const char *haystack, const char *needle) {

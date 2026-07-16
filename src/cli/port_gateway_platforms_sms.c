@@ -14,6 +14,8 @@
 #include <time.h>
 #include <ctype.h>
 
+#include "port_gateway_platforms_sms.h"
+
 #define TWILIO_API_BASE "https://api.twilio.com/2010-04-01/Accounts"
 #define MAX_SMS_LENGTH 1600
 

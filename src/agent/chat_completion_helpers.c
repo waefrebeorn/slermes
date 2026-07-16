@@ -18,6 +18,8 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "hermes_agent.h"
+
 /* AG26: Port of Python agent/chat_completion_helpers.py:_is_openai_codex_backend(). Returns true if api_mode
  * equals "codex_responses". */
 bool is_openai_codex_backend(const char *api_mode)

@@ -13,6 +13,7 @@
 /* PoP: computer use tool (port of tools/computer_use_tool) */
 
 #include "hermes_core_types.h"
+#include "hermes_agent.h"
 #include "hermes_json.h"
 #include "hermes_computer_use.h"
 #include "mcp.h"

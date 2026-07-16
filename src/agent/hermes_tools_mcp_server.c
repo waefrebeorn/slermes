@@ -26,6 +26,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "registry.h"
+
 #define MCP_MAX_LINE 131072
 
 /* ================================================================

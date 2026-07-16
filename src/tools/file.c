@@ -5,6 +5,7 @@
  */
 
 #include "hermes_core_types.h"
+#include "hermes_agent.h"
 #include "sandbox.h"
 #include "hermes_json.h"
 #include <stdio.h>
@@ -204,7 +205,7 @@ static char *handle_read(const char *args_json) {
 
 /* PoP: _handle_write_file @ src/tools/file.c:handle_write
  * Port of Python tools/file_operations.py:write_file_tool(). */
-/* PoP: handle_write @ file_tools:write */
+/* PoP: handle_write @ tools/file_tools.py:write */
 /* PoP: handle_write @ agent/process_bootstrap.py:write */
 /* PoP: handle_write @ hermes_cli/main.py:write */
 /* PoP: handle_write @ hermes_cli/pty_bridge.py:write */
@@ -371,7 +372,7 @@ static char *handle_search(const char *args_json) {
 
 /* Port of Python hermes_cli/write_approval_commands.py:_diff(). */
 /* File diff — unified diff between two files */
-/* PoP: handle_diff @ file_tools:diff */
+/* PoP: handle_diff @ tools/file_tools.py:diff */
 /* PoP: handle_diff @ checkpoint_manager:diff */
 /* PoP: handle_diff @ tools/file_operations.py:ShellFileOperations.diff */
 static char *handle_diff(const char *args_json) {

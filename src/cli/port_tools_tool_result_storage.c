@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "libcrypto/crypto.h"
+
 /* PoP: cli_tools_tool_result_storage__resolve_storage_dir @ tools/tool_result_storage.py:_resolve_storage_dir */
 
 /* Port of Python tools/tool_result_storage.py:_resolve_storage_dir */

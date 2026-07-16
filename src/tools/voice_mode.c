@@ -8,6 +8,7 @@
  */
 
 #include "hermes_core_types.h"
+#include "hermes_agent.h"
 #include "hermes_json.h"
 #include "transcribe.h"
 #include <stdio.h>
@@ -687,7 +688,7 @@ char *voice_record(const char *output_path, int max_seconds) {
     return strdup(output_path);
 }
 
-/* PoP: voice_transcribe @ transcription_tools:transcribe */
+/* PoP: voice_transcribe @ tools/transcription_tools.py:transcribe */
 /* PoP: voice_transcribe @ transcription_provider:transcribe */
 char *voice_transcribe(const char *audio_path) {
     if (!audio_path) return NULL;

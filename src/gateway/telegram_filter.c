@@ -10,6 +10,8 @@
 #include <string.h>
 #include <regex.h>  /* POSIX regex for mention_patterns */
 
+#include <ctype.h>
+
 /* ── Cached compiled regex patterns ──────────────────────────── */
 
 #define TG_MAX_PATTERNS 32

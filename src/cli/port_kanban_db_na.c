@@ -18,6 +18,8 @@
 #include <errno.h>
 #include <signal.h>
 
+#include "kanban_db.h"
+
 /* Port of Python: _fire_kanban_lifecycle_hook */
 void _fire_kanban_lifecycle_hook(const char* event, const char* task_id)
 {

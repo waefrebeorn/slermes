@@ -5,6 +5,7 @@
  * Port of Python tools/path_security.py.
  */
 #include "hermes_core_types.h"
+#include "hermes_agent.h"
 #include "hermes_json.h"
 #include "path.h"
 #include <stdio.h>

@@ -4,7 +4,12 @@
  * Wraps popen() with timeout and size limits.
  */
 
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+
 #include "hermes_core_types.h"
+#include "hermes_agent.h"
 #include "hermes_json.h"
 #include "hermes_tool_config.h"
 #include "hermes_sandbox.h"
@@ -24,14 +29,18 @@
 #include <termios.h>
 #include <poll.h>
 #include <fcntl.h>
+#ifndef _XOPEN_SOURCE
+#define _XOPEN_SOURCE 700
+#endif
+#ifndef _DEFAULT_SOURCE
+#define _DEFAULT_SOURCE
+#endif
+#include <pty.h>
 #ifdef __linux__
 #include <sys/vfs.h>
 #endif
 #ifdef __APPLE__
 #include <sys/mount.h>
-#endif
-#ifdef __linux__
-#include <pty.h>
 #endif
 #ifdef __APPLE__
 #include <util.h>
@@ -59,7 +68,7 @@ static const char *SCHEMA = "{"
  *  Safe command preview
  * ================================================================ */
 
-/* PoP: _safe_command_preview @ terminal_tool:_safe_command_preview */
+/* PoP: _safe_command_preview @ tools/terminal_tool.py:_safe_command_preview */
 /* Return a log-safe preview of a command, truncated at limit bytes.
  * Returns pointer to a static buffer (NOT thread-safe — terminal.c
  * is single-threaded). Mirrors Python _safe_command_preview(). */
@@ -144,6 +153,14 @@ static char *run_command(const char *command, int timeout_sec) {
 }
 
 /* F09: PTY mode execution using forkpty */
+#ifndef _PTY_H
+/* glibc declares forkpty in <pty.h> under __THROW; declare it
+ * explicitly so the build is deterministic regardless of the
+ * <features.h> macro resolution order in this translation unit. */
+extern int forkpty(int *__amaster, char *__name,
+                   const struct termios *__termp,
+                   const struct winsize *__winp);
+#endif
 #if defined(__linux__) || defined(__APPLE__)
 static char *run_command_pty(const char *command, int timeout_sec, const char *sudo_password) {
     if (!command) return strdup("{\"error\": \"No command provided\"}");
@@ -788,7 +805,7 @@ static char *build_env_passthrough_export(void) {
  * ================================================================ */
 
 /* Validate workdir uses only safe filesystem characters.
- * PoP: _validate_workdir @ terminal_tool:_validate_workdir
+ * PoP: _validate_workdir @ tools/terminal_tool.py:_validate_workdir
  * Mirrors Python terminal_tool._validate_workdir().
  * Uses allowlist: alphanumeric plus / \ _ : - . ~ space + @ = ,
  * Returns error string if dangerous, NULL if safe. */
@@ -823,7 +840,7 @@ static const char *_check_workdir(const char *workdir) {
 }
 
 /* Check free disk space on workdir's filesystem. Returns NULL if OK, warning if < 100MB free.
- * PoP: _check_disk_usage_warning @ terminal_tool:_check_disk_usage_warning
+ * PoP: _check_disk_usage_warning @ tools/terminal_tool.py:_check_disk_usage_warning
  * Port of Python terminal_tool._check_disk_usage_warning(). */
 static const char *_check_disk_usage(const char *workdir) {
 #if defined(__linux__) || defined(__APPLE__)
@@ -858,7 +875,7 @@ static char *_inject_warnings(const char *result_json,
 }
 
 /* Interpret exit code into human-readable message per command semantics.
- * PoP: _interpret_exit_code @ terminal_tool:_interpret_exit_code
+ * PoP: _interpret_exit_code @ tools/terminal_tool.py:_interpret_exit_code
  * Mirrors Python terminal_tool._interpret_exit_code(). */
 static const char *exit_code_interpret(const char *command, int exit_code) {
     if (!command || exit_code == 0) return NULL;
@@ -935,7 +952,7 @@ static const char *exit_code_interpret(const char *command, int exit_code) {
 }
 
 /* Check command output for sudo failure patterns and add a helpful tip.
- * PoP: _handle_sudo_failure @ terminal_tool:_handle_sudo_failure
+ * PoP: _handle_sudo_failure @ tools/terminal_tool.py:_handle_sudo_failure
  * Mirrors Python terminal_tool._handle_sudo_failure(). */
 static void _inject_sudo_failure(json_t *rj, const char *command) {
     (void)command;
@@ -959,7 +976,7 @@ static void _inject_sudo_failure(json_t *rj, const char *command) {
 }
 
 /* Check if sudo -n works without a password prompt.
- * PoP: _sudo_nopasswd_works @ terminal_tool:_sudo_nopasswd_works
+ * PoP: _sudo_nopasswd_works @ tools/terminal_tool.py:_sudo_nopasswd_works
  * Port of Python terminal_tool._sudo_nopasswd_works().
  * Returns true when local sudo works without prompting.
  * Only checks the local backend; Docker/SSH/etc return false.
@@ -978,7 +995,7 @@ bool terminal_sudo_nopasswd_works(void) {
 }
 
 /* Interactive sudo password prompt.
- * PoP: _prompt_for_sudo_password @ terminal_tool:_prompt_for_sudo_password
+ * PoP: _prompt_for_sudo_password @ tools/terminal_tool.py:_prompt_for_sudo_password
  * Port of Python terminal_tool._prompt_for_sudo_password().
  * Opens /dev/tty, disables echo, reads password with timeout via poll().
  * Returns malloc'd password string (caller must free) or NULL on timeout/skip/error.
@@ -1078,7 +1095,7 @@ restore:
 
 /* Check if token looks like a shell env assignment (KEY=VALUE).
  * Port of Python terminal_tool._looks_like_env_assignment(). */
-/* PoP: _looks_like_env_assignment @ terminal_tool:_looks_like_env_assignment */
+/* PoP: _looks_like_env_assignment @ tools/terminal_tool.py:_looks_like_env_assignment */
 static bool looks_like_env_assignment(const char *token) {
     if (!token || !token[0]) return false;
     const char *eq = strchr(token, '=');
@@ -1098,11 +1115,11 @@ static bool looks_like_env_assignment(const char *token) {
 }
 
 /* Forward declaration */
-/* PoP: terminal_read_shell_token @ terminal_tool:_read_shell_token */
+/* PoP: terminal_read_shell_token @ tools/terminal_tool.py:_read_shell_token */
 char *terminal_read_shell_token(const char *command, int start, int *end);
 
 /* B07: Rewrite bare 'sudo' command words to 'sudo -S -p ""' for piped password.
- * PoP: _rewrite_real_sudo_invocations @ terminal_tool:_rewrite_real_sudo_invocations
+ * PoP: _rewrite_real_sudo_invocations @ tools/terminal_tool.py:_rewrite_real_sudo_invocations
  * Port of Python terminal_tool._rewrite_real_sudo_invocations().
  * Returns malloc'd transformed string. Sets *found to true if any sudo was rewritten.
  * Caller must free() the returned string. */
@@ -1222,9 +1239,9 @@ char *terminal_rewrite_sudo(const char *command, bool *found) {
     return out;
 }
 
-/* PoP: _transform_sudo_command @ terminal_tool:_transform_sudo_command */
+/* PoP: _transform_sudo_command @ tools/terminal_tool.py:_transform_sudo_command */
 /* Transform sudo commands to support password piping.
- * PoP: _transform_sudo_command @ terminal_tool:_transform_sudo_command
+ * PoP: _transform_sudo_command @ tools/terminal_tool.py:_transform_sudo_command
  * Port of Python terminal_tool._transform_sudo_command().
  * Returns malloc'd string: rewritten command if sudo found and password available,
  * or original command if no sudo or passwordless sudo works.
@@ -1280,7 +1297,7 @@ static char *_transform_sudo(const char *command, char **out_password) {
 }
 
 /* Rewrite compound background commands (e.g., "cmd1 & cmd2 &").
- * PoP: _rewrite_compound_background @ terminal_tool:_rewrite_compound_background
+ * PoP: _rewrite_compound_background @ tools/terminal_tool.py:_rewrite_compound_background
  * Port of Python terminal_tool._rewrite_compound_background(). */
 char *terminal_rewrite_compound_background(const char *command) {
     if (!command || !command[0]) return strdup(command ? command : "");
@@ -1386,7 +1403,7 @@ static char *_inject_interpretation(const char *result_json, const char *command
 }
 
 /* Strip quoted content from command to prevent false-positive pattern matches.
- * PoP: _strip_quotes @ terminal_tool:_strip_quotes
+ * PoP: _strip_quotes @ tools/terminal_tool.py:_strip_quotes
  * Mirrors Python terminal_tool._strip_quotes().
  * Removes content inside single quotes, double quotes (with escape handling),
  * and backtick-quoted strings. Replaces with empty quotes to preserve structure. */
@@ -1434,7 +1451,7 @@ static char *_strip_quotes(const char *command) {
 }
 
 /* Read one shell token from a command string, preserving quotes/escapes.
- * PoP: _read_shell_token @ terminal_tool:_read_shell_token
+ * PoP: _read_shell_token @ tools/terminal_tool.py:_read_shell_token
  * Reads token starting at *start. On success, sets *end to position after token
  * and returns a malloc'd copy of the token. Caller must free().
  * Returns NULL on error. */
@@ -1503,7 +1520,7 @@ char *terminal_read_shell_token(const char *command, int start, int *end) {
 }
 
 /* Check command for shell-level background wrappers and suggest background=true.
- * PoP: _foreground_background_guidance @ terminal_tool:_foreground_background_guidance
+ * PoP: _foreground_background_guidance @ tools/terminal_tool.py:_foreground_background_guidance
  * Mirrors Python terminal_tool._foreground_background_guidance(). */
 static const char *_check_foreground_guidance(const char *command) {
     if (!command) return NULL;
@@ -1771,7 +1788,7 @@ static char *run_command_singularity(const char *command, int timeout_sec) {
 
 /* ================================================================
  *  Main terminal handler
- *  PoP: terminal_tool @ terminal_tool:terminal_tool
+ *  PoP: terminal_tool @ tools/terminal_tool.py:terminal_tool
  * ================================================================ */
 
 char *terminal_handler(const char *args_json, const char *task_id) {
@@ -2020,15 +2037,15 @@ char *terminal_handler(const char *args_json, const char *task_id) {
     return _inject_interpretation(w_default, command);
 }
 
-/* PoP: check_terminal_requirements @ terminal_tool:check_terminal_requirements */
+/* PoP: check_terminal_requirements @ tools/terminal_tool.py:check_terminal_requirements */
 /* Verify terminal execution environment is available.
- * PoP: check_terminal_requirements @ terminal_tool:check_terminal_requirements
+ * PoP: check_terminal_requirements @ tools/terminal_tool.py:check_terminal_requirements
  * Always returns true in C core - actual checks done at Python layer. */
 bool check_terminal_requirements(void) {
     return true;
 }
 
-/* PoP: is_persistent_env @ terminal_tool:is_persistent_env */
+/* PoP: is_persistent_env @ tools/terminal_tool.py:is_persistent_env */
 /* Check if task has a persistent environment.
  * C core doesn't manage persistent environments - returns false. */
 bool is_persistent_env(const char *task_id) {
@@ -2036,7 +2053,7 @@ bool is_persistent_env(const char *task_id) {
     return false;
 }
 
-/* PoP: cleanup_all_environments @ terminal_tool:cleanup_all_environments */
+/* PoP: cleanup_all_environments @ tools/terminal_tool.py:cleanup_all_environments */
 /* Clean up all environment containers/VMs.
  * C core doesn't manage environments - no-op. */
 /* PoP: cleanup_all_environments @ tools/terminal_tool.py:cleanup_all_environments */
@@ -2044,7 +2061,7 @@ void cleanup_all_environments(void) {
     /* No-op in C core */
 }
 
-/* PoP: cleanup_vm @ terminal_tool:cleanup_vm */
+/* PoP: cleanup_vm @ tools/terminal_tool.py:cleanup_vm */
 /* Clean up a specific VM environment.
  * C core doesn't manage VMs - no-op. */
 /* PoP: cleanup_vm @ tools/terminal_tool.py:cleanup_vm */
@@ -2054,9 +2071,9 @@ void cleanup_vm(const char *task_id, bool force_remove) {
     /* No-op in C core */
 }
 
-/* PoP: _looks_like_help_or_version_command @ terminal_tool:_looks_like_help_or_version_command */
+/* PoP: _looks_like_help_or_version_command @ tools/terminal_tool.py:_looks_like_help_or_version_command */
 /* Check if command looks like --help or --version.
- * PoP: _looks_like_help_or_version_command @ terminal_tool:_looks_like_help_or_version_command */
+ * PoP: _looks_like_help_or_version_command @ tools/terminal_tool.py:_looks_like_help_or_version_command */
 static bool _looks_like_help_or_version_command(const char *command) {
     if (!command) return false;
     return (strstr(command, "--help") != NULL) || (strstr(command, "--version") != NULL) ||
