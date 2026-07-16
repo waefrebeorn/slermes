@@ -37,6 +37,7 @@ struct kanban_task {
     long  claim_expires, current_run_id;
     int   consecutive_failures, block_recurrences;
     int   goal_mode;
+    long  goal_max_turns;
     long  max_runtime_seconds, last_heartbeat_at;
     long  worker_pid;
 };
@@ -140,6 +141,7 @@ kanban_task_t *kdb_task_from_row(sqlite3_stmt *st)
     t->consecutive_failures = col_int(st, "consecutive_failures", 0);
     t->block_recurrences     = col_int(st, "block_recurrences", 0);
     t->goal_mode        = col_int(st, "goal_mode", 0);
+    t->goal_max_turns   = col_long(st, "goal_max_turns", 0);
     t->max_runtime_seconds = col_long(st, "max_runtime_seconds", 0);
     t->last_heartbeat_at = col_long(st, "last_heartbeat_at", 0);
     t->worker_pid       = col_long(st, "worker_pid", 0);
@@ -215,6 +217,47 @@ long        kdb_task_current_run_id(const kanban_task_t *t){ return t ? t->curre
 const char *kdb_task_block_kind(const kanban_task_t *t)    { return t ? t->block_kind : NULL; }
 /* PoP: kdb_task_block_recurrences @ hermes_cli/kanban_db.py:block_recurrences */
 int         kdb_task_block_recurrences(const kanban_task_t *t){ return t ? t->block_recurrences : 0; }
+/* PoP: kdb_task_model_override @ hermes_cli/kanban_db.py:model_override */
+const char *kdb_task_model_override(const kanban_task_t *t){ return t ? t->model_override : NULL; }
+/* PoP: kdb_task_goal_mode @ hermes_cli/kanban_db.py:goal_mode */
+int         kdb_task_goal_mode(const kanban_task_t *t){ return t ? t->goal_mode : 0; }
+/* PoP: kdb_task_goal_max_turns @ hermes_cli/kanban_db.py:goal_max_turns */
+long        kdb_task_goal_max_turns(const kanban_task_t *t){ return t ? t->goal_max_turns : 0; }
+/* PoP: kdb_task_max_runtime_seconds @ hermes_cli/kanban_db.py:max_runtime_seconds */
+long        kdb_task_max_runtime_seconds(const kanban_task_t *t){ return t ? t->max_runtime_seconds : 0; }
+
+/* PoP: kdb_task_skills @ hermes_cli/kanban_db.py (task.skills JSON array).
+ * Parses the `skills_json` field (a JSON array of strings) into a malloc'd
+ * NULL-terminated array of skill names. Caller frees with kdb_strv_free.
+ * Returns NULL when there are no skills / parse fails. */
+char **kdb_task_skills(const kanban_task_t *t)
+{
+    if (!t || !t->skills_json || !t->skills_json[0]) return NULL;
+    const char *s = t->skills_json;
+    /* require a JSON array */
+    while (*s && (*s==' '||*s=='\t'||*s=='\n'||*s=='\r')) s++;
+    if (*s != '[') return NULL;
+    s++;
+    char **out = calloc(16, sizeof(char *));
+    int n = 0;
+    while (*s) {
+        while (*s && *s != '"' && *s != ']' && *s != ',') s++;
+        if (*s == ']') break;
+        if (*s == '"') {
+            s++;
+            size_t start = 0; char buf[256];
+            while (*s && *s != '"' && start < sizeof(buf)-1) buf[start++] = *s++;
+            buf[start] = 0;
+            if (*s == '"') s++;           /* consume closing quote */
+            if (start && n < 15) out[n++] = strdup(buf);
+        } else if (*s == ',') {
+            s++;
+        }
+    }
+    out[n] = NULL;
+    if (n == 0) { free(out); return NULL; }
+    return out;
+}
 
 /* ---- Run ---- */
 
@@ -259,7 +302,13 @@ const char *kdb_run_error(const kanban_run_t *r)     { return r ? r->error : NUL
 /* PoP: kdb_run_id @ hermes_cli/kanban_db.py:id */
 long        kdb_run_id(const kanban_run_t *r)        { return r ? r->id : 0; }
 /* PoP: kdb_run_status @ hermes_cli/kanban_db.py:status */
-const char *kdb_run_status(const kanban_run_t *r)    { return r ? r->status : NULL; }
+const char *kdb_run_status(const kanban_run_t *r)   { return r ? r->status : NULL; }
+/* PoP: kdb_run_profile @ hermes_cli/kanban_db.py:profile */
+const char *kdb_run_profile(const kanban_run_t *r)  { return r ? r->profile : NULL; }
+/* PoP: kdb_run_started_at @ hermes_cli/kanban_db.py:started_at */
+long        kdb_run_started_at(const kanban_run_t *r){ return r ? r->started_at : 0; }
+/* PoP: kdb_run_ended_at @ hermes_cli/kanban_db.py:ended_at */
+long        kdb_run_ended_at(const kanban_run_t *r)  { return r ? r->ended_at : 0; }
 
 /* ---- Comment ---- */
 

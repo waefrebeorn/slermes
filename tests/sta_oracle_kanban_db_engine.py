@@ -222,6 +222,15 @@ for op in root.get("ops", []):
     elif name == "delete":
         ok = kb.delete_task(conn, subst(a["task_id"]))
         results.append({"op": "delete", "ok": bool(ok)})
+    elif name == "heartbeat":
+        ern = a.get("expected_run_id")
+        ern = None if not ern else int(ern)
+        ok = kb.heartbeat_worker(conn, subst(a["task_id"]),
+                                 note=a.get("note"), expected_run_id=ern)
+        results.append({"op": "heartbeat", "ok": bool(ok)})
+    elif name == "respawn_guard":
+        r = kb.check_respawn_guard(conn, subst(a["task_id"]))
+        results.append({"op": "respawn_guard", "value": r})
     else:
         results.append({"op": name, "ok": False})
 
@@ -233,7 +242,7 @@ for r in results:
     elif r["op"] == "list":
         ids = '[' + ','.join(jprint_str(x) for x in r["ids"]) + ']'
         parts.append('{"op":"list","count":%d,"ids":%s}' % (r["count"], ids))
-    elif r["op"] == "stats" or r["op"] == "age" or r["op"] == "latest_sum" or r["op"] == "assignees" or r["op"] == "create_board" or r["op"] == "write_board_metadata" or r["op"] == "read_board_metadata" or r["op"] == "list_boards" or r["op"] == "remove_board":
+    elif r["op"] == "stats" or r["op"] == "age" or r["op"] == "latest_sum" or r["op"] == "assignees" or r["op"] == "respawn_guard" or r["op"] == "create_board" or r["op"] == "write_board_metadata" or r["op"] == "read_board_metadata" or r["op"] == "list_boards" or r["op"] == "remove_board":
         parts.append('{"op":"%s","value":%s}' % (r["op"], jprint_str(r["value"])))
     elif r["op"] == "run_lifecycle":
         parts.append('{"op":"run_lifecycle","cur_run":%d,"ended":%d,"synth":%d,"latest_summary":%s}'

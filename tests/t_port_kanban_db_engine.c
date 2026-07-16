@@ -302,6 +302,20 @@ int main(int argc, char **argv)
             int ok = kdb_delete_task(conn, tid);
             printf("%s{\"op\":\"delete\",\"ok\":%s}", i?",":"", ok?"true":"false");
         }
+        else if (strcmp(name, "heartbeat") == 0) {
+            const char *tid = subst(json_get_str(a, "task_id", NULL));
+            const char *note = json_get_str(a, "note", NULL);
+            long ern = (long)json_get_num(a, "expected_run_id", 0);
+            int ok = kdb_heartbeat_worker(conn, tid, note, ern);
+            printf("%s{\"op\":\"heartbeat\",\"ok\":%s}", i?",":"", ok?"true":"false");
+        }
+        else if (strcmp(name, "respawn_guard") == 0) {
+            const char *tid = subst(json_get_str(a, "task_id", NULL));
+            char *r = kdb_check_respawn_guard(conn, tid);
+            printf("%s{\"op\":\"respawn_guard\",\"value\":", i?",":"");
+            jprint_str(r); printf("}"); if (r) free(r);
+        }
+
         else if (strcmp(name, "create_board") == 0) {
             const char *slug = json_get_str(a, "slug", NULL);
             const char *nm = json_get_str(a, "name", NULL);
