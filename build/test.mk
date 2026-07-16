@@ -50,6 +50,16 @@ test-cronjobs:
 		$(SSL_LDFLAGS) -o /tmp/t_cronjobs -lssl -lcrypto -lpcre2-8 2>/dev/null \
 		&& /tmp/t_cronjobs 2>&1 || echo "(cronjobs test failed)"
 
+# Model catalog (port of hermes_cli/models.py catalog + static resolution)
+# Links model_catalog.o + port_models_helpers.o (owns fast-mode/cache-path
+# helpers that model_catalog.c delegates to).
+test-models:
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include $(LIB_INCS) tests/model_catalog_test.c \
+		src/cli/model_catalog.o src/cli/port_models_helpers.o \
+		lib/libjson/json.o lib/libcrypto/crypto.o lib/libcredentialfiles/credential_files.o \
+		$(SSL_LDFLAGS) -o /tmp/t_models 2>/dev/null \
+		&& /tmp/t_models 2>&1 || echo "(model catalog test failed)"
+
 # Profile store (port of hermes_cli/profiles.py) — disk-backed real-behavior test.
 test-profiles:
 	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include $(LIB_INCS) tests/profile_store_test.c \

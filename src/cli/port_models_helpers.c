@@ -36,6 +36,7 @@
  *   should_use_copilot_responses_api        <- _should_use_copilot_responses_api
  */
 
+#include "port_models_helpers.h"
 #include "hermes_json.h"
 #include "hermes_logger.h"
 #include "libcrypto/crypto.h"
