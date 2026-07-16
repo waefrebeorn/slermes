@@ -69,6 +69,13 @@ test-profiles:
 		$(SSL_LDFLAGS) -o /tmp/t_profiles -lssl -lcrypto -lz 2>/dev/null \
 		&& /tmp/t_profiles 2>&1 || echo "(profiles test failed)"
 
+# Gateway command sanitize (pure helpers ported from hermes_cli/commands.py)
+test-commands-sanitize:
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include $(LIB_INCS) tests/gateway_command_sanitize_test.c \
+		src/cli/gateway_command_sanitize.o lib/libjson/json.o \
+		-o /tmp/t_cmdsanitize 2>/dev/null \
+		&& /tmp/t_cmdsanitize 2>&1 || echo "(gateway command sanitize test failed)"
+
 # Make a combined list of all phony targets for the check/ci workflow
 TEST_PHONIES := test test-libs check
 

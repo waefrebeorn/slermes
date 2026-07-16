@@ -82,6 +82,7 @@ PORT_OBJ = \
     src/cli/port_drain_control_helpers.o \
     src/cli/port_platforms_base_helpers.o \
     src/cli/port_auth_helpers.o \
+    src/cli/gateway_command_sanitize.o \
     src/cli/port_scale_to_zero_helpers.o \
     src/cli/port_cron_jobs_helpers.o \
     src/cli/port_profiles_helpers.o \
