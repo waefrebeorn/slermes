@@ -64,6 +64,7 @@ PORT_OBJ = \
     src/cli/port_gateway_slash_access.o \
     src/cli/port_gateway_sticker_cache.o \
     src/cli/port_hermes_cli_models.o \
+    src/cli/model_catalog.o \
     src/cli/port_hermes_cli_main_helpers.o \
     src/cli/port_hermes_cli_backup.o \
     src/cli/port_pty_clamp_helpers.o \
