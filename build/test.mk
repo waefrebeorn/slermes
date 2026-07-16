@@ -50,6 +50,15 @@ test-cronjobs:
 		$(SSL_LDFLAGS) -o /tmp/t_cronjobs -lssl -lcrypto -lpcre2-8 2>/dev/null \
 		&& /tmp/t_cronjobs 2>&1 || echo "(cronjobs test failed)"
 
+# Profile store (port of hermes_cli/profiles.py) — disk-backed real-behavior test.
+test-profiles:
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include $(LIB_INCS) tests/profile_store_test.c \
+		src/cli/port_cli_profiles.o src/gateway/status.o src/slermes_home.o \
+		lib/libjson/json.o lib/libyaml/yaml.o lib/libhash/hash.o \
+		lib/libdatetime/datetime.o lib/libpath/path.o lib/libuuid/uuid.o \
+		$(SSL_LDFLAGS) -o /tmp/t_profiles -lssl -lcrypto -lz 2>/dev/null \
+		&& /tmp/t_profiles 2>&1 || echo "(profiles test failed)"
+
 # Make a combined list of all phony targets for the check/ci workflow
 TEST_PHONIES := test test-libs check
 
