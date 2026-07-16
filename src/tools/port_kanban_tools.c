@@ -301,8 +301,22 @@ bool maybe_auto_subscribe(const char *conn, const char *task_id)
         return false;
     }
     if (strstr(conn, "subscribe") || strstr(conn, "auto")) {
-        hermes_log(LOG_INFO, "port", "maybe_auto_subscribing: task=%s", task_id ? task_id : "(none)");
+        hermes_log(LOG_INFO, "port", "maybe_auto_subscribe: task=%s", task_id ? task_id : "(none)");
         return true;
     }
     return false;
+}
+
+/* ================================================================
+ *  _default_task_id
+ * ================================================================ */
+/* PoP: default_task_id @ tools/kanban_tools.py:_default_task_id */
+/* Resolve `task_id` arg or fall back to the env var the dispatcher set
+ * (HERMES_KANBAN_TASK). Returns a malloc'd string (caller frees) or NULL. */
+char *default_task_id(const char *arg)
+{
+    if (arg && arg[0]) return strdup(arg);
+    const char *env_tid = getenv("HERMES_KANBAN_TASK");
+    if (env_tid && env_tid[0]) return strdup(env_tid);
+    return NULL;
 }

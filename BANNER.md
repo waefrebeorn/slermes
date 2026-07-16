@@ -3,7 +3,7 @@
 # ║         of Hermes Agent (Nous Research)                      ║
 # ║                                                              ║
 # ║  Build: Clean  │  v570 │  Tests: 36/36  │  Oracle: 18 suites 0 mismatch + 1611/0 fuzz ║
-# ║  Ported: 5,385/9,731 (55.3%)  REAL_GAP: 4,270 (43.9%)  PARTIAL: 76  ║
+# ║  Ported: 5,570/9,731 (57.2%)  REAL_GAP: 4,064 (41.8%)  PARTIAL: 97  ║
 # ║  ✓ v570: finish commands.c -> cli_cmd_* dispatch-hub split (14 modules, builds+links+runs) ║
 # ║    promotion of 10 static CLI globals to external; shared.h convergence point; ║
 # ║    orphaned-dup removal; cmd_compress_coerce_keep_value rename; show_section_* recovery. ║
