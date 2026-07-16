@@ -21,6 +21,8 @@
 #include <limits.h>
 #include <sys/stat.h>
 #include <dirent.h>
+#include <fcntl.h>
+#include <crypto.h>
 
 /* local hex/word helpers (used by prose scanner below) */
 static int is_hex(char c) {
@@ -685,3 +687,226 @@ int kdb_table_has_drifted(sqlite3 *conn, const char *table)
 /* ------------------------------------------------------------------ */
 
 
+
+/* ------------------------------------------------------------------ */
+/* DB integrity / corruption recovery (portable subset)               */
+/* ------------------------------------------------------------------ */
+
+#define KDB_SCRATCH_TIP_SENTINEL ".scratch_tip_shown"
+static const char KDB_SCRATCH_TIP_MESSAGE[] =
+    "scratch workspaces are ephemeral -- they are deleted when the task "
+    "completes. Use --workspace worktree (git worktree) or "
+    "--workspace dir:/abs/path (existing dir) to preserve worker output.";
+
+/* PoP: kdb_check_file_length_invariant @ hermes_cli/kanban_db.py:_check_file_length_invariant */
+int kdb_check_file_length_invariant(sqlite3 *conn)
+{
+    if (!conn) return 0;
+    /* Resolve the on-disk file via database_list (col 2 = path). */
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(conn, "PRAGMA database_list", -1, &st, NULL) != SQLITE_OK)
+        return 0;
+    const char *path = NULL;
+    if (sqlite3_step(st) == SQLITE_ROW) {
+        const unsigned char *p = sqlite3_column_text(st, 2);
+        if (p && p[0]) path = (const char *)p;
+    }
+    sqlite3_finalize(st);
+    if (!path) return 0; /* in-memory / unnamed */
+    struct stat stt;
+    if (stat(path, &stt) != 0) return 0;
+    long page_size = 0;
+    sqlite3_stmt *ps = NULL;
+    if (sqlite3_prepare_v2(conn, "PRAGMA page_size", -1, &ps, NULL) == SQLITE_OK) {
+        if (sqlite3_step(ps) == SQLITE_ROW) page_size = sqlite3_column_int64(ps, 0);
+        sqlite3_finalize(ps);
+    }
+    if (page_size <= 0) return 0;
+    int fd = open(path, O_RDONLY);
+    if (fd < 0) return 0;
+    unsigned char hdr[4];
+    ssize_t got = (fd >= 0) ? read(fd, hdr, 4) : 0;
+    close(fd);
+    if (got < 4) return 0;
+    long header_page_count = ((long)hdr[0] << 24) | ((long)hdr[1] << 16)
+                            | ((long)hdr[2] << 8) | (long)hdr[3];
+    if (header_page_count == 0) return 0; /* new/empty */
+    long actual_pages = (long)stt.st_size / page_size;
+    if (actual_pages < header_page_count) return 1; /* torn-extent corruption */
+    return 0;
+}
+
+/* PoP: kdb_scratch_tip_sentinel_path @ hermes_cli/kanban_db.py:_scratch_tip_sentinel_path */
+char *kdb_scratch_tip_sentinel_path(void)
+{
+    char *home = kanban_home();
+    if (!home) return NULL;
+    size_t L = strlen(home) + 1 + sizeof(KDB_SCRATCH_TIP_SENTINEL);
+    char *out = malloc(L);
+    snprintf(out, L, "%s/%s", home, KDB_SCRATCH_TIP_SENTINEL);
+    free(home);
+    return out;
+}
+
+/* PoP: kdb_scratch_tip_shown @ hermes_cli/kanban_db.py:_scratch_tip_shown */
+int kdb_scratch_tip_shown(void)
+{
+    char *p = kdb_scratch_tip_sentinel_path();
+    if (!p) return 0;
+    int exists = (access(p, F_OK) == 0);
+    free(p);
+    return exists;
+}
+
+/* PoP: kdb_mark_scratch_tip_shown @ hermes_cli/kanban_db.py:_mark_scratch_tip_shown */
+void kdb_mark_scratch_tip_shown(void)
+{
+    char *p = kdb_scratch_tip_sentinel_path();
+    if (!p) return;
+    char *home = kanban_home();
+    if (home) { mkdirs(home); free(home); } /* best-effort parent */
+    FILE *f = fopen(p, "wb");
+    if (f) fclose(f);
+    free(p);
+}
+
+/* PoP: kdb_maybe_emit_scratch_tip @ hermes_cli/kanban_db.py:_maybe_emit_scratch_tip */
+void kdb_maybe_emit_scratch_tip(sqlite3 *conn, const char *task_id,
+                                const char *workspace_kind)
+{
+    const char *kind = workspace_kind ? workspace_kind : "scratch";
+    if (strcmp(kind, "scratch") != 0) return;
+    if (kdb_scratch_tip_shown()) return;
+    if (conn && task_id) {
+        char payload[512];
+        snprintf(payload, sizeof(payload),
+                 "{\"message\":%s}", KDB_SCRATCH_TIP_MESSAGE);
+        kdb_append_event(conn, task_id, -1, "tip_scratch_workspace", payload);
+    }
+    kdb_mark_scratch_tip_shown();
+}
+
+/* ------------------------------------------------------------------ */
+/* corruption recovery: backup + guard                           */
+/* ------------------------------------------------------------------ */
+
+/* PoP: kdb_backup_corrupt_db @ hermes_cli/kanban_db.py:_backup_corrupt_db
+ * Copy a corrupt DB (and its WAL/SHM sidecars) to a content-addressed
+ * backup inside the DB's own parent dir. The backup basename is derived
+ * from the file name + sha256[:16] of the bytes, so repeated quarantine
+ * of the same corrupt image reuses one backup instead of N copies.
+ * Returns a malloc'd backup path (caller frees) or NULL on copy failure. */
+char *kdb_backup_corrupt_db(const char *path)
+{
+    char cbuf[65536];
+    if (!path) return NULL;
+    char resolved[PATH_MAX];
+    if (logical_norm(path, resolved, sizeof(resolved)) != 0) return NULL;
+    char *parent = strdup(resolved);
+    char *slash = strrchr(parent, '/');
+    if (slash) *slash = 0;
+    /* sha256 of the whole file (kanban DBs are small) */
+    FILE *h = fopen(resolved, "rb");
+    if (!h) { free(parent); return NULL; }
+    fseek(h, 0, SEEK_END); long fsz = ftell(h); fseek(h, 0, SEEK_SET);
+    char *buf = (fsz > 0 && fsz < 64*1024*1024) ? malloc((size_t)fsz) : NULL;
+    size_t got = (buf && fsz > 0) ? fread(buf, 1, (size_t)fsz, h) : 0;
+    fclose(h);
+    char token[33];
+    if (buf && got > 0) {
+        unsigned char hash[CRYPTO_SHA256_LEN];
+        crypto_sha256((const unsigned char *)buf, got, hash);
+        for (int i = 0; i < 16; i++) snprintf(token + i*2, 3, "%02x", hash[i]);
+        token[32] = 0;
+    } else {
+        snprintf(token, sizeof(token), "unknown");
+    }
+    free(buf);
+    const char *base = strrchr(resolved, '/');
+    base = base ? base + 1 : resolved;
+    char cand[PATH_MAX];
+    snprintf(cand, sizeof(cand), "%s/%s.corrupt.%s.bak", parent, base, token);
+    free(parent);
+    /* defensive: candidate must stay inside the original parent */
+    char cand_norm[PATH_MAX];
+    if (logical_norm(cand, cand_norm, sizeof(cand_norm)) != 0) return NULL;
+    if (strstr(cand_norm, "/..") != NULL) return NULL;
+    if (!access(cand, F_OK)) {
+        return strdup(cand); /* already quarantined with these exact bytes */
+    }
+    if (link(resolved, cand) != 0) {
+        /* fall back to copy (cross-device / no hardlink support) */
+        FILE *src = fopen(resolved, "rb");
+        if (!src) return NULL;
+        FILE *dst = fopen(cand, "wb");
+        if (!dst) { fclose(src); return NULL; }
+        char cbuf[65536]; size_t m;
+        while ((m = fread(cbuf, 1, sizeof(cbuf), src)) > 0) fwrite(cbuf, 1, m, dst);
+        fclose(src); fclose(dst);
+    }
+    /* sidecars */
+    for (int i = 0; i < 2; i++) {
+        const char *suf = (i == 0) ? "-wal" : "-shm";
+        char side[PATH_MAX];
+        snprintf(side, sizeof(side), "%s%s", resolved, suf);
+        if (access(side, F_OK) != 0) continue;
+        char side_bak[PATH_MAX];
+        snprintf(side_bak, sizeof(side_bak), "%s%s", cand, suf);
+        FILE *ss = fopen(side, "rb");
+        if (!ss) continue;
+        FILE *sd = fopen(side_bak, "wb");
+        if (!sd) { fclose(ss); continue; }
+        size_t mm;
+        while ((mm = fread(cbuf, 1, sizeof(cbuf), ss)) > 0) fwrite(cbuf, 1, mm, sd);
+        fclose(ss); fclose(sd);
+    }
+    return strdup(cand);
+}
+
+/* PoP: kdb_guard_existing_db_is_healthy @ hermes_cli/kanban_db.py:_guard_existing_db_is_healthy
+ * Run `PRAGMA integrity_check` on an existing non-empty DB file. Opens a
+ * throwaway probe so a healthy WAL/hot-journal DB can checkpoint before
+ * we call it corrupt. Returns:
+ *   0  = healthy / no-op (missing, zero-byte, or already-proven path)
+ *   1  = CORRUPT: backup written, *reason_out malloc'd (caller frees)
+ *  -1  = transient lock/busy: caller should propagate (no backup made)
+ * *reason_out is only set (non-NULL) on return == 1. */
+int kdb_guard_existing_db_is_healthy(const char *path, char **reason_out)
+{
+    if (reason_out) *reason_out = NULL;
+    if (!path) return 0;
+    char resolved[PATH_MAX];
+    if (logical_norm(path, resolved, sizeof(resolved)) != 0) return 0;
+    struct stat stt;
+    if (stat(resolved, &stt) != 0 || stt.st_size == 0) return 0;
+    sqlite3 *probe = NULL;
+    int prc = sqlite3_open_v2(resolved, &probe,
+                               SQLITE_OPEN_READWRITE | SQLITE_OPEN_NOMUTEX, NULL);
+    if (prc != SQLITE_OK) {
+        if (probe) sqlite3_close(probe);
+        /* open refusal => treat as transient (let caller see a lock error) */
+        return -1;
+    }
+    char *reason = NULL;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(probe, "PRAGMA integrity_check", -1, &st, NULL) == SQLITE_OK) {
+        if (sqlite3_step(st) == SQLITE_ROW) {
+            const unsigned char *r = sqlite3_column_text(st, 0);
+            const char *rs = r ? (const char *)r : "";
+            if (rs[0] && strcmp(rs, "ok") != 0) {
+                size_t L = strlen(rs) + 64;
+                reason = malloc(L);
+                snprintf(reason, L, "integrity_check returned: %s", rs);
+            }
+        }
+        sqlite3_finalize(st);
+    }
+    sqlite3_close(probe);
+    if (reason) {
+        char *backup = kdb_backup_corrupt_db(resolved);
+        free(backup); /* backup path intentionally discarded here */
+        if (reason_out) { *reason_out = reason; } else { free(reason); }
+        return 1;
+    }
+    return 0;
+}

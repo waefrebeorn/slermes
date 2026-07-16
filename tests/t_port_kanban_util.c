@@ -236,6 +236,43 @@ int main(int argc, char **argv)
             printf("}");
             free(out);
         }
+        else if (strcmp(name, "file_length_invariant") == 0) {
+            int r = kdb_check_file_length_invariant(conn);
+            printf("{\"op\":\"file_length_invariant\",\"corrupt\":%s}", r ? "true" : "false");
+        }
+        else if (strcmp(name, "scratch_tip_before") == 0) {
+            /* unlink any pre-existing sentinel so the lifecycle is deterministic
+             * regardless of which side ran first in the shared temp home */
+            char *sp = kdb_scratch_tip_sentinel_path();
+            if (sp) { unlink(sp); free(sp); }
+            int r = kdb_scratch_tip_shown();
+            printf("{\"op\":\"scratch_tip_before\",\"shown\":%s}", r ? "true" : "false");
+        }
+        else if (strcmp(name, "scratch_tip_mark") == 0) {
+            kdb_mark_scratch_tip_shown();
+            printf("{\"op\":\"scratch_tip_mark\",\"ok\":true}");
+        }
+        else if (strcmp(name, "scratch_tip_after") == 0) {
+            int r = kdb_scratch_tip_shown();
+            printf("{\"op\":\"scratch_tip_after\",\"shown\":%s}", r ? "true" : "false");
+        }
+        else if (strcmp(name, "maybe_emit_scratch_tip") == 0) {
+            const char *tid = real_id(json_get_str(a, "task", ""), ids, nid);
+            const char *kind = json_get_str(a, "kind", "scratch");
+            kdb_maybe_emit_scratch_tip(conn, tid, kind);
+            /* verify the tip event was appended */
+            int found = 0;
+            char q[256];
+            snprintf(q, sizeof(q),
+                "SELECT 1 FROM task_events WHERE task_id=? AND kind='tip_scratch_workspace' LIMIT 1");
+            sqlite3_stmt *st = NULL;
+            if (sqlite3_prepare_v2(conn, q, -1, &st, NULL) == SQLITE_OK) {
+                sqlite3_bind_text(st, 1, tid ? tid : "", -1, SQLITE_TRANSIENT);
+                if (sqlite3_step(st) == SQLITE_ROW) found = 1;
+                sqlite3_finalize(st);
+            }
+            printf("{\"op\":\"maybe_emit_scratch_tip\",\"event_appended\":%s}", found ? "true" : "false");
+        }
         else {
             printf("{\"op\":%s,\"ok\":false}", name);
         }

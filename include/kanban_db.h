@@ -312,6 +312,25 @@ char **kdb_path_search_names(const char *command);
 char *kdb_safe_which_no_cwd(const char *command);
 /* True when `table` still carries the legacy (pre-AUTOINCREMENT) shape. */
 int  kdb_table_has_drifted(sqlite3 *conn, const char *table);
+/* Read SQLite header page_count vs actual file size; returns 1 if the file is
+ * shorter than the header claims (torn-extent corruption), else 0. */
+int  kdb_check_file_length_invariant(sqlite3 *conn);
+/* Copy a corrupt DB (+WAL/-SHM sidecars) to a content-addressed backup
+ * inside its own parent dir; returns malloc'd backup path (caller frees) or NULL. */
+char *kdb_backup_corrupt_db(const char *path);
+/* Run PRAGMA integrity_check on an existing DB. Returns 0=healthy/no-op,
+ * 1=CORRUPT (backup written, *reason_out malloc'd, caller frees),
+ * -1=transient lock/busy (propagate; no backup). */
+int  kdb_guard_existing_db_is_healthy(const char *path, char **reason_out);
+/* Per-install scratch-workspace tip sentinel (malloc'd, caller frees). */
+char *kdb_scratch_tip_sentinel_path(void);
+/* True iff the scratch-tip has already been emitted this install. */
+int  kdb_scratch_tip_shown(void);
+/* Touch the sentinel so future scratch workspaces stay silent. */
+void kdb_mark_scratch_tip_shown(void);
+/* Emit the first-use scratch-workspace tip exactly once per install. */
+void kdb_maybe_emit_scratch_tip(sqlite3 *conn, const char *task_id,
+                                const char *workspace_kind);
 /* Enumerate assignees: returns malloc'd JSON array of
  * {"name","on_disk","counts":{status:n}} objects (caller frees). */
 char *kdb_known_assignees(sqlite3 *conn);
