@@ -11,6 +11,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "hermes_cron.h"
+#include "scheduler.h"
+
 /* Forward declarations from scheduler.c */
 bool cron_add_job(const char *name, const char *schedule, const char *command);
 void cron_remove_job(const char *name);

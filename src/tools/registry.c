@@ -15,6 +15,7 @@
 #include "hermes_agent.h"
 #include "hermes_json.h"
 #include "hermes_tool_result.h"  /* tool_error(), tool_result_obj() for standardized JSON */
+#include "registry.h"
 #include <ctype.h>
 #include <pthread.h>
 

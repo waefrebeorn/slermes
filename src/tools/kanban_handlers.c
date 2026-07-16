@@ -15,6 +15,7 @@
 #include "hermes_kanban.h"
 #include "hermes_json.h"
 #include "hermes_core_types.h"
+#include "hermes_agent.h"
 
 #include <stdio.h>
 #include <stdlib.h>

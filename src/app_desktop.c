@@ -40,7 +40,7 @@
 #include <time.h>
 #include <ctype.h>
 #include <sys/ioctl.h>
-#include "pty.h"
+#include "slermes_pty.h"
 #include "clipboard.h"
 
 #include "app_desktop_internals.h"

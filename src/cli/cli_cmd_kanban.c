@@ -7,6 +7,8 @@
 #include "commands_shared.h"
 #include "hermes_core_types.h"
 
+#include "cli.h"
+
 /* /kanban: Kanban board management */
 void cmd_kanban(const char *args, agent_state_t *state) {
     (void)state;

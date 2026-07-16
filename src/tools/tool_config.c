@@ -16,6 +16,8 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "vault.h"
+
 /* ================================================================
  *  Runtime overrides (simple linked list)
  * ================================================================ */

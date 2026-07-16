@@ -676,6 +676,19 @@ void kdb_run_daemon(sqlite3 *conn, double interval, int max_spawn,
  * (caller frees) or NULL on unknown task. */
 char *kdb_build_worker_context(sqlite3 *conn, const char *task_id);
 
+/* --- git helpers (implemented in port_kanban_db.c) --------------------- */
+/* Resolve the .git directory for path (or nearest ancestor). Caller frees. */
+const char *kdb_git_dir(const char *path);
+const char *_git_dir(const char *path);
+/* Resolve the .git/common-dir path. Caller frees. */
+const char *_git_common_dir(const char *path);
+/* Resolve the worktree toplevel. Caller frees. */
+const char *_git_toplevel(const char *path);
+/* Whether a branch exists in repo_root. */
+bool _git_branch_exists(const char *repo_root, const char *branch_name);
+/* Walk up to the nearest existing path. Caller frees. */
+const char *_nearest_existing_path(const char *path);
+
 #ifdef __cplusplus
 }
 #endif

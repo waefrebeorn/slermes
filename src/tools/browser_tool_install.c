@@ -19,6 +19,8 @@
 #include <ctype.h>
 #include <dirent.h>
 
+#include "browser_tool_platform.h"
+
 struct browser_tool_install {
     int unused;
 };

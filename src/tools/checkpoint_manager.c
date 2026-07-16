@@ -23,7 +23,7 @@
 #define CHECKPOINT_DIR ".hermes_checkpoints"
 #define MAX_PATH 4096
 
-/* PoP: _project_hash @ checkpoint_manager:_project_hash */
+/* PoP: _project_hash @ tools/checkpoint_manager.py:_project_hash */
 static void _project_hash(const char *working_dir, char *out_hash, size_t out_len) {
     if (!working_dir) {
         snprintf(out_hash, out_len, "default");
@@ -37,7 +37,7 @@ static void _project_hash(const char *working_dir, char *out_hash, size_t out_le
     snprintf(out_hash, out_len, "%lx", hash);
 }
 
-/* PoP: _store_path @ checkpoint_manager:_store_path */
+/* PoP: _store_path @ tools/checkpoint_manager.py:_store_path */
 static void _store_path(const char *base, char *out_path, size_t out_len) {
     if (base && base[0]) {
         snprintf(out_path, out_len, "%s/%s", base, CHECKPOINT_DIR);
@@ -51,7 +51,7 @@ static void _store_path(const char *base, char *out_path, size_t out_len) {
     }
 }
 
-/* PoP: _shadow_repo_path @ checkpoint_manager:_shadow_repo_path */
+/* PoP: _shadow_repo_path @ tools/checkpoint_manager.py:_shadow_repo_path */
 static void _shadow_repo_path(const char *working_dir, char *out_path, size_t out_len) {
     char store[MAX_PATH];
     _store_path(NULL, store, sizeof(store));
@@ -60,32 +60,32 @@ static void _shadow_repo_path(const char *working_dir, char *out_path, size_t ou
     snprintf(out_path, out_len, "%s/shadow/%s", store, dir_hash);
 }
 
-/* PoP: _index_path @ checkpoint_manager:_index_path */
+/* PoP: _index_path @ tools/checkpoint_manager.py:_index_path */
 static void _index_path(const char *base, const char *dir_hash, char *out_path, size_t out_len) {
     _store_path(base, out_path, out_len);
     char *p = out_path + strlen(out_path);
     snprintf(p, out_len - (p - out_path), "/index-%s.json", dir_hash);
 }
 
-/* PoP: _ref_name @ checkpoint_manager:_ref_name */
+/* PoP: _ref_name @ tools/checkpoint_manager.py:_ref_name */
 static void _ref_name(const char *dir_hash, char *out_ref, size_t out_len) {
     snprintf(out_ref, out_len, "refs/checkpoints/%s", dir_hash);
 }
 
-/* PoP: _project_meta_path @ checkpoint_manager:_project_meta_path */
+/* PoP: _project_meta_path @ tools/checkpoint_manager.py:_project_meta_path */
 static void _project_meta_path(const char *base, const char *dir_hash, char *out_path, size_t out_len) {
     _store_path(base, out_path, out_len);
     char *p = out_path + strlen(out_path);
     snprintf(p, out_len - (p - out_path), "/meta-%s.json", dir_hash);
 }
 
-/* PoP: _git_env @ checkpoint_manager:_git_env */
+/* PoP: _git_env @ tools/checkpoint_manager.py:_git_env */
 static void _git_env(void) {
     setenv("GIT_DIR", ".", 1);
     setenv("GIT_WORK_TREE", ".", 1);
 }
 
-/* PoP: _run_git @ checkpoint_manager:_run_git */
+/* PoP: _run_git @ tools/checkpoint_manager.py:_run_git */
 static bool _run_git(const char *repo_path, const char *cmd, char *out, size_t out_len) {
     char full_cmd[MAX_PATH * 2];
     snprintf(full_cmd, sizeof(full_cmd), "cd '%s' && git %s 2>&1", repo_path, cmd);
@@ -99,7 +99,7 @@ static bool _run_git(const char *repo_path, const char *cmd, char *out, size_t o
     return true;
 }
 
-/* PoP: _init_store @ checkpoint_manager:_init_store */
+/* PoP: _init_store @ tools/checkpoint_manager.py:_init_store */
 static void _init_store(const char *base, const char *working_dir, char *out_store, size_t out_len) {
     _store_path(base, out_store, out_len);
     mkdir(out_store, 0755);
@@ -108,7 +108,7 @@ static void _init_store(const char *base, const char *working_dir, char *out_sto
     mkdir(shadows, 0755);
 }
 
-/* PoP: _register_project @ checkpoint_manager:_register_project */
+/* PoP: _register_project @ tools/checkpoint_manager.py:_register_project */
 static void _register_project(const char *store, const char *working_dir) {
     char dir_hash[64];
     _project_hash(working_dir, dir_hash, sizeof(dir_hash));
@@ -123,7 +123,7 @@ static void _register_project(const char *store, const char *working_dir) {
     }
 }
 
-/* PoP: _touch_project @ checkpoint_manager:_touch_project */
+/* PoP: _touch_project @ tools/checkpoint_manager.py:_touch_project */
 static void _touch_project(const char *store, const char *working_dir) {
     char dir_hash[64];
     _project_hash(working_dir, dir_hash, sizeof(dir_hash));
@@ -156,7 +156,7 @@ static void _touch_project(const char *store, const char *working_dir) {
 }
 
 
-/* PoP: _dir_file_count @ checkpoint_manager:_dir_file_count */
+/* PoP: _dir_file_count @ tools/checkpoint_manager.py:_dir_file_count */
 static int _dir_file_count(const char *path) {
     DIR *d = opendir(path);
     if (!d) return 0;
@@ -171,7 +171,7 @@ static int _dir_file_count(const char *path) {
     return count;
 }
 
-/* PoP: _dir_size_bytes @ checkpoint_manager:_dir_size_bytes */
+/* PoP: _dir_size_bytes @ tools/checkpoint_manager.py:_dir_size_bytes */
 static long _dir_size_bytes(const char *path) {
     long total = 0;
     DIR *d = opendir(path);
@@ -191,7 +191,7 @@ static long _dir_size_bytes(const char *path) {
     return total;
 }
 
-/* PoP: _init_shadow_repo @ checkpoint_manager:_init_shadow_repo */
+/* PoP: _init_shadow_repo @ tools/checkpoint_manager.py:_init_shadow_repo */
 static bool _init_shadow_repo(const char *shadow_repo, const char *working_dir) {
     mkdir(shadow_repo, 0755);
     _run_git(shadow_repo, "init --bare", NULL, 0);
@@ -204,7 +204,7 @@ static bool _init_shadow_repo(const char *shadow_repo, const char *working_dir) 
 }
 
 
-/* PoP: _delete_ref @ checkpoint_manager:_delete_ref */
+/* PoP: _delete_ref @ tools/checkpoint_manager.py:_delete_ref */
 static bool _delete_ref(const char *store, const char *ref) {
     char shadow[MAX_PATH];
     _shadow_repo_path("", shadow, sizeof(shadow));
@@ -218,7 +218,7 @@ static bool _delete_ref(const char *store, const char *ref) {
 
 
 
-/* PoP: _validate_commit_hash @ checkpoint_manager:_validate_commit_hash */
+/* PoP: _validate_commit_hash @ tools/checkpoint_manager.py:_validate_commit_hash */
 bool _validate_commit_hash(const char *commit_hash) {
     if (!commit_hash) return false;
     for (const char *p = commit_hash; *p; p++) {
@@ -228,26 +228,26 @@ bool _validate_commit_hash(const char *commit_hash) {
     return strlen(commit_hash) >= 7 && strlen(commit_hash) <= 40;
 }
 
-/* PoP: _validate_file_path @ checkpoint_manager:_validate_file_path */
+/* PoP: _validate_file_path @ tools/checkpoint_manager.py:_validate_file_path */
 bool _validate_file_path(const char *file_path, const char *working_dir) {
     (void)working_dir;
     if (!file_path) return false;
     return file_path[0] != '\0' && strstr(file_path, "..") == NULL;
 }
 
-/* PoP: _normalize_path @ checkpoint_manager:_normalize_path */
+/* PoP: _normalize_path @ tools/checkpoint_manager.py:_normalize_path */
 char* _normalize_path(const char *path_value) {
     if (!path_value) return strdup(".");
     return realpath(path_value, NULL) ? : strdup(path_value);
 }
 
-/* PoP: _migrate_legacy_store @ checkpoint_manager:_migrate_legacy_store */
+/* PoP: _migrate_legacy_store @ tools/checkpoint_manager.py:_migrate_legacy_store */
 char* _migrate_legacy_store(const char *base) {
     (void)base;
     return NULL;
 }
 
-/* PoP: _run_git @ checkpoint_manager:_run_git (wrapper) */
+/* PoP: _run_git @ tools/checkpoint_manager.py:_run_git (wrapper) */
 char* checkpoint_run_git(const char *repo_path, const char *cmd) {
     char out[4096];
     if (_run_git(repo_path, cmd, out, sizeof(out))) {
@@ -860,7 +860,7 @@ char *format_checkpoint_list(const char *checkpoints_json, const char *directory
     return checkpoints_json ? strdup(checkpoints_json) : strdup("[]");
 }
 
-/* PoP: _list_projects @ checkpoint_manager:_list_projects */
+/* PoP: _list_projects @ tools/checkpoint_manager.py:_list_projects */
 char* _list_projects(const char *store) {
     (void)store;
     return strdup("[]");

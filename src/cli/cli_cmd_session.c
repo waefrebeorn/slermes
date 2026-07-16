@@ -7,6 +7,11 @@
 #include "commands_shared.h"
 #include "hermes_core_types.h"
 
+#include "send_message.h"
+#include "session_crud.h"
+#include "session_search.h"
+#include "delegate.h"
+
 /* PoP: cmd_agents @ hermes_cli/main.py:cmd_agents */
 void cmd_agents(const char *args, agent_state_t *state) {
     (void)args; (void)state;

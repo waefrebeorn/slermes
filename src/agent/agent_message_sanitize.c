@@ -16,6 +16,9 @@
 #include <ctype.h>
 #include <stdlib.h>
 
+#include "hermes_redact.h"
+#include "hermes_sanitize.h"
+
 /* ================================================================
  *  Think Block Stripping (non-streaming)
  *

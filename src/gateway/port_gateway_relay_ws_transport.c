@@ -23,6 +23,8 @@
 #include "hermes_logger.h"
 #include "libwebsocket/websocket.h"
 
+#include "port_gateway_relay_ws_transport.h"
+
 /* ── Constants ───────────────────────────────────────────────────────── */
 #define WS_HANDSHAKE_TIMEOUT_MS  30000
 #define WS_OUTBOUND_TIMEOUT_MS   30000

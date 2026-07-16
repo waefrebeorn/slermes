@@ -48,6 +48,7 @@
 #include "tui_slash_worker.h"
 #include "chat_render.h"
 #include "chat_composer.h"
+#include "slermes_home.h"
 
 /* ── Forward definitions (hoisted; used by early helpers below, defined
  *    in full further down the file). Kept here so the translation unit is

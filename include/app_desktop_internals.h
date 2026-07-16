@@ -12,7 +12,7 @@
 #include "app_desktop.h"
 #include "chat_render.h"
 #include "chat_composer.h"
-#include "pty.h"
+#include "slermes_pty.h"
 
 #include <stdbool.h>
 #include <stddef.h>

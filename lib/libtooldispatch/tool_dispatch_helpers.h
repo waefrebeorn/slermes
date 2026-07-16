@@ -22,6 +22,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdlib.h>   /* free() used by inline helpers */
 
 #ifdef __cplusplus
 extern "C" {

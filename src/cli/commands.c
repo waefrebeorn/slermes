@@ -901,7 +901,6 @@ static void list_free(list_t *l) {
     l->count = l->capacity = 0;
 }
 
-static void handoff_read_dir(list_t *entries);
 
 /* Write a handoff request JSON file (declared in commands_shared.h) */
 void handoff_write_request(const char *handoff_id, const char *platform,
@@ -938,41 +937,7 @@ void handoff_write_request(const char *handoff_id, const char *platform,
 }
 
 /* Scan handoff directory and return entries */
-static void handoff_read_dir(list_t *entries) {
-    const char *home = getenv("HERMES_HOME");
-    if (!home) home = getenv("HOME");
-    if (!home) home = "/tmp";
-    char handoff_dir[8192];
-    snprintf(handoff_dir, sizeof(handoff_dir), "%s/.hermes/handoffs", home);
-
-    DIR *d = opendir(handoff_dir);
-    if (!d) return;
-
-    struct dirent *ent;
-    while ((ent = readdir(d)) != NULL) {
-        /* Only read .json files */
-        size_t len = strlen(ent->d_name);
-        if (len < 6 || strcmp(ent->d_name + len - 5, ".json") != 0)
-            continue;
-
-        char path[8192];
-        snprintf(path, sizeof(path), "%s/%s", handoff_dir, ent->d_name);
-        json_node_t *req = json_parse_file(path, NULL);
-        if (!req) continue;
-
-        handoff_entry_t *e = (handoff_entry_t *)calloc(1, sizeof(handoff_entry_t));
-        if (e) {
-            e->id = strdup(json_get_str(req, "id", ""));
-            e->platform = strdup(json_get_str(req, "platform", ""));
-            e->session_id = strdup(json_get_str(req, "session_id", ""));
-            e->requester = strdup(json_get_str(req, "requester", ""));
-            e->status = strdup(json_get_str(req, "status", "unknown"));
-            list_append(entries, e);
-        }
-        json_free(req);
-    }
-    closedir(d);
-}
+/* handoff_read_dir is defined in cli_cmd_system.c (declared in cli_cmd_system.h). */
 
 /* /indicator: Pick TUI indicator style — stores in static var */
 char g_indicator_style[32] = "default";
@@ -998,18 +963,5 @@ extern bool mcp_remove_server(const char *name);
 int g_voice_mode = 0;
 
 /* JSON-escape a string into a fixed-size buffer (for safe JSON injection) */
-static void json_escape_arg(const char *src, char *dst, size_t dst_sz) {
-    size_t pos = 0;
-    for (const char *s = src; *s && pos < dst_sz - 2; s++) {
-        switch (*s) {
-            case '"':  if (pos + 2 < dst_sz) { dst[pos++] = '\\'; dst[pos++] = '"'; } break;
-            case '\\': if (pos + 2 < dst_sz) { dst[pos++] = '\\'; dst[pos++] = '\\'; } break;
-            case '\n': if (pos + 2 < dst_sz) { dst[pos++] = '\\'; dst[pos++] = 'n'; } break;
-            case '\t': if (pos + 2 < dst_sz) { dst[pos++] = '\\'; dst[pos++] = 't'; } break;
-            case '\r': if (pos + 2 < dst_sz) { dst[pos++] = '\\'; dst[pos++] = 'r'; } break;
-            default:   dst[pos++] = *s; break;
-        }
-    }
-    dst[pos] = '\0';
-}
+/* json_escape_arg is provided by cli_cmd_kanban.c (declared in cli_cmd_kanban.h). */
 

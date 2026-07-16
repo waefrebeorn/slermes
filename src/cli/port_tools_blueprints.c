@@ -14,6 +14,9 @@
 #include <ctype.h>
 #include <limits.h>
 
+#include <unistd.h>
+#include <sys/stat.h>
+
 #define BP_MAX_NAME 128
 #define BP_MAX_SCHED 64
 #define BP_MAX_PROMPT 4096

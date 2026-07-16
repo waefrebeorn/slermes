@@ -12,6 +12,8 @@
 #include "hermes_logger.h"
 #include <stdio.h>
 
+#include "cli.h"
+
 /* CLI-specific initialization */
 void cli_init(void) {
     display_init();

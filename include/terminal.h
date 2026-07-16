@@ -18,7 +18,7 @@
 #ifndef TERMINAL_H
 #define TERMINAL_H
 
-#include "pty.h"
+#include "slermes_pty.h"
 #include <stddef.h>
 #include <stdbool.h>
 #include <stdint.h>

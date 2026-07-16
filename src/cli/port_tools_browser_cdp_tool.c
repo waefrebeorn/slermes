@@ -15,6 +15,8 @@
 #include <string.h>
 #include <time.h>
 
+#include "hermes_redact.h"
+
 #define CDP_DOCS_URL "https://chromedevtools.github.io/devtools-protocol/"
 
 /* PoP: browser_cdp_tool__run_async @ tools/browser_cdp_tool.py:_run_async */

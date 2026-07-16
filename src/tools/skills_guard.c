@@ -19,6 +19,7 @@
  */
 
 #include "hermes_core_types.h"
+#include "hermes_agent.h"
 #include "hermes_json.h"
 #include "hermes_regex.h"
 #include "binary.h"

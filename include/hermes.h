@@ -97,67 +97,11 @@ bool commands_get_fast(void);
 void cdp_set_url(const char *url);
 const char *cdp_get_url(void);
 
-/* Registry accessors */
-size_t registry_get_count(void);
-const char *registry_get_name(size_t i);
-
-/* Generation counter — bumped on every mutation.
- * Callers can cache tool metadata and check generation for staleness. */
-uint64_t registry_generation(void);
-
-/* Find tool by name in registry. Returns NULL if not found. */
-tool_t *registry_find(const char *name);
-
-/* P52: Per-tool timeout. Set seconds, 0 = default, -1 = no timeout. */
-void registry_set_timeout(const char *name, int seconds);
-/* P150: Filter tool registry by enabled/disabled toolsets. Marks matching tools unavailable. */
-void registry_filter_by_toolset(tool_registry_t *reg, const char *enabled_csv, const char *disabled_csv);
-/* P150: Get toolset name for a registered tool. Returns "" if not set. */
-const char *registry_get_toolset(const char *name);
-/* P150: Set toolset name for a registered tool (after registration). */
-void registry_set_toolset(const char *name, const char *toolset);
-int  registry_get_timeout(const char *name);
-
-/* P55: Tool wildcard matching — enable/disable all tools matching a pattern */
-/* Pattern supports '*' wildcard: "discord:*", "browser_*", "*_search" */
-void registry_set_available_pattern(const char *pattern, bool available);
-
-/* S14 gap #9: Toolset availability check — register check function for toolset.
- * Once set, registry_refresh_availability() calls check_fn (with 30s cache) to
- * mark tools in this toolset as available/unavailable. */
-void registry_set_toolset_check_fn(const char *toolset, bool (*fn)(void));
-
-/* Refresh availability of all tools that have check_fn registered.
- * Caches results for 30 seconds (check_fn_last). */
-void registry_refresh_availability(void);
-
-/* S14 gap #11: Deregister a tool by name. Used for MCP dynamic tool removal.
- * Returns true if tool was found and removed, false if not found. */
-bool registry_deregister(const char *name);
-
-/* S14 gap #16: Rich query API — get schema JSON for a tool (returns "" if not found) */
-const char *registry_get_schema(const char *name);
-/* Rich query: return display emoji for a tool, or default (⚡) if unset */
-const char *registry_get_emoji(const char *name, const char *default_emoji);
-
-/* S14 gap #16: Rich query API — check if any tool in a toolset is available */
-bool registry_is_toolset_available(const char *toolset);
-
-/* S14 gap #2: Tool Search bridge — search tools by keyword (name/description).
- * Returns JSON array of matching tool names, or ["error":"..."] on failure.
- * Caller must free the returned string. */
-char *registry_search(const char *keyword);
-
-/* S14 gap #2: Tool Search bridge — describe a tool.
- * Returns JSON object with name, description, schema, toolset, or {"error":"..."}.
- * Caller must free the returned string. */
-char *registry_describe(const char *name);
-
-/* S14 gap #8: Mark a tool as async (handlers that should run in detached thread) */
-void registry_set_async(const char *name, bool async);
-
-/* Check if tool name matches a wildcard pattern. Returns true on match. */
-bool registry_name_matches(const char *name, const char *pattern);
+/* Registry accessors — declared in registry.h (included below).
+ * Kept as a re-include so legacy consumers of hermes.h keep compiling
+ * while translation units that only need the registry can include
+ * registry.h directly (god-header elimination). */
+#include "registry.h"
 
 /* P49-P50: Tool result storage and output limits */
 char *tool_result_store(const char *data, size_t size, size_t max_inline);

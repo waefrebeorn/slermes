@@ -23,6 +23,8 @@
 #include <fcntl.h>
 #include <errno.h>
 
+#include "libcrypto/crypto.h"
+
 /* ─── Constants ────────────────────────────────────────────────── */
 
 #define GOOGLE_TOKEN_URL       "https://oauth2.googleapis.com/token"

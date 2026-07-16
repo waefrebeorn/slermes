@@ -13,7 +13,7 @@
 
 #include "window.h"
 #include "window_compositor.h"
-#include "pty.h"
+#include "slermes_pty.h"
 #include "terminal.h"
 #include "chat_render.h"
 #include "chat_composer.h"

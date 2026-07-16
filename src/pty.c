@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 /*
  * pty.c — Pseudo-Terminal (PTY) allocation for shell processes
  *
@@ -11,7 +12,8 @@
  * PoP: pty_dispose  @ electron/main.cjs:terminal:dispose
  */
 
-#include "pty.h"
+#include <pty.h>       /* openpty (system, needs _GNU_SOURCE) */
+#include "slermes_pty.h"
 #include "hermes_core_types.h"
 
 #include <stdio.h>
@@ -26,7 +28,9 @@
 #include <sys/types.h>
 
 #ifndef _WIN32
-#include <pty.h>       /* openpty on some systems */
+#include <termios.h>
+
+#include "hermes_logger.h"
 #endif
 
 #define PTY_MAGIC 0x50545931  /* "PTY1" */
@@ -86,7 +90,7 @@ pty_t *pty_allocate(const char *shell, char *const env[], int cols, int rows) {
     /* Windows: pipe stub — full ConPTY requires Win10+ APIs */
     int pipefd[2];
     if (pipe(pipefd) != 0) {
-        hermes_log("PTY pipe creation failed: %s", strerror(errno));
+        hermes_log(LOG_ERROR, "pty", "PTY pipe creation failed: %s", strerror(errno));
         free(pty);
         return NULL;
     }
@@ -100,7 +104,7 @@ pty_t *pty_allocate(const char *shell, char *const env[], int cols, int rows) {
     char name_buf[PTY_NAME_MAX];
 
     if (openpty(&master, &slave, name_buf, NULL, NULL) != 0) {
-        hermes_log("openpty() failed: %s", strerror(errno));
+        hermes_log(LOG_ERROR, "pty", "openpty() failed: %s", strerror(errno));
         free(pty);
         return NULL;
     }
@@ -122,7 +126,7 @@ pty_t *pty_allocate(const char *shell, char *const env[], int cols, int rows) {
     /* Fork child process */
     pid_t pid = fork();
     if (pid < 0) {
-        hermes_log("PTY fork failed: %s", strerror(errno));
+        hermes_log(LOG_ERROR, "pty", "PTY fork failed: %s", strerror(errno));
         close(pty->master_fd);
         close(pty->slave_fd);
         free(pty);
@@ -191,7 +195,7 @@ bool pty_resize(pty_t *pty, int cols, int rows) {
     ws.ws_ypixel = 0;
 
     if (ioctl(pty->master_fd, TIOCSWINSZ, &ws) != 0) {
-        hermes_log("PTY TIOCSWINSZ failed: %s", strerror(errno));
+        hermes_log(LOG_ERROR, "pty", "PTY TIOCSWINSZ failed: %s", strerror(errno));
         return false;
     }
 
@@ -211,7 +215,7 @@ int pty_read(pty_t *pty, char *buf, size_t bufsize) {
     ssize_t n = read(pty->master_fd, buf, bufsize);
     if (n < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) return 0;
-        hermes_log("PTY read error: %s", strerror(errno));
+        hermes_log(LOG_ERROR, "pty", "PTY read error: %s", strerror(errno));
         return -1;
     }
     if (n == 0) {
@@ -228,7 +232,7 @@ int pty_write(pty_t *pty, const char *buf, size_t len) {
     ssize_t written = write(pty->master_fd, buf, len);
     if (written < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) return 0;
-        hermes_log("PTY write error: %s", strerror(errno));
+        hermes_log(LOG_ERROR, "pty", "PTY write error: %s", strerror(errno));
         return -1;
     }
     return (int)written;

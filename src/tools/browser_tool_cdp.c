@@ -21,6 +21,8 @@
 #include "browser_tool_install.h"
 #include "browser_tool_env.h"
 #include "browser_tool_cdp.h"
+
+#include "browser_tool_platform.h"
 json_t *browser_supervisor_get_or_start(const char *session_key);
 void browser_supervisor_stop_all(void);
 

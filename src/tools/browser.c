@@ -8,6 +8,7 @@
  */
 
 #include "hermes_core_types.h"
+#include "hermes_agent.h"
 #include "browser_tool_cdp.h"
 #include "hermes_json.h"
 #include "hermes_http.h"
@@ -831,7 +832,7 @@ static char *resolve_url(const char *base, const char *href) {
 /* browser_click: Click on an element by its text content or @ref */
 /* PoP: browser_click_handler @ browser_tool:click */
 /* PoP: browser_click_handler @ backend:click */
-/* PoP: browser_click_handler @ cua_backend:click */
+/* PoP: browser_click_handler @ tools/computer_use/cua_backend.py:click */
 /* PoP: browser_click_handler @ computer_use:click */
 /* PoP: browser_click_handler @ tools/browser_tool.py:click */
 /* PoP: browser_click_handler @ tools/computer_use/backend.py:click */
@@ -996,7 +997,7 @@ char *browser_type_handler(const char *args_json, const char *task_id) {
 /* browser_scroll: Scroll the page up or down */
 /* PoP: browser_scroll_handler @ browser_tool:scroll */
 /* PoP: browser_scroll_handler @ backend:scroll */
-/* PoP: browser_scroll_handler @ cua_backend:scroll */
+/* PoP: browser_scroll_handler @ tools/computer_use/cua_backend.py:scroll */
 /* PoP: browser_scroll_handler @ computer_use:scroll */
 /* PoP: browser_scroll_handler @ session_search:_scroll */
 /* PoP: browser_scroll_handler @ tools/browser_tool.py:scroll */
@@ -1641,7 +1642,7 @@ static char *cdp_generate_pdf(json_node_t *result) {
 /* Port of Python hermes_cli/bundles.py:_console(). */
 /* browser_console handler — get console logs via CDP */
 /* PoP: browser_console_handler @ tools/browser_tool.py:browser_console */
-/* PoP: browser_console_handler @ browser_camofox:browser_console */
+/* PoP: browser_console_handler @ tools/browser_camofox.py:browser_console */
 /* PoP: browser_console_handler @ tools/browser_tool.py:browser_console */
 static char *browser_console_handler(const char *args_json, const char *task_id) {
     (void)task_id;
