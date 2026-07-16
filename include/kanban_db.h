@@ -134,6 +134,14 @@ const char *kdb_task_last_failure_error(const kanban_task_t *t);
 long        kdb_task_current_run_id(const kanban_task_t *t);
 const char *kdb_task_block_kind(const kanban_task_t *t);
 int         kdb_task_block_recurrences(const kanban_task_t *t);
+const char *kdb_task_model_override(const kanban_task_t *t);
+int         kdb_task_goal_mode(const kanban_task_t *t);
+long        kdb_task_goal_max_turns(const kanban_task_t *t);
+long        kdb_task_max_runtime_seconds(const kanban_task_t *t);
+/* Parse the task's `skills` JSON array into a malloc'd NULL-terminated array
+ * of skill-name strings (caller frees with kdb_strv_free). Returns NULL when
+ * there are no skills. */
+char **kdb_task_skills(const kanban_task_t *t);
 
 /* Run */
 const char *kdb_run_outcome(const kanban_run_t *r);
@@ -141,6 +149,9 @@ const char *kdb_run_summary(const kanban_run_t *r);
 const char *kdb_run_error(const kanban_run_t *r);
 long        kdb_run_id(const kanban_run_t *r);
 const char *kdb_run_status(const kanban_run_t *r);
+const char *kdb_run_profile(const kanban_run_t *r);
+long        kdb_run_started_at(const kanban_run_t *r);
+long        kdb_run_ended_at(const kanban_run_t *r);
 
 /* Comment */
 const char *kdb_comment_author(const kanban_comment_t *c);
@@ -219,6 +230,8 @@ int  kdb_add_comment(sqlite3 *conn, const char *task_id,
                         const char *author, const char *body);
 kanban_comment_t **kdb_list_comments(sqlite3 *conn, const char *task_id, int *out_n);
 void kdb_comment_list_free(kanban_comment_t **list);
+/* Free a NULL-terminated array of attachments returned by kdb_list_attachments. */
+void kdb_attachment_list_free(kanban_attach_t **list);
 
 /* Attachments. */
 int  kdb_add_attachment(sqlite3 *conn, const char *task_id,
@@ -503,6 +516,36 @@ char *workspaces_root(const char *board);
 int  profile_exists(const char *name);
 
 /* =========================================================================
+ * Shared path / config / text helpers  (port_kanban_db.c)
+ * Declared here so all concern modules reuse them instead of duplicating.
+ * ========================================================================= */
+
+/* Returns malloc'd absolute dir of a board's worker-log directory.
+ * Caller frees. board may be NULL (uses current board). */
+char *worker_logs_dir(const char *board);
+
+/* True when `value` is an explicit filesystem path, not a bare command name. */
+int  looks_like_path(const char *value);
+
+/* True for Windows .cmd/.bat shims (unsafe as argv[0]). */
+int  is_windows_batch_shim(const char *path);
+
+/* Resolve the crash-grace window (seconds) from env or default. */
+int  resolve_crash_grace_seconds(void);
+
+/* Resolve the rate-limit cooldown window (seconds) from env or default. */
+int  resolve_rate_limit_cooldown_seconds(void);
+
+/* malloc'd coarse relative-age string ("3h ago"). Caller frees. */
+char *relative_age(long ts, long now);
+
+/* Parse an int/numeric/ISO8601 timestamp to epoch seconds, or -1. */
+long to_epoch(const char *val);
+
+/* Normalize an error message for grouping (strip pid/ts). Caller frees. */
+char *error_fingerprint(const char *error_text);
+
+/* =========================================================================
  * Utilities  (kanban_util.c)  — portable DB/logic helpers
  * ========================================================================= */
 
@@ -550,6 +593,88 @@ int  kdb_has_spawnable_ready(sqlite3 *conn);
 
 /* Same, for the `review` status column. */
 int  kdb_has_spawnable_review(sqlite3 *conn);
+
+/* =========================================================================
+ * Worker / dispatcher surface  (kanban_workers.c)
+ *
+ * Faithful port of the worker lifecycle + dispatcher engine from
+ * hermes_cli/kanban_db.py: zombie reaping, cross-process init flock,
+ * single-writer dispatch flock, crashed/stale runtime enforcement,
+ * respawn guard, fire-and-forget spawn, the dispatch tick, the long-lived
+ * daemon, and the worker-context builder.
+ * ========================================================================= */
+
+/* Opaque single-tick dispatch result. The skipped_* / spawned / etc vectors
+ * are NULL-terminated arrays of malloc'd strings the caller frees with
+ * kdb_strv_free (or the _free helper below for tuples). */
+typedef struct kdb_dispatch_result kdb_dispatch_result_t;
+
+/* Allocate / free a dispatch result. */
+kdb_dispatch_result_t *kdb_dispatch_result_new(void);
+void kdb_dispatch_result_free(kdb_dispatch_result_t *r);
+
+/* Reap all zombie children without blocking; records each exit via the
+ * worker-exit registry. Returns the count reaped. No-op semantics on Win. */
+int  kdb_reap_worker_zombies(void);
+
+/* True when pid (host-local) is still alive and not a zombie. */
+int  kdb_pid_alive(long pid);
+
+/* Cross-process bounded init flock (fcntl LOCK_EX|LOCK_NB with timeout).
+ * Allocates a `<db>.init.lock` file handle; on success *held_out=1 and the
+ * caller owns the lock until kdb_init_lock_release. Returns 0 on success. */
+int  kdb_init_lock_acquire(const char *db_path, int *held_out, void **handle_out);
+void kdb_init_lock_release(void *handle);
+
+/* Non-blocking single-writer dispatch flock. Allocates `<db>.dispatch.lock`.
+ * On success *held_out=1; the caller owns the lock until release. Returns 0. */
+int  kdb_dispatch_tick_lock_acquire(const char *db_path, int *held_out, void **handle_out);
+void kdb_dispatch_tick_lock_release(void *handle);
+
+/* Record a heartbeat + touch last_heartbeat_at. Returns 1 on success. */
+int  kdb_heartbeat_worker(sqlite3 *conn, const char *task_id,
+                           const char *note, long expected_run_id);
+
+/* Terminate max-runtime-expired workers. Returns a malloc'd NULL-terminated
+ * list of reclaimed task ids; caller frees with kdb_strv_free. */
+char **kdb_enforce_max_runtime(sqlite3 *conn);
+
+/* Reclaim running tasks whose worker PID is dead. Returns malloc'd
+ * NULL-terminated list of reclaimed ids (caller frees). Auto-blocks on
+ * clean-exit-without-terminal (protocol violation). */
+char **kdb_detect_crashed_workers(sqlite3 *conn);
+
+/* Reclaim stale-heartbeat running tasks. Returns malloc'd NULL-terminated
+ * list of reclaimed ids (caller frees). */
+char **kdb_detect_stale_running(sqlite3 *conn, int stale_timeout_seconds);
+
+/* Return a guard reason ("rate_limit_cooldown"|"blocker_auth"|"recent_success"|
+ * "active_pr") if task_id must NOT be re-spawned this tick, else NULL. */
+char *kdb_check_respawn_guard(sqlite3 *conn, const char *task_id);
+
+/* Run one dispatcher tick under the board dispatch lock. Returns a malloc'd
+ * result (caller frees). Dry-run reports would-be spawns without mutating. */
+kdb_dispatch_result_t *kdb_dispatch_once(sqlite3 *conn,
+                                          int ttl_seconds, int dry_run,
+                                          int max_spawn, int max_in_progress,
+                                          int failure_limit,
+                                          int stale_timeout_seconds,
+                                          const char *board,
+                                          const char *default_assignee,
+                                          int max_in_progress_per_profile);
+
+/* Fire-and-forget `hermes -p <profile> chat -q "work kanban task <id>"`.
+ * Returns the spawned child PID (or -1 on failure). */
+long kdb_default_spawn(sqlite3 *conn, const char *task_id,
+                        const char *workspace, const char *board);
+
+/* Run the dispatcher loop every `interval` seconds until stop is set. */
+void kdb_run_daemon(sqlite3 *conn, double interval, int max_spawn,
+                     int failure_limit, volatile int *stop);
+
+/* Build the full worker prompt text for a task. Returns malloc'd text
+ * (caller frees) or NULL on unknown task. */
+char *kdb_build_worker_context(sqlite3 *conn, const char *task_id);
 
 #ifdef __cplusplus
 }

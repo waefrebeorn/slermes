@@ -180,6 +180,7 @@ PORT_OBJ = \
     src/cli/kanban_util.o \
     src/cli/kanban_boards.o \
     src/cli/kanban_decompose.o \
+    src/cli/kanban_workers.o \
     src/cli/port_main.o \
     src/cli/port_memory_providers.o \
     src/cli/port_model_normalize.o \
