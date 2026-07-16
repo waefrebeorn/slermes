@@ -302,6 +302,16 @@ int  kdb_gc_events(sqlite3 *conn, int older_than_seconds);
  * NULL-terminated malloc'd array (caller frees with kdb_strv_free). */
 char **kdb_list_profiles_on_disk(void);
 void   kdb_strv_free(char **v);
+/* True when an sqlite error message denotes a lock/busy contention. */
+int  kdb_is_busy_error(const char *msg);
+/* Canonical absolute path for a resolved Hermes shim (expands ~, cwd). */
+char *kdb_absolute_hermes_path(const char *path);
+/* Candidate executable names for an unqualified command (NULL-term, free w/ kdb_strv_free). */
+char **kdb_path_search_names(const char *command);
+/* Resolve a bare command from PATH, skipping empty/"." entries. Returns malloc'd path or NULL. */
+char *kdb_safe_which_no_cwd(const char *command);
+/* True when `table` still carries the legacy (pre-AUTOINCREMENT) shape. */
+int  kdb_table_has_drifted(sqlite3 *conn, const char *table);
 /* Enumerate assignees: returns malloc'd JSON array of
  * {"name","on_disk","counts":{status:n}} objects (caller frees). */
 char *kdb_known_assignees(sqlite3 *conn);

@@ -26,6 +26,24 @@ static void jprint_str(const char *s)
     printf("\"");
 }
 
+/* Print a path (quoted), masking the (per-run temp) home prefix with
+ * <HOME> so oracle output is deterministic regardless of where the
+ * runner puts HOME. */
+static void print_path_masked(const char *s)
+{
+    if (!s) { printf("null"); return; }
+    char *home = kanban_home();
+    size_t hl = home ? strlen(home) : 0;
+    printf("\"");
+    if (home && strncmp(s, home, hl) == 0 && (s[hl] == '/' || s[hl] == 0)) {
+        printf("<HOME>%s", s + hl);
+    } else {
+        printf("%s", s);
+    }
+    printf("\"");
+    free(home);
+}
+
 /* Map a fixture placeholder (T0/T1/T2) to the real task id returned by
  * create_task. */
 static const char *real_id(const char *placeholder, char **ids, int n)
@@ -57,7 +75,7 @@ int main(int argc, char **argv)
     json_t *ops = json_obj_get(root, "ops");
     int nops = (ops && ops->type == JSON_ARRAY) ? ops->c.count : 0;
 
-    char *ids[8]; int nid = 0;
+    char *ids[8]; char *phs[8]; int nid = 0;
     printf("[");
     for (int i = 0; i < nops; i++) {
         json_t *a = ops->c.items[i];
@@ -72,13 +90,13 @@ int main(int argc, char **argv)
             spec.assignee = json_get_str(a, "assignee", "default");
             spec.created_by = json_get_str(a, "created_by", spec.assignee);
             char *rid = kdb_create_task(conn, &spec, NULL);
-            if (rid && nid < 8) ids[nid++] = rid;
+            if (rid && nid < 8) { ids[nid] = rid; phs[nid] = strdup(id ? id : ""); nid++; }
+            /* emit the fixture placeholder (deterministic) instead of the random real id */
             printf("{\"op\":\"create\",\"placeholder\":");
             jprint_str(id);
             printf(",\"real\":");
-            jprint_str(rid);
+            jprint_str(id);
             printf("}");
-            free(rid);
         }
         else if (strcmp(name, "link") == 0) {
             const char *p = real_id(json_get_str(a, "parent", ""), ids, nid);
@@ -128,9 +146,35 @@ int main(int argc, char **argv)
             }
             char *ver = NULL, *pha = NULL;
             kdb_verify_created_cards(conn, comp, cv, cn, &ver, &pha);
+            /* map resolved real ids back to fixture placeholders for deterministic output */
+            char *vm = malloc(strlen(ver) + 64), *pm = malloc(strlen(pha) + 64);
+            vm[0] = 0; pm[0] = 0;
+            for (int k = 0; ver[k]; ) {
+                /* copy until a quoted id */
+                if (ver[k] == '"') {
+                    char tok[64]; int t = 0; k++;
+                    while (ver[k] && ver[k] != '"' && t + 1 < (int)sizeof(tok)) tok[t++] = ver[k++];
+                    if (ver[k] == '"') k++;
+                    tok[t] = 0;
+                    const char *ph = tok;
+                    for (int j = 0; j < nid; j++) if (strcmp(tok, ids[j]) == 0) { ph = phs[j]; break; }
+                    strcat(vm, "\""); strcat(vm, ph); strcat(vm, "\"");
+                } else { int n = (int)strcspn(ver + k, "\""); strncat(vm, ver + k, (size_t)n); k += n; }
+            }
+            for (int k = 0; pha[k]; ) {
+                if (pha[k] == '"') {
+                    char tok[64]; int t = 0; k++;
+                    while (pha[k] && pha[k] != '"' && t + 1 < (int)sizeof(tok)) tok[t++] = pha[k++];
+                    if (pha[k] == '"') k++;
+                    tok[t] = 0;
+                    const char *ph = tok;
+                    for (int j = 0; j < nid; j++) if (strcmp(tok, ids[j]) == 0) { ph = phs[j]; break; }
+                    strcat(pm, "\""); strcat(pm, ph); strcat(pm, "\"");
+                } else { int n = (int)strcspn(pha + k, "\""); strncat(pm, pha + k, (size_t)n); k += n; }
+            }
             printf("{\"op\":\"verify_created_cards\",\"verified\":%s,\"phantom\":%s}",
-                   ver ? ver : "[]", pha ? pha : "[]");
-            free(ver); free(pha); free(cv);
+                   vm, pm);
+            free(ver); free(pha); free(cv); free(vm); free(pm);
         }
         else if (strcmp(name, "is_managed_scratch") == 0) {
             char *home = kanban_home();
@@ -141,7 +185,7 @@ int main(int argc, char **argv)
             else snprintf(full, sizeof(full), "%s", ph);
             int r = kdb_is_managed_scratch_path(full);
             printf("{\"op\":\"is_managed_scratch\",\"path\":");
-            jprint_str(full);
+            print_path_masked(full);
             printf(",\"managed\":%s}", r ? "true" : "false");
             free(home);
         }
@@ -164,14 +208,42 @@ int main(int argc, char **argv)
             int r = kdb_has_spawnable_review(conn);
             printf("{\"op\":\"has_spawnable_review\",\"v\":%s}", r ? "true" : "false");
         }
+        else if (strcmp(name, "is_busy_error") == 0) {
+            const char *msg = json_get_str(a, "msg", "");
+            printf("{\"op\":\"is_busy_error\",\"v\":%s}", kdb_is_busy_error(msg) ? "true" : "false");
+        }
+        else if (strcmp(name, "absolute_hermes_path") == 0) {
+            const char *ph = json_get_str(a, "path", "");
+            char *out = kdb_absolute_hermes_path(ph);
+            printf("{\"op\":\"absolute_hermes_path\",\"path\":");
+            print_path_masked(out ? out : "");
+            printf("}");
+            free(out);
+        }
+        else if (strcmp(name, "path_search_names") == 0) {
+            const char *cmd = json_get_str(a, "cmd", "");
+            char **nv = kdb_path_search_names(cmd);
+            printf("{\"op\":\"path_search_names\",\"names\":[");
+            if (nv) for (int k = 0; nv[k]; k++) { if (k) printf(","); jprint_str(nv[k]); }
+            printf("]}");
+            if (nv) { for (int k = 0; nv[k]; k++) free(nv[k]); free(nv); }
+        }
+        else if (strcmp(name, "safe_which_no_cwd") == 0) {
+            const char *cmd = json_get_str(a, "cmd", "");
+            char *out = kdb_safe_which_no_cwd(cmd);
+            printf("{\"op\":\"safe_which_no_cwd\",\"path\":");
+            jprint_str(out ? out : "");
+            printf("}");
+            free(out);
+        }
         else {
             printf("{\"op\":%s,\"ok\":false}", name);
         }
     }
     printf("]\n");
 
-    /* free created ids */
-    for (int k = 0; k < nid; k++) free(ids[k]);
+    /* free created ids + placeholders */
+    for (int k = 0; k < nid; k++) { free(ids[k]); free(phs[k]); }
     sqlite3_close(conn);
     json_free(root);
     return 0;
