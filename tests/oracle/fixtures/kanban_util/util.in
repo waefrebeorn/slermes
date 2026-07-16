@@ -16,6 +16,11 @@
     {"op": "absolute_hermes_path", "path": "~/x.sh"},
     {"op": "absolute_hermes_path", "path": "/abs/y.sh"},
     {"op": "path_search_names", "cmd": "python"},
-    {"op": "safe_which_no_cwd", "cmd": "python3"}
+    {"op": "safe_which_no_cwd", "cmd": "python3"},
+    {"op": "file_length_invariant"},
+    {"op": "scratch_tip_before"},
+    {"op": "scratch_tip_mark"},
+    {"op": "scratch_tip_after"},
+    {"op": "maybe_emit_scratch_tip", "task": "T1", "kind": "scratch"}
   ]
 }

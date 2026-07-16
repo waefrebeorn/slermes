@@ -134,6 +134,35 @@ def main():
             cmd = a.get("cmd", "")
             out = kdb._safe_which_no_cwd(cmd)
             parts.append('{"op":"safe_which_no_cwd","path":%s}' % jprint_str(out))
+        elif name == "file_length_invariant":
+            try:
+                kdb._check_file_length_invariant(conn)
+                parts.append('{"op":"file_length_invariant","corrupt":false}')
+            except Exception:
+                parts.append('{"op":"file_length_invariant","corrupt":true}')
+        elif name == "scratch_tip_before":
+            sp = kdb._scratch_tip_sentinel_path()
+            try:
+                sp.unlink(missing_ok=True)
+            except OSError:
+                pass
+            parts.append('{"op":"scratch_tip_before","shown":%s}'
+                         % ("true" if kdb._scratch_tip_shown() else "false"))
+        elif name == "scratch_tip_mark":
+            kdb._mark_scratch_tip_shown()
+            parts.append('{"op":"scratch_tip_mark","ok":true}')
+        elif name == "scratch_tip_after":
+            parts.append('{"op":"scratch_tip_after","shown":%s}'
+                         % ("true" if kdb._scratch_tip_shown() else "false"))
+        elif name == "maybe_emit_scratch_tip":
+            tid = ids.get(a.get("task"), a.get("task"))
+            kind = a.get("kind", "scratch")
+            kdb._maybe_emit_scratch_tip(conn, tid, kind)
+            row = conn.execute(
+                "SELECT 1 FROM task_events WHERE task_id=? AND kind='tip_scratch_workspace' LIMIT 1",
+                (tid,)).fetchone()
+            parts.append('{"op":"maybe_emit_scratch_tip","event_appended":%s}'
+                         % ("true" if row else "false"))
         else:
             parts.append('{"op":%s,"ok":false}' % jprint_str(name))
 
