@@ -286,35 +286,103 @@ char *kdb_scan_prose_for_phantom_ids(sqlite3 *conn, const char *text)
 /* scratch-path guard                                                 */
 /* ------------------------------------------------------------------ */
 
+/* Logical path normalization mirroring Python Path.resolve(strict=False):
+ * expand leading ~, collapse . / .. / duplicate separators, no existence
+ * or symlink requirement. Returns 0 on success, -1 on overflow. */
+static int logical_norm(const char *path, char *out, size_t outsz)
+{
+    if (!path || !*path || outsz < 2) return -1;
+    char expanded[PATH_MAX];
+    if (path[0] == '~') {
+        char *home = kanban_home();
+        if (home) { snprintf(expanded, sizeof(expanded), "%s%s", home, path + 1); free(home); }
+        else snprintf(expanded, sizeof(expanded), "%s", path + 1);
+    } else {
+        snprintf(expanded, sizeof(expanded), "%s", path);
+    }
+    out[0] = 0;
+    const char *p = expanded;
+    if (p[0] == '/') { out[0] = '/'; out[1] = 0; p++; }
+    char *o = out + strlen(out);
+    char seg[PATH_MAX];
+    while (*p) {
+        size_t n = strspn(p, "/"); p += n;
+        if (!*p) break;
+        size_t len = strcspn(p, "/");
+        if (len == 1 && p[0] == '.') { p += len; continue; }
+        if (len == 2 && p[0] == '.' && p[1] == '.') {
+            if (o > out + 1) { o--; while (o > out + 1 && o[-1] != '/') o--; }
+            p += len; continue;
+        }
+        snprintf(seg, sizeof(seg), "/%.*s", (int)len, p);
+        if (strlen(out) + strlen(seg) + 1 >= outsz) return -1;
+        strcat(out, seg);
+        o = out + strlen(out);
+        p += len;
+    }
+    return 0;
+}
+
 /* PoP: kdb_is_managed_scratch_path @ hermes_cli/kanban_db.py:_is_managed_scratch_path */
 int kdb_is_managed_scratch_path(const char *path)
 {
     if (!path || !*path) return 0;
+    /* Mirror Python's p.resolve(strict=False): a LOGICAL normalization
+     * that does NOT require the path to exist (realpath() would, and
+     * would also collapse symlinks). Expand ~, collapse . / .. /
+     * duplicate separators. */
+    char expanded[PATH_MAX];
+    if (path[0] == '~') {
+        char *home = kanban_home();
+        if (home) { snprintf(expanded, sizeof(expanded), "%s%s", home, path + 1); free(home); }
+        else snprintf(expanded, sizeof(expanded), "%s", path + 1);
+    } else {
+        snprintf(expanded, sizeof(expanded), "%s", path);
+    }
     char resolved[PATH_MAX];
-    if (realpath(path, resolved) == NULL) {
-        if (realpath(".", resolved) == NULL) return 0;
-        size_t L = strlen(resolved);
-        if (L + 1 + strlen(path) >= PATH_MAX) return 0;
-        resolved[L] = '/'; resolved[L+1] = 0;
-        strncat(resolved, path, PATH_MAX - L - 2);
+    resolved[0] = 0;
+    const char *p = expanded;
+    if (p[0] == '/') { resolved[0] = '/'; resolved[1] = 0; p++; }
+    char *out = resolved + strlen(resolved);
+    char seg[PATH_MAX];
+    while (*p) {
+        size_t n = strspn(p, "/"); p += n;            /* skip seps */
+        if (!*p) break;
+        size_t len = strcspn(p, "/");
+        if (len == 1 && p[0] == '.') { p += len; continue; }
+        if (len == 2 && p[0] == '.' && p[1] == '.') {
+            /* pop last component */
+            if (out > resolved + 1) { out--; while (out > resolved + 1 && out[-1] != '/') out--; }
+            p += len; continue;
+        }
+        snprintf(seg, sizeof(seg), "/%.*s", (int)len, p);
+        size_t need = strlen(resolved) + strlen(seg) + 1;
+        if (need >= PATH_MAX) return 0;
+        strcat(resolved, seg);
+        out = resolved + strlen(resolved);
+        p += len;
     }
 
     char **roots = NULL; int rc = 0;
     const char *override = getenv("HERMES_KANBAN_WORKSPACES_ROOT");
     if (override && override[0]) {
         char ov[PATH_MAX];
-        if (realpath(override, ov) != NULL) { roots = realloc(roots, sizeof(char*)*2); roots[rc++] = strdup(ov); }
+        if (logical_norm(override, ov, sizeof(ov)) == 0) {
+            roots = realloc(roots, sizeof(char*)*2); roots[rc++] = strdup(ov);
+        }
     }
     char *home = kanban_home();
     if (home) {
         char wr[PATH_MAX];
         snprintf(wr, sizeof(wr), "%s/kanban/workspaces", home);
         char wrc[PATH_MAX];
-        if (realpath(wr, wrc) != NULL) { roots = realloc(roots, sizeof(char*)*(size_t)(rc+1)); roots[rc++] = strdup(wrc); }
+        if (logical_norm(wr, wrc, sizeof(wrc)) == 0) {
+            roots = realloc(roots, sizeof(char*)*(size_t)(rc+1)); roots[rc++] = strdup(wrc);
+        }
         char bp[PATH_MAX];
         snprintf(bp, sizeof(bp), "%s/kanban/boards", home);
         char bpc[PATH_MAX];
-        if (realpath(bp, bpc) != NULL) {
+        if (logical_norm(bp, bpc, sizeof(bpc)) == 0) {
             DIR *d = opendir(bpc);
             if (d) {
                 struct dirent *e;
@@ -323,7 +391,9 @@ int kdb_is_managed_scratch_path(const char *path)
                     char eb[PATH_MAX];
                     snprintf(eb, sizeof(eb), "%s/%s/workspaces", bpc, e->d_name);
                     char ebc[PATH_MAX];
-                    if (realpath(eb, ebc) != NULL) { roots = realloc(roots, sizeof(char*)*(size_t)(rc+1)); roots[rc++] = strdup(ebc); }
+                    if (logical_norm(eb, ebc, sizeof(ebc)) == 0) {
+                        roots = realloc(roots, sizeof(char*)*(size_t)(rc+1)); roots[rc++] = strdup(ebc);
+                    }
                 }
                 closedir(d);
             }
@@ -457,3 +527,161 @@ int kdb_has_spawnable_review(sqlite3 *conn)
     sqlite3_finalize(st);
     return found;
 }
+
+/* ------------------------------------------------------------------ */
+/* connection / error helpers                                         */
+/* ------------------------------------------------------------------ */
+
+/* PoP: kdb_is_busy_error @ hermes_cli/kanban_db.py:_is_busy_error */
+int kdb_is_busy_error(const char *msg)
+{
+    if (!msg) return 0;
+    char low[512];
+    size_t n = 0;
+    for (const char *pp = msg; *pp && n + 1 < sizeof(low); pp++) {
+        char c = *pp;
+        if (c >= 'A' && c <= 'Z') c = (char)(c - 'a' + 'A');
+        low[n++] = c;
+    }
+    low[n] = 0;
+    return strstr(low, "database is locked") != NULL
+        || strstr(low, "database is busy") != NULL;
+}
+
+/* PoP: kdb_absolute_hermes_path @ hermes_cli/kanban_db.py:_absolute_hermes_path */
+char *kdb_absolute_hermes_path(const char *path)
+{
+    if (!path) return NULL;
+    char *exp = NULL;
+    if (path[0] == '~') {
+        char *home = kanban_home();
+        if (home) {
+            size_t L = strlen(home) + strlen(path) + 1;
+            exp = malloc(L);
+            snprintf(exp, L, "%s%s", home, path + 1);
+            free(home);
+        } else {
+            exp = strdup(path);
+        }
+    } else {
+        exp = strdup(path);
+    }
+    if (!exp) return NULL;
+    if (exp[0] == '/') return exp;
+    char cwd[PATH_MAX];
+    if (realpath(".", cwd) == NULL) { free(exp); return NULL; }
+    size_t L = strlen(cwd) + strlen(exp) + 2;
+    char *out = malloc(L);
+    snprintf(out, L, "%s/%s", cwd, exp);
+    free(exp);
+    return out;
+}
+
+/* ------------------------------------------------------------------ */
+/* path search (worker argv resolution) - portable subset            */
+/* ------------------------------------------------------------------ */
+
+/* PoP: kdb_path_search_names @ hermes_cli/kanban_db.py:_path_search_names */
+char **kdb_path_search_names(const char *command)
+{
+    char **out = malloc(sizeof(char*) * 2);
+    out[0] = strdup(command);
+    out[1] = NULL;
+    return out;
+}
+
+/* PoP: kdb_safe_which_no_cwd @ hermes_cli/kanban_db.py:_safe_which_no_cwd */
+char *kdb_safe_which_no_cwd(const char *command)
+{
+    if (!command) return NULL;
+    const char *path_env = getenv("PATH");
+    if (!path_env) return NULL;
+    char **names = kdb_path_search_names(command);
+    char tmp[PATH_MAX];
+    char *result = NULL;
+    const char *sep = (strchr(path_env, ':') ? ":" : ";");
+    for (const char *pp = path_env; ; ) {
+        size_t len = strcspn(pp, sep);
+        if (!(len == 0 || (len == 1 && pp[0] == '.'))) {
+            char dir[PATH_MAX];
+            if (len >= sizeof(dir)) { dir[0] = 0; }
+            else { memcpy(dir, pp, len); dir[len] = 0; }
+            char *ed = NULL;
+            if (dir[0] == '~') {
+                char *home = kanban_home();
+                if (home) { size_t L = strlen(home) + len + 1; ed = malloc(L); snprintf(ed, L, "%s%s", home, dir + 1); free(home); }
+                else ed = strdup(dir);
+            } else ed = strdup(dir);
+            for (int i = 0; names[i] && !result; i++) {
+                snprintf(tmp, sizeof(tmp), "%s/%s", ed, names[i]);
+                struct stat stt;
+                if (stat(tmp, &stt) == 0 && S_ISREG(stt.st_mode)
+#ifdef X_OK
+                    && access(tmp, X_OK) == 0
+#endif
+                ) {
+                    result = strdup(tmp);
+                }
+            }
+            free(ed);
+        }
+        if (pp[len] == 0) break;
+        pp += len + 1;
+    }
+    for (int i = 0; names[i]; i++) free(names[i]);
+    free(names);
+    return result;
+}
+
+/* ------------------------------------------------------------------ */
+/* schema drift detection                                             */
+/* ------------------------------------------------------------------ */
+
+/* PoP: kdb_table_has_drifted @ hermes_cli/kanban_db.py:_table_has_drifted */
+int kdb_table_has_drifted(sqlite3 *conn, const char *table)
+{
+    if (!conn || !table) return 0;
+    char q[256];
+    snprintf(q, sizeof(q), "PRAGMA table_info(%s)", table);
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(conn, q, -1, &st, NULL) != SQLITE_OK) return 0;
+    int id_pk = 0; char id_type[32]; id_type[0] = 0;
+    int lei_seen = 0; char lei_type[32]; lei_type[0] = 0;
+    int is_notify = (strcmp(table, "kanban_notify_subs") == 0);
+    while (sqlite3_step(st) == SQLITE_ROW) {
+        const char *name = (const char *)sqlite3_column_text(st, 1);
+        const char *type = (const char *)sqlite3_column_text(st, 2);
+        int pk = sqlite3_column_int(st, 5);
+        if (name && strcmp(name, "id") == 0) {
+            if (type) snprintf(id_type, sizeof(id_type), "%s", type);
+            id_pk = pk;
+        }
+        if (is_notify && name && strcmp(name, "last_event_id") == 0) {
+            lei_seen = 1;
+            if (type) snprintf(lei_type, sizeof(lei_type), "%s", type);
+        }
+    }
+    sqlite3_finalize(st);
+    if (is_notify) {
+        if (!lei_seen) return 0;
+        char up[32]; size_t n = 0;
+        for (const char *pp = lei_type; *pp && n + 1 < sizeof(up); pp++) {
+            char c = *pp; if (c >= 'a' && c <= 'z') c = (char)(c - 'a' + 'A'); up[n++] = c;
+        }
+        up[n] = 0;
+        return strcmp(up, "INTEGER") != 0;
+    }
+    if (id_type[0] == 0) return 0;
+    char up[32]; size_t n = 0;
+    for (const char *pp = id_type; *pp && n + 1 < sizeof(up); pp++) {
+        char c = *pp; if (c >= 'a' && c <= 'z') c = (char)(c - 'a' + 'A'); up[n++] = c;
+    }
+    up[n] = 0;
+    return !(strcmp(up, "INTEGER") == 0 && id_pk);
+}
+
+/* ------------------------------------------------------------------ */
+/* run queries                                                        */
+/* ------------------------------------------------------------------ */
+
+

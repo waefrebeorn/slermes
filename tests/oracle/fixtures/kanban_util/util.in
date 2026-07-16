@@ -10,6 +10,12 @@
     {"op": "is_managed_scratch", "path": "KANBAN_HOME/kanban/workspaces/T1"},
     {"op": "is_managed_scratch_bad", "path": "KANBAN_HOME/kanban"},
     {"op": "has_spawnable_ready"},
-    {"op": "has_spawnable_review"}
+    {"op": "has_spawnable_review"},
+    {"op": "is_busy_error", "msg": "database is locked"},
+    {"op": "is_busy_error", "msg": "no such table: tasks"},
+    {"op": "absolute_hermes_path", "path": "~/x.sh"},
+    {"op": "absolute_hermes_path", "path": "/abs/y.sh"},
+    {"op": "path_search_names", "cmd": "python"},
+    {"op": "safe_which_no_cwd", "cmd": "python3"}
   ]
 }

@@ -44,15 +44,27 @@ void kdb_canon_assignee(const char *in, char *out, size_t sz)
 
 static char *kanban_new_task_id(void)
 {
-    /* "t_" + 4 hex bytes, mirrors _new_task_id (secrets.token_hex(4)). */
+    /* "t_" + 4 hex bytes, mirrors Python's secrets.token_hex(4).
+     * Use a cryptographic RNG so successive calls within the same second
+     * do NOT collide (the old time/malloc-address mixer did, breaking
+     * rapid multi-create). Prefer getrandom(2); fall back to /dev/urandom;
+     * last-resort to a seeded PRNG. */
     static const char hexd[] = "0123456789abcdef";
     char *buf = malloc(12);
+    if (!buf) return NULL;
     unsigned char r[4];
-    for (int i = 0; i < 4; i++) {
-        /* best-effort randomness */
-        unsigned int v = (unsigned int)((time(NULL) ^ (size_t)buf) + i * 2654435761u);
-        v = (v * 1103515245u + 12345u) >> 16;
-        r[i] = (unsigned char)(v & 0xff);
+    int ok = 0;
+#if defined(__linux__) && defined(SYS_getrandom)
+    if (syscall(SYS_getrandom, r, sizeof(r), 0) == (long)sizeof(r)) ok = 1;
+#endif
+    if (!ok) {
+        FILE *f = fopen("/dev/urandom", "rb");
+        if (f) { ok = (fread(r, 1, sizeof(r), f) == sizeof(r)); fclose(f); }
+    }
+    if (!ok) {
+        static int seeded = 0;
+        if (!seeded) { seeded = 1; srand((unsigned)(time(NULL) ^ (size_t)buf)); }
+        for (int i = 0; i < 4; i++) r[i] = (unsigned char)(rand() & 0xff);
     }
     buf[0] = 't'; buf[1] = '_';
     for (int i = 0; i < 4; i++) {
@@ -146,7 +158,7 @@ char *kdb_create_task(sqlite3 *conn, const kdb_create_spec_t *spec, char **paren
     (void)mrt;
     for (int attempt = 0; attempt < 2; attempt++) {
         task_id = kanban_new_task_id();
-        if (kdb_write_begin(conn) != 0) { free(task_id); task_id = NULL; break; }
+    if (kdb_write_begin(conn) != 0) { free(task_id); task_id = NULL; break; }
         sqlite3_stmt *st = NULL;
         const char *sql =
             "INSERT INTO tasks (id, title, body, assignee, status, priority, "
