@@ -41,6 +41,15 @@ test-libs:
 	@echo "=== Testing checkpoint_persist ==="
 	@gcc -O2 -g -Wall -Wextra -I include $(LIB_INCS) tests/test_checkpoint_persist.c src/agent/checkpoint.c src/agent/context.c lib/libjson/json.o -o /tmp/t_chkpersist -lm 2>/dev/null && /tmp/t_chkpersist 2>&1 || echo "(no test runner)"
 
+# Cron job store (port of cron/jobs.py) — disk-backed real-behavior test.
+test-cronjobs:
+	@gcc -O2 -g -Wall -Wextra -I include $(LIB_INCS) tests/cron_jobs_test.c \
+		src/cron/port_cron_jobs.o src/cron/port_lifecycle_guard.o src/slermes_home.o \
+		lib/libjson/json.o lib/libhash/hash.o lib/libcron/cron.o \
+		lib/libdatetime/datetime.o lib/libuuid/uuid.o \
+		$(SSL_LDFLAGS) -o /tmp/t_cronjobs -lssl -lcrypto -lpcre2-8 2>/dev/null \
+		&& /tmp/t_cronjobs 2>&1 || echo "(cronjobs test failed)"
+
 # Make a combined list of all phony targets for the check/ci workflow
 TEST_PHONIES := test test-libs check
 
