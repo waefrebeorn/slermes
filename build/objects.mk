@@ -191,6 +191,7 @@ PORT_OBJ = \
     src/cli/port_runtime_provider.o src/hermes_cli/sqlite_util.o \
     src/cli/port_voice.o \
     src/cli/port_web_server.o \
+    src/cli/port_web_server_auth.o \
     src/gateway/port_api_server.o \
     src/gateway/port_base.o \
     src/gateway/port_signal.o \

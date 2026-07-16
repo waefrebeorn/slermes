@@ -46,8 +46,9 @@ static int g_dash_fd = -1;
 static char g_response_buf[65536] = "";
 
 /* Port of Python hermes_cli/web_server.py:_SESSION_TOKEN
- * Random token generated on start, checked via X-Hermes-Session-Token header. */
-static char g_session_token[SESSION_TOKEN_LEN] = "";
+ * Random token generated on start, checked via X-Hermes-Session-Token header.
+ * Non-static so the auth helpers in port_web_server_auth.c can validate it. */
+char g_session_token[SESSION_TOKEN_LEN] = "";
 
 /* Public API paths that do NOT require auth (mirrors Python _PUBLIC_API_PATHS). */
 static bool is_public_path(const char *path) {
