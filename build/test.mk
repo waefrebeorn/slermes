@@ -76,6 +76,12 @@ test-commands-sanitize:
 		-o /tmp/t_cmdsanitize 2>/dev/null \
 		&& /tmp/t_cmdsanitize 2>&1 || echo "(gateway command sanitize test failed)"
 
+test-blueprint-cmd:
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include $(LIB_INCS) tests/blueprint_cmd_test.c \
+		src/cli/blueprint_cmd.o src/cli/port_blueprint_catalog_helpers.o lib/libjson/json.o lib/libdifflib/difflib.o \
+		-o /tmp/t_blueprint 2>/dev/null \
+		&& /tmp/t_blueprint 2>&1 || echo "(blueprint command test failed)"
+
 # Make a combined list of all phony targets for the check/ci workflow
 TEST_PHONIES := test test-libs check
 

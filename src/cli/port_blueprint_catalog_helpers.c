@@ -636,6 +636,15 @@ json_t *blueprint_catalog_get(const char *key)
     return NULL;
 }
 
+/* Expose the single baked catalog source-of-truth so other modules (e.g.
+ * blueprint_cmd.c) can load it without a second copy. Returns the static
+ * JSON array string; do NOT free. */
+const char *blueprint_catalog_raw_json(void)
+{
+    return BLUEPRINT_CATALOG_JSON;
+}
+
+
 /*
  * PoP: blueprint_form_schema @ cron/blueprint_catalog.py:blueprint_form_schema
  * Emits the JSON a form renderer needs for this blueprint. Returns malloc'd
