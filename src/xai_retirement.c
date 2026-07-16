@@ -9,7 +9,7 @@
  * any reference to a retired xAI model. Pure logic — no I/O.
  */
 
-/* PoP: xAI retirement notice (port of tools/xai_http) */
+/* PoP: hermes_xai_looks_like @ hermes_cli/xai_retirement.py:_looks_like_xai */
 
 #include "hermes_xai_retirement.h"
 #include <string.h>
@@ -168,8 +168,55 @@ xai_retirement_result_t hermes_xai_find_retired(const hermes_config_t *cfg) {
 }
 
 /* ================================================================
+ *  Resolve a dotted slot path to (parent_mapping, leaf_key)
+ *  Faithful port of xai_retirement._walk_to_parent.
+ *  Operates on a parsed YAML/JSON document (hermes_json node tree).
+ *  Returns 0 on success (filling *out_parent / *out_leaf), or a
+ *  negative code on error:
+ *    -1  path has no parent (len(parts) < 2)
+ *    -2  a segment or leaf is missing / not a mapping
+ * ================================================================ */
+
+/* PoP: hermes_xai_walk_to_parent @ hermes_cli/xai_retirement.py:_walk_to_parent */
+int hermes_xai_walk_to_parent(const json_t *yaml_doc, const char *dotted_path,
+                               json_t **out_parent, const char **out_leaf)
+{
+    if (!yaml_doc || !dotted_path || !out_parent || !out_leaf)
+        return -2;
+    *out_parent = NULL;
+    *out_leaf = NULL;
+
+    /* Split on '.' */
+    char pathbuf[256];
+    if (strlen(dotted_path) >= sizeof(pathbuf)) return -2;
+    strcpy(pathbuf, dotted_path);
+    char *parts[64];
+    int nparts = 0;
+    char *p = pathbuf;
+    char *seg;
+    while ((seg = strtok_r(p, ".", &p)) != NULL) {
+        if (nparts >= 64) return -2;
+        parts[nparts++] = seg;
+        p = NULL; /* strtok_r continuation */
+    }
+    if (nparts < 2) return -1;
+
+    json_t *node = (json_t *)yaml_doc;
+    for (int i = 0; i < nparts - 1; i++) {
+        if (!node || node->type != JSON_OBJECT) return -2;
+        node = json_obj_get(node, parts[i]);
+        if (!node) return -2;
+    }
+    if (!node || node->type != JSON_OBJECT) return -2;
+    *out_parent = node;
+    *out_leaf = parts[nparts - 1];
+    return 0;
+}
+
+/* ================================================================
  *  Format helpers
  * ================================================================ */
+/* PoP: hermes_xai_format_issue @ hermes_cli/xai_retirement.py:format_issue */
 char *hermes_xai_format_issue(const xai_retirement_issue_t *issue) {
     if (!issue) return NULL;
 

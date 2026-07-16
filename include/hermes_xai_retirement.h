@@ -62,4 +62,13 @@ bool hermes_xai_looks_like(const char *model);
  */
 const char *hermes_xai_normalize(const char *model);
 
+/**
+ * Resolve a dotted slot path (e.g. "auxiliary.vision.model") to
+ * (parent_mapping, leaf_key), faithful to xai_retirement._walk_to_parent.
+ * Returns 0 on success, -1 if path has <1 parent, -2 if a segment/leaf
+ * is missing or an intermediate node is not a mapping.
+ */
+int hermes_xai_walk_to_parent(const json_t *yaml_doc, const char *dotted_path,
+                              json_t **out_parent, const char **out_leaf);
+
 #endif /* HERMES_XAI_RETIREMENT_H */
