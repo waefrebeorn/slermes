@@ -98,6 +98,13 @@ test-provider-meta:
 		-o /tmp/t_provmeta 2>/dev/null \
 		&& /tmp/t_provmeta 2>&1 || echo "(provider meta test failed)"
 
+# Shell completion generation (pure slice of hermes_cli/completion.py).
+test-completion:
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include $(LIB_INCS) tests/completion_test.c \
+		src/cli/port_completion.o \
+		-o /tmp/t_completion 2>/dev/null \
+		&& /tmp/t_completion 2>&1 || echo "(completion test failed)"
+
 test-model-normalize:
 	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include $(LIB_INCS) tests/model_normalize_test.c \
 		src/cli/port_model_normalize.o src/cli/model_catalog.o src/cli/port_models_helpers.o \
