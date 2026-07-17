@@ -394,6 +394,7 @@ static int is_known_provider_name(const char *s) {
     return strcmp(s, "openrouter") == 0 || strcmp(s, "custom") == 0;
 }
 
+/* PoP: parse_model_input @ hermes_cli/models.py:parse_model_input */
 void model_parse_model_input(const char *raw, const char *current_provider,
                              char *provider_out, size_t poutsz,
                              char *model_out, size_t moutsz) {
@@ -782,4 +783,40 @@ void model_clear_provider_models_cache(const char *provider) {
         model_save_provider_models_cache("{}");
     }
     free(cache);
+}
+
+/* PoP: curated_models_for_provider @ hermes_cli/models.py:curated_models_for_provider */
+/*
+ * Faithful port of models.py:curated_models_for_provider's STATIC-CATALOG
+ * fallback path. Mirrors the Python:
+ *   normalized = normalize_provider(provider)
+ *   if normalized == "openrouter": return fetch_openrouter_models(...)   # HTTP
+ *   live = provider_model_ids(normalized)                                # HTTP
+ *   if live: return [(m, "") for m in live]
+ *   return [(m, "") for m in _PROVIDER_MODELS.get(normalized, [])]        # static
+ *
+ * This C entry implements the deterministic static fallback: it fills
+ * provider_out[i]/model_out[i] with the curated (model_id, "") tuples from
+ * the embedded _PROVIDER_MODELS catalog and returns the count. The live
+ * HTTP path (openrouter / provider_model_ids) is a separate, network-driven
+ * resolver layered on top; callers that need live data call it first and
+ * fall back to this. Returns 0 when the provider has no static models.
+ */
+int model_curated_models_for_provider(const char *provider,
+                                      char provider_out[][64],
+                                      char model_out[][256],
+                                      int max) {
+    if (!provider || max <= 0) return 0;
+    const char *norm = model_normalize_provider(provider);
+    const provider_entry_t *e = find_provider(norm);
+    if (!e) return 0;
+    int n = 0;
+    for (int i = 0; i < e->n_models && n < max; i++) {
+        /* provider_out mirrors the normalized provider (Python returns "" for
+         * description; provider_out carries the provider for tuple symmetry). */
+        snprintf(provider_out[n], 64, "%s", norm);
+        snprintf(model_out[n], 256, "%s", e->models[i]);
+        n++;
+    }
+    return n;
 }
