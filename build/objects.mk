@@ -84,6 +84,7 @@ PORT_OBJ = \
     src/cli/port_auth_helpers.o \
     src/cli/gateway_command_sanitize.o \
     src/cli/blueprint_cmd.o \
+    src/cli/port_goals_data.o \
     src/cli/port_scale_to_zero_helpers.o \
     src/cli/port_cron_jobs_helpers.o \
     src/cli/port_profiles_helpers.o \

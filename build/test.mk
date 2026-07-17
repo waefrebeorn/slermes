@@ -82,6 +82,14 @@ test-blueprint-cmd:
 		-o /tmp/t_blueprint 2>/dev/null \
 		&& /tmp/t_blueprint 2>&1 || echo "(blueprint command test failed)"
 
+# Goal data-model (pure data layer ported from hermes_cli/goals.py:
+# GoalContract, parse_contract, GoalState serialize/render).
+test-goals-data:
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include $(LIB_INCS) tests/goal_data_test.c \
+		src/cli/port_goals_data.o lib/libjson/json.o \
+		-o /tmp/t_goalsdata 2>/dev/null \
+		&& /tmp/t_goalsdata 2>&1 || echo "(goal data test failed)"
+
 test-model-normalize:
 	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include $(LIB_INCS) tests/model_normalize_test.c \
 		src/cli/port_model_normalize.o src/cli/model_catalog.o src/cli/port_models_helpers.o \
