@@ -106,8 +106,9 @@ test-plugin-manifest:
 
 # Goal manager (orchestration + judge-prompt helpers, pure layer of goals.py).
 test-goals-manager:
-	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib -I lib/libcredentialfiles $(LIB_INCS) tests/goal_manager_test.c \
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib -I lib/libcredentialfiles -I src $(LIB_INCS) tests/goal_manager_test.c \
 		src/cli/port_goals_data.o src/cli/port_goals_manager.o src/cli/port_goals_helpers.o lib/libjson/json.o lib/libcredentialfiles/credential_files.o \
+		src/tools/process_registry.o -lpthread \
 		-o /tmp/t_gm 2>/dev/null \
 		&& /tmp/t_gm 2>&1 || echo "(goals manager test failed)"
 

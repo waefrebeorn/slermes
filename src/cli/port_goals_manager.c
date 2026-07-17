@@ -39,6 +39,7 @@
 
 #include "goal_contract.h"
 #include "goal_contract_internal.h"
+#include "tools/process_registry.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -847,5 +848,54 @@ char *goal_judge_render_background_block(const char *const *json_processes) {
         "Background processes the agent currently has running (it may be waiting "
         "on one of these):\n%s\n", lines);
     free(lines);
+    return out;
+}
+
+/* PoP: gather_background_processes @ hermes_cli/goals.py:gather_background_processes */
+/*
+ * Faithful C port of goals.py:gather_background_processes.
+ *
+ * Thin, fail-safe wrapper over process_registry_list(task_id). Returns only
+ * RUNNING processes (an exited one is nothing to wait on) as a JSON array
+ * string the caller frees. Never raises: any registry failure yields "[]".
+ */
+char *goal_gather_background_processes(const char *task_id) {
+    char *raw = process_registry_list(task_id);
+    if (!raw) return strdup("[]");
+
+    json_t *doc = json_parse(raw, NULL);
+    free(raw);
+    if (!doc || doc->type != JSON_ARRAY) {
+        json_free(doc);
+        return strdup("[]");
+    }
+
+    /* Build a filtered array: drop entries with status == "exited". */
+    size_t cap = 4096;
+    char *out = malloc(cap);
+    size_t len = 0;
+    out[len++] = '[';
+
+    int first = 1;
+    for (size_t i = 0; i < doc->c.count; i++) {
+        json_t *e = doc->c.items[i];
+        if (!e || e->type != JSON_OBJECT) continue;
+        const char *status = json_get_str(e, "status", NULL);
+        if (status && strcmp(status, "exited") == 0) continue;
+
+        /* Re-serialize the entry. Each list entry is a compact JSON object. */
+        char *entry = json_serialize(e);
+        if (!entry) continue;
+        size_t need = len + strlen(entry) + 2; /* comma + entry + nul */
+        if (need > cap) { cap = need * 2; out = realloc(out, cap); }
+        if (!first) out[len++] = ',';
+        memcpy(out + len, entry, strlen(entry));
+        len += strlen(entry);
+        first = 0;
+        free(entry);
+    }
+    out[len++] = ']';
+    out[len] = '\0';
+    json_free(doc);
     return out;
 }

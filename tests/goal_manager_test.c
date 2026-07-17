@@ -7,6 +7,7 @@
  */
 
 #include "goal_contract.h"
+#include "tools/process_registry.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -261,6 +262,37 @@ static void test_os_liveness(void) {
     goal_manager_free(m);
 }
 
+static void test_gather_background_processes(void) {
+    /* registry auto-inits on first spawn/list. Spawn a real long-running
+     * process tagged to a task. */
+    ProcessSession *s = process_registry_spawn_local(
+        "sleep 5", "/tmp", "gather_task_1", "gather_sess_key", NULL);
+    CHECK(s != NULL, "spawned sleep session");
+    if (!s) return;
+
+    /* Gather for the task -> should include the running process. */
+    char *running = goal_gather_background_processes("gather_task_1");
+    CHECK(running && strstr(running, s->id) != NULL, "running process appears in gather");
+    free(running);
+
+    /* Gather with no filter -> still sees it among all. */
+    char *all = goal_gather_background_processes(NULL);
+    CHECK(all && strstr(all, s->id) != NULL, "no-filter gather includes process");
+    free(all);
+
+    /* Fail-safe: unknown task -> "[]" (no entries for that task). */
+    char *none = goal_gather_background_processes("no_such_task");
+    CHECK(none && strcmp(none, "[]") == 0, "unknown task yields []");
+    free(none);
+
+    /* Kill it, then it should be dropped (status becomes exited). */
+    char *killres = process_registry_kill(s->id);
+    free(killres);
+    char *after = goal_gather_background_processes("gather_task_1");
+    CHECK(after && strstr(after, s->id) == NULL, "killed process dropped from gather");
+    free(after);
+}
+
 int main(void) {
     test_manager_basic();
     test_subgoals();
@@ -270,6 +302,7 @@ int main(void) {
     test_judge_parse();
     test_judge_extract_and_bg();
     test_os_liveness();
+    test_gather_background_processes();
     printf("goal_manager_test: %d checks, %d failed\n", checks, failures);
     return failures ? 1 : 0;
 }

@@ -253,6 +253,12 @@ goal_state_t *goal_manager_wait_on(goal_manager_t *m, long pid, const char *reas
 goal_state_t *goal_manager_wait_on_session(goal_manager_t *m, const char *session_id, const char *reason, double now);
 goal_state_t *goal_manager_wait_for_seconds(goal_manager_t *m, int seconds, const char *reason, double now);
 bool goal_manager_stop_waiting(goal_manager_t *m);
+
+/* Faithful port of goals.py:gather_background_processes — fail-safe snapshot
+ * of RUNNING background processes (drops status=="exited") as a JSON array
+ * string the caller frees. Returns "[]" on any registry failure. Pure wrapper
+ * over the already-ported process_registry_list(). */
+char *goal_gather_background_processes(const char *task_id);
 bool goal_manager_is_waiting(goal_manager_t *m, double now);
 
 /* next_continuation_prompt() — the canonical user-role message for the next
