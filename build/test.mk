@@ -92,6 +92,13 @@ test-goals-data:
 
 # Provider metadata (display-logic slice of hermes_cli/models.py:
 # normalize_provider, provider_label, provider_group_for_slug, group_providers).
+# Goal manager (orchestration + judge-prompt helpers, pure layer of goals.py).
+test-goals-manager:
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib -I lib/libcredentialfiles $(LIB_INCS) tests/goal_manager_test.c \
+		src/cli/port_goals_data.o src/cli/port_goals_manager.o src/cli/port_goals_helpers.o lib/libjson/json.o lib/libcredentialfiles/credential_files.o \
+		-o /tmp/t_gm 2>/dev/null \
+		&& /tmp/t_gm 2>&1 || echo "(goals manager test failed)"
+
 test-provider-meta:
 	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib $(LIB_INCS) tests/provider_meta_test.c \
 		src/cli/port_provider_meta.o src/cli/port_config_pure.o lib/libjson/json.o \
