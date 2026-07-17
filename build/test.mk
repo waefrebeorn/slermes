@@ -90,8 +90,13 @@ test-goals-data:
 		-o /tmp/t_goalsdata 2>/dev/null \
 		&& /tmp/t_goalsdata 2>&1 || echo "(goal data test failed)"
 
-# Provider metadata (display-logic slice of hermes_cli/models.py:
-# normalize_provider, provider_label, provider_group_for_slug, group_providers).
+# Plugin manifest (pure data-model port of plugins.py:PluginManifest).
+test-plugin-manifest:
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib $(LIB_INCS) tests/plugin_manifest_test.c \
+		src/cli/port_plugin_manifest.o lib/libjson/json.o \
+		-o /tmp/t_pm 2>/dev/null \
+		&& /tmp/t_pm 2>&1 || echo "(plugin manifest test failed)"
+
 # Goal manager (orchestration + judge-prompt helpers, pure layer of goals.py).
 test-goals-manager:
 	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib -I lib/libcredentialfiles $(LIB_INCS) tests/goal_manager_test.c \
