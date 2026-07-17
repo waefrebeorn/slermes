@@ -90,6 +90,13 @@ test-goals-data:
 		-o /tmp/t_goalsdata 2>/dev/null \
 		&& /tmp/t_goalsdata 2>&1 || echo "(goal data test failed)"
 
+# Tools-config pure helpers (display/config slice of tools_config.py).
+test-tools-config-helpers:
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib $(LIB_INCS) tests/tools_config_helpers_test.c \
+		src/cli/port_tools_config_helpers.o \
+		-o /tmp/t_tch 2>/dev/null \
+		&& /tmp/t_tch 2>&1 || echo "(tools config helpers test failed)"
+
 # Plugin manifest (pure data-model port of plugins.py:PluginManifest).
 test-plugin-manifest:
 	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib $(LIB_INCS) tests/plugin_manifest_test.c \
