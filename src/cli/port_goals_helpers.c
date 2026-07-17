@@ -143,7 +143,7 @@ static char *strip_code_fences(const char *raw)
  * --------------------------------------------------------------------------- */
 
 /*
- * PoP: GoalContract.is_empty @ hermes_cli/goals.py:GoalContract.is_empty
+ * PoP: goal_contract_is_empty @ hermes_cli/goals.py:is_empty
  * Returns 1 if all contract fields are empty (contract given as JSON). */
 int goals_is_empty(const char *contract_json)
 {

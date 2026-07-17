@@ -10,19 +10,19 @@
  * This is the data core: no SessionDB, no TTY, no network, no judge loop.
  * The persistence + loop layers live elsewhere and call into this API.
  *
- * PoP: goal_meta_key             @ hermes_cli/goals.py:_meta_key
- * PoP: goal_contract_is_empty    @ hermes_cli/goals.py:GoalContract.is_empty
- * PoP: goal_contract_to_dict     @ hermes_cli/goals.py:GoalContract.to_dict
- * PoP: goal_contract_from_dict   @ hermes_cli/goals.py:GoalContract.from_dict
- * PoP: goal_contract_render      @ hermes_cli/goals.py:GoalContract.render_block
- * PoP: parse_contract            @ hermes_cli/goals.py:parse_contract
- * PoP: goal_state_to_json        @ hermes_cli/goals.py:GoalState.to_json
- * PoP: goal_state_from_json      @ hermes_cli/goals.py:GoalState.from_json
- * PoP: goal_state_has_contract   @ hermes_cli/goals.py:GoalState.has_contract
- * PoP: goal_state_render_subgoals @ hermes_cli/goals.py:GoalState.render_subgoals_block
- */
+/* PoP: goal_meta_key           @ hermes_cli/goals.py:_meta_key */
+/* PoP: goal_contract_is_empty  @ hermes_cli/goals.py:is_empty */
+/* PoP: goal_contract_to_dict   @ hermes_cli/goals.py:to_dict */
+/* PoP: goal_contract_from_dict @ hermes_cli/goals.py:from_dict */
+/* PoP: goal_contract_render    @ hermes_cli/goals.py:render_block */
+/* PoP: parse_contract          @ hermes_cli/goals.py:parse_contract */
+/* PoP: goal_state_to_json      @ hermes_cli/goals.py:to_json */
+/* PoP: goal_state_from_json    @ hermes_cli/goals.py:from_json */
+/* PoP: goal_state_has_contract @ hermes_cli/goals.py:has_contract */
+/* PoP: goal_state_render_subgoals @ hermes_cli/goals.py:render_subgoals_block */
 
 #include "goal_contract.h"
+#include "goal_contract_internal.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -36,8 +36,6 @@ const int GOAL_DEFAULT_MAX_TURNS = 20;
  * Canonical contract fields + labels + inline-input aliases
  * (Python: _CONTRACT_FIELDS / _CONTRACT_LABELS / _CONTRACT_ALIASES)
  * ─────────────────────────────────────────────────────────────────── */
-
-#define N_CONTRACT_FIELDS 5
 
 static const char *CONTRACT_FIELDS[N_CONTRACT_FIELDS] = {
     "outcome", "verification", "constraints", "boundaries", "stop_when"
@@ -122,10 +120,6 @@ static const char *alias_to_field(const char *raw_prefix) {
 /* ───────────────────────────────────────────────────────────────────
  * GoalContract
  * ─────────────────────────────────────────────────────────────────── */
-
-struct goal_contract_t {
-    char *fields[N_CONTRACT_FIELDS]; /* each owned, may be NULL/"" */
-};
 
 goal_contract_t *goal_contract_new(void) {
     goal_contract_t *c = calloc(1, sizeof(*c));
@@ -367,27 +361,6 @@ bool parse_contract(const char *text, char **headline_out, goal_contract_t **con
  * GoalState
  * ─────────────────────────────────────────────────────────────────── */
 
-struct goal_state_t {
-    char *goal;
-    char *status;              /* active | paused | done | cleared */
-    int turns_used;
-    int max_turns;
-    double created_at;
-    double last_turn_at;
-    char *last_verdict;        /* "done" | "continue" | "skipped" | NULL */
-    char *last_reason;         /* NULL */
-    char *paused_reason;       /* NULL */
-    int consecutive_parse_failures;
-    char **subgoals;           /* owned array of strings */
-    size_t n_subgoals;
-    long waiting_on_pid;       /* 0 => none */
-    char *waiting_on_session;  /* NULL */
-    double waiting_until;      /* 0.0 => none */
-    char *waiting_reason;      /* NULL */
-    double waiting_since;
-    goal_contract_t *contract; /* owned */
-};
-
 goal_state_t *goal_state_new(const char *goal) {
     goal_state_t *s = calloc(1, sizeof(*s));
     if (!s) return NULL;
@@ -421,25 +394,26 @@ int goal_state_subgoal_count(const goal_state_t *s) {
     return (int)(s ? s->n_subgoals : 0);
 }
 
-void goal_state_add_subgoal(goal_state_t *s, const char *text) {
-    if (!s || !text) return;
+int goal_state_add_subgoal(goal_state_t *s, const char *text) {
+    if (!s || !text) return 0;
     /* trim */
     const char *p = text;
     while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
     const char *e = p + strlen(p);
     while (e > p && (e[-1] == ' ' || e[-1] == '\t' || e[-1] == '\n' || e[-1] == '\r')) e--;
-    if (e <= p) return;
+    if (e <= p) return 0;
     size_t len = (size_t)(e - p);
     /* de-dupe against existing (case-sensitive, trimmed) */
     for (size_t i = 0; i < s->n_subgoals; i++) {
         size_t el = strlen(s->subgoals[i]);
-        if (el == len && strncmp(s->subgoals[i], p, len) == 0) return;
+        if (el == len && strncmp(s->subgoals[i], p, len) == 0) return 0;
     }
     char *copy = malloc(len + 1);
     memcpy(copy, p, len);
     copy[len] = '\0';
     s->subgoals = realloc(s->subgoals, (s->n_subgoals + 1) * sizeof(char *));
     s->subgoals[s->n_subgoals++] = copy;
+    return 1;
 }
 
 char *goal_state_render_subgoals(const goal_state_t *s) {
