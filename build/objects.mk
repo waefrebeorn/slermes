@@ -208,7 +208,8 @@ PORT_OBJ = \
     src/tools/browser_camofox.o src/tools/browser_camofox_state.o \
     src/tools/port_browser_supervisor.o \
     src/tools/port_environments/base.o \
-    src/agent/anthropic_adapter.o
+    src/agent/anthropic_adapter.o \
+    src/cli/port_plugin_manifest.o
 
 # Desktop app parity objects (v465-v468)
 # Desktop app parity objects (core — always needed for main binary)
