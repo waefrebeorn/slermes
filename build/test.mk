@@ -90,6 +90,13 @@ test-goals-data:
 		-o /tmp/t_goalsdata 2>/dev/null \
 		&& /tmp/t_goalsdata 2>&1 || echo "(goal data test failed)"
 
+# CLI command registry + completion walk (commands.py registry + completion.py:_walk).
+test-cli-command-registry:
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib $(LIB_INCS) tests/cli_command_registry_test.c \
+		src/cli/port_cli_command_registry.o src/cli/port_completion.o \
+		-o /tmp/t_ccr 2>/dev/null \
+		&& /tmp/t_ccr 2>&1 || echo "(cli command registry test failed)"
+
 # Tools-config pure helpers (display/config slice of tools_config.py).
 test-tools-config-helpers:
 	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib $(LIB_INCS) tests/tools_config_helpers_test.c \
