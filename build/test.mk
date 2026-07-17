@@ -90,6 +90,14 @@ test-goals-data:
 		-o /tmp/t_goalsdata 2>/dev/null \
 		&& /tmp/t_goalsdata 2>&1 || echo "(goal data test failed)"
 
+# Provider metadata (display-logic slice of hermes_cli/models.py:
+# normalize_provider, provider_label, provider_group_for_slug, group_providers).
+test-provider-meta:
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib $(LIB_INCS) tests/provider_meta_test.c \
+		src/cli/port_provider_meta.o src/cli/port_config_pure.o lib/libjson/json.o \
+		-o /tmp/t_provmeta 2>/dev/null \
+		&& /tmp/t_provmeta 2>&1 || echo "(provider meta test failed)"
+
 test-model-normalize:
 	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include $(LIB_INCS) tests/model_normalize_test.c \
 		src/cli/port_model_normalize.o src/cli/model_catalog.o src/cli/port_models_helpers.o \
