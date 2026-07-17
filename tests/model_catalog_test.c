@@ -126,6 +126,43 @@ int main(void) {
     CHECK(pm && strstr(pm, "anthropic/claude-fable-5"), "provider_model_ids returns static nous");
     free(pm);
 
+    /* ── parse_model_input (mirrors models.py:parse_model_input) ──── */
+    {
+        char prov[64], mod[256];
+        model_parse_model_input("openrouter:anthropic/claude-sonnet-4.5", "nous", prov, sizeof(prov), mod, sizeof(mod));
+        CHECK(strcmp(prov, "openrouter") == 0, "explicit provider switch");
+        CHECK(strcmp(mod, "anthropic/claude-sonnet-4.5") == 0, "explicit model kept");
+
+        model_parse_model_input("anthropic/claude-sonnet-4.5", "nous", prov, sizeof(prov), mod, sizeof(mod));
+        CHECK(strcmp(prov, "nous") == 0, "no provider -> current_provider");
+        CHECK(strcmp(mod, "anthropic/claude-sonnet-4.5") == 0, "model kept when no provider");
+
+        model_parse_model_input("gpt-5.4", "openai", prov, sizeof(prov), mod, sizeof(mod));
+        CHECK(strcmp(prov, "openai") == 0, "bare model -> current_provider");
+
+        /* colon is NOT a delimiter when left side isn't a known provider */
+        model_parse_model_input("anthropic/claude-3.5-sonnet:beta", "nous", prov, sizeof(prov), mod, sizeof(mod));
+        CHECK(strcmp(prov, "nous") == 0, "model-with-colon not split");
+        CHECK(strcmp(mod, "anthropic/claude-3.5-sonnet:beta") == 0, "full model with colon kept");
+
+        /* custom triple syntax */
+        model_parse_model_input("custom:local:qwen", "nous", prov, sizeof(prov), mod, sizeof(mod));
+        CHECK(strcmp(prov, "custom:local") == 0, "custom triple provider");
+        CHECK(strcmp(mod, "qwen") == 0, "custom triple model");
+    }
+
+    /* ── curated_models_for_provider (static-catalog fallback) ────── */
+    {
+        char prov[16][64]; char mods[16][256];
+        int n = model_curated_models_for_provider("nous", prov, mods, 16);
+        CHECK(n > 0, "nous has curated models");
+        int found_fable = 0;
+        for (int i = 0; i < n; i++) if (strcmp(mods[i], "anthropic/claude-fable-5") == 0) found_fable = 1;
+        CHECK(found_fable, "nous curated list includes claude-fable-5");
+        int n2 = model_curated_models_for_provider("unknownproviderxyz", prov, mods, 16);
+        CHECK(n2 == 0, "unknown provider -> 0 models");
+    }
+
     printf("\nmodel_catalog_test: %d passed, %d failed\n", g_pass, g_fail);
     return g_fail ? 1 : 0;
 }

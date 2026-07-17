@@ -88,6 +88,16 @@ void model_parse_model_input(const char *raw,
                               char *provider_out, size_t poutsz,
                               char *model_out, size_t moutsz);
 
+/* Faithful port of models.py:curated_models_for_provider (STATIC-CATALOG
+ * fallback). Fills provider_out[i]/model_out[i] with (model_id, "") tuples
+ * from the embedded _PROVIDER_MODELS catalog for the normalized provider,
+ * returns the count. Live HTTP resolution (openrouter / provider_model_ids)
+ * is a separate network-driven layer that calls this as fallback. */
+int model_curated_models_for_provider(const char *provider,
+                                      char provider_out[][64],
+                                      char model_out[][256],
+                                      int max);
+
 /* Detect a provider for a model name using static catalogs only.
  * Returns 1 and fills provider_out/model_out (caller buffers) on a confident
  * match, else returns 0 (no match). */
