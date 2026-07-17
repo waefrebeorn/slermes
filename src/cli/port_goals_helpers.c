@@ -143,16 +143,6 @@ static char *strip_code_fences(const char *raw)
  * --------------------------------------------------------------------------- */
 
 /*
- * PoP: _meta_key @ hermes_cli/goals.py:_meta_key
- * Returns malloc'd "goal:<session_id>". Caller frees. */
-char *goal_meta_key(const char *session_id)
-{
-    char *out = malloc(strlen(session_id ? session_id : "") + 8);
-    sprintf(out, "goal:%s", session_id ? session_id : "");
-    return out;
-}
-
-/*
  * PoP: GoalContract.is_empty @ hermes_cli/goals.py:GoalContract.is_empty
  * Returns 1 if all contract fields are empty (contract given as JSON). */
 int goals_is_empty(const char *contract_json)

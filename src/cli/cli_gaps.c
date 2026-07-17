@@ -224,7 +224,7 @@ const char *cli_subprocess_invoke(const char *module, const char *args) {
  *  hermes_cli/pairing.py        → gateway/pairing.c      (PORTED)
  *  hermes_cli/completion.py     → commands.c, /completions (PORTED)
  *  hermes_cli/voice.py          → commands.c, /voice      (PORTED)
- *  hermes_cli/goals.py          → commands.c, /goal       (PORTED)
+ *  hermes_cli/goals.py          → port_goals_data.c (GoalContract/parse_contract/GoalState data layer), port_goals_helpers.c (pure helpers)  (PARTIAL — data model + pure helpers ported; judge/loop/persistence still REAL_GAP)
  *  hermes_cli/secret_prompt.py  → cli.c (secret prompt)   (PORTED)
  *  hermes_cli/model_catalog.py  → commands.c, /model list (PORTED)
  *  hermes_cli/partial_compress.py→ commands.c,/compress   (PORTED)
