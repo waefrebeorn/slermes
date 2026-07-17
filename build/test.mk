@@ -82,6 +82,13 @@ test-blueprint-cmd:
 		-o /tmp/t_blueprint 2>/dev/null \
 		&& /tmp/t_blueprint 2>&1 || echo "(blueprint command test failed)"
 
+test-model-normalize:
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include $(LIB_INCS) tests/model_normalize_test.c \
+		src/cli/port_model_normalize.o src/cli/model_catalog.o src/cli/port_models_helpers.o \
+		lib/libjson/json.o lib/libcrypto/crypto.o lib/libcredentialfiles/credential_files.o \
+		-lcrypto -lssl -o /tmp/t_modelnorm 2>/dev/null \
+		&& /tmp/t_modelnorm 2>&1 || echo "(model normalize test failed)"
+
 # Make a combined list of all phony targets for the check/ci workflow
 TEST_PHONIES := test test-libs check
 
