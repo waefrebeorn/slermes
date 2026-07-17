@@ -209,7 +209,8 @@ PORT_OBJ = \
     src/tools/port_browser_supervisor.o \
     src/tools/port_environments/base.o \
     src/agent/anthropic_adapter.o \
-    src/cli/port_plugin_manifest.o
+    src/cli/port_plugin_manifest.o \
+    src/cli/port_tools_config_helpers.o
 
 # Desktop app parity objects (v465-v468)
 # Desktop app parity objects (core — always needed for main binary)
