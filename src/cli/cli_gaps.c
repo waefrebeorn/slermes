@@ -304,7 +304,7 @@ const char *cli_subprocess_invoke(const char *module, const char *args) {
  *  memory_setup.py          hermes python memory_setup  memory provider setup
  *  middleware.py            hermes python middleware     middleware pipeline
  *  migrate.py               (one-shot)                  migration script
- *  model_normalize.py       hermes python model_normalize   model name normalize
+ *  model_normalize.py       PORTED (src/cli/port_model_normalize.c)  model name normalize
  *  nous_account.py          hermes python nous_account  Nous Portal account API
  *  nous_subscription.py     hermes python nous_subscription Nous Portal billing
  *  oneshot.py               hermes python oneshot       one-shot execution
