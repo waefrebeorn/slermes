@@ -568,10 +568,10 @@ char *learning_graph_build(const char *hermes_home, const char *repo_skills_dir)
             for (int b = a + 1; b < k; b++)
                 if (cv[b] > cv[a]) { char *ts = ck[a]; ck[a] = ck[b]; ck[b] = ts; long tl = cv[a]; cv[a] = cv[b]; cv[b] = tl; }
         for (int a = 0; a < k; a++) {
-            json_t *pair = json_new_array();
-            json_array_append(pair, json_string(ck[a]));
-            json_array_append(pair, json_int(cv[a]));
-            json_array_append(clusters_arr, pair);
+            json_t *obj = json_new_object();
+            json_object_set(obj, "category", json_string(ck[a]));
+            json_object_set(obj, "count", json_int(cv[a]));
+            json_array_append(clusters_arr, obj);
             free(ck[a]);
         }
         free(ck); free(cv);
