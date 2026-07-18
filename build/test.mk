@@ -199,6 +199,16 @@ test-model-normalize:
 		-lcrypto -lssl -o /tmp/t_modelnorm 2>/dev/null \
 		&& /tmp/t_modelnorm 2>&1 || echo "(model normalize test failed)"
 
+# Write-approval pending store (faithful port of tools/write_approval.py).
+# Exercises the previously-stubbed file-backed store: stage_write / pending_count
+# / list_pending / get_pending / discard_pending / write_approval_enabled / skill_gist.
+test-write-approval:
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib -I lib/libyaml $(LIB_INCS) tests/test_write_approval.c \
+		src/cli/port_tools_write_approval.o \
+		lib/libjson/json.o lib/libyaml/yaml.o lib/libuuid/uuid.o lib/libhash/hash.o lib/libcredentialfiles/credential_files.o \
+		-lcrypto -lssl -o /tmp/t_write_approval 2>/dev/null \
+		&& /tmp/t_write_approval 2>&1 || echo "(write approval test failed)"
+
 # Make a combined list of all phony targets for the check/ci workflow
 TEST_PHONIES := test test-libs check
 
