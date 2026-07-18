@@ -163,6 +163,14 @@ test-provider-meta:
 		-o /tmp/t_provmeta 2>/dev/null \
 		&& /tmp/t_provmeta 2>&1 || echo "(provider meta test failed)"
 
+# Learning graph (agent/learning_graph.py: frontmatter / skill scan / usage /
+# build_skill_nodes / memory_cards / skill_roots / build_learning_graph).
+test-learning-graph: src/cli/port_learning_graph.o src/cli/port_learning_graph_helpers.o lib/libjson/json.o lib/libyaml/yaml.o lib/libskillusage/skill_usage.o
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib/libyaml -I lib/libskillusage -I lib $(LIB_INCS) tests/learning_graph_test.c \
+		src/cli/port_learning_graph.o src/cli/port_learning_graph_helpers.o lib/libjson/json.o lib/libyaml/yaml.o lib/libskillusage/skill_usage.o \
+		-lpthread -o /tmp/t_lg 2>/dev/null \
+		&& /tmp/t_lg 2>&1 || echo "(learning graph test failed)"
+
 # Shell completion generation (pure slice of hermes_cli/completion.py).
 test-completion:
 	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include $(LIB_INCS) tests/completion_test.c \
