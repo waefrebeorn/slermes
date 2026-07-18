@@ -36,6 +36,7 @@
 #include <ctype.h>
 #include <time.h>
 #include "hermes_json.h"
+#include "port_learning_graph.h"
 
 /* --- ISO-8601 -> time_t (UTC) ----------------------------------------- */
 static int parse_iso_to_ts(const char *value, time_t *out)
