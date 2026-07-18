@@ -19,6 +19,7 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <pthread.h>
+#include <math.h>
 
 /* ── Global state (mirrors Python module-level) ────────────────────── */
 
@@ -292,6 +293,7 @@ typedef struct {
     char cwd[4096];
     pid_t pid;
     long host_start_time;
+    time_t started_at;
     bool exited;
     int exit_code;
     char completion_reason[64];
@@ -327,18 +329,15 @@ typedef struct {
     bool completion_queued;
 } process_session_t;
 
-/* Global registry state */
+/* Global registry state (arrays + finished_count; running_count and
+ * registry_lock are declared earlier near the top of the file) */
 static process_session_t *running_sessions[1024];
-static int running_count = 0;
 static process_session_t *finished_sessions[1024];
 static int finished_count = 0;
-static pthread_mutex_t registry_lock = PTHREAD_MUTEX_INITIALIZER;
 
-/* Forward declarations */
+/* Forward declarations (emit_output is only used below; the other three
+ * registry functions are already defined earlier in this file as non-static) */
 static void process_registry_emit_output(process_session_t *session, const char *chunk);
-static bool process_registry_check_watch_patterns(process_session_t *session, const char *new_text);
-static void process_registry_move_to_finished(process_session_t *session);
-static void process_registry_write_checkpoint(void);
 
 /* PoP: _emit_output @ tools/process_registry.py:_emit_output
  * Port of Python tools/process_registry.py:_emit_output().
@@ -593,10 +592,9 @@ void process_registry_terminate_host_pid(pid_t pid, long expected_start)
     snprintf(cmd, sizeof(cmd), "taskkill /PID %d /T /F", pid);
     system(cmd);
     #else
-    /* POSIX: use psutil-like approach with kill and killpg */
-    import psutil  /* Not available in C */
+    /* POSIX: terminate the process group. psutil is Python-only; in C we
+     * use killpg directly. */
 
-    /* Fallback: use killpg to terminate process group */
     if (killpg(pid, SIGTERM) != 0) {
         /* Try direct kill */
         kill(pid, SIGTERM);

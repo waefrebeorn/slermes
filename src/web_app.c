@@ -175,7 +175,7 @@ typedef struct {
 typedef struct {
     char path[512];
     char name[256];
-    size_t time_t modified_at;
+    time_t modified_at;
     bool is_dir;
 } web_file_entry_t;
 
