@@ -231,8 +231,8 @@ static int ends_with(const char *s, const char *suffix)
     return strcmp(s + ls - lsuf, suffix) == 0;
 }
 
-/* PoP: _no_proxy_entry_matches @ gateway/platforms/base.py:_no_proxy_entry_matches
- * Returns 1 if a NO_PROXY entry matches host[:port]. Supports exact host,
+/* PoP: no_proxy_entry_matches @ gateway/platforms/base.py:_no_proxy_entry_matches */
+/* Returns 1 if a NO_PROXY entry matches host[:port]. Supports exact host,
  * "*.domain" / ".domain" suffix wildcards, and "*". CIDR / IP-literal matching
  * is intentionally omitted (needs an IP-address library not in the C runtime);
  * the domain + wildcard cases cover normal NO_PROXY usage. */
@@ -300,8 +300,8 @@ int is_host_excluded_by_no_proxy(const char *hostname, const char *no_proxy_valu
     return 0;
 }
 
-/* PoP: safe_url_for_log @ gateway/platforms/base.py:safe_url_for_log
- * Returns malloc'd log-safe URL (strips userinfo, truncates). Caller frees. */
+/* PoP: safe_url_for_log @ gateway/platforms/base.py:safe_url_for_log */
+/* Returns malloc'd log-safe URL (strips userinfo, truncates). Caller frees. */
 char *safe_url_for_log(const char *url, int max_len)
 {
     if (max_len <= 0) return strdup("");
@@ -345,10 +345,10 @@ char *safe_url_for_log(const char *url, int max_len)
  *  These were REAL_GAP.
  * =========================================================================== */
 
-/* PoP: is_network_accessible @ gateway/platforms/base.py:is_network_accessible
- * True if host would expose the server beyond loopback (IPv4/IPv6 literal or
+/* PoP: is_network_accessible @ gateway/platforms/base.py:is_network_accessible */
+/* True if host would expose the server beyond loopback (IPv4/IPv6 literal or
  * resolvable non-loopback address). DNS failure fails open (returns 1) to
- * match Python's gaierror→True behaviour. */
+ * match Python's gaierror->True behaviour. */
 int is_network_accessible(const char *host)
 {
     if (!host || !host[0]) return 1;
