@@ -1,5 +1,5 @@
-#ifndef TITLEBAR_H
-#define TITLEBAR_H
+#ifndef HERMES_TITLEBAR_H
+#define HERMES_TITLEBAR_H
 
 #include "app_state.h"
 #include "gui_core.h"
@@ -36,4 +36,4 @@ bool statusbar_handle_click(app_state_t *app, int mx, int my);
 #define TOOL_HAPTICS     2
 #define TOOL_SETTINGS    3
 
-#endif /* TITLEBAR_H */
+#endif /* HERMES_TITLEBAR_H */
