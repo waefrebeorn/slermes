@@ -142,12 +142,20 @@ test-plugin-manifest:
 		&& /tmp/t_pm 2>&1 || echo "(plugin manifest test failed)"
 
 # Goal manager (orchestration + judge-prompt helpers, pure layer of goals.py).
-test-goals-manager:
+test-goals-manager: src/cli/port_goals_data.o src/cli/port_goals_manager.o src/cli/port_goals_helpers.o lib/libjson/json.o lib/libcredentialfiles/credential_files.o src/tools/process_registry.o
 	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib -I lib/libcredentialfiles -I src $(LIB_INCS) tests/goal_manager_test.c \
 		src/cli/port_goals_data.o src/cli/port_goals_manager.o src/cli/port_goals_helpers.o lib/libjson/json.o lib/libcredentialfiles/credential_files.o \
 		src/tools/process_registry.o -lpthread \
 		-o /tmp/t_gm 2>/dev/null \
 		&& /tmp/t_gm 2>&1 || echo "(goals manager test failed)"
+
+# Process bootstrap (agent/process_bootstrap.py _SafeWriter / _OpenAIProxy /
+# build_keepalive_http_client).
+test-process-bootstrap: src/agent/process_bootstrap.o src/agent/proxy_utils.o src/agent/logger.o src/tools/url_safety.o lib/libjson/json.o lib/libhttp/http.o
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib -I lib/libcredentialfiles -I src $(LIB_INCS) tests/process_bootstrap_test.c \
+		src/agent/process_bootstrap.o src/agent/proxy_utils.o src/agent/logger.o src/tools/url_safety.o lib/libjson/json.o lib/libhttp/http.o \
+		-lpthread -lssl -lcrypto -lz -o /tmp/t_pb 2>/dev/null \
+		&& /tmp/t_pb 2>&1 || echo "(process bootstrap test failed)"
 
 test-provider-meta:
 	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib $(LIB_INCS) tests/provider_meta_test.c \
