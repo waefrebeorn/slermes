@@ -161,8 +161,8 @@ static void test_build(void) {
     if (clusters) {
         for (size_t i = 0; i < json_array_size(clusters); i++) {
             json_t *p = json_array_get(clusters, i);
-            const char *c = (p && json_array_size(p) >= 1)
-                ? json_string_value(json_array_get(p, 0)) : "";
+            const char *c = (p && p->type == JSON_OBJECT)
+                ? json_object_get_string(p, "category", "") : "";
             if (strcmp(c, "memory") == 0) has_mem_cluster = 1;
         }
     }
