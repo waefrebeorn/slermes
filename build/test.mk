@@ -229,6 +229,17 @@ test-async-delegation: src/tools/port_tools_async_delegation.o
 		-lcrypto -lssl -o /tmp/t_async 2>/dev/null \
 		&& /tmp/t_async 2>&1 || echo "(async delegation test failed)"
 
+# Memory tool store (tools/memory_tool.py: MemoryStore + load_on_disk_store).
+# Exercises the file-backed bounded memory: add/replace/remove/apply_batch,
+# dedupe, char-limit gate, frozen snapshot, atomic persistence, injectable
+# threat scanner, and E2E parity vs the real Python module.
+test-memory-tool: src/tools/port_memory_tool.o
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib $(LIB_INCS) tests/test_memory_tool.c \
+		src/tools/port_memory_tool.o \
+		lib/libjson/json.o \
+		-o /tmp/t_mem 2>/dev/null \
+		&& /tmp/t_mem 2>&1 || echo "(memory tool test failed)"
+
 # Make a combined list of all phony targets for the check/ci workflow
 TEST_PHONIES := test test-libs check
 

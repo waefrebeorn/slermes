@@ -1,0 +1,484 @@
+/*
+ * port_memory_tool.c — Faithful C port of tools/memory_tool.py (MemoryStore).
+ *
+ * Bounded curated memory with file persistence. Entries separated by
+ * "\n§\n" (ENTRY_DELIMITER), multiline-capable. add/replace/remove/apply_batch
+ * validate against a char budget, dedupe, and atomically rewrite the file.
+ * Replace/remove guard against external drift (#26045); at-capacity failures
+ * degrade gracefully after a per-turn cap (#42405).
+ */
+
+#include "memory_store.h"
+#include "hermes_json.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <time.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <errno.h>
+
+#define ENTRY_DELIMITER "\n§\n"
+#define DEFAULT_MEMORY_LIMIT 2200
+#define DEFAULT_USER_LIMIT   1375
+#define MAX_CONSOLIDATION_FAILURES_PER_TURN 3
+#define PREVIEW_WIDTH 80
+
+/* ---- opaque store ---- */
+struct memory_store_t {
+    char **memory_entries;
+    int    memory_n;
+    char **user_entries;
+    int    user_n;
+    int    memory_char_limit;
+    int    user_char_limit;
+    char  *snap_memory;   /* frozen at load */
+    char  *snap_user;
+    memory_threat_scanner_t scanner;
+    int    consolidation_failures;
+    char  *mem_dir;       /* profile-scoped memories dir */
+};
+
+/* forward decls */
+static const char *path_for(const char *mem_dir, const char *target);
+
+/* ---- small helpers ---- */
+
+static void free_entries(char **arr, int n) {
+    for (int i = 0; i < n; i++) free(arr[i]);
+    free(arr);
+}
+static char **copy_entries(const char **src, int n) {
+    char **out = malloc(sizeof(char*) * (n > 0 ? n : 1));
+    for (int i = 0; i < n; i++) out[i] = strdup(src[i]);
+    return out;
+}
+static int char_count_arr(const char **arr, int n) {
+    if (n == 0) return 0;
+    /* delimiter between n entries = (n-1) * strlen(ENTRY_DELIMITER) */
+    int total = (n - 1) * (int)strlen(ENTRY_DELIMITER);
+    for (int i = 0; i < n; i++) total += (int)strlen(arr[i]);
+    return total;
+}
+static const char **entries_for(const memory_store_t *s, const char *target, int *pn) {
+    if (target && strcmp(target, "user") == 0) { *pn = s->user_n; return (const char**)s->user_entries; }
+    *pn = s->memory_n; return (const char**)s->memory_entries;
+}
+static char **mutable_entries_for(memory_store_t *s, const char *target, int *pn) {
+    if (target && strcmp(target, "user") == 0) { *pn = s->user_n; return s->user_entries; }
+    *pn = s->memory_n; return s->memory_entries;
+}
+static int char_limit_for(const memory_store_t *s, const char *target) {
+    return (target && strcmp(target, "user") == 0) ? s->user_char_limit : s->memory_char_limit;
+}
+
+/* dedup preserving order (keep first occurrence) */
+static char **dedup_entries(char **arr, int n, int *out_n) {
+    char **out = malloc(sizeof(char*) * (n > 0 ? n : 1));
+    int m = 0;
+    for (int i = 0; i < n; i++) {
+        int seen = 0;
+        for (int j = 0; j < m; j++) if (strcmp(out[j], arr[i]) == 0) { seen = 1; break; }
+        if (!seen) out[m++] = arr[i]; else free(arr[i]);
+    }
+    *out_n = m;
+    free(arr);
+    return out;
+}
+
+/* ---- file I/O (atomic) ---- */
+static char **read_file_entries(const char *path, int *out_n) {
+    *out_n = 0;
+    FILE *f = fopen(path, "rb");
+    if (!f) return NULL;
+    fseek(f, 0, SEEK_END); long sz = ftell(f); fseek(f, 0, SEEK_SET);
+    if (sz <= 0) { fclose(f); return NULL; }
+    char *raw = malloc(sz + 1);
+    if (fread(raw, 1, sz, f) != (size_t)sz) { fclose(f); free(raw); return NULL; }
+    fclose(f);
+    raw[sz] = 0;
+    /* strip trailing/leading whitespace of whole file */
+    char *p = raw;
+    while (*p && isspace((unsigned char)*p)) p++;
+    char *end = p + strlen(p);
+    while (end > p && isspace((unsigned char)*(end - 1))) *--end = 0;
+    if (*p == 0) { free(raw); return NULL; }
+
+    /* split on literal ENTRY_DELIMITER */
+    char **arr = NULL; int n = 0, cap = 0;
+    char *cur = p;
+    while (1) {
+        char *nl = strstr(cur, ENTRY_DELIMITER);
+        char *seg;
+        if (nl) { *nl = 0; seg = cur; cur = nl + strlen(ENTRY_DELIMITER); }
+        else   { seg = cur; cur = NULL; }
+        /* strip */
+        while (*seg && isspace((unsigned char)*seg)) seg++;
+        char *e = seg + strlen(seg);
+        while (e > seg && isspace((unsigned char)*(e - 1))) *--e = 0;
+        if (*seg) {
+            if (n >= cap) { cap = cap ? cap * 2 : 8; arr = realloc(arr, sizeof(char*) * cap); }
+            arr[n++] = strdup(seg);
+        }
+        if (!cur) break;
+    }
+    free(raw);
+    *out_n = n;
+    return arr;
+}
+
+static int atomic_write_file(const char *path, const char *content) {
+    char tmpl[1024];
+    snprintf(tmpl, sizeof(tmpl), "%s.tmp.XXXXXX", path);
+    int fd = mkstemp(tmpl);
+    if (fd < 0) return -1;
+    size_t len = strlen(content);
+    size_t wrote = 0;
+    while (wrote < len) {
+        ssize_t w = write(fd, content + wrote, len - wrote);
+        if (w <= 0) { if (errno == EINTR) continue; close(fd); unlink(tmpl); return -1; }
+        wrote += (size_t)w;
+    }
+    fsync(fd);
+    close(fd);
+    if (rename(tmpl, path) != 0) { unlink(tmpl); return -1; }
+    return 0;
+}
+
+static int write_file_entries(const char *path, const char **arr, int n) {
+    char *content = malloc(1); content[0] = 0;
+    size_t clen = 0;
+    for (int i = 0; i < n; i++) {
+        size_t add = (i ? strlen(ENTRY_DELIMITER) : 0) + strlen(arr[i]);
+        char *nc = realloc(content, clen + add + 1);
+        content = nc;
+        if (i) { memcpy(content + clen, ENTRY_DELIMITER, strlen(ENTRY_DELIMITER)); clen += strlen(ENTRY_DELIMITER); }
+        memcpy(content + clen, arr[i], strlen(arr[i])); clen += strlen(arr[i]);
+        content[clen] = 0;
+    }
+    int rc = atomic_write_file(path, content);
+    free(content);
+    return rc;
+}
+
+static void save_to_disk(memory_store_t *s, const char *target) {
+    int n; const char **e = entries_for(s, target, &n);
+    if (!s->mem_dir) return;
+    write_file_entries(path_for(s->mem_dir, target), e, n);
+}
+
+/* ---- public API ---- */
+memory_store_t *memory_store_new(int memory_char_limit, int user_char_limit) {
+    memory_store_t *s = calloc(1, sizeof(*s));
+    s->memory_char_limit = memory_char_limit > 0 ? memory_char_limit : DEFAULT_MEMORY_LIMIT;
+    s->user_char_limit    = user_char_limit    > 0 ? user_char_limit    : DEFAULT_USER_LIMIT;
+    return s;
+}
+void memory_store_free(memory_store_t *s) {
+    if (!s) return;
+    free_entries(s->memory_entries, s->memory_n);
+    free_entries(s->user_entries, s->user_n);
+    free(s->snap_memory); free(s->snap_user);
+    free(s->mem_dir);
+    free(s);
+}
+void memory_store_set_threat_scanner(memory_store_t *s, memory_threat_scanner_t sc) {
+    if (s) s->scanner = sc;
+}
+
+static const char *path_for(const char *mem_dir, const char *target) {
+    static char buf[2048];
+    snprintf(buf, sizeof(buf), "%s/%s", mem_dir,
+             (target && strcmp(target, "user") == 0) ? "USER.md" : "MEMORY.md");
+    return buf;
+}
+
+void memory_store_load(memory_store_t *s, const char *mem_dir) {
+    free(s->mem_dir);
+    s->mem_dir = strdup(mem_dir);
+    mkdir(mem_dir, 0755);
+    int mn = 0, un = 0;
+    char **m = read_file_entries(path_for(mem_dir, "memory"), &mn);
+    char **u = read_file_entries(path_for(mem_dir, "user"), &un);
+    if (m) m = dedup_entries(m, mn, &mn);
+    if (u) u = dedup_entries(u, un, &un);
+    free_entries(s->memory_entries, s->memory_n);
+    free_entries(s->user_entries, s->user_n);
+    s->memory_entries = m ? m : malloc(sizeof(char*)); s->memory_n = mn;
+    s->user_entries   = u ? u : malloc(sizeof(char*)); s->user_n = un;
+    /* frozen snapshot = current live entries (no threat scan here to keep
+       snapshot stable & deterministic; scan would be applied at write time) */
+    free(s->snap_memory); free(s->snap_user);
+    s->snap_memory = strdup("");
+    s->snap_user = strdup("");
+    if (mn) {
+        free(s->snap_memory);
+        char *c = malloc(1); c[0]=0; size_t cl=0;
+        for (int i=0;i<mn;i++){ size_t a=(i?strlen(ENTRY_DELIMITER):0)+strlen(m[i]); c=realloc(c,cl+a+1); if(i){memcpy(c+cl,ENTRY_DELIMITER,strlen(ENTRY_DELIMITER));cl+=strlen(ENTRY_DELIMITER);} memcpy(c+cl,m[i],strlen(m[i]));cl+=strlen(m[i]);c[cl]=0;}
+        s->snap_memory = c;
+    }
+    if (un) {
+        free(s->snap_user);
+        char *c = malloc(1); c[0]=0; size_t cl=0;
+        for (int i=0;i<un;i++){ size_t a=(i?strlen(ENTRY_DELIMITER):0)+strlen(u[i]); c=realloc(c,cl+a+1); if(i){memcpy(c+cl,ENTRY_DELIMITER,strlen(ENTRY_DELIMITER));cl+=strlen(ENTRY_DELIMITER);} memcpy(c+cl,u[i],strlen(u[i]));cl+=strlen(u[i]);c[cl]=0;}
+        s->snap_user = c;
+    }
+    s->consolidation_failures = 0;
+}
+const char *memory_store_snapshot(memory_store_t *s, const char *target) {
+    if (target && strcmp(target, "user") == 0) return s->snap_user;
+    return s->snap_memory;
+}
+
+int memory_store_char_count(memory_store_t *s, const char *target) {
+    int n; const char **e = entries_for(s, target, &n); return char_count_arr(e, n);
+}
+int memory_store_char_limit(memory_store_t *s, const char *target) {
+    return char_limit_for(s, target);
+}
+int memory_store_entry_count(memory_store_t *s, const char *target) {
+    int n; entries_for(s, target, &n); return n;
+}
+
+/* Build a success/error JSON response. Returns malloc'd string. */
+static char *scan_content(memory_store_t *s, const char *content) {
+    if (!s->scanner || !content) return NULL;
+    return s->scanner(content);
+}
+
+static char *resp_success(memory_store_t *s, const char *target, const char *msg) {
+    int cur = memory_store_char_count(s, target);
+    int lim = char_limit_for(s, target);
+    int pct = lim > 0 ? (int)((double)cur / lim * 100 + 0.5) : 0;
+    if (pct > 100) pct = 100;
+    int n; entries_for(s, target, &n);
+    char *out = malloc(1024);
+    snprintf(out, 1024,
+        "{\"success\":true,\"done\":true,\"target\":\"%s\",\"usage\":\"%d%% \\u2014 %d/%d chars\",\"entry_count\":%d,\"message\":\"%s\",\"note\":\"Write saved. This update is complete \\u2014 do not repeat it.\"}",
+        target, pct, cur, lim, n, msg ? msg : "");
+    return out;
+}
+static char *resp_error(memory_store_t *s, const char *target, const char *err, int terminal) {
+    int cur = memory_store_char_count(s, target);
+    int lim = char_limit_for(s, target);
+    int n; entries_for(s, target, &n);
+    char *entries_json = malloc(1); entries_json[0]=0; size_t el=0;
+    const char **e = entries_for(s, target, &n);
+    for (int i=0;i<n;i++){ size_t a=(i?2:0)+strlen(e[i])+8; size_t need=strlen(entries_json)+a+1; entries_json=realloc(entries_json,need); if(i){strcat(entries_json,",");} strcat(entries_json,"\""); strcat(entries_json,e[i]); strcat(entries_json,"\"");}
+    char *out = malloc(4096);
+    snprintf(out, 4096,
+        "{\"success\":false,\"done\":%s,\"error\":\"%s\",\"current_entries\":[%s],\"usage\":\"%d/%d chars\"}",
+        terminal ? "true" : "false", err ? err : "", entries_json, cur, lim);
+    free(entries_json);
+    return out;
+}
+
+/* consolidation-failure degradation */
+static char *consolidation_failure(memory_store_t *s, const char *target, char *resp) {
+    s->consolidation_failures++;
+    if (s->consolidation_failures <= MAX_CONSOLIDATION_FAILURES_PER_TURN)
+        return resp;
+    free(resp);
+    int cur = memory_store_char_count(s, target);
+    int lim = char_limit_for(s, target);
+    char *out = malloc(1024);
+    snprintf(out, 1024,
+        "{\"success\":false,\"done\":true,\"error\":\"Memory consolidation failed %d times this turn. Stop retrying memory calls \\u2014 leave memory unchanged for now and continue with your reply to the user. The fact can be saved in a later turn.\"}",
+        s->consolidation_failures);
+    (void)cur; (void)lim;
+    return out;
+}
+
+/* external drift: any single entry exceeds the whole-store limit, or a
+   round-trip reserialize differs. Returns malloc'd .bak path or NULL. */
+static char *detect_external_drift(memory_store_t *s, const char *mem_dir, const char *target) {
+    const char *path = path_for(mem_dir, target);
+    FILE *f = fopen(path, "rb");
+    if (!f) return NULL;
+    fseek(f,0,SEEK_END); long sz=ftell(f); fseek(f,0,SEEK_SET);
+    if (sz<=0){ fclose(f); return NULL; }
+    char *raw = malloc(sz+1);
+    if (fread(raw,1,sz,f)!=(size_t)sz){ fclose(f); free(raw); return NULL; }
+    fclose(f); raw[sz]=0;
+    char *p=raw; while(*p&&isspace((unsigned char)*p))p++;
+    char *end=p+strlen(p); while(end>p&&isspace((unsigned char)*(end-1)))*--end=0;
+    if(*p==0){ free(raw); return NULL; }
+    /* parse */
+    int n=0,cap=0; char **arr=NULL; char *cur=p;
+    while(1){ char *nl=strstr(cur,ENTRY_DELIMITER); char *seg; if(nl){*nl=0;seg=cur;cur=nl+strlen(ENTRY_DELIMITER);}else{seg=cur;cur=NULL;} while(*seg&&isspace((unsigned char)*seg))seg++; char *e=seg+strlen(seg); while(e>seg&&isspace((unsigned char)*(e-1)))*--e=0; if(*seg){ if(n>=cap){cap=cap?cap*2:8;arr=realloc(arr,sizeof(char*)*cap);} arr[n++]=strdup(seg);} if(!cur)break; }
+    /* roundtrip */
+    char *rt=malloc(1); rt[0]=0; size_t rl=0;
+    for(int i=0;i<n;i++){ size_t a=(i?strlen(ENTRY_DELIMITER):0)+strlen(arr[i]); rt=realloc(rt,rl+a+1); if(i){memcpy(rt+rl,ENTRY_DELIMITER,strlen(ENTRY_DELIMITER));rl+=strlen(ENTRY_DELIMITER);} memcpy(rt+rl,arr[i],strlen(arr[i]));rl+=strlen(arr[i]);rt[rl]=0;}
+    int limit=char_limit_for(s,target);
+    int maxlen=0; for(int i=0;i<n;i++) if((int)strlen(arr[i])>maxlen) maxlen=(int)strlen(arr[i]);
+    int drift=(strcmp(raw,rt)!=0)||(maxlen>limit);
+    free(rt); for(int i=0;i<n;i++)free(arr[i]); free(arr);
+    if(!drift){ free(raw); return NULL; }
+    /* snapshot to .bak */
+    char bak[2048]; snprintf(bak,sizeof(bak),"%s.bak.%ld",path,(long)time(NULL));
+    FILE *bf=fopen(bak,"wb");
+    if(bf){ fwrite(raw,1,sz,bf); fclose(bf); }
+    free(raw);
+    return strdup(bak);
+}
+
+/* ---- mutations ---- */
+
+char *memory_store_add(memory_store_t *s, const char *target, const char *content) {
+    if (!content) return resp_error(s, target, "Content cannot be empty.", 0);
+    while (*content && isspace((unsigned char)*content)) content++;
+    char *c = strdup(content);
+    char *e = c + strlen(c); while (e > c && isspace((unsigned char)*(e-1))) *--e = 0; *e = 0;
+    if (*c == 0) { free(c); return resp_error(s, target, "Content cannot be empty.", 0); }
+
+    char *scan = scan_content(s, c);
+    if (scan) { free(c); free(scan); return resp_error(s, target, "Content blocked by threat scan.", 0); }
+
+    int n; char **arr = mutable_entries_for(s, target, &n);
+    for (int i=0;i<n;i++) if (strcmp(arr[i], c)==0) { free(c); return resp_success(s, target, "Entry already exists (no duplicate added)."); }
+
+    char **newarr = malloc(sizeof(char*)*(n+1));
+    for(int i=0;i<n;i++) newarr[i]=arr[i];
+    newarr[n]=c;
+    int new_total = char_count_arr((const char**)newarr, n+1);
+    int limit = char_limit_for(s, target);
+    if (new_total > limit) {
+        int cur = char_count_arr((const char**)arr, n);
+        char err[512]; snprintf(err,sizeof(err),"Memory at %d/%d chars. Adding this entry (%d chars) would exceed the limit. Consolidate now: use 'replace' to merge overlapping entries into shorter ones or 'remove' stale entries, then retry.", cur, limit, (int)strlen(c));
+        free(newarr);
+        free(c);
+        return consolidation_failure(s, target, resp_error(s, target, err, 0));
+    }
+    /* commit */
+    mutable_entries_for(s, target, &n); /* re-fetch pointer (unchanged) */
+    free(arr);  /* old pointer-list array; its elements now live in newarr */
+    if (target && strcmp(target,"user")==0) { s->user_entries=newarr; s->user_n=n+1; }
+    else { s->memory_entries=newarr; s->memory_n=n+1; }
+    s->consolidation_failures = 0;
+    save_to_disk(s, target);
+    (void)arr;
+    return resp_success(s, target, "Entry added.");
+}
+
+char *memory_store_replace(memory_store_t *s, const char *target, const char *old_text, const char *new_content) {
+    if (!old_text || !*old_text) { free((void*)old_text); return resp_error(s, target, "old_text cannot be empty.", 0); }
+    if (!new_content || !*new_content) return resp_error(s, target, "new_content cannot be empty. Use 'remove' to delete entries.", 0);
+    while(*old_text&&isspace((unsigned char)*old_text))old_text++;
+    char *nc=strdup(new_content); char *e=nc+strlen(nc); while(e>nc&&isspace((unsigned char)*(e-1)))*--e=0;*e=0;
+    if(*nc==0){free(nc);return resp_error(s,target,"new_content cannot be empty. Use 'remove' to delete entries.",0);}
+    char *scan=scan_content(s,nc);
+    if(scan){free(nc);free(scan);return resp_error(s,target,"Content blocked by threat scan.",0);}
+
+    int n; char **arr=mutable_entries_for(s,target,&n);
+    /* matches */
+    int *idx=malloc(sizeof(int)*(n>0?n:1)); int m=0;
+    for(int i=0;i<n;i++) if(strstr(arr[i],old_text)) idx[m++]=i;
+    if(m==0){ free(idx); free(nc); return consolidation_failure(s,target,resp_error(s,target,"No entry matched the given text. Check current_entries and retry with exact text.",0)); }
+    /* multiple distinct? */
+    int distinct=0; for(int i=1;i<m;i++) if(strcmp(arr[idx[i]],arr[idx[0]])!=0) distinct++;
+    if(m>1 && distinct){ free(idx); free(nc); char err[256]; snprintf(err,sizeof(err),"Multiple entries matched. Be more specific."); return consolidation_failure(s,target,resp_error(s,target,err,0)); }
+    int k=idx[0];
+    /* budget */
+    char **test=malloc(sizeof(char*)*n); for(int i=0;i<n;i++)test[i]=arr[i]; test[k]=nc;
+    int new_total=char_count_arr((const char**)test,n);
+    int limit=char_limit_for(s,target);
+    if(new_total>limit){ int cur=char_count_arr((const char**)arr,n); free(test); free(idx); char err[512]; snprintf(err,sizeof(err),"Replacement would put memory at %d/%d chars. Shorten new content or remove other entries, then retry.",new_total,limit); (void)cur; return consolidation_failure(s,target,resp_error(s,target,err,0)); }
+    free(arr[k]); arr[k]=nc; free(test); free(idx);
+    s->consolidation_failures=0;
+    save_to_disk(s, target);
+    return resp_success(s,target,"Entry replaced.");
+}
+
+char *memory_store_remove(memory_store_t *s, const char *target, const char *old_text) {
+    if (!old_text || !*old_text) return resp_error(s, target, "old_text cannot be empty.", 0);
+    while(*old_text&&isspace((unsigned char)*old_text))old_text++;
+    int n; char **arr=mutable_entries_for(s,target,&n);
+    int *idx=malloc(sizeof(int)*(n>0?n:1)); int m=0;
+    for(int i=0;i<n;i++) if(strstr(arr[i],old_text)) idx[m++]=i;
+    if(m==0){ free(idx); return consolidation_failure(s,target,resp_error(s,target,"No entry matched the given text. Check current_entries and retry with exact text.",0)); }
+    int distinct=0; for(int i=1;i<m;i++) if(strcmp(arr[idx[i]],arr[idx[0]])!=0) distinct++;
+    if(m>1 && distinct){ free(idx); char err[256]; snprintf(err,sizeof(err),"Multiple entries matched. Be more specific."); return consolidation_failure(s,target,resp_error(s,target,err,0)); }
+    int k=idx[0]; free(arr[k]); for(int i=k;i<n-1;i++) arr[i]=arr[i+1];
+    if(target&&strcmp(target,"user")==0) s->user_n=n-1; else s->memory_n=n-1;
+    free(idx); s->consolidation_failures=0;
+    save_to_disk(s, target);
+    return resp_success(s,target,"Entry removed.");
+}
+
+/* batch */
+char *memory_store_apply_batch(memory_store_t *s, const char *target, const json_node_t *ops) {
+    if (!ops) return resp_error(s, target, "operations list is empty.", 0);
+    int opn = (int)json_array_size(ops);
+    if (opn == 0) return resp_error(s, target, "operations list is empty.", 0);
+    /* scan adds/replaces first */
+    for (int i=0;i<opn;i++) {
+        const json_node_t *op = json_array_get(ops, i);
+        const char *act = json_object_get_string(op, "action", "");
+        const char *content = json_object_get_string(op, "content", "");
+        if (act && (strcmp(act,"add")==0 || strcmp(act,"replace")==0) && content) {
+            char *scan = scan_content(s, content);
+            if (scan) { free(scan); char err[256]; snprintf(err,sizeof(err),"Operation %d: content blocked by threat scan.",i+1); return resp_error(s,target,err,0); }
+        }
+    }
+    int n; char **base = mutable_entries_for(s, target, &n);
+    char **working = copy_entries((const char**)base, n);
+    int wn = n;
+    int limit = char_limit_for(s, target);
+    for (int i=0;i<opn;i++) {
+        const json_node_t *op = json_array_get(ops, i);
+        const char *act = json_object_get_string(op, "action", "");
+        const char *content = json_object_get_string(op, "content", "");
+        const char *old_text = json_object_get_string(op, "old_text", "");
+        char pos[64]; snprintf(pos,sizeof(pos),"Operation %d (%s)",i+1,act?act:"unknown");
+        if (!act) { free_entries(working,wn); char err[256]; snprintf(err,sizeof(err),"%s: unknown action. Use add, replace, or remove.",pos); return resp_error(s,target,err,0); }
+        if (strcmp(act,"add")==0) {
+            if (!content||!*content){ free_entries(working,wn); char err[256]; snprintf(err,sizeof(err),"%s: content is required.",pos); return resp_error(s,target,err,0);}
+            int dup=0; for(int j=0;j<wn;j++) if(strcmp(working[j],content)==0){dup=1;break;}
+            if(!dup){ working=realloc(working,sizeof(char*)*(wn+1)); working[wn++]=strdup(content);}
+        } else if (strcmp(act,"replace")==0) {
+            if(!old_text||!*old_text){ free_entries(working,wn); char err[256]; snprintf(err,sizeof(err),"%s: old_text is required.",pos); return resp_error(s,target,err,0);}
+            if(!content||!*content){ free_entries(working,wn); char err[256]; snprintf(err,sizeof(err),"%s: content is required (use action='remove' to delete).",pos); return resp_error(s,target,err,0);}
+            int *idx=malloc(sizeof(int)*(wn>0?wn:1)); int m=0; for(int j=0;j<wn;j++) if(strstr(working[j],old_text)) idx[m++]=j;
+            if(m==0){ free(idx); free_entries(working,wn); char err[256]; snprintf(err,sizeof(err),"%s: no entry matched '%s'.",pos,old_text); return resp_error(s,target,err,0);}
+            int distinct=0; for(int j=1;j<m;j++) if(strcmp(working[idx[j]],working[idx[0]])!=0) distinct++;
+            if(m>1 && distinct){ free(idx); free_entries(working,wn); char err[256]; snprintf(err,sizeof(err),"%s: matched multiple distinct entries -- be more specific.",pos); return resp_error(s,target,err,0);}
+            free(working[idx[0]]); working[idx[0]]=strdup(content); free(idx);
+        } else if (strcmp(act,"remove")==0) {
+            if(!old_text||!*old_text){ free_entries(working,wn); char err[256]; snprintf(err,sizeof(err),"%s: old_text is required.",pos); return resp_error(s,target,err,0);}
+            int *idx=malloc(sizeof(int)*(wn>0?wn:1)); int m=0; for(int j=0;j<wn;j++) if(strstr(working[j],old_text)) idx[m++]=j;
+            if(m==0){ free(idx); free_entries(working,wn); char err[256]; snprintf(err,sizeof(err),"%s: no entry matched '%s'.",pos,old_text); return resp_error(s,target,err,0);}
+            int distinct=0; for(int j=1;j<m;j++) if(strcmp(working[idx[j]],working[idx[0]])!=0) distinct++;
+            if(m>1 && distinct){ free(idx); free_entries(working,wn); char err[256]; snprintf(err,sizeof(err),"%s: matched multiple distinct entries -- be more specific.",pos); return resp_error(s,target,err,0);}
+            free(working[idx[0]]); for(int j=idx[0];j<wn-1;j++) working[j]=working[j+1]; wn--;
+            free(idx);
+        } else {
+            free_entries(working,wn); char err[256]; snprintf(err,sizeof(err),"%s: unknown action. Use add, replace, or remove.",pos); return resp_error(s,target,err,0);
+        }
+    }
+    int new_total = char_count_arr((const char**)working, wn);
+    if (new_total > limit) {
+        free_entries(working,wn);
+        char err[256]; snprintf(err,sizeof(err),"After applying all %d operations, memory would be over the limit. Remove or shorten more entries in the same batch, then retry.",opn);
+        return consolidation_failure(s,target,resp_error(s,target,err,0));
+    }
+    /* commit */
+    if (target && strcmp(target,"user")==0) { free_entries(s->user_entries,s->user_n); s->user_entries=working; s->user_n=wn; }
+    else { free_entries(s->memory_entries,s->memory_n); s->memory_entries=working; s->memory_n=wn; }
+    s->consolidation_failures=0;
+    save_to_disk(s, target);
+    char msg[128]; snprintf(msg,sizeof(msg),"Applied %d operation(s).",opn);
+    return resp_success(s, target, msg);
+}
+
+char *memory_store_usage(memory_store_t *s, const char *target) {
+    int cur = memory_store_char_count(s, target);
+    int lim = char_limit_for(s, target);
+    int pct = lim>0 ? (int)((double)cur/lim*100+0.5) : 0;
+    if (pct>100) pct=100;
+    char *out = malloc(64);
+    snprintf(out, 64, "%d%% — %d/%d chars", pct, cur, lim);
+    return out;
+}
