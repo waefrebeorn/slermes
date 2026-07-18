@@ -16,7 +16,7 @@
 #include <sys/stat.h>
 
 /* Resolve the shared Hermes home dir (HERMES_HOME / SLERMES_HOME / HOME). */
-static void hermes_home_dir(char *out, size_t sz)
+void hermes_home_dir(char *out, size_t sz)
 {
     const char *h = getenv("HERMES_HOME");
     if (h && h[0]) { snprintf(out, sz, "%s", h); return; }
@@ -26,9 +26,8 @@ static void hermes_home_dir(char *out, size_t sz)
     snprintf(out, sz, "%s/.hermes", h ? h : ".");
 }
 
-/* PoP: _nous_recommended_disk_path @ hermes_cli/models.py:_nous_recommended_disk_path
- * Returns malloc'd path to the persisted recommended-models cache JSON.
- * Caller frees. */
+/* PoP: _nous_recommended_disk_path @ hermes_cli/models.py:_nous_recommended_disk_path */
+/* Returns malloc'd path to the persisted recommended-models cache JSON. Caller frees. */
 char *nous_recommended_disk_path(void)
 {
     char home[PATH_MAX];
@@ -38,10 +37,9 @@ char *nous_recommended_disk_path(void)
     return strdup(out);
 }
 
-/* PoP: _read_nous_recommended_disk @ hermes_cli/models.py:_read_nous_recommended_disk
- * Reads the disk cache and returns the last-known-good data payload for
- * `base` as a malloc'd JSON string (already JSON-encoded), or NULL.
- * Caller frees. Returns NULL on missing file / parse error / no entry. */
+/* PoP: _read_nous_recommended_disk @ hermes_cli/models.py:_read_nous_recommended_disk */
+/* Reads the disk cache and returns the last-known-good data payload for `base`
+ * as a malloc'd JSON string (already JSON-encoded), or NULL. Caller frees. */
 char *read_nous_recommended_disk(const char *base)
 {
     if (!base) return NULL;

@@ -49,6 +49,9 @@ const char *model_default_model_for_provider(const char *provider);
 /* Number of curated models for a provider. */
 int model_provider_model_count(const char *provider);
 
+/* True when `model` (case-insensitive) appears in `provider`'s static catalog. */
+int model_provider_has_model(const char *provider, const char *model);
+
 /* Return the Nth curated model id for a provider (static string), or NULL. */
 const char *model_provider_model_at(const char *provider, int idx);
 
