@@ -202,7 +202,7 @@ test-model-normalize:
 # Write-approval pending store (faithful port of tools/write_approval.py).
 # Exercises the previously-stubbed file-backed store: stage_write / pending_count
 # / list_pending / get_pending / discard_pending / write_approval_enabled / skill_gist.
-test-write-approval:
+test-write-approval: src/cli/port_tools_write_approval.o
 	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib -I lib/libyaml $(LIB_INCS) tests/test_write_approval.c \
 		src/cli/port_tools_write_approval.o \
 		lib/libjson/json.o lib/libyaml/yaml.o lib/libuuid/uuid.o lib/libhash/hash.o lib/libcredentialfiles/credential_files.o \
