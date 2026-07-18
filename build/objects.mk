@@ -166,7 +166,7 @@ PORT_OBJ = \
     src/cli/port_hermes_cli_memory_setup.o \
     src/cli/port_hermes_cli_toolset_validation.o \
     src/cli/port_tools_checkpoint_manager.o \
-    src/cli/port_tools_write_approval.o \
+    src/tools/port_memory_tool.o \
     src/tools/environments.o \
     src/gateway/session.o \
     src/gateway/stream_consumer.o \
