@@ -60,6 +60,36 @@ test-models:
 		$(SSL_LDFLAGS) -o /tmp/t_models 2>/dev/null \
 		&& /tmp/t_models 2>&1 || echo "(model catalog test failed)"
 
+# Network-backed + pure model-catalog helpers (port_models_net.c). Injectable
+# HTTP transport exercised with a mock (no real network).
+test-models-net:
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib $(LIB_INCS) tests/port_models_net_test.c \
+		src/cli/port_models_net.o src/cli/port_models_helpers.o src/cli/port_hermes_cli_models.o src/cli/model_catalog.o \
+		lib/libjson/json.o lib/libcrypto/crypto.o lib/libcredentialfiles/credential_files.o \
+		$(SSL_LDFLAGS) -o /tmp/t_models_net 2>/dev/null \
+		&& /tmp/t_models_net 2>&1 || echo "(models net test failed)"
+
+# Pure + network-wrapped model-catalog helpers (port_models_pure.c). Injectable
+# HTTP transport exercised with a mock (no real network), plus disk-cache and
+# config-resolver behavior. Depends on port_models_net.o + port_models_helpers.o.
+test-models-pure:
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib $(LIB_INCS) tests/port_models_pure_test.c \
+		src/cli/port_models_pure.o src/cli/port_models_net.o src/cli/port_models_helpers.o \
+		src/cli/port_hermes_cli_models.o src/cli/model_catalog.o src/cli/port_model_normalize.o \
+		src/slermes_home.o lib/libjson/json.o lib/libcrypto/crypto.o lib/libcredentialfiles/credential_files.o \
+		$(SSL_LDFLAGS) -o /tmp/t_models_pure 2>/dev/null \
+		&& /tmp/t_models_pure 2>&1 || echo "(models pure test failed)"
+
+# validate_requested_model + ensure_lmstudio_model_loaded (port_models_validate.c).
+# Injectable HTTP transport + MoA/catalog resolvers, no real network.
+test-models-validate:
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib $(LIB_INCS) tests/port_models_validate_test.c \
+		src/cli/port_models_validate.o src/cli/port_models_pure.o src/cli/port_models_net.o src/cli/port_models_helpers.o \
+		src/cli/port_hermes_cli_models.o src/cli/model_catalog.o src/cli/port_model_normalize.o \
+		src/slermes_home.o lib/libjson/json.o lib/libcrypto/crypto.o lib/libcredentialfiles/credential_files.o lib/libfuzzymatch/fuzzy_match.o \
+		$(SSL_LDFLAGS) -lm -o /tmp/t_models_validate 2>/dev/null \
+		&& /tmp/t_models_validate 2>&1 || echo "(models validate test failed)"
+
 # Profile store (port of hermes_cli/profiles.py) — disk-backed real-behavior test.
 test-profiles:
 	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include $(LIB_INCS) tests/profile_store_test.c \

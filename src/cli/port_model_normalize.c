@@ -225,11 +225,11 @@ char *model_normalize_prepend_vendor(const char *model_name)
     return out;
 }
 
-/* normalize_copilot_model_id — Copilot-specific resolver (pure part).
- * Python's version also does a live catalog lookup; that dynamic part is a
- * REAL_GAP here — we resolve against the static alias table and strip the
- * vendor/ prefix, which reproduces the documented doctest behavior.
- * Returns a malloc'd string (caller frees). */
+/* PoP: normalize_copilot_model_id @ hermes_cli/models.py:normalize_copilot_model_id */
+/* Copilot-specific resolver (pure part). Python's version also does a live
+ * catalog lookup; that dynamic part is a REAL_GAP here — we resolve against
+ * the static alias table and strip the vendor/prefix, reproducing the
+ * documented doctest behavior. Returns a malloc'd string (caller frees). */
 char *model_normalize_copilot_model_id(const char *model_id)
 {
     if (!model_id) return strdup("");

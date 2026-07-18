@@ -359,6 +359,16 @@ int model_provider_model_count(const char *provider) {
     return e ? e->n_models : 0;
 }
 
+/* True when `model` (case-insensitive) is in the static catalog for `provider`. */
+int model_provider_has_model(const char *provider, const char *model) {
+    if (!model) return 0;
+    const provider_entry_t *e = find_provider(model_normalize_provider(provider));
+    if (!e) return 0;
+    for (int i = 0; i < e->n_models; i++)
+        if (strcasecmp(e->models[i], model) == 0) return 1;
+    return 0;
+}
+
 const char *model_provider_model_at(const char *provider, int idx) {
     const provider_entry_t *e = find_provider(model_normalize_provider(provider));
     if (!e || idx < 0 || idx >= e->n_models) return NULL;
@@ -455,6 +465,7 @@ void model_parse_model_input(const char *raw, const char *current_provider,
 
 /* Resolve a short alias to (provider, model) using the static catalog.
  * Returns 1 and fills out_* on match, else 0. */
+/* PoP: _resolve_static_model_alias @ hermes_cli/models.py:_resolve_static_model_alias */
 static int resolve_static_model_alias(const char *name_lower,
                                       char *provider_out, size_t poutsz,
                                       char *model_out, size_t moutsz,
@@ -466,6 +477,7 @@ static int resolve_static_model_alias(const char *name_lower,
     return 0;
 }
 
+/* PoP: detect_static_provider_for_model @ hermes_cli/models.py:detect_static_provider_for_model */
 int model_detect_static_provider_for_model(const char *model_name,
                                            const char *current_provider,
                                            char *provider_out, size_t poutsz,
@@ -524,6 +536,7 @@ static const char *OPENROUTER_CURATED[] = {
 };
 #define N_OR_CURATED (int)(sizeof(OPENROUTER_CURATED)/sizeof(OPENROUTER_CURATED[0]))
 
+/* PoP: _find_openrouter_slug @ hermes_cli/models.py:_find_openrouter_slug */
 char *model_find_openrouter_slug(const char *model_name) {
     if (!model_name || !*model_name) return NULL;
     char lower[1024];
@@ -673,6 +686,7 @@ char *model_credential_fingerprint(const char *provider) {
     return credential_fingerprint(provider);
 }
 
+/* PoP: _load_provider_models_cache @ hermes_cli/models.py:_load_provider_models_cache */
 char *model_load_provider_models_cache(void) {
     char *path = model_provider_models_cache_path();
     FILE *f = fopen(path, "r");
@@ -688,6 +702,7 @@ char *model_load_provider_models_cache(void) {
     return blob;
 }
 
+/* PoP: _save_provider_models_cache @ hermes_cli/models.py:_save_provider_models_cache */
 void model_save_provider_models_cache(const char *json) {
     if (!json) return;
     char *path = model_provider_models_cache_path();
@@ -715,6 +730,7 @@ static char *provider_static_json(const char *provider) {
     return out;
 }
 
+/* PoP: provider_model_ids @ hermes_cli/models.py:provider_model_ids */
 char *model_provider_model_ids(const char *provider, int force_refresh) {
     (void)force_refresh;
     /* Offline port: the live /v1/models fetch is a no-op; degrade to the
@@ -723,6 +739,7 @@ char *model_provider_model_ids(const char *provider, int force_refresh) {
     return provider_static_json(provider);
 }
 
+/* PoP: cached_provider_model_ids @ hermes_cli/models.py:cached_provider_model_ids */
 char *model_cached_provider_model_ids(const char *provider, int force_refresh) {
     const char *norm = model_normalize_provider(provider);
     if (!norm || !*norm) return NULL;
@@ -765,6 +782,7 @@ char *model_cached_provider_model_ids(const char *provider, int force_refresh) {
     return result;
 }
 
+/* PoP: clear_provider_models_cache @ hermes_cli/models.py:clear_provider_models_cache */
 void model_clear_provider_models_cache(const char *provider) {
     if (!provider) {
         char *path = model_provider_models_cache_path();

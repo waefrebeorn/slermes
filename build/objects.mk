@@ -72,7 +72,9 @@ PORT_OBJ = \
     src/cli/port_hermes_cli_kanban_helpers.o \
     src/cli/port_config_helpers.o \
     src/cli/port_models_helpers.o \
-    src/cli/port_goals_helpers.o \
+    src/cli/port_models_net.o \
+    src/cli/port_models_pure.o \
+    src/cli/port_models_validate.o \
     src/cli/port_status_helpers.o \
     src/cli/port_managed_scope_helpers.o \
     src/cli/port_context_breakdown_helpers.o \
