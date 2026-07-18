@@ -178,6 +178,13 @@ test-learning-graph-render: src/cli/port_learning_graph_render.o src/cli/port_le
 		-lm -o /tmp/t_lgr 2>/dev/null \
 		&& /tmp/t_lgr 2>&1 || echo "(learning graph render test failed)"
 
+# Learning mutations (agent/learning_mutations.py: 15 features).
+test-learning-mutations: src/cli/port_learning_mutations.o src/cli/port_learning_graph.o src/cli/port_learning_graph_helpers.o lib/libjson/json.o lib/libyaml/yaml.o lib/libskillusage/skill_usage.o
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib/libyaml -I lib/libskillusage -I lib $(LIB_INCS) tests/learning_mutations_test.c \
+		src/cli/port_learning_mutations.o src/cli/port_learning_graph.o src/cli/port_learning_graph_helpers.o lib/libjson/json.o lib/libyaml/yaml.o lib/libskillusage/skill_usage.o \
+		-lpthread -o /tmp/t_lm 2>/dev/null \
+		&& /tmp/t_lm 2>&1 || echo "(learning mutations test failed)"
+
 # Shell completion generation (pure slice of hermes_cli/completion.py).
 test-completion:
 	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include $(LIB_INCS) tests/completion_test.c \
