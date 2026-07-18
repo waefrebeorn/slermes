@@ -209,6 +209,26 @@ test-write-approval: src/cli/port_tools_write_approval.o
 		-lcrypto -lssl -o /tmp/t_write_approval 2>/dev/null \
 		&& /tmp/t_write_approval 2>&1 || echo "(write approval test failed)"
 
+# Skill write-origin provenance (existing port in lib/libskillusage/skill_provenance.c,
+# faithful port of tools/skill_provenance.py — token-based set/reset, is_background_review).
+test-skill-provenance:
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libskillusage $(LIB_INCS) tests/test_skill_provenance.c \
+		lib/libskillusage/skill_provenance.o \
+		-o /tmp/t_prov 2>/dev/null \
+		&& /tmp/t_prov 2>&1 || echo "(skill provenance test failed)"
+
+# Async (background) delegation registry (faithful port of tools/async_delegation.py).
+# Exercises the registry: dispatch runs a worker, completion event delivered via
+# injected sink, capacity gate rejects, interrupt_all cancels, batch dispatch
+# occupies one slot and emits an is_batch event with results. Replaces the prior
+# stub in src/tools/port_tools_async_delegation.c.
+test-async-delegation: src/tools/port_tools_async_delegation.o
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -pthread -I include -I lib/libjson -I lib -I lib/libyaml $(LIB_INCS) tests/test_async_delegation.c \
+		src/tools/port_tools_async_delegation.o \
+		lib/libjson/json.o lib/libuuid/uuid.o lib/libhash/hash.o \
+		-lcrypto -lssl -o /tmp/t_async 2>/dev/null \
+		&& /tmp/t_async 2>&1 || echo "(async delegation test failed)"
+
 # Make a combined list of all phony targets for the check/ci workflow
 TEST_PHONIES := test test-libs check
 
