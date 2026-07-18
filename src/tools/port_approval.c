@@ -6,6 +6,7 @@
 
 #include "hermes_logger.h"
 #include "hermes_json.h"
+#include "approval.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
