@@ -321,7 +321,7 @@ char *learning_graph_memory_cards(const char *hermes_home)
             while (*chunk && (chunk[chunk_len-1] == '\n' || chunk[chunk_len-1] == '\r' || chunk[chunk_len-1]==' '))
                 chunk[--chunk_len] = '\0';
             while (*chunk == '\n' || *chunk == '\r' || *chunk == ' ') {
-                memmove(chunk, chunk+1, strlen(chunk));
+                memmove(chunk, chunk+1, strlen(chunk)+1); /* +1 keeps the null terminator */
             }
             if (*chunk) {
                 /* first line -> title (strip leading "# ") */
@@ -335,12 +335,13 @@ char *learning_graph_memory_cards(const char *hermes_home)
                 if (tlen > 80) {
                     title_out = (char *)malloc(84);
                     memcpy(title_out, title, 80);
-                    memcpy(title_out + 80, "…\0", 3);
+                    memcpy(title_out + 80, "…", 3); /* UTF-8 ellipsis */
+                    title_out[83] = '\0';
                 } else {
                     title_out = strdup(title);
                 }
-                char *body = (char *)malloc(chunk_len + 1);
-                snprintf(body, chunk_len + 1, "%s", chunk);
+                char *body = (char *)malloc(strlen(chunk) + 1);
+                snprintf(body, strlen(chunk) + 1, "%s", chunk);
                 if (nl) *nl = '\n'; /* restore for body copy below */
                 /* body = chunk up to 1200 */
                 size_t bl = strlen(chunk);

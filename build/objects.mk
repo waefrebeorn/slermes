@@ -103,6 +103,7 @@ PORT_OBJ = \
     src/cli/port_learning_graph.o \
     src/cli/port_learning_graph_render_helpers.o \
     src/cli/port_learning_graph_render.o \
+    src/cli/port_learning_mutations.o \
     src/cli/port_file_state_helpers.o \
     src/cli/port_fuzzy_match_helpers.o \
     src/cli/port_file_tools_helpers.o \
