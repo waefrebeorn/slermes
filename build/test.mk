@@ -431,6 +431,12 @@ test-fallback-config: src/cli/port_fallback_config.o lib/libjson/json.o
 	    tests/test_fallback_config.c src/cli/port_fallback_config.o lib/libjson/json.o -o /tmp/t_fb 2>&1 \
 	    && /tmp/t_fb 2>&1 || echo "(fallback config test failed)"
 
+# agent/lsp/range_shift.py pure helpers (diff-aware LSP line-shift map).
+test-lsp-range-shift: src/agent/port_lsp_range_shift.o lib/libjson/json.o
+	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib -I lib/libjson \
+	    tests/test_lsp_range_shift.c src/agent/port_lsp_range_shift.o lib/libjson/json.o -o /tmp/t_rs 2>&1 \
+	    && /tmp/t_rs 2>&1 || echo "(lsp range shift test failed)"
+
 # DM pairing store (faithful port of gateway/pairing.py).
 	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib/libdb \
 	    tests/test_pairing.c src/gateway/pairing.o lib/libcrypto/crypto.o src/gateway/helpers.o lib/libjson/json.o -lcrypto -o /tmp/t_pair 2>&1 \
