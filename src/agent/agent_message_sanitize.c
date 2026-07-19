@@ -426,45 +426,44 @@ char *escape_invalid_chars_in_json_strings(const char *raw) {
     return out;
 }
 
-/* ---- sanitize_structure_surrogates (JSON object level) ---- */
-/* Port of Python: _sanitize_structure_surrogates */
-/* Walk a json_t tree and replace surrogate code points in string values.
- * Returns true if any replacements were made. Mutates in-place. */
-static bool __attribute__((unused)) sanitize_structure_surrogates_json(json_node_t *node) {
+/* Port of Python: _sanitize_structure_surrogates
+ * Walk a json_t tree and replace surrogate code points in string values,
+ * recursing into nested dict/list values (matches Python's _walk, which
+ * scrubs VALUES only — not key names). Returns true if ANY
+ * replacements were made (does NOT abort on first hit — the whole tree is
+ * scrubbed). Mutates in-place. */
+bool agent_message_sanitize_structure_surrogates(json_t *node)
+{
     if (!node) return false;
+    bool found = false;
     if (node->type == JSON_STRING) {
         if (strstr(node->str_val, "\xED")) {
             char *fixed = sanitize_surrogates(node->str_val);
             if (fixed) {
                 free(node->str_val);
                 node->str_val = fixed;
-                return true;
+                found = true;
             }
         }
+        return found;
     }
     if (node->type == JSON_OBJECT) {
         for (size_t i = 0; i < node->c.count; i++) {
-            if (sanitize_structure_surrogates_json(node->c.items[i]))
-                return true;
-            /* Also check key names for surrogates */
-            if (node->c.keys[i]) {
-                char *kfix = sanitize_surrogates(node->c.keys[i]);
-                if (kfix && strcmp(kfix, node->c.keys[i]) != 0) {
-                    free(node->c.keys[i]);
-                    node->c.keys[i] = kfix;
-                    return true;
-                }
-                if (kfix) free(kfix);
-            }
+            if (node->c.items[i] &&
+                agent_message_sanitize_structure_surrogates(node->c.items[i]))
+                found = true;
         }
+        return found;
     }
     if (node->type == JSON_ARRAY) {
         for (size_t i = 0; i < node->c.count; i++) {
-            if (sanitize_structure_surrogates_json(node->c.items[i]))
-                return true;
+            if (node->c.items[i] &&
+                agent_message_sanitize_structure_surrogates(node->c.items[i]))
+                found = true;
         }
+        return found;
     }
-    return false;
+    return found;
 }
 
 /* ---- sanitize_structure_non_ascii ---- */
@@ -594,6 +593,30 @@ bool sanitize_messages_surrogates(message_t *messages, int count) {
                     snprintf(tc->arguments, sizeof(tc->arguments), "%s", fixed);
                     free(fixed);
                     found = true;
+                }
+            }
+            /* Nested structured fields inside tool-call arguments JSON
+             * (e.g. reasoning_details arrays of dicts) — flat per-field
+             * checks above don't reach them. Port of Python's
+             * _sanitize_structure_surrogates(value) on each message. */
+            if (tc->arguments && tc->arguments[0]) {
+                char *err = NULL;
+                json_t *aj = json_parse(tc->arguments, &err);
+                if (err) free(err);
+                if (aj) {
+                    if (agent_message_sanitize_structure_surrogates(aj)) {
+                        char *ser = json_serialize(aj);
+                        if (ser) {
+                            size_t n = strlen(ser);
+                            if (n < sizeof(tc->arguments)) {
+                                snprintf(tc->arguments, sizeof(tc->arguments),
+                                         "%s", ser);
+                                found = true;
+                            }
+                            free(ser);
+                        }
+                    }
+                    json_free(aj);
                 }
             }
         }

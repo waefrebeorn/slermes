@@ -214,6 +214,10 @@ bool  sanitize_json_surrogates(void *json_obj);
 /* AG16: Message sanitization gaps — sanitize messages and structures */
 bool  sanitize_messages_surrogates(message_t *messages, int count);
 bool  sanitize_messages_non_ascii(message_t *messages, int count);
+/* Recursively scrub surrogate code points from a json_t tree (string values +
+ * key names), returning true if any were replaced. Port of Python
+ * _sanitize_structure_surrogates. Caller owns the mutated node. */
+bool  agent_message_sanitize_structure_surrogates(json_t *node);
 json_node_t *sanitize_tools_non_ascii(json_node_t *tools);
 char *escape_invalid_chars_in_json_strings(const char *raw);
 

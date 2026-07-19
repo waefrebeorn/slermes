@@ -446,6 +446,16 @@ test-provider-custom:
 	    || echo "provider_custom oracle: all cases MATCH"
 
 
+# Message sanitize surrogate-structure walker (faithful port of
+# agent/message_sanitization.py:_sanitize_structure_surrogates).
+# Oracle-verified: recursive dict/list scrub of surrogate code points in
+# string values (not keys), returns whether any were replaced, vs LIVE
+# Python across 6 cases (flat/nested/array/key/multi/clean/JSON-args).
+test-msg-sanitize-surrogates:
+	@bash tests/oracle/runners/run_oracle.sh msg_sanitize_surrogates 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(msg_sanitize_surrogates oracle FAILED)" \
+	    || echo "msg_sanitize_surrogates oracle: all cases MATCH"
+
 # hermes debug helpers (faithful port of hermes_cli/debug.py pure logic).
 test-debug: src/hermes_cli/debug_cli.o src/agent/redact.o
 	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib/libdb \
