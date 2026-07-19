@@ -623,9 +623,8 @@ int content_length_for_budget(const json_t *raw_content) {
  * ================================================================ */
 
 /* Port of Python: _extract_tool_call_name_and_args */
-/* AG26: Port of Python agent/context_compressor.py:_extract_tool_call_name_and_args() */
-static __attribute__((unused)) void extract_tool_call_name_and_args(const json_t *tool_call,
-                                                                     char **name_out, char **args_out) {
+void context_compressor_extract_name_args(const json_t *tool_call,
+                                           char **name_out, char **args_out) {
     const char *name = "unknown";
     const char *args = "";
     if (tool_call && tool_call->type == JSON_OBJECT) {
@@ -641,21 +640,18 @@ static __attribute__((unused)) void extract_tool_call_name_and_args(const json_t
     *args_out = strdup(args);
 }
 
-/* Port of Python: _extract_tool_call_id */
-/* AG26: Port of Python agent/context_compressor.py:_extract_tool_call_id() */
-/* AG26: Port of Python agent/context_compressor.py:_get_tool_call_id() */
-static __attribute__((unused)) const char *extract_tool_call_id(const json_t *tool_call) {
+/* Port of Python: _extract_tool_call_id / _get_tool_call_id */
+const char *context_compressor_extract_id(const json_t *tool_call) {
     if (!tool_call || tool_call->type != JSON_OBJECT) return strdup("");
     const char *id = json_get_str(tool_call, "id", "");
     return strdup(id);
 }
 
 /* Port of Python: _content_text_for_contains */
-/* AG26: Port of Python agent/context_compressor.py:_content_text_for_contains() */
-static __attribute__((unused)) char *content_text_for_contains(const json_t *content) {
-    if (!content) return strdup("");
+char *context_compressor_content_text(const json_t *content) {
+    if (!content || content->type == JSON_NULL) return strdup("");
     if (content->type == JSON_STRING) {
-        const char *s = json_get_str(content, "", NULL);
+        const char *s = json_string_value(content);
         return strdup(s ? s : "");
     }
     if (content->type != JSON_ARRAY) {
@@ -670,7 +666,7 @@ static __attribute__((unused)) char *content_text_for_contains(const json_t *con
         const json_t *part = json_get(content, i);
         if (!part) continue;
         if (part->type == JSON_STRING) {
-            const char *s = json_get_str(part, "", NULL);
+            const char *s = json_string_value(part);
             if (s) total += strlen(s) + 1;
         } else if (part->type == JSON_OBJECT) {
             const char *t = json_get_str(part, "text", NULL);
@@ -686,7 +682,7 @@ static __attribute__((unused)) char *content_text_for_contains(const json_t *con
         if (!part) continue;
         const char *text = NULL;
         if (part->type == JSON_STRING) {
-            text = json_get_str(part, "", NULL);
+            text = json_string_value(part);
         } else if (part->type == JSON_OBJECT) {
             text = json_get_str(part, "text", NULL);
         }
@@ -698,12 +694,11 @@ static __attribute__((unused)) char *content_text_for_contains(const json_t *con
     return buf;
 }
 
-/* Port of Python: _append_text_to_content */
-/* AG26: Port of Python agent/context_compressor.py:_append_text_to_content() */
-static __attribute__((unused)) json_t *append_text_to_content(const json_t *content, const char *text, bool prepend) {
-    if (!content) return json_new_string(text ? text : "");
+/* Port of Python: _append_text_to_content — append/prepend plain text safely. */
+json_t *context_compressor_append_text(const json_t *content, const char *text, bool prepend) {
+    if (!content || content->type == JSON_NULL) return json_new_string(text ? text : "");
     if (content->type == JSON_STRING) {
-        const char *existing = json_get_str(content, "", NULL);
+        const char *existing = json_string_value(content);
         if (!existing) existing = "";
         size_t elen = strlen(existing);
         size_t tlen = text ? strlen(text) : 0;
@@ -748,7 +743,22 @@ static __attribute__((unused)) json_t *append_text_to_content(const json_t *cont
         }
         return out;
     }
-    return json_new_string(text ? text : "");
+    /* Non-string, non-array content: mirror Python text + str(content). */
+    {
+        char *rendered = json_serialize(content);
+        const char *r = rendered ? rendered : "";
+        size_t rlen = strlen(r);
+        size_t tlen = text ? strlen(text) : 0;
+        size_t blen = rlen + tlen + 1;
+        char *buf = malloc(blen);
+        if (!buf) { free(rendered); return json_new_string(text ? text : ""); }
+        if (prepend) { memcpy(buf, text ? text : "", tlen); memcpy(buf + tlen, r, rlen + 1); }
+        else         { memcpy(buf, r, rlen); memcpy(buf + rlen, text ? text : "", tlen + 1); }
+        free(rendered);
+        json_t *ret = json_new_string(buf);
+        free(buf);
+        return ret;
+    }
 }
 
 /* Port of Python: _collect_path_mentions — collect file path mentions from text */
