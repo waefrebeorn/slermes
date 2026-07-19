@@ -80,11 +80,19 @@ fallback_entry_t *fallback_config_iter_entries(const json_t *raw, int *out_count
         if (!entry || entry->type != JSON_OBJECT) continue;
         char *prov = entry_str(entry, "provider");
         char *model = entry_str(entry, "model");
-        /* strip */
+        /* strip leading + trailing whitespace (mirrors Python str.strip()) */
         char *p = prov;
-        while (*p == ' ' || *p == '\t') p++;
+        while (*p == ' ' || *p == '\t' || *p == '\r' || *p == '\n') p++;
+        size_t plen = strlen(p);
+        while (plen > 0 && (p[plen - 1] == ' ' || p[plen - 1] == '\t' ||
+               p[plen - 1] == '\r' || p[plen - 1] == '\n'))
+            p[--plen] = '\0';
         char *mp = model;
-        while (*mp == ' ' || *mp == '\t') mp++;
+        while (*mp == ' ' || *mp == '\t' || *mp == '\r' || *mp == '\n') mp++;
+        size_t mlen = strlen(mp);
+        while (mlen > 0 && (mp[mlen - 1] == ' ' || mp[mlen - 1] == '\t' ||
+               mp[mlen - 1] == '\r' || mp[mlen - 1] == '\n'))
+            mp[--mlen] = '\0';
         if (!*p || !*mp) { free(prov); free(model); continue; }
 
         out[cnt].provider = strdup(p);
@@ -139,7 +147,7 @@ fallback_entry_t *fallback_config_get_chain(const json_t *config, int *out_count
                 fallback_config_entry_identity(&out[j], sp, sm, sb, sizeof(sp));
                 if (strcmp(sp, p) == 0 && strcmp(sm, m) == 0 && strcmp(sb, b) == 0) { dup = 1; break; }
             }
-            if (dup) { fallback_config_free_entries(&ents[i], 1); continue; }
+            if (dup) { free(ents[i].provider); free(ents[i].model); free(ents[i].base_url); continue; }
             if (cnt >= cap) {
                 cap *= 2;
                 out = realloc(out, (size_t)cap * sizeof(fallback_entry_t));
