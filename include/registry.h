@@ -83,6 +83,15 @@ const char *registry_get_emoji(const char *name, const char *default_emoji);
 /* S14 gap #16: Rich query API — check if any tool in a toolset is available */
 bool registry_is_toolset_available(const char *toolset);
 
+/* Full registration (port of Python ToolRegistry.register): accepts the
+ * requires_env list + per-tool max result size. requires_env_n is the number
+ * of entries in the requires_env array (may be 0/NULL). */
+bool registry_register_ex_full(const char *name, const char *description,
+                               const char *schema_json, const char *toolset,
+                               char *(*handler)(const char *args_json, const char *task_id),
+                               const char *const *requires_env, size_t requires_env_n,
+                               int max_result_size_chars);
+
 /* --- Toolset enumeration + alias API (port of Python ToolRegistry) --------- */
 
 /* Sorted unique toolset names present in the registry.
@@ -103,6 +112,20 @@ void registry_register_toolset_alias(const char *alias, const char *toolset);
 const char *registry_get_toolset_alias_target(const char *alias);
 /* JSON {"alias": "toolset"} snapshot of all alias mappings. Caller frees. */
 char *registry_get_registered_toolset_aliases(void);
+
+/* Default max result size (chars) when a tool doesn't set its own.
+ * Mirrors tools/budget_config.DEFAULT_RESULT_SIZE_CHARS. */
+#define REGISTRY_DEFAULT_RESULT_SIZE_CHARS 100000
+
+/* Return per-tool max result size, or *default*, or the global default. */
+int registry_get_max_result_size(const char *name, int default_size);
+
+/* {toolset: available_bool} for every registered toolset (JSON object). */
+char *registry_check_toolset_requirements(void);
+/* {toolset: {available, tools[]}} metadata for UI display (JSON object). */
+char *registry_get_available_toolsets(void);
+/* {toolset: {name, env_vars[], check_fn, setup_url, tools[]}} (JSON object). */
+char *registry_get_toolset_requirements(void);
 
 /* S14 gap #2: Tool Search bridge — search tools by keyword (name/description).
  * Returns JSON array of matching tool names, or ["error":"..."] on failure.

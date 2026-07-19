@@ -226,7 +226,9 @@ bool registry_register(const char *name, const char *description,
 
 static bool registry_register_ex_locked(const char *name, const char *description,
                           const char *schema_json, const char *toolset,
-                          char *(*handler)(const char *args_json, const char *task_id))
+                          char *(*handler)(const char *args_json, const char *task_id),
+                          const char *const *requires_env, size_t requires_env_n,
+                          int max_result_size_chars)
 {
     if (!name || !handler) return false;
 
@@ -292,6 +294,20 @@ static bool registry_register_ex_locked(const char *name, const char *descriptio
         snprintf(t->emoji, sizeof(t->emoji), "\xE2\x9A\xA1");          /* ⚡ default */
     }
 
+    /* requires_env + per-tool max result size. */
+    if (requires_env && requires_env_n) {
+        size_t n = requires_env_n < 8 ? requires_env_n : 8;
+        for (size_t k = 0; k < n; k++) {
+            if (requires_env[k] && requires_env[k][0]) {
+                snprintf(t->requires_env[t->requires_env_count],
+                         sizeof(t->requires_env[t->requires_env_count]),
+                         "%s", requires_env[k]);
+                t->requires_env_count++;
+            }
+        }
+    }
+    t->max_result_size_chars = max_result_size_chars;
+
     return true;
 }
 
@@ -299,8 +315,20 @@ bool registry_register_ex(const char *name, const char *description,
                           const char *schema_json, const char *toolset,
                           char *(*handler)(const char *args_json, const char *task_id))
 {
+    return registry_register_ex_full(name, description, schema_json, toolset,
+                                     handler, NULL, 0, 0);
+}
+
+bool registry_register_ex_full(const char *name, const char *description,
+                               const char *schema_json, const char *toolset,
+                               char *(*handler)(const char *args_json, const char *task_id),
+                               const char *const *requires_env, size_t requires_env_n,
+                               int max_result_size_chars)
+{
     pthread_mutex_lock(&g_registry_mutex);
-    bool ok = registry_register_ex_locked(name, description, schema_json, toolset, handler);
+    bool ok = registry_register_ex_locked(name, description, schema_json, toolset,
+                                          handler, requires_env, requires_env_n,
+                                          max_result_size_chars);
     if (ok) g_registry_generation++;
     pthread_mutex_unlock(&g_registry_mutex);
     return ok;
@@ -1101,7 +1129,110 @@ char *registry_get_registered_toolset_aliases(void) {
     return result;
 }
 
-/* S14 gap #2: Tool Search bridge — search tools by keyword.
+/* Internal unlocked: does toolset have at least one available tool?
+ * Mirrors Python _toolset_has_exposable_tools. */
+static bool toolset_has_exposable_tools(const char *toolset) {
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].toolset, toolset) == 0 &&
+            g_registry.tools[i].available)
+            return true;
+    }
+    return false;
+}
+
+/* Return per-tool max result size, or *default*, or the global default. */
+int registry_get_max_result_size(const char *name, int default_size) {
+    pthread_mutex_lock(&g_registry_mutex);
+    int out = REGISTRY_DEFAULT_RESULT_SIZE_CHARS;
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].name, name) == 0) {
+            if (g_registry.tools[i].max_result_size_chars > 0)
+                out = g_registry.tools[i].max_result_size_chars;
+            else if (default_size > 0)
+                out = default_size;
+            pthread_mutex_unlock(&g_registry_mutex);
+            return out;
+        }
+    }
+    if (default_size > 0) out = default_size;
+    pthread_mutex_unlock(&g_registry_mutex);
+    return out;
+}
+
+/* {toolset: available_bool} for every registered toolset. */
+char *registry_check_toolset_requirements(void) {
+    pthread_mutex_lock(&g_registry_mutex);
+    json_node_t *obj = json_new_object();
+    for (size_t i = 0; i < g_registry.count; i++) {
+        const char *ts = g_registry.tools[i].toolset;
+        if (!ts || !ts[0] || json_object_get(obj, ts)) continue;
+        json_object_set(obj, ts, json_new_bool(toolset_has_exposable_tools(ts)));
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    char *result = json_serialize(obj);
+    json_free(obj);
+    return result;
+}
+
+/* {toolset: {available, tools[]}} metadata for UI display. */
+char *registry_get_available_toolsets(void) {
+    pthread_mutex_lock(&g_registry_mutex);
+    json_node_t *obj = json_new_object();
+    for (size_t i = 0; i < g_registry.count; i++) {
+        const char *ts = g_registry.tools[i].toolset;
+        if (!ts || !ts[0]) continue;
+        json_node_t *ts_obj = json_object_get(obj, ts);
+        if (!ts_obj) {
+            ts_obj = json_new_object();
+            json_object_set(ts_obj, "available", json_new_bool(toolset_has_exposable_tools(ts)));
+            json_object_set(ts_obj, "tools", json_new_array());
+            json_object_set(obj, ts, ts_obj);
+        }
+        json_array_append(json_object_get(ts_obj, "tools"),
+                          json_new_string(g_registry.tools[i].name));
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    char *result = json_serialize(obj);
+    json_free(obj);
+    return result;
+}
+
+/* {toolset: {name, env_vars[], check_fn, setup_url, tools[]}}. */
+char *registry_get_toolset_requirements(void) {
+    pthread_mutex_lock(&g_registry_mutex);
+    json_node_t *obj = json_new_object();
+    for (size_t i = 0; i < g_registry.count; i++) {
+        const char *ts = g_registry.tools[i].toolset;
+        if (!ts || !ts[0]) continue;
+        json_node_t *ts_obj = json_object_get(obj, ts);
+        if (!ts_obj) {
+            ts_obj = json_new_object();
+            json_object_set(ts_obj, "name", json_new_string(ts));
+            json_object_set(ts_obj, "env_vars", json_new_array());
+            json_object_set(ts_obj, "check_fn", json_new_null());
+            json_object_set(ts_obj, "setup_url", json_new_null());
+            json_object_set(ts_obj, "tools", json_new_array());
+            json_object_set(obj, ts, ts_obj);
+        }
+        for (size_t k = 0; k < g_registry.tools[i].requires_env_count; k++) {
+            const char *e = g_registry.tools[i].requires_env[k];
+            bool have = false;
+            json_node_t *ev = json_object_get(ts_obj, "env_vars");
+            for (size_t m = 0; m < json_len(ev); m++) {
+                if (!strcmp(json_get_str(json_get(ev, m), NULL, ""), e)) { have = true; break; }
+            }
+            if (!have) json_array_append(ev, json_new_string(e));
+        }
+        json_array_append(json_object_get(ts_obj, "tools"),
+                          json_new_string(g_registry.tools[i].name));
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    char *result = json_serialize(obj);
+    json_free(obj);
+    return result;
+}
+
+/* S14 gap #2: Tool Search bridge — search tools by keyword (name/description).
  * Searches tool name and description. Returns JSON array of matching names. */
 char *registry_search(const char *keyword) {
     if (!keyword || !keyword[0])
