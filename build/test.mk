@@ -407,6 +407,12 @@ test-url-safety-helpers: src/tools/port_url_safety_helpers.o
 	    tests/test_url_safety_helpers.c src/tools/port_url_safety_helpers.o -o /tmp/t_urlsafe 2>&1 \
 	    && /tmp/t_urlsafe 2>&1 || echo "(url safety helpers test failed)"
 
+# agent/moa_trace.py pure helper (session-id filename sanitization).
+test-moa-trace-helpers: src/agent/port_moa_trace_helpers.o
+	@gcc -O2 -g -Wall -Wextra -I include -I src \
+	    tests/test_moa_trace_helpers.c src/agent/port_moa_trace_helpers.o -o /tmp/t_moa 2>&1 \
+	    && /tmp/t_moa 2>&1 || echo "(moa trace helpers test failed)"
+
 # DM pairing store (faithful port of gateway/pairing.py).
 	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib/libdb \
 	    tests/test_pairing.c src/gateway/pairing.o lib/libcrypto/crypto.o src/gateway/helpers.o lib/libjson/json.o -lcrypto -o /tmp/t_pair 2>&1 \
