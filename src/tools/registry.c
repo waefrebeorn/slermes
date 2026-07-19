@@ -780,6 +780,21 @@ bool registry_is_toolset_available(const char *toolset) {
     return avail;
 }
 
+/* Per-tool availability getter (mirrors Python registry.is_available). */
+bool registry_is_available(const char *name) {
+    if (!name) return false;
+    pthread_mutex_lock(&g_registry_mutex);
+    bool avail = false;
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].name, name) == 0 && g_registry.tools[i].available) {
+            avail = true;
+            break;
+        }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    return avail;
+}
+
 /* P150: Check if a toolset is present in comma-separated list */
 static bool toolset_in_list(const char *toolset, const char *csv) {
     if (!csv || !*csv) return true; /* empty list means "all" */
@@ -877,6 +892,22 @@ void registry_set_toolset_check_fn(const char *toolset, bool (*fn)(void)) {
     for (size_t i = 0; i < g_registry.count; i++) {
         if (strcmp(g_registry.tools[i].toolset, toolset) == 0) {
             g_registry.tools[i].check_fn = fn;
+        }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+}
+
+void registry_set_check_fn(const char *name, bool (*fn)(void)) {
+    if (!name || !fn) return;
+    pthread_mutex_lock(&g_registry_mutex);
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].name, name) == 0) {
+            g_registry.tools[i].check_fn = fn;
+            /* Evaluate immediately so availability is correct without waiting
+             * for the next refresh_availability() pass. */
+            g_registry.tools[i].available = fn();
+            g_registry_generation++;
+            break;
         }
     }
     pthread_mutex_unlock(&g_registry_mutex);

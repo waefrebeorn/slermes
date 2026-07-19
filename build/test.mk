@@ -245,12 +245,22 @@ test-memory-tool: src/tools/port_memory_tool.o
 # missing-old_text / apply_memory_pending). Exercises the dispatch layer,
 # gate integration (block/stage/allow), and E2E parity vs Python.
 test-memory-tool-handler: src/tools/port_memory_tool.o
-	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib $(LIB_INCS) tests/test_memory_tool_handler.c \
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib -I src/tools $(LIB_INCS) tests/test_memory_tool_handler.c \
 		src/tools/port_memory_tool.o \
 		src/tools/registry.o \
 		lib/libjson/json.o \
 		-o /tmp/t_mem_h 2>/dev/null \
 		&& /tmp/t_mem_h 2>&1 || echo "(memory tool handler test failed)"
+
+# close_terminal tool (tools/close_terminal_tool.py) + process_registry.request_close_terminal sink.
+test-close-terminal-tool: src/tools/port_close_terminal_tool.o src/tools/process_registry.o
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib -I src/tools $(LIB_INCS) tests/test_close_terminal_tool.c \
+		src/tools/port_close_terminal_tool.o \
+		src/tools/process_registry.o \
+		src/tools/registry.o \
+		lib/libjson/json.o \
+		-o /tmp/t_close_terminal 2>/dev/null \
+		&& /tmp/t_close_terminal 2>&1 || echo "(close terminal tool test failed)"
 
 # Live wiring: the faithful memory_tool.py port registered as the "memory" tool.
 test-memory-tool-live: src/tools/port_memory_tool.o src/cli/port_tools_write_approval.o
