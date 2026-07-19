@@ -240,6 +240,16 @@ test-memory-tool: src/tools/port_memory_tool.o
 		-o /tmp/t_mem 2>/dev/null \
 		&& /tmp/t_mem 2>&1 || echo "(memory tool test failed)"
 
+# Memory tool handler (tools/memory_tool.py: memory_tool / write gate /
+# missing-old_text / apply_memory_pending). Exercises the dispatch layer,
+# gate integration (block/stage/allow), and E2E parity vs Python.
+test-memory-tool-handler: src/tools/port_memory_tool.o
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib $(LIB_INCS) tests/test_memory_tool_handler.c \
+		src/tools/port_memory_tool.o \
+		lib/libjson/json.o \
+		-o /tmp/t_mem_h 2>/dev/null \
+		&& /tmp/t_mem_h 2>&1 || echo "(memory tool handler test failed)"
+
 # Make a combined list of all phony targets for the check/ci workflow
 TEST_PHONIES := test test-libs check
 

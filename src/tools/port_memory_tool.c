@@ -38,12 +38,14 @@ struct memory_store_t {
     char  *snap_memory;   /* frozen at load */
     char  *snap_user;
     memory_threat_scanner_t scanner;
+    memory_store_write_gate_t gate;   /* NULL => fail-open */
     int    consolidation_failures;
     char  *mem_dir;       /* profile-scoped memories dir */
 };
 
 /* forward decls */
 static const char *path_for(const char *mem_dir, const char *target);
+static char *json_dumps_str(const char *s);
 
 /* ---- small helpers ---- */
 
@@ -188,6 +190,14 @@ void memory_store_free(memory_store_t *s) {
 void memory_store_set_threat_scanner(memory_store_t *s, memory_threat_scanner_t sc) {
     if (s) s->scanner = sc;
 }
+void memory_store_set_write_gate(memory_store_t *s, memory_store_write_gate_t gate) {
+    if (s) s->gate = gate;
+}
+void memory_store_free_gate_decision(memory_write_gate_decision_t *d) {
+    if (!d) return;
+    free(d->message);
+    free(d->pending_id);
+}
 
 static const char *path_for(const char *mem_dir, const char *target) {
     static char buf[2048];
@@ -264,9 +274,8 @@ static char *resp_success(memory_store_t *s, const char *target, const char *msg
 static char *resp_error(memory_store_t *s, const char *target, const char *err, int terminal) {
     int cur = memory_store_char_count(s, target);
     int lim = char_limit_for(s, target);
-    int n; entries_for(s, target, &n);
-    char *entries_json = malloc(1); entries_json[0]=0; size_t el=0;
-    const char **e = entries_for(s, target, &n);
+    int n; const char **e = entries_for(s, target, &n);
+    char *entries_json = malloc(1); entries_json[0]=0;
     for (int i=0;i<n;i++){ size_t a=(i?2:0)+strlen(e[i])+8; size_t need=strlen(entries_json)+a+1; entries_json=realloc(entries_json,need); if(i){strcat(entries_json,",");} strcat(entries_json,"\""); strcat(entries_json,e[i]); strcat(entries_json,"\"");}
     char *out = malloc(4096);
     snprintf(out, 4096,
@@ -481,4 +490,187 @@ char *memory_store_usage(memory_store_t *s, const char *target) {
     char *out = malloc(64);
     snprintf(out, 64, "%d%% — %d/%d chars", pct, cur, lim);
     return out;
+}
+
+/* ---- the memory_tool handler (tools/memory_tool.py) ------------------ */
+
+static char *tool_error_json(const char *msg) {
+    char *out = malloc(512);
+    char *m = json_dumps_str(msg);
+    snprintf(out, 512, "{\"success\":false,\"error\":%s}", m);
+    free(m);
+    return out;
+}
+/* json_dumps_str: wrap a C string as a JSON-escaped quoted string (caller frees). */
+static char *json_dumps_str(const char *s) {
+    size_t n = s ? strlen(s) : 0;
+    char *out = malloc(n * 6 + 3);
+    char *p = out;
+    *p++ = '"';
+    for (size_t i = 0; i < n; i++) {
+        unsigned char c = (unsigned char)s[i];
+        switch (c) {
+            case '"': *p++='\\'; *p++='"'; break;
+            case '\\': *p++='\\'; *p++='\\'; break;
+            case '\n': *p++='\\'; *p++='n'; break;
+            case '\r': *p++='\\'; *p++='r'; break;
+            case '\t': *p++='\\'; *p++='t'; break;
+            case '\b': *p++='\\'; *p++='b'; break;
+            case '\f': *p++='\\'; *p++='f'; break;
+            default:
+                if (c < 0x20) { snprintf(p, 7, "\\u%04x", c); p += 6; }
+                else *p++ = (char)c;
+        }
+    }
+    *p++ = '"';
+    *p = 0;
+    return out;
+}
+
+static char *gate_result_staged(memory_write_gate_decision_t *d) {
+    char *pid = json_dumps_str(d->pending_id ? d->pending_id : "");
+    char *msg = json_dumps_str(d->message ? d->message : "");
+    char *out = malloc(512);
+    snprintf(out, 512,
+        "{\"success\":true,\"staged\":true,\"pending_id\":%s,\"message\":%s}", pid, msg);
+    free(pid); free(msg);
+    return out;
+}
+
+int memory_tool_available(void) { return 1; }
+
+char *memory_tool_missing_old_text_error(memory_store_t *store,
+                                         const char *target, const char *action) {
+    int n; const char **e = entries_for(store, target, &n);
+    char *entries_json = malloc(1); entries_json[0]=0;
+    for (int i=0;i<n;i++){
+        size_t a=(i?2:0)+strlen(e[i])+8; size_t need=strlen(entries_json)+a+1;
+        entries_json=realloc(entries_json,need);
+        if(i) strcat(entries_json,",");
+        strcat(entries_json,"\""); strcat(entries_json,e[i]); strcat(entries_json,"\"");
+    }
+    int cur = memory_store_char_count(store, target);
+    int lim = memory_store_char_limit(store, target);
+    char *out = malloc(1024);
+    snprintf(out, 1024,
+        "{\"success\":false,\"error\":\"'%s' needs old_text -- a short unique substring of the entry to %s. None was provided. Reissue the %s with old_text set to part of one of the current_entries below.\",\"current_entries\":[%s],\"usage\":\"%d/%d\"}",
+        action?action:"", action?action:"", action?action:"", entries_json, cur, lim);
+    free(entries_json);
+    return out;
+}
+
+/* Evaluate the single-op write gate. Returns a malloc'd JSON result (caller
+ * frees) and sets *handled=1 when the write should NOT proceed; returns NULL
+ * and *handled=0 when the caller should perform the real write. */
+static char *eval_write_gate(memory_store_t *store, const char *target,
+                             const char *summary, const char *detail,
+                             int *handled) {
+    (void)summary;
+    *handled = 0;
+    if (!store->gate) return NULL;
+    memory_write_gate_decision_t d = store->gate(target, detail);
+    if (d.allow) { memory_store_free_gate_decision(&d); return NULL; }
+    *handled = 1;
+    if (d.blocked) {
+        char *out = tool_error_json(d.message ? d.message : "Write blocked.");
+        memory_store_free_gate_decision(&d);
+        return out;
+    }
+    char *out = gate_result_staged(&d);
+    memory_store_free_gate_decision(&d);
+    return out;
+}
+
+char *memory_tool_run(memory_store_t *store, const char *action,
+                      const char *target, const char *content,
+                      const char *old_text, const json_node_t *operations) {
+    if (!store)
+        return tool_error_json("Memory is not available. It may be disabled in config or this environment.");
+    if (!target || (strcmp(target,"memory")!=0 && strcmp(target,"user")!=0))
+        return tool_error_json("Invalid target. Use 'memory' or 'user'.");
+
+    /* --- Batch path --- */
+    if (operations) {
+        if (!json_node_is_array(operations)) {
+            return tool_error_json("operations must be a list of {action, content?, old_text?} objects.");
+        }
+        int opn = (int)json_array_size(operations);
+        char *detail = malloc(1); detail[0]=0; size_t dl=0;
+        for (int i=0;i<opn;i++){
+            const json_node_t *op = json_array_get(operations, i);
+            const char *a = json_object_get_string(op,"action","");
+            const char *c = json_object_get_string(op,"content","");
+            const char *o = json_object_get_string(op,"old_text","");
+            char line[1024];
+            if (strcmp(a,"remove")==0) snprintf(line,sizeof(line),"- remove: %s\n", o);
+            else if (strcmp(a,"replace")==0) snprintf(line,sizeof(line),"- replace: %s -> %s\n", o, c);
+            else snprintf(line,sizeof(line),"- %s: %s\n", a, c);
+            size_t la=strlen(line);
+            detail=realloc(detail,dl+la+1); memcpy(detail+dl,line,la); dl+=la; detail[dl]=0;
+        }
+        int handled;
+        char *gr = eval_write_gate(store, target, "apply batch", detail, &handled);
+        free(detail);
+        if (handled) return gr;
+        return memory_store_apply_batch(store, target, operations);
+    }
+
+    /* --- Single-op path: validate required params BEFORE the gate --- */
+    if (action && strcmp(action,"add")==0 && (!content || !*content))
+        return tool_error_json("Content is required for 'add' action.");
+    if (action && strcmp(action,"replace")==0) {
+        if (!old_text || !*old_text)
+            return memory_tool_missing_old_text_error(store, target, "replace");
+        if (!content || !*content)
+            return tool_error_json("content is required for 'replace' action.");
+    }
+    if (action && strcmp(action,"remove")==0 && (!old_text || !*old_text))
+        return memory_tool_missing_old_text_error(store, target, "remove");
+
+    /* write gate */
+    {
+        const char *label = (strcmp(target,"user")==0) ? "user profile" : "memory";
+        char summary[256];
+        char *detail = NULL;
+        if (action && strcmp(action,"add")==0) {
+            snprintf(summary,sizeof(summary),"add to %s", label);
+            detail = json_dumps_str(content ? content : "");
+        } else if (action && strcmp(action,"replace")==0) {
+            snprintf(summary,sizeof(summary),"replace in %s", label);
+            char *o = json_dumps_str(old_text ? old_text : "");
+            char *c = json_dumps_str(content ? content : "");
+            size_t L = strlen("old: \nnew: ") + strlen(o) + strlen(c) + 1;
+            detail = malloc(L); snprintf(detail,L,"old: %s\nnew: %s", o, c);
+            free(o); free(c);
+        } else {
+            snprintf(summary,sizeof(summary),"remove from %s", label);
+            detail = json_dumps_str(old_text ? old_text : "");
+        }
+        int handled;
+        char *gr = eval_write_gate(store, target, summary, detail, &handled);
+        free(detail);
+        if (handled) return gr;
+    }
+
+    if (action && strcmp(action,"add")==0)      return memory_store_add(store, target, content);
+    if (action && strcmp(action,"replace")==0)  return memory_store_replace(store, target, old_text, content);
+    if (action && strcmp(action,"remove")==0)   return memory_store_remove(store, target, old_text);
+    return tool_error_json("Unknown action. Use: add, replace, remove");
+}
+
+char *memory_tool_apply_pending(memory_store_t *store, const json_node_t *payload) {
+    if (!store) return tool_error_json("Memory is not available.");
+    if (!payload) return tool_error_json("Missing staged payload.");
+    const char *action = json_object_get_string(payload, "action", "");
+    const char *target = json_object_get_string(payload, "target", "memory");
+    const char *content = json_object_get_string(payload, "content", "");
+    const char *old_text = json_object_get_string(payload, "old_text", "");
+    if (strcmp(action,"batch")==0) {
+        const json_node_t *ops = json_object_get(payload, "operations");
+        return memory_store_apply_batch(store, target, ops);
+    }
+    if (strcmp(action,"add")==0)     return memory_store_add(store, target, content);
+    if (strcmp(action,"replace")==0) return memory_store_replace(store, target, old_text, content);
+    if (strcmp(action,"remove")==0)  return memory_store_remove(store, target, old_text);
+    return tool_error_json("Unknown staged action.");
 }
