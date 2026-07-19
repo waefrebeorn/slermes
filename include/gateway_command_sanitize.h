@@ -65,6 +65,10 @@ char *commands_sanitize_slack_name(const char *raw);
  * args hint begins with '<'. (PoP: hermes_cli/commands.py:_requires_argument) */
 bool commands_requires_argument(const char *args_hint);
 
+/* Human-readable file size label ("512B", "2K", "1.0M", "1.4G").
+ * (PoP: hermes_cli/commands.py:_file_size_label). Caller frees. */
+char *commands_file_size_label(long size);
+
 /* ── Tuple helpers ──────────────────────────────────────────────────── */
 
 /* Dedupe a list of raw names after Telegram sanitization, preserving first

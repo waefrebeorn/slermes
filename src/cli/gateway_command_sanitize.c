@@ -123,6 +123,22 @@ bool commands_requires_argument(const char *args_hint) {
     return *args_hint == '<';
 }
 
+/* ── Human-readable file size label (mirrors _file_size_label) ── */
+
+char *commands_file_size_label(long size) {
+    char buf[32];
+    if (size < 1024) {
+        snprintf(buf, sizeof(buf), "%ldB", size);
+    } else if (size < 1024L * 1024) {
+        snprintf(buf, sizeof(buf), "%.0fK", (double)size / 1024.0);
+    } else if (size < 1024L * 1024 * 1024) {
+        snprintf(buf, sizeof(buf), "%.1fM", (double)size / (1024.0 * 1024.0));
+    } else {
+        snprintf(buf, sizeof(buf), "%.1fG", (double)size / (1024.0 * 1024.0 * 1024.0));
+    }
+    return strdup(buf);
+}
+
 /* ── Dedupe sanitized names ────────────────────────────────────────── */
 
 char **commands_dedupe_sanitized_telegram(const char *const *names, int n, int *out_n) {
