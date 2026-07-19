@@ -421,9 +421,15 @@ test-pet-prompts: src/pet/port_pet_prompts.o
 
 # cron/scripts/classify_items.py pure helpers (item id / prompt / score parse).
 test-classify-items: src/cron/port_classify_items.o lib/libjson/json.o
-	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib/libjson \
+	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib -I lib/libjson \
 	    tests/test_classify_items.c src/cron/port_classify_items.o lib/libjson/json.o -o /tmp/t_cls 2>&1 \
 	    && /tmp/t_cls 2>&1 || echo "(classify items test failed)"
+
+# hermes_cli/fallback_config.py pure helpers (fallback chain merge/dedup).
+test-fallback-config: src/cli/port_fallback_config.o lib/libjson/json.o
+	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib -I lib/libjson \
+	    tests/test_fallback_config.c src/cli/port_fallback_config.o lib/libjson/json.o -o /tmp/t_fb 2>&1 \
+	    && /tmp/t_fb 2>&1 || echo "(fallback config test failed)"
 
 # DM pairing store (faithful port of gateway/pairing.py).
 	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib/libdb \
