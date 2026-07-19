@@ -338,6 +338,12 @@ perf-gate: slermes
 	@python3 scripts/perf-gate.py
 
 
+# Skill manager validation/security core (faithful port of tools/skill_manager_tool.py).
+test-skill-val: src/tools/skill_manager_val.o
+	@gcc -O2 -g -Wall -Wextra -I include -I src \
+	    tests/test_skill_manager_val.c src/tools/skill_manager_val.o -o /tmp/t_skill_val 2>&1 \
+	    && /tmp/t_skill_val 2>&1 || echo "(skill-val test failed)"
+
 # Pet atlas pixel-ops (faithful port of agent/pet/generate/atlas.py).
 test-atlas: src/pet/atlas.o
 	@gcc -O2 -g -Wall -Wextra -I include -I src \
