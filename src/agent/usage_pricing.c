@@ -8,12 +8,78 @@
 
 #include "usage_pricing.h"
 #include "hermes_tokenizer.h"
+#include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
 #include <math.h>
 #include <ctype.h>
+
+/* Mirror of Python _NOUS_DEFAULT_BASE_URL (agent/usage_pricing.py). */
+static const char *_NOUS_DEFAULT_BASE_URL = "https://inference-api.nousresearch.com/v1";
+
+/* Faithful port of utils.base_url_host_matches(): exact-host or subdomain
+ * comparison (no substring false-positives on paths). */
+static bool base_url_host_matches(const char *base_url, const char *domain)
+{
+    if (!base_url || !*base_url) return false;
+    if (!domain || !*domain) return false;
+
+    /* Minimal hostname extraction: after "://" if present, up to first
+     * '/', ':' (port), or '?'. Lowercased, trailing dot stripped. */
+    const char *p = base_url;
+    if ((p[0] == 'h' && p[1] == 't' && p[2] == 't' && p[3] == 'p' &&
+         (p[4] == ':' || (p[4] == 's' && p[5] == ':'))) ) {
+        p = strstr(p, "://");
+        if (p) p += 3; else p = base_url;
+    }
+    char host[256];
+    size_t n = 0;
+    while (*p && *p != '/' && *p != ':' && *p != '?' && n < sizeof(host) - 1) {
+        host[n++] = (char)tolower((unsigned char)*p);
+        p++;
+    }
+    host[n] = '\0';
+    if (n && host[n-1] == '.') host[--n] = '\0';
+    if (!host[0]) return false;
+
+    char dom[256];
+    size_t d = 0;
+    for (const char *q = domain; *q && d < sizeof(dom) - 1; q++) {
+        dom[d++] = (char)tolower((unsigned char)*q);
+    }
+    dom[d] = '\0';
+    if (d && dom[d-1] == '.') dom[--d] = '\0';
+    if (!dom[0]) return false;
+
+    if (strcmp(host, dom) == 0) return true;
+    /* subdomain: host ends with "." + dom */
+    size_t hl = strlen(host), dl = strlen(dom);
+    return hl > dl && host[hl - dl - 1] == '.' && strcmp(host + hl - dl, dom) == 0;
+}
+
+/* Replace dots with dashes only inside version-number runs (e.g. "4.7"->"4-7").
+ * Faithful to Python re.sub(r"(\d+)\.(\d+)", r"\1-\2", name). */
+static void dots_to_dashes_versioned(char *out, size_t outsz, const char *in)
+{
+    size_t o = 0;
+    size_t i = 0;
+    while (in[i] && o < outsz - 1) {
+        /* find a digit run */
+        if (isdigit((unsigned char)in[i])) {
+            while (isdigit((unsigned char)in[i])) { out[o++] = in[i++]; if (o >= outsz-1) break; }
+            if (in[i] == '.' && isdigit((unsigned char)in[i+1]) && o < outsz - 1) {
+                out[o++] = '-';
+                i++; /* skip the dot */
+                while (isdigit((unsigned char)in[i])) { out[o++] = in[i++]; if (o >= outsz-1) break; }
+            }
+        } else {
+            out[o++] = in[i++];
+        }
+    }
+    out[o] = '\0';
+}
 
 /* ================================================================
  *  Per-model pricing entries
@@ -313,30 +379,20 @@ usage_counts_t normalize(const usage_counts_t *usage)
  *  Billing route resolution (port of Python resolves)
  * ================================================================ */
 
-typedef enum {
-    BILLING_DOCS_SNAPSHOT,   /* official pricing table lookup */
-    BILLING_MODELS_API,      /* API-fetched model metadata (OpenRouter) */
-    BILLING_SUB_INCLUDED,    /* subscription-included (OpenAI Codex) */
-    BILLING_UNKNOWN,
-} billing_mode_t;
-
-typedef struct {
-    char  provider[PRICING_PROVIDER_MAX];
-    char  model_name[PRICING_MODEL_NAME_MAX];
-    char  base_url[256];
-    billing_mode_t mode;
-} billing_route_t;
+/* billing_mode_t / billing_route_t are declared in usage_pricing.h. */
 
 /* Port of Python agent/usage_pricing.py:resolve_billing_route
- * Determines billing provider & mode from model name + optional provider/base_url. */
-static __attribute__((unused)) billing_route_t resolve_billing_route(const char *model_name,
-                                              const char *provider,
-                                              const char *base_url)
+ * Determines billing provider & mode from model name + optional provider/base_url.
+ * Faithful: nous/vertex routing, openai-codex subscription-included, exact-host
+ * base_url matching (utils.base_url_host_matches). */
+billing_route_t usage_pricing_resolve_billing_route(const char *model_name,
+                                                     const char *provider,
+                                                     const char *base_url)
 {
     billing_route_t route;
     memset(&route, 0, sizeof(route));
 
-    /* Normalise inputs */
+    /* Normalise inputs: strip + lowercase. */
     char pbuf[PRICING_PROVIDER_MAX] = "";
     char bbuf[256] = "";
     char mbuf[PRICING_MODEL_NAME_MAX] = "";
@@ -348,7 +404,7 @@ static __attribute__((unused)) billing_route_t resolve_billing_route(const char 
             i++;
         }
         pbuf[i] = '\0';
-        /* strip */
+        /* strip trailing spaces */
         while (i > 0 && pbuf[i-1] == ' ') pbuf[--i] = '\0';
     }
     if (base_url) {
@@ -369,44 +425,78 @@ static __attribute__((unused)) billing_route_t resolve_billing_route(const char 
         while (i > 0 && mbuf[i-1] == ' ') mbuf[--i] = '\0';
     }
 
-    /* Infer provider from model "provider/model" format */
+    /* Infer provider from model "provider/model" format (anthropic/openai/google). */
     if (!pbuf[0]) {
         const char *slash = strchr(mbuf, '/');
         if (slash) {
             size_t plen = (size_t)(slash - mbuf);
-            if (plen >= sizeof(pbuf)) plen = sizeof(pbuf) - 1;
-            memcpy(pbuf, mbuf, plen);
-            pbuf[plen] = '\0';
-            /* Strip inferred provider from model */
-            size_t rest = strlen(slash + 1);
-            if (rest >= sizeof(mbuf)) rest = sizeof(mbuf) - 1;
-            memmove(mbuf, slash + 1, rest + 1);
+            char iprov[32] = "";
+            if (plen >= sizeof(iprov)) plen = sizeof(iprov) - 1;
+            memcpy(iprov, mbuf, plen);
+            iprov[plen] = '\0';
+            if (strcmp(iprov, "anthropic") == 0 ||
+                strcmp(iprov, "openai") == 0 ||
+                strcmp(iprov, "google") == 0) {
+                pbuf[0] = '\0';
+                strncpy(pbuf, iprov, sizeof(pbuf) - 1);
+                pbuf[sizeof(pbuf) - 1] = '\0';
+                size_t rest = strlen(slash + 1);
+                if (rest >= sizeof(mbuf)) rest = sizeof(mbuf) - 1;
+                memmove(mbuf, slash + 1, rest + 1);
+            }
         }
     }
 
-    /* Resolve billing mode */
     snprintf(route.provider, sizeof(route.provider), "%s", pbuf);
     snprintf(route.model_name, sizeof(route.model_name), "%s", mbuf);
     snprintf(route.base_url, sizeof(route.base_url), "%s", bbuf);
 
+    /* Resolve billing mode — faithful to Python ordering. */
     if (strcmp(pbuf, "openai-codex") == 0) {
         route.mode = BILLING_SUB_INCLUDED;
     } else if (strcmp(pbuf, "openrouter") == 0 ||
-               strstr(bbuf, "openrouter.ai")) {
+               base_url_host_matches(base_url, "openrouter.ai")) {
         route.mode = BILLING_MODELS_API;
+    } else if (strcmp(pbuf, "nous") == 0 ||
+               base_url_host_matches(base_url, "inference-api.nousresearch.com")) {
+        route.mode = BILLING_MODELS_API;  /* official_models_api */
+        /* Nous fills in its default base URL when none is supplied. */
+        if (!bbuf[0]) {
+            snprintf(route.base_url, sizeof(route.base_url), "%s", _NOUS_DEFAULT_BASE_URL);
+        }
     } else if (strcmp(pbuf, "anthropic") == 0 ||
                strcmp(pbuf, "openai") == 0 ||
                strcmp(pbuf, "minimax") == 0 ||
                strcmp(pbuf, "minimax-cn") == 0) {
         route.mode = BILLING_DOCS_SNAPSHOT;
+    } else if (strcmp(pbuf, "vertex") == 0 ||
+               base_url_host_matches(base_url, "aiplatform.googleapis.com")) {
+        /* Vertex hosts the same Gemini models as Google AI Studio. */
+        snprintf(route.provider, sizeof(route.provider), "gemini");
+        /* strip "google/" vendor prefix so pricing key matches */
+        const char *slash = strchr(mbuf, '/');
+        if (slash) {
+            size_t rest = strlen(slash + 1);
+            if (rest >= sizeof(mbuf)) rest = sizeof(mbuf) - 1;
+            memmove(mbuf, slash + 1, rest + 1);
+            snprintf(route.model_name, sizeof(route.model_name), "%s", mbuf);
+        }
+        route.mode = BILLING_DOCS_SNAPSHOT;
     } else if (strcmp(pbuf, "custom") == 0 ||
                strcmp(pbuf, "local") == 0 ||
-               strstr(bbuf, "localhost")) {
+               (bbuf[0] && strstr(bbuf, "localhost"))) {
         route.mode = BILLING_UNKNOWN;
-    } else if (pbuf[0]) {
-        /* Unknown provider: try docs snapshot */
-        route.mode = BILLING_DOCS_SNAPSHOT;
     } else {
+        /* No recognizable provider (e.g. "bedrock", "weird/thing"): model keeps
+         * its last "/"-segment, provider defaults to "unknown", mode unknown. */
+        const char *last = strrchr(mbuf, '/');
+        if (last) {
+            size_t rest = strlen(last + 1);
+            if (rest >= sizeof(mbuf)) rest = sizeof(mbuf) - 1;
+            memmove(mbuf, last + 1, rest + 1);
+            snprintf(route.model_name, sizeof(route.model_name), "%s", mbuf);
+        }
+        snprintf(route.provider, sizeof(route.provider), "%s", pbuf[0] ? pbuf : "unknown");
         route.mode = BILLING_UNKNOWN;
     }
 
@@ -463,3 +553,173 @@ static __attribute__((unused)) bool openrouter_pricing_entry(const char *model_i
     return pricing_entry_from_metadata(model_id, input_per_1m, output_per_1m,
                                        cache_read_per_1m, cache_write_per_1m);
 }
+
+/* ================================================================
+ *  normalize_usage (3-way provider token normalization)
+ *  Port of Python agent/usage_pricing.py:normalize_usage
+ * ================================================================ */
+
+static long long _to_ll(const json_t *v)
+{
+    if (!v) return 0;
+    if (v->type == JSON_NUMBER) return (long long)v->num_val;
+    if (v->type == JSON_STRING) return strtoll(v->str_val, NULL, 10);
+    return 0;
+}
+
+static long long _get_ll(const json_t *obj, const char *key)
+{
+    return _to_ll(json_obj_get(obj, key));
+}
+
+/* Normalize raw API response usage into canonical token buckets. */
+usage_counts_t usage_pricing_normalize_usage(const char *provider,
+                                              const char *api_mode,
+                                              const json_t *response_usage)
+{
+    usage_counts_t u;
+    memset(&u, 0, sizeof(u));
+    if (!response_usage || response_usage->type != JSON_OBJECT) {
+        return u;
+    }
+
+    char pname[64] = "";
+    if (provider) {
+        size_t i = 0;
+        while (provider[i] && i < sizeof(pname) - 1) {
+            pname[i] = (char)tolower((unsigned char)provider[i]); i++;
+        }
+        pname[i] = '\0';
+    }
+    char mode[64] = "";
+    if (api_mode) {
+        size_t i = 0;
+        while (api_mode[i] && i < sizeof(mode) - 1) {
+            mode[i] = (char)tolower((unsigned char)api_mode[i]); i++;
+        }
+        mode[i] = '\0';
+    }
+
+    long long input_tokens = 0, output_tokens = 0;
+    long long cache_read_tokens = 0, cache_write_tokens = 0;
+
+    if (strcmp(mode, "anthropic_messages") == 0 || strcmp(pname, "anthropic") == 0) {
+        input_tokens       = _get_ll(response_usage, "input_tokens");
+        output_tokens      = _get_ll(response_usage, "output_tokens");
+        cache_read_tokens  = _get_ll(response_usage, "cache_read_input_tokens");
+        cache_write_tokens = _get_ll(response_usage, "cache_creation_input_tokens");
+    } else if (strcmp(mode, "codex_responses") == 0) {
+        long long input_total = _get_ll(response_usage, "input_tokens");
+        output_tokens = _get_ll(response_usage, "output_tokens");
+        json_t *details = json_obj_get(response_usage, "input_tokens_details");
+        cache_read_tokens  = _get_ll(details, "cached_tokens");
+        cache_write_tokens = _get_ll(details, "cache_creation_tokens");
+        long long sub = cache_read_tokens + cache_write_tokens;
+        input_tokens = input_total - sub;
+        if (input_tokens < 0) input_tokens = 0;
+    } else {
+        /* OpenAI Chat Completions (and OpenAI-compatible proxies). */
+        long long prompt_total = _get_ll(response_usage, "prompt_tokens");
+        output_tokens = _get_ll(response_usage, "completion_tokens");
+        json_t *details = json_obj_get(response_usage, "prompt_tokens_details");
+        cache_read_tokens = _get_ll(details, "cached_tokens");
+        if (!cache_read_tokens)
+            cache_read_tokens = _get_ll(response_usage, "cache_read_input_tokens");
+        cache_write_tokens = _get_ll(details, "cache_write_tokens");
+        if (!cache_write_tokens)
+            cache_write_tokens = _get_ll(response_usage, "cache_creation_input_tokens");
+        long long sub = cache_read_tokens + cache_write_tokens;
+        input_tokens = prompt_total - sub;
+        if (input_tokens < 0) input_tokens = 0;
+    }
+
+    long long reasoning_tokens = 0;
+    json_t *odetails = json_obj_get(response_usage, "output_tokens_details");
+    if (odetails) reasoning_tokens = _get_ll(odetails, "reasoning_tokens");
+
+    u.input_tokens      = input_tokens;
+    u.output_tokens     = output_tokens;
+    u.cache_read_tokens = cache_read_tokens;
+    u.cache_write_tokens = cache_write_tokens;
+    u.reasoning_tokens  = reasoning_tokens;
+    u.request_count     = 1;
+    return u;
+}
+
+/* ================================================================
+ *  format_token_count_compact
+ *  Port of Python agent/usage_pricing.py:format_token_count_compact
+ * ================================================================ */
+
+const char *usage_pricing_format_token_count(long long value)
+{
+    static char buf[32];
+    long long abs_value = value < 0 ? -value : value;
+    if (abs_value < 1000) {
+        snprintf(buf, sizeof(buf), "%lld", value);
+        return buf;
+    }
+    const char *sign = value < 0 ? "-" : "";
+    static const long long units[] = {1000000000LL, 1000000LL, 1000LL};
+    static const char   *suf[]  = {"B", "M", "K"};
+    for (int i = 0; i < 3; i++) {
+        if (abs_value >= units[i]) {
+            double scaled = (double)abs_value / (double)units[i];
+            char text[32];
+            if (scaled < 10.0)      snprintf(text, sizeof(text), "%.2f", scaled);
+            else if (scaled < 100.0) snprintf(text, sizeof(text), "%.1f", scaled);
+            else                     snprintf(text, sizeof(text), "%.0f", scaled);
+            /* strip trailing zeros / dot, matching Python rstrip("0").rstrip(".") */
+            char *p = text + strlen(text);
+            while (p > text && p[-1] == '0') *--p = '\0';
+            if (p > text && p[-1] == '.') *--p = '\0';
+            snprintf(buf, sizeof(buf), "%s%s%s", sign, text, suf[i]);
+            return buf;
+        }
+    }
+    snprintf(buf, sizeof(buf), "%lld", value);
+    return buf;
+}
+
+/* ================================================================
+ *  Model-name normalization
+ *  Ports of agent/usage_pricing.py:_normalize_bedrock_model_name
+ *  and _normalize_anthropic_model_name
+ * ================================================================ */
+
+void usage_pricing_normalize_bedrock_model(const char *model, char *out, size_t out_size)
+{
+    if (!out || out_size == 0) return;
+    if (!model) { out[0] = '\0'; return; }
+    char lower[256];
+    size_t i = 0;
+    while (model[i] && i < sizeof(lower) - 1) {
+        lower[i] = (char)tolower((unsigned char)model[i]); i++;
+    }
+    lower[i] = '\0';
+    const char *prefixes[] = {"us.", "global.", "eu.", "ap.", "jp."};
+    for (int k = 0; k < 5; k++) {
+        size_t pl = strlen(prefixes[k]);
+        if (strncmp(lower, prefixes[k], pl) == 0) {
+            memmove(lower, lower + pl, strlen(lower + pl) + 1);
+            break;
+        }
+    }
+    dots_to_dashes_versioned(out, out_size, lower);
+}
+
+void usage_pricing_normalize_anthropic_model(const char *model, char *out, size_t out_size)
+{
+    if (!out || out_size == 0) return;
+    if (!model) { out[0] = '\0'; return; }
+    const char *p = model;
+    if (strncmp(p, "anthropic/", 10) == 0) p += 10;
+    char lower[256];
+    size_t i = 0;
+    while (p[i] && i < sizeof(lower) - 1) {
+        lower[i] = (char)tolower((unsigned char)p[i]); i++;
+    }
+    lower[i] = '\0';
+    dots_to_dashes_versioned(out, out_size, lower);
+}
+
