@@ -149,6 +149,10 @@ char *canonical_tool_args(const char *tool_name,
 char *coerce_args(const char *tool_name,
                                   const char *tool_args);
 
+/* Stable SHA256 identity of a tool result (canonical JSON, sorted keys).
+ * Port of Python agent/tool_guardrails.py:_result_hash. Caller must free. */
+const char *tool_guardrails_result_hash(const char *result);
+
 /* Build decision from call context. Port of Python from_call. */
 tool_guardrail_decision_t
 tool_guardrail_from_call(const char *tool_name,

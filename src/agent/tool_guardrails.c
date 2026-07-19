@@ -637,42 +637,62 @@ char *coerce_args(const char *tool_name,
 }
 
 
-/* Port of Python agent/tool_guardrails.py:_result_hash */
-static __attribute__((unused)) const char *result_hash(const char *result)
+/* Recursively sort object keys in place (Python json.dumps sort_keys=True
+ * applies at every nesting level). Arrays are visited but order is preserved. */
+static void canonical_sort_keys(json_t *node)
 {
-    /* Canonical JSON serialization + SHA256 hash */
-    if (!result || !result[0]) return NULL;
-
-    /* Serialize the parsed JSON with sorted keys (canonical form) */
-    json_node_t *parsed = json_parse(result, NULL);
-    if (parsed) {
-        char *canonical = json_serialize(parsed);
-        json_free(parsed);
-        if (canonical) {
-            /* SHA256 hex digest of the canonical form */
-            unsigned char hash[32];
-            char hex[65];
-            crypto_sha256((const unsigned char *)canonical, strlen(canonical), hash);
-            for (int j = 0; j < 32; j++)
-                snprintf(hex + j * 2, 3, "%02x", hash[j]);
-            hex[64] = '\0';
-            free(canonical);
-            return strdup(hex);
+    if (!node) return;
+    if (node->type == JSON_OBJECT && node->c.count > 1) {
+        size_t n = node->c.count;
+        for (size_t i = 0; i < n; i++) {
+            for (size_t j = i + 1; j < n; j++) {
+                if (strcmp(node->c.keys[j], node->c.keys[i]) < 0) {
+                    const char *kt = node->c.keys[i];
+                    node->c.keys[i] = node->c.keys[j];
+                    node->c.keys[j] = kt;
+                    json_t *vt = node->c.items[i];
+                    node->c.items[i] = node->c.items[j];
+                    node->c.items[j] = vt;
+                }
+            }
         }
     }
-    /* Fallback: hash the raw string */
-    {
-        unsigned char hash[32];
-        char hex[65];
-        crypto_sha256((const unsigned char *)result, strlen(result), hash);
-        for (int j = 0; j < 32; j++)
-            snprintf(hex + j * 2, 3, "%02x", hash[j]);
-        hex[64] = '\0';
-        return strdup(hex);
+    if (node->type == JSON_OBJECT || node->type == JSON_ARRAY) {
+        for (size_t i = 0; i < node->c.count; i++)
+            canonical_sort_keys(node->c.items[i]);
     }
 }
 
+/* Port of Python agent/tool_guardrails.py:_result_hash
+ * Stable SHA256 identity of a tool result. Parses the result as JSON and
+ * hashes its canonical form (sorted keys, compact separators, ensure_ascii=False
+ * — matching Python json.dumps(..., sort_keys=True, separators=(",",":"),
+ * ensure_ascii=False)). Falls back to hashing the raw string when unparseable. */
+const char *tool_guardrails_result_hash(const char *result)
+{
+    char *canonical = NULL;
+    json_t *parsed = result ? json_parse(result, NULL) : NULL;
+    if (parsed) {
+        json_t *copy = json_copy(parsed);
+        json_free(parsed);
+        canonical_sort_keys(copy);
+        canonical = copy ? json_serialize(copy) : NULL;
+        if (copy) json_free(copy);
+    }
+    if (!canonical) canonical = strdup(result ? result : "");
+
+    unsigned char hash[32];
+    char hex[65];
+    crypto_sha256((const unsigned char *)canonical, strlen(canonical), hash);
+    for (int j = 0; j < 32; j++)
+        snprintf(hex + j * 2, 3, "%02x", hash[j]);
+    hex[64] = '\0';
+    free(canonical);
+    return strdup(hex);
+}
+
 /* Port of Python agent/tool_guardrails.py:_result_hash */
+
 /* Port of Python agent/tool_guardrails.py:from_call */
 tool_guardrail_decision_t
 tool_guardrail_from_call(const char *tool_name,

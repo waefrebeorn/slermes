@@ -428,6 +428,14 @@ test-tts:
 	    | grep -E 'MISMATCH' && echo "(tts oracle FAILED)" \
 	    || echo "tts oracle: all cases MATCH"
 
+# Tool guardrails result hash (faithful port of agent/tool_guardrails.py).
+# Oracle-verified: SHA256 of canonical JSON (recursively sorted keys, compact
+# separators, ensure_ascii=False) vs LIVE Python across 12 cases.
+test-tool-guardrails:
+	@bash tests/oracle/runners/run_oracle.sh tool_guardrails 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(tool_guardrails oracle FAILED)" \
+	    || echo "tool_guardrails oracle: all cases MATCH"
+
 
 # hermes debug helpers (faithful port of hermes_cli/debug.py pure logic).
 test-debug: src/hermes_cli/debug_cli.o src/agent/redact.o
