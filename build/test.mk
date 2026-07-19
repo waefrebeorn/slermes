@@ -446,6 +446,16 @@ test-provider-custom:
 	    || echo "provider_custom oracle: all cases MATCH"
 
 
+# Gateway platform short-label (faithful port of
+# hermes_cli/setup.py:_gateway_platform_short_label). Oracle-verified:
+# strip trailing "(...)" qualifier + .strip(), with the "base or label"
+# fallback that the dead C version got wrong (returned "" for labels
+# starting with "("). 16 cases incl. real _PLATFORMS labels + edges.
+test-gateway-short-label:
+	@bash tests/oracle/runners/run_oracle.sh gateway_short_label 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(gateway_short_label oracle FAILED)" \
+	    || echo "gateway_short_label oracle: all cases MATCH"
+
 # Message sanitize surrogate-structure walker (faithful port of
 # agent/message_sanitization.py:_sanitize_structure_surrogates).
 # Oracle-verified: recursive dict/list scrub of surrogate code points in

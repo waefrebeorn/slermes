@@ -524,18 +524,28 @@ __attribute__((unused)) static bool setup_supports_same_provider_pool_setup(cons
 }
 
 /* Port of Python hermes_cli/setup.py:_gateway_platform_short_label().
- * Strip trailing parenthetical qualifiers from a label. */
-__attribute__((unused)) static const char *setup_gateway_platform_short_label(const char *label) {
-    if (!label) return "";
+ * Strip trailing parenthetical qualifiers from a gateway platform label:
+ * base = label.split("(", 1)[0].strip(); return base or label.
+ * Returns a malloc'd string the caller must free (was a static buffer,
+ * which was both thread-unsafe and wrong: for a label starting with "("
+ * it returned "" instead of the original label). */
+char *setup_gateway_platform_short_label(const char *label) {
+    if (!label) return strdup("");
     const char *paren = strchr(label, '(');
-    if (!paren) return label;
-    /* Return the part before the paren */
-    static char buf[256];
-    size_t len = (size_t)(paren - label);
-    /* Trim trailing space */
-    while (len > 0 && label[len-1] == ' ') len--;
-    if (len >= sizeof(buf)) len = sizeof(buf) - 1;
-    memcpy(buf, label, len);
+    if (!paren) return strdup(label);
+    /* base = label[:paren].strip()  (leading + trailing whitespace) */
+    size_t start = 0;
+    while (label[start] == ' ' || label[start] == '\t') start++;
+    size_t end = (size_t)(paren - label);
+    while (end > start && (label[end - 1] == ' ' || label[end - 1] == '\t')) end--;
+    if (end <= start) {
+        /* base was empty after strip -> Python returns the original label */
+        return strdup(label);
+    }
+    size_t len = end - start;
+    char *buf = (char *)malloc(len + 1);
+    if (!buf) return strdup(label);
+    memcpy(buf, label + start, len);
     buf[len] = '\0';
     return buf;
 }
