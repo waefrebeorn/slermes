@@ -274,7 +274,8 @@ PET_OBJ = \
     src/pet/pet_store.o \
     src/pet/pet_render.o \
     src/pet/atlas.o \
-    src/pet/pet_commands.o
+    src/pet/pet_commands.o \
+    src/pet/port_pet_prompts.o
 
 # Custom GUI desktop (SDL2-based)
 DESKTOP_GUI_OBJ := src/gui_core.o src/desktop_gui.o src/slermes_home.o src/chat_render.o lib/libdb/sqlite3.o lib/libhttp/http.o lib/libjson/json.o lib/libbase64/base64.o lib/libcrypto/crypto.o
