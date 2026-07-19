@@ -6,8 +6,8 @@
  */
 
 #include "hermes_core_types.h"
-
 #include "registry.h"
+#include "memory_store.h"  /* memory_tool_set_gate + memory_write_gate_decision_t (live memory wiring) */
 
 /* P168: File sandbox init */
 void sandbox_init(void);
@@ -61,6 +61,44 @@ void registry_init_env_probe(void);
 void registry_init_skills_guard(void);
 void registry_init_curator_backup(void);
 
+/* ---- write-approval gate -> live memory tool (wiring layer) -------------
+ * This belongs here (not in either port module) so neither port couples to
+ * the other: tool_init.c links both port_memory_tool.o and
+ * port_tools_write_approval.o. Faithful to tools/memory_tool.py:_apply_write_gate:
+ * gate OFF -> writes flow freely (allow); gate ON -> stage (the core binary
+ * has no interactive prompt channel, mirroring Python's None -> stage). */
+extern int  cli_tools_write_approval_write_approval_enabled(const char *subsystem);
+extern int  cli_tools_write_approval_evaluate_gate(const char *subsystem, const char *action, const char *detail);
+extern json_node_t *cli_tools_write_approval_stage_write(const char *subsystem, const json_node_t *payload, const char *summary, const char *origin);
+
+static memory_write_gate_decision_t wa_memory_gate_adapter(const char *target, const char *detail) {
+    memory_write_gate_decision_t d = {0};
+    int need = cli_tools_write_approval_evaluate_gate("memory", "memory_write", NULL);
+    if (need == 0) { d.allow = 1; return d; }
+
+    json_node_t *payload = json_new_object();
+    json_object_set(payload, "action", json_string("memory_write"));
+    json_object_set(payload, "target", json_string(target ? target : "memory"));
+    json_object_set(payload, "detail", json_string(detail ? detail : ""));
+    json_node_t *rec = cli_tools_write_approval_stage_write("memory", payload,
+                                                            detail ? detail : "memory write", "memory_tool");
+    json_free(payload);
+    if (rec) {
+        const char *id = json_object_get_string(rec, "id", "");
+        d.staged = 1;
+        d.pending_id = strdup(id ? id : "");
+        d.message = strdup(detail ? detail : "Staged for approval.");
+        json_free(rec);
+    } else {
+        d.allow = 1;  /* staging failed -> fail open rather than drop the write */
+    }
+    return d;
+}
+
+void cli_tools_write_approval_attach_memory_gate(void) {
+    memory_tool_set_gate(wa_memory_gate_adapter);
+}
+
 /* Register all tools */
 void tools_init_all(void) {
     /* P168: Initialize file sandbox before any tool registration */
@@ -77,6 +115,9 @@ void tools_init_all(void) {
     registry_init_exec_code();
     registry_init_clarify();
     registry_init_memory();
+    /* Attach the write-approval gate to the live memory tool (fail-open if the
+     * gate module can't load — mirrors Python's lazy-import gate). */
+    cli_tools_write_approval_attach_memory_gate();
     registry_init_todo();
     registry_init_process();
     registry_init_send_message();

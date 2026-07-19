@@ -131,6 +131,14 @@ int memory_tool_available(void);
 char *memory_tool_missing_old_text_error(memory_store_t *store,
                                          const char *target, const char *action);
 
+/* ---- live-tool wiring (singleton store + gate seam) ----------------
+ * The "memory" tool is persistent: the store is loaded once from
+ * <HERMES_HOME>/memories and reused across calls. The gate is injected by the
+ * wiring layer (tool_init.c) so this module stays self-contained. */
+memory_store_t *memory_tool_get_store(void);
+void memory_tool_set_store(memory_store_t *store);
+void memory_tool_set_gate(memory_store_write_gate_t gate);
+
 #ifdef __cplusplus
 }
 #endif
