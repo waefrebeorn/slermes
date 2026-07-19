@@ -186,6 +186,13 @@ static tool_registry_t g_registry = {NULL, 0, 0};
 static pthread_mutex_t g_registry_mutex = PTHREAD_MUTEX_INITIALIZER;
 static uint64_t g_registry_generation = 0;
 
+/* Toolset alias store (Python ToolRegistry._toolset_aliases). Maps an alias
+ * string to its canonical toolset name. Bounded; entries are short. */
+#define REG_ALIAS_MAX 64
+typedef struct { char alias[64]; char toolset[32]; } reg_alias_t;
+static reg_alias_t g_aliases[REG_ALIAS_MAX];
+static size_t g_aliases_count = 0;
+
 /* Generation counter — bumped on every mutation.
  * Callers that cache tool metadata can compare against this to
  * detect stale cache entries, mirroring Python's ToolRegistry._generation. */
@@ -950,6 +957,148 @@ bool registry_deregister(const char *name) {
     }
     pthread_mutex_unlock(&g_registry_mutex);
     return false;
+}
+
+/* ============================================================================
+ *  Toolset enumeration + alias API (faithful port of Python ToolRegistry
+ *  get_registered_toolset_names / get_tool_names_for_toolset /
+ *  get_all_tool_names / get_tool_to_toolset_map / get_toolset_for_tool /
+ *  register_toolset_alias / get_toolset_alias_target /
+ *  get_registered_toolset_aliases).
+ *  Pure data, thread-safe, no I/O.
+ * ========================================================================== */
+
+/* Return sorted unique toolset names present in the registry.
+ * Caller frees the returned NULL-terminated char* array. */
+char **registry_get_registered_toolset_names(size_t *out_n) {
+    pthread_mutex_lock(&g_registry_mutex);
+    char **names = calloc(g_registry.count + 1, sizeof(char*));
+    size_t n = 0;
+    for (size_t i = 0; i < g_registry.count; i++) {
+        const char *ts = g_registry.tools[i].toolset;
+        if (!ts || !ts[0]) continue;
+        bool dup = false;
+        for (size_t j = 0; j < n; j++) if (strcmp(names[j], ts) == 0) { dup = true; break; }
+        if (!dup) names[n++] = strdup(ts);
+    }
+    /* insertion sort (short lists) */
+    for (size_t a = 1; a < n; a++) {
+        char *key = names[a]; size_t b = a;
+        while (b > 0 && strcmp(names[b-1], key) > 0) { names[b] = names[b-1]; b--; }
+        names[b] = key;
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    if (out_n) *out_n = n;
+    return names;
+}
+
+/* Return sorted tool names registered under a given toolset.
+ * Caller frees the returned NULL-terminated char* array. */
+char **registry_get_tool_names_for_toolset(const char *toolset, size_t *out_n) {
+    pthread_mutex_lock(&g_registry_mutex);
+    char **names = calloc(g_registry.count + 1, sizeof(char*));
+    size_t n = 0;
+    if (toolset) {
+        for (size_t i = 0; i < g_registry.count; i++) {
+            if (strcmp(g_registry.tools[i].toolset, toolset) == 0)
+                names[n++] = strdup(g_registry.tools[i].name);
+        }
+    }
+    for (size_t a = 1; a < n; a++) {
+        char *key = names[a]; size_t b = a;
+        while (b > 0 && strcmp(names[b-1], key) > 0) { names[b] = names[b-1]; b--; }
+        names[b] = key;
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    if (out_n) *out_n = n;
+    return names;
+}
+
+/* Return sorted names of every registered tool.
+ * Caller frees the returned NULL-terminated char* array. */
+char **registry_get_all_tool_names(size_t *out_n) {
+    pthread_mutex_lock(&g_registry_mutex);
+    char **names = calloc(g_registry.count + 1, sizeof(char*));
+    size_t n = 0;
+    for (size_t i = 0; i < g_registry.count; i++)
+        names[n++] = strdup(g_registry.tools[i].name);
+    for (size_t a = 1; a < n; a++) {
+        char *key = names[a]; size_t b = a;
+        while (b > 0 && strcmp(names[b-1], key) > 0) { names[b] = names[b-1]; b--; }
+        names[b] = key;
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    if (out_n) *out_n = n;
+    return names;
+}
+
+/* Return {tool_name: toolset_name} for every registered tool as JSON object. */
+char *registry_get_tool_to_toolset_map(void) {
+    pthread_mutex_lock(&g_registry_mutex);
+    json_node_t *obj = json_new_object();
+    for (size_t i = 0; i < g_registry.count; i++) {
+        json_object_set(obj, g_registry.tools[i].name,
+                        json_new_string(g_registry.tools[i].toolset));
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    char *result = json_serialize(obj);
+    json_free(obj);
+    return result;
+}
+
+/* Return the toolset a tool belongs to, or NULL. Caller does not own. */
+const char *registry_get_toolset_for_tool(const char *name) {
+    pthread_mutex_lock(&g_registry_mutex);
+    const char *ts = NULL;
+    for (size_t i = 0; i < g_registry.count; i++) {
+        if (strcmp(g_registry.tools[i].name, name) == 0) { ts = g_registry.tools[i].toolset; break; }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    return ts;
+}
+
+/* Register an explicit alias for a canonical toolset name. Overwrites a
+ * prior alias mapping (mirroring Python's collision-warning-then-overwrite). */
+void registry_register_toolset_alias(const char *alias, const char *toolset) {
+    if (!alias || !alias[0] || !toolset) return;
+    pthread_mutex_lock(&g_registry_mutex);
+    for (size_t i = 0; i < g_aliases_count; i++) {
+        if (strcmp(g_aliases[i].alias, alias) == 0) {
+            snprintf(g_aliases[i].toolset, sizeof(g_aliases[i].toolset), "%s", toolset);
+            pthread_mutex_unlock(&g_registry_mutex);
+            return;
+        }
+    }
+    if (g_aliases_count < REG_ALIAS_MAX) {
+        snprintf(g_aliases[g_aliases_count].alias, sizeof(g_aliases[g_aliases_count].alias), "%s", alias);
+        snprintf(g_aliases[g_aliases_count].toolset, sizeof(g_aliases[g_aliases_count].toolset), "%s", toolset);
+        g_aliases_count++;
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+}
+
+/* Return the canonical toolset name for an alias, or NULL. Caller does not own. */
+const char *registry_get_toolset_alias_target(const char *alias) {
+    if (!alias) return NULL;
+    pthread_mutex_lock(&g_registry_mutex);
+    const char *target = NULL;
+    for (size_t i = 0; i < g_aliases_count; i++) {
+        if (strcmp(g_aliases[i].alias, alias) == 0) { target = g_aliases[i].toolset; break; }
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    return target;
+}
+
+/* Return a JSON {"alias": "toolset"} snapshot of all alias mappings. */
+char *registry_get_registered_toolset_aliases(void) {
+    pthread_mutex_lock(&g_registry_mutex);
+    json_node_t *obj = json_new_object();
+    for (size_t i = 0; i < g_aliases_count; i++)
+        json_object_set(obj, g_aliases[i].alias, json_new_string(g_aliases[i].toolset));
+    pthread_mutex_unlock(&g_registry_mutex);
+    char *result = json_serialize(obj);
+    json_free(obj);
+    return result;
 }
 
 /* S14 gap #2: Tool Search bridge — search tools by keyword.
