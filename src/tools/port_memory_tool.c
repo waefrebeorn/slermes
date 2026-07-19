@@ -10,6 +10,7 @@
 
 #include "memory_store.h"
 #include "hermes_json.h"
+#include "registry.h"  /* live "memory" tool registration */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -673,4 +674,95 @@ char *memory_tool_apply_pending(memory_store_t *store, const json_node_t *payloa
     if (strcmp(action,"replace")==0) return memory_store_replace(store, target, old_text, content);
     if (strcmp(action,"remove")==0)  return memory_store_remove(store, target, old_text);
     return tool_error_json("Unknown staged action.");
+}
+
+/* ---- live-tool wiring (singleton store + gate seam) -----------------
+ * The "memory" tool is a live, persistent tool: the store is loaded once from
+ * <HERMES_HOME>/memories and reused across calls (faithful to Python's
+ * injected `store=kw.get("store")`). The write gate is an injectable seam so
+ * this module stays self-contained (see tool_init.c for the real adapter). */
+static memory_store_t *g_memory_store = NULL;
+
+memory_store_t *memory_tool_get_store(void) { return g_memory_store; }
+
+void memory_tool_set_store(memory_store_t *s) { g_memory_store = s; }
+
+void memory_tool_set_gate(memory_store_write_gate_t gate) {
+    if (g_memory_store) memory_store_set_write_gate(g_memory_store, gate);
+}
+
+/* ---- live "memory" tool registration (tools/memory_tool.py) ----------
+ * The singleton store is loaded once from <HERMES_HOME>/memories and reused
+ * across calls (mirrors Python's injected store). The write gate is attached
+ * by the wiring layer (tool_init.c) via memory_tool_set_gate(); default is
+ * fail-open, matching Python's lazy-import gate. */
+static char *memory_tool_bridge(const char *args_json, const char *task_id) {
+    (void)task_id;
+    if (!g_memory_store)
+        return strdup("{\"success\":false,\"error\":\"Memory is not available. It may be disabled in config or this environment.\"}");
+    if (!args_json)
+        return strdup("{\"success\":false,\"error\":\"No args\"}");
+
+    char *err = NULL;
+    json_node_t *args = json_parse(args_json, &err);
+    if (!args) { free(err); return strdup("{\"success\":false,\"error\":\"JSON parse error\"}"); }
+
+    const char *action   = json_object_get_string(args, "action", "");
+    const char *target   = json_object_get_string(args, "target", "memory");
+    const char *content  = json_object_get_string(args, "content", "");
+    const char *old_text = json_object_get_string(args, "old_text", "");
+    const json_node_t *operations = json_object_get(args, "operations");
+
+    char *result = memory_tool_run(g_memory_store, action, target, content, old_text, operations);
+    json_free(args);
+    return result;
+}
+
+void registry_init_memory(void) {
+    if (!g_memory_store) {
+        const char *home = getenv("HERMES_HOME");
+        char memdir[HERMES_PATH_MAX];
+        if (!home || !*home) home = "~/.hermes";
+        snprintf(memdir, sizeof(memdir), "%s/memories", home);
+        g_memory_store = memory_store_new(0, 0);
+        memory_store_load(g_memory_store, memdir);
+        memory_tool_set_store(g_memory_store);
+    }
+    registry_register("memory",
+        "Save durable facts to persistent memory that survive across sessions. Memory is "
+        "injected into every future turn, so keep entries compact and high-signal.\n\n"
+        "HOW: make ALL your changes in ONE call via an 'operations' array (each item: "
+        "{action, content?, old_text?}). The batch applies atomically and the char limit is "
+        "checked only on the FINAL result — so a single call can remove/replace stale entries "
+        "to free room AND add new ones, even when an add alone would overflow. The response "
+        "reports current/limit chars and confirms completion; one batch call finishes the "
+        "update, so don't repeat it. Use the bare action/content/old_text fields only for a "
+        "single lone change.\n\n"
+        "WHEN: save proactively when the user states a preference, correction, or personal "
+        "detail, or you learn a stable fact about their environment, conventions, or workflow. "
+        "Priority: user preferences & corrections > environment facts > procedures. The best "
+        "memory stops the user repeating themselves.\n\n"
+        "IF FULL: an add is rejected with the current entries shown. Reissue as ONE batch that "
+        "removes or shortens enough stale entries and adds the new one together.\n\n"
+        "TARGETS: 'user' = who the user is (name, role, preferences, style). 'memory' = your "
+        "notes (environment, conventions, tool quirks, lessons).\n\n"
+        "SKIP: trivial/obvious info, easily re-discovered facts, raw data dumps, task progress, "
+        "completed-work logs, temporary TODO state (use session_search for those). Reusable "
+        "procedures belong in a skill, not memory.",
+        "{"
+        "\"type\":\"object\","
+        "\"properties\":{"
+          "\"action\":{\"type\":\"string\",\"enum\":[\"add\",\"replace\",\"remove\"],\"description\":\"The action to perform (single-op shape). Omit when using 'operations'.\"},"
+          "\"target\":{\"type\":\"string\",\"enum\":[\"memory\",\"user\"],\"description\":\"Which memory store: 'memory' for personal notes, 'user' for user profile.\"},"
+          "\"content\":{\"type\":\"string\",\"description\":\"The entry content. Required for 'add' and 'replace' (single-op shape).\"},"
+          "\"old_text\":{\"type\":\"string\",\"description\":\"REQUIRED for 'replace' and 'remove' (single-op shape): a short unique substring identifying the existing entry to modify. Omit only for 'add'.\"},"
+          "\"operations\":{\"type\":\"array\",\"description\":\"Batch shape: a list of operations applied atomically in one call against the final char budget. Preferred when making multiple changes or consolidating to make room. Each item is {action, content?, old_text?}.\","
+            "\"items\":{\"type\":\"object\",\"properties\":{"
+              "\"action\":{\"type\":\"string\",\"enum\":[\"add\",\"replace\",\"remove\"]},"
+              "\"content\":{\"type\":\"string\",\"description\":\"Entry content for add/replace.\"},"
+              "\"old_text\":{\"type\":\"string\",\"description\":\"Substring identifying the entry for replace/remove.\"}},"
+              "\"required\":[\"action\"]}}"
+        "},"
+        "\"required\":[\"target\"]"
+        "}", memory_tool_bridge);
 }

@@ -14,6 +14,10 @@
 #include "memory_store.h"
 #include "hermes_json.h"
 
+/* stub for tool_error (defined in agent core, not linked here; only hit on
+ * error paths this unit test does not exercise). */
+char *tool_error(const char *m, ...) { (void)m; return strdup("{\"success\":false}"); }
+
 #define HOME "mth_handler"
 
 static int g_fail = 0;
@@ -40,19 +44,6 @@ static void mk_home(void) {
     setenv("HERMES_HOME", g_home, 1);
 }
 
-static char *py_eval(const char *expr) {
-    char tmpl[] = "import sys,os,json\nsys.path.insert(0,'/home/wubu/hermes-agent-dev')\nos.environ['HERMES_HOME']='%s'\nimport tools.memory_tool as M\ns=M.load_on_disk_store()\n%s\nprint(json.dumps(r) if not isinstance(r,str) else r)\n";
-    char script[1200]; snprintf(script,sizeof(script),tmpl,g_home,expr);
-    char path[256]; snprintf(path,sizeof(path),"/tmp/mth_py_XXXXXX");
-    int fd = mkstemp(path); dprintf(fd,"%s",script); close(fd);
-    char cmd[1400]; snprintf(cmd,sizeof(cmd),"python3 %s",path);
-    FILE *f = popen(cmd,"r");
-    static char out[8192]; out[0]=0;
-    size_t got=0; char buf[512];
-    while (fgets(buf,sizeof(buf),f) && got<sizeof(out)-1) { size_t l=strlen(buf); memcpy(out+got,buf,l); got+=l; }
-    out[got]=0; pclose(f); unlink(path);
-    return out;
-}
 static char *py_eval_home(const char *mem, const char *expr) {
     char home[1100]; snprintf(home,sizeof(home),"%s/..", mem); /* mem = home/memories */
     char tmpl[] = "import sys,os,json\nsys.path.insert(0,'/home/wubu/hermes-agent-dev')\nos.environ['HERMES_HOME']='%s'\nimport tools.memory_tool as M\ns=M.load_on_disk_store()\n%s\nprint(json.dumps(r) if not isinstance(r,str) else r)\n";

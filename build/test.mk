@@ -236,6 +236,7 @@ test-async-delegation: src/tools/port_tools_async_delegation.o
 test-memory-tool: src/tools/port_memory_tool.o
 	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib $(LIB_INCS) tests/test_memory_tool.c \
 		src/tools/port_memory_tool.o \
+		src/tools/registry.o \
 		lib/libjson/json.o \
 		-o /tmp/t_mem 2>/dev/null \
 		&& /tmp/t_mem 2>&1 || echo "(memory tool test failed)"
@@ -246,9 +247,24 @@ test-memory-tool: src/tools/port_memory_tool.o
 test-memory-tool-handler: src/tools/port_memory_tool.o
 	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib $(LIB_INCS) tests/test_memory_tool_handler.c \
 		src/tools/port_memory_tool.o \
+		src/tools/registry.o \
 		lib/libjson/json.o \
 		-o /tmp/t_mem_h 2>/dev/null \
 		&& /tmp/t_mem_h 2>&1 || echo "(memory tool handler test failed)"
+
+# Live wiring: the faithful memory_tool.py port registered as the "memory" tool.
+test-memory-tool-live: src/tools/port_memory_tool.o src/cli/port_tools_write_approval.o
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib $(LIB_INCS) tests/test_memory_tool_live.c \
+		src/tools/port_memory_tool.o \
+		src/cli/port_tools_write_approval.o \
+		src/tools/registry.o \
+		lib/libjson/json.o \
+		lib/libyaml/yaml.o \
+		lib/libuuid/uuid.o \
+		lib/libhash/hash.o \
+		lib/libcredentialfiles/credential_files.o \
+		-o /tmp/t_mem_live 2>/dev/null \
+		&& /tmp/t_mem_live 2>&1 || echo "(memory tool live test failed)"
 
 # Make a combined list of all phony targets for the check/ci workflow
 TEST_PHONIES := test test-libs check

@@ -20,6 +20,10 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+/* stub for tool_error (defined in agent core, not linked here; only hit on
+ * error paths this unit test does not exercise). */
+char *tool_error(const char *m, ...) { (void)m; return strdup("{\"success\":false}"); }
+
 static int g_pass = 0, g_fail = 0;
 #define TEST(cond, name) do { if (cond) { g_pass++; printf("  PASS: %s\n", name); } \
     else { g_fail++; printf("  FAIL: %s\n", name); } } while (0)

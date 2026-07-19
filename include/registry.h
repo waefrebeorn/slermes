@@ -81,11 +81,16 @@ char *registry_search(const char *keyword);
  * Caller must free the returned string. */
 char *registry_describe(const char *name);
 
-/* S14 gap #8: Mark a tool as async (handlers that should run in detached thread) */
-void registry_set_async(const char *name, bool async);
+/* Register a tool with the given name/description/schema and handler.
+ * Registers into the "" (default) toolset. */
+bool registry_register(const char *name, const char *description,
+                        const char *schema_json,
+                        char *(*handler)(const char *args_json, const char *task_id));
 
-/* Check if tool name matches a wildcard pattern. Returns true on match. */
-bool registry_name_matches(const char *name, const char *pattern);
+/* Register a tool with an explicit toolset. */
+bool registry_register_ex(const char *name, const char *description,
+                           const char *schema_json, const char *toolset,
+                           char *(*handler)(const char *args_json, const char *task_id));
 
 #ifdef __cplusplus
 }
