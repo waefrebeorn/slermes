@@ -1,0 +1,1 @@
+[{"content":"hi","role":"user"},{"content":"ok","role":"assistant","tool_calls":[{"id":"1"}]},{"content":"done","role":"tool","tool_call_id":"1"}]

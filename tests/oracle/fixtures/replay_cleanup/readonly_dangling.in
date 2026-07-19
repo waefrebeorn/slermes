@@ -1,0 +1,1 @@
+[{"content":"read it","role":"user"},{"content":"","role":"assistant","tool_calls":[{"id":"r","function":{"name":"read_file"}}]}]

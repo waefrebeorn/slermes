@@ -13,6 +13,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
 
 /* Minimal JSON-string emitter (mirrors the engine harness style). */
 static void jprint_str(const char *s)
