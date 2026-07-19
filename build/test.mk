@@ -364,6 +364,38 @@ test-projects-db: src/hermes_cli/projects_db.o
 	    -o /tmp/t_pdb -lpthread -ldl -lm 2>&1 \
 	    && /tmp/t_pdb 2>&1 || echo "(projects-db test failed)"
 
+# Replay-history sanitization (faithful port of agent/replay_cleanup.py).
+# Oracle-verified: C helpers vs LIVE Python across interrupted/dangling/
+# side-effect-recovery and stale-dangerous-confirmation cases.
+test-replay-cleanup:
+	@bash tests/oracle/runners/run_oracle.sh replay_cleanup 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(replay_cleanup oracle FAILED)" \
+	    || echo "replay_cleanup oracle: all cases MATCH"
+
+# Expensive-model cost guard (faithful port of hermes_cli/model_cost_guard.py).
+# Oracle-verified: format_money + pricing_from_model_info vs LIVE Python.
+test-model-cost-guard:
+	@bash tests/oracle/runners/run_oracle.sh model_cost_guard 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(model_cost_guard oracle FAILED)" \
+	    || echo "model_cost_guard oracle: all cases MATCH"
+
+# Yuanbao protobuf wire codec (faithful port of gateway/platforms/yuanbao_proto.py).
+# Oracle-verified: C decoders vs LIVE Python across inbound/msgcontent/bodyelem/
+# group-member-list/forward round-trip cases (byte-identical wire bytes).
+test-yuanbao-proto:
+	@bash tests/oracle/runners/run_oracle.sh yuanbao_proto 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(yuanbao_proto oracle FAILED)" \
+	    || echo "yuanbao_proto oracle: all cases MATCH"
+
+# Office document text extraction (faithful port of tools/read_extract.py).
+# Oracle-verified: C read_extract_document_text vs LIVE Python across docx/
+# xlsx/ipynb fixtures (incl. Unicode text, shared strings, workbook sheets).
+test-read-extract:
+	@bash tests/oracle/runners/run_oracle.sh read_extract 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(read_extract oracle FAILED)" \
+	    || echo "read_extract oracle: all cases MATCH"
+
+
 # hermes debug helpers (faithful port of hermes_cli/debug.py pure logic).
 test-debug: src/hermes_cli/debug_cli.o src/agent/redact.o
 	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib/libdb \

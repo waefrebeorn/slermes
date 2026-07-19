@@ -74,7 +74,13 @@ gml += P._encode_field(3, P.WT_LEN, P._encode_message(mem))  # length-prefixed m
 gml += P._encode_field(4, P.WT_VARINT, P._encode_varint(0))
 gml += P._encode_field(5, P.WT_VARINT, P._encode_varint(1))
 cases["gml_dec"] = P.decode_get_group_member_list_rsp(gml)
+cases["gml_enc"] = list(gml)
 
 with open(os.path.join(HERE, "yuanbao_proto.ref.json"), "w") as f:
+    json.dump(cases, f, indent=2, sort_keys=True, default=str)
+# The oracle runner feeds each *.in fixture to BOTH the C harness and the
+# Python oracle as argv[1]. The harness/oracle read the ref JSON from that
+# path, so ship an identical .in copy for the runner to discover.
+with open(os.path.join(HERE, "yuanbao_proto.in"), "w") as f:
     json.dump(cases, f, indent=2, sort_keys=True, default=str)
 print("wrote", len(cases), "cases")
