@@ -129,7 +129,7 @@ classify_score_t *cron_classify_parse_scores(const char *content, int n_items, i
     char *err = NULL;
     json_t *arr = json_parse(p, &err);
     free(text);
-    if (err) free(err);
+    if (err) { free(err); err = NULL; }
     if (!arr) {
         /* Last-ditch: find first [...] block. */
         const char *s = content ? strchr(content, '[') : NULL;
@@ -141,7 +141,7 @@ classify_score_t *cron_classify_parse_scores(const char *content, int n_items, i
             block[blen] = '\0';
             arr = json_parse(block, &err);
             free(block);
-            if (err) free(err);
+            if (err) { free(err); err = NULL; }
         }
     }
     if (!arr || arr->type != JSON_ARRAY) { if (arr) json_free(arr); return NULL; }
