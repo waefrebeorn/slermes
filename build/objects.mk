@@ -272,6 +272,7 @@ PET_OBJ = \
     src/pet/pet_manifest.o \
     src/pet/pet_store.o \
     src/pet/pet_render.o \
+    src/pet/atlas.o \
     src/pet/pet_commands.o
 
 # Custom GUI desktop (SDL2-based)
