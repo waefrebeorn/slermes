@@ -120,6 +120,63 @@ int main(void) {
         free(aliases);
     }
 
+    /* per-tool max_result_size + requires_env via registry_register_ex_full */
+    {
+        const char *envs[2] = { "HERMES_DESKTOP", "SOME_TOKEN" };
+        registry_register_ex_full("enum_req", "needs env", "{}", "alpha", dummy_handler,
+                                  envs, 2, 12345);
+        TEST(registry_get_max_result_size("enum_req", 0) == 12345, "per-tool max result size honored");
+        TEST(registry_get_max_result_size("enum_a1", 0) == REGISTRY_DEFAULT_RESULT_SIZE_CHARS,
+             "no per-tool size -> global default");
+        TEST(registry_get_max_result_size("enum_a1", 555) == 555, "no per-tool size -> default arg");
+        TEST(registry_get_max_result_size("nope", 0) == REGISTRY_DEFAULT_RESULT_SIZE_CHARS,
+             "unknown tool -> global default");
+
+        /* toolset requirements JSON */
+        char *req = registry_check_toolset_requirements();
+        json_node_t *j = json_parse(req, NULL);
+        TEST(j != NULL, "check_toolset_requirements parses");
+        if (j) {
+            /* alpha has enum_a1/a2/enum_req all available -> true */
+            TEST(json_object_get_bool(j, "alpha", 0) == 1, "alpha available");
+            json_free(j);
+        }
+        free(req);
+
+        /* available toolsets: alpha lists our tools */
+        char *avail = registry_get_available_toolsets();
+        json_node_t *ja = json_parse(avail, NULL);
+        TEST(ja != NULL, "get_available_toolsets parses");
+        if (ja) {
+            json_node_t *alpha = json_object_get(ja, "alpha");
+            TEST(alpha != NULL, "alpha present in available toolsets");
+            if (alpha) {
+                json_node_t *tools = json_object_get(alpha, "tools");
+                TEST(tools != NULL && json_len(tools) >= 3, "alpha tools >= 3");
+            }
+            json_free(ja);
+        }
+        free(avail);
+
+        /* toolset requirements: enum_req's env vars surface under alpha */
+        char *tr = registry_get_toolset_requirements();
+        json_node_t *jt = json_parse(tr, NULL);
+        TEST(jt != NULL, "get_toolset_requirements parses");
+        if (jt) {
+            json_node_t *alpha = json_object_get(jt, "alpha");
+            TEST(alpha != NULL, "alpha present");
+            if (alpha) {
+                json_node_t *ev = json_object_get(alpha, "env_vars");
+                int seen_desktop = 0;
+                for (size_t m = 0; m < json_len(ev); m++)
+                    if (!strcmp(json_node_get_string(json_get(ev, m)), "HERMES_DESKTOP")) seen_desktop = 1;
+                TEST(seen_desktop == 1, "requires_env HERMES_DESKTOP surfaced");
+            }
+            json_free(jt);
+        }
+        free(tr);
+    }
+
     if (g_fail==0) printf("ALL PASSED\n"); else printf("%d FAIL\n", g_fail);
     return g_fail?1:0;
 }

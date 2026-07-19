@@ -136,6 +136,11 @@ typedef struct {
     /* S14 gap #8: Async handler support — run handler in detached thread */
     bool  async;                      /* if true, run handler in detached thread */
     char  emoji[16];                  /* Display emoji for tool activity feed (e.g. "⚡", "📁") */
+    /* Per-tool max result size (chars). 0 = inherit global default. */
+    int   max_result_size_chars;
+    /* Environment variables a tool requires to be usable (NULL-terminated). */
+    char  requires_env[8][64];
+    size_t requires_env_count;
 } tool_t;
 
 typedef struct {
