@@ -376,6 +376,11 @@ test-pairing: src/gateway/pairing.o lib/libcrypto/crypto.o src/gateway/helpers.o
 	    tests/test_pairing.c src/gateway/pairing.o lib/libcrypto/crypto.o src/gateway/helpers.o lib/libjson/json.o -lcrypto -o /tmp/t_pair 2>&1 \
 	    && /tmp/t_pair 2>&1 || echo "(pairing test failed)"
 
+# Kanban CLI pure formatting/parsing helpers (faithful port of hermes_cli/kanban.py).
+test-kanban-format: src/hermes_cli/kanban_format.o
+	@gcc -O2 -g -Wall -Wextra -I include -I src tests/test_kanban_format.c src/hermes_cli/kanban_format.o -o /tmp/t_kanban 2>&1 \
+	    && /tmp/t_kanban 2>&1 || echo "(kanban-format test failed)"
+
 # Combined check - lint, build, test suite
 check:
 	@echo "=== Check: lint ==="
