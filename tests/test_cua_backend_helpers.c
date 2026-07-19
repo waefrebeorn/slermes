@@ -60,10 +60,14 @@ static void check_key(const char *keys, const char *ek, const char **emods, int 
 
 int main(void)
 {
-    /* PNG 640x480 */
+    /* PNG 640x480 (IHDR chunk: length + "IHDR" + width + height) */
     unsigned char png[] = {
-        0x89,'P','N','G','\r','\n',0x1a,'\n',
-        'I','H','D','R', 0,0,2,0x80, 0,0,1,0xE0, 0x08,0x06,0,0,0
+        0x89,'P','N','G','\r','\n',0x1a,'\n',   /* signature (8) */
+        0,0,0,0x0D,                             /* IHDR length = 13 */
+        'I','H','D','R',                        /* type (4) */
+        0,0,2,0x80,                             /* width  = 640 */
+        0,0,1,0xE0,                             /* height = 480 */
+        0x08,0x06,0,0,0                         /* bitdepth/colortype + crc */
     };
     check_dims(png, sizeof(png), 640, 480);
 
