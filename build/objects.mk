@@ -74,6 +74,7 @@ PORT_OBJ = \
     src/cli/port_config_helpers.o \
     src/cli/port_fallback_config.o \
     src/cli/port_timeouts.o \
+    src/cli/port_session_listing.o \
     src/cli/port_models_helpers.o \
     src/cli/port_models_net.o \
     src/cli/port_models_pure.o \
