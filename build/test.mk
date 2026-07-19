@@ -404,6 +404,14 @@ test-usage-pricing:
 	    | grep -E 'MISMATCH' && echo "(usage_pricing oracle FAILED)" \
 	    || echo "usage_pricing oracle: all cases MATCH"
 
+# Account usage helpers (faithful port of agent/account_usage.py).
+# Oracle-verified: title_case_slug, fmt_usd (thousands separators), is_finite_num
+# vs LIVE Python across 18 cases.
+test-account-usage:
+	@bash tests/oracle/runners/run_oracle.sh account_usage 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(account_usage oracle FAILED)" \
+	    || echo "account_usage oracle: all cases MATCH"
+
 
 # hermes debug helpers (faithful port of hermes_cli/debug.py pure logic).
 test-debug: src/hermes_cli/debug_cli.o src/agent/redact.o

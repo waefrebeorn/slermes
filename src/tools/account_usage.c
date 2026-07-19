@@ -28,15 +28,17 @@
  *  Helpers (port of Python helper functions)
  */
 
-/* Port of Python: _title_case_slug */
-static __attribute__((unused)) const char *title_case_slug(const char *value) {
+/* Port of Python: _title_case_slug — "foo_bar-baz" -> "Foo Bar Baz" (None if empty).
+ * Mirrors str(value).replace("_"," ").replace("-"," ").title(): every
+ * whitespace/_/- separated word is capitalized. */
+const char *account_usage_title_case_slug(const char *value) {
     if (!value || !value[0]) return NULL;
     static char buf[256];
     size_t pos = 0;
     bool word_start = true;
     for (size_t i = 0; value[i] && pos < sizeof(buf) - 1; i++) {
         unsigned char c = (unsigned char)value[i];
-        if (c == '_' || c == '-') {
+        if (c == '_' || c == '-' || c == ' ') {
             buf[pos++] = ' ';
             word_start = true;
         } else {
@@ -48,14 +50,47 @@ static __attribute__((unused)) const char *title_case_slug(const char *value) {
     return buf;
 }
 
-/* Port of Python: _fmt_usd */
-static __attribute__((unused)) void fmt_usd(double d, char *buf, size_t sz) {
+/* Port of Python: _fmt_usd — f"${d:,.2f}" with thousands separators. */
+void account_usage_fmt_usd(double d, char *buf, size_t sz) {
     if (!buf || sz == 0) return;
-    snprintf(buf, sz, "$%.2f", d);
+    /* Round to cents, then split into integer / fractional parts.
+     * Truncate toward zero (matches Python f"{d:,.2f}") so negatives like
+     * -1234.56 yield integer -1234 + fraction -56, not floor(-1235). */
+    long long ip = (long long)d;
+    int frac = (int)round((d - (double)ip) * 100.0);
+    if (frac >= 100)  { frac -= 100; ip += 1; }
+    if (frac <= -100) { frac += 100; ip -= 1; }
+    /* frac now in [-99, 99]; display its absolute value (negative ip carries
+     * the sign, e.g. -1234.56 -> ip=-1234, frac=-56 -> "$-1,234.56"). */
+
+    /* Build the integer part with comma groupings (least-significant first).
+     * Track digit count separately from comma count so groups are exactly 3. */
+    char digits[32];
+    int nd = 0;      /* total entries (digits + commas) */
+    int dc = 0;      /* digit count only */
+    long long mag = ip < 0 ? -ip : ip;
+    if (mag == 0) {
+        digits[nd++] = '0';
+    } else {
+        while (mag > 0) {
+            if (dc > 0 && dc % 3 == 0) digits[nd++] = ',';
+            digits[nd++] = (char)('0' + (mag % 10));
+            dc++;
+            mag /= 10;
+        }
+    }
+    /* digits[] is LSD-first; reverse into intbuf[] (most-significant first). */
+    char intbuf[32];
+    int n = 0;
+    if (ip < 0) intbuf[n++] = '-';
+    for (int i = nd - 1; i >= 0; i--) intbuf[n++] = digits[i];
+    intbuf[n] = '\0';
+
+    snprintf(buf, sz, "$%s.%02d", intbuf, frac < 0 ? -frac : frac);
 }
 
-/* Port of Python: _is_finite_num */
-static __attribute__((unused)) bool is_finite_num(double v) {
+/* Port of Python: _is_finite_num — real numeric (int/float, not bool, not NaN/Inf). */
+bool account_usage_is_finite_num(double v) {
     return isfinite(v) && !isnan(v);
 }
 
