@@ -437,7 +437,13 @@ test-timeouts: src/cli/port_timeouts.o lib/libjson/json.o
 	    tests/test_timeouts.c src/cli/port_timeouts.o lib/libjson/json.o -o /tmp/t_to 2>&1 \
 	    && /tmp/t_to 2>&1 || echo "(timeouts test failed)"
 
-# agent/lsp/range_shift.py pure helpers (diff-aware LSP line-shift map).
+# hermes_cli/session_listing.py pure helpers (arg parse + gateway format).
+test-session-listing: src/cli/port_session_listing.o lib/libjson/json.o
+	    @gcc -O2 -g -Wall -Wextra -I include -I src -I lib -I lib/libjson \
+	        tests/test_session_listing.c src/cli/port_session_listing.o lib/libjson/json.o -o /tmp/t_sl 2>&1 \
+	        && /tmp/t_sl 2>&1 || echo "(session listing test failed)"
+
+	    # agent/lsp/range_shift.py pure helpers (diff-aware LSP line-shift map).
 test-lsp-range-shift: src/agent/port_lsp_range_shift.o lib/libjson/json.o
 	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib -I lib/libjson \
 	    tests/test_lsp_range_shift.c src/agent/port_lsp_range_shift.o lib/libjson/json.o -o /tmp/t_rs 2>&1 \
