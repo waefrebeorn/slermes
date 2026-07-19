@@ -74,6 +74,26 @@ bool context_set_system(agent_state_t *state, const char *content);
 void context_truncate(agent_state_t *state, size_t max_messages);
 const message_t *context_get(const agent_state_t *state, size_t index);
 
+/* === Context compressor pure helpers (context.c, port of agent/context_compressor.py) ===
+ * Oracle-verified against LIVE Python in tests/oracle/fixtures/context_compressor. */
+
+/* Port of Python: _extract_tool_call_name_and_args — (name, arguments) from a
+ * tool_call object. Caller must free *name_out and *args_out. */
+void context_compressor_extract_name_args(const json_t *tool_call,
+                                           char **name_out, char **args_out);
+
+/* Port of Python: _extract_tool_call_id — tool_call id (dict/object form).
+ * Caller must free the returned string. */
+const char *context_compressor_extract_id(const json_t *tool_call);
+
+/* Port of Python: _content_text_for_contains — best-effort text view of content
+ * (None->"", str->str, list->"\n".join text parts). Caller must free. */
+char *context_compressor_content_text(const json_t *content);
+
+/* Port of Python: _append_text_to_content — safely append/prepend text to
+ * content (str/None/list aware). Returns a new json_t* (caller frees). */
+json_t *context_compressor_append_text(const json_t *content, const char *text, bool prepend);
+
 /* P90: Smart context eviction strategies */
 typedef enum {
     EVICT_OLDEST_TOOL_FIRST,

@@ -1,0 +1,19 @@
+[
+  {"op":"extract_name_args","tool_call":{"role":"assistant","tool_calls":[{"function":{"name":"search","arguments":"{\"q\":\"x\"}"}}]}},
+  {"op":"extract_name_args","tool_call":{"function":{"name":"read_file","arguments":"{\"path\":\"/a\"}"}}},
+  {"op":"extract_name_args","tool_call":{}},
+  {"op":"extract_name_args","tool_call":{"function":{"name":null,"arguments":null}}},
+  {"op":"extract_id","tool_call":{"id":"call_abc123"}},
+  {"op":"extract_id","tool_call":{}},
+  {"op":"extract_id","tool_call":"not-an-object"},
+  {"op":"content_text","content":null},
+  {"op":"content_text","content":"just a string"},
+  {"op":"content_text","content":["hello","world"]},
+  {"op":"content_text","content":[{"type":"text","text":"part one"},{"type":"image"},{"type":"text","text":"part two"}]},
+  {"op":"content_text","content":[{"type":"text","text":""},{"type":"text","text":"only this"}]},
+  {"op":"append_text","content":null,"text":"NOTE","prepend":false},
+  {"op":"append_text","content":"existing body","text":"PREFIX","prepend":true},
+  {"op":"append_text","content":"existing body","text":"SUFFIX","prepend":false},
+  {"op":"append_text","content":[{"type":"text","text":"a"}],"text":"head","prepend":true},
+  {"op":"append_text","content":[{"type":"text","text":"a"},{"type":"text","text":"b"}],"text":"tail","prepend":false}
+]

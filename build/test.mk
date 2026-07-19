@@ -412,6 +412,14 @@ test-account-usage:
 	    | grep -E 'MISMATCH' && echo "(account_usage oracle FAILED)" \
 	    || echo "account_usage oracle: all cases MATCH"
 
+# Context compressor pure helpers (faithful port of agent/context_compressor.py).
+# Oracle-verified: extract_name_args, extract_id, content_text_for_contains,
+# append_text_to_content vs LIVE Python across 17 cases.
+test-context-compressor:
+	@bash tests/oracle/runners/run_oracle.sh context_compressor 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(context_compressor oracle FAILED)" \
+	    || echo "context_compressor oracle: all cases MATCH"
+
 
 # hermes debug helpers (faithful port of hermes_cli/debug.py pure logic).
 test-debug: src/hermes_cli/debug_cli.o src/agent/redact.o
