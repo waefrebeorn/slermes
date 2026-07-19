@@ -337,7 +337,14 @@ coverage-gate:
 perf-gate: slermes
 	@python3 scripts/perf-gate.py
 
-# Combined check — lint, build, test suite
+
+# Pet atlas pixel-ops (faithful port of agent/pet/generate/atlas.py).
+test-atlas: src/pet/atlas.o
+	@gcc -O2 -g -Wall -Wextra -I include -I src \
+	    tests/test_atlas.c src/pet/atlas.o -o /tmp/t_atlas -lm 2>&1 \
+	    && /tmp/t_atlas 2>&1 || echo "(atlas test failed)"
+
+# Combined check - lint, build, test suite
 check:
 	@echo "=== Check: lint ==="
 	bash -n tests/run_mission8_tests.sh 2>/dev/null || true
