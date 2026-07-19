@@ -431,6 +431,12 @@ test-fallback-config: src/cli/port_fallback_config.o lib/libjson/json.o
 	    tests/test_fallback_config.c src/cli/port_fallback_config.o lib/libjson/json.o -o /tmp/t_fb 2>&1 \
 	    && /tmp/t_fb 2>&1 || echo "(fallback config test failed)"
 
+# hermes_cli/timeouts.py pure helpers (provider/stale request timeout lookup).
+test-timeouts: src/cli/port_timeouts.o lib/libjson/json.o
+	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib -I lib/libjson \
+	    tests/test_timeouts.c src/cli/port_timeouts.o lib/libjson/json.o -o /tmp/t_to 2>&1 \
+	    && /tmp/t_to 2>&1 || echo "(timeouts test failed)"
+
 # agent/lsp/range_shift.py pure helpers (diff-aware LSP line-shift map).
 test-lsp-range-shift: src/agent/port_lsp_range_shift.o lib/libjson/json.o
 	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib -I lib/libjson \
