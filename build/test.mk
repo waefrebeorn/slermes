@@ -436,6 +436,15 @@ test-tool-guardrails:
 	    | grep -E 'MISMATCH' && echo "(tool_guardrails oracle FAILED)" \
 	    || echo "tool_guardrails oracle: all cases MATCH"
 
+# Custom-provider extra_body resolution (faithful port of agent/agent_init.py).
+# Oracle-verified: _custom_provider_extra_body_for_agent (incl. custom:filter,
+# provider_key/name match, multi-model catalog, fallback) + _merge_extra_body
+# (existing overrides win) vs LIVE Python across 9 cases.
+test-provider-custom:
+	@bash tests/oracle/runners/run_oracle.sh provider_custom 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(provider_custom oracle FAILED)" \
+	    || echo "provider_custom oracle: all cases MATCH"
+
 
 # hermes debug helpers (faithful port of hermes_cli/debug.py pure logic).
 test-debug: src/hermes_cli/debug_cli.o src/agent/redact.o

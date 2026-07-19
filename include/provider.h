@@ -293,6 +293,18 @@ char *google_empty_response(const char *model);
 /* Custom (user-defined) provider */
 extern const provider_ops_t PROVIDER_OPS_CUSTOM;
 
+/* Custom-provider request-shaping helpers (port of agent/agent_init.py). */
+char *custom_normalized_base_url(const char *value);
+bool custom_provider_model_matches(const char *agent_model, const json_t *entry);
+json_t *custom_provider_extra_body_for_agent(const char *provider,
+                                           const char *model,
+                                           const char *base_url,
+                                           const json_t *custom_providers);
+json_t *custom_merge_extra_body(const char *provider, const char *model,
+                               const char *base_url,
+                               const json_t *custom_providers,
+                               const json_t *existing_extra_body);
+
 /* Codex Responses API provider */
 extern const provider_ops_t PROVIDER_OPS_CODEX;
 

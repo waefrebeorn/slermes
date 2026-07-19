@@ -312,28 +312,102 @@ char *custom_normalized_base_url(const char *value) {
     return result;
 }
 
-/* Port of Python: _custom_provider_model_matches */
-bool custom_provider_model_matches(const char *agent_model, const char *provider_model) {
-    if (!provider_model || !provider_model[0]) return true;
-    if (!agent_model) return false;
-    /* Case-insensitive compare */
-    size_t alen = strlen(agent_model);
-    size_t plen = strlen(provider_model);
-    if (alen != plen) return false;
-    for (size_t i = 0; i < alen; i++) {
-        if (tolower((unsigned char)agent_model[i]) != tolower((unsigned char)provider_model[i]))
-            return false;
+/* Port of Python: _custom_provider_model_matches
+ * agent_model matches the entry if its `model` equals agent_model, OR the
+ * entry has a `models` catalog (dict keys or list/tuple) containing
+ * agent_model. Empty model + empty catalog -> match (unfiltered). */
+bool custom_provider_model_matches(const char *agent_model, const json_t *entry)
+{
+    if (!entry || entry->type != JSON_OBJECT) return false;
+    char agent_norm[256];
+    {
+        const char *a = agent_model ? agent_model : "";
+        size_t j = 0;
+        for (size_t i = 0; a[i] && j + 1 < sizeof(agent_norm); i++) {
+            if (a[i] == ' ' || a[i] == '\t') continue;
+            agent_norm[j++] = (char)tolower((unsigned char)a[i]);
+        }
+        agent_norm[j] = '\0';
     }
-    return true;
+
+    /* Multi-model catalog: dict keys or list/tuple of models. */
+    const json_t *models = json_object_get(entry, "models");
+    if (models) {
+        bool catalog_hit = false;
+        if (models->type == JSON_OBJECT) {
+            for (size_t i = 0; i < models->c.count; i++) {
+                const char *k = models->c.keys[i];
+                if (k) {
+                    /* normalize k */
+                    char kn[256]; size_t j = 0;
+                    for (size_t i2 = 0; k[i2] && j + 1 < sizeof(kn); i2++) {
+                        if (k[i2] == ' ' || k[i2] == '\t') continue;
+                        kn[j++] = (char)tolower((unsigned char)k[i2]);
+                    }
+                    kn[j] = '\0';
+                    if (strcmp(kn, agent_norm) == 0) { catalog_hit = true; break; }
+                }
+            }
+        } else if (models->type == JSON_ARRAY) {
+            for (size_t i = 0; i < json_array_size(models); i++) {
+                const json_t *m = json_get(models, i);
+                if (m && m->type == JSON_STRING) {
+                    const char *s = m->str_val;
+                    char mn[256]; size_t j = 0;
+                    for (size_t i2 = 0; s[i2] && j + 1 < sizeof(mn); i2++) {
+                        if (s[i2] == ' ' || s[i2] == '\t') continue;
+                        mn[j++] = (char)tolower((unsigned char)s[i2]);
+                    }
+                    mn[j] = '\0';
+                    if (strcmp(mn, agent_norm) == 0) { catalog_hit = true; break; }
+                }
+            }
+        }
+        if (catalog_hit) return true;
+    }
+
+    const char *provider_model = json_get_str(entry, "model", "");
+    if (!provider_model || !provider_model[0]) {
+        /* No model filter and no catalog -> matches anything. */
+        return !(models && (models->type == JSON_OBJECT || models->type == JSON_ARRAY));
+    }
+    /* normalize provider_model */
+    char pm[256]; size_t j = 0;
+    for (size_t i = 0; provider_model[i] && j + 1 < sizeof(pm); i++) {
+        if (provider_model[i] == ' ' || provider_model[i] == '\t') continue;
+        pm[j++] = (char)tolower((unsigned char)provider_model[i]);
+    }
+    pm[j] = '\0';
+    return strcmp(pm, agent_norm) == 0;
 }
 
 /* Port of Python: _custom_provider_extra_body_for_agent */
-static __attribute__((unused)) json_t *custom_provider_extra_body_for_agent(
+json_t *custom_provider_extra_body_for_agent(
     const char *provider, const char *model, const char *base_url,
     const json_t *custom_providers) {
-    if (!provider || strcasecmp(provider, "custom") != 0) return NULL;
-    if (!base_url) return NULL;
+    char prov_norm[256];
+    {
+        const char *p = provider ? provider : "";
+        size_t j = 0;
+        for (size_t i = 0; p[i] && j + 1 < sizeof(prov_norm); i++) {
+            if (p[i] == ' ' || p[i] == '\t') continue;
+            prov_norm[j++] = (char)tolower((unsigned char)p[i]);
+        }
+        prov_norm[j] = '\0';
+    }
 
+    const char *filter = NULL;
+    if (strcmp(prov_norm, "custom") == 0) {
+        filter = "";
+    } else if (strncmp(prov_norm, "custom:", 7) == 0) {
+        filter = prov_norm + 7;
+        /* strip leading spaces */
+        while (*filter == ' ') filter++;
+    } else {
+        return NULL;
+    }
+
+    if (!base_url) return NULL;
     char *target_url = custom_normalized_base_url(base_url);
     if (!target_url || !target_url[0]) {
         free(target_url);
@@ -351,6 +425,31 @@ static __attribute__((unused)) json_t *custom_provider_extra_body_for_agent(
         const json_t *entry = json_get(custom_providers, i);
         if (!entry || entry->type != JSON_OBJECT) continue;
 
+        if (filter && filter[0]) {
+            const char *pk = json_get_str(entry, "provider_key", "");
+            const char *nm = json_get_str(entry, "name", "");
+            char pkn[256], nmn[256];
+            /* normalize pk */
+            {
+                size_t j = 0;
+                for (size_t k = 0; pk[k] && j + 1 < sizeof(pkn); k++) {
+                    if (pk[k] == ' ' || pk[k] == '\t') continue;
+                    pkn[j++] = (char)tolower((unsigned char)pk[k]);
+                }
+                pkn[j] = '\0';
+            }
+            {
+                size_t j = 0;
+                for (size_t k = 0; nm[k] && j + 1 < sizeof(nmn); k++) {
+                    if (nm[k] == ' ' || nm[k] == '\t') continue;
+                    nmn[j++] = (char)tolower((unsigned char)nm[k]);
+                }
+                nmn[j] = '\0';
+            }
+            if (strcmp(pkn, filter) != 0 && strcmp(nmn, filter) != 0)
+                continue;
+        }
+
         const char *entry_url_str = json_get_str(entry, "base_url", NULL);
         char *entry_url = entry_url_str ? custom_normalized_base_url(entry_url_str) : NULL;
         if (!entry_url) continue;
@@ -360,26 +459,26 @@ static __attribute__((unused)) json_t *custom_provider_extra_body_for_agent(
         if (!url_match) continue;
 
         const json_t *extra_body = json_object_get(entry, "extra_body");
-        if (extra_body && extra_body->type == JSON_OBJECT) {
-            const char *provider_model = json_get_str(entry, "model", "");
-            if (provider_model && provider_model[0]) {
-                if (custom_provider_model_matches(model, provider_model)) {
-                    free(target_url);
-                    return json_copy((json_t *)extra_body);
-                }
-            } else {
-                /* Save as fallback if no model filter */
-                if (!fallback)
-                    fallback = json_copy((json_t *)extra_body);
+        if (!extra_body || extra_body->type != JSON_OBJECT || extra_body->c.count == 0)
+            continue;
+
+        const char *provider_model = json_get_str(entry, "model", "");
+        if (provider_model && provider_model[0]) {
+            if (custom_provider_model_matches(model, entry)) {
+                free(target_url);
+                return json_copy((json_t *)extra_body);
             }
+        } else {
+            if (!fallback)
+                fallback = json_copy((json_t *)extra_body);
         }
     }
     free(target_url);
     return fallback;
 }
 
-/* Port of Python: _merge_custom_provider_extra_body */
-static __attribute__((unused)) json_t *custom_merge_extra_body(
+/* Port of Python: _merge_custom_provider_extra_body (pure merge variant). */
+json_t *custom_merge_extra_body(
     const char *provider, const char *model, const char *base_url,
     const json_t *custom_providers, const json_t *existing_extra_body) {
     json_t *extra_body = custom_provider_extra_body_for_agent(
@@ -389,7 +488,7 @@ static __attribute__((unused)) json_t *custom_merge_extra_body(
     if (!existing_extra_body || existing_extra_body->type != JSON_OBJECT)
         return extra_body;
 
-    /* Merge: start with extra_body, overlay existing overrides */
+    /* Merge: start with extra_body, overlay existing overrides. */
     json_t *merged = json_copy(extra_body);
     json_free(extra_body);
     if (!merged) return json_copy((json_t *)existing_extra_body);
