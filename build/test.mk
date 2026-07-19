@@ -383,13 +383,19 @@ test-cron-helpers: src/cron/port_cron_scheduler_helpers.o
 	    tests/test_cron_scheduler_helpers.c src/cron/port_cron_scheduler_helpers.o -o /tmp/t_cron_h 2>&1 \
 	    && /tmp/t_cron_h 2>&1 || echo "(cron helpers test failed)"
 
-# DM pairing store (faithful port of gateway/pairing.py).
+# hermes_cli/commands.py file_size_label (reused existing gateway_command_sanitize).
 test-gateway-cmd-sanitize: src/cli/gateway_command_sanitize.o
 	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib/libjson \
 	    tests/test_gateway_command_sanitize.c src/cli/gateway_command_sanitize.o lib/libjson/json.o -o /tmp/t_gwsan 2>&1 \
 	    && /tmp/t_gwsan 2>&1 || echo "(gateway cmd sanitize test failed)"
 
-test-pairing: src/gateway/pairing.o lib/libcrypto/crypto.o src/gateway/helpers.o lib/libjson/json.o
+# cua_backend.py pure parse helpers (image dims, tree split, key combo).
+test-cua-helpers: src/tools/port_cua_backend_helpers.o
+	@gcc -O2 -g -Wall -Wextra -I include -I src \
+	    tests/test_cua_backend_helpers.c src/tools/port_cua_backend_helpers.o -o /tmp/t_cua 2>&1 \
+	    && /tmp/t_cua 2>&1 || echo "(cua helpers test failed)"
+
+# DM pairing store (faithful port of gateway/pairing.py).
 	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib/libdb \
 	    tests/test_pairing.c src/gateway/pairing.o lib/libcrypto/crypto.o src/gateway/helpers.o lib/libjson/json.o -lcrypto -o /tmp/t_pair 2>&1 \
 	    && /tmp/t_pair 2>&1 || echo "(pairing test failed)"
