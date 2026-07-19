@@ -70,6 +70,18 @@ void account_usage_free_credits_view(credits_view_t *view);
 /* Free a snapshot returned by fetch_account_usage() */
 void account_usage_free(account_usage_snapshot_t *snap);
 
+/* === Pure helper ports (agent/account_usage.py) — oracle-verified === */
+
+/* Port of Python: _title_case_slug — "foo_bar-baz" -> "Foo Bar Baz" (returns
+ * NULL for empty/unset). Returns a pointer to a static buffer (NOT thread-safe). */
+const char *account_usage_title_case_slug(const char *value);
+
+/* Port of Python: _fmt_usd — f"${d:,.2f}" with thousands separators. */
+void account_usage_fmt_usd(double d, char *buf, size_t sz);
+
+/* Port of Python: _is_finite_num — real numeric (finite, not NaN/Inf). */
+bool account_usage_is_finite_num(double v);
+
 /* Render snapshot to display lines. Name parity.
  * Returns a NULL-terminated array of strings the caller must free.
  * Each line is a separate allocation. */
