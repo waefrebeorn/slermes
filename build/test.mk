@@ -357,6 +357,13 @@ test-verification: src/agent/verification_evidence.o
 	    -o /tmp/t_ve -lpthread -ldl -lm 2>&1 \
 	    && /tmp/t_ve 2>&1 || echo "(verification test failed)"
 
+# Per-profile Project store (faithful port of hermes_cli/projects_db.py).
+test-projects-db: src/hermes_cli/projects_db.o
+	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib/libdb \
+	    tests/test_projects_db.c src/hermes_cli/projects_db.o lib/libdb/sqlite3.o \
+	    -o /tmp/t_pdb -lpthread -ldl -lm 2>&1 \
+	    && /tmp/t_pdb 2>&1 || echo "(projects-db test failed)"
+
 # Combined check - lint, build, test suite
 check:
 	@echo "=== Check: lint ==="
