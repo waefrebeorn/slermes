@@ -60,6 +60,7 @@ void registry_init_yuanbao_tools(void);
 void registry_init_env_probe(void);
 void registry_init_skills_guard(void);
 void registry_init_curator_backup(void);
+void registry_init_close_terminal(void);
 
 /* ---- write-approval gate -> live memory tool (wiring layer) -------------
  * This belongs here (not in either port module) so neither port couples to
@@ -108,6 +109,7 @@ void tools_init_all(void) {
     sandbox_escape_init();
 
     registry_init_terminal();
+    registry_init_close_terminal();
     registry_init_file();
     registry_init_web();
     registry_init_skills();
@@ -213,6 +215,7 @@ void tools_init_all(void) {
     registry_set_toolset("cronjob", "cron");
     registry_set_toolset("cron_cmd", "cron");
     registry_set_toolset("memory", "memory");
+    registry_set_toolset("close_terminal", "terminal");
     registry_set_toolset("delegate_task", "delegate");
     registry_set_toolset("send_message", "send_message");
     registry_set_toolset("computer_use", "computer_use");

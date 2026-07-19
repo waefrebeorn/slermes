@@ -55,9 +55,21 @@ void registry_set_available_pattern(const char *pattern, bool available);
  * mark tools in this toolset as available/unavailable. */
 void registry_set_toolset_check_fn(const char *toolset, bool (*fn)(void));
 
+/* Per-tool availability check — register check_fn for a single tool (mirrors
+ * Python's per-tool check_fn on registry.register). Used by desktop-only tools
+ * like close_terminal that must not appear outside the GUI. */
+void registry_set_check_fn(const char *name, bool (*fn)(void));
+
 /* Refresh availability of all tools that have check_fn registered.
  * Caches results for 30 seconds (check_fn_last). */
 void registry_refresh_availability(void);
+
+/* Per-tool availability getter (mirrors Python registry.is_available). */
+bool registry_is_available(const char *name);
+
+/* Wildcard name matcher (e.g. "browser*" matches "browser_tool_eval").
+ * Exact match when pattern has no '*'; prefix match for "prefix*". */
+bool registry_name_matches(const char *name, const char *pattern);
 
 /* S14 gap #11: Deregister a tool by name. Used for MCP dynamic tool removal.
  * Returns true if tool was found and removed, false if not found. */

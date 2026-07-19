@@ -155,6 +155,12 @@ static void registry_init(void) {
     g_registry_initialized = true;
 }
 
+/* Public init (declared in process_registry.h) — idempotent. Allocates the
+ * session arrays + mutexes up front. Safe to call before any spawn/get. */
+void process_registry_init(void) {
+    registry_init();
+}
+
 static void session_init(ProcessSession *s, const char *id, const char *command,
                          const char *task_id, const char *session_key,
                          pid_t pid, const char *cwd, bool detached,
@@ -1016,4 +1022,40 @@ void process_registry_append_output(const char *session_id, const char *text) {
     ProcessSession *s = NULL;
     process_registry_get_session(session_id, &s);
     if (s) session_append_output(s, text, strlen(text));
+}
+
+/* ============================================================================
+ *  Close-terminal sink (tools/close_terminal_tool.py: request_close_terminal)
+ *  Desktop-only: the desktop gateway wires an on_close sink that emits a
+ *  terminal.close event. Outside the GUI (CLI / messaging) the sink is NULL
+ *  and close_terminal returns an error. The sink is injected, not hardcoded,
+ *  so this module stays self-contained.
+ * ========================================================================== */
+static void (*g_close_sink)(ProcessSession *session, const char *session_id) = NULL;
+
+void process_registry_set_close_sink(void (*sink)(ProcessSession *session, const char *session_id)) {
+    g_close_sink = sink;
+}
+
+/* PoP: request_close_terminal @ tools/process_registry.py:ProcessRegistry.request_close_terminal */
+char *process_registry_request_close_terminal(const char *session_id) {
+    if (!g_close_sink) {
+        return strdup("{\"status\":\"error\","
+                      "\"error\":\"close_terminal is only available in the Hermes desktop app.\"}");
+    }
+    /* A missing session is NOT an error: the tab can linger after the process
+     * finished/pruned, and closing it is still valid. */
+    ProcessSession *s = NULL;
+    process_registry_get_session(session_id, &s);
+    if (g_close_sink) {
+        g_close_sink(s, session_id);
+    }
+    char *out = malloc(512);
+    if (!out) return strdup("{\"status\":\"error\",\"error\":\"oom\"}");
+    snprintf(out, 512,
+        "{\"status\":\"ok\",\"closed\":\"%s\","
+        "\"note\":\"Closed the read-only terminal tab. The process was not killed; "
+        "its output remains available and the user can reopen the tab from the status stack.\"}",
+        session_id ? session_id : "");
+    return out;
 }

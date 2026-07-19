@@ -113,4 +113,13 @@ int process_registry_get_session(const char *session_id, ProcessSession **out);
 /* Append output to session */
 void process_registry_append_output(const char *session_id, const char *text);
 
+/* Close-terminal sink (tools/close_terminal_tool.py: request_close_terminal).
+ * The desktop gateway injects an on_close sink that emits a terminal.close
+ * event; NULL means close_terminal is unavailable (CLI / messaging). */
+typedef void (*process_registry_close_sink_t)(ProcessSession *session, const char *session_id);
+void process_registry_set_close_sink(process_registry_close_sink_t sink);
+/* Returns a malloc'd JSON string: {status:error,...} when no sink is wired,
+ * else {status:ok, closed:<id>, note:...}. Caller frees. */
+char *process_registry_request_close_terminal(const char *session_id);
+
 #endif /* HERMES_PROCESS_REGISTRY_H */
