@@ -395,6 +395,12 @@ test-cua-helpers: src/tools/port_cua_backend_helpers.o
 	    tests/test_cua_backend_helpers.c src/tools/port_cua_backend_helpers.o -o /tmp/t_cua 2>&1 \
 	    && /tmp/t_cua 2>&1 || echo "(cua helpers test failed)"
 
+# tools/url_safety.py pure helpers (sensitive query params, private-IP gate).
+test-url-safety-helpers: src/tools/port_url_safety_helpers.o
+	@gcc -O2 -g -Wall -Wextra -I include -I src \
+	    tests/test_url_safety_helpers.c src/tools/port_url_safety_helpers.o -o /tmp/t_urlsafe 2>&1 \
+	    && /tmp/t_urlsafe 2>&1 || echo "(url safety helpers test failed)"
+
 # DM pairing store (faithful port of gateway/pairing.py).
 	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib/libdb \
 	    tests/test_pairing.c src/gateway/pairing.o lib/libcrypto/crypto.o src/gateway/helpers.o lib/libjson/json.o -lcrypto -o /tmp/t_pair 2>&1 \
