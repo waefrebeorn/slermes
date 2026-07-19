@@ -364,6 +364,12 @@ test-projects-db: src/hermes_cli/projects_db.o
 	    -o /tmp/t_pdb -lpthread -ldl -lm 2>&1 \
 	    && /tmp/t_pdb 2>&1 || echo "(projects-db test failed)"
 
+# hermes debug helpers (faithful port of hermes_cli/debug.py pure logic).
+test-debug: src/hermes_cli/debug_cli.o src/agent/redact.o
+	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib/libdb \
+	    tests/test_debug_cli.c src/hermes_cli/debug_cli.o src/agent/redact.o -o /tmp/t_dbg 2>&1 \
+	    && /tmp/t_dbg 2>&1 || echo "(debug test failed)"
+
 # Combined check - lint, build, test suite
 check:
 	@echo "=== Check: lint ==="
