@@ -262,6 +262,14 @@ test-close-terminal-tool: src/tools/port_close_terminal_tool.o src/tools/process
 		-o /tmp/t_close_terminal 2>/dev/null \
 		&& /tmp/t_close_terminal 2>&1 || echo "(close terminal tool test failed)"
 
+# Registry enumeration + toolset-alias API (tools/registry.py ToolRegistry).
+test-registry-enum: src/tools/registry.o
+	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib $(LIB_INCS) tests/test_registry_enum.c \
+		src/tools/registry.o \
+		lib/libjson/json.o \
+		-o /tmp/t_reg_enum 2>/dev/null \
+		&& /tmp/t_reg_enum 2>&1 || echo "(registry enum test failed)"
+
 # Live wiring: the faithful memory_tool.py port registered as the "memory" tool.
 test-memory-tool-live: src/tools/port_memory_tool.o src/cli/port_tools_write_approval.o
 	@gcc -O2 -g -Wall -Wextra -Werror=implicit-function-declaration -I include -I lib/libjson -I lib $(LIB_INCS) tests/test_memory_tool_live.c \

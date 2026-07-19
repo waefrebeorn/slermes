@@ -83,6 +83,27 @@ const char *registry_get_emoji(const char *name, const char *default_emoji);
 /* S14 gap #16: Rich query API — check if any tool in a toolset is available */
 bool registry_is_toolset_available(const char *toolset);
 
+/* --- Toolset enumeration + alias API (port of Python ToolRegistry) --------- */
+
+/* Sorted unique toolset names present in the registry.
+ * Returns a NULL-terminated char* array; caller frees each + the array. */
+char **registry_get_registered_toolset_names(size_t *out_n);
+/* Sorted tool names registered under a given toolset. Caller frees. */
+char **registry_get_tool_names_for_toolset(const char *toolset, size_t *out_n);
+/* Sorted names of every registered tool. Caller frees. */
+char **registry_get_all_tool_names(size_t *out_n);
+/* {tool_name: toolset_name} JSON object for every registered tool. Caller frees. */
+char *registry_get_tool_to_toolset_map(void);
+/* Toolset a tool belongs to, or NULL (borrowed, do not free). */
+const char *registry_get_toolset_for_tool(const char *name);
+
+/* Register an explicit alias -> canonical toolset mapping (overwrites prior). */
+void registry_register_toolset_alias(const char *alias, const char *toolset);
+/* Canonical toolset name for an alias, or NULL (borrowed). */
+const char *registry_get_toolset_alias_target(const char *alias);
+/* JSON {"alias": "toolset"} snapshot of all alias mappings. Caller frees. */
+char *registry_get_registered_toolset_aliases(void);
+
 /* S14 gap #2: Tool Search bridge — search tools by keyword (name/description).
  * Returns JSON array of matching tool names, or ["error":"..."] on failure.
  * Caller must free the returned string. */
