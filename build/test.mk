@@ -395,6 +395,12 @@ test-cua-helpers: src/tools/port_cua_backend_helpers.o
 	    tests/test_cua_backend_helpers.c src/tools/port_cua_backend_helpers.o -o /tmp/t_cua 2>&1 \
 	    && /tmp/t_cua 2>&1 || echo "(cua helpers test failed)"
 
+# hermes_cli/checkpoints.py pure format helpers (bytes/age/timestamp).
+test-checkpoints-format: src/cli/port_checkpoints_format.o
+	@gcc -O2 -g -Wall -Wextra -I include -I src \
+	    tests/test_checkpoints_format.c src/cli/port_checkpoints_format.o -o /tmp/t_ckfmt 2>&1 \
+	    && /tmp/t_ckfmt 2>&1 || echo "(checkpoints format test failed)"
+
 # tools/url_safety.py pure helpers (sensitive query params, private-IP gate).
 test-url-safety-helpers: src/tools/port_url_safety_helpers.o
 	@gcc -O2 -g -Wall -Wextra -I include -I src \

@@ -66,6 +66,7 @@ PORT_OBJ = \
     src/cli/port_hermes_cli_models.o \
     src/cli/model_catalog.o \
     src/cli/port_hermes_cli_main_helpers.o \
+    src/cli/port_checkpoints_format.o \
     src/cli/port_hermes_cli_backup.o \
     src/cli/port_pty_clamp_helpers.o \
     src/cli/port_hermes_cli_gateway_platform.o \
