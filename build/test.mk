@@ -413,6 +413,12 @@ test-moa-trace-helpers: src/agent/port_moa_trace_helpers.o
 	    tests/test_moa_trace_helpers.c src/agent/port_moa_trace_helpers.o -o /tmp/t_moa 2>&1 \
 	    && /tmp/t_moa 2>&1 || echo "(moa trace helpers test failed)"
 
+# agent/pet/generate/prompts.py pure prompt builders (style/spacing/base/row).
+test-pet-prompts: src/pet/port_pet_prompts.o
+	@gcc -O2 -g -Wall -Wextra -I include -I src \
+	    tests/test_pet_prompts.c src/pet/port_pet_prompts.o -o /tmp/t_petprompts 2>&1 \
+	    && /tmp/t_petprompts 2>&1 || echo "(pet prompts test failed)"
+
 # DM pairing store (faithful port of gateway/pairing.py).
 	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib/libdb \
 	    tests/test_pairing.c src/gateway/pairing.o lib/libcrypto/crypto.o src/gateway/helpers.o lib/libjson/json.o -lcrypto -o /tmp/t_pair 2>&1 \
