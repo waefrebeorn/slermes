@@ -344,6 +344,13 @@ test-atlas: src/pet/atlas.o
 	    tests/test_atlas.c src/pet/atlas.o -o /tmp/t_atlas -lm 2>&1 \
 	    && /tmp/t_atlas 2>&1 || echo "(atlas test failed)"
 
+# Verification evidence ledger (faithful port of agent/verification_evidence.py).
+test-verification: src/agent/verification_evidence.o
+	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib/libdb \
+	    tests/test_verification_evidence.c src/agent/verification_evidence.o lib/libdb/db.o lib/libdb/sqlite3.o \
+	    -o /tmp/t_ve -lpthread -ldl -lm 2>&1 \
+	    && /tmp/t_ve 2>&1 || echo "(verification test failed)"
+
 # Combined check - lint, build, test suite
 check:
 	@echo "=== Check: lint ==="
