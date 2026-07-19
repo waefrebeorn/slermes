@@ -297,7 +297,7 @@ TOOLS_PORT_REGEN = src/tools/port_url_safety_helpers.o src/tools/port_patch_pars
 PHASE2_OBJ += $(AGENT_PORT_NEW) $(AGENT_PORT_REGEN)
 PHASE3_OBJ += $(TOOLS_PORT_NEW) $(TOOLS_PORT_REGEN)
 PHASE4_OBJ += $(GATEWAY_PORT_NEW) $(GATEWAY_PORT_REGEN)
-CRON_OBJ = src/cron/scheduler.o src/cron/jobs.o src/cron/cron_extras.o src/cron/cron_sqlite.o src/cron/cron_cli.o src/cron/port_cron_scheduler_provider.o src/cron/port_cron_scheduler_helpers.o src/cron/port_scheduler.o src/cron/cron_suggestions.o src/cron/suggestion_catalog.o src/cron/port_jobs.o src/cron/port_lifecycle_guard.o src/cron/port_cron_jobs.o
+CRON_OBJ = src/cron/scheduler.o src/cron/jobs.o src/cron/cron_extras.o src/cron/cron_sqlite.o src/cron/cron_cli.o src/cron/port_cron_scheduler_provider.o src/cron/port_cron_scheduler_helpers.o src/cron/port_scheduler.o src/cron/cron_suggestions.o src/cron/suggestion_catalog.o src/cron/port_jobs.o src/cron/port_lifecycle_guard.o src/cron/port_cron_jobs.o src/cron/port_classify_items.o
 
 # NOTE: the PHASE*_OBJ += lines above feed the standalone phase<N> targets only.
 # The `slermes` link line builds PHASE5_OBJ FRESH from the subsystem *_OBJ lists,

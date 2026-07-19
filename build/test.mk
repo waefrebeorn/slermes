@@ -419,6 +419,12 @@ test-pet-prompts: src/pet/port_pet_prompts.o
 	    tests/test_pet_prompts.c src/pet/port_pet_prompts.o -o /tmp/t_petprompts 2>&1 \
 	    && /tmp/t_petprompts 2>&1 || echo "(pet prompts test failed)"
 
+# cron/scripts/classify_items.py pure helpers (item id / prompt / score parse).
+test-classify-items: src/cron/port_classify_items.o lib/libjson/json.o
+	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib/libjson \
+	    tests/test_classify_items.c src/cron/port_classify_items.o lib/libjson/json.o -o /tmp/t_cls 2>&1 \
+	    && /tmp/t_cls 2>&1 || echo "(classify items test failed)"
+
 # DM pairing store (faithful port of gateway/pairing.py).
 	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib/libdb \
 	    tests/test_pairing.c src/gateway/pairing.o lib/libcrypto/crypto.o src/gateway/helpers.o lib/libjson/json.o -lcrypto -o /tmp/t_pair 2>&1 \
