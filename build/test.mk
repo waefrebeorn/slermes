@@ -420,6 +420,14 @@ test-context-compressor:
 	    | grep -E 'MISMATCH' && echo "(context_compressor oracle FAILED)" \
 	    || echo "context_compressor oracle: all cases MATCH"
 
+# TTS output-format resolution (faithful port of agent/tts_provider.py).
+# Oracle-verified: resolve_output_format clamps to {mp3,wav,ogg,opus,flac},
+# strips whitespace + case-insensitive, invalid -> mp3, vs LIVE Python.
+test-tts:
+	@bash tests/oracle/runners/run_oracle.sh tts 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(tts oracle FAILED)" \
+	    || echo "tts oracle: all cases MATCH"
+
 
 # hermes debug helpers (faithful port of hermes_cli/debug.py pure logic).
 test-debug: src/hermes_cli/debug_cli.o src/agent/redact.o

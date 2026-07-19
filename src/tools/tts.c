@@ -9,6 +9,7 @@
 #include "hermes_http.h"
 #include "hermes_tool_config.h"
 #include "hermes_tts_registry.h"
+#include "tts_provider.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -587,25 +588,27 @@ void tts_reset_for_tests(void) {
     g_tts_provider_count = 0;
 }
 
-/* Port of Python agent/tts_provider.py:resolve_output_format
- * Clamp an output_format value to the valid set.
- * Invalid values coerce to "mp3" (DEFAULT_OUTPUT_FORMAT).
- * Valid: mp3, wav, ogg, opus, flac. */
-static __attribute__((unused)) const char *resolve_output_format(const char *value)
+/* Port of Python agent/tts_provider.py:resolve_output_format()
+ * Clamp an output_format value to the valid set. Invalid values coerce to
+ * TTS_DEFAULT_FORMAT ("mp3"). Valid: mp3, wav, ogg, opus, flac.
+ * Mirrors Python's value.strip().lower() — leading/trailing whitespace is
+ * ignored before the membership check. */
+const char *tts_resolve_output_format(const char *value)
 {
-    if (!value || !value[0]) return strdup("mp3");
-
-    /* Normalise to lower case */
-    char buf[16];
-    size_t i;
-    for (i = 0; value[i] && i < sizeof(buf) - 1; i++)
-        buf[i] = (char)tolower((unsigned char)value[i]);
-    buf[i] = '\0';
-
-    if (strcmp(buf, "mp3") == 0) return strdup("mp3");
-    if (strcmp(buf, "wav") == 0) return strdup("wav");
-    if (strcmp(buf, "ogg") == 0) return strdup("ogg");
-    if (strcmp(buf, "opus") == 0) return strdup("opus");
-    if (strcmp(buf, "flac") == 0) return strdup("flac");
-    return strdup("mp3");
+    if (!value || !value[0]) return TTS_DEFAULT_FORMAT;
+    /* Skip leading whitespace, find end, strip trailing whitespace. */
+    while (*value == ' ' || *value == '\t' || *value == '\n' || *value == '\r')
+        value++;
+    if (!*value) return TTS_DEFAULT_FORMAT;
+    size_t len = strlen(value);
+    while (len > 0 &&
+           (value[len - 1] == ' ' || value[len - 1] == '\t' ||
+            value[len - 1] == '\n' || value[len - 1] == '\r'))
+        len--;
+    for (int i = 0; TTS_VALID_FORMATS[i]; i++) {
+        size_t flen = strlen(TTS_VALID_FORMATS[i]);
+        if (len == flen && strncasecmp(value, TTS_VALID_FORMATS[i], flen) == 0)
+            return TTS_VALID_FORMATS[i];
+    }
+    return TTS_DEFAULT_FORMAT;
 }

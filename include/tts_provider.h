@@ -161,14 +161,7 @@ static inline json_node_t *tts_default_stream(tts_provider_t *self,
  * ================================================================ */
 
 /* Port of Python agent/tts_provider.py:resolve_output_format(). */
-static inline const char *resolve_output_format(const char *value) {
-    if (!value || !value[0]) return TTS_DEFAULT_FORMAT;
-    for (int i = 0; TTS_VALID_FORMATS[i]; i++) {
-        if (strcasecmp(value, TTS_VALID_FORMATS[i]) == 0)
-            return TTS_VALID_FORMATS[i];
-    }
-    return TTS_DEFAULT_FORMAT;
-}
+const char *tts_resolve_output_format(const char *value);
 
 #ifdef __cplusplus
 }
