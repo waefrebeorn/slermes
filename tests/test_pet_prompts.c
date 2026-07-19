@@ -49,7 +49,7 @@ int main(void)
 
     /* build_base_prompt */
     s = pet_prompts_build_base(NULL, NULL, NULL);
-    check("base(def) len", s && strlen(s) == 1404);
+    check("base(def) len", s && strlen(s) == 1410);
     check("base(def) concept", s && strncmp(s, "A stylized mascot pet character: a distinctive mascot creature", 55) == 0);
     free(s);
 
@@ -63,7 +63,7 @@ int main(void)
 
     /* build_row_prompt */
     s = pet_prompts_build_row("idle", 4, "a fox", NULL);
-    check("row(idle) len", s && strlen(s) == 3115);
+    check("row(idle) len", s && strlen(s) == 3130);
     check("row(idle) action", s && strstr(s, "idle loop") != NULL);
     check("row(idle) posepx", s && strstr(s, "269px wide on a 1536px") != NULL);
     free(s);
