@@ -370,6 +370,12 @@ test-debug: src/hermes_cli/debug_cli.o src/agent/redact.o
 	    tests/test_debug_cli.c src/hermes_cli/debug_cli.o src/agent/redact.o -o /tmp/t_dbg 2>&1 \
 	    && /tmp/t_dbg 2>&1 || echo "(debug test failed)"
 
+# DM pairing store (faithful port of gateway/pairing.py).
+test-pairing: src/gateway/pairing.o lib/libcrypto/crypto.o src/gateway/helpers.o lib/libjson/json.o
+	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib/libdb \
+	    tests/test_pairing.c src/gateway/pairing.o lib/libcrypto/crypto.o src/gateway/helpers.o lib/libjson/json.o -lcrypto -o /tmp/t_pair 2>&1 \
+	    && /tmp/t_pair 2>&1 || echo "(pairing test failed)"
+
 # Combined check - lint, build, test suite
 check:
 	@echo "=== Check: lint ==="
