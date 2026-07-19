@@ -187,6 +187,7 @@ extern char                g_gw_log_path[GW_LOG_PATH_MAX];
 
     /* hook pipeline helpers (defined in server.c, used by gw_dispatch.c) */
     char *gw_apply_pre_send_hooks(const char *platform, const char *text);
+    char *gw_apply_post_receive_hooks(const char *platform, const char *chat_id, const char *text);
     char *gw_apply_interceptors(const char *platform, const char *chat_id, const char *text);
     char *gw_strip_all_formatting(const char *text);
     gw_platform_t *gw_platform_find(const char *name);
