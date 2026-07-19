@@ -369,8 +369,10 @@
 /* ✅ estimate_usage_cost() — usage_pricing.c:176 */
 /* ✅ get_pricing_entry() — usage_pricing.c */
 /* ✅ has_known_pricing() — usage_pricing.c */
-/* ✅ format_token_count_compact() — usage_pricing.c */
-/* ✅ normalize_usage() — usage_pricing.c */
+/* ✅ format_token_count_compact() — usage_pricing.c (usage_pricing_format_token_count) */
+/* ✅ normalize_usage() — usage_pricing.c (usage_pricing_normalize_usage, 3-way) */
+/* ✅ resolve_billing_route() — usage_pricing.c (usage_pricing_resolve_billing_route,
+ *    now live: nous/vertex/openai-codex routing + exact-host base_url matching) */
 
 /*
  * ══════════════════════════════════════════════════════════════
