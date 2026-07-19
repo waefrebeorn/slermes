@@ -395,6 +395,15 @@ test-read-extract:
 	    | grep -E 'MISMATCH' && echo "(read_extract oracle FAILED)" \
 	    || echo "read_extract oracle: all cases MATCH"
 
+# Usage pricing (faithful port of agent/usage_pricing.py).
+# Oracle-verified: normalize_usage (3-way), resolve_billing_route (nous/vertex/
+# openai-codex routing), format_token_count_compact, bedrock/anthropic model-name
+# normalization vs LIVE Python across 33 cases.
+test-usage-pricing:
+	@bash tests/oracle/runners/run_oracle.sh usage_pricing 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(usage_pricing oracle FAILED)" \
+	    || echo "usage_pricing oracle: all cases MATCH"
+
 
 # hermes debug helpers (faithful port of hermes_cli/debug.py pure logic).
 test-debug: src/hermes_cli/debug_cli.o src/agent/redact.o
