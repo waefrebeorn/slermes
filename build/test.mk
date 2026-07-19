@@ -443,6 +443,13 @@ test-session-listing: src/cli/port_session_listing.o lib/libjson/json.o
 	        tests/test_session_listing.c src/cli/port_session_listing.o lib/libjson/json.o -o /tmp/t_sl 2>&1 \
 	        && /tmp/t_sl 2>&1 || echo "(session listing test failed)"
 
+
+	    # tui_gateway/project_tree.py pure path/lane-id helpers.
+test-project-tree: src/cli/port_project_tree.o
+	    @gcc -O2 -g -Wall -Wextra -I include -I src -I lib -I lib/libjson \
+	        tests/test_project_tree.c src/cli/port_project_tree.o -o /tmp/t_pt 2>&1 \
+	        && /tmp/t_pt 2>&1 || echo "(project tree test failed)"
+
 	    # agent/lsp/range_shift.py pure helpers (diff-aware LSP line-shift map).
 test-lsp-range-shift: src/agent/port_lsp_range_shift.o lib/libjson/json.o
 	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib -I lib/libjson \
