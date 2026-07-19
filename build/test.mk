@@ -376,6 +376,13 @@ test-auth: src/hermes_cli/auth_helpers.o lib/libcrypto/crypto.o
 	    tests/test_auth_helpers.c src/hermes_cli/auth_helpers.o lib/libcrypto/crypto.o -lcrypto -o /tmp/t_auth 2>&1 \
 	    && /tmp/t_auth 2>&1 || echo "(auth test failed)"
 
+# cron/scheduler.py pure string helpers (_summarize_cron_failure_for_delivery,
+# _is_cron_silence_response, _normalize_deliver_value).
+test-cron-helpers: src/cron/port_cron_scheduler_helpers.o
+	@gcc -O2 -g -Wall -Wextra -I include -I src \
+	    tests/test_cron_scheduler_helpers.c src/cron/port_cron_scheduler_helpers.o -o /tmp/t_cron_h 2>&1 \
+	    && /tmp/t_cron_h 2>&1 || echo "(cron helpers test failed)"
+
 # DM pairing store (faithful port of gateway/pairing.py).
 test-pairing: src/gateway/pairing.o lib/libcrypto/crypto.o src/gateway/helpers.o lib/libjson/json.o
 	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib/libdb \
