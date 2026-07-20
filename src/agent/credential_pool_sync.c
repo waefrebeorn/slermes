@@ -8,6 +8,7 @@ No god headers — only the minimal includes each module requires. C11 only.
 
 #include "credential_pool.h"
 #include "credential_pool_internals.h"
+#include "credential_persistence.h"
 #include "hermes_json.h"
 #include "hermes_yaml.h"
 #include "hermes_auth.h"
@@ -373,7 +374,67 @@ void credential_pool_write_through_provider_state_to_global_root(const char *pro
     free(path);
 }
 
-/* PoP: agent/credential_pool.py:_sync_anthropic_entry_from_credentials_file */
+/* PoP: agent/credential_pool.py: _write_through_provider_state_to_global_root
+ * is the per-provider OAuth-state writer. This is the entry-array writer that
+ * mirrors Python's `[entry.to_dict() for entry in self._entries]` persistence
+ * (credential_pool.py:543): it serializes every pool entry through
+ * credential_entry_to_json() — which runs sanitize_borrowed_credential_payload
+ * — and stores the resulting array under providers.<provider> in auth.json.
+ * Best-effort; swallows all errors; skips under pytest. */
+void credential_pool_persist_entries(const credential_pool_t *pool) {
+    if (!pool || pool->entry_count <= 0) return;
+    if (getenv("PYTEST_CURRENT_TEST") || getenv("PYTEST_VERSION")) return;
+
+    char *entries_json = credential_pool_entries_json(pool);
+    if (!entries_json) return;
+
+    char *path = cp_auth_json_path();
+    if (!path) { free(entries_json); return; }
+
+    FILE *f = fopen(path, "r");
+    json_node_t *root = NULL;
+    if (f) {
+        fseek(f, 0, SEEK_END);
+        long sz = ftell(f);
+        fseek(f, 0, SEEK_SET);
+        char *buf = (char *)malloc(sz + 1);
+        if (buf) {
+            fread(buf, 1, sz, f);
+            buf[sz] = '\0';
+            char *err = NULL;
+            root = json_parse(buf, &err);
+            if (err) free(err);
+            free(buf);
+        }
+        fclose(f);
+    }
+    if (!root) root = json_object();
+    if (root->type != JSON_OBJECT) { json_free(root); free(entries_json); free(path); return; }
+
+    json_node_t *providers = json_obj_get(root, "providers");
+    if (!providers || providers->type != JSON_OBJECT) {
+        providers = json_object();
+        json_set(root, "providers", providers);
+    }
+
+    json_node_t *entries = json_parse(entries_json, NULL);
+    if (entries && entries->type == JSON_ARRAY) {
+        json_set(providers, pool->provider_name, entries);
+        char *ser = json_serialize_pretty(root, 2);
+        if (ser) {
+            FILE *out = fopen(path, "w");
+            if (out) { fputs(ser, out); fclose(out); }
+            free(ser);
+        }
+        /* entries is now owned by root; do not free separately. */
+    } else {
+        json_free(entries);
+    }
+    json_free(root);
+    free(entries_json);
+    free(path);
+}
+
 /* _sync_anthropic_entry_from_credentials_file — if the entry is an anthropic
  * claude_code entry, sync its tokens from ~/.claude/.credentials.json when they
  * differ. Mutates *e in place. Returns true if a sync was applied. */

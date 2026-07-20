@@ -153,6 +153,24 @@ int credential_pool_tick(credential_pool_t *pool);
 bool is_borrowed_credential_source(const char *source, const char *provider_id);
 json_node_t *sanitize_borrowed_credential_payload(const json_node_t *payload, const char *provider_id);
 
+/* Serialize one credential_entry_t to its disk-safe JSON object (port of
+ * Python CredentialEntry.to_dict() — runs sanitize_borrowed_credential_payload).
+ * Caller frees. */
+json_node_t *credential_entry_to_json(const credential_entry_t *e, const char *provider);
+
+/* JSON-in variant of credential_entry_to_json(): build the entry from a JSON
+ * object (load-path shape) and serialize it disk-safe. Reuses the above. */
+json_node_t *credential_entry_to_json_from_obj(const json_t *entry, const char *provider);
+
+/* Serialize all entries of a pool to the providers.<provider> entry-array JSON
+ * string Python writes to auth.json. Caller frees. */
+char *credential_pool_entries_json(const credential_pool_t *pool);
+
+/* Persist a pool's entries to auth.json's providers.<provider> array (the
+ * sanitized entry-array write path, mirroring Python's to_dict persistence).
+ * Best-effort; skips under pytest. */
+void credential_pool_persist_entries(const credential_pool_t *pool);
+
 /* === Prune control (port of Python credential_pool._is_prunable + module global) ===
  * `env:*` entries are re-hydrated from the environment on every load; a process
  * that merely lacks the env var must NOT delete the on-disk entry for every other
