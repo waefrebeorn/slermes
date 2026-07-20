@@ -12,6 +12,7 @@
 #include "hermes_cron.h"
 #include "hermes_skills.h"
 #include "hermes_json.h"
+#include "libyaml/yaml.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -376,9 +377,11 @@ static int extract_tar_gz(const char *archive_path, const char *dest_dir) {
 }
 
 /* Port of Python agent/curator_backup.py _load_config().
- * Loads curator.backup section from config.yaml.
- * Returns json_node_t* (caller must json_free), or NULL on error/missing. */
-static json_node_t *load_curator_backup_config(void) {
+ * Loads the curator.backup section from config.yaml using the real YAML
+ * parser (libyaml). Returns the parsed yaml_doc_t* (caller must yaml_free),
+ * or NULL when the file is missing / unparseable. Navigation uses dotted
+ * paths, exactly mirroring Python's load_config()['curator']['backup']. */
+static yaml_doc_t *load_curator_backup_config(void) {
     const char *home = getenv("HERMES_HOME");
     if (!home)
         home = getenv("HOME");
@@ -388,108 +391,34 @@ static json_node_t *load_curator_backup_config(void) {
     char cfg_path[PATH_MAX_LEN];
     snprintf(cfg_path, sizeof(cfg_path), "%s/.hermes/config.yaml", home);
 
-    FILE *f = fopen(cfg_path, "r");
-    if (!f)
-        return NULL;
-
-    fseek(f, 0, SEEK_END);
-    long size = ftell(f);
-    fseek(f, 0, SEEK_SET);
-
-    if (size <= 0) {
-        fclose(f);
-        return NULL;
-    }
-
-    char *buf = malloc((size_t)size + 1);
-    if (!buf) {
-        fclose(f);
-        return NULL;
-    }
-
-    size_t n = fread(buf, 1, (size_t)size, f);
-    fclose(f);
-    buf[n] = '\0';
-
-    /* Simple YAML-to-JSON: extract curator.backup section as JSON.
-     * In practice, we'd use a YAML parser; for now scan for the keys. */
-    json_node_t *config = json_new_object();
-    json_node_t *curator = json_new_object();
-    json_node_t *backup = json_new_object();
-
-    char *line = buf;
-    while (*line) {
-        char *nl = strchr(line, '\n');
-        if (nl) *nl = '\0';
-
-        /* Look for "enabled:" */
-        if (strstr(line, "enabled:") && !strstr(line, "#")) {
-            char *val = strstr(line, "enabled:") + 8;
-            while (*val == ' ' || *val == '\t') val++;
-            if (strncmp(val, "true", 4) == 0 || strncmp(val, "True", 4) == 0 ||
-                strncmp(val, "yes", 3) == 0 || strncmp(val, "1", 1) == 0) {
-                json_object_set(backup, "enabled", json_new_bool(true));
-            } else {
-                json_object_set(backup, "enabled", json_new_bool(false));
-            }
-        }
-
-        /* Look for "keep:" */
-        if (strstr(line, "keep:") && !strstr(line, "#")) {
-            char *val = strstr(line, "keep:") + 5;
-            while (*val == ' ' || *val == '\t') val++;
-            int keep = atoi(val);
-            if (keep > 0)
-                json_object_set(backup, "keep", json_new_number((double)keep));
-        }
-
-        if (nl) *nl = '\n';
-        line = nl ? nl + 1 : line + strlen(line);
-    }
-
-    json_object_set(curator, "backup", backup);
-    json_object_set(config, "curator", curator);
-
-    free(buf);
-    return config;
+    char *err = NULL;
+    yaml_doc_t *doc = yaml_parse_file(cfg_path, &err);
+    if (err) { free(err); return NULL; }
+    return doc; /* may be NULL if file missing */
 }
 
 /* Port of Python agent/curator_backup.py is_enabled().
  * Returns true if curator backup is enabled in config (default true). */
-static bool __attribute__((unused)) is_enabled(void) {
-    json_node_t *cfg = load_curator_backup_config();
-    if (!cfg)
+bool curator_backup_config_enabled(void) {
+    yaml_doc_t *doc = load_curator_backup_config();
+    if (!doc)
         return true; /* default ON */
 
-    json_node_t *curator = json_obj_get(cfg, "curator");
-    bool enabled = true;
-    if (curator) {
-        json_node_t *backup = json_obj_get(curator, "backup");
-        if (backup)
-            enabled = json_get_bool(backup, "enabled", true);
-    }
-    json_free(cfg);
+    bool enabled = yaml_get_bool(doc, "curator.backup.enabled", true);
+    yaml_free(doc);
     return enabled;
 }
 
 /* Port of Python agent/curator_backup.py get_keep().
- * AG26: Port of Python agent/curator_backup.py:get_keep()
- * AG26: Port of Python agent/curator_backup.py:snapshot_skills()
  * Returns the configured keep count (default 5, minimum 1). */
-static int __attribute__((unused)) get_keep(void) {
-    json_node_t *cfg = load_curator_backup_config();
-    if (!cfg)
+int curator_backup_config_keep(void) {
+    yaml_doc_t *doc = load_curator_backup_config();
+    if (!doc)
         return DEFAULT_KEEP;
 
-    json_node_t *curator = json_obj_get(cfg, "curator");
-    int keep = DEFAULT_KEEP;
-    if (curator) {
-        json_node_t *backup = json_obj_get(curator, "backup");
-        if (backup)
-            keep = (int)json_get_num(backup, "keep", (double)DEFAULT_KEEP);
-    }
-    json_free(cfg);
-    return keep < 1 ? DEFAULT_KEEP : keep;
+    int keep = yaml_get_int(doc, "curator.backup.keep", DEFAULT_KEEP);
+    yaml_free(doc);
+    return keep < 1 ? 1 : keep; /* Python: max(1, n) */
 }
 
 /* Port of Python agent/curator_backup.py:_count_skill_files(). */
