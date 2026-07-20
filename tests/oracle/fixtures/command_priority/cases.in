@@ -1,0 +1,44 @@
+# Fixture for Telegram menu prioritization (tests/t_port_command_priority.c).
+# cfg <json>  sets platforms.telegram.extra.command_menu for the case
+# entry name|desc|key   adds a command entry
+# ===  ends a case (flushes both 'priority' and 'sort' ops)
+#
+# All names are pre-sanitized (lowercase [a-z0-9_]) to match the harness.
+
+# === default: no config -> effective priority is the built-in list ===
+entry help|Help|k_help
+entry new|New|k_new
+entry obscure_cmd|Obscure|k_obs
+entry model|Model|k_model
+===
+
+# === prepend mode: configured priority first, then defaults ===
+cfg {"priority_mode":"prepend","priority":["mycmd","debug"]}
+entry mycmd|My|k_my
+entry help|Help|k_help
+entry debug|Debug|k_debug
+entry obscure|Obscure|k_obs
+===
+
+# === append mode: defaults first, then configured ===
+cfg {"priority_mode":"append","priority":["mycmd","debug"]}
+entry mycmd|My|k_my
+entry help|Help|k_help
+entry debug|Debug|k_debug
+entry obscure|Obscure|k_obs
+===
+
+# === replace mode: ONLY configured priority names ===
+cfg {"priority_mode":"replace","priority":["debug","mycmd"]}
+entry mycmd|My|k_my
+entry help|Help|k_help
+entry debug|Debug|k_debug
+entry obscure|Obscure|k_obs
+===
+
+# === configured names filtered through sanitize (upper -> lower, '-' -> '_') ===
+cfg {"priority_mode":"prepend","priority":["My-Cmd","Debug"]}
+entry my_cmd|My|k_my
+entry help|Help|k_help
+entry debug|Debug|k_debug
+===

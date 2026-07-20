@@ -591,6 +591,11 @@ test-command-clamp:
 	    | grep -E 'MISMATCH' && echo "(command_clamp oracle FAILED)" \
 	    || echo "command_clamp oracle: all cases MATCH"
 
+test-command-priority:
+	@bash tests/oracle/runners/run_oracle.sh command_priority 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(command_priority oracle FAILED)" \
+	    || echo "command_priority oracle: all cases MATCH"
+
 # Cron delivery / origin / mirror / routing helpers (faithful port of the PURE
 # config/routing transforms in cron/scheduler.py: _resolve_origin,
 # _cron_mirror_delivery_enabled, _target_matches_origin,
