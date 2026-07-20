@@ -1,0 +1,27 @@
+# Fixture for the DISK-SAFETY boundary sanitize_borrowed_credential_payload().
+# Format: sani <provider_id> <payload_json>
+#   - borrowed source (not manual, not in persistable set) -> strips secret
+#     keys, keeps metadata, adds secret_fingerprint (sha256:<16>).
+#   - owned source (manual / persistable) -> returned unchanged.
+#
+# Note: provider_id here is the *provider* context, while `source` inside the
+# payload drives the borrowed check (is_borrowed_credential_source(source, provider_id)).
+
+# === borrowed runtime secret: strip + fingerprint ===
+sani openai {"source":"oauth","provider":"openai","access_token":"supersecretvalue","refresh_token":"rt123","scope":"chat","client_id":"cid","last_status":"ok"}
+sani xai {"source":"loopback_pkce","agent_key":"ak-secret","token_type":"Bearer","expires_at":"2026"}
+
+# === borrowed with secret-named custom key ===
+sani nous {"source":"device_code","myCustom_api_key":"abc123","scope":"x","client_id":"y"}
+
+# === manual source: pass-through unchanged ===
+sani openai {"source":"manual","access_token":"should-stay","scope":"chat"}
+
+# === persistable (anthropic/hermes_pkce): pass-through unchanged ===
+sani anthropic {"source":"hermes_pkce","access_token":"owned-token","scope":"chat","client_id":"cid"}
+
+# === non-object input: null ===
+sani openai not-a-json-object
+
+# === borrowed but no secret field: strip nothing, no fingerprint ===
+sani openai {"source":"oauth","scope":"chat","client_id":"cid","last_status":"ok"}
