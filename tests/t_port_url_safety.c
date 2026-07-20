@@ -1,56 +1,91 @@
-/* t_port_url_safety.c — oracle harness for tools/url_safety.py query/redirect
- * helpers. Emits one JSON object per line: {"fn":..,"in":..,"out":..}. */
+/*
+ * t_port_url_safety.c — oracle harness for the PURE, deterministic helpers in
+ * src/cli/port_tools_url_safety.c (port of tools/url_safety.py).
+ *
+ * Oracle-viable subset (no DNS / network during the checked paths):
+ *   normalize   -> cli_tools_url_safety_normalize_url_for_request (pure)
+ *   blocked_ip  -> cli_tools_url_safety__is_blocked_ip (pure)
+ *   always_blocked -> cli_tools_url_safety_is_always_blocked_url
+ *                    (literal-IP + blocked-hostname paths only; hostname
+ *                     paths do getaddrinfo and are intentionally NOT oracled)
+ *
+ * One op per line; the harness exercises the REAL C functions and emits
+ * stable JSON (one object per line) that the Python oracle reproduces.
+ */
+
+#include "url_safety_cli.h"   /* cli_tools_url_safety_* decls */
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include "hermes_url_safety.h"
 
-static const char *js(const char *s) {
-    static char bufs[8][4096];
-    static int bi = 0;
-    char *b = bufs[bi]; bi = (bi + 1) % 8;
-    char *q = b; *q++ = '"';
-    for (const char *p = s; p && *p && q - b < 4000; p++) {
+/* emit a JSON string value (raw quotes) */
+static void emit_json_string(const char *s) {
+    if (!s) { printf("null"); return; }
+    putchar('"');
+    for (const char *p = s; *p; p++) {
         unsigned char c = (unsigned char)*p;
-        if (c == '"' || c == '\\') { *q++ = '\\'; *q++ = c; }
-        else if (c == '\n') { *q++ = '\\'; *q++ = 'n'; }
-        else *q++ = c;
+        switch (c) {
+            case '"':  printf("\\\""); break;
+            case '\\': printf("\\\\"); break;
+            case '\n': printf("\\n"); break;
+            case '\t': printf("\\t"); break;
+            case '\r': printf("\\r"); break;
+            default:
+                if (c < 0x20) printf("\\u%04x", c);
+                else putchar((int)c);
+        }
     }
-    *q++ = '"'; *q = '\0';
-    return b;
+    putchar('"');
 }
 
-static void emit_qp(const char *url) {
-    char *r = url_safety_sensitive_query_param_name(url);
-    printf("{\"fn\":\"qp\",\"in\":%s,\"out\":%s}\n", js(url ? url : ""), r ? js(r) : "null");
-    free(r);
-}
-static void emit_has(const char *url) {
-    int h = url_safety_has_sensitive_query_params(url);
-    printf("{\"fn\":\"has\",\"in\":%s,\"out\":%s}\n", js(url ? url : ""), h ? "true" : "false");
-}
-static void emit_redir(bool is_redirect, const char *cur, const char *loc, const char *nxt) {
-    char *r = url_safety_redirect_target_from_response(is_redirect, cur, loc, nxt);
-    printf("{\"fn\":\"redir\",\"in\":%s,\"is_redirect\":%s,\"loc\":%s,\"nxt\":%s,\"out\":%s}\n",
-           js(cur ? cur : ""), is_redirect ? "true" : "false",
-           js(loc ? loc : ""), js(nxt ? nxt : ""), r ? js(r) : "null");
-    free(r);
+/* split a line into op + rest (first space separates) */
+static void split_op(const char *line, char *op, size_t opsz, const char **rest) {
+    size_t i = 0;
+    while (*line && *line != ' ' && i + 1 < opsz) op[i++] = *line++;
+    op[i] = '\0';
+    if (*line == ' ') line++;
+    *rest = line;
 }
 
 int main(void) {
-    emit_qp("https://example.com/path?token=abc123&x=1");
-    emit_qp("https://example.com/?password=secret&user=bob");
-    emit_qp("https://example.com/?x=1");
-    emit_qp("https://example.com/?Token=abc");
-    emit_qp("ftp://example.com/?token=1");
-    emit_qp("https://example.com/noquery");
-    emit_qp("not a url");
-    emit_qp(NULL);
-    emit_qp("https://example.com/?secret="); /* value empty -> not sensitive */
-    emit_has("https://example.com/?apikey=zzz");
-    emit_has("https://example.com/?foo=bar");
-    emit_redir(true, "https://a.com/page", "/next", NULL);
-    emit_redir(true, "https://a.com/page", "https://b.com/abs", NULL);
-    emit_redir(false, "https://a.com/page", "/next", NULL);
-    emit_redir(true, "https://a.com/page", NULL, "https://c.com/final");
+    char line[8192];
+    while (fgets(line, sizeof(line), stdin)) {
+        size_t L = strlen(line);
+        while (L > 0 && (line[L-1] == '\n' || line[L-1] == '\r')) line[--L] = '\0';
+        if (!*line || line[0] == '#') continue;
+
+        char op[32];
+        const char *rest;
+        split_op(line, op, sizeof(op), &rest);
+
+        if (strcmp(op, "normalize") == 0) {
+            char buf[8192];
+            int rc = cli_tools_url_safety_normalize_url_for_request(
+                rest[0] ? rest : "", buf, sizeof(buf));
+            printf("{\"op\":\"normalize\",\"in\":");
+            emit_json_string(rest[0] ? rest : "");
+            printf(",\"out\":");
+            if (rc == 0) emit_json_string(buf);
+            else emit_json_string(rest[0] ? rest : "");  /* C returns -1; Python returns raw */
+            printf(",\"rc\":%d}\n", rc);
+
+        } else if (strcmp(op, "blocked_ip") == 0) {
+            int r = cli_tools_url_safety__is_blocked_ip(rest[0] ? rest : "");
+            printf("{\"op\":\"blocked_ip\",\"ip\":");
+            emit_json_string(rest[0] ? rest : "");
+            printf(",\"blocked\":%s}\n", r ? "true" : "false");
+
+        } else if (strcmp(op, "always_blocked") == 0) {
+            int r = cli_tools_url_safety_is_always_blocked_url(rest[0] ? rest : "");
+            printf("{\"op\":\"always_blocked\",\"url\":");
+            emit_json_string(rest[0] ? rest : "");
+            printf(",\"blocked\":%s}\n", r ? "true" : "false");
+
+        } else {
+            printf("{\"op\":\"unknown\",\"raw\":");
+            emit_json_string(line);
+            printf("}\n");
+        }
+    }
     return 0;
 }

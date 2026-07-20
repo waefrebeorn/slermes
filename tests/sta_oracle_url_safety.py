@@ -1,44 +1,86 @@
-"""sta_oracle_url_safety.py — oracle for tools/url_safety.py query/redirect
-helpers. Replays each harness line through the LIVE Python module and asserts
-equality with the C output (0 mismatches = pass)."""
-import sys, json, os
-sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
-import tools.url_safety as U
+#!/usr/bin/env python3
+"""
+sta_oracle_url_safety.py — Python oracle for the PURE, deterministic SSRF-safety
+helpers in tools/url_safety.py (mirrored by src/cli/port_tools_url_safety.c).
 
-def py_redir(is_redirect, cur, loc, nxt):
-    class N:
-        url = nxt
-    class R:
-        pass
-    r = R()
-    r.is_redirect = is_redirect
-    r.url = cur
-    r.headers = {"location": loc} if loc else {}
-    r.next_request = N() if nxt else None
-    return U.redirect_target_from_response(r)
+The oracle imports the REAL module and exercises the genuine functions:
+  - normalize_url_for_request        (pure string transform)
+  - _is_blocked_ip                   (pure IP classification)
+  - is_always_blocked_url            (literal-IP + blocked-hostname paths;
+                                      hostname-DNS paths are env-dependent and
+                                      intentionally NOT oracled here)
+  - is_safe_url is excluded (DNS resolution).
 
-mism = 0; n = 0
-for line in sys.stdin:
-    line = line.strip()
-    if not line.startswith("{"):
-        continue
-    rec = json.loads(line)
-    fn = rec["fn"]; inp = rec["in"]
-    if fn == "qp":
-        exp = U.sensitive_query_param_name(inp)
-        got = rec["out"]
-    elif fn == "has":
-        exp = bool(U.has_sensitive_query_params(inp))
-        got = (rec["out"] == "true")
-    elif fn == "redir":
-        exp = py_redir(rec.get("is_redirect") == "true", inp,
-                       rec.get("loc") or None, rec.get("nxt") or None)
-        got = rec["out"]
-    else:
-        continue
-    if exp != got:
-        mism += 1
-        print(f"MISMATCH fn={fn} in={inp!r} PY={exp!r} C={got!r}")
-    n += 1
-print(f"URL_SAFETY oracle: {n} cases, {mism} mismatches")
-sys.exit(1 if mism else 0)
+Output contract matches tests/t_port_url_safety.c: one JSON object per line,
+sorted keys, ensure_ascii=False (raw UTF-8), compact separators.
+"""
+
+import json
+import os
+import sys
+
+# Make the hermes-agent-dev tree importable.
+_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+if _ROOT not in sys.path:
+    sys.path.insert(0, _ROOT)
+
+from tools.url_safety import (  # noqa: E402
+    normalize_url_for_request,
+    _is_blocked_ip,
+    is_always_blocked_url,
+)
+
+import ipaddress  # noqa: E402
+
+
+def emit(obj):
+    sys.stdout.write(json.dumps(obj, separators=(",", ":"), ensure_ascii=False) + "\n")
+
+
+def split_op(line):
+    line = line.rstrip("\n")
+    if not line.strip() or line.startswith("#"):
+        return None
+    op, _, rest = line.partition(" ")
+    return op, rest
+
+
+def main():
+    for raw in sys.stdin:
+        parsed = split_op(raw)
+        if parsed is None:
+            continue
+        op, rest = parsed
+
+        if op == "normalize":
+            url = rest if rest else ""
+            try:
+                out = normalize_url_for_request(url)
+                rc = 0 if url.lower().startswith(("http://", "https://")) else -1
+            except Exception:
+                out = url
+                rc = -1
+            emit({"op": "normalize", "in": url, "out": out, "rc": rc})
+
+        elif op == "blocked_ip":
+            ip = rest if rest else ""
+            try:
+                blocked = bool(_is_blocked_ip(ipaddress.ip_address(ip)))
+            except ValueError:
+                # Python ipaddress rejects unparseable; the C side blocks those.
+                blocked = True
+            emit({"op": "blocked_ip", "ip": ip, "blocked": blocked})
+
+        elif op == "always_blocked":
+            url = rest if rest else ""
+            emit({"op": "always_blocked", "url": url,
+                  "blocked": bool(is_always_blocked_url(url))})
+
+        else:
+            emit({"op": "unknown", "raw": raw.rstrip("\n")})
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
