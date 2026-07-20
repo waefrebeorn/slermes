@@ -527,49 +527,19 @@ const char *setup_current_reasoning_effort(void) {
 /* Port of Python hermes_cli/setup.py:_supports_same_provider_pool_setup().
  * Returns true for providers that support multi-key rotation (a "same
  * provider pool"), i.e. those whose PROVIDER_REGISTRY entry has auth_type
- * in {api_key, oauth_device_code}. "custom" and "openrouter" are special
- * cases (custom never; openrouter always). Providers absent from the
- * registry are not supported. This is a direct translation of the canonical
- * lookup; the registry snapshot is checked for drift by the oracle
- * (tests/sta_oracle_*.py recomputes from the LIVE PROVIDER_REGISTRY). */
-bool config_setup_supports_same_provider_pool_setup(const char *provider) {
-    if (!provider || !*provider || strcmp(provider, "custom") == 0)
-        return false;
-    if (strcmp(provider, "openrouter") == 0)
-        return true;
+ * in {api_key, oauth_device_code}. "custom" -> never; "openrouter" -> always.
+ * Providers absent from the registry are not supported.
+ *
+ * The lookup is delegated to the self-contained C provider-auth registry
+ * (lib/libproviderauth) — no hardcoded snapshot here. The oracle
+ * (tests/sta_oracle_provider_pool_setup.py) diffs the C registry table
+ * against the LIVE Python PROVIDER_REGISTRY, so any drift is caught.
+ *
+ * Forward-declared to avoid pulling the registry module's header chain. */
+bool provider_auth_supports_pool(const char *provider);
 
-    /* PROVIDER_REGISTRY snapshot — 44 entries (sorted), keyed exactly like
-     * the live registry. Value: 1 if auth_type in {api_key, oauth_device_code}.
-     * Regenerated from the LIVE hermes_cli.auth.PROVIDER_REGISTRY; the oracle
-     * (tests/sta_oracle_provider_pool_setup.py) recomputes the same lookup
-     * and the runner diffs, so any drift is caught. */
-    static const char *const REG_KEYS[] = {
-        "alibaba", "alibaba-coding-plan", "anthropic", "arcee", "azure-foundry",
-        "bedrock", "copilot", "copilot-acp", "deep-infra", "deepinfra",
-        "deepinfra-ai", "deepseek", "fireworks", "fireworks-ai", "fw",
-        "gemini", "gmi", "huggingface", "kilocode", "kimi-coding",
-        "kimi-coding-cn", "lmstudio", "minimax", "minimax-cn", "minimax-oauth",
-        "nous", "novita", "novita-ai", "novitaai", "nvidia",
-        "ollama-cloud", "openai-api", "openai-codex", "opencode-go", "opencode-zen",
-        "qwen-oauth", "solar", "stepfun", "tencent-tokenhub", "upstage",
-        "xai", "xai-oauth", "xiaomi", "zai", NULL
-    };
-    static const bool REG_SUPPORTS[] = {
-        1, 1, 1, 1, 1,
-        0, 1, 0, 1, 1,
-        1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1,
-        1, 1, 1, 1, 0,
-        1, 1, 1, 1, 1,
-        1, 1, 0, 1, 1,
-        0, 1, 1, 1, 1,
-        1, 0, 1, 1
-    };
-    for (size_t i = 0; REG_KEYS[i]; i++) {
-        if (strcmp(provider, REG_KEYS[i]) == 0)
-            return REG_SUPPORTS[i];
-    }
-    return false;
+bool config_setup_supports_same_provider_pool_setup(const char *provider) {
+    return provider_auth_supports_pool(provider);
 }
 
 /* Port of Python hermes_cli/setup.py:_gateway_platform_short_label().
