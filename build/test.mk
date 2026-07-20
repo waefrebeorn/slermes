@@ -514,6 +514,23 @@ test-fuzzy-utils:
 	    | grep -E 'MISMATCH' && echo "(fuzzy_utils oracle FAILED)" \
 	    || echo "fuzzy_utils oracle: all cases MATCH"
 
+# V4A patch parser (patch_parser_parse_v4a) — behavior-contract oracle.
+test-patch-parser:
+	@bash tests/oracle/runners/run_oracle.sh patch_parser 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(patch_parser oracle FAILED)" \
+	    || echo "patch_parser oracle: all cases MATCH"
+
+# Schema sanitizer (schema_sanitizer) — behavior-contract oracle.
+test-schema-sanitizer:
+	@bash tests/oracle/runners/run_oracle.sh schema_sanitizer 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(schema_sanitizer oracle FAILED)" \
+	    || echo "schema_sanitizer oracle: all cases MATCH"
+
+test-fuzzy-match-helpers:
+	@bash tests/oracle/runners/run_oracle.sh fuzzy_match_helpers 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(fuzzy_match_helpers oracle FAILED)" \
+	    || echo "fuzzy_match_helpers oracle: all cases MATCH"
+
 # Microsoft Graph error extraction (msgraph_extract_error) — contract oracle.
 test-msgraph-error:
 	@bash tests/oracle/runners/run_oracle.sh msgraph_error 2>&1 \

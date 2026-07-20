@@ -1,0 +1,27 @@
+# Fixture for the PURE fuzzy-match string helpers
+# (tests/t_port_fuzzy_match_helpers.c). One op per line:
+#   norm <text>   unicode-normalize (fold to ASCII)
+#   lead <line>   count of leading whitespace
+#   first <text>  first non-blank line (or null)
+# \n / \t are literal backslash escapes decoded to real chars.
+
+# === unicode normalize: smart quotes, dashes, accents ===
+norm “curly quotes” and ‘single’
+norm em—dash and …ellipsis
+norm café already naïve résumé
+norm plain ascii stays
+norm mixed “café—naïve” text
+
+# === leading whitespace (spaces + tabs) ===
+lead    
+lead \t\ttabbed
+lead nolead
+lead   three spaces then text
+lead \n\tblank line then tab
+
+# === first meaningful line ===
+first \n\n   \nactual line here
+first \t\n  \nsecond real line
+first all\n\n\t\nblank
+first already meaningful
+first line one\nline two\nline three
