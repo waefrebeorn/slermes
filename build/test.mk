@@ -536,6 +536,18 @@ test-setup-probes:
 	    | grep -E 'MISMATCH' && echo "(setup_probes oracle FAILED)" \
 	    || echo "setup_probes oracle: all cases MATCH"
 
+# Cron delivery / origin / mirror / routing helpers (faithful port of the PURE
+# config/routing transforms in cron/scheduler.py: _resolve_origin,
+# _cron_mirror_delivery_enabled, _target_matches_origin,
+# _is_known_delivery_platform, _resolve_home_env_var, _get_home_target_chat_id,
+# _get_home_target_thread_id, _iter_home_target_platforms, cron_delivery_targets,
+# _expand_routing_tokens, _resolve_single_delivery_target(s)). Contract oracle
+# over REAL env-driven home channels. No mocks.
+test-cron-delivery:
+	@bash tests/oracle/runners/run_oracle.sh cron_delivery 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(cron_delivery oracle FAILED)" \
+	    || echo "cron_delivery oracle: all cases MATCH"
+
 # hermes debug helpers (faithful port of hermes_cli/debug.py pure logic).
 test-debug: src/hermes_cli/debug_cli.o src/agent/redact.o
 	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib/libdb \

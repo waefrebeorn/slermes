@@ -1,0 +1,97 @@
+# cron_delivery oracle fixtures — exercise cron/scheduler.py delivery/origin/
+# mirror/routing helpers. Each op is independent; home channels are set via the
+# *_HOME_CHANNEL env vars the Python accessors read.
+#
+# ops:
+#   origin <platform> <chat_id> [thread_id]
+#   clear_origin
+#   mirror <attach_present> [attach_val] [global]
+#   known_platform <name>
+#   home_env <name>
+#   home_chat <name> [chat_id]            (sets/unsets <ENV>)
+#   home_thread <name> [thread_id]        (sets/unsets <ENV>_THREAD_ID)
+#   register_plugin <name> <env_var>
+#   expand <token>
+#   resolve_one <deliver_value>
+#   resolve_all <deliver_csv>
+#   delivery_targets <connected_csv>
+#   match_origin <platform> <chat_id> [thread_id]
+
+# --- origin resolution ---
+origin telegram -100123 17
+match_origin telegram -100123 17
+match_origin telegram -100123
+match_origin discord -100123 17
+clear_origin
+match_origin telegram -100123 17
+
+# --- mirror precedence (per-job beats global) ---
+origin telegram -1001
+mirror 1 1 0
+mirror 1 0 1
+mirror 0 0 1
+mirror 0 0 0
+
+# --- known delivery platforms ---
+known_platform telegram
+known_platform webhook
+known_platform notarealplatform
+known_platform homeassistant
+
+# --- home env var resolution ---
+home_env telegram
+home_env qqbot
+home_env matrix
+
+# --- home chat id set/unset (telegram) ---
+home_chat telegram -100987
+home_chat telegram
+home_chat discord DISCORDROOM42
+home_chat discord
+
+# --- home thread id (telegram override + generic) ---
+home_thread telegram 555
+home_thread telegram
+home_thread slack SLACKTHREAD9
+home_thread slack
+
+# --- plugin registration (C-only contract; oracle echoes) ---
+register_plugin myplugin MYPLUGIN_HOME_CHANNEL
+known_platform myplugin
+home_env myplugin
+
+# --- routing token expansion: set a few home channels, expand "all" ---
+home_chat telegram -100abc
+home_chat discord DISCORDROOM1
+home_chat slack SLACKROOM1
+expand all
+expand telegram
+expand notatoken
+
+# --- single delivery target resolution ---
+origin telegram -100origin
+resolve_one local
+resolve_one origin
+resolve_one telegram
+resolve_one telegram:-555:9
+resolve_one nope:-1
+resolve_one notarealplatform
+
+# --- multiple delivery targets (csv + "all" token, dedup) ---
+origin telegram -100origin
+home_chat telegram -100abc
+home_chat discord DISCORDROOM1
+resolve_all origin
+resolve_all telegram,discord
+resolve_all all
+resolve_all origin,all
+resolve_all local
+resolve_all origin,telegram
+
+# --- UI-facing delivery targets (connected set) ---
+home_chat telegram -100abc
+home_chat discord DISCORDROOM1
+home_chat slack SLACKROOM1
+delivery_targets telegram,discord,slack,signal
+delivery_targets telegram
+delivery_targets signal
