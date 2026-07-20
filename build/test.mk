@@ -446,6 +446,16 @@ test-provider-custom:
 	    || echo "provider_custom oracle: all cases MATCH"
 
 
+# Shared multi-user session classification (faithful port of
+# gateway/session.py:is_shared_multi_user_session). Oracle-verified: C struct
+# gw_session_source_t {chat_type, thread_id} + two bool flags diffed line-by-line
+# against the LIVE gateway/session.py with a SessionSource built from the same
+# fields, across 19 cases (dm/group/channel/thread x per-user flags).
+test-shared-session:
+	@bash tests/oracle/runners/run_oracle.sh shared_session 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(shared_session oracle FAILED)" \
+	    || echo "shared_session oracle: all cases MATCH"
+
 # Provider "same provider pool" support (faithful port of
 # hermes_cli/setup.py:_supports_same_provider_pool_setup). Oracle-verified:
 # the C PROVIDER_REGISTRY snapshot (44 keys, regenerated from the LIVE
