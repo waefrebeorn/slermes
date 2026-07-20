@@ -566,6 +566,11 @@ test-credential-sanitize:
 	    | grep -E 'MISMATCH' && echo "(credential_sanitize oracle FAILED)" \
 	    || echo "credential_sanitize oracle: all cases MATCH"
 
+test-credential-entry-to-json:
+	@bash tests/oracle/runners/run_oracle.sh credential_entry_to_json 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(credential_entry_to_json oracle FAILED)" \
+	    || echo "credential_entry_to_json oracle: all cases MATCH"
+
 # Microsoft Graph error extraction (msgraph_extract_error) — contract oracle.
 test-msgraph-error:
 	@bash tests/oracle/runners/run_oracle.sh msgraph_error 2>&1 \

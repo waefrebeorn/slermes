@@ -1,0 +1,26 @@
+# Fixture for the DISK-SAFE entry serializer credential_entry_to_json()
+# (port of agent/credential_pool.py:PooledCredential.to_dict() + sanitize).
+#
+# One JSON object per line: {"provider":.., "entry":{...credential_entry_t fields}}
+#
+# Behavioral parity: C emits the secret/identity fields it carries, then runs
+# sanitize. Borrowed sources strip secrets + add secret_fingerprint;
+# owned (manual) sources pass through.
+
+# === borrowed runtime secret: strip + fingerprint ===
+{"provider":"openai","entry":{"source":"oauth","label":"prod","access_token":"supersecretvalue","refresh_token":"rt123","scope":"chat","agent_key":"ak"}}
+
+# === borrowed with custom secret-suffix key in extra ===
+{"provider":"nous","entry":{"source":"device_code","label":"n","extra":{"myCustom_api_key":"abc123"},"scope":"x"}}
+
+# === manual (owned): pass-through, secrets kept ===
+{"provider":"openai","entry":{"source":"manual","label":"m","access_token":"should-stay","scope":"chat"}}
+
+# === persistable anthropic/hermes_pkce: pass-through ===
+{"provider":"anthropic","entry":{"source":"hermes_pkce","label":"h","access_token":"owned-token","scope":"chat"}}
+
+# === borrowed but no secret field: no fingerprint added ===
+{"provider":"openai","entry":{"source":"oauth","label":"n","scope":"chat","base_url":"https://api.openai.com/v1"}}
+
+# === borrowed with api_key secret: strip + fingerprint ===
+{"provider":"xai","entry":{"source":"loopback_pkce","label":"x","api_key":"sk-secret","scope":"chat"}}
