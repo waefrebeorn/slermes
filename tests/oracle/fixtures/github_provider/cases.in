@@ -1,0 +1,17 @@
+# Fixture for github_provider_for (tests/t_port_github_provider.c).
+# One owner/repo per line. Case-insensitive; unknown repos -> null.
+
+openai/skills
+anthropics/skills
+huggingface/skills
+nvidia/skills
+voltagent/awesome-agent-skills
+garrytan/gstack
+minimax-ai/cli
+OpenAI/Skills
+NVIDIA/skills
+HuggingFace/Skills
+unknown/repo
+foo/bar
+openai/skills 
+nvidia/skills\t
