@@ -1,84 +1,82 @@
 #!/usr/bin/env python3
-"""Oracle: prove C cron_prompt_sanitize == LIVE tools/cronjob_tools.py.
-
-Reads JSON lines {fn,in,out} from stdin (emitted by t_port_cron_prompt_sanitize),
-recomputes the SAME function from the live Python module, and asserts equality.
-Calls the REAL Python functions (no re-implementation). Exits 1 on mismatch.
-
-  gcc -O2 -I include -I src/tools t_port_cron_prompt_sanitize.c \
-      src/tools/cron_prompt_sanitize.o lib/libjson/json.o -o /tmp/t_cps
-  /tmp/t_cps | python3 sta_oracle_cron_prompt_sanitize.py
 """
+sta_oracle_cron_prompt_sanitize.py — Python oracle for the PURE cron-prompt
+sanitization helpers in tools/cronjob_tools.py (_check_invisible_unicode,
+_strip_invisible_unicode, _scan_cron_skill_assembled), ported in
+src/tools/cron_prompt_sanitize.c.
+
+Imports the REAL tools.cronjob_tools module and exercises the genuine
+functions. Output contract matches tests/t_port_cron_prompt_sanitize.c: one
+JSON object per line, sorted keys, ensure_ascii=False, compact separators.
+Invisible codepoints / emoji are token-encoded in the fixture and decoded here
+identically to the C harness.
+"""
+
 import json
-import sys
 import os
+import sys
 
-REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-sys.path.insert(0, REPO)
-import tools.cronjob_tools as py
+_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+if _ROOT not in sys.path:
+    sys.path.insert(0, _ROOT)
 
-
-def py_check_invisible(prompt: str) -> str:
-    return py._check_invisible_unicode(prompt)
-
-
-def py_strip_invisible(prompt: str):
-    # Live fn returns (cleaned, removed_list). Normalize to C's shape:
-    # C emits {"cleaned":str, "removed":["U+XXXX",...]} (removed sorted).
-    cleaned, removed = py._strip_invisible_unicode(prompt)
-    return json.dumps({"cleaned": cleaned, "removed": sorted(removed)}, sort_keys=True)
+from tools.cronjob_tools import (  # noqa: E402
+    _check_invisible_unicode,
+    _strip_invisible_unicode,
+    _scan_cron_skill_assembled,
+)
 
 
-def py_scan_skill(prompt: str):
-    cleaned, error = py._scan_cron_skill_assembled(prompt)
-    return json.dumps({"cleaned": cleaned, "error": error}, sort_keys=True)
+def emit(obj):
+    sys.stdout.write(json.dumps(obj, separators=(",", ":"), ensure_ascii=False) + "\n")
 
 
-EXPECT = {
-    "check_invisible_unicode": lambda i: py_check_invisible(i),
-    "strip_invisible_unicode": py_strip_invisible,
-    "scan_cron_skill_assembled": py_scan_skill,
-}
+def dec(s):
+    """Decode fixture tokens into real characters (mirror of C harness)."""
+    if s is None:
+        return ""
+    s = s.replace("@ZWSP@", "​")   # U+200B
+    s = s.replace("@ZWJ@", "​")    # U+200D
+    s = s.replace("@ZWNJ@", "​")   # U+200C
+    s = s.replace("@BOM@", "﻿")    # U+FEFF
+    s = s.replace("@LTR@", "‎")    # U+200E
+    s = s.replace("@RLM@", "‏")    # U+200F
+    s = s.replace("@EMO@", "😀")  # U+1F600
+    return s
 
-total = 0
-mismatches = 0
-for line in sys.stdin:
-    line = line.strip()
-    if not line:
-        continue
-    rec = json.loads(line)
-    fn, in_s, out_s = rec["fn"], rec["in"], rec["out"]
-    try:
-        exp = EXPECT[fn](in_s)
-    except Exception as e:  # noqa: BLE001
-        print(f"PYTHON ERROR {fn} in={in_s!r}: {e}")
-        mismatches += 1
-        total += 1
-        continue
-    total += 1
 
-    # check_invisible_unicode returns a plaintext Blocked/empty message. When the
-    # input holds multiple invisible codepoints (e.g. bidi U+202E + U+202C), Python
-    # iterates a *set* whose order depends on PYTHONHASHSEED, so the exact codepoint
-    # in the message is nondeterministic. The faithful invariant is "did it block?":
-    # both C and Python must agree on blocked-vs-clean for the SAME input.
-    if fn == "check_invisible_unicode":
-        c_blocked = "Blocked: prompt contains invisible unicode" in (out_s or "")
-        p_blocked = "Blocked: prompt contains invisible unicode" in (exp or "")
-        if c_blocked != p_blocked:
-            mismatches += 1
-            print(f"MISMATCH {fn} in={in_s!r}\n  C  ={out_s!r}\n  PY ={exp!r}")
-        continue
+def split_kv(line):
+    line = line.rstrip("\n")
+    if not line.strip() or line.startswith("#"):
+        return None
+    op, _, rest = line.partition(" ")
+    return op, rest
 
-    # Structural comparison: both C `out` and Python `exp` are JSON strings.
-    try:
-        c_json = json.loads(out_s) if out_s else None
-        p_json = json.loads(exp) if exp else None
-    except Exception:
-        c_json, p_json = out_s, exp
-    if c_json != p_json:
-        mismatches += 1
-        print(f"MISMATCH {fn} in={in_s!r}\n  C  ={out_s!r}\n  PY ={exp!r}")
 
-print(f"{total} cases, {mismatches} mismatches")
-sys.exit(1 if mismatches else 0)
+def main():
+    for raw in sys.stdin:
+        parsed = split_kv(raw)
+        if parsed is None:
+            continue
+        op, rest = parsed
+        v = dec(rest) if rest else ""
+
+        if op == "check":
+            emit({"op": "check", "in": v, "error": _check_invisible_unicode(v)})
+
+        elif op == "strip":
+            cleaned, removed = _strip_invisible_unicode(v)
+            emit({"op": "strip", "in": v, "cleaned": cleaned, "removed": removed})
+
+        elif op == "scan":
+            cleaned, error = _scan_cron_skill_assembled(v)
+            emit({"op": "scan", "in": v, "cleaned": cleaned, "error": error})
+
+        else:
+            emit({"op": "unknown", "raw": raw.rstrip("\n")})
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
