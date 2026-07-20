@@ -1,108 +1,90 @@
 /*
- * t_port_file_text_ops.c — oracle harness for the extracted file_text_ops
- * module (v551). Calls each public fn over a fixture set and emits one JSON
- * line per (fn, input): {"fn":...,"in":...,"out":...}. A companion Python
- * script proves C == LIVE tools/file_operations.py.
- *
- * Build:
- *   gcc -O2 -I include -I src/tools -I lib/libjson \
- *       tests/t_port_file_text_ops.c src/tools/file_text_ops.o \
- *       lib/libjson/json.o -o /tmp/t_fto
+ * t_port_file_text_ops.c — oracle harness for the PURE text helpers in
+ * src/tools/file_text_ops.c (ports of tools/file_operations.py via
+ * ShellFileOperations): file_ops_escape_shell_arg, file_ops_add_line_numbers.
+ * Deterministic string transforms (no IO / network).
  */
-#include "file_text_ops.h"
-#include "hermes_json.h"
+
+#include "tools/file_text_ops.h"
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-#include <stdarg.h>
+#include <string.h>
 
-/* Minimal hermes_log stub */
-void hermes_log(int level, const char *module, const char *fmt, ...)
-{ (void)level; (void)module; (void)fmt; }
-
-static void emit_str(const char *fn, const char *in, const char *out)
-{
-    printf("{\"fn\":\"%s\",\"in\":\"", fn);
-    const char *p = in ? in : "";
-    while (*p) {
-        unsigned char c = (unsigned char)*p++;
-        if (c == '"' || c == '\\') { putchar('\\'); putchar(c); }
-        else if (c < 0x20) printf("\\u%04x", c);
-        else putchar(c);
+static void emit_json_string(const char *s) {
+    if (!s) { printf("null"); return; }
+    putchar('"');
+    for (const char *p = s; *p; p++) {
+        unsigned char c = (unsigned char)*p;
+        switch (c) {
+            case '"':  printf("\\\""); break;
+            case '\\': printf("\\\\"); break;
+            case '\n': printf("\\n"); break;
+            case '\t': printf("\\t"); break;
+            default:
+                if (c < 0x20) printf("\\u%04x", c);
+                else putchar((int)c);
+        }
     }
-    printf("\",\"out\":\"");
-    const char *q = out ? out : "";
-    while (*q) {
-        unsigned char c = (unsigned char)*q++;
-        if (c == '"' || c == '\\') { putchar('\\'); putchar(c); }
-        else if (c < 0x20) printf("\\u%04x", c);
-        else putchar(c);
-    }
-    printf("\"}\n");
+    putchar('"');
 }
 
-static void emit_json(const char *fn, const char *in, const char *out)
-{
-    printf("{\"fn\":\"%s\",\"in\":\"", fn);
-    const char *p = in ? in : "";
-    while (*p) { unsigned char c=(unsigned char)*p++; if(c=='"'||c=='\\'){putchar('\\');putchar(c);} else if(c<0x20) printf("\\u%04x",c); else putchar(c); }
-    printf("\",\"out\":%s}\n", out ? out : "{}");
+static void split_kv(const char *line, char *key, size_t ksz, const char **val) {
+    size_t i = 0;
+    while (*line && *line != ' ' && i + 1 < ksz) key[i++] = *line++;
+    key[i] = '\0';
+    if (*line == ' ') line++;
+    *val = line;
 }
 
-int main(void)
-{
-    /* strip_terminal_fence_leaks */
-    const char *ansi = "\033[31mred\033[0m";
-    const char *osc = "\033]0;title\007";
-    const char *fence = "__HERMES_FENCE_abc__\nsome line\n";
-    emit_str("strip_terminal_fence_leaks", ansi, file_text_ops_strip_terminal_fence_leaks(ansi));
-    emit_str("strip_terminal_fence_leaks", osc, file_text_ops_strip_terminal_fence_leaks(osc));
-    emit_str("strip_terminal_fence_leaks", fence, file_text_ops_strip_terminal_fence_leaks(fence));
+/* Decode \n / \t tokens (mirror of Python oracle). */
+static char *decode_nl(const char *in) {
+    if (!in) return NULL;
+    size_t n = strlen(in);
+    char *out = malloc(n + 1);
+    if (!out) return NULL;
+    size_t oi = 0;
+    for (size_t i = 0; i < n; ) {
+        if (strncmp(in + i, "\\n", 2) == 0) { out[oi++] = '\n'; i += 2; }
+        else if (strncmp(in + i, "\\t", 2) == 0) { out[oi++] = '\t'; i += 2; }
+        else out[oi++] = in[i++];
+    }
+    out[oi] = '\0';
+    return out;
+}
 
-    /* detect_line_ending */
-    emit_str("detect_line_ending", "a\r\nb", file_text_ops_detect_line_ending("a\r\nb"));
-    emit_str("detect_line_ending", "a\nb", file_text_ops_detect_line_ending("a\nb"));
-    emit_str("detect_line_ending", "a\rb", file_text_ops_detect_line_ending("a\rb"));
-    emit_str("detect_line_ending", "noeol", file_text_ops_detect_line_ending("noeol"));
+int main(void) {
+    char line[16384];
+    while (fgets(line, sizeof(line), stdin)) {
+        size_t L = strlen(line);
+        while (L > 0 && (line[L-1] == '\n' || line[L-1] == '\r')) line[--L] = '\0';
+        if (!*line || line[0] == '#') continue;
 
-    /* normalize_line_endings */
-    emit_str("normalize_line_endings", "a\r\nb\r\nc", file_text_ops_normalize_line_endings("a\r\nb\r\nc", "\n"));
-    emit_str("normalize_line_endings", "a\rb\rc", file_text_ops_normalize_line_endings("a\rb\rc", "\r\n"));
-    emit_str("normalize_line_endings", "a\nb", file_text_ops_normalize_line_endings("a\nb", "\r\n"));
+        char op[40];
+        const char *rest;
+        split_kv(line, op, sizeof(op), &rest);
+        const char *v = rest[0] ? rest : "";
 
-    /* strip_bom / has_bom */
-    emit_str("strip_bom", "\xEF\xBB\xBFhello", file_text_ops_strip_bom("\xEF\xBB\xBFhello"));
-    emit_str("strip_bom", "hello", file_text_ops_strip_bom("hello"));
-    emit_str("has_bom", "\xEF\xBB\xBFx", file_text_ops_has_bom("\xEF\xBB\xBFx") ? "1" : "0");
-    emit_str("has_bom", "x", file_text_ops_has_bom("x") ? "1" : "0");
-
-    /* add_line_numbers (max_line_length=2000 to mirror Python get_max_line_length) */
-    emit_str("add_line_numbers", "a\nb\nc", file_text_ops_add_line_numbers("a\nb\nc", 1, 2000));
-    emit_str("add_line_numbers", "", file_text_ops_add_line_numbers("", 1, 2000));
-    char longline[200];
-    for (int i = 0; i < 199; i++) longline[i] = 'x'; longline[199] = '\0';
-    char *ln = file_text_ops_add_line_numbers(longline, 1, 2000);
-    emit_str("add_line_numbers_trunc", longline, ln);
-    free(ln);
-
-    /* expand_path: shells out to $HOME in Python; C uses $HOME env var.
-     * Not oracle-verified (backend-dependent) — kept as a smoke call. */
-    char *ep = file_text_ops_expand_path("~/.config");
-    emit_str("expand_path", "~/.config", ep);
-    free(ep);
-
-    /* escape_shell_arg */
-    emit_str("escape_shell_arg", "plain", file_text_ops_escape_shell_arg("plain"));
-    emit_str("escape_shell_arg", "it's", file_text_ops_escape_shell_arg("it's"));
-    emit_str("escape_shell_arg", NULL, file_text_ops_escape_shell_arg(NULL));
-
-    /* parse_search_context_line (grep/rg path-line-content) */
-    char *pcl = file_text_ops_parse_search_context_line("src/foo.c-12-context here");
-    emit_json("parse_search_context_line", "src/foo.c-12-context here", pcl);
-    free(pcl);
-    char *pcl2 = file_text_ops_parse_search_context_line("src/foo.c:12: bar");
-    emit_json("parse_search_context_line_none", "src/foo.c:12: bar", pcl2);
-    free(pcl2);
-
+        if (strcmp(op, "escape") == 0) {
+            char *out = file_text_ops_escape_shell_arg(v);
+            printf("{\"op\":\"escape\",\"in\":");
+            emit_json_string(v); printf(",\"out\":");
+            emit_json_string(out ? out : "");
+            printf("}\n");
+            free(out);
+        } else if (strcmp(op, "linenum") == 0) {
+            char *d = decode_nl(v);
+            char *out = file_text_ops_add_line_numbers(d ? d : "", 1, 0);
+            printf("{\"op\":\"linenum\",\"in\":");
+            emit_json_string(d ? d : "");
+            printf(",\"out\":");
+            emit_json_string(out ? out : "");
+            printf("}\n");
+            free(out); free(d);
+        } else {
+            printf("{\"op\":\"unknown\",\"raw\":");
+            emit_json_string(line);
+            printf("}\n");
+        }
+    }
     return 0;
 }
