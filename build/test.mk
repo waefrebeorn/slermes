@@ -551,6 +551,11 @@ test-url-safety:
 	    | grep -E 'MISMATCH' && echo "(url_safety oracle FAILED)" \
 	    || echo "url_safety oracle: all cases MATCH"
 
+test-file-ops-pure:
+	@bash tests/oracle/runners/run_oracle.sh file_ops_pure 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(file_ops_pure oracle FAILED)" \
+	    || echo "file_ops_pure oracle: all cases MATCH"
+
 # Cron delivery / origin / mirror / routing helpers (faithful port of the PURE
 # config/routing transforms in cron/scheduler.py: _resolve_origin,
 # _cron_mirror_delivery_enabled, _target_matches_origin,
