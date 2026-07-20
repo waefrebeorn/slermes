@@ -1,0 +1,26 @@
+# Fixture for the PURE command-name sanitizers (tests/t_port_command_sanitize.c).
+# One op per line: telegram <raw>  or  slack <raw>.
+
+# === telegram: lowercase, - -> _, keep [a-z0-9_], collapse _, strip _ ===
+telegram My-Cool_Skill
+telegram Hello World!
+telegram --leading-dashes--
+telegram ___many___underscores___
+telegram UPPER123
+telegram a-b-c-d
+telegram 
+telegram mix/of\bad/chars#@!
+telegram already_valid_name
+telegram Name.With.Dots.And-Spaces
+
+# === slack: lowercase, keep [a-z0-9_-], strip -/_ from ends, cap 32 ===
+slack My-Cool-Skill
+slack Hello World!
+slack --leading-dashes--
+slack ___many___underscores___
+slack UPPER123
+slack a-b-c-d
+slack 
+slack mix/of\bad/chars#@!
+slack this-is-a-very-long-slack-command-name-that-exceeds-the-limit-of-thirty-two-characters-xxxx
+slack -_-weird-_-edges-_-
