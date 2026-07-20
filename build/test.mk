@@ -536,6 +536,16 @@ test-setup-probes:
 	    | grep -E 'MISMATCH' && echo "(setup_probes oracle FAILED)" \
 	    || echo "setup_probes oracle: all cases MATCH"
 
+test-kanban-helpers:
+	@bash tests/oracle/runners/run_oracle.sh kanban_helpers 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(kanban_helpers oracle FAILED)" \
+	    || echo "kanban_helpers oracle: all cases MATCH"
+
+test-run-pure-helpers:
+	@bash tests/oracle/runners/run_oracle.sh run_pure 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(run_pure oracle FAILED)" \
+	    || echo "run_pure oracle: all cases MATCH"
+
 # Cron delivery / origin / mirror / routing helpers (faithful port of the PURE
 # config/routing transforms in cron/scheduler.py: _resolve_origin,
 # _cron_mirror_delivery_enabled, _target_matches_origin,
