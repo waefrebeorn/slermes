@@ -446,6 +446,17 @@ test-provider-custom:
 	    || echo "provider_custom oracle: all cases MATCH"
 
 
+# Provider "same provider pool" support (faithful port of
+# hermes_cli/setup.py:_supports_same_provider_pool_setup). Oracle-verified:
+# the C PROVIDER_REGISTRY snapshot (44 keys, regenerated from the LIVE
+# registry) is diffed line-by-line against the live
+# hermes_cli.auth.PROVIDER_REGISTRY auth_type lookup, incl. custom/openrouter
+# special cases and unknown providers -> false.
+test-provider-pool-setup:
+	@bash tests/oracle/runners/run_oracle.sh provider_pool_setup 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(provider_pool_setup oracle FAILED)" \
+	    || echo "provider_pool_setup oracle: all cases MATCH"
+
 # Curator backup config (faithful port of agent/curator_backup.py
 # is_enabled/get_keep). Oracle-verified: real YAML (libyaml) navigation of
 # curator.backup.enabled (default true) and .keep (default 5, floor 1),

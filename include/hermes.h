@@ -265,5 +265,21 @@ bool is_spawn_paused(void);
 
 /** @} */ /* end of hermes group */
 
+/* ------------------------------------------------------------------ */
+/* CLI config-setup helpers (src/cli/config_setup.c — ports of         */
+/* hermes_cli/setup.py).                                               */
+/* ------------------------------------------------------------------ */
+
+/* Gateway platform short label: strip trailing parenthetical qualifier.
+ * Returns malloc'd string (caller frees). Port of setup.py:
+ * _gateway_platform_short_label. */
+char *setup_gateway_platform_short_label(const char *label);
+
+/* Whether a provider supports multi-key "same provider pool" rotation.
+ * Port of setup.py:_supports_same_provider_pool_setup. True for providers
+ * whose auth_type is api_key/oauth_device_code (custom/openrouter handled
+ * as special cases; unknown providers -> false). */
+bool config_setup_supports_same_provider_pool_setup(const char *provider);
+
 #endif /* HERMES_H */
 
