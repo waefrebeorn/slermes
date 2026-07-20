@@ -551,6 +551,11 @@ test-skills-guard:
 	    | grep -E 'MISMATCH' && echo "(skills_guard oracle FAILED)" \
 	    || echo "skills_guard oracle: all cases MATCH"
 
+test-tool-search:
+	@bash tests/oracle/runners/run_oracle.sh tool_search 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(tool_search oracle FAILED)" \
+	    || echo "tool_search oracle: all cases MATCH"
+
 # Microsoft Graph error extraction (msgraph_extract_error) — contract oracle.
 test-msgraph-error:
 	@bash tests/oracle/runners/run_oracle.sh msgraph_error 2>&1 \

@@ -1,0 +1,23 @@
+# Fixture for the PURE tool-search helpers (tests/t_port_tool_search.c).
+# One op per line:
+#   tok <text>    _tokenize (lowercased alphanumeric tokens)
+#   est <json>    estimate_tokens_from_schemas (compact JSON; chars/4, ceil)
+# \n is a literal backslash-n decoded to a real newline.
+
+# === tokenize: punctuation/underscore/camelCase handling ===
+tok Hello World
+tok foo_bar_baz
+tok camelCaseToken
+tok GetUserByID_2
+tok  mixed WORDS with   extra   spaces
+tok a1b2c3!
+tok (paren) [bracket] {brace}
+tok UPPER.lower.kebab-case_and/slash
+tok empty
+tok 123 456 789
+
+# === estimate: compact JSON schema token counts (chars/4, ceil) ===
+est {"name":"get_weather","description":"fetch weather","parameters":{"type":"object","properties":{"city":{"type":"string"}}}}
+est {"name":"x","description":"","parameters":{}}
+est {}
+est {"name":"a","description":"b","parameters":{"type":"object","properties":{"p":{"type":"string"},"q":{"type":"number"}}}}
