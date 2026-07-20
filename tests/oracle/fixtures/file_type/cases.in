@@ -1,0 +1,38 @@
+# Fixture for the PURE file-type detection helpers (tests/t_port_file_type.c).
+# One op per line: image <path>  or  binary <path>.
+# Extension-only rule (case-insensitive). .pdf is NOT binary (text). .ico IS image.
+
+# === images (.ico included) ===
+image photo.png
+image pic.JPEG
+image icon.ico
+image animated.gif
+image logo.webp
+image snap.bmp
+
+# === binaries (various classes) ===
+binary prog.exe
+binary lib.so
+binary archive.zip
+binary movie.mp4
+binary song.mp3
+binary doc.docx
+binary data.sqlite3
+binary model.bin
+binary font.ttf
+binary page.pdf
+
+# === neither (text / source) ===
+binary notes.txt
+binary script.py
+binary readme.md
+binary config.json
+binary data.csv
+image code.c
+image notes.txt
+image script.py
+
+# === no extension / dotfile ===
+binary Makefile
+image .gitignore
+binary path/with/noext
