@@ -288,7 +288,7 @@ typedef struct {
  *  Agent State
  * ================================================================ */
 
-/* Forward declaration for file_mutation_tracker_t (defined in hermes_gap_fixes.h) */
+/* Forward declaration for file_mutation_tracker_t (defined in file_mutation_verifier.h) */
 typedef struct file_mutation_tracker_t file_mutation_tracker_t;
 
 typedef struct {

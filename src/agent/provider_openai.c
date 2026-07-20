@@ -9,7 +9,7 @@
 #include "provider.h"
 #include "hermes_portal_tags.h"
 #include "provider_metadata.h"
-#include "hermes_gap_fixes.h"
+#include "api_error_summary.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

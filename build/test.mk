@@ -571,6 +571,19 @@ test-credential-entry-to-json:
 	    | grep -E 'MISMATCH' && echo "(credential_entry_to_json oracle FAILED)" \
 	    || echo "credential_entry_to_json oracle: all cases MATCH"
 
+# API error summarizer (summarize_api_error) — contract oracle vs run_agent._summarize_api_error.
+test-api-error-summary:
+	@bash tests/oracle/runners/run_oracle.sh api_error_summary 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(api_error_summary oracle FAILED)" \
+	    || echo "api_error_summary oracle: all cases MATCH"
+
+# File-mutation verifier (tracker init/record/format_footer) — contract oracle vs
+# run_agent._record_file_mutation_result + _format_file_mutation_failure_footer.
+test-file-mutation-verifier:
+	@bash tests/oracle/runners/run_oracle.sh file_mutation_verifier 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(file_mutation_verifier oracle FAILED)" \
+	    || echo "file_mutation_verifier oracle: all cases MATCH"
+
 # Microsoft Graph error extraction (msgraph_extract_error) — contract oracle.
 test-msgraph-error:
 	@bash tests/oracle/runners/run_oracle.sh msgraph_error 2>&1 \

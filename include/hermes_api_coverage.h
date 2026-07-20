@@ -238,15 +238,12 @@
  *  MEMORY
  * ══════════════════════════════════════════════════════════════
  *
- * memory_manager.py → hermes_gap_fixes.c + memory_provider.c
+ * memory_manager.py → port_agent_memory_manager.c + port_memory_manager_helpers.c
+ *   (the fabricated hermes_gap_fixes.c + memory_manager.c façade were removed:
+ *    they were no-op stubs duplicating the real ports above).
  */
 
-/* ✅ memory_manager_init() — hermes_gap_fixes.c:483 */
-/* ✅ memory_manager_load() — hermes_gap_fixes.c:491 */
-/* ✅ memory_manager_save() — hermes_gap_fixes.c (stub, calls agent_save_session) */
-/* ✅ memory_manager_search() — hermes_gap_fixes.c:499 */
-/* ✅ memory_manager_delete() — hermes_gap_fixes.c:509 */
-/* ✅ memory_manager_list() — hermes_gap_fixes.c:517 */
+/* ✅ MemoryManager.* — port_agent_memory_manager.c + port_memory_manager_helpers.c */
 /* ✅ memory_search() — memory_provider.c (via hermes_memory.h) */
 /* ✅ memory_format_snapshot() — memory_provider.c (via hermes_memory.h) */
 

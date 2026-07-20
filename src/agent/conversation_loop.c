@@ -26,7 +26,8 @@
 #include "hermes_url_safety.h"
 #include "hermes_tool_guardrails.h"
 #include "acp/edit_approval.h"
-#include "hermes_gap_fixes.h"
+#include "todo_hydrate.h"
+#include "file_mutation_verifier.h"
 #include "provider_metadata.h"
 #include <stdio.h>
 #include <stdlib.h>
