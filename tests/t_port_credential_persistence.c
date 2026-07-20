@@ -6,6 +6,7 @@
  */
 
 #include "credential_persistence.h"
+#include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -63,6 +64,20 @@ int main(void) {
         } else if (strcmp(op, "fp") == 0) {
             char *fp = fingerprint_value(v);
             printf("{\"op\":\"fp\",\"in\":");
+            emit_json_string(v);
+            printf(",\"out\":");
+            if (fp) emit_json_string(fp);
+            else printf("null");
+            printf("}\n");
+            free(fp);
+        } else if (strcmp(op, "fpj") == 0) {
+            /* v is a JSON object literal; fingerprint its secret fields. */
+            char *err = NULL;
+            json_t *payload = json_parse(v, &err);
+            free(err);
+            char *fp = payload ? credential_secret_fingerprint(payload) : NULL;
+            json_free(payload);
+            printf("{\"op\":\"fpj\",\"in\":");
             emit_json_string(v);
             printf(",\"out\":");
             if (fp) emit_json_string(fp);
