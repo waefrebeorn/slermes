@@ -66,6 +66,7 @@ typedef struct {
     char title[256];
     char description[1024];
     char source_url[512];
+    char provider[64];     /* matches Python SkillMeta.extra.provider */
     char category[64];
     char tags[1024];        /* comma-separated */
     char recommended_method[32];
@@ -144,6 +145,8 @@ char *skills_hub_summary(void);
 /* v323: Multi-source support — register well-known static skills */
 bool skills_hub_register_static(const hub_skill_meta_t *skills, int count, const char *source_id);
 int  skills_hub_unified_search(const char *query, hub_skill_meta_t *results, int limit);
+/* Pure: keep only results whose provider matches (exact, case-insensitive). */
+bool hub_filter_results_by_provider(hub_skill_meta_t *results, int count, const char *provider);
 int  skills_hub_source_count(void);
 const char *skills_hub_source_name(int index);
 

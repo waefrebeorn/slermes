@@ -1,0 +1,37 @@
+# Fixture for hub_filter_results_by_provider (tests/t_port_skills_hub_filter.c).
+# entry slug|name|provider   (provider optional)
+# filter <provider>          sets the filter for the next '===' case
+# ===                      flushes the case
+
+# === exact match on provider field ===
+entry skill-a|Skill A|nvidia
+entry skill-b|Skill B|openai
+entry skill-c|Skill C|anthropic
+entry skill-d|Skill D|nvidia
+filter nvidia
+===
+
+# === case-insensitive ===
+entry s1|One|NVIDIA
+entry s2|Two|OpenAI
+filter nvidia
+===
+
+# === substring in source_url but NOT provider must NOT match (faithful fix) ===
+entry log|Nvidia Logs|nvidia
+entry nlog|NvidiaLogSource|nvidia
+entry other|Other|anthropic
+filter nvidialogs
+===
+
+# === empty provider entries never match a non-empty filter ===
+entry e1|E1|
+entry e2|E2|openai
+filter openai
+===
+
+# === filter with surrounding whitespace is stripped ===
+entry w1|W1|huggingface
+entry w2|W2|openai
+filter   HUGGINGFACE  
+===

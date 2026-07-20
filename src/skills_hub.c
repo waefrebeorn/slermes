@@ -140,6 +140,15 @@ static hub_skill_meta_t parse_skill_item(json_node_t *item) {
     meta.install_count = (int)json_get_num(item, "installCount", 0);
     meta.needs_proxy = json_get_bool(item, "proxies", false);
 
+    /* Provider: Python reads r.extra.get("provider"). The catalog JSON nests
+     * it under "extra" (object) or may carry a top-level "provider". */
+    const char *prov = NULL;
+    json_node_t *extra = json_obj_get(item, "extra");
+    if (extra && extra->type == JSON_OBJECT)
+        prov = json_get_str(extra, "provider", NULL);
+    if (!prov) prov = json_get_str(item, "provider", NULL);
+    if (prov) snprintf(meta.provider, sizeof(meta.provider), "%s", prov);
+
     return meta;
 }
 
@@ -1322,13 +1331,31 @@ char *hub_bundle_content_hash(const hub_bundle_file_t *files, size_t count) {
 /* PoP: hub_filter_results_by_provider @ tools/skills_hub.py:_filter_results_by_provider */
 bool hub_filter_results_by_provider(hub_skill_meta_t *results, int count, const char *provider) {
     if (!results || count <= 0 || !provider) return false;
+    /* Python: keep r where str((r.extra or {}).get("provider","")).lower()
+     * == provider.strip().lower(). Exact, case-insensitive match on the
+     * dedicated provider field (NOT a substring scan of source_url). */
+    char want[64];
+    size_t wi = 0;
+    for (const char *p = provider; *p && wi + 1 < sizeof(want); p++) {
+        if (*p == ' ' || *p == '\t') continue;  /* strip whitespace */
+        want[wi++] = (char)tolower((unsigned char)*p);
+    }
+    want[wi] = '\0';
+
     int kept = 0;
     for (int i = 0; i < count; i++) {
-        /* Check if source_url contains provider - simplified since C doesn't have SkillMeta.extra */
-        if (results[i].source_url[0] && strstr(results[i].source_url, provider) != NULL) {
-            if (kept != i) results[kept] = results[i];
-            kept++;
-        }
+        const char *pp = results[i].provider;
+        if (!pp || !pp[0]) continue;
+        /* case-insensitive compare (provider field is already lowercase-ish,
+         * but normalize to be safe) */
+        size_t pl = strlen(pp);
+        if (pl != wi) continue;
+        bool eq = true;
+        for (size_t k = 0; k < pl; k++)
+            if (tolower((unsigned char)pp[k]) != want[k]) { eq = false; break; }
+        if (!eq) continue;
+        if (kept != i) results[kept] = results[i];
+        kept++;
     }
     return kept > 0;
 }
