@@ -83,6 +83,13 @@ const char *google_oauth_get_client_id(void);
 /* Port of Python: _get_client_secret */
 const char *google_oauth_get_client_secret(void);
 
+/* Port of Python: _require_client_id (env GOOGLE_CLIENT_ID, else default). */
+const char *require_client_id(void);
+
+/* Port of Python: _get_client_secret (raw; env GOOGLE_CLIENT_SECRET
+ * overrides the compiled-in default). */
+const char *get_client_secret(void);
+
 /* Port of Python: exchange_code.
  * Wraps oauth_exchange_code() from token_exchange.c.
  * Returns allocated token, or NULL on failure. */

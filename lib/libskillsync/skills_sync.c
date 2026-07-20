@@ -319,17 +319,11 @@ int skills_sync_remove_tree(const char *path)
 
 /* ─── Skill discovery ────────────────────────────────────── */
 
-/* Callback for discovering SKILL.md files */
-typedef struct {
-    char names[SKILLS_SYNC_MAX_ENTRIES][SKILLS_SYNC_MAX_NAME];
-    char dirs[SKILLS_SYNC_MAX_ENTRIES][SKILLS_SYNC_MAX_PATH];
-    int count;
-    const char *bundled_dir;
-} discover_ctx_t;
+/* discover_ctx_t is declared in lib/libskillsync/skills_sync.h */
 
 static discover_ctx_t g_discover_ctx __attribute__((unused));
 
-static void _discover_skills_in_dir(const char *dir_path, discover_ctx_t *ctx)
+void _discover_skills_in_dir(const char *dir_path, discover_ctx_t *ctx)
 {
     DIR *d = opendir(dir_path);
     if (!d) return;

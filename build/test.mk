@@ -498,6 +498,34 @@ test-msg-sanitize-surrogates:
 	    | grep -E 'MISMATCH' && echo "(msg_sanitize_surrogates oracle FAILED)" \
 	    || echo "msg_sanitize_surrogates oracle: all cases MATCH"
 
+# fuzzymatch utilities (count_lines / trim_right) — behavior-contract oracle.
+test-fuzzy-utils:
+	@bash tests/oracle/runners/run_oracle.sh fuzzy_utils 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(fuzzy_utils oracle FAILED)" \
+	    || echo "fuzzy_utils oracle: all cases MATCH"
+
+# Microsoft Graph error extraction (msgraph_extract_error) — contract oracle.
+test-msgraph-error:
+	@bash tests/oracle/runners/run_oracle.sh msgraph_error 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(msgraph_error oracle FAILED)" \
+	    || echo "msgraph_error oracle: all cases MATCH"
+
+# Skill discovery (_discover_skills_in_dir) — contract oracle over a synthetic
+# skill tree (real opendir walk, no mocks).
+test-skills-discover:
+	@bash tests/oracle/runners/run_oracle.sh skills_discover 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(skills_discover oracle FAILED)" \
+	    || echo "skills_discover oracle: all cases MATCH"
+
+# Provider/model setup probes (espeak / xai / reasoning_effort / model_config_dict
+# / model_section_has_credentials / google_oauth require_client_id+client_secret)
+# — contract oracle over REAL inputs (controlled PATH, real env vars, a real
+# hermes_config_t). No mocks.
+test-setup-probes:
+	@bash tests/oracle/runners/run_oracle.sh setup_probes 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(setup_probes oracle FAILED)" \
+	    || echo "setup_probes oracle: all cases MATCH"
+
 # hermes debug helpers (faithful port of hermes_cli/debug.py pure logic).
 test-debug: src/hermes_cli/debug_cli.o src/agent/redact.o
 	@gcc -O2 -g -Wall -Wextra -I include -I src -I lib/libdb \

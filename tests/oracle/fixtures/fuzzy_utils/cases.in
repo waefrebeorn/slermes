@@ -1,0 +1,11 @@
+lines	
+lines	hello
+lines	line1
+line2
+line3
+lines	  trailing spaces only   
+trim	hello world   
+trim	  indented with trailing   
+trim	no trailing
+trim	
+trim	  multiple   spaces   here   
