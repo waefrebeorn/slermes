@@ -536,6 +536,11 @@ test-tool-output-limits:
 	    | grep -E 'MISMATCH' && echo "(tool_output_limits oracle FAILED)" \
 	    || echo "tool_output_limits oracle: all cases MATCH"
 
+test-path-security:
+	@bash tests/oracle/runners/run_oracle.sh path_security 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(path_security oracle FAILED)" \
+	    || echo "path_security oracle: all cases MATCH"
+
 # Microsoft Graph error extraction (msgraph_extract_error) — contract oracle.
 test-msgraph-error:
 	@bash tests/oracle/runners/run_oracle.sh msgraph_error 2>&1 \
