@@ -135,7 +135,7 @@ static char *re_xml_text_content(const char *start, const char *end)
 static const char *g_extractable[] = { ".ipynb", ".docx", ".xlsx", NULL };
 
 /* PoP: _extension @ tools/read_extract.py:_extension */
-static const char *read_extract_extension(const char *path)
+const char *read_extract_extension(const char *path)
 {
     if (!path) return "";
     const char *dot = strrchr(path, '.');

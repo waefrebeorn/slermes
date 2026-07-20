@@ -1,33 +1,45 @@
 #!/usr/bin/env python3
-"""Faithfulness oracle for port_tools_read_extract.c.
-
-Reads the *.in fixture (argv[1]); the .in contains the basename of a sample
-document (sample.docx / sample.xlsx / sample.ipynb) in the SAME fixture
-directory. Recomputes the extraction from the LIVE tools/read_extract.py and
-emits a compact JSON line {"fn":<base>,"out":<text>} that the runner diffs
-against the C harness.
-
-ensure_ascii=False mirrors the C harness (which emits raw UTF-8 and escapes
-only ", \\, and the standard control chars), so the two are byte-identical.
 """
-import sys, os, json
+sta_oracle_read_extract.py — Python oracle for the PURE document-type helpers in
+tools/read_extract.py (_extension, is_extractable_document), ported in
+src/tools/port_tools_read_extract.c.
 
-sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
-from tools.read_extract import extract_document_text
+Imports the REAL tools.read_extract module and calls the genuine _extension /
+is_extractable_document. Output contract matches tests/t_port_read_extract.c:
+one JSON object per line, sorted keys, ensure_ascii=False, compact separators.
+No sample files required (pure extension classification).
+"""
+
+import json
+import os
+import sys
+
+_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+if _ROOT not in sys.path:
+    sys.path.insert(0, _ROOT)
+
+from tools.read_extract import _extension, is_extractable_document  # noqa: E402
+
+
+def emit(obj):
+    sys.stdout.write(json.dumps(obj, separators=(",", ":"), ensure_ascii=False) + "\n")
 
 
 def main():
-    if len(sys.argv) < 2:
-        sys.stderr.write("usage: sta_oracle_read_extract.py <sample.in>\n")
-        return 2
-    with open(sys.argv[1], "r", encoding="utf-8") as f:
-        base = f.read().strip()
-
-    here = os.path.dirname(os.path.abspath(sys.argv[1]))
-    sample = os.path.join(here, base)
-    text = extract_document_text(sample)
-    print(json.dumps({"fn": base, "out": text}, separators=(",", ":"), ensure_ascii=False))
-    return 0
+    for raw in sys.stdin:
+        line = raw.rstrip("\n")
+        if not line.strip() or line.startswith("#"):
+            continue
+        if line.startswith("ext "):
+            v = line[4:]
+            emit({
+                "op": "ext",
+                "in": v,
+                "ext": _extension(v),
+                "extractable": bool(is_extractable_document(v)),
+            })
+        else:
+            emit({"op": "unknown", "raw": raw.rstrip("\n")})
 
 
 if __name__ == "__main__":
