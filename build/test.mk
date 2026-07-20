@@ -467,6 +467,16 @@ test-provider-pool-setup:
 	    | grep -E 'MISMATCH' && echo "(provider_pool_setup oracle FAILED)" \
 	    || echo "provider_pool_setup oracle: all cases MATCH"
 
+# Provider auth registry exhaustive table-drift check (lib/libproviderauth
+# vs LIVE hermes_cli.auth.PROVIDER_REGISTRY). Every key->auth_type row is
+# emitted and diffed by tests/sta_oracle_provider_auth.py; any missing/extra/
+# renamed key or wrong auth_type fails. This is the live-source-of-truth for
+# config_setup_supports_same_provider_pool_setup (no hardcoded snapshot).
+test-provider-auth:
+	@bash tests/oracle/runners/run_oracle.sh provider_auth 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(provider_auth oracle FAILED)" \
+	    || echo "provider_auth oracle: all rows MATCH"
+
 # Curator backup config (faithful port of agent/curator_backup.py
 # is_enabled/get_keep). Oracle-verified: real YAML (libyaml) navigation of
 # curator.backup.enabled (default true) and .keep (default 5, floor 1),

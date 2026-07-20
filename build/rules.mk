@@ -108,6 +108,9 @@ lib/libschemasanitizer/schema_sanitizer.o: lib/libschemasanitizer/schema_sanitiz
 lib/libfuzzymatch/fuzzy_match.o: lib/libfuzzymatch/fuzzy_match.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+lib/libproviderauth/provider_auth.o: lib/libproviderauth/provider_auth.c lib/libproviderauth/provider_auth.h
+	$(CC) $(CFLAGS) -I include -c $< -o $@
+
 lib/libinterrupt/interrupt.o: lib/libinterrupt/interrupt.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
