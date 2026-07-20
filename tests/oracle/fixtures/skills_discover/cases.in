@@ -1,0 +1,9 @@
+skill foo
+skill bar
+nested cat baz
+noskill empty
+noskill wrap
+skill wrap/inner
+skill deep
+nested a b
+nested a c

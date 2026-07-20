@@ -100,6 +100,14 @@ void msgraph_token_provider_init(msgraph_token_provider_t *tp,
 const char *msgraph_get_access_token(msgraph_token_provider_t *tp,
                                       char *out, size_t out_size);
 
+/**
+ * Extract a human-readable error message from a Microsoft Graph API error
+ * JSON body. Returns error_description, else error, else the raw body, or
+ * "unknown error" for an empty body. Port of the Graph error-extraction
+ * contract (tools/microsoft_graph_client.py / gateway msgraph error handling).
+ */
+const char *msgraph_extract_error(const char *body);
+
 /** Force refresh on next call */
 void msgraph_clear_cache(msgraph_token_provider_t *tp);
 

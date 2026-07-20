@@ -1,0 +1,19 @@
+espeak have
+espeak no
+xai set
+xai unset
+reasoning
+model_config gpt-4o
+model_config claude-3-5-sonnet
+model_config 
+model_creds nous set
+model_creds nous unset
+model_creds openai set
+model_creds anthropic unset
+model_creds google set
+model_creds bedrock unset
+model_creds unknown set
+goauth client_id set
+goauth client_id unset
+goauth secret set
+goauth secret unset

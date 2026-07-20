@@ -172,6 +172,24 @@ int skills_sync_reset(const char *hermes_home,
                        char *out_msg,
                        char *out_action);
 
+/**
+ * Skill discovery context (port of Python tools/skills_sync.py skill
+ * discovery). Filled by _discover_skills_in_dir().
+ */
+typedef struct {
+    char names[SKILLS_SYNC_MAX_ENTRIES][SKILLS_SYNC_MAX_NAME];
+    char dirs[SKILLS_SYNC_MAX_ENTRIES][SKILLS_SYNC_MAX_PATH];
+    int count;
+    const char *bundled_dir;
+} discover_ctx_t;
+
+/**
+ * Recursively discover skills (directories containing a SKILL.md) under
+ * dir_path, appending each to ctx (cap SKILLS_SYNC_MAX_ENTRIES).
+ * Port of Python tools/skills_sync.py:_discover_skills().
+ */
+void _discover_skills_in_dir(const char *dir_path, discover_ctx_t *ctx);
+
 #ifdef __cplusplus
 }
 #endif

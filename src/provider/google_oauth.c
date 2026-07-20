@@ -67,14 +67,14 @@ static const char *get_client_id(void) {
 }
 
 /* Port of Python: _require_client_id */
-static __attribute__((unused)) const char *require_client_id(void) {
+const char *require_client_id(void) {
     const char *id = get_client_id();
     if (!id || !*id) return DEFAULT_CLIENT_ID;
     return id;
 }
 
 /* Port of Python: _get_client_secret */
-static __attribute__((unused)) const char *get_client_secret(void) {
+const char *get_client_secret(void) {
     const char *env = getenv("GOOGLE_CLIENT_SECRET");
     if (env && *env) return env;
     if (g_client_secret[0]) return g_client_secret;

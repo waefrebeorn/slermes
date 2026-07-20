@@ -66,6 +66,12 @@ void fuzzy_result_free(fuzzy_result_t *result);
  */
 double fuzzy_ratio(const char *a, const char *b);
 
+/* Count newline-separated lines in s (empty/NULL -> 0, non-empty -> >=1). */
+int count_lines(const char *s);
+
+/* Trim trailing whitespace only; returns a malloc'd copy the caller frees. */
+char *trim_right(const char *s);
+
 #ifdef __cplusplus
 }
 #endif

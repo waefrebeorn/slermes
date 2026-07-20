@@ -494,20 +494,33 @@ __attribute__((unused)) static char *setup_prompt_sanitized(const char *question
 /* ── Config utility functions (Port of Python setup.py) ── */
 
 /* Port of Python hermes_cli/setup.py:_model_config_dict().
- * Return the model config: if it's a dict return it, if string wrap in {"default": s}. */
-__attribute__((unused)) static void setup_model_config_dict(const hermes_config_t *cfg,
+ * The C side carries the model as a plain string (the Python struct wraps a
+ * dict), so we faithfully reproduce the dict form the Python returns:
+ *   - non-empty model string  -> {"default": "<model>"}
+ *   - empty/missing model     -> {}
+ * `out_default` receives the compact JSON form (mirrors json.dumps with
+ * separators=(",",":")). */
+void setup_model_config_dict(const hermes_config_t *cfg,
                                      char *out_default, size_t out_size) {
-    if (!cfg) return;
-    if (cfg->model[0])
-        strncpy(out_default, cfg->model, out_size - 1);
-    else
+    if (!out_default || out_size == 0) return;
+    if (!cfg || !cfg->model[0]) {
         out_default[0] = '\0';
+        strncpy(out_default, "{}", out_size - 1);
+        out_default[out_size - 1] = '\0';
+        return;
+    }
+    int need = snprintf(NULL, 0, "{\"default\":\"%s\"}", cfg->model);
+    if (need < 0 || (size_t)need >= out_size) {
+        out_default[0] = '\0';
+        return;
+    }
+    snprintf(out_default, out_size, "{\"default\":\"%s\"}", cfg->model);
 }
 
 /* Port of Python hermes_cli/setup.py:_current_reasoning_effort().
  * Read reasoning_effort from config struct. Currently not stored in cfg,
  * always returns empty string (caller uses default). */
-__attribute__((unused)) static const char *setup_current_reasoning_effort(void) {
+const char *setup_current_reasoning_effort(void) {
     return ""; /* hermes_config_t does not have reasoning_effort field yet */
 }
 
@@ -587,9 +600,13 @@ char *setup_gateway_platform_short_label(const char *label) {
 }
 
 /* Port of Python hermes_cli/setup.py:_model_section_has_credentials().
- * Return True when any known inference provider has usable credentials. */
-__attribute__((unused)) static bool setup_model_section_has_credentials(const hermes_config_t *cfg, const char *provider) {
-    if (!cfg || !provider) return false;
+ * Return True when the named provider has usable credentials (its key env
+ * var is set). The provider is passed explicitly; cfg is unused by the
+ * env-key lookup (kept for API symmetry with the Python signature, which
+ * reads the provider from config["model"]["provider"]). */
+bool setup_model_section_has_credentials(const hermes_config_t *cfg, const char *provider) {
+    (void)cfg; /* env-key lookup only needs `provider` */
+    if (!provider) return false;
     /* Check if provider env var is set */
     const char *key_env = NULL;
     if (strcmp(provider, "nous") == 0) key_env = "NOUS_API_KEY";
@@ -610,7 +627,7 @@ __attribute__((unused)) static bool setup_model_section_has_credentials(const he
 
 /* Port of Python hermes_cli/setup.py:_check_espeak_ng().
  * Check if espeak-ng or espeak is installed. */
-__attribute__((unused)) static bool setup_check_espeak_ng(void) {
+bool setup_check_espeak_ng(void) {
     FILE *fp = popen("which espeak-ng 2>/dev/null || which espeak 2>/dev/null", "r");
     if (!fp) return false;
     char buf[256];
@@ -621,7 +638,7 @@ __attribute__((unused)) static bool setup_check_espeak_ng(void) {
 
 /* Port of Python hermes_cli/setup.py:_xai_oauth_logged_in_for_setup().
  * Check if xAI OAuth token exists — probes XAI_API_KEY env. */
-__attribute__((unused)) static bool setup_xai_oauth_logged_in(void) {
+bool setup_xai_oauth_logged_in(void) {
     const char *key = getenv("XAI_API_KEY");
     return key && *key;
 }

@@ -31,7 +31,7 @@ static char *sstrdup(const char *s)
 }
 
 /* Count lines in a string */
-static int __attribute__((unused)) count_lines(const char *s)
+int count_lines(const char *s)
 {
     if (!s || !*s) return 0;
     int n = 1;
@@ -104,7 +104,7 @@ static const char *trim_left(const char *s)
 }
 
 /* Trim trailing whitespace only — returns malloc'd copy */
-static char __attribute__((unused)) *trim_right(const char *s)
+char *trim_right(const char *s)
 {
     if (!s || !*s) return sstrdup("");
     const char *end = s + strlen(s) - 1;
