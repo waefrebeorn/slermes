@@ -561,6 +561,11 @@ test-skills-hub-path:
 	    | grep -E 'MISMATCH' && echo "(skills_hub_path oracle FAILED)" \
 	    || echo "skills_hub_path oracle: all cases MATCH"
 
+test-delegate-pure:
+	@bash tests/oracle/runners/run_oracle.sh delegate_pure 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(delegate_pure oracle FAILED)" \
+	    || echo "delegate_pure oracle: all cases MATCH"
+
 # Cron delivery / origin / mirror / routing helpers (faithful port of the PURE
 # config/routing transforms in cron/scheduler.py: _resolve_origin,
 # _cron_mirror_delivery_enabled, _target_matches_origin,

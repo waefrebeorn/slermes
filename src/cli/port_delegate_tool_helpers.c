@@ -23,29 +23,6 @@
 #include <ctype.h>
 #include "libjson/json.h"
 
-/* --- role normalization ------------------------------------------------ */
-/* PoP: _normalize_role @ tools/delegate_tool.py:_normalize_role */
-/* None/empty -> "leaf". "leaf"/"orchestrator" pass through (case-insensitive,
- * stripped). Anything else -> "leaf" (silent degrade, matches Python). */
-const char *delegate_normalize_role(const char *r)
-{
-    if (!r || !*r) return "leaf";
-    /* strip + lowercase into a buffer */
-    char buf[64];
-    size_t i = 0, j = 0;
-    while (r[i] == ' ' || r[i] == '\t') i++;
-    while (r[i] && j + 1 < sizeof(buf)) {
-        char c = r[i++];
-        if (c >= 'A' && c <= 'Z') c = (char)(c - 'A' + 'a');
-        if (c == ' ' || c == '\t') continue;
-        buf[j++] = c;
-    }
-    buf[j] = '\0';
-    if (strcmp(buf, "leaf") == 0) return "leaf";
-    if (strcmp(buf, "orchestrator") == 0) return "orchestrator";
-    return "leaf"; /* coerce unknown */
-}
-
 /* --- runtime url normalization ----------------------------------------- */
 /* PoP: _normalized_runtime_url @ tools/delegate_tool.py:_normalized_runtime_url */
 /* str(value or "") then strip() then rstrip('/'). Allocates result (caller

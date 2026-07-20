@@ -371,7 +371,7 @@ static void delegate_unregister_subagent(const char *subagent_id)
  * --------------------------------------------------------------------------- */
 /* PoP: _stringify_tool_content @ tools/delegate_tool.py:_stringify_tool_content */
 /* Stable text representation for tool-result content (string / list / dict). */
-static char *delegate_stringify_tool_content(const json_node_t *content, char *out, size_t out_sz)
+char *delegate_stringify_tool_content(const json_node_t *content, char *out, size_t out_sz)
 {
     if (out && out_sz) out[0] = '\0';
     if (!content) return out;
@@ -425,7 +425,7 @@ static char *delegate_stringify_tool_content(const json_node_t *content, char *o
 
 /* PoP: _looks_like_error_output @ tools/delegate_tool.py:_looks_like_error_output */
 /* Conservative stderr/error detector for tool-result previews. */
-static bool delegate_looks_like_error_output(const json_node_t *content)
+bool delegate_looks_like_error_output(const json_node_t *content)
 {
     char buf[16384];
     delegate_stringify_tool_content(content, buf, sizeof(buf));
@@ -835,7 +835,7 @@ static void delegate_strip_blocked_tools(const char **toolsets, int n,
 static bool delegate_check_requirements(void) { return true; }
 
 /* PoP: _normalize_role @ tools/delegate_tool.py:_normalize_role */
-static void delegate_normalize_role(const char *r, char *out, size_t out_sz)
+void delegate_normalize_role(const char *r, char *out, size_t out_sz)
 {
     if (!r || !r[0]) { snprintf(out, out_sz, "leaf"); return; }
     char norm[64];
