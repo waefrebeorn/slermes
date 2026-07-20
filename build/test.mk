@@ -596,6 +596,11 @@ test-command-priority:
 	    | grep -E 'MISMATCH' && echo "(command_priority oracle FAILED)" \
 	    || echo "command_priority oracle: all cases MATCH"
 
+test-search-context:
+	@bash tests/oracle/runners/run_oracle.sh search_context 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(search_context oracle FAILED)" \
+	    || echo "search_context oracle: all cases MATCH"
+
 # Cron delivery / origin / mirror / routing helpers (faithful port of the PURE
 # config/routing transforms in cron/scheduler.py: _resolve_origin,
 # _cron_mirror_delivery_enabled, _target_matches_origin,
