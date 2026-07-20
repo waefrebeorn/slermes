@@ -1,21 +1,29 @@
 /*
  * credential_persistence.c — Credential-pool disk-boundary sanitization helpers.
- * Port of Python agent/credential_persistence.py (174 lines).
+ * Port of Python agent/credential_persistence.py.
  *
- * Provides _normalize_key(), _is_secret_payload_key(), and _fingerprint_value()
- * used by credential_pool.c's sanitize_borrowed_credential_payload().
+ * Provides the SHARED, reusable sanitization primitives:
+ *   credential_normalize_key()      — port of _normalize_key
+ *   is_secret_payload_key()         — port of _is_secret_payload_key
+ *   fingerprint_value()             — port of _fingerprint_value (SHA-256)
+ *   credential_secret_fingerprint() — port of _credential_secret_fingerprint
+ *
+ * These are consumed by credential_pool_persistence.c (and any other
+ * subsystem that needs disk-safe credential policy) — they are NOT
+ * re-implemented there. Self-contained: minimal includes only, no god header.
  */
 
-#include "hermes_core_types.h"
+#include "credential_persistence.h"
 #include "hermes_json.h"
+#include "hermes_crypto.h"
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-/* ================================================================
+/* =============================================================== *
  *  Safe metadata keys — never secret values
- * ================================================================ */
+ * =============================================================== */
 
 static bool is_safe_metadata_key(const char *key) {
     static const char *safe_keys[] = {
@@ -54,19 +62,19 @@ static const char *SECRET_VALUE_SUFFIXES[] = {
     NULL
 };
 
-/* ================================================================
- *  _normalize_key — Port of Python _normalize_key()
- * ================================================================ */
+/* =============================================================== *
+ *  credential_normalize_key — Port of Python _normalize_key()
+ *  Lowercases, replaces hyphens/dots with underscores, inserts
+ *  underscores at camelCase boundaries, strips surrounding space.
+ * =============================================================== */
 
-/* Port of Python agent/credential_persistence.py:_normalize_key().
- * Lowercases, replaces hyphens/dots with underscores, inserts
- * underscores at camelCase boundaries. */
-static void normalize_key(const char *key, char *out, size_t out_sz) {
+void credential_normalize_key(const char *key, char *out, size_t out_sz) {
     if (!key || !out || out_sz == 0) return;
     size_t j = 0;
     int prev_lower = 0;
     for (size_t i = 0; key[i] && j < out_sz - 1; i++) {
         char c = key[i];
+        if (c == ' ' || c == '\t') { prev_lower = 0; continue; }
         if (c == '-' || c == '.') c = '_';
         if (isupper((unsigned char)c) && prev_lower) {
             if (j < out_sz - 2) out[j++] = '_';
@@ -77,52 +85,63 @@ static void normalize_key(const char *key, char *out, size_t out_sz) {
     out[j] = '\0';
 }
 
-/* ================================================================
- *  _is_secret_payload_key — Port of Python _is_secret_payload_key()
- * ================================================================ */
+/* =============================================================== *
+ *  is_secret_payload_key — Port of Python _is_secret_payload_key()
+ *  Returns true if the key names a secret payload field.
+ * =============================================================== */
 
-/* Port of Python agent/credential_persistence.py:_is_secret_payload_key().
- * Returns true if the key looks like a secret payload field. */
 bool is_secret_payload_key(const char *key) {
     if (!key || !key[0]) return false;
     char normalized[128];
-    normalize_key(key, normalized, sizeof(normalized));
+    credential_normalize_key(key, normalized, sizeof(normalized));
     if (is_safe_metadata_key(normalized)) return false;
     if (is_secret_value_key(normalized)) return true;
     for (int i = 0; SECRET_VALUE_SUFFIXES[i]; i++) {
         size_t nlen = strlen(normalized);
         size_t slen = strlen(SECRET_VALUE_SUFFIXES[i]);
-        if (nlen > slen && strcmp(normalized + nlen - slen, SECRET_VALUE_SUFFIXES[i]) == 0)
+        if (nlen > slen &&
+            strcmp(normalized + nlen - slen, SECRET_VALUE_SUFFIXES[i]) == 0)
             return true;
     }
     return false;
 }
 
-/* ================================================================
- *  _fingerprint_value — Port of Python _fingerprint_value()
- * ================================================================ */
+/* =============================================================== *
+ *  fingerprint_value — Port of Python _fingerprint_value()
+ *  SHA-256 of the value, rendered as "sha256:<first 16 hex>".
+ *  Returns NULL for NULL/empty input. Caller must free.
+ * =============================================================== */
 
-/* Port of Python agent/credential_persistence.py:_fingerprint_value().
- * Returns a hash-based fingerprint (first 16 hex chars),
- * or NULL if the value is NULL or empty. Caller must free. */
 char *fingerprint_value(const char *value) {
     if (!value || !value[0]) return NULL;
-    unsigned long hash = 5381;
-    for (const char *p = value; *p; p++)
-        hash = ((hash << 5) + hash) + (unsigned char)*p;
-    char *result = malloc(24);
+    unsigned char digest[CRYPTO_SHA256_LEN];
+    crypto_sha256((const unsigned char *)value, strlen(value), digest);
+    /* First 16 hex chars == first 8 bytes. */
+    char *result = malloc(8 + 1 + 16 + 1);
     if (!result) return NULL;
-    snprintf(result, 24, "hash:%016lx", hash);
+    static const char hex[] = "0123456789abcdef";
+    char *p = result;
+    *p++ = 's'; *p++ = 'h'; *p++ = 'a'; *p++ = '2';
+    *p++ = '5'; *p++ = '6'; *p++ = ':';
+    for (int i = 0; i < 8; i++) {
+        *p++ = hex[(digest[i] >> 4) & 0xf];
+        *p++ = hex[digest[i] & 0xf];
+    }
+    *p = '\0';
     return result;
 }
 
-/* Port of Python agent/credential_persistence.py:_credential_secret_fingerprint().
- * Walk a JSON payload object looking for secret key fields and return
- * the first fingerprint found. Returns a malloc'd string or NULL. */
+/* =============================================================== *
+ *  credential_secret_fingerprint — Port of Python
+ *  _credential_secret_fingerprint(). Walk a JSON payload object
+ *  for secret-named values, return the first fingerprint found, or
+ *  pass through an existing "sha256:..." fingerprint. Caller frees.
+ * =============================================================== */
+
 char *credential_secret_fingerprint(const json_t *payload) {
     if (!payload || payload->type != JSON_OBJECT) return NULL;
 
-    /* Try well-known key names first */
+    /* Try well-known key names first (preserves Python ordering). */
     const char *well_known[] = {"agent_key", "access_token", "refresh_token",
                                  "api_key", "token", "secret", NULL};
     for (int i = 0; well_known[i]; i++) {
@@ -133,7 +152,7 @@ char *credential_secret_fingerprint(const json_t *payload) {
         }
     }
 
-    /* Walk all keys for secret-like names */
+    /* Walk all keys for secret-like names. */
     for (size_t i = 0; i < payload->c.count; i++) {
         const char *key = payload->c.keys[i];
         if (!key) continue;
@@ -144,7 +163,7 @@ char *credential_secret_fingerprint(const json_t *payload) {
         if (fp) return fp;
     }
 
-    /* Return existing fingerprint if present */
+    /* Pass through an existing fingerprint if present. */
     const char *existing = json_get_str(payload, "secret_fingerprint", NULL);
     if (existing && strncmp(existing, "sha256:", 7) == 0)
         return strdup(existing);

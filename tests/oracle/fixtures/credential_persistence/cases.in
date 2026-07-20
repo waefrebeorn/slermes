@@ -1,0 +1,55 @@
+# Fixture for the PURE credential-key helpers (tests/t_port_credential_persistence.c).
+# One op per line:
+#   norm <key>     _normalize_key (camelCase->snake, -/. -> _, lowercase, strip)
+#   secret <key>   _is_secret_payload_key
+#
+# Python: _normalize_key strips, inserts _ at [a-z0-9]|[A-Z] boundaries,
+# lowercases, replaces - and . with _.
+
+# === _normalize_key: case / separator handling ===
+norm apiKey
+norm accessToken
+norm clientSecret
+norm user.ID
+norm myFieldName2
+norm already_snake
+norm With Leading
+norm kebab-case-name
+norm dotted.name.here
+norm MIXEDCase123
+norm  spaced key
+norm UPPER
+norm lower
+
+# === _is_secret_payload_key: true cases ===
+secret access_token
+secret refreshToken
+secret api_key
+secret apiKey
+secret client_secret
+secret password
+secret myCustom_api_key
+secret service_token
+secret db_password
+secret X_id_token
+
+# === _is_secret_payload_key: false (safe metadata / non-secret) ===
+secret secret_fingerprint
+secret secret_source
+secret token_type
+secret scope
+secret client_id
+secret expires_at
+secret last_error_code
+secret not_a_secret_field
+secret description
+secret username
+
+# === _fingerprint_value: SHA-256 fidelity (first 16 hex of sha256) ===
+# Known vector: sha256("hello") = 2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824
+fp hello
+fp abc
+fp password123
+fp sk-1234567890abcdef
+fp a very long value with spaces and symbols !@#$%^&*()
+fp

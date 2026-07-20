@@ -1,33 +1,45 @@
-/* credential_persistence.h — Credential-pool disk-boundary sanitization.
- * Port of Python agent/credential_persistence.py.
+/*
+ * credential_persistence.h — minimal declaration surface for the
+ * credential-pool disk-boundary sanitization helpers ported from
+ * agent/credential_persistence.py (no god header, C11 only).
+ *
+ * This is the SINGLE authoritative surface for the shared sanitization
+ * helpers. Both src/agent/credential_persistence.c (pure helpers) and
+ * src/agent/credential_pool_persistence.c (sanitize / borrowed-source policy)
+ * reuse these symbols rather than re-implementing them.
  */
-#ifndef CREDENTIAL_PERSISTENCE_H
-#define CREDENTIAL_PERSISTENCE_H
 
+#ifndef SLERMES_CREDENTIAL_PERSISTENCE_H
+#define SLERMES_CREDENTIAL_PERSISTENCE_H
+
+#include <stddef.h>
 #include <stdbool.h>
-#include "hermes_json.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+/* Forward decl — libjson's json_t. We avoid pulling json.h into this slim
+ * header; callers that pass json payloads include hermes_json.h themselves. */
+struct json_t;
 
-/* Check if a credential source is borrowed (reference-only). */
-bool is_borrowed_credential_source(const char *source, const char *provider_id);
+/* ---------------------------------------------------------------------------
+ * Pure key helpers (ports of agent/credential_persistence.py)
+ * ------------------------------------------------------------------------- */
 
-/* Check if a key is a secret payload field. */
+/* Port of _normalize_key(): lowercases, replaces '-'/'.' with '_',
+ * inserts '_' at [a-z0-9]|[A-Z] camelCase boundaries, strips surrounding
+ * whitespace. */
+void credential_normalize_key(const char *key, char *out, size_t out_sz);
+
+/* Port of _is_secret_payload_key(): true if the (normalized) key names a
+ * secret value (and is not a safe-metadata key). */
 bool is_secret_payload_key(const char *key);
 
-/* Generate a fingerprint for a value. Caller must free. */
+/* Port of _fingerprint_value(): SHA-256 of the value, rendered as
+ * "sha256:<first 16 hex>". Returns NULL for NULL/empty input. Caller frees. */
 char *fingerprint_value(const char *value);
 
-/* Walk a JSON payload object for secret keys and return fingerprint. Caller must free. */
-char *credential_secret_fingerprint(const json_t *payload);
+/* Port of _credential_secret_fingerprint(): walk a JSON object looking for a
+ * well-known or secret-named value field and return its fingerprint, or pass
+ * through an existing "sha256:..." fingerprint. Caller frees. Returns NULL if
+ * none found. */
+char *credential_secret_fingerprint(const struct json_t *payload);
 
-/* Sanitize a credential payload for disk storage. Caller must free. */
-json_t *sanitize_borrowed_credential_payload(json_t *payload, const char *provider_id);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* CREDENTIAL_PERSISTENCE_H */
+#endif /* SLERMES_CREDENTIAL_PERSISTENCE_H */
