@@ -1,0 +1,15 @@
+# Fixture for file_mutation_verifier oracle.
+# Ops: init | record <tool> <pathjson> <iserr 0/1> <errpreview> | format
+# Verifies: error recorded, success removes entry, footer format, "... and N more".
+
+init
+record patch {"path":"/home/u/a.txt"} 1 {"error":"permission denied"}
+format
+record write_file {"path":"/home/u/b.txt"} 1 {"error":"disk full"}
+format
+record patch {"path":"/home/u/a.txt"} 0
+format
+record delete_file {"paths":["/home/u/c.txt","/home/u/d.txt"]} 1 {"error":"locked"}
+format
+record append_file {"file_path":"/home/u/e.txt"} 1
+format

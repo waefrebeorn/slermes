@@ -27,7 +27,7 @@
 #include "provider_metadata.h"
 #include "hermes_tool_guardrails.h"
 #include "acp/edit_approval.h"
-#include "hermes_gap_fixes.h"
+/* (hermes_gap_fixes.h removed: split into todo_hydrate.h / file_mutation_verifier.h / api_error_summary.h; this TU used no symbols from it) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
