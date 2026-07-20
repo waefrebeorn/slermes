@@ -226,7 +226,13 @@ void session_free(int idx) {
     memset(&g_gw.sessions[idx], 0, sizeof(g_gw.sessions[idx]));
 }
 
-bool __attribute__((unused)) is_shared_multi_user_session(const gw_session_source_t *src,
+/* Port of Python gateway/session.py:is_shared_multi_user_session().
+ * Return true when a non-DM session is shared across participants:
+ *   - DMs are never shared.
+ *   - Threads are shared unless thread_sessions_per_user is true.
+ *   - Non-thread group/channel sessions are shared unless
+ *     group_sessions_per_user is true (default: true = isolated per user). */
+bool is_shared_multi_user_session(const gw_session_source_t *src,
                                           bool group_sessions_per_user,
                                           bool thread_sessions_per_user) {
     if (!src) return false;
