@@ -38,6 +38,9 @@ LINKCMD=$(make -B -n slermes 2>/dev/null \
 # Normalize: replace the output target and the main object.
 LINKCMD=${LINKCMD// -o slermes / -o \/tmp\/tt_$NAME }
 LINKCMD=${LINKCMD//src\/main.o /$HARNESS }
+# Always rebuild the harness from the current object closure (never reuse a
+# stale /tmp/tt_<name> from a prior run with a different object set).
+rm -f "/tmp/tt_$NAME"
 # CFLAGS in the captured command use -O2 -g etc.; keep them. Build it.
 TMPH=$(mktemp -d); mkdir -p "$TMPH/.hermes/cron"
 
