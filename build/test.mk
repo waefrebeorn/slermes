@@ -606,6 +606,11 @@ test-file-text-ops:
 	    | grep -E 'MISMATCH' && echo "(file_text_ops oracle FAILED)" \
 	    || echo "file_text_ops oracle: all cases MATCH"
 
+test-skills-hub-filter:
+	@bash tests/oracle/runners/run_oracle.sh skills_hub_filter 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(skills_hub_filter oracle FAILED)" \
+	    || echo "skills_hub_filter oracle: all cases MATCH"
+
 # Cron delivery / origin / mirror / routing helpers (faithful port of the PURE
 # config/routing transforms in cron/scheduler.py: _resolve_origin,
 # _cron_mirror_delivery_enabled, _target_matches_origin,
