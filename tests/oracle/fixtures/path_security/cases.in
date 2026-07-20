@@ -1,0 +1,28 @@
+# Fixture for the path-safety helpers (tests/t_port_path_security.c).
+# One op per line:
+#   traversal <path>          has_traversal_component
+#   within <root> | <relpath> validate_within_dir(root/relpath within root)
+# (within cases materialize a real temp tree on both sides; compared on the
+#  SAFETY decision, not the error-string wording.)
+
+# === traversal: pure component check ===
+traversal a/b/c
+traversal a/../b
+traversal /..
+traversal ..
+traversal a/..b
+traversal foo..bar
+traversal a/b/../c
+traversal a/./b
+traversal ../..
+traversal a\..\b
+traversal a/.../b
+traversal ..
+
+# === within: real FS safety decisions ===
+within /tmp/ps_root_a | sub/file.txt
+within /tmp/ps_root_b | ok.txt
+within /tmp/ps_root_c | ../escape.txt
+within /tmp/ps_root_d | deep/nested/ok.txt
+within /tmp/ps_root_e | ../../etc/passwd
+within /tmp/ps_root_f | sibling/../../outside.txt
