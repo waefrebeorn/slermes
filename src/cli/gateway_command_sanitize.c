@@ -346,7 +346,8 @@ int commands_clamp_names(const cmd_entry_t *in, int n,
         return 0;
     }
 
-    /* Build the used-name set (reserved first). */
+    /* Build the used-name set (reserved first), mirroring Python's
+     * `used = set(reserved)`. */
     char **used = malloc(sizeof(char *) * (size_t)(n_reserved + n + 1));
     int n_used = 0;
     for (int i = 0; i < n_reserved; i++)
@@ -354,38 +355,45 @@ int commands_clamp_names(const cmd_entry_t *in, int n,
 
     for (int i = 0; i < n; i++) {
         const cmd_entry_t *e = &in[i];
+        const char *raw = e->name ? e->name : "";
+        size_t rawlen = strlen(raw);
         char candidate[CMD_NAME_LIMIT + 1];
         memset(candidate, 0, sizeof(candidate));
-        strncpy(candidate, e->name ? e->name : "", CMD_NAME_LIMIT);
+
+        /* PoP: tools/skills_hub.py style length clamp. Faithful to
+         * hermes_cli/commands.py:_clamp_command_names: renaming with a
+         * 31-char prefix + 0-9 digit suffix happens ONLY when the name
+         * exceeds the 32-char limit (truncation occurred). A <=32-char name
+         * that merely collides with `used` is dropped, never renamed. */
+        bool truncated = rawlen > CMD_NAME_LIMIT;
+        strncpy(candidate, raw, CMD_NAME_LIMIT);
         candidate[CMD_NAME_LIMIT] = '\0';
 
-        /* Collides with a *reserved* name -> drop (matches Python, which
-         * skips reserved collisions rather than renaming onto a digit slot). */
-        bool reserved_hit = false;
-        for (int u = 0; u < n_reserved; u++)
-            if (reserved[u] && *reserved[u] && strcmp(reserved[u], candidate) == 0) { reserved_hit = true; break; }
-        if (reserved_hit) { dropped++; continue; }
-
-        /* Collides with an earlier survivor -> try a 31-char prefix + a 0-9
-         * digit suffix to disambiguate (Python _clamp_command_names). */
-        bool collides = false;
-        for (int u = 0; u < n_used; u++) if (strcmp(used[u], candidate) == 0) { collides = true; break; }
-        if (collides) {
-            char prefix[CMD_NAME_LIMIT];
-            memcpy(prefix, candidate, CMD_NAME_LIMIT - 1);
-            prefix[CMD_NAME_LIMIT - 1] = '\0';
-            int chosen = -1;
-            for (int d = 0; d < 10; d++) {
-                snprintf(candidate, sizeof(candidate), "%s%d", prefix, d);
-                bool inner = false;
-                for (int u = 0; u < n_used; u++) if (strcmp(used[u], candidate) == 0) { inner = true; break; }
-                if (!inner) { chosen = d; break; }
+        if (truncated) {
+            bool collides = false;
+            for (int u = 0; u < n_used; u++)
+                if (strcmp(used[u], candidate) == 0) { collides = true; break; }
+            if (collides) {
+                char prefix[CMD_NAME_LIMIT];
+                memcpy(prefix, candidate, CMD_NAME_LIMIT - 1);
+                prefix[CMD_NAME_LIMIT - 1] = '\0';
+                int chosen = -1;
+                for (int d = 0; d < 10; d++) {
+                    snprintf(candidate, sizeof(candidate), "%s%d", prefix, d);
+                    bool inner = false;
+                    for (int u = 0; u < n_used; u++)
+                        if (strcmp(used[u], candidate) == 0) { inner = true; break; }
+                    if (!inner) { chosen = d; break; }
+                }
+                if (chosen < 0) { dropped++; continue; } /* all 10 slots taken */
             }
-            if (chosen < 0) { dropped++; continue; } /* all 10 slots taken */
         }
 
+        /* Final dup check (covers reserved + earlier survivors, both
+         * truncated-rename paths and <=32-char collisions). */
         bool dup = false;
-        for (int u = 0; u < n_used; u++) if (strcmp(used[u], candidate) == 0) { dup = true; break; }
+        for (int u = 0; u < n_used; u++)
+            if (strcmp(used[u], candidate) == 0) { dup = true; break; }
         if (dup) { dropped++; continue; }
 
         if (written >= out_cap) { dropped++; continue; }
@@ -398,7 +406,6 @@ int commands_clamp_names(const cmd_entry_t *in, int n,
         used[n_used++] = strdup(candidate);
     }
 
-    /* free the working set */
     for (int u = 0; u < n_used; u++) free(used[u]);
     free(used);
     if (out_dropped) *out_dropped = dropped;
