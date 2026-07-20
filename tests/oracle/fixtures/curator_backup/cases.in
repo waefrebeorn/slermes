@@ -1,0 +1,69 @@
+# Case 1: no curator.backup section at all -> defaults (enabled=true, keep=5)
+model: gpt-5
+
+---
+
+# Case 2: backup explicitly disabled
+curator:
+  backup:
+    enabled: false
+
+---
+
+# Case 3: backup explicitly enabled
+curator:
+  backup:
+    enabled: true
+
+---
+
+# Case 4: keep=3
+curator:
+  backup:
+    keep: 3
+
+---
+
+# Case 5: keep=0 -> floor at 1 (Python max(1,n))
+curator:
+  backup:
+    keep: 0
+
+---
+
+# Case 6: keep=-2 -> floor at 1
+curator:
+  backup:
+    enabled: true
+    keep: -2
+
+---
+
+# Case 7: top-level enabled:false must NOT disable backup (not under curator.backup)
+enabled: false
+curator:
+  backup:
+    keep: 7
+
+---
+
+# Case 8: curator present but no backup block -> defaults
+curator:
+  interval_hours: 168
+
+---
+
+# Case 9: nested realistic config, enabled true + keep 10
+curator:
+  backup:
+    enabled: true
+    keep: 10
+    schedule: "0 3 * * *"
+
+---
+
+# Case 10: enabled false under curator but NOT under backup -> default true
+curator:
+  enabled: false
+  backup:
+    keep: 4

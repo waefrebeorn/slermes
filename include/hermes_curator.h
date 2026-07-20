@@ -91,6 +91,13 @@ void init_state(curator_state_t *state);
 bool is_enabled(void);
 
 /**
+ * Curator BACKUP config (port of agent/curator_backup.py). These read the
+ * `curator.backup` section of config.yaml via the real YAML parser (libyaml).
+ */
+bool curator_backup_config_enabled(void);
+int  curator_backup_config_keep(void);
+
+/**
  * Get curator run interval in hours from env or default.
  * Port of Python agent/curator.py:get_interval_hours().
  */

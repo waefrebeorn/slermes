@@ -446,6 +446,17 @@ test-provider-custom:
 	    || echo "provider_custom oracle: all cases MATCH"
 
 
+# Curator backup config (faithful port of agent/curator_backup.py
+# is_enabled/get_keep). Oracle-verified: real YAML (libyaml) navigation of
+# curator.backup.enabled (default true) and .keep (default 5, floor 1),
+# vs LIVE agent/curator_backup.py across 10 config docs (incl. the
+# previously-broken cases: top-level enabled:false must NOT disable backup,
+# and keep<=0 floors at 1).
+test-curator-backup:
+	@bash tests/oracle/runners/run_oracle.sh curator_backup 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(curator_backup oracle FAILED)" \
+	    || echo "curator_backup oracle: all cases MATCH"
+
 # Gateway platform short-label (faithful port of
 # hermes_cli/setup.py:_gateway_platform_short_label). Oracle-verified:
 # strip trailing "(...)" qualifier + .strip(), with the "base or label"
