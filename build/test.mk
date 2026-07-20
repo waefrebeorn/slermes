@@ -581,6 +581,11 @@ test-command-sanitize:
 	    | grep -E 'MISMATCH' && echo "(command_sanitize oracle FAILED)" \
 	    || echo "command_sanitize oracle: all cases MATCH"
 
+test-file-search:
+	@bash tests/oracle/runners/run_oracle.sh file_search 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(file_search oracle FAILED)" \
+	    || echo "file_search oracle: all cases MATCH"
+
 # Cron delivery / origin / mirror / routing helpers (faithful port of the PURE
 # config/routing transforms in cron/scheduler.py: _resolve_origin,
 # _cron_mirror_delivery_enabled, _target_matches_origin,

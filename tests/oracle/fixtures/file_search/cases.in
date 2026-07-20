@@ -1,0 +1,22 @@
+# Fixture for the PURE file-search diagnostics helpers
+# (tests/t_port_file_search.c). One op per line.
+#   search <exit>|<stdout>   (stdout may contain \n for newlines)
+#   split <output>           (output may contain \n for newlines)
+#
+# \n in the field is a literal backslash-n token decoded to a real newline.
+
+# === search: timeout strips marker, sets reason ===
+search 124|some output\n[Command timed out after 30s]
+search 124|line one\n[Command timed out after 5s]\nline two
+search 0|normal stdout no timeout
+search 0|multi\nline\noutput
+search 124|[Command timed out after 120s]
+
+# === split: separate rg/grep diagnostics from payload ===
+split rg: path/to/file.py: Permission denied\nfile.py:10:def foo():\nsrc/main.c:42:int main() {
+split grep: Invalid regular expression '(['\nfile.py:1:hello\nfile.py:2:world
+split -- file.py:1:match\nsrc/x.c:3:other\n--
+split normal match line only: path/to/x.py:5:content
+split file_only_path_without_colon.md\nanother/path.go
+split indented caret line\n    ^\nerror: unmatched parenthesis
+split rg: regex parse error:\n    (foo\n    ^\nfile.py:1:still a payload line
