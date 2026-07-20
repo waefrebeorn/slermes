@@ -79,6 +79,14 @@ long kanban_parse_duration(const char *value);
    which are typically borrowed; frees the malloc'd string fields). */
 void kanban_task_free(kanban_task_t *t);
 
+/* _profile_author: best-effort author name (HERMES_PROFILE_NAME, then
+   HERMES_PROFILE, then "user"). Returns a malloc'd string (caller frees). */
+char *kanban_profile_author(void);
+
+/* _worker_run_id_for: if HERMES_KANBAN_TASK == task_id, parse
+   HERMES_KANBAN_RUN_ID as int and return it; else -1. Malformed -> -1. */
+long kanban_worker_run_id_for(const char *task_id);
+
 #ifdef __cplusplus
 }
 #endif

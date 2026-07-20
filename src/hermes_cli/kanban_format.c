@@ -11,6 +11,11 @@
 #include <ctype.h>
 #include <time.h>
 
+/* Declared in src/cli/port_cli_profiles.c (profile_get_active_name @
+ * hermes_cli/profiles.py:get_active_profile_name). Used by
+ * kanban_profile_author as the fallback after the HERMES_PROFILE* env vars. */
+extern char *profile_get_active_name(void);
+
 static char *xstrdup(const char *s){ return s?strdup(s):NULL; }
 
 /* status -> display icon (mirrors _STATUS_ICONS) */
@@ -38,9 +43,10 @@ char *kanban_fmt_ts(long ts) {
 char *kanban_fmt_task_line(const kanban_task_t *t) {
     const char *icon = kanban_status_icon(t->status);
     const char *assignee = (t->assignee && *t->assignee) ? t->assignee : "(unassigned)";
-    /* tenant display: "[tenant]" when present, else "" (mirrors Python) */
+    /* tenant display: " [tenant]" when present (mirrors Python's
+     * f" [{t.tenant}]"), else "" — note the leading space. */
     char tenant_disp[256] = "";
-    if (t->tenant && *t->tenant) snprintf(tenant_disp, sizeof(tenant_disp), "[%s]", t->tenant);
+    if (t->tenant && *t->tenant) snprintf(tenant_disp, sizeof(tenant_disp), " [%s]", t->tenant);
     /* icon + " " + id + "  " + status(left 8) + "  " + assignee(left 20) + tenant + "  " + title */
     size_t cap = 1024;
     char *out = (char*)malloc(cap);
@@ -159,7 +165,7 @@ int kanban_parse_workspace_flag(const char *value, char **out_kind, char **out_p
         if (strncmp(p, prefixes[i].pre, pl)==0){
             char *path = p + pl;
             while (*path==' '||*path=='\t') path++;
-            if (!*path){ *errmsg = xstrdup("requires a path after the colon"); free(v); return -1; }
+            if (!*path){ *errmsg = xstrdup("--workspace dir: requires a path after the colon"); free(v); return -1; }
             /* expanduser ~ */
             if (path[0]=='~'){
                 const char *home = getenv("HOME");
@@ -176,7 +182,9 @@ int kanban_parse_workspace_flag(const char *value, char **out_kind, char **out_p
             free(v); return 0;
         }
     }
-    *errmsg = xstrdup("unknown --workspace value");
+    { char buf[512]; snprintf(buf, sizeof(buf),
+        "unknown --workspace value '%s': use scratch, worktree, worktree:<path>, or dir:<path>",
+        value ? value : ""); *errmsg = xstrdup(buf); }
     free(v); return -1;
 }
 
@@ -228,4 +236,33 @@ void kanban_task_free(kanban_task_t *t) {
     free(t->project_id); free(t->created_by); free(t->result);
     free(t->session_id); free(t->workflow_template_id); free(t->current_step_key);
     free(t);
+}
+
+/* ── PoP: _profile_author @ hermes_cli/kanban.py:_profile_author ──
+ * Best-effort author name: HERMES_PROFILE_NAME, then HERMES_PROFILE, then
+ * "user". Returns a malloc'd string (caller frees). */
+char *kanban_profile_author(void) {
+    const char *v = getenv("HERMES_PROFILE_NAME");
+    if (v && v[0]) return strdup(v);
+    v = getenv("HERMES_PROFILE");
+    if (v && v[0]) return strdup(v);
+    /* Python falls back to the active profile name (hermes_cli.profiles
+     * .get_active_profile_name()) before the literal "user". Mirror that. */
+    char *active = profile_get_active_name();
+    if (active) return active;
+    return strdup("user");
+}
+
+/* ── PoP: _worker_run_id_for @ hermes_cli/kanban.py:_worker_run_id_for ──
+ * If HERMES_KANBAN_TASK == task_id, parse HERMES_KANBAN_RUN_ID as int and
+ * return it; otherwise return -1. Malformed run id -> -1. */
+long kanban_worker_run_id_for(const char *task_id) {
+    const char *env_task = getenv("HERMES_KANBAN_TASK");
+    if (!env_task || strcmp(env_task, task_id ? task_id : "") != 0) return -1;
+    const char *raw = getenv("HERMES_KANBAN_RUN_ID");
+    if (!raw || !raw[0]) return -1;
+    char *end = NULL;
+    long v = strtol(raw, &end, 10);
+    if (*end != '\0') return -1;
+    return v;
 }

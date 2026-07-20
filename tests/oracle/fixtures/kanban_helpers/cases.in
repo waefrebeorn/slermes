@@ -1,0 +1,64 @@
+# kanban_helpers oracle fixtures — exercise the PURE kanban helpers from
+# hermes_cli/kanban.py (implemented in src/hermes_cli/kanban_format.c).
+# Fields are '|'-separated so titles/bodies may contain spaces.
+# ops:
+#   fmt_ts <ts>
+#   fmt_task_line <id>|<status>|<assignee>|<tenant>|<title>
+#   task_dict <id>|<title>|<body>|<assignee>|<status>|<priority>|<tenant>|<wspath>|<branch>|<project>|<created_by>|<created_at>|<started_at>|<completed_at>|<result>|<skills>|<max_retries>|<session_id>|<wtid>|<stepkey>
+#   run_state <state_type>|<state_name>      (empty field before | = absent)
+#   ws_flag <value>
+#   branch_flag <value>
+#   profile_author
+#   duration <value>
+#   worker_run <task_id>
+
+# --- fmt_ts ---
+fmt_ts 0
+fmt_ts 1700000000
+fmt_ts 1760000000
+
+# --- fmt_task_line ---
+fmt_task_line t1|running|alice|team|Fix the thing
+fmt_task_line t2|done||team|Ship it
+fmt_task_line t3|blocked|bob||Blocked task with spaces
+
+# --- task_dict ---
+task_dict k1|My Title|My body|carol|ready|3|proj|workspace/dir|feat-branch|P9|me|1700000000|1700001000|1700002000|good result|["a","b"]|2|sess-x|wtempl|step1
+task_dict k2|No body|||todo|0|||||0|0|0|||[]|0|||
+task_dict k3|T|B|u|running|5|t|w/pkg|br|pr|cb|100|200|300|r|[]|1|s2|w2|sk2
+
+# --- run_state (both present / both absent / inconsistent) ---
+run_state type1|name1
+run_state |
+run_state type1|
+
+# --- ws_flag ---
+ws_flag
+ws_flag scratch
+ws_flag worktree
+ws_flag dir:/tmp/x
+ws_flag worktree:/home/u/wt
+ws_flag dir:
+ws_flag bogus
+
+# --- branch_flag ---
+branch_flag
+branch_flag main
+branch_flag feature/x
+branch_flag -bad
+branch_flag has space
+
+# --- profile_author (env-driven; both sides read same ambient env) ---
+profile_author
+
+# --- duration ---
+duration
+duration 30
+duration 5m
+duration 2h
+duration 1d
+duration abc
+duration 10x
+
+# --- worker_run (env-driven) ---
+worker_run t-999
