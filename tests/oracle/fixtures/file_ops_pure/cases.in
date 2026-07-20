@@ -1,0 +1,66 @@
+# Fixture for the PURE file_operations.py helpers (tests/t_port_file_ops_pure.c).
+# One op per line. Multi-field ops use '|'. Tokens decoded identically by the
+# C harness and the Python oracle:
+#   @LF@ -> real newline   @CRLF@ -> real \r\n   @BSN@ -> backslash+n (regex \n)
+#   @BSBSN@ -> \\n (literal backslash-backslash-n)   @BOM@ -> U+FEFF (UTF-8 EF BB BF)
+
+# === fence: strip terminal OSC / __HERMES_FENCE__ wrappers ===
+fence normal line of text
+fence __HERMES_FENCE_ABC__actual content here
+fence prefix __HERMES_FENCE_ABC__ and trailing text
+fence line1@LF@__HERMES_FENCE_X__@LF@line2
+fence @LF@]0;titlereal content
+fence @LF@[31mcolored@LF@[0m but no fence
+
+# === detect_le: line ending detection ===
+detect_le line1@LF@line2@LF@line3
+detect_le line1@CRLF@line2@CRLF@
+detect_le single line no newline
+detect_le 
+detect_le a@CRLF@b@LF@c
+
+# === norm_le: target|text  (target is @LF@ or @CRLF@) ===
+norm_le @LF@|line1@LF@line2
+norm_le @CRLF@|line1@LF@line2
+norm_le @CRLF@|line1@CRLF@line2@CRLF@
+norm_le @LF@|line1@CRLF@line2@CRLF@
+norm_le @LF@|mixed@LF@line
+
+# === strip_bom: leading UTF-8 BOM ===
+strip_bom @BOM@hello
+strip_bom no bom here
+strip_bom @BOM@first@LF@@BOM@second
+
+# === pat_newline: regex newline detection ===
+pat_newline plain pattern
+pat_newline line1@LF@line2
+pat_newline backslash-n @BSN@
+pat_newline escaped backslash-n @BSBSN@
+
+# === norm_read: default_limit|offset|limit ===
+norm_read 2000|1|100
+norm_read 2000|0|100
+norm_read 2000|-5|100
+norm_read 2000|1|999999
+norm_read 2000|abc|xyz
+norm_read 50|0|10
+
+# === norm_search: default_limit|offset|limit ===
+norm_search 50|0|10
+norm_search 50|-3|10
+norm_search 50|0|0
+norm_search 50|5|999
+
+# === lint: kind|content ===
+lint json|{"a": 1, "b": [2, 3]}
+lint json|{"a": 1, "a": 2}
+lint json|not json at all
+lint json|[1, 2, 3]
+lint python|x = 1@LF@y = 2
+lint python|def f(:@LF@    pass
+lint python|import os@LF@print(os.getcwd())
+lint yaml|name: hermes@LF@version: 1
+lint yaml|"a": b: c
+lint toml|title = "x"@LF@[table]@LF@key = 1
+lint toml|title = 
+ = 
