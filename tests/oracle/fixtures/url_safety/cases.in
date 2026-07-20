@@ -1,0 +1,71 @@
+# Fixture for the PURE SSRF-safety helpers (tests/t_port_url_safety.c).
+# One op per line. 'normalize' exercises punycode + percent-encoding.
+# 'blocked_ip' classifies literal IPs. 'always_blocked' targets cloud-metadata
+# hostnames / literal IPs only (hostname-DNS paths are intentionally excluded).
+
+# === normalize: IRI -> ASCII (punycode) ===
+normalize https://wttr.in/Köln
+normalize https://www.münchen.de/path
+normalize http://BÜcher.example.com
+normalize https://example.com/Naïve
+# === normalize: percent-encoding of path/query/fragment ===
+normalize https://example.com/a b?x=1&y=2 3#frag ment
+normalize https://example.com/ü?q= café
+normalize https://example.com/keep-!$&'()*+,;=:@
+# === normalize: already-ascii, unchanged ===
+normalize https://example.com/plain/path?q=1
+# === normalize: whitespace stripped ===
+normalize   https://example.com/spacey
+# === normalize: non-http scheme -> returned raw, rc=-1 ===
+normalize ftp://example.com/file
+normalize file:///etc/passwd
+normalize not a url at all
+# === normalize: empty ===
+normalize
+
+# === blocked_ip: private/loopback/link-local/CGNAT/reserved/multicast ===
+blocked_ip 127.0.0.1
+blocked_ip 10.0.0.5
+blocked_ip 172.16.0.1
+blocked_ip 172.31.255.255
+blocked_ip 192.168.1.1
+blocked_ip 169.254.169.254
+blocked_ip 100.64.0.1
+blocked_ip 0.0.0.0
+blocked_ip 224.0.0.1
+blocked_ip 240.0.0.1
+blocked_ip 255.255.255.255
+# === blocked_ip: public ===
+blocked_ip 8.8.8.8
+blocked_ip 1.1.1.1
+blocked_ip 93.184.216.34
+# === blocked_ip: IPv6 ===
+blocked_ip ::1
+blocked_ip fe80::1
+blocked_ip fc00::1
+blocked_ip ff02::1
+blocked_ip ::
+blocked_ip ::ffff:127.0.0.1
+blocked_ip ::ffff:192.168.1.1
+blocked_ip 2606:4700:4700::1111
+# === blocked_ip: unparseable -> blocked (fail closed) ===
+blocked_ip not-an-ip
+blocked_ip 999.1.1.1
+
+# === always_blocked: cloud metadata (always blocked) ===
+always_blocked http://169.254.169.254/latest/meta-data/
+always_blocked https://169.254.170.2/
+always_blocked http://169.254.169.253/
+always_blocked http://100.100.100.200/
+always_blocked http://metadata.google.internal/
+always_blocked http://metadata.goog/
+# === always_blocked: literal IP metadata (v4) ===
+always_blocked http://169.254.169.254
+# === always_blocked: benign literal IP (NOT in always-blocked floor) ===
+always_blocked http://8.8.8.8/
+always_blocked http://1.1.1.1/
+always_blocked http://93.184.216.34/
+always_blocked http://192.168.1.1/
+# === always_blocked: empty / malformed ===
+always_blocked
+always_blocked not a url
