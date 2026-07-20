@@ -158,8 +158,12 @@ bool skills_hub_is_installed(const char *skill_name);
 
 /* Path validation (port of Python _validate_skill_name, _normalize_bundle_path) */
 bool hub_validate_skill_name(const char *name);
+/* Faithful _validate_skill_name returning the normalized name (out buffer). */
+bool hub_normalize_skill_name(const char *name, char *out, size_t out_sz);
 bool hub_normalize_lock_install_path(const char *install_path, const char *skill_name,
                                      char *out, size_t out_sz);
+/* Faithful _validate_install_parent_path returning the normalized path. */
+bool hub_validate_install_parent_path(const char *category, char *out, size_t out_len);
 
 /* Hub directory structure */
 bool hub_ensure_dirs(void);

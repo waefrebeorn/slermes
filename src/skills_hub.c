@@ -27,6 +27,11 @@
 #include <ctype.h>
 #include <stdbool.h>
 
+/* Forward declaration: defined later in this TU (faithful port of
+ * tools/skills_hub.py:_normalize_bundle_path). */
+bool hub_normalize_bundle_path(const char *path_value, const char *field_name,
+                               bool allow_nested, char *out, size_t out_len);
+
 #ifndef HERMES_PATH_MAX
 #define HERMES_PATH_MAX 4096
 #endif
@@ -732,23 +737,24 @@ bool skills_hub_is_installed(const char *skill_name) {
  * ================================================================ */
 
 /* Port of Python: _validate_skill_name */
-/* PoP: hub_validate_skill_name @ tools/skills_hub.py:_validate_skill_name */
+/* PoP: hub_validate_skill_name @ tools/skills_hub.py:_validate_skill_name
+ * Delegates to the faithful _normalize_bundle_path (allow_nested=False), so
+ * it rejects separators, absolute paths, ".." traversal, Windows drive
+ * letters ("C:"), and empty/dot-only names — exactly like Python. */
 bool hub_validate_skill_name(const char *name) {
-    if (!name || !name[0]) return false;
-    /* Must not contain directory separators */
-    for (const char *p = name; *p; p++) {
-        if (*p == '/' || *p == '\\')
-            return false;
-    }
-    /* Must not be just dots */
-    bool all_dots = true;
-    for (const char *p = name; *p; p++) {
-        if (*p != '.') { all_dots = false; break; }
-    }
-    if (all_dots) return false;
-    /* Must not start with dot (hidden) */
-    if (name[0] == '.') return false;
-    return true;
+    if (!name) return false;
+    char out[HERMES_PATH_MAX];
+    return hub_normalize_bundle_path(name, "skill name", false, out, sizeof(out));
+}
+
+/* Faithful port of _validate_skill_name returning the normalized name.
+ * Returns true and writes the normalized form to out on success; false and
+ * leaves out empty on rejection. */
+bool hub_normalize_skill_name(const char *name, char *out, size_t out_sz) {
+    if (!out || out_sz == 0) return false;
+    out[0] = '\0';
+    if (!name) return false;
+    return hub_normalize_bundle_path(name, "skill name", false, out, out_sz);
 }
 
 /* Port of Python: _normalize_lock_install_path */
