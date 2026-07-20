@@ -531,6 +531,11 @@ test-fuzzy-match-helpers:
 	    | grep -E 'MISMATCH' && echo "(fuzzy_match_helpers oracle FAILED)" \
 	    || echo "fuzzy_match_helpers oracle: all cases MATCH"
 
+test-tool-output-limits:
+	@bash tests/oracle/runners/run_oracle.sh tool_output_limits 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(tool_output_limits oracle FAILED)" \
+	    || echo "tool_output_limits oracle: all cases MATCH"
+
 # Microsoft Graph error extraction (msgraph_extract_error) — contract oracle.
 test-msgraph-error:
 	@bash tests/oracle/runners/run_oracle.sh msgraph_error 2>&1 \

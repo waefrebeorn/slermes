@@ -1,0 +1,16 @@
+# Fixture for the PURE tool-output-limit helpers
+# (tests/t_port_tool_output_limits.c). One op per line:
+#   coerce <val> <default>   _coerce_positive_int
+#   limits                   get_max_bytes / get_max_lines / get_max_line_length
+# (limits uses no config => module defaults.)
+
+# === coerce: positive passes, zero/negative fall to default ===
+coerce 100 50
+coerce 1 10
+coerce 0 42
+coerce -5 42
+coerce -100 7
+coerce 2000 2000
+
+# === limits: module defaults (no config present) ===
+limits
