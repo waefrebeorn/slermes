@@ -21,6 +21,7 @@ from agent.credential_persistence import (  # noqa: E402
     _normalize_key,
     _is_secret_payload_key,
     _fingerprint_value,
+    _credential_secret_fingerprint,
 )
 
 
@@ -50,6 +51,13 @@ def main():
             emit({"op": "secret", "in": v, "out": bool(_is_secret_payload_key(v))})
         elif op == "fp":
             emit({"op": "fp", "in": v, "out": _fingerprint_value(v)})
+        elif op == "fpj":
+            import json as _json
+            try:
+                payload = _json.loads(v) if v else None
+            except Exception:
+                payload = None
+            emit({"op": "fpj", "in": v, "out": _credential_secret_fingerprint(payload) if payload is not None else None})
         else:
             emit({"op": "unknown", "raw": raw.rstrip("\n")})
 
