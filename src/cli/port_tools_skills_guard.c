@@ -173,31 +173,47 @@ const char* cli_tools_skills_guard__resolve_trust_level(const char *source, cons
         hermes_log(LOG_WARNING, "skills_guard", "_resolve_trust_level: NULL source");
         return "community";
     }
-    if (strcmp(source, "builtin") == 0) return "builtin";
-    if (strcmp(source, "trusted") == 0) return "trusted";
-    if (strcmp(source, "agent-created") == 0) return "agent-created";
-    if (repo) {
-        if (strcmp(repo, "openai/skills") == 0) return "trusted";
-        if (strcmp(repo, "anthropics/skills") == 0) return "trusted";
-        if (strcmp(repo, "huggingface/skills") == 0) return "trusted";
-        if (strcmp(repo, "NVIDIA/skills") == 0) return "trusted";
+    (void)repo; /* Python derives trust from source alone; repo is ignored. */
+
+    /* Prefix aliases normalized away (tools/skills_guard.py). */
+    static const char *PREFIX_ALIASES[] = {
+        "skills-sh/", "skills.sh/", "skils-sh/", "skils.sh/", NULL
+    };
+    static const char *TRUSTED_REPOS[] = {
+        "openai/skills", "anthropics/skills", "huggingface/skills", "NVIDIA/skills", NULL
+    };
+
+    char norm[256];
+    snprintf(norm, sizeof(norm), "%s", source);
+    for (int i = 0; PREFIX_ALIASES[i]; i++) {
+        size_t pl = strlen(PREFIX_ALIASES[i]);
+        if (strncmp(norm, PREFIX_ALIASES[i], pl) == 0) {
+            memmove(norm, norm + pl, strlen(norm) - pl + 1);
+            break;
+        }
+    }
+
+    if (strcmp(norm, "agent-created") == 0) return "agent-created";
+    if (strcmp(norm, "official") == 0)     return "builtin";
+
+    for (int i = 0; TRUSTED_REPOS[i]; i++) {
+        size_t tl = strlen(TRUSTED_REPOS[i]);
+        if (strcmp(norm, TRUSTED_REPOS[i]) == 0 ||
+            (strncmp(norm, TRUSTED_REPOS[i], tl) == 0 && norm[tl] == '/')) {
+            return "trusted";
+        }
     }
     hermes_log(LOG_DEBUG, "skills_guard", "_resolve_trust_level: source=%s -> community", source);
     return "community";
 }
 
-/* PoP: cli_tools_skills_guard__determine_verdict @ tools/skills_guard.py:_determine_verdict */
-const char* cli_tools_skills_guard__determine_verdict(int max_severity, int total_findings, const char *trust_level) {
-    if (!trust_level) {
-        trust_level = "community";
-    }
-    int is_trusted = (strcmp(trust_level, "builtin") == 0 || strcmp(trust_level, "trusted") == 0);
+/* PoP: cli_tools_skills_guard__determine_verdict @ tools/skills_guard.py:_determine_verdict
+ * Faithful to Python: critical -> dangerous, high -> caution, else safe.
+ * Severity levels: 3=critical, 2=high, 1=medium, 0=low (trust-independent,
+ * matching the Python findings-based logic). */
+const char* cli_tools_skills_guard__determine_verdict(int max_severity, int total_findings) {
+    (void)total_findings; /* Python verdict is driven by severity, not count. */
     if (max_severity >= 3) return "dangerous";
-    if (max_severity >= 2) return "dangerous";
-    if (max_severity >= 1 && !is_trusted) return "dangerous";
-    if (max_severity >= 1) return "caution";
-    if (total_findings > 0) return "caution";
-    hermes_log(LOG_DEBUG, "skills_guard", "_determine_verdict: sev=%d findings=%d trust=%s -> safe",
-               max_severity, total_findings, trust_level);
+    if (max_severity == 2) return "caution";
     return "safe";
 }
