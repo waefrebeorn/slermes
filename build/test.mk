@@ -541,6 +541,11 @@ test-path-security:
 	    | grep -E 'MISMATCH' && echo "(path_security oracle FAILED)" \
 	    || echo "path_security oracle: all cases MATCH"
 
+test-threat-patterns:
+	@bash tests/oracle/runners/run_oracle.sh threat_patterns 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(threat_patterns oracle FAILED)" \
+	    || echo "threat_patterns oracle: all cases MATCH"
+
 # Microsoft Graph error extraction (msgraph_extract_error) — contract oracle.
 test-msgraph-error:
 	@bash tests/oracle/runners/run_oracle.sh msgraph_error 2>&1 \
