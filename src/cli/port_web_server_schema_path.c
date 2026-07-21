@@ -47,9 +47,7 @@ const char *ws_path_status_str(ws_path_status_t s) {
 }
 
 /* ───────────────────────── ws_infer_type ──────────────────────────────── */
-/* PoP: _infer_type @ hermes_cli/web_server.py:_infer_type
- *     `isinstance(value, bool)` is checked first because bool is a
- *     subclass of int in Python — same order matters here too. */
+/* PoP: _infer_type @ hermes_cli/web_server.py:_infer_type */
 const char *ws_infer_type_bool (bool   v) { (void)v; return "boolean"; }
 const char *ws_infer_type_int  (long   v) { (void)v; return "number";  }
 const char *ws_infer_type_f64  (double v) { (void)v; return "number";  }
@@ -231,17 +229,7 @@ void ws_schema_free(ws_schema_entry_t *arr, size_t n) {
 }
 
 /* ── ws_path_text ───────────────────────────────────────────────────── */
-/* PoP: _path_text @ hermes_cli/web_server.py:_path_text
- *     Python: `text = str(raw_path or "").strip()`; THEN the NUL check
- *     (`if "\x00" in text: raise HTTPException(400, "Invalid path")`).
- *     Python strings can carry embedded NUL bytes, so the NUL check is
- *     applied to the *stripped* bytes, not the strlen-truncated view.
- *
- * Callers with a byte buffer (decoded escape sequences, raw file read,
- * or anything that may contain an embedded NUL) MUST use `ws_path_text_n`
- * and pass the true byte length. `ws_path_text` is a thin wrapper that
- * calls `strlen` — it CANNOT see past the first NUL and so cannot detect
- * the HAS_NUL case for an embedded NUL. */
+/* PoP: ws_path_text_n @ hermes_cli/web_server.py:_path_text */
 ws_path_status_t ws_path_text_n(const char *raw, size_t raw_len,
                                 char *out, size_t cap)
 {
