@@ -1,6 +1,7 @@
 /* Slermes C port — gateway/cgroup_cleanup.py (cgroup process reaper) */
 
 #include <stdbool.h>
+#include "hermes_gateway_core.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>

@@ -1,4 +1,5 @@
 #include "hermes_logger.h"
+#include "hermes_gateway_core.h"
 #include "hermes_core_types.h"
 #include <string.h>
 #include <stdlib.h>

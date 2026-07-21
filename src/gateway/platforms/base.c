@@ -7,7 +7,7 @@
  * media caching, message formatting, and platform vtable helpers.
  */
 
-#include "hermes_gateway.h"
+#include "hermes_gateway_core.h"
 #include "hermes_json.h"
 #include "hermes_http.h"
 #include "hermes_logger.h"

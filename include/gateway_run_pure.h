@@ -62,6 +62,79 @@ bool gateway_is_transient_network_error(const char *exc_name,
                                          const char *cause_name,
                                          const char *context_name);
 
+/* run.py _event_media_type_at - per-attachment MIME type lookup */
+const char *gateway_event_media_type_at(const json_node_t *event, int index);
+
+/* run.py _event_media_is_image - True if attachment at index is an image */
+bool gateway_event_media_is_image(const json_node_t *event, int index);
+
+/* run.py _event_media_is_audio - True if attachment at index is audio */
+bool gateway_event_media_is_audio(const json_node_t *event, int index);
+
+/* run.py _event_media_is_video - True if attachment at index is video */
+bool gateway_event_media_is_video(const json_node_t *event, int index);
+
+/* run.py _build_media_placeholder - text placeholder for media events */
+char *gateway_build_media_placeholder(const char *media_urls_json,
+                                       const char *media_types_json,
+                                       const char *message_type);
+
+/* run.py _build_document_context_note - context note for document attachments */
+char *gateway_build_document_context_note(const char *display_name,
+                                           const char *agent_path,
+                                           const char *mime_type);
+
+/* ===========================================================================
+ *  web_server.py pure helpers ported from hermes_cli/web_server.py
+ * =========================================================================== */
+
+/* PoP: _tail_lines @ hermes_cli/web_server.py:_tail_lines
+ * Return malloc'd string with last n lines of file at path. */
+char *web_tail_lines(const char *path, int n);
+
+/* PoP: _dashboard_spawn_executable @ hermes_cli/web_server.py:_dashboard_spawn_executable
+ * Returns malloc'd string - pythonw.exe on Windows, sys.executable otherwise. */
+char *web_dashboard_spawn_executable(void);
+
+/* PoP: _record_completed_action @ hermes_cli/web_server.py:_record_completed_action
+ * Simple stub - the full action tracking requires subprocess management. */
+void web_record_completed_action(const char *name, int exit_code, const char *message);
+
+/* PoP: _normalize_config_for_web @ hermes_cli/web_server.py:_normalize_config_for_web
+ * Normalize config for web UI: flatten model dict to string, extract context_length.
+ * Input and output are JSON objects (caller frees). */
+json_node_t *web_normalize_config_for_web(json_node_t *config);
+
+/* run.py _resolve_gateway_display_bool */
+bool gateway_resolve_gateway_display_bool(const json_node_t *user_config,
+                                           const char *platform_key,
+                                           const char *setting,
+                                           bool default_val,
+                                           const char *platform,
+                                           const json_node_t *require_platform_override_for);
+
+/* run.py _has_platform_display_override */
+bool gateway_has_platform_display_override(const json_node_t *user_config, const char *platform_key, const char *setting);
+
+/* ===========================================================================
+ *  run.py display/format helpers
+ * =========================================================================== */
+
+/* run.py _float_env - read env var as float with fallback */
+float gateway_float_env(const char *name, float default_val);
+
+/* run.py _parse_session_key - parse session key into components */
+json_node_t *gateway_parse_session_key(const char *session_key);
+
+/* run.py _format_gateway_process_notification - format watch event */
+char *gateway_format_gateway_process_notification(const json_node_t *evt);
+
+/* run.py _normalize_empty_agent_response - ensure required fields exist */
+json_node_t *gateway_normalize_empty_agent_response(json_node_t *agent_result);
+
+/* run.py _voice_key - extract voice key from event */
+const char *gateway_voice_key(const json_node_t *event);
+
 #ifdef __cplusplus
 }
 #endif

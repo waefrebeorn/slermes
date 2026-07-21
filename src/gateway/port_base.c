@@ -5,6 +5,7 @@
  */
 
 #include "hermes_logger.h"
+#include "hermes_gateway_core.h"
 #include "hermes_json.h"
 #include <stdbool.h>
 #include <stdlib.h>

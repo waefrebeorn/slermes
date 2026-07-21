@@ -11,6 +11,7 @@
  */
 
 #include "hermes_core_types.h"
+#include "hermes_gateway_sticker_cache.h"
 #include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>

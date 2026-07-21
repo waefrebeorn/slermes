@@ -1,6 +1,7 @@
 /* Slermes C11 port of gateway/dead_targets.py — implementation.
  * PoP: exact port. Semantic source of truth = gateway/dead_targets.py. */
 #include "dead_targets.h"
+#include "hermes_gateway_core.h"
 #include "slermes_home.h"
 
 #include <stdio.h>

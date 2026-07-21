@@ -4,6 +4,7 @@
  */
 
 #include "hermes_telegram_network.h"
+#include "hermes_gateway_telegram.h"
 #include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>

@@ -2,6 +2,7 @@
  * port_gateway_message_timestamps.c — Port of Python gateway/message_timestamps.py
  */
 #include <stdio.h>
+#include "hermes_gateway_core.h"
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>

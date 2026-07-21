@@ -6,7 +6,10 @@
 #include "hermes_core_types.h"
 #include "hermes_agent.h"
 #include "hermes_json.h"
-#include "hermes_gateway.h"
+#include "hermes_gateway_webhook.h"
+#include "hermes_gateway_core.h"
+#include "hermes_gateway_whatsapp.h"
+#include "hermes_gateway_sms.h"
 #include <unistd.h>
 #include <errno.h>
 #include <sys/socket.h>

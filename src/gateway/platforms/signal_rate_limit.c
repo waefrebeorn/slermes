@@ -14,3 +14,4 @@ N/A: RateLimitState dataclass — C uses struct with timestamps.
  */
 
 #include "hermes_core_types.h"
+#include "hermes_gateway_signal.h"

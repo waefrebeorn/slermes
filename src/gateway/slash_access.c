@@ -14,7 +14,7 @@
 
 #include "hermes_core_types.h"
 #include "hermes_json.h"
-#include "hermes_gateway.h"
+#include "hermes_gateway_slash_access.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

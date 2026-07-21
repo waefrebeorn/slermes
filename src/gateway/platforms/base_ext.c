@@ -22,7 +22,7 @@
  *   proxy_kwargs_for_aiohttp           -> proxy_kwargs_for_aiohttp
  */
 
-#include "hermes_gateway.h"
+#include "hermes_gateway_core.h"
 #include "base.h"
 #include "hermes_json.h"
 #include "hermes_http.h"

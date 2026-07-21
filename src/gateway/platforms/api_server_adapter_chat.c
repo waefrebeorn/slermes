@@ -4,6 +4,7 @@
  */
 
 #include "api_server_adapter.h"
+#include "hermes_gateway_webhook.h"
 #include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>

@@ -8,7 +8,7 @@
 
 #include "gateway_helpers.h"
 #include "hermes_json.h"
-#include "hermes_gateway.h"
+#include "hermes_gateway_delivery.h"
 #include "hermes_system_prompt.h"
 #include "hermes_yaml.h"
 #include "gateway/platforms/base.h"

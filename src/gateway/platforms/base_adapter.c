@@ -40,7 +40,7 @@
  *   BasePlatformAdapter._thread_metadata_for_source -> gw_thread_metadata_for_source
  */
 
-#include "hermes_gateway.h"
+#include "hermes_gateway_core.h"
 #include "base.h"
 #include "hermes_json.h"
 #include "hermes_http.h"

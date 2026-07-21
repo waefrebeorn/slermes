@@ -7,7 +7,7 @@
 #include "hermes_agent.h"
 #include "hermes_json.h"
 #include "hermes_http.h"
-#include "hermes_gateway.h"
+#include "hermes_gateway_weixin.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -7,6 +7,7 @@
  */
 
 #include "api_server_adapter.h"
+#include "hermes_gateway_webhook.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

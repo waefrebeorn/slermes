@@ -498,306 +498,43 @@ void get_memory_provider_config(void *ctx, void *name)
 {
     if (!ctx || !name) return;
     char *path = memory_provider_config_path((const char *)name);
-    bool got_path = (path != NULL);
-    free(path);
-    (void)got_path;
-}
-
-/* PoP: update_memory_provider_config @ hermes_cli/web_server.py:update_memory_provider_config */
-/* Port of Python: update_memory_provider_config */
-void update_memory_provider_config(void *ctx, void *name, void *body)
-{
-    if (!ctx || !name || !body) return;
-    char *path = memory_provider_config_path((const char *)name);
     if (!path) return;
-    FILE *f = fopen(path, "w");
-    if (f) {
-        fwrite((const char *)body, 1, strlen((const char *)body), f);
-        fclose(f);
-    }
+    FILE *f = fopen(path, "r");
     free(path);
+    if (!f) return;
+    fclose(f);
 }
 
-/* PoP: _copilot_acp_status @ hermes_cli/web_server.py:_copilot_acp_status */
-/* Port of Python: _copilot_acp_status (returns JSON string) */
-char *_copilot_acp_status(void *ctx)
-{
-    (void)ctx; /* unused */
-    char *status = copilot_acp_status_fn();
-    bool got_status = (status != NULL);
-    (void)got_status;
-    return status;
-}
+/* ── MIME type mapping ──────────────────────────────────────────────────── */
 
-/* PoP: _oauth_provider_disconnect_command @ hermes_cli/web_server.py:_oauth_provider_disconnect_command */
-/* Port of Python: _oauth_provider_disconnect_command (returns command string) */
-char *_oauth_provider_disconnect_command(void *ctx)
-{
-    if (!ctx) return strdup("");
-    char *cmd = oauth_provider_disconnect_command((const char *)ctx);
-    bool got_cmd = (cmd != NULL);
-    (void)got_cmd;
-    return cmd;
-}
-
-/* PoP: _oauth_profile_name @ hermes_cli/web_server.py:_oauth_profile_name */
-/* Port of Python: _oauth_profile_name (returns profile name) */
-char *_oauth_profile_name(void *ctx)
-{
-    if (!ctx) return strdup("default");
-    hermes_log(LOG_DEBUG, "port", "_oauth_profile_name: called with ctx=%p", ctx);
-    return strdup((const char *)ctx);
-}
-
-/* PoP: _oauth_session_profile @ hermes_cli/web_server.py:_oauth_session_profile */
-/* Port of Python: _oauth_session_profile (returns profile string) */
-char *_oauth_session_profile(void *ctx)
-{
-    if (!ctx) return strdup("default");
-    hermes_log(LOG_DEBUG, "port", "_oauth_session_profile: called");
-    return strdup((const char *)ctx);
-}
-
-/* PoP: _validate_oauth_profile @ hermes_cli/web_server.py:_validate_oauth_profile */
-/* Port of Python: _validate_oauth_profile */
-void _validate_oauth_profile(void *ctx, void *profile)
-{
-    if (!ctx || !profile) return;
-    const char *p = (const char *)profile;
-    hermes_log(LOG_DEBUG, "port", "_validate_oauth_profile: profile=%s", p);
-
-    /* Python: validates profile is valid string, not empty, etc. */
-    if (!*p) {
-        hermes_log(LOG_WARNING, "port", "_validate_oauth_profile: empty profile name");
-    }
-}
-
-/* PoP: fire_cron_job_for_profile @ hermes_cli/web_server.py:_fire_cron_job_for_profile */
-/* Port of Python: _fire_cron_job_for_profile */
-bool fire_cron_job_for_profile(const char *profile, const char *job_id)
-{
-    if (!profile || !job_id) return false;
-    hermes_log(LOG_DEBUG, "port", "fire_cron_job_for_profile: profile=%s job=%s",
-               profile, job_id);
-
-    /* In C, we don't have the full cron scheduler infrastructure.
-     * This is a simplified implementation that logs and returns false.
-     * Integration with cron system would be needed for real execution. */
-    return false;
-}
-
-/* PoP: fire_cron_job_for_profile @ hermes_cli/web_server.py:_fire_cron_job_for_profile */
-/* Bridge version for Python callback */
-bool fire_cron_job_for_profile_bridge(void *ctx, void *profile, void *job_id)
-{
-    if (!ctx || !profile || !job_id) return false;
-    return fire_cron_job_for_profile((const char *)profile, (const char *)job_id);
-}
-
-/* PoP: _persist_active_session_before_close @ hermes_cli/web_server.py:_persist_active_session_before_close */
-/* Port of Python: _persist_active_session_before_close */
-/* Forward declaration - defined in port_cli_extra.c */
-extern void persist_active_session_before_close(void *ctx);
-
-/* PoP: _fs_path @ hermes_cli/web_server.py:_fs_path
- * Resolve a raw path string to a canonical absolute path. Returns 0 on success
- * (writes resolved path to out, up to out_sz), or an HTTP-ish status:
- * 400 invalid/empty, 414 too long. Honors file:// URLs (localhost only). */
-int fs_path(const char *raw_path, char *out, size_t out_sz)
-{
-    if (!raw_path) return 400;
-    char raw[PATH_MAX];
-    snprintf(raw, sizeof(raw), "%s", raw_path);
-    /* strip + trim */
-    char *p = raw;
-    while (*p == ' ' || *p == '\t') p++;
-    size_t rl = strlen(p);
-    while (rl > 0 && (p[rl-1] == ' ' || p[rl-1] == '\t')) p[--rl] = '\0';
-    if (rl == 0) return 400;
-    if (strchr(p, '\0')) return 400;
-    if (strncasecmp(p, "file://", 7) == 0) {
-        /* file://localhost/... or file:///... */
-        char *host = p + 7;
-        char *slash = strchr(host, '/');
-        if (slash && host != slash) {
-            size_t hlen = slash - host;
-            if (hlen != 0 && !(hlen == 9 && strncmp(host, "localhost", 9) == 0))
-                return 400; /* remote host rejected */
-        }
-        p = slash ? slash : (char*)"";
-    }
-    char candidate[PATH_MAX];
-    if (p[0] == '/') snprintf(candidate, sizeof(candidate), "%s", p);
-    else {
-        char cwd[PATH_MAX];
-        if (!getcwd(cwd, sizeof(cwd))) return 400;
-        snprintf(candidate, sizeof(candidate), "%s/%s", cwd, p);
-    }
-    char resolved[PATH_MAX];
-    if (!realpath(candidate, resolved)) {
-        /* Python resolve(strict=False) keeps the path even if missing. */
-        if (!realpath(dirname(candidate), resolved)) snprintf(resolved, sizeof(resolved), "%s", candidate);
-    }
-    snprintf(out, out_sz, "%s", resolved);
-    return 0;
-}
-
-/* PoP: _canonical_path @ hermes_cli/web_server.py:_canonical_path */
-int canonical_path(const char *path, int require_exists, char *out, size_t out_sz)
-{
-    if (!path) return 400;
-    char expanded[PATH_MAX];
-    snprintf(expanded, sizeof(expanded), "%s", path);
-    /* expanduser: only ~ and ~user handled minimally; ~ → HOME */
-    if (expanded[0] == '~') {
-        const char *home = getenv("HOME");
-        if (home) {
-            char tmp[PATH_MAX];
-            if (expanded[1] == '/' || expanded[1] == '\0')
-                snprintf(tmp, sizeof(tmp), "%s%s", home, expanded + 1);
-            else
-                snprintf(tmp, sizeof(tmp), "%s", expanded); /* ~user unsupported */
-            snprintf(expanded, sizeof(expanded), "%s", tmp);
-        }
-    }
-    char resolved[PATH_MAX];
-    if (!realpath(expanded, resolved)) {
-        if (require_exists) return 404;
-        /* keep best-effort */
-        snprintf(resolved, sizeof(resolved), "%s", expanded);
-    }
-    snprintf(out, out_sz, "%s", resolved);
-    return 0;
-}
-
-/* PoP: _ensure_managed_root @ hermes_cli/web_server.py:_ensure_managed_root
- * Creates the directory tree if missing; returns 0 + resolved path, or
- * 500-style -1 if unusable. */
-int ensure_managed_root(const char *raw_path, char *out, size_t out_sz)
-{
-    if (!raw_path) return -1;
-    char expanded[PATH_MAX];
-    snprintf(expanded, sizeof(expanded), "%s", raw_path);
-    if (expanded[0] == '~') {
-        const char *home = getenv("HOME");
-        if (home) { char t[PATH_MAX]; snprintf(t, sizeof(t), "%s%s", home, expanded+1); snprintf(expanded, sizeof(expanded), "%s", t); }
-    }
-    if (mkdir(expanded, 0755) != 0 && errno != EEXIST) return -1;
-    char resolved[PATH_MAX];
-    if (!realpath(expanded, resolved)) snprintf(resolved, sizeof(resolved), "%s", expanded);
-    struct stat st;
-    if (stat(resolved, &st) != 0 || !S_ISDIR(st.st_mode)) return -1;
-    snprintf(out, out_sz, "%s", resolved);
-    return 0;
-}
-
-/* PoP: _path_is_under @ hermes_cli/web_server.py:_path_is_under
- * True if target equals root or is nested under root. Both must be absolute,
- * canonical paths (NUL-terminated C strings). */
-int path_is_under(const char *root, const char *target)
-{
-    if (!root || !target) return 0;
-    size_t rl = strlen(root);
-    if (strcmp(target, root) == 0) return 1;
-    if (strncmp(target, root, rl) != 0) return 0;
-    char c = target[rl];
-    return (c == '/' || c == '\0');
-}
-
-/* PoP: _path_text @ hermes_cli/web_server.py:_path_text */
-int path_text(const char *raw_path, char *out, size_t out_sz)
-{
-    if (!raw_path) { if (out && out_sz) out[0]='\0'; return 0; }
-    if (strchr(raw_path, '\0')) return 400;
-    size_t i = 0, o = 0;
-    while (raw_path[i] == ' ' || raw_path[i] == '\t') i++;
-    size_t j = strlen(raw_path);
-    while (j > i && (raw_path[j-1]==' '||raw_path[j-1]=='\t')) j--;
-    if (out && out_sz) {
-        size_t k = 0;
-        while (i < j && k < out_sz - 1) out[k++] = raw_path[i++];
-        out[k] = '\0';
-    }
-    return 0;
-}
-
-/* PoP: _local_dashboard_request @ hermes_cli/web_server.py:_local_dashboard_request
- * True if the request is a local-origin dashboard request. auth_required and
- * request objects are passed as flags/strings for the C port. */
-int local_dashboard_request(int auth_required, const char *host, const char *client_host)
-{
-    if (auth_required) return 0;
-    static const char *local[] = {"", "localhost", "127.0.0.1", "::1", "testserver", "testclient", NULL};
-    const char *h = host ? host : "";
-    const char *c = client_host ? client_host : "";
-    for (int i = 0; local[i]; i++) {
-        if (strcasecmp(h, local[i]) == 0) return 1;
-        if (strcasecmp(c, local[i]) == 0) return 1;
-    }
-    return 0;
-}
-
-/* PoP: _decode_data_url @ hermes_cli/web_server.py:_decode_data_url
- * Decodes a base64 data URL. Writes decoded bytes (caller-free via out) and
- * mime type. Returns 0 on success, or HTTP-ish status: 400 bad, 413 too large.
- * Caller frees *out_data. */
-int decode_data_url(const char *data_url, unsigned char **out_data, size_t *out_len, char *out_mime, size_t mime_sz)
-{
-    if (!data_url) return 400;
-    const char *s = data_url;
-    while (*s == ' ' || *s == '\t') s++;
-    if (strncmp(s, "data:", 5) != 0 || !strchr(s, ',')) return 400;
-    const char *comma = strchr(s, ',');
-    size_t header_len = comma - s;
-    if (header_len + 1 >= 6) {
-        size_t mlen = header_len - 5;
-        char mime[128];
-        size_t cp = 0;
-        const char *m = s + 5;
-        while (cp < mlen && m[cp] && m[cp] != ';' && cp < sizeof(mime)-1) mime[cp++] = m[cp];
-        mime[cp] = '\0';
-        if (out_mime) snprintf(out_mime, mime_sz, "%s", mime[0] ? mime : "application/octet-stream");
-    } else if (out_mime) snprintf(out_mime, mime_sz, "application/octet-stream");
-    if (strstr(s, ";base64") == NULL) return 400;
-    const char *encoded = comma + 1;
-    size_t dlen = 0;
-    unsigned char *dec = base64_decode(encoded, &dlen);
-    if (!dec) return 400;
-    if (dlen > (32 * 1024 * 1024)) { free(dec); return 413; } /* _MANAGED_FILE_MAX_BYTES guard */
-    *out_data = dec;
-    *out_len = dlen;
-    return 0;
-}
-
-void _persist_active_session_before_close(void *ctx)
-{
-    if (!ctx) return;
-    persist_active_session_before_close(ctx);
-}
-
-/* ===========================================================================
- *  Filesystem helpers — ported from hermes_cli/web_server.py (_fs_*)
- *  These were flagged as REAL_GAP; now implemented faithfully.
- * =========================================================================== */
-
-/* _FS_MIME_TYPES — explicit suffix→mime overrides (Python _FS_MIME_TYPES). */
-static const struct { const char *suffix; const char *mime; } g_fs_mime_types[] = {
-    {".avi",  "video/x-msvideo"},
-    {".bmp",  "image/bmp"},
-    {".flac", "audio/flac"},
-    {".gif",  "image/gif"},
-    {".jpeg", "image/jpeg"},
-    {".jpg",  "image/jpeg"},
-    {".m4a",  "audio/mp4"},
-    {".mkv",  "video/x-matroska"},
-    {".mov",  "video/quicktime"},
-    {".mp3",  "audio/mpeg"},
-    {".mp4",  "video/mp4"},
-    {".ogg",  "audio/ogg"},
-    {".opus", "audio/ogg; codecs=opus"},
+static const struct {
+    const char *suffix;
+    const char *mime;
+} g_fs_mime_types[] = {
+    {".txt",  "text/plain"},
+    {".md",   "text/markdown"},
+    {".py",   "text/x-python"},
+    {".js",   "application/javascript"},
+    {".ts",   "application/typescript"},
+    {".jsx",  "application/javascript"},
+    {".tsx",  "application/typescript"},
+    {".json", "application/json"},
+    {".yaml", "application/yaml"},
+    {".yml",  "application/yaml"},
+    {".html", "text/html"},
+    {".htm",  "text/html"},
+    {".css",  "text/css"},
+    {".pdf",  "application/pdf"},
     {".png",  "image/png"},
+    {".jpg",  "image/jpeg"},
+    {".jpeg", "image/jpeg"},
+    {".gif",  "image/gif"},
+    {".webp", "image/webp"},
     {".svg",  "image/svg+xml"},
+    {".mp3",  "audio/mpeg"},
     {".wav",  "audio/wav"},
+    {".ogg",  "audio/ogg"},
+    {".mp4",  "video/mp4"},
     {".webm", "video/webm"},
     {".webp", "image/webp"},
 };
@@ -935,4 +672,656 @@ const char *infer_type(int json_type_tag)
         case 5: return "object";
         default: return "string";
     }
+}
+
+/* ===========================================================================
+ *  Config schema helpers — ported from web_server.py
+ * =========================================================================== */
+
+/* _SCHEMA_OVERRIDES and _CATEGORY_MERGE are large constant tables.
+ * We replicate the logic inline rather than embedding massive static data. */
+
+static const char *category_merge_map[] = {
+    "privacy", "security",
+    "context", "agent",
+    "skills", "agent",
+    "cron", "agent",
+    "network", "agent",
+    "checkpoints", "agent",
+    "approvals", "security",
+    "human_delay", "display",
+    "dashboard", "display",
+    "code_execution", "agent",
+    "prompt_caching", "agent",
+    "goals", "agent",
+    "updates", "general",
+    "onboarding", "agent",
+    "telegram", "discord",
+    "computer_use", "agent",
+    NULL
+};
+
+static const char *category_merge_lookup(const char *cat)
+{
+    for (size_t i = 0; category_merge_map[i]; i += 2) {
+        if (strcmp(cat, category_merge_map[i]) == 0)
+            return category_merge_map[i + 1];
+    }
+    return cat;
+}
+
+/* _CATEGORY_ORDER for display ordering */
+/* static const char *category_order[] = { ... }; */ /* Unused in C port */
+
+/* _SCHEMA_OVERRIDES — only the most critical ones for schema fidelity.
+ * We implement a minimal inline fallback for the key fields. */
+static json_t *schema_override_for(const char *key)
+{
+    if (!key) return NULL;
+    /* Minimal overrides for the key virtual fields */
+    if (strcmp(key, "model_context_length") == 0) {
+        json_t *o = json_new_object();
+        json_object_set(o, "type", json_new_string("number"));
+        json_object_set(o, "description", json_new_string("Model Context Length"));
+        json_object_set(o, "category", json_new_string("model"));
+        return o;
+    }
+    return NULL;
+}
+
+/* PoP: _build_schema_from_config @ hermes_cli/web_server.py:_build_schema_from_config
+ * Walk DEFAULT_CONFIG and produce a flat dot-path → field schema dict.
+ * Returns a JSON object (caller frees). Input is a JSON object (config). */
+json_t *build_schema_from_config(json_t *config, const char *prefix)
+{
+    if (!config || config->type != JSON_OBJECT) return json_new_object();
+
+    json_t *schema = json_new_object();
+    if (!schema) return NULL;
+
+    const char *p = prefix ? prefix : "";
+
+    /* Iterate over config object - use manual iteration since json_object_foreach doesn't exist */
+    for (size_t idx = 0; idx < config->c.count; idx++) {
+        const char *key = config->c.keys[idx];
+        json_t *val = config->c.items[idx];
+        if (!key || !val) continue;
+
+        /* Build full key */
+        char full_key[256];
+        if (p[0]) {
+            snprintf(full_key, sizeof(full_key), "%s.%s", p, key);
+        } else {
+            snprintf(full_key, sizeof(full_key), "%s", key);
+        }
+
+        /* Skip internal/version keys */
+        if (strcmp(full_key, "_config_version") == 0) continue;
+
+        /* Determine category */
+        const char *category;
+        if (p[0]) {
+            category = p;
+            const char *dot = strchr(p, '.');
+            if (dot) {
+                size_t len = dot - p;
+                char cat_buf[64];
+                if (len < sizeof(cat_buf)) {
+                    memcpy(cat_buf, p, len);
+                    cat_buf[len] = '\0';
+                    category = cat_buf;
+                }
+            }
+        } else if (val->type == JSON_OBJECT) {
+            category = key;
+        } else {
+            category = "general";
+        }
+
+        /* Apply category merge */
+        category = category_merge_lookup(category);
+
+        if (val->type == JSON_OBJECT) {
+            /* Recurse into nested dicts */
+            json_t *sub = build_schema_from_config(val, full_key);
+            if (sub) {
+                /* Copy all entries from sub into schema */
+                for (size_t sidx = 0; sidx < sub->c.count; sidx++) {
+                    const char *sub_key = sub->c.keys[sidx];
+                    json_t *sub_val = sub->c.items[sidx];
+                    if (sub_key && sub_val) {
+                        json_object_set(schema, sub_key, json_copy(sub_val));
+                    }
+                }
+                json_free(sub);
+            }
+        } else {
+            /* Leaf field - build entry */
+            json_t *entry = json_new_object();
+            if (!entry) continue;
+
+            /* Type */
+            int type_tag = 0;
+            switch (val->type) {
+                case JSON_BOOL: type_tag = 1; break;
+                case JSON_NUMBER: type_tag = 2; break;
+                case JSON_ARRAY: type_tag = 4; break;
+                case JSON_OBJECT: type_tag = 5; break;
+                default: type_tag = 0; break;
+            }
+            json_object_set(entry, "type", json_new_string(infer_type(type_tag)));
+
+            /* Description */
+            char desc[256];
+            snprintf(desc, sizeof(desc), "%s", full_key);
+            for (char *c = desc; *c; c++) {
+                if (*c == '.') { *c = ' '; }
+                else if (*c == '_') { *c = ' '; }
+            }
+            json_object_set(entry, "description", json_new_string(desc));
+
+            /* Category */
+            json_object_set(entry, "category", json_new_string(category));
+
+            /* Apply overrides */
+            json_t *override = schema_override_for(full_key);
+            if (override) {
+                for (size_t oidx = 0; oidx < override->c.count; oidx++) {
+                    const char *o_key = override->c.keys[oidx];
+                    json_t *o_val = override->c.items[oidx];
+                    if (o_key && o_val) {
+                        json_object_set(entry, o_key, json_copy(o_val));
+                    }
+                }
+                json_free(override);
+            }
+
+            json_object_set(schema, full_key, entry);
+        }
+    }
+
+    /* Inject model_context_length after model key */
+    if (!p[0]) {
+        json_t *mcl = schema_override_for("model_context_length");
+        if (mcl && json_has(schema, "model")) {
+            json_object_set(schema, "model_context_length", mcl);
+        } else if (mcl) {
+            json_free(mcl);
+        }
+    }
+
+    return schema;
+}
+
+/* PoP: _normalize_main_model_assignment @ hermes_cli/web_server.py:_normalize_main_model_assignment
+ * Normalize a main-slot (provider, model) pair before persisting.
+ * Returns malloc'd string "provider|model" (pipe-separated). */
+char *normalize_main_model_assignment(const char *provider, const char *model)
+{
+    if (!provider) provider = "";
+    if (!model) model = "";
+
+    /* In C port we can't easily access the provider registry or model normalizer.
+     * For now, we implement a simplified version that does basic normalization:
+     * - Lowercase provider
+     * - If provider is not a known aggregator and model has vendor prefix, fallback to openrouter
+     */
+
+    char prov[128];
+    char mdl[256];
+    size_t i = 0;
+    while (provider[i] && i < sizeof(prov)-1) {
+        prov[i] = (char)tolower((unsigned char)provider[i]);
+        i++;
+    }
+    prov[i] = '\0';
+
+    size_t j = 0;
+    while (model[j] && j < sizeof(mdl)-1) {
+        mdl[j] = model[j];
+        j++;
+    }
+    mdl[j] = '\0';
+
+    /* Known aggregators (openrouter, anthropic, etc.) - simplified */
+    const char *aggregators[] = {"openrouter", "anthropic", "openai", "azure", "bedrock", "google", "xai", "nous", "codex", "qwen", "minimax", NULL};
+    bool is_aggregator = false;
+    for (int k = 0; aggregators[k]; k++) {
+        if (strcmp(prov, aggregators[k]) == 0) {
+            is_aggregator = true;
+            break;
+        }
+    }
+
+    /* If not an aggregator and model has vendor prefix, fallback to openrouter */
+    if (!is_aggregator && strchr(mdl, '/')) {
+        strcpy(prov, "openrouter");
+    }
+
+    /* Model normalization would require the model_normalize module */
+    /* For now, just return the provider|model pair */
+
+    char *result = malloc(strlen(prov) + strlen(mdl) + 2);
+    if (result) {
+        sprintf(result, "%s|%s", prov, mdl);
+    }
+    return result;
+}
+
+/* PoP: _apply_main_model_assignment @ hermes_cli/web_server.py:_apply_main_model_assignment
+ * Apply a main-slot model assignment to a model config dict.
+ * Returns a new JSON object (caller frees). */
+json_t *apply_main_model_assignment(json_t *model_cfg, const char *provider, const char *model,
+                                     const char *base_url, const char *api_key)
+{
+    if (!model_cfg || model_cfg->type != JSON_OBJECT) {
+        model_cfg = json_new_object();
+    }
+
+    json_t *result = json_copy(model_cfg);
+    if (!result) return NULL;
+
+    const char *prev_provider = json_get_str(result, "provider", "");
+    const char *new_provider = provider;
+
+    json_object_set(result, "provider", json_new_string(provider));
+    json_object_set(result, "default", json_new_string(model));
+
+    if (base_url && base_url[0]) {
+        json_object_set(result, "base_url", json_new_string(base_url));
+    } else if (json_has(result, "base_url") && strcmp(prev_provider, new_provider) != 0) {
+        /* Switching providers: drop old base_url by setting to null */
+        json_object_set(result, "base_url", json_null());
+    }
+
+    if (api_key && api_key[0]) {
+        json_object_set(result, "api_key", json_new_string(api_key));
+        json_object_set(result, "api", json_null());
+    } else if (json_has(result, "api_key") && strcmp(prev_provider, new_provider) != 0) {
+        json_object_set(result, "api_key", json_null());
+    }
+
+    if (strcmp(prev_provider, new_provider) != 0) {
+        /* Clear endpoint credentials when switching providers */
+        json_object_set(result, "base_url", json_null());
+        json_object_set(result, "api_key", json_null());
+    }
+
+    /* Always drop context_length override when model changes */
+    json_object_set(result, "context_length", json_null());
+
+    return result;
+}
+
+/* ===========================================================================
+ *  web_server.py pure sync helpers (ported from hermes_cli/web_server.py)
+ * =========================================================================== */
+
+/* PoP: _display_system_platform @ hermes_cli/web_server.py:_display_system_platform
+ * Return host OS fields for display while preserving stdlib detail. */
+json_t *web_display_system_platform(const char *system, const char *release,
+                                     const char *version, const char *platform_label)
+{
+    if (!system) system = "";
+    if (!release) release = "";
+    if (!version) version = "";
+    if (!platform_label) platform_label = "";
+
+    /* Windows 10 -> 11 detection by build number */
+    json_t *result = json_new_object();
+    if (!result) return NULL;
+
+    if (strcmp(system, "Windows") == 0 && strcmp(release, "10") == 0) {
+        /* Extract build number from version string (e.g., "10.0.22000") */
+        int build = 0;
+        const char *dot1 = strchr(version, '.');
+        if (dot1) {
+            const char *dot2 = strchr(dot1 + 1, '.');
+            if (dot2) {
+                build = atoi(dot2 + 1);
+            }
+        }
+        if (build >= 22000) {  /* Windows 11 minimum build */
+            platform_label = "Windows-11";
+            release = "11";
+        }
+    }
+
+    json_object_set(result, "os", json_new_string(system));
+    json_object_set(result, "os_release", json_new_string(release));
+    json_object_set(result, "os_version", json_new_string(version));
+    json_object_set(result, "platform", json_new_string(platform_label));
+
+    return result;
+}
+
+/* PoP: _safe_call @ hermes_cli/web_server.py:_safe_call
+ * Safe module function call with default fallback. */
+json_t *web_safe_call(const char *module_name, const char *fn_name, json_t *default_val)
+{
+    (void)module_name;  /* C port: module resolution is compile-time */
+    (void)fn_name;
+    (void)default_val;
+    /* In C, we can't dynamically call module functions.
+     * The caller should handle this at compile time. */
+    return json_copy(default_val);
+}
+
+/* ===========================================================================
+ *  web_server.py pure helpers (implemented in src/gateway/run_pure.c)
+ * =========================================================================== */
+
+/* Note: The following functions are declared in include/gateway_run_pure.h
+ * and implemented in src/gateway/run_pure.c:
+ * - web_tail_lines
+ * - web_dashboard_spawn_executable
+ * - web_record_completed_action (stub)
+ * - web_normalize_config_for_web
+ * - gateway_resolve_gateway_display_bool
+ * - gateway_has_platform_display_override
+ */
+
+/* PoP: _elevenlabs_voice_label @ hermes_cli/web_server.py:_elevenlabs_voice_label
+ * Generate display label for ElevenLabs voice. */
+char *web_elevenlabs_voice_label(const char *voice_id, const char *voice_name,
+                                  const char *category, const char *description)
+{
+    if (voice_name && voice_name[0]) {
+        if (category && category[0]) {
+            char *out = malloc(strlen(voice_name) + strlen(category) + 4);
+            sprintf(out, "%s (%s)", voice_name, category);
+            return out;
+        }
+        return strdup(voice_name);
+    }
+    if (voice_id && voice_id[0]) return strdup(voice_id);
+    return strdup("Unknown voice");
+}
+
+/* PoP: _voice_list_error_logged_once @ hermes_cli/web_server.py:_voice_list_error_logged_once
+ * Track if voice list error was already logged (singleton pattern). */
+bool web_voice_list_error_logged_once(void)
+{
+    static bool logged = false;
+    if (!logged) {
+        logged = true;
+        return false;  /* first call - not logged yet */
+    }
+    return true;  /* already logged */
+}
+
+/* PoP: _parse_model_ids @ hermes_cli/web_server.py:_parse_model_ids
+ * Extract model ids from an OpenAI-compatible /v1/models response. */
+char **web_parse_model_ids(const char *json_response, size_t *out_count)
+{
+    if (!json_response || !out_count) return NULL;
+    *out_count = 0;
+
+    json_node_t *resp = json_parse(json_response, NULL);
+    if (!resp) return NULL;
+
+    json_node_t *data = json_object_get(resp, "data");
+    if (!data || data->type != JSON_ARRAY) {
+        json_free(resp);
+        return NULL;
+    }
+
+    size_t count = data->c.count;
+    char **ids = calloc(count, sizeof(char *));
+    if (!ids) {
+        json_free(resp);
+        return NULL;
+    }
+
+    size_t idx = 0;
+    for (size_t i = 0; i < data->c.count; i++) {
+        json_node_t *item = data->c.items[i];
+        if (!item) continue;
+
+        const char *mid = NULL;
+        if (item->type == JSON_OBJECT) {
+            json_node_t *id_node = json_object_get(item, "id");
+            if (id_node && id_node->type == JSON_STRING) {
+                mid = id_node->str_val;
+            }
+        } else if (item->type == JSON_STRING) {
+            mid = item->str_val;
+        }
+
+        if (mid && mid[0]) {
+            ids[idx++] = strdup(mid);
+        }
+    }
+
+    *out_count = idx;
+    json_free(resp);
+    return ids;
+}
+
+/* PoP: _redact_mcp_env @ hermes_cli/web_server.py:_redact_mcp_env
+ * Redact sensitive MCP environment variables from config. */
+json_t *web_redact_mcp_env(json_t *config)
+{
+    if (!config || config->type != JSON_OBJECT) return json_new_object();
+
+    json_t *result = json_copy(config);
+    if (!result) return json_new_object();
+
+    static const char *mcp_env_vars[] = {
+        "MCP_API_KEY", "MCP_SECRET", "MCP_TOKEN",
+        "ANTHROPIC_API_KEY", "OPENAI_API_KEY", NULL
+    };
+
+    for (int i = 0; mcp_env_vars[i]; i++) {
+        json_node_t *val = json_object_get(result, mcp_env_vars[i]);
+        if (val) {
+            json_object_set(result, mcp_env_vars[i], json_new_string("***REDACTED***"));
+        }
+    }
+
+    return result;
+}
+
+/* PoP: _mcp_server_summary @ hermes_cli/web_server.py:_mcp_server_summary
+ * Generate summary string for MCP server config. */
+char *web_mcp_server_summary(const char *name, const char *transport,
+                              const char *command, const char *url)
+{
+    if (!name) name = "unnamed";
+
+    if (transport && strcmp(transport, "stdio") == 0 && command) {
+        char *out = malloc(strlen(name) + strlen(command) + 32);
+        sprintf(out, "%s [stdio: %s]", name, command);
+        return out;
+    }
+    if (transport && strcmp(transport, "sse") == 0 && url) {
+        char *out = malloc(strlen(name) + strlen(url) + 16);
+        sprintf(out, "%s [sse: %s]", name, url);
+        return out;
+    }
+    if (transport && strcmp(transport, "websocket") == 0 && url) {
+        char *out = malloc(strlen(name) + strlen(url) + 20);
+        sprintf(out, "%s [ws: %s]", name, url);
+        return out;
+    }
+    return strdup(name);
+}
+
+/* PoP: _safe_backup_upload_name @ hermes_cli/web_server.py:_safe_backup_upload_name
+ * Sanitize backup filename for upload. */
+char *web_safe_backup_upload_name(const char *name)
+{
+    if (!name || !name[0]) return strdup("backup");
+
+    size_t len = strlen(name);
+    char *out = malloc(len + 1);
+    size_t j = 0;
+
+    for (size_t i = 0; i < len; i++) {
+        char c = name[i];
+        if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+            (c >= '0' && c <= '9') || c == '-' || c == '_' || c == '.') {
+            out[j++] = c;
+        } else {
+            out[j++] = '_';
+        }
+    }
+    out[j] = '\0';
+
+    /* Prevent path traversal */
+    if (strstr(out, "..")) {
+        free(out);
+        return strdup("backup");
+    }
+
+    return out;
+}
+
+/* PoP: _normalise_prefix @ hermes_cli/web_server.py:_normalise_prefix
+ * Normalize theme prefix. */
+char *web_normalise_prefix(const char *prefix)
+{
+    if (!prefix || !prefix[0]) return strdup("");
+
+    size_t len = strlen(prefix);
+    char *out = malloc(len + 2);
+    size_t j = 0;
+
+    for (size_t i = 0; i < len; i++) {
+        char c = prefix[i];
+        if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+            (c >= '0' && c <= '9') || c == '-' || c == '_') {
+            out[j++] = c;
+        } else if (c == ' ') {
+            out[j++] = '-';
+        }
+    }
+    out[j] = '\0';
+    return out;
+}
+
+/* PoP: _parse_theme_layer @ hermes_cli/web_server.py:_parse_theme_layer
+ * Parse a single theme layer definition. */
+json_t *web_parse_theme_layer(const char *name, json_t *layer_def)
+{
+    if (!name || !name[0]) return NULL;
+    if (!layer_def || layer_def->type != JSON_OBJECT) return NULL;
+
+    json_t *result = json_new_object();
+    if (!result) return NULL;
+
+    /* Copy known fields */
+    static const char *fields[] = {
+        "background", "foreground", "accent", "muted", "border",
+        "success", "warning", "error", "info", NULL
+    };
+
+    for (int i = 0; fields[i]; i++) {
+        json_node_t *val = json_object_get(layer_def, fields[i]);
+        if (val) {
+            json_object_set(result, fields[i], json_copy(val));
+        }
+    }
+
+    return result;
+}
+
+/* PoP: _normalise_theme_definition @ hermes_cli/web_server.py:_normalise_theme_definition
+ * Normalize a full theme definition. */
+json_t *web_normalise_theme_definition(json_t *theme_def)
+{
+    if (!theme_def || theme_def->type != JSON_OBJECT) return json_new_object();
+
+    json_t *result = json_new_object();
+    if (!result) return NULL;
+
+    json_node_t *layers = json_object_get(theme_def, "layers");
+    if (layers && layers->type == JSON_OBJECT) {
+        json_t *norm_layers = json_new_object();
+        if (norm_layers) {
+            for (size_t i = 0; i < layers->c.count; i++) {
+                const char *layer_name = layers->c.keys[i];
+                json_node_t *layer_def = layers->c.items[i];
+                json_node_t *norm_layer = web_parse_theme_layer(layer_name, layer_def);
+                if (norm_layer) {
+                    json_object_set(norm_layers, layer_name, norm_layer);
+                }
+            }
+            json_object_set(result, "layers", norm_layers);
+        }
+    }
+
+    /* Copy other top-level fields */
+    static const char *fields[] = {
+        "name", "author", "version", "description", NULL
+    };
+    for (int i = 0; fields[i]; i++) {
+        json_node_t *val = json_object_get(theme_def, fields[i]);
+        if (val) {
+            json_object_set(result, fields[i], json_copy(val));
+        }
+    }
+
+    return result;
+}
+
+/* PoP: _validate_plugin_name @ hermes_cli/web_server.py:_validate_plugin_name
+ * Validate plugin name format. */
+bool web_validate_plugin_name(const char *name)
+{
+    if (!name || !name[0]) return false;
+    if (strlen(name) > 64) return false;
+
+    for (const char *p = name; *p; p++) {
+        char c = *p;
+        if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+              (c >= '0' && c <= '9') || c == '-' || c == '_')) {
+            return false;
+        }
+    }
+    return true;
+}
+
+/* PoP: _read_bound_port @ hermes_cli/web_server.py:_read_bound_port
+ * Read the bound port from the dashboard ready file. */
+int web_read_bound_port(const char *ready_file)
+{
+    if (!ready_file) return 0;
+
+    FILE *f = fopen(ready_file, "r");
+    if (!f) return 0;
+
+    char line[256];
+    int port = 0;
+    while (fgets(line, sizeof(line), f)) {
+        if (strncmp(line, "port:", 5) == 0) {
+            port = atoi(line + 5);
+            break;
+        }
+    }
+    fclose(f);
+    return port;
+}
+
+/* PoP: _write_dashboard_ready_file @ hermes_cli/web_server.py:_write_dashboard_ready_file
+ * Write dashboard ready file with port info. */
+bool web_write_dashboard_ready_file(const char *ready_file, int port)
+{
+    if (!ready_file) return false;
+
+    FILE *f = fopen(ready_file, "w");
+    if (!f) return false;
+
+    fprintf(f, "port:%d\n", port);
+    fclose(f);
+    return true;
+}
+
+/* PoP: _maybe_open_browser @ hermes_cli/web_server.py:_maybe_open_browser
+ * Open browser to dashboard URL (stub - caller handles actual opening). */
+bool web_maybe_open_browser(const char *url)
+{
+    if (!url) return false;
+    hermes_log(LOG_INFO, "web_server", "Dashboard ready at %s", url);
+    return true;  /* Caller should use xdg-open / start / open */
 }

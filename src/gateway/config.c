@@ -16,6 +16,7 @@
 #endif
 
 #include "hermes_json.h"
+#include "hermes_gateway_core.h"
 #include "hermes_core_types.h"
 #include "hermes_logger.h"
 #include <string.h>

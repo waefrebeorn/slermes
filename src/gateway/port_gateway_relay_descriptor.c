@@ -2,6 +2,7 @@
  * port_gateway_relay_descriptor.c — Port of Python gateway/relay/descriptor.py
  */
 #include <stdio.h>
+#include "hermes_gateway_core.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>

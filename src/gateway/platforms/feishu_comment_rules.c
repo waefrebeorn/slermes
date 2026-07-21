@@ -18,3 +18,4 @@ N/A: frozenset allow_from — C uses comma-separated string or array.
  */
 
 #include "hermes_core_types.h"
+#include "hermes_gateway_feishu.h"
