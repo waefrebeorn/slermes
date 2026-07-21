@@ -801,6 +801,7 @@ char *checkpoint_manager_working_dir_for_path(tool_checkpoint_mgr_t *self,
  *  previous no-op stubs with real behaviour.
  * ===================================================================== */
 
+/* PoP: prune_checkpoints @ tools/checkpoint_manager.py:prune_checkpoints */
 bool prune_checkpoints(const char *store, const char *working_dir, int keep) {
     if (!store) return false;
     char base[MAX_PATH];
@@ -867,3 +868,4 @@ char* _list_projects(const char *store) {
 }
 
 /* PoP: ensure_installed not applicable - Python only */
+

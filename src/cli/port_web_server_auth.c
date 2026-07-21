@@ -45,6 +45,7 @@ static bool is_loopback_value(const char *h) {
  * back to the legacy "Bearer <token>" Authorization form. Mirrors Python's
  * hmac.compare_digest, which compares the ENTIRE header value — so trailing
  * junk (e.g. "token extra") is rejected, not just whitespace-trimmed. */
+/* PoP: port_web_server_auth__has_valid_session_token @ hermes_cli/web_server.py:_has_valid_session_token */
 bool ws_has_valid_session_token(const char *headers) {
     if (!headers || !g_session_token[0]) return false;
     size_t toklen = strlen(g_session_token);
@@ -92,6 +93,7 @@ bool ws_has_valid_session_token(const char *headers) {
  * trusted (no gate); any non-loopback bind always requires an auth
  * provider. `allow_public` is accepted for backward-compat but ignored —
  * a non-loopback bind ALWAYS engages the gate. */
+/* PoP: port_web_server_auth__should_require_auth @ hermes_cli/web_server.py:should_require_auth */
 bool ws_should_require_auth(const char *host, bool allow_public) {
     (void)allow_public; /* legacy escape hatch, intentionally ignored */
     if (!host) return true;
@@ -104,6 +106,7 @@ bool ws_should_require_auth(const char *host, bool allow_public) {
  * interface. 0.0.0.0 / :: binds opt into all-interfaces (no Host-layer
  * defence possible); loopback binds accept the loopback aliases; explicit
  * non-loopback binds require an exact host match. */
+/* PoP: port_web_server_auth__is_accepted_host @ hermes_cli/web_server.py:_is_accepted_host */
 bool ws_is_accepted_host(const char *host_header, const char *bound_host) {
     if (!host_header || !bound_host) return false;
 
@@ -161,3 +164,6 @@ bool ws_is_accepted_host(const char *host_header, const char *bound_host) {
     /* Explicit non-loopback bind: require exact host match. */
     return strcmp(host_only, bound_lc) == 0;
 }
+
+
+
