@@ -219,7 +219,7 @@ warning. No banned void* passthroughs, no `In a real implementation` façades.
 **Commit:** `d562a040da` — pushed to `origin/main`.
 **Discipline:** real fixes only, no stubs, no void* passthroughs.
 
-## v571 — Pure-Transform Gap Closure (17 funcs / 6 modules)
+## v572 — Pure-Transform Gap Closure (17 funcs / 6 modules)
 
 **What happened:** Continued the REAL_GAP closure pass with pure-transform modules
 (no config/network/async deps). Ported 17 functions with faithful C11 + `/* PoP: */`

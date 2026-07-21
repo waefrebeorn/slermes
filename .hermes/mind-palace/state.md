@@ -1,12 +1,22 @@
-# State — Slermes C Translation (v571)
+# State — Slermes C Translation (v572)
 
-- Build: `make slermes` = 0 errors, binary links clean (~42 MB)
-- **Scanner (real, live 2026-07-12):** 4,924 PORTED (50.6%), 4,732 REAL_GAP (48.6%), 75 PARTIAL, 9,731 total features. N/A: 0 (deleted).
+- Build: `make slermes` = 0 errors, binary links clean (~45 MB)
+- **Scanner (real, live 2026-07-20):** 5,868 PORTED (60.3%), 3,650 REAL_GAP (37.5%), 215 PARTIAL, 9,731 total features. N/A: 0 (deleted).
 - Tests: `bash tests/run_mission8_tests.sh` → 36 passed, 0 failed, 35 skipped
-- **CLI dispatch-hub split COMPLETE (v570):** the prior session extracted `src/cli/commands.c` (7.8k lines) into 14 `cli_cmd_<cat>.c/.h` modules but left it unbuildable. This session finished it — `make slermes` links clean (42 MB binary), `/help` dispatch renders, 36/36 M8 tests pass, parity scanner unchanged (PoP annotations preserved).
-- Prior walkway claims of "8,688/8,688 100% PORTED" are stale/v398-era fiction; corrected to live scanner output above
 
-## This Session (v570) — Façade Audit Closure
+## This Session (v572) — God Header Extraction
+
+Split the 1530-line `include/hermes_gateway.h` into a focused type-declaration
+header (`hermes_gateway_types.h`) + the function-declaration umbrella
+(`hermes_gateway.h` now includes it). Removed ~306 lines of duplicate type
+definitions from the umbrella — gateway_msg_t, gw_rate_limiter_t,
+gw_http_pool_entry_t, gw_session_source_t, gw_session_entry_t, gw_platform_t,
+gateway_state_t, webhook_subscription_t, slash_policy_t, and all associated
+#defines now live in a self-contained header with its own include guard.
+
+Builds clean, links (45 MB), 7,579 global symbols. Mission 8: 36/0/35.
+No behavioral change — pure structural extraction.
+Follows the previous session's monolith-split pattern (hermes_gap_fixes).
 
 All 18 files ported to real implementations (per-file commits, no god-header):
 
@@ -66,7 +76,7 @@ Modules ported (commits):
 - `b21caa411c` gateway — 5 platform/env (uname/sha256)
 - `9f3a620f81` kanban — 4 CLI/time helpers
 
-## This Session (v571) — Pure-Transform Gap Closure (17 funcs)
+## This Session (v572) — Pure-Transform Gap Closure (17 funcs)
 
 Ported 17 REAL_GAP functions across 6 modules with faithful C11 + `/* PoP: */`
 annotations, each backed by an oracle harness (`t_port_*.c` + `sta_oracle_*.py`)
