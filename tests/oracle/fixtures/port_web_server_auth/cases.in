@@ -1,0 +1,48 @@
+# Fixture for web server auth helpers (port_web_server_auth.c)
+# One op per line. '|' separates fields so values may contain spaces.
+# A leading '#' or blank line is ignored. Where an arg is wrapped in
+# double quotes, the harness strips the outer quotes (no nested escaping
+# is required). '\r' and '\n' literal escapes inside headers are honoured.
+#
+# Grammar:
+#   should_require_auth|<host>|<allow_public:bool>
+#   is_accepted_host|<host_header>|<bound_host>
+#   has_valid_session_token|<headers>
+
+# ---- should_require_auth: loopback binds are trusted (no auth gate) ----
+# Use "NONE" as a sentinel for empty host; the harness converts back to "".
+should_require_auth|localhost|false
+should_require_auth|127.0.0.1|false
+should_require_auth|::1|false
+should_require_auth|0.0.0.0|true
+should_require_auth|192.168.1.5|true
+should_require_auth|example.com|true
+should_require_auth|localhost|true
+should_require_auth|0.0.0.0|false
+should_require_auth|NONE|false
+
+# ---- is_accepted_host: DNS-rebinding defence ----
+is_accepted_host|localhost|localhost
+is_accepted_host|localhost:9119|localhost
+is_accepted_host|127.0.0.1|localhost
+is_accepted_host|evil.test|localhost
+is_accepted_host|0.0.0.0|0.0.0.0
+is_accepted_host|evil.test|0.0.0.0
+is_accepted_host|10.0.0.5|10.0.0.5
+is_accepted_host|10.0.0.6|10.0.0.5
+is_accepted_host|[::1]:9119|localhost
+is_accepted_host|[::1]|localhost
+is_accepted_host|NONE|localhost
+is_accepted_host|EXAMPLE.test|example.test
+is_accepted_host|example.test|EXAMPLE.test
+
+# ---- has_valid_session_token (token is hard-preset to "test-token-123") ----
+has_valid_session_token|"X-Hermes-Session-Token: test-token-123\r\n"
+has_valid_session_token|"x-hermes-session-token: test-token-123\r\n"
+has_valid_session_token|"X-Hermes-Session-Token: test-token-123 extra\r\n"
+has_valid_session_token|"Authorization: Bearer test-token-123\r\n"
+has_valid_session_token|"Authorization: Bearer ***"
+has_valid_session_token|"X-Hermes-Session-Token: other\r\n"
+has_valid_session_token|""
+has_valid_session_token|"X-Hermes-Session-Token: test-token-123x\r\n"
+has_valid_session_token|"Authorization: Bearer test-token-123 extra\r\n"
