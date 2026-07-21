@@ -1,4 +1,4 @@
-# Plan — Slermes C Translation (v570)
+# Plan — Slermes C Translation (v572)
 
 ## Current State
 - 8,688/8,688 PORTED (100%) — Python→C port complete
