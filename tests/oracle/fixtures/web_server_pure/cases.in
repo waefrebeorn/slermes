@@ -1,0 +1,54 @@
+# Fixture for web_server_pure pure-helpers (port_web_server_schema_path.c).
+# One op per line. '|' separates fields so values may contain spaces.
+# `-` denotes "no arg" for ops that take fewer than the maximum.
+# Comments (`# ...`) and blanks are ignored.
+
+# ─── ws_infer_type_* ──────────────────────────────────────────────────
+infer_type_bool|true
+infer_type_bool|false
+infer_type_int|0
+infer_type_int|42
+infer_type_int|-7
+infer_type_f64|3.14
+infer_type_f64|0.0
+infer_type_str|
+infer_type_str|hello
+
+# ─── ws_path_text ─────────────────────────────────────────────────────
+path_text|hello
+path_text|   spaced  
+path_text|\tnl-\n
+path_text|
+path_text|abc\0def
+
+# ─── ws_path_is_under ──────────────────────────────────────────────────
+path_is_under|/home/user|/home/user
+path_is_under|/home/user|/home/user/docs
+path_is_under|/home/user|/home/other
+path_is_under|/home/user|/home/us
+path_is_under|/|/
+path_is_under|/a|/b
+
+# ─── ws_fs_mime_type ──────────────────────────────────────────────────
+fs_mime|picture.PNG
+fs_mime|foo/bar.txt
+fs_mime|archive.tar.gz
+fs_mime|video.MKV
+fs_mime|noext_file
+
+# ─── ws_audio_extension_for_mime ──────────────────────────────────────
+audio_mime|audio/mpeg
+audio_mime|audio/wav
+audio_mime|audio/x-wav
+audio_mime|  Audio/ogg; codecs=opus 
+audio_mime|audio/mp3;bitrate=128
+audio_mime|unknown/mime
+
+# ─── ws_fs_looks_binary ───────────────────────────────────────────────
+# format: looks_binary|hex_str   (hex of bytestream; "" = empty)
+looks_binary|
+looks_binary|00
+looks_binary|48656c6c6f
+looks_binary|0001020304050607
+looks_binary|616263083031
+looks_binary|41424320206420652066
