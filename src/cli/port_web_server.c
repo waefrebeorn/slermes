@@ -1,4 +1,6 @@
-/**
+#include "hermes_web_server_pure.h"
+
+/** 
  * port_web_server.c — Port of Python: web_server.py
  *
  * Real C implementations for web server / dashboard functions.
@@ -505,97 +507,21 @@ void get_memory_provider_config(void *ctx, void *name)
     fclose(f);
 }
 
-/* ── MIME type mapping ──────────────────────────────────────────────────── */
-
-static const struct {
-    const char *suffix;
-    const char *mime;
-} g_fs_mime_types[] = {
-    {".txt",  "text/plain"},
-    {".md",   "text/markdown"},
-    {".py",   "text/x-python"},
-    {".js",   "application/javascript"},
-    {".ts",   "application/typescript"},
-    {".jsx",  "application/javascript"},
-    {".tsx",  "application/typescript"},
-    {".json", "application/json"},
-    {".yaml", "application/yaml"},
-    {".yml",  "application/yaml"},
-    {".html", "text/html"},
-    {".htm",  "text/html"},
-    {".css",  "text/css"},
-    {".pdf",  "application/pdf"},
-    {".png",  "image/png"},
-    {".jpg",  "image/jpeg"},
-    {".jpeg", "image/jpeg"},
-    {".gif",  "image/gif"},
-    {".webp", "image/webp"},
-    {".svg",  "image/svg+xml"},
-    {".mp3",  "audio/mpeg"},
-    {".wav",  "audio/wav"},
-    {".ogg",  "audio/ogg"},
-    {".mp4",  "video/mp4"},
-    {".webm", "video/webm"},
-    {".webp", "image/webp"},
-};
-
-/* PoP: _fs_mime_type @ hermes_cli/web_server.py:_fs_mime_type */
-const char *fs_mime_type(const char *path)
-{
-    static char buf[128];
-    (void)buf;
-    const char *dot = strrchr(path ? path : "", '.');
-    if (dot) {
-        char suf[32];
-        size_t i;
-        for (i = 0; dot[i] && i < sizeof(suf) - 1; i++) suf[i] = (char)tolower((unsigned char)dot[i]);
-        suf[i] = '\0';
-        for (size_t k = 0; k < sizeof(g_fs_mime_types)/sizeof(g_fs_mime_types[0]); k++) {
-            if (strcmp(suf, g_fs_mime_types[k].suffix) == 0)
-                return g_fs_mime_types[k].mime;
-        }
-    }
-    if (dot) {
-        if (!strcmp(dot, ".txt") || !strcmp(dot, ".md") || !strcmp(dot, ".py") ||
-            !strcmp(dot, ".c") || !strcmp(dot, ".h") || !strcmp(dot, ".json") ||
-            !strcmp(dot, ".yaml") || !strcmp(dot, ".yml") || !strcmp(dot, ".csv"))
-            return "text/plain";
-        if (!strcmp(dot, ".html") || !strcmp(dot, ".htm")) return "text/html";
-        if (!strcmp(dot, ".css")) return "text/css";
-        if (!strcmp(dot, ".js")) return "application/javascript";
-        if (!strcmp(dot, ".pdf")) return "application/pdf";
-    }
-    return "application/octet-stream";
-}
-
-/* PoP: _fs_looks_binary @ hermes_cli/web_server.py:_fs_looks_binary */
-bool fs_looks_binary(const unsigned char *data, size_t len)
-{
-    if (!data || len == 0) return false;
-    if (memchr(data, '\0', len)) return true;
-    size_t suspicious = 0;
-    for (size_t i = 0; i < len; i++) {
-        unsigned char b = data[i];
-        if (b < 32 && b != 9 && b != 10 && b != 13) suspicious++;
-    }
-    return ((double)suspicious / (double)len) > 0.12;
-}
-
 /* PoP: _fs_regular_file @ hermes_cli/web_server.py:_fs_regular_file
  * Returns 0 on success (fills out_path + *out_mode/*out_size), else an HTTP-ish
- * status code: 400 invalid, 403 unreadable, 404 missing. */
+ * status code: 400 invalid, 403 unreadable, 404 missing. Thin wrapper over
+ * ws_fs_regular_file (which returns ws_path_status_t + struct stat). */
 int fs_regular_file(const char *raw_path, char *out_path, size_t out_sz,
                     mode_t *out_mode, long *out_size)
 {
     if (!raw_path || !raw_path[0]) return 400;
     struct stat st;
-    if (stat(raw_path, &st) != 0) {
-        if (errno == ENOENT) return 404;
-        if (errno == EACCES) return 403;
-        return 400;
-    }
-    if (S_ISDIR(st.st_mode)) return 400;
-    if (!S_ISREG(st.st_mode)) return 400;
+    ws_path_status_t ws = ws_fs_regular_file(raw_path, &st);
+    if (ws == WS_PATH_NOT_FOUND) return 404;
+    if (ws == WS_PATH_NOT_READABLE) return 403;
+    if (ws == WS_PATH_IS_DIR) return 400;
+    if (ws == WS_PATH_NOT_REGULAR) return 400;
+    if (ws != WS_PATH_OK) return 400;
     if (out_path && out_sz) snprintf(out_path, out_sz, "%s", raw_path);
     if (out_mode) *out_mode = st.st_mode;
     if (out_size) *out_size = (long)st.st_size;
@@ -603,22 +529,10 @@ int fs_regular_file(const char *raw_path, char *out_path, size_t out_sz,
 }
 
 /* PoP: _fs_find_git_root @ hermes_cli/web_server.py:_fs_find_git_root */
+/* Delegate to pure port to avoid duplicate implementation */
 char *fs_find_git_root(const char *start)
 {
-    if (!start || !start[0]) return NULL;
-    char cur[PATH_MAX];
-    snprintf(cur, sizeof(cur), "%s", start);
-    for (int i = 0; i < 50; i++) {
-        char probe[PATH_MAX];
-        snprintf(probe, sizeof(probe), "%s/.git", cur);
-        struct stat st;
-        if (stat(probe, &st) == 0 && S_ISDIR(st.st_mode))
-            return strdup(cur);
-        char *slash = strrchr(cur, '/');
-        if (!slash || slash == cur) return NULL;
-        *slash = '\0';
-    }
-    return NULL;
+    return ws_fs_find_git_root(start);
 }
 
 /* PoP: _fs_git_branch @ hermes_cli/web_server.py:_fs_git_branch */
@@ -640,24 +554,7 @@ char *fs_git_branch(const char *cwd)
 /* PoP: _audio_extension_for_mime @ hermes_cli/web_server.py:_audio_extension_for_mime */
 const char *audio_extension_for_mime(const char *mime_type)
 {
-    static const struct { const char *mime; const char *ext; } map[] = {
-        {"audio/flac", ".flac"},
-        {"audio/mp4",  ".m4a"},
-        {"audio/mpeg", ".mp3"},
-        {"audio/ogg",  ".ogg"},
-        {"audio/ogg; codecs=opus", ".opus"},
-        {"audio/wav",  ".wav"},
-        {"audio/webm", ".webm"},
-        {"audio/x-wav", ".wav"},
-    };
-    char norm[128];
-    size_t i = 0;
-    const char *s = mime_type ? mime_type : "";
-    while (*s && *s != ';' && i < sizeof(norm) - 1) norm[i++] = (char)tolower((unsigned char)*s++);
-    norm[i] = '\0';
-    for (size_t k = 0; k < sizeof(map)/sizeof(map[0]); k++)
-        if (strcmp(norm, map[k].mime) == 0) return map[k].ext;
-    return ".webm";
+    return ws_audio_extension_for_mime(mime_type);
 }
 
 /* PoP: _infer_type @ hermes_cli/web_server.py:_infer_type
