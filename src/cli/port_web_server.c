@@ -147,8 +147,7 @@ char *copilot_acp_status_fn(void)
     return strdup("{\"status\":\"disabled\",\"source\":\"copilot_cli\",\"source_label\":\"Managed by the GitHub Copilot CLI\"}");
 }
 
-/* PoP: dashboard_local_update_managed_externally @ hermes_cli/web_server.py:dashboard_local_update_managed_externally */
-/* Port of Python: _dashboard_local_update_managed_externally */
+/* PoP: _dashboard_local_update_managed_externally @ hermes_cli/web_server.py:_dashboard_local_update_managed_externally */
 bool dashboard_local_update_managed_externally(void) {
     if (default_hermes_root_is_opt_data()) {
         return true;
@@ -169,8 +168,7 @@ bool dashboard_local_update_managed_externally(void) {
     return true;  /* Container without git - externally managed */
 }
 
-/* PoP: gateway_display_command @ hermes_cli/web_server.py:_gateway_display_command */
-/* Port of Python: _gateway_display_command */
+/* PoP: _gateway_display_command @ hermes_cli/web_server.py:_gateway_display_command */
 char *gateway_display_command(const char *profile, const char *verb)
 {
     if (!profile || !verb) return strdup("");
@@ -180,8 +178,7 @@ char *gateway_display_command(const char *profile, const char *verb)
     return cmd;
 }
 
-/* PoP: gateway_subcommand_fn @ hermes_cli/web_server.py:_gateway_subcommand */
-/* Port of Python: _gateway_subcommand */
+/* PoP: _gateway_subcommand @ hermes_cli/web_server.py:_gateway_subcommand */
 char *gateway_subcommand_fn(const char *profile, const char *verb)
 {
     if (!profile || !verb) return strdup("");
@@ -191,16 +188,14 @@ char *gateway_subcommand_fn(const char *profile, const char *verb)
     return sub;
 }
 
-/* PoP: gemini_cli_status @ hermes_cli/web_server.py:_gemini_cli_status */
-/* Port of Python: _gemini_cli_status */
+/* PoP: _gemini_cli_status @ hermes_cli/web_server.py:_gemini_cli_status */
 char *gemini_cli_status_fn(void)
 {
     const char *gemini = getenv("GEMINI_CLI_ENABLED");
     return strdup((gemini && strcmp(gemini, "1") == 0) ? "{\"status\":\"enabled\"}" : "{\"status\":\"disabled\"}");
 }
 
-/* PoP: get_chat_argv_lock @ hermes_cli/web_server.py:_get_chat_argv_lock */
-/* Port of Python: _get_chat_argv_lock */
+/* PoP: _get_chat_argv_lock @ hermes_cli/web_server.py:_get_chat_argv_lock */
 char *get_chat_argv_lock(const char *app)
 {
     if (!app) return strdup("");
@@ -557,7 +552,7 @@ const char *audio_extension_for_mime(const char *mime_type)
     return ws_audio_extension_for_mime(mime_type);
 }
 
-/* PoP: _infer_type @ hermes_cli/web_server.py:_infer_type
+/* PoP: port_web_server__infer_type @ hermes_cli/web_server.py:_infer_type
  * Classify a JSON value type into a UI field type string. */
 const char *infer_type(int json_type_tag)
 {
@@ -750,8 +745,7 @@ json_t *build_schema_from_config(json_t *config, const char *prefix)
     return schema;
 }
 
-/* PoP: _normalize_main_model_assignment @ hermes_cli/web_server.py:_normalize_main_model_assignment
- * Normalize a main-slot (provider, model) pair before persisting.
+/* PoP: port_web_server__normalize_main_model_assignment @ hermes_cli/web_server.py:_normalize_main_model_assignment
  * Returns malloc'd string "provider|model" (pipe-separated). */
 char *normalize_main_model_assignment(const char *provider, const char *model)
 {
@@ -805,7 +799,7 @@ char *normalize_main_model_assignment(const char *provider, const char *model)
     return result;
 }
 
-/* PoP: _apply_main_model_assignment @ hermes_cli/web_server.py:_apply_main_model_assignment
+/* PoP: port_web_server__apply_main_model_assignment @ hermes_cli/web_server.py:_apply_main_model_assignment
  * Apply a main-slot model assignment to a model config dict.
  * Returns a new JSON object (caller frees). */
 json_t *apply_main_model_assignment(json_t *model_cfg, const char *provider, const char *model,
@@ -850,11 +844,7 @@ json_t *apply_main_model_assignment(json_t *model_cfg, const char *provider, con
     return result;
 }
 
-/* ===========================================================================
- *  web_server.py pure sync helpers (ported from hermes_cli/web_server.py)
- * =========================================================================== */
-
-/* PoP: _display_system_platform @ hermes_cli/web_server.py:_display_system_platform
+/* PoP: port_web_server__display_system_platform @ hermes_cli/web_server.py:_display_system_platform
  * Return host OS fields for display while preserving stdlib detail. */
 json_t *web_display_system_platform(const char *system, const char *release,
                                      const char *version, const char *platform_label)
@@ -892,7 +882,7 @@ json_t *web_display_system_platform(const char *system, const char *release,
     return result;
 }
 
-/* PoP: _safe_call @ hermes_cli/web_server.py:_safe_call
+/* PoP: port_web_server__safe_call @ hermes_cli/web_server.py:_safe_call
  * Safe module function call with default fallback. */
 json_t *web_safe_call(const char *module_name, const char *fn_name, json_t *default_val)
 {
@@ -918,7 +908,7 @@ json_t *web_safe_call(const char *module_name, const char *fn_name, json_t *defa
  * - gateway_has_platform_display_override
  */
 
-/* PoP: _elevenlabs_voice_label @ hermes_cli/web_server.py:_elevenlabs_voice_label
+/* PoP: port_web_server__elevenlabs_voice_label @ hermes_cli/web_server.py:_elevenlabs_voice_label
  * Generate display label for ElevenLabs voice. */
 char *web_elevenlabs_voice_label(const char *voice_id, const char *voice_name,
                                   const char *category, const char *description)
@@ -935,7 +925,7 @@ char *web_elevenlabs_voice_label(const char *voice_id, const char *voice_name,
     return strdup("Unknown voice");
 }
 
-/* PoP: _voice_list_error_logged_once @ hermes_cli/web_server.py:_voice_list_error_logged_once
+/* PoP: port_web_server__voice_list_error_logged_once @ hermes_cli/web_server.py:_voice_list_error_logged_once
  * Track if voice list error was already logged (singleton pattern). */
 bool web_voice_list_error_logged_once(void)
 {
@@ -995,7 +985,7 @@ char **web_parse_model_ids(const char *json_response, size_t *out_count)
     return ids;
 }
 
-/* PoP: _redact_mcp_env @ hermes_cli/web_server.py:_redact_mcp_env
+/* PoP: port_web_server__redact_mcp_env @ hermes_cli/web_server.py:_redact_mcp_env
  * Redact sensitive MCP environment variables from config. */
 json_t *web_redact_mcp_env(json_t *config)
 {
@@ -1019,7 +1009,7 @@ json_t *web_redact_mcp_env(json_t *config)
     return result;
 }
 
-/* PoP: _mcp_server_summary @ hermes_cli/web_server.py:_mcp_server_summary
+/* PoP: port_web_server__mcp_server_summary @ hermes_cli/web_server.py:_mcp_server_summary
  * Generate summary string for MCP server config. */
 char *web_mcp_server_summary(const char *name, const char *transport,
                               const char *command, const char *url)
@@ -1044,7 +1034,7 @@ char *web_mcp_server_summary(const char *name, const char *transport,
     return strdup(name);
 }
 
-/* PoP: _safe_backup_upload_name @ hermes_cli/web_server.py:_safe_backup_upload_name
+/* PoP: port_web_server__safe_backup_upload_name @ hermes_cli/web_server.py:_safe_backup_upload_name
  * Sanitize backup filename for upload. */
 char *web_safe_backup_upload_name(const char *name)
 {
@@ -1074,7 +1064,7 @@ char *web_safe_backup_upload_name(const char *name)
     return out;
 }
 
-/* PoP: _normalise_prefix @ hermes_cli/web_server.py:_normalise_prefix
+/* PoP: port_web_server__normalise_prefix @ hermes_cli/web_server.py:_normalise_prefix
  * Normalize theme prefix. */
 char *web_normalise_prefix(const char *prefix)
 {
@@ -1097,7 +1087,7 @@ char *web_normalise_prefix(const char *prefix)
     return out;
 }
 
-/* PoP: _parse_theme_layer @ hermes_cli/web_server.py:_parse_theme_layer
+/* PoP: port_web_server__parse_theme_layer @ hermes_cli/web_server.py:_parse_theme_layer
  * Parse a single theme layer definition. */
 json_t *web_parse_theme_layer(const char *name, json_t *layer_def)
 {
@@ -1123,7 +1113,7 @@ json_t *web_parse_theme_layer(const char *name, json_t *layer_def)
     return result;
 }
 
-/* PoP: _normalise_theme_definition @ hermes_cli/web_server.py:_normalise_theme_definition
+/* PoP: port_web_server__normalise_theme_definition @ hermes_cli/web_server.py:_normalise_theme_definition
  * Normalize a full theme definition. */
 json_t *web_normalise_theme_definition(json_t *theme_def)
 {
@@ -1162,7 +1152,7 @@ json_t *web_normalise_theme_definition(json_t *theme_def)
     return result;
 }
 
-/* PoP: _validate_plugin_name @ hermes_cli/web_server.py:_validate_plugin_name
+/* PoP: port_web_server__validate_plugin_name @ hermes_cli/web_server.py:_validate_plugin_name
  * Validate plugin name format. */
 bool web_validate_plugin_name(const char *name)
 {
@@ -1179,7 +1169,7 @@ bool web_validate_plugin_name(const char *name)
     return true;
 }
 
-/* PoP: _read_bound_port @ hermes_cli/web_server.py:_read_bound_port
+/* PoP: port_web_server__read_bound_port @ hermes_cli/web_server.py:_read_bound_port
  * Read the bound port from the dashboard ready file. */
 int web_read_bound_port(const char *ready_file)
 {
@@ -1200,7 +1190,7 @@ int web_read_bound_port(const char *ready_file)
     return port;
 }
 
-/* PoP: _write_dashboard_ready_file @ hermes_cli/web_server.py:_write_dashboard_ready_file
+/* PoP: port_web_server__write_dashboard_ready_file @ hermes_cli/web_server.py:_write_dashboard_ready_file
  * Write dashboard ready file with port info. */
 bool web_write_dashboard_ready_file(const char *ready_file, int port)
 {
@@ -1214,7 +1204,7 @@ bool web_write_dashboard_ready_file(const char *ready_file, int port)
     return true;
 }
 
-/* PoP: _maybe_open_browser @ hermes_cli/web_server.py:_maybe_open_browser
+/* PoP: port_web_server__maybe_open_browser @ hermes_cli/web_server.py:_maybe_open_browser
  * Open browser to dashboard URL (stub - caller handles actual opening). */
 bool web_maybe_open_browser(const char *url)
 {
