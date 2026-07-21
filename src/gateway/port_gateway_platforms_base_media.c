@@ -10,6 +10,7 @@
 
 #define _GNU_SOURCE
 #include <stdio.h>
+#include "hermes_gateway_core.h"
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>

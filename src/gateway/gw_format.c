@@ -9,6 +9,7 @@
  */
 
 #include "hermes_core_types.h"
+#include "hermes_gateway_core.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>

@@ -12,6 +12,7 @@
  */
 
 #include "gateway_status.h"
+#include "hermes_gateway_core.h"
 #include "slermes_home.h"
 #include "json.h"
 #include "hash.h"

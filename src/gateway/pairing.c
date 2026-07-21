@@ -4,6 +4,7 @@
  */
 
 #include "pairing.h"
+#include "hermes_gateway_pairing.h"
 #include "crypto.h"
 /* forward-declare the existing whatsapp normalizer (defined in gateway/helpers.c) */
 extern char *normalize_whatsapp_identifier(const char *value);

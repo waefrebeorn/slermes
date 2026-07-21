@@ -9,6 +9,7 @@
  */
 
 #include "hermes_core_types.h"
+#include "hermes_gateway_mirror.h"
 #include "hermes_json.h"
 #include "hermes_db.h"
 #include <stdio.h>

@@ -14,6 +14,7 @@
  */
 
 #include "hermes_json.h"
+#include "hermes_gateway_display_config.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>

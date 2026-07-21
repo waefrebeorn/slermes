@@ -5,7 +5,7 @@
 
 #include "gateway_helpers.h"
 #include "hermes_json.h"
-#include "hermes_gateway.h"
+#include "hermes_gateway_core.h"
 #include "hermes_system_prompt.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -336,7 +336,7 @@ static int count_lines(const char *text) {
 }
 
 /* Check if text looks like a provider/infrastructure error (not normal content).
- * Port of Python gateway/run.py _looks_like_gateway_provider_error().
+ * Port of Python gateway/run.py:_looks_like_gateway_provider_error().
  * Two heuristics from Python: text is short (<=3 lines) AND error marker at start. */
 bool gateway_looks_like_provider_error(const char *text) {
     if (!text || !*text) return false;

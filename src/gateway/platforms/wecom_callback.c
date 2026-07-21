@@ -4,6 +4,7 @@
  */
 
 #include "hermes_wecom_callback.h"
+#include "hermes_gateway_wecom.h"
 #include <stdio.h>
 #include <string.h>
 

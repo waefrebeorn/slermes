@@ -6,7 +6,7 @@
 #include "hermes_core_types.h"
 #include "hermes_agent.h"
 #include "hermes_json.h"
-#include "hermes_gateway.h"
+#include "hermes_gateway_msgraph.h"
 #include <unistd.h>
 #include <errno.h>
 #include <sys/socket.h>

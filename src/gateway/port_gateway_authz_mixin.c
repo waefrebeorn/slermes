@@ -17,7 +17,7 @@
  * which config.c owns — no duplicated platform-name index here.
  */
 
-#include "hermes_gateway.h"
+#include "hermes_gateway_slash_access.h"
 #include "hermes_gateway_config.h"
 #include "hermes_json.h"
 #include <string.h>

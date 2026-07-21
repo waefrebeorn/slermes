@@ -2,6 +2,7 @@
  * port_gateway_platforms_api_server.c — Port of Python gateway/platforms/api_server.py
  */
 #include <stdio.h>
+#include "hermes_gateway_webhook.h"
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>

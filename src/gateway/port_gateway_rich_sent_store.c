@@ -2,6 +2,7 @@
  * port_gateway_rich_sent_store.c — Port of Python gateway/rich_sent_store.py
  */
 #include <stdio.h>
+#include "hermes_gateway_core.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>

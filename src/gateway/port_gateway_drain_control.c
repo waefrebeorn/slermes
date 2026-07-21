@@ -1,6 +1,7 @@
 /* Slermes C port — gateway/drain_control.py (marker contract, pure FS helpers) */
 
 #include <stdbool.h>
+#include "hermes_gateway_core.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>

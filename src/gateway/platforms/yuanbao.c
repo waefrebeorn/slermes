@@ -5,7 +5,7 @@
 
 #include "hermes_core_types.h"
 #include "hermes_json.h"
-#include "hermes_gateway.h"
+#include "hermes_gateway_yuanbao.h"
 #include "websocket.h"
 #include "protobuf.h"
 #include <stdio.h>
@@ -860,7 +860,7 @@ bool yuanbao_md_ends_with_table_row(const char *text)
 /* Split text at nearest paragraph boundary within max_chars.
    Returns head (caller-free) and sets *tail_out (caller-free). */
 /* PoP: yuanbao_md_split_at_paragraph_boundary @ gateway/platforms/yuanbao.py:split_at_paragraph_boundary */
-char *yuanbao_md_split_at_paragraph_boundary(const char *text, int max_chars, char **tail_out)
+char *yuanbao_md_split_at_paragraph_boundary(const char *text, size_t max_chars, char **tail_out)
 {
     if (!text || !tail_out) return NULL;
     *tail_out = NULL;
@@ -1311,7 +1311,7 @@ char **yuanbao_md_merge_block_streaming_fences(char **chunks)
    Guarantees: fences not split, tables not split, split at paragraph boundaries,
    small chunks merged. Returns NULL-terminated array, caller frees. */
 /* PoP: yuanbao_md_chunk_markdown_text @ gateway/platforms/yuanbao.py:chunk_markdown_text */
-char **yuanbao_md_chunk_markdown_text(const char *text, int max_chars)
+char **yuanbao_md_chunk_markdown_text(const char *text, size_t max_chars)
 {
     if (!text || !*text) {
         char **arr = calloc(1, sizeof(char*));
@@ -1460,4 +1460,309 @@ char **yuanbao_md_chunk_markdown_text(const char *text, int max_chars)
 
     /* Filter NULLs and return */
     return result;
+}
+
+/* ================================================================
+ *  SignManager — WS auth token signing & caching (port of Python SignManager)
+ * ================================================================ */
+
+#include "libhash/hash.h"
+#include "libhttp/http.h"
+#include "libjson/json.h"
+
+static pthread_mutex_t yb_sign_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+typedef struct yuanbao_sign_entry {
+    char app_key[128];
+    yuanbao_token_entry_t entry;
+    struct yuanbao_sign_entry *next;
+} yuanbao_sign_entry_t;
+
+static yuanbao_sign_entry_t *yb_sign_cache = NULL;  /* linked list of cached entries */
+
+/* Internal: find cache entry by app_key (caller must hold mutex) */
+static yuanbao_sign_entry_t *yb_sign_find(const char *app_key) {
+    for (yuanbao_sign_entry_t *e = yb_sign_cache; e; e = e->next) {
+        if (strcmp(e->app_key, app_key) == 0) return e;
+    }
+    return NULL;
+}
+
+/* Internal: add or update cache entry (caller must hold mutex) */
+static void yb_sign_cache_set(const char *app_key, const char *token, const char *bot_id,
+                               int duration, const char *product, const char *source,
+                               double expire_ts) {
+    yuanbao_sign_entry_t *e = yb_sign_find(app_key);
+    if (!e) {
+        e = calloc(1, sizeof(*e));
+        if (!e) return;
+        snprintf(e->app_key, sizeof(e->app_key), "%s", app_key);
+        e->next = yb_sign_cache;
+        yb_sign_cache = e;
+    }
+    snprintf(e->entry.token, sizeof(e->entry.token), "%s", token ? token : "");
+    snprintf(e->entry.bot_id, sizeof(e->entry.bot_id), "%s", bot_id ? bot_id : "");
+    e->entry.duration = duration;
+    snprintf(e->entry.product, sizeof(e->entry.product), "%s", product ? product : "");
+    snprintf(e->entry.source, sizeof(e->entry.source), "%s", source ? source : "");
+    e->entry.expire_ts = expire_ts;
+}
+
+/* PoP: yuanbao_get_refresh_lock @ gateway/platforms/yuanbao.py:SignManager.get_refresh_lock */
+pthread_mutex_t *yuanbao_get_refresh_lock(const char *app_key) {
+    (void)app_key;
+    return &yb_sign_mutex;
+}
+
+/* PoP: yuanbao_compute_signature @ gateway/platforms/yuanbao.py:SignManager.compute_signature */
+char *yuanbao_compute_signature(const char *nonce, const char *timestamp,
+                                 const char *app_key, const char *app_secret) {
+    if (!nonce || !timestamp || !app_key || !app_secret) return NULL;
+    char plain[1024];
+    snprintf(plain, sizeof(plain), "%s%s%s%s", nonce, timestamp, app_key, app_secret);
+    char *out = hash_hmac_sha256_hex((const unsigned char *)app_secret, strlen(app_secret),
+                                      (const unsigned char *)plain, strlen(plain));
+    return out;
+}
+
+/* PoP: yuanbao_build_timestamp @ gateway/platforms/yuanbao.py:SignManager.build_timestamp */
+char *yuanbao_build_timestamp(void) {
+    time_t now = time(NULL);
+    struct tm tm_utc;
+    gmtime_r(&now, &tm_utc);
+    /* Adjust to Beijing time (UTC+8) */
+    tm_utc.tm_hour += 8;
+    mktime(&tm_utc);  /* normalize */
+    char *out = malloc(32);
+    if (!out) return NULL;
+    strftime(out, 32, "%Y-%m-%dT%H:%M:%S+08:00", &tm_utc);
+    return out;
+}
+
+/* PoP: yuanbao_is_cache_valid @ gateway/platforms/yuanbao.py:SignManager.is_cache_valid */
+bool yuanbao_is_cache_valid(const yuanbao_token_entry_t *entry) {
+    if (!entry) return false;
+    double now = (double)time(NULL);
+    return (entry->expire_ts - now) > YUANBAO_SIGN_CACHE_REFRESH_MARGIN_S;
+}
+
+/* PoP: yuanbao_clear_locks @ gateway/platforms/yuanbao.py:SignManager.clear_locks */
+void yuanbao_clear_locks(void) {
+    pthread_mutex_lock(&yb_sign_mutex);
+    /* In C we don't have per-app_key asyncio.Lock objects to clear;
+     * we just note that the global mutex is the lock mechanism. */
+    pthread_mutex_unlock(&yb_sign_mutex);
+}
+
+/* PoP: yuanbao_purge_expired @ gateway/platforms/yuanbao.py:SignManager.purge_expired */
+int yuanbao_purge_expired(void) {
+    pthread_mutex_lock(&yb_sign_mutex);
+    double now = (double)time(NULL);
+    int purged = 0;
+    yuanbao_sign_entry_t **pp = &yb_sign_cache;
+    while (*pp) {
+        if (now - (*pp)->entry.expire_ts > 0) {
+            yuanbao_sign_entry_t *victim = *pp;
+            *pp = victim->next;
+            free(victim);
+            purged++;
+        } else {
+            pp = &(*pp)->next;
+        }
+    }
+    pthread_mutex_unlock(&yb_sign_mutex);
+    return purged;
+}
+
+/* PoP: yuanbao_fetch @ gateway/platforms/yuanbao.py:SignManager.fetch */
+yuanbao_sign_entry_t *yuanbao_fetch(const char *app_key, const char *app_secret,
+                                     const char *api_domain, const char *route_env) {
+    if (!app_key || !app_secret || !api_domain) return NULL;
+
+    char url[512];
+    snprintf(url, sizeof(url), "%s%s", api_domain, YUANBAO_SIGN_TOKEN_PATH);
+
+    for (int attempt = 0; attempt <= YUANBAO_SIGN_MAX_RETRIES; attempt++) {
+        char *nonce = malloc(33);
+        if (!nonce) return NULL;
+        for (int i = 0; i < 16; i++) {
+            unsigned char b = (unsigned char)rand();
+            sprintf(nonce + i * 2, "%02x", b);
+        }
+        nonce[32] = '\0';
+
+        char *timestamp = yuanbao_build_timestamp();
+        if (!timestamp) { free(nonce); return NULL; }
+
+        char *signature = yuanbao_compute_signature(nonce, timestamp, app_key, app_secret);
+        if (!signature) { free(nonce); free(timestamp); return NULL; }
+
+        /* Build JSON payload */
+        json_t *payload = json_object();
+        json_object_set(payload, "app_key", json_string(app_key));
+        json_object_set(payload, "nonce", json_string(nonce));
+        json_object_set(payload, "signature", json_string(signature));
+        json_object_set(payload, "timestamp", json_string(timestamp));
+
+        char *payload_str = json_serialize(payload);
+        json_free(payload);
+
+        /* Build headers */
+        char *headers = malloc(1024);
+        if (!headers) { free(payload_str); free(nonce); free(timestamp); free(signature); return NULL; }
+        snprintf(headers, 1024,
+                 "Content-Type: application/json\r\n"
+                 "X-AppVersion: %s\r\n"
+                 "X-OperationSystem: %s\r\n"
+                 "X-Instance-Id: %llu\r\n"
+                 "X-Bot-Version: %s\r\n",
+                 YUANBAO_SIGN_APP_VERSION,
+                 YUANBAO_SIGN_OPERATION_SYSTEM,
+                 (unsigned long long)YUANBAO_SIGN_INSTANCE_ID,
+                 YUANBAO_SIGN_BOT_VERSION);
+        if (route_env && route_env[0]) {
+            char hdr[128];
+            snprintf(hdr, sizeof(hdr), "X-Route-Env: %s\r\n", route_env);
+            strncat(headers, hdr, 1023 - strlen(headers));
+        }
+
+        /* POST request */
+        http_t *client = http_new(30);
+        http_resp_t *resp = http_post_json(client, url, payload_str);
+        http_free(client);
+        free(payload_str);
+        free(nonce);
+        free(timestamp);
+        free(signature);
+        free(headers);
+
+        if (!resp) continue;
+
+        if (resp->status != 200) {
+            fprintf(stderr, "[gateway:yuanbao] Sign token API returned %d: %.*s\n",
+                    resp->status, (int)resp->body_len, resp->body ? resp->body : "");
+            http_resp_free(resp);
+            if (attempt < YUANBAO_SIGN_MAX_RETRIES) {
+                sleep(YUANBAO_SIGN_RETRY_DELAY_S);
+                continue;
+            }
+            return NULL;
+        }
+
+        char *err_msg = NULL;
+        json_t *result = json_parse(resp->body, &err_msg);
+        http_resp_free(resp);
+        if (!result) {
+            free(err_msg);
+            continue;
+        }
+
+        json_t *code_node = json_obj_get(result, "code");
+        if (!code_node) { json_free(result); continue; }
+        int code = (code_node->type == JSON_NUMBER) ? (int)code_node->num_val : 0;
+
+        if (code == 0) {
+            json_t *data = json_obj_get(result, "data");
+            if (!data || data->type != JSON_OBJECT) {
+                json_free(result);
+                continue;
+            }
+            json_t *token_node = json_obj_get(data, "token");
+            json_t *bot_id_node = json_obj_get(data, "bot_id");
+            json_t *duration_node = json_obj_get(data, "duration");
+            json_t *product_node = json_obj_get(data, "product");
+            json_t *source_node = json_obj_get(data, "source");
+
+            yuanbao_sign_entry_t *entry = calloc(1, sizeof(*entry));
+            if (!entry) { json_free(result); return NULL; }
+            snprintf(entry->app_key, sizeof(entry->app_key), "%s", app_key);
+            if (token_node && token_node->type == JSON_STRING)
+                snprintf(entry->entry.token, sizeof(entry->entry.token), "%s", token_node->str_val);
+            if (bot_id_node && bot_id_node->type == JSON_STRING)
+                snprintf(entry->entry.bot_id, sizeof(entry->entry.bot_id), "%s", bot_id_node->str_val);
+            entry->entry.duration = duration_node ? (duration_node->type == JSON_NUMBER ? (int)duration_node->num_val : 0) : 0;
+            if (product_node && product_node->type == JSON_STRING)
+                snprintf(entry->entry.product, sizeof(entry->entry.product), "%s", product_node->str_val);
+            if (source_node && source_node->type == JSON_STRING)
+                snprintf(entry->entry.source, sizeof(entry->entry.source), "%s", source_node->str_val);
+            entry->entry.expire_ts = (double)time(NULL) + (entry->entry.duration > 0 ? entry->entry.duration : 3600);
+            json_free(result);
+            return entry;
+        }
+
+        if (code == YUANBAO_SIGN_RETRYABLE_CODE && attempt < YUANBAO_SIGN_MAX_RETRIES) {
+            fprintf(stderr, "[gateway:yuanbao] Sign token retryable: code=%d, retrying in %.0fs (attempt=%d/%d)\n",
+                    code, YUANBAO_SIGN_RETRY_DELAY_S, attempt + 1, YUANBAO_SIGN_MAX_RETRIES);
+            json_free(result);
+            sleep(YUANBAO_SIGN_RETRY_DELAY_S);
+            continue;
+        }
+
+        json_t *msg_node = json_obj_get(result, "msg");
+        const char *msg = (msg_node && msg_node->type == JSON_STRING) ? msg_node->str_val : "";
+        fprintf(stderr, "[gateway:yuanbao] Sign token error: code=%d, msg=%s\n", code, msg);
+        json_free(result);
+        return NULL;
+    }
+    return NULL;
+}
+
+/* PoP: yuanbao_get_token @ gateway/platforms/yuanbao.py:SignManager.get_token */
+yuanbao_sign_entry_t *yuanbao_get_token(const char *app_key, const char *app_secret,
+                                         const char *api_domain, const char *route_env) {
+    if (!app_key || !app_secret || !api_domain) return NULL;
+
+    yuanbao_purge_expired();
+
+    pthread_mutex_lock(&yb_sign_mutex);
+    yuanbao_sign_entry_t *cached = yb_sign_find(app_key);
+    if (cached && yuanbao_is_cache_valid((const yuanbao_token_entry_t *)&cached->entry)) {
+        yuanbao_sign_entry_t *copy = malloc(sizeof(*copy));
+        if (copy) memcpy(copy, cached, sizeof(*copy));
+        pthread_mutex_unlock(&yb_sign_mutex);
+        return copy;
+    }
+    pthread_mutex_unlock(&yb_sign_mutex);
+
+    /* Double-checked locking: fetch and re-check under lock */
+    pthread_mutex_lock(&yb_sign_mutex);
+    cached = yb_sign_find(app_key);
+    if (cached && yuanbao_is_cache_valid((const yuanbao_token_entry_t *)&cached->entry)) {
+        yuanbao_sign_entry_t *copy = malloc(sizeof(*copy));
+        if (copy) memcpy(copy, cached, sizeof(*copy));
+        pthread_mutex_unlock(&yb_sign_mutex);
+        return copy;
+    }
+
+    yuanbao_sign_entry_t *entry = yuanbao_fetch(app_key, app_secret, api_domain, route_env);
+    if (entry) {
+        yb_sign_cache_set(app_key, entry->entry.token, entry->entry.bot_id, entry->entry.duration,
+                          entry->entry.product, entry->entry.source, entry->entry.expire_ts);
+    }
+    pthread_mutex_unlock(&yb_sign_mutex);
+    return entry;
+}
+
+/* PoP: yuanbao_force_refresh @ gateway/platforms/yuanbao.py:SignManager.force_refresh */
+yuanbao_sign_entry_t *yuanbao_force_refresh(const char *app_key, const char *app_secret,
+                                             const char *api_domain, const char *route_env) {
+    if (!app_key || !app_secret || !api_domain) return NULL;
+
+    fprintf(stderr, "[gateway:yuanbao] [force-refresh] Clearing cache and re-signing token: app_key=****%s\n",
+            app_key + strlen(app_key) - 4);
+
+    pthread_mutex_lock(&yb_sign_mutex);
+    yuanbao_sign_entry_t **pp = &yb_sign_cache;
+    while (*pp) {
+        if (strcmp((*pp)->app_key, app_key) == 0) {
+            yuanbao_sign_entry_t *victim = *pp;
+            *pp = victim->next;
+            free(victim);
+            break;
+        }
+        pp = &(*pp)->next;
+    }
+    pthread_mutex_unlock(&yb_sign_mutex);
+
+    return yuanbao_get_token(app_key, app_secret, api_domain, route_env);
 }

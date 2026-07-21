@@ -12,6 +12,7 @@
 
 #include "hermes_core_types.h"
 #include "hermes.h"
+#include "hermes_gateway_discord.h"
 #include <pthread.h>
 #include "hermes_json.h"
 #include "hermes_http.h"

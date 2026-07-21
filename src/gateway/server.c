@@ -8,7 +8,7 @@
 #include "hermes_core_types.h"
 #include "gw_server_internals.h"
 #include "hermes_agent.h"
-#include "hermes_gateway.h"
+#include "hermes_gateway_core.h"
 #include "hermes_json.h"
 #include "hermes_http.h"
 #include "gateway_helpers.h"

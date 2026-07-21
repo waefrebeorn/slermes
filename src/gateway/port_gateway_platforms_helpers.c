@@ -6,6 +6,7 @@
  */
 
 #include <stdbool.h>
+#include "hermes_gateway_core.h"
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>

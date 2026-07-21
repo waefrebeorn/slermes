@@ -1,6 +1,7 @@
 /* Slermes C11 port of gateway/restart_loop_guard.py — implementation.
  * PoP: exact port. Semantic source of truth = gateway/restart_loop_guard.py. */
 #include "restart_loop_guard.h"
+#include "hermes_gateway_core.h"
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -4,6 +4,7 @@
  */
 
 #include "hermes_telegram_filter.h"
+#include "hermes_gateway_telegram.h"
 #include "hermes_core_types.h"
 #include <stdio.h>
 #include <stdlib.h>

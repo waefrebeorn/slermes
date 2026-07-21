@@ -16,3 +16,4 @@ N/A: Document comment reply formatting — C uses sprintf patterns.
  */
 
 #include "hermes_core_types.h"
+#include "hermes_gateway_feishu.h"

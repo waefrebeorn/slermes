@@ -17,6 +17,7 @@
  */
 
 #include "hermes_gateway_stream.h"
+#include "hermes_gateway_core.h"
 #include <stddef.h>
 
 /* ================================================================

@@ -7,6 +7,7 @@
   * Detect when the gateway is running stale code after a hot git pull.
   */
 
+ #include "hermes_gateway_core.h"
  #include <stdio.h>
  #include <stdlib.h>
  #include <string.h>
