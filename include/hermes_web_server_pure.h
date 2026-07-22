@@ -167,10 +167,54 @@ char **ws_media_serve_roots(void);
  * Returns 0 on success, -1 on error. */
 int ws_ensure_managed_root(const char *path);
 
-/* Python `_fs_path`: sanitize and resolve a path string. Returns malloc'd
- * absolute Path on success, or NULL on error (invalid/empty/NUL-containing).
- * Mirrors: Path(raw or "").strip(); check NUL; expanduser(); resolve(). */
-char *ws_fs_path(const char *raw_path);
+/* ── Dashboard pure helpers (web_server.py deterministic helpers) ─────────── */
+
+/* PoP: web_parse_expiry_ts @ hermes_cli/web_server.py:_parse_expiry_ts
+ * Parse an ISO-8601 timestamp (with optional trailing 'Z') into a Unix
+ * epoch (double). Falls back to now+600s on any parse error. */
+double web_parse_expiry_ts(const char *value);
+
+/* PoP: web_normalize_telegram_user_id @ hermes_cli/web_server.py:_normalize_telegram_user_id
+ * Return a malloc'd normalized Telegram user id (digits only) or NULL if the
+ * value does not fullmatch ^[0-9]+$. Caller frees. */
+char *web_normalize_telegram_user_id(const char *value);
+
+/* PoP: web_telegram_onboarding_error_message @ hermes_cli/web_server.py:_telegram_onboarding_error_message
+ * Map an onboarding error code to a human message; returns `fallback` when the
+ * code is unknown. Returns a string literal (no free). */
+const char *web_telegram_onboarding_error_message(const char *error, const char *fallback);
+
+/* PoP: web_truncate_token @ hermes_cli/web_server.py:_truncate_token
+ * Return a malloc'd display-safe token: "…XXXXXX" (last `visible` chars).
+ * JWTs (>=2 dots) are reduced to their trailing signature segment first.
+ * Empty/invalid input returns a malloc'd empty string. Caller frees. */
+char *web_truncate_token(const char *value, int visible);
+
+/* PoP: web_windows_build_number @ hermes_cli/web_server.py:_windows_build_number
+ * Extract the Windows NT build number (10.0.NNNNN) from a version/platform
+ * string, or -1 if not found. */
+int web_windows_build_number(const char *version, const char *platform_label);
+
+/* PoP: web_cron_optional_text @ hermes_cli/web_server.py:_cron_optional_text
+ * Strip whitespace; optionally strip a trailing slash. Returns a malloc'd
+ * string, or NULL for None/empty input. Caller frees. */
+char *web_cron_optional_text(const char *value, bool strip_trailing_slash);
+
+/* PoP: web_cron_string_list @ hermes_cli/web_server.py:_cron_string_list
+ * Normalize a newline/comma-separated string or a list into a NULL-terminated
+ * array of malloc'd strings (whitespace-trimmed, empties dropped). Returns
+ * NULL for None/invalid input. Caller frees each element and the array. */
+char **web_cron_string_list(const char *value);
+
+/* PoP: web_channel_or_close_code @ hermes_cli/web_server.py:_channel_or_close_code
+ * Return a malloc'd copy of `channel` if it matches ^[A-Za-z0-9._-]{1,128}$,
+ * else NULL. Caller frees. */
+char *web_channel_or_close_code(const char *channel);
+
+/* PoP: web_read_active_session_file @ hermes_cli/web_server.py:_read_active_session_file
+ * Read a JSON file and return a malloc'd session_id (str of "session_id"
+ * field) or NULL on any error / missing value. Caller frees. */
+char *web_read_active_session_file(const char *path);
 
 #ifdef __cplusplus
 }
