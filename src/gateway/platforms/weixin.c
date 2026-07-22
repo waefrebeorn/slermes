@@ -13,6 +13,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <time.h>
+#include <strings.h>
 #include <errno.h>
 #include <sys/stat.h>
 #include <openssl/evp.h>
@@ -737,3 +738,171 @@ void weixin_random_wechat_uin(char *out, size_t out_sz)
     if (enc) { snprintf(out, out_sz, "%s", enc); free(enc); }
     else if (out_sz) out[0] = '\0';
 }
+
+/* ── Simple utility ports ───────────────────────────────────────────── */
+
+/* PoP: _check_weixin_requirements @ gateway/platforms/weixin.py:check_weixin_requirements */
+/* PoP: weixin_check_requirements @ gateway/platforms/weixin.py:check_weixin_requirements */
+bool weixin_check_requirements(void)
+{
+    return true; /* C port: always available in compiled binary */
+}
+
+/* PoP: _json_dumps @ gateway/platforms/weixin.py:_json_dumps */
+/* PoP: weixin_json_dumps @ gateway/platforms/weixin.py:_json_dumps */
+char *weixin_json_dumps(const json_t *payload)
+{
+    if (!payload) return strdup("{}");
+    return json_serialize(payload);
+}
+
+/* PoP: _base_info @ gateway/platforms/weixin.py:_base_info */
+/* PoP: weixin_base_info @ gateway/platforms/weixin.py:_base_info */
+json_t *weixin_base_info(void)
+{
+    json_t *obj = json_object();
+    if (!obj) return NULL;
+    json_object_set(obj, "channel_version", json_string("2.0"));
+    return obj;
+}
+
+/* PoP: _account_dir @ gateway/platforms/weixin.py:_account_dir */
+/* PoP: weixin_account_dir @ gateway/platforms/weixin.py:_account_dir */
+char *weixin_account_dir(const char *hermes_home)
+{
+    if (!hermes_home) return NULL;
+    size_t sz = strlen(hermes_home) + 32;
+    char *path = (char *)malloc(sz);
+    if (!path) return NULL;
+    snprintf(path, sz, "%s/weixin/accounts", hermes_home);
+    mkdir(path, 0700);
+    return path;
+}
+
+/* PoP: _account_file @ gateway/platforms/weixin.py:_account_file */
+/* PoP: weixin_account_file @ gateway/platforms/weixin.py:_account_file */
+char *weixin_account_file(const char *hermes_home, const char *account_id)
+{
+    if (!hermes_home || !account_id) return NULL;
+    size_t sz = strlen(hermes_home) + strlen(account_id) + 64;
+    char *path = (char *)malloc(sz);
+    if (!path) return NULL;
+    char *dir = weixin_account_dir(hermes_home);
+    if (!dir) { free(path); return NULL; }
+    snprintf(path, sz, "%s/%s.json", dir, account_id);
+    free(dir);
+    return path;
+}
+
+/* PoP: _cdn_download_url @ gateway/platforms/weixin.py:_cdn_download_url */
+/* PoP: weixin_cdn_download_url @ gateway/platforms/weixin.py:_cdn_download_url */
+char *weixin_cdn_download_url(const char *cdn_base_url, const char *encrypted_query_param)
+{
+    if (!cdn_base_url || !encrypted_query_param) return NULL;
+    /* Strip trailing slash from base */
+    size_t blen = strlen(cdn_base_url);
+    while (blen > 0 && cdn_base_url[blen-1] == '/') blen--;
+    /* URL-encode the param (simplified: just pass through for ASCII) */
+    size_t sz = blen + strlen(encrypted_query_param) + 64;
+    char *url = (char *)malloc(sz);
+    if (!url) return NULL;
+    snprintf(url, sz, "%.*s/download?encrypted_query_param=%s",
+             (int)blen, cdn_base_url, encrypted_query_param);
+    return url;
+}
+
+/* PoP: _cdn_upload_url @ gateway/platforms/weixin.py:_cdn_upload_url */
+/* PoP: weixin_cdn_upload_url @ gateway/platforms/weixin.py:_cdn_upload_url */
+char *weixin_cdn_upload_url(const char *cdn_base_url, const char *upload_param, const char *filekey)
+{
+    if (!cdn_base_url || !upload_param || !filekey) return NULL;
+    size_t blen = strlen(cdn_base_url);
+    while (blen > 0 && cdn_base_url[blen-1] == '/') blen--;
+    size_t sz = blen + strlen(upload_param) + strlen(filekey) + 64;
+    char *url = (char *)malloc(sz);
+    if (!url) return NULL;
+    snprintf(url, sz, "%.*s/upload?upload_param=%s&filekey=%s",
+             (int)blen, cdn_base_url, upload_param, filekey);
+    return url;
+}
+
+/* PoP: @gateway/platforms/weixin.py:_mime_from_filename */
+/* PoP: weixin_mime_from_filename @ gateway/platforms/weixin.py:_mime_from_filename */
+const char *weixin_mime_from_filename(const char *filename)
+{
+    if (!filename) return "application/octet-stream";
+    const char *dot = strrchr(filename, '.');
+    if (!dot) return "application/octet-stream";
+    /* Common MIME types */
+    if (strcasecmp(dot, ".jpg") == 0 || strcasecmp(dot, ".jpeg") == 0) return "image/jpeg";
+    if (strcasecmp(dot, ".png") == 0) return "image/png";
+    if (strcasecmp(dot, ".gif") == 0) return "image/gif";
+    if (strcasecmp(dot, ".webp") == 0) return "image/webp";
+    if (strcasecmp(dot, ".mp3") == 0) return "audio/mpeg";
+    if (strcasecmp(dot, ".wav") == 0) return "audio/wav";
+    if (strcasecmp(dot, ".ogg") == 0) return "audio/ogg";
+    if (strcasecmp(dot, ".m4a") == 0) return "audio/mp4";
+    if (strcasecmp(dot, ".mp4") == 0) return "video/mp4";
+    if (strcasecmp(dot, ".pdf") == 0) return "application/pdf";
+    if (strcasecmp(dot, ".zip") == 0) return "application/zip";
+    if (strcasecmp(dot, ".json") == 0) return "application/json";
+    if (strcasecmp(dot, ".txt") == 0) return "text/plain";
+    if (strcasecmp(dot, ".html") == 0 || strcasecmp(dot, ".htm") == 0) return "text/html";
+    return "application/octet-stream";
+}
+
+/* PoP: _split_table_row @ gateway/platforms/weixin.py:_split_table_row */
+/* PoP: weixin_split_table_row @ gateway/platforms/weixin.py:_split_table_row */
+char **weixin_split_table_row(const char *line, int *count)
+{
+    if (count) *count = 0;
+    if (!line) return NULL;
+    /* Split on pipe '|' character, trim each field */
+    char *work = strdup(line);
+    if (!work) return NULL;
+    int cap = 16, n = 0;
+    char **result = (char **)malloc((size_t)cap * sizeof(char *));
+    if (!result) { free(work); return NULL; }
+    char *tok = strtok(work, "|");
+    while (tok) {
+        /* Trim */
+        while (*tok == ' ') tok++;
+        char *end = tok + strlen(tok);
+        while (end > tok && end[-1] == ' ') end--;
+        *end = '\0';
+        if (n >= cap) {
+            cap *= 2;
+            char **tmp = (char **)realloc(result, (size_t)cap * sizeof(char *));
+            if (!tmp) { free(work); return NULL; }
+            result = tmp;
+        }
+        result[n++] = strdup(tok);
+        tok = strtok(NULL, "|");
+    }
+    free(work);
+    if (count) *count = n;
+    return result;
+}
+
+/* PoP: _rate_limit_cooldown_remaining @ gateway/platforms/weixin.py:_rate_limit_cooldown_remaining */
+/* PoP: weixin_rate_limit_cooldown_remaining @ gateway/platforms/weixin.py:_rate_limit_cooldown_remaining */
+double weixin_rate_limit_cooldown_remaining(double circuit_until)
+{
+    double now = (double)time(NULL);
+    double rem = circuit_until - now;
+    return rem > 0.0 ? rem : 0.0;
+}
+
+/* PoP: _open_dm_opted_in @ gateway/platforms/weixin.py:_open_dm_opted_in */
+/* PoP: weixin_open_dm_opted_in @ gateway/platforms/weixin.py:_open_dm_opted_in */
+bool weixin_open_dm_opted_in(void)
+{
+    const char *allow_all = getenv("GATEWAY_ALLOW_ALL_USERS");
+    if (allow_all && (strcmp(allow_all, "true") == 0 || strcmp(allow_all, "1") == 0 || strcmp(allow_all, "yes") == 0))
+        return true;
+    const char *wx_allow_all = getenv("WEIXIN_ALLOW_ALL_USERS");
+    if (wx_allow_all && (strcmp(wx_allow_all, "true") == 0 || strcmp(wx_allow_all, "1") == 0 || strcmp(wx_allow_all, "yes") == 0))
+        return true;
+    return false;
+}
+
