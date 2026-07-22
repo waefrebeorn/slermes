@@ -33,7 +33,7 @@ static void lc(char *s)
 
 /* ---------------------------------------------------------------------- */
 /* PoP: auth_xai_callback_cors_origin @ hermes_cli/auth.py:_xai_callback_cors_origin */
- * Returns malloc'd allowed origin, or "" (empty) when not allowed. */
+/* Returns malloc'd allowed origin, or "" (empty) when not allowed. */
 char *auth_xai_callback_cors_origin(const char *origin)
 {
     if (!origin) return strdup("");
@@ -44,7 +44,7 @@ char *auth_xai_callback_cors_origin(const char *origin)
 
 /* ---------------------------------------------------------------------- */
 /* PoP: auth_ssh_user_at_host @ hermes_cli/auth.py:_ssh_user_at_host */
- * Returns "user@hostname" using USER/LOGNAME env + gethostname. */
+/* Returns "user@hostname" using USER/LOGNAME env + gethostname. */
 char *auth_ssh_user_at_host(void)
 {
     char host[256];
@@ -60,7 +60,7 @@ char *auth_ssh_user_at_host(void)
 
 /* ---------------------------------------------------------------------- */
 /* PoP: auth_is_terminal_nous_refresh_error @ hermes_cli/auth.py:_is_terminal_nous_refresh_error */
- * provider/code/relogin passed explicitly (no AuthError object). */
+/* provider/code/relogin passed explicitly (no AuthError object). */
 int auth_is_terminal_nous_refresh_error(const char *provider, const char *code, int relogin_required)
 {
     if (!provider || !code) return 0;
@@ -75,7 +75,7 @@ int auth_is_terminal_nous_refresh_error(const char *provider, const char *code, 
 
 /* ---------------------------------------------------------------------- */
 /* PoP: auth_is_source_suppressed @ hermes_cli/auth.py:is_source_suppressed */
- * Takes the auth.json "suppressed_sources" object as JSON (caller loads it).
+/* Takes the auth.json "suppressed_sources" object as JSON (caller loads it).
  * Returns 1 if (provider_id -> list) contains source. */
 int auth_is_source_suppressed(const char *provider_id, const char *source, const char *suppressed_json)
 {

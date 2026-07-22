@@ -13,6 +13,14 @@
 #include <string.h>
 #include <stdio.h>
 
+/* PoP: cron_classify_eprint @ cron/scripts/classify_items.py:_eprint
+ * Print to stderr. Mirror of Python _eprint(*args). */
+void cron_classify_eprint(const char *msg)
+{
+    if (msg) fprintf(stderr, "%s\n", msg);
+}
+
+
 /* PoP: _item_id @ cron/scripts/classify_items.py:_item_id
  * Prefer id/guid/message_id/url/link; else "item-<index>". Result malloc'd. */
 char *cron_classify_item_id(const json_t *item, int index)

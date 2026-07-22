@@ -34,7 +34,7 @@ static int is_truthy(const char *v)
 
 /* ---------------------------------------------------------------------- */
 /* PoP: scale_to_zero_enabled @ gateway/scale_to_zero.py:scale_to_zero_enabled */
- * environ_json: JSON object {"HERMES_SCALE_TO_ZERO": "..."} or NULL (use empty). */
+/* environ_json: JSON object {"HERMES_SCALE_TO_ZERO": "..."} or NULL (use empty). */
 int scale_to_zero_enabled(const char *environ_json)
 {
     const char *val = NULL;
