@@ -23,4 +23,8 @@ json_t *agent_replay_cleanup_sanitize_replay_history(const json_t *history);
 json_t *agent_replay_cleanup_strip_stale_dangerous_confirmations(
     const json_t *history, double now, double expiry_seconds);
 
+/* Return true when a text matches a known dangerous confirmation phrase
+ * (substring, case-insensitive). Pure classifier; no allocation. */
+bool agent_replay_cleanup_is_dangerous_confirmation(const char *content);
+
 #endif
