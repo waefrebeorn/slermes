@@ -200,7 +200,7 @@ void _background_install(bool log_failures) {
     (void)log_failures;
 }
 
-/* PoP: ensure_installed @ tools/tirith_security.py:ensure_installed */
+/* PoP: ensure_installed @ agent/thread_scoped_output.py:_ensure_installed */
 bool ensure_installed(bool log_failures) {
     (void)log_failures;
     return true;
