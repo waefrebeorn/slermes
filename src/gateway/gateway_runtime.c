@@ -262,6 +262,7 @@ void gw_load_prefill_messages(void) {
 
 /* Load ephemeral system prompt from HERMES_EPHEMERAL_SYSTEM_PROMPT env var
  * or config.yaml agent.system_prompt. */
+/* PoP: gw_load_ephemeral_system_prompt @ gateway/run.py:_load_ephemeral_system_prompt */
 void gw_load_ephemeral_system_prompt(void) {
     g_ephemeral_system_prompt[0] = '\0';
 
@@ -341,6 +342,7 @@ typedef struct {
 static gw_routing_cfg_t g_routing;
 
 /* Load provider routing config from config.yaml provider_routing. */
+/* PoP: gw_load_provider_routing @ gateway/run.py:_load_provider_routing */
 void gw_load_provider_routing(void) {
     memset(&g_routing, 0, sizeof(g_routing));
     g_routing.enabled = false;
@@ -393,6 +395,7 @@ bool gw_fallback_enabled(void) { return g_routing.enabled; }
 
 static char g_service_tier[64] = "";
 
+/* PoP: gw_load_service_tier @ gateway/run.py:_load_service_tier */
 void gw_load_service_tier(void) {
     g_service_tier[0] = '\0';
     const char *env = getenv("HERMES_SERVICE_TIER");
@@ -451,6 +454,7 @@ void gw_runtime_init(void) {
  *  Port of Python stop() drain logic
  * ════════════════════════════════════════════════════════════════ */
 
+/* PoP: gw_drain_active_agents @ gateway/run.py:_drain_active_agents */
 void gw_drain_active_agents(int timeout_sec) {
     /* For each cached agent, save session state and free resources */
     pthread_mutex_lock(&g_agent_cache_mutex);
