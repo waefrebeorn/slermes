@@ -508,6 +508,7 @@ void gw_notify_sessions_shutdown(const char *reason) {
 
 /* ════════════════════════════════════════════════════════════════
  *  8. SYSTEMD INTEGRATION
+ * PoP: _launch_systemd_restart_shortcut @ gateway/run.py:_launch_systemd_restart_shortcut
  *  Port of Python _launch_systemd_restart_shortcut()
  *  Checks NOTIFY_SOCKET or JOURNAL_STREAM env vars.
  * ════════════════════════════════════════════════════════════════ */

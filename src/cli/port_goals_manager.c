@@ -261,6 +261,8 @@ char *goal_manager_status_line(const goal_manager_t *m) {
             return out;
         }
         if (s->waiting_on_pid && (!m->vtab || !m->vtab->pid_alive ||
+/* PoP: pid_alive @ hermes_cli/active_sessions.py:_pid_alive */
+/* PoP: pid_alive @ hermes_cli/kanban_db.py:_pid_alive */
                                   m->vtab->pid_alive(s->waiting_on_pid))) {
             char wr_buf[128];
             snprintf(wr_buf, sizeof(wr_buf), "pid %ld%s%s%s", s->waiting_on_pid,

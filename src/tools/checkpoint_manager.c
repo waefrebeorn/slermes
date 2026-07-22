@@ -229,6 +229,7 @@ bool _validate_commit_hash(const char *commit_hash) {
 }
 
 /* PoP: _validate_file_path @ tools/checkpoint_manager.py:_validate_file_path */
+/* PoP: _validate_file_path @ tools/skill_manager_tool.py:_validate_file_path */
 bool _validate_file_path(const char *file_path, const char *working_dir) {
     (void)working_dir;
     if (!file_path) return false;
@@ -236,6 +237,8 @@ bool _validate_file_path(const char *file_path, const char *working_dir) {
 }
 
 /* PoP: _normalize_path @ tools/checkpoint_manager.py:_normalize_path */
+/* PoP: _normalize_path @ gateway/platforms/msgraph_webhook.py:_normalize_path */
+/* PoP: _normalize_path @ gateway/platforms/whatsapp_cloud.py:_normalize_path */
 char* _normalize_path(const char *path_value) {
     if (!path_value) return strdup(".");
     return realpath(path_value, NULL) ? : strdup(path_value);
@@ -864,6 +867,7 @@ char *format_checkpoint_list(const char *checkpoints_json, const char *directory
 }
 
 /* PoP: _list_projects @ tools/checkpoint_manager.py:_list_projects */
+/* PoP: _list_projects @ hermes_cli/secrets_cli.py:_list_projects */
 char* _list_projects(const char *store) {
     (void)store;
     return strdup("[]");

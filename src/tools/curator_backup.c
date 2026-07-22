@@ -409,6 +409,7 @@ bool curator_backup_config_enabled(void) {
     return enabled;
 }
 
+/* PoP: get_keep @ agent/curator_backup.py:get_keep */
 /* Port of Python agent/curator_backup.py get_keep().
  * Returns the configured keep count (default 5, minimum 1). */
 int curator_backup_config_keep(void) {
@@ -627,6 +628,7 @@ static bool backup_cron_jobs_into(const char *dest_dir, int *out_backed_up, int 
 
 /* ─── Tool handlers ─── */
 
+/* PoP: snapshot_skills @ agent/curator_backup.py:snapshot_skills */
 /* Port of Python agent/curator_backup.py snapshot_skills().
  * Creates a tar.gz snapshot of the skills directory, captures cron/jobs.json,
  * writes manifest.json, and prunes old snapshots.

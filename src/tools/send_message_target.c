@@ -39,6 +39,7 @@ int send_message_target_parse_target_ref(const char *platform_name, const char *
     const char *pattern = NULL;
     int chat_g = 1, thread_g = 2;
     if (strcmp(platform_name, "telegram") == 0) {
+/* PoP: target @ agent/thread_scoped_output.py:_target */
         /* Telegram topic target (digits:digits) OR @username. */
         if (target_ref[0] == '@') {
             if (chat_id_size > 0) {

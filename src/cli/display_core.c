@@ -1155,6 +1155,7 @@ char *display_split_diff_sections(const char *diff) {
             current_arr = json_array();
             json_append(arr, current_arr);
         }
+/* PoP: section @ hermes_cli/doctor.py:_section */
         /* Add line to current section (without newline) */
         size_t len = (size_t)(nl - p);
         char *line = (char *)malloc(len + 1);
