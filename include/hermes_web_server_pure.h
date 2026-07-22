@@ -216,6 +216,15 @@ char *web_channel_or_close_code(const char *channel);
  * field) or NULL on any error / missing value. Caller frees. */
 char *web_read_active_session_file(const char *path);
 
+/* PoP: _platform_env_prefixes @ hermes_cli/web_server.py:_platform_env_prefixes
+ * Env-var prefixes owned by a messaging platform card. Returns a malloc'd
+ * NULL-terminated array of malloc'd strings, or NULL on alloc failure.
+ * Caller frees with web_free_strv(). */
+char **web_platform_env_prefixes(const char *platform_id);
+
+/* Free a NULL-terminated array of malloc'd strings produced by the helpers. */
+void web_free_strv(char **v);
+
 #ifdef __cplusplus
 }
 #endif

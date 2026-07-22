@@ -1422,3 +1422,48 @@ char *web_read_active_session_file(const char *path) {
     json_free(doc);
     return out;
 }
+
+/* PoP: _platform_env_prefixes @ hermes_cli/web_server.py:_platform_env_prefixes */
+char **web_platform_env_prefixes(const char *platform_id)
+{
+    /* aliases map (platform_id -> prefixes) */
+    static const struct { const char *id; const char *p[3]; int n; } aliases[] = {
+        {"email",        {"EMAIL_"}, 1},
+        {"homeassistant", {"HASS_"}, 1},
+        {"qqbot",        {"QQ_", "QQBOT_"}, 2},
+        {"sms",          {"TWILIO_"}, 1},
+        {"wecom",        {"WECOM_BOT_", "WECOM_SECRET"}, 2},
+        {"wecom_callback", {"WECOM_CALLBACK_"}, 1},
+    };
+    if (!platform_id || !*platform_id) return NULL;
+    for (int i = 0; i < (int)(sizeof(aliases)/sizeof(aliases[0])); i++) {
+        if (strcmp(platform_id, aliases[i].id) == 0) {
+            char **out = malloc(sizeof(char *) * (aliases[i].n + 1));
+            if (!out) return NULL;
+            for (int j = 0; j < aliases[i].n; j++)
+                out[j] = strdup(aliases[i].p[j]);
+            out[aliases[i].n] = NULL;
+            return out;
+        }
+    }
+    /* default: upper-case id with '-' -> '_', plus trailing '_' */
+    size_t L = strlen(platform_id);
+    char *up = malloc(L + 2);
+    if (!up) return NULL;
+    for (size_t k = 0; k < L; k++)
+        up[k] = (platform_id[k] == '-') ? '_' : (char)toupper((unsigned char)platform_id[k]);
+    up[L] = '_';
+    up[L+1] = '\0';
+    char **out = malloc(sizeof(char *) * 2);
+    if (!out) { free(up); return NULL; }
+    out[0] = up;
+    out[1] = NULL;
+    return out;
+}
+
+void web_free_strv(char **v)
+{
+    if (!v) return;
+    for (int i = 0; v[i]; i++) free(v[i]);
+    free(v);
+}
