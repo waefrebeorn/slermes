@@ -270,6 +270,7 @@ verify_kind_t verify_kind_for_command(const char *canonical) {
     return VERIFY_KIND_TEST;
 }
 
+/* PoP: verify_looks_like_target @ agent/verification_evidence.py:_looks_like_target */
 bool verify_looks_like_target(const char *arg) {
     if (!arg || !arg[0] || arg[0] == '-' || strchr(arg, '=')) return false;
     if (strchr(arg, '/') || strchr(arg, '\\') || strchr(arg, ':')) {
@@ -291,6 +292,7 @@ verify_scope_t verify_scope_for_args(char **args, int n) {
     return VERIFY_SCOPE_FULL;
 }
 
+/* PoP: verify_is_under_temp_dir @ agent/verification_evidence.py:_is_under_temp_dir */
 bool verify_is_under_temp_dir(const char *token) {
     if (!token || !token[0] || token[0] == '-') return false;
     if (token[0] != '/') return false;  /* require absolute */
@@ -318,6 +320,7 @@ bool verify_is_under_root(const char *token, const char *root) {
     return false;
 }
 
+/* PoP: verify_is_temp_script_path @ agent/verification_evidence.py:_is_temp_script_path */
 bool verify_is_temp_script_path(const char *token, const char *root) {
     if (!token || !token[0]) return false;
     /* basename */

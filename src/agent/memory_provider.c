@@ -98,6 +98,7 @@ static void builtin_shutdown(memory_provider_t *self) {
     self->initialized = false;
 }
 
+/* PoP: builtin_get_config_schema @ agent/memory_provider.py:get_config_schema */
 static memory_provider_config_field_t *builtin_get_config_schema(memory_provider_t *self) {
     (void)self;
     /* Built-in needs no config */
