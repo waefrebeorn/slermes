@@ -246,9 +246,11 @@ const char *memory_store_snapshot(memory_store_t *s, const char *target) {
     return s->snap_memory;
 }
 
+/* PoP: memory_store_char_count @ tools/memory_tool.py:_char_count */
 int memory_store_char_count(memory_store_t *s, const char *target) {
     int n; const char **e = entries_for(s, target, &n); return char_count_arr(e, n);
 }
+/* PoP: memory_store_char_limit @ tools/memory_tool.py:_char_limit */
 int memory_store_char_limit(memory_store_t *s, const char *target) {
     return char_limit_for(s, target);
 }

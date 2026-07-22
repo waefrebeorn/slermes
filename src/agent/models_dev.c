@@ -45,6 +45,7 @@ extern int extract_context(json_t *entry);
 /* ── file-local globals ──────────────────────────────────────────────── */
 static json_t *g_models_dev_cache = NULL;
 static time_t  g_models_dev_cache_time = 0;
+/* PoP: get_models_dev_cache_path @ agent/models_dev.py:_get_cache_path */
 static char *get_models_dev_cache_path(void) {
     const char *home = getenv("XDG_CONFIG_HOME");
     if (!home || !*home) home = getenv("HOME");
