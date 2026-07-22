@@ -134,6 +134,7 @@ static char **parse_id_array(const char *json) {
  * length, or -1 on failure. The probe uses the injectable `fetch` transport;
  * the (re)load uses the injectable `post` transport. Either may be NULL when
  * not needed (e.g. already-loaded case needs no POST). */
+/* PoP: models_ensure_lmstudio_model_loaded @ hermes_cli/models.py:ensure_lmstudio_model_loaded */
 int models_ensure_lmstudio_model_loaded(http_fetch_fn fetch, void *fetch_ctx,
                                          http_post_fn post, void *post_ctx,
                                          const char *model, const char *base_url,

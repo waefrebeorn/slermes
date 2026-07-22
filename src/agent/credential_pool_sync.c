@@ -328,6 +328,7 @@ char *credential_entry_get_extra(const credential_entry_t *e, const char *key) {
 /* _write_through_provider_state_to_global_root — best-effort write of a
  * rotated provider `state` JSON object into the global-root auth.json
  * providers.<provider_id> section. Swallows all errors. Mirrors the Python fn. */
+/* PoP: credential_pool_write_through_provider_state_to_global_root @ agent/credential_pool.py:_write_through_provider_state_to_global_root */
 void credential_pool_write_through_provider_state_to_global_root(const char *provider_id,
                                                                   const char *state_json) {
     if (!provider_id || !*provider_id || !state_json) return;
@@ -486,6 +487,7 @@ bool credential_pool_sync_anthropic_entry_from_credentials_file(credential_entry
  * fresher tokens from the auth store first where applicable. force=true skips
  * the expiry short-circuit. Returns true if the entry was refreshed in place.
  * Dispatches to the real C OAuth refresh primitives — no stubs. */
+/* PoP: credential_pool_refresh_entry_impl @ agent/credential_pool.py:_refresh_entry_impl */
 bool credential_pool_refresh_entry_impl(credential_pool_t *pool, int entry_index, bool force) {
     if (!pool || entry_index < 0 || entry_index >= pool->entry_count) return false;
     credential_entry_t *e = &pool->entries[entry_index];

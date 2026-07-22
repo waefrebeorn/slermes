@@ -15,6 +15,7 @@ extern "C" {
 /* check_close_terminal_requirements @ tools/close_terminal_tool.py
  * Returns true only when HERMES_DESKTOP is set to 1/true/yes (matches the
  * Python check_fn gating the tool to the desktop GUI). */
+/* PoP: check_close_terminal_requirements @ tools/close_terminal_tool.py:check_close_terminal_requirements */
 bool check_close_terminal_requirements(void);
 
 /* Registry registration for the close_terminal tool. Wires the handler and

@@ -19,6 +19,7 @@
 
 /* PoP: _coerce_timeout @ hermes_cli/timeouts.py:_coerce_timeout
  * Coerce a raw timeout value to a positive float, else None(-1). */
+/* PoP: timeouts_coerce_timeout @ hermes_cli/timeouts.py:_coerce_timeout */
 double timeouts_coerce_timeout(const char *raw)
 {
     if (!raw) return -1.0;
@@ -34,6 +35,7 @@ double timeouts_coerce_timeout(const char *raw)
 /* PoP: _get_model_config @ hermes_cli/timeouts.py:_get_model_config
  * Given a provider_config JSON object + optional model name, return the model's
  * config object (borrowed from config), or NULL if absent. Does NOT free. */
+/* PoP: timeouts_get_model_config @ hermes_cli/timeouts.py:_get_model_config */
 const json_t *timeouts_get_model_config(const json_t *provider_config,
                                        const char *model)
 {

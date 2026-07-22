@@ -30,6 +30,9 @@ int is_macos(void)
     return strcmp(u.sysname, "Darwin") == 0;
 }
 
+/* PoP: is_windows @ hermes_cli/uninstall.py:_is_windows */
+/* PoP: is_windows @ hermes_cli/stdio.py:is_windows */
+/* PoP: is_windows @ hermes_cli/main.py:_is_windows */
 /* PoP: is_windows @ hermes_cli/gateway.py:is_windows */
 int is_windows(void)
 {
@@ -61,6 +64,7 @@ static int valid_profile_name(const char *s)
 /* PoP: _profile_suffix @ hermes_cli/gateway.py:_profile_suffix
  * Returns malloc'd suffix ("" for default root, profile name, or short
  * hash for arbitrary paths). Caller frees. */
+/* PoP: gateway_profile_suffix @ hermes_cli/gateway.py:_profile_suffix */
 char *gateway_profile_suffix(void)
 {
     char home[PATH_MAX], def[PATH_MAX];
@@ -93,6 +97,7 @@ char *gateway_profile_suffix(void)
 
 /* PoP: _profile_arg @ hermes_cli/gateway.py:_profile_arg
  * Returns malloc'd "--profile <name>" for named profiles, "" otherwise. */
+/* PoP: gateway_profile_arg @ hermes_cli/gateway.py:_profile_arg */
 char *gateway_profile_arg(const char *hermes_home)
 {
     char home[PATH_MAX], def[PATH_MAX];

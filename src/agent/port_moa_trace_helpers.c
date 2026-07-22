@@ -14,6 +14,7 @@
  * Make a session id safe as a filename component: keep alphanumerics and
  * '-', '_', '.', replace every other char with '_'. Empty/None -> "unknown-session".
  * Result malloc'd; caller frees. */
+/* PoP: moa_trace_sanitize_session_id @ agent/moa_trace.py:_sanitize_session_id */
 char *moa_trace_sanitize_session_id(const char *session_id)
 {
     if (!session_id || !*session_id)

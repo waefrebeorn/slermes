@@ -22,7 +22,7 @@
 #include <unistd.h>
 #include <ctype.h>
 
-/* PoP: check_close_terminal_requirements @ tools/close_terminal_tool.py:check_close_terminal_requirements */
+/* PoP: close_terminal_tool @ tools/close_terminal_tool.py:close_terminal_tool */
 bool check_close_terminal_requirements(void) {
     const char *v = getenv("HERMES_DESKTOP");
     if (!v || !*v) return false;

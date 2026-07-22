@@ -43,6 +43,7 @@ char *debug_pending_path(const char *hermes_home) {
 }
 
 /* Minimal JSON parse of [{"url":"...","expire_at":<num>}, ...]. Returns count. */
+/* PoP: debug_load_pending @ hermes_cli/debug.py:_load_pending */
 debug_pending_t *debug_load_pending(const char *hermes_home, int *out_count) {
     char *path = debug_pending_path(hermes_home);
     FILE *f = fopen(path, "rb");

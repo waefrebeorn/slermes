@@ -186,6 +186,7 @@ static char *path_for(pairing_store_t *st, const char *name) {
     return p;
 }
 
+/* PoP: load_json @ gateway/pairing.py:_load_json */
 static pj_val_t *load_json(pairing_store_t *st, const char *name) {
     char *path = path_for(st, name);
     FILE *f = fopen(path, "rb");
@@ -498,6 +499,7 @@ char *pairing_generate_code(pairing_store_t *st, const char *platform, const cha
     return xstrdup(code);
 }
 
+/* PoP: pairing_approve_code @ gateway/pairing.py:approve_code */
 pairing_result_t *pairing_approve_code(pairing_store_t *st, const char *platform, const char *code, double now) {
     pairing_cleanup_expired(st, platform, now);
     char *pname = pending_filename(platform);

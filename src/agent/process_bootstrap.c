@@ -49,6 +49,7 @@ static const char *ci_strstr(const char *haystack, const char *needle) {
  *  1. Lazy OpenAI SDK proxy
  * ================================================================ */
 
+/* PoP: load_openai_cls @ agent/auxiliary_client.py:_load_openai_cls */
 /* PoP: load_openai_cls @ agent/process_bootstrap.py:_load_openai_cls */
 const void *load_openai_cls(void) {
     /* C's OpenAI-compatible client is built into the provider system via

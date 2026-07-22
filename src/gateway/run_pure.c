@@ -191,6 +191,7 @@ bool gateway_surface_passes_raw_text(const char *platform) {
 }
 
 /* run.py _non_conversational_metadata */
+/* PoP: gateway_non_conversational_metadata @ gateway/run.py:_non_conversational_metadata */
 json_node_t *gateway_non_conversational_metadata(json_node_t *metadata,
                                                   const char *platform) {
     char *pv = gateway_platform_value(platform);
@@ -528,6 +529,7 @@ bool gateway_event_media_is_video(const json_node_t *event, int index)
 
 /* PoP: _build_media_placeholder @ hermes_cli/web_server.py:_build_media_placeholder
  * Text placeholder for media events from run.py */
+/* PoP: gateway_build_media_placeholder @ gateway/run.py:_build_media_placeholder */
 char *gateway_build_media_placeholder(const char *media_urls_json,
                                        const char *media_types_json,
                                        const char *message_type)
