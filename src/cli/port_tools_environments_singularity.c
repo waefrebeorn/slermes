@@ -77,6 +77,7 @@ const char* cli_tools_environments_singularity__ensure_singularity_available(voi
     return exe;
 }
 
+/* PoP: cli_tools_environments_singularity__load_snapshots @ tools/environments/modal.py:_load_snapshots */
 /* PoP: cli_tools_environments_singularity__load_snapshots @ tools/environments/singularity.py:_load_snapshots */
 int cli_tools_environments_singularity__load_snapshots(const char *store_path, char *buf, size_t bufsize) {
     if (!store_path || !buf || bufsize == 0) {
@@ -96,6 +97,7 @@ int cli_tools_environments_singularity__load_snapshots(const char *store_path, c
     return 0;
 }
 
+/* PoP: cli_tools_environments_singularity__save_snapshots @ tools/environments/modal.py:_save_snapshots */
 /* PoP: cli_tools_environments_singularity__save_snapshots @ tools/environments/singularity.py:_save_snapshots */
 int cli_tools_environments_singularity__save_snapshots(const char *store_path, const char *data) {
     if (!store_path || !data) {
