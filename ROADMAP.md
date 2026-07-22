@@ -12,7 +12,7 @@
 
 | Mission | Claim | Reality |
 |---------|-------|---------|
-| **1-4** | Function parity (8,688 PoP), Desktop GUI, App shell | ✅ 760 port_*.c files, 12,499 PoP annotations |
+| **1-4** | Function parity foundation (C11 reimplementation + desktop GUI + app shell); ~4,663 PoP annotations wired | 🟡 In progress — function parity ~65.3% (6,357/9,733 PORTED, 3,376 REAL_GAP). Not 100% — see parity-summary.md |
 | **5** | Docs serving (`/api/docs*`) | ✅ 6 endpoints, 749 upstream .md files served |
 | **6** | Skills parser + `/api/skills` | ✅ 121 skills parsed from 77 SKILL.md files |
 | **7** | Distribution (AppImage, Homebrew, NSIS, Docker, Nix, make install) | ✅ Packaging scripts exist, **multi-OS release CI just added** |
