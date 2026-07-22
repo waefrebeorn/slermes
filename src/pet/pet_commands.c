@@ -213,6 +213,7 @@ void pet_disable(void) {
 }
 
 /* PoP: pet_set_scale @ agent/pet/constants.py:clamp_scale (applied) */
+/* PoP: _set_scale @ hermes_cli/pets.py:_set_scale */
 void pet_set_scale(float scale) {
     g_pet.scale = pet_clamp_scale(scale);
 }

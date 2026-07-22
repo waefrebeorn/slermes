@@ -26,6 +26,7 @@ bool is_continuous_active(void *ctx)
 }
 
 /* Port of Python: _continuous_on_silence */
+/* PoP: silence @ agent/thread_scoped_output.py:silence */
 void continuous_on_silence(void *ctx)
 {
     if (!ctx) {

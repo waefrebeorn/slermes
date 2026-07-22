@@ -30,6 +30,7 @@ static int _dedup_max_size = 2000;
 
 /* Port of Python gateway/platforms/helpers.py:is_duplicate */
 /* Return 1 if msg_id was already seen within the TTL window. */
+/* PoP: _is_duplicate @ gateway/platforms/qqbot/adapter.py:_is_duplicate */
 int helpers_is_duplicate(const char *msg_id)
 {
     if (!msg_id || !msg_id[0]) return 0;

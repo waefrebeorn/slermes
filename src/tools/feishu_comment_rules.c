@@ -42,6 +42,7 @@
  * ================================================================ */
 
 /** Get HERMES_HOME directory path. */
+/* PoP: _hermes_home @ hermes_cli/webhook.py:_hermes_home */
 static const char *rules_hermes_home(void) {
     static char buf[1024];
     const char *home = getenv("HERMES_HOME");

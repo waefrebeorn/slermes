@@ -1022,6 +1022,7 @@ char **registry_get_registered_toolset_names(size_t *out_n) {
 
 /* Return sorted tool names registered under a given toolset.
  * Caller frees the returned NULL-terminated char* array. */
+/* PoP: get_tool_names_for_toolset @ tools/registry.py:get_tool_names_for_toolset */
 char **registry_get_tool_names_for_toolset(const char *toolset, size_t *out_n) {
     pthread_mutex_lock(&g_registry_mutex);
     char **names = calloc(g_registry.count + 1, sizeof(char*));

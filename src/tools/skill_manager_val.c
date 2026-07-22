@@ -53,6 +53,7 @@ char *skill_val_validate_category(const char *category) {
     return NULL;
 }
 
+/* PoP: _validate_content_size @ tools/skill_manager_tool.py:_validate_content_size */
 char *skill_val_validate_content_size(const char *content, const char *label) {
     const char *lab = label && *label ? label : "SKILL.md";
     size_t len = content ? strlen(content) : 0;

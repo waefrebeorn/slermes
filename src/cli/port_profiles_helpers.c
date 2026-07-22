@@ -34,6 +34,7 @@
  * static). We return the length written into out (excluding NUL), or -1 for
  * empty. Caller provides out of size >= 64.
  */
+/* PoP: profile_name @ hermes_cli/plugins.py:profile_name */
 int profiles_normalize_profile_name(const char *name, char *out, size_t outsz)
 {
     if (!name) { if (out && outsz) out[0] = '\0'; return -1; }

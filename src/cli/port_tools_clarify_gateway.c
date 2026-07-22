@@ -188,6 +188,7 @@ void *cli_tools_clarify_gateway_get_notify(const char *session_key) {
 
 /* PoP: cli_tools_clarify_gateway__coerce_text_response @ tools/clarify_gateway.py:_coerce_text_response */
 /* Map typed choice replies to canonical choice text, otherwise keep custom text. */
+/* PoP: _text_response @ tools/computer_use/tool.py:_text_response */
 char *cli_tools_clarify_gateway__coerce_text_response(const clarify_entry_t *entry, const char *response) {
     if (!response) return strdup("");
     /* strip */

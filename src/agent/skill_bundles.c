@@ -370,6 +370,7 @@ json_t *reload_bundles(void) {
 }
 
 /* Port of Python: build_bundle_invocation_message — build message from bundle */
+/* PoP: on_message @ gateway/platforms/qqbot/adapter.py:_on_message */
 json_t *build_bundle_invocation_message(const char *cmd_key, const char *user_instruction) {
     (void)cmd_key;
     (void)user_instruction;

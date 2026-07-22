@@ -36,6 +36,7 @@ double timeouts_coerce_timeout(const char *raw)
 /* Given a provider_config JSON object + optional model name, return the model's
  * config object (borrowed from config), or NULL if absent. Does NOT free. */
 /* PoP: timeouts_get_model_config @ hermes_cli/timeouts.py:_get_model_config */
+/* PoP: _get_model_config @ hermes_cli/runtime_provider.py:_get_model_config */
 const json_t *timeouts_get_model_config(const json_t *provider_config,
                                        const char *model)
 {

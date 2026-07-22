@@ -63,6 +63,7 @@ static const char *ssl_repair_hint(void)
 }
 
 /* AG26: Port of Python agent/ssl_guard.py:_ssl_err() */
+/* PoP: _err @ hermes_cli/pets.py:_err */
 static hermes_error_t ssl_err(hermes_error_code_t code, const char *message)
 {
     hermes_error_t e = {0};

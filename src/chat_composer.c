@@ -155,6 +155,7 @@ bool composer_delete(composer_t *c) {
     return true;
 }
 
+/* PoP: move_cursor @ tools/computer_use/cua_backend.py:move_cursor */
 void composer_move_cursor(composer_t *c, int delta) {
     if (!c) return;
     int new_pos = c->cursor_pos + delta;

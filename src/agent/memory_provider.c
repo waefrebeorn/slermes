@@ -63,6 +63,7 @@ static void builtin_initialize(memory_provider_t *self, const char *session_id,
     self->initialized = true;
 }
 
+/* PoP: system_prompt_block @ agent/memory_provider.py:system_prompt_block */
 static char *builtin_system_prompt_block(memory_provider_t *self) {
     (void)self;
     /* Built-in provider adds no extra system prompt text */

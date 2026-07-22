@@ -51,6 +51,7 @@ void pet_clear_manifest_cache(void) {
 }
 
 /* PoP: pet_fetch_manifest @ agent/pet/manifest.py:fetch_manifest */
+/* PoP: _fetch_manifest @ hermes_cli/model_catalog.py:_fetch_manifest */
 int pet_fetch_manifest(pet_manifest_entry_t *out, int max_count, bool force) {
     if (!out || max_count <= 0) return 0;
 

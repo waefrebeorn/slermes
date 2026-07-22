@@ -37,6 +37,7 @@ static void term_clear_line(terminal_t *term, int row) {
     }
 }
 
+/* PoP: play @ hermes_cli/journey.py:_play */
 static void term_erase_in_display(terminal_t *term, int mode, int row, int col) {
     switch (mode) {
         case 0: /* erase below */

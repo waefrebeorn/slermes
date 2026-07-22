@@ -104,6 +104,7 @@ static cu_action_t *noop_scroll(const char *dir, int amount,
                              dir ? dir : "down", amount > 0 ? amount : 3);
 }
 
+/* PoP: type_text @ tools/computer_use/cua_backend.py:type_text */
 static cu_action_t *noop_type_text(const char *text) {
     return noop_make_action("type", true, "typed %zu chars",
                              text ? strlen(text) : 0);
@@ -708,6 +709,7 @@ static cu_action_t *wayland_list_apps(void) {
         "active apps unknown (install swaymsg+jq)");
 }
 
+/* PoP: focus_app @ tools/computer_use/cua_backend.py:focus_app */
 static cu_action_t *wayland_focus_app(const char *app, bool raise) {
     (void)raise;
     if (!_has_cmd("swaymsg") || !_has_cmd("jq")) {

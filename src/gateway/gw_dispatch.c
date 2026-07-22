@@ -86,6 +86,7 @@ void gw_event_register(gw_event_listener_t listener, void *userdata) {
     gw_event_bus.count++;
 }
 
+/* PoP: _emit @ agent/moa_loop.py:_emit */
 void gw_event_emit(const char *event_type, json_node_t *data) {
     for (int i = 0; i < gw_event_bus.count; i++) {
         gw_event_bus.listeners[i](event_type, data, gw_event_bus.data[i]);
@@ -288,6 +289,7 @@ void poll_platform_shutdown(void) {
     printf("[gateway] Polling platform shutdown\n");
 }
 
+/* PoP: shutdown_all @ agent/memory_manager.py:shutdown_all */
 void gw_platform_shutdown_all(void) {
     for (int i = 0; i < g_gw.platform_def_count; i++) {
         if (g_gw.platform_defs[i].shutdown)

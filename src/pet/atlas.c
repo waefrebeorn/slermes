@@ -300,6 +300,7 @@ static bool img_bbox(const pet_img_t *img, int *l, int *t, int *r, int *b) {
     *l=L; *t=T; *r=R+1; *b=B+1; return true;
 }
 
+/* PoP: _fit_to_cell @ agent/pet/generate/atlas.py:_fit_to_cell */
 pet_img_t *pet_fit_to_cell(const pet_img_t *img, int cell_w, int cell_h) {
     pet_img_t *target = pet_img_new(cell_w, cell_h);
     if (!target) return NULL;
@@ -481,6 +482,7 @@ pet_component_t *pet_component_boxes(const pet_img_t *img, int *out_count) {
     return trim ? trim : out;
 }
 
+/* PoP: _isolate_slot_subject @ agent/pet/generate/atlas.py:_isolate_slot_subject */
 pet_img_t *pet_isolate_slot_subject(const pet_img_t *img) {
     pet_img_t *work = pet_erase_long_axis_lines(img);
     if (!work) return NULL;
@@ -566,6 +568,7 @@ int pet_best_shift(const int *ref, int nref, const int *prof, int nprof, int win
     return best;
 }
 
+/* PoP: _merge_related_boxes @ agent/pet/generate/atlas.py:_merge_related_boxes */
 int *pet_merge_related_boxes(const int *boxes, int count, int *out_count) {
     int (*b)[4] = (int (*)[4])malloc((size_t)count * sizeof(int[4]));
     if (!b) { *out_count = 0; return NULL; }

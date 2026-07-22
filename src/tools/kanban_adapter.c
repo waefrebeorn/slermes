@@ -40,6 +40,7 @@ static sqlite3 *adapter_conn(void)
  * Legacy high-level API (delegates to the engine)
  * ========================================================================= */
 
+/* PoP: _create_task @ gateway/platforms/qqbot/adapter.py:_create_task */
 char *kanban_create_task(const kanban_task_spec_t *spec)
 {
     if (!spec || !spec->title || !*spec->title ||

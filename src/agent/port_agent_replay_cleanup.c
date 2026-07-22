@@ -97,6 +97,7 @@ static char *msg_tool_call_name(const json_t *msg, size_t idx, char *out, size_t
 
 /* Build a recovery tool-result message matching Python make_tool_result_message:
  * {role, name, tool_name, content, tool_call_id, effect_disposition}. */
+/* PoP: tool_result @ tools/registry.py:tool_result */
 static json_t *make_recovery_tool_result(const char *name, const char *content,
                                           const char *tool_call_id,
                                           const char *effect_disposition)

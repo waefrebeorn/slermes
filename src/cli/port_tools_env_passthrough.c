@@ -24,6 +24,7 @@ int cli_tools_env_passthrough__is_hermes_provider_credential(const char *name);
 /* Load tools.env_passthrough (terminal.env_passthrough) from config.yaml,
  * filtering out Hermes-managed provider credentials, and cache the result.
  * Returns the cached array via *out and count via *out_count. */
+/* PoP: gh @ hermes_cli/web_git.py:_gh */
 void cli_tools_env_passthrough__load_config_passthrough(char ***out, int *out_count)
 {
     if (out) *out = NULL;

@@ -18,6 +18,7 @@
 /* Minimal shlex.split: splits on whitespace, honors ' and " quoting, drops
  * unquoted quotes. Returns malloc'd argv (NULL-terminated) + count. Caller
  * frees with session_listing_free_argv. */
+/* PoP: parse_args @ hermes_cli/codex_runtime_switch.py:parse_args */
 char **session_listing_parse_args(const char *raw, int *out_count)
 {
     *out_count = 0;
