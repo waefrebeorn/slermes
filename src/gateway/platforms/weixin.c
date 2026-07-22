@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <strings.h>
+#include <ctype.h>
 #include <errno.h>
 #include <sys/stat.h>
 #include <openssl/evp.h>
@@ -882,6 +883,194 @@ char **weixin_split_table_row(const char *line, int *count)
     free(work);
     if (count) *count = n;
     return result;
+}
+
+/* PoP: _looks_like_heading_line_for_weixin @ gateway/platforms/weixin.py:_looks_like_heading_line_for_weixin */
+/* PoP: weixin_looks_like_heading_line @ gateway/platforms/weixin.py:_looks_like_heading_line_for_weixin */
+bool weixin_looks_like_heading_line(const char *line)
+{
+    if (!line || !*line) return false;
+    /* Starts with # or ## or ### ... */
+    const char *p = line;
+    while (*p == ' ') p++;
+    if (*p == '#') {
+        p++;
+        while (*p == '#') p++;
+        return (*p == ' ' || *p == '\0');
+    }
+    /* Underline-style heading: line of === or --- */
+    if (*p == '=' || *p == '-') {
+        int count = 0;
+        while (*p == '=' || *p == '-') { count++; p++; }
+        while (*p == ' ') p++;
+        return count >= 3 && *p == '\0';
+    }
+    return false;
+}
+
+/* PoP: _looks_like_chatty_line_for_weixin @ gateway/platforms/weixin.py:_looks_like_chatty_line_for_weixin */
+/* PoP: weixin_looks_like_chatty_line @ gateway/platforms/weixin.py:_looks_like_chatty_line_for_weixin */
+bool weixin_looks_like_chatty_line(const char *line)
+{
+    if (!line || !*line) return false;
+    const char *p = line;
+    while (*p == ' ') p++;
+    /* Blockquote or list marker */
+    if (*p == '>' || *p == '-' || *p == '*' || *p == '+') return true;
+    /* Numbered list */
+    if (isdigit((unsigned char)*p)) {
+        while (isdigit((unsigned char)*p)) p++;
+        while (*p == ' ') p++;
+        if (*p == '.') return true;
+    }
+    /* Inline code backtick */
+    if (*p == '`') return true;
+    return false;
+}
+
+/* PoP: _coerce_float_extra @ gateway/platforms/weixin.py:_coerce_float_extra */
+/* PoP: weixin_coerce_float_extra @ gateway/platforms/weixin.py:_coerce_float_extra */
+double weixin_coerce_float_extra(const json_t *obj, const char *key, double default_val)
+{
+    if (!obj || !key) return default_val;
+    return json_get_num(obj, key, default_val);
+}
+
+/* PoP: _is_dm_allowed @ gateway/platforms/weixin.py:_is_dm_allowed */
+/* PoP: weixin_is_dm_allowed @ gateway/platforms/weixin.py:_is_dm_allowed */
+bool weixin_is_dm_allowed(const char *sender_id, bool open_dm_opted_in,
+                           const char *allowlist_json, const char *blocklist_json)
+{
+    if (!sender_id) return false;
+    if (open_dm_opted_in) return true;
+    /* Check allowlist */
+    if (allowlist_json) {
+        json_t *root = json_parse(allowlist_json, NULL);
+        if (root && root->type == JSON_ARRAY) {
+            for (size_t i = 0; i < json_array_size(root); i++) {
+                const json_t *e = json_array_get(root, i);
+                if (e && e->type == JSON_STRING && strcmp(e->str_val, sender_id) == 0) {
+                    json_free(root);
+                    return true;
+                }
+            }
+        }
+        if (root) json_free(root);
+    }
+    /* Check blocklist - if present and matches, deny */
+    if (blocklist_json) {
+        json_t *root = json_parse(blocklist_json, NULL);
+        if (root && root->type == JSON_ARRAY) {
+            for (size_t i = 0; i < json_array_size(root); i++) {
+                const json_t *e = json_array_get(root, i);
+                if (e && e->type == JSON_STRING && strcmp(e->str_val, sender_id) == 0) {
+                    json_free(root);
+                    return false;
+                }
+            }
+        }
+        if (root) json_free(root);
+    }
+    return false;
+}
+
+/* PoP: _assert_weixin_cdn_url @ gateway/platforms/weixin.py:_assert_weixin_cdn_url */
+/* PoP: weixin_assert_cdn_url @ gateway/platforms/weixin.py:_assert_weixin_cdn_url */
+bool weixin_assert_cdn_url(const char *url)
+{
+    if (!url) return false;
+    /* Must start with https:// */
+    if (strncmp(url, "https://", 8) != 0) return false;
+    /* Must contain weixin.qq.com or similar CDN domain patterns */
+    if (strstr(url, "weixin.qq.com") || strstr(url, "wx.qq.com") ||
+        strstr(url, "wechat.com") || strstr(url, "qq.com"))
+        return true;
+    return false;
+}
+
+/* PoP: _rate_limit_error @ gateway/platforms/weixin.py:_rate_limit_error */
+/* PoP: weixin_rate_limit_error @ gateway/platforms/weixin.py:_rate_limit_error */
+char *weixin_rate_limit_error(double cooldown_remaining)
+{
+    char *msg = (char *)malloc(128);
+    if (!msg) return NULL;
+    snprintf(msg, 128,
+             "iLink sendmessage rate limited; cooldown active for %.1fs",
+             cooldown_remaining);
+    return msg;
+}
+
+/* PoP: _load_sync_buf @ gateway/platforms/weixin.py:_load_sync_buf */
+/* PoP: weixin_load_sync_buf @ gateway/platforms/weixin.py:_load_sync_buf */
+char *weixin_load_sync_buf(const char *hermes_home, const char *account_id)
+{
+    if (!hermes_home || !account_id) return NULL;
+    char *path = weixin_account_file(hermes_home, account_id);
+    if (!path) return NULL;
+    FILE *f = fopen(path, "r");
+    free(path);
+    if (!f) return NULL;
+    fseek(f, 0, SEEK_END);
+    long len = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    if (len <= 0) { fclose(f); return strdup(""); }
+    char *buf = (char *)malloc((size_t)len + 1);
+    if (!buf) { fclose(f); return NULL; }
+    size_t n = fread(buf, 1, (size_t)len, f);
+    fclose(f);
+    buf[n] = '\0';
+    return buf;
+}
+
+/* PoP: _headers @ gateway/platforms/weixin.py:_headers */
+/* PoP: weixin_headers @ gateway/platforms/weixin.py:_headers */
+json_t *weixin_headers(const char *token, const char *body)
+{
+    json_t *h = json_object();
+    if (!h) return NULL;
+    json_object_set(h, "Content-Type", json_string("application/json; charset=utf-8"));
+    if (token) {
+        char buf[512];
+        snprintf(buf, sizeof(buf), "Bearer %s", token);
+        json_object_set(h, "Authorization", json_string(buf));
+    }
+    if (body) {
+        char buf[64];
+        snprintf(buf, sizeof(buf), "%zu", body ? strlen(body) : 0);
+        json_object_set(h, "Content-Length", json_string(buf));
+    }
+    return h;
+}
+
+/* PoP: _coerce_list @ gateway/platforms/weixin.py:_coerce_list */
+/* PoP: weixin_coerce_list @ gateway/platforms/weixin.py:_coerce_list */
+char **weixin_coerce_list(const json_t *value, int *count)
+{
+    if (count) *count = 0;
+    if (!value) return NULL;
+    if (value->type == JSON_ARRAY) {
+        size_t n = json_array_size(value);
+        char **arr = (char **)calloc(n + 1, sizeof(char *));
+        if (!arr) return NULL;
+        size_t j = 0;
+        for (size_t i = 0; i < n; i++) {
+            const json_t *e = json_array_get(value, i);
+            if (e && e->type == JSON_STRING) {
+                arr[j++] = strdup(e->str_val);
+            }
+        }
+        if (count) *count = (int)j;
+        return arr;
+    }
+    if (value->type == JSON_STRING) {
+        char **arr = (char **)malloc(2 * sizeof(char *));
+        if (!arr) return NULL;
+        arr[0] = strdup(value->str_val);
+        arr[1] = NULL;
+        if (count) *count = 1;
+        return arr;
+    }
+    return NULL;
 }
 
 /* PoP: _rate_limit_cooldown_remaining @ gateway/platforms/weixin.py:_rate_limit_cooldown_remaining */
