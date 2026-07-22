@@ -156,8 +156,8 @@ bool browser_is_safe_url(const char *url)
     return true;
 }
 
-/* PoP: _is_camofox_mode @ tools/browser_tool.py:_is_camofox_mode */
-/* PoP: browser_is_camofox_mode @ tools/browser_tool.py:_is_camofox_mode */
+/* PoP: _is_camofox_mode @ tools/browser_camofox.py:is_camofox_mode */
+/* PoP: browser_is_camofox_mode @ tools/browser_camofox.py:is_camofox_mode */
 bool browser_is_camofox_mode(void)
 {
     const char *url = getenv("CAMOFOX_URL");

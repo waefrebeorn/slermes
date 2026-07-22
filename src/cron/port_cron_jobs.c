@@ -396,8 +396,9 @@ static char *iso_local(time_t ts) {
     return out;
 }
 
+/* PoP: now_iso @ tools/skill_usage.py:_now_iso */
 /* Current time ISO (local, aware). Mirrors _hermes_now().isoformat(). */
-static char *now_iso(void) { return iso_local(time(NULL)); }
+char *now_iso(void) { return iso_local(time(NULL)); }
 
 /* Parse an ISO timestamp → time_t (UTC epoch). -1 on failure. */
 static time_t iso_to_ts(const char *iso) {
