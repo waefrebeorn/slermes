@@ -59,6 +59,7 @@ void cmd_entry_free(cmd_entry_t *e) {
 
 /* ── Name sanitizers ───────────────────────────────────────────────── */
 
+/* PoP: commands_sanitize_telegram_name @ hermes_cli/commands.py:_sanitize_telegram_name */
 char *commands_sanitize_telegram_name(const char *raw) {
     if (!raw) return strdup("");
     size_t n = strlen(raw);
@@ -94,6 +95,7 @@ char *commands_sanitize_telegram_name(const char *raw) {
     return buf;
 }
 
+/* PoP: commands_sanitize_slack_name @ hermes_cli/commands.py:_sanitize_slack_name */
 char *commands_sanitize_slack_name(const char *raw) {
     if (!raw) return strdup("");
     size_t n = strlen(raw);
@@ -117,6 +119,7 @@ char *commands_sanitize_slack_name(const char *raw) {
     return buf;
 }
 
+/* PoP: commands_requires_argument @ hermes_cli/commands.py:_requires_argument */
 bool commands_requires_argument(const char *args_hint) {
     if (!args_hint) return false;
     while (*args_hint == ' ' || *args_hint == '\t') args_hint++;
@@ -125,6 +128,7 @@ bool commands_requires_argument(const char *args_hint) {
 
 /* ── Human-readable file size label (mirrors _file_size_label) ── */
 
+/* PoP: commands_file_size_label @ hermes_cli/commands.py:_file_size_label */
 char *commands_file_size_label(long size) {
     char buf[32];
     if (size < 1024) {
@@ -235,6 +239,7 @@ char *commands_telegram_menu_config_json(const char *raw_cfg_json) {
     return out;
 }
 
+/* PoP: commands_telegram_menu_max_commands @ hermes_cli/commands.py:telegram_menu_max_commands */
 int commands_telegram_menu_max_commands(const char *raw_cfg_json) {
     int max_commands, mode, npri;
     char **priority;

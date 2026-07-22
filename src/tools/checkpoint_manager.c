@@ -247,7 +247,7 @@ char* _migrate_legacy_store(const char *base) {
     return NULL;
 }
 
-/* PoP: _run_git @ tools/checkpoint_manager.py:_run_git (wrapper) */
+/* PoP: _run_git @ tools/checkpoint_manager.py:_run_git */
 char* checkpoint_run_git(const char *repo_path, const char *cmd) {
     char out[4096];
     if (_run_git(repo_path, cmd, out, sizeof(out))) {
@@ -829,6 +829,7 @@ void maybe_auto_prune_checkpoints(const char *store, const char *working_dir) {
      * This standalone hook is intentionally a no-op. */
 }
 
+/* PoP: store_status @ tools/checkpoint_manager.py:store_status */
 char *store_status(const char *checkpoint_base) {
     char store[MAX_PATH];
     _store_path(NULL, store, sizeof(store));

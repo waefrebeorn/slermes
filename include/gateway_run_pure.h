@@ -90,19 +90,23 @@ char *gateway_build_document_context_note(const char *display_name,
 
 /* PoP: _tail_lines @ hermes_cli/web_server.py:_tail_lines
  * Return malloc'd string with last n lines of file at path. */
+/* PoP: web_tail_lines @ hermes_cli/web_server.py:_tail_lines */
 char *web_tail_lines(const char *path, int n);
 
 /* PoP: _dashboard_spawn_executable @ hermes_cli/web_server.py:_dashboard_spawn_executable
  * Returns malloc'd string - pythonw.exe on Windows, sys.executable otherwise. */
+/* PoP: web_dashboard_spawn_executable @ hermes_cli/web_server.py:_dashboard_spawn_executable */
 char *web_dashboard_spawn_executable(void);
 
 /* PoP: _record_completed_action @ hermes_cli/web_server.py:_record_completed_action
  * Simple stub - the full action tracking requires subprocess management. */
+/* PoP: web_record_completed_action @ hermes_cli/web_server.py:_record_completed_action */
 void web_record_completed_action(const char *name, int exit_code, const char *message);
 
 /* PoP: _normalize_config_for_web @ hermes_cli/web_server.py:_normalize_config_for_web
  * Normalize config for web UI: flatten model dict to string, extract context_length.
  * Input and output are JSON objects (caller frees). */
+/* PoP: web_normalize_config_for_web @ hermes_cli/web_server.py:_normalize_config_for_web */
 json_node_t *web_normalize_config_for_web(json_node_t *config);
 
 /* run.py _resolve_gateway_display_bool */

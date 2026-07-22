@@ -167,6 +167,7 @@ static int write_file_entries(const char *path, const char **arr, int n) {
     return rc;
 }
 
+/* PoP: save_to_disk @ tools/memory_tool.py:save_to_disk */
 static void save_to_disk(memory_store_t *s, const char *target) {
     int n; const char **e = entries_for(s, target, &n);
     if (!s->mem_dir) return;
@@ -287,6 +288,7 @@ static char *resp_error(memory_store_t *s, const char *target, const char *err, 
 }
 
 /* consolidation-failure degradation */
+/* PoP: consolidation_failure @ tools/memory_tool.py:_consolidation_failure */
 static char *consolidation_failure(memory_store_t *s, const char *target, char *resp) {
     s->consolidation_failures++;
     if (s->consolidation_failures <= MAX_CONSOLIDATION_FAILURES_PER_TURN)
@@ -304,6 +306,7 @@ static char *consolidation_failure(memory_store_t *s, const char *target, char *
 
 /* external drift: any single entry exceeds the whole-store limit, or a
    round-trip reserialize differs. Returns malloc'd .bak path or NULL. */
+/* PoP: detect_external_drift @ tools/memory_tool.py:_detect_external_drift */
 static char *detect_external_drift(memory_store_t *s, const char *mem_dir, const char *target) {
     const char *path = path_for(mem_dir, target);
     FILE *f = fopen(path, "rb");
@@ -419,6 +422,7 @@ char *memory_store_remove(memory_store_t *s, const char *target, const char *old
 }
 
 /* batch */
+/* PoP: memory_store_apply_batch @ tools/memory_tool.py:apply_batch */
 char *memory_store_apply_batch(memory_store_t *s, const char *target, const json_node_t *ops) {
     if (!ops) return resp_error(s, target, "operations list is empty.", 0);
     int opn = (int)json_array_size(ops);
@@ -540,6 +544,7 @@ static char *gate_result_staged(memory_write_gate_decision_t *d) {
 
 int memory_tool_available(void) { return 1; }
 
+/* PoP: memory_tool_missing_old_text_error @ tools/memory_tool.py:_missing_old_text_error */
 char *memory_tool_missing_old_text_error(memory_store_t *store,
                                          const char *target, const char *action) {
     int n; const char **e = entries_for(store, target, &n);

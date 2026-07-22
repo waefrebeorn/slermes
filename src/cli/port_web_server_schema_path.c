@@ -669,6 +669,167 @@ char *ws_fs_find_git_root(const char *start) {
     return NULL;
 }
 
+/* ── ws_fs_path ─────────────────────────────────────────────────────────────
+ * PoP: _fs_path @ hermes_cli/web_server.py:_fs_path
+ *     Python: strip; check NUL; expanduser(); resolve().
+ *     Returns malloc'd absolute path on success, NULL on error (empty/NUL/invalid).
+ */
+char *ws_fs_path(const char *raw_path) {
+    if (!raw_path) return NULL;
+    /* Strip whitespace */
+    const char *p = raw_path;
+    while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+    size_t len = strlen(p);
+    while (len > 0 && (p[len-1] == ' ' || p[len-1] == '\t' || p[len-1] == '\n' || p[len-1] == '\r')) len--;
+    if (len == 0) return NULL;
+    /* Check for NUL byte */
+    if (memchr(p, '\0', len) != NULL) return NULL;
+    /* Check for file: URL */
+    if (len >= 5 && strncasecmp(p, "file:", 5) == 0) {
+        const char *url_path = p + 5;
+        /* Skip "//" if present */
+        if (len >= 7 && url_path[0] == '/' && url_path[1] == '/') {
+            const char *host_start = url_path + 2;
+            const char *host_end = strchr(host_start, '/');
+            if (host_end) {
+                /* Check netloc - only allow localhost or empty */
+                size_t host_len = host_end - host_start;
+                if (host_len > 0 && host_len != 9 && strncmp(host_start, "localhost", 9) != 0) {
+                    return NULL;
+                }
+                url_path = host_end;
+            }
+        }
+        /* For simplicity, just decode the path part - full URL parsing is complex */
+        p = url_path;
+        len = strlen(p);
+    }
+    /* Expanduser */
+    char buf[4096];
+    if (p[0] == '~' && (p[1] == '/' || p[1] == '\0')) {
+        const char *home = getenv("HOME");
+        if (!home || !*home) home = "/tmp";
+        if (p[1] == '\0') {
+            snprintf(buf, sizeof buf, "%s", home);
+        } else {
+            snprintf(buf, sizeof buf, "%s%s", home, p + 1);
+        }
+        p = buf;
+    }
+    /* Make absolute if needed */
+    char abs_path[4096];
+    if (p[0] == '/') {
+        snprintf(abs_path, sizeof abs_path, "%s", p);
+    } else {
+        char cwd[4096];
+        if (!getcwd(cwd, sizeof cwd)) return NULL;
+        snprintf(abs_path, sizeof abs_path, "%s/%s", cwd, p);
+    }
+    /* Resolve */
+    char real[4096];
+    const char *got = realpath(abs_path, real);
+    if (got) {
+        return strdup(real);
+    }
+    /* realpath failed - try to return the cleaned path anyway (strict=False behavior) */
+    char cleaned[4096];
+    snprintf(cleaned, sizeof cleaned, "%s", abs_path);
+    size_t L = strlen(cleaned);
+    while (L > 1 && cleaned[L-1] == '/') cleaned[--L] = '\0';
+    return strdup(cleaned);
+}
+
+/* ── ws_git_path ─────────────────────────────────────────────────────────────
+ * PoP: ws_git_path @ hermes_cli/web_server.py:_git_path
+ *     Python: str(path or "").strip(); if "\0" in path: raise; resolve with realpath.
+ *     Returns malloc'd path or NULL on error.
+ */
+char *ws_git_path(const char *raw_path) {
+    if (!raw_path) return NULL;
+    /* Strip whitespace */
+    const char *p = raw_path;
+    while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+    size_t len = strlen(p);
+    while (len > 0 && (p[len-1] == ' ' || p[len-1] == '\t' || p[len-1] == '\n' || p[len-1] == '\r')) len--;
+    if (len == 0) return NULL;
+    /* Check for NUL byte */
+    if (memchr(p, '\0', len) != NULL) return NULL;
+    /* Resolve with realpath */
+    char real[4096];
+    const char *got = realpath(p, real);
+    if (got) {
+        return strdup(real);
+    }
+    return NULL;
+}
+
+/* ── ws_media_serve_roots ────────────────────────────────────────────────────
+ * PoP: ws_media_serve_roots @ hermes_cli/web_server.py:_media_serve_roots
+ *     Returns NULL-terminated array of malloc'd strings, caller frees each.
+ *     Roots: HERMES_HOME/images, HERMES_HOME/screenshots, HERMES_HOME/cache
+ */
+char **ws_media_serve_roots(void) {
+    const char *home = getenv("HERMES_HOME");
+    if (!home || !*home) {
+        const char *h = getenv("HOME");
+        if (h && *h) home = h;
+        else home = "/tmp";
+    }
+    char **roots = calloc(4, sizeof(char*));
+    if (!roots) return NULL;
+    const char *subdirs[] = {"images", "screenshots", "cache", NULL};
+    for (int i = 0; subdirs[i]; i++) {
+        char path[4096];
+        snprintf(path, sizeof path, "%s/%s", home, subdirs[i]);
+        char real[4096];
+        const char *resolved = realpath(path, real);
+        if (resolved) {
+            roots[i] = strdup(resolved);
+        } else {
+            roots[i] = strdup(path);
+        }
+    }
+    return roots;
+}
+
+/* ── ws_ensure_managed_root ──────────────────────────────────────────────────
+ * PoP: ws_ensure_managed_root @ hermes_cli/web_server.py:_ensure_managed_root
+ *     Returns 0 on success, -1 on error.
+ */
+int ws_ensure_managed_root(const char *path) {
+    if (!path || !*path) return -1;
+    /* Expand user */
+    char expanded[4096];
+    if (path[0] == '~' && (path[1] == '/' || path[1] == '\0')) {
+        const char *home = getenv("HOME");
+        if (!home || !*home) home = "/tmp";
+        if (path[1] == '\0') {
+            snprintf(expanded, sizeof expanded, "%s", home);
+        } else {
+            snprintf(expanded, sizeof expanded, "%s%s", home, path + 1);
+        }
+        path = expanded;
+    }
+    /* mkdir -p */
+    char *p = strdup(path);
+    if (!p) return -1;
+    char *slash = p;
+    while ((slash = strchr(slash + 1, '/')) != NULL) {
+        *slash = '\0';
+        if (mkdir(p, 0755) != 0 && errno != EEXIST) {
+            free(p);
+            return -1;
+        }
+        *slash = '/';
+    }
+    if (mkdir(p, 0755) != 0 && errno != EEXIST) {
+        free(p);
+        return -1;
+    }
+    free(p);
+    return 0;
+}
+
 /* ── ws_audio_extension_for_mime ───────────────────────────────────────────
  * PoP: _audio_extension_for_mime @ hermes_cli/web_server.py:_audio_extension_for_mime
  *     Python: `normalized = (mime_type or "").split(";", 1)[0].strip().lower()`;

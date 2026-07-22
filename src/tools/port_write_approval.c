@@ -55,6 +55,7 @@ static int port_pending_cmp_created_at(const json_t **a, const json_t **b)
  * Scan pending_dir(subsystem)/*.json, parse each, skip unreadable,
  * stable-sort by created_at (oldest first). Return JSON array string.
  * Caller owns the returned malloc'd string and must free it. */
+/* PoP: list_pending @ tools/write_approval.py:list_pending */
 char *list_pending(const char *subsystem)
 {
     if (!subsystem) {
@@ -169,4 +170,107 @@ char *list_pending(const char *subsystem)
         return strdup("[]");
     }
     return txt;
+}
+
+/* PoP: frontmatter_description @ tools/write_approval.py:_frontmatter_description */
+/* Extract the description: value from SKILL.md YAML frontmatter. */
+char *frontmatter_description(const char *content)
+{
+    if (!content) return strdup("");
+
+    /* Match "^description:\s*(.+)$" with re.MULTILINE */
+    const char *desc_prefix = "description:";
+    const char *p = content;
+    char *result = NULL;
+
+    while (*p) {
+        /* Skip leading whitespace at line start */
+        while (*p == ' ' || *p == '\t') p++;
+        /* Check for "description:" at current position */
+        if (strncasecmp(p, desc_prefix, strlen(desc_prefix)) == 0) {
+            p += strlen(desc_prefix);
+            /* Skip whitespace after colon */
+            while (*p == ' ' || *p == '\t') p++;
+            /* Read remaining rest of line for description */
+            const char *start = p;
+            while (*p && *p != '\n' && *p != '\r') p++;
+            /* Extract the description text */
+            size_t len = p - start;
+            if (len > 0) {
+                /* Allocate and copy */
+                result = malloc(len + 1);
+                if (result) {
+                    memcpy(result, start, len);
+                    result[len] = '\0';
+                    /* Strip surrounding quotes */
+                    size_t rlen = strlen(result);
+                    if (rlen >= 2 && ((result[0] == '\'' && result[rlen-1] == '\'') ||
+                                      (result[0] == '"' && result[rlen-1] == '"'))) {
+                        memmove(result, result + 1, rlen - 2);
+                        result[rlen - 2] = '\0';
+                    }
+                    /* Strip trailing whitespace */
+                    rlen = strlen(result);
+                    while (rlen > 0 && (result[rlen-1] == ' ' || result[rlen-1] == '\t'))
+                        result[--rlen] = '\0';
+                    /* Truncate to 140 chars */
+                    if (rlen > 140) result[140] = '\0';
+                }
+                break;
+            }
+        } else {
+            /* Skip to next line */
+            while (*p && *p != '\n') p++;
+            if (*p == '\n') p++;
+        }
+    }
+    if (!result) return strdup("");
+    return result;
+}
+
+/* PoP: skill_pending_diff @ tools/write_approval.py:skill_pending_diff */
+/* Build a diff for a staged skill write from a pending record. */
+char *skill_pending_diff(const char *record_json)
+{
+    if (!record_json) return strdup("");
+
+    json_t *record = json_parse(record_json, NULL);
+    if (!record) return strdup("");
+
+    /* Extract payload.action and payload.name */
+    json_t *payload = json_obj_get(record, "payload");
+    if (!payload || !json_is_object(payload)) {
+        json_free(record);
+        return strdup("");
+    }
+
+    const char *action = json_get_str(json_obj_get(payload, "action"), NULL, "");
+    const char *name = json_get_str(json_obj_get(payload, "name"), NULL, "");
+
+    if (strcmp(action, "create") == 0) {
+        const char *content = json_get_str(json_obj_get(payload, "content"), NULL, "");
+        char *out = strdup(content);
+        json_free(record);
+        return out ? out : strdup("");
+    }
+
+    /* For edit/patch/write_file: try to produce a simple diff-like output.
+     * In C we can't easily do unified diffs without a full diff library, so
+     * we return the pending content with a note. */
+    char *result = NULL;
+    if (strcmp(action, "edit") == 0 || strcmp(action, "patch") == 0 || strcmp(action, "write_file") == 0) {
+        const char *content = json_get_str(json_obj_get(payload, "content"), NULL, "");
+        if (content && content[0]) {
+            size_t len = strlen(content) + 256;
+            result = malloc(len);
+            if (result) {
+                snprintf(result, len,
+                         "[pending %s for '%s']\n---\n%s\n",
+                         action, name, content);
+            }
+        }
+    }
+
+    json_free(record);
+    return result ? result : strdup("(no diff available)");
 }

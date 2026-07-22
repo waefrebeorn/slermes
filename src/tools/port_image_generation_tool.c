@@ -725,7 +725,7 @@ json_t *image_gen_active_terminal_env(const char *task_id)
 }
 
 /* ---------------------------------------------------------------------------
-/* PoP: _agent_cache_base_for_env @ tools/image_generation_tool.py:_agent_cache_base_for_env
+ * PoP: _agent_cache_base_for_env @ tools/image_generation_tool.py:_agent_cache_base_for_env
  * --------------------------------------------------------------------------- */
 
 char *image_gen_agent_cache_base_for_env(json_t *env)
@@ -841,7 +841,7 @@ void image_gen_force_artifact_sync(json_t *env)
 }
 
 /* ---------------------------------------------------------------------------
-/* PoP: _postprocess_image_generate_result @ tools/image_generation_tool.py:_postprocess_image_generate_result
+ * PoP: _postprocess_image_generate_result @ tools/image_generation_tool.py:_postprocess_image_generate_result
  * --------------------------------------------------------------------------- */
 
 char *image_gen_postprocess_image_generate_result(const char *raw, const char *task_id)

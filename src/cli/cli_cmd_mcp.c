@@ -10,6 +10,7 @@
 #include "mcp_tool.h"
 
 /* /mcp: MCP server status and management */
+/* PoP: cmd_mcp @ hermes_cli/main.py:cmd_mcp */
 void cmd_mcp(const char *args, agent_state_t *state) {
     (void)state;
     /* Parse subcommand */

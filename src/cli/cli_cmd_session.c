@@ -330,6 +330,7 @@ void cmd_history(const char *args, agent_state_t *state) {
 }
 
 /* /insights: Show usage insights (enhanced with DB-backed historical stats) */
+/* PoP: cmd_insights @ hermes_cli/main.py:cmd_insights */
 void cmd_insights(const char *args, agent_state_t *state) {
     /* Parse --days N and --source S arguments */
     int days_filter = 0;
@@ -643,6 +644,7 @@ void cmd_reset(const char *args, agent_state_t *state) {
 
 /* /resume: Resume a previously-named session */
 /* AG26: Port of Python hermes_cli/main.py:resume(). */
+/* PoP: cmd_resume @ hermes_cli/curator.py:_cmd_resume */
 void cmd_resume(const char *args, agent_state_t *state) {
     if (!args || !args[0]) {
         printf("Usage: /resume <session_id>\n");
@@ -704,6 +706,7 @@ void cmd_retry(const char *args, agent_state_t *state) {
 }
 
 /* /rollback: List or restore state snapshots */
+/* PoP: cmd_rollback @ hermes_cli/curator.py:_cmd_rollback */
 void cmd_rollback(const char *args, agent_state_t *state) {
     if (args && args[0]) {
         /* Restore to named checkpoint */
@@ -734,6 +737,8 @@ void cmd_rollback(const char *args, agent_state_t *state) {
     }
 }
 
+/* PoP: cmd_save @ gateway/session.py:_save */
+/* PoP: cmd_save @ gateway/platforms/helpers.py:_save */
 void cmd_save(const char *args, agent_state_t *state) {
     (void)args;
     /* Auto-open DB if needed */
@@ -1131,6 +1136,7 @@ void cmd_snapshot(const char *args, agent_state_t *state) {
         printf("Failed to save snapshot.\n");
 }
 
+/* PoP: cmd_stats @ hermes_cli/kanban.py:_cmd_stats */
 void cmd_stats(const char *args, agent_state_t *state) {
     (void)args;
     printf("Messages:  %zu\n", state->message_count);
@@ -1156,6 +1162,8 @@ void cmd_stats(const char *args, agent_state_t *state) {
  * AG26: Port of Python hermes_cli/curator.py:cmd_status().
  * AG26: Port of Python hermes_cli/portal_cli.py:cmd_status().
  */
+/* PoP: cmd_status @ hermes_cli/portal_cli.py:_cmd_status */
+/* PoP: cmd_status @ hermes_cli/curator.py:_cmd_status */
 void cmd_status(const char *args, agent_state_t *state) {
     if (args && args[0]) {
         /* Show platform/connection status */

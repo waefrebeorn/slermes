@@ -154,6 +154,24 @@ char *ws_fs_find_git_root(const char *start);
  * if unknown. The returned pointer is to a string literal (no free). */
 const char *ws_audio_extension_for_mime(const char *mime);
 
+/* PoP: ws_git_path @ hermes_cli/web_server.py:_git_path
+ * str(path or "").strip(); if "\\0" in path: raise; resolve with realpath.
+ * Returns malloc'd path or NULL on error. */
+char *ws_git_path(const char *raw_path);
+
+/* PoP: ws_media_serve_roots @ hermes_cli/web_server.py:_media_serve_roots
+ * Returns NULL-terminated array of malloc'd strings, caller frees each. */
+char **ws_media_serve_roots(void);
+
+/* PoP: ws_ensure_managed_root @ hermes_cli/web_server.py:_ensure_managed_root
+ * Returns 0 on success, -1 on error. */
+int ws_ensure_managed_root(const char *path);
+
+/* Python `_fs_path`: sanitize and resolve a path string. Returns malloc'd
+ * absolute Path on success, or NULL on error (invalid/empty/NUL-containing).
+ * Mirrors: Path(raw or "").strip(); check NUL; expanduser(); resolve(). */
+char *ws_fs_path(const char *raw_path);
+
 #ifdef __cplusplus
 }
 #endif

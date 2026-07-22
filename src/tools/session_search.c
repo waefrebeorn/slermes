@@ -343,6 +343,7 @@ static bool session_has_tag(const char *meta_content, const char *tag_filter) {
     return strstr(meta_content, tag_filter) != NULL;
 }
 
+/* PoP: session_search_handler @ tools/session_search_tool.py:session_search */
 char *session_search_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     if (!args_json) return strdup("{\"error\":\"No args\"}");

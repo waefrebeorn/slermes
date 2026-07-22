@@ -10,6 +10,7 @@
 #include "cli.h"
 
 /* /kanban: Kanban board management */
+/* PoP: cmd_kanban @ hermes_cli/main.py:cmd_kanban */
 void cmd_kanban(const char *args, agent_state_t *state) {
     (void)state;
     if (!args || !args[0]) {

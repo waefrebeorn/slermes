@@ -811,6 +811,7 @@ char *yuanbao_proto_decode_log_ext(const unsigned char *data, size_t len)
 #define YUANBAO_PROTO_DEBUG_MODE 0
 #endif
 
+/* PoP: yuanbao_proto_dbg @ gateway/platforms/yuanbao_proto.py:_dbg */
 void yuanbao_proto_dbg(const char *label, const unsigned char *data, size_t len)
 {
     if (!YUANBAO_PROTO_DEBUG_MODE) return;
