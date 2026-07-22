@@ -17,8 +17,8 @@
  *  Profile / gating helpers
  * ================================================================ */
 
-/* PoP: profile_has_kanban_toolset @ tools/kanban_tools.py:_profile_has_kanban_toolset
- * Port of Python tools/kanban_tools.py:_profile_has_kanban_toolset().
+/* PoP: profile_has_kanban_toolset @ tools/kanban_tools.py:_profile_has_kanban_toolset */
+/* Port of Python tools/kanban_tools.py:_profile_has_kanban_toolset().
  * Checks if the current profile has "kanban" in its toolsets config.
  * Returns true if the kanban toolset is enabled. */
 bool profile_has_kanban_toolset(void)
@@ -31,8 +31,8 @@ bool profile_has_kanban_toolset(void)
     return strstr(toolsets, "kanban") != NULL;
 }
 
-/* PoP: check_kanban_mode @ tools/kanban_tools.py:_check_kanban_mode
- * Port of Python tools/kanban_tools.py:_check_kanban_mode().
+/* PoP: check_kanban_mode @ tools/kanban_tools.py:_check_kanban_mode */
+/* Port of Python tools/kanban_tools.py:_check_kanban_mode().
  * True when: HERMES_KANBAN_TASK is set (dispatcher worker) OR
  * profile has kanban toolset (orchestrator). */
 bool check_kanban_mode(void)
@@ -41,8 +41,8 @@ bool check_kanban_mode(void)
     return profile_has_kanban_toolset();
 }
 
-/* PoP: check_kanban_orchestrator_mode @ tools/kanban_tools.py:_check_kanban_orchestrator_mode
- * Port of Python tools/kanban_tools.py:_check_kanban_orchestrator_mode().
+/* PoP: check_kanban_orchestrator_mode @ tools/kanban_tools.py:_check_kanban_orchestrator_mode */
+/* Port of Python tools/kanban_tools.py:_check_kanban_orchestrator_mode().
  * Board-routing tools (list/unblock) are hidden from task workers.
  * Returns true only for orchestrator profiles (kanban toolset, no task env). */
 bool check_kanban_orchestrator_mode(void)
@@ -55,8 +55,8 @@ bool check_kanban_orchestrator_mode(void)
  *  Worker identity / task ownership
  * ================================================================ */
 
-/* PoP: worker_run_id @ tools/kanban_tools.py:_worker_run_id
- * Port of Python tools/kanban_tools.py:_worker_run_id().
+/* PoP: worker_run_id @ tools/kanban_tools.py:_worker_run_id */
+/* Port of Python tools/kanban_tools.py:_worker_run_id().
  * Returns the dispatcher run id when this worker is scoped to task_id.
  * Returns NULL (0) if not a dispatcher-spawned worker for this task. */
 int worker_run_id(const char *task_id)
@@ -72,8 +72,8 @@ int worker_run_id(const char *task_id)
     return (int)val;
 }
 
-/* PoP: stamp_worker_session_metadata @ tools/kanban_tools.py:_stamp_worker_session_metadata
- * Port of Python tools/kanban_tools.py:_stamp_worker_session_metadata().
+/* PoP: stamp_worker_session_metadata @ tools/kanban_tools.py:_stamp_worker_session_metadata */
+/* Port of Python tools/kanban_tools.py:_stamp_worker_session_metadata().
  * Adds trusted worker session id metadata for this worker's own task.
  * Returns json_t* object (caller owns) or NULL if not a dispatcher worker. */
 json_t *stamp_worker_session_metadata(const char *task_id, const json_t *metadata)
@@ -90,8 +90,8 @@ json_t *stamp_worker_session_metadata(const char *task_id, const json_t *metadat
     return stamped;
 }
 
-/* PoP: enforce_worker_task_ownership @ tools/kanban_tools.py:_enforce_worker_task_ownership
- * Port of Python tools/kanban_tools.py:_enforce_worker_task_ownership().
+/* PoP: enforce_worker_task_ownership @ tools/kanban_tools.py:_enforce_worker_task_ownership */
+/* Port of Python tools/kanban_tools.py:_enforce_worker_task_ownership().
  * Rejects worker-driven destructive calls on foreign task IDs.
  * Returns malloc'd error string on rejection, NULL when allowed. */
 char *enforce_worker_task_ownership(const char *tid)
@@ -116,8 +116,8 @@ char *enforce_worker_task_ownership(const char *tid)
  *  Goal judge availability
  * ================================================================ */
 
-/* PoP: goal_judge_available @ tools/kanban_tools.py:_goal_judge_available
- * Port of Python tools/kanban_tools.py:_goal_judge_available().
+/* PoP: goal_judge_available @ tools/kanban_tools.py:_goal_judge_available */
+/* Port of Python tools/kanban_tools.py:_goal_judge_available().
  * True when an auxiliary client is configured for the goal judge.
  * In C, we check if the auxiliary client is available via env proxy. */
 bool goal_judge_available(void)
@@ -135,8 +135,8 @@ bool goal_judge_available(void)
 static double s_auto_heartbeat_last = 0.0;
 #define AUTO_HEARTBEAT_MIN_INTERVAL 60.0
 
-/* PoP: heartbeat_current_worker_from_env @ tools/kanban_tools.py:heartbeat_current_worker_from_env
- * Port of Python tools/kanban_tools.py:heartbeat_current_worker_from_env().
+/* PoP: heartbeat_current_worker_from_env @ tools/kanban_tools.py:heartbeat_current_worker_from_env */
+/* Port of Python tools/kanban_tools.py:heartbeat_current_worker_from_env().
  * Best-effort: extend kanban claim + bump board heartbeat for current
  * dispatcher-spawned worker, using identity from env vars.
  * Rate-limited to one DB write per 60s per-process. Returns true if attempted. */
@@ -169,8 +169,8 @@ bool heartbeat_current_worker_from_env(void)
  *  Response / arg helpers
  * ================================================================ */
 
-/* PoP: ok @ tools/kanban_tools.py:_ok
- * Port of Python tools/kanban_tools.py:_ok().
+/* PoP: ok @ tools/kanban_tools.py:_ok */
+/* Port of Python tools/kanban_tools.py:_ok().
  * Builds a JSON success response: {"ok": true, **fields}.
  * Mirrors hermes_ok in hermes_error.h but with extra fields. */
 json_t *ok(const json_t *fields)
@@ -195,8 +195,8 @@ json_t *ok(const json_t *fields)
     return obj;
 }
 
-/* PoP: normalize_profile @ tools/kanban_tools.py:_normalize_profile
- * Port of Python tools/kanban_tools.py:_normalize_profile().
+/* PoP: normalize_profile @ tools/kanban_tools.py:_normalize_profile */
+/* Port of Python tools/kanban_tools.py:_normalize_profile().
  * Normalizes CLI-compatible assignee sentinels for the tool surface.
  * Returns malloc'd string (caller frees) or NULL for none/null/empty. */
 char *normalize_profile(const char *value)
@@ -218,8 +218,8 @@ char *normalize_profile(const char *value)
     return lower;
 }
 
-/* PoP: parse_bool_arg @ tools/kanban_tools.py:_parse_bool_arg
- * Port of Python tools/kanban_tools.py:_parse_bool_arg().
+/* PoP: parse_bool_arg @ tools/kanban_tools.py:_parse_bool_arg */
+/* Port of Python tools/kanban_tools.py:_parse_bool_arg().
  * Parses a string arg as boolean: "1"/"true"/"yes"/"on" -> true,
  * "0"/"false"/"no"/"off" -> false, empty/NULL -> default_val. */
 bool parse_bool_arg(const char *arg, bool default_val)
@@ -240,8 +240,8 @@ bool parse_bool_arg(const char *arg, bool default_val)
     return default_val;
 }
 
-/* PoP: require_orchestrator_tool @ tools/kanban_tools.py:_require_orchestrator_tool
- * Port of Python tools/kanban_tools.py:_require_orchestrator_tool().
+/* PoP: require_orchestrator_tool @ tools/kanban_tools.py:_require_orchestrator_tool */
+/* Port of Python tools/kanban_tools.py:_require_orchestrator_tool().
  * Returns error string (caller frees) if called from worker context (has HERMES_KANBAN_TASK).
  * Returns NULL when called from orchestrator/CLI context. */
 char *require_orchestrator_tool(const char *tool_name)
@@ -254,8 +254,8 @@ char *require_orchestrator_tool(const char *tool_name)
     return NULL;
 }
 
-/* PoP: task_summary_dict @ tools/kanban_tools.py:_task_summary_dict
- * Port of Python tools/kanban_tools.py:_task_summary_dict().
+/* PoP: task_summary_dict @ tools/kanban_tools.py:_task_summary_dict */
+/* Port of Python tools/kanban_tools.py:_task_summary_dict().
  * Builds a summary JSON object from a task JSON.
  * Returns json_t* object with id, title, status, assignee, priority, etc. */
 json_t *task_summary_dict(const json_t *task)

@@ -214,8 +214,8 @@ char *profile_dir_for(const char *name) {
     return result;
 }
 
-/* PoP: profile_dir_exists @ hermes_cli/profiles.py:profile_exists
- * Hermes-profile-dir existence (default always true). Distinct from
+/* PoP: profile_dir_exists @ hermes_cli/profiles.py:profile_exists */
+/* Hermes-profile-dir existence (default always true). Distinct from
  * kanban_db.c's profile_exists, which lists *kanban* profiles. */
 int profile_dir_exists(const char *name) {
     char *canon = profile_normalize_name(name);
@@ -690,8 +690,8 @@ bool profile_write_profile_meta(const char *profile_dir, const char *description
 
 /* ── Archive member path-safety (import/export) ───────────────────── */
 
-/* PoP: profile_archive_member_safe @ hermes_cli/profiles.py:_normalize_profile_archive_parts
- * Faithful to Python's PurePosixPath.parts: split on '/', drop empty and "."
+/* PoP: profile_archive_member_safe @ hermes_cli/profiles.py:_normalize_profile_archive_parts */
+/* Faithful to Python's PurePosixPath.parts: split on '/', drop empty and "."
  * parts, reject absolute paths, Windows drives, and any ".." part. A trailing
  * slash (e.g. "_arcroot/") yields a valid single part "_arcroot"; consecutive
  * slashes ("a//b") are collapsed to ["a","b"] and accepted. */

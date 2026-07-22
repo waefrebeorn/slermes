@@ -470,8 +470,8 @@ bool should_bypass_proxy(const char *target_hosts) {
     return false; // Placeholder
 }
 
-/* PoP: resolve_proxy_url @ gateway/platforms/base.py:resolve_proxy_url
- * Port of Python telegram_network.py:_resolve_proxy_url(). */
+/* PoP: resolve_proxy_url @ gateway/platforms/base.py:resolve_proxy_url */
+/* Port of Python telegram_network.py:_resolve_proxy_url(). */
 /* PoP: resolve_proxy_url @ gateway/platforms/helpers:resolve_proxy_url */
 /* PoP: cli_gateway_platforms_base_resolve_proxy_url @ gateway/platforms/base.py:resolve_proxy_url */
 char *resolve_proxy_url(const char *platform_env_var, const char *target_hosts) {

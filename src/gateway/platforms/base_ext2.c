@@ -408,8 +408,8 @@ void gw_image_list_free(gw_image_list_t *list) {
     list->count = 0;
 }
 
-/* PoP: gw_extract_media @ gateway/platforms/base.py:extract_media
- * Port of Python dingtalk.py:_extract_media(). */
+/* PoP: gw_extract_media @ gateway/platforms/base.py:extract_media */
+/* Port of Python dingtalk.py:_extract_media(). */
 gw_media_list_t gw_extract_media(const char *content) {
     gw_media_list_t result = {0};
     if (!content) return result;

@@ -249,8 +249,8 @@ void kdb_parent_results_free(char **parents, char **results)
  * Operator reclaim
  * ========================================================================= */
 
-/* PoP: kdb_reclaim_task @ hermes_cli/kanban_db.py:reclaim_task
- * Best-effort OS termination is skipped in the engine (no worker pid signal
+/* PoP: kdb_reclaim_task @ hermes_cli/kanban_db.py:reclaim_task */
+/* Best-effort OS termination is skipped in the engine (no worker pid signal
  * coupling here); the DB contract — release claim, reset to ready, end run,
  * append event, clear failure counter — is fully honored so the dispatcher
  * and oracle see identical state. */

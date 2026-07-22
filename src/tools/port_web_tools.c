@@ -370,8 +370,8 @@ bool web_check_web_api_key(void)
     return available;
 }
 
-/* PoP: web_extract_tool @ tools/web_tools.py:web_extract_tool
- * Port of Python tools/web_tools.py:web_extract_tool().
+/* PoP: web_extract_tool @ tools/web_tools.py:web_extract_tool */
+/* Port of Python tools/web_tools.py:web_extract_tool().
  * Extract content from specific web pages using available extraction API backend. */
 char *web_extract_tool(const char *urls_json, const char *format, int char_limit)
 {

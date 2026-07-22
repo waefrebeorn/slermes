@@ -248,8 +248,8 @@ kanban_run_t *kdb_latest_run(sqlite3 *conn, const char *task_id)
     return r;
 }
 
-/* PoP: kdb_latest_summary @ hermes_cli/kanban_db.py:latest_summary
- * (definition lives in kanban_tasks.c) */
+/* PoP: kdb_latest_summary @ hermes_cli/kanban_db.py:latest_summary */
+/* (definition lives in kanban_tasks.c) */
 
 /* PoP: kdb_latest_summaries_json @ hermes_cli/kanban_db.py:latest_summaries */
 char *kdb_latest_summaries_json(sqlite3 *conn, char **task_ids, int n_ids)

@@ -120,8 +120,8 @@ static const char *SCHEMA_WRITE = "{"
  *  Handlers
  * ================================================================ */
 
-/* PoP: _handle_read_file @ src/tools/file.c:handle_read
- * Port of Python tools/file_operations.py:read_file_tool(). */
+/* PoP: _handle_read_file @ src/tools/file.c:handle_read */
+/* Port of Python tools/file_operations.py:read_file_tool(). */
 /* PoP: handle_read @ tools/file_operations.py:ShellFileOperations.read_file */
 static char *handle_read(const char *args_json) {
     if (!args_json) return strdup("{\"error\":\"No args\"}");
@@ -203,8 +203,8 @@ static char *handle_read(const char *args_json) {
     return json_out;
 }
 
-/* PoP: _handle_write_file @ src/tools/file.c:handle_write
- * Port of Python tools/file_operations.py:write_file_tool(). */
+/* PoP: _handle_write_file @ src/tools/file.c:handle_write */
+/* Port of Python tools/file_operations.py:write_file_tool(). */
 /* PoP: handle_write @ tools/file_tools.py:write */
 /* PoP: handle_write @ agent/process_bootstrap.py:write */
 /* PoP: handle_write @ hermes_cli/main.py:write */
@@ -279,8 +279,8 @@ static char *handle_write(const char *args_json) {
     return json_out;
 }
 
-/* PoP: _handle_search_file @ src/tools/file.c:handle_search
- * Port of Python tools/file_operations.py:search_tool(). */
+/* PoP: _handle_search_file @ src/tools/file.c:handle_search */
+/* Port of Python tools/file_operations.py:search_tool(). */
 /* PoP: handle_search @ tools/file_operations.py:ShellFileOperations.search */
 static char *handle_search(const char *args_json) {
     if (!args_json) return strdup("{\"error\":\"No args\"}");

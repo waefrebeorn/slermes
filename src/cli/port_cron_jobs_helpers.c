@@ -31,8 +31,8 @@ static void lc(char *s)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: parse_duration @ cron/jobs.py:parse_duration
- * Parses "30m"->30, "2h"->120, "1d"->1440. Returns minutes, or -1 on invalid. */
+/* PoP: parse_duration @ cron/jobs.py:parse_duration */
+/* Parses "30m"->30, "2h"->120, "1d"->1440. Returns minutes, or -1 on invalid. */
 int jobs_parse_duration(const char *s)
 {
     if (!s) return -1;
@@ -58,8 +58,8 @@ int jobs_parse_duration(const char *s)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: compute_next_run @ cron/jobs.py:compute_next_run
- * schedule_json: {"kind":"once","run_at":"ISO"} | {"kind":"interval","minutes":N}
+/* PoP: compute_next_run @ cron/jobs.py:compute_next_run */
+/* schedule_json: {"kind":"once","run_at":"ISO"} | {"kind":"interval","minutes":N}
  * last_run_at: ISO timestamp string or NULL.
  * Returns malloc'd ISO timestamp, or NULL (cron kind / error). Caller frees. */
 char *jobs_compute_next_run(const char *schedule_json, const char *last_run_at)

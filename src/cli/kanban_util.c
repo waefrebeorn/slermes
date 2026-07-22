@@ -790,8 +790,8 @@ void kdb_maybe_emit_scratch_tip(sqlite3 *conn, const char *task_id,
 /* corruption recovery: backup + guard                           */
 /* ------------------------------------------------------------------ */
 
-/* PoP: kdb_backup_corrupt_db @ hermes_cli/kanban_db.py:_backup_corrupt_db
- * Copy a corrupt DB (and its WAL/SHM sidecars) to a content-addressed
+/* PoP: kdb_backup_corrupt_db @ hermes_cli/kanban_db.py:_backup_corrupt_db */
+/* Copy a corrupt DB (and its WAL/SHM sidecars) to a content-addressed
  * backup inside the DB's own parent dir. The backup basename is derived
  * from the file name + sha256[:16] of the bytes, so repeated quarantine
  * of the same corrupt image reuses one backup instead of N copies.
@@ -863,8 +863,8 @@ char *kdb_backup_corrupt_db(const char *path)
     return strdup(cand);
 }
 
-/* PoP: kdb_guard_existing_db_is_healthy @ hermes_cli/kanban_db.py:_guard_existing_db_is_healthy
- * Run `PRAGMA integrity_check` on an existing non-empty DB file. Opens a
+/* PoP: kdb_guard_existing_db_is_healthy @ hermes_cli/kanban_db.py:_guard_existing_db_is_healthy */
+/* Run `PRAGMA integrity_check` on an existing non-empty DB file. Opens a
  * throwaway probe so a healthy WAL/hot-journal DB can checkpoint before
  * we call it corrupt. Returns:
  *   0  = healthy / no-op (missing, zero-byte, or already-proven path)

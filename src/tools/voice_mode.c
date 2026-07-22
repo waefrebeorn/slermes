@@ -84,8 +84,8 @@ void voice_set_channels(int channels) {
  *  Audio Environment Detection
  * ================================================================ */
 
-/* PoP: _import_audio @ tools/voice_mode.py:voice_import_audio
- * Port of Python tools/voice_mode.py:_import_audio(). */
+/* PoP: _import_audio @ tools/voice_mode.py:voice_import_audio */
+/* Port of Python tools/voice_mode.py:_import_audio(). */
 const char *voice_import_audio(void) {
     /* Check for available audio backends */
     if (access("/usr/bin/arecord", X_OK) == 0 || access("/usr/local/bin/arecord", X_OK) == 0)
@@ -99,8 +99,8 @@ const char *voice_import_audio(void) {
     return NULL;
 }
 
-/* PoP: _audio_available @ tools/voice_mode.py:voice_audio_available
- * Port of Python tools/voice_mode.py:_audio_available(). */
+/* PoP: _audio_available @ tools/voice_mode.py:voice_audio_available */
+/* Port of Python tools/voice_mode.py:_audio_available(). */
 int voice_audio_available(void) {
     /* Check if audio libraries are available */
     void *audio = voice_import_audio();
@@ -108,8 +108,8 @@ int voice_audio_available(void) {
     return 0;
 }
 
-/* PoP: _voice_capture_install_hint @ tools/voice_mode.py:_voice_capture_install_hint
- * Port of Python tools/voice_mode.py:_voice_capture_install_hint(). */
+/* PoP: _voice_capture_install_hint @ tools/voice_mode.py:_voice_capture_install_hint */
+/* Port of Python tools/voice_mode.py:_voice_capture_install_hint(). */
 void voice_capture_install_hint(void) {
     printf("Voice capture requires one of:\n");
     printf("  - ALSA: sudo apt-get install alsa-utils\n");
@@ -126,8 +126,8 @@ static int check_pulse_socket(void) {
     return stat(pulse_server, &st) == 0 && (st.st_mode & S_IFMT) == S_IFSOCK;
 }
 
-/* PoP: _pulse_socket_reachable @ tools/voice_mode.py:voice_pulse_socket_reachable
- * Port of Python tools/voice_mode.py:_pulse_socket_reachable(). */
+/* PoP: _pulse_socket_reachable @ tools/voice_mode.py:voice_pulse_socket_reachable */
+/* Port of Python tools/voice_mode.py:_pulse_socket_reachable(). */
 int voice_pulse_socket_reachable(void) {
     /* Check if PulseAudio socket is reachable */
     int result = check_pulse_socket();
@@ -139,16 +139,16 @@ static int check_termux_api(void) {
            access("/data/data/com.termux/files/usr/bin/termux-api", X_OK) == 0;
 }
 
-/* PoP: _termux_api_app_installed @ tools/voice_mode.py:voice_termux_api_app_installed
- * Port of Python tools/voice_mode.py:_termux_api_app_installed(). */
+/* PoP: _termux_api_app_installed @ tools/voice_mode.py:voice_termux_api_app_installed */
+/* Port of Python tools/voice_mode.py:_termux_api_app_installed(). */
 int voice_termux_api_app_installed(void) {
     /* Check if Termux API app is installed */
     int result = check_termux_api();
     return result;
 }
 
-/* PoP: _termux_microphone_command @ tools/voice_mode.py:voice_termux_microphone_command
- * Port of Python tools/voice_mode.py:_termux_microphone_command(). */
+/* PoP: _termux_microphone_command @ tools/voice_mode.py:voice_termux_microphone_command */
+/* Port of Python tools/voice_mode.py:_termux_microphone_command(). */
 char *voice_termux_microphone_command(void) {
     /* Get the termux-microphone-record command path */
     if (!check_termux_api()) return NULL;
@@ -156,16 +156,16 @@ char *voice_termux_microphone_command(void) {
     return cmd;
 }
 
-/* PoP: _termux_voice_capture_available @ tools/voice_mode.py:voice_termux_voice_capture_available
- * Port of Python tools/voice_mode.py:_termux_voice_capture_available(). */
+/* PoP: _termux_voice_capture_available @ tools/voice_mode.py:voice_termux_voice_capture_available */
+/* Port of Python tools/voice_mode.py:_termux_voice_capture_available(). */
 int voice_termux_voice_capture_available(void) {
     /* Check if Termux voice capture is available */
     int api = check_termux_api();
     return api;
 }
 
-/* PoP: detect_audio_environment @ tools/voice_mode.py:detect_audio_environment
- * Port of Python tools/voice_mode.py:detect_audio_environment(). */
+/* PoP: detect_audio_environment @ tools/voice_mode.py:detect_audio_environment */
+/* Port of Python tools/voice_mode.py:detect_audio_environment(). */
 char *detect_audio_environment(void) {
     const char *backend = voice_import_audio();
     if (!backend) return strdup("none");
@@ -208,8 +208,8 @@ void play_beep(void) {
     }
 }
 
-/* PoP: play_audio_file @ tools/voice_mode.py:play_audio_file
- * Port of Python tools/voice_mode.py:play_audio_file(). */
+/* PoP: play_audio_file @ tools/voice_mode.py:play_audio_file */
+/* Port of Python tools/voice_mode.py:play_audio_file(). */
 int play_audio_file(const char *file_path) {
     if (!file_path) return -1;
     
@@ -231,8 +231,8 @@ int play_audio_file(const char *file_path) {
     return system(cmd) == 0 ? 0 : -1;
 }
 
-/* PoP: stop_playback @ tools/voice_mode.py:stop_playback
- * Port of Python tools/voice_mode.py:stop_playback(). */
+/* PoP: stop_playback @ tools/voice_mode.py:stop_playback */
+/* Port of Python tools/voice_mode.py:stop_playback(). */
 void stop_playback(void) {
     system("pkill -f \"aplay|paplay|play|mpg123|ffplay\" 2>/dev/null");
 }
@@ -270,8 +270,8 @@ static void *record_thread(void *arg) {
     return NULL;
 }
 
-/* PoP: create_audio_recorder @ tools/voice_mode.py:create_audio_recorder
- * Port of Python tools/voice_mode.py:create_audio_recorder(). */
+/* PoP: create_audio_recorder @ tools/voice_mode.py:create_audio_recorder */
+/* Port of Python tools/voice_mode.py:create_audio_recorder(). */
 char *create_audio_recorder(const char *output_path, int max_seconds, 
                             int sample_rate, int channels) {
     pthread_mutex_lock(&g_recorder.mutex);
@@ -300,8 +300,8 @@ char *create_audio_recorder(const char *output_path, int max_seconds,
     return strdup("");
 }
 
-/* PoP: is_recording @ tools/voice_mode.py:is_recording
- * Port of Python tools/voice_mode.py:is_recording(). */
+/* PoP: is_recording @ tools/voice_mode.py:is_recording */
+/* Port of Python tools/voice_mode.py:is_recording(). */
 int is_recording(void) {
     pthread_mutex_lock(&g_recorder.mutex);
     int running = g_recorder.running;
@@ -309,8 +309,8 @@ int is_recording(void) {
     return running;
 }
 
-/* PoP: elapsed_seconds @ tools/voice_mode.py:elapsed_seconds
- * Port of Python tools/voice_mode.py:elapsed_seconds(). */
+/* PoP: elapsed_seconds @ tools/voice_mode.py:elapsed_seconds */
+/* Port of Python tools/voice_mode.py:elapsed_seconds(). */
 int elapsed_seconds(void) {
     pthread_mutex_lock(&g_recorder.mutex);
     time_t start = g_recorder.start_time;
@@ -321,8 +321,8 @@ int elapsed_seconds(void) {
     return (int)(time(NULL) - start);
 }
 
-/* PoP: current_rms @ tools/voice_mode.py:current_rms
- * Port of Python tools/voice_mode.py:current_rms(). */
+/* PoP: current_rms @ tools/voice_mode.py:current_rms */
+/* Port of Python tools/voice_mode.py:current_rms(). */
 double current_rms(void) {
     pthread_mutex_lock(&g_recorder.mutex);
     double rms = g_recorder.rms;
@@ -330,8 +330,8 @@ double current_rms(void) {
     return rms;
 }
 
-/* PoP: _ensure_stream @ tools/voice_mode.py:voice_ensure_stream
- * Port of Python tools/voice_mode.py:_ensure_stream(). */
+/* PoP: _ensure_stream @ tools/voice_mode.py:voice_ensure_stream */
+/* Port of Python tools/voice_mode.py:_ensure_stream(). */
 int voice_ensure_stream(void) {
     if (!g_recorder.running) {
         return create_audio_recorder(NULL, g_voice_timeout, 
@@ -340,8 +340,8 @@ int voice_ensure_stream(void) {
     return 0;
 }
 
-/* PoP: _close_stream_with_timeout @ tools/voice_mode.py:voice_close_stream_with_timeout
- * Port of Python tools/voice_mode.py:_close_stream_with_timeout(). */
+/* PoP: _close_stream_with_timeout @ tools/voice_mode.py:voice_close_stream_with_timeout */
+/* Port of Python tools/voice_mode.py:_close_stream_with_timeout(). */
 int voice_close_stream_with_timeout(int timeout_sec) {
     if (!g_recorder.running) return 0;
     
@@ -377,8 +377,8 @@ int voice_close_stream_with_timeout(int timeout_sec) {
     return 0;
 }
 
-/* PoP: _stop_termux_recording @ tools/voice_mode.py:voice_stop_termux_recording
- * Port of Python tools/voice_mode.py:_stop_termux_recording(). */
+/* PoP: _stop_termux_recording @ tools/voice_mode.py:voice_stop_termux_recording */
+/* Port of Python tools/voice_mode.py:_stop_termux_recording(). */
 void voice_stop_termux_recording(void) {
     system("termux-microphone-record -s 2>/dev/null");
 }
@@ -403,8 +403,8 @@ typedef struct {
     uint32_t subchunk2_size;
 } wav_header_t;
 
-/* PoP: _write_wav @ tools/voice_mode.py:voice_write_wav
- * Port of Python tools/voice_mode.py:_write_wav(). */
+/* PoP: _write_wav @ tools/voice_mode.py:voice_write_wav */
+/* Port of Python tools/voice_mode.py:_write_wav(). */
 int voice_write_wav(const char *file_path, const void *data, size_t data_len,
                     int sample_rate, int channels, int bits_per_sample) {
     if (!file_path || !data || data_len == 0) return -1;
@@ -438,8 +438,8 @@ int voice_write_wav(const char *file_path, const void *data, size_t data_len,
  *  Transcription
  * ================================================================ */
 
-/* PoP: is_whisper_hallucination @ tools/voice_mode.py:is_whisper_hallucination
- * Port of Python tools/voice_mode.py:is_whisper_hallucination(). */
+/* PoP: is_whisper_hallucination @ tools/voice_mode.py:is_whisper_hallucination */
+/* Port of Python tools/voice_mode.py:is_whisper_hallucination(). */
 int is_whisper_hallucination(const char *text) {
     if (!text) return 0;
     
@@ -477,8 +477,8 @@ int is_whisper_hallucination(const char *text) {
     return 0;
 }
 
-/* PoP: _should_chunk_for_transcription @ tools/voice_mode.py:should_chunk_for_transcription
- * Port of Python tools/voice_mode.py:_should_chunk_for_transcription(). */
+/* PoP: _should_chunk_for_transcription @ tools/voice_mode.py:should_chunk_for_transcription */
+/* Port of Python tools/voice_mode.py:_should_chunk_for_transcription(). */
 int should_chunk_for_transcription(const char *file_path, int chunk_seconds) {
     if (!file_path) return 0;
     
@@ -492,8 +492,8 @@ int should_chunk_for_transcription(const char *file_path, int chunk_seconds) {
     return estimated_seconds > chunk_seconds;
 }
 
-/* PoP: _split_wav_for_transcription @ tools/voice_mode.py:split_wav_for_transcription
- * Port of Python tools/voice_mode.py:_split_wav_for_transcription(). */
+/* PoP: _split_wav_for_transcription @ tools/voice_mode.py:split_wav_for_transcription */
+/* Port of Python tools/voice_mode.py:_split_wav_for_transcription(). */
 char **split_wav_for_transcription(const char *file_path, int chunk_seconds, int *count) {
     if (!file_path || !count) return NULL;
     *count = 0;
@@ -556,8 +556,8 @@ char **split_wav_for_transcription(const char *file_path, int chunk_seconds, int
     return result;
 }
 
-/* PoP: _transcribe_wav_in_chunks @ tools/voice_mode.py:transcribe_wav_in_chunks
- * Port of Python tools/voice_mode.py:_transcribe_wav_in_chunks(). */
+/* PoP: _transcribe_wav_in_chunks @ tools/voice_mode.py:transcribe_wav_in_chunks */
+/* Port of Python tools/voice_mode.py:_transcribe_wav_in_chunks(). */
 char *transcribe_wav_in_chunks(const char *file_path, int chunk_seconds, const char *model) {
     if (!file_path) return NULL;
     
@@ -593,8 +593,8 @@ char *transcribe_wav_in_chunks(const char *file_path, int chunk_seconds, const c
     return combined;
 }
 
-/* PoP: transcribe_recording @ tools/voice_mode.py:transcribe_recording
- * Port of Python tools/voice_mode.py:transcribe_recording(). */
+/* PoP: transcribe_recording @ tools/voice_mode.py:transcribe_recording */
+/* Port of Python tools/voice_mode.py:transcribe_recording(). */
 char *transcribe_recording(const char *file_path, const char *model, int chunk_seconds) {
     if (!file_path) return strdup("{\"success\":false,\"error\":\"No file path\"}");
     
@@ -616,8 +616,8 @@ char *transcribe_recording(const char *file_path, const char *model, int chunk_s
  *  Utility
  * ================================================================ */
 
-/* PoP: check_voice_requirements @ tools/voice_mode.py:check_voice_requirements
- * Port of Python tools/voice_mode.py:check_voice_requirements(). */
+/* PoP: check_voice_requirements @ tools/voice_mode.py:check_voice_requirements */
+/* Port of Python tools/voice_mode.py:check_voice_requirements(). */
 char *check_voice_requirements(void) {
     char *result = malloc(2048);
     result[0] = '\0';
@@ -652,8 +652,8 @@ char *check_voice_requirements(void) {
     return result;
 }
 
-/* PoP: cleanup_temp_recordings @ tools/voice_mode.py:cleanup_temp_recordings
- * Port of Python tools/voice_mode.py:cleanup_temp_recordings(). */
+/* PoP: cleanup_temp_recordings @ tools/voice_mode.py:cleanup_temp_recordings */
+/* Port of Python tools/voice_mode.py:cleanup_temp_recordings(). */
 int cleanup_temp_recordings(void) {
     char cmd[512];
     snprintf(cmd, sizeof(cmd), 

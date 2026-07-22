@@ -60,8 +60,8 @@ char *cli_agent_display__read_file_line_label(const json_t *args)
 
 /* ---- redact_tool_args_for_display ---- */
 
-/* PoP: cli_agent_display__redact_tool_args_for_display @ agent/display.py:redact_tool_args_for_display
- * Returns a freshly-allocated JSON string with browser_type "text" redacted.
+/* PoP: cli_agent_display__redact_tool_args_for_display @ agent/display.py:redact_tool_args_for_display */
+/* Returns a freshly-allocated JSON string with browser_type "text" redacted.
  * For all other tools returns an unmodified copy of args_json. Caller frees. */
 char *cli_agent_display__redact_tool_args_for_display(const char *tool_name, const char *args_json)
 {
@@ -127,8 +127,8 @@ static const char *primary_arg_key(const char *tool)
     return NULL;
 }
 
-/* PoP: cli_agent_display__build_tool_preview @ agent/display.py:build_tool_preview
- * tool_name + args_json (object) + max_len (0 = unlimited). Returns a malloc'd
+/* PoP: cli_agent_display__build_tool_preview @ agent/display.py:build_tool_preview */
+/* tool_name + args_json (object) + max_len (0 = unlimited). Returns a malloc'd
  * preview string (caller frees) or strdup("") on empty/None. */
 char *cli_agent_display__build_tool_preview(const char *tool_name, const char *args_json, int max_len)
 {
@@ -347,8 +347,8 @@ static void redact_typed_walk(json_t *node, const char *needle, const char *reda
     }
 }
 
-/* PoP: cli_agent_display__redact_browser_typed_text_for_display @ agent/display.py:redact_browser_typed_text_for_display
- * value_json is a serialized JSON value; typed_text is the raw typed string.
+/* PoP: cli_agent_display__redact_browser_typed_text_for_display @ agent/display.py:redact_browser_typed_text_for_display */
+/* value_json is a serialized JSON value; typed_text is the raw typed string.
  * Returns a freshly-allocated serialized JSON value with every occurrence of the
  * raw typed secret replaced by its redacted form. When typed_text is NULL/empty
  * or contains nothing secret-looking, returns an unmodified copy. Caller frees. */
@@ -412,8 +412,8 @@ static const char *TOOL_VERBS(const char *tool)
     for (int i = 0; m[i].k; i++) if (strcmp(m[i].k, tool) == 0) return m[i].v;
     return NULL;
 }
-/* PoP: cli_agent_display__get_tool_verb @ agent/display.py:get_tool_verb
- * Returns the friendly verb for a built-in tool, or NULL when friendly labels
+/* PoP: cli_agent_display__get_tool_verb @ agent/display.py:get_tool_verb */
+/* Returns the friendly verb for a built-in tool, or NULL when friendly labels
  * are disabled or the tool has no curated verb. Returned pointer is static. */
 const char *cli_agent_display__get_tool_verb(const char *tool_name)
 {
@@ -430,8 +430,8 @@ static int verb_no_preview(const char *tool) {
     return cli_agent_display__verb_drops_preview(tool);
 }
 
-/* PoP: cli_agent_display__tool_verb_connector @ agent/display.py:tool_verb_connector
- * Returns the connector between a verb and its preview (" for " or " "). */
+/* PoP: cli_agent_display__tool_verb_connector @ agent/display.py:tool_verb_connector */
+/* Returns the connector between a verb and its preview (" for " or " "). */
 const char *cli_agent_display__tool_verb_connector(const char *tool_name) {
     if (tool_name && (strcmp(tool_name,"web_search")==0 || strcmp(tool_name,"search_files")==0))
         return " for ";

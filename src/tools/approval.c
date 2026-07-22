@@ -186,8 +186,8 @@ void approval_save_allowlist(void) {
     free(ser);
 }
 
-/* PoP: reset_session @ src/tools/approval.c:approval_reset_session
- * Port of Python session.py:reset_session(). */
+/* PoP: reset_session @ src/tools/approval.c:approval_reset_session */
+/* Port of Python session.py:reset_session(). */
 /* AG26: Port of Python tools/approval.py:clear_session() (session reset). */
 void approval_reset_session(void) {
     g_approval_count = 0;

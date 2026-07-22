@@ -129,8 +129,8 @@ static char **parse_id_array(const char *json) {
 }
 
 /* ── ensure_lmstudio_model_loaded ──────────────────────────────────────── */
-/* PoP: ensure_lmstudio_model_loaded @ hermes_cli/models.py:ensure_lmstudio_model_loaded
- * Injectable HTTP POST to /api/v1/models/load. Returns resolved loaded context
+/* PoP: ensure_lmstudio_model_loaded @ hermes_cli/models.py:ensure_lmstudio_model_loaded */
+/* Injectable HTTP POST to /api/v1/models/load. Returns resolved loaded context
  * length, or -1 on failure. The probe uses the injectable `fetch` transport;
  * the (re)load uses the injectable `post` transport. Either may be NULL when
  * not needed (e.g. already-loaded case needs no POST). */

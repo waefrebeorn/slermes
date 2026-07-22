@@ -62,8 +62,8 @@ double scale_to_zero_parse_idle_timeout_seconds(double cfg_value, int has_cfg, i
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: messaging_is_relay_only_or_absent @ gateway/scale_to_zero.py:messaging_is_relay_only_or_absent
- * platforms_json: JSON array of platform name strings. Returns 1 when the only
+/* PoP: messaging_is_relay_only_or_absent @ gateway/scale_to_zero.py:messaging_is_relay_only_or_absent */
+/* platforms_json: JSON array of platform name strings. Returns 1 when the only
  * present name is "relay" (case-insensitive) or the set is empty. */
 /* PoP: scale_to_zero_messaging_is_relay_only_or_absent @ gateway/scale_to_zero.py:messaging_is_relay_only_or_absent */
 int scale_to_zero_messaging_is_relay_only_or_absent(const char *platforms_json)

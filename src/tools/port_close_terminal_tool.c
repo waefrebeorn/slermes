@@ -32,8 +32,8 @@ bool check_close_terminal_requirements(void) {
     return strcmp(buf, "1") == 0 || strcmp(buf, "true") == 0 || strcmp(buf, "yes") == 0;
 }
 
-/* PoP: close_terminal_tool @ tools/close_terminal_tool.py:close_terminal_tool
- * Handler signature matches registry_register_ex: args_json is the tool's
+/* PoP: close_terminal_tool @ tools/close_terminal_tool.py:close_terminal_tool */
+/* Handler signature matches registry_register_ex: args_json is the tool's
  * argument object ({"process_id": "..."}), task_id is the active task. */
 char *close_terminal_tool(const char *args_json, const char *task_id) {
     (void)task_id;

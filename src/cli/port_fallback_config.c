@@ -17,8 +17,8 @@
 
 typedef struct json_t json_t;
 
-/* PoP: _normalized_base_url @ hermes_cli/fallback_config.py:_normalized_base_url
- * Strip whitespace, then trailing '/'. Non-string -> "". Caller frees. */
+/* PoP: _normalized_base_url @ hermes_cli/fallback_config.py:_normalized_base_url */
+/* Strip whitespace, then trailing '/'. Non-string -> "". Caller frees. */
 char *fallback_config_normalize_base_url(const char *value)
 {
     if (!value) return strdup("");
@@ -55,8 +55,8 @@ static char *entry_str(const json_t *entry, const char *key)
     return strdup("");
 }
 
-/* PoP: _iter_fallback_entries @ hermes_cli/fallback_config.py:_iter_fallback_entries
- * raw is a dict or list of dicts; returns normalized entries (fresh copies with
+/* PoP: _iter_fallback_entries @ hermes_cli/fallback_config.py:_iter_fallback_entries */
+/* raw is a dict or list of dicts; returns normalized entries (fresh copies with
  * stripped provider/model, optional base_url). Provider or model empty -> skipped.
  * Caller frees via fallback_config_free_entries. */
 fallback_entry_t *fallback_config_iter_entries(const json_t *raw, int *out_count)
@@ -111,8 +111,8 @@ fallback_entry_t *fallback_config_iter_entries(const json_t *raw, int *out_count
     return out;
 }
 
-/* PoP: _entry_identity @ hermes_cli/fallback_config.py:_entry_identity
- * Lowercased (provider, model, base_url) triple. */
+/* PoP: _entry_identity @ hermes_cli/fallback_config.py:_entry_identity */
+/* Lowercased (provider, model, base_url) triple. */
 /* PoP: fallback_config_entry_identity @ hermes_cli/fallback_config.py:_entry_identity */
 void fallback_config_entry_identity(const fallback_entry_t *entry,
                                     char *prov, char *model, char *base, size_t sz)
@@ -122,8 +122,8 @@ void fallback_config_entry_identity(const fallback_entry_t *entry,
     lower_copy(entry ? entry->base_url : "", base, sz);
 }
 
-/* PoP: get_fallback_chain @ hermes_cli/fallback_config.py:get_fallback_chain
- * Merge fallback_providers then fallback_model; drop duplicates by identity.
+/* PoP: get_fallback_chain @ hermes_cli/fallback_config.py:get_fallback_chain */
+/* Merge fallback_providers then fallback_model; drop duplicates by identity.
  * Returns fresh entries. Caller frees via fallback_config_free_entries. */
 fallback_entry_t *fallback_config_get_chain(const json_t *config, int *out_count)
 {

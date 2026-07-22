@@ -2188,8 +2188,8 @@ static const char *SCHEMA_VIEW = "{"
     "\"required\":[\"name\"]"
 "}";
 
-/* PoP: skill_view @ src/tools/skills.c:skills_view_handler
- * Port of Python tools/skills_tool.py:skill_view(). */
+/* PoP: skill_view @ src/tools/skills.c:skills_view_handler */
+/* Port of Python tools/skills_tool.py:skill_view(). */
 char *skills_view_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     if (!args_json) return strdup("{\"error\":\"No args\"}");
@@ -2244,8 +2244,8 @@ char *skills_view_handler(const char *args_json, const char *task_id) {
  *  Original handler: skills_list (backward compat)
  * ================================================================ */
 
-/* PoP: skills_list @ src/tools/skills.c:skills_list_handler
- * Port of Python tools/skills_tool.py:skills_list(). */
+/* PoP: skills_list @ src/tools/skills.c:skills_list_handler */
+/* Port of Python tools/skills_tool.py:skills_list(). */
 char *skills_list_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     (void)args_json;

@@ -746,8 +746,8 @@ bool skills_hub_is_installed(const char *skill_name) {
  * ================================================================ */
 
 /* Port of Python: _validate_skill_name */
-/* PoP: hub_validate_skill_name @ tools/skills_hub.py:_validate_skill_name
- * Delegates to the faithful _normalize_bundle_path (allow_nested=False), so
+/* PoP: hub_validate_skill_name @ tools/skills_hub.py:_validate_skill_name */
+/* Delegates to the faithful _normalize_bundle_path (allow_nested=False), so
  * it rejects separators, absolute paths, ".." traversal, Windows drive
  * letters ("C:"), and empty/dot-only names — exactly like Python. */
 bool hub_validate_skill_name(const char *name) {

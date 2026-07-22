@@ -20,8 +20,8 @@ static bool sst_source_is_demoted(const char *source)
     return strcmp(source, "cron") == 0;
 }
 
-/* PoP: order_for_recall @ tools/session_search_tool.py:_order_for_recall
- * Port of Python tools/session_search_tool.py:_order_for_recall().
+/* PoP: order_for_recall @ tools/session_search_tool.py:_order_for_recall */
+/* Port of Python tools/session_search_tool.py:_order_for_recall().
  * Stable-sort FTS rows so interactive sessions rank above automation.
  * Within each class (interactive vs demoted) the original BM25 `rank` order is
  * preserved — we just partition the JSON array: demoted entries (`source` in
@@ -100,8 +100,8 @@ void order_for_recall(json_t *results)
     }
 }
 
-/* PoP: normalize_title_query @ tools/session_search_tool.py:_normalize_title_query
- * Port of Python tools/session_search_tool.py:_normalize_title_query().
+/* PoP: normalize_title_query @ tools/session_search_tool.py:_normalize_title_query */
+/* Port of Python tools/session_search_tool.py:_normalize_title_query().
  * Strip common quoting the model may include around a remembered title.
  * Python: return query.strip().strip("`'\"").
  *
@@ -134,8 +134,8 @@ char *normalize_title_query(const char *query)
     return out;
 }
 
-/* PoP: title_match_result @ tools/session_search_tool.py:_title_match_result
- * Port of Python tools/session_search_tool.py:_title_match_result().
+/* PoP: title_match_result @ tools/session_search_tool.py:_title_match_result */
+/* Port of Python tools/session_search_tool.py:_title_match_result().
  * Build a discovery-shaped JSON object when the query matches a session title.
  *
  * Python signature:
