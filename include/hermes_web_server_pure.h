@@ -225,6 +225,15 @@ char **web_platform_env_prefixes(const char *platform_id);
 /* Free a NULL-terminated array of malloc'd strings produced by the helpers. */
 void web_free_strv(char **v);
 
+/* Reusable client-IP resolution (Port of dashboard_auth _client_ip, identical
+ * across middleware.py / routes.py / token_auth.py). Takes the parsed
+ * X-Forwarded-For header value and the direct client host; returns a malloc'd
+ * string (first forwarded hop, trimmed, else client_host, else ""). Caller frees. */
+/* PoP: web_client_ip @ hermes_cli/dashboard_auth/middleware.py:_client_ip */
+/* PoP: web_client_ip @ hermes_cli/dashboard_auth/routes.py:_client_ip */
+/* PoP: web_client_ip @ hermes_cli/dashboard_auth/token_auth.py:_client_ip */
+char *web_client_ip(const char *x_forwarded_for, const char *client_host);
+
 #ifdef __cplusplus
 }
 #endif
