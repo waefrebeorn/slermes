@@ -107,6 +107,7 @@ static const char *legacy_env_for(const char *cur)
 }
 
 /* ── PoP: _resolve_origin @ cron/scheduler.py:_resolve_origin ───────────── */
+/* PoP: scheduler_resolve_origin @ cron/scheduler.py:_resolve_origin */
 int scheduler_resolve_origin(const scheduler_job_t *job, scheduler_origin_t *out)
 {
     if (out) memset(out, 0, sizeof(*out));
@@ -125,6 +126,7 @@ int scheduler_resolve_origin(const scheduler_job_t *job, scheduler_origin_t *out
 }
 
 /* ── PoP: _cron_mirror_delivery_enabled @ cron/scheduler.py:_cron_mirror_delivery_enabled ── */
+/* PoP: scheduler_cron_mirror_delivery_enabled @ cron/scheduler.py:_cron_mirror_delivery_enabled */
 int scheduler_cron_mirror_delivery_enabled(const scheduler_job_t *job, int global_mirror)
 {
     if (job && job->attach_to_session_present) {
@@ -134,6 +136,7 @@ int scheduler_cron_mirror_delivery_enabled(const scheduler_job_t *job, int globa
 }
 
 /* ── PoP: _target_matches_origin @ cron/scheduler.py:_target_matches_origin ── */
+/* PoP: scheduler_target_matches_origin @ cron/scheduler.py:_target_matches_origin */
 int scheduler_target_matches_origin(const scheduler_origin_t *origin,
                                     const char *platform_name,
                                     const char *chat_id,
@@ -157,6 +160,7 @@ int scheduler_target_matches_origin(const scheduler_origin_t *origin,
 }
 
 /* ── PoP: _is_known_delivery_platform @ cron/scheduler.py:_is_known_delivery_platform ── */
+/* PoP: scheduler_is_known_delivery_platform @ cron/scheduler.py:_is_known_delivery_platform */
 int scheduler_is_known_delivery_platform(const char *name)
 {
     if (!name || !name[0]) return 0;
@@ -171,6 +175,7 @@ int scheduler_is_known_delivery_platform(const char *name)
 }
 
 /* ── PoP: _resolve_home_env_var @ cron/scheduler.py:_resolve_home_env_var ── */
+/* PoP: scheduler_resolve_home_env_var @ cron/scheduler.py:_resolve_home_env_var */
 const char *scheduler_resolve_home_env_var(const char *name)
 {
     if (!name || !name[0]) return NULL;
@@ -186,6 +191,7 @@ const char *scheduler_resolve_home_env_var(const char *name)
 }
 
 /* ── PoP: _get_home_target_chat_id @ cron/scheduler.py:_get_home_target_chat_id ── */
+/* PoP: scheduler_get_home_target_chat_id @ cron/scheduler.py:_get_home_target_chat_id */
 char *scheduler_get_home_target_chat_id(const char *name)
 {
     const char *env = scheduler_resolve_home_env_var(name);
@@ -202,6 +208,7 @@ char *scheduler_get_home_target_chat_id(const char *name)
 }
 
 /* ── PoP: _get_home_target_thread_id @ cron/scheduler.py:_get_home_target_thread_id ── */
+/* PoP: scheduler_get_home_target_thread_id @ cron/scheduler.py:_get_home_target_thread_id */
 char *scheduler_get_home_target_thread_id(const char *name)
 {
     const char *env = scheduler_resolve_home_env_var(name);
@@ -229,6 +236,7 @@ char *scheduler_get_home_target_thread_id(const char *name)
 }
 
 /* ── PoP: _iter_home_target_platforms @ cron/scheduler.py:_iter_home_target_platforms ── */
+/* PoP: scheduler_iter_home_target_platforms @ cron/scheduler.py:_iter_home_target_platforms */
 int scheduler_iter_home_target_platforms(const char **names_out, int max)
 {
     int n = 0;
@@ -249,6 +257,7 @@ int scheduler_iter_home_target_platforms(const char **names_out, int max)
 /* ── PoP: _expand_routing_tokens @ cron/scheduler.py:_expand_routing_tokens ──
  * "all" expands to every home-target platform with a configured home chat id
  * (env-driven on the C side). Unknown tokens pass through unchanged. */
+/* PoP: scheduler_expand_routing_tokens @ cron/scheduler.py:_expand_routing_tokens */
 int scheduler_expand_routing_tokens(const char *part, char **out_names, int max)
 {
     if (!part || !part[0] || max <= 0) return 0;
@@ -282,6 +291,7 @@ static int target_from_origin(const scheduler_origin_t *o, scheduler_target_t *o
 }
 
 /* ── PoP: _resolve_single_delivery_target @ cron/scheduler.py:_resolve_single_delivery_target ── */
+/* PoP: scheduler_resolve_single_delivery_target @ cron/scheduler.py:_resolve_single_delivery_target */
 int scheduler_resolve_single_delivery_target(const scheduler_job_t *job,
                                              const char *deliver_value,
                                              scheduler_target_t *out)
@@ -365,6 +375,8 @@ int scheduler_resolve_single_delivery_target(const scheduler_job_t *job,
 
 /* ── PoP: _resolve_delivery_targets @ cron/scheduler.py:_resolve_delivery_targets ──
  * csv deliver (+ "all" token), deduped by (platform, chat_id, thread_id). */
+/* PoP: scheduler_resolve_delivery_target @ cron/scheduler.py:_resolve_delivery_target */
+/* PoP: scheduler_resolve_delivery_targets @ cron/scheduler.py:_resolve_delivery_targets */
 int scheduler_resolve_delivery_targets(const scheduler_job_t *job,
                                        scheduler_target_t *out, int max)
 {
@@ -427,6 +439,7 @@ int scheduler_resolve_delivery_target(const scheduler_job_t *job, scheduler_targ
 /* ── PoP: cron_delivery_targets @ cron/scheduler.py:cron_delivery_targets ──
  * Every home-target platform that is a known delivery platform AND in the
  * connected set, reporting whether its home channel is configured. */
+/* PoP: scheduler_cron_delivery_targets @ cron/scheduler.py:cron_delivery_targets */
 int scheduler_cron_delivery_targets(const char **connected, int n_connected,
                                     scheduler_delivery_desc_t *out, int max)
 {

@@ -449,6 +449,8 @@ cred_recover_t recover_with_credential_pool(
 }
 
 
+/* PoP: load_pool @ hermes_cli/proxy/adapters/xai.py:_load_pool */
+/* PoP: load_pool @ agent/credential_pool.py:load_pool */
 credential_pool_t *load_pool(const char *provider) {
     if (!provider || !*provider) return NULL;
     

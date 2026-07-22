@@ -113,6 +113,7 @@ fallback_entry_t *fallback_config_iter_entries(const json_t *raw, int *out_count
 
 /* PoP: _entry_identity @ hermes_cli/fallback_config.py:_entry_identity
  * Lowercased (provider, model, base_url) triple. */
+/* PoP: fallback_config_entry_identity @ hermes_cli/fallback_config.py:_entry_identity */
 void fallback_config_entry_identity(const fallback_entry_t *entry,
                                     char *prov, char *model, char *base, size_t sz)
 {

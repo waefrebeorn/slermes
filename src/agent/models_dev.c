@@ -753,6 +753,7 @@ static bool models_dev_supports_pdf(json_t *entry) {
     return false;
 }
 
+/* PoP: models_dev_supports_audio_input @ agent/models_dev.py:supports_audio_input */
 static bool models_dev_supports_audio_input(json_t *entry) {
     if (!entry || entry->type != JSON_OBJECT) return false;
     json_t *mods = json_obj_get(entry, "modalities");

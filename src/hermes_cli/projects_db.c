@@ -181,6 +181,7 @@ void projects_db_close(projects_db_t *db) {
 
 /* ── internal row -> project ── */
 
+/* PoP: load_folders @ hermes_cli/projects_db.py:_load_folders */
 static project_folder_t *load_folders(projects_db_t *db, const char *pid, int *out_n) {
     const char *sql =
         "SELECT path, label, is_primary, added_at FROM project_folders "
@@ -341,6 +342,7 @@ char *projects_db_create_project(projects_db_t *db, const char *name,
 }
 
 /* ── list ── */
+/* PoP: projects_db_list_projects @ hermes_cli/projects_db.py:list_projects */
 project_t *projects_db_list_projects(projects_db_t *db, bool include_archived, int *out_count) {
     const char *sql =
         "SELECT id, slug, name, description, icon, color, board_slug, "
@@ -377,6 +379,7 @@ project_t *projects_db_list_projects(projects_db_t *db, bool include_archived, i
     *out_count=n; return arr;
 }
 
+/* PoP: projects_db_get_project @ hermes_cli/projects_db.py:get_project */
 project_t *projects_db_get_project(projects_db_t *db, const char *id_or_slug) {
     project_t *p = get_project_full(db, id_or_slug, true);
     if (!p) {
@@ -609,6 +612,7 @@ int projects_db_record_discovered_repos(projects_db_t *db, const char **roots, c
     sqlite3_exec(db->conn,"COMMIT",0,0,0);
     return written;
 }
+/* PoP: projects_db_list_discovered_repos @ hermes_cli/projects_db.py:list_discovered_repos */
 discovered_repo_t *projects_db_list_discovered_repos(projects_db_t *db, int *out_count) {
     sqlite3_stmt *st;
     sqlite3_prepare_v2(db->conn,"SELECT root, label, last_seen FROM discovered_repos ORDER BY last_seen DESC",-1,&st,0);
@@ -626,6 +630,7 @@ discovered_repo_t *projects_db_list_discovered_repos(projects_db_t *db, int *out
 }
 
 /* ── resolution + naming ── */
+/* PoP: projects_db_project_for_path @ hermes_cli/projects_db.py:project_for_path */
 project_t *projects_db_project_for_path(projects_db_t *db, const char *path, bool include_archived) {
     if (!path || !*path || !*path) return NULL;
     char *target = projects_db_normalize_path(path);

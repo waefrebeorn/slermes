@@ -31,6 +31,7 @@ No god headers — only the minimal includes each module requires. C11 only.
  * _is_source_suppressed / _prune_stale_seeded_entries / cp_auth_json_path.
  */
 
+/* PoP: label_from_token @ agent/credential_pool.py:label_from_token */
 const char *label_from_token(const char *token, const char *fallback) {
     if (!token || !*token) return fallback ? fallback : "";
     

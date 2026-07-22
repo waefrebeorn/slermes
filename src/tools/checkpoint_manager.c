@@ -801,6 +801,7 @@ char *checkpoint_manager_working_dir_for_path(tool_checkpoint_mgr_t *self,
  *  previous no-op stubs with real behaviour.
  * ===================================================================== */
 
+/* PoP: prune_checkpoints @ hermes_cli/web_server.py:prune_checkpoints */
 /* PoP: prune_checkpoints @ tools/checkpoint_manager.py:prune_checkpoints */
 bool prune_checkpoints(const char *store, const char *working_dir, int keep) {
     if (!store) return false;

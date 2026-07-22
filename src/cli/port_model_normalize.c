@@ -97,6 +97,7 @@ static bool deepseek_has_reasoner_kw(const char *b) {
 }
 
 /* _normalize_for_deepseek — bare name (vendor prefix already stripped). */
+/* PoP: model_normalize_for_deepseek @ hermes_cli/model_normalize.py:_normalize_for_deepseek */
 const char *model_normalize_for_deepseek(const char *model_name)
 {
     /* returns a static string; caller must not free */

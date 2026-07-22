@@ -578,7 +578,7 @@ char *kanban_db_path(const char *board)
     return strdup(out);
 }
 
-/* PoP: profile_exists @ hermes_cli/profiles.py:profile_exists
+/* PoP: profile_exists @ hermes_cli/profiles.py:profile_exists */
  * True iff a profile directory named `name` exists on disk. Shared by all
  * kanban concern modules (decompose, util) — promoted from a static helper so
  * there is a single source of truth. */

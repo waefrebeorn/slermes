@@ -33,7 +33,7 @@ static int is_truthy(const char *v)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: scale_to_zero_enabled @ gateway/scale_to_zero.py:scale_to_zero_enabled
+/* PoP: scale_to_zero_enabled @ gateway/scale_to_zero.py:scale_to_zero_enabled */
  * environ_json: JSON object {"HERMES_SCALE_TO_ZERO": "..."} or NULL (use empty). */
 int scale_to_zero_enabled(const char *environ_json)
 {
@@ -65,6 +65,7 @@ double scale_to_zero_parse_idle_timeout_seconds(double cfg_value, int has_cfg, i
 /* PoP: messaging_is_relay_only_or_absent @ gateway/scale_to_zero.py:messaging_is_relay_only_or_absent
  * platforms_json: JSON array of platform name strings. Returns 1 when the only
  * present name is "relay" (case-insensitive) or the set is empty. */
+/* PoP: scale_to_zero_messaging_is_relay_only_or_absent @ gateway/scale_to_zero.py:messaging_is_relay_only_or_absent */
 int scale_to_zero_messaging_is_relay_only_or_absent(const char *platforms_json)
 {
     if (!platforms_json || !platforms_json[0]) return 1;
@@ -90,6 +91,7 @@ int scale_to_zero_should_arm(int enabled, int relay_only_or_absent, const char *
 
 /* ---------------------------------------------------------------------- */
 /* PoP: is_idle @ gateway/scale_to_zero.py:is_idle */
+/* PoP: scale_to_zero_is_idle @ gateway/run.py:_scale_to_zero_is_idle */
 int scale_to_zero_is_idle(int running_agent_count, double seconds_since_last_inbound,
                           double idle_timeout_seconds, int has_live_background_work)
 {

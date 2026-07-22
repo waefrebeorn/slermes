@@ -223,6 +223,7 @@ static bool entry_staged(const char *tag, const char *xy) {
     return false;
 }
 
+/* PoP: classify @ gateway/platforms/yuanbao.py:_classify */
 /* PoP: classify @ hermes_cli/web_git.py:_classify */
 static json_t *classify(const char *tag, const char *xy, const char *path) {
     char t = tag ? tag[0] : '\0';
@@ -253,6 +254,7 @@ static char status_letter(const char *tag, const char *xy) {
 
 /* numstat: git diff --numstat -> {path: (added, removed)}. */
 typedef struct { char *path; int added, removed; } numstat_t;
+/* PoP: numstat @ hermes_cli/web_git.py:_numstat */
 static numstat_t *numstat(const char *cwd, const char **args, size_t n, size_t *out_n) {
     char *out = git_out(cwd, args, n, NULL);
     numstat_t *arr = NULL; size_t cap = 0, cnt = 0;

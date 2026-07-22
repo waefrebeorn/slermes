@@ -1108,6 +1108,7 @@ void registry_register_toolset_alias(const char *alias, const char *toolset) {
 }
 
 /* Return the canonical toolset name for an alias, or NULL. Caller does not own. */
+/* PoP: registry_get_toolset_alias_target @ tools/registry.py:get_toolset_alias_target */
 const char *registry_get_toolset_alias_target(const char *alias) {
     if (!alias) return NULL;
     pthread_mutex_lock(&g_registry_mutex);

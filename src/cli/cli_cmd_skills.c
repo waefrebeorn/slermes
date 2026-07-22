@@ -235,6 +235,7 @@ void cmd_reload_skills(const char *args, agent_state_t *state) {
 
 /* PoP: cli_hermes_cli_skills_config_skills_command @ hermes_cli/skills_config.py:skills_command */
 /* /skills: List installed skills */
+/* PoP: cmd_skills @ hermes_cli/main.py:cmd_skills */
 void cmd_skills(const char *args, agent_state_t *state) {
     (void)state;
     const char *home = getenv("SLERMES_HOME");

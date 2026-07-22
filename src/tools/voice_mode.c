@@ -191,7 +191,7 @@ char *detect_audio_environment(void) {
  *  Audio Playback
  * ================================================================ */
 
-/* PoP: play_beep @ tools/voice_mode.py:play_beep */
+/* PoP: play_beep @ hermes_cli/voice.py:_play_beep */
 /* Port of Python tools/voice_mode.py:play_beep(). */
 void play_beep(void) {
     /* Try various beep commands */
