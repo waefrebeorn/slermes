@@ -1321,10 +1321,12 @@ char *image_gen_build_no_backend_setup_message(void)
 }
 
 /* ---------------------------------------------------------------------------
- * PoP: check_image_generation_requirements @ tools/image_generation_tool.py:check_image_generation_requirements
+ * NOTE: the Python plugin-provider probing is not ported to C (no plugin
+ * registry in the C tree), so this function is intentionally NOT credited as
+ * PORTED — it remains a REAL_GAP. See the "not implemented in C port" log.
  * --------------------------------------------------------------------------- */
 
-bool image_gen_check_image_generation_requirements(void)
+bool image_gen_check_image_generation_requirements_stub(void)
 {
     /* 1. Check FAL backend */
     if (image_gen_check_fal_api_key()) {

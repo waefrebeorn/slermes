@@ -90,11 +90,11 @@ char *web_load_web_config(void)
     hermes_config_load(&cfg, NULL);
     /* Return the web config section as JSON string */
     json_t *web = json_object();
-    if (cfg.web.extract_backend && cfg.web.extract_backend[0])
-        json_set(web, "extract_backend", json_string(cfg.web.extract_backend));
-    if (cfg.web.search_backend && cfg.web.search_backend[0])
-        json_set(web, "search_backend", json_string(cfg.web.search_backend));
-    json_set(web, "extract_char_limit", json_new_number(cfg.web.extract_char_limit));
+    if (cfg.tools.web_extract_backend && cfg.tools.web_extract_backend[0])
+        json_set(web, "extract_backend", json_string(cfg.tools.web_extract_backend));
+    if (cfg.tools.web_search_backend && cfg.tools.web_search_backend[0])
+        json_set(web, "search_backend", json_string(cfg.tools.web_search_backend));
+    json_set(web, "extract_char_limit", json_new_number(15000));
     char *serialized = json_serialize(web);
     json_free(web);
     return serialized ? serialized : strdup("{}");
@@ -413,6 +413,24 @@ char *web_extract_tool(const char *urls_json, const char *format, int char_limit
         if (!url_item || url_item->type != JSON_STRING) continue;
         const char *url = url_item->str_val;
         if (!url || !url[0]) continue;
+
+        /* Security: block URLs containing embedded secrets (exfiltration
+         * prevention). Mirrors Python web_extract_tool: scan the raw URL and
+         * its URL-decoded form for secret-key prefixes. url_has_secret()
+         * already does exactly this (raw + percent-decoded), reusing the
+         * url_safety module rather than duplicating the prefix table. */
+        const char *secret_prefix = url_has_secret(url);
+        if (secret_prefix) {
+            json_t *blocked = json_object();
+            json_set(blocked, "url", json_string(url));
+            json_set(blocked, "title", json_string(""));
+            json_set(blocked, "content", json_string(""));
+            json_set(blocked, "error",
+                json_string("Blocked: URL contains what appears to be an API key or token. "
+                             "Secrets must not be sent in URLs."));
+            json_append(results, blocked);
+            continue;
+        }
 
         /* SSRF check — reuse the focused url_safety module (no duplicate
          * inline IP-range matching; that logic lives in url_safety.c). */
