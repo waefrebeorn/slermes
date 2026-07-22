@@ -8,7 +8,7 @@
 #define HERMES_SECRETS_H
 
 #include <stdbool.h>
-#include "hermes.h"
+#include "hermes_core_types.h"
 
 /* Max length of a resolved secret value */
 #define HERMES_SECRET_MAX_VAL 4096

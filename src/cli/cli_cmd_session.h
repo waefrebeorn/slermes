@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 #include <stdio.h>
-#include "hermes.h"
+#include "hermes_core_types.h"
 
 void cmd_agents(const char *args, agent_state_t *state);
 void cmd_background(const char *args, agent_state_t *state);

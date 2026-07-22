@@ -8,7 +8,7 @@
 #ifndef HERMES_CURATOR_H
 #define HERMES_CURATOR_H
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include <stdbool.h>
 #include <time.h>
 

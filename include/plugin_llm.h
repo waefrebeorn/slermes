@@ -12,7 +12,7 @@
 #ifndef PLUGIN_LLM_H
 #define PLUGIN_LLM_H
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 
 #ifdef __cplusplus

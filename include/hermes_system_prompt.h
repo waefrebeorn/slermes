@@ -16,7 +16,7 @@
  * with prompt-injection threat detection. Port of Python prompt_builder.py.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include <stdbool.h>
 #include <stddef.h>
 

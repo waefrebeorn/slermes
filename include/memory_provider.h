@@ -31,7 +31,7 @@
 #ifndef MEMORY_PROVIDER_H
 #define MEMORY_PROVIDER_H
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include <time.h>
 

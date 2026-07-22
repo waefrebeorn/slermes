@@ -10,7 +10,7 @@
 #ifndef CODEX_EVENT_PROJECTOR_H
 #define CODEX_EVENT_PROJECTOR_H
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include <stdbool.h>
 
 #ifdef __cplusplus

@@ -6,7 +6,7 @@
 #ifndef HERMES_GATEWAY_RUNTIME_H
 #define HERMES_GATEWAY_RUNTIME_H
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include <stdbool.h>
 
 /* ═══ 1. Agent Cache ═══ */

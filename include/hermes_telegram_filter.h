@@ -9,7 +9,7 @@
 #ifndef HERMES_TELEGRAM_FILTER_H
 #define HERMES_TELEGRAM_FILTER_H
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include <stdbool.h>
 

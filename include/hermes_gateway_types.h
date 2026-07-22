@@ -11,7 +11,7 @@
 #ifndef HERMES_GATEWAY_TYPES_H
 #define HERMES_GATEWAY_TYPES_H
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_http.h"
 #include <pthread.h>

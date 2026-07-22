@@ -9,7 +9,7 @@
 /* Forward declaration — cron_job_t is defined in scheduler.c */
 struct cron_job_t;
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include <time.h>
 
 /* ================================================================

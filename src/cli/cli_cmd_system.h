@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 #include <stdio.h>
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "commands_shared.h"
 
 void cmd_approve(const char *args, agent_state_t *state);

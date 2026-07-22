@@ -8,7 +8,7 @@
 #ifndef PROVIDER_METADATA_H
 #define PROVIDER_METADATA_H
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 
 #ifdef __cplusplus
 extern "C" {
