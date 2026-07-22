@@ -443,10 +443,9 @@ static void backup_strv_free(char **arr, int n)
     free(arr);
 }
 
-/*
 /* PoP: backup_prune_quick_snapshots @ hermes_cli/backup.py:_prune_quick_snapshots */
 /* PoP: backup_prune_quick_snapshots @ hermes_cli/backup.py:prune_quick_snapshots */
- * Public wrapper: Remove oldest snapshot dirs beyond keep. Returns count deleted. */
+/* Public wrapper: Remove oldest snapshot dirs beyond keep. Returns count deleted. */
 int backup_prune_quick_snapshots(const char *root, int keep)
 {
     struct stat st;

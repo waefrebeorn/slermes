@@ -218,7 +218,7 @@ void _guard_named_profile_under_multiplexer(const char* profile_name, bool force
  * =========================================================================== */
 
 /* PoP: get_parent_pid @ hermes_cli/gateway.py:_get_parent_pid */
- * Returns parent PID of pid, or -1 when unavailable (portable /proc walk). */
+/* Returns parent PID of pid, or -1 when unavailable (portable /proc walk). */
 int get_parent_pid(int pid)
 {
     if (pid <= 1) return -1;
@@ -282,7 +282,7 @@ int is_pid_ancestor_of_current_process(int target_pid)
 }
 
 /* PoP: get_ancestor_pids @ hermes_cli/gateway.py:_get_ancestor_pids */
- * Fills out[] with ancestor PIDs (including self); returns count (<=max). */
+/* Fills out[] with ancestor PIDs (including self); returns count (<=max). */
 int get_ancestor_pids(int *out, int max)
 {
     int pid = (int)getpid();
@@ -300,7 +300,7 @@ int get_ancestor_pids(int *out, int max)
 }
 
 /* PoP: append_unique_pid @ hermes_cli/gateway.py:_append_unique_pid */
- * Appends pid to *pids (growing the array) if valid/unique/not excluded. */
+/* Appends pid to *pids (growing the array) if valid/unique/not excluded. */
 void append_unique_pid(int **pids, int *count, int *cap, int pid,
                        const int *exclude, int exclude_n)
 {
