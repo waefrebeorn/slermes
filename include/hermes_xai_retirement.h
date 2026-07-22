@@ -9,7 +9,7 @@
 #ifndef HERMES_XAI_RETIREMENT_H
 #define HERMES_XAI_RETIREMENT_H
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 
 /* ================================================================
  *  Constants

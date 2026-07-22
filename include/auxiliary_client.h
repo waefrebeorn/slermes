@@ -9,7 +9,7 @@
 #ifndef HERMES_AUXILIARY_CLIENT_H
 #define HERMES_AUXILIARY_CLIENT_H
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 
 #ifdef __cplusplus
 extern "C" {

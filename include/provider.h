@@ -25,7 +25,7 @@
 #ifndef PROVIDER_H
 #define PROVIDER_H
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 
 #include "credential_pool.h"

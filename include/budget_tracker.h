@@ -9,7 +9,7 @@
 #ifndef BUDGET_TRACKER_H
 #define BUDGET_TRACKER_H
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 
 #ifdef __cplusplus
 extern "C" {

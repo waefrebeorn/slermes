@@ -18,7 +18,7 @@
 #ifndef TTS_PROVIDER_H
 #define TTS_PROVIDER_H
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 
 #ifdef __cplusplus

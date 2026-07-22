@@ -9,7 +9,7 @@
 #ifndef HERMES_API_SERVER_ADAPTER_H
 #define HERMES_API_SERVER_ADAPTER_H
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_gateway.h"
 #include "hermes_gateway_config.h"
 #include "hermes_json.h"

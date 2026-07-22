@@ -10,7 +10,7 @@
 #ifndef FALLBACK_ROUTING_H
 #define FALLBACK_ROUTING_H
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "credential_pool.h"
 #include <time.h>
 

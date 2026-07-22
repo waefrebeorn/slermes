@@ -5,7 +5,7 @@
 #ifndef CODING_CONTEXT_H
 #define CODING_CONTEXT_H
 
-#include "hermes.h" /* for hermes_config_t */
+#include "hermes_core_types.h" /* for hermes_config_t */
 
 /* Opaque forward declaration */
 typedef struct coding_runtime_mode_s coding_runtime_mode_t;

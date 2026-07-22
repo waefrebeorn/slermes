@@ -5,7 +5,7 @@
 #ifndef SLERMES_COMMANDS_SHARED_H
 #define SLERMES_COMMANDS_SHARED_H
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 
 /* System + POSIX headers the extracted cli_cmd_* handlers need (moved out of
  * commands.c, which pulled these in late). Centralised here so every handler

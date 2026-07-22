@@ -32,7 +32,7 @@
 #ifndef HERMES_API_SERVER_H
 #define HERMES_API_SERVER_H
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include <stdbool.h>
 
 #ifdef __cplusplus

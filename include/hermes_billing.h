@@ -7,7 +7,7 @@
 #ifndef HERMES_BILLING_H
 #define HERMES_BILLING_H
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include "hermes_json.h"
 
 /* ================================================================

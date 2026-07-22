@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
-#include "hermes.h"
+#include "hermes_core_types.h"
 
 #ifdef __cplusplus
 extern "C" {

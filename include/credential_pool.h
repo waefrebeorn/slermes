@@ -10,7 +10,7 @@
 #ifndef CREDENTIAL_POOL_H
 #define CREDENTIAL_POOL_H
 
-#include "hermes.h"
+#include "hermes_core_types.h"
 #include <time.h>
 
 #ifdef __cplusplus
