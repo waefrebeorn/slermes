@@ -612,6 +612,7 @@ char *codex_client_take_notification(codex_client_t *c, double timeout_sec) {
     return queue_pop(&c->notifications, timeout_sec);
 }
 
+/* PoP: codex_client_take_server_request @ agent/transports/codex_app_server.py:take_server_request */
 char *codex_client_take_server_request(codex_client_t *c, double timeout_sec) {
     if (!c) return NULL;
     return queue_pop(&c->server_requests, timeout_sec);
