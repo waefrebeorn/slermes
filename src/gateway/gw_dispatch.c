@@ -310,7 +310,8 @@ int gateway_tool_event_cb(const char *event_type, const char *tool_name,
         char msg[512];
         snprintf(msg, sizeof(msg), "⚙️ Running *%s*... ", tool_name ? tool_name : "tool");
         /* P161: Filter/sanitize status messages before platform delivery.
-           Mirrors Python _prepare_gateway_status_message(). */
+         * PoP: _prepare_gateway_status_message @ gateway/run.py:_prepare_gateway_status_message
+         * Mirrors Python _prepare_gateway_status_message(). */
         char *filtered = gateway_prepare_status_message(ctx->platform, msg);
         if (filtered) {
             gateway_send(ctx->platform, ctx->chat_id, filtered);

@@ -555,6 +555,8 @@ static const char *_sig_ext_to_mime(const char *ext) {
     return "application/octet-stream";
 }
 
+/* PoP: _ext_to_mime @ gateway/platforms/signal.py:_ext_to_mime */
+/* PoP: sig_ext_to_mime @ gateway/platforms/signal.py:_ext_to_mime */
 /* _ext_to_mime(ext) — Python: _EXT_TO_MIME.get(ext.lower(), default). */
 static const char *sig_ext_to_mime(const char *ext) {
     if (!ext) return "application/octet-stream";
@@ -566,6 +568,7 @@ static const char *sig_ext_to_mime(const char *ext) {
     return _sig_ext_to_mime(buf);
 }
 
+/* PoP: _is_audio_ext @ gateway/platforms/signal.py:_is_audio_ext */
 /* _is_audio_ext(ext) / _is_image_ext(ext). */
 static bool sig_is_audio_ext(const char *ext) {
     if (!ext) return false;
@@ -576,6 +579,8 @@ static bool sig_is_audio_ext(const char *ext) {
            strcmp(buf, ".ogg") == 0 || strcmp(buf, ".m4a") == 0 ||
            strcmp(buf, ".aac") == 0;
 }
+/* PoP: _is_image_ext @ gateway/platforms/signal.py:_is_image_ext */
+/* PoP: sig_is_image_ext @ gateway/platforms/signal.py:_is_image_ext */
 static bool sig_is_image_ext(const char *ext) {
     if (!ext) return false;
     char buf[32]; size_t i = 0;
@@ -586,6 +591,7 @@ static bool sig_is_image_ext(const char *ext) {
            strcmp(buf, ".webp") == 0;
 }
 
+/* PoP: _looks_like_e164_number @ gateway/platforms/signal.py:_looks_like_e164_number */
 /* _looks_like_e164_number(value) — starts with '+', rest digits, len 7..15. */
 static bool sig_looks_like_e164(const char *value) {
     if (!value || value[0] != '+') return false;
@@ -620,6 +626,7 @@ static bool sig_is_uuid(const char *v) {
     return gi == 5 && !need_dash;
 }
 
+/* PoP: _is_signal_service_id @ gateway/platforms/signal.py:_is_signal_service_id */
 /* _is_signal_service_id(value) — PNI:/u:/valid UUID. */
 static bool sig_is_signal_service_id(const char *value) {
     if (!value || !value[0]) return false;
@@ -628,6 +635,8 @@ static bool sig_is_signal_service_id(const char *value) {
     return sig_is_uuid(value);
 }
 
+/* PoP: _parse_comma_list @ gateway/platforms/signal.py:_parse_comma_list */
+/* PoP: sig_parse_comma_list @ gateway/platforms/signal.py:_parse_comma_list */
 /* _parse_comma_list(value) — split on ',' strip → JSON array string. */
 static char *sig_parse_comma_list(const char *value) {
     if (!value) return strdup("[]");
@@ -656,6 +665,7 @@ static char *sig_parse_comma_list(const char *value) {
     return out;
 }
 
+/* PoP: _guess_extension @ gateway/platforms/signal.py:_guess_extension */
 /* _guess_extension(data) — magic-byte sniff (mirrors Python _guess_extension). */
 static const char *sig_guess_extension(const unsigned char *data, size_t n) {
     if (n >= 4 && data[0] == 0x89 && data[1] == 'P' && data[2] == 'N' && data[3] == 'G')
@@ -683,11 +693,13 @@ static const char *sig_guess_extension(const unsigned char *data, size_t n) {
     return "";
 }
 
+/* PoP: check_signal_requirements @ gateway/platforms/signal.py:check_signal_requirements */
 /* check_signal_requirements() — Signal URL + account env present. */
 static bool sig_check_requirements(void) {
     return getenv("SIGNAL_HTTP_URL") != NULL && getenv("SIGNAL_ACCOUNT") != NULL;
 }
 
+/* PoP: _markdown_to_signal @ gateway/platforms/signal.py:_markdown_to_signal */
 /* _markdown_to_signal(text) — plain-text fallback (strip markdown).
  * The Python wrapper delegates to the shared markdown_to_signal(); the C
  * port's equivalent (gateway_signal_markdown_to_signal) is a plain-text

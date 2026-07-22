@@ -2125,6 +2125,7 @@ char *gemini_native_adapter_bare_gemini_model_id(const char *model) {
     return out;
 }
 
+/* PoP: handle @ gateway/platforms/yuanbao.py:handle */
 /* Opaque native client handle (mirrors GeminiNativeClient: api_key, base_url,
  * _default_headers). _default_headers is currently empty in C (the Python
  * default is {}), so only api_key/base_url are material. */

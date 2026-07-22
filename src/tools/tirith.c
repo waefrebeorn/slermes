@@ -132,6 +132,7 @@ bool is_platform_supported(void) {
 }
 
 /* PoP: _download_file @ tools/tirith_security.py:_download_file */
+/* PoP: _download_file @ gateway/platforms/weixin.py:_download_file */
 bool _download_file(const char *url, const char *dest, int timeout) {
     if (!url || !url[0] || !dest || !dest[0]) return false;
 
@@ -201,6 +202,7 @@ void _background_install(bool log_failures) {
 }
 
 /* PoP: ensure_installed @ agent/thread_scoped_output.py:_ensure_installed */
+/* PoP: ensure_installed @ tools/tirith_security.py:ensure_installed */
 bool ensure_installed(bool log_failures) {
     (void)log_failures;
     return true;

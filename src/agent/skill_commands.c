@@ -169,6 +169,7 @@ static int extract_skill_config_vars_from_file(const char *md_path, skill_cmd_en
 
 /* Resolve config var values from config.yaml.
  * For each skill with config vars, looks up skills.config.<key> in config.yaml
+ * PoP: value @ gateway/platforms/bluebubbles.py:_value
  * and stores the resolved value (or default if not set). */
 /* Port of Python: _inject_skill_config */
 static void skill_config_inject(void) {

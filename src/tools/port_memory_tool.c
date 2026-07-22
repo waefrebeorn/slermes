@@ -66,6 +66,7 @@ static int char_count_arr(const char **arr, int n) {
     for (int i = 0; i < n; i++) total += (int)strlen(arr[i]);
     return total;
 }
+/* PoP: entries_for @ tools/memory_tool.py:_entries_for */
 static const char **entries_for(const memory_store_t *s, const char *target, int *pn) {
     if (target && strcmp(target, "user") == 0) { *pn = s->user_n; return (const char**)s->user_entries; }
     *pn = s->memory_n; return (const char**)s->memory_entries;

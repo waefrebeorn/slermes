@@ -859,6 +859,8 @@ json_t *process_registry_read_log(const char *session_id, int offset, int limit)
 }
 
 /* PoP: kill_process @ tools/process_registry.py:kill_process
+/* PoP: kill_process @ tools/environments/base.py:_kill_process */
+/* PoP: kill_process @ tools/environments/local.py:_kill_process */
  * Port of Python tools/process_registry.py:kill_process().
  * Kill a background process. */
 json_t *process_registry_kill_process(const char *session_id, const char *source)
