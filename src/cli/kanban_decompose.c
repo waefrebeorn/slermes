@@ -55,6 +55,8 @@ static char *strip_fences(const char *raw)
 
 /* Crude JSON validation: attempt a structural parse by counting braces
  * and verifying the extracted candidate re-parses via the json lib. */
+/* PoP: kdb_extract_json_blob @ hermes_cli/kanban_specify.py:_extract_json_blob */
+/* PoP: kdb_extract_json_blob @ hermes_cli/profile_describer.py:_extract_json_blob */
 /* PoP: kdb_extract_json_blob @ hermes_cli/kanban_decompose.py:_extract_json_blob */
 char *kdb_extract_json_blob(const char *raw)
 {

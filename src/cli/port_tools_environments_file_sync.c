@@ -114,8 +114,9 @@ json_node_t* cli_tools_environments_file_sync_unique_parent_dirs(json_node_t *fi
     return dirs;
 }
 
+/* PoP: cli_tools_environments_file_sync__sha256_file @ agent/secret_sources/bitwarden.py:_sha256_file */
 /* PoP: cli_tools_environments_file_sync__sha256_file @ tools/environments/file_sync.py:_sha256_file */
-char* cli_tools_environments_file_sync__sha256_file(const char *path, char *buf, size_t bufsz) {
+char *cli_tools_environments_file_sync__sha256_file(const char *path, char *buf, size_t bufsz) {
     /*
      * Return hex SHA-256 digest of a file.
      * Reads the file fully and computes the digest via libcrypto (real hash,
