@@ -17,6 +17,7 @@
 #include "hermes_http.h"
 #include "provider.h"
 #include "base64.h"
+#include "hermes_transport_common.h"
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,21 +27,6 @@
 /* ================================================================
  *  Gemini native adapter helpers
  * ================================================================ */
-
-/* Map Google finish reason to OpenAI-compatible format */
-static const char *google_map_finish_reason(const char *reason) {
-    if (!reason || !*reason) return "stop";
-    /* Google returns: STOP, MAX_TOKENS, SAFETY, RECITATION, OTHER, BLOCKLIST, PROHIBITED_CONTENT, SPAM, IMAGE_SAFETY */
-    if (strcasecmp(reason, "STOP") == 0) return "stop";
-    if (strcasecmp(reason, "MAX_TOKENS") == 0) return "length";
-    if (strcasecmp(reason, "SAFETY") == 0) return "content_filter";
-    if (strcasecmp(reason, "RECITATION") == 0) return "content_filter";
-    if (strcasecmp(reason, "BLOCKLIST") == 0) return "content_filter";
-    if (strcasecmp(reason, "PROHIBITED_CONTENT") == 0) return "content_filter";
-    if (strcasecmp(reason, "SPAM") == 0) return "content_filter";
-    if (strcasecmp(reason, "IMAGE_SAFETY") == 0) return "content_filter";
-    return "stop";
-}
 
 /* Detect free-tier quota exhaustion in Gemini error responses */
 static bool is_free_tier_quota_error(const char *error_message) {
@@ -583,7 +569,7 @@ static provider_response_t *google_parse_response(const provider_t *p,
 
         /* Check finish reason */
         const char *finish = json_get_str(candidate, "finishReason", "");
-        const char *mapped = google_map_finish_reason(finish);
+        const char *mapped = transport_map_finish_reason("google", finish);
         snprintf(resp->finish_reason, sizeof(resp->finish_reason), "%s", mapped);
 
         /* Handle blocked content (finishReason=SAFETY/BLOCKLIST/etc with no content text) */
@@ -658,7 +644,7 @@ static provider_response_t *google_parse_stream_chunk(const provider_t *p,
          * may have finishReason + text content simultaneously) */
         const char *finish = json_get_str(candidate, "finishReason", NULL);
         if (finish) {
-            const char *mapped = google_map_finish_reason(finish);
+            const char *mapped = transport_map_finish_reason("google", finish);
             snprintf(resp->finish_reason, sizeof(resp->finish_reason), "%s", mapped);
             /* Also extract text if present before signaling end */
         }
