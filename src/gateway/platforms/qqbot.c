@@ -141,6 +141,7 @@ bool qqbot_send_image(http_client_t *http, const char *image_url) {
  *  keyboard_json: JSON object with "rows" array, e.g.
  *  {"rows":[{"buttons":[{"id":"1","label":"Click me","action":0}]}]}
  * ================================================================ */
+/* PoP: qqbot_send_with_keyboard @ gateway/platforms/qqbot/adapter.py:send_with_keyboard */
 bool qqbot_send_with_keyboard(http_client_t *http, const char *text,
                                const char *keyboard_json) {
     if (!text) return false;

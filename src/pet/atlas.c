@@ -52,10 +52,12 @@ static pet_img_t *img_copy(const pet_img_t *img) {
 
 /* ── background removal ────────────────────────────────────────────── */
 
+/* PoP: pet_color_distance @ agent/pet/generate/atlas.py:_color_distance */
 float pet_color_distance(int r, int g, int b, int kr, int kg, int kb) {
     return (float)sqrt((double)((r - kr) * (r - kr) + (g - kg) * (g - kg) + (b - kb) * (b - kb)));
 }
 
+/* PoP: pet_has_transparency @ agent/pet/generate/atlas.py:_has_transparency */
 bool pet_has_transparency(const pet_img_t *img) {
     if (!img || !img->px) return false;
     long total = (long)img->w * img->h;
@@ -66,6 +68,7 @@ bool pet_has_transparency(const pet_img_t *img) {
     return transparent > total * 5 / 100;  /* >5% */
 }
 
+/* PoP: pet_dominant_corner_color @ agent/pet/generate/atlas.py:_dominant_corner_color */
 void pet_dominant_corner_color(const pet_img_t *img, int *out_r, int *out_g, int *out_b) {
     int counts[8][8][8] = {{{0}}};  /* coarse 5-bit buckets keep it allocation-free */
     int best = 0, br = 0, bg = 0, bb = 0;
@@ -84,6 +87,7 @@ void pet_dominant_corner_color(const pet_img_t *img, int *out_r, int *out_g, int
     if (out_b) *out_b = bb;
 }
 
+/* PoP: pet_near_key_mask @ agent/pet/generate/atlas.py:_near_key_mask */
 pet_img_t *pet_near_key_mask(const pet_img_t *img, int kr, int kg, int kb, int tol) {
     pet_img_t *m = pet_img_new(img->w, img->h);
     if (!m) return NULL;
@@ -95,6 +99,7 @@ pet_img_t *pet_near_key_mask(const pet_img_t *img, int kr, int kg, int kb, int t
     return m;
 }
 
+/* PoP: pet_defringe @ agent/pet/generate/atlas.py:_defringe */
 void pet_defringe(pet_img_t *img) {
     if (!img || !img->px) return;
     /* 3x3 min filter on alpha. */
@@ -118,6 +123,7 @@ void pet_defringe(pet_img_t *img) {
     free(tmp);
 }
 
+/* PoP: pet_remove_background @ agent/pet/generate/atlas.py:remove_background */
 pet_img_t *pet_remove_background(const pet_img_t *img, const int *chroma_key, float threshold) {
     pet_img_t *rgba = img_copy(img);
     if (!rgba) return NULL;
@@ -186,6 +192,7 @@ pet_img_t *pet_remove_background(const pet_img_t *img, const int *chroma_key, fl
     return rgba;
 }
 
+/* PoP: pet_repair_internal_alpha_holes @ agent/pet/generate/atlas.py:_repair_internal_alpha_holes */
 void pet_repair_internal_alpha_holes(pet_img_t *img) {
     if (!img || !img->px) return;
     int w = img->w, h = img->h;
@@ -334,6 +341,7 @@ pet_img_t *pet_fit_to_cell(const pet_img_t *img, int cell_w, int cell_h) {
     return target;
 }
 
+/* PoP: pet_drop_side_bleed @ agent/pet/generate/atlas.py:_drop_side_bleed */
 pet_img_t *pet_drop_side_bleed(const pet_img_t *img) {
     int w = img->w, h = img->h;
     pet_img_t *out = img_copy(img);
@@ -380,6 +388,7 @@ pet_img_t *pet_drop_side_bleed(const pet_img_t *img) {
     return out;
 }
 
+/* PoP: pet_erase_long_axis_lines @ agent/pet/generate/atlas.py:_erase_long_axis_lines */
 pet_img_t *pet_erase_long_axis_lines(const pet_img_t *img) {
     int w = img->w, h = img->h;
     pet_img_t *out = img_copy(img);
@@ -438,6 +447,7 @@ pet_img_t *pet_erase_long_axis_lines(const pet_img_t *img) {
     return out;
 }
 
+/* PoP: pet_component_boxes @ agent/pet/generate/atlas.py:_component_boxes */
 pet_component_t *pet_component_boxes(const pet_img_t *img, int *out_count) {
     int w = img->w;
     int l,t,r,b;
@@ -523,6 +533,7 @@ pet_img_t *pet_isolate_slot_subject(const pet_img_t *img) {
 
 /* ── column projection / registration ──────────────────────────────── */
 
+/* PoP: pet_column_profile @ agent/pet/generate/atlas.py:_column_profile */
 int *pet_column_profile(const pet_img_t *img) {
     int *prof = (int *)malloc((size_t)img->w * sizeof(int));
     if (!prof) return NULL;
@@ -534,6 +545,7 @@ int *pet_column_profile(const pet_img_t *img) {
     return prof;
 }
 
+/* PoP: pet_content_runs @ agent/pet/generate/atlas.py:_content_runs */
 int *pet_content_runs(const int *profile, int n, int *out_count, int threshold) {
     int cap = n + 1;
     int *runs = (int *)malloc((size_t)cap * 2 * sizeof(int));
@@ -554,6 +566,7 @@ int *pet_content_runs(const int *profile, int n, int *out_count, int threshold) 
     return trim ? trim : runs;
 }
 
+/* PoP: pet_best_shift @ agent/pet/generate/atlas.py:_best_shift */
 int pet_best_shift(const int *ref, int nref, const int *prof, int nprof, int window) {
     int n = nref < nprof ? nref : nprof;
     int best = 0;
@@ -612,6 +625,7 @@ int *pet_merge_related_boxes(const int *boxes, int count, int *out_count) {
     return flat;
 }
 
+/* PoP: pet_group_component_rows @ agent/pet/generate/atlas.py:_group_component_rows */
 int *pet_group_component_rows(const int *boxes, int count, int *out_count) {
     /* Group by vertical center proximity, then sort left→right per row. */
     int (*b)[4] = (int (*)[4])malloc((size_t)count * sizeof(int[4]));

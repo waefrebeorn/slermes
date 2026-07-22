@@ -106,6 +106,7 @@ static void make_call_id(char *buf, size_t bufsz, const char *item_type, const c
 }
 
 /* Helper: format tool args as JSON string */
+/* PoP: format_tool_args @ agent/transports/codex_event_projector.py:_format_tool_args */
 static char *format_tool_args(json_node_t *args) {
     if (!args) return strdup("{}");
     return json_serialize(args);
