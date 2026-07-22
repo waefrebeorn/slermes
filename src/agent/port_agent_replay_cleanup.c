@@ -306,7 +306,13 @@ json_t *agent_replay_cleanup_sanitize_replay_history(const json_t *history)
 
 /* ── Dangerous-confirmation expiry (#59607) ── */
 
-static bool is_dangerous_confirmation_text(const char *content)
+/* PoP: is_dangerous_confirmation @ agent/replay_cleanup.py:is_dangerous_confirmation */
+/* Faithful port of the module-level is_dangerous_confirmation(content): returns
+ * True when the (lowercased) text contains any of _DANGEROUS_CONFIRMATION_PATTERNS
+ * as a substring. Python does content.strip().lower() then `pattern in text`;
+ * outer whitespace trim is a no-op for a substring test, so tolower+strstr matches.
+ * Non-string / NULL content => False (mirrors `isinstance(content, str)` guard). */
+bool agent_replay_cleanup_is_dangerous_confirmation(const char *content)
 {
     if (!content) return false;
     char low[8192];
@@ -343,7 +349,7 @@ json_t *agent_replay_cleanup_strip_stale_dangerous_confirmations(
         if (role_j && role_j->type == JSON_STRING && role_j->str_val)
             snprintf(role, sizeof(role), "%s", role_j->str_val);
         bool is_user = strcmp(role, "user") == 0;
-        if (is_user && msg && is_dangerous_confirmation_text(msg_content_str(msg))) {
+        if (is_user && msg && agent_replay_cleanup_is_dangerous_confirmation(msg_content_str(msg))) {
             json_t *ts = json_obj_get(msg, "timestamp");
             if (ts && (ts->type == JSON_NUMBER || ts->type == JSON_STRING)) {
                 double tsval = (ts->type == JSON_NUMBER) ? ts->num_val
