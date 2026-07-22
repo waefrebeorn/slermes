@@ -29,6 +29,9 @@ void approval_load_allowlist(void);
 void approval_set_gateway_send(bool (*fn)(const char *, const char *, const char *),
                                const char *platform, const char *chat_id);
 
+/* Core allow/deny decision for a tool invocation (tools/approval.py:check). */
+int approval_check(const char *tool_name, const char *args_json);
+
 #ifdef __cplusplus
 }
 #endif
