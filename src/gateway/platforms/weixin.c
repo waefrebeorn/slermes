@@ -1082,7 +1082,30 @@ double weixin_rate_limit_cooldown_remaining(double circuit_until)
     return rem > 0.0 ? rem : 0.0;
 }
 
-/* PoP: _open_dm_opted_in @ gateway/platforms/weixin.py:_open_dm_opted_in */
+/* Local helper: join an array of lines with '\n', strip leading/trailing
+ * whitespace, and return a malloc'd string (caller frees). */
+static char *weixin__join_strip(char **lines, int n)
+{
+    size_t total = 1; /* NUL */
+    for (int i = 0; i < n; i++) total += strlen(lines[i]) + 1; /* + '\n' */
+    char *buf = malloc(total);
+    if (!buf) return NULL;
+    buf[0] = '\0';
+    for (int i = 0; i < n; i++) {
+        if (i) strcat(buf, "\n");
+        strcat(buf, lines[i]);
+    }
+    /* strip trailing whitespace */
+    size_t len = strlen(buf);
+    while (len > 0 && (buf[len-1] == ' ' || buf[len-1] == '\t' ||
+                       buf[len-1] == '\n' || buf[len-1] == '\r'))
+        buf[--len] = '\0';
+    /* strip leading whitespace */
+    const char *p = buf;
+    while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+    if (p != buf) memmove(buf, p, strlen(p) + 1);
+    return buf;
+}
 /* PoP: weixin_open_dm_opted_in @ gateway/platforms/weixin.py:_open_dm_opted_in */
 bool weixin_open_dm_opted_in(void)
 {
@@ -1093,5 +1116,192 @@ bool weixin_open_dm_opted_in(void)
     if (wx_allow_all && (strcmp(wx_allow_all, "true") == 0 || strcmp(wx_allow_all, "1") == 0 || strcmp(wx_allow_all, "yes") == 0))
         return true;
     return false;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+ *  Pure helpers ported from gateway/platforms/weixin.py
+ *  (faithful, no async/HTTP — these are synchronous utilities)
+ * ═══════════════════════════════════════════════════════════════════════ */
+
+#define WEIXIN_RATE_LIMIT_ERRCODE (-2)
+
+/* PoP: _is_stale_session_ret @ gateway/platforms/weixin.py:_is_stale_session_ret */
+/* True when iLink returns ret=-2 / errcode=-2 with 'unknown error' — stale-session signal. */
+bool weixin_is_stale_session_ret(int ret, int errcode, const char *errmsg)
+{
+    if (ret != WEIXIN_RATE_LIMIT_ERRCODE && errcode != WEIXIN_RATE_LIMIT_ERRCODE)
+        return false;
+    return errmsg != NULL && strcasecmp(errmsg, "unknown error") == 0;
+}
+
+/* PoP: _parse_aes_key @ gateway/platforms/weixin.py:_parse_aes_key */
+/* Decode a base64 AES key; accept 16 raw bytes or a 32-char hex string. */
+int weixin_parse_aes_key(const char *aes_key_b64, unsigned char *out, size_t *out_len)
+{
+    if (!aes_key_b64 || !out || !out_len) return -1;
+    size_t dlen = 0;
+    unsigned char *dec = base64_decode(aes_key_b64, &dlen);
+    if (!dec) return -1;
+    if (dlen == 16) {
+        memcpy(out, dec, 16);
+        *out_len = 16;
+        free(dec);
+        return 0;
+    }
+    if (dlen == 32) {
+        /* If it decodes to a pure hex string, interpret as hex bytes. */
+        bool all_hex = true;
+        for (size_t i = 0; i < 32; i++) {
+            char c = (char)dec[i];
+            if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'))) {
+                all_hex = false; break;
+            }
+        }
+        if (all_hex) {
+            for (size_t i = 0; i < 16; i++) {
+                unsigned int b = 0;
+                sscanf((char *)dec + i * 2, "%2x", &b);
+                out[i] = (unsigned char)b;
+            }
+            *out_len = 16;
+            free(dec);
+            return 0;
+        }
+    }
+    free(dec);
+    return -1; /* unexpected aes_key format */
+}
+
+/* PoP: _guess_chat_type @ gateway/platforms/weixin.py:_guess_chat_type */
+/* Derive (chat_type, peer_id) from a raw inbound message dict. */
+void weixin_guess_chat_type(json_t *message, const char *account_id,
+                             char *out_type, size_t type_cap,
+                             char *out_peer, size_t peer_cap)
+{
+    const char *room = json_get_str(message, "room_id", "");
+    if (!room || !*room) room = json_get_str(message, "chat_room_id", "");
+    const char *to = json_get_str(message, "to_user_id", "");
+    const char *from = json_get_str(message, "from_user_id", "");
+    int msg_type = (int)json_get_num(message, "msg_type", 0);
+
+    bool is_group = (room && *room) ||
+                    (to && account_id && strcmp(to, account_id) != 0 && msg_type == 1);
+    if (is_group) {
+        snprintf(out_type, type_cap, "group");
+        const char *peer = room && *room ? room : (to && *to ? to : (from ? from : ""));
+        snprintf(out_peer, peer_cap, "%s", peer);
+    } else {
+        snprintf(out_type, type_cap, "dm");
+        snprintf(out_peer, peer_cap, "%s", from ? from : "");
+    }
+}
+
+/* PoP: _message_type_from_media @ gateway/platforms/weixin.py:_message_type_from_media */
+typedef enum {
+    WEIXIN_MSG_TEXT = 0,
+    WEIXIN_MSG_PHOTO,
+    WEIXIN_MSG_VIDEO,
+    WEIXIN_MSG_VOICE,
+    WEIXIN_MSG_DOCUMENT,
+    WEIXIN_MSG_COMMAND,
+} weixin_msg_type_t;
+
+weixin_msg_type_t weixin_message_type_from_media(const char **media_types, int n_media, const char *text)
+{
+    for (int i = 0; i < n_media; i++) {
+        if (media_types[i] && strncmp(media_types[i], "image/", 6) == 0) return WEIXIN_MSG_PHOTO;
+    }
+    for (int i = 0; i < n_media; i++) {
+        if (media_types[i] && strncmp(media_types[i], "video/", 6) == 0) return WEIXIN_MSG_VIDEO;
+    }
+    for (int i = 0; i < n_media; i++) {
+        if (media_types[i] && strncmp(media_types[i], "audio/", 6) == 0) return WEIXIN_MSG_VOICE;
+    }
+    if (n_media > 0) return WEIXIN_MSG_DOCUMENT;
+    if (text && text[0] == '/') return WEIXIN_MSG_COMMAND;
+    return WEIXIN_MSG_TEXT;
+}
+
+/* PoP: _split_markdown_blocks @ gateway/platforms/weixin.py:_split_markdown_blocks */
+/* Split content into blocks at fenced code regions and blank lines, keeping fenced blocks intact. */
+char **weixin_split_markdown_blocks(const char *content, int *out_count)
+{
+    if (out_count) *out_count = 0;
+    if (!content || !*content) return NULL;
+
+    /* Count lines first. */
+    int nlines = 1;
+    for (const char *p = content; *p; p++) if (*p == '\n') nlines++;
+    char **lines = malloc(sizeof(char *) * (nlines + 1));
+    int nl = 0;
+    const char *start = content;
+    for (const char *p = content; ; p++) {
+        if (*p == '\n' || *p == '\0') {
+            size_t len = p - start;
+            char *line = malloc(len + 1);
+            memcpy(line, start, len);
+            line[len] = '\0';
+            /* strip trailing CR */
+            while (len > 0 && (line[len-1] == '\r')) line[--len] = '\0';
+            lines[nl++] = line;
+            start = p + 1;
+            if (*p == '\0') break;
+        }
+    }
+    lines[nl] = NULL;
+
+    char **blocks = malloc(sizeof(char *) * (nl + 1));
+    int nb = 0;
+    char **current = malloc(sizeof(char *) * (nl + 1));
+    int nc = 0;
+    bool in_code = false;
+
+    for (int i = 0; i < nl; i++) {
+        const char *ls = lines[i];
+        while (*ls == ' ' || *ls == '\t') ls++;
+        bool is_fence = (strncmp(ls, "```", 3) == 0);
+
+        if (is_fence) {
+            if (!in_code && nc > 0) {
+                blocks[nb++] = weixin__join_strip(current, nc);
+                nc = 0;
+            }
+            current[nc++] = strdup(lines[i]);
+            in_code = !in_code;
+            if (!in_code) {
+                blocks[nb++] = weixin__join_strip(current, nc);
+                nc = 0;
+            }
+            continue;
+        }
+        if (in_code) {
+            current[nc++] = strdup(lines[i]);
+            continue;
+        }
+        if (lines[i][0] == '\0') {
+            if (nc > 0) {
+                blocks[nb++] = weixin__join_strip(current, nc);
+                nc = 0;
+            }
+            continue;
+        }
+        current[nc++] = strdup(lines[i]);
+    }
+    if (nc > 0) blocks[nb++] = weixin__join_strip(current, nc);
+    blocks[nb] = NULL;
+
+    /* filter empties */
+    int out_n = 0;
+    for (int i = 0; i < nb; i++) {
+        if (blocks[i] && blocks[i][0]) blocks[out_n++] = blocks[i];
+        else free(blocks[i]);
+    }
+    blocks[out_n] = NULL;
+
+    for (int i = 0; i < nl; i++) free(lines[i]);
+    free(lines);
+    free(current);
+    if (out_count) *out_count = out_n;
+    return blocks;
 }
 
