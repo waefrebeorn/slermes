@@ -3,6 +3,7 @@
  */
 
 #include "hermes_logger.h"
+#include "hermes_gateway_dm.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -139,6 +140,34 @@ int cli_gateway_authz_mixin__is_user_authorized(
         }
     }
     return 0;
+}
+
+/* Shared gateway DM-authorization helper. Identical logic across
+ * gateway/platforms/{weixin,whatsapp_common,qqbot/adapter,yuanbao}.py:
+ * _open_dm_opted_in — OR of GATEWAY_ALLOW_ALL_USERS and the platform-specific
+ * allow-all env var, each opted-in when lowercased value is in {true,1,yes}. */
+/* PoP: gateway_dm_opted_in @ gateway/platforms/weixin.py:_open_dm_opted_in */
+/* PoP: gateway_dm_opted_in @ gateway/platforms/whatsapp_common.py:_open_dm_opted_in */
+/* PoP: gateway_dm_opted_in @ gateway/platforms/qqbot/adapter.py:_open_dm_opted_in */
+/* PoP: gateway_dm_opted_in @ gateway/platforms/yuanbao.py:_open_dm_opted_in */
+bool gateway_dm_opted_in(const char *platform_env)
+{
+    static const char *truthy[] = {"true", "1", "yes", NULL};
+    const char *g = getenv("GATEWAY_ALLOW_ALL_USERS");
+    if (g) {
+        for (int i = 0; truthy[i]; i++) {
+            if (strcasecmp(g, truthy[i]) == 0) return true;
+        }
+    }
+    if (platform_env && *platform_env) {
+        const char *p = getenv(platform_env);
+        if (p) {
+            for (int i = 0; truthy[i]; i++) {
+                if (strcasecmp(p, truthy[i]) == 0) return true;
+            }
+        }
+    }
+    return false;
 }
 
 
