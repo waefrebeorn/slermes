@@ -93,9 +93,9 @@ Scanner: 4,884 → 4,901 PORTED (+17); 4,774 → 4,757 REAL_GAP (−17). All 17 
 Fixed `tests/run_one_oracle.sh` (added `-I src`) so port headers resolve.
 
 <!-- PARITY:AUTO -->
-| PORTED  | 5,570 / 9,731 (57.2%) |
-| REAL_GAP| 4,064 (41.8%) — no N/A |
-| PARTIAL | 97 (0.8%) |
+| PORTED  | 6,357 / 9,733 (65.3%) |
+| REAL_GAP| 3,376 (34.7%) — no N/A |
+| PARTIAL | 0 (0.8%) |
 | STUB    | 0 |
 
 _Generated from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._

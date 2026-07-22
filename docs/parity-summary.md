@@ -1,18 +1,18 @@
 # Slermes C11 Parity — Live State
 
-**Generated:** 2026-07-12 by `slermes_parity_battleground.py` (live scanner)
+**Generated:** 2026-07-22 by `slermes_parity_battleground.py` (live scanner)
 
 ## Overall Numbers (live)
 
 | Classification | Count | Percentage | Meaning |
 |----------------|-------|------------|---------|
-| **PORTED** | 4,924 | 50.6% | C11 implementation with PoP annotation |
-| **REAL_GAP** | 4,732 | 48.6% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |
-| **PARTIAL** | 75 | 0.8% | C fn exists, no PoP annotation yet |
+| **PORTED** | 6,357 | 65.3% | C11 implementation with PoP annotation |
+| **REAL_GAP** | 3,376 | 34.7% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |
+| **PARTIAL** | 0 | 0.0% | All C fns now carry PoP annotations |
 | **STUB** | 0 | 0.0% | No stub functions remain |
-| **TOTAL** | 9,731 | 100% | All Python functions/methods scanned |
+| **TOTAL** | 9,733 | 100% | All Python functions/methods scanned |
 
-> **This is a partial port, ~half done.** REAL_GAP is the honest count of Python
+> **This is a partial port, ~two-thirds done.** REAL_GAP is the honest count of Python
 > features not yet reimplemented in C — it is not zero and the docs do not claim
 > otherwise. Regenerate anytime with `python3 tests/slermes_parity_battleground.py
 > --json`; this table is the single source of truth for completeness.

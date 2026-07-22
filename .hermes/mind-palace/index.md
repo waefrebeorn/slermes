@@ -17,26 +17,32 @@ Anything the Nous Research team produces — **code AND documents** — is upstr
 
 | Metric | Value |
 |--------|-------|
-| **Version** | v572 |
+| **Version** | v572+ (live scanner refreshed 2026-07-22) |
 | **Checkpoint** | 117+ |
-| **PORTED** | 4,884 (50.2% of 9,731 features) |
-| **REAL_GAP** | 4,774 (49.1%) |
-| **PARTIAL** | 73 |
-| **Build** | Clean, 0 errors (slermes 42 MB) |
-| **Tests** | 26 pass + 63 new Mission 8 tests (API/CLI/state_db/UI) |
-| Binary | 46 MB (slermes) + 5.4 MB (slermes-desktop-gui) + ~150 KB (web_server) |
-| **C source files** | 1,107 files, ~497K LOC |
-| **Web Endpoints** | ~50 REST (99% real), 100 JSON-RPC (registered), 4 docs endpoints |
-| **Desktop Features** | ~95/111 (100% of actionable items done; remaining are N/A for C) |
-| **Skills** | 121 parsed via C-side SKILL.md parser |
+| **PORTED** | 6,357 (65.3% of 9,733 features) |
+| **REAL_GAP** | 3,376 (34.7%) |
+| **PARTIAL** | 0 |
+| **Build** | Clean, 0 errors (slermes ~45 MB) |
+| **Tests** | Mission 8: 36 pass / 0 fail / 35 skip |
+| Binary | 45 MB (slermes) + slermes-desktop-gui + web_server |
+| **C source files** | 1,100+ files, ~500K LOC |
+| **Web Endpoints** | ~50 REST, 100+ JSON-RPC (registered) |
+| **Desktop Features** | tracked separately (see Desktop Feature Parity table) |
+| **Skills** | parsed via C-side SKILL.md parser |
 | **Distribution** | AppImage, Homebrew, NSIS, Docker, Nix, make install |
-| **Platform Backends** | Linux ✅, Win32 ✅ (975 LOC), macOS ✅ (1009 LOC) |
+| **Platform Backends** | Linux ✅, Win32 ✅, macOS ✅ |
+
+> Parity counts above are the live scanner output
+> (`python3 tests/slermes_parity_battleground.py --json`) as of 2026-07-22.
+> The authoritative, always-regenerated block lives in `state.md` /
+> `battleship.md` via `make parity-walkway`; this table is a manually-curated
+> snapshot and should be re-synced on each gap-closure pass (barnacle hunt).
 
 ---
 
 ## Project Scope (What We SLERMEd)
 
-### ✅ Ported — Core Agent (8,688 functions, 100%)
+### ✅ Ported — Core Agent (function parity ~65.3% as of 2026-07-22; feature parity tracked separately below)
 
 | Area | Python Source | C Port | Status |
 |------|--------------|--------|--------|
@@ -141,7 +147,7 @@ The entire `ui-tui/` directory. Full TUI with components, lib, pages, stores.
 
 ### 4. Python Agent Core — 2,521 files
 
-Already 100% ported (8,688 functions). These are the upstream source that maps to the C port:
+Already 100% ported (8,688 functions) **in the v398-era structural map** — these are the upstream source modules that map to the C port. NOTE: the *current* function-parity is ~65.3% (6,357/9,733 PORTED as of 2026-07-22); see the live `<!-- PARITY:AUTO -->` block in state.md. The 8,688 figure is the old upstream-function census, not a claim that all are C-ported.
 
 | Module | File Count | Status |
 |--------|-----------|--------|

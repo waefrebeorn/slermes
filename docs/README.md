@@ -17,7 +17,7 @@ We took Hermes Agent — Nous Research's Python/Electron AI agent — and **SLER
 
 | Mission | Description | Status |
 |---------|-------------|--------|
-| Mission 1-4 | Function parity (8,688 PoP), Desktop GUI, App shell | ✅ Complete |
+| Mission 1-4 | Function parity foundation (C11 reimplementation + desktop GUI + app shell); ~4,663 PoP annotations wired | 🟡 In progress — function parity ~65.3% (6,357/9,733), 3,376 REAL_GAP remain |
 | Mission 5 | Documentation serving (`/api/docs*`) | ✅ Complete (v501) |
 | Mission 6 | Skills parser + `/api/skills` | ✅ Complete (v502) |
 | Mission 7 | Distribution (AppImage, Homebrew, NSIS, Docker, Nix, make install) | ✅ Complete (v503) |
