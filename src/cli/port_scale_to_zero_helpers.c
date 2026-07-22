@@ -84,6 +84,7 @@ int scale_to_zero_messaging_is_relay_only_or_absent(const char *platforms_json)
 
 /* ---------------------------------------------------------------------- */
 /* PoP: should_arm @ gateway/scale_to_zero.py:should_arm */
+/* PoP: scale_to_zero_should_arm @ gateway/run.py:_scale_to_zero_should_arm */
 int scale_to_zero_should_arm(int enabled, int relay_only_or_absent, const char *wake_url)
 {
     return (enabled != 0) && (relay_only_or_absent != 0) && (wake_url && wake_url[0]);

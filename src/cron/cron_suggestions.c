@@ -75,6 +75,7 @@ static void sugg_path(char *buf, size_t sz)
     snprintf(buf, sz, "%s/cron/suggestions.json", home);
 }
 
+/* PoP: now_iso @ tools/skill_usage.py:_now_iso */
 static void now_iso(char *buf, size_t sz)
 {
     time_t t = time(NULL);
