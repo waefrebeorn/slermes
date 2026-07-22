@@ -130,6 +130,7 @@ void session_db_load_messages(app_state_t *app, int idx) {
     }
 }
 
+/* PoP: _get_session @ tools/browser_camofox.py:_get_session */
 session_entry_t *session_db_get_session(app_state_t *app, int idx) {
     if (!app || idx < 0 || idx >= app->session_count) return NULL;
     return &app->sessions[idx];

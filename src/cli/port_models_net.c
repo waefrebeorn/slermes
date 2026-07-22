@@ -31,6 +31,7 @@
 /* ── Pure parse helpers (faithful ports of models.py) ───────────────────── */
 
 /* PoP: _payload_items @ hermes_cli/models.py:_payload_items */
+/* PoP: load_items @ cron/scripts/classify_items.py:_load_items */
 static void payload_items(const json_t *payload, json_t ***out_items, size_t *out_n) {
     size_t cap = 16, n = 0;
     json_t **items = malloc(cap * sizeof(json_t *));

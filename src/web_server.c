@@ -1970,6 +1970,7 @@ static void h_hub_sources(void) {
         "\"featured\":[{\"name\":\"research\",\"description\":\"Research skill pack\"},{\"name\":\"devops\",\"description\":\"DevOps automation skills\"}],"
         "\"installed\":{}}");
 }
+/* PoP: _discover @ agent/pet/generate/imagegen.py:_discover */
 static void h_sessions_search_discover(void) {
     RESET();
     /* Search discover — list sessions available for search */

@@ -146,6 +146,7 @@ void app_desktop_toggle_settings(app_desktop_state_t *app_state) {
     ui.dirty = true;
 }
 
+/* PoP: _palette @ hermes_cli/journey.py:_palette */
 void app_desktop_toggle_command_palette(app_desktop_state_t *app_state) {
     (void)app_state;
     if (app.command_palette) { app.command_palette = false; ui_destroy_overlay(); }

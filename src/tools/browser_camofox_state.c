@@ -21,6 +21,7 @@
 /* Resolve the profile-scoped Camofox persistence root.
  * Returns heap-allocated "<HERMES_HOME>/browser_auth/camofox" (caller frees),
  * or NULL on failure. Mirrors get_camofox_state_dir(). */
+/* PoP: _state_dir @ hermes_cli/active_sessions.py:_state_dir */
 static char *camofox_state_dir(void)
 {
     char home[4096];

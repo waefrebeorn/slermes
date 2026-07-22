@@ -26,6 +26,7 @@ void stream_diag_init(stream_diag_t *diag) {
 }
 
 /* Port of Python: stream_diag_capture_response */
+/* PoP: _capture_response @ tools/computer_use/tool.py:_capture_response */
 void stream_diag_capture_response(stream_diag_t *diag) {
     if (!diag) return;
     char saved_headers[384];

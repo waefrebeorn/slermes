@@ -109,6 +109,7 @@ json_node_t* cli_gateway_platforms_wecom_callback__resolve_app_for_chat(const ch
 }
 
 /* PoP: cli_gateway_platforms_wecom_callback__handle_verify @ gateway/platforms/wecom_callback.py:_handle_verify */
+/* PoP: _handle_verify @ gateway/platforms/whatsapp_cloud.py:_handle_verify */
 int cli_gateway_platforms_wecom_callback__handle_verify(const char *msg_signature, const char *timestamp,
                                                          const char *nonce, const char *echostr,
                                                          json_node_t *apps, char *buf, size_t bufsz) {

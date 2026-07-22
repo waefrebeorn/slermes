@@ -679,6 +679,7 @@ void image_routing_disable_vision(void *state) {
     s->vision_disabled = true;
 }
 
+/* PoP: _disabled @ tools/file_state.py:_disabled */
 bool image_routing_vision_disabled(const void *state) {
     if (!state) return false;
     const agent_state_t *s = (const agent_state_t *)state;

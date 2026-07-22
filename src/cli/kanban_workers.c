@@ -1090,6 +1090,7 @@ int kdb_init_lock_acquire(const char *db_path, int *held_out, void **handle_out)
 #endif
 }
 
+/* PoP: release @ hermes_cli/active_sessions.py:release */
 void kdb_init_lock_release(void *handle)
 {
 #ifndef _WIN32

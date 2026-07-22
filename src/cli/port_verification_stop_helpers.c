@@ -397,6 +397,7 @@ char *verification_stop_build_nudge(const char *changed_paths_json, int attempts
         size_t cap = strlen(joined) + 256;
         instruction = malloc(cap);
         snprintf(instruction, cap,
+/* PoP: now @ gateway/session.py:_now */
             "Run the relevant verification command now (%s), read any failure, repair the code, and summarize what passed.",
             joined);
         free(joined);

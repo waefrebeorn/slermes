@@ -153,6 +153,7 @@ static http_response_t *openapi_post(http_client_t *http, const char *url,
 
 /* GET request to Feishu Open API with auth.
  * Returns http_response_t (caller frees) or NULL. */
+/* PoP: api_get @ gateway/platforms/bluebubbles.py:_api_get */
 static http_response_t *openapi_get(http_client_t *http, const char *url) {
     const char *tok = get_tenant_token(http);
     if (!tok) return NULL;

@@ -494,6 +494,7 @@ void cronjob_notify_provider_jobs_changed_safe(void)
  * the ticker uses, so failure/delivery behaviour cannot drift. The built-in C
  * scheduler has no separate CAS store, so an inline run IS the claim: a found +
  * triggered job maps to claimed=true; a missing/failed lookup to claimed=false. */
+/* PoP: _now @ gateway/session.py:_now */
 json_t *cronjob_execute_job_now(const json_t *job)
 {
     json_t *out = json_object();

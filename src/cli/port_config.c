@@ -48,6 +48,7 @@ const char* _install_method_project_root(const char* project_root)
  * In C: check for .dockerenv, containerenv, or cgroup indicators.
  */
 /* Port of Python: _running_in_container */
+/* PoP: _in_container @ hermes_cli/security_audit_startup.py:_in_container */
 bool _running_in_container(void)
 {
     /* Check for Docker container indicator */

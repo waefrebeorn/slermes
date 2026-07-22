@@ -39,6 +39,7 @@ int pty_clamp_dimension(int value, int maximum) {
 }
 
 /* PoP: pty_win_clamp @ hermes_cli/win_pty_bridge.py:_clamp */
+/* PoP: _clamp @ hermes_cli/journey.py:_clamp */
 int pty_win_clamp(int value, int maximum) {
     int n = parse_dim(value, maximum);
     if (n < PTY_MIN_DIMENSION) return PTY_MIN_DIMENSION;

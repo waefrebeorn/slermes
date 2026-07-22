@@ -942,6 +942,7 @@ void sse_write_chunk(sse_writer_t *writer, const char *content, int index) {
     json_free(chunk);
 }
 
+/* PoP: finish @ gateway/stream_consumer.py:finish */
 void sse_write_finish(sse_writer_t *writer, const char *usage_json) {
     if (!writer) return;
     json_t *chunk = json_object();

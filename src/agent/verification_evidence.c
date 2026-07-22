@@ -152,6 +152,7 @@ char **verify_canonical_tokens(const char *canonical, int *out_count) {
     return out;
 }
 
+/* PoP: _find_subsequence @ agent/verification_evidence.py:_find_subsequence */
 int verify_find_subsequence(char **tokens, int n, char **needle, int m) {
     if (!tokens || !needle || m == 0 || m > n) return -1;
     /* cleaned tokens */
@@ -220,6 +221,7 @@ char ***verify_equivalent_needles(char **needle, int m, int *out_count, int **ou
     return out;
 }
 
+/* PoP: _find_canonical_match @ agent/verification_evidence.py:_find_canonical_match */
 verify_match_t *verify_find_canonical_match(const char *command,
                                             char **canonical_commands, int nc) {
     int seg_count; int *seg_lens;
@@ -253,6 +255,7 @@ verify_match_t *verify_find_canonical_match(const char *command,
     return result;
 }
 
+/* PoP: _kind_for_command @ agent/verification_evidence.py:_kind_for_command */
 verify_kind_t verify_kind_for_command(const char *canonical) {
     char low[1024]; int i = 0;
     for (; canonical && canonical[i] && i < (int)sizeof(low)-1; i++)
@@ -282,6 +285,7 @@ bool verify_looks_like_target(const char *arg) {
     return false;
 }
 
+/* PoP: _scope_for_args @ agent/verification_evidence.py:_scope_for_args */
 verify_scope_t verify_scope_for_args(char **args, int n) {
     for (int i = 0; i < n; i++) if (verify_looks_like_target(args[i])) return VERIFY_SCOPE_TARGETED;
     return VERIFY_SCOPE_FULL;
@@ -354,6 +358,7 @@ char **verify_ad_hoc_script_args(char **tokens, int n, const char *root, int *ou
     return NULL;
 }
 
+/* PoP: _find_ad_hoc_match @ agent/verification_evidence.py:_find_ad_hoc_match */
 char **verify_find_ad_hoc_match(const char *command, const char *root, int *out_n) {
     int seg_count; int *seg_lens;
     char ***segs = verify_split_segments(command, &seg_count, &seg_lens);

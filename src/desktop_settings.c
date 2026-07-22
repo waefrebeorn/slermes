@@ -195,6 +195,7 @@ bool desktop_settings_set_theme(desktop_theme_t theme) {
     return true;
 }
 
+/* PoP: _get_gateway_url @ gateway/platforms/qqbot/adapter.py:_get_gateway_url */
 bool desktop_settings_get_gateway_url(char *url, size_t url_size) {
     if (!url || url_size == 0) return false;
     strncpy(url, g_desktop.gateway_url, url_size - 1);
