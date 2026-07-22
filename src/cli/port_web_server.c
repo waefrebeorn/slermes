@@ -1188,3 +1188,237 @@ bool web_maybe_open_browser(const char *url)
     hermes_log(LOG_INFO, "web_server", "Dashboard ready at %s", url);
     return true;  /* Caller should use xdg-open / start / open */
 }
+
+/* ================================================================
+ *  Dashboard pure helpers — Port of hermes_cli/web_server.py
+ *  Deterministic helpers with no FastAPI / asyncio dependency.
+ * ================================================================ */
+
+/* Minimal ISO-8601 parser: YYYY-MM-DD[THH:MM[:SS[.fff]][Z|±HH:MM]].
+ * Returns seconds since epoch (UTC), or -1 on parse failure. */
+static double web__parse_iso(const char *s) {
+    if (!s || !*s) return -1;
+    int Y, M, D, h = 0, m = 0, sec = 0;
+    double frac = 0;
+    char sign = '\0'; int tz_h = 0, tz_m = 0;
+    const char *p = s;
+    if (sscanf(p, "%d-%d-%dT%d:%d:%d", &Y, &M, &D, &h, &m, &sec) < 3)
+        return -1;
+    /* advance past the date/time we consumed */
+    /* find 'T' then the time; if no 'T', default time 00:00:00 */
+    const char *t = strchr(p, 'T');
+    if (t) {
+        const char *q = t + 1;
+        /* parse time optionally with fractional and timezone */
+        int n = 0;
+        if (sscanf(q, "%d:%d:%d%n", &h, &m, &sec, &n) >= 3) {
+            q += n;
+            if (*q == '.') { sscanf(q, ".%lf%n", &frac, &n); q += n; }
+            if (*q == 'Z' || *q == 'z') { /* utc */ }
+            else if (*q == '+' || *q == '-') {
+                sign = *q;
+                sscanf(q, "%c%d:%d", &sign, &tz_h, &tz_m);
+            }
+        }
+    }
+    /* days-from-civil algorithm (Howard Hinnant) */
+    int yy = Y - (M <= 2 ? 1 : 0);
+    int era = (yy >= 0 ? yy : yy - 399) / 400;
+    int yoe = yy - era * 400;
+    int doy = (153 * (M + (M > 2 ? -3 : 9)) + 2) / 5 + D - 1;
+    int doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+    long days = era * 146097 + doe - 719468;
+    double secs = ((double)days * 86400.0) + h * 3600.0 + m * 60.0 + sec + frac;
+    if (sign == '+') secs -= (tz_h * 3600 + tz_m * 60);
+    else if (sign == '-') secs += (tz_h * 3600 + tz_m * 60);
+    return secs;
+}
+
+/* PoP: web_parse_expiry_ts @ hermes_cli/web_server.py:_parse_expiry_ts */
+double web_parse_expiry_ts(const char *value) {
+    if (!value || !*value) return (double)time(NULL) + 600.0;
+    /* Normalize a trailing 'Z' to an explicit +00:00 offset so the ISO
+     * parser always sees a UTC offset. */
+    size_t L = strlen(value);
+    char *norm = malloc(L + 7);
+    if (L > 0 && (value[L-1] == 'Z' || value[L-1] == 'z'))
+        snprintf(norm, L + 7, "%.*s+00:00", (int)(L-1), value);
+    else
+        snprintf(norm, L + 7, "%s", value);
+    double r = web__parse_iso(norm);
+    free(norm);
+    if (r < 0) return (double)time(NULL) + 600.0;
+    return r;
+}
+
+/* PoP: web_normalize_telegram_user_id @ hermes_cli/web_server.py:_normalize_telegram_user_id */
+/* _TELEGRAM_USER_ID_RE = ^[0-9]+$ */
+char *web_normalize_telegram_user_id(const char *value) {
+    if (!value) return NULL;
+    const char *s = value;
+    while (*s && isspace((unsigned char)*s)) s++;
+    size_t start = s - value;
+    size_t i = start;
+    if (value[i] == '\0') return NULL;
+    for (; value[i]; i++) {
+        if (value[i] == ' ' || value[i] == '\t' || value[i] == '\n' || value[i] == '\r') break;
+    }
+    size_t end = i;
+    /* all chars in [start,end) must be digits */
+    for (size_t k = start; k < end; k++) {
+        if (!isdigit((unsigned char)value[k])) return NULL;
+    }
+    if (end == start) return NULL;
+    size_t len = end - start;
+    char *out = malloc(len + 1);
+    memcpy(out, value + start, len);
+    out[len] = '\0';
+    return out;
+}
+
+/* PoP: web_telegram_onboarding_error_message @ hermes_cli/web_server.py:_telegram_onboarding_error_message */
+const char *web_telegram_onboarding_error_message(const char *error, const char *fallback) {
+    static const struct { const char *code; const char *msg; } map[] = {
+        {"not_found", "Telegram pairing was not found. Start a new setup."},
+        {"expired", "Telegram setup expired. Start a new setup."},
+        {"claimed", "Telegram setup was already claimed. Start a new setup."},
+        {"unauthorized", "Telegram setup service rejected this request."},
+        {"telegram_manager_bot_token_not_configured", "Telegram setup service is not configured."},
+        {"telegram_token_fetch_failed", "Telegram could not finish bot setup. Try again."},
+        {NULL, NULL},
+    };
+    if (error) {
+        for (int i = 0; map[i].code; i++)
+            if (strcmp(error, map[i].code) == 0) return map[i].msg;
+    }
+    return fallback ? fallback : "";
+}
+
+/* PoP: web_truncate_token @ hermes_cli/web_server.py:_truncate_token */
+char *web_truncate_token(const char *value, int visible) {
+    if (!value || !*value) return strdup("");
+    if (visible <= 0) visible = 6;
+    const char *s = value;
+    /* JWT: >=2 dots -> take trailing segment */
+    int dots = 0;
+    for (const char *p = s; *p; p++) if (*p == '.') dots++;
+    if (dots >= 2) {
+        const char *last = strrchr(s, '.');
+        if (last) s = last + 1;
+    }
+    size_t len = strlen(s);
+    if (len <= (size_t)visible) return strdup(s);
+    /* prefix with ellipsis char '…' (UTF-8) */
+    size_t need = 3 + (size_t)visible + 1; /* … + visible + nul (… is 3 bytes) */
+    char *out = malloc(need);
+    snprintf(out, need, "\xe2\x80\xa6%.*s", visible, s + len - visible);
+    return out;
+}
+
+/* PoP: web_windows_build_number @ hermes_cli/web_server.py:_windows_build_number */
+/* regex: (?:^|[^0-9])10\.0\.(\d{5,})(?:[^0-9]|$) */
+int web_windows_build_number(const char *version, const char *platform_label) {
+    const char *srcs[2];
+    srcs[0] = version ? version : "";
+    srcs[1] = platform_label ? platform_label : "";
+    for (int i = 0; i < 2; i++) {
+        const char *s = srcs[i];
+        for (const char *p = s; *p; p++) {
+            if ((p == s || !isdigit((unsigned char)p[-1])) &&
+                p[0] == '1' && p[1] == '0' && p[2] == '.' && p[3] == '0' && p[4] == '.') {
+                const char *q = p + 5;
+                if (isdigit((unsigned char)*q)) {
+                    const char *num_start = q;
+                    while (isdigit((unsigned char)*q)) q++;
+                    size_t nlen = q - num_start;
+                    if (nlen >= 5 && (!isdigit((unsigned char)*q))) {
+                        int v = atoi(num_start);
+                        return v;
+                    }
+                }
+            }
+        }
+    }
+    return -1;
+}
+
+/* PoP: web_cron_optional_text @ hermes_cli/web_server.py:_cron_optional_text */
+char *web_cron_optional_text(const char *value, bool strip_trailing_slash) {
+    if (!value) return NULL;
+    /* strip leading/trailing whitespace */
+    const char *s = value;
+    while (*s && isspace((unsigned char)*s)) s++;
+    const char *e = s + strlen(s);
+    while (e > s && isspace((unsigned char)e[-1])) e--;
+    if (e == s) return NULL;
+    size_t len = e - s;
+    char *out = malloc(len + 1);
+    memcpy(out, s, len); out[len] = '\0';
+    if (strip_trailing_slash) {
+        while (out[0] && out[strlen(out)-1] == '/') out[strlen(out)-1] = '\0';
+    }
+    if (out[0] == '\0') { free(out); return NULL; }
+    return out;
+}
+
+/* PoP: web_cron_string_list @ hermes_cli/web_server.py:_cron_string_list */
+char **web_cron_string_list(const char *value) {
+    if (!value) return NULL;
+    /* split on newline or comma */
+    char *buf = strdup(value);
+    char **arr = malloc(sizeof(char *) * 64);
+    int n = 0;
+    char *save = buf;
+    const char *delim = "\n,";
+    char *tok = strtok_r(buf, delim, &save);
+    while (tok) {
+        /* trim */
+        while (*tok && isspace((unsigned char)*tok)) tok++;
+        size_t L = strlen(tok);
+        while (L > 0 && isspace((unsigned char)tok[L-1])) tok[--L] = '\0';
+        if (tok[0]) {
+            if (n >= 63) break;
+            arr[n++] = strdup(tok);
+        }
+        tok = strtok_r(NULL, delim, &save);
+    }
+    free(buf);
+    if (n == 0) { free(arr); return NULL; }
+    arr[n] = NULL;
+    return arr;
+}
+
+/* PoP: web_channel_or_close_code @ hermes_cli/web_server.py:_channel_or_close_code */
+/* _VALID_CHANNEL_RE = ^[A-Za-z0-9._-]{1,128}$ */
+char *web_channel_or_close_code(const char *channel) {
+    if (!channel) return NULL;
+    size_t len = strlen(channel);
+    if (len < 1 || len > 128) return NULL;
+    for (size_t i = 0; i < len; i++) {
+        char c = channel[i];
+        if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
+              (c >= '0' && c <= '9') || c == '.' || c == '_' || c == '-'))
+            return NULL;
+    }
+    return strdup(channel);
+}
+
+/* PoP: web_read_active_session_file @ hermes_cli/web_server.py:_read_active_session_file */
+char *web_read_active_session_file(const char *path) {
+    if (!path) return NULL;
+    char *err = NULL;
+    json_t *doc = json_parse_file(path, &err);
+    if (err) { free(err); }
+    if (!doc) return NULL;
+    const char *sid = json_get_str(doc, "session_id", NULL);
+    char *out = NULL;
+    if (sid && *sid) {
+        while (*sid && isspace((unsigned char)*sid)) sid++;
+        /* strip trailing whitespace (Python str.strip() semantics) */
+        size_t L = strlen(sid);
+        while (L > 0 && isspace((unsigned char)sid[L-1])) L--;
+        if (L > 0) { out = malloc(L + 1); memcpy(out, sid, L); out[L] = '\0'; }
+    }
+    json_free(doc);
+    return out;
+}
