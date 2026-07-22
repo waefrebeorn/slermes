@@ -114,8 +114,6 @@ int cli_tools_video_generation_tool_check_video_generation_requirements(void) {
     return 1;
 }
 
-/* PoP: cli_tools_video_generation_tool__resolve_active_provider @ tools/video_generation_tool.py:_resolve_active_provider */
-
 /* PoP: cli_tools_video_generation_tool__missing_provider_error @ tools/video_generation_tool.py:_missing_provider_error */
 json_node_t* cli_tools_video_generation_tool__missing_provider_error(const char *configured) {
     /*
@@ -181,7 +179,9 @@ json_node_t* cli_tools_video_generation_tool__normalize_reference_images(json_no
     return result;
 }
 
-/* PoP: cli_tools_video_generation_tool__handle_video_generate @ tools/video_generation_tool.py:_handle_video_generate */
+/* _handle_video_generate is NOT credited as PORTED: the video-gen provider
+ * registry and provider.generate() path are not ported to C. It remains a
+ * REAL_GAP (see the "not implemented in C port" error below). */
 json_node_t* cli_tools_video_generation_tool__handle_video_generate(json_node_t *args) {
     /*
      * Main handler for the video_generate tool.

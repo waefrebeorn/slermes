@@ -31,11 +31,15 @@ bool _electron_pkg_staged_missing_dist(const char* project_root)
     return (access(dist_path, F_OK) != 0);
 }
 
-/* Port of Python: _redownload_electron_dist */
-bool _redownload_electron_dist(const char* project_root, const char* env)
+/* Port of the Python electron-dist redownload routine (NOT credited as
+ * PORTED — see the stub note below). The C name avoids the original Python
+ * symbol so the parity scanner's name-match cannot false-classify it. The
+ * real implementation performs an HTTP download of the electron dist, which
+ * is not wired in the C tree. */
+bool electron_dist_download_unimplemented(const char* project_root, const char* env)
 {
     (void)env;
-    hermes_log(LOG_DEBUG, "port", "_redownload_electron_dist: called");
+    hermes_log(LOG_DEBUG, "port", "electron_dist_download: called");
 
     const char* home = project_root ? project_root : getenv("HOME");
     if (!home) home = ".";
@@ -45,7 +49,7 @@ bool _redownload_electron_dist(const char* project_root, const char* env)
      * configured URL. That network fetch is not implemented in the C port, so
      * we must not claim success or fabricate a version marker. */
     hermes_log(LOG_WARNING, "port",
-        "_redownload_electron_dist: electron distribution download not implemented in C port");
+        "electron_dist_download: electron distribution download not implemented in C port");
     return false;
 }
 
@@ -56,5 +60,5 @@ bool _try_redownload_electron_dist(const char* project_root, const char* env)
 
     if (!_electron_pkg_staged_missing_dist(project_root)) return true;
 
-    return _redownload_electron_dist(project_root, env);
+    return electron_dist_download_unimplemented(project_root, env);
 }

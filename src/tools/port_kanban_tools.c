@@ -135,12 +135,16 @@ bool goal_judge_available(void)
 static double s_auto_heartbeat_last = 0.0;
 #define AUTO_HEARTBEAT_MIN_INTERVAL 60.0
 
-/* PoP: heartbeat_current_worker_from_env @ tools/kanban_tools.py:heartbeat_current_worker_from_env */
-/* Port of Python tools/kanban_tools.py:heartbeat_current_worker_from_env().
+/* NOTE: the kanban worker-heartbeat routine is intentionally NOT credited as
+ * PORTED. The Python implementation performs a real kanban store DB write
+ * (claim extension + board heartbeat); the C port only does rate-limiting and
+ * env identity resolution, then returns false ("not attempted"). The actual
+ * DB write is not wired in the C tree, so this remains a REAL_GAP. */
+/* Port of the Python kanban worker-heartbeat helper (tools/kanban_tools.py).
  * Best-effort: extend kanban claim + bump board heartbeat for current
  * dispatcher-spawned worker, using identity from env vars.
  * Rate-limited to one DB write per 60s per-process. Returns true if attempted. */
-bool heartbeat_current_worker_from_env(void)
+bool kanban_worker_heartbeat_unimplemented(void)
 {
     const char *tid = getenv("HERMES_KANBAN_TASK");
     if (!tid) return false;
