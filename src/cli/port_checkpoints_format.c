@@ -22,8 +22,8 @@ void hermes_cli_checkpoints_fmt_bytes(long n, char *out, size_t outsz)
     else snprintf(out, outsz, "%.1f %s", size, units[i]);
 }
 
-/* PoP: hermes_cli_checkpoints__fmt_age @ hermes_cli/checkpoints.py:_fmt_age
- * now is passed in (Python reads time.time() internally; we expose it for testability). */
+/* PoP: hermes_cli_checkpoints__fmt_age @ hermes_cli/checkpoints.py:_fmt_age */
+/* now is passed in (Python reads time.time() internally; we expose it for testability). */
 void hermes_cli_checkpoints_fmt_age(double ts, double now, char *out, size_t outsz)
 {
     if (ts != ts) { snprintf(out, outsz, "—"); return; }  /* NaN guard */
@@ -36,8 +36,8 @@ void hermes_cli_checkpoints_fmt_age(double ts, double now, char *out, size_t out
     snprintf(out, outsz, "%dd ago", (int)(age / 86400));
 }
 
-/* PoP: hermes_cli_checkpoints__fmt_ts @ hermes_cli/checkpoints.py:_fmt_ts
- * Formats a unix timestamp as "YYYY-MM-DD HH:MM"; on a non-numeric/zero/NaN
+/* PoP: hermes_cli_checkpoints__fmt_ts @ hermes_cli/checkpoints.py:_fmt_ts */
+/* Formats a unix timestamp as "YYYY-MM-DD HH:MM"; on a non-numeric/zero/NaN
  * value returns the em-dash placeholder "—". */
 void hermes_cli_checkpoints_fmt_ts(double ts, char *out, size_t outsz)
 {

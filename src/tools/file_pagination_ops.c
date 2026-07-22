@@ -86,8 +86,8 @@ bool file_pagination_ops_is_line_oriented_newline_error(const char *error)
            strstr(error, "--multiline") != NULL;
 }
 
-/* PoP: file_pagination_ops_pattern_has_regex_newline @ tools/file_operations.py:_pattern_has_regex_newline
- * True when pattern contains a literal newline OR a regex \n escape preceded by
+/* PoP: file_pagination_ops_pattern_has_regex_newline @ tools/file_operations.py:_pattern_has_regex_newline */
+/* True when pattern contains a literal newline OR a regex \n escape preceded by
  * an ODD number of backslashes (even backslashes => literal backslash+n). */
 bool file_pagination_ops_pattern_has_regex_newline(const char *pattern)
 {

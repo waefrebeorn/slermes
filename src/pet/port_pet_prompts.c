@@ -125,15 +125,15 @@ static char *format_exact(const char *fmt, ...)
 
 /* ── public API ─────────────────────────────────────────────────────────── */
 
-/* PoP: style_hint @ agent/pet/generate/prompts.py:style_hint
- * Returns the style hint string (malloc'd) for a style key, or "" if unknown. */
+/* PoP: style_hint @ agent/pet/generate/prompts.py:style_hint */
+/* Returns the style hint string (malloc'd) for a style key, or "" if unknown. */
 char *pet_prompts_style_hint(const char *style)
 {
     return strdup(style_hint_lookup(style));
 }
 
-/* PoP: _spacing_spec @ agent/pet/generate/prompts.py:_spacing_spec
- * (per-pose width px, gap px) for a row of frame_count poses. */
+/* PoP: _spacing_spec @ agent/pet/generate/prompts.py:_spacing_spec */
+/* (per-pose width px, gap px) for a row of frame_count poses. */
 void pet_prompts_spacing_spec(int frame_count, int *out_pose_px, int *out_gap_px)
 {
     int slots = frame_count > 0 ? frame_count : 1;

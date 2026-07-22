@@ -207,8 +207,8 @@ const char* cli_tools_skills_guard__resolve_trust_level(const char *source, cons
     return "community";
 }
 
-/* PoP: cli_tools_skills_guard__determine_verdict @ tools/skills_guard.py:_determine_verdict
- * Faithful to Python: critical -> dangerous, high -> caution, else safe.
+/* PoP: cli_tools_skills_guard__determine_verdict @ tools/skills_guard.py:_determine_verdict */
+/* Faithful to Python: critical -> dangerous, high -> caution, else safe.
  * Severity levels: 3=critical, 2=high, 1=medium, 0=low (trust-independent,
  * matching the Python findings-based logic). */
 const char* cli_tools_skills_guard__determine_verdict(int max_severity, int total_findings) {

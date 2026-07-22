@@ -848,8 +848,8 @@ char **models_merge_with_models_dev(char *const *live, char *const *mdev) {
     return out;
 }
 
-/* PoP: union_with_portal_free_recommendations @ hermes_cli/models.py:union_with_portal_free_recommendations
- * (also covers union_with_portal_paid_recommendations; `paid` selects tier semantics). */
+/* PoP: union_with_portal_free_recommendations @ hermes_cli/models.py:union_with_portal_free_recommendations */
+/* (also covers union_with_portal_paid_recommendations; `paid` selects tier semantics). */
 static char **union_portal(http_fetch_fn fetch, void *ctx, const char *portal_base_url,
                            char *const *base, int paid) {
     (void)paid;

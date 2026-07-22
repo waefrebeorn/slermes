@@ -183,8 +183,8 @@ json_t *list_user_modified_bundled_skills(void)
 #include <openssl/md5.h>
 #include <openssl/sha.h>
 
-/* PoP: _get_bundled_dir @ tools/skills_sync.py:_get_bundled_dir
- * Port of Python tools/skills_sync.py:_get_bundled_dir().
+/* PoP: _get_bundled_dir @ tools/skills_sync.py:_get_bundled_dir */
+/* Port of Python tools/skills_sync.py:_get_bundled_dir().
  * Locates the bundled skills/ directory. Checks HERMES_BUNDLED_SKILLS env var
  * first, then wheel-installed data dir, then falls back to relative path. */
 char *get_bundled_dir(void)
@@ -211,8 +211,8 @@ char *get_bundled_dir(void)
     return path;
 }
 
-/* PoP: _get_optional_dir @ tools/skills_sync.py:_get_optional_dir
- * Port of Python tools/skills_sync.py:_get_optional_dir().
+/* PoP: _get_optional_dir @ tools/skills_sync.py:_get_optional_dir */
+/* Port of Python tools/skills_sync.py:_get_optional_dir().
  * Locates the official optional-skills/ directory. */
 char *get_optional_dir(void)
 {
@@ -238,8 +238,8 @@ char *get_optional_dir(void)
     return path;
 }
 
-/* PoP: _build_external_skill_index @ tools/skills_sync.py:_build_external_skill_index
- * Port of Python tools/skills_sync.py:_build_external_skill_index().
+/* PoP: _build_external_skill_index @ tools/skills_sync.py:_build_external_skill_index */
+/* Port of Python tools/skills_sync.py:_build_external_skill_index().
  * Indexes every skill available in external_dirs by name and frontmatter name.
  * Returns json_t* array of skill names, or NULL on error. */
 json_t *build_external_skill_index(void)
@@ -287,8 +287,8 @@ json_t *build_external_skill_index(void)
     return arr;
 }
 
-/* PoP: _read_manifest @ tools/skills_sync.py:_read_manifest
- * Port of Python tools/skills_sync.py:_read_manifest().
+/* PoP: _read_manifest @ tools/skills_sync.py:_read_manifest */
+/* Port of Python tools/skills_sync.py:_read_manifest().
  * Reads the manifest as a dict of {skill_name: origin_hash}. */
 json_t *read_manifest(void)
 {
@@ -324,8 +324,8 @@ json_t *read_manifest(void)
     return result;
 }
 
-/* PoP: _write_manifest @ tools/skills_sync.py:_write_manifest
- * Port of Python tools/skills_sync.py:_write_manifest().
+/* PoP: _write_manifest @ tools/skills_sync.py:_write_manifest */
+/* Port of Python tools/skills_sync.py:_write_manifest().
  * Writes the manifest dict to disk atomically. */
 void write_manifest(json_t *manifest)
 {
@@ -352,8 +352,8 @@ void write_manifest(json_t *manifest)
     rename(tmp_path, manifest_path);
 }
 
-/* PoP: _read_skill_name @ tools/skills_sync.py:_read_skill_name
- * Port of Python tools/skills_sync.py:_read_skill_name().
+/* PoP: _read_skill_name @ tools/skills_sync.py:_read_skill_name */
+/* Port of Python tools/skills_sync.py:_read_skill_name().
  * Reads the skill name from a SKILL.md file. */
 char *read_skill_name(const char *skill_md_path, const char *fallback)
 {
@@ -379,8 +379,8 @@ char *read_skill_name(const char *skill_md_path, const char *fallback)
     return strdup(fallback ? fallback : "");
 }
 
-/* PoP: _read_suppressed_names @ tools/skills_sync.py:_read_suppressed_names
- * Port of Python tools/skills_sync.py:_read_suppressed_names().
+/* PoP: _read_suppressed_names @ tools/skills_sync.py:_read_suppressed_names */
+/* Port of Python tools/skills_sync.py:_read_suppressed_names().
  * Reads built-in skills the curator pruned - must NOT be re-seeded on sync.
  * Returns json_t* array of suppressed skill names, or NULL on error. */
 /* PoP: read_suppressed_names @ tools/skill_usage.py:read_suppressed_names */
@@ -413,8 +413,8 @@ json_t *read_suppressed_names(void)
     return arr;
 }
 
-/* PoP: _discover_bundled_skills @ tools/skills_sync.py:_discover_bundled_skills
- * Port of Python tools/skills_sync.py:_discover_bundled_skills().
+/* PoP: _discover_bundled_skills @ tools/skills_sync.py:_discover_bundled_skills */
+/* Port of Python tools/skills_sync.py:_discover_bundled_skills().
  * Finds all SKILL.md files in the bundled directory.
  * Returns json_t* array of objects with name and path, or NULL on error. */
 json_t *discover_bundled_skills(const char *bundled_dir)
@@ -509,8 +509,8 @@ char *safe_rel_install_path(const char *path, const char *base)
     return skills_sync_fs_safe_rel_install_path(path, base);
 }
 
-/* PoP: _skill_file_list @ tools/skills_sync.py:_skill_file_list
- * Port of Python tools/skills_sync.py:_skill_file_list().
+/* PoP: _skill_file_list @ tools/skills_sync.py:_skill_file_list */
+/* Port of Python tools/skills_sync.py:_skill_file_list().
  * Lists files inside a skill directory in lock-file format.
  * Returns json_t* array of relative file paths (POSIX), or NULL on error. */
 json_t *skill_file_list(const char *skill_dir)
@@ -568,8 +568,8 @@ json_t *skill_file_list(const char *skill_dir)
     return arr;
 }
 
-/* PoP: _content_hash @ tools/skills_sync.py:_content_hash
- * Port of Python tools/skills_sync.py:_content_hash().
+/* PoP: _content_hash @ tools/skills_sync.py:_content_hash */
+/* Port of Python tools/skills_sync.py:_content_hash().
  * Returns the same hash style the skills hub lock uses.
  * Returns malloc'd hex string (caller must free) or NULL on error. */
 char *content_hash(const char *directory)
@@ -581,15 +581,15 @@ char *content_hash(const char *directory)
     return dir_hash(directory);
 }
 
-/* PoP: _dir_hash @ tools/skills_sync.py:_dir_hash
- * Delegate to the focused skills_sync_fs module. */
+/* PoP: _dir_hash @ tools/skills_sync.py:_dir_hash */
+/* Delegate to the focused skills_sync_fs module. */
 char *dir_hash(const char *directory)
 {
     return skills_sync_fs_dir_hash(directory);
 }
 
-/* PoP: _optional_skill_index @ tools/skills_sync.py:_optional_skill_index
- * Port of Python tools/skills_sync.py:_optional_skill_index().
+/* PoP: _optional_skill_index @ tools/skills_sync.py:_optional_skill_index */
+/* Port of Python tools/skills_sync.py:_optional_skill_index().
  * Returns official optional skills keyed by folder name and frontmatter name.
  * Returns json_t* object mapping name -> {folder_name, install_path, source_dir}. */
 json_t *optional_skill_index(void)
@@ -689,8 +689,8 @@ json_t *optional_skill_index(void)
     return index;
 }
 
-/* PoP: _move_to_restore_backup @ tools/skills_sync.py:_move_to_restore_backup
- * Port of Python tools/skills_sync.py:_move_to_restore_backup().
+/* PoP: _move_to_restore_backup @ tools/skills_sync.py:_move_to_restore_backup */
+/* Port of Python tools/skills_sync.py:_move_to_restore_backup().
  * Moves an existing skill directory into a restore backup, preserving rel path.
  * Returns malloc'd string (caller must free) or NULL on error. */
 char *move_to_restore_backup(const char *path, const char *backup_root)
@@ -748,8 +748,8 @@ char *move_to_restore_backup(const char *path, const char *backup_root)
     return strdup(rel);
 }
 
-/* PoP: restore_official_optional_skill @ tools/skills_sync.py:restore_official_optional_skill
- * Port of Python tools/skills_sync.py:restore_official_optional_skill().
+/* PoP: restore_official_optional_skill @ tools/skills_sync.py:restore_official_optional_skill */
+/* Port of Python tools/skills_sync.py:restore_official_optional_skill().
  * Restores one or all official optional skills from repo source.
  * Returns json_t* object with ok, message, restored, backfilled, backed_up arrays. */
 json_t *restore_official_optional_skill(const char *name, bool restore)
@@ -875,8 +875,8 @@ json_t *restore_official_optional_skill(const char *name, bool restore)
     return result;
 }
 
-/* PoP: _backfill_optional_provenance @ tools/skills_sync.py:_backfill_optional_provenance
- * Port of Python tools/skills_sync.py:_backfill_optional_provenance().
+/* PoP: _backfill_optional_provenance @ tools/skills_sync.py:_backfill_optional_provenance */
+/* Port of Python tools/skills_sync.py:_backfill_optional_provenance().
  * Marks already-present official optional skills as hub-installed.
  * Returns json_t* array of backfilled skill names. */
 json_t *backfill_optional_provenance(bool quiet)
@@ -1015,8 +1015,8 @@ json_t *backfill_optional_provenance(bool quiet)
         return result;
     }
 
-/* PoP: sync_skills @ tools/skills_sync.py:sync_skills
- * Port of Python tools/skills_sync.py:sync_skills().
+/* PoP: sync_skills @ tools/skills_sync.py:sync_skills */
+/* Port of Python tools/skills_sync.py:sync_skills().
  * Syncs bundled skills into ~/.hermes/skills/ using the manifest.
  * Returns json_t* object with keys: copied, updated, skipped, user_modified, cleaned, total_bundled, etc. */
 json_t *sync_skills(bool quiet)
@@ -1255,8 +1255,8 @@ json_t *sync_skills(bool quiet)
     return result;
 }
 
-/* PoP: _rmtree_writable @ tools/skills_sync.py:_rmtree_writable
- * Port of Python tools/skills_sync.py:_rmtree_writable().
+/* PoP: _rmtree_writable @ tools/skills_sync.py:_rmtree_writable */
+/* Port of Python tools/skills_sync.py:_rmtree_writable().
  * Removes a directory tree, making read-only entries writable first. */
 void rmtree_writable(const char *path)
 {
@@ -1353,8 +1353,8 @@ void rmtree_writable(const char *path)
     free(skills_resolved);
 }
 
-/* PoP: reset_bundled_skill @ tools/skills_sync.py:reset_bundled_skill
- * Port of Python tools/skills_sync.py:reset_bundled_skill().
+/* PoP: reset_bundled_skill @ tools/skills_sync.py:reset_bundled_skill */
+/* Port of Python tools/skills_sync.py:reset_bundled_skill().
  * Resets a bundled skill's manifest tracking so future syncs work normally. */
 json_t *reset_bundled_skill(const char *name, bool restore)
 {
@@ -1453,8 +1453,8 @@ json_t *reset_bundled_skill(const char *name, bool restore)
     return result;
 }
 
-/* PoP: set_bundled_skills_opt_out @ tools/skills_sync.py:set_bundled_skills_opt_out
- * Port of Python tools/skills_sync.py:set_bundled_skills_opt_out().
+/* PoP: set_bundled_skills_opt_out @ tools/skills_sync.py:set_bundled_skills_opt_out */
+/* Port of Python tools/skills_sync.py:set_bundled_skills_opt_out().
  * Toggles the .no-bundled-skills opt-out marker for the active profile. */
 json_t *set_bundled_skills_opt_out(bool enabled)
 {
@@ -1501,8 +1501,8 @@ json_t *set_bundled_skills_opt_out(bool enabled)
     return result;
 }
 
-/* PoP: is_bundled_skills_opt_out @ tools/skills_sync.py:is_bundled_skills_opt_out
- * Port of Python tools/skills_sync.py:is_bundled_skills_opt_out().
+/* PoP: is_bundled_skills_opt_out @ tools/skills_sync.py:is_bundled_skills_opt_out */
+/* Port of Python tools/skills_sync.py:is_bundled_skills_opt_out().
  * Returns true if the active profile carries the opt-out marker. */
 bool is_bundled_skills_opt_out(void)
 {
@@ -1514,8 +1514,8 @@ bool is_bundled_skills_opt_out(void)
     return access(marker, F_OK) == 0;
 }
 
-/* PoP: remove_pristine_bundled_skills @ tools/skills_sync.py:remove_pristine_bundled_skills
- * Port of Python tools/skills_sync.py:remove_pristine_bundled_skills().
+/* PoP: remove_pristine_bundled_skills @ tools/skills_sync.py:remove_pristine_bundled_skills */
+/* Port of Python tools/skills_sync.py:remove_pristine_bundled_skills().
  * Deletes bundled skills that are present, manifest-tracked, AND unmodified. */
 json_t *remove_pristine_bundled_skills(bool dry_run)
 {

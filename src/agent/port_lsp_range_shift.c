@@ -133,8 +133,8 @@ static lsp_range_shift_t *build_opcodes(char **pre, int pn, char **post, int qn)
     return sh;
 }
 
-/* PoP: build_line_shift @ agent/lsp/range_shift.py:build_line_shift
- * Returns a shift map; lsp_line_shift() applies it. Caller frees with
+/* PoP: build_line_shift @ agent/lsp/range_shift.py:build_line_shift */
+/* Returns a shift map; lsp_line_shift() applies it. Caller frees with
  * lsp_free_line_shift. Trivial (identical) content -> identity. */
 lsp_range_shift_t *lsp_build_line_shift(const char *pre_text, const char *post_text)
 {
@@ -177,8 +177,8 @@ int lsp_line_shift(const lsp_range_shift_t *sh, int line)
     return sh->post_n > 0 ? (sh->post_n - 1) : -1;
 }
 
-/* PoP: shift_diagnostic_range @ agent/lsp/range_shift.py:shift_diagnostic_range
- * Parse diag JSON, remap start.line/end.line through shift. Returns a malloc'd
+/* PoP: shift_diagnostic_range @ agent/lsp/range_shift.py:shift_diagnostic_range */
+/* Parse diag JSON, remap start.line/end.line through shift. Returns a malloc'd
  * new JSON string, or NULL if start maps to deleted (caller drops it). */
 char *lsp_shift_diagnostic_range(const char *diag_json, const lsp_range_shift_t *sh)
 {
@@ -223,8 +223,8 @@ char *lsp_shift_diagnostic_range(const char *diag_json, const lsp_range_shift_t 
     return ser;
 }
 
-/* PoP: shift_baseline @ agent/lsp/range_shift.py:shift_baseline
- * Apply shift to every diagnostic in the baseline JSON array, dropping deleted
+/* PoP: shift_baseline @ agent/lsp/range_shift.py:shift_baseline */
+/* Apply shift to every diagnostic in the baseline JSON array, dropping deleted
  * entries. Returns a malloc'd JSON array string (possibly "[]"). */
 char *lsp_shift_baseline_json(const char *baseline_json, const lsp_range_shift_t *sh)
 {

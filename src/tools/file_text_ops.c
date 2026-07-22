@@ -24,8 +24,8 @@ static char *dup_str(const char *s)
 
 /* ---- strip_terminal_fence_leaks ----------------------------------------- */
 
-/* PoP: file_text_ops_strip_terminal_fence_leaks @ tools/file_operations.py:_strip_terminal_fence_leaks
- * Per line: if the line contains an OSC (\x1b]) or a __HERMES_FENCE_ marker
+/* PoP: file_text_ops_strip_terminal_fence_leaks @ tools/file_operations.py:_strip_terminal_fence_leaks */
+/* Per line: if the line contains an OSC (\x1b]) or a __HERMES_FENCE_ marker
  * (a "terminal wrapper"), strip OSC sequences, fence markers, and bell chars;
  * if the cleaned line is then empty, drop the whole line (incl. its \n).
  * CSI (\x1b[) is deliberately left intact (Python only strips OSC/fence/bell). */
@@ -105,8 +105,8 @@ char *file_text_ops_strip_terminal_fence_leaks(const char *text)
 
 /* ---- detect_line_ending ------------------------------------------------- */
 
-/* PoP: file_text_ops_detect_line_ending @ tools/file_operations.py:_detect_line_ending
- * Returns malloc'd "crlf" / "lf" / "unknown". Python's _detect_line_ending
+/* PoP: file_text_ops_detect_line_ending @ tools/file_operations.py:_detect_line_ending */
+/* Returns malloc'd "crlf" / "lf" / "unknown". Python's _detect_line_ending
  * returns None for content without a newline (undetermined: new/empty/
  * single-line file), and the FS wrapper _detect_file_line_ending surfaces
  * that as None -> "unknown". Python never returns a bare "cr" string. */
@@ -126,8 +126,8 @@ char *file_text_ops_detect_line_ending(const char *sample)
 
 /* ---- normalize_line_endings --------------------------------------------- */
 
-/* PoP: file_text_ops_normalize_line_endings @ tools/file_operations.py:_normalize_line_endings
- * Idempotent: collapse CRLF + lone CR to LF, then expand to CRLF if target
+/* PoP: file_text_ops_normalize_line_endings @ tools/file_operations.py:_normalize_line_endings */
+/* Idempotent: collapse CRLF + lone CR to LF, then expand to CRLF if target
  * is "\r\n". */
 char *file_text_ops_normalize_line_endings(const char *text, const char *target)
 {
@@ -166,8 +166,8 @@ char *file_text_ops_normalize_line_endings(const char *text, const char *target)
 
 /* ---- strip_bom / has_bom ------------------------------------------------ */
 
-/* PoP: file_text_ops_strip_bom @ tools/file_operations.py:_strip_bom
- * Strips a single leading UTF-8 BOM. */
+/* PoP: file_text_ops_strip_bom @ tools/file_operations.py:_strip_bom */
+/* Strips a single leading UTF-8 BOM. */
 char *file_text_ops_strip_bom(const char *text)
 {
     if (!text) return dup_str("");
@@ -275,8 +275,8 @@ char *file_text_ops_escape_shell_arg(const char *arg)
 
 /* ---- parse_search_context_line ------------------------------------------ */
 
-/* PoP: file_text_ops_parse_search_context_line @ tools/file_operations.py:_parse_search_context_line
- * Parses grep/rg "path-line-content" format via the rightmost -<digits>-
+/* PoP: file_text_ops_parse_search_context_line @ tools/file_operations.py:_parse_search_context_line */
+/* Parses grep/rg "path-line-content" format via the rightmost -<digits>-
  * separator. Returns JSON {"path":..,"line":..,"content":..} on match, or
  * "{}" when no -<digits>- separator is present (Python returns None). */
 char *file_text_ops_parse_search_context_line(const char *line)

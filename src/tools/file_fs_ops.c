@@ -82,8 +82,8 @@ char *file_fs_ops_read_file_raw(const char *path)
     return buf;
 }
 
-/* PoP: file_fs_ops_delete_path @ tools/file_operations.py:delete_path
- * Faithful: Python's delete_path -> _python_delete first calls
+/* PoP: file_fs_ops_delete_path @ tools/file_operations.py:delete_path */
+/* Faithful: Python's delete_path -> _python_delete first calls
  * _is_write_denied(path) and returns WriteResult(error="Delete denied: ...")
  * for protected paths. POSIX-only backend (no Windows rm), so it
  * unlinks a file or rmdirs an empty dir; a denied path returns false. */
@@ -103,8 +103,8 @@ bool file_fs_ops_python_delete(const char *path)
     return file_fs_ops_delete_path(path);
 }
 
-/* PoP: file_fs_ops_patch_replace @ tools/file_operations.py:patch_replace
- * First-occurrence replace primitive (Python's full method is fuzzy + guarded). */
+/* PoP: file_fs_ops_patch_replace @ tools/file_operations.py:patch_replace */
+/* First-occurrence replace primitive (Python's full method is fuzzy + guarded). */
 char *file_fs_ops_patch_replace(const char *content, const char *old_text,
                                  const char *new_text)
 {
@@ -140,8 +140,8 @@ static bool in_set(const char *ext, const char **set)
     return false;
 }
 
-/* PoP: file_fs_ops_is_likely_binary @ tools/file_operations.py:_is_likely_binary
- * ext in BINARY_EXTENSIONS -> true; else >30% non-printable in first 1000
+/* PoP: file_fs_ops_is_likely_binary @ tools/file_operations.py:_is_likely_binary */
+/* ext in BINARY_EXTENSIONS -> true; else >30% non-printable in first 1000
  * bytes -> true; else false. Mirrors the .py content-sample branch. */
 bool file_fs_ops_is_likely_binary(const char *path)
 {
@@ -163,8 +163,8 @@ bool file_fs_ops_is_likely_binary(const char *path)
     return read > 0 && ((double)non_printable / (double)read) > 0.30;
 }
 
-/* PoP: file_fs_ops_is_image @ tools/file_operations.py:_is_image
- * IMAGE_EXTENSIONS set, case-insensitive (includes .ico). */
+/* PoP: file_fs_ops_is_image @ tools/file_operations.py:_is_image */
+/* IMAGE_EXTENSIONS set, case-insensitive (includes .ico). */
 bool file_fs_ops_is_image(const char *path)
 {
     if (!path) return false;

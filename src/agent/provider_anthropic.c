@@ -2018,8 +2018,8 @@ json_t *anthropic_extract_preserved_thinking_blocks(const json_t *message) {
  * Takes a raw message dict with optional fields:
  *   content, tool_calls, reasoning_details, reasoning_content,
  *   _extracted_thinking (cache_control passthrough on content). */
-/* PoP: anthropic_apply_assistant_cache_control_to_last_cacheable_block @ agent/anthropic_adapter.py:_apply_assistant_cache_control_to_last_cacheable_block
- * Port of Python agent/anthropic_adapter.py:_apply_assistant_cache_control_to_last_cacheable_block().
+/* PoP: anthropic_apply_assistant_cache_control_to_last_cacheable_block @ agent/anthropic_adapter.py:_apply_assistant_cache_control_to_last_cacheable_block */
+/* Port of Python agent/anthropic_adapter.py:_apply_assistant_cache_control_to_last_cacheable_block().
  * Mirrors the Python helper that walks `blocks` from the end and applies
  * `cache_control` (deep-copied) to the last block whose `type` is either
  * "text" or "tool_use". When cache_control is not a dict the call is a no-op
@@ -3192,8 +3192,8 @@ json_t *anthropic_read_creds_from_keychain(void) {
 #endif
 }
 
-/* PoP: anthropic_read_claude_code_creds_from_file @ agent/anthropic_adapter.py:_read_claude_code_credentials_from_file
- * Port of Python agent/anthropic_adapter.py:_read_claude_code_credentials_from_file().
+/* PoP: anthropic_read_claude_code_creds_from_file @ agent/anthropic_adapter.py:_read_claude_code_credentials_from_file */
+/* Port of Python agent/anthropic_adapter.py:_read_claude_code_credentials_from_file().
  * Read Claude Code OAuth credentials from ~/.claude/.credentials.json.
  * Mirrors the Python helper that builds the file path via Path.home() / ".claude" / ".credentials.json",
  * gracefully returns NULL when the file is missing, unparseable, has no claudeAiOauth object,
@@ -3242,8 +3242,8 @@ json_t *anthropic_read_claude_code_creds_from_file(void) {
     return result;
 }
 
-/* PoP: anthropic_read_claude_code_creds @ agent/anthropic_adapter.py:read_claude_code_credentials
- * Port of Python anthropic_adapter.py:read_claude_code_credentials().
+/* PoP: anthropic_read_claude_code_creds @ agent/anthropic_adapter.py:read_claude_code_credentials */
+/* Port of Python anthropic_adapter.py:read_claude_code_credentials().
  * Read refreshable Claude Code credentials, preferring macOS Keychain on Darwin
  * and falling back to ~/.claude/.credentials.json elsewhere.
  * Returns json_t* dict with accessToken/refreshToken/expiresAt/source, or NULL. */

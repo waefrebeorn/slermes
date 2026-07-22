@@ -339,8 +339,8 @@ static int finished_count = 0;
  * registry functions are already defined earlier in this file as non-static) */
 static void process_registry_emit_output(process_session_t *session, const char *chunk);
 
-/* PoP: _emit_output @ tools/process_registry.py:_emit_output
- * Port of Python tools/process_registry.py:_emit_output().
+/* PoP: _emit_output @ tools/process_registry.py:_emit_output */
+/* Port of Python tools/process_registry.py:_emit_output().
  * Forwards a freshly-read chunk to the live-output sink, if one is set. */
 static void process_registry_emit_output(process_session_t *session, const char *chunk)
 {
@@ -351,8 +351,8 @@ static void process_registry_emit_output(process_session_t *session, const char 
                session->id, strlen(chunk));
 }
 
-/* PoP: _global_watch_admit @ tools/process_registry.py:_global_watch_admit
- * Port of Python tools/process_registry.py:_global_watch_admit().
+/* PoP: _global_watch_admit @ tools/process_registry.py:_global_watch_admit */
+/* Port of Python tools/process_registry.py:_global_watch_admit().
  * Global rate limiter for watch pattern notifications across all processes. */
 static bool process_registry_global_watch_admit(double now)
 {
@@ -428,8 +428,8 @@ static bool process_registry_global_watch_admit(double now)
     return admit;
 }
 
-/* PoP: _is_host_pid_alive @ tools/process_registry.py:_is_host_pid_alive
- * Port of Python tools/process_registry.py:_is_host_pid_alive().
+/* PoP: _is_host_pid_alive @ tools/process_registry.py:_is_host_pid_alive */
+/* Port of Python tools/process_registry.py:_is_host_pid_alive().
  * Best-effort liveness check for host-visible PIDs. */
 bool process_registry_is_host_pid_alive(pid_t pid)
 {
@@ -448,8 +448,8 @@ bool process_registry_is_host_pid_alive(pid_t pid)
     #endif
 }
 
-/* PoP: _safe_host_start_time @ tools/process_registry.py:_safe_host_start_time
- * Port of Python tools/process_registry.py:_safe_host_start_time().
+/* PoP: _safe_host_start_time @ tools/process_registry.py:_safe_host_start_time */
+/* Port of Python tools/process_registry.py:_safe_host_start_time().
  * Kernel start time for a host PID, or 0 when unavailable. */
 long process_registry_safe_host_start_time(pid_t pid)
 {
@@ -489,8 +489,8 @@ long process_registry_safe_host_start_time(pid_t pid)
     #endif
 }
 
-/* PoP: _host_pid_is_ours @ tools/process_registry.py:_host_pid_is_ours
- * Port of Python tools/process_registry.py:_host_pid_is_ours().
+/* PoP: _host_pid_is_ours @ tools/process_registry.py:_host_pid_is_ours */
+/* Port of Python tools/process_registry.py:_host_pid_is_ours().
  * True only if pid is alive AND still the process we spawned. */
 bool process_registry_host_pid_is_ours(pid_t pid, long expected_start)
 {
@@ -499,8 +499,8 @@ bool process_registry_host_pid_is_ours(pid_t pid, long expected_start)
     return process_registry_safe_host_start_time(pid) == expected_start;
 }
 
-/* PoP: _refresh_detached_session @ tools/process_registry.py:_refresh_detached_session
- * Port of Python tools/process_registry.py:_refresh_detached_session().
+/* PoP: _refresh_detached_session @ tools/process_registry.py:_refresh_detached_session */
+/* Port of Python tools/process_registry.py:_refresh_detached_session().
  * Update recovered host-PID sessions when the underlying process has exited. */
 void process_registry_refresh_detached_session(process_session_t *session)
 {
@@ -525,8 +525,8 @@ void process_registry_refresh_detached_session(process_session_t *session)
     process_registry_move_to_finished(session);
 }
 
-/* PoP: _proc_alive @ tools/process_registry.py:_proc_alive
- * Port of Python tools/process_registry.py:_proc_alive().
+/* PoP: _proc_alive @ tools/process_registry.py:_proc_alive */
+/* Port of Python tools/process_registry.py:_proc_alive().
  * True if a process is running and not a zombie. */
 bool process_registry_proc_alive(pid_t pid)
 {
@@ -564,8 +564,8 @@ bool process_registry_proc_alive(pid_t pid)
     #endif
 }
 
-/* PoP: _daemon_term_grace_seconds @ tools/process_registry.py:_daemon_term_grace_seconds
- * Port of Python tools/process_registry.py:_daemon_term_grace_seconds().
+/* PoP: _daemon_term_grace_seconds @ tools/process_registry.py:_daemon_term_grace_seconds */
+/* Port of Python tools/process_registry.py:_daemon_term_grace_seconds().
  * Grace window (s) between SIGTERM and escalated SIGKILL. */
 double process_registry_daemon_term_grace_seconds(void)
 {
@@ -574,8 +574,8 @@ double process_registry_daemon_term_grace_seconds(void)
     return 2.0;
 }
 
-/* PoP: _terminate_host_pid @ tools/process_registry.py:_terminate_host_pid
- * Port of Python tools/process_registry.py:_terminate_host_pid().
+/* PoP: _terminate_host_pid @ tools/process_registry.py:_terminate_host_pid */
+/* Port of Python tools/process_registry.py:_terminate_host_pid().
  * Terminate a host-visible PID and its descendants. */
 void process_registry_terminate_host_pid(pid_t pid, long expected_start)
 {
@@ -622,8 +622,8 @@ void process_registry_terminate_host_pid(pid_t pid, long expected_start)
     #endif
 }
 
-/* PoP: _env_temp_dir @ tools/process_registry.py:_env_temp_dir
- * Port of Python tools/process_registry.py:_env_temp_dir().
+/* PoP: _env_temp_dir @ tools/process_registry.py:_env_temp_dir */
+/* Port of Python tools/process_registry.py:_env_temp_dir().
  * Return the writable sandbox temp dir for env-backed background tasks. */
 const char *process_registry_env_temp_dir(void *env)
 {
@@ -632,8 +632,8 @@ const char *process_registry_env_temp_dir(void *env)
     return "/tmp";
 }
 
-/* PoP: spawn_via_env @ tools/process_registry.py:spawn_via_env
- * Port of Python tools/process_registry.py:spawn_via_env().
+/* PoP: spawn_via_env @ tools/process_registry.py:spawn_via_env */
+/* Port of Python tools/process_registry.py:spawn_via_env().
  * Spawn a background process through a non-local environment backend. */
 process_session_t *process_registry_spawn_via_env(void *env, const char *command,
                                                    const char *cwd, const char *task_id,
@@ -671,8 +671,8 @@ process_session_t *process_registry_spawn_via_env(void *env, const char *command
     return session;
 }
 
-/* PoP: _reader_loop @ tools/process_registry.py:_reader_loop
- * Port of Python tools/process_registry.py:_reader_loop().
+/* PoP: _reader_loop @ tools/process_registry.py:_reader_loop */
+/* Port of Python tools/process_registry.py:_reader_loop().
  * Background thread: read stdout from a local Popen process. */
 void *process_registry_reader_loop(void *arg)
 {
@@ -712,8 +712,8 @@ void *process_registry_reader_loop(void *arg)
     return NULL;
 }
 
-/* PoP: _env_poller_loop @ tools/process_registry.py:_env_poller_loop
- * Port of Python tools/process_registry.py:_env_poller_loop().
+/* PoP: _env_poller_loop @ tools/process_registry.py:_env_poller_loop */
+/* Port of Python tools/process_registry.py:_env_poller_loop().
  * Background thread: poll a sandbox log file for non-local backends. */
 void *process_registry_env_poller_loop(void *arg)
 {
@@ -722,8 +722,8 @@ void *process_registry_env_poller_loop(void *arg)
     return NULL;
 }
 
-/* PoP: _pty_reader_loop @ tools/process_registry.py:_pty_reader_loop
- * Port of Python tools/process_registry.py:_pty_reader_loop().
+/* PoP: _pty_reader_loop @ tools/process_registry.py:_pty_reader_loop */
+/* Port of Python tools/process_registry.py:_pty_reader_loop().
  * Background thread: read output from a PTY process. */
 void *process_registry_pty_reader_loop(void *arg)
 {
@@ -736,8 +736,8 @@ void *process_registry_pty_reader_loop(void *arg)
     return NULL;
 }
 
-/* PoP: is_completion_consumed @ tools/process_registry.py:is_completion_consumed
- * Port of Python tools/process_registry.py:is_completion_consumed().
+/* PoP: is_completion_consumed @ tools/process_registry.py:is_completion_consumed */
+/* Port of Python tools/process_registry.py:is_completion_consumed().
  * Check if a completion notification was already consumed via wait/log. */
 bool process_registry_is_completion_consumed(const char *session_id)
 {
@@ -746,8 +746,8 @@ bool process_registry_is_completion_consumed(const char *session_id)
     return false;
 }
 
-/* PoP: is_session_waiting @ tools/process_registry.py:is_session_waiting
- * Port of Python tools/process_registry.py:is_session_waiting().
+/* PoP: is_session_waiting @ tools/process_registry.py:is_session_waiting */
+/* Port of Python tools/process_registry.py:is_session_waiting().
  * Whether a goal loop parked on this session should still be parked. */
 bool process_registry_is_session_waiting(const char *session_id)
 {
@@ -793,8 +793,8 @@ bool process_registry_is_session_waiting(const char *session_id)
     return true;
 }
 
-/* PoP: _drain_should_skip @ tools/process_registry.py:_drain_should_skip
- * Port of Python tools/process_registry.py:_drain_should_skip().
+/* PoP: _drain_should_skip @ tools/process_registry.py:_drain_should_skip */
+/* Port of Python tools/process_registry.py:_drain_should_skip().
  * Whether the CLI drain should skip a completion event for this session. */
 bool process_registry_drain_should_skip(const char *session_id)
 {
@@ -803,8 +803,8 @@ bool process_registry_drain_should_skip(const char *session_id)
     return false;
 }
 
-/* PoP: read_log @ tools/process_registry.py:read_log
- * Port of Python tools/process_registry.py:read_log().
+/* PoP: read_log @ tools/process_registry.py:read_log */
+/* Port of Python tools/process_registry.py:read_log().
  * Read the full output log with optional pagination by lines. */
 json_t *process_registry_read_log(const char *session_id, int offset, int limit)
 {
@@ -946,8 +946,8 @@ json_t *process_registry_kill_process(const char *session_id, const char *source
     return result;
 }
 
-/* PoP: write_stdin @ tools/process_registry.py:write_stdin
- * Port of Python tools/process_registry.py:write_stdin().
+/* PoP: write_stdin @ tools/process_registry.py:write_stdin */
+/* Port of Python tools/process_registry.py:write_stdin().
  * Send raw data to a running process's stdin (no newline appended). */
 json_t *process_registry_write_stdin(const char *session_id, const char *data)
 {
@@ -1003,8 +1003,8 @@ json_t *process_registry_write_stdin(const char *session_id, const char *data)
     return result;
 }
 
-/* PoP: submit_stdin @ tools/process_registry.py:submit_stdin
- * Port of Python tools/process_registry.py:submit_stdin().
+/* PoP: submit_stdin @ tools/process_registry.py:submit_stdin */
+/* Port of Python tools/process_registry.py:submit_stdin().
  * Send data + newline to a running process's stdin (like pressing Enter). */
 json_t *process_registry_submit_stdin(const char *session_id, const char *data)
 {
@@ -1019,8 +1019,8 @@ json_t *process_registry_submit_stdin(const char *session_id, const char *data)
     return result;
 }
 
-/* PoP: request_close_terminal @ tools/process_registry.py:request_close_terminal
- * Port of Python tools/process_registry.py:request_close_terminal().
+/* PoP: request_close_terminal @ tools/process_registry.py:request_close_terminal */
+/* Port of Python tools/process_registry.py:request_close_terminal().
  * Ask the desktop GUI to close the read-only terminal tab mirroring this background process. */
 json_t *process_registry_request_close_terminal(const char *session_id)
 {
@@ -1033,8 +1033,8 @@ json_t *process_registry_request_close_terminal(const char *session_id)
     return result;
 }
 
-/* PoP: close_stdin @ tools/process_registry.py:close_stdin
- * Port of Python tools/process_registry.py:close_stdin().
+/* PoP: close_stdin @ tools/process_registry.py:close_stdin */
+/* Port of Python tools/process_registry.py:close_stdin().
  * Close a running process's stdin / send EOF without killing the process. */
 json_t *process_registry_close_stdin(const char *session_id)
 {
@@ -1088,8 +1088,8 @@ json_t *process_registry_close_stdin(const char *session_id)
     return result;
 }
 
-/* PoP: list_sessions @ tools/process_registry.py:list_sessions
- * Port of Python tools/process_registry.py:list_sessions().
+/* PoP: list_sessions @ tools/process_registry.py:list_sessions */
+/* Port of Python tools/process_registry.py:list_sessions().
  * List all running and recently-finished processes. */
 json_t *process_registry_list_sessions(const char *task_id, const char *session_key)
 {
@@ -1159,8 +1159,8 @@ json_t *process_registry_list_sessions(const char *task_id, const char *session_
     return result;
 }
 
-/* PoP: has_any_active @ tools/process_registry.py:has_any_active
- * Port of Python tools/process_registry.py:has_any_active().
+/* PoP: has_any_active @ tools/process_registry.py:has_any_active */
+/* Port of Python tools/process_registry.py:has_any_active().
  * Whether ANY background process is still running (across all sessions). */
 bool process_registry_has_any_active(void)
 {
@@ -1188,8 +1188,8 @@ bool process_registry_has_any_active(void)
     return false;
 }
 
-/* PoP: _prune_if_needed @ tools/process_registry.py:_prune_if_needed
- * Port of Python tools/process_registry.py:_prune_if_needed().
+/* PoP: _prune_if_needed @ tools/process_registry.py:_prune_if_needed */
+/* Port of Python tools/process_registry.py:_prune_if_needed().
  * Remove oldest finished sessions if over MAX_PROCESSES. Must hold _lock. */
 void process_registry_prune_if_needed(void)
 {
@@ -1235,8 +1235,8 @@ void process_registry_prune_if_needed(void)
     pthread_mutex_unlock(&registry_lock);
 }
 
-/* PoP: _format_age @ tools/process_registry.py:_format_age
- * Port of Python tools/process_registry.py:_format_age().
+/* PoP: _format_age @ tools/process_registry.py:_format_age */
+/* Port of Python tools/process_registry.py:_format_age().
  * Human-friendly elapsed string ('18m', '2h3m', '45s'). */
 char *process_registry_format_age(double seconds)
 {
@@ -1267,8 +1267,8 @@ char *process_registry_format_age(double seconds)
     return buf;
 }
 
-/* PoP: _format_async_delegation @ tools/process_registry.py:_format_async_delegation
- * Port of Python tools/process_registry.py:_format_async_delegation().
+/* PoP: _format_async_delegation @ tools/process_registry.py:_format_async_delegation */
+/* Port of Python tools/process_registry.py:_format_async_delegation().
  * Format an async-delegation completion into a self-contained re-injection. */
 char *process_registry_format_async_delegation(json_t *evt)
 {
@@ -1464,8 +1464,8 @@ char *process_registry_format_async_delegation(json_t *evt)
     return buf;
 }
 
-/* PoP: format_process_notification @ tools/process_registry.py:format_process_notification
- * Port of Python tools/process_registry.py:format_process_notification().
+/* PoP: format_process_notification @ tools/process_registry.py:format_process_notification */
+/* Port of Python tools/process_registry.py:format_process_notification().
  * Format a process notification event into a [IMPORTANT: ...] message. */
 char *process_registry_format_process_notification(json_t *evt)
 {
@@ -1529,8 +1529,8 @@ char *process_registry_format_process_notification(json_t *evt)
     return buf;
 }
 
-/* PoP: _redact_process_result @ tools/process_registry.py:_redact_process_result
- * Port of Python tools/process_registry.py:_redact_process_result().
+/* PoP: _redact_process_result @ tools/process_registry.py:_redact_process_result */
+/* Port of Python tools/process_registry.py:_redact_process_result().
  * Redact sensitive data from process results. */
 json_t *process_registry_redact_process_result(json_t *result)
 {
@@ -1538,8 +1538,8 @@ json_t *process_registry_redact_process_result(json_t *result)
     return json_copy(result);
 }
 
-/* PoP: _handle_process @ tools/process_registry.py:_handle_process
- * Port of Python tools/process_registry.py:_handle_process().
+/* PoP: _handle_process @ tools/process_registry.py:_handle_process */
+/* Port of Python tools/process_registry.py:_handle_process().
  * Main handler for the 'process' tool. */
 json_t *process_registry_handle_process(json_t *args)
 {

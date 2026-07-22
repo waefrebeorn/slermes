@@ -188,8 +188,8 @@ bool looks_like_image(const char *url) {
  *  Session/source helpers
  * ================================================================ */
 
-/* PoP: _build_source @ src/gateway/platforms/base.c:gw_build_source
- * Port of Python yuanbao.py:_build_source(). */
+/* PoP: _build_source @ src/gateway/platforms/base.c:gw_build_source */
+/* Port of Python yuanbao.py:_build_source(). */
 json_node_t *gw_build_source(const char *platform, const char *chat_id,
                               const char *chat_name, const char *chat_type,
                               const char *user_id, const char *user_name,
@@ -394,8 +394,8 @@ int is_network_accessible(const char *host)
     return accessible;
 }
 
-/* PoP: proxy_kwargs_for_bot @ gateway/platforms/base.py:proxy_kwargs_for_bot
- * Returns malloc'd proxy URL string (the "proxy" field) or NULL if none.
+/* PoP: proxy_kwargs_for_bot @ gateway/platforms/base.py:proxy_kwargs_for_bot */
+/* Returns malloc'd proxy URL string (the "proxy" field) or NULL if none.
  * Caller frees. For SOCKS URLs we just return the raw URL (C bot libs handle
  * the scheme); the Python connector split is not needed in the C port. */
 char *proxy_kwargs_for_bot(const char *proxy_url)
@@ -406,8 +406,8 @@ char *proxy_kwargs_for_bot(const char *proxy_url)
 
 #define BASE_DEFAULT_INBOUND_MEDIA_MAX_BYTES (128 * 1024 * 1024)
 
-/* PoP: get_inbound_media_max_bytes @ gateway/platforms/base.py:get_inbound_media_max_bytes
- * Reads gateway.max_inbound_media_bytes from config.yaml. 0/neg disables.
+/* PoP: get_inbound_media_max_bytes @ gateway/platforms/base.py:get_inbound_media_max_bytes */
+/* Reads gateway.max_inbound_media_bytes from config.yaml. 0/neg disables.
  * Falls back to 128 MiB on any error. */
 long get_inbound_media_max_bytes(void)
 {
@@ -417,8 +417,8 @@ long get_inbound_media_max_bytes(void)
     return BASE_DEFAULT_INBOUND_MEDIA_MAX_BYTES;
 }
 
-/* PoP: validate_inbound_media_size @ gateway/platforms/base.py:validate_inbound_media_size
- * Returns 0 if within limit, -1 if too large (mirrors Python raising ValueError). */
+/* PoP: validate_inbound_media_size @ gateway/platforms/base.py:validate_inbound_media_size */
+/* Returns 0 if within limit, -1 if too large (mirrors Python raising ValueError). */
 int validate_inbound_media_size(long size, long max_bytes)
 {
     long limit = (max_bytes > 0) ? max_bytes : get_inbound_media_max_bytes();

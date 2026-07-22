@@ -129,8 +129,8 @@ static bool cp_is_invisible(unsigned int cp)
 /* ================================================================
  *  1. PoP: _is_emoji_cp
  * ================================================================ */
-/* PoP: cp_is_emoji @ tools/cronjob_tools.py:_is_emoji_cp
- * Port of Python tools/cronjob_tools.py:_is_emoji_cp().
+/* PoP: cp_is_emoji @ tools/cronjob_tools.py:_is_emoji_cp */
+/* Port of Python tools/cronjob_tools.py:_is_emoji_cp().
  * Returns true if the codepoint falls within any emoji Unicode range. */
 static bool cp_is_emoji(unsigned int cp)
 {
@@ -164,8 +164,8 @@ static unsigned int decode_utf8_before(const char *s, size_t len, size_t end, si
     return cp;
 }
 
-/* PoP: zwj_has_emoji_neighbour @ tools/cronjob_tools.py:_zwj_has_emoji_neighbour
- * Port of Python tools/cronjob_tools.py:_zwj_has_emoji_neighbour().
+/* PoP: zwj_has_emoji_neighbour @ tools/cronjob_tools.py:_zwj_has_emoji_neighbour */
+/* Port of Python tools/cronjob_tools.py:_zwj_has_emoji_neighbour().
  * Returns true when the ZWJ at text[byte_idx] appears inside an emoji sequence.
  * Works on byte offsets: walks to the start of the left/right codepoints
  * (backing up over continuation bytes) and skips variation selectors (U+FE0F),
@@ -210,8 +210,8 @@ static bool zwj_has_emoji_neighbour(const char *text, size_t byte_idx)
  *  3. PoP: _strip_legitimate_emoji_zwj
  *  Returns a freshly-allocated string containing the cleaned prompt.
  * ================================================================ */
-/* PoP: strip_legitimate_emoji_zwj @ tools/cronjob_tools.py:_strip_legitimate_emoji_zwj
- * Port of Python tools/cronjob_tools.py:_strip_legitimate_emoji_zwj().
+/* PoP: strip_legitimate_emoji_zwj @ tools/cronjob_tools.py:_strip_legitimate_emoji_zwj */
+/* Port of Python tools/cronjob_tools.py:_strip_legitimate_emoji_zwj().
  * Returns a freshly-allocated string with legitimate emoji ZWJs removed. */
 static char *strip_legitimate_emoji_zwj(const char *prompt)
 {
@@ -324,8 +324,8 @@ static const char *strcasestr_local(const char *haystack, const char *needle)
  *  Replaces the matched curl segment with "curl https://api.github.com/user".
  *  Returns malloc'd string.
  * ================================================================ */
-/* PoP: strip_cron_safe_constructs @ tools/cronjob_tools.py:_strip_cron_safe_constructs
- * Port of Python tools/cronjob_tools.py:_strip_cron_safe_constructs().
+/* PoP: strip_cron_safe_constructs @ tools/cronjob_tools.py:_strip_cron_safe_constructs */
+/* Port of Python tools/cronjob_tools.py:_strip_cron_safe_constructs().
  * Strips the GitHub Authorization: token *** from curl commands to avoid
  * tripping the broader auth-header exfil rule. Returns malloc'd string. */
 static char *strip_cron_safe_constructs(const char *prompt)
@@ -382,8 +382,8 @@ static char *strip_cron_safe_constructs(const char *prompt)
  *  injection markers are found, after stripping legitimate emoji ZWJs.
  *  Empty string on success.
  * ================================================================ */
-/* PoP: check_invisible_unicode @ tools/cronjob_tools.py:_check_invisible_unicode
- * Port of Python tools/cronjob_tools.py:_check_invisible_unicode().
+/* PoP: check_invisible_unicode @ tools/cronjob_tools.py:_check_invisible_unicode */
+/* Port of Python tools/cronjob_tools.py:_check_invisible_unicode().
  * Scans prompt (minus legitimate emoji ZWJs) for invisible unicode codepoints.
  * Returns malloc'd error string on block, empty string ("") on pass.
  * Caller owns the returned string. */
@@ -421,8 +421,8 @@ char *cron_prompt_sanitize_check_invisible(const char *prompt)
  *  Returns a JSON object {cleaned_prompt, removed_codepoints[]}.
  *  Caller owns the returned json_t*.
  * ================================================================ */
-/* PoP: strip_invisible_unicode @ tools/cronjob_tools.py:_strip_invisible_unicode
- * Port of Python tools/cronjob_tools.py:_strip_invisible_unicode().
+/* PoP: strip_invisible_unicode @ tools/cronjob_tools.py:_strip_invisible_unicode */
+/* Port of Python tools/cronjob_tools.py:_strip_invisible_unicode().
  * Strips invisible unicode characters from prompt, preserving emoji ZWJs.
  * Returns json_t* object with "cleaned" (string) and "removed" (array of "U+XXXX").
  * Caller owns the returned object. */
@@ -534,8 +534,8 @@ static bool match_disregard_rules(const char *s)
     return has_qual && has_obj;
 }
 
-/* PoP: scan_cron_skill_assembled @ tools/cronjob_tools.py:_scan_cron_skill_assembled
- * Port of Python tools/cronjob_tools.py:_scan_cron_skill_assembled().
+/* PoP: scan_cron_skill_assembled @ tools/cronjob_tools.py:_scan_cron_skill_assembled */
+/* Port of Python tools/cronjob_tools.py:_scan_cron_skill_assembled().
  * Looser pattern set — only catches unambiguous prompt-injection directives.
  * Invisible unicode is SANITIZED, not blocked. Skill bodies are already
  * scanned at install time; stray zero-width spaces in code examples should

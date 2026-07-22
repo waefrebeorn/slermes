@@ -804,8 +804,8 @@ char *yuanbao_proto_decode_log_ext(const unsigned char *data, size_t len)
     char *out = json_dumps(e,0); json_free(e); yb_fields_free(&lf); return out;
 }
 
-/* PoP: _dbg @ gateway/platforms/yuanbao_proto.py:_dbg
- * Debug-mode hex dump of the first 64 bytes of a buffer. No-op unless
+/* PoP: _dbg @ gateway/platforms/yuanbao_proto.py:_dbg */
+/* Debug-mode hex dump of the first 64 bytes of a buffer. No-op unless
  * DEBUG_MODE is enabled (mirrors the Python guard `if DEBUG_MODE:`). */
 #ifndef YUANBAO_PROTO_DEBUG_MODE
 #define YUANBAO_PROTO_DEBUG_MODE 0

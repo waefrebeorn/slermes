@@ -114,8 +114,8 @@ bool file_ops_python_delete(const char *path)
  * ================================================================ */
 
 /* Port of Python: patch_replace */
-/* PoP: file_ops_patch_replace @ tools/file_operations.py:patch_replace
- * delegates to the first-occurrence replace primitive in file_fs_ops.c */
+/* PoP: file_ops_patch_replace @ tools/file_operations.py:patch_replace */
+/* delegates to the first-occurrence replace primitive in file_fs_ops.c */
 char *file_ops_patch_replace(const char *content, const char *old_text, const char *new_text)
 {
     return file_fs_ops_patch_replace(content, old_text, new_text);
@@ -137,15 +137,15 @@ char *file_ops_patch_v4a(const char *patch_content)
  *  Pagination helpers
  * ================================================================ */
 
-/* PoP: file_ops_normalize_read_pagination @ tools/file_operations.py:normalize_read_pagination
- * delegates to file_pagination_ops_normalize_read_pagination */
+/* PoP: file_ops_normalize_read_pagination @ tools/file_operations.py:normalize_read_pagination */
+/* delegates to file_pagination_ops_normalize_read_pagination */
 char *file_ops_normalize_read_pagination(int offset, int limit, int default_limit)
 {
     return file_pagination_ops_normalize_read_pagination(offset, limit, default_limit);
 }
 
-/* PoP: file_ops_normalize_search_pagination @ tools/file_operations.py:normalize_search_pagination
- * delegates to file_pagination_ops_normalize_search_pagination */
+/* PoP: file_ops_normalize_search_pagination @ tools/file_operations.py:normalize_search_pagination */
+/* delegates to file_pagination_ops_normalize_search_pagination */
 char *file_ops_normalize_search_pagination(int offset, int limit, int default_limit)
 {
     return file_pagination_ops_normalize_search_pagination(offset, limit, default_limit);
@@ -196,16 +196,16 @@ bool file_ops_has_command(const char *cmd)
  * ================================================================ */
 
 /* Port of Python: _is_likely_binary */
-/* PoP: file_ops_is_likely_binary @ tools/file_operations.py:_is_likely_binary
- * delegates to file_fs_ops_is_likely_binary (faithful BINARY_EXTENSIONS + 30% rule) */
+/* PoP: file_ops_is_likely_binary @ tools/file_operations.py:_is_likely_binary */
+/* delegates to file_fs_ops_is_likely_binary (faithful BINARY_EXTENSIONS + 30% rule) */
 bool file_ops_is_likely_binary(const char *path)
 {
     return file_fs_ops_is_likely_binary(path);
 }
 
 /* Port of Python: _is_image */
-/* PoP: file_ops_is_image @ tools/file_operations.py:_is_image
- * delegates to file_fs_ops_is_image (faithful IMAGE_EXTENSIONS, includes .ico) */
+/* PoP: file_ops_is_image @ tools/file_operations.py:_is_image */
+/* delegates to file_fs_ops_is_image (faithful IMAGE_EXTENSIONS, includes .ico) */
 bool file_ops_is_image(const char *path)
 {
     return file_fs_ops_is_image(path);
@@ -239,15 +239,15 @@ char *file_ops_escape_shell_arg(const char *arg)
  * ================================================================ */
 
 /* Port of Python: _detect_file_line_ending */
-/* PoP: file_ops_detect_file_line_ending @ tools/file_operations.py:_detect_file_line_ending
- * delegates to file_fs_ops_detect_file_line_ending */
+/* PoP: file_ops_detect_file_line_ending @ tools/file_operations.py:_detect_file_line_ending */
+/* delegates to file_fs_ops_detect_file_line_ending */
 char *file_ops_detect_file_line_ending(const char *path)
 {
     return file_fs_ops_detect_file_line_ending(path);
 }
 
-/* PoP: file_ops_file_has_bom @ tools/file_operations.py:_file_has_bom
- * delegates to file_fs_ops_file_has_bom */
+/* PoP: file_ops_file_has_bom @ tools/file_operations.py:_file_has_bom */
+/* delegates to file_fs_ops_file_has_bom */
 bool file_ops_file_has_bom(const char *path)
 {
     return file_fs_ops_file_has_bom(path);
@@ -300,22 +300,22 @@ bool file_ops_file_has_bom(const char *path)
 /* Port of Python: _densify_matches */
 
 
-/* PoP: file_ops_is_line_oriented_newline_error @ tools/file_operations.py:_is_line_oriented_newline_error
- * delegates to file_pagination_ops_is_line_oriented_newline_error */
+/* PoP: file_ops_is_line_oriented_newline_error @ tools/file_operations.py:_is_line_oriented_newline_error */
+/* delegates to file_pagination_ops_is_line_oriented_newline_error */
 bool file_ops_is_line_oriented_newline_error(const char *error)
 {
     return file_pagination_ops_is_line_oriented_newline_error(error);
 }
 
-/* PoP: file_ops_maybe_warn_line_oriented_newline_pattern @ tools/file_operations.py:_maybe_warn_line_oriented_newline_pattern
- * delegates to file_pagination_ops_maybe_warn_line_oriented_newline_pattern */
+/* PoP: file_ops_maybe_warn_line_oriented_newline_pattern @ tools/file_operations.py:_maybe_warn_line_oriented_newline_pattern */
+/* delegates to file_pagination_ops_maybe_warn_line_oriented_newline_pattern */
 json_t *file_ops_maybe_warn_line_oriented_newline_pattern(json_t *result, const char *pattern)
 {
     return file_pagination_ops_maybe_warn_line_oriented_newline_pattern(result, pattern);
 }
 
-/* PoP: file_ops_pattern_has_regex_newline @ tools/file_operations.py:_pattern_has_regex_newline
- * delegates to file_pagination_ops_pattern_has_regex_newline */
+/* PoP: file_ops_pattern_has_regex_newline @ tools/file_operations.py:_pattern_has_regex_newline */
+/* delegates to file_pagination_ops_pattern_has_regex_newline */
 bool file_ops_pattern_has_regex_newline(const char *pattern)
 {
     return file_pagination_ops_pattern_has_regex_newline(pattern);

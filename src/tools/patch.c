@@ -1094,8 +1094,8 @@ static char *apply_patch(const char *path, const char *old_str,
  *  Handler
  * ================================================================ */
 
-/* PoP: _handle_patch @ src/tools/patch.c:patch_handler
- * Port of Python tools/file_operations.py:patch_tool(). */
+/* PoP: _handle_patch @ src/tools/patch.c:patch_handler */
+/* Port of Python tools/file_operations.py:patch_tool(). */
 char *patch_handler(const char *args_json, const char *task_id) {
     (void)task_id;
 
