@@ -1005,16 +1005,6 @@ json_t *backfill_optional_provenance(bool quiet)
     return backfilled;
 }
 
-/* PoP: sync_skills @ tools/skills_sync.py:sync_skills
-    if (!index || json_len(index) == 0) {
-        json_set(result, "ok", json_bool(false));
-        json_set(result, "message", json_string("No official optional skills directory found."));
-        json_set(result, "restored", json_array());
-        json_set(result, "backfilled", json_array());
-        json_set(result, "backed_up", json_array());
-        return result;
-    }
-
 /* PoP: sync_skills @ tools/skills_sync.py:sync_skills */
 /* Port of Python tools/skills_sync.py:sync_skills().
  * Syncs bundled skills into ~/.hermes/skills/ using the manifest.
