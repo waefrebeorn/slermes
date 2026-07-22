@@ -52,6 +52,7 @@ static const char *require_orchestrator(const char *tool_name) {
 
 /* ---- handlers ---- */
 
+/* PoP: handle_show @ tools/kanban_tools.py:_handle_show */
 static char *handle_show(const char *args_json, const char *task_id) {
     (void)task_id;
     json_t *args = json_parse(args_json, NULL);
@@ -126,6 +127,7 @@ static char *handle_list(const char *args_json, const char *task_id) {
     return out ? out : strdup("{\"error\":\"OOM\"}");
 }
 
+/* PoP: handle_complete @ tools/kanban_tools.py:_handle_complete */
 static char *handle_complete(const char *args_json, const char *task_id) {
     (void)task_id;
     json_t *args = json_parse(args_json, NULL);
@@ -149,6 +151,7 @@ static char *handle_complete(const char *args_json, const char *task_id) {
     return strdup("{\"ok\":true,\"status\":\"done\"}");
 }
 
+/* PoP: handle_block @ tools/kanban_tools.py:_handle_block */
 static char *handle_block(const char *args_json, const char *task_id) {
     (void)task_id;
     json_t *args = json_parse(args_json, NULL);
@@ -170,6 +173,7 @@ static char *handle_block(const char *args_json, const char *task_id) {
     return strdup(r);
 }
 
+/* PoP: handle_heartbeat @ tools/kanban_tools.py:_handle_heartbeat */
 static char *handle_heartbeat(const char *args_json, const char *task_id) {
     (void)task_id;
     json_t *args = json_parse(args_json, NULL);
@@ -186,6 +190,7 @@ static char *handle_heartbeat(const char *args_json, const char *task_id) {
     return strdup("{\"ok\":true}");
 }
 
+/* PoP: handle_comment @ tools/kanban_tools.py:_handle_comment */
 static char *handle_comment(const char *args_json, const char *task_id) {
     (void)task_id;
     json_t *args = json_parse(args_json, NULL);
@@ -200,6 +205,7 @@ static char *handle_comment(const char *args_json, const char *task_id) {
     return strdup("{\"ok\":true}");
 }
 
+/* PoP: handle_create @ tools/kanban_tools.py:_handle_create */
 static char *handle_create(const char *args_json, const char *task_id) {
     (void)task_id;
     if (!kanban_orchestrator())
@@ -235,6 +241,7 @@ static char *handle_create(const char *args_json, const char *task_id) {
     return strdup(out);
 }
 
+/* PoP: handle_unblock @ tools/kanban_tools.py:_handle_unblock */
 static char *handle_unblock(const char *args_json, const char *task_id) {
     (void)task_id;
     const char *guard = require_orchestrator("kanban_unblock");
@@ -251,6 +258,7 @@ static char *handle_unblock(const char *args_json, const char *task_id) {
     return strdup(out);
 }
 
+/* PoP: handle_link @ tools/kanban_tools.py:_handle_link */
 static char *handle_link(const char *args_json, const char *task_id) {
     (void)task_id;
     json_t *args = json_parse(args_json, NULL);

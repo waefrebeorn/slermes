@@ -1098,6 +1098,7 @@ done:
     return result;
 }
 
+/* PoP: url_safety_has_sensitive_query_params @ tools/url_safety.py:has_sensitive_query_params */
 bool url_safety_has_sensitive_query_params(const char *url) {
     char *r = url_safety_sensitive_query_param_name(url);
     bool has = (r != NULL);
@@ -1108,6 +1109,7 @@ bool url_safety_has_sensitive_query_params(const char *url) {
 /* Resolve a redirect target from response fields, mimicking
  * redirect_target_from_response. relative Locations resolved against the
  * current url (urljoin). Returns malloc'd target or NULL. */
+/* PoP: url_safety_redirect_target_from_response @ tools/url_safety.py:redirect_target_from_response */
 char *url_safety_redirect_target_from_response(bool is_redirect,
                                                const char *current_url,
                                                const char *location_header,

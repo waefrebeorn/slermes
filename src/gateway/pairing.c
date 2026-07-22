@@ -178,6 +178,7 @@ void pairing_store_close(pairing_store_t *st) {
     free(st->dir); free(st);
 }
 
+/* PoP: path_for @ tools/memory_tool.py:_path_for */
 static char *path_for(pairing_store_t *st, const char *name) {
     size_t need = strlen(st->dir)+1+strlen(name)+1;
     char *p = (char*)malloc(need);
@@ -202,6 +203,7 @@ static pj_val_t *load_json(pairing_store_t *st, const char *name) {
     return v;
 }
 
+/* PoP: save_json @ gateway/pairing.py:_save_json */
 static void save_json(pairing_store_t *st, const char *name, pj_val_t *obj) {
     char *path = path_for(st, name);
     size_t cap = 256; char *out=(char*)malloc(cap); size_t pos=0;
@@ -301,6 +303,7 @@ bool pairing_is_approved(pairing_store_t *st, const char *platform, const char *
     return ok;
 }
 
+/* PoP: pairing_list_approved @ gateway/pairing.py:list_approved */
 int pairing_list_approved(pairing_store_t *st, const char *platform, pairing_approved_t **out) {
     pairing_approved_t *arr=NULL; int n=0, cap=0;
     /* enumerate platforms */
@@ -343,6 +346,7 @@ int pairing_list_approved(pairing_store_t *st, const char *platform, pairing_app
     *out=arr; return n;
 }
 
+/* PoP: pairing_approve_user @ gateway/pairing.py:_approve_user */
 bool pairing_approve_user(pairing_store_t *st, const char *platform, const char *user_id, const char *user_name, double now) {
     char *norm = normalize_uid(st, platform, user_id);
     char name[256]; snprintf(name,sizeof(name),"%s-approved.json",platform);
@@ -390,6 +394,7 @@ static void hex_encode(const unsigned char *bin, int n, char *out) {
     out[n*2]='\0';
 }
 
+/* PoP: hash_code @ gateway/pairing.py:_hash_code */
 static void hash_code(const char *code, const unsigned char *salt, int salt_len, char *out_hex /*65*/) {
     unsigned char buf[64];
     memcpy(buf, salt, salt_len);
@@ -404,6 +409,7 @@ static void hash_code(const char *code, const unsigned char *salt, int salt_len,
 static char *pending_filename(const char *platform);
 
 /* Remove expired pending codes (tolerant of malformed/legacy entries). */
+/* PoP: pairing_cleanup_expired @ gateway/pairing.py:_cleanup_expired */
 static void pairing_cleanup_expired(pairing_store_t *st, const char *platform, double now) {
     char *pname = pending_filename(platform);
     pj_val_t *obj = load_json(st, pname);
@@ -601,6 +607,7 @@ int pairing_list_pending(pairing_store_t *st, const char *platform, double now, 
     *out=arr; return n;
 }
 
+/* PoP: pairing_clear_pending @ gateway/pairing.py:clear_pending */
 int pairing_clear_pending(pairing_store_t *st, const char *platform) {
     int count=0;
     char **plats=NULL; int np=0;
@@ -622,6 +629,7 @@ int pairing_clear_pending(pairing_store_t *st, const char *platform) {
     return count;
 }
 
+/* PoP: pairing_is_locked_out @ gateway/pairing.py:_is_locked_out */
 bool pairing_is_locked_out(pairing_store_t *st, const char *platform, double now) {
     pj_val_t *rl = load_json(st, "_rate_limits.json");
     if (!rl) return false;

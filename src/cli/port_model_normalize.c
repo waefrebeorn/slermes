@@ -132,6 +132,7 @@ char *model_normalize_strip_vendor(const char *model_name)
 }
 
 /* _dots_to_hyphens — replace '.' with '-'. Caller frees. */
+/* PoP: model_normalize_dots_to_hyphens @ hermes_cli/model_normalize.py:_dots_to_hyphens */
 char *model_normalize_dots_to_hyphens(const char *model_name)
 {
     if (!model_name) return strdup("");
@@ -142,6 +143,7 @@ char *model_normalize_dots_to_hyphens(const char *model_name)
 }
 
 /* _normalize_provider_alias — resolve via model_normalize_provider(). Caller frees. */
+/* PoP: model_normalize_provider_alias @ hermes_cli/model_normalize.py:_normalize_provider_alias */
 char *model_normalize_provider_alias(const char *provider_name)
 {
     if (!provider_name) return strdup("");
@@ -212,6 +214,7 @@ char *model_normalize_detect_vendor(const char *model_name)
 }
 
 /* _prepend_vendor — prepend vendor/ when missing. Caller frees. */
+/* PoP: model_normalize_prepend_vendor @ hermes_cli/model_normalize.py:_prepend_vendor */
 char *model_normalize_prepend_vendor(const char *model_name)
 {
     if (!model_name) return strdup("");

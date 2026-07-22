@@ -155,6 +155,7 @@ static const char *G_FALLBACK_PREFIX = "[System note: A new message";
 /* ------------------------------------------------------------------ */
 
 /* run.py _gateway_platform_value */
+/* PoP: gateway_platform_value @ gateway/run.py:_gateway_platform_value */
 char *gateway_platform_value(const void *platform) {
     /* `platform` may be a string or an object with a `value` attribute.
      * We accept a plain C string here (the harness/oracle only use strings);
@@ -178,6 +179,7 @@ char *gateway_platform_value(const void *platform) {
 }
 
 /* run.py _gateway_surface_passes_raw_text */
+/* PoP: gateway_surface_passes_raw_text @ gateway/run.py:_gateway_surface_passes_raw_text */
 bool gateway_surface_passes_raw_text(const char *platform) {
     char *pv = gateway_platform_value(platform);
     bool res = false;
@@ -251,6 +253,7 @@ char *gateway_provider_error_reply_regex(const char *text) {
 /* ------------------------------------------------------------------ */
 
 /* run.py _is_auto_continue_noise */
+/* PoP: gateway_is_auto_continue_noise @ gateway/run.py:_is_auto_continue_noise */
 bool gateway_is_auto_continue_noise(const char *content) {
     if (!content || !*content) return false;
     if (strncmp(content, G_NOTE_PREFIX, strlen(G_NOTE_PREFIX)) == 0) return true;
@@ -259,6 +262,7 @@ bool gateway_is_auto_continue_noise(const char *content) {
 }
 
 /* run.py _strip_auto_continue_noise */
+/* PoP: gateway_strip_auto_continue_noise @ gateway/run.py:_strip_auto_continue_noise */
 char *gateway_strip_auto_continue_noise(const char *content) {
     if (!content) return NULL;
     if (!gateway_is_auto_continue_noise(content)) return strdup(content);
@@ -289,6 +293,7 @@ static regex_slot_t G_COMMAND_MENTION_RE = {
     "/([A-Za-z0-9][A-Za-z0-9_-]*)", false, NULL
 };
 
+/* PoP: gateway_telegramize_command_mentions @ gateway/run.py:_telegramize_command_mentions */
 char *gateway_telegramize_command_mentions(const char *text,
                                             const char *platform) {
     if (!text) return NULL;
@@ -417,6 +422,7 @@ char *gateway_coerce_timestamp(const char *value) {
 /* ------------------------------------------------------------------ */
 
 /* run.py _message_timestamps_enabled(user_config dict) */
+/* PoP: gateway_message_timestamps_enabled @ gateway/run.py:_message_timestamps_enabled */
 bool gateway_message_timestamps_enabled(json_node_t *user_config) {
     if (!user_config || !json_node_is_object(user_config)) return false;
     json_node_t *gw = json_object_get(user_config, "gateway");
@@ -437,6 +443,7 @@ bool gateway_message_timestamps_enabled(json_node_t *user_config) {
 /* run.py _is_transient_network_error. `exc_name` is the exception class
  * name; `cause_name`/`context_name` are the `__cause__`/`__context__` names
  * (may be NULL). Bounded to depth 12 like Python. */
+/* PoP: gateway_is_transient_network_error @ gateway/run.py:_is_transient_network_error */
 bool gateway_is_transient_network_error(const char *exc_name,
                                          const char *cause_name,
                                          const char *context_name) {
@@ -483,6 +490,7 @@ const char *gateway_event_media_type_at(const json_node_t *event, int index)
 }
 
 /* run.py _event_media_is_image */
+/* PoP: gateway_event_media_is_image @ gateway/run.py:_event_media_is_image */
 bool gateway_event_media_is_image(const json_node_t *event, int index)
 {
     const char *mtype = gateway_event_get_media_type(event, index);
@@ -494,6 +502,7 @@ bool gateway_event_media_is_image(const json_node_t *event, int index)
 }
 
 /* run.py _event_media_is_audio */
+/* PoP: gateway_event_media_is_audio @ gateway/run.py:_event_media_is_audio */
 bool gateway_event_media_is_audio(const json_node_t *event, int index)
 {
     const char *mtype = gateway_event_get_media_type(event, index);
@@ -506,6 +515,7 @@ bool gateway_event_media_is_audio(const json_node_t *event, int index)
 }
 
 /* run.py _event_media_is_video */
+/* PoP: gateway_event_media_is_video @ gateway/run.py:_event_media_is_video */
 bool gateway_event_media_is_video(const json_node_t *event, int index)
 {
     const char *mtype = gateway_event_get_media_type(event, index);
@@ -566,6 +576,7 @@ char *gateway_build_media_placeholder(const char *media_urls_json,
 }
 
 /* run.py _build_document_context_note */
+/* PoP: gateway_build_document_context_note @ gateway/run.py:_build_document_context_note */
 char *gateway_build_document_context_note(const char *display_name,
                                            const char *agent_path,
                                            const char *mime_type)
@@ -670,7 +681,7 @@ char *web_dashboard_spawn_executable(void)
 #endif
 }
 
-/* PoP: port_web_server__record_completed_action @ hermes_cli/web_server.py:_record_completed_action
+/* PoP: web_record_completed_action @ hermes_cli/web_server.py:_record_completed_action
  * Simple stub - the full action tracking requires subprocess management. */
 void web_record_completed_action(const char *name, int exit_code, const char *message)
 {
@@ -683,7 +694,7 @@ void web_record_completed_action(const char *name, int exit_code, const char *me
  *  web_server.py config normalization helpers
  * =========================================================================== */
 
-/* PoP: port_web_server__normalize_config_for_web @ hermes_cli/web_server.py:_normalize_config_for_web
+/* PoP: web_normalize_config_for_web @ hermes_cli/web_server.py:_normalize_config_for_web
  * Normalize config for web UI: flatten model dict to string, extract context_length.
  * Input and output are JSON objects (caller frees). */
 json_node_t *web_normalize_config_for_web(json_node_t *config)
@@ -905,6 +916,7 @@ bool gateway_uses_telegram_observed_group_context(const char *channel_prompt)
  * =========================================================================== */
 
 /* run.py _has_platform_display_override - returns true if display.platforms.<platform> explicitly sets setting */
+/* PoP: gateway_has_platform_display_override @ gateway/run.py:_has_platform_display_override */
 bool gateway_has_platform_display_override(const json_node_t *user_config, const char *platform_key, const char *setting)
 {
     if (!user_config || user_config->type != JSON_OBJECT) return false;
@@ -917,6 +929,7 @@ bool gateway_has_platform_display_override(const json_node_t *user_config, const
 }
 
 /* run.py _resolve_gateway_display_bool - resolve boolean display setting with optional platform-only opt-in */
+/* PoP: gateway_resolve_gateway_display_bool @ gateway/run.py:_resolve_gateway_display_bool */
 bool gateway_resolve_gateway_display_bool(const json_node_t *user_config,
                                            const char *platform_key,
                                            const char *setting,

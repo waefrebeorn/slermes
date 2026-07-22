@@ -68,6 +68,7 @@ static const char *SECRET_VALUE_SUFFIXES[] = {
  *  underscores at camelCase boundaries, strips surrounding space.
  * =============================================================== */
 
+/* PoP: credential_normalize_key @ agent/credential_persistence.py:_normalize_key */
 void credential_normalize_key(const char *key, char *out, size_t out_sz) {
     if (!key || !out || out_sz == 0) return;
     size_t j = 0;
@@ -90,6 +91,7 @@ void credential_normalize_key(const char *key, char *out, size_t out_sz) {
  *  Returns true if the key names a secret payload field.
  * =============================================================== */
 
+/* PoP: is_secret_payload_key @ agent/credential_persistence.py:_is_secret_payload_key */
 bool is_secret_payload_key(const char *key) {
     if (!key || !key[0]) return false;
     char normalized[128];
@@ -112,6 +114,7 @@ bool is_secret_payload_key(const char *key) {
  *  Returns NULL for NULL/empty input. Caller must free.
  * =============================================================== */
 
+/* PoP: fingerprint_value @ agent/credential_persistence.py:_fingerprint_value */
 char *fingerprint_value(const char *value) {
     if (!value || !value[0]) return NULL;
     unsigned char digest[CRYPTO_SHA256_LEN];
@@ -138,6 +141,7 @@ char *fingerprint_value(const char *value) {
  *  pass through an existing "sha256:..." fingerprint. Caller frees.
  * =============================================================== */
 
+/* PoP: credential_secret_fingerprint @ agent/credential_persistence.py:_credential_secret_fingerprint */
 char *credential_secret_fingerprint(const json_t *payload) {
     if (!payload || payload->type != JSON_OBJECT) return NULL;
 

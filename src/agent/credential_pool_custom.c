@@ -180,6 +180,7 @@ static json_t *cp_read_custom_providers(void)
 /* Port of Python agent/credential_pool.py:_iter_custom_providers.
  * Fills out_norm (normalized names) and out_entry (malloc'd JSON entry
  * strings) for each valid custom_providers entry. Returns count (<= max). */
+/* PoP: credential_pool_iter_custom_providers @ agent/credential_pool.py:_iter_custom_providers */
 int credential_pool_iter_custom_providers(char **out_norm, char **out_entry, int max)
 {
     json_t *cps = cp_read_custom_providers();

@@ -37,6 +37,7 @@ static const char *TRUNK_BRANCHES[] = {"main", "master", NULL};
  * caller frees). Returns git's exit code; on spawn failure returns 1 and
  * *out = "". *out_len (if non-NULL) receives the real byte count, which may
  * exceed strlen() because porcelain -z output contains embedded NULs. */
+/* PoP: web_git_run @ hermes_cli/web_git.py:web_git_run */
 int web_git_run(const char *cwd, char **out, size_t *out_len,
                const char **args, size_t nargs) {
     *out = NULL;
@@ -94,6 +95,7 @@ int web_git_run(const char *cwd, char **out, size_t *out_len,
  * the real byte count (may exceed strlen() for -z output). The returned
  * buffer is NOT newline-trimmed; callers that compare as strings must trim
  * themselves. */
+/* PoP: git_out @ hermes_cli/web_git.py:_git_out */
 static char *git_out(const char *cwd, const char **args, size_t n, size_t *out_len) {
     char *out = NULL;
     int code = web_git_run(cwd, &out, out_len, args, n);
@@ -103,6 +105,7 @@ static char *git_out(const char *cwd, const char **args, size_t n, size_t *out_l
 
 /* Trim a single trailing newline in place; returns the (possibly shortened)
  * string. Safe to call on the git_out buffers. */
+/* PoP: trim_nl @ hermes_cli/web_git.py:_trim_nl */
 static char *trim_nl(char *s) {
     if (!s) return s;
     size_t L = strlen(s);
@@ -111,6 +114,7 @@ static char *trim_nl(char *s) {
 }
 
 /* Run a mutation; returns malloc'd error string on failure ("" on success). */
+/* PoP: git_ok @ hermes_cli/web_git.py:_git_ok */
 static char *git_ok(const char *cwd, const char **args, size_t n) {
     char *out = NULL;
     int code = web_git_run(cwd, &out, NULL, args, n);
@@ -123,6 +127,7 @@ static char *git_ok(const char *cwd, const char **args, size_t n) {
     return strdup("");
 }
 
+/* PoP: is_dir @ hermes_cli/web_git.py:_is_dir */
 static bool is_dir(const char *cwd) {
     struct stat st;
     if (stat(cwd, &st) != 0) return false;
@@ -137,6 +142,7 @@ static void review_list_cb(const char *tag, const char *xy, const char *path, vo
 
 /* Resolve "old => new" / "dir/{old => new}/f" to the NEW path (Python
  * resolve_rename_path). Caller frees. */
+/* PoP: resolve_rename_path @ hermes_cli/web_git.py:resolve_rename_path */
 static char *resolve_rename_path(const char *raw) {
     char *path = strdup(raw ? raw : "");
     if (!path) return NULL;
@@ -171,6 +177,7 @@ static char *resolve_rename_path(const char *raw) {
  * to the Python generator. */
 typedef void (*entry_cb)(const char *tag, const char *xy, const char *path, void *ud);
 
+/* PoP: walk_entries @ hermes_cli/web_git.py:_walk_entries */
 static void walk_entries(const char *raw, size_t raw_len, entry_cb cb, void *ud) {
     if (!raw) return;
     const char *p = raw;
@@ -208,6 +215,7 @@ static void walk_entries(const char *raw, size_t raw_len, entry_cb cb, void *ud)
     }
 }
 
+/* PoP: entry_staged @ hermes_cli/web_git.py:_entry_staged */
 static bool entry_staged(const char *tag, const char *xy) {
     char t = tag ? tag[0] : '\0';
     if ((t == '1' || t == '2') && xy && xy[0] != '.' && xy[0] != '?')
@@ -215,6 +223,7 @@ static bool entry_staged(const char *tag, const char *xy) {
     return false;
 }
 
+/* PoP: classify @ hermes_cli/web_git.py:_classify */
 static json_t *classify(const char *tag, const char *xy, const char *path) {
     char t = tag ? tag[0] : '\0';
     char y = (xy && strlen(xy) > 1) ? xy[1] : '.';
@@ -232,6 +241,7 @@ static json_t *classify(const char *tag, const char *xy, const char *path) {
     return o;
 }
 
+/* PoP: status_letter @ hermes_cli/web_git.py:_status_letter */
 static char status_letter(const char *tag, const char *xy) {
     char t = tag ? tag[0] : '\0';
     if (t == '?') return '?';
@@ -268,6 +278,7 @@ static numstat_t *numstat(const char *cwd, const char **args, size_t n, size_t *
 }
 
 /* Untracked file line count (newlines + final unterminated line). */
+/* PoP: untracked_insertions @ hermes_cli/web_git.py:_untracked_insertions */
 static int untracked_insertions(const char *cwd, const char *rel) {
     char *target = path_join(cwd, rel);
     if (!target) return 0;
@@ -293,6 +304,7 @@ static int untracked_insertions(const char *cwd, const char *rel) {
 
 /* ── branch helpers ───────────────────────────────────────────────────── */
 
+/* PoP: default_branch_name @ hermes_cli/web_git.py:_default_branch_name */
 static char *default_branch_name(const char *cwd) {
     const char *a1[] = {"rev-parse", "--abbrev-ref", "origin/HEAD"};
     char *head = git_out(cwd, a1, 3, NULL);
@@ -314,6 +326,7 @@ static char *default_branch_name(const char *cwd) {
     return strdup("");
 }
 
+/* PoP: branch_base @ hermes_cli/web_git.py:_branch_base */
 static char *branch_base(const char *cwd) {
     const char *a1[] = {"rev-parse", "--abbrev-ref", "origin/HEAD"};
     char *head = git_out(cwd, a1, 3, NULL);
@@ -331,6 +344,7 @@ static char *branch_base(const char *cwd) {
 
 /* ── repo_status ──────────────────────────────────────────────────────── */
 
+/* PoP: web_git_repo_status @ hermes_cli/web_git.py:repo_status */
 json_t *web_git_repo_status(const char *cwd) {
     if (!is_dir(cwd)) return NULL;
     const char *args[] = {"status", "--porcelain=v2", "--branch", "-z"};
@@ -424,6 +438,7 @@ static void classify_cb_adapter(const char *tag, const char *xy, const char *pat
 
 /* ── review_list ─────────────────────────────────────────────────────── */
 
+/* PoP: web_git_review_list @ hermes_cli/web_git.py:review_list */
 json_t *web_git_review_list(const char *cwd, const char *scope, const char *base_ref) {
     if (!is_dir(cwd)) { json_t *e = json_object(); json_set(e, "files", json_array());
         json_set(e, "base", json_null()); return e; }
@@ -531,6 +546,7 @@ static void review_list_cb(const char *tag, const char *xy, const char *path, vo
 
 /* ── diff functions ──────────────────────────────────────────────────── */
 
+/* PoP: web_git_review_diff @ hermes_cli/web_git.py:review_diff */
 char *web_git_review_diff(const char *cwd, const char *file_path,
                           const char *scope, const char *base_ref, bool staged) {
     if (!is_dir(cwd)) return strdup("");
@@ -561,6 +577,7 @@ char *web_git_review_diff(const char *cwd, const char *file_path,
     return git_out(cwd, b, 5, NULL);
 }
 
+/* PoP: web_git_file_diff_vs_head @ hermes_cli/web_git.py:file_diff_vs_head */
 char *web_git_file_diff_vs_head(const char *cwd, const char *file_path) {
     if (!is_dir(cwd)) return strdup("");
     const char *a[] = {"diff", "HEAD", "--", file_path};
@@ -578,6 +595,7 @@ char *web_git_file_diff_vs_head(const char *cwd, const char *file_path) {
 
 /* ── stage / unstage / revert / rev-parse ────────────────────────────── */
 
+/* PoP: web_git_review_stage @ hermes_cli/web_git.py:review_stage */
 json_t *web_git_review_stage(const char *cwd, const char *file_path) {
     if (file_path && *file_path) {
         const char *a[] = {"add", "--", file_path};
@@ -591,6 +609,7 @@ json_t *web_git_review_stage(const char *cwd, const char *file_path) {
     json_t *r = json_object(); json_set(r, "ok", json_bool(true)); return r;
 }
 
+/* PoP: web_git_review_unstage @ hermes_cli/web_git.py:review_unstage */
 json_t *web_git_review_unstage(const char *cwd, const char *file_path) {
     if (file_path && *file_path) {
         const char *a[] = {"reset", "-q", "HEAD", "--", file_path};
@@ -604,6 +623,7 @@ json_t *web_git_review_unstage(const char *cwd, const char *file_path) {
     json_t *r = json_object(); json_set(r, "ok", json_bool(true)); return r;
 }
 
+/* PoP: web_git_review_revert @ hermes_cli/web_git.py:review_revert */
 json_t *web_git_review_revert(const char *cwd, const char *file_path) {
     if (file_path && *file_path) {
         const char *a[] = {"checkout", "HEAD", "--", file_path};
@@ -619,6 +639,7 @@ json_t *web_git_review_revert(const char *cwd, const char *file_path) {
     json_t *r = json_object(); json_set(r, "ok", json_bool(true)); return r;
 }
 
+/* PoP: web_git_review_rev_parse @ hermes_cli/web_git.py:review_rev_parse */
 char *web_git_review_rev_parse(const char *cwd, const char *ref) {
     const char *a[] = {"rev-parse", ref ? ref : "HEAD"};
     char *out = git_out(cwd, a, 2, NULL);
@@ -630,6 +651,7 @@ char *web_git_review_rev_parse(const char *cwd, const char *ref) {
 
 /* ── commit / push ───────────────────────────────────────────────────── */
 
+/* PoP: review_push @ hermes_cli/web_git.py:_review_push */
 static char *review_push(const char *cwd) {
     const char *a[] = {"rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"};
     char *up = git_out(cwd, a, 4, NULL);
@@ -645,6 +667,7 @@ static char *review_push(const char *cwd) {
     return strdup("");
 }
 
+/* PoP: web_git_review_commit @ hermes_cli/web_git.py:review_commit */
 json_t *web_git_review_commit(const char *cwd, const char *message, bool push) {
     const char *sa[] = {"status", "--porcelain=v2", "-z"};
     size_t raw_len = 0;
@@ -669,6 +692,7 @@ json_t *web_git_review_commit(const char *cwd, const char *message, bool push) {
     json_t *r = json_object(); json_set(r, "ok", json_bool(true)); return r;
 }
 
+/* PoP: web_git_review_push @ hermes_cli/web_git.py:review_push */
 json_t *web_git_review_push(const char *cwd) {
     char *e = review_push(cwd); free(e);
     json_t *r = json_object(); json_set(r, "ok", json_bool(true)); return r;
@@ -676,6 +700,7 @@ json_t *web_git_review_push(const char *cwd) {
 
 /* ── commit context ──────────────────────────────────────────────────── */
 
+/* PoP: web_git_review_commit_context @ hermes_cli/web_git.py:review_commit_context */
 json_t *web_git_review_commit_context(const char *cwd) {
     if (!is_dir(cwd)) { json_t *e = json_object(); json_set(e, "diff", json_string(""));
         json_set(e, "recent", json_string("")); return e; }
@@ -746,6 +771,7 @@ json_t *web_git_review_commit_context(const char *cwd) {
 
 /* ── worktrees & branches ────────────────────────────────────────────── */
 
+/* PoP: web_git_worktree_list @ hermes_cli/web_git.py:worktree_list */
 json_t *web_git_worktree_list(const char *cwd) {
     const char *a[] = {"worktree", "list", "--porcelain"};
     char *out = git_out(cwd, a, 3, NULL);
@@ -803,6 +829,7 @@ json_t *web_git_worktree_list(const char *cwd) {
     return res;
 }
 
+/* PoP: main_root @ hermes_cli/web_git.py:_main_root */
 static char *main_root(const char *cwd) {
     json_t *wt = web_git_worktree_list(cwd);
     char *root = strdup(cwd);
@@ -836,6 +863,7 @@ static char *git_default_branch(const char *cwd) {
     return strdup("");
 }
 
+/* PoP: sanitize_branch @ hermes_cli/web_git.py:_sanitize_branch */
 static char *sanitize_branch(const char *name) {
     char *v = strdup(name ? name : "");
     /* collapse whitespace -> '-' */
@@ -869,6 +897,7 @@ static char *slugify(const char *name) {
     return s;
 }
 
+/* PoP: unique_dir @ hermes_cli/web_git.py:_unique_dir */
 static char *unique_dir(const char *base) {
     char *cand = strdup(base);
     int n = 1;
@@ -882,6 +911,7 @@ static char *unique_dir(const char *base) {
     return cand;
 }
 
+/* PoP: web_git_worktree_add @ hermes_cli/web_git.py:worktree_add */
 json_t *web_git_worktree_add(const char *cwd, const char *existing_branch,
                              const char *name, const char *branch, const char *base) {
     /* ensure repo (init + root commit if needed) */
@@ -953,6 +983,7 @@ json_t *web_git_worktree_add(const char *cwd, const char *existing_branch,
     return res;
 }
 
+/* PoP: web_git_worktree_remove @ hermes_cli/web_git.py:worktree_remove */
 json_t *web_git_worktree_remove(const char *cwd, const char *worktree_path, bool force) {
     char *root = main_root(cwd);
     const char *wa[5]; size_t n = 0;
@@ -966,6 +997,7 @@ json_t *web_git_worktree_remove(const char *cwd, const char *worktree_path, bool
     return r;
 }
 
+/* PoP: web_git_branch_list @ hermes_cli/web_git.py:branch_list */
 json_t *web_git_branch_list(const char *cwd) {
     const char *a[] = {"for-each-ref", "--format=%(refname:short)", "--sort=-committerdate", "refs/heads"};
     char *out = git_out(cwd, a, 4, NULL);
@@ -1000,6 +1032,7 @@ json_t *web_git_branch_list(const char *cwd) {
     return res;
 }
 
+/* PoP: web_git_branch_switch @ hermes_cli/web_git.py:branch_switch */
 json_t *web_git_branch_switch(const char *cwd, const char *branch) {
     char *t = sanitize_branch(branch ? branch : "");
     json_t *r = json_object();
@@ -1047,6 +1080,7 @@ static char *gh_run(const char *cwd, const char **args, size_t n, bool *ok) {
     return buf;
 }
 
+/* PoP: web_git_review_ship_info @ hermes_cli/web_git.py:review_ship_info */
 json_t *web_git_review_ship_info(const char *cwd) {
     if (!is_dir(cwd)) { json_t *e = json_object(); json_set(e, "ghReady", json_bool(false));
         json_set(e, "pr", json_null()); return e; }
@@ -1076,6 +1110,7 @@ json_t *web_git_review_ship_info(const char *cwd) {
     return e;
 }
 
+/* PoP: web_git_review_create_pr @ hermes_cli/web_git.py:review_create_pr */
 json_t *web_git_review_create_pr(const char *cwd) {
     char *e = review_push(cwd); free(e);
     bool ok; char *out = gh_run(cwd, (const char *[]){"pr", "create", "--fill"}, 3, &ok);

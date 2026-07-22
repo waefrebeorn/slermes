@@ -393,6 +393,7 @@ void cmd_dashboard(const char *args, agent_state_t *state) {
 
 /* /debug: Generate debug report */
 /* AG26: Port of Python hermes_cli/main.py:_debug(). */
+/* PoP: cmd_debug @ hermes_cli/main.py:cmd_debug */
 void cmd_debug(const char *args, agent_state_t *state) {
     (void)args;
     time_t now = time(NULL);
@@ -571,6 +572,7 @@ void cmd_deps(const char *args, agent_state_t *state) {
 /* AG26: Port of Python hermes_cli/hooks.py:_cmd_doctor().
  * AG26: Port of Python hermes_cli/main.py:cmd_doctor().
  */
+/* PoP: cmd_doctor @ tools/computer_use/permissions.py:_doctor */
 void cmd_doctor(const char *args, agent_state_t *state) {
     /* Normalize subcommand */
     char subcmd[64] = "";
@@ -737,6 +739,7 @@ void cmd_doctor(const char *args, agent_state_t *state) {
 /* ================================================================
  *  /dump — System debug info dump
  * ================================================================ */
+/* PoP: cmd_dump @ hermes_cli/main.py:cmd_dump */
 void cmd_dump(const char *args, agent_state_t *state) {
     (void)args;
 
@@ -1266,6 +1269,7 @@ void cmd_platforms(const char *args, agent_state_t *state) {
 }
 
 /* /profile: Show active profile */
+/* PoP: cmd_profile @ hermes_cli/main.py:cmd_profile */
 void cmd_profile(const char *args, agent_state_t *state) {
     if (args && args[0]) {
         if (strcmp(args, "home") == 0) {
@@ -1295,6 +1299,7 @@ void cmd_redraw(const char *args, agent_state_t *state) {
 }
 
 /* /reload: Reload .env */
+/* PoP: cmd_reload @ hermes_cli/bundles.py:_cmd_reload */
 void cmd_reload(const char *args, agent_state_t *state) {
     if (args && args[0]) {
         if (strcmp(args, "plugins") == 0) {
@@ -1487,6 +1492,8 @@ void cmd_stop(const char *args, agent_state_t *state) {
     printf("Done. Killed %d process(es).\n", killed ? 1 : 0);
 }
 
+/* PoP: cmd_tools @ hermes_cli/portal_cli.py:_cmd_tools */
+/* PoP: cmd_tools @ hermes_cli/main.py:cmd_tools */
 void cmd_tools(const char *args, agent_state_t *state) {
     if (args && args[0]) {
         /* Show details for a specific tool */
@@ -1587,6 +1594,7 @@ void cmd_toolsets(const char *args, agent_state_t *state) {
 }
 
 /* /update: Update Hermes Agent — git pull + rebuild */
+/* PoP: cmd_update @ hermes_cli/main.py:cmd_update */
 void cmd_update(const char *args, agent_state_t *state) {
     (void)args; (void)state;
     printf("Updating Hermes Agent...\n");

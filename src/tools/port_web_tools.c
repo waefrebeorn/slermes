@@ -10,6 +10,7 @@
 #include "port_web_tools.h"
 #include "web_base64_img.h"
 #include "hermes_url_safety.h"
+#include "hermes_core_types.h"
 #include "hermes_logger.h"
 #include "hermes_json.h"
 #include <stdbool.h>
@@ -78,6 +79,33 @@ bool web_has_env(const char *name)
     bool exists = (val && val[0] != '\0');
     free(val);
     return exists;
+}
+
+/* PoP: web_load_web_config @ tools/web_tools.py:_load_web_config */
+char *web_load_web_config(void)
+{
+    /* Load the web: section from ~/.hermes/config.yaml via hermes_config_load. */
+    hermes_config_t cfg;
+    memset(&cfg, 0, sizeof(cfg));
+    hermes_config_load(&cfg, NULL);
+    /* Return the web config section as JSON string */
+    json_t *web = json_object();
+    if (cfg.web.extract_backend && cfg.web.extract_backend[0])
+        json_set(web, "extract_backend", json_string(cfg.web.extract_backend));
+    if (cfg.web.search_backend && cfg.web.search_backend[0])
+        json_set(web, "search_backend", json_string(cfg.web.search_backend));
+    json_set(web, "extract_char_limit", json_new_number(cfg.web.extract_char_limit));
+    char *serialized = json_serialize(web);
+    json_free(web);
+    return serialized ? serialized : strdup("{}");
+}
+
+/* PoP: web_ensure_web_plugins_loaded @ tools/web_tools.py:_ensure_web_plugins_loaded */
+void web_ensure_web_plugins_loaded(void)
+{
+    /* In C, the registry is loaded at init time — no need for lazy plugin discovery.
+     * This function is a no-op for C; the web tools are already initialized. */
+    hermes_log(LOG_DEBUG, "web", "web_ensure_web_plugins_loaded: C registry already initialized");
 }
 
 

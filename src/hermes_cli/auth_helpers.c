@@ -339,6 +339,7 @@ char *auth_format_error(const auth_error_t *e) {
 }
 
 /* ── nous invoke jwt status ── */
+/* PoP: auth_nous_invoke_jwt_status @ hermes_cli/auth.py:_nous_invoke_jwt_status */
 char *auth_nous_invoke_jwt_status(const char *token, const char *scope, const char *expires_at, int min_ttl_seconds) {
     char *payload = auth_decode_jwt_payload(token);
     if (!payload) return strdup("access_token_not_jwt");

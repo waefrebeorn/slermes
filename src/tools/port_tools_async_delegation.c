@@ -72,6 +72,7 @@ static int running_count_locked(void) {
 }
 
 /* Caller must hold g_lock. Drop oldest completed beyond the retention cap. */
+/* PoP: prune_completed_locked @ tools/async_delegation.py:_prune_completed_locked */
 static void prune_completed_locked(void) {
     int completed = 0;
     for (async_delegation_rec_t *r = g_head; r; r = r->next)
@@ -152,6 +153,7 @@ static void build_and_emit_event(async_delegation_rec_t *rec, json_node_t *resul
     json_free(evt);
 }
 
+/* PoP: finalize @ tools/async_delegation.py:_finalize */
 static void finalize(async_delegation_rec_t *rec, json_node_t *result, const char *status) {
     double completed_at = now_sec();
     pthread_mutex_lock(&g_lock);
@@ -218,6 +220,7 @@ void async_delegation_shutdown(void) {
     pthread_mutex_unlock(&g_lock);
 }
 
+/* PoP: async_delegation_active_count @ tools/async_delegation.py:active_count */
 int async_delegation_active_count(void) {
     pthread_mutex_lock(&g_lock);
     int n = running_count_locked();
@@ -412,6 +415,7 @@ json_node_t *async_delegation_list(void) {
     return arr;
 }
 
+/* PoP: async_delegation_interrupt_all @ tools/async_delegation.py:interrupt_all */
 int async_delegation_interrupt_all(const char *reason) {
     (void)reason;
     int n = 0;

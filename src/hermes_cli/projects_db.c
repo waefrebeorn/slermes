@@ -93,6 +93,7 @@ char *projects_db_slugify(const char *name) {
     return out;
 }
 
+/* PoP: projects_db_normalize_slug @ hermes_cli/projects_db.py:normalize_slug */
 char *projects_db_normalize_slug(const char *slug) {
     if (!slug) return NULL;
     char *s = xstrdup(slug);
@@ -109,6 +110,7 @@ char *projects_db_normalize_slug(const char *slug) {
     return s;
 }
 
+/* PoP: projects_db_normalize_path @ hermes_cli/projects_db.py:_normalize_path */
 char *projects_db_normalize_path(const char *path) {
     if (!path) return NULL;
     char *p = xstrdup(path);
@@ -236,6 +238,7 @@ static project_t *get_project_full(projects_db_t *db, const char *id_or_slug, bo
 }
 
 /* unique slug */
+/* PoP: unique_slug @ hermes_cli/projects_db.py:_unique_slug */
 static char *unique_slug(projects_db_t *db, const char *candidate) {
     char *base = xstrdup(candidate);
     char *slug = xstrdup(base);
@@ -264,6 +267,7 @@ static char *unique_slug(projects_db_t *db, const char *candidate) {
 }
 
 /* ── create ── */
+/* PoP: projects_db_create_project @ hermes_cli/projects_db.py:create_project */
 char *projects_db_create_project(projects_db_t *db, const char *name,
                                  const char *slug, char **folders, int n_folders,
                                  const char *primary_path, const char *description,
@@ -385,6 +389,7 @@ project_t *projects_db_get_project(projects_db_t *db, const char *id_or_slug) {
     return p;
 }
 
+/* PoP: projects_db_update_project @ hermes_cli/projects_db.py:update_project */
 bool projects_db_update_project(projects_db_t *db, const char *project_id,
                                 const char *name, const char *description,
                                 const char *icon, const char *color,
@@ -426,6 +431,7 @@ bool projects_db_update_project(projects_db_t *db, const char *project_id,
     return rc > 0;
 }
 
+/* PoP: projects_db_add_folder @ hermes_cli/projects_db.py:add_folder */
 char *projects_db_add_folder(projects_db_t *db, const char *project_id,
                              const char *path, const char *label, bool is_primary) {
     char *norm = projects_db_normalize_path(path);
@@ -462,6 +468,7 @@ char *projects_db_add_folder(projects_db_t *db, const char *project_id,
     return norm; /* caller owns */
 }
 
+/* PoP: set_primary_locked @ hermes_cli/projects_db.py:_set_primary_locked */
 static void set_primary_locked(projects_db_t *db, const char *pid, const char *path) {
     sqlite3_stmt *s1;
     sqlite3_prepare_v2(db->conn,"UPDATE project_folders SET is_primary = 0 WHERE project_id = ?",-1,&s1,0);
@@ -477,6 +484,7 @@ static void set_primary_locked(projects_db_t *db, const char *pid, const char *p
 }
 
 
+/* PoP: projects_db_set_primary @ hermes_cli/projects_db.py:set_primary */
 bool projects_db_set_primary(projects_db_t *db, const char *project_id, const char *path) {
     char *norm = projects_db_normalize_path(path);
     sqlite3_stmt *st;
@@ -491,6 +499,7 @@ bool projects_db_set_primary(projects_db_t *db, const char *project_id, const ch
     return true;
 }
 
+/* PoP: projects_db_remove_folder @ hermes_cli/projects_db.py:remove_folder */
 bool projects_db_remove_folder(projects_db_t *db, const char *project_id, const char *path) {
     char *norm = projects_db_normalize_path(path);
     sqlite3_stmt *st;
@@ -524,6 +533,7 @@ bool projects_db_remove_folder(projects_db_t *db, const char *project_id, const 
     return rc > 0;
 }
 
+/* PoP: projects_db_archive_project @ hermes_cli/projects_db.py:archive_project */
 bool projects_db_archive_project(projects_db_t *db, const char *project_id) {
     sqlite3_stmt *st;
     sqlite3_prepare_v2(db->conn,"UPDATE projects SET archived = 1 WHERE id = ?",-1,&st,0);
@@ -531,6 +541,7 @@ bool projects_db_archive_project(projects_db_t *db, const char *project_id) {
     sqlite3_step(st); int rc=sqlite3_changes(db->conn); sqlite3_finalize(st);
     return rc>0;
 }
+/* PoP: projects_db_restore_project @ hermes_cli/projects_db.py:restore_project */
 bool projects_db_restore_project(projects_db_t *db, const char *project_id) {
     sqlite3_stmt *st;
     sqlite3_prepare_v2(db->conn,"UPDATE projects SET archived = 0 WHERE id = ?",-1,&st,0);
@@ -538,6 +549,7 @@ bool projects_db_restore_project(projects_db_t *db, const char *project_id) {
     sqlite3_step(st); int rc=sqlite3_changes(db->conn); sqlite3_finalize(st);
     return rc>0;
 }
+/* PoP: projects_db_delete_project @ hermes_cli/projects_db.py:delete_project */
 bool projects_db_delete_project(projects_db_t *db, const char *project_id) {
     sqlite3_stmt *st;
     sqlite3_prepare_v2(db->conn,"DELETE FROM projects WHERE id = ?",-1,&st,0);
@@ -547,6 +559,7 @@ bool projects_db_delete_project(projects_db_t *db, const char *project_id) {
 }
 
 /* ── active pointer ── */
+/* PoP: projects_db_set_active @ hermes_cli/projects_db.py:set_active */
 void projects_db_set_active(projects_db_t *db, const char *project_id) {
     if (!project_id) {
         sqlite3_exec(db->conn,"DELETE FROM project_meta WHERE key = 'active_id'",0,0,0);
@@ -559,6 +572,7 @@ void projects_db_set_active(projects_db_t *db, const char *project_id) {
     sqlite3_bind_text(st,1,project_id,-1,SQLITE_TRANSIENT);
     sqlite3_step(st); sqlite3_finalize(st);
 }
+/* PoP: projects_db_get_active_id @ hermes_cli/projects_db.py:get_active_id */
 char *projects_db_get_active_id(projects_db_t *db) {
     sqlite3_stmt *st;
     sqlite3_prepare_v2(db->conn,"SELECT value FROM project_meta WHERE key = 'active_id'",-1,&st,0);
@@ -569,6 +583,7 @@ char *projects_db_get_active_id(projects_db_t *db) {
 }
 
 /* ── discovered repos ── */
+/* PoP: projects_db_record_discovered_repos @ hermes_cli/projects_db.py:record_discovered_repos */
 int projects_db_record_discovered_repos(projects_db_t *db, const char **roots, const char **labels, int n, bool replace) {
     int written=0;
     sqlite3_exec(db->conn,"BEGIN",0,0,0);
@@ -647,6 +662,7 @@ project_t *projects_db_project_for_path(projects_db_t *db, const char *path, boo
     return p;
 }
 
+/* PoP: projects_db_branch_name_for @ hermes_cli/projects_db.py:branch_name_for */
 char *projects_db_branch_name_for(const project_t *proj, const char *task_id, const char *title) {
     char *slug = proj && proj->slug ? xstrdup(proj->slug) : projects_db_slugify(proj?proj->name:"");
     char *base = (char*)malloc(strlen(slug)+1+strlen(task_id?task_id:"")+1);

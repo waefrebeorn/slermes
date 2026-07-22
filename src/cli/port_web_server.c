@@ -502,10 +502,7 @@ void get_memory_provider_config(void *ctx, void *name)
     fclose(f);
 }
 
-/* PoP: _fs_regular_file @ hermes_cli/web_server.py:_fs_regular_file
- * Returns 0 on success (fills out_path + *out_mode/*out_size), else an HTTP-ish
- * status code: 400 invalid, 403 unreadable, 404 missing. Thin wrapper over
- * ws_fs_regular_file (which returns ws_path_status_t + struct stat). */
+/* PoP: _fs_regular_file @ hermes_cli/web_server.py:_fs_regular_file */
 int fs_regular_file(const char *raw_path, char *out_path, size_t out_sz,
                     mode_t *out_mode, long *out_size)
 {
@@ -552,8 +549,7 @@ const char *audio_extension_for_mime(const char *mime_type)
     return ws_audio_extension_for_mime(mime_type);
 }
 
-/* PoP: port_web_server__infer_type @ hermes_cli/web_server.py:_infer_type
- * Classify a JSON value type into a UI field type string. */
+/* PoP: port_web_server__infer_type @ hermes_cli/web_server.py:_infer_type */
 const char *infer_type(int json_type_tag)
 {
     switch (json_type_tag) {
@@ -621,9 +617,7 @@ static json_t *schema_override_for(const char *key)
     return NULL;
 }
 
-/* PoP: _build_schema_from_config @ hermes_cli/web_server.py:_build_schema_from_config
- * Walk DEFAULT_CONFIG and produce a flat dot-path → field schema dict.
- * Returns a JSON object (caller frees). Input is a JSON object (config). */
+/* PoP: _build_schema_from_config @ hermes_cli/web_server.py:_build_schema_from_config */
 json_t *build_schema_from_config(json_t *config, const char *prefix)
 {
     if (!config || config->type != JSON_OBJECT) return json_new_object();
@@ -745,8 +739,7 @@ json_t *build_schema_from_config(json_t *config, const char *prefix)
     return schema;
 }
 
-/* PoP: port_web_server__normalize_main_model_assignment @ hermes_cli/web_server.py:_normalize_main_model_assignment
- * Returns malloc'd string "provider|model" (pipe-separated). */
+/* PoP: port_web_server__normalize_main_model_assignment @ hermes_cli/web_server.py:_normalize_main_model_assignment */
 char *normalize_main_model_assignment(const char *provider, const char *model)
 {
     if (!provider) provider = "";
@@ -799,9 +792,7 @@ char *normalize_main_model_assignment(const char *provider, const char *model)
     return result;
 }
 
-/* PoP: port_web_server__apply_main_model_assignment @ hermes_cli/web_server.py:_apply_main_model_assignment
- * Apply a main-slot model assignment to a model config dict.
- * Returns a new JSON object (caller frees). */
+/* PoP: port_web_server__apply_main_model_assignment @ hermes_cli/web_server.py:_apply_main_model_assignment */
 json_t *apply_main_model_assignment(json_t *model_cfg, const char *provider, const char *model,
                                      const char *base_url, const char *api_key)
 {
@@ -844,8 +835,7 @@ json_t *apply_main_model_assignment(json_t *model_cfg, const char *provider, con
     return result;
 }
 
-/* PoP: port_web_server__display_system_platform @ hermes_cli/web_server.py:_display_system_platform
- * Return host OS fields for display while preserving stdlib detail. */
+/* PoP: port_web_server__display_system_platform @ hermes_cli/web_server.py:_display_system_platform */
 json_t *web_display_system_platform(const char *system, const char *release,
                                      const char *version, const char *platform_label)
 {
@@ -882,8 +872,7 @@ json_t *web_display_system_platform(const char *system, const char *release,
     return result;
 }
 
-/* PoP: port_web_server__safe_call @ hermes_cli/web_server.py:_safe_call
- * Safe module function call with default fallback. */
+/* PoP: port_web_server__safe_call @ hermes_cli/web_server.py:_safe_call */
 json_t *web_safe_call(const char *module_name, const char *fn_name, json_t *default_val)
 {
     (void)module_name;  /* C port: module resolution is compile-time */
@@ -908,8 +897,7 @@ json_t *web_safe_call(const char *module_name, const char *fn_name, json_t *defa
  * - gateway_has_platform_display_override
  */
 
-/* PoP: port_web_server__elevenlabs_voice_label @ hermes_cli/web_server.py:_elevenlabs_voice_label
- * Generate display label for ElevenLabs voice. */
+/* PoP: port_web_server__elevenlabs_voice_label @ hermes_cli/web_server.py:_elevenlabs_voice_label */
 char *web_elevenlabs_voice_label(const char *voice_id, const char *voice_name,
                                   const char *category, const char *description)
 {
@@ -925,8 +913,7 @@ char *web_elevenlabs_voice_label(const char *voice_id, const char *voice_name,
     return strdup("Unknown voice");
 }
 
-/* PoP: port_web_server__voice_list_error_logged_once @ hermes_cli/web_server.py:_voice_list_error_logged_once
- * Track if voice list error was already logged (singleton pattern). */
+/* PoP: port_web_server__voice_list_error_logged_once @ hermes_cli/web_server.py:_voice_list_error_logged_once */
 bool web_voice_list_error_logged_once(void)
 {
     static bool logged = false;
@@ -937,8 +924,7 @@ bool web_voice_list_error_logged_once(void)
     return true;  /* already logged */
 }
 
-/* PoP: _parse_model_ids @ hermes_cli/web_server.py:_parse_model_ids
- * Extract model ids from an OpenAI-compatible /v1/models response. */
+/* PoP: _parse_model_ids @ hermes_cli/web_server.py:_parse_model_ids */
 char **web_parse_model_ids(const char *json_response, size_t *out_count)
 {
     if (!json_response || !out_count) return NULL;
@@ -985,8 +971,7 @@ char **web_parse_model_ids(const char *json_response, size_t *out_count)
     return ids;
 }
 
-/* PoP: port_web_server__redact_mcp_env @ hermes_cli/web_server.py:_redact_mcp_env
- * Redact sensitive MCP environment variables from config. */
+/* PoP: port_web_server__redact_mcp_env @ hermes_cli/web_server.py:_redact_mcp_env */
 json_t *web_redact_mcp_env(json_t *config)
 {
     if (!config || config->type != JSON_OBJECT) return json_new_object();
@@ -1009,8 +994,7 @@ json_t *web_redact_mcp_env(json_t *config)
     return result;
 }
 
-/* PoP: port_web_server__mcp_server_summary @ hermes_cli/web_server.py:_mcp_server_summary
- * Generate summary string for MCP server config. */
+/* PoP: port_web_server__mcp_server_summary @ hermes_cli/web_server.py:_mcp_server_summary */
 char *web_mcp_server_summary(const char *name, const char *transport,
                               const char *command, const char *url)
 {
@@ -1034,8 +1018,7 @@ char *web_mcp_server_summary(const char *name, const char *transport,
     return strdup(name);
 }
 
-/* PoP: port_web_server__safe_backup_upload_name @ hermes_cli/web_server.py:_safe_backup_upload_name
- * Sanitize backup filename for upload. */
+/* PoP: port_web_server__safe_backup_upload_name @ hermes_cli/web_server.py:_safe_backup_upload_name */
 char *web_safe_backup_upload_name(const char *name)
 {
     if (!name || !name[0]) return strdup("backup");
@@ -1064,8 +1047,7 @@ char *web_safe_backup_upload_name(const char *name)
     return out;
 }
 
-/* PoP: port_web_server__normalise_prefix @ hermes_cli/web_server.py:_normalise_prefix
- * Normalize theme prefix. */
+/* PoP: port_web_server__normalise_prefix @ hermes_cli/web_server.py:_normalise_prefix */
 char *web_normalise_prefix(const char *prefix)
 {
     if (!prefix || !prefix[0]) return strdup("");
@@ -1087,8 +1069,7 @@ char *web_normalise_prefix(const char *prefix)
     return out;
 }
 
-/* PoP: port_web_server__parse_theme_layer @ hermes_cli/web_server.py:_parse_theme_layer
- * Parse a single theme layer definition. */
+/* PoP: port_web_server__parse_theme_layer @ hermes_cli/web_server.py:_parse_theme_layer */
 json_t *web_parse_theme_layer(const char *name, json_t *layer_def)
 {
     if (!name || !name[0]) return NULL;
@@ -1113,8 +1094,7 @@ json_t *web_parse_theme_layer(const char *name, json_t *layer_def)
     return result;
 }
 
-/* PoP: port_web_server__normalise_theme_definition @ hermes_cli/web_server.py:_normalise_theme_definition
- * Normalize a full theme definition. */
+/* PoP: port_web_server__normalise_theme_definition @ hermes_cli/web_server.py:_normalise_theme_definition */
 json_t *web_normalise_theme_definition(json_t *theme_def)
 {
     if (!theme_def || theme_def->type != JSON_OBJECT) return json_new_object();
@@ -1152,8 +1132,7 @@ json_t *web_normalise_theme_definition(json_t *theme_def)
     return result;
 }
 
-/* PoP: port_web_server__validate_plugin_name @ hermes_cli/web_server.py:_validate_plugin_name
- * Validate plugin name format. */
+/* PoP: port_web_server__validate_plugin_name @ hermes_cli/web_server.py:_validate_plugin_name */
 bool web_validate_plugin_name(const char *name)
 {
     if (!name || !name[0]) return false;
@@ -1169,8 +1148,7 @@ bool web_validate_plugin_name(const char *name)
     return true;
 }
 
-/* PoP: port_web_server__read_bound_port @ hermes_cli/web_server.py:_read_bound_port
- * Read the bound port from the dashboard ready file. */
+/* PoP: port_web_server__read_bound_port @ hermes_cli/web_server.py:_read_bound_port */
 int web_read_bound_port(const char *ready_file)
 {
     if (!ready_file) return 0;
@@ -1190,8 +1168,7 @@ int web_read_bound_port(const char *ready_file)
     return port;
 }
 
-/* PoP: port_web_server__write_dashboard_ready_file @ hermes_cli/web_server.py:_write_dashboard_ready_file
- * Write dashboard ready file with port info. */
+/* PoP: port_web_server__write_dashboard_ready_file @ hermes_cli/web_server.py:_write_dashboard_ready_file */
 bool web_write_dashboard_ready_file(const char *ready_file, int port)
 {
     if (!ready_file) return false;
@@ -1204,8 +1181,7 @@ bool web_write_dashboard_ready_file(const char *ready_file, int port)
     return true;
 }
 
-/* PoP: port_web_server__maybe_open_browser @ hermes_cli/web_server.py:_maybe_open_browser
- * Open browser to dashboard URL (stub - caller handles actual opening). */
+/* PoP: port_web_server__maybe_open_browser @ hermes_cli/web_server.py:_maybe_open_browser */
 bool web_maybe_open_browser(const char *url)
 {
     if (!url) return false;

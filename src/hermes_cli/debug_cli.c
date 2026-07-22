@@ -18,6 +18,7 @@
 
 static char *xstrdup(const char *s) { return s ? strdup(s) : NULL; }
 
+/* PoP: debug_extract_paste_id @ hermes_cli/debug.py:_extract_paste_id */
 char *debug_extract_paste_id(const char *url) {
     if (!url) return NULL;
     while (*url == ' ' || *url == '\t') url++;
@@ -96,6 +97,7 @@ debug_pending_t *debug_load_pending(const char *hermes_home, int *out_count) {
     return arr;
 }
 
+/* PoP: debug_save_pending @ hermes_cli/debug.py:_save_pending */
 bool debug_save_pending(const char *hermes_home, debug_pending_t *entries, int n) {
     char *path = debug_pending_path(hermes_home);
     /* ensure dir */
@@ -121,6 +123,7 @@ bool debug_save_pending(const char *hermes_home, debug_pending_t *entries, int n
     return true;
 }
 
+/* PoP: debug_record_pending @ hermes_cli/debug.py:_record_pending */
 void debug_record_pending(const char *hermes_home, const char *urls[], int n,
                           double now, int delay_seconds) {
     /* collect paste.rs urls */
@@ -155,6 +158,7 @@ void debug_record_pending(const char *hermes_home, const char *urls[], int n,
     free(keep);
 }
 
+/* PoP: debug_sweep_expired_pastes @ hermes_cli/debug.py:_sweep_expired_pastes */
 void debug_sweep_expired_pastes(const char *hermes_home, double now,
                                 int (*delete_cb)(const char *url),
                                 int *out_deleted, int *out_remaining) {
@@ -196,6 +200,7 @@ void debug_free_pending(debug_pending_t *arr, int n) {
     free(arr);
 }
 
+/* PoP: debug_redact_log_text @ hermes_cli/debug.py:_redact_log_text */
 char *debug_redact_log_text(const char *text) {
     if (!text || !*text) return xstrdup(text ? text : "");
     char *red = hermes_redact(text);          /* force-redact secrets */

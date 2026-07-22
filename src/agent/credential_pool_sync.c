@@ -272,6 +272,7 @@ long long jwt_exp_claim(const char *token) {
 
 /* Nous NAS invoke-JWT usability: the token must carry `scope` and not be
  * past its `exp`. Mirrors hermes_cli.auth._nous_invoke_jwt_is_usable(). */
+/* PoP: nous_invoke_jwt_is_usable @ hermes_cli/auth.py:_nous_invoke_jwt_is_usable */
 bool nous_invoke_jwt_is_usable(const char *token, const char *scope, const char *expires_at) {
     (void)expires_at;
     if (!token || !*token) return false;
@@ -438,6 +439,7 @@ void credential_pool_persist_entries(const credential_pool_t *pool) {
 /* _sync_anthropic_entry_from_credentials_file — if the entry is an anthropic
  * claude_code entry, sync its tokens from ~/.claude/.credentials.json when they
  * differ. Mutates *e in place. Returns true if a sync was applied. */
+/* PoP: credential_pool_sync_anthropic_entry_from_credentials_file @ agent/credential_pool.py:_sync_anthropic_entry_from_credentials_file */
 bool credential_pool_sync_anthropic_entry_from_credentials_file(credential_entry_t *e) {
     if (!e) return false;
     if (strcmp(e->source, "claude_code") != 0 && strcmp(e->source, "anthropic") != 0)

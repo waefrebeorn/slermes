@@ -8,6 +8,7 @@
 #include "hermes_core_types.h"
 
 /* /auth: Provider auth status overview */
+/* PoP: cmd_auth @ hermes_cli/main.py:cmd_auth */
 void cmd_auth(const char *args, agent_state_t *state) {
     (void)state;
     if (!args || !args[0]) {
