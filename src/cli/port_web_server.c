@@ -1467,3 +1467,31 @@ void web_free_strv(char **v)
     for (int i = 0; v[i]; i++) free(v[i]);
     free(v);
 }
+
+/* Reusable client-IP resolution (Port of the dashboard_auth _client_ip helper,
+ * identical across middleware.py / routes.py / token_auth.py):
+ *   x_forwarded_for (may be ""): take the first comma-separated value, trimmed.
+ *   else fall back to client_host (the direct peer), or "" if NULL.
+ * Caller owns the returned string (malloc'd). Returns NULL on alloc failure. */
+char *web_client_ip(const char *x_forwarded_for, const char *client_host)
+{
+    if (x_forwarded_for && *x_forwarded_for) {
+        /* first hop */
+        const char *comma = strchr(x_forwarded_for, ',');
+        size_t len = comma ? (size_t)(comma - x_forwarded_for) : strlen(x_forwarded_for);
+        /* trim leading/trailing whitespace */
+        size_t s = 0;
+        while (s < len && (x_forwarded_for[s] == ' ' || x_forwarded_for[s] == '\t')) s++;
+        size_t e = len;
+        while (e > s && (x_forwarded_for[e-1] == ' ' || x_forwarded_for[e-1] == '\t')) e--;
+        if (e > s) {
+            char *out = malloc(e - s + 1);
+            if (!out) return NULL;
+            memcpy(out, x_forwarded_for + s, e - s);
+            out[e - s] = '\0';
+            return out;
+        }
+    }
+    if (client_host && *client_host) return strdup(client_host);
+    return strdup("");
+}
