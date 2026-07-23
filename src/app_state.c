@@ -166,7 +166,7 @@ static int cb_sessions(void *u, int argc, char **argv, char **cn) {
     (void)u;
     app_state_t *app = (app_state_t*)u;
     if (!app || app->session_count >= MAX_SESSIONS) return 0;
-    session_entry_t *s = &app->sessions[app->session_count];
+    app_session_entry_t *s = &app->sessions[app->session_count];
     memset(s, 0, sizeof(*s));
     for (int i = 0; i < argc; i++) {
         if (!argv[i]) continue;
@@ -299,7 +299,7 @@ void app_load_stats(app_state_t *app) {
 int app_selected_session(app_state_t *app) { return app ? app->selected_session : -1; }
 void app_set_selected_session(app_state_t *app, int idx) { if (app) app->selected_session = idx; }
 int app_session_count(app_state_t *app) { return app ? app->session_count : 0; }
-session_entry_t *app_get_session(app_state_t *app, int idx) {
+app_session_entry_t *app_get_session(app_state_t *app, int idx) {
     if (!app || idx < 0 || idx >= app->session_count) return NULL;
     return &app->sessions[idx];
 }

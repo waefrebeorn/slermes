@@ -3,6 +3,7 @@
 
 #include "gui_core.h"
 #include "slermes_home.h"
+#include "app_session_entry.h"
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -11,7 +12,6 @@
  * ══════════════════════════════════════════════════════════════════════ */
 
 typedef struct app_state app_state_t;
-typedef struct session_entry session_entry_t;
 typedef struct message_entry message_entry_t;
 typedef struct nav_item nav_item_t;
 
@@ -94,7 +94,7 @@ void app_load_stats(app_state_t *app);
 int app_selected_session(app_state_t *app);
 void app_set_selected_session(app_state_t *app, int idx);
 int app_session_count(app_state_t *app);
-session_entry_t *app_get_session(app_state_t *app, int idx);
+app_session_entry_t *app_get_session(app_state_t *app, int idx);
 
 /* Navigation */
 int app_selected_nav(app_state_t *app);

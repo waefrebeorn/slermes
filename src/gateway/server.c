@@ -5,6 +5,7 @@
  * Configured via --platform flag (single) or config.yaml gateway.platforms list.
  */
 
+#include "hermes.h"
 #include "hermes_core_types.h"
 #include "gw_server_internals.h"
 #include "hermes_agent.h"

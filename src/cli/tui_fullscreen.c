@@ -21,6 +21,8 @@
 /* PoP: TUI fullscreen mode (TypeScript-based) */
 
 #define _GNU_SOURCE
+#include "hermes_cli.h"
+#include "hermes_agent.h"
 #include "hermes_core_types.h"
 #include "tui_fullscreen.h"
 

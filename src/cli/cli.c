@@ -15,6 +15,7 @@
 /* PoP: auth_logout_command @ hermes_cli/auth_commands.py:auth_logout_command */
 /* PoP: auth_spotify_command @ hermes_cli/auth_commands.py:auth_spotify_command */
 
+#include "hermes.h"
 #include "hermes_core_types.h"
 #include "hermes_agent.h"
 #include "hermes_display.h"

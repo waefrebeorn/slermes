@@ -12,6 +12,8 @@
  *  - Tools use "input_schema" not "parameters", no "type":"function" wrapper
  */
 
+#include "libcrypto/crypto.h"
+#include "hermes_auth.h"
 #include "hermes_core_types.h"
 #include "hermes_logger.h"
 #include "hermes_json.h"

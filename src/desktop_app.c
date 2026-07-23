@@ -50,7 +50,7 @@ typedef struct {
     char title[256];
     char last_message[512];
     time_t updated_at;
-} session_entry_t;
+} desktop_session_entry_t;
 
 typedef struct {
     char name[128];
@@ -82,7 +82,7 @@ typedef struct {
     int active_tab;
     
     /* Sessions */
-    session_entry_t *sessions;
+    desktop_session_entry_t *sessions;
     int session_count;
     int session_capacity;
     int active_session;
@@ -142,7 +142,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prev_instance, LPSTR cmd_line, 
     
     /* Initialize app state */
     g_app.session_capacity = 64;
-    g_app.sessions = calloc(g_app.session_capacity, sizeof(session_entry_t));
+    g_app.sessions = calloc(g_app.session_capacity, sizeof(desktop_session_entry_t));
     g_app.message_capacity = 256;
     g_app.messages = calloc(g_app.message_capacity, sizeof(chat_message_t));
     g_app.active_tab = TAB_CHAT;
@@ -449,7 +449,7 @@ static void draw_text(HDC hdc, const char *text, RECT *rect, UINT format) {
 /* ── Session Management ────────────────────────────────────────────────── */
 static void load_sessions(void) {
     /* Add a default welcome session */
-    session_entry_t *s = &g_app.sessions[g_app.session_count++];
+    desktop_session_entry_t *s = &g_app.sessions[g_app.session_count++];
     strncpy(s->id, "default", sizeof(s->id) - 1);
     strncpy(s->title, "Welcome", sizeof(s->title) - 1);
     strncpy(s->last_message, "Start a new conversation", sizeof(s->last_message) - 1);
@@ -462,10 +462,10 @@ static void load_sessions(void) {
 static void new_session(void) {
     if (g_app.session_count >= g_app.session_capacity) {
         g_app.session_capacity *= 2;
-        g_app.sessions = realloc(g_app.sessions, g_app.session_capacity * sizeof(session_entry_t));
+        g_app.sessions = realloc(g_app.sessions, g_app.session_capacity * sizeof(desktop_session_entry_t));
     }
     
-    session_entry_t *s = &g_app.sessions[g_app.session_count];
+    desktop_session_entry_t *s = &g_app.sessions[g_app.session_count];
     snprintf(s->id, sizeof(s->id), "session_%d", g_app.session_count);
     snprintf(s->title, sizeof(s->title), "Chat %d", g_app.session_count + 1);
     s->last_message[0] = '\0';
@@ -539,7 +539,7 @@ static void send_message(void) {
     
     /* Update session last message */
     if (g_app.active_session >= 0 && g_app.active_session < g_app.session_count) {
-        session_entry_t *s = &g_app.sessions[g_app.active_session];
+        desktop_session_entry_t *s = &g_app.sessions[g_app.active_session];
         strncpy(s->last_message, text, sizeof(s->last_message) - 1);
         s->updated_at = time(NULL);
         update_session_list();

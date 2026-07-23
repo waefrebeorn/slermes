@@ -5,6 +5,7 @@
  * Split from system_prompt.c in v376 for module parity.
  */
 
+#include "hermes_skills.h"
 #include "hermes_system_prompt.h"
 #include "hermes_json.h"
 #include <stdio.h>

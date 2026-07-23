@@ -7,6 +7,7 @@
 
 /* PoP: Yuanbao tools (port of tools/yuanbao_tools) */
 
+#include "registry.h"
 #include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_gateway.h"
