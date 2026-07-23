@@ -4,6 +4,8 @@
  * Real C implementations for process registry functions.
  */
 
+#include "hermes.h"
+#include "window.h"
 #include "hermes_logger.h"
 #include "hermes_json.h"
 #include <stdbool.h>

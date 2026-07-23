@@ -15,7 +15,7 @@ void session_db_load_sessions(app_state_t *app);
 void session_db_load_messages(app_state_t *app, int idx);
 
 /* Get session by index */
-session_entry_t *session_db_get_session(app_state_t *app, int idx);
+app_session_entry_t *session_db_get_session(app_state_t *app, int idx);
 
 /* Get message by index */
 message_entry_t *session_db_get_message(app_state_t *app, int idx);

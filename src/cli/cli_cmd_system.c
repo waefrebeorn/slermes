@@ -3,6 +3,7 @@
  * Self-contained command-category module.
  */
 
+#include "hermes.h"
 #include "cli_cmd_system.h"
 #include "commands_shared.h"
 #include "hermes_core_types.h"

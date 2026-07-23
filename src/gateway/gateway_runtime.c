@@ -9,6 +9,7 @@
  * These are loaded at gateway start and consulted per-turn.
  */
 
+#include "hermes_agent.h"
 #include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_gateway_core.h"

@@ -9,6 +9,7 @@
  * 5. Repeat until max_iterations or final response
  */
 
+#include "hermes_memory.h"
 #include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_agent.h"

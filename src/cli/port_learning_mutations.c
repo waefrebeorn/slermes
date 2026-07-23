@@ -18,6 +18,7 @@
  * return shapes exactly.
  */
 
+#include "libyaml/yaml.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

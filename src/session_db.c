@@ -31,7 +31,7 @@ static int cb_sessions(void *u, int argc, char **argv, char **cn) {
     (void)u;
     app_state_t *app = (app_state_t*)u;
     if (!app || app->session_count >= MAX_SESSIONS) return 0;
-    session_entry_t *s = &app->sessions[app->session_count];
+    app_session_entry_t *s = &app->sessions[app->session_count];
     memset(s, 0, sizeof(*s));
     for (int i = 0; i < argc; i++) {
         if (!argv[i]) continue;
@@ -131,7 +131,7 @@ void session_db_load_messages(app_state_t *app, int idx) {
 }
 
 /* PoP: _get_session @ tools/browser_camofox.py:_get_session */
-session_entry_t *session_db_get_session(app_state_t *app, int idx) {
+app_session_entry_t *session_db_get_session(app_state_t *app, int idx) {
     if (!app || idx < 0 || idx >= app->session_count) return NULL;
     return &app->sessions[idx];
 }
@@ -144,7 +144,7 @@ message_entry_t *session_db_get_message(app_state_t *app, int idx) {
 bool session_db_update_session_model(app_state_t *app, int session_idx, const char *model) {
     if (!app || !model || session_idx < 0 || session_idx >= app->session_count) return false;
     
-    session_entry_t *s = &app->sessions[session_idx];
+    app_session_entry_t *s = &app->sessions[session_idx];
     char *zErr = NULL;
     char *sql = sqlite3_mprintf("UPDATE sessions SET model='%q' WHERE id='%q'", model, s->id);
     
@@ -164,7 +164,7 @@ bool session_db_update_session_model(app_state_t *app, int session_idx, const ch
 bool session_db_delete_session(app_state_t *app, int session_idx) {
     if (!app || session_idx < 0 || session_idx >= app->session_count) return false;
     
-    session_entry_t *s = &app->sessions[session_idx];
+    app_session_entry_t *s = &app->sessions[session_idx];
     char *zErr = NULL;
     char *sql = sqlite3_mprintf("DELETE FROM sessions WHERE id='%q'", s->id);
     
@@ -207,7 +207,7 @@ int session_db_create_session(app_state_t *app, const char *title, const char *s
 bool session_db_archive_session(app_state_t *app, int session_idx, bool archive) {
     if (!app || session_idx < 0 || session_idx >= app->session_count) return false;
     
-    session_entry_t *s = &app->sessions[session_idx];
+    app_session_entry_t *s = &app->sessions[session_idx];
     char *zErr = NULL;
     char *sql = sqlite3_mprintf("UPDATE sessions SET archived=%d WHERE id='%q'", archive ? 1 : 0, s->id);
     

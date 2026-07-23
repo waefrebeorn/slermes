@@ -10,6 +10,7 @@
 #define APP_STATE_INTERNAL_H
 
 #include "app_state.h"
+#include "app_session_entry.h"
 #include "gui_core.h"
 #include "slermes_home.h"
 #include "sqlite3.h"
@@ -19,16 +20,6 @@
 /* ══════════════════════════════════════════════════════════════════════
  * Internal Data Structures (full definitions)
  * ══════════════════════════════════════════════════════════════════════ */
-
-struct session_entry {
-    char id[64];
-    char title[256];
-    char source[32];
-    char model[128];
-    int  msg_count;
-    int  tokens;
-    long started_at;
-};
 
 struct message_entry {
     char role[32];
@@ -49,9 +40,9 @@ struct app_state {
     char        latest_model[128];
     bool        running;
 
-    session_entry_t sessions[MAX_SESSIONS];
-    int             session_count;
-    int             selected_session;
+    app_session_entry_t sessions[MAX_SESSIONS];
+    int                 session_count;
+    int                 selected_session;
 
     message_entry_t messages[MAX_MESSAGES];
     int             message_count;

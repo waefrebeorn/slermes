@@ -3,6 +3,7 @@
  * Port of Python gateway/platforms/yuanbao.py.
  */
 
+#include "hermes_agent.h"
 #include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_gateway_yuanbao.h"

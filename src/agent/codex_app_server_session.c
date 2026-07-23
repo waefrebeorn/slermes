@@ -16,6 +16,7 @@
  *                 (turn orchestration in codex_session_run_turn)
  */
 
+#include "hermes.h"
 #include "codex_app_server_session.h"
 #include "hermes_core_types.h"
 #include "hermes_json.h"
