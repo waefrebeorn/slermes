@@ -123,10 +123,13 @@ typedef struct {
     session_meta_t meta;
 } db_session_entry_t;
 
-/* NOTE: bare `session_entry_t` is owned by include/app_state.h (app-state
- * layout: id/title/source/model/...). db.h uses db_session_entry_t to avoid
- * the name collision. Previously both defined session_entry_t, which broke
- * any TU that included hermes.h (-> libdb/db.h) together with app_state.h. */
+/* Canonical session list entry (id + metadata). Owned by libdb; the
+ * app-state subsystem uses its own app_session_entry_t to avoid a
+ * name collision. */
+typedef struct {
+    char           id[64];
+    session_meta_t meta;
+} session_entry_t;
 
 /* List sessions with metadata. Returns malloc'd array. Caller must free each + array. */
 db_session_entry_t *db_list_with_meta(const db_t *db, size_t *count);
