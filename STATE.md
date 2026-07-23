@@ -1,3 +1,56 @@
+# Slermes Parity — Vault Checkpoint (v621)
+
+**Date:** 2026-07-23
+**Branch:** main (recovery push target = origin/main, force-with-lease)
+**Session:** v621 recovery — crashed-session salvage + history renumber
+
+## What this session recovered
+The prior auto-pilot session crashed AFTER committing real work but BEFORE it
+could (a) renumber 49 placeholder `vXXX`/`v572` commit messages, (b) refresh
+BANNER/STATE/parity-summary, and (c) push. HEAD (v621) was left unpushed with
+`vXXX` labels. This session:
+- Restored byte-identical history via `git filter-repo` `--commit-callback`
+  (matched on message text, since `commit.id` is an internal mark), renumbering
+  the 49 mislabeled commits to **v573..v621** (monotonic, descriptive
+  intermediate commits like `port_web_server_auth:` / `pop annotations:` kept).
+- Confirmed the prior 40 of those 49 were already byte-pushed to origin/main
+  (just without version labels); only **14** commits (v608..v621) were genuinely
+  unpushed.
+- Verified: `make slermes` clean, `run_mission8_tests.sh` 36/0/35, live parity
+  scan matches the renumbered history.
+
+## Live Scanner (end v621)
+| Metric | Value | Δ vs v607 (old origin/main) |
+|--------|-------|------------------------------|
+| PORTED | 6,434 (66.1%) | +77 |
+| REAL_GAP | 3,299 (33.9%) | −77 |
+| PARTIAL | 0 (0.0%) | 0 |
+| TOTAL | 9,733 | — |
+
+## v608..v621 Commits (14 local, oracle-verified REAL_GAP closures)
+| Module | Functions | Effect |
+|--------|-----------|--------|
+| model_normalize + skill_provenance | 2 | RG −2 |
+| provider_catalog | 2 | RG −2 |
+| skills_tool | 3 | RG −3 |
+| dashboard_auth/cookies | 11 | RG −11 |
+| kanban_diagnostics | 7 | RG −7 |
+| moa_config | 11 | RG −11 |
+| azure_detect | 3 | RG −3 |
+| fallback_cmd | 3 | RG −3 |
+| session_recap | 8 | RG −8 |
+| middleware | 3 | RG −3 |
+| lazy_deps | 3 | RG −3 |
+| curses_ui | 5 | RG −5 |
+| security_audit | 2 | RG −2 |
+| doctor | 4 | RG −4 |
+
+Net REAL_GAP closed this recovery: **75** (3,376 → 3,299); no façades,
+no stubs, no god headers. Push is force-with-lease because the 40 already-on-origin
+commits were re-hashed (message-only rename, tree identical).
+
+---
+
 # Slermes Parity — Vault Checkpoint (v542)
 
 **Date:** 2026-07-07

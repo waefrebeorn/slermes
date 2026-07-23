@@ -1,13 +1,13 @@
 # Slermes C11 Parity — Live State
 
-**Generated:** 2026-07-22 by `slermes_parity_battleground.py` (live scanner)
+**Generated:** 2026-07-23 by `slermes_parity_battleground.py` (live scanner)
 
 ## Overall Numbers (live)
 
 | Classification | Count | Percentage | Meaning |
 |----------------|-------|------------|---------|
-| **PORTED** | 6,357 | 65.3% | C11 implementation with PoP annotation |
-| **REAL_GAP** | 3,376 | 34.7% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |
+| **PORTED** | 6,434 | 66.1% | C11 implementation with PoP annotation |
+| **REAL_GAP** | 3,299 | 33.9% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |
 | **PARTIAL** | 0 | 0.0% | All C fns now carry PoP annotations |
 | **STUB** | 0 | 0.0% | No stub functions remain |
 | **TOTAL** | 9,733 | 100% | All Python functions/methods scanned |
