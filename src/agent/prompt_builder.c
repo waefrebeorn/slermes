@@ -60,6 +60,7 @@ static char *file_read_all(const char *path) {
     return buf;
 }
 
+/* PoP: context_truncate_content @ agent/prompt_builder.py:_truncate_content */
 char *context_truncate_content(const char *content, const char *name, int max_chars) {
 /* AG26: Port of Python agent/prompt_builder.py:_truncate_content() */
     if (!content) return NULL;
@@ -93,6 +94,7 @@ char *context_truncate_content(const char *content, const char *name, int max_ch
  * ================================================================ */
 
 /* Port of Python: _strip_yaml_frontmatter */
+/* PoP: context_strip_frontmatter @ agent/prompt_builder.py:_strip_yaml_frontmatter */
 char *context_strip_frontmatter(const char *content) {
     if (!content || content[0] != '-')
         return strdup(content);
@@ -117,6 +119,7 @@ char *context_strip_frontmatter(const char *content) {
  * ================================================================ */
 
 /* Port of Python: _scan_context_content */
+/* PoP: context_scan_content @ agent/prompt_builder.py:_scan_context_content */
 char *context_scan_content(const char *content, const char *filename) {
     if (!content) return NULL;
 
@@ -174,6 +177,7 @@ char *context_scan_content(const char *content, const char *filename) {
  * ================================================================ */
 
 /* Port of Python: _find_git_root */
+/* PoP: context_find_git_root @ agent/prompt_builder.py:_find_git_root */
 char *context_find_git_root(const char *start_dir) {
     if (!start_dir) return NULL;
 
@@ -223,6 +227,7 @@ char *context_find_git_root(const char *start_dir) {
  * ================================================================ */
 
 /* Port of Python: load_soul_md */
+/* PoP: load_soul_md @ agent/prompt_builder.py:load_soul_md */
 char *load_soul_md(void) {
     const char *hermes_home = getenv("HERMES_HOME");
     if (!hermes_home) {
@@ -268,6 +273,7 @@ char *load_soul_md(void) {
 /* Port of Python: _load_hermes_md, _find_hermes_md — consolidated: hermes.md discovery + loading */
 /* AG26: Port of Python agent/prompt_builder.py:_load_hermes_md() */
 /* AG26: Port of Python agent/prompt_builder.py:_find_hermes_md() */
+/* PoP: context_load_hermes_md @ agent/prompt_builder.py:_load_hermes_md */
 char *context_load_hermes_md(const char *cwd) {
     if (!cwd) return NULL;
 
@@ -362,6 +368,7 @@ done:
  * ================================================================ */
 
 /* Port of Python: _load_agents_md */
+/* PoP: context_load_agents_md @ agent/prompt_builder.py:_load_agents_md */
 char *context_load_agents_md(const char *cwd) {
     if (!cwd) return NULL;
 
@@ -406,6 +413,7 @@ char *context_load_agents_md(const char *cwd) {
  * ================================================================ */
 
 /* Port of Python: _load_claude_md */
+/* PoP: context_load_claude_md @ agent/prompt_builder.py:_load_claude_md */
 char *context_load_claude_md(const char *cwd) {
     if (!cwd) return NULL;
 
@@ -450,6 +458,7 @@ char *context_load_claude_md(const char *cwd) {
  * ================================================================ */
 
 /* Port of Python: _load_cursorrules */
+/* PoP: context_load_cursorrules @ agent/prompt_builder.py:_load_cursorrules */
 char *context_load_cursorrules(const char *cwd) {
     if (!cwd) return NULL;
 
@@ -545,6 +554,7 @@ char *context_load_cursorrules(const char *cwd) {
  * ================================================================ */
 
 /* Port of Python: build_context_files_prompt */
+/* PoP: build_context_files_prompt @ agent/prompt_builder.py:build_context_files_prompt */
 char *build_context_files_prompt(const char *cwd, bool skip_soul) {
     if (!cwd) cwd = ".";
 
@@ -608,6 +618,7 @@ char *build_context_files_prompt(const char *cwd, bool skip_soul) {
  *  Platform hints (ported from PLATFORM_HINTS dict)
  * ================================================================ */
 
+/* PoP: platform_hint_get @ agent/prompt_builder.py:_current_session_platform_hint */
 const char *platform_hint_get(const char *platform_name) {
     if (!platform_name) return NULL;
 
@@ -782,6 +793,7 @@ const char *platform_hint_get(const char *platform_name) {
  * ================================================================ */
 
 /* Port of Python: build_environment_hints */
+/* PoP: build_environment_hints @ agent/prompt_builder.py:build_environment_hints */
 char *build_environment_hints(void) {
     /* Detect WSL */
     int is_wsl = 0;
@@ -877,6 +889,7 @@ static int skills_cache_count = 0;
 
 /* Get path to snapshot file in hermes_home */
 /* Port of Python: _skills_prompt_snapshot_path */
+/* PoP: skills_prompt_snapshot_path @ agent/prompt_builder.py:_skills_prompt_snapshot_path */
 static char *skills_prompt_snapshot_path(const char *hermes_home) {
     if (!hermes_home) return NULL;
     size_t len = strlen(hermes_home) + strlen(SNAPSHOT_FILENAME) + 2;
@@ -887,6 +900,7 @@ static char *skills_prompt_snapshot_path(const char *hermes_home) {
 
 /* Clear the in-process skills prompt cache (and optionally disk snapshot) */
 /* Port of Python: clear_skills_system_prompt_cache */
+/* PoP: clear_skills_system_prompt_cache @ agent/prompt_builder.py:clear_skills_system_prompt_cache */
 void clear_skills_system_prompt_cache(const char *hermes_home, bool clear_snapshot) {
     pthread_mutex_lock(&skills_cache_lock);
     for (int i = 0; i < skills_cache_count; i++) {
@@ -909,6 +923,7 @@ void clear_skills_system_prompt_cache(const char *hermes_home, bool clear_snapsh
 /* Build an mtime/size manifest of SKILL.md and DESCRIPTION.md files.
  * Returns JSON object: { "relative/path": [mtime_ns, size], ... } */
 /* Port of Python: _build_skills_manifest */
+/* PoP: build_skills_manifest @ agent/prompt_builder.py:_build_skills_manifest */
 json_node_t *build_skills_manifest(const char *skills_dir) {
     json_node_t *manifest = json_object();
     if (!manifest || !skills_dir) return manifest;
@@ -978,6 +993,7 @@ json_node_t *build_skills_manifest(const char *skills_dir) {
 
 /* Load the disk snapshot if it exists and its manifest still matches.
  * Returns JSON snapshot object or NULL. */
+/* PoP: load_skills_snapshot @ agent/prompt_builder.py:_load_skills_snapshot */
 json_node_t *load_skills_snapshot(const char *skills_dir, const char *hermes_home) {
     if (!hermes_home) return NULL;
 
@@ -1039,6 +1055,7 @@ json_node_t *load_skills_snapshot(const char *skills_dir, const char *hermes_hom
 
 /* Write skill metadata to disk for fast cold-start reuse. */
 /* Port of Python: _write_skills_snapshot */
+/* PoP: write_skills_snapshot @ agent/prompt_builder.py:_write_skills_snapshot */
 void write_skills_snapshot(const char *skills_dir, const char *hermes_home,
                             json_node_t *manifest, json_node_t *skill_entries,
                             json_node_t *category_descriptions) {
@@ -1073,6 +1090,7 @@ void write_skills_snapshot(const char *skills_dir, const char *hermes_home,
  * Returns JSON object with skill_name, category, frontmatter_name,
  * description, platforms, conditions. */
 /* Port of Python: _build_snapshot_entry */
+/* PoP: build_snapshot_entry @ agent/prompt_builder.py:_build_snapshot_entry */
 json_node_t *build_snapshot_entry(const char *skill_file, const char *skills_dir,
                                    json_node_t *frontmatter, const char *description) {
     json_node_t *entry = json_object();
@@ -1283,6 +1301,7 @@ static int cmp_strings(const void *a, const void *b) {
 }
 
 /* Port of Python: build_skills_system_prompt */
+/* PoP: build_skills_system_prompt @ agent/prompt_builder.py:build_skills_system_prompt */
 char *build_skills_system_prompt(const char *disabled_csv) {
     skill_list_t *list = skills_scan_all();
     if (!list || list->count == 0) {
@@ -1444,6 +1463,7 @@ char *build_skills_system_prompt(const char *disabled_csv) {
  * ================================================================ */
 
 /* Port of Python prompt_builder.py:format_steer_marker — wrap steer text in markers */
+/* PoP: format_steer_marker @ agent/prompt_builder.py:format_steer_marker */
 char *format_steer_marker(const char *steer_text) {
     if (!steer_text) return strdup("");
     const char *open  = "\n\n[OUT-OF-BAND USER MESSAGE -- a direct message from the user, delivered mid-turn; not tool output]\n";
@@ -1456,6 +1476,7 @@ char *format_steer_marker(const char *steer_text) {
 }
 
 /* Port of Python: build_nous_subscription_prompt */
+/* PoP: build_nous_subscription_prompt @ agent/prompt_builder.py:build_nous_subscription_prompt */
 char *build_nous_subscription_prompt(void) {
     /* Nous subscription system is Nous-specific (hermes_cli.nous_subscription).
      * C has no equivalent — return empty string, matching Python behavior
@@ -1474,6 +1495,7 @@ const char *session_cwd_override(void) {
 }
 
 /* Port of Python: _clear_backend_probe_cache — reset backend probe cache */
+/* PoP: clear_backend_probe_cache @ agent/prompt_builder.py:_clear_backend_probe_cache */
 void clear_backend_probe_cache(void) {
     /* Static probe cache lives in system_prompt.c; clear it */
     /* The cache stores env_type:cwd_hint -> result strings */
@@ -1486,6 +1508,7 @@ void clear_backend_probe_cache(void) {
  * by available_tools/available_toolsets doesn't apply in C architecture.
  * This stub is retained for source-level parity; the real filtering happens
  * at skill-load time in skill_preprocessing.c. */
+/* PoP: skill_should_show @ agent/prompt_builder.py:_skill_should_show */
 bool skill_should_show(void) {
     /* In C, skill filtering is done at load time, not at prompt-build time.
      * All loaded skills are always shown in the prompt.
@@ -1496,6 +1519,7 @@ bool skill_should_show(void) {
 
 /* Port of Python: _parse_skill_file — read SKILL.md, check compatibility */
 /* Returns (is_compatible, frontmatter_json, description) */
+/* PoP: parse_skill_file @ agent/prompt_builder.py:_parse_skill_file */
 bool parse_skill_file(const char *skill_path, char *frontmatter_out, size_t fm_sz, 
                        char *desc_out, size_t desc_sz) {
     if (!skill_path || !skill_path[0]) return true;
@@ -1521,6 +1545,7 @@ bool is_developer_role_model(const char *model_name) {
 }
 
 /* Port of Python: _probe_remote_backend — probe remote terminal backend */
+/* PoP: probe_remote_backend @ agent/prompt_builder.py:_probe_remote_backend */
 char *probe_remote_backend(const char *env_type) {
     if (!env_type || !env_type[0]) return NULL;
     const char *known_remotes[] = {"docker", "singularity", "modal",
