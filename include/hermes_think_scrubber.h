@@ -52,6 +52,13 @@ const char *feed(think_scrubber_t *sc, const char *text);
  * remaining visible text, or NULL. */
 const char *flush(think_scrubber_t *sc);
 
+/* Port of Python gateway/stream_consumer.py:_strip_orphan_close_tags
+ * (identical logic to agent/think_scrubber.py::_strip_orphan_close_tags).
+ * Removes any close tags (</think>, </reasoning>, …) with no matching open.
+ * Writes the result into dst (null-terminated); returns the output length.
+ * Promoted to non-static so gateway/stream_consumer.c reuses it. */
+int think_scrubber_strip_orphan_close_tags(const char *src, int len, char *dst, int dst_cap);
+
 #ifdef __cplusplus
 }
 #endif
