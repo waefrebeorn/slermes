@@ -208,6 +208,7 @@ PORT_OBJ = \
     src/cli/port_kanban_diagnostics.o \
     src/cli/port_moa_config.o \
     src/cli/port_azure_detect.o \
+    src/cli/port_fallback_cmd.o \
     src/cli/port_model_normalize.o \
     src/cli/port_provider_catalog.o \
     src/cli/port_model_switch.o \
