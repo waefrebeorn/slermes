@@ -158,6 +158,7 @@ char *model_normalize_provider_alias(const char *provider_name)
     return strdup(norm ? norm : tmp);
 }
 
+/* PoP: model_normalize_strip_match_prefix @ hermes_cli/model_normalize.py:_strip_matching_provider_prefix */
 /* _strip_matching_provider_prefix — strip provider/ only when prefix == target. Caller frees. */
 char *model_normalize_strip_match_prefix(const char *model_name, const char *target_provider)
 {
