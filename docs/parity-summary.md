@@ -12,11 +12,14 @@
 | **STUB** | 0 | 0.0% | No stub functions remain |
 | **TOTAL** | 11,174 | 100% | All Python functions/methods scanned |
 
-> **Re-pull effect (2026-07-23):** upstream added **+1,441** new Python features
-> (total 9,733 → 11,174). Slermes gained +98 ports in the same window, so
-> REAL_GAP rose **+1,320** (3,299 → 4,619). The quarry grew faster than ports —
-> this is expected and honest, not a regression. Pre-pull baseline was 6,434 /
-> 3,299 (66.1% / 33.9%).
+> **Honesty note (2026-07-23 upstream re-pull):** upstream added **+1,441** new
+> Python features (total 9,733 → 11,174). Slermes gained +98 ports in the same
+> window, so REAL_GAP rose **+1,320** (3,299 → 4,619) and % ported dropped 66%→58%.
+> This is the quarry growing faster than ports — **expected and honest, not a
+> regression.** Pre-pull baseline was 6,434 / 3,299 (66.1% / 33.9%).
+> The 23 PARTIAL are immediate annotation-only fixes (no new logic). v622 plan:
+> close ~1,000 REAL_GAP by reusing existing `port_*`/`lib/` helpers
+> (see `REUSE_GAP_PLAN_v622.md`).
 
 > **This is a partial port, ~two-thirds done.** REAL_GAP is the honest count of Python
 > features not yet reimplemented in C — it is not zero and the docs do not claim
