@@ -205,6 +205,7 @@ PORT_OBJ = \
     src/cli/port_dashboard_auth_audit.o \
     src/cli/port_dashboard_auth_registry.o \
     src/cli/port_dashboard_auth_cookies.o \
+    src/cli/port_kanban_diagnostics.o \
     src/cli/port_model_normalize.o \
     src/cli/port_provider_catalog.o \
     src/cli/port_model_switch.o \
