@@ -8,6 +8,7 @@
 #include "hermes.h"
 #include "hermes_core_types.h"
 #include "gw_server_internals.h"
+#include "gw_pollers.h"
 #include "hermes_agent.h"
 #include "hermes_gateway_core.h"
 #include "hermes_json.h"
@@ -132,7 +133,6 @@ char *gw_observe_consume(const char *platform, const char *chat_id) {
 /* Forward declaration for gw_queue_drain_all */
 
 /* GW13: Kanban notifier thread — polls kanban events and delivers to subscribers */
-static void *thread_kanban_notifier(void *arg);
 
 /* ================================================================
  *  P101: Message queue (thread-safe, bounded circular buffer)
@@ -1022,243 +1022,12 @@ void process_update(const char *platform, const char *chat_id, const char *text)
 /* Telegram-specific: poll for a response from a specific chat_id.
    Called during approval wait to short-poll Telegram for user's y/n/a response.
    Returns strdup'd text or NULL. */
-static char *telegram_poll_for_response(const char *target_chat_id) {
-    if (!target_chat_id) return NULL;
 
-    json_node_t *root = telegram_get_updates(g_gw.http, g_gw.tg_offset, 5);
-    if (!root) return NULL;
 
-    json_node_t *result = json_obj_get(root, "result");
-    char *response = NULL;
-    if (result && json_len(result) > 0) {
-        size_t n = json_len(result);
-        for (size_t i = 0; i < n; i++) {
-            json_node_t *update = json_get(result, i);
-            double update_id = json_get_num(update, "update_id", 0);
-            if (update_id > 0)
-                g_gw.tg_offset = (int)update_id + 1;
 
-            const char *chat_id = telegram_get_chat_id(update);
-            const char *text = telegram_get_text(update);
-            if (chat_id && text && strcmp(chat_id, target_chat_id) == 0) {
-                response = strdup(text);
-                break;
-            }
-        }
-    }
-    json_free(root);
-    return response;
-}
 
-static void *thread_poll_telegram(void *arg) {
-    (void)arg;
-    printf("[gateway] Telegram polling (interval: %ds)\n", g_gw.poll_interval);
 
-    /* L08: Fetch bot identity on first run for @mention detection */
-    telegram_get_me(g_gw.http);
-    if (telegram_get_username()[0])
-        printf("[gateway] Telegram bot: @%s\n", telegram_get_username());
 
-    /* Register approval poll function for Telegram.
-       During approval wait, the gateway will short-poll Telegram for the response. */
-    gw_approval_set_poll(telegram_poll_for_response, 1);
-
-    while (g_gw.running) {
-        json_node_t *root = telegram_get_updates(g_gw.http, g_gw.tg_offset, 30);
-
-        if (root) {
-            json_node_t *result = json_obj_get(root, "result");
-            if (result && json_len(result) > 0) {
-                size_t n = json_len(result);
-                for (size_t i = 0; i < n; i++) {
-                    json_node_t *update = json_get(result, i);
-                    double update_id = json_get_num(update, "update_id", 0);
-                    if (update_id > 0)
-                        g_gw.tg_offset = (int)update_id + 1;
-
-                    const char *chat_id = telegram_get_chat_id(update);
-                    const char *text = telegram_get_text(update);
-                    const char *thread_id = telegram_get_message_thread_id(update);
-                    const char *message_id = NULL;
-                    if (!chat_id || !text) continue;
-
-                    /* ── Extract message_id from the update for source metadata ── */
-                    json_node_t *msg = json_obj_get(update, "message");
-                    if (!msg) msg = json_obj_get(update, "edited_message");
-                    if (msg) {
-                        const char *mid = json_get_str(msg, "message_id", NULL);
-                        if (mid) message_id = mid;
-                    }
-
-                    /* ── Telegram message filtering (port of Python TelegramAdapter) ── */
-                    bool is_group = telegram_is_group(update);
-                    bool is_mentioned = telegram_is_mentioned(update);
-                    const char *bot_username = telegram_get_username();
-                    bool is_reply = false; /* TODO: detect reply_to_bot */
-
-                    /* Determine observe vs process */
-                    bool should_observe = tg_should_observe_message(
-                        telegram_get_chat_type(update), chat_id, text, thread_id,
-                        is_group, is_mentioned, is_reply, bot_username);
-
-                    bool should_process = tg_should_process_message(
-                        telegram_get_chat_type(update), chat_id, text, thread_id,
-                        is_group, is_mentioned, is_reply, bot_username);
-
-                    if (!should_process && !should_observe) {
-                        /* Silently skip (not in allowed_chats, guest mode off, etc.) */
-                        if (g_gw.group_observe_enabled)
-                            printf("[gateway] Skipped (filtered): %s %s\n", chat_id, text);
-                        continue;
-                    }
-
-                    /* L08: Group observe — silently accumulate unmentioned group messages */
-                    if (should_observe) {
-                        /* Build attributed text: [username|user_id]\ntext */
-                        const char *user_id = telegram_get_user_id(update);
-                        const char *user_name = telegram_get_user_name(update);
-                        char observe_buf[8192];
-                        if (user_name && user_id) {
-                            snprintf(observe_buf, sizeof(observe_buf),
-                                     "[%s|%s]\n%s", user_name, user_id, text);
-                        } else {
-                            snprintf(observe_buf, sizeof(observe_buf), "%s", text);
-                        }
-                        gw_observe_append("telegram", chat_id, observe_buf);
-                        printf("[gateway] Observed (no trigger): %s: %s\n", chat_id, observe_buf);
-                        continue;
-                    }
-
-                    process_update("telegram", chat_id, text);
-
-                    /* P102a: Populate session source metadata from Telegram update */
-                    gw_session_source_t src;
-                    session_source_set(&src, "telegram", chat_id,
-                                       telegram_get_chat_name(update),
-                                       telegram_get_chat_type(update),
-                                       telegram_get_user_id(update),
-                                       telegram_get_user_name(update),
-                                       thread_id, /* thread_id for topics */
-                                       NULL, /* chat_topic */
-                                       NULL, /* user_id_alt */
-                                       NULL, /* chat_id_alt */
-                                       NULL, /* guild_id */
-                                       NULL, /* parent_chat_id */
-                                       message_id, /* message_id */
-                                       telegram_is_bot(update));
-                    gw_session_set_source("telegram", chat_id, &src);
-                }
-            }
-            json_free(root);
-            /* Successful poll — reset reconnect backoff */
-            gw_reconnect_reset(0);
-        } else {
-            /* Poll failed — exponential backoff reconnect */
-            double delay = gw_reconnect_delay(0);
-            printf("[gateway] Poll failed, reconnecting in %.0fs\n", delay);
-            if (g_gw.running) sleep((int)delay);
-        }
-
-        /* Drain queued messages (e.g., from rate-limiting on prior cycles) */
-        if (gw_queue_depth() > 0)
-            gw_queue_drain_all();
-
-        if (g_gw.running)
-            sleep(g_gw.poll_interval);
-    }
-    return NULL;
-}
-
-static void *thread_poll_discord(void *arg) {
-    (void)arg;
-    printf("[gateway] Discord polling (interval: %ds)\n", g_gw.poll_interval);
-
-    while (g_gw.running) {
-        json_node_t *updates = discord_poll_messages(g_gw.http);
-        if (updates && json_len(updates) > 0) {
-            size_t n = json_len(updates);
-            for (size_t i = 0; i < n; i++) {
-                json_node_t *update = json_get(updates, i);
-                process_update("discord",
-                               discord_get_chat_id(update),
-                               discord_get_text(update));
-            }
-        }
-        json_free(updates);
-        if (g_gw.running) sleep(g_gw.poll_interval);
-    }
-    return NULL;
-}
-
-static void *thread_poll_slack(void *arg) {
-    (void)arg;
-    printf("[gateway] Slack polling (interval: %ds)\n", g_gw.poll_interval);
-
-    while (g_gw.running) {
-        json_node_t *updates = slack_poll_messages(g_gw.http);
-        if (updates && json_len(updates) > 0) {
-            size_t n = json_len(updates);
-            for (size_t i = 0; i < n; i++) {
-                json_node_t *update = json_get(updates, i);
-                process_update("slack",
-                               slack_get_chat_id(update),
-                               slack_get_text(update));
-            }
-        }
-        json_free(updates);
-        if (g_gw.running) sleep(g_gw.poll_interval);
-    }
-    return NULL;
-}
-
-static void *thread_poll_matrix(void *arg) {
-    (void)arg;
-    printf("[gateway] Matrix polling (interval: %ds)\n", g_gw.poll_interval);
-
-    while (g_gw.running) {
-        json_node_t *updates = matrix_poll_messages(g_gw.http);
-        if (updates && json_len(updates) > 0) {
-            size_t n = json_len(updates);
-            for (size_t i = 0; i < n; i++) {
-                json_node_t *update = json_get(updates, i);
-                process_update("matrix",
-                               matrix_get_chat_id(update),
-                               matrix_get_text(update));
-            }
-        }
-        json_free(updates);
-        if (g_gw.running) sleep(g_gw.poll_interval);
-    }
-    return NULL;
-}
-
-static void *thread_poll_mattermost(void *arg) {
-    (void)arg;
-    printf("[gateway] Mattermost polling (interval: %ds)\n", g_gw.poll_interval);
-
-    while (g_gw.running) {
-        json_node_t *updates = mattermost_poll_messages(g_gw.http);
-        if (updates && json_len(updates) > 0) {
-            size_t n = json_len(updates);
-            for (size_t i = 0; i < n; i++) {
-                json_node_t *update = json_get(updates, i);
-                process_update("mattermost",
-                               mattermost_get_chat_id(update),
-                               mattermost_get_text(update));
-            }
-        }
-        json_free(updates);
-        if (g_gw.running) sleep(g_gw.poll_interval);
-    }
-    return NULL;
-}
-
-static void *thread_webhook(void *arg) {
-    int port = *(int *)arg;
-    printf("[gateway] Webhook HTTP API on port %d\n", port);
-    webhook_server_run(port);
-    return NULL;
-}
 
 /* ================================================================
  *  Signal handler
@@ -1284,218 +1053,31 @@ typedef struct {
 
 /* Setup for API Server platform */
 
-/* Email poll thread */
-static void *thread_poll_email(void *arg) {
-    (void)arg;
-    int poll_int = g_gw.poll_interval * 3; /* Email polls less frequently */
-    printf("[gateway] Email polling (interval: %ds)\n", poll_int);
-    while (g_gw.running) {
-        json_node_t *updates = email_poll_messages(g_gw.http);
-        if (updates && json_len(updates) > 0) {
-            size_t n = json_len(updates);
-            for (size_t i = 0; i < n; i++) {
-                json_node_t *update = json_get(updates, i);
-                process_update("email",
-                               email_get_chat_id(update),
-                               email_get_text(update));
-            }
-        }
-        json_free(updates);
-        if (g_gw.running) sleep(poll_int);
-    }
-    return NULL;
-}
 
-/* Signal poll thread */
-static void *thread_poll_signal(void *arg) {
-    (void)arg;
-    /* Check if signal-cli is available */
-    if (!signal_check_available()) {
-        printf("[gateway] signal-cli not found. Signal platform disabled.\n");
-        return NULL;
-    }
-    printf("[gateway] Signal polling (interval: %ds)\n", g_gw.poll_interval);
-    while (g_gw.running) {
-        json_node_t *updates = signal_poll_messages(g_gw.http);
-        if (updates && json_len(updates) > 0) {
-            size_t n = json_len(updates);
-            for (size_t i = 0; i < n; i++) {
-                json_node_t *update = json_get(updates, i);
-                process_update("signal",
-                               signal_get_chat_id(update),
-                               signal_get_text(update));
-            }
-        }
-        json_free(updates);
-        if (g_gw.running) sleep(g_gw.poll_interval);
-    }
-    return NULL;
-}
 
 /* HomeAssistant setup + thread */
 
-static void *thread_poll_ha(void *arg) {
-    (void)arg;
-    printf("[gateway] HomeAssistant polling (interval: %ds)\n", g_gw.poll_interval * 5);
-    while (g_gw.running) {
-        json_node_t *updates = ha_poll_messages(g_gw.http);
-        if (updates && json_len(updates) > 0) {
-            size_t n = json_len(updates);
-            for (size_t i = 0; i < n; i++) {
-                json_node_t *update = json_get(updates, i);
-                process_update("homeassistant",
-                               ha_get_chat_id(update),
-                               ha_get_text(update));
-            }
-        }
-        json_free(updates);
-        if (g_gw.running) sleep(g_gw.poll_interval * 5);
-    }
-    return NULL;
-}
 
 /* SMS setup + thread */
 
-static void *thread_poll_sms(void *arg) {
-    (void)arg;
-    printf("[gateway] SMS/Twilio polling (interval: %ds)\n", g_gw.poll_interval * 5);
-    while (g_gw.running) {
-        json_node_t *updates = sms_poll_messages(g_gw.http);
-        if (updates && json_len(updates) > 0) {
-            size_t n = json_len(updates);
-            for (size_t i = 0; i < n; i++) {
-                json_node_t *update = json_get(updates, i);
-                process_update("sms",
-                               sms_get_chat_id(update),
-                               sms_get_text(update));
-            }
-            json_free(updates);
-        } else {
-            json_free(updates);
-        }
-        if (g_gw.running) sleep(g_gw.poll_interval * 5);
-    }
-    return NULL;
-}
 
 /* Port of Python hermes_cli/gateway.py:_setup_feishu(). */
 /* Feishu setup */
 
-static void *thread_poll_feishu(void *arg) {
-    (void)arg;
-    printf("[gateway] Feishu platform (webhook-based). Idle.\n");
-    while (g_gw.running) sleep(g_gw.poll_interval * 10);
-    return NULL;
-}
 
 /* Port of Python hermes_cli/gateway.py:_setup_wecom(). */
 /* WeCom setup */
 
-static void *thread_poll_wecom(void *arg) {
-    (void)arg;
-    printf("[gateway] WeCom polling (interval: %ds)\n", g_gw.poll_interval * 5);
-    while (g_gw.running) {
-        json_node_t *updates = wecom_poll_messages(g_gw.http);
-        if (updates && json_len(updates) > 0) {
-            size_t n = json_len(updates);
-            for (size_t i = 0; i < n; i++) {
-                json_node_t *update = json_get(updates, i);
-                process_update("wecom",
-                               wecom_get_chat_id(update),
-                               wecom_get_text(update));
-            }
-            json_free(updates);
-        } else {
-            json_free(updates);
-        }
-        if (g_gw.running) sleep(g_gw.poll_interval * 5);
-    }
-    return NULL;
-}
 
 /* Port of Python hermes_cli/gateway.py:_setup_dingtalk(). */
 /* DingTalk setup */
 
-static void *thread_poll_dingtalk(void *arg) {
-    (void)arg;
-    printf("[gateway] DingTalk polling (interval: %ds)\n", g_gw.poll_interval * 5);
-    while (g_gw.running) {
-        json_node_t *updates = dingtalk_poll_messages(g_gw.http);
-        if (updates && json_len(updates) > 0) {
-            size_t n = json_len(updates);
-            for (size_t i = 0; i < n; i++) {
-                json_node_t *update = json_get(updates, i);
-                process_update("dingtalk",
-                               dingtalk_get_chat_id(update),
-                               dingtalk_get_text(update));
-            }
-            json_free(updates);
-        } else {
-            json_free(updates);
-        }
-        if (g_gw.running) sleep(g_gw.poll_interval * 5);
-    }
-    return NULL;
-}
 
 /* QQ Bot setup */
 
-static void *thread_poll_qqbot(void *arg) {
-    (void)arg;
-    printf("[gateway] QQ Bot polling (interval: %ds)\n", g_gw.poll_interval * 5);
-    while (g_gw.running) {
-        json_node_t *updates = qqbot_poll_messages(g_gw.http);
-        if (updates && json_len(updates) > 0) {
-            size_t n = json_len(updates);
-            for (size_t i = 0; i < n; i++) {
-                json_node_t *update = json_get(updates, i);
-                process_update("qqbot",
-                               qqbot_get_chat_id(update),
-                               qqbot_get_text(update));
-            }
-            json_free(updates);
-        } else {
-            json_free(updates);
-        }
-        if (g_gw.running) sleep(g_gw.poll_interval * 5);
-    }
-    return NULL;
-}
 
 /* BlueBubbles setup */
 
-static void *thread_poll_bluebubbles(void *arg) {
-    (void)arg;
-    printf("[gateway] BlueBubbles platform (iMessage). Polling every %ds.\\n", g_gw.poll_interval);
-
-    /* Check for optional poll GUID env var */
-    const char *poll_guid = getenv("BLUEBUBBLES_POLL_GUID");
-    if (poll_guid) {
-        bluebubbles_set_poll_guid(poll_guid);
-        printf("[gateway] BlueBubbles polling chat GUID: %s\\n", poll_guid);
-    } else {
-        bluebubbles_set_poll_guid(NULL);
-        printf("[gateway] BlueBubbles is webhook-driven. Set BLUEBUBBLES_POLL_GUID for polling.\\n");
-    }
-
-    while (g_gw.running) {
-        json_node_t *updates = bluebubbles_poll_messages(g_gw.http);
-        if (updates && json_len(updates) > 0) {
-            size_t n = json_len(updates);
-            for (size_t i = 0; i < n; i++) {
-                json_node_t *update = json_get(updates, i);
-                const char *chat_id = bluebubbles_get_chat_id(update);
-                const char *text = bluebubbles_get_text(update);
-                if (chat_id && text && text[0]) {
-                    process_update("bluebubbles", chat_id, text);
-                }
-            }
-        }
-        json_free(updates);
-        if (g_gw.running) sleep(g_gw.poll_interval);
-    }
-    return NULL;
-}
 
 /* ================================================================
  *  Get port from env with HERMES_ or SLERMES_ prefix
@@ -1507,11 +1089,6 @@ static void *thread_poll_bluebubbles(void *arg) {
  * ================================================================ */
 
 
-static void *thread_msgraph_webhook(void *arg) {
-    (void)arg;
-    msgraph_webhook_run();
-    return NULL;
-}
 
 /* weixin setup + thread */
 extern bool weixin_init(const char *token, const char *account_id);
@@ -1520,11 +1097,6 @@ extern void weixin_stop(void);
 
 /* Port of Python hermes_cli/gateway.py:_setup_weixin(). */
 
-static void *thread_weixin(void *arg) {
-    (void)arg;
-    weixin_start();
-    return NULL;
-}
 
 /* yuanbao setup + thread */
 extern bool yuanbao_init(const char *app_id, const char *app_secret,
@@ -1534,11 +1106,6 @@ extern void yuanbao_start(void);
 extern void yuanbao_stop(void);
 
 
-static void *thread_yuanbao(void *arg) {
-    (void)arg;
-    yuanbao_start();
-    return NULL;
-}
 
 /* Port of Python hermes_cli/dump.py:_gateway_status(). */
 /* ── Gateway subcommand: status ───────────────────────────────── */
@@ -1547,243 +1114,7 @@ static void *thread_yuanbao(void *arg) {
 /* ── Gateway subcommand: list ─────────────────────────────────── */
 
 /* Periodic cleanup thread — evicts idle sessions every 60s */
-/* GW13: Kanban notifier thread function
- * Polls kanban board JSON files for pending notification events and
- * delivers them to subscribed platform/chat/thread targets via the
- * gateway's platform send function. Mirrors Python's _kanban_notifier_watcher.
- *
- * For each board on disk (~/.hermes/kanban/boards/<slug>.json):
- *   1. Read notify_subs and find active subscriptions owned by this profile
- *   2. For each sub, find terminal events (completed/blocked/gave_up/crashed/timed_out)
- *      with id > last_event_id for the subscribed task
- *   3. Send notification message to (platform, chat_id, thread_id)
- *   4. Advance cursor on success, increment fail_count on failure
- *   5. Remove sub after max consecutive failures (dead chat detection)
- *   6. Auto-unsubscribe when task reaches terminal state (done/archived)
- */
-static void *thread_kanban_notifier(void *arg) {
-    (void)arg;
 
-    /* Initial delay so gateway finishes wiring platform adapters */
-    sleep(5);
-
-    fprintf(stderr, "[kanban-notifier] started (profile=%s)\n",
-            g_gw.kanban_notifier_profile[0] ? g_gw.kanban_notifier_profile : "(default)");
-
-    while (g_gw.running) {
-        sleep(g_gw.kanban_notifier_interval_sec);
-        if (!g_gw.running) break;
-
-        /* Scan board files on disk */
-        char boards_dir[4096];
-        snprintf(boards_dir, sizeof(boards_dir), "%s/.hermes/kanban/boards",
-                 getenv("HOME") ? getenv("HOME") : "/tmp");
-
-        DIR *dir = opendir(boards_dir);
-        if (!dir) continue;
-
-        struct dirent *entry;
-        while ((entry = readdir(dir)) != NULL) {
-            if (!strstr(entry->d_name, ".json")) continue;
-
-            char board_path[4096];
-            snprintf(board_path, sizeof(board_path), "%s/%s", boards_dir, entry->d_name);
-
-            /* Read board JSON file */
-            FILE *f = fopen(board_path, "r");
-            if (!f) continue;
-
-            fseek(f, 0, SEEK_END);
-            long fsize = ftell(f);
-            if (fsize > 1024 * 1024 || fsize <= 0) { fclose(f); continue; }
-            fseek(f, 0, SEEK_SET);
-
-            char *json_buf = (char *)malloc((size_t)fsize + 1);
-            if (!json_buf) { fclose(f); continue; }
-            size_t nread = fread(json_buf, 1, (size_t)fsize, f);
-            json_buf[nread] = '\0';
-            fclose(f);
-
-            /* Parse board JSON — extract slug, tasks, events, notify_subs */
-            json_t *board = json_parse(json_buf, NULL);
-            free(json_buf);
-            if (!board) continue;
-
-            const char *slug = json_get_str(board, "slug", "default");
-            (void)slug;
-
-            /* Process notify_subs */
-            json_t *subs = json_obj_get(board, "notify_subs");
-            json_t *events = json_obj_get(board, "events");
-
-            if (subs && events) {
-                size_t nsubs = json_len(subs);
-                size_t nevents = json_len(events);
-
-                for (size_t si = 0; si < nsubs; si++) {
-                    json_t *sub = json_get(subs, si);
-                    if (!sub) continue;
-                    if (!json_get_bool(sub, "active", false)) continue;
-
-                    const char *task_id = json_get_str(sub, "task_id", "");
-                    const char *platform = json_get_str(sub, "platform", "");
-                    const char *chat_id = json_get_str(sub, "chat_id", "");
-                    const char *thread_id = json_get_str(sub, "thread_id", "");
-                    const char *sub_profile = json_get_str(sub, "notifier_profile", "");
-                    int64_t last_event_id = (int64_t)json_get_num(sub, "last_event_id", 0);
-
-                    if (!task_id[0] || !platform[0] || !chat_id[0]) continue;
-
-                    /* Profile ownership check */
-                    if (sub_profile[0] && g_gw.kanban_notifier_profile[0] &&
-                        strcmp(sub_profile, g_gw.kanban_notifier_profile) != 0) {
-                        continue;  /* owned by different profile */
-                    }
-
-                    /* Check if platform adapter is connected */
-                    gw_platform_t *plat = gw_platform_find(platform);
-                    if (!plat) continue;
-
-                    /* Collect unseen terminal events for this task */
-                    int64_t max_id = last_event_id;
-                    int event_count = 0;
-                    char event_kinds[64][64];
-                    char event_payloads[64][2048];
-
-                    for (size_t ei = 0; ei < nevents; ei++) {
-                        json_t *ev = json_get(events, ei);
-                        if (!ev) continue;
-
-                        int64_t ev_id = (int64_t)json_get_num(ev, "id", 0);
-                        if (ev_id <= last_event_id) continue;
-
-                        const char *ev_task = json_get_str(ev, "task_id", "");
-                        if (strcmp(ev_task, task_id) != 0) continue;
-
-                        const char *kind = json_get_str(ev, "kind", "");
-                        /* Only terminal kinds */
-                        bool is_terminal = false;
-                        const char *terminal_kinds[] = {
-                            "completed", "blocked", "gave_up", "crashed", "timed_out", NULL
-                        };
-                        for (int tk = 0; terminal_kinds[tk]; tk++) {
-                            if (strcmp(kind, terminal_kinds[tk]) == 0) {
-                                is_terminal = true;
-                                break;
-                            }
-                        }
-                        if (!is_terminal) continue;
-
-                        if (event_count < 64) {
-                            snprintf(event_kinds[event_count], 64, "%s", kind);
-                            const char *payload = json_get_str(ev, "payload", "{}");
-                            snprintf(event_payloads[event_count], 2048, "%s", payload);
-                            event_count++;
-                        }
-                        if (ev_id > max_id) max_id = ev_id;
-                    }
-
-                    if (event_count == 0) continue;
-
-                    /* Build notification message */
-                    char msg[4096];
-                    if (event_count == 1) {
-                        snprintf(msg, sizeof(msg),
-                                 "📋 Kanban task %s: %s\n%s",
-                                 task_id, event_kinds[0], event_payloads[0]);
-                    } else {
-                        int written = snprintf(msg, sizeof(msg),
-                                               "📋 Kanban task %s: %d new events\n",
-                                               task_id, event_count);
-                        for (int ei = 0; ei < event_count && ei < 5; ei++) {
-                            size_t len = strlen(msg);
-                            snprintf(msg + len, sizeof(msg) - len,
-                                     "  • %s\n", event_kinds[ei]);
-                        }
-                        (void)written;
-                    }
-
-                    /* Deliver via platform adapter */
-                    char full_chat[256];
-                    if (thread_id && thread_id[0]) {
-                        snprintf(full_chat, sizeof(full_chat), "%s:%s", chat_id, thread_id);
-                    } else {
-                        snprintf(full_chat, sizeof(full_chat), "%s", chat_id);
-                    }
-
-                    int sent = gw_platform_send(platform, full_chat, msg) ? 0 : -1;
-
-                    if (sent == 0) {
-                        /* Success: advance cursor in the JSON file */
-                        json_set(sub, "last_event_id", json_number((double)max_id));
-
-                        /* Check if task is terminal — auto-unsubscribe */
-                        json_t *task_list = json_obj_get(board, "tasks");
-                        if (task_list) {
-                            size_t ntasks = json_len(task_list);
-                            for (size_t ti = 0; ti < ntasks; ti++) {
-                                json_t *t = json_get(task_list, ti);
-                                if (!t) continue;
-                                const char *tid = json_get_str(t, "id", "");
-                                if (strcmp(tid, task_id) == 0) {
-                                    const char *col = json_get_str(t, "column", "");
-                                    if (strcmp(col, "done") == 0 || strcmp(col, "archived") == 0) {
-                                        json_set(sub, "active", json_bool(false));
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-
-                        fprintf(stderr, "[kanban-notifier] delivered %d event(s) for %s to %s:%s\n",
-                                event_count, task_id, platform, full_chat);
-                    } else {
-                        /* Failure: increment fail count */
-                        int fail_count = (int)json_get_num(sub, "fail_count", 0) + 1;
-                        json_set(sub, "fail_count", json_number((double)fail_count));
-
-                        if (fail_count >= g_gw.kanban_notifier_max_fail) {
-                            json_set(sub, "active", json_bool(false));
-                            fprintf(stderr, "[kanban-notifier] removed dead sub for %s on %s (fail_count=%d)\n",
-                                    task_id, platform, fail_count);
-                        } else {
-                            fprintf(stderr, "[kanban-notifier] send failed for %s on %s (fail_count=%d/%d)\n",
-                                    task_id, platform, fail_count, g_gw.kanban_notifier_max_fail);
-                        }
-                    }
-                }
-            }
-
-            /* Write updated board back to disk */
-            char *updated = json_serialize(board);
-            if (updated) {
-                FILE *out = fopen(board_path, "w");
-                if (out) {
-                    fputs(updated, out);
-                    fclose(out);
-                }
-                free(updated);
-            }
-
-            json_free(board);
-        }
-        closedir(dir);
-    }
-
-    fprintf(stderr, "[kanban-notifier] stopped\n");
-    return NULL;
-}
-
-static void *thread_cleanup_sessions(void *arg) {
-    (void)arg;
-    while (g_gw.running) {
-        sleep(60);
-        pthread_mutex_lock(&g_gw.session_mutex);
-        session_cleanup_idle();
-        pthread_mutex_unlock(&g_gw.session_mutex);
-    }
-    return NULL;
-}
 
 int hermes_gateway_main(int argc, char **argv) {
     /* Subcommand dispatch */
