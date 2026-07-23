@@ -205,6 +205,7 @@ PORT_OBJ = \
     src/cli/port_dashboard_auth_audit.o \
     src/cli/port_dashboard_auth_registry.o \
     src/cli/port_model_normalize.o \
+    src/cli/port_provider_catalog.o \
     src/cli/port_model_switch.o \
     src/cli/port_nous_billing.o src/cli/billing_json_helpers.o \
     src/cli/port_runtime_provider.o src/hermes_cli/sqlite_util.o src/hermes_cli/projects_db.o src/hermes_cli/debug_cli.o src/hermes_cli/auth_helpers.o src/hermes_cli/kanban_format.o \
