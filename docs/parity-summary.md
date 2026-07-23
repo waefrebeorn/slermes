@@ -1,16 +1,22 @@
 # Slermes C11 Parity — Live State
 
-**Generated:** 2026-07-23 by `slermes_parity_battleground.py` (live scanner)
+**Generated:** 2026-07-23 (post upstream re-pull) by `slermes_parity_battleground.py` (live scanner)
 
-## Overall Numbers (live)
+## Overall Numbers (live, after re-pulling fresh upstream Python)
 
 | Classification | Count | Percentage | Meaning |
 |----------------|-------|------------|---------|
-| **PORTED** | 6,434 | 66.1% | C11 implementation with PoP annotation |
-| **REAL_GAP** | 3,299 | 33.9% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |
-| **PARTIAL** | 0 | 0.0% | All C fns now carry PoP annotations |
+| **PORTED** | 6,532 | 58.5% | C11 implementation with PoP annotation |
+| **REAL_GAP** | 4,619 | 41.3% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |
+| **PARTIAL** | 23 | 0.2% | C fn exists, annotation needs fixing |
 | **STUB** | 0 | 0.0% | No stub functions remain |
-| **TOTAL** | 9,733 | 100% | All Python functions/methods scanned |
+| **TOTAL** | 11,174 | 100% | All Python functions/methods scanned |
+
+> **Re-pull effect (2026-07-23):** upstream added **+1,441** new Python features
+> (total 9,733 → 11,174). Slermes gained +98 ports in the same window, so
+> REAL_GAP rose **+1,320** (3,299 → 4,619). The quarry grew faster than ports —
+> this is expected and honest, not a regression. Pre-pull baseline was 6,434 /
+> 3,299 (66.1% / 33.9%).
 
 > **This is a partial port, ~two-thirds done.** REAL_GAP is the honest count of Python
 > features not yet reimplemented in C — it is not zero and the docs do not claim
