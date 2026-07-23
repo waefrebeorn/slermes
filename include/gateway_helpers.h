@@ -69,6 +69,17 @@ char *redact_phone(const char *phone);
  *  Port of Python gateway/run.py _sanitize_gateway_final_response()
  * ================================================================ */
 
+/* Redact secrets/user-facing credentials before text leaves the gateway.
+ * Faithful port of Python gateway/run.py _redact_gateway_user_facing_secrets().
+ * Tirith (hermes_redact) first, then the _GATEWAY_SECRET_PATTERNS pass.
+ * Caller frees. */
+char *gateway_redact_user_facing_secrets(const char *text);
+
+/* Render an AgentNotice to a single stripped plaintext line.
+ * Faithful port of Python gateway/run.py render_notice_line().
+ * Caller frees. */
+char *gateway_render_notice_line(const char *notice_text);
+
 /* Check if text looks like a provider/infrastructure error (not normal content).
  * Mirrors Python _looks_like_gateway_provider_error().
  * Two heuristics: text is short (≤3 lines) AND error marker at start. */
