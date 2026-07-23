@@ -2,7 +2,7 @@
 # ║           Slermes — C Translation                            ║
 # ║         of Hermes Agent (Nous Research)                      ║
 # ║                                                              ║
-# ║  Build: Clean  │  v627 │  Tests: 36/36  │  Oracle: 18 suites 0 mismatch + 1611/0 fuzz ║
+# ║  Build: Clean  │  v629 │  Tests: 36/36  │  Oracle: 18 suites 0 mismatch + 1611/0 fuzz ║
 # ║  Ported: 6,532/11,174 (58.5%)  REAL_GAP: 4,619 (41.3%)  PARTIAL: 23  ║
 # ║  ✓ v573..v627: god-header purge, web_server/weixin heavy ports, batch PoP   ║
 # ║    annotation closure, recovery renumber, parity-page fix (55 commits).    ║
