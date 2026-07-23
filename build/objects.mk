@@ -214,6 +214,7 @@ PORT_OBJ = \
     src/cli/port_lazy_deps.o \
     src/cli/port_curses_ui.o \
     src/cli/port_security_audit.o \
+    src/cli/port_doctor.o \
     src/cli/port_model_normalize.o \
     src/cli/port_provider_catalog.o \
     src/cli/port_model_switch.o \
