@@ -417,6 +417,7 @@ char *provider_derive_api_key_name(const char *provider_name, const char *base_u
  *  L06: supports_vision config override
  * ================================================================ */
 
+/* PoP: model_supports_vision @ agent/models_dev.py:supports_vision */
 bool model_supports_vision(const char *model_name, const provider_config_t *provider_cfg) {
     if (!model_name) return false;
 
@@ -484,6 +485,7 @@ bool model_supports_vision(const char *model_name, const provider_config_t *prov
 /* Port of Python agent/models_dev.py:_extract_context().
  * Extract context_length from a model entry's "limit" sub-object.
  * Returns context_window (int) or -1 if invalid/zero. */
+/* PoP: extract_context @ agent/models_dev.py:_extract_context */
 int extract_context(json_t *entry) {
     if (!entry || entry->type != JSON_OBJECT) return -1;
     json_t *limit = json_obj_get(entry, "limit");
@@ -570,6 +572,7 @@ const char *models_dev_resolve_hermes_provider(const char *provider) {
 /* Normalize a base URL: strip whitespace and trailing slash.
  * Port of Python model_metadata._normalize_base_url().
  * Returns malloc'd string, caller must free(). */
+/* PoP: provider_normalize_base_url @ agent/model_metadata.py:_normalize_base_url */
 char *provider_normalize_base_url(const char *base_url) {
     if (!base_url || !*base_url) return NULL;
 
@@ -647,6 +650,7 @@ char *provider_strip_prefix(const char *model) {
  * Recognises loopback, container DNS (host.docker.internal),
  * RFC-1918 private ranges, link-local, and Tailscale CGNAT.
  * Returns true if the host is local/private. */
+/* PoP: is_local_endpoint @ agent/model_metadata.py:is_local_endpoint */
 bool is_local_endpoint(const char *base_url) {
     if (!base_url || !*base_url) return false;
 
@@ -867,6 +871,7 @@ char *provider_infer_from_url(const char *base_url) {
  * Port of Python model_metadata.parse_context_limit_from_error().
  * Extracts numbers near context-related keywords. Returns limit,
  * or -1 if not found / not parseable. */
+/* PoP: parse_context_limit_from_error @ agent/model_metadata.py:parse_context_limit_from_error */
 int parse_context_limit_from_error(const char *error_msg) {
     if (!error_msg || !*error_msg) return -1;
 
@@ -948,6 +953,7 @@ int parse_context_limit_from_error(const char *error_msg) {
 /* Parse available output tokens from a max_tokens-too-large error message.
  * Port of Python model_metadata.parse_available_output_tokens_from_error().
  * Returns available tokens, or -1 if not a max_tokens-too-large error. */
+/* PoP: parse_available_output_tokens_from_error @ agent/model_metadata.py:parse_available_output_tokens_from_error */
 int parse_available_output_tokens_from_error(const char *error_msg) {
     if (!error_msg || !*error_msg) return -1;
 
@@ -995,6 +1001,7 @@ int parse_available_output_tokens_from_error(const char *error_msg) {
 
 /* ---- model_id_matches ---- */
 /* Port of Python model_metadata._model_id_matches(). */
+/* PoP: model_id_matches @ agent/model_metadata.py:_model_id_matches */
 bool model_id_matches(const char *candidate_id, const char *lookup_model) {
     if (!candidate_id || !lookup_model) return false;
 
@@ -1052,6 +1059,7 @@ bool provider_model_suggests_minimax_m3(const char *model) {
 
 /* ---- provider_normalize_model_version ---- */
 /* Port of Python model_metadata._normalize_model_version(). */
+/* PoP: provider_normalize_model_version @ agent/model_metadata.py:_normalize_model_version */
 char *provider_normalize_model_version(const char *model) {
     if (!model) return NULL;
 
@@ -1069,6 +1077,7 @@ char *provider_normalize_model_version(const char *model) {
 
 /* ---- grok_supports_reasoning_effort (name parity) ---- */
 /* Port of Python model_metadata.grok_supports_reasoning_effort(). */
+/* PoP: grok_supports_reasoning_effort @ agent/model_metadata.py:grok_supports_reasoning_effort */
 bool grok_supports_reasoning_effort(const char *model) {
     if (!model) return false;
     size_t len = strlen(model);
@@ -1097,6 +1106,7 @@ bool grok_supports_reasoning_effort(const char *model) {
 /* ---- is_openrouter_base_url ---- */
 /* Port of Python model_metadata._is_openrouter_base_url().
  * Checks if URL contains "openrouter.ai". */
+/* PoP: is_openrouter_base_url @ agent/model_metadata.py:_is_openrouter_base_url */
 bool is_openrouter_base_url(const char *base_url) {
     return base_url && strstr(base_url, "openrouter.ai") != NULL;
 }
@@ -1104,6 +1114,7 @@ bool is_openrouter_base_url(const char *base_url) {
 /* ---- is_custom_endpoint ---- */
 /* Port of Python model_metadata._is_custom_endpoint().
  * URL is valid (non-empty) and not an OpenRouter endpoint. */
+/* PoP: is_custom_endpoint @ agent/model_metadata.py:_is_custom_endpoint */
 bool is_custom_endpoint(const char *base_url) {
     return base_url && *base_url && !is_openrouter_base_url(base_url);
 }
@@ -1123,6 +1134,7 @@ bool provider_is_known_base_url(const char *base_url) {
 /* ---- provider_auth_headers ---- */
 /* Port of Python model_metadata._auth_headers().
  * Returns json_t dict {Authorization: Bearer <key>} or NULL if key empty. */
+/* PoP: provider_auth_headers @ agent/model_metadata.py:_auth_headers */
 json_t *provider_auth_headers(const char *api_key) {
     if (!api_key) return NULL;
     while (*api_key == ' ' || *api_key == '\t') api_key++;
@@ -1143,6 +1155,7 @@ json_t *provider_auth_headers(const char *api_key) {
 /* Port of Python model_metadata._coerce_reasonable_int().
  * Converts string to int, checks range [minimum, maximum].
  * Returns -1 on failure (overflow, non-numeric, out of range). */
+/* PoP: coerce_reasonable_int @ agent/model_metadata.py:_coerce_reasonable_int */
 int coerce_reasonable_int(const char *value, int minimum, int maximum) {
     if (!value) return -1;
     while (*value == ' ' || *value == '\t') value++;
@@ -1168,6 +1181,7 @@ int coerce_reasonable_int(const char *value, int minimum, int maximum) {
 /* ---- estimate_tokens_rough ---- */
 /* Port of Python model_metadata.estimate_tokens_rough().
  * Rough token estimate using ceiling division: (len + 3) / 4. */
+/* PoP: estimate_tokens_rough @ agent/model_metadata.py:estimate_tokens_rough */
 int estimate_tokens_rough(const char *text) {
     if (!text) return 0;
     size_t len = strlen(text);
@@ -1177,6 +1191,7 @@ int estimate_tokens_rough(const char *text) {
 /* ---- resolve_requests_verify ---- */
 /* Port of Python model_metadata._resolve_requests_verify().
  * Returns 1 for verify, 0 for skip verify, -1 for custom CA path. */
+/* PoP: resolve_requests_verify @ agent/model_metadata.py:_resolve_requests_verify */
 int resolve_requests_verify(void) {
     const char *value = getenv("HERMES_VERIFY_SSL");
     if (!value || !*value) return 1; /* Default: verify */
@@ -1213,6 +1228,7 @@ const char *provider_requests_verify_path(void) {
 /* Port of Python model_metadata._extract_first_int().
  * Iterates nested JSON objects looking for keys in the NULL-terminated
  * keys array. Returns the first matching coerced int value, or -1. */
+/* PoP: extract_first_int @ agent/model_metadata.py:_extract_first_int */
 int extract_first_int(const json_t *payload, const char **keys) {
     if (!payload || !keys) return -1;
     if (payload->type == JSON_OBJECT) {
@@ -1259,6 +1275,7 @@ int extract_first_int(const json_t *payload, const char **keys) {
 /* ---- extract_context_length ---- */
 /* Port of Python model_metadata._extract_context_length().
  * Delegates to extract_first_int with context-length keys. */
+/* PoP: extract_context_length @ agent/model_metadata.py:_extract_context_length */
 int extract_context_length(const json_t *payload) {
     const char *keys[] = {
         "context_length", "context_window", "context_size",
@@ -1272,6 +1289,7 @@ int extract_context_length(const json_t *payload) {
 /* ---- extract_max_completion_tokens ---- */
 /* Port of Python model_metadata._extract_max_completion_tokens().
  * Delegates to extract_first_int with max-completion keys. */
+/* PoP: extract_max_completion_tokens @ agent/model_metadata.py:_extract_max_completion_tokens */
 int extract_max_completion_tokens(const json_t *payload) {
     const char *keys[] = {
         "max_completion_tokens", "max_output_tokens", "max_tokens", NULL
@@ -1283,6 +1301,7 @@ int extract_max_completion_tokens(const json_t *payload) {
  * Extracts pricing from model metadata payload.
  * First checks for novita-specific keys, then iterates nested dicts
  * using alias maps for prompt/completion/request/cache_read/cache_write. */
+/* PoP: provider_extract_pricing @ agent/model_metadata.py:_extract_pricing */
 json_t *provider_extract_pricing(const json_t *payload) {
     if (!payload || payload->type != JSON_OBJECT) return NULL;
 
@@ -1464,6 +1483,7 @@ int estimate_count_image_tokens(const json_t *msg, int cost_per_image) {
 /* ---- estimate_message_chars ---- */
 /* Port of Python model_metadata._estimate_message_chars().
  * Counts serialized chars of a message dict. */
+/* PoP: estimate_message_chars @ agent/model_metadata.py:_estimate_message_chars */
 int estimate_message_chars(const json_t *msg) {
     if (!msg) return 0;
     char *serialized = json_serialize(msg);
@@ -1477,6 +1497,7 @@ int estimate_message_chars(const json_t *msg) {
 /* Port of Python model_metadata.estimate_messages_tokens_rough().
  * Sums char-based tokens + image tokens for a message array.
  * Uses ceiling division: (total_chars + 3) / 4. */
+/* PoP: estimate_messages_tokens_rough @ agent/model_metadata.py:estimate_messages_tokens_rough */
 int estimate_messages_tokens_rough(const json_t *messages) {
     if (!messages || messages->type != JSON_ARRAY) return 0;
     int total_chars = 0;
@@ -1493,6 +1514,7 @@ int estimate_messages_tokens_rough(const json_t *messages) {
 /* ---- estimate_request_tokens_rough ---- */
 /* Port of Python model_metadata.estimate_request_tokens_rough().
  * Estimates tokens for system_prompt + messages + tools. */
+/* PoP: estimate_request_tokens_rough @ agent/model_metadata.py:estimate_request_tokens_rough */
 int estimate_request_tokens_rough(const json_t *messages,
                                    const char *system_prompt,
                                    const json_t *tools) {
@@ -1528,6 +1550,7 @@ const int CONTEXT_PROBE_TIERS[CONTEXT_PROBE_TIER_COUNT] = {
 /* ---- get_next_probe_tier ---- */
 /* Port of Python model_metadata.get_next_probe_tier().
  * Returns the next lower probe tier, or -1 if already at minimum. */
+/* PoP: get_next_probe_tier @ agent/model_metadata.py:get_next_probe_tier */
 int get_next_probe_tier(int current_length) {
     for (int i = 0; i < CONTEXT_PROBE_TIER_COUNT; i++) {
         if (CONTEXT_PROBE_TIERS[i] < current_length)
@@ -1566,6 +1589,7 @@ json_t *provider_context_cache_load(void) {
 /* Port of Python model_metadata.save_context_length().
  * Saves model@base_url -> length entry to the cache file.
  * Creates the file if it doesn't exist. */
+/* PoP: save_context_length @ agent/model_metadata.py:save_context_length */
 int save_context_length(const char *model, const char *base_url, int length) {
     if (!model || !base_url) return 0;
 
@@ -1624,6 +1648,7 @@ int save_context_length(const char *model, const char *base_url, int length) {
 /* ---- get_cached_context_length (name parity) ---- */
 /* Port of Python model_metadata.get_cached_context_length().
  * Looks up model@base_url in the cache file. Returns -1 if not found. */
+/* PoP: get_cached_context_length @ agent/model_metadata.py:get_cached_context_length */
 int get_cached_context_length(const char *model, const char *base_url) {
     if (!model || !base_url) return -1;
 
@@ -1706,6 +1731,7 @@ int provider_context_cache_invalidate(const char *model, const char *base_url) {
 /* Port of Python model_metadata.detect_local_server_type().
  * Probes known local inference endpoints via HTTP GET and
  * returns the detected server type, or NULL if undetermined. */
+/* PoP: detect_local_server_type @ agent/model_metadata.py:detect_local_server_type */
 char *detect_local_server_type(const char *base_url, const char *api_key) {
     if (!base_url || !*base_url) return NULL;
 
@@ -1817,6 +1843,7 @@ done:
  * If model_id contains "/", the bare model part (after first "/") is
  * also added as an alias — but only if no entry already exists under
  * that key (setdefault semantics). */
+/* PoP: add_model_aliases @ agent/model_metadata.py:_add_model_aliases */
 void add_model_aliases(json_t *cache, const char *model_id, json_t *entry) {
     if (!cache || !model_id || !*model_id || !entry) return;
 
@@ -1838,6 +1865,7 @@ void add_model_aliases(json_t *cache, const char *model_id, json_t *entry) {
 /* Port of Python model_metadata.get_context_length_from_provider_error().
  * Returns a provider-reported lower context limit only if it's less than
  * the current_context_length. Returns -1 if no limit found. */
+/* PoP: get_context_length_from_provider_error @ agent/model_metadata.py:get_context_length_from_provider_error */
 int get_context_length_from_provider_error(const char *error_msg, int current_context_length) {
     int parsed = parse_context_limit_from_error(error_msg);
     if (parsed < 0) return -1;
@@ -1961,6 +1989,7 @@ static int ollama_query_api_show_internal(const char *model, const char *base_ur
 /* Port of Python model_metadata._query_ollama_api_show().
  * Provider-agnostic: POSTs to /api/show, parses response.
  * Resolution: model_info.*.context_length > num_ctx. */
+/* PoP: query_ollama_api_show @ agent/model_metadata.py:_query_ollama_api_show */
 int query_ollama_api_show(const char *model, const char *base_url, const char *api_key) {
     int model_ctx = -1, num_ctx = -1;
     int flags = ollama_query_api_show_internal(model, base_url, api_key, &model_ctx, &num_ctx);
@@ -1973,6 +2002,7 @@ int query_ollama_api_show(const char *model, const char *base_url, const char *a
 /* Port of Python model_metadata.query_ollama_num_ctx().
  * Strips provider prefix, verifies server is Ollama, then queries.
  * Resolution: num_ctx > model_info context_length. */
+/* PoP: query_ollama_num_ctx @ agent/model_metadata.py:query_ollama_num_ctx */
 int query_ollama_num_ctx(const char *model, const char *base_url, const char *api_key) {
     if (!model || !*model || !base_url || !*base_url) return -1;
 
@@ -2064,6 +2094,7 @@ static int probe_v1_models_list(http_t *h, const char *server_url,
 /* ---- query_local_context_length ---- */
 /* Port of Python model_metadata._query_local_context_length().
  * Probes local inference server endpoints to find the model's context length. */
+/* PoP: query_local_context_length @ agent/model_metadata.py:_query_local_context_length */
 int query_local_context_length(const char *model, const char *base_url, const char *api_key) {
     if (!model || !*model || !base_url || !*base_url) return -1;
 
@@ -2176,6 +2207,7 @@ done:
 /* Port of Python model_metadata._query_anthropic_context_length().
  * Queries Anthropic's /v1/models endpoint for model context length.
  * Returns context length or -1 on failure/unsupported. */
+/* PoP: query_anthropic_context_length @ agent/model_metadata.py:_query_anthropic_context_length */
 int query_anthropic_context_length(const char *model, const char *base_url, const char *api_key) {
     if (!model || !*model || !base_url || !*base_url) return -1;
     /* OAuth tokens (sk-ant-oat*) cannot access /v1/models */
@@ -2236,6 +2268,7 @@ int query_anthropic_context_length(const char *model, const char *base_url, cons
 /* Port of Python model_metadata._resolve_endpoint_context_length().
  * Resolves context length from an endpoint's live /models metadata.
  * Tries exact match first, then single-entry fallback, then fuzzy match. */
+/* PoP: resolve_endpoint_context_length @ agent/model_metadata.py:_resolve_endpoint_context_length */
 int resolve_endpoint_context_length(const char *model, const char *base_url, const char *api_key) {
     if (!model || !*model || !base_url || !*base_url) return -1;
 
@@ -2311,6 +2344,7 @@ static const struct { const char *slug; int ctx; } g_codex_oauth_fallback[] = {
  * Probes chatgpt.com/backend-api/codex/models for per-slug context windows.
  * Returns json_t* dict of slug -> context_window, or NULL on failure.
  * Caller must json_free(). */
+/* PoP: provider_fetch_codex_oauth_context_lengths @ agent/model_metadata.py:_fetch_codex_oauth_context_lengths */
 json_t *provider_fetch_codex_oauth_context_lengths(const char *access_token) {
     if (!access_token || !*access_token) return NULL;
 
@@ -2358,6 +2392,7 @@ json_t *provider_fetch_codex_oauth_context_lengths(const char *access_token) {
 /* Port of Python model_metadata._resolve_codex_oauth_context_length().
  * Resolves a Codex OAuth model's real context window.
  * Prefers live probe, falls back to hardcoded defaults via substring match. */
+/* PoP: resolve_codex_oauth_context_length @ agent/model_metadata.py:_resolve_codex_oauth_context_length */
 int resolve_codex_oauth_context_length(const char *model, const char *access_token) {
     if (!model || !*model) return -1;
 
@@ -2436,6 +2471,7 @@ int resolve_codex_oauth_context_length(const char *model, const char *access_tok
  * Fetches model metadata from OpenRouter API with 1-hour TTL.
  * Returns json_t* dict keyed by model ID, or NULL on failure.
  * Caller must json_free(). */
+/* PoP: provider_fetch_model_metadata @ agent/model_metadata.py:fetch_model_metadata */
 json_t *provider_fetch_model_metadata(bool force_refresh) {
     /* Static in-memory cache */
     static json_t *g_cache = NULL;
@@ -2515,6 +2551,7 @@ json_t *provider_fetch_model_metadata(bool force_refresh) {
  * Fetches model metadata from an OpenAI-compatible /models endpoint.
  * Returns json_t* dict keyed by model ID, or NULL on failure.
  * Caller must json_free(). */
+/* PoP: provider_fetch_endpoint_model_metadata @ agent/model_metadata.py:fetch_endpoint_model_metadata */
 json_t *provider_fetch_endpoint_model_metadata(const char *base_url, const char *api_key, bool force_refresh) {
     if (!base_url || !*base_url) return NULL;
 
@@ -2638,6 +2675,7 @@ json_t *provider_fetch_endpoint_model_metadata(const char *base_url, const char 
 /* Port of Python model_metadata._resolve_nous_context_length().
  * Resolves Nous Portal model context length via live portal then OR fallback.
  * Returns context length or -1 on failure. */
+/* PoP: resolve_nous_context_length @ agent/model_metadata.py:_resolve_nous_context_length */
 int resolve_nous_context_length(const char *model, const char *base_url, const char *api_key) {
     if (!model || !*model) return -1;
 
@@ -2767,6 +2805,7 @@ int resolve_nous_context_length(const char *model, const char *base_url, const c
 /* Port of Python model_metadata.get_model_context_length().
  * Main orchestrator for model context length resolution.
  * Returns context length or DEFAULT_FALLBACK_CONTEXT (256K). */
+/* PoP: get_model_context_length @ agent/model_metadata.py:get_model_context_length */
 int get_model_context_length(const char *model, const char *base_url,
                                        const char *api_key, int config_context_length,
                                        const char *provider_name) {
@@ -2862,6 +2901,7 @@ int get_model_context_length(const char *model, const char *base_url,
 }
 
 /* Port of Python: _model_name_suggests_grok_4_3 — check if model has "grok-4.3" */
+/* PoP: model_name_suggests_grok_4_3 @ agent/model_metadata.py:_model_name_suggests_grok_4_3 */
 bool model_name_suggests_grok_4_3(const char *model) {
     if (!model || !model[0]) return false;
     for (const char *p = model; *p; p++) {
