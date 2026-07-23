@@ -4,9 +4,11 @@
  */
 
 #include "gateway_helpers.h"
+#include "gateway_run_pure.h"
 #include "hermes_json.h"
 #include "hermes_gateway_core.h"
 #include "hermes_system_prompt.h"
+#include "hermes_redact.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,6 +17,204 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <pthread.h>
+#include <regex.h>
+
+/* ------------------------------------------------------------------ */
+/*  Faithful gateway regex table (run.py _GATEWAY_*_RE / secret sets)  */
+/*  POSIX ERE translations; REG_ICASE == re.IGNORECASE.                */
+/* ------------------------------------------------------------------ */
+
+typedef struct {
+    const char *pat;
+    regex_t    *re;
+    bool        compiled;
+} gw_regex_slot_t;
+
+static bool gw_regex_match(gw_regex_slot_t *slot, const char *text) {
+    if (!text || !*text) return false;
+    if (!slot->compiled) {
+        slot->re = malloc(sizeof(regex_t));
+        if (regcomp(slot->re, slot->pat, REG_EXTENDED | REG_ICASE | REG_NOSUB) != 0) {
+            free(slot->re); slot->re = NULL; return false;
+        }
+        slot->compiled = true;
+    }
+    if (!slot->re) return false;
+    return regexec(slot->re, text, 0, NULL, 0) == 0;
+}
+
+/* run.py _GATEWAY_AUTH_ERROR_RE */
+static gw_regex_slot_t G_GW_AUTH_RE = {
+    "(provider[ ]+authentication[ ]+failed|incorrect[ ]+api[ ]+key"
+    "|invalid[ ]+api[ ]+key|401)", NULL, false
+};
+/* run.py _GATEWAY_PROVIDER_POLICY_RE */
+static gw_regex_slot_t G_GW_POLICY_RE = {
+    "(cybersecurity[ ]+risk|security[ ]+policy|safety[ ]+policy"
+    "|policy[ ]+violation|violat(e|es|ed|ion)|blocked[ ]+(because|by|under)"
+    "|request[ ](was[ ])?(blocked|rejected)|disallowed|moderation)", NULL, false
+};
+/* run.py _GATEWAY_RATE_LIMIT_RE */
+static gw_regex_slot_t G_GW_RATE_RE = {
+    "(rate[ ]+limit|rate-limited|429|quota|usage[ ]+limit)", NULL, false
+};
+/* run.py _TELEGRAM_NOISY_STATUS_RE (IGNORECASE | DOTALL) */
+static gw_regex_slot_t G_GW_NOISY_RE = {
+    "(auxiliary[ ]+.+[ ]+failed"
+    "|compression[ ]+summary[ ]+failed"
+    "|fallback[ ]+context[ ]+marker"
+    "|configured[ ]+compression[ ]+model[ ]+.+[ ]+failed"
+    "|no[ ]+auxiliary[ ]+llm[ ]+provider[ ]+configured"
+    "|auto-lowered[ ]+compression[ ]+threshold"
+    "|compacting[ ]+context[ ]+(-|\xe2\x80\x94)[ ]+summarizing[ ]+earlier[ ]+conversation"
+    "|preflight[ ]+compression"
+    "|session[ ]+compressed[ ][0-9]+[ ]+times"
+    "|rate[ ]+limited[.][ ]+waiting[ ][0-9]"
+    "|retrying[ ]+in[ ][0-9]"
+    "|max[ ]+retries[ ][(][0-9]+[)][ ]+.*(trying[ ]+fallback|exhausted|invalid[ ]+responses)"
+    "|stream[ ]+(drop|drop[ ]+mid[ ]+tool-call).+retry[ ][0-9]"
+    "|stale[ ]+connections[ ]+from[ ]+a[ ]+previous[ ]+provider[ ]+issue)", NULL, false
+};
+
+/* run.py _GATEWAY_SECRET_PATTERNS — belt-and-suspenders redaction pass that
+ * runs AFTER redact_sensitive_text (Tirith). Each slot keeps the
+ * surrounding word-boundary chars via capture groups so we only replace the
+ * token itself (mirroring Python's [REDACTED] substitution). Bearer keeps its
+ * "Bearer " prefix, exactly like the Python lambda. */
+static gw_regex_slot_t G_SECRET_SLOTS[] = {
+    /* \bsk-[A-Za-z0-9][A-Za-z0-9_\-]{12,}\b */
+    {"([^A-Za-z0-9_]|^)(sk-[A-Za-z0-9][A-Za-z0-9_-]{12,})([^A-Za-z0-9_]|$)", NULL, false},
+    /* \bgh[pousr]_[A-Za-z0-9_]{20,}\b */
+    {"([^A-Za-z0-9_]|^)(gh[pousr]_[A-Za-z0-9_]{20,})([^A-Za-z0-9_]|$)", NULL, false},
+    /* \bxapp-\d+-[A-Za-z0-9\-]{20,}\b */
+    {"([^A-Za-z0-9_]|^)(xapp-[0-9]+-[A-Za-z0-9-]{20,})([^A-Za-z0-9_]|$)", NULL, false},
+    /* \bxox[baprs]-[A-Za-z0-9\-]{20,}\b */
+    {"([^A-Za-z0-9_]|^)(xox[baprs]-[A-Za-z0-9-]{20,})([^A-Za-z0-9_]|$)", NULL, false},
+    /* \bhf_[A-Za-z0-9]{20,}\b */
+    {"([^A-Za-z0-9_]|^)(hf_[A-Za-z0-9]{20,})([^A-Za-z0-9_]|$)", NULL, false},
+    /* \bglpat-[A-Za-z0-9_\-]{20,}\b */
+    {"([^A-Za-z0-9_]|^)(glpat-[A-Za-z0-9_-]{20,})([^A-Za-z0-9_]|$)", NULL, false},
+    /* (?i)\b(Bearer\s+)[A-Za-z0-9._\-]{20,}\b  (keeps "Bearer " prefix) */
+    {"([Bb][Ee][Aa][Rr][Ee][Rr][ ]+)([A-Za-z0-9._-]{20,})([^A-Za-z0-9_]|$)", NULL, false},
+};
+static const int G_SECRET_COUNT =
+    sizeof(G_SECRET_SLOTS) / sizeof(G_SECRET_SLOTS[0]);
+
+/* Replace every non-overlapping match of a 3-group slot with:
+ *   group1 + replacement + group3   (group2 = the token is dropped)
+ * Mirrors Python re.sub(lambda m: (m.group(1) if m.lastindex else "") + "[REDACTED]")
+ * — for the Bearer slot group1 is the "Bearer " prefix; for the others group1
+ * is the leading word-boundary char (re-added so only the token is redacted). */
+static char *gw_sub_secret(gw_regex_slot_t *slot, const char *text) {
+    if (!gw_regex_match(slot, text)) return strdup(text);
+    if (!slot->compiled) {
+        slot->re = malloc(sizeof(regex_t));
+        if (regcomp(slot->re, slot->pat, REG_EXTENDED | REG_ICASE) != 0) {
+            free(slot->re); slot->re = NULL; return strdup(text);
+        }
+        slot->compiled = true;
+    }
+    size_t cap = strlen(text) + 64;
+    char *out = malloc(cap);
+    if (!out) return strdup(text);
+    size_t olen = 0;
+    const char *cur = text;
+    regmatch_t m[4];
+    while (*cur && regexec(slot->re, cur, 4, m, 0) == 0) {
+        /* copy text preceding the match */
+        size_t pre_len = (size_t)m[0].rm_so;
+        if (olen + pre_len + 128 >= cap) {
+            cap = olen + pre_len + 256;
+            char *n = realloc(out, cap); if (!n) { free(out); return strdup(text); }
+            out = n;
+        }
+        memcpy(out + olen, cur, pre_len);
+        olen += pre_len;
+        /* group1 (leading boundary / Bearer prefix) */
+        if (m[1].rm_so >= 0) {
+            size_t g1 = (size_t)(m[1].rm_eo - m[1].rm_so);
+            if (olen + g1 + 128 >= cap) {
+                cap = olen + g1 + 256;
+                char *n = realloc(out, cap); if (!n) { free(out); return strdup(text); }
+                out = n;
+            }
+            memcpy(out + olen, cur + m[0].rm_so + m[1].rm_so, g1);
+            olen += g1;
+        }
+        /* [REDACTED] (replaces group2 = the token) */
+        const char *RED = "[REDACTED]";
+        size_t rl = strlen(RED);
+        if (olen + rl + 128 >= cap) {
+            cap = olen + rl + 256;
+            char *n = realloc(out, cap); if (!n) { free(out); return strdup(text); }
+            out = n;
+        }
+        memcpy(out + olen, RED, rl);
+        olen += rl;
+        /* group3 (trailing boundary) */
+        if (m[3].rm_so >= 0) {
+            size_t g3 = (size_t)(m[3].rm_eo - m[3].rm_so);
+            if (olen + g3 + 128 >= cap) {
+                cap = olen + g3 + 256;
+                char *n = realloc(out, cap); if (!n) { free(out); return strdup(text); }
+                out = n;
+            }
+            memcpy(out + olen, cur + m[0].rm_so + m[3].rm_so, g3);
+            olen += g3;
+        }
+        cur += m[0].rm_eo;
+    }
+    size_t tail = strlen(cur);
+    if (olen + tail + 1 >= cap) {
+        cap = olen + tail + 64;
+        char *n = realloc(out, cap); if (!n) { free(out); return strdup(text); }
+        out = n;
+    }
+    memcpy(out + olen, cur, tail + 1);
+    return out;
+}
+
+/* Faithful port of run.py _redact_gateway_user_facing_secrets:
+ * redact_sensitive_text(force=True) first (Tirith), then the
+ * _GATEWAY_SECRET_PATTERNS belt-and-suspenders pass. */
+static char *gw_redact_gateway_secrets(const char *text) {
+    if (!text) return NULL;
+    char *red = hermes_redact(text);
+    char *cur = red ? red : strdup(text);
+    if (!cur) return NULL;
+    for (int i = 0; i < G_SECRET_COUNT; i++) {
+        char *next = gw_sub_secret(&G_SECRET_SLOTS[i], cur);
+        free(cur);
+        cur = next;
+        if (!cur) return NULL;
+    }
+    return cur;
+}
+
+/* Public entry point mirroring Python _redact_gateway_user_facing_secrets.
+ * Caller frees. */
+/* PoP: gateway_redact_user_facing_secrets @ gateway/run.py:_redact_gateway_user_facing_secrets */
+char *gateway_redact_user_facing_secrets(const char *text) {
+    return gw_redact_gateway_secrets(text);
+}
+
+/* Faithful port of run.py render_notice_line: emit an AgentNotice's text as a
+ * single stripped plaintext line (fail-soft to "" on missing/empty). */
+/* PoP: gateway_render_notice_line @ gateway/run.py:render_notice_line */
+char *gateway_render_notice_line(const char *notice_text) {
+    if (!notice_text) return strdup("");
+    /* strip leading/trailing whitespace */
+    const char *s = notice_text;
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    const char *e = s + strlen(s);
+    while (e > s && (e[-1] == ' ' || e[-1] == '\t' || e[-1] == '\n' || e[-1] == '\r')) e--;
+    size_t n = (size_t)(e - s);
+    char *out = malloc(n + 1);
+    if (!out) return strdup("");
+    memcpy(out, s, n);
+    out[n] = '\0';
+    return out;
+}
 
 /* ================================================================
  *  Message Deduplicator
@@ -260,169 +460,116 @@ char *redact_phone(const char *phone) {
  *  Port of Python gateway/run.py _sanitize_gateway_final_response()
  * ================================================================ */
 
-/* Provider error shape patterns — short text that starts with these markers
- * is likely a provider failure envelope, not normal assistant content.
- * Mirrors Python _GATEWAY_PROVIDER_ERROR_SHAPE_RE. */
-static const char *PROVIDER_ERROR_START_PATTERNS[] = {
-    "api call failed",
-    "provider authentication failed",
-    "non-retryable error",
-    "rate limited after",
-    "error code:",
-    "http ",
-    "incorrect api key",
-    "invalid api key",
+/* run.py _GATEWAY_PROVIDER_ERROR_SHAPE_RE (optional leading non-word prefix) */
+static gw_regex_slot_t G_GW_SHAPE_RE = {
+    "(api[ ]+(call[ ])?failed"
+    "|provider[ ]+authentication[ ]+failed"
+    "|non-retryable[ ]+error"
+    "|rate[ ]+limited[ ]+after[ ][0-9]+[ ]+retries"
+    "|error[ ]+code[ ]*:"
+    "|http[ ]*[0-9][0-9][0-9]"
+    "|incorrect[ ]+api[ ]+key"
+    "|invalid[ ]+api[ ]+key)", NULL, false
 };
-static const int PROVIDER_ERROR_START_COUNT =
-    sizeof(PROVIDER_ERROR_START_PATTERNS) / sizeof(PROVIDER_ERROR_START_PATTERNS[0]);
-
-/* Auth error patterns for reply selection.
- * Mirrors Python _GATEWAY_AUTH_ERROR_RE. */
-static const char *GATEWAY_AUTH_PATTERNS[] = {
-    "auth", "api key", "credential", "unauthorized", "forbidden",
-    "invalid token", "token expired", "token revoked",
-};
-static const int GATEWAY_AUTH_COUNT =
-    sizeof(GATEWAY_AUTH_PATTERNS) / sizeof(GATEWAY_AUTH_PATTERNS[0]);
-
-/* Provider policy blocked patterns for reply selection.
- * Mirrors Python _GATEWAY_PROVIDER_POLICY_RE. */
-static const char *GATEWAY_POLICY_PATTERNS[] = {
-    "no endpoints available matching",
-    "guardrail",
-    "data policy",
-};
-static const int GATEWAY_POLICY_COUNT =
-    sizeof(GATEWAY_POLICY_PATTERNS) / sizeof(GATEWAY_POLICY_PATTERNS[0]);
-
-/* Rate limit patterns for reply selection.
- * Mirrors Python _GATEWAY_RATE_LIMIT_RE. */
-static const char *GATEWAY_RATE_LIMIT_PATTERNS[] = {
-    "rate limit", "rate_limit", "too many requests", "throttled",
-    "resource_exhausted",
-};
-static const int GATEWAY_RATE_LIMIT_COUNT =
-    sizeof(GATEWAY_RATE_LIMIT_PATTERNS) / sizeof(GATEWAY_RATE_LIMIT_PATTERNS[0]);
-
-/* Noisy Telegram status patterns to filter out.
- * Mirrors Python _TELEGRAM_NOISY_STATUS_RE. */
-static const char *NOISY_STATUS_PATTERNS[] = {
-    "processing your request",
-    "thinking",
-    "generating response",
-    "computing",
-};
-static const int NOISY_STATUS_COUNT =
-    sizeof(NOISY_STATUS_PATTERNS) / sizeof(NOISY_STATUS_PATTERNS[0]);
-
-/* Case-insensitive start-of-string match for any pattern. */
-static bool starts_with_any_i(const char *text, const char *patterns[], int count) {
-    if (!text) return false;
-    for (int i = 0; i < count; i++) {
-        size_t plen = strlen(patterns[i]);
-        if (strncasecmp(text, patterns[i], plen) == 0)
-            return true;
-    }
-    return false;
-}
-
-/* Count newline characters in text. */
-static int count_lines(const char *text) {
-    int lines = 1;
-    for (const char *p = text; *p; p++) {
-        if (*p == '\n') lines++;
-    }
-    return lines;
-}
 
 /* Check if text looks like a provider/infrastructure error (not normal content).
- * Port of Python gateway/run.py:_looks_like_gateway_provider_error().
- * Two heuristics from Python: text is short (<=3 lines) AND error marker at start. */
+ * Faithful port of Python gateway/run.py:_looks_like_gateway_provider_error():
+ * short text (<=4 newlines, len <=400) AND matches _GATEWAY_PROVIDER_ERROR_SHAPE_RE. */
+/* PoP: gateway_looks_like_provider_error @ gateway/run.py:_looks_like_gateway_provider_error */
 bool gateway_looks_like_provider_error(const char *text) {
     if (!text || !*text) return false;
-    if (count_lines(text) > 3) return false;
-
-    /* Skip leading whitespace/punctuation before checking patterns. */
-    const char *p = text;
-    while (*p && (isspace((unsigned char)*p) || ispunct((unsigned char)*p)))
-        p++;
-
-    return starts_with_any_i(p, PROVIDER_ERROR_START_PATTERNS,
-                             PROVIDER_ERROR_START_COUNT);
+    int newlines = 0;
+    for (const char *p = text; *p; p++) if (*p == '\n') newlines++;
+    if (strlen(text) > 400 || newlines > 4) return false;
+    return gw_regex_match(&G_GW_SHAPE_RE, text);
 }
 
 /* Map a raw provider error to a short user-safe reply.
- * Port of Python gateway/run.py _gateway_provider_error_reply().
- * AG26: Port of Python gateway/run.py:_gateway_provider_error_reply().
- */
+ * Faithful port of Python gateway/run.py _gateway_provider_error_reply()
+ * using the _GATEWAY_AUTH_ERROR_RE / _GATEWAY_PROVIDER_POLICY_RE /
+ * _GATEWAY_RATE_LIMIT_RE regexes (in priority order). */
+/* PoP: gateway_provider_error_reply @ gateway/run.py:_gateway_provider_error_reply */
 char *gateway_provider_error_reply(const char *text) {
     if (!text) return strdup("");
-
-    /* Skip leading whitespace for pattern matching. */
-    const char *p = text;
-    while (*p && isspace((unsigned char)*p)) p++;
-
-    if (starts_with_any_i(p, GATEWAY_RATE_LIMIT_PATTERNS, GATEWAY_RATE_LIMIT_COUNT)) {
-        return strdup("⏱️ The model provider is rate-limiting requests. "
-                       "Please wait a moment and try again.");
+    if (gw_regex_match(&G_GW_AUTH_RE, text)) {
+        return strdup("\xe2\x9a\xa0\xef\xb8\x8f Provider authentication failed. "
+                      "Check the configured credentials; raw provider details "
+                      "are in the gateway logs.");
     }
-    if (starts_with_any_i(p, GATEWAY_AUTH_PATTERNS, GATEWAY_AUTH_COUNT)) {
-        return strdup("⚠️ Provider authentication failed. "
-                       "Check the configured credentials; "
-                       "raw provider details are in the gateway logs.");
+    if (gw_regex_match(&G_GW_POLICY_RE, text)) {
+        return strdup("\xe2\x9a\xa0\xef\xb8\x8f The model provider rejected the "
+                      "request. I kept the raw provider error out of chat; check "
+                      "gateway logs for details or try rephrasing.");
     }
-    if (starts_with_any_i(p, GATEWAY_POLICY_PATTERNS, GATEWAY_POLICY_COUNT)) {
-        return strdup("⚠️ The model provider rejected the request. "
-                       "Check gateway logs for details or try rephrasing.");
+    if (gw_regex_match(&G_GW_RATE_RE, text)) {
+        return strdup("\xe2\x8f\xb1\xef\xb8\x8f The model provider is "
+                      "rate-limiting requests. Please wait a moment and try again.");
     }
     /* Generic fallback. */
-    return strdup("⚠️ The model provider failed after retries. "
-                   "Check gateway logs for diagnostics.");
+    return strdup("\xe2\x9a\xa0\xef\xb8\x8f The model provider failed after "
+                  "retries. I kept raw provider details out of chat; check "
+                  "gateway logs for diagnostics.");
 }
 
 /* Sanitize a gateway response before sending to chat.
- * For Telegram: detects provider errors and rewrites them.
- * Secret redaction is done separately via hermes_redact().
- * Returns a malloc'd string (caller must free). */
+ * Faithful port of run.py _sanitize_gateway_final_response():
+ *   - programmatic surfaces (local/api_server/webhook/msgraph_webhook) keep
+ *     raw text unchanged (fail-closed: everything else is a chat surface);
+ *   - otherwise redact secrets (Tirith + _GATEWAY_SECRET_PATTERNS), then if
+ *     it looks like a provider error, rewrite to the user-safe reply.
+ * Returns a malloc'd string (caller must free), or NULL if text is NULL. */
+/* PoP: gateway_sanitize_response @ gateway/run.py:_sanitize_gateway_final_response */
 char *gateway_sanitize_response(const char *platform, const char *text) {
     if (!text) return NULL;
-
-    /* Only apply provider error rewriting for Telegram.
-     * Secret redaction is handled separately via hermes_redact(). */
-    if (!platform || strcmp(platform, "telegram") != 0)
+    if (gateway_surface_passes_raw_text(platform))
         return strdup(text);
 
-    if (gateway_looks_like_provider_error(text))
-        return gateway_provider_error_reply(text);
-
-    return strdup(text);
+    char *redacted = gw_redact_gateway_secrets(text);
+    if (!redacted) return strdup(text);
+    if (gateway_looks_like_provider_error(redacted)) {
+        char *reply = gateway_provider_error_reply(redacted);
+        free(redacted);
+        return reply;
+    }
+    return redacted;
 }
 
 /* Filter a status message before platform delivery.
- * Port of Python gateway/run.py _prepare_gateway_status_message().
- * Returns NULL if message should be filtered out entirely.
- * Returns a malloc'd string (caller must free) otherwise. */
+ * Faithful port of run.py _prepare_gateway_status_message():
+ *   - empty/whitespace-only -> filtered (NULL);
+ *   - programmatic surfaces keep raw text;
+ *   - otherwise redact, drop noisy auxiliary/compression chatter, and rewrite
+ *     provider errors to the user-safe reply.
+ * Returns NULL if the message should be filtered out entirely, else a
+ * malloc'd string (caller must free). */
+/* PoP: gateway_prepare_status_message @ gateway/run.py:_prepare_gateway_status_message */
 char *gateway_prepare_status_message(const char *platform, const char *text) {
-    if (!text || !*text) return NULL;
+    if (!text) return NULL;
+    char *stripped = strdup(text);
+    /* lstrip */
+    char *p = stripped;
+    while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+    if (!*p) { free(stripped); return NULL; }
 
-    /* Skip leading whitespace. */
-    const char *p = text;
-    while (*p && isspace((unsigned char)*p)) p++;
-    if (!*p) return NULL;
+    if (gateway_surface_passes_raw_text(platform)) {
+        char *out = strdup(p);
+        free(stripped);
+        return out;
+    }
 
-    /* Only apply Telegram-specific filtering. */
-    if (!platform || strcmp(platform, "telegram") != 0)
-        return strdup(p);
-
-    /* Filter noisy status patterns. */
-    if (starts_with_any_i(p, NOISY_STATUS_PATTERNS, NOISY_STATUS_COUNT))
+    char *redacted = gw_redact_gateway_secrets(p);
+    free(stripped);
+    if (!redacted) return NULL;
+    if (gw_regex_match(&G_GW_NOISY_RE, redacted)) {
+        free(redacted);
         return NULL;
-
-    /* If it looks like a provider error, rewrite it. */
-    if (gateway_looks_like_provider_error(p))
-        return gateway_provider_error_reply(p);
-
-    return strdup(p);
+    }
+    if (gateway_looks_like_provider_error(redacted)) {
+        char *reply = gateway_provider_error_reply(redacted);
+        free(redacted);
+        return reply;
+    }
+    return redacted;
 }
 
 /* ================================================================
