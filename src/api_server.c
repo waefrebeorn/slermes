@@ -47,6 +47,8 @@
 #include <arpa/inet.h>
 #include <signal.h>
 #include <errno.h>
+#include "registry.h"
+#include "hermes_skills.h"
 
 /* ── Constants ──────────────────────────────────────────────────── */
 
