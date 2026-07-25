@@ -221,8 +221,13 @@ void cmd_auth(const char *args, agent_state_t *state) {
                 printf("\n❌ Failed to save OAuth token: %s\n", oauth_last_error());
                 oauth_token_free(tok);
             }
+
+            /* Also write to shared store for cross-profile credential sharing */
+            if (nous_write_shared_state(&entry)) {
+                printf("   Shared store updated for cross-profile sharing.\n");
+            }
         } else if (strcasecmp(provider, "xai-oauth") == 0 ||
-                   strcasecmp(provider, "xai") == 0) {
+                  strcasecmp(provider, "xai") == 0) {
             /* PKCE loopback callback flow for xAI OAuth */
             const char *home = state->hermes_home[0] ? state->hermes_home : getenv("HOME");
             if (!home) { printf("Cannot determine home directory.\n"); return; }
@@ -283,11 +288,17 @@ void cmd_auth(const char *args, agent_state_t *state) {
             if (!entries[i].token.refresh_token || !entries[i].token.refresh_token[0]) {
                 if (target[0]) printf("  %s: no refresh token\n", entries[i].provider);
                 continue;
-            }
-            /* Determine token endpoint from provider name */
-            const char *endpoint = NULL;
-            const char *client_id = "hermes-cli";
-            if (strcmp(entries[i].provider, "nous-oauth") == 0) {
+                }
+                /* Determine token endpoint from provider name */
+                const char *endpoint = NULL;
+                /* Try to merge shared state before refreshing */
+                if (strcmp(entries[i].provider, "nous-oauth") == 0) {
+                if (nous_merge_shared_state(&entries[i])) {
+                    printf("  %s: merged fresher shared credentials\n", entries[i].provider);
+                }
+                }
+                const char *client_id = "hermes-cli";
+                if (strcmp(entries[i].provider, "nous-oauth") == 0) {
                 endpoint = NOUS_OAUTH_TOKEN_ENDPOINT;
             } else if (strcmp(entries[i].provider, "xai-oauth") == 0) {
                 endpoint = "https://auth.x.ai/oauth2/token";

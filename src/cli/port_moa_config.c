@@ -15,24 +15,58 @@
 const char *MOA_MARKER_PREFIX = "__HERMES_MOA_TURN_V1__";
 const char *MOA_DEFAULT_PRESET_NAME = "default";
 
-/* Default reference models + aggregator (mirrors Python module constants). */
+/* Default reference models + aggregator (mirrors Python module constants).
+ * Live-tested 2026-07-24 on integrate.api.nvidia.com — ALL FREE on NVIDIA NIM.
+ * NVIDIA is a cloud provider hosting non-NVIDIA models (GLM, DeepSeek, MiniMax, etc.)
+ */
 static json_t *moa_default_reference_models(void) {
     json_t *a = json_array();
+    /* TIER S: Verified-callable agentic leaders */
     json_t *s1 = json_object();
-    json_set(s1, "provider", json_string("openai-codex"));
-    json_set(s1, "model", json_string("gpt-5.5"));
+    json_set(s1, "provider", json_string("nvidia_nim"));
+    json_set(s1, "model", json_string("z-ai/glm-5.2"));
     json_append(a, s1);
     json_t *s2 = json_object();
-    json_set(s2, "provider", json_string("openrouter"));
-    json_set(s2, "model", json_string("deepseek/deepseek-v4-pro"));
+    json_set(s2, "provider", json_string("nvidia_nim"));
+    json_set(s2, "model", json_string("nvidia/nemotron-3-ultra-550b-a55b"));
     json_append(a, s2);
+    json_t *s3 = json_object();
+    json_set(s3, "provider", json_string("nvidia_nim"));
+    json_set(s3, "model", json_string("nvidia/nemotron-3-super-120b-a12b"));
+    json_append(a, s3);
+    json_t *s4 = json_object();
+    json_set(s4, "provider", json_string("nvidia_nim"));
+    json_set(s4, "model", json_string("minimaxai/minimax-m3"));
+    json_append(a, s4);
+    json_t *s5 = json_object();
+    json_set(s5, "provider", json_string("nvidia_nim"));
+    json_set(s5, "model", json_string("deepseek-ai/deepseek-v4-flash"));
+    json_append(a, s5);
+    json_t *s6 = json_object();
+    json_set(s6, "provider", json_string("nvidia_nim"));
+    json_set(s6, "model", json_string("mistralai/mistral-small-4-119b-2603"));
+    json_append(a, s6);
+    /* TIER B: Fast/creative/specialist */
+    json_t *s7 = json_object();
+    json_set(s7, "provider", json_string("nvidia_nim"));
+    json_set(s7, "model", json_string("mistralai/mistral-nemotron"));
+    json_append(a, s7);
+    json_t *s8 = json_object();
+    json_set(s8, "provider", json_string("nvidia_nim"));
+    json_set(s8, "model", json_string("nvidia/nemotron-3-nano-omni-30b-a3b-reasoning"));
+    json_append(a, s8);
+    /* OpenRouter free tier */
+    json_t *s9 = json_object();
+    json_set(s9, "provider", json_string("openrouter"));
+    json_set(s9, "model", json_string("nvidia/nemotron-3-ultra-550b-a55b:free"));
+    json_append(a, s9);
     return a;
 }
 
 static json_t *moa_default_aggregator(void) {
     json_t *a = json_object();
-    json_set(a, "provider", json_string("openrouter"));
-    json_set(a, "model", json_string("anthropic/claude-opus-4.8"));
+    json_set(a, "provider", json_string("nvidia_nim"));
+    json_set(a, "model", json_string("z-ai/glm-5.2"));
     return a;
 }
 

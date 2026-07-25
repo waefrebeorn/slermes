@@ -32,7 +32,7 @@ NCURSES_LIBS := $(wildcard /usr/lib/x86_64-linux-gnu/libncursesw.so /usr/lib/x86
 PANEL_LIBS   := $(wildcard /usr/lib/x86_64-linux-gnu/libpanelw.so /usr/lib/x86_64-linux-gnu/libpanelw.so.6)
 TINFO_LIBS   := $(wildcard /usr/lib/x86_64-linux-gnu/libtinfo.so /usr/lib/x86_64-linux-gnu/libtinfo.so.6)
 slermes: $(PHASE5_OBJ) src/main.o $(HERMES_CLI_PORT_OBJ) $(HERMES_CLI_PORT_EXTRA_OBJ) $(PORT_OBJ) $(PET_OBJ) $(DESKTOP_CORE_OBJ) $(LIB_OBJ_FILTERED) $(WHISPER_EXTRA_OBJ)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(PLATFORM_LDFLAGS) $(LIBS) -lstdc++ \
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(PLATFORM_LDFLAGS) $(LIBS) -lasound -lstdc++ \
 		$(if $(NCURSES_LIBS),$(NCURSES_LIBS)) $(if $(PANEL_LIBS),$(PANEL_LIBS)) $(if $(TINFO_LIBS),$(TINFO_LIBS)) \
 		$(if $(WHISPER_LIBS),$(WHISPER_LIBS))
 	@echo "  slermes binary: $@ $$(ls -lh $@ | awk '{print $$5}')$(if $(WHISPER_LIBS), with whisper, without whisper)"

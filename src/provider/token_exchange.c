@@ -17,6 +17,7 @@
 #include "hermes_http.h"
 #include "hermes_json.h"
 #include <errno.h>
+#include <pthread.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -41,10 +42,219 @@ void _set_error(const char *fmt, ...) {
     va_end(args);
 }
 
+/* ================================================================
+ *  Shared Nous Portal auth store (cross-profile credential sharing)
+ * ================================================================ */
+
+/* Thread-local shared store lock holder */
+static __thread int g_shared_lock_held = 0;
+static pthread_mutex_t g_shared_lock = PTHREAD_MUTEX_INITIALIZER;
+
+/* Get the shared auth directory (~/.slermes/shared/) */
+const char *nous_shared_auth_dir(void) {
+    static __thread char path[1024];
+    const char *override = getenv("SLERMES_SHARED_AUTH_DIR");
+    if (override && *override) {
+        snprintf(path, sizeof(path), "%s", override);
+        return path;
+    }
+    const char *home = getenv("HOME");
+    if (!home) return NULL;
+    snprintf(path, sizeof(path), "%s/.slermes/shared", home);
+    return path;
+}
+
+/* Get the shared Nous auth store path (~/.slermes/shared/nous_auth.json) */
+const char *nous_shared_store_path(void) {
+    static __thread char path[1024];
+    const char *dir = nous_shared_auth_dir();
+    if (!dir) return NULL;
+    snprintf(path, sizeof(path), "%s/nous_auth.json", dir);
+    return path;
+}
+
+/* Cross-profile lock for shared Nous store */
+int nous_shared_store_lock(int timeout_sec) {
+    if (timeout_sec <= 0) timeout_sec = 15;
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    ts.tv_sec += timeout_sec;
+    int rc = pthread_mutex_timedlock(&g_shared_lock, &ts);
+    if (rc == 0) {
+        g_shared_lock_held = 1;
+        return 1;
+    }
+    return 0;
+}
+
+void nous_shared_store_unlock(void) {
+    if (g_shared_lock_held) {
+        pthread_mutex_unlock(&g_shared_lock);
+        g_shared_lock_held = 0;
+    }
+}
+
+/* Write Nous OAuth state to shared store */
+bool nous_write_shared_state(const auth_entry_t *entry) {
+    if (!entry || !entry->provider[0]) return false;
+    const char *path = nous_shared_store_path();
+    if (!path) return false;
+    
+    /* Create shared directory if it doesn't exist */
+    const char *dir = nous_shared_auth_dir();
+    if (dir) {
+        mkdir(dir, 0700);
+    }
+    
+    /* Build JSON */
+    json_t *root = json_new_object();
+    if (!root) return false;
+    
+    json_node_t *node = json_new_object();
+    if (entry->token.access_token)
+        json_object_set(node, "access_token", json_new_string(entry->token.access_token));
+    if (entry->token.refresh_token && entry->token.refresh_token[0])
+        json_object_set(node, "refresh_token", json_new_string(entry->token.refresh_token));
+    if (entry->token.id_token && entry->token.id_token[0])
+        json_object_set(node, "id_token", json_new_string(entry->token.id_token));
+    json_object_set(node, "token_type", 
+        json_new_string(entry->token.token_type ? entry->token.token_type : "Bearer"));
+    json_object_set(node, "expires_at", json_new_number(entry->token.expires_at));
+    json_object_set(node, "expires_in", json_new_number(entry->token.expires_in));
+    json_object_set(node, "portal_base_url", 
+        json_new_string("https://portal.nousresearch.com"));
+    json_object_set(node, "inference_base_url", 
+        json_new_string("https://inference-api.nousresearch.com/v1"));
+    json_object_set(node, "client_id", json_new_string("hermes-cli"));
+    json_object_set(node, "scope", json_new_string("inference:invoke"));
+    json_object_set(root, "nous", node);
+    
+    char *json_str = json_serialize(root);
+    json_free(root);
+    if (!json_str) return false;
+    
+    FILE *f = fopen(path, "w");
+    if (!f) { free(json_str); return false; }
+    fputs(json_str, f);
+    fclose(f);
+    chmod(path, 0600);
+    free(json_str);
+    return true;
+}
+
+/* Read Nous OAuth state from shared store */
+auth_entry_t *nous_read_shared_state(void) {
+    const char *path = nous_shared_store_path();
+    if (!path) return NULL;
+    
+    char *err = NULL;
+    json_t *root = json_parse_file(path, &err);
+    if (!root) { free(err); return NULL; }
+    if (root->type != JSON_OBJECT) { json_free(root); return NULL; }
+    
+    json_node_t *nous_node = json_object_get(root, "nous");
+    if (!nous_node || nous_node->type != JSON_OBJECT) { json_free(root); return NULL; }
+    
+    auth_entry_t *entry = calloc(1, sizeof(auth_entry_t));
+    if (!entry) { json_free(root); return NULL; }
+    
+    strncpy(entry->provider, "nous-oauth", sizeof(entry->provider) - 1);
+    entry->token.access_token = strdup(json_object_get_string(nous_node, "access_token", ""));
+    entry->token.refresh_token = strdup(json_object_get_string(nous_node, "refresh_token", ""));
+    entry->token.id_token = strdup(json_object_get_string(nous_node, "id_token", ""));
+    entry->token.token_type = strdup(json_object_get_string(nous_node, "token_type", "Bearer"));
+    entry->token.expires_at = json_object_get_number(nous_node, "expires_at", 0.0);
+    entry->token.expires_in = (int)json_object_get_number(nous_node, "expires_in", 0);
+    
+    json_free(root);
+    return entry;
+}
+
+/* Merge fresher shared state into local profile state */
+bool nous_merge_shared_state(auth_entry_t *local_state) {
+    if (!local_state) return false;
+    
+    auth_entry_t *shared = nous_read_shared_state();
+    if (!shared) return false;
+    
+    bool changed = false;
+    double shared_exp = shared->token.expires_at > 0 ? shared->token.expires_at : 0;
+    double local_exp = local_state->token.expires_at > 0 ? local_state->token.expires_at : 0;
+    
+    /* If shared has a different refresh token, or fresher access token, update */
+    if (shared->token.refresh_token && shared->token.refresh_token[0] &&
+        (!local_state->token.refresh_token || !local_state->token.refresh_token[0] ||
+         strcmp(shared->token.refresh_token, local_state->token.refresh_token) != 0)) {
+        free(local_state->token.refresh_token);
+        local_state->token.refresh_token = strdup(shared->token.refresh_token);
+        changed = true;
+    }
+    if (shared->token.access_token && shared->token.access_token[0] &&
+        shared_exp > local_exp) {
+        free(local_state->token.access_token);
+        local_state->token.access_token = strdup(shared->token.access_token);
+        local_state->token.expires_at = shared->token.expires_at;
+        local_state->token.expires_in = shared->token.expires_in;
+        changed = true;
+    }
+    
+    auth_store_free(shared, 1);
+    return changed;
+}
+
+/* Try to import shared credentials for a new profile (one-tap login) */
+auth_entry_t *nous_try_import_shared_state(int timeout_sec) {
+    if (timeout_sec <= 0) timeout_sec = 15;
+    
+    if (!nous_shared_store_lock(timeout_sec)) {
+        _set_error("Timed out waiting for shared Nous auth lock");
+        return NULL;
+    }
+    
+    auth_entry_t *shared = nous_read_shared_state();
+    if (!shared) {
+        nous_shared_store_unlock();
+        return NULL;
+    }
+    
+    /* Try to refresh the shared token to verify it's still valid */
+    if (shared->token.refresh_token && shared->token.refresh_token[0]) {
+        oauth_token_t *refreshed = oauth_refresh_token(
+            NOUS_OAUTH_TOKEN_ENDPOINT,
+            DEFAULT_NOUS_CLIENT_ID,
+            shared->token.refresh_token,
+            timeout_sec);
+        
+        if (refreshed) {
+            /* Update shared state with refreshed tokens */
+            free(shared->token.access_token);
+            shared->token.access_token = refreshed->access_token;
+            if (refreshed->refresh_token && refreshed->refresh_token[0]) {
+                free(shared->token.refresh_token);
+                shared->token.refresh_token = refreshed->refresh_token;
+            }
+            shared->token.expires_at = refreshed->expires_at;
+            shared->token.expires_in = refreshed->expires_in;
+            shared->token.token_type = refreshed->token_type;
+            free(refreshed);
+            
+            /* Write back updated shared state */
+            nous_write_shared_state(shared);
+        } else {
+            /* Refresh failed - shared token is stale */
+            auth_store_free(shared, 1);
+            nous_shared_store_unlock();
+            return NULL;
+        }
+    }
+    
+    nous_shared_store_unlock();
+    return shared;
+}
+
 const char *oauth_last_error(void) {
     return g_last_error;
 }
-
 /* ================================================================
  *  URL-encode a simple key=value pair and append to buffer
  * ================================================================ */

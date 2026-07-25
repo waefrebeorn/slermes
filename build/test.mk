@@ -428,6 +428,15 @@ test-tts:
 	    | grep -E 'MISMATCH' && echo "(tts oracle FAILED)" \
 	    || echo "tts oracle: all cases MATCH"
 
+# Voice recognition: Whisper-hallucination filter + VAD RMS math
+# (faithful port of tools/voice_mode.py). Oracle-verified: exact-set +
+# repeat-regex hallucination detection and sqrt(mean(x^2)) RMS match the
+# live Python module for all fixtures under tests/oracle/fixtures/recognition.
+test-recognition:
+	@bash tests/oracle/runners/run_oracle.sh recognition 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(recognition oracle FAILED)" \
+	    || echo "recognition oracle: all cases MATCH"
+
 # Tool guardrails result hash (faithful port of agent/tool_guardrails.py).
 # Oracle-verified: SHA256 of canonical JSON (recursively sorted keys, compact
 # separators, ensure_ascii=False) vs LIVE Python across 12 cases.

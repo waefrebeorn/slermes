@@ -108,6 +108,8 @@ static kanban_task_t *build_task(char **a)
     t->session_id = strdup(a[17]);
     t->workflow_template_id = strdup(a[18]);
     t->current_step_key = strdup(a[18]);
+    t->model_override = strdup("");
+    t->provider_override = strdup("");
     t->skills = parse_skills(a[15], &t->skills_n);
     return t;
 }

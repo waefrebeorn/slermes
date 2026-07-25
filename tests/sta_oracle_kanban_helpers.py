@@ -84,6 +84,8 @@ def main():
                 t.max_retries = int(parts[16]) if parts[16] else 0
                 t.session_id = parts[17]; t.workflow_template_id = parts[18]
                 t.current_step_key = parts[18]
+                t.model_override = ""
+                t.provider_override = ""
                 d = K._task_to_dict(t)
                 print(json.dumps({
                     "op": "task_dict",

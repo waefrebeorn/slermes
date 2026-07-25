@@ -41,6 +41,8 @@ typedef struct {
     char *session_id;
     char *workflow_template_id;
     char *current_step_key;
+    char *model_override;
+    char *provider_override;
     char **skills;
     int   skills_n;
 } kanban_task_t;

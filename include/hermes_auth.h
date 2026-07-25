@@ -202,6 +202,33 @@ oauth_token_t *oauth_refresh_token(
     int timeout_sec);
 
 /* ================================================================
+ *  Shared Nous Portal auth store (cross-profile credential sharing)
+ * ================================================================ */
+
+/* Get the shared auth directory (~/.slermes/shared/) */
+const char *nous_shared_auth_dir(void);
+
+/* Get the shared Nous auth store path (~/.slermes/shared/nous_auth.json) */
+const char *nous_shared_store_path(void);
+
+/* Cross-profile lock for shared Nous store */
+typedef struct nous_shared_lock_t nous_shared_lock_t;
+int nous_shared_store_lock(int timeout_sec);
+void nous_shared_store_unlock(void);
+
+/* Write Nous OAuth state to shared store (called after successful login/refresh) */
+bool nous_write_shared_state(const auth_entry_t *entry);
+
+/* Read Nous OAuth state from shared store */
+auth_entry_t *nous_read_shared_state(void);
+
+/* Merge fresher shared state into local profile state (called at login) */
+bool nous_merge_shared_state(auth_entry_t *local_state);
+
+/* Try to import shared credentials for a new profile (one-tap login) */
+auth_entry_t *nous_try_import_shared_state(int timeout_sec);
+
+/* ================================================================
  *  Last error
  * ================================================================ */
 

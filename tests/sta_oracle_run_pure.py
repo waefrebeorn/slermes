@@ -27,26 +27,26 @@ RUNPY = os.path.join(ROOT, "gateway", "run.py")
 # All are before the broken import at ~970, so they exec cleanly with just
 # `re`, `datetime`, and typing available.
 REGIONS = [
-    (70, 155),    # _TELEGRAM_NOISY_STATUS_RE, _GATEWAY_RAW_TEXT_PLATFORMS,
-                  # _GATEWAY_PROVIDER_*, _GATEWAY_SECRET_PATTERNS, etc.
-    (212, 271),   # _gateway_platform_value, _non_conversational_metadata,
-                  # _is_transient_network_error
-    (354, 409),   # _gateway_provider_error_reply, _looks_like_gateway_provider_error
-                  # (stop BEFORE _sanitize_gateway_final_response, which is I/O
-                  # coupled and intentionally not exec'd)
-    (374, 386),   # _GATEWAY_PROVIDER_ERROR_SHAPE_RE (needed by the above)
-    (543, 615),   # _telegramize_command_mentions, _coerce_gateway_timestamp
-    (770, 787),   # _message_timestamps_enabled
-    (977, 1008),  # _AUTO_CONTINUE_* prefixes, _is_auto_continue_noise,
+    (72, 172),    # _TELEGRAM_COMMAND_MENTION_RE, _TELEGRAM_NOISY_STATUS_RE,
+                  # _GATEWAY_RAW_TEXT_PLATFORMS, _GATEWAY_PROVIDER_*,
+                  # _GATEWAY_RATE_LIMIT_RE, _GATEWAY_SECRET_PATTERNS, etc.
+                  # (up to end of patterns before _ensure_windows_gateway_venv_imports)
+    (229, 288),   # _gateway_platform_value, _non_conversational_metadata,
+                  # _is_transient_network_error (complete function)
+    (400, 455),   # _gateway_provider_error_reply, _GATEWAY_PROVIDER_ERROR_SHAPE_RE,
+                  # _looks_like_gateway_provider_error (stop BEFORE _redact_gateway_user_facing_secrets)
+    (594, 666),   # _telegramize_command_mentions, _coerce_gateway_timestamp
+    (923, 940),   # _message_timestamps_enabled
+    (1146, 1177), # _AUTO_CONTINUE_* prefixes, _is_auto_continue_noise,
                   # _strip_auto_continue_noise
 ]
 
+# _telegramize_command_mentions does `from hermes_cli.commands import
+# _sanitize_telegram_name` lazily; make it resolvable.
 ns = {
     "re": re,
     "datetime": datetime,
     "Optional": Optional, "Dict": Dict, "Any": Any, "List": List,
-    # _telegramize_command_mentions does `from hermes_cli.commands import
-    # _sanitize_telegram_name` lazily; make it resolvable.
     "__name__": "gateway_run_pure_oracle",
 }
 
