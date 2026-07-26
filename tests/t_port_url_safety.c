@@ -17,6 +17,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+
+/* SSRF transport layer (src/tools/port_tools_url_safety_ssrf.c). */
+typedef struct { char host[256]; int port; char scheme[8]; } ssrf_origin_scheme_t;
+extern bool ssrf_is_blocked_ip(const struct sockaddr *sa);
+extern const char *ssrf_safe_connect_scheme(const char *host, int port,
+                                            const ssrf_origin_scheme_t *map, int n);
 
 /* emit a JSON string value (raw quotes) */
 static void emit_json_string(const char *s) {
@@ -80,6 +90,36 @@ int main(void) {
             printf("{\"op\":\"always_blocked\",\"url\":");
             emit_json_string(rest[0] ? rest : "");
             printf(",\"blocked\":%s}\n", r ? "true" : "false");
+
+        } else if (strcmp(op, "ssrf_blocked_ip") == 0) {
+            /* New SSRF-transport layer (src/tools/port_tools_url_safety_ssrf.c):
+             * sockaddr-based ssrf_is_blocked_ip. */
+            struct sockaddr_storage ss;
+            memset(&ss, 0, sizeof(ss));
+            int parsed = 0, blocked = 1;
+            const char *ip = rest[0] ? rest : "";
+            if (strchr(ip, ':')) {
+                struct sockaddr_in6 *s6 = (struct sockaddr_in6 *)&ss;
+                s6->sin6_family = AF_INET6;
+                parsed = inet_pton(AF_INET6, ip, &s6->sin6_addr) == 1;
+            } else {
+                struct sockaddr_in *s4 = (struct sockaddr_in *)&ss;
+                s4->sin_family = AF_INET;
+                parsed = inet_pton(AF_INET, ip, &s4->sin_addr) == 1;
+            }
+            if (parsed) blocked = ssrf_is_blocked_ip((struct sockaddr *)&ss) ? 1 : 0;
+            printf("{\"op\":\"ssrf_blocked_ip\",\"ip\":");
+            emit_json_string(ip);
+            printf(",\"blocked\":%s}\n", blocked ? "true" : "false");
+
+        } else if (strcmp(op, "connect_scheme") == 0) {
+            /* "connect_scheme <port>" -> default scheme for a port with an
+             * empty origin map (ssrf_safe_connect_scheme). */
+            int port = atoi(rest);
+            const char *scheme = ssrf_safe_connect_scheme("example.com", port, NULL, 0);
+            printf("{\"op\":\"connect_scheme\",\"port\":%d,\"scheme\":", port);
+            emit_json_string(scheme);
+            printf("}\n");
 
         } else {
             printf("{\"op\":\"unknown\",\"raw\":");

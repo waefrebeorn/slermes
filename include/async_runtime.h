@@ -72,6 +72,19 @@ typedef int (*async_http_transport_t)(const char *method, const char *url,
 void async_http_set_transport(async_http_client_t *c,
                               async_http_transport_t t, void *ctx);
 
+/* Connect-time SSRF guard hook. When installed, the real transport calls
+ * guard(host, port, scheme, ctx) at the moment the TCP socket is about to be
+ * opened. The guard resolves + validates the host and returns a NUL-terminated
+ * list of vetted IP strings the transport must dial (host preserved for Host
+ * header / SNI / cert verification), closing the DNS-rebind gap. Returns a
+ * malloc'd, NULL-terminated char* array on success (caller frees each entry +
+ * the array), or NULL to BLOCK the connection (SSRF violation / DNS failure).
+ * Faithful C analogue of tools/url_safety.py's httpx network-backend guard. */
+typedef char **(*async_http_ssrf_guard_t)(const char *host, int port,
+                                          const char *scheme, void *ctx);
+void async_http_set_ssrf_guard(async_http_client_t *c,
+                               async_http_ssrf_guard_t g, void *ctx);
+
 /* These are AWAITABLE from within a fiber (they call fiber_yield while the
  * socket is not ready). When called outside a fiber they still work but run
  * synchronously on an internal loop. They return a malloc'd result. */

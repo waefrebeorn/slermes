@@ -38,6 +38,10 @@ void url_set_allow_private(bool allow);
 /* Reset allow_private cache (for testing). */
 void url_reset_allow_private(void);
 
+/* Return the current global allow-private-URLs toggle (getter for
+ * g_allow_private). Mirrors Python _global_allow_private_urls() result. */
+bool url_allow_private_enabled(void);
+
 /* ================================================================
  *  P160: Website Blocklist API
  * ================================================================ */

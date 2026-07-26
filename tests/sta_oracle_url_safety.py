@@ -76,6 +76,23 @@ def main():
             emit({"op": "always_blocked", "url": url,
                   "blocked": bool(is_always_blocked_url(url))})
 
+        elif op == "ssrf_blocked_ip":
+            # SSRF transport layer: same predicate as _is_blocked_ip, applied to
+            # the resolved connect-time address (C: ssrf_is_blocked_ip).
+            ip = rest if rest else ""
+            try:
+                blocked = bool(_is_blocked_ip(ipaddress.ip_address(ip)))
+            except ValueError:
+                blocked = True
+            emit({"op": "ssrf_blocked_ip", "ip": ip, "blocked": blocked})
+
+        elif op == "connect_scheme":
+            # _safe_connect_scheme with an empty origin map: https iff port 443.
+            from tools.url_safety import _safe_connect_scheme
+            port = int(rest)
+            emit({"op": "connect_scheme", "port": port,
+                  "scheme": _safe_connect_scheme("example.com", port, {})})
+
         else:
             emit({"op": "unknown", "raw": raw.rstrip("\n")})
 

@@ -251,6 +251,14 @@ static void req_on_write(int fd, void *u) {
     (void)fd; req_pump((req_t *)u);
 }
 
+struct async_http_client_t {
+    int timeout_ms;
+    async_http_transport_t transport;
+    void *transport_ctx;
+    async_http_ssrf_guard_t ssrf_guard;
+    void *ssrf_guard_ctx;
+};
+
 static async_http_result_t *real_request(async_http_client_t *c, const char *method,
                                          const char *url, const char *body) {
     async_http_result_t *res = mk_result();
@@ -262,22 +270,63 @@ static async_http_result_t *real_request(async_http_client_t *c, const char *met
         res->transport_err = -1; res->err = strdup("bad url"); free(r.rbuf); return res;
     }
 
+    /* Resolve + connect. If an SSRF guard is installed, it resolves and
+     * validates the host and returns the vetted IP strings we may dial;
+     * we then connect BY IP (host preserved for Host header / SNI), which
+     * closes the DNS-rebind gap between pre-flight validation and connect.
+     * Faithful analogue of url_safety._resolved_http_connect_ips + the
+     * httpx guarded network backend. */
     struct addrinfo hints, *res0 = NULL;
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC; hints.ai_socktype = SOCK_STREAM;
     char portstr[16]; snprintf(portstr, sizeof(portstr), "%d", r.url.port);
-    if (getaddrinfo(r.url.host, portstr, &hints, &res0) != 0 || !res0) {
-        res->transport_err = -1; res->err = strdup("dns failed"); async_http_url_free(&r.url); free(r.rbuf); return res;
+
+    char **vetted = NULL;
+    if (c->ssrf_guard) {
+        vetted = c->ssrf_guard(r.url.host, r.url.port, r.url.scheme, c->ssrf_guard_ctx);
+        if (!vetted) {
+            res->transport_err = -1; res->err = strdup("blocked by ssrf guard");
+            async_http_url_free(&r.url); free(r.rbuf); return res;
+        }
     }
+
     int fd = -1;
-    for (struct addrinfo *ai = res0; ai; ai = ai->ai_next) {
-        fd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
-        if (fd < 0) continue;
-        fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
-        if (connect(fd, ai->ai_addr, ai->ai_addrlen) == 0 || errno == EINPROGRESS) break;
-        close(fd); fd = -1;
+    if (vetted) {
+        /* Dial each vetted IP directly (AI_NUMERICHOST — no re-resolution). */
+        struct addrinfo nhints;
+        for (int i = 0; vetted[i] && fd < 0; i++) {
+            memset(&nhints, 0, sizeof(nhints));
+            nhints.ai_family = AF_UNSPEC; nhints.ai_socktype = SOCK_STREAM;
+            nhints.ai_flags = AI_NUMERICHOST;
+            struct addrinfo *ipres = NULL;
+            if (getaddrinfo(vetted[i], portstr, &nhints, &ipres) != 0 || !ipres) {
+                if (ipres) freeaddrinfo(ipres);
+                continue;
+            }
+            for (struct addrinfo *ai = ipres; ai; ai = ai->ai_next) {
+                fd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
+                if (fd < 0) continue;
+                fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
+                if (connect(fd, ai->ai_addr, ai->ai_addrlen) == 0 || errno == EINPROGRESS) break;
+                close(fd); fd = -1;
+            }
+            freeaddrinfo(ipres);
+        }
+        for (int i = 0; vetted[i]; i++) free(vetted[i]);
+        free(vetted);
+    } else {
+        if (getaddrinfo(r.url.host, portstr, &hints, &res0) != 0 || !res0) {
+            res->transport_err = -1; res->err = strdup("dns failed"); async_http_url_free(&r.url); free(r.rbuf); return res;
+        }
+        for (struct addrinfo *ai = res0; ai; ai = ai->ai_next) {
+            fd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
+            if (fd < 0) continue;
+            fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
+            if (connect(fd, ai->ai_addr, ai->ai_addrlen) == 0 || errno == EINPROGRESS) break;
+            close(fd); fd = -1;
+        }
+        freeaddrinfo(res0);
     }
-    freeaddrinfo(res0);
     if (fd < 0) { res->transport_err = -1; res->err = strdup("connect failed"); async_http_url_free(&r.url); free(r.rbuf); return res; }
     r.fd = fd;
 
@@ -307,11 +356,6 @@ static async_http_result_t *real_request(async_http_client_t *c, const char *met
 /* ════════════════════════════════════════════════════════════════════════
  * client + injectable transport
  * ════════════════════════════════════════════════════════════════════════ */
-struct async_http_client_t {
-    int timeout_ms;
-    async_http_transport_t transport;
-    void *transport_ctx;
-};
 
 async_http_client_t *async_http_client_new(int timeout_ms) {
     async_http_client_t *c = calloc(1, sizeof(*c));
@@ -322,6 +366,9 @@ async_http_client_t *async_http_client_new(int timeout_ms) {
 void async_http_client_free(async_http_client_t *c) { free(c); }
 void async_http_set_transport(async_http_client_t *c, async_http_transport_t t, void *ctx) {
     if (c) { c->transport = t; c->transport_ctx = ctx; }
+}
+void async_http_set_ssrf_guard(async_http_client_t *c, async_http_ssrf_guard_t g, void *ctx) {
+    if (c) { c->ssrf_guard = g; c->ssrf_guard_ctx = ctx; }
 }
 
 async_http_result_t *async_http_get(async_http_client_t *c, const char *url) {

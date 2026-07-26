@@ -69,3 +69,46 @@ always_blocked http://192.168.1.1/
 # === always_blocked: empty / malformed ===
 always_blocked
 always_blocked not a url
+
+# === ssrf_blocked_ip: connect-time SSRF guard (port_tools_url_safety_ssrf.c) ===
+ssrf_blocked_ip 8.8.8.8
+ssrf_blocked_ip 1.1.1.1
+ssrf_blocked_ip 10.0.0.1
+ssrf_blocked_ip 172.16.0.1
+ssrf_blocked_ip 172.32.0.1
+ssrf_blocked_ip 192.168.1.1
+ssrf_blocked_ip 127.0.0.1
+ssrf_blocked_ip 169.254.169.254
+ssrf_blocked_ip 169.254.170.2
+ssrf_blocked_ip 100.100.100.200
+ssrf_blocked_ip 100.64.0.1
+ssrf_blocked_ip 100.128.0.1
+ssrf_blocked_ip 0.0.0.0
+ssrf_blocked_ip 224.0.0.1
+ssrf_blocked_ip 240.0.0.1
+ssrf_blocked_ip 255.255.255.255
+ssrf_blocked_ip 198.18.0.1
+ssrf_blocked_ip 192.0.0.1
+ssrf_blocked_ip 192.0.2.1
+ssrf_blocked_ip 198.51.100.1
+ssrf_blocked_ip 203.0.113.1
+ssrf_blocked_ip ::1
+ssrf_blocked_ip ::
+ssrf_blocked_ip fe80::1
+ssrf_blocked_ip fc00::1
+ssrf_blocked_ip fd00:ec2::254
+ssrf_blocked_ip fb00::1
+ssrf_blocked_ip 4000::1
+ssrf_blocked_ip 2606:4700::1111
+ssrf_blocked_ip 2001:4860:4860::8888
+ssrf_blocked_ip 2001:db8::1
+ssrf_blocked_ip 2002::1
+ssrf_blocked_ip ::ffff:10.0.0.1
+ssrf_blocked_ip ::ffff:8.8.8.8
+ssrf_blocked_ip ::ffff:169.254.169.254
+
+# === connect_scheme: default origin scheme by port ===
+connect_scheme 443
+connect_scheme 80
+connect_scheme 8080
+connect_scheme 8443
