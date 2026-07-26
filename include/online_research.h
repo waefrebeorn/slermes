@@ -76,6 +76,25 @@ void moa_research_free(research_summary_t *research);
  */
 void moa_apply_research_to_refs(moa_ref_model_t **refs, int *count, research_summary_t *research);
 
+/* ─── Python module-level API (tools/mixture_of_agents_tool.py) ────────
+ * Wrappers mapping the Python module names onto the real MoA engine. */
+int moa_provider_health_is_healthy(const char *provider_name);
+void moa_provider_health_record_success(const char *provider_name);
+void moa_provider_health_record_failure(const char *provider_name);
+char *moa_provider_health_get_summary(void);
+char *moa_http_client_call_model(const moa_ref_model_t *ref,
+                                 const char *system_prompt, const char *user_prompt);
+char *moa_http_client_extract_content(const char *data_json);
+char **moa_query_all_references(const moa_ref_model_t *refs, int ref_count,
+                                const char *system_prompt, const char *user_prompt,
+                                int *out_pairs);
+char *moa_mixture_of_agents_math(const char *user_prompt);
+void moa_http_client_enter(void);
+void moa_http_client_exit(void);
+
+/* Main engine entry (tools/mixture_of_agents.c) — returns JSON string (caller frees). */
+char *handle_mixture_of_agents(const char *args_json, const char *task_id);
+
 /* ─── Cache Configuration ────────────────────────────────────────── */
 
 /**

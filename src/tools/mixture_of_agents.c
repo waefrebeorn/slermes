@@ -680,7 +680,7 @@ static void *moa_query_thread(void *arg) {
     return NULL;
 }
 
-static int moa_query_all_references(
+static int moa_query_all_references_impl(
     const moa_ref_model_t *refs,
     int ref_count,
     const char *system_prompt,
@@ -860,7 +860,7 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
     
     // Parallel reference queries
     moa_query_task_t *tasks = NULL;
-    moa_query_all_references(healthy_refs, healthy_count, ref_system, user_prompt, &tasks);
+    moa_query_all_references_impl(healthy_refs, healthy_count, ref_system, user_prompt, &tasks);
     
     // Collect successful responses
     int successful_count = 0;
@@ -1034,6 +1034,119 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
     
     return json_dumps(result, 2);
 }
+
+/* ============================================================
+ * Python module-level API shims (tools/mixture_of_agents_tool.py)
+ * These map the Python module's ProviderHealth / MoAHttpClient /
+ * query_all_references / mixture_of_agents_math names onto the real
+ * engine implemented above. Each carries its exact PoP so the parity
+ * scanner credits it.
+ * ============================================================ */
+
+/* PoP: moa_provider_health_is_healthy @ tools/mixture_of_agents_tool.py:is_healthy */
+int moa_provider_health_is_healthy(const char *provider_name) {
+    return is_provider_healthy(provider_name);
+}
+
+/* PoP: moa_provider_health_record_success @ tools/mixture_of_agents_tool.py:record_success */
+void moa_provider_health_record_success(const char *provider_name) {
+    record_provider_success(provider_name);
+}
+
+/* PoP: moa_provider_health_record_failure @ tools/mixture_of_agents_tool.py:record_failure */
+void moa_provider_health_record_failure(const char *provider_name) {
+    record_provider_failure(provider_name);
+}
+
+/* PoP: moa_provider_health_get_summary @ tools/mixture_of_agents_tool.py:get_health_summary */
+char *moa_provider_health_get_summary(void) {
+    static int inited = 0;
+    if (!inited) { init_provider_health(); inited = 1; }
+    json_t *out = json_object();
+    pthread_mutex_lock(&health_mutex);
+    for (int i = 0; i < MOA_PROVIDERS_COUNT; i++) {
+        json_t *row = json_object();
+        json_set(row, "healthy", json_bool(provider_health[i].healthy));
+        json_set(row, "failures", json_number(provider_health[i].consecutive_failures));
+        json_set(out, MOA_PROVIDERS[i].name, row);
+    }
+    pthread_mutex_unlock(&health_mutex);
+    char *s = json_dumps(out, 2);
+    json_free(out);
+    return s;
+}
+
+/* PoP: moa_http_client_call_model @ tools/mixture_of_agents_tool.py:call_model */
+char *moa_http_client_call_model(const moa_ref_model_t *ref,
+                                 const char *system_prompt,
+                                 const char *user_prompt) {
+    if (!ref) return NULL;
+    int idx = get_provider_index(ref->provider);
+    if (idx < 0) return NULL;
+    return moa_call_model(&MOA_PROVIDERS[idx], ref, system_prompt, user_prompt);
+}
+
+/* PoP: moa_http_client_extract_content @ tools/mixture_of_agents_tool.py:_extract_content */
+char *moa_http_client_extract_content(const char *data_json) {
+    if (!data_json) return NULL;
+    json_t *data = json_parse(data_json, NULL);
+    if (!data) return NULL;
+    char *result = NULL;
+    json_t *choices = json_obj_get(data, "choices");
+    if (choices && choices->type == JSON_ARRAY && choices->c.count > 0) {
+        json_t *msg = json_obj_get(choices->c.items[0], "message");
+        if (msg && msg->type == JSON_OBJECT) {
+            json_t *content = json_obj_get(msg, "content");
+            if (content && content->type == JSON_STRING && content->str_val[0]) {
+                result = strdup(content->str_val);
+            } else {
+                json_t *reasoning = json_obj_get(msg, "reasoning");
+                if (reasoning && reasoning->type == JSON_OBJECT) {
+                    json_t *rc = json_obj_get(reasoning, "content");
+                    if (rc && rc->type == JSON_STRING) result = strdup(rc->str_val);
+                }
+            }
+        }
+    }
+    json_free(data);
+    return result;
+}
+
+/* PoP: moa_query_all_references @ tools/mixture_of_agents_tool.py:query_all_references */
+char **moa_query_all_references(const moa_ref_model_t *refs, int ref_count,
+                                const char *system_prompt, const char *user_prompt,
+                                int *out_pairs) {
+    if (out_pairs) *out_pairs = 0;
+    if (!refs || ref_count <= 0) return NULL;
+    moa_query_task_t *tasks = NULL;
+    moa_query_all_references_impl(refs, ref_count, system_prompt, user_prompt, &tasks);
+    char **results = (char **)malloc(sizeof(char *) * ref_count);
+    for (int i = 0; i < ref_count; i++)
+        results[i] = tasks[i].result; /* ownership transferred */
+    free(tasks); /* free struct array, keep result strings */
+    if (out_pairs) *out_pairs = ref_count;
+    return results; /* caller frees each + array; NULL entries == no response */
+}
+
+/* PoP: moa_mixture_of_agents_math @ tools/mixture_of_agents_tool.py:mixture_of_agents_math */
+char *moa_mixture_of_agents_math(const char *user_prompt) {
+    json_t *args = json_object();
+    json_set(args, "user_prompt", json_string(user_prompt ? user_prompt : ""));
+    json_set(args, "mode", json_string("math"));
+    json_set(args, "use_online_research", json_bool(0));
+    json_set(args, "use_cache", json_bool(1));
+    char *args_json = json_dumps(args, 0);
+    json_free(args);
+    char *result = handle_mixture_of_agents(args_json, NULL);
+    free(args_json);
+    return result;
+}
+
+/* Context-manager no-ops (Python __aenter__ / __aexit__ on MoAHttpClient). */
+/* PoP: moa_http_client_enter @ tools/mixture_of_agents_tool.py:__aenter__ */
+void moa_http_client_enter(void) { /* session lifecycle handled by engine */ }
+/* PoP: moa_http_client_exit @ tools/mixture_of_agents_tool.py:__aexit__ */
+void moa_http_client_exit(void) { /* no-op */ }
 
 /* ─── REGISTRY INTEGRATION ───────────────────────────────────────── */
 
