@@ -27,6 +27,7 @@
 #include "hermes_core_types.h"   /* hermes_config_t, hermes_config_load, hermes_get_home */
 #include "hermes_json.h"         /* json_node_t */
 #include "gateway_run_pure.h"    /* gateway_strip_auto_continue_noise */
+#include "hash.h"                /* hash_sha256_hex */
 
 /* ───────────────────────────── helpers ───────────────────────────── */
 
@@ -640,4 +641,109 @@ bool gw_is_telegram_dm_topic_target(const char *platform,
     if (chat_type && strcmp(chat_type, "dm") == 0) return true;
     if (chat_id && chat_id[0] != '\0' && has_dm_topic_info) return true;
     return false;
+}
+
+/* ────────── _adapter_credential_fingerprint ──────────
+ * Salted, log-safe fingerprint of an adapter's bot token. The caller
+ * discovers the token from adapter attrs; this ports the hashing chokepoint:
+ *   sha256("hermes-mux:" + token).hexdigest()[:16]
+ * Returns malloc'd 17-byte string (16 hex + NUL) or NULL when token empty. */
+/* PoP: gw_adapter_credential_fingerprint @ gateway/run.py:_adapter_credential_fingerprint */
+char *gw_adapter_credential_fingerprint(const char *token) {
+    if (!token) return NULL;
+    /* .strip() */
+    while (*token == ' ' || *token == '\t' || *token == '\n' || *token == '\r')
+        token++;
+    size_t tn = strlen(token);
+    while (tn > 0 && (token[tn-1] == ' ' || token[tn-1] == '\t' ||
+                      token[tn-1] == '\n' || token[tn-1] == '\r')) tn--;
+    if (tn == 0) return NULL;
+
+    static const char *PREFIX = "hermes-mux:";
+    size_t pn = strlen(PREFIX);
+    char *buf = malloc(pn + tn + 1);
+    if (!buf) return NULL;
+    memcpy(buf, PREFIX, pn);
+    memcpy(buf + pn, token, tn);
+    buf[pn + tn] = '\0';
+
+    char *hex = hash_sha256_hex((const unsigned char *)buf, pn + tn);
+    free(buf);
+    if (!hex) return NULL;
+    /* [:16] */
+    char *out = malloc(17);
+    if (!out) { free(hex); return NULL; }
+    memcpy(out, hex, 16);
+    out[16] = '\0';
+    free(hex);
+    return out;
+}
+
+/* ────────── _empty_honcho_cache_busting_config ──────────
+ * {key: None for key in _HONCHO_CACHE_BUSTING_KEYS} — emit as a JSON object
+ * with all-null values. Returns malloc'd JSON string. */
+/* PoP: gw_empty_honcho_cache_busting_config @ gateway/run.py:_empty_honcho_cache_busting_config */
+char *gw_empty_honcho_cache_busting_config(void) {
+    static const char *KEYS[] = {
+        "honcho.peer_name", "honcho.ai_peer", "honcho.pin_peer_name",
+        "honcho.runtime_peer_prefix", "honcho.user_peer_aliases", NULL
+    };
+    /* build {"k1":null,"k2":null,...} */
+    size_t cap = 256;
+    char *out = malloc(cap);
+    if (!out) return NULL;
+    size_t len = 0;
+    out[len++] = '{';
+    for (int i = 0; KEYS[i]; i++) {
+        const char *k = KEYS[i];
+        size_t need = strlen(k) + 10;
+        if (len + need >= cap) { cap *= 2; char *n = realloc(out, cap); if (!n) { free(out); return NULL; } out = n; }
+        if (i > 0) out[len++] = ',';
+        out[len++] = '"';
+        memcpy(out + len, k, strlen(k)); len += strlen(k);
+        out[len++] = '"'; out[len++] = ':';
+        memcpy(out + len, "null", 4); len += 4;
+    }
+    out[len++] = '}';
+    out[len] = '\0';
+    return out;
+}
+
+/* ────────── _get_proxy_url ──────────
+ * GATEWAY_PROXY_URL env first (rstrip "/"), else gateway.proxy_url from
+ * config. Here the env path is ported; pass the config value as fallback
+ * (already resolved by the caller from _load_gateway_config). Returns
+ * malloc'd string or NULL. */
+/* PoP: gw_get_proxy_url @ gateway/run.py:_get_proxy_url */
+char *gw_get_proxy_url(const char *config_proxy_url) {
+    const char *env = getenv("GATEWAY_PROXY_URL");
+    char work[1024];
+    const char *pick = NULL;
+
+    if (env) {
+        snprintf(work, sizeof(work), "%s", env);
+        /* .strip() */
+        char *s = work;
+        while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+        size_t n = strlen(s);
+        while (n > 0 && (s[n-1] == ' ' || s[n-1] == '\t' ||
+                         s[n-1] == '\n' || s[n-1] == '\r')) s[--n] = '\0';
+        if (n > 0) pick = s;
+    }
+    if (!pick && config_proxy_url) {
+        snprintf(work, sizeof(work), "%s", config_proxy_url);
+        char *s = work;
+        while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+        size_t n = strlen(s);
+        while (n > 0 && (s[n-1] == ' ' || s[n-1] == '\t' ||
+                         s[n-1] == '\n' || s[n-1] == '\r')) s[--n] = '\0';
+        if (n > 0) pick = s;
+    }
+    if (!pick) return NULL;
+    /* .rstrip("/") */
+    char *dup = xstrdup(pick);
+    if (!dup) return NULL;
+    size_t dn = strlen(dup);
+    while (dn > 0 && dup[dn-1] == '/') dup[--dn] = '\0';
+    return dup;
 }

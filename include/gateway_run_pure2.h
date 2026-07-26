@@ -171,6 +171,18 @@ bool gw_is_telegram_dm_topic_target(const char *platform,
                                     const char *chat_type,
                                     bool has_dm_topic_info);
 
+/* run.py _adapter_credential_fingerprint — salted sha256[:16] of token. */
+/* PoP: gw_adapter_credential_fingerprint @ gateway/run.py:_adapter_credential_fingerprint */
+char *gw_adapter_credential_fingerprint(const char *token);
+
+/* run.py _empty_honcho_cache_busting_config — JSON object, all-null values. */
+/* PoP: gw_empty_honcho_cache_busting_config @ gateway/run.py:_empty_honcho_cache_busting_config */
+char *gw_empty_honcho_cache_busting_config(void);
+
+/* run.py _get_proxy_url — GATEWAY_PROXY_URL env else config value, rstrip "/". */
+/* PoP: gw_get_proxy_url @ gateway/run.py:_get_proxy_url */
+char *gw_get_proxy_url(const char *config_proxy_url);
+
 #ifdef __cplusplus
 }
 #endif
