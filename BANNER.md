@@ -3,7 +3,7 @@
 # ║         of Hermes Agent (Nous Research)                      ║
 # ║                                                              ║
 # ║  Build: Clean  │  v629 │  Tests: 36/36  │  Oracle: 18 suites 0 mismatch + 1611/0 fuzz ║
-# ║  Ported: 6,547/11,249 (58.2%)  REAL_GAP: 4,667 (41.5%)  PARTIAL: 35  ║
+# ║  Ported: 234/774 (30.2%)  REAL_GAP: 531 (68.6%)  PARTIAL: 9  ║
 # ║  ✓ v573..v627: god-header purge, web_server/weixin heavy ports, batch PoP   ║
 # ║    annotation closure, recovery renumber, parity-page fix (55 commits).    ║
 # ║    0 STUB, no god headers.                                          ║

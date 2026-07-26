@@ -99,6 +99,13 @@ typedef struct {
     char  id[64];
     char  name[128];
     char  arguments[4096]; /* JSON args string */
+    /* Recognition-stage flags (set by libtoolrecog normalization):
+     *  malformed  — arguments did not parse as a JSON object; the tool is
+     *               NOT dispatched; the dispatch loop emits the error result.
+     *  unwrapped   — this call was produced by peeling a Tool-Search
+     *               `tool_call` bridge open to its underlying tool. */
+    bool  malformed;
+    bool  unwrapped;
 } tool_call_t;
 
 typedef enum {

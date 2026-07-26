@@ -43,9 +43,9 @@ Mission 2 COMPLETE — Desktop parity 95/111 features
 Mission 5: Documentation serving (serve ALL 749 upstream .md files via web_server.c)
 
 <!-- PARITY:AUTO -->
-| PORTED  | 6,547 / 11,249 (58.2%) |
-| REAL_GAP| 4,667 (41.5%) — no N/A |
-| PARTIAL | 35 (0.8%) |
+| PORTED  | 234 / 774 (30.2%) |
+| REAL_GAP| 531 (68.6%) — no N/A |
+| PARTIAL | 9 (0.8%) |
 | STUB    | 0 |
 
 _Generated from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._

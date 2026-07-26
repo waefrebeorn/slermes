@@ -26,9 +26,9 @@ session notes, not the current count:**
 (never hand-maintain). The port is ~two-thirds done as of 2026-07-22.**
 
 <!-- PARITY:AUTO -->
-| PORTED  | 6,547 / 11,249 (58.2%) |
-| REAL_GAP| 4,667 (41.5%) — no N/A |
-| PARTIAL | 35 (0.8%) |
+| PORTED  | 234 / 774 (30.2%) |
+| REAL_GAP| 531 (68.6%) — no N/A |
+| PARTIAL | 9 (0.8%) |
 | STUB    | 0 |
 
 _Generated from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
