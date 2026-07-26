@@ -17,6 +17,8 @@
 #include "hermes_skill_commands.h"
 #include "hermes_logger.h"
 #include "hermes_telegram_filter.h"
+#include "hermes_gateway_runner.h"
+#include "port_gateway_run_agent.h"
 #include <pthread.h>
 #include <errno.h>
 #include <stdio.h>
@@ -92,6 +94,12 @@ char *gw_apply_interceptors(const char *platform, const char *chat_id,
  * ================================================================ */
 
 gateway_state_t g_gw;
+
+/* Shared GatewayRunner: owns the faithful session-state maps (model/reasoning
+ * overrides, run-generation tokens, sidecar notes, native images) that the
+ * turn core (gateway_runner_run_agent_inner) reads. Created in
+ * hermes_gateway_main, used by process_update. */
+static GatewayRunner *g_runner = NULL;
 
 /* Promoted gateway globals (declared extern in gw_server_internals.h).
  * server.c owns the definitions; the extracted gateway modules reference
@@ -983,9 +991,48 @@ void process_update(const char *platform, const char *chat_id, const char *text)
         /* Unknown command — let it fall through to the AI agent */
     }
 
-    /* Run agent on per-chat session */
-    char *resp = agent_chat(session_agent, text);
-    /* Clear callbacks after agent_chat returns — context is stack-local */
+    /* Run agent on per-chat session.
+     *
+     * Route through the faithful GatewayRunner turn core when available: it
+     * applies /model session overrides, resolves session reasoning config,
+     * guards against superseded (stale run-generation) turns, wraps native
+     * images + observed context, calls run_conversation, then assembles the
+     * result dict (empty-response normalization, MEDIA auto-append, provider
+     * sanitize). Falls back to the direct agent_chat path if the runner or
+     * turn core is unavailable. */
+    char *resp = NULL;
+    json_node_t *turn_result = NULL;
+    if (g_runner) {
+        int run_gen = gateway_runner_begin_session_run_generation(
+            g_runner, session_agent->session_key);
+        gw_turn_input_t turn_in;
+        memset(&turn_in, 0, sizeof(turn_in));
+        turn_in.message = text;
+        turn_in.context_prompt = NULL;   /* system prompt already set on state */
+        turn_in.session_key = session_agent->session_key;
+        turn_in.session_id = session_agent->session_id;
+        turn_in.platform = platform;
+        turn_in.observed_context = NULL;
+        turn_in.run_generation = run_gen;
+        turn_result = gateway_runner_run_agent_inner(g_runner, session_agent,
+                                                     &turn_in);
+        if (turn_result) {
+            const char *fr = gw_turn_result_final_response(turn_result);
+            resp = strdup(fr ? fr : "");
+        } else {
+            /* Superseded turn (a newer message bumped the generation) — drop
+             * this reply silently, exactly as the Python runner does. */
+            session_agent->tool_event_cb = NULL;
+            session_agent->tool_event_data = NULL;
+            session_agent->stream_cb = NULL;
+            session_agent->stream_data = NULL;
+            free(modified_text);
+            return;
+        }
+    } else {
+        resp = agent_chat(session_agent, text);
+    }
+    /* Clear callbacks after the turn returns — context is stack-local */
     session_agent->tool_event_cb = NULL;
     session_agent->tool_event_data = NULL;
     session_agent->stream_cb = NULL;
@@ -995,9 +1042,9 @@ void process_update(const char *platform, const char *chat_id, const char *text)
            hermes_redact() handles API keys, tokens, JWTs, and
            configured patterns via key:value and free-text prefix matching. */
         char *redacted = hermes_redact(resp);
-        /* P160: Sanitize provider errors for Telegram.
-           Detects provider failure envelopes and rewrites them to
-           user-safe short replies. Mirrors Python _sanitize_gateway_final_response(). */
+        /* P160: Sanitize provider errors for Telegram. The turn core already
+           sanitizes when routed through the runner; this stays for the
+           agent_chat fallback path and is idempotent on clean text. */
         char *sanitized = gateway_sanitize_response(platform, redacted ? redacted : resp);
         gateway_send(platform, chat_id, sanitized ? sanitized : (redacted ? redacted : resp));
         free(sanitized);
@@ -1013,6 +1060,8 @@ void process_update(const char *platform, const char *chat_id, const char *text)
                      "%s", session_agent->llm.provider);
         }
     }
+    if (turn_result) json_free(turn_result);
+    free(modified_text);
 }
 
 /* ================================================================
@@ -1224,6 +1273,10 @@ int hermes_gateway_main(int argc, char **argv) {
 
     printf("[gateway] WuBu Slermes Gateway v%s\n", HERMES_VERSION);
 
+    /* Create the shared GatewayRunner that owns the faithful session-state
+     * maps consumed by the turn core (gateway_runner_run_agent_inner). */
+    g_runner = gateway_runner_create(NULL);
+
     /* Determine platforms to run */
     platform_def_t all_platforms[] = {
         {"telegram",   setup_telegram,   thread_poll_telegram,   0},
@@ -1416,6 +1469,8 @@ int hermes_gateway_main(int argc, char **argv) {
     pthread_join(cleanup_thread, NULL);
 
 cleanup:
+    /* Destroy the shared GatewayRunner (session-state maps). */
+    if (g_runner) { gateway_runner_destroy(g_runner); g_runner = NULL; }
     /* Shutdown all platforms */
     gw_platform_shutdown_all();
     /* P102: Save and free all sessions */
