@@ -28,6 +28,7 @@
  *  Helpers (port of Python helper functions)
  */
 
+/* PoP: account_usage_title_case_slug @ agent/account_usage.py:_title_case_slug */
 /* Port of Python: _title_case_slug — "foo_bar-baz" -> "Foo Bar Baz" (None if empty).
  * Mirrors str(value).replace("_"," ").replace("-"," ").title(): every
  * whitespace/_/- separated word is capitalized. */
@@ -50,6 +51,7 @@ const char *account_usage_title_case_slug(const char *value) {
     return buf;
 }
 
+/* PoP: account_usage_fmt_usd @ agent/account_usage.py:_fmt_usd */
 /* Port of Python: _fmt_usd — f"${d:,.2f}" with thousands separators. */
 void account_usage_fmt_usd(double d, char *buf, size_t sz) {
     if (!buf || sz == 0) return;
@@ -89,11 +91,13 @@ void account_usage_fmt_usd(double d, char *buf, size_t sz) {
     snprintf(buf, sz, "$%s.%02d", intbuf, frac < 0 ? -frac : frac);
 }
 
+/* PoP: account_usage_is_finite_num @ agent/account_usage.py:_is_finite_num */
 /* Port of Python: _is_finite_num — real numeric (int/float, not bool, not NaN/Inf). */
 bool account_usage_is_finite_num(double v) {
     return isfinite(v) && !isnan(v);
 }
 
+/* PoP: account_usage_parse_dt @ agent/account_usage.py:_parse_dt */
 /* Parse a datetime value to unix timestamp. Returns 0 on failure. */
 /* Port of Python: _parse_dt */
 static int64_t parse_dt(const char *value) {
@@ -109,6 +113,7 @@ static int64_t parse_dt(const char *value) {
     return 0;
 }
 
+/* PoP: account_usage_format_reset @ agent/account_usage.py:_format_reset */
 /* Format a reset timestamp for display. Returns a static buffer. */
 /* Port of Python: _format_reset */
 static const char *format_reset(int64_t reset_at) {
@@ -151,6 +156,7 @@ static const char *format_reset(int64_t reset_at) {
  *  Provider-specific fetchers
  */
 
+/* PoP: account_usage_fetch_openrouter @ agent/account_usage.py:_fetch_openrouter_account_usage */
 /* Port of Python: _fetch_openrouter_account_usage */
 static account_usage_snapshot_t *fetch_openrouter(const char *base_url,
     const char *api_key)
@@ -249,6 +255,7 @@ static account_usage_snapshot_t *fetch_openrouter(const char *base_url,
     return snap;
 }
 
+/* PoP: account_usage_fetch_anthropic @ agent/account_usage.py:_fetch_anthropic_account_usage */
 /* Port of Python: _fetch_anthropic_account_usage */
 static account_usage_snapshot_t *fetch_anthropic(const char *base_url,
     const char *api_key)
@@ -355,6 +362,7 @@ static account_usage_snapshot_t *fetch_anthropic(const char *base_url,
     return snap;
 }
 
+/* PoP: account_usage_fetch_codex @ agent/account_usage.py:_fetch_codex_account_usage */
 /* Port of Python: _fetch_codex_account_usage (with _resolve_codex_usage_url inlined) */
 /* AG26: Port of Python agent/account_usage.py:_resolve_codex_usage_url() */
 static account_usage_snapshot_t *fetch_codex(const char *base_url,
@@ -483,6 +491,7 @@ static account_usage_snapshot_t *fetch_codex(const char *base_url,
  *  Public API
  */
 
+/* PoP: account_usage_fetch_account_usage @ agent/account_usage.py:fetch_account_usage */
 /* Port of Python: fetch_account_usage */
 account_usage_snapshot_t *fetch_account_usage(const char *provider,
     const char *base_url, const char *api_key)
@@ -514,6 +523,7 @@ static char *str_alloc(const char *s) {
     return strdup(s);
 }
 
+/* PoP: account_usage_render_account_usage_lines @ agent/account_usage.py:render_account_usage_lines */
 /* Port of Python: render_account_usage_lines */
 char **render_account_usage_lines(const account_usage_snapshot_t *snap,
     bool markdown)
@@ -589,6 +599,7 @@ char **render_account_usage_lines(const account_usage_snapshot_t *snap,
     return lines;
 }
 
+/* PoP: account_usage_available @ agent/account_usage.py:available */
 /* Port of Python: AccountUsageSnapshot.available (property)
  * Returns true if snapshot has usable data (windows/details) and no unavailable_reason. */
 /* AG26: Port of Python agent/account_usage.py:AccountUsageSnapshot.available() */
