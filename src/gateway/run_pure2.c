@@ -747,3 +747,53 @@ char *gw_get_proxy_url(const char *config_proxy_url) {
     while (dn > 0 && dup[dn-1] == '/') dup[--dn] = '\0';
     return dup;
 }
+
+/* ────────── _thread_metadata_for_target ──────────
+ * Build thread metadata JSON for synthetic sends. is_dm_topic is the
+ * adapter/DB-resolved gw_is_telegram_dm_topic_target() result (a separate
+ * concern), passed in explicitly. Returns a malloc'd json_t (caller frees
+ * via json_free) or NULL when thread_id is NULL. */
+/* PoP: gw_thread_metadata_for_target @ gateway/run.py:_thread_metadata_for_target */
+json_t *gw_thread_metadata_for_target(const char *thread_id,
+                                      bool is_dm_topic,
+                                      const char *reply_to_message_id) {
+    if (thread_id == NULL) return NULL; /* thread_id is None */
+    json_t *meta = json_object();
+    if (!meta) return NULL;
+    json_set(meta, "thread_id", json_string(thread_id));
+    if (is_dm_topic) {
+        json_set(meta, "telegram_dm_topic_reply_fallback", json_bool(true));
+        /* tid not in {"", "1"} */
+        const char *tid = thread_id;
+        bool general = (tid[0] == '\0') || (tid[0] == '1' && tid[1] == '\0');
+        if (!general)
+            json_set(meta, "direct_messages_topic_id", json_string(tid));
+        if (reply_to_message_id != NULL)
+            json_set(meta, "telegram_reply_to_message_id",
+                     json_string(reply_to_message_id));
+    }
+    return meta;
+}
+
+/* ────────── _checkpoint_agent_kwargs ──────────
+ * Translate gateway checkpoint config into AIAgent constructor args.
+ * The DEFAULT_CONFIG["checkpoints"] defaults are inlined (config.py):
+ *   enabled=false, max_snapshots=20, max_total_size_mb=500, max_file_size_mb=10.
+ * `cp_enabled_present`/`cp_enabled` mirror a legacy `checkpoints: true` bool or
+ * a dict's "enabled". The three size ints come from the dict or defaults.
+ * Returns a malloc'd json_t (caller frees). */
+/* PoP: gw_checkpoint_agent_kwargs @ gateway/run.py:_checkpoint_agent_kwargs */
+json_t *gw_checkpoint_agent_kwargs(bool cp_enabled,
+                                   int max_snapshots,
+                                   int max_total_size_mb,
+                                   int max_file_size_mb) {
+    json_t *out = json_object();
+    if (!out) return NULL;
+    json_set(out, "checkpoints_enabled", json_bool(cp_enabled));
+    json_set(out, "checkpoint_max_snapshots", json_number((double)max_snapshots));
+    json_set(out, "checkpoint_max_total_size_mb",
+             json_number((double)max_total_size_mb));
+    json_set(out, "checkpoint_max_file_size_mb",
+             json_number((double)max_file_size_mb));
+    return out;
+}

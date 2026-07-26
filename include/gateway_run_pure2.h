@@ -183,6 +183,19 @@ char *gw_empty_honcho_cache_busting_config(void);
 /* PoP: gw_get_proxy_url @ gateway/run.py:_get_proxy_url */
 char *gw_get_proxy_url(const char *config_proxy_url);
 
+/* run.py _thread_metadata_for_target — malloc'd json_t or NULL. */
+/* PoP: gw_thread_metadata_for_target @ gateway/run.py:_thread_metadata_for_target */
+json_t *gw_thread_metadata_for_target(const char *thread_id,
+                                      bool is_dm_topic,
+                                      const char *reply_to_message_id);
+
+/* run.py _checkpoint_agent_kwargs — malloc'd json_t of AIAgent ctor args. */
+/* PoP: gw_checkpoint_agent_kwargs @ gateway/run.py:_checkpoint_agent_kwargs */
+json_t *gw_checkpoint_agent_kwargs(bool cp_enabled,
+                                   int max_snapshots,
+                                   int max_total_size_mb,
+                                   int max_file_size_mb);
+
 #ifdef __cplusplus
 }
 #endif
