@@ -1,0 +1,7 @@
+# weixin open but disabled -> no violation
+gateway:
+  platforms:
+    weixin:
+      enabled: false
+      extra:
+        dm_policy: open

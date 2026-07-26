@@ -1,0 +1,7 @@
+# extra.dm_policy=open wins over WECOM_DM_POLICY=pairing env -> violation
+gateway:
+  platforms:
+    wecom:
+      enabled: true
+      extra:
+        dm_policy: open

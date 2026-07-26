@@ -1,0 +1,7 @@
+# weixin open BUT GATEWAY_ALLOW_ALL_USERS=true -> no violation
+gateway:
+  platforms:
+    weixin:
+      enabled: true
+      extra:
+        dm_policy: open

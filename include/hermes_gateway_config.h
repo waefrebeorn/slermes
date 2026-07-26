@@ -196,6 +196,7 @@ const char *gateway_config_get_unauthorized_dm_behavior(const gateway_config_t *
  * per-platform `extra` settings without config.c's local gateway_config_t type
  * leaking across the header boundary. */
 void gateway_config_load_global(void);
+const gateway_config_t *gateway_config_get_global(void);
 const char *gateway_config_get_unauthorized_dm_behavior_global(void);
 
 /* Find a platform config by (case-insensitive) name in the loaded global

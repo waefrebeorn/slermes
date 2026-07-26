@@ -10,6 +10,7 @@
 
 #include <stdbool.h>
 #include "hermes_json.h"
+#include "hermes_gateway_config.h"
 
 /* run.py _active_profile_name — profile name this gateway represents.
  * Wraps profiles.get_active_profile_name(); "default" on any failure.
@@ -46,5 +47,7 @@ json_t *gw_load_reasoning_config(const char *model);
  * for a provider (e.g. "custom:hyper"). Returns a malloc'd string, or NULL
  * when the provider is empty or cannot be resolved (Python returns None). */
 char *gw_credential_pool_for_provider(const char *provider);
+/* PoP: gw_own_policy_open_startup_violation @ gateway/run.py:_own_policy_open_startup_violation */
+char *gw_own_policy_open_startup_violation(const gateway_config_t *cfg);
 
 #endif /* PORT_GATEWAY_RUN_DEPS_H */

@@ -34,6 +34,7 @@
 #include <dirent.h>
 
 #include "hermes_gateway_config.h"
+#include "port_gateway_run_deps.h"
 
 /* ============================================================================
  *  Hook pipeline appliers (defined here; declared in gw_server_internals.h).
@@ -1191,6 +1192,27 @@ int hermes_gateway_main(int argc, char **argv) {
      * such as authorization_is_upstream / dm_policy / unauthorized_dm_behavior)
      * that the authz mixin reads. */
     gateway_config_load_global();
+
+    /* Faithful port of gateway/run.py GatewayRunner startup:
+     *   reason = _own_policy_open_startup_violation(self.config)
+     *   if reason: log error; write_runtime_status(startup_failed); _request_clean_exit(reason)
+     * Refuse to start when an "open" policy platform lacks the allow-all opt-in. */
+    {
+        const gateway_config_t *startup_cfg = gateway_config_get_global();
+        char *violation = startup_cfg ? gw_own_policy_open_startup_violation(startup_cfg) : NULL;
+        if (violation) {
+            const char *platform_value = violation;
+            const char *colon = strchr(violation, ':');
+            if (colon) platform_value = violation;  /* keep full reason for status */
+            fprintf(stderr,
+                "Refusing to start: %s has dm_policy/group_policy set to 'open' "
+                "but neither GATEWAY_ALLOW_ALL_USERS nor the platform allow-all flag is enabled.\n",
+                platform_value);
+            gw_update_platform_runtime_status(NULL, "startup_failed", NULL, violation);
+            free(violation);
+            return 1;
+        }
+    }
 
     g_gw.auto_continue_freshness_secs = g_gw.config.gateway_auto_continue_freshness > 0.0
         ? g_gw.config.gateway_auto_continue_freshness : 3600.0;  /* default 1h, 0=disabled */

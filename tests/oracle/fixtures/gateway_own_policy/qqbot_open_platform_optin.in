@@ -1,0 +1,7 @@
+# qqbot group_policy=open via env, opted-in via QQ_ALLOW_ALL_USERS -> no violation
+gateway:
+  platforms:
+    qqbot:
+      enabled: true
+      extra:
+        group_policy: open

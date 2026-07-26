@@ -398,6 +398,7 @@ typedef struct {
     bool enabled;
     char token[512];
     char api_key[512];
+    char name[32]; /* platform key (e.g. "telegram") */
     gw_home_channel_t home_channel;
     bool has_home_channel;
     char reply_to_mode[16]; /* "off", "first", "all" */
@@ -721,6 +722,9 @@ bool gateway_config_load(const char *config_dir, gateway_config_t *out_cfg) {
             if (plat_obj && json_node_is_object(plat_obj)) {
                 out_cfg->platforms[i].has_home_channel = false;
                 if (gw_platform_config_from_json(plat_obj, &out_cfg->platforms[i])) {
+                    strncpy(out_cfg->platforms[i].name, platform_names[i],
+                            sizeof(out_cfg->platforms[i].name) - 1);
+                    out_cfg->platforms[i].name[sizeof(out_cfg->platforms[i].name) - 1] = '\0';
                     out_cfg->platform_count++;
                 }
             }
@@ -1075,6 +1079,9 @@ bool gateway_config_from_json(const json_node_t *obj, gateway_config_t *cfg)
             if (plat_obj && json_node_is_object(plat_obj)) {
                 cfg->platforms[i].has_home_channel = false;
                 if (gw_platform_config_from_json(plat_obj, &cfg->platforms[i])) {
+                    strncpy(cfg->platforms[i].name, platform_names[i],
+                            sizeof(cfg->platforms[i].name) - 1);
+                    cfg->platforms[i].name[sizeof(cfg->platforms[i].name) - 1] = '\0';
                     cfg->platform_count++;
                 }
             }
@@ -1213,6 +1220,15 @@ static const char *g_gw_platform_names[] = {
 void gateway_config_load_global(void) {
     memset(&g_gw_config, 0, sizeof(g_gw_config));
     g_gw_config_loaded = gateway_config_load(NULL, &g_gw_config);
+}
+
+/* Return the authoritative loaded global gateway config (mirrors Python
+ * GatewayRunner.config / load_gateway_config() result). Returns NULL until
+ * gateway_config_load_global() has run. Callers pass this to ported helpers
+ * that take a config object (e.g. gw_own_policy_open_startup_violation). */
+const gateway_config_t *gateway_config_get_global(void) {
+    if (!g_gw_config_loaded) return NULL;
+    return &g_gw_config;
 }
 
 const char *gateway_config_get_unauthorized_dm_behavior_global(void) {

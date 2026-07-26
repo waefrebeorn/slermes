@@ -1,0 +1,3 @@
+# No platforms configured -> no violation (null)
+gateway:
+  platforms: {}

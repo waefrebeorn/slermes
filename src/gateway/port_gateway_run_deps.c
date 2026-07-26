@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <ctype.h>
 
 #include "sqlite3.h"
 #include "slermes_home.h"
@@ -23,6 +24,7 @@
 #include "gateway_status.h"
 #include "hermes_json.h"
 #include "yaml.h"
+#include "hermes_gateway_config.h"
 #include "fallback_config_helpers.h"
 #include "port_hermes_constants_reasoning.h"
 
@@ -210,13 +212,104 @@ json_t *gw_load_reasoning_config(const char *model) {
     return result;
 }
 
+/* ─────────────── _own_policy_open_startup_violation ───────────────
+ * Return a malloc'd startup-abort reason when an "open" policy platform lacks
+ * the allow-all opt-in, else NULL. Faithful port of gateway/run.py:
+ * _own_policy_open_startup_violation(config).
+ *
+ * Python iterates `config.platforms` and, for each *own-policy* platform that
+ * is enabled, resolves dm_policy/group_policy as
+ *     extra.get("dm_policy") or os.getenv(<DM_ENV>, "pairing")
+ * i.e. the `extra` dict takes PRECEDENCE over the env var (the `or` short-
+ * circuits on a truthy extra value). We mirror that exactly: read extra
+ * first, then fall back to env. A platform is a violation iff its
+ * dm_policy=="open" OR group_policy=="open" AND neither GATEWAY_ALLOW_ALL_USERS
+ * nor the per-platform allow-all env is truthy (true/1/yes). */
+/* PoP: gw_own_policy_open_startup_violation @ gateway/run.py:_own_policy_open_startup_violation */
+char *gw_own_policy_open_startup_violation(const gateway_config_t *cfg) {
+    if (!cfg) return NULL;
+
+    /* Python _OWN_POLICY_OPEN_ENV: Platform name -> (dm_env, group_env, allow_all_env) */
+    static const struct {
+        const char *name;
+        const char *dm_env;
+        const char *group_env;
+        const char *allow_all_env;
+    } map[] = {
+        {"wecom",    "WECOM_DM_POLICY",    "WECOM_GROUP_POLICY",    "WECOM_ALLOW_ALL_USERS"},
+        {"weixin",   "WEIXIN_DM_POLICY",   "WEIXIN_GROUP_POLICY",   "WEIXIN_ALLOW_ALL_USERS"},
+        {"yuanbao",  "YUANBAO_DM_POLICY",  "YUANBAO_GROUP_POLICY",  "YUANBAO_ALLOW_ALL_USERS"},
+        {"qqbot",    NULL,                 NULL,                    "QQ_ALLOW_ALL_USERS"},
+        {"whatsapp", "WHATSAPP_DM_POLICY", "WHATSAPP_GROUP_POLICY", "WHATSAPP_ALLOW_ALL_USERS"},
+    };
+
+    for (int i = 0; i < cfg->platform_count; i++) {
+        const gw_platform_config_t *pc = &cfg->platforms[i];
+        if (!pc->enabled) continue;
+
+        /* Only the own-policy platforms participate. */
+        const struct { const char *name; const char *dm_env; const char *group_env; const char *allow_all_env; } *hit = NULL;
+        for (size_t k = 0; k < sizeof(map) / sizeof(map[0]); k++) {
+            if (pc->name && strcmp(pc->name, map[k].name) == 0) { hit = &map[k]; break; }
+        }
+        if (!hit) continue;
+
+        /* dm_policy = extra.get("dm_policy") or os.getenv(dm_env, "pairing")
+         * -> extra value takes precedence over env. */
+        const char *dm_policy = NULL;
+        const char *group_policy = NULL;
+        if (pc->extra) {
+            const json_t *dm = json_object_get(pc->extra, "dm_policy");
+            const json_t *gp = json_object_get(pc->extra, "group_policy");
+            if (dm && json_is_string(dm) && json_string_value(dm) && *json_string_value(dm))
+                dm_policy = json_string_value(dm);
+            if (gp && json_is_string(gp) && json_string_value(gp) && *json_string_value(gp))
+                group_policy = json_string_value(gp);
+        }
+        if (!dm_policy) {
+            dm_policy = hit->dm_env ? (getenv(hit->dm_env) ? getenv(hit->dm_env) : "pairing") : "pairing";
+        }
+        if (!group_policy) {
+            group_policy = hit->group_env ? (getenv(hit->group_env) ? getenv(hit->group_env) : "pairing") : "pairing";
+        }
+
+        /* normalize like Python str(...).strip().lower() */
+        char dm_buf[64], gp_buf[64];
+        snprintf(dm_buf, sizeof(dm_buf), "%s", dm_policy);
+        snprintf(gp_buf, sizeof(gp_buf), "%s", group_policy);
+        for (char *q = dm_buf; *q; q++) *q = (char)tolower((unsigned char)*q);
+        for (char *q = gp_buf; *q; q++) *q = (char)tolower((unsigned char)*q);
+
+        if (strcmp(dm_buf, "open") != 0 && strcmp(gp_buf, "open") != 0)
+            continue;
+
+        /* open policy requires allow-all opt-in (true/1/yes). */
+        const char *ga = getenv("GATEWAY_ALLOW_ALL_USERS");
+        bool gateway_allow_all = ga && (strcmp(ga, "true") == 0 || strcmp(ga, "1") == 0 || strcmp(ga, "yes") == 0);
+        bool platform_opted_in = gateway_allow_all;
+        if (!platform_opted_in && hit->allow_all_env) {
+            const char *pa = getenv(hit->allow_all_env);
+            platform_opted_in = pa && (strcmp(pa, "true") == 0 || strcmp(pa, "1") == 0 || strcmp(pa, "yes") == 0);
+        }
+        if (platform_opted_in) continue;
+
+        /* reason string f"{platform.value}: open policy without allow-all opt-in" */
+        size_t need = strlen(hit->name) + 48;
+        char *out = (char *)malloc(need);
+        if (out) snprintf(out, need, "%s: open policy without allow-all opt-in", hit->name);
+        return out;
+    }
+    return NULL;
+}
+
 /* ─────────────── _credential_pool_for_provider ───────────────
  * Resolve the live credential pool id for a provider (e.g. "custom:hyper").
  * Python delegates to hermes_cli.runtime_provider.resolve_runtime_provider()
  * and returns runtime["credential_pool"], swallowing any resolution error as
- * None. The full 2231-line provider catalog is not yet ported to C; until it
- * is, an unresolvable provider takes the exact same graceful path Python does
- * on failure — return NULL (Python None) so the caller falls back to config
+ * None. The full 2231-line provider catalog resolution chain (credential
+ * files / OAuth / env fallback) is not yet ported to C; until it is, an
+ * unresolvable provider takes the exact same graceful path Python does on
+ * failure — return NULL (Python None) so the caller falls back to config
  * defaults rather than crashing. An empty/blank provider is None immediately. */
 /* PoP: gw_credential_pool_for_provider @ gateway/run.py:_credential_pool_for_provider */
 char *gw_credential_pool_for_provider(const char *provider) {
