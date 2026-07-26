@@ -86,7 +86,9 @@ struct GatewayRunner {
     json_t *pending_one_turn_model_restores;/* _pending_one_turn_model_restores */
     json_t *session_ephemeral_pin;          /* _session_ephemeral_pin */
     json_t *session_vc_last;                /* _session_vc_last */
-    /* _session_service_tier_overrides */
+    json_t *session_service_tier_overrides; /* _session_service_tier_overrides */
+    json_t *pending_turn_sidecar_notes;     /* _pending_turn_sidecar_notes */
+    json_t *pending_native_image_paths;     /* _pending_native_image_paths_by_session */
 
     /* ── Agent cache: session_key -> opaque agent ───────── */
     struct gw_agent_cache_entry {
@@ -149,6 +151,9 @@ GatewayRunner *gateway_runner_create(const char *config_path)
     self->pending_one_turn_model_restores = json_object();
     self->session_ephemeral_pin = json_object();
     self->session_vc_last = json_object();
+    self->session_service_tier_overrides = json_object();
+    self->pending_turn_sidecar_notes = json_object();
+    self->pending_native_image_paths = json_object();
 
     /* config.stt_echo_transcripts defaults True. */
     self->stt_echo_transcripts = 1;
@@ -172,6 +177,9 @@ void gateway_runner_destroy(GatewayRunner *self)
     if (self->pending_one_turn_model_restores) json_free(self->pending_one_turn_model_restores);
     if (self->session_ephemeral_pin) json_free(self->session_ephemeral_pin);
     if (self->session_vc_last) json_free(self->session_vc_last);
+    if (self->session_service_tier_overrides) json_free(self->session_service_tier_overrides);
+    if (self->pending_turn_sidecar_notes) json_free(self->pending_turn_sidecar_notes);
+    if (self->pending_native_image_paths) json_free(self->pending_native_image_paths);
     for (int i = 0; i < self->agent_cache_count; i++)
         free(self->agent_cache[i].key);
     free(self->agent_cache);
@@ -1027,4 +1035,128 @@ void gateway_runner_cache_agent(GatewayRunner *self, const char *session_key,
     self->agent_cache[self->agent_cache_count].agent = agent;
     self->agent_cache_count++;
     pthread_mutex_unlock(&self->agent_cache_lock);
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+ * Service-tier overrides, MoA one-shot restore, sidecar notes, native images
+ * ════════════════════════════════════════════════════════════════════════ */
+
+/* PoP: gateway_runner_set_session_service_tier_override @ gateway/run.py:GatewayRunner._set_session_service_tier_override */
+void gateway_runner_set_session_service_tier_override(GatewayRunner *self,
+                                                      const char *session_key,
+                                                      const char *service_tier,
+                                                      bool clear)
+{
+    if (!self || !session_key || !session_key[0]) return;
+    if (clear) {
+        json_object_del(self->session_service_tier_overrides, session_key);
+    } else {
+        /* "priority" or None (explicit normal) — key PRESENCE decides. */
+        json_set(self->session_service_tier_overrides, session_key,
+                 service_tier ? json_string(service_tier) : json_null());
+    }
+}
+
+/* PoP: gateway_runner_resolve_session_service_tier @ gateway/run.py:GatewayRunner._resolve_session_service_tier */
+const char *gateway_runner_resolve_session_service_tier(const GatewayRunner *self,
+                                                        const char *session_key)
+{
+    if (!self) return NULL;
+    if (session_key && session_key[0] && self->session_service_tier_overrides) {
+        json_t *ov = json_obj_get(self->session_service_tier_overrides,
+                                  session_key);
+        if (ov) {
+            /* Key presence, not value truthiness: explicit-normal (null)
+             * wins over the config default. */
+            return (ov->type == JSON_STRING) ? ov->str_val : NULL;
+        }
+    }
+    /* Config default (loaded into the runner at startup). */
+    return self->service_tier[0] ? self->service_tier : NULL;
+}
+
+/* Declared in port_gateway_run_deps.h; extern here to avoid an include cycle. */
+extern json_t *gw_load_reasoning_config(const char *model);
+
+/* PoP: gateway_runner_resolve_session_reasoning_config @ gateway/run.py:GatewayRunner._resolve_session_reasoning_config */
+json_t *gateway_runner_resolve_session_reasoning_config(const GatewayRunner *self,
+                                                        const char *session_key,
+                                                        const char *model)
+{
+    /* Priority: session-scoped /reasoning --session override > per-model
+     * override > global agent.reasoning_effort. Returns a malloc'd copy. */
+    if (self && session_key && session_key[0] &&
+        self->session_reasoning_overrides) {
+        json_t *ov = json_obj_get(self->session_reasoning_overrides,
+                                  session_key);
+        if (ov) return json_copy(ov);
+    }
+    return gw_load_reasoning_config(model ? model : "");
+}
+
+/* PoP: gateway_runner_restore_moa_one_shot @ gateway/run.py:GatewayRunner._restore_moa_one_shot */
+void gateway_runner_restore_moa_one_shot(GatewayRunner *self,
+                                         bool moa_disable_after_turn,
+                                         const json_t *moa_restore_override,
+                                         const char *quick_key)
+{
+    /* No-op unless the /moa one-shot flagged this turn. restore==NULL means
+     * the user had no prior override, so the MoA override is cleared. */
+    if (!self || !moa_disable_after_turn || !quick_key) return;
+    if (!moa_restore_override) {
+        json_object_del(self->session_model_overrides, quick_key);
+    } else {
+        json_set(self->session_model_overrides, quick_key,
+                 json_copy(moa_restore_override));
+    }
+    gateway_runner_evict_cached_agent(self, quick_key);
+}
+
+/* PoP: gateway_runner_set_pending_turn_sidecar_notes @ gateway/run.py:GatewayRunner._set_pending_turn_sidecar_notes */
+void gateway_runner_set_pending_turn_sidecar_notes(GatewayRunner *self,
+                                                   const char *session_key,
+                                                   const json_t *notes)
+{
+    /* Stage per-turn must-deliver notes for the next agent run (one-shot). */
+    if (!self || !session_key || !session_key[0]) return;
+    if (!notes || notes->type != JSON_ARRAY || notes->c.count == 0) return;
+    json_set(self->pending_turn_sidecar_notes, session_key, json_copy(notes));
+}
+
+/* PoP: gateway_runner_consume_pending_turn_sidecar_notes @ gateway/run.py:GatewayRunner._consume_pending_turn_sidecar_notes */
+json_t *gateway_runner_consume_pending_turn_sidecar_notes(GatewayRunner *self,
+                                                          const char *session_key)
+{
+    /* Returns a malloc'd array (possibly empty); pops the staged entry. */
+    if (!self || !session_key || !session_key[0]) return json_array();
+    json_t *staged = json_obj_get(self->pending_turn_sidecar_notes, session_key);
+    json_t *result = (staged && staged->type == JSON_ARRAY)
+                         ? json_copy(staged) : json_array();
+    if (staged) json_object_del(self->pending_turn_sidecar_notes, session_key);
+    return result;
+}
+
+/* PoP: gateway_runner_consume_pending_native_image_paths @ gateway/run.py:GatewayRunner._consume_pending_native_image_paths */
+json_t *gateway_runner_consume_pending_native_image_paths(GatewayRunner *self,
+                                                          const char *session_key)
+{
+    /* Returns a malloc'd array (possibly empty); pops the pending entry. */
+    if (!self || !session_key) return json_array();
+    if (!self->pending_native_image_paths ||
+        self->pending_native_image_paths->c.count == 0)
+        return json_array();
+    json_t *pending = json_obj_get(self->pending_native_image_paths, session_key);
+    json_t *result = (pending && pending->type == JSON_ARRAY)
+                         ? json_copy(pending) : json_array();
+    if (pending) json_object_del(self->pending_native_image_paths, session_key);
+    return result;
+}
+
+/* Stage native image paths (wiring seam for the consume path). */
+void gateway_runner_stage_pending_native_image_paths(GatewayRunner *self,
+                                                     const char *session_key,
+                                                     const json_t *paths)
+{
+    if (!self || !session_key || !paths) return;
+    json_set(self->pending_native_image_paths, session_key, json_copy(paths));
 }

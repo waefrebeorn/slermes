@@ -107,6 +107,35 @@ void gateway_runner_evict_cached_agent(GatewayRunner *self,
 void gateway_runner_cache_agent(GatewayRunner *self, const char *session_key,
                                 void *agent);
 
+/* ─── Service tier / MoA / sidecar notes / native images ─────────────── */
+
+void gateway_runner_set_session_service_tier_override(GatewayRunner *self,
+                                                      const char *session_key,
+                                                      const char *service_tier,
+                                                      bool clear);
+const char *gateway_runner_resolve_session_service_tier(const GatewayRunner *self,
+                                                        const char *session_key);
+/* Returns malloc'd reasoning-config object or NULL. */
+json_t *gateway_runner_resolve_session_reasoning_config(const GatewayRunner *self,
+                                                        const char *session_key,
+                                                        const char *model);
+void gateway_runner_restore_moa_one_shot(GatewayRunner *self,
+                                         bool moa_disable_after_turn,
+                                         const json_t *moa_restore_override,
+                                         const char *quick_key);
+void gateway_runner_set_pending_turn_sidecar_notes(GatewayRunner *self,
+                                                   const char *session_key,
+                                                   const json_t *notes);
+/* Returns malloc'd array (possibly empty). */
+json_t *gateway_runner_consume_pending_turn_sidecar_notes(GatewayRunner *self,
+                                                          const char *session_key);
+/* Returns malloc'd array (possibly empty). */
+json_t *gateway_runner_consume_pending_native_image_paths(GatewayRunner *self,
+                                                          const char *session_key);
+void gateway_runner_stage_pending_native_image_paths(GatewayRunner *self,
+                                                     const char *session_key,
+                                                     const json_t *paths);
+
 /* ─── Config resolution (pure) ────────────────────────────────────── */
 
 /* Resolve busy_input_mode from config string. Pure stateless. */
