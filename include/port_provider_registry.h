@@ -90,6 +90,26 @@ char *provider_host_derived_api_key(const char *base_url);
  * precedence chain is resolved by resolve_requested_provider upstream). */
 char *provider_resolve_alias(const char *requested);
 
+/* runtime_provider.py:_normalize_base_url_for_match — strip/rstrip-slash/lower.
+ * Returns malloc'd string. */
+char *provider_normalize_base_url_for_match(const char *value);
+
+/* runtime_provider.py:find_custom_provider_identity — reverse-lookup an endpoint
+ * URL to its canonical "custom:<name>" menu key from config providers /
+ * custom_providers. Returns a malloc'd "custom:<name>" or NULL. */
+char *provider_find_custom_identity_by_url(const char *base_url);
+
+/* runtime_provider.py:find_custom_provider_identity_by_model — reverse-lookup a
+ * model id to the "custom:<name>" entry that serves it. Returns malloc'd or NULL. */
+char *provider_find_custom_identity_by_model(const char *model);
+
+/* runtime_provider.py:canonical_custom_identity — recover a routable
+ * "custom:<name>" identity for a bare "custom" provider. Priority: base_url →
+ * model → config_provider. Any arg may be NULL. Returns malloc'd or NULL. */
+char *provider_canonical_custom_identity(const char *base_url,
+                                         const char *config_provider,
+                                         const char *model);
+
 #ifdef __cplusplus
 }
 #endif

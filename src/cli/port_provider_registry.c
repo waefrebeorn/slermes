@@ -8,6 +8,12 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdio.h>
+#include "hermes_json.h"
+#include "port_config_py_helpers.h"
+
+/* config loader (config.yaml → json_t); mirrors the deps-module helper. */
+extern const char *slermes_home(void);
+#include "yaml.h"
 
 /* ─── Default base-URL / OAuth constants (auth.py top-of-file) ─────────── */
 #define D_NOUS_PORTAL   "https://portal.nousresearch.com"
@@ -406,3 +412,338 @@ char *provider_resolve_alias(const char *requested) {
     /* auto or unknown: return normalized as-is (caller resolves precedence) */
     return norm;
 }
+
+/* ─── custom-provider reverse lookup (config-backed) ───────────────────── */
+
+/* config.yaml → json_t (owned by caller; free with json_free). */
+static json_t *pr_load_config(void) {
+    char path[1024];
+    snprintf(path, sizeof(path), "%s/config.yaml", slermes_home());
+    char *yerr = NULL;
+    yaml_doc_t *doc = yaml_parse_file(path, &yerr);
+    if (yerr) free(yerr);
+    if (!doc) return NULL;
+    char *js = yaml_to_json_string(doc, "");
+    yaml_free(doc);
+    if (!js) return NULL;
+    char *jerr = NULL;
+    json_t *cfg = json_parse(js, &jerr);
+    free(js);
+    if (jerr) free(jerr);
+    return cfg;
+}
+
+/* PoP: _normalize_base_url_for_match @ hermes_cli/runtime_provider.py:_normalize_base_url_for_match */
+char *provider_normalize_base_url_for_match(const char *value) {
+    if (!value) return dup_or_empty("");
+    /* strip whitespace */
+    const char *a = value; while (*a && isspace((unsigned char)*a)) a++;
+    const char *b = a + strlen(a); while (b > a && isspace((unsigned char)b[-1])) b--;
+    size_t n = (size_t)(b - a);
+    char *out = malloc(n + 1); if (!out) return NULL;
+    for (size_t i = 0; i < n; i++) out[i] = (char)tolower((unsigned char)a[i]);
+    out[n] = '\0';
+    /* rstrip trailing '/' */
+    size_t l = strlen(out);
+    while (l > 0 && out[l-1] == '/') out[--l] = '\0';
+    return out;
+}
+
+/* Build "custom:<normalized-name>" (malloc'd). */
+static char *pr_custom_slug(const char *name) {
+    char *norm = provider_normalize_custom_name(name);
+    if (!norm) return NULL;
+    size_t len = strlen(norm) + 8;
+    char *out = malloc(len);
+    if (out) snprintf(out, len, "custom:%s", norm);
+    free(norm);
+    return out;
+}
+
+/* First non-empty of entry["api"], entry["url"], entry["base_url"] (borrowed). */
+static const char *pr_entry_url(const json_t *entry) {
+    const char *keys[] = { "api", "url", "base_url" };
+    for (int i = 0; i < 3; i++) {
+        const json_t *v = json_obj_get(entry, keys[i]);
+        const char *s = json_string_value_safe(v);
+        if (s && *s) return s;
+    }
+    return NULL;
+}
+
+/* PoP: find_custom_provider_identity @ hermes_cli/runtime_provider.py:find_custom_provider_identity */
+char *provider_find_custom_identity_by_url(const char *base_url) {
+    char *target = provider_normalize_base_url_for_match(base_url);
+    if (!target || !*target) { free(target); return NULL; }
+    json_t *cfg = pr_load_config();
+    if (!cfg) { free(target); return NULL; }
+    char *result = NULL;
+
+    /* 1. providers: dict — ep_name → entry */
+    const json_t *providers = json_obj_get(cfg, "providers");
+    if (json_is_object(providers)) {
+        size_t np = json_object_size(providers);
+        for (size_t i = 0; i < np && !result; i++) {
+            const char *ep_name = json_object_get_key_at(providers, i);
+            const json_t *entry = json_obj_get(providers, ep_name);
+            if (!json_is_object(entry)) continue;
+            const char *eu = pr_entry_url(entry);
+            char *norm = provider_normalize_base_url_for_match(eu);
+            if (norm && strcmp(norm, target) == 0) result = pr_custom_slug(ep_name);
+            free(norm);
+        }
+    }
+
+    /* 2. get_compatible_custom_providers(config) — list of {name, base_url} */
+    if (!result) {
+        json_t *cps = config_py_get_compatible_custom_providers(cfg);
+        if (json_is_array(cps)) {
+            size_t nc = json_array_size(cps);
+            for (size_t i = 0; i < nc && !result; i++) {
+                const json_t *entry = json_array_get(cps, i);
+                if (!json_is_object(entry)) continue;
+                const char *name = json_string_value_safe(json_obj_get(entry, "name"));
+                if (!name || !*name) continue;
+                char *norm = provider_normalize_base_url_for_match(
+                    json_string_value_safe(json_obj_get(entry, "base_url")));
+                if (norm && strcmp(norm, target) == 0) result = pr_custom_slug(name);
+                free(norm);
+            }
+        }
+        if (cps) json_free(cps);
+    }
+
+    json_free(cfg);
+    free(target);
+    return result;
+}
+
+/* stripped-lower copy of a json string value (or NULL). */
+static char *pr_strip_lower_json(const json_t *v) {
+    const char *s = json_string_value_safe(v);
+    return s ? strip_lower(s) : NULL;
+}
+
+/* Does a config entry serve `target` (already stripped+lower)? */
+static bool pr_entry_serves_model(const json_t *entry, const char *target) {
+    const char *keys[] = { "model", "default_model" };
+    for (int i = 0; i < 2; i++) {
+        char *v = pr_strip_lower_json(json_obj_get(entry, keys[i]));
+        bool hit = (v && strcmp(v, target) == 0);
+        free(v);
+        if (hit) return true;
+    }
+    const json_t *models = json_obj_get(entry, "models");
+    if (json_is_object(models)) {
+        size_t nm = json_object_size(models);
+        for (size_t i = 0; i < nm; i++) {
+            char *mid = strip_lower(json_object_get_key_at(models, i));
+            bool hit = (mid && strcmp(mid, target) == 0);
+            free(mid);
+            if (hit) return true;
+        }
+    } else if (json_is_array(models)) {
+        size_t nm = json_array_size(models);
+        for (size_t i = 0; i < nm; i++) {
+            const json_t *item = json_array_get(models, i);
+            if (json_is_string(item)) {
+                char *v = strip_lower(json_string_value_safe(item));
+                bool hit = (v && strcmp(v, target) == 0);
+                free(v);
+                if (hit) return true;
+            } else if (json_is_object(item)) {
+                const json_t *idv = json_obj_get(item, "id");
+                if (!json_is_string(idv)) idv = json_obj_get(item, "name");
+                char *v = pr_strip_lower_json(idv);
+                bool hit = (v && strcmp(v, target) == 0);
+                free(v);
+                if (hit) return true;
+            }
+        }
+    }
+    return false;
+}
+
+/* PoP: find_custom_provider_identity_by_model @ hermes_cli/runtime_provider.py:find_custom_provider_identity_by_model */
+char *provider_find_custom_identity_by_model(const char *model) {
+    char *target = strip_lower(model);
+    if (!target || !*target) { free(target); return NULL; }
+    json_t *cfg = pr_load_config();
+    if (!cfg) { free(target); return NULL; }
+    char *result = NULL;
+
+    const json_t *providers = json_obj_get(cfg, "providers");
+    if (json_is_object(providers)) {
+        size_t np = json_object_size(providers);
+        for (size_t i = 0; i < np && !result; i++) {
+            const char *ep_name = json_object_get_key_at(providers, i);
+            const json_t *entry = json_obj_get(providers, ep_name);
+            if (json_is_object(entry) && pr_entry_serves_model(entry, target))
+                result = pr_custom_slug(ep_name);
+        }
+    }
+
+    if (!result) {
+        json_t *cps = config_py_get_compatible_custom_providers(cfg);
+        if (json_is_array(cps)) {
+            size_t nc = json_array_size(cps);
+            for (size_t i = 0; i < nc && !result; i++) {
+                const json_t *entry = json_array_get(cps, i);
+                if (!json_is_object(entry)) continue;
+                const char *name = json_string_value_safe(json_obj_get(entry, "name"));
+                if (!name || !*name) continue;
+                if (pr_entry_serves_model(entry, target)) result = pr_custom_slug(name);
+            }
+        }
+        if (cps) json_free(cps);
+    }
+
+    json_free(cfg);
+    free(target);
+    return result;
+}
+
+/* Is `norm` a bare/non-routable candidate? */
+static bool pr_is_bare_candidate(const char *norm) {
+    return !norm || !*norm || strcmp(norm,"custom")==0 ||
+           strcmp(norm,"auto")==0 || strcmp(norm,"openrouter")==0;
+}
+
+/* Faithful existence subset of runtime_provider._get_named_custom_provider:
+ * does `candidate` name a real providers:/custom_providers: entry that has a
+ * usable base_url? Matches on ep_name, normalized name, "custom:<norm>", and
+ * the entry's display name (raw + normalized + "custom:<disp_norm>"). */
+static bool pr_named_custom_exists(const char *candidate) {
+    char *req_norm = provider_normalize_custom_name(candidate);
+    if (!req_norm || !*req_norm || strcmp(req_norm,"auto")==0) { free(req_norm); return false; }
+    json_t *cfg = pr_load_config();
+    if (!cfg) { free(req_norm); return false; }
+    bool found = false;
+
+    char slug_norm[512];
+    snprintf(slug_norm, sizeof(slug_norm), "custom:%s", req_norm);
+
+    const json_t *providers = json_obj_get(cfg, "providers");
+    if (json_is_object(providers)) {
+        size_t np = json_object_size(providers);
+        for (size_t i = 0; i < np && !found; i++) {
+            const char *ep_name = json_object_get_key_at(providers, i);
+            const json_t *entry = json_obj_get(providers, ep_name);
+            if (!json_is_object(entry)) continue;
+            const char *base_url = pr_entry_url(entry);
+            if (!base_url || !*base_url) continue;
+            char *name_norm = provider_normalize_custom_name(ep_name);
+            if ((strcmp(req_norm, ep_name)==0) ||
+                (name_norm && strcmp(req_norm, name_norm)==0) ||
+                (strcmp(req_norm, slug_norm)==0)) {
+                /* match by provider key (ep_name / name_norm / custom:<req_norm>) */
+                found = true;
+            }
+            /* explicit "custom:<name_norm>" key equal to the requested norm */
+            if (!found && name_norm) {
+                char key[512]; snprintf(key, sizeof(key), "custom:%s", name_norm);
+                if (strcmp(req_norm, key)==0) found = true;
+            }
+            /* match by display name */
+            if (!found) {
+                const char *disp = json_string_value_safe(json_obj_get(entry, "name"));
+                if (disp && *disp) {
+                    char *disp_norm = provider_normalize_custom_name(disp);
+                    char dkey[512];
+                    if (disp_norm) snprintf(dkey, sizeof(dkey), "custom:%s", disp_norm);
+                    if ((strcmp(req_norm, disp)==0) ||
+                        (disp_norm && strcmp(req_norm, disp_norm)==0) ||
+                        (disp_norm && strcmp(req_norm, dkey)==0)) found = true;
+                    free(disp_norm);
+                }
+            }
+            free(name_norm);
+        }
+    }
+
+    if (!found) {
+        json_t *cps = config_py_get_compatible_custom_providers(cfg);
+        if (json_is_array(cps)) {
+            size_t nc = json_array_size(cps);
+            for (size_t i = 0; i < nc && !found; i++) {
+                const json_t *entry = json_array_get(cps, i);
+                if (!json_is_object(entry)) continue;
+                const char *name = json_string_value_safe(json_obj_get(entry, "name"));
+                const char *bu = json_string_value_safe(json_obj_get(entry, "base_url"));
+                if (!name || !*name || !bu || !*bu) continue;
+                char *nn = provider_normalize_custom_name(name);
+                char nkey[512];
+                if (nn) snprintf(nkey, sizeof(nkey), "custom:%s", nn);
+                if ((strcmp(req_norm, name)==0) ||
+                    (nn && strcmp(req_norm, nn)==0) ||
+                    (nn && strcmp(req_norm, nkey)==0)) found = true;
+                free(nn);
+            }
+        }
+        if (cps) json_free(cps);
+    }
+
+    json_free(cfg);
+    free(req_norm);
+    return found;
+}
+
+/* PoP: canonical_custom_identity @ hermes_cli/runtime_provider.py:canonical_custom_identity */
+char *provider_canonical_custom_identity(const char *base_url,
+                                         const char *config_provider,
+                                         const char *model) {
+    /* 1. reverse-lookup by endpoint URL */
+    if (base_url && *base_url) {
+        char *id = provider_find_custom_identity_by_url(base_url);
+        if (id) return id;
+    }
+    /* 2. reverse-lookup by the session's model name */
+    if (model && *model) {
+        char *id = provider_find_custom_identity_by_model(model);
+        if (id) return id;
+    }
+    /* 3. fall back to the configured provider when it names a real entry */
+    char *candidate = NULL;
+    if (config_provider) {
+        /* strip only (case preserved for named-custom lookup) */
+        const char *a = config_provider; while (*a && isspace((unsigned char)*a)) a++;
+        const char *b = a + strlen(a); while (b > a && isspace((unsigned char)b[-1])) b--;
+        size_t n = (size_t)(b - a);
+        candidate = malloc(n + 1);
+        if (candidate) { memcpy(candidate, a, n); candidate[n] = '\0'; }
+    }
+    if (!candidate || !*candidate) {
+        /* config model.provider */
+        free(candidate); candidate = NULL;
+        json_t *cfg = pr_load_config();
+        if (cfg) {
+            const json_t *m = json_obj_get(cfg, "model");
+            const char *p = json_is_object(m)
+                ? json_string_value_safe(json_obj_get(m, "provider")) : NULL;
+            if (p) candidate = dup_or_empty(p);
+            json_free(cfg);
+        }
+    }
+    if (!candidate || !*candidate) {
+        free(candidate);
+        const char *ev = getenv("HERMES_INFERENCE_PROVIDER");
+        candidate = dup_or_empty(ev ? ev : "");
+    }
+
+    char *cand_norm = provider_normalize_custom_name(candidate);
+    if (pr_is_bare_candidate(cand_norm)) { free(candidate); free(cand_norm); return NULL; }
+
+    /* only return when it resolves to a real named custom entry */
+    char *result = NULL;
+    if (pr_named_custom_exists(candidate)) {
+        if (strncmp(cand_norm, "custom:", 7) == 0) result = dup_or_empty(cand_norm);
+        else {
+            size_t len = strlen(cand_norm) + 8;
+            result = malloc(len);
+            if (result) snprintf(result, len, "custom:%s", cand_norm);
+        }
+    }
+    free(candidate); free(cand_norm);
+    return result;
+}
+

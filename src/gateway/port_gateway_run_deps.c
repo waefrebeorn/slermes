@@ -139,7 +139,7 @@ char *gw_load_fallback_model(void) {
     if (yerr) free(yerr);
     if (!doc) return NULL;
 
-    char *json_str = yaml_to_json_string(doc, NULL);
+    char *json_str = yaml_to_json_string(doc, "");
     yaml_free(doc);
     if (!json_str) return NULL;
 
@@ -186,7 +186,7 @@ static json_t *load_config_yaml_as_json(void) {
     yaml_doc_t *doc = yaml_parse_file(cfg_path, &yerr);
     if (yerr) free(yerr);
     if (!doc) return NULL;
-    char *json_str = yaml_to_json_string(doc, NULL);
+    char *json_str = yaml_to_json_string(doc, "");
     yaml_free(doc);
     if (!json_str) return NULL;
     char *jerr = NULL;
