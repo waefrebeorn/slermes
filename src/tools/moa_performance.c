@@ -17,6 +17,7 @@
 #include "hermes_http.h"
 #include "online_research.h"
 #include "moa_performance.h"
+#include "libcrypto/crypto.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -757,6 +758,191 @@ void moa_model_selector_record_success(moa_project_context_t *project, const cha
     char model_id[256];
     snprintf(model_id, sizeof(model_id), "%s:%s", model->provider, model->model);
     moa_project_set_preferred_model(project, mode, model_id);
+}
+
+/* ============================================================
+ * Python module-level API shims (tools/moa_performance.py)
+ * Map the Python module's ProjectManager / ModelSelector / HTTP client
+ * / cache names onto the real SQLite-backed engine above.
+ * ============================================================ */
+
+#include "online_research.h"   /* moa_http_client_call_model, moa_query_all_references, moa_http_client_extract_content */
+
+/* shared http client handle (the engine owns the actual transport) */
+static int g_http_client_open = 0;
+
+/* PoP: moa_perf_init_db @ tools/moa_performance.py:_init_db */
+void moa_perf_init_db(void) {
+    moa_get_project_manager();   /* triggers sqlite schema init via pthread_once */
+    moa_get_response_cache();
+    moa_get_research_cache();
+}
+
+/* PoP: moa_perf_get_or_create_project @ tools/moa_performance.py:get_or_create_project */
+moa_project_context_t *moa_perf_get_or_create_project(const char *working_dir, const char *project_name) {
+    (void)project_name;  /* C impl derives name from working_dir when creating */
+    return moa_project_get_or_create(working_dir);
+}
+
+/* PoP: moa_perf_save_project @ tools/moa_performance.py:_save_project */
+void moa_perf_save_project(moa_project_context_t *ctx) {
+    if (ctx) moa_project_update(ctx);
+}
+
+/* PoP: moa_perf_update_project @ tools/moa_performance.py:update_project */
+void moa_perf_update_project(moa_project_context_t *ctx) {
+    if (ctx) moa_project_update(ctx);
+}
+
+/* PoP: moa_perf_record_session @ tools/moa_performance.py:record_session */
+void moa_perf_record_session(const char *project_id, const char *mode, const char *prompt,
+                             const char *result_summary, const char **models_used, int models_count,
+                             double duration) {
+    moa_project_record_session(project_id, mode, prompt, result_summary, models_used, models_count, duration);
+}
+
+/* PoP: moa_perf_get_project_history @ tools/moa_performance.py:get_project_history */
+char *moa_perf_get_project_history(const char *project_id, int limit) {
+    moa_project_manager_t *pm = moa_get_project_manager();
+    if (!pm || !pm->db || !project_id) return strdup("[]");
+    if (limit <= 0) limit = 20;
+    char sql[512];
+    snprintf(sql, sizeof sql,
+             "SELECT mode, prompt, result_summary, models_used, duration_seconds, timestamp "
+             "FROM project_sessions WHERE project_id = '%s' ORDER BY timestamp DESC LIMIT %d",
+             project_id, limit);
+    sqlite3_stmt *stmt;
+    json_t *arr = json_new_array();
+    pthread_mutex_lock(&pm->mutex);
+    if (sqlite3_prepare_v2(pm->db, sql, -1, &stmt, NULL) == SQLITE_OK) {
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            json_t *o = json_new_object();
+            const char *c_mode = (const char*)sqlite3_column_text(stmt, 0);
+            const char *c_prompt = (const char*)sqlite3_column_text(stmt, 1);
+            const char *c_summary = (const char*)sqlite3_column_text(stmt, 2);
+            const char *c_models = (const char*)sqlite3_column_text(stmt, 3);
+            json_object_set(o, "mode", json_new_string(c_mode ? c_mode : ""));
+            json_object_set(o, "prompt", json_new_string(c_prompt ? c_prompt : ""));
+            json_object_set(o, "result_summary", json_new_string(c_summary ? c_summary : ""));
+            json_object_set(o, "models_used", json_parse(c_models ? c_models : "[]", NULL) ?: json_new_array());
+            json_object_set(o, "duration", json_new_number(sqlite3_column_double(stmt, 4)));
+            json_object_set(o, "timestamp", json_new_number(sqlite3_column_double(stmt, 5)));
+            json_array_append(arr, o);
+        }
+        sqlite3_finalize(stmt);
+    }
+    pthread_mutex_unlock(&pm->mutex);
+    char *s = json_serialize(arr);
+    json_free(arr);
+    return s;
+}
+
+/* PoP: moa_perf_get_preferred_model @ tools/moa_performance.py:get_preferred_model */
+const char *moa_perf_get_preferred_model(const char *project_id, const char *mode) {
+    moa_project_context_t *ctx = moa_project_get_or_create(NULL);
+    (void)project_id;
+    return moa_project_get_preferred_model(ctx, mode);
+}
+
+/* PoP: moa_perf_set_preferred_model @ tools/moa_performance.py:set_preferred_model */
+void moa_perf_set_preferred_model(const char *project_id, const char *mode, const char *model) {
+    moa_project_context_t *ctx = moa_project_get_or_create(NULL);
+    (void)project_id;
+    moa_project_set_preferred_model(ctx, mode, model);
+}
+
+/* PoP: moa_perf_make_key @ tools/moa_performance.py:_make_key */
+void moa_perf_make_key(const char *query, const char *intent, char *out, size_t out_len) {
+    unsigned char hash[32];
+    char buf[1024];
+    snprintf(buf, sizeof buf, "%s:%s", intent ? intent : "", query ? query : "");
+    crypto_sha256((const unsigned char*)buf, strlen(buf), hash);
+    static const char *hex = "0123456789abcdef";
+    size_t n = out_len > 32 ? 32 : out_len - 1;
+    for (size_t i = 0; i < n; i++) {
+        out[i*2]   = hex[hash[i] >> 4];
+        out[i*2+1] = hex[hash[i] & 0xf];
+    }
+    out[n*2] = '\0';
+}
+
+/* PoP: moa_perf_clear_expired @ tools/moa_performance.py:clear_expired */
+void moa_perf_clear_expired(void) {
+    moa_research_clear_expired_cache();
+    /* response cache TTL handled lazily on get; nothing to purge here */
+}
+
+/* PoP: moa_perf_ensure_session @ tools/moa_performance.py:_ensure_session */
+void moa_perf_ensure_session(void) {
+    moa_get_project_manager();
+}
+
+/* PoP: moa_perf_enter @ tools/moa_performance.py:__aenter__ */
+void moa_perf_enter(void) { g_http_client_open = 1; }
+/* PoP: moa_perf_exit @ tools/moa_performance.py:__aexit__ */
+void moa_perf_exit(void) { g_http_client_open = 0; }
+
+/* PoP: moa_perf_call_model @ tools/moa_performance.py:call_model */
+char *moa_perf_call_model(const moa_ref_model_t *ref, const char *system_prompt, const char *user_prompt) {
+    return moa_http_client_call_model(ref, system_prompt, user_prompt);
+}
+
+/* PoP: moa_perf_call_model_batch @ tools/moa_performance.py:call_model_batch */
+char **moa_perf_call_model_batch(const moa_ref_model_t *refs, int ref_count,
+                                 const char *system_prompt, const char *user_prompt, int *out_count) {
+    return moa_query_all_references(refs, ref_count, system_prompt, user_prompt, out_count);
+}
+
+/* PoP: moa_perf_extract_content @ tools/moa_performance.py:_extract_content */
+char *moa_perf_extract_content(const char *data_json) {
+    return moa_http_client_extract_content(data_json);
+}
+
+/* PoP: moa_perf_get_model_for_mode @ tools/moa_performance.py:get_model_for_mode */
+const moa_ref_model_t *moa_perf_get_model_for_mode(const moa_ref_model_t *refs, int ref_count,
+                                                   const char *mode) {
+    moa_project_context_t *ctx = moa_project_get_or_create(NULL);
+    return moa_model_selector_get_preferred(refs, ref_count, ctx, mode);
+}
+
+/* PoP: moa_perf_record_successful_model @ tools/moa_performance.py:record_successful_model */
+void moa_perf_record_successful_model(const char *project_id, const char *mode, const moa_ref_model_t *model) {
+    moa_project_context_t *ctx = moa_project_get_or_create(NULL);
+    (void)project_id;
+    moa_model_selector_record_success(ctx, mode, model);
+}
+
+/* PoP: moa_perf_get_project_manager @ tools/moa_performance.py:get_project_manager */
+moa_project_manager_t *moa_perf_get_project_manager(void) {
+    return moa_get_project_manager();
+}
+
+/* PoP: moa_perf_get_research_cache @ tools/moa_performance.py:get_research_cache */
+void *moa_perf_get_research_cache(void) {
+    return (void *)moa_get_research_cache();
+}
+
+/* PoP: moa_perf_get_response_cache @ tools/moa_performance.py:get_response_cache */
+void *moa_perf_get_response_cache(void) {
+    return (void *)moa_get_response_cache();
+}
+
+/* PoP: moa_perf_get_model_selector @ tools/moa_performance.py:get_model_selector */
+void *moa_perf_get_model_selector(void) {
+    /* single shared selector; identity handle */
+    static int selector = 1;
+    return &selector;
+}
+
+/* PoP: moa_perf_get_http_client @ tools/moa_performance.py:get_http_client */
+void *moa_perf_get_http_client(void) {
+    moa_perf_enter();
+    return &g_http_client_open;
+}
+
+/* PoP: moa_perf_close_global_clients @ tools/moa_performance.py:close_global_clients */
+void moa_perf_close_global_clients(void) {
+    moa_performance_shutdown();
 }
 
 /* ─── Cleanup ─────────────────────────────────────────────────────── */
