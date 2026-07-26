@@ -24,6 +24,7 @@
 #include "hermes_json.h"
 #include "yaml.h"
 #include "fallback_config_helpers.h"
+#include "port_hermes_constants_reasoning.h"
 
 /* Forward decls from already-ported subsystems (opaque API). */
 extern char *profile_get_active_name(void);   /* port_cli_profiles.c */
@@ -174,4 +175,37 @@ char *gw_load_fallback_model(void) {
     char *out = json_serialize(arr);
     json_free(arr);
     return out;
+}
+
+/* Load slermes_home()/config.yaml as a json_t object, or NULL on error.
+ * Shared by fallback + reasoning loaders. */
+static json_t *load_config_yaml_as_json(void) {
+    char cfg_path[1024];
+    snprintf(cfg_path, sizeof(cfg_path), "%s/config.yaml", slermes_home());
+    char *yerr = NULL;
+    yaml_doc_t *doc = yaml_parse_file(cfg_path, &yerr);
+    if (yerr) free(yerr);
+    if (!doc) return NULL;
+    char *json_str = yaml_to_json_string(doc, NULL);
+    yaml_free(doc);
+    if (!json_str) return NULL;
+    char *jerr = NULL;
+    json_t *cfg = json_parse(json_str, &jerr);
+    free(json_str);
+    if (jerr) free(jerr);
+    return cfg;
+}
+
+/* ─────────────── _load_reasoning_config ───────────────
+ * Load reasoning effort from config.yaml, respecting per-model overrides.
+ * Thin wrapper over the shared resolve_reasoning_config chokepoint (per-model
+ * override > global agent.reasoning_effort; YAML boolean False = disabled).
+ * model may be NULL/"" (config's model.default is then used). Returns a
+ * malloc'd json_t reasoning-config object, or NULL when unset/unrecognized. */
+/* PoP: gw_load_reasoning_config @ gateway/run.py:_load_reasoning_config */
+json_t *gw_load_reasoning_config(const char *model) {
+    json_t *cfg = load_config_yaml_as_json();
+    json_t *result = reasoning_resolve_config(cfg, model ? model : "");
+    if (cfg) json_free(cfg);
+    return result;
 }

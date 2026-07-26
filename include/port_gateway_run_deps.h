@@ -9,6 +9,7 @@
 #define PORT_GATEWAY_RUN_DEPS_H
 
 #include <stdbool.h>
+#include "hermes_json.h"
 
 /* run.py _active_profile_name — profile name this gateway represents.
  * Wraps profiles.get_active_profile_name(); "default" on any failure.
@@ -35,5 +36,10 @@ void gw_update_platform_runtime_status(const char *platform,
  * Returns a malloc'd JSON array string of {provider,model,base_url} objects,
  * or NULL when the chain is empty / config missing / on any error. */
 char *gw_load_fallback_model(void);
+
+/* run.py _load_reasoning_config — reasoning effort from config.yaml with
+ * per-model overrides. model may be NULL/"". Returns a malloc'd json_t
+ * reasoning-config object, or NULL when unset/unrecognized. */
+json_t *gw_load_reasoning_config(const char *model);
 
 #endif /* PORT_GATEWAY_RUN_DEPS_H */
