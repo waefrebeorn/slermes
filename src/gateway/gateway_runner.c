@@ -10,6 +10,7 @@
 #define _GNU_SOURCE
 #include "hermes_gateway_runner.h"
 #include "hermes_core_types.h"
+#include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -78,11 +79,28 @@ struct GatewayRunner {
     void *running_agents;               /* Will use khash or simple array */
     int   running_agent_count;
 
-    /* ── Session overrides ───────────────────────────────── */
-    /* These would be hash maps in production. For now: static arrays. */
-    /* _session_model_overrides */
-    /* _session_reasoning_overrides */
+    /* ── Session overrides (Python dicts ported as json_t objects) ── */
+    json_t *session_model_overrides;        /* _session_model_overrides */
+    json_t *session_reasoning_overrides;    /* _session_reasoning_overrides */
+    json_t *session_run_generation;         /* _session_run_generation */
+    json_t *pending_one_turn_model_restores;/* _pending_one_turn_model_restores */
+    json_t *session_ephemeral_pin;          /* _session_ephemeral_pin */
+    json_t *session_vc_last;                /* _session_vc_last */
     /* _session_service_tier_overrides */
+
+    /* ── Agent cache: session_key -> opaque agent ───────── */
+    struct gw_agent_cache_entry {
+        char *key;
+        void *agent;
+    } *agent_cache;
+    int agent_cache_count;
+    int agent_cache_capacity;
+    /* Soft-release hook invoked off-thread on eviction
+     * (_release_evicted_agent_soft). */
+    void (*release_agent_soft)(void *agent);
+
+    /* ── Config flags ────────────────────────────────────── */
+    int stt_echo_transcripts;           /* config.stt_echo_transcripts (default True) */
 
     /* ── Pending / queued messages ───────────────────────── */
     /* _pending_messages, _queued_events, etc. */
@@ -124,6 +142,17 @@ GatewayRunner *gateway_runner_create(const char *config_path)
     self->adapter_capacity = 8;
     self->adapters = calloc(self->adapter_capacity, sizeof(void *));
 
+    /* Session override / generation maps (Python dicts). */
+    self->session_model_overrides = json_object();
+    self->session_reasoning_overrides = json_object();
+    self->session_run_generation = json_object();
+    self->pending_one_turn_model_restores = json_object();
+    self->session_ephemeral_pin = json_object();
+    self->session_vc_last = json_object();
+
+    /* config.stt_echo_transcripts defaults True. */
+    self->stt_echo_transcripts = 1;
+
     /* Init locks */
     pthread_mutex_init(&self->lock, NULL);
     pthread_mutex_init(&self->agent_cache_lock, NULL);
@@ -137,6 +166,15 @@ void gateway_runner_destroy(GatewayRunner *self)
     if (!self) return;
     free(self->config_path);
     free(self->adapters);
+    if (self->session_model_overrides) json_free(self->session_model_overrides);
+    if (self->session_reasoning_overrides) json_free(self->session_reasoning_overrides);
+    if (self->session_run_generation) json_free(self->session_run_generation);
+    if (self->pending_one_turn_model_restores) json_free(self->pending_one_turn_model_restores);
+    if (self->session_ephemeral_pin) json_free(self->session_ephemeral_pin);
+    if (self->session_vc_last) json_free(self->session_vc_last);
+    for (int i = 0; i < self->agent_cache_count; i++)
+        free(self->agent_cache[i].key);
+    free(self->agent_cache);
     pthread_mutex_destroy(&self->lock);
     pthread_mutex_destroy(&self->agent_cache_lock);
     pthread_mutex_destroy(&self->completion_delivery_lock);
@@ -194,12 +232,16 @@ bool gateway_runner_is_running(const GatewayRunner *self)
     { return self ? self->running : false; }
 bool gateway_runner_is_draining(const GatewayRunner *self)
     { return self ? self->draining : false; }
+/* PoP: gateway_runner_should_exit_cleanly @ gateway/run.py:should_exit_cleanly */
 bool gateway_runner_should_exit_cleanly(const GatewayRunner *self)
     { return self ? self->exit_cleanly : false; }
+/* PoP: gateway_runner_should_exit_with_failure @ gateway/run.py:should_exit_with_failure */
 bool gateway_runner_should_exit_with_failure(const GatewayRunner *self)
     { return self ? self->exit_with_failure : false; }
+/* PoP: gateway_runner_exit_reason @ gateway/run.py:exit_reason */
 const char *gateway_runner_exit_reason(const GatewayRunner *self)
     { return self ? self->exit_reason : NULL; }
+/* PoP: gateway_runner_exit_code @ gateway/run.py:exit_code */
 int gateway_runner_exit_code(const GatewayRunner *self)
     { return self ? self->exit_code_val : -1; }
 const char *gateway_runner_busy_input_mode(const GatewayRunner *self)
@@ -766,4 +808,223 @@ bool gateway_runner_is_duplicate_voice_transcript(const GatewayRunner *self,
 {
     (void)self; (void)guild_id; (void)user_id; (void)transcript;
     return false;
+}
+/* ════════════════════════════════════════════════════════════════════════
+ * Session model / reasoning override state (Python dict-backed methods)
+ * ════════════════════════════════════════════════════════════════════════ */
+
+/* PoP: gateway_runner_should_echo_stt_transcripts @ gateway/run.py:GatewayRunner._should_echo_stt_transcripts */
+bool gateway_runner_should_echo_stt_transcripts(const GatewayRunner *self)
+{
+    /* bool(getattr(self.config, "stt_echo_transcripts", True)) */
+    return self ? (self->stt_echo_transcripts != 0) : true;
+}
+
+/* PoP: gateway_runner_startup_should_abort @ gateway/run.py:GatewayRunner._startup_should_abort */
+bool gateway_runner_startup_should_abort(const GatewayRunner *self)
+{
+    if (!self) return false;
+    return self->restart_requested || self->draining || self->shutdown_event_set;
+}
+
+/* PoP: gateway_runner_is_intentional_model_switch @ gateway/run.py:GatewayRunner._is_intentional_model_switch */
+bool gateway_runner_is_intentional_model_switch(const GatewayRunner *self,
+                                                const char *session_key,
+                                                const char *agent_model)
+{
+    if (!self || !session_key || !self->session_model_overrides) return false;
+    json_t *override = json_obj_get(self->session_model_overrides, session_key);
+    if (!override || override->type != JSON_OBJECT) return false;
+    json_t *m = json_obj_get(override, "model");
+    const char *om = (m && m->type == JSON_STRING) ? m->str_val : NULL;
+    return om && agent_model && strcmp(om, agent_model) == 0;
+}
+
+/* PoP: gateway_runner_snapshot_session_model_override @ gateway/run.py:GatewayRunner._snapshot_session_model_override */
+json_t *gateway_runner_snapshot_session_model_override(const GatewayRunner *self,
+                                                       const char *session_key)
+{
+    json_t *snap = json_object();
+    json_t *override = NULL;
+    if (self && session_key && self->session_model_overrides)
+        override = json_obj_get(self->session_model_overrides, session_key);
+    json_set(snap, "had_override", json_bool(override != NULL));
+    json_set(snap, "override", override ? json_copy(override) : json_null());
+    return snap;
+}
+
+/* PoP: gateway_runner_restore_session_model_override @ gateway/run.py:GatewayRunner._restore_session_model_override */
+void gateway_runner_restore_session_model_override(GatewayRunner *self,
+                                                   const char *session_key,
+                                                   const json_t *snapshot)
+{
+    if (!self || !session_key || !session_key[0] || !snapshot) return;
+    json_t *had = json_obj_get((json_t *)snapshot, "had_override");
+    if (had && had->type == JSON_BOOL && had->bool_val) {
+        json_t *ov = json_obj_get((json_t *)snapshot, "override");
+        json_t *copy = (ov && ov->type == JSON_OBJECT) ? json_copy(ov)
+                                                       : json_object();
+        json_set(self->session_model_overrides, session_key, copy);
+    } else {
+        json_object_del(self->session_model_overrides, session_key);
+    }
+    gateway_runner_evict_cached_agent(self, session_key);
+}
+
+/* PoP: gateway_runner_restore_pending_one_turn_model_override @ gateway/run.py:GatewayRunner._restore_pending_one_turn_model_override */
+void gateway_runner_restore_pending_one_turn_model_override(GatewayRunner *self,
+                                                            const char *session_key)
+{
+    if (!self || !session_key || !session_key[0]) return;
+    json_t *snap = json_obj_get(self->pending_one_turn_model_restores, session_key);
+    if (!snap) return;
+    json_t *owned = json_copy(snap);
+    json_object_del(self->pending_one_turn_model_restores, session_key);
+    gateway_runner_restore_session_model_override(self, session_key, owned);
+    json_free(owned);
+}
+
+/* PoP: gateway_runner_set_session_reasoning_override @ gateway/run.py:GatewayRunner._set_session_reasoning_override */
+void gateway_runner_set_session_reasoning_override(GatewayRunner *self,
+                                                   const char *session_key,
+                                                   const json_t *reasoning_config)
+{
+    if (!self || !session_key || !session_key[0]) return;
+    if (!reasoning_config) {
+        json_object_del(self->session_reasoning_overrides, session_key);
+    } else {
+        json_set(self->session_reasoning_overrides, session_key,
+                 json_copy(reasoning_config));
+    }
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+ * Run generation tokens
+ * ════════════════════════════════════════════════════════════════════════ */
+
+/* PoP: gateway_runner_begin_session_run_generation @ gateway/run.py:GatewayRunner._begin_session_run_generation */
+int gateway_runner_begin_session_run_generation(GatewayRunner *self,
+                                                const char *session_key)
+{
+    if (!self || !session_key || !session_key[0]) return 0;
+    json_t *cur = json_obj_get(self->session_run_generation, session_key);
+    int next_generation = (cur && cur->type == JSON_NUMBER)
+                              ? (int)cur->num_val + 1 : 1;
+    json_set(self->session_run_generation, session_key,
+             json_number((double)next_generation));
+    return next_generation;
+}
+
+/* PoP: gateway_runner_invalidate_session_run_generation @ gateway/run.py:GatewayRunner._invalidate_session_run_generation */
+int gateway_runner_invalidate_session_run_generation(GatewayRunner *self,
+                                                     const char *session_key,
+                                                     const char *reason)
+{
+    int generation = gateway_runner_begin_session_run_generation(self, session_key);
+    if (reason && reason[0]) {
+        fprintf(stderr, "[gateway] Invalidated run generation for %s → %d (%s)\n",
+                session_key ? session_key : "", generation, reason);
+    }
+    return generation;
+}
+
+/* PoP: gateway_runner_is_session_run_current @ gateway/run.py:GatewayRunner._is_session_run_current */
+bool gateway_runner_is_session_run_current(const GatewayRunner *self,
+                                           const char *session_key,
+                                           int generation)
+{
+    if (!session_key || !session_key[0]) return true;
+    if (!self || !self->session_run_generation) return generation == 0;
+    json_t *cur = json_obj_get(self->session_run_generation, session_key);
+    int current = (cur && cur->type == JSON_NUMBER) ? (int)cur->num_val : 0;
+    return current == generation;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+ * Agent cache eviction
+ * ════════════════════════════════════════════════════════════════════════ */
+
+struct gw_evict_release_arg {
+    void (*release)(void *agent);
+    void *agent;
+};
+
+static void *gw_evict_release_thread(void *raw)
+{
+    struct gw_evict_release_arg *arg = raw;
+    if (arg && arg->release) arg->release(arg->agent);
+    free(arg);
+    return NULL;
+}
+
+/* PoP: gateway_runner_evict_cached_agent @ gateway/run.py:GatewayRunner._evict_cached_agent */
+void gateway_runner_evict_cached_agent(GatewayRunner *self, const char *session_key)
+{
+    if (!self || !session_key) return;
+
+    /* Prompt-stability state rides the agent-cache lifecycle. */
+    if (self->session_ephemeral_pin)
+        json_object_del(self->session_ephemeral_pin, session_key);
+    if (self->session_vc_last)
+        json_object_del(self->session_vc_last, session_key);
+
+    /* Pop the entry under the agent-cache lock. */
+    void *evicted = NULL;
+    pthread_mutex_lock(&self->agent_cache_lock);
+    for (int i = 0; i < self->agent_cache_count; i++) {
+        if (strcmp(self->agent_cache[i].key, session_key) == 0) {
+            evicted = self->agent_cache[i].agent;
+            free(self->agent_cache[i].key);
+            self->agent_cache[i] = self->agent_cache[self->agent_cache_count - 1];
+            self->agent_cache_count--;
+            break;
+        }
+    }
+    pthread_mutex_unlock(&self->agent_cache_lock);
+
+    if (!evicted) return;
+
+    /* Soft-release off-thread so we never block on slow socket teardown;
+     * inline fallback when thread creation fails (mirrors Python). */
+    if (self->release_agent_soft) {
+        struct gw_evict_release_arg *arg = malloc(sizeof(*arg));
+        if (arg) {
+            arg->release = self->release_agent_soft;
+            arg->agent = evicted;
+            pthread_t tid;
+            if (pthread_create(&tid, NULL, gw_evict_release_thread, arg) == 0) {
+                pthread_detach(tid);
+            } else {
+                free(arg);
+                self->release_agent_soft(evicted);
+            }
+        } else {
+            self->release_agent_soft(evicted);
+        }
+    }
+}
+
+/* Cache an agent for a session (test/wiring seam for the eviction path). */
+void gateway_runner_cache_agent(GatewayRunner *self, const char *session_key,
+                                void *agent)
+{
+    if (!self || !session_key) return;
+    pthread_mutex_lock(&self->agent_cache_lock);
+    for (int i = 0; i < self->agent_cache_count; i++) {
+        if (strcmp(self->agent_cache[i].key, session_key) == 0) {
+            self->agent_cache[i].agent = agent;
+            pthread_mutex_unlock(&self->agent_cache_lock);
+            return;
+        }
+    }
+    if (self->agent_cache_count >= self->agent_cache_capacity) {
+        int ncap = self->agent_cache_capacity ? self->agent_cache_capacity * 2 : 16;
+        self->agent_cache = realloc(self->agent_cache,
+                                    (size_t)ncap * sizeof(self->agent_cache[0]));
+        self->agent_cache_capacity = ncap;
+    }
+    self->agent_cache[self->agent_cache_count].key = strdup(session_key);
+    self->agent_cache[self->agent_cache_count].agent = agent;
+    self->agent_cache_count++;
+    pthread_mutex_unlock(&self->agent_cache_lock);
 }

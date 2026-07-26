@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <time.h>
+#include "hermes_json.h"
 
 /* ─── Opaque handle ───────────────────────────────────────────────── */
 typedef struct GatewayRunner GatewayRunner;
@@ -68,6 +69,43 @@ int    gateway_runner_running_agent_count(const GatewayRunner *self);
 bool   gateway_runner_has_setup_skill(const GatewayRunner *self);
 double gateway_runner_scale_to_zero_idle_timeout(const GatewayRunner *self);
 int    gateway_runner_goal_max_turns(const GatewayRunner *self);
+bool   gateway_runner_should_echo_stt_transcripts(const GatewayRunner *self);
+bool   gateway_runner_startup_should_abort(const GatewayRunner *self);
+
+/* ─── Session model / reasoning override state ────────────────────── */
+
+bool gateway_runner_is_intentional_model_switch(const GatewayRunner *self,
+                                                const char *session_key,
+                                                const char *agent_model);
+/* Returns malloc'd {"had_override": bool, "override": dict|null} snapshot. */
+json_t *gateway_runner_snapshot_session_model_override(const GatewayRunner *self,
+                                                       const char *session_key);
+void gateway_runner_restore_session_model_override(GatewayRunner *self,
+                                                   const char *session_key,
+                                                   const json_t *snapshot);
+void gateway_runner_restore_pending_one_turn_model_override(GatewayRunner *self,
+                                                            const char *session_key);
+void gateway_runner_set_session_reasoning_override(GatewayRunner *self,
+                                                   const char *session_key,
+                                                   const json_t *reasoning_config);
+
+/* ─── Run generation tokens ───────────────────────────────────────── */
+
+int  gateway_runner_begin_session_run_generation(GatewayRunner *self,
+                                                 const char *session_key);
+int  gateway_runner_invalidate_session_run_generation(GatewayRunner *self,
+                                                      const char *session_key,
+                                                      const char *reason);
+bool gateway_runner_is_session_run_current(const GatewayRunner *self,
+                                           const char *session_key,
+                                           int generation);
+
+/* ─── Agent cache ─────────────────────────────────────────────────── */
+
+void gateway_runner_evict_cached_agent(GatewayRunner *self,
+                                       const char *session_key);
+void gateway_runner_cache_agent(GatewayRunner *self, const char *session_key,
+                                void *agent);
 
 /* ─── Config resolution (pure) ────────────────────────────────────── */
 
