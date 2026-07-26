@@ -295,3 +295,205 @@ char *normalize_custom_provider_entry_json(const char *entry_json, const char *p
     json_free(entry);
     return result;
 }
+
+/* ===========================================================================
+ *  _is_env_config_key
+ * =========================================================================== */
+
+/*
+ * PoP: is_env_config_key @ hermes_cli/config.py:_is_env_config_key
+ * True when key starts with "env." or "env/". */
+bool is_env_config_key(const char *key)
+{
+    if (!key || !key[0]) return false;
+    if (strncmp(key, "env.", 4) == 0) return true;
+    if (strncmp(key, "env/", 4) == 0) return true;
+    return false;
+}
+
+/* ===========================================================================
+ *  _env_line_defines_key
+ * =========================================================================== */
+
+/*
+ * PoP: env_line_defines_key @ hermes_cli/config.py:_env_line_defines_key
+ * True when line starts with "KEY=". */
+bool env_line_defines_key(const char *line, const char *key)
+{
+    if (!line || !key) return false;
+    const char *p = line;
+    while (*p && (unsigned char)*p <= ' ') p++;
+    size_t klen = strlen(key);
+    return (strncmp(p, key, klen) == 0 && p[klen] == '=');
+}
+
+/* ===========================================================================
+ *  _check_non_ascii_credential
+ * =========================================================================== */
+
+/*
+ * PoP: check_non_ascii_credential @ hermes_cli/config.py:_check_non_ascii_credential
+ * Return error string if value contains non-ASCII characters, NULL if clean. */
+const char *check_non_ascii_credential(const char *key, const char *value)
+{
+    (void)key;
+    if (!value) return NULL;
+    for (const char *p = value; *p; p++) {
+        if ((unsigned char)*p > 127)
+            return "Non-ASCII characters detected in credential value. "
+                   "Please use only ASCII characters.";
+    }
+    return NULL;
+}
+
+/* ===========================================================================
+ *  _terminal_env_value / terminal_config_env_var_for_key
+ * =========================================================================== */
+
+/*
+ * PoP: terminal_env_value @ hermes_cli/config.py:_terminal_env_value
+ * Strip and collapse whitespace to single space. */
+void terminal_env_value(const char *value, char *out, size_t out_size)
+{
+    if (!out || out_size == 0) return;
+    out[0] = '\0';
+    if (!value) return;
+    const char *p = value;
+    while (*p && (unsigned char)*p <= ' ') p++;
+    size_t pos = 0;
+    int last_was_space = 0;
+    while (*p && pos < out_size - 1) {
+        if ((unsigned char)*p <= ' ') {
+            if (!last_was_space) { out[pos++] = ' '; last_was_space = 1; }
+        } else { out[pos++] = *p; last_was_space = 0; }
+        p++;
+    }
+    while (pos > 0 && out[pos-1] == ' ') pos--;
+    out[pos] = '\0';
+}
+
+/*
+ * PoP: terminal_config_env_var_for_key @ hermes_cli/config.py:terminal_config_env_var_for_key
+ * Transform "terminal.shell" -> "TERMINAL_SHELL". */
+void terminal_config_env_var_for_key(const char *key, char *out, size_t out_size)
+{
+    if (!out || out_size == 0) return;
+    out[0] = '\0';
+    if (!key) return;
+    size_t pos = 0;
+    for (const char *p = key; *p && pos < out_size - 1; p++) {
+        if (*p == '.' || *p == '-') out[pos++] = '_';
+        else out[pos++] = (char)toupper((unsigned char)*p);
+    }
+    out[pos] = '\0';
+}
+
+/* ===========================================================================
+ *  _format_config_get_value
+ * =========================================================================== */
+
+/*
+ * PoP: format_config_get_value @ hermes_cli/config.py:_format_config_get_value
+ * Format value for display: plain or JSON-escaped. */
+void format_config_get_value(const char *value, int as_json,
+                               char *out, size_t out_size)
+{
+    if (!out || out_size == 0) return;
+    out[0] = '\0';
+    if (!value) return;
+    if (as_json) {
+        size_t pos = 0;
+        out[pos++] = '"';
+        for (const char *p = value; *p && pos < out_size - 2; p++) {
+            if (*p == '"' || *p == '\\') out[pos++] = '\\';
+            out[pos++] = *p;
+        }
+        out[pos++] = '"'; out[pos] = '\0';
+    } else {
+        size_t n = strlen(value);
+        if (n >= out_size) n = out_size - 1;
+        memcpy(out, value, n); out[n] = '\0';
+    }
+}
+
+/* ===========================================================================
+ *  _default_value_for_key / _known_top_level_keys
+ * =========================================================================== */
+
+/*
+ * PoP: default_value_for_key @ hermes_cli/config.py:_default_value_for_key
+ * Return default value for known config keys, or NULL. */
+const char *default_value_for_key(const char *dotted_key)
+{
+    if (!dotted_key) return NULL;
+    if (strcmp(dotted_key, "agent.model") == 0) return "deepseek/deepseek-chat";
+    if (strcmp(dotted_key, "agent.timeout") == 0) return "300";
+    if (strcmp(dotted_key, "agent.gateway_timeout") == 0) return "1800";
+    if (strcmp(dotted_key, "security.redact_secrets") == 0) return "true";
+    if (strcmp(dotted_key, "tools.approve_commands") == 0) return "true";
+    return NULL;
+}
+
+/*
+ * PoP: known_top_level_keys @ hermes_cli/config.py:_known_top_level_keys
+ * Iterate known top-level config keys. Pass NULL to start, previous key to continue. */
+const char *known_top_level_keys(const char *prev)
+{
+    static const char *KEYS[] = {
+        "agent", "tools", "gateway", "security", "display",
+        "cron", "model", "provider", "plugins", "skills",
+        "pet", "notifications", "voice", "curator", NULL
+    };
+    if (!prev) return KEYS[0];
+    for (int i = 0; KEYS[i]; i++) {
+        if (strcmp(prev, KEYS[i]) == 0) return KEYS[i+1];
+    }
+    return NULL;
+}
+
+/* ===========================================================================
+ *  _validate_config_key
+ * =========================================================================== */
+
+/*
+ * PoP: validate_config_key @ hermes_cli/config.py:_validate_config_key
+ * Return true if key is a valid dot-separated config path. */
+bool validate_config_key(const char *key, char *suggestion, size_t sug_size)
+{
+    if (suggestion && sug_size > 0) suggestion[0] = '\0';
+    if (!key || !key[0]) return false;
+    for (const char *p = key; *p; p++) {
+        if (!isalnum((unsigned char)*p) && *p != '.' && *p != '_' && *p != '-')
+            return false;
+    }
+    if (key[0] == '.' || key[strlen(key)-1] == '.') return false;
+    if (strstr(key, "..")) return false;
+    return true;
+}
+
+/* ===========================================================================
+ *  redact_key
+ * =========================================================================== */
+
+/*
+ * PoP: redact_key @ hermes_cli/config.py:redact_key
+ * Redact credential-like keys by replacing value with ***. */
+void redact_key(const char *key, char *out, size_t out_size)
+{
+    if (!out || out_size == 0) return;
+    out[0] = '\0';
+    if (!key) return;
+    char buf[256]; size_t bn = 0;
+    for (const char *p = key; *p && bn < sizeof(buf)-1; p++)
+        buf[bn++] = (char)toupper((unsigned char)*p);
+    buf[bn] = '\0';
+    if (strstr(buf, "API_KEY") || strstr(buf, "SECRET") ||
+        strstr(buf, "TOKEN") || strstr(buf, "PASSWORD") ||
+        strstr(buf, "AUTH") || strstr(buf, "CREDENTIAL")) {
+        snprintf(out, out_size, "%s=*** (redacted)", key);
+    } else {
+        size_t n = strlen(key);
+        if (n >= out_size) n = out_size - 1;
+        memcpy(out, key, n); out[n] = '\0';
+    }
+}
