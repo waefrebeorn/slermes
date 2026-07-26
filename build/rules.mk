@@ -204,6 +204,9 @@ lib/libenvpassthrough.a: lib/libenvpassthrough/env_passthrough.o
 lib/libxai_http.a: lib/libxai_http/xai_http.o
 	$(AR) rcs $@ $^
 
+lib/libasync.a: lib/libasync/fiber.o lib/libasync/async_http.o
+	$(AR) rcs $@ $^
+
 lib/libcredential.a: lib/libcredential/credential.o
 	$(AR) rcs $@ $^
 
