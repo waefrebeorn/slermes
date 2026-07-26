@@ -11,6 +11,9 @@
 #ifndef HERMES_JSON_H
 #define HERMES_JSON_H
 
+#include <string.h>
+#include <stdlib.h>
+
 /*
  * hermes_json.h — Compatibility shim: maps old hermes JSON API → libjson.
  *
@@ -107,6 +110,42 @@ static inline char *json_dumps(const json_t *node, int flags) {
     if (flags > 0) return json_serialize_pretty(node, flags);
     return json_serialize(node);
 }
+
+/* Set array element at index, freeing any previous value. */
+static inline void json_array_set(json_t *arr, size_t index, json_t *val) {
+    if (!arr || arr->type != JSON_ARRAY) { if (val) json_free(val); return; }
+    if (index >= arr->c.count) { if (val) json_free(val); return; }
+    json_free(arr->c.items[index]);
+    arr->c.items[index] = val;
+}
+
+/* Remove array element at index (shifts remaining left). */
+static inline void json_array_remove(json_t *arr, size_t index) {
+    if (!arr || arr->type != JSON_ARRAY) return;
+    if (index >= arr->c.count) return;
+    for (size_t i = index; i + 1 < arr->c.count; i++)
+        arr->c.items[i] = arr->c.items[i + 1];
+    arr->c.count--;
+}
+
+/* Delete object key. */
+static inline void json_object_del(json_t *obj, const char *key) {
+    if (!obj || obj->type != JSON_OBJECT) return;
+    size_t idx = (size_t)-1;
+    for (size_t i = 0; i < obj->c.count; i++) {
+        if (strcmp(obj->c.keys[i], key) == 0) { idx = i; break; }
+    }
+    if (idx == (size_t)-1) return;
+    free(obj->c.keys[idx]);
+    json_free(obj->c.items[idx]);
+    for (size_t i = idx; i + 1 < obj->c.count; i++) {
+        obj->c.keys[i] = obj->c.keys[i + 1];
+        obj->c.items[i] = obj->c.items[i + 1];
+    }
+    obj->c.count--;
+}
+
+#define json_string_value_safe(v)  ((v) && (v)->type == JSON_STRING ? (v)->str_val : NULL)
 
 #define json_is_true(v)         ((v) && (v)->type == JSON_BOOL && (v)->bool_val)
 
