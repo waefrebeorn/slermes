@@ -6,6 +6,7 @@
 
 #include "hermes_logger.h"
 #include "hermes_json.h"
+#include "port_provider_registry.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -44,14 +45,15 @@ char *_getenv(void *ctx, void *name, void *default_val)
     return getenv_fn((const char *)name, (const char *)default_val);
 }
 
-/* Port of Python: canonical_custom_identity */
+/* Port of Python: canonical_custom_identity.
+ * Real implementation: delegates to the config-backed provider registry, which
+ * reverse-looks-up base_url → custom:<name>, then the configured provider when
+ * it names a real ``providers:``/``custom_providers:`` entry. (The model-based
+ * recovery source is available via provider_canonical_custom_identity's 3rd
+ * arg; this 2-arg ABI passes model=NULL, matching the original call sites.) */
 char *canonical_custom_identity(const char *base_url, const char *config_provider)
 {
-    (void)base_url;
-    (void)config_provider;
-    /* In C, we don't have the full custom provider registry.
-     * Return NULL (equivalent to Python's None) */
-    return NULL;
+    return provider_canonical_custom_identity(base_url, config_provider, NULL);
 }
 
 /* PoP: canonical_custom_identity @ hermes_cli/runtime_provider.py:canonical_custom_identity */
