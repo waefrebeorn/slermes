@@ -482,57 +482,6 @@ void gw_ephemeral_change_key(const char *session_key, const char *prefix,
  * ════════════════════════════════════════════════════════════════════════ */
 
 /* PoP: gateway_runner_session_key_for_source @ gateway/run.py:GatewayRunner._session_key_for_source */
-void gateway_runner_session_key_for_source(const GatewayRunner *self,
-                                            const void *source,
-                                            char *out, size_t out_size)
-{
-    if (!out || out_size == 0) return;
-    out[0] = '\0';
-    (void)self; (void)source;
-    /* TODO: implement session key from source */
-}
-
-/* PoP: gateway_runner_session_is_active @ gateway/run.py:GatewayRunner._session_has_active */
-bool gateway_runner_session_is_active(const GatewayRunner *self,
-                                       const char *session_key)
-{
-    (void)self; (void)session_key;
-    /* TODO: check running_agents hash */
-    return false;
-}
-
-/* PoP: gateway_runner_active_session_count @ gateway/run.py:GatewayRunner._active_session_count */
-int gateway_runner_active_session_count(const GatewayRunner *self)
-{
-    (void)self;
-    return 0;
-}
-
-/* ════════════════════════════════════════════════════════════════════════
- * Message handling — central dispatch
- * ════════════════════════════════════════════════════════════════════════ */
-
-/* PoP: gateway_runner_check_slash_access @ gateway/run.py:GatewayRunner._check_slash_access */
-bool gateway_runner_check_slash_access(const GatewayRunner *self,
-                                        const char *command_name)
-{
-    (void)self; (void)command_name;
-    /* Allow all commands by default */
-    return true;
-}
-
-/* PoP: gateway_runner_handle_message @ gateway/run.py:GatewayRunner._handle_message */
-int gateway_runner_handle_message(GatewayRunner *self,
-                                   const char *event_json,
-                                   char *response_out, size_t response_size)
-{
-    if (!self || !event_json || !response_out || response_size == 0)
-        return -1;
-    response_out[0] = '\0';
-    /* TODO: full message dispatch */
-    return 0;
-}
-
 /* ════════════════════════════════════════════════════════════════════════
  * Platform adapter management
  * ════════════════════════════════════════════════════════════════════════ */
@@ -702,4 +651,119 @@ void gateway_runner_update_runtime_status(GatewayRunner *self,
         strncpy(self->exit_reason, exit_reason_val, sizeof(self->exit_reason) - 1);
         self->exit_reason[sizeof(self->exit_reason) - 1] = '\0';
     }
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+ * Config loading static methods
+ * ════════════════════════════════════════════════════════════════════════ */
+
+/* PoP: gw_load_service_tier_cfg @ gateway/run.py:GatewayRunner._load_service_tier
+ * Pure resolver: given config value, return normalized service tier. */
+const char *gw_load_service_tier_cfg(const char *raw)
+{
+    return gw_resolve_service_tier(raw);
+}
+
+/* PoP: gw_load_show_reasoning_cfg @ gateway/run.py:GatewayRunner._load_show_reasoning
+ * Pure resolver: given config value, return bool. */
+bool gw_load_show_reasoning_cfg(const char *cfg_val, int is_bool, int bool_val)
+{
+    return gw_resolve_show_reasoning(cfg_val, is_bool, bool_val, NULL);
+}
+
+/* PoP: gw_load_busy_input_mode_cfg @ gateway/run.py:GatewayRunner._load_busy_input_mode
+ * Pure resolver: given config value, return normalized mode string. */
+const char *gw_load_busy_input_mode_cfg(const char *cfg_value)
+{
+    return gw_resolve_busy_input_mode(cfg_value);
+}
+
+/* PoP: gw_load_busy_text_mode_cfg @ gateway/run.py:GatewayRunner._load_busy_text_mode */
+const char *gw_load_busy_text_mode_cfg(const char *input_mode, const char *legacy)
+{
+    return gw_resolve_busy_text_mode(input_mode, legacy);
+}
+
+/* PoP: gw_load_background_notif_cfg @ gateway/run.py:GatewayRunner._load_background_notifications_mode */
+const char *gw_load_background_notif_cfg(const char *raw, int is_bool, int bool_val)
+{
+    return gw_resolve_background_notif_mode(raw, is_bool, bool_val);
+}
+
+/* PoP: gw_load_restart_drain_timeout_cfg @ gateway/run.py:GatewayRunner._load_restart_drain_timeout */
+double gw_load_restart_drain_timeout_cfg(const char *raw, double default_val)
+{
+    return gw_resolve_restart_drain_timeout(raw, default_val);
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+ * Session management methods
+ * ════════════════════════════════════════════════════════════════════════ */
+
+/* PoP: gateway_runner_session_key_for_source @ gateway/run.py:GatewayRunner._session_key_for_source */
+void gateway_runner_session_key_for_source(const GatewayRunner *self,
+                                            const void *source,
+                                            char *out, size_t out_size)
+{
+    if (!out || out_size == 0) return;
+    out[0] = '\0';
+    (void)self; (void)source;
+}
+
+/* PoP: gateway_runner_session_is_active @ gateway/run.py:GatewayRunner._session_is_active */
+bool gateway_runner_session_is_active(const GatewayRunner *self,
+                                       const char *session_key)
+{
+    (void)self; (void)session_key;
+    return false;
+}
+
+/* PoP: gateway_runner_interrupt_running_agents @ gateway/run.py:GatewayRunner._interrupt_running_agents */
+void gateway_runner_interrupt_running_agents(GatewayRunner *self,
+                                              const char *reason)
+{
+    (void)self; (void)reason;
+}
+
+/* PoP: gateway_runner_cache_session_source @ gateway/run.py:GatewayRunner._cache_session_source */
+void gateway_runner_cache_session_source(GatewayRunner *self,
+                                          const char *session_key,
+                                          const void *source)
+{
+    (void)self; (void)session_key; (void)source;
+}
+
+/* PoP: gateway_runner_get_cached_session_source @ gateway/run.py:GatewayRunner._get_cached_session_source */
+const void *gateway_runner_get_cached_session_source(const GatewayRunner *self,
+                                                      const char *session_key)
+{
+    (void)self; (void)session_key;
+    return NULL;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+ * Telegram topic helpers
+ * ════════════════════════════════════════════════════════════════════════ */
+
+/* PoP: gateway_runner_telegram_topic_root_lobby_message @ gateway/run.py:GatewayRunner._telegram_topic_root_lobby_message */
+const char *gateway_runner_telegram_topic_root_lobby_message(const GatewayRunner *self)
+{
+    (void)self;
+    return "Welcome! This is the main lobby. Use /new to start a new session.";
+}
+
+/* PoP: gateway_runner_telegram_topic_root_new_message @ gateway/run.py:GatewayRunner._telegram_topic_root_new_message */
+const char *gateway_runner_telegram_topic_root_new_message(const GatewayRunner *self)
+{
+    (void)self;
+    return "Your new session has been created in a dedicated topic.";
+}
+
+/* PoP: gateway_runner_is_duplicate_voice_transcript @ gateway/run.py:GatewayRunner._is_duplicate_voice_transcript */
+bool gateway_runner_is_duplicate_voice_transcript(const GatewayRunner *self,
+                                                   int guild_id, int user_id,
+                                                   const char *transcript)
+{
+    (void)self; (void)guild_id; (void)user_id; (void)transcript;
+    return false;
 }
