@@ -32,8 +32,11 @@ from dataclasses import dataclass, field, asdict
 from typing import Dict, List, Set, Optional, Tuple
 from collections import defaultdict
 
-HERMES_DIR = Path("/home/wubu/hermes-agent-dev")
-SLERMES_DIR = HERMES_DIR / "slermes"
+# Python source root (the real Hermes package checkout). NOTE: the C port tree
+# lives in a SEPARATE directory (hermes-agent-dev/slermes), NOT as a subdir of
+# the Python source — so SLERMES_DIR is decoupled from HERMES_DIR below.
+HERMES_DIR = Path("/home/wubu/.hermes/hermes-agent")
+SLERMES_DIR = Path("/home/wubu/hermes-agent-dev/slermes")
 
 # Python source directories to scan
 PYTHON_SOURCE_DIRS = {
