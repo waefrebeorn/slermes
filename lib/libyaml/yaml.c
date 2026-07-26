@@ -240,12 +240,57 @@ static yaml_entry_t *parse_map(yaml_line_t *lines, size_t count,
 
                 while (j < count && lines[j].indent > ln->indent) {
                     if (lines[j].line[0] == '-' && (lines[j].line[1] == ' ' || lines[j].line[1] == '\0')) {
+                        int dash_indent = lines[j].indent;
                         const char *item_text = lines[j].line + 1;
                         while (*item_text == ' ') item_text++;
+                        /* Column where item_text begins within the physical line
+                         * (used as the synthetic indent for a mapping item). */
+                        int item_col = dash_indent + (int)(item_text - (lines[j].line + 1)) + 1;
+
+                        /* Does the item start a mapping ("key: value")? A colon
+                         * followed by space or EOL marks a YAML key (so "http://x"
+                         * is NOT treated as a key). */
+                        bool item_is_map = false;
+                        for (const char *q = item_text; *q; q++) {
+                            if (*q == ':' && (q[1] == ' ' || q[1] == '\0')) { item_is_map = true; break; }
+                        }
+                        /* Continuation lines: deeper-indented than the dash line
+                         * and before the next dash at this indent. */
+                        size_t cont_start = j + 1, cont_end = cont_start;
+                        while (cont_end < count && lines[cont_end].indent > dash_indent)
+                            cont_end++;
+                        if (cont_end > cont_start) item_is_map = true;
+
+                        yaml_entry_t *item = NULL;
+                        if (item_is_map && *item_text) {
+                            /* Build a temp line array: synthetic first line for the
+                             * inline "key: value" at item_col, then the real
+                             * continuation lines. parse_map borrows .line pointers
+                             * and never frees them, so shallow copies are safe. */
+                            size_t nlines = 1 + (cont_end - cont_start);
+                            yaml_line_t *tmp = (yaml_line_t *)xmalloc(nlines * sizeof(yaml_line_t));
+                            if (tmp) {
+                                tmp[0] = lines[j];
+                                tmp[0].line = (char *)item_text;  /* borrowed */
+                                tmp[0].indent = item_col;
+                                for (size_t t = cont_start; t < cont_end; t++)
+                                    tmp[1 + (t - cont_start)] = lines[t];
+                                size_t used = 0;
+                                item = parse_map(tmp, nlines, item_col - 1, &used, err);
+                                free(tmp);
+                            }
+                        }
+                        if (!item) item = parse_value(item_text);
+
                         child->items = (yaml_entry_t **)xrealloc(child->items,
                             (child->item_count + 1) * sizeof(yaml_entry_t *));
                         if (child->items)
-                            child->items[child->item_count++] = parse_value(item_text);
+                            child->items[child->item_count++] = item;
+                        else if (item)
+                            free_entry(item);
+                        /* Skip past the continuation lines we just consumed. */
+                        j = cont_end;
+                        continue;
                     }
                     j++;
                 }

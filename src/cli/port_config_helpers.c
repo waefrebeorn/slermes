@@ -188,14 +188,14 @@ char *normalize_custom_provider_entry_json(const char *entry_json, const char *p
     for (int i = 0; CAMEL[i]; i += 2) {
         json_t *v = json_object_get(entry, CAMEL[i]);
         if (v && !json_object_get(entry, CAMEL[i+1])) {
-            json_object_set(entry, CAMEL[i+1], v);
+            json_object_set(entry, CAMEL[i+1], json_copy(v));
         }
     }
     /* api_key_env alias for key_env */
     {
         json_t *ake = json_object_get(entry, "api_key_env");
         if (ake && !json_object_get(entry, "key_env")) {
-            json_object_set(entry, "key_env", ake);
+            json_object_set(entry, "key_env", json_copy(ake));
         }
     }
 
@@ -240,44 +240,44 @@ char *normalize_custom_provider_entry_json(const char *entry_json, const char *p
     json_t *am = json_object_get(entry, "api_mode");
     if ((!am || am->type != JSON_STRING) ) am = json_object_get(entry, "transport");
     if (am && am->type == JSON_STRING && json_string_value(am)[0]) {
-        json_object_set(out, "api_mode", am);
+        json_object_set(out, "api_mode", json_copy(am));
     }
     for (int i = 0; i < 6; i++) {
         json_t *v = json_object_get(entry, copy_str[i]);
         if (v && v->type == JSON_STRING && json_string_value(v)[0]) {
-            json_object_set(out, copy_str[i], v);
+            json_object_set(out, copy_str[i], json_copy(v));
         }
     }
     /* model also from default_model */
     json_t *mn = json_object_get(entry, "model");
     if ((!mn || mn->type != JSON_STRING) ) mn = json_object_get(entry, "default_model");
     if (mn && mn->type == JSON_STRING && json_string_value(mn)[0]) {
-        json_object_set(out, "model", mn);
+        json_object_set(out, "model", json_copy(mn));
     }
     /* context_length: positive int */
     json_t *cl = json_object_get(entry, "context_length");
     if (cl && cl->type == JSON_NUMBER && json_number_value(cl) > 0) {
-        json_object_set(out, "context_length", cl);
+        json_object_set(out, "context_length", json_copy(cl));
     }
     /* rate_limit_delay: non-negative number */
     json_t *rd = json_object_get(entry, "rate_limit_delay");
     if (rd && (rd->type == JSON_NUMBER) && json_number_value(rd) >= 0) {
-        json_object_set(out, "rate_limit_delay", rd);
+        json_object_set(out, "rate_limit_delay", json_copy(rd));
     }
     /* discover_models: bool */
     json_t *dm = json_object_get(entry, "discover_models");
     if (dm && dm->type == JSON_BOOL) {
-        json_object_set(out, "discover_models", dm);
+        json_object_set(out, "discover_models", json_copy(dm));
     }
     /* extra_body: dict */
     json_t *eb = json_object_get(entry, "extra_body");
     if (eb && eb->type == JSON_OBJECT) {
-        json_object_set(out, "extra_body", eb);
+        json_object_set(out, "extra_body", json_copy(eb));
     }
     /* models: dict or list -> dict shape */
     json_t *models = json_object_get(entry, "models");
     if (models && models->type == JSON_OBJECT && json_object_size(models) > 0) {
-        json_object_set(out, "models", models);
+        json_object_set(out, "models", json_copy(models));
     } else if (models && models->type == JSON_ARRAY) {
         json_t *md = json_object();
         for (size_t i = 0; i < json_array_size(models); i++) {
@@ -286,8 +286,11 @@ char *normalize_custom_provider_entry_json(const char *entry_json, const char *p
                 json_object_set(md, json_string_value(m), json_object());
             }
         }
-        if (json_object_size(md) > 0) json_object_set(out, "models", md);
-        json_free(md);
+        if (json_object_size(md) > 0) {
+            json_object_set(out, "models", md);
+        } else {
+            json_free(md);
+        }
     }
 
     char *result = json_dumps(out, 0);
