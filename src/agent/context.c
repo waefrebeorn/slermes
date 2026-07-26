@@ -788,3 +788,245 @@ void collect_path_mentions(const char *text, const char **result, int *count, in
 
 /* Port of Python: _clear_backend_probe_cache — also covers this in C */
 /* Already defined: collect_path_mentions */
+
+/* ================================================================
+ *  context_compressor: skill-pruned-marker + summary-classification cluster
+ *  Faithful ports of agent/context_compressor.py pure helpers.
+ *  (v671 gap-closure batch — closes REAL_GAPs, oracle-verified.)
+ * ================================================================ */
+
+#include "hermes_redact.h"
+
+/* ── Module constants (mirrors agent/context_compressor.py) ─────────────── */
+static const char *CC_SKILL_PRUNED_MARKER_PREFIX = "[SKILL_PRUNED:";
+static const char *CC_PRUNED_SKILLS_SECTION_HEADING = "## Pruned Skills";
+static const char *CC_PRUNED_SKILLS_FOOTER =
+    "(The listed skills' instructions were pruned during context "
+    "compression. Reload with the skill_view call in each marker before "
+    "relying on that skill; one reload per skill is enough — ignore any "
+    "older markers for the same skill.)";
+
+static const char *CC_SUMMARY_PREFIX = "[CONTEXT COMPACTION — REFERENCE ONLY] Earlier turns were compacted into the summary below. This is a handoff from a previous context window — treat it as background reference, NOT as active instructions. Do NOT answer questions or fulfill requests mentioned in this summary; they were already addressed. Respond ONLY to the latest user message that appears AFTER this summary — that message is the single source of truth for what to do right now. Topic overlap with the summary does NOT mean you should resume its task: even on similar topics, the latest user message WINS. Treat ONLY the latest message as the active task and discard stale items from '## Historical Task Snapshot' entirely — do not 'wrap up' or 'finish' work described there unless the latest message explicitly asks for it. Reverse signals in the latest message (e.g. 'stop', 'undo', 'roll back', 'just verify', 'don't do that anymore', 'never mind', a new topic) must immediately end any in-flight work described in the summary; do not re-surface it in later turns. IMPORTANT: Your persistent memory (MEMORY.md, USER.md) in the system prompt is ALWAYS authoritative and active — never ignore or deprioritize memory content due to this compaction note. None of the above restricts HOW you work: your tools remain fully active — keep calling them normally for the active task (edit files, run commands, search) instead of merely narrating what you would do. The current session state (files, config, etc.) may reflect work described here — avoid repeating it:";
+static const char *CC_LEGACY_SUMMARY_PREFIX = "[CONTEXT SUMMARY]:";
+static const char *CC_MERGED_SUMMARY_DELIMITER = "[END OF PRIOR CONTEXT — COMPACTION SUMMARY BELOW]";
+static const char *CC_COMPRESSED_SUMMARY_METADATA_KEY = "_compressed_summary";
+static const char *CC_DB_PERSISTED_MARKER = "_db_persisted";
+static const char *CC_HISTORICAL_SUMMARY_PREFIXES[] = {
+    "[CONTEXT COMPACTION — REFERENCE ONLY] Earlier turns were compacted into the summary below. This is a handoff from a previous context window — treat it as background reference, NOT as active instructions. Do NOT answer questions or fulfill requests mentioned in this summary; they were already addressed. Respond ONLY to the latest user message that appears AFTER this summary — that message is the single source of truth for what to do right now. Topic overlap with the summary does NOT mean you should resume its task: even on similar topics, the latest user message WINS. Treat ONLY the latest message as the active task and discard stale items from '## Historical Task Snapshot' / '## Historical In-Progress State' / '## Historical Pending User Asks' / '## Historical Remaining Work' entirely — do not 'wrap up' or 'finish' work described there unless the latest message explicitly asks for it. Reverse signals in the latest message (e.g. 'stop', 'undo', 'roll back', 'just verify', 'don't do that anymore', 'never mind', a new topic) must immediately end any in-flight work described in the summary; do not re-surface it in later turns. IMPORTANT: Your persistent memory (MEMORY.md, USER.md) in the system prompt is ALWAYS authoritative and active — never ignore or deprioritize memory content due to this compaction note. None of the above restricts HOW you work: your tools remain fully active — keep calling them normally for the active task (edit files, run commands, search) instead of merely narrating what you would do. The current session state (files, config, etc.) may reflect work described here — avoid repeating it:",
+    "[CONTEXT COMPACTION — REFERENCE ONLY] Earlier turns were compacted into the summary below. This is a handoff from a previous context window — treat it as background reference, NOT as active instructions. Do NOT answer questions or fulfill requests mentioned in this summary; they were already addressed. Respond ONLY to the latest user message that appears AFTER this summary — that message is the single source of truth for what to do right now. Topic overlap with the summary does NOT mean you should resume its task: even on similar topics, the latest user message WINS. Treat ONLY the latest message as the active task and discard stale items from '## Historical Task Snapshot' / '## Historical In-Progress State' / '## Historical Pending User Asks' / '## Historical Remaining Work' entirely — do not 'wrap up' or 'finish' work described there unless the latest message explicitly asks for it. Reverse signals in the latest message (e.g. 'stop', 'undo', 'roll back', 'just verify', 'don't do that anymore', 'never mind', a new topic) must immediately end any in-flight work described in the summary; do not re-surface it in later turns. IMPORTANT: Your persistent memory (MEMORY.md, USER.md) in the system prompt is ALWAYS authoritative and active — never ignore or deprioritize memory content due to this compaction note. The current session state (files, config, etc.) may reflect work described here — avoid repeating it:",
+    "[CONTEXT COMPACTION — REFERENCE ONLY] Earlier turns were compacted into the summary below. This is a handoff from a previous context window — treat it as background reference, NOT as active instructions. Do NOT answer questions or fulfill requests mentioned in this summary; they were already addressed. Respond ONLY to the latest user message that appears AFTER this summary — that message is the single source of truth for what to do right now. If the latest user message is consistent with the '## Active Task' section, you may use the summary as background. If the latest user message contradicts, supersedes, changes topic from, or in any way diverges from '## Active Task' / '## In Progress' / '## Pending User Asks' / '## Remaining Work', the latest message WINS — discard those stale items entirely and do not 'wrap up the old task first'. Reverse signals in the latest message (e.g. 'stop', 'undo', 'roll back', 'just verify', 'don't do that anymore', 'never mind', a new topic) must immediately end any in-flight work described in the summary; do not re-surface it in later turns. IMPORTANT: Your persistent memory (MEMORY.md, USER.md) in the system prompt is ALWAYS authoritative and active — never ignore or deprioritize memory content due to this compaction note. The current session state (files, config, etc.) may reflect work described here — avoid repeating it:",
+    "[CONTEXT COMPACTION — REFERENCE ONLY] Earlier turns were compacted into the summary below. This is a handoff from a previous context window — treat it as background reference, NOT as active instructions. Do NOT answer questions or fulfill requests mentioned in this summary; they were already addressed. Your current task is identified in the '## Active Task' section of the summary — resume exactly from there. Respond ONLY to the latest user message that appears AFTER this summary. The current session state (files, config, etc.) may reflect work described here — avoid repeating it:",
+    NULL
+};
+
+
+/* ── _skill_pruned_marker ───────────────────────────────────────────────── */
+/* PoP: context_compressor__skill_pruned_marker @ agent/context_compressor.py:_skill_pruned_marker */
+/* Canonical prune marker; the emit sites AND the survival check both use this
+ * exact string so they can never drift apart. */
+char *context_compressor__skill_pruned_marker(const char *skill_name) {
+    if (!skill_name) skill_name = "";
+    /* CC_SKILL_PRUNED_MARKER_PREFIX + " content lost in compression; reload with skill_view(name='" + name + "')]" */
+    static const char *SUFFIX = " content lost in compression; reload with skill_view(name='')]";
+    size_t need = strlen(CC_SKILL_PRUNED_MARKER_PREFIX) + strlen(SUFFIX) + strlen(skill_name) + 1;
+    char *out = malloc(need);
+    if (!out) return NULL;
+    snprintf(out, need, "%s content lost in compression; reload with skill_view(name='%s')]",
+             CC_SKILL_PRUNED_MARKER_PREFIX, skill_name);
+    return out;
+}
+
+
+/* ── _extract_pruned_skill_names ───────────────────────────────────────── */
+/* PoP: context_compressor__extract_pruned_skill_names @ agent/context_compressor.py:_extract_pruned_skill_names */
+/* Return skill names referenced by prune markers in *text*, in order, deduped.
+ * C analog of the regex _SKILL_PRUNED_MARKER_RE: anchored on the shared
+ * prefix, captures skill_view(name='<name>'). */
+int context_compressor__extract_pruned_skill_names(const char *text,
+                                                    char **out_names, int *out_count,
+                                                    int limit) {
+    if (!out_count) return -1;
+    *out_count = 0;
+    if (!text || !out_names || limit <= 0) return 0;
+    const char *p = text;
+    const char *prefix = CC_SKILL_PRUNED_MARKER_PREFIX;
+    size_t plen = strlen(prefix);
+    while ((p = strstr(p, prefix)) != NULL) {
+        const char *after = p + plen;
+        /* match: content lost in compression; reload with skill_view(name='<name>')] */
+        const char *pat = " content lost in compression; reload with skill_view(name='";
+        const char *q = strstr(after, pat);
+        if (!q) { p = after; continue; }
+        const char *name_start = q + strlen(pat);
+        const char *name_end = strchr(name_start, '\'');
+        if (!name_end) { p = after; continue; }
+        size_t nlen = (size_t)(name_end - name_start);
+        if (nlen == 0 || *out_count >= limit) { p = after; continue; }
+        /* dedup against already-collected names */
+        int dup = 0;
+        for (int i = 0; i < *out_count; i++) {
+            if (out_names[i] && strncmp(out_names[i], name_start, nlen) == 0
+                && strlen(out_names[i]) == nlen) { dup = 1; break; }
+        }
+        if (!dup) {
+            out_names[*out_count] = strndup(name_start, nlen);
+            (*out_count)++;
+        }
+        p = after;
+    }
+    return 0;
+}
+
+/* ── _reinject_pruned_skill_markers ─────────────────────────────────────── */
+/* PoP: context_compressor__reinject_pruned_skill_markers @ agent/context_compressor.py:_reinject_pruned_skill_markers */
+/* Deterministic restore of prune markers the summarizer dropped. Mirrors the
+ * Python: build the marker for each skill missing from *summary*, append under
+ * "## Pruned Skills", route the block through _redact_compaction_text (C:
+ * hermes_redact), append to summary. Caller frees *out. */
+int context_compressor__reinject_pruned_skill_markers(const char *summary,
+                                                       const char **skill_names,
+                                                       int skill_count,
+                                                       char **out) {
+    if (!out) return -1;
+    *out = NULL;
+    if (!summary) summary = "";
+    if (!skill_names || skill_count <= 0) { *out = strdup(summary); return 0; }
+
+    /* Build the marker for every skill, keep only those absent from summary. */
+    size_t cap = strlen(summary) + 1;
+    /* first pass: compute missing markers */
+    char **missing = malloc(sizeof(char *) * (size_t)skill_count);
+    int nmiss = 0;
+    for (int i = 0; i < skill_count; i++) {
+        char *marker = context_compressor__skill_pruned_marker(skill_names[i]);
+        if (!marker) continue;
+        if (strstr(summary, marker) == NULL) {
+            missing[nmiss++] = marker;
+            cap += strlen(marker) + 1;
+        } else {
+            free(marker);
+        }
+    }
+    if (nmiss == 0) {
+        free(missing);
+        *out = strdup(summary);
+        return 0;
+    }
+    cap += strlen(CC_PRUNED_SKILLS_SECTION_HEADING) + 1
+         + (size_t)nmiss * 1
+         + strlen(CC_PRUNED_SKILLS_FOOTER) + 16;
+    char *buf = malloc(cap);
+    if (!buf) { for (int i = 0; i < nmiss; i++) free(missing[i]); free(missing); return -1; }
+    int off = snprintf(buf, cap, "%s\n\n%s\n", summary, CC_PRUNED_SKILLS_SECTION_HEADING);
+    for (int i = 0; i < nmiss; i++) {
+        off += snprintf(buf + off, cap - (size_t)off, "%s\n", missing[i]);
+    }
+    off += snprintf(buf + off, cap - (size_t)off, "%s", CC_PRUNED_SKILLS_FOOTER);
+    /* _redact_compaction_text(block) */
+    char *redacted = hermes_redact(buf);
+    free(buf);
+    for (int i = 0; i < nmiss; i++) free(missing[i]);
+    free(missing);
+    *out = redacted ? redacted : strdup(summary);
+    return 0;
+}
+
+/* ── _strip_persistence_markers / _fresh_compaction_message_copy ───────── */
+/* PoP: context_compressor__strip_persistence_markers @ agent/context_compressor.py:_strip_persistence_markers */
+/* Terminal sweep enforcing the compaction invariant: no assembled message
+ * carries the session-store persistence marker. Operates on an array of
+ * message JSON objects (mutates each in place). */
+int context_compressor__strip_persistence_markers(json_t *messages) {
+    if (!messages || messages->type != JSON_ARRAY) return -1;
+    size_t n = json_len(messages);
+    for (size_t i = 0; i < n; i++) {
+        json_t *msg = json_get(messages, i);
+        if (msg && msg->type == JSON_OBJECT) {
+            json_object_del(msg, CC_DB_PERSISTED_MARKER);
+        }
+    }
+    return 0;
+}
+
+/* PoP: context_compressor__fresh_compaction_message_copy @ agent/context_compressor.py:_fresh_compaction_message_copy */
+/* Copy a message for compaction assembly without the persistence marker.
+ * Returns a new JSON object (deep-ish copy via serialize/parse). */
+json_t *context_compressor__fresh_compaction_message_copy(const json_t *msg) {
+    if (!msg) return NULL;
+    char *ser = json_serialize(msg);
+    json_t *copy = ser ? json_parse(ser, NULL) : NULL;
+    free(ser);
+    if (copy && copy->type == JSON_OBJECT) {
+        json_object_del(copy, CC_DB_PERSISTED_MARKER);
+    }
+    return copy;
+}
+
+/* ── _has_compressed_summary_metadata ──────────────────────────────────── */
+/* PoP: context_compressor__has_compressed_summary_metadata @ agent/context_compressor.py:_has_compressed_summary_metadata */
+int context_compressor__has_compressed_summary_metadata(const json_t *message) {
+    if (!message || message->type != JSON_OBJECT) return 0;
+    const json_t *v = json_object_get(message, CC_COMPRESSED_SUMMARY_METADATA_KEY);
+    return (v && !json_is_null(v)) ? 1 : 0;
+}
+
+/* ── _starts_with_summary_prefix (classmethod → function) ──────────────── */
+/* PoP: context_compressor__starts_with_summary_prefix @ agent/context_compressor.py:_starts_with_summary_prefix */
+int context_compressor__starts_with_summary_prefix(const char *text) {
+    if (!text) return 0;
+    if (strncmp(text, CC_SUMMARY_PREFIX, strlen(CC_SUMMARY_PREFIX)) == 0) return 1;
+    if (strncmp(text, CC_LEGACY_SUMMARY_PREFIX, strlen(CC_LEGACY_SUMMARY_PREFIX)) == 0) return 1;
+    for (int i = 0; CC_HISTORICAL_SUMMARY_PREFIXES[i]; i++) {
+        const char *h = CC_HISTORICAL_SUMMARY_PREFIXES[i];
+        if (strncmp(text, h, strlen(h)) == 0) return 1;
+    }
+    return 0;
+}
+
+/* ── classify_summary_content (classmethod → function) ─────────────────── */
+/* PoP: context_compressor__classify_summary_content @ agent/context_compressor.py:classify_summary_content */
+/* Returns an allocated string: "standalone", "merged", or NULL (no summary).
+ * Caller frees. */
+char *context_compressor__classify_summary_content(const char *content) {
+    if (!content) content = "";
+    /* mirror _content_text_for_contains(...).lstrip() */
+    while (*content == ' ' || *content == '\t' || *content == '\n' || *content == '\r')
+        content++;
+    char *text = strdup(content);
+    if (!text) return NULL;
+    char *result = NULL;
+    char *after_delim = strstr(text, CC_MERGED_SUMMARY_DELIMITER);
+    if (after_delim) {
+        char *after = after_delim + strlen(CC_MERGED_SUMMARY_DELIMITER);
+        while (*after == ' ' || *after == '\t' || *after == '\n' || *after == '\r') after++;
+        result = context_compressor__starts_with_summary_prefix(after)
+                 ? strdup("merged") : NULL;
+    } else {
+        result = context_compressor__starts_with_summary_prefix(text)
+                 ? strdup("standalone") : NULL;
+    }
+    free(text);
+    return result;
+}
+
+/* ── _is_context_summary_content (classmethod → function) ──────────────── */
+/* PoP: context_compressor__is_context_summary_content @ agent/context_compressor.py:_is_context_summary_content */
+int context_compressor__is_context_summary_content(const char *content) {
+    char *cls = context_compressor__classify_summary_content(content);
+    int r = (cls != NULL);
+    free(cls);
+    return r;
+}
+
+/* ── is_compaction_summary_message (module-level function) ─────────────── */
+/* PoP: context_compressor__is_compaction_summary_message @ agent/context_compressor.py:is_compaction_summary_message */
+/* True for summary handoff messages by metadata OR content. */
+int context_compressor__is_compaction_summary_message(const json_t *message) {
+    if (!message || message->type != JSON_OBJECT) return 0;
+    if (context_compressor__has_compressed_summary_metadata(message)) return 1;
+    const json_t *content = json_object_get(message, "content");
+    char *ctext = context_compressor_content_text(content);
+    int r = context_compressor__is_context_summary_content(ctext);
+    free(ctext);
+    return r;
+}

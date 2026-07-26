@@ -31,6 +31,22 @@ char  *context_compressor_content_text(const json_t *content);
 json_t *context_compressor_append_text(const json_t *content,
                                         const char *text, bool prepend);
 
+/* New v671 cluster (skill-pruned-marker + summary-classification). */
+char *context_compressor__skill_pruned_marker(const char *skill_name);
+int  context_compressor__extract_pruned_skill_names(const char *text,
+                                                    char **out_names, int *out_count,
+                                                    int limit);
+int  context_compressor__reinject_pruned_skill_markers(const char *summary,
+                                                       const char **skill_names,
+                                                       int skill_count, char **out);
+int  context_compressor__strip_persistence_markers(json_t *messages);
+json_t *context_compressor__fresh_compaction_message_copy(const json_t *msg);
+int  context_compressor__has_compressed_summary_metadata(const json_t *message);
+int  context_compressor__starts_with_summary_prefix(const char *text);
+char *context_compressor__classify_summary_content(const char *content);
+int  context_compressor__is_context_summary_content(const char *content);
+int  context_compressor__is_compaction_summary_message(const json_t *message);
+
 static char *read_all(const char *path)
 {
     FILE *f = fopen(path, "rb");
@@ -97,6 +113,147 @@ static json_t *emit_append_text(const json_t *c)
     return o;
 }
 
+/* ── v671 cluster emitters ─────────────────────────────────────────────── */
+
+static json_t *emit_skill_pruned_marker(const json_t *c)
+{
+    const char *name = json_get_str(c, "name", "");
+    char *m = context_compressor__skill_pruned_marker(name);
+    json_t *o = json_new_object();
+    json_set(o, "fn", json_string("skill_pruned_marker"));
+    json_set(o, "out", json_string(m ? m : ""));
+    free(m);
+    return o;
+}
+
+static json_t *emit_extract_pruned_skill_names(const json_t *c)
+{
+    const char *text = json_get_str(c, "text", "");
+    char *names[64];
+    int count = 0;
+    context_compressor__extract_pruned_skill_names(text, names, &count, 64);
+    json_t *arr = json_new_array();
+    for (int i = 0; i < count; i++) {
+        json_array_append(arr, json_string(names[i]));
+        free(names[i]);
+    }
+    json_t *o = json_new_object();
+    json_set(o, "fn", json_string("extract_pruned_skill_names"));
+    json_set(o, "out", arr);
+    return o;
+}
+
+static json_t *emit_reinject_pruned_skill_markers(const json_t *c)
+{
+    const char *summary = json_get_str(c, "summary", "");
+    json_t *skills = json_obj_get(c, "skills");
+    int n = skills ? (int)json_len(skills) : 0;
+    const char **sks = NULL;
+    if (n > 0) {
+        sks = (const char **)malloc(sizeof(char *) * (size_t)n);
+        for (int i = 0; i < n; i++) {
+            const json_t *s = json_get(skills, i);
+            sks[i] = (s && s->type == JSON_STRING) ? json_string_value(s) : "";
+        }
+    }
+    char *out = NULL;
+    context_compressor__reinject_pruned_skill_markers(summary, sks, n, &out);
+    json_t *o = json_new_object();
+    json_set(o, "fn", json_string("reinject_pruned_skill_markers"));
+    json_set(o, "out", json_string(out ? out : ""));
+    free(out);
+    free(sks);
+    return o;
+}
+
+static json_t *emit_strip_persistence_markers(const json_t *c)
+{
+    json_t *messages = json_obj_get(c, "messages");
+    if (messages) {
+        /* deep-ish copy so the harness fixture is not mutated across cases */
+        char *ser = json_serialize(messages);
+        json_t *copy = ser ? json_parse(ser, NULL) : NULL;
+        free(ser);
+        /* Python's _strip_persistence_markers is a mutating helper that returns
+         * None; mirror that by emitting rc:null. */
+        context_compressor__strip_persistence_markers(copy);
+        json_t *o = json_new_object();
+        json_set(o, "fn", json_string("strip_persistence_markers"));
+        json_set(o, "rc", json_null());
+        json_set(o, "out", copy ? copy : json_new_array());
+        return o;
+    }
+    json_t *o = json_new_object();
+    json_set(o, "fn", json_string("strip_persistence_markers"));
+    json_set(o, "rc", json_null());
+    json_set(o, "out", json_new_array());
+    return o;
+}
+
+static json_t *emit_fresh_compaction_message_copy(const json_t *c)
+{
+    json_t *msg = json_obj_get(c, "message");
+    json_t *copy = context_compressor__fresh_compaction_message_copy(msg);
+    char *ser = copy ? json_serialize(copy) : strdup("null");
+    json_t *o = json_new_object();
+    json_set(o, "fn", json_string("fresh_compaction_message_copy"));
+    json_set(o, "out", json_string(ser ? ser : ""));
+    free(ser);
+    if (copy) json_free(copy);
+    return o;
+}
+
+static json_t *emit_has_compressed_summary_metadata(const json_t *c)
+{
+    json_t *msg = json_obj_get(c, "message");
+    int r = context_compressor__has_compressed_summary_metadata(msg);
+    json_t *o = json_new_object();
+    json_set(o, "fn", json_string("has_compressed_summary_metadata"));
+    json_set(o, "out", json_new_bool(r));
+    return o;
+}
+
+static json_t *emit_starts_with_summary_prefix(const json_t *c)
+{
+    const char *text = json_get_str(c, "text", "");
+    int r = context_compressor__starts_with_summary_prefix(text);
+    json_t *o = json_new_object();
+    json_set(o, "fn", json_string("starts_with_summary_prefix"));
+    json_set(o, "out", json_new_bool(r));
+    return o;
+}
+
+static json_t *emit_classify_summary_content(const json_t *c)
+{
+    const char *text = json_get_str(c, "text", "");
+    char *r = context_compressor__classify_summary_content(text);
+    json_t *o = json_new_object();
+    json_set(o, "fn", json_string("classify_summary_content"));
+    json_set(o, "out", json_string(r ? r : "null"));
+    free(r);
+    return o;
+}
+
+static json_t *emit_is_context_summary_content(const json_t *c)
+{
+    const char *text = json_get_str(c, "text", "");
+    int r = context_compressor__is_context_summary_content(text);
+    json_t *o = json_new_object();
+    json_set(o, "fn", json_string("is_context_summary_content"));
+    json_set(o, "out", json_new_bool(r));
+    return o;
+}
+
+static json_t *emit_is_compaction_summary_message(const json_t *c)
+{
+    json_t *msg = json_obj_get(c, "message");
+    int r = context_compressor__is_compaction_summary_message(msg);
+    json_t *o = json_new_object();
+    json_set(o, "fn", json_string("is_compaction_summary_message"));
+    json_set(o, "out", json_new_bool(r));
+    return o;
+}
+
 int main(int argc, char **argv)
 {
     if (argc < 2) { fprintf(stderr, "usage: %s <cases.json>\n", argv[0]); return 2; }
@@ -117,6 +274,16 @@ int main(int argc, char **argv)
         else if (strcmp(op, "extract_id") == 0)        o = emit_id(c);
         else if (strcmp(op, "content_text") == 0)      o = emit_content_text(c);
         else if (strcmp(op, "append_text") == 0)       o = emit_append_text(c);
+        else if (strcmp(op, "skill_pruned_marker") == 0)            o = emit_skill_pruned_marker(c);
+        else if (strcmp(op, "extract_pruned_skill_names") == 0)     o = emit_extract_pruned_skill_names(c);
+        else if (strcmp(op, "reinject_pruned_skill_markers") == 0)  o = emit_reinject_pruned_skill_markers(c);
+        else if (strcmp(op, "strip_persistence_markers") == 0)      o = emit_strip_persistence_markers(c);
+        else if (strcmp(op, "fresh_compaction_message_copy") == 0)   o = emit_fresh_compaction_message_copy(c);
+        else if (strcmp(op, "has_compressed_summary_metadata") == 0) o = emit_has_compressed_summary_metadata(c);
+        else if (strcmp(op, "starts_with_summary_prefix") == 0)      o = emit_starts_with_summary_prefix(c);
+        else if (strcmp(op, "classify_summary_content") == 0)        o = emit_classify_summary_content(c);
+        else if (strcmp(op, "is_context_summary_content") == 0)      o = emit_is_context_summary_content(c);
+        else if (strcmp(op, "is_compaction_summary_message") == 0)   o = emit_is_compaction_summary_message(c);
         else { o = json_new_object(); json_set(o, "fn", json_string(op)); }
 
         char *ser = json_serialize(o);
