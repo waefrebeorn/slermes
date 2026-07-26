@@ -196,6 +196,10 @@ json_t *gw_checkpoint_agent_kwargs(bool cp_enabled,
                                    int max_total_size_mb,
                                    int max_file_size_mb);
 
+/* run.py _load_voice_modes — filtered chat_id->mode object from raw JSON. */
+/* PoP: gw_load_voice_modes @ gateway/run.py:_load_voice_modes */
+json_t *gw_load_voice_modes(const char *voice_modes_json);
+
 #ifdef __cplusplus
 }
 #endif

@@ -797,3 +797,42 @@ json_t *gw_checkpoint_agent_kwargs(bool cp_enabled,
              json_number((double)max_file_size_mb));
     return out;
 }
+
+/* ────────── _load_voice_modes ──────────
+ * Parse a voice-modes mapping (chat_id -> mode) and return a filtered copy:
+ *   - only values in {"off","voice_only","all"} are kept;
+ *   - keys without a ":" prefix (legacy unprefixed) are skipped.
+ * The file read + JSON decode is a separate concern — pass the raw JSON text
+ * (or NULL). Malformed/non-object input yields an empty object. Returns a
+ * malloc'd json_t (caller frees via json_free). */
+/* PoP: gw_load_voice_modes @ gateway/run.py:_load_voice_modes */
+json_t *gw_load_voice_modes(const char *voice_modes_json) {
+    json_t *result = json_object();
+    if (!result) return NULL;
+    if (!voice_modes_json) return result;
+
+    char *err = NULL;
+    json_t *data = json_parse(voice_modes_json, &err);
+    if (err) free(err);
+    if (!data) return result;
+    if (data->type != JSON_OBJECT) { json_free(data); return result; }
+
+    size_t n = json_object_size(data);
+    for (size_t i = 0; i < n; i++) {
+        const char *key = json_object_get_key_at(data, i);
+        if (!key) continue;
+        json_t *modev = json_obj_get(data, key);
+        if (!modev || modev->type != JSON_STRING) continue;
+        const char *mode = modev->str_val;
+        if (!mode) continue;
+        /* valid_modes = {"off","voice_only","all"} */
+        if (strcmp(mode, "off") != 0 && strcmp(mode, "voice_only") != 0 &&
+            strcmp(mode, "all") != 0)
+            continue;
+        /* skip legacy unprefixed keys (no ":") */
+        if (strchr(key, ':') == NULL) continue;
+        json_set(result, key, json_string(mode));
+    }
+    json_free(data);
+    return result;
+}
