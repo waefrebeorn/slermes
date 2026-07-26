@@ -9,8 +9,8 @@ configs. Rewriting from scratch in C is the point; there is NO N/A.
 
 State (historical baseline — 2026-07-12; live counts are in the
 `<!-- PARITY:AUTO -->
-| PORTED  | 254 / 774 (32.8%) |
-| REAL_GAP| 511 (66.0%) — no N/A |
+| PORTED  | 428 / 774 (55.3%) |
+| REAL_GAP| 337 (43.5%) — no N/A |
 | PARTIAL | 9 (0.8%) |
 | STUB    | 0 |
 

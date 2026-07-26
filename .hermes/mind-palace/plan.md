@@ -3,8 +3,8 @@
 ## Current State (HISTORICAL — v572 baseline; see live block at bottom)
 
 > The `<!-- PARITY:AUTO -->
-| PORTED  | 254 / 774 (32.8%) |
-| REAL_GAP| 511 (66.0%) — no N/A |
+| PORTED  | 428 / 774 (55.3%) |
+| REAL_GAP| 337 (43.5%) — no N/A |
 | PARTIAL | 9 (0.8%) |
 | STUB    | 0 |
 
