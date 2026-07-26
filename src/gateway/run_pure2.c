@@ -527,3 +527,117 @@ hermes_config_t *gw_load_gateway_config_for_runner(void) {
     /* The C tree has no multiplex_profiles scope; identical to load. */
     return gw_load_gateway_config();
 }
+
+/* ────────── _adapter_disconnect_timeout_secs ────────── */
+/* PoP: gw_adapter_disconnect_timeout_secs @ gateway/run.py:_adapter_disconnect_timeout_secs */
+double gw_adapter_disconnect_timeout_secs(void) {
+    const char *raw = getenv("HERMES_GATEWAY_ADAPTER_DISCONNECT_TIMEOUT");
+    if (raw) {
+        /* .strip() */
+        while (*raw == ' ' || *raw == '\t') raw++;
+        char buf[64];
+        snprintf(buf, sizeof(buf), "%s", raw);
+        size_t n = strlen(buf);
+        while (n > 0 && (buf[n-1] == ' ' || buf[n-1] == '\t' ||
+                         buf[n-1] == '\n' || buf[n-1] == '\r')) buf[--n] = '\0';
+        if (n > 0) {
+            char *end = NULL;
+            double t = strtod(buf, &end);
+            if (end != buf && *end == '\0') {
+                /* float() succeeded */
+                return t < 0.0 ? 0.0 : t;
+            }
+            /* invalid → warn-and-ignore in Python; fall through to default */
+        }
+    }
+    return 5.0; /* _ADAPTER_DISCONNECT_TIMEOUT_SECS_DEFAULT */
+}
+
+/* ────────── _platform_connect_timeout_secs ────────── */
+/* PoP: gw_platform_connect_timeout_secs @ gateway/run.py:_platform_connect_timeout_secs */
+double gw_platform_connect_timeout_secs(void) {
+    const char *raw = getenv("HERMES_GATEWAY_PLATFORM_CONNECT_TIMEOUT");
+    if (raw) {
+        while (*raw == ' ' || *raw == '\t') raw++;
+        char buf[64];
+        snprintf(buf, sizeof(buf), "%s", raw);
+        size_t n = strlen(buf);
+        while (n > 0 && (buf[n-1] == ' ' || buf[n-1] == '\t' ||
+                         buf[n-1] == '\n' || buf[n-1] == '\r')) buf[--n] = '\0';
+        if (n > 0) {
+            char *end = NULL;
+            double t = strtod(buf, &end);
+            if (end != buf && *end == '\0') {
+                return t < 0.0 ? 0.0 : t;
+            }
+        }
+    }
+    return 30.0; /* _PLATFORM_CONNECT_TIMEOUT_SECS_DEFAULT */
+}
+
+/* ────────── _TELEGRAM_GENERAL_TOPIC_IDS membership ──────────
+ * frozenset({"", "1"}) — the General/root topic ids. */
+static bool gw_is_telegram_general_topic_id(const char *tid) {
+    if (!tid) return true; /* str(None or "") -> "" which IS in the set */
+    return tid[0] == '\0' || (tid[0] == '1' && tid[1] == '\0');
+}
+
+/* ────────── _is_telegram_topic_root_lobby ──────────
+ * topic_mode_enabled is the (DB-resolved) result of
+ * _telegram_topic_mode_enabled(source); passed in explicitly because the DB
+ * read is a separate concern. */
+/* PoP: gw_is_telegram_topic_root_lobby @ gateway/run.py:_is_telegram_topic_root_lobby */
+bool gw_is_telegram_topic_root_lobby(const char *platform,
+                                     const char *chat_type,
+                                     const char *thread_id,
+                                     bool topic_mode_enabled) {
+    if (!platform || strcmp(platform, "telegram") != 0) return false;
+    if (!chat_type || strcmp(chat_type, "dm") != 0) return false;
+    if (!topic_mode_enabled) return false;
+    return gw_is_telegram_general_topic_id(thread_id);
+}
+
+/* ────────── _is_telegram_topic_lane ────────── */
+/* PoP: gw_is_telegram_topic_lane @ gateway/run.py:_is_telegram_topic_lane */
+bool gw_is_telegram_topic_lane(const char *platform,
+                               const char *chat_type,
+                               const char *thread_id,
+                               bool topic_mode_enabled) {
+    if (!platform || strcmp(platform, "telegram") != 0) return false;
+    if (!chat_type || strcmp(chat_type, "dm") != 0) return false;
+    if (!topic_mode_enabled) return false;
+    const char *tid = thread_id ? thread_id : "";
+    if (tid[0] == '\0' || gw_is_telegram_general_topic_id(tid)) return false;
+    return true;
+}
+
+/* ────────── _telegram_topic_new_header ────────── */
+/* PoP: gw_telegram_topic_new_header @ gateway/run.py:_telegram_topic_new_header */
+const char *gw_telegram_topic_new_header(const char *platform,
+                                         const char *chat_type,
+                                         const char *thread_id,
+                                         bool topic_mode_enabled) {
+    if (!gw_is_telegram_topic_lane(platform, chat_type, thread_id,
+                                   topic_mode_enabled))
+        return NULL;
+    return "Started a new Hermes session in this topic.\n\n"
+           "Tip: for parallel work, open All Messages and send a message there "
+           "to create a separate topic instead of using /new here. /new replaces "
+           "the session attached to the current topic.";
+}
+
+/* ────────── _is_telegram_dm_topic_target ──────────
+ * has_dm_topic_info is the (adapter-resolved) result of
+ * _get_dm_topic_info returning a dict; passed in explicitly. */
+/* PoP: gw_is_telegram_dm_topic_target @ gateway/run.py:_is_telegram_dm_topic_target */
+bool gw_is_telegram_dm_topic_target(const char *platform,
+                                    const char *chat_id,
+                                    const char *thread_id,
+                                    const char *chat_type,
+                                    bool has_dm_topic_info) {
+    if (!platform || strcmp(platform, "telegram") != 0) return false;
+    if (thread_id == NULL) return false; /* thread_id is None */
+    if (chat_type && strcmp(chat_type, "dm") == 0) return true;
+    if (chat_id && chat_id[0] != '\0' && has_dm_topic_info) return true;
+    return false;
+}

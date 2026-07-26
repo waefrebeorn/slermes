@@ -134,6 +134,43 @@ int gw_current_max_iterations(void);
 /* PoP: gw_load_gateway_config_for_runner @ gateway/run.py:load_gateway_config_for_runner */
 hermes_config_t *gw_load_gateway_config_for_runner(void);
 
+/* run.py _adapter_disconnect_timeout_secs — env-tunable disconnect timeout. */
+/* PoP: gw_adapter_disconnect_timeout_secs @ gateway/run.py:_adapter_disconnect_timeout_secs */
+double gw_adapter_disconnect_timeout_secs(void);
+
+/* run.py _platform_connect_timeout_secs — env-tunable connect timeout. */
+/* PoP: gw_platform_connect_timeout_secs @ gateway/run.py:_platform_connect_timeout_secs */
+double gw_platform_connect_timeout_secs(void);
+
+/* run.py _is_telegram_topic_root_lobby — pass DB-resolved topic_mode_enabled. */
+/* PoP: gw_is_telegram_topic_root_lobby @ gateway/run.py:_is_telegram_topic_root_lobby */
+bool gw_is_telegram_topic_root_lobby(const char *platform,
+                                     const char *chat_type,
+                                     const char *thread_id,
+                                     bool topic_mode_enabled);
+
+/* run.py _is_telegram_topic_lane — pass DB-resolved topic_mode_enabled. */
+/* PoP: gw_is_telegram_topic_lane @ gateway/run.py:_is_telegram_topic_lane */
+bool gw_is_telegram_topic_lane(const char *platform,
+                               const char *chat_type,
+                               const char *thread_id,
+                               bool topic_mode_enabled);
+
+/* run.py _telegram_topic_new_header — static header string or NULL. */
+/* PoP: gw_telegram_topic_new_header @ gateway/run.py:_telegram_topic_new_header */
+const char *gw_telegram_topic_new_header(const char *platform,
+                                         const char *chat_type,
+                                         const char *thread_id,
+                                         bool topic_mode_enabled);
+
+/* run.py _is_telegram_dm_topic_target — pass adapter-resolved dict flag. */
+/* PoP: gw_is_telegram_dm_topic_target @ gateway/run.py:_is_telegram_dm_topic_target */
+bool gw_is_telegram_dm_topic_target(const char *platform,
+                                    const char *chat_id,
+                                    const char *thread_id,
+                                    const char *chat_type,
+                                    bool has_dm_topic_info);
+
 #ifdef __cplusplus
 }
 #endif
