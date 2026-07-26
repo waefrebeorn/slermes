@@ -21,6 +21,9 @@
 #include "slermes_home.h"
 #include "goal_contract.h"
 #include "gateway_status.h"
+#include "hermes_json.h"
+#include "yaml.h"
+#include "fallback_config_helpers.h"
 
 /* Forward decls from already-ported subsystems (opaque API). */
 extern char *profile_get_active_name(void);   /* port_cli_profiles.c */
@@ -115,4 +118,60 @@ void gw_update_platform_runtime_status(const char *platform,
         platform_state,
         error_code,
         error_message);
+}
+
+/* ─────────────── _load_fallback_model ───────────────
+ * Load the fallback provider chain from config.yaml. Reads
+ * slermes_home()/config.yaml, converts YAML→JSON, and runs the already-ported
+ * fallback_config_get_chain() (merges fallback_providers + legacy
+ * fallback_model, dropping duplicate routes). Returns a malloc'd JSON array
+ * string of {provider,model,base_url} objects, or NULL when the chain is
+ * empty / config is missing / any error occurs (mirrors the Python
+ * try/except -> None). */
+/* PoP: gw_load_fallback_model @ gateway/run.py:_load_fallback_model */
+char *gw_load_fallback_model(void) {
+    char cfg_path[1024];
+    snprintf(cfg_path, sizeof(cfg_path), "%s/config.yaml", slermes_home());
+
+    char *yerr = NULL;
+    yaml_doc_t *doc = yaml_parse_file(cfg_path, &yerr);
+    if (yerr) free(yerr);
+    if (!doc) return NULL;
+
+    char *json_str = yaml_to_json_string(doc, NULL);
+    yaml_free(doc);
+    if (!json_str) return NULL;
+
+    char *jerr = NULL;
+    json_t *cfg = json_parse(json_str, &jerr);
+    free(json_str);
+    if (jerr) free(jerr);
+    if (!cfg) return NULL;
+
+    int count = 0;
+    fallback_entry_t *chain = fallback_config_get_chain(cfg, &count);
+    json_free(cfg);
+
+    if (!chain || count <= 0) {
+        if (chain) fallback_config_free_entries(chain, count);
+        return NULL; /* empty chain -> None */
+    }
+
+    /* Serialize to a JSON array of {provider,model,base_url}. */
+    json_t *arr = json_array();
+    for (int i = 0; i < count; i++) {
+        json_t *o = json_object();
+        json_set(o, "provider",
+                 json_string(chain[i].provider ? chain[i].provider : ""));
+        json_set(o, "model",
+                 json_string(chain[i].model ? chain[i].model : ""));
+        if (chain[i].base_url && chain[i].base_url[0])
+            json_set(o, "base_url", json_string(chain[i].base_url));
+        json_array_append(arr, o);
+    }
+    fallback_config_free_entries(chain, count);
+
+    char *out = json_serialize(arr);
+    json_free(arr);
+    return out;
 }

@@ -31,4 +31,9 @@ void gw_update_platform_runtime_status(const char *platform,
                                        const char *error_code,
                                        const char *error_message);
 
+/* run.py _load_fallback_model — fallback chain from config.yaml.
+ * Returns a malloc'd JSON array string of {provider,model,base_url} objects,
+ * or NULL when the chain is empty / config missing / on any error. */
+char *gw_load_fallback_model(void);
+
 #endif /* PORT_GATEWAY_RUN_DEPS_H */
