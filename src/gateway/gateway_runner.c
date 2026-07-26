@@ -1012,6 +1012,12 @@ void gateway_runner_evict_cached_agent(GatewayRunner *self, const char *session_
     }
 }
 
+/* Borrowed accessor for the live model-override dict. */
+json_t *gateway_runner_session_model_overrides(const GatewayRunner *self)
+{
+    return self ? self->session_model_overrides : NULL;
+}
+
 /* Cache an agent for a session (test/wiring seam for the eviction path). */
 void gateway_runner_cache_agent(GatewayRunner *self, const char *session_key,
                                 void *agent)

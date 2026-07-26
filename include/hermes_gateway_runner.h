@@ -136,6 +136,16 @@ void gateway_runner_stage_pending_native_image_paths(GatewayRunner *self,
                                                      const char *session_key,
                                                      const json_t *paths);
 
+/* Borrowed accessor: the live _session_model_overrides dict (do not free). */
+json_t *gateway_runner_session_model_overrides(const GatewayRunner *self);
+
+/* run.py _apply_session_model_override — mutate *io_model + merge runtime
+ * kwargs from the /model session override. runtime_kwargs is owned by caller. */
+void gateway_runner_apply_session_model_override(GatewayRunner *self,
+                                                 const char *session_key,
+                                                 char **io_model,
+                                                 json_t *runtime_kwargs);
+
 /* ─── Config resolution (pure) ────────────────────────────────────── */
 
 /* Resolve busy_input_mode from config string. Pure stateless. */

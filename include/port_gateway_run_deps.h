@@ -42,4 +42,9 @@ char *gw_load_fallback_model(void);
  * reasoning-config object, or NULL when unset/unrecognized. */
 json_t *gw_load_reasoning_config(const char *model);
 
+/* run.py _credential_pool_for_provider — resolve the live credential pool id
+ * for a provider (e.g. "custom:hyper"). Returns a malloc'd string, or NULL
+ * when the provider is empty or cannot be resolved (Python returns None). */
+char *gw_credential_pool_for_provider(const char *provider);
+
 #endif /* PORT_GATEWAY_RUN_DEPS_H */

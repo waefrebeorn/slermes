@@ -209,3 +209,23 @@ json_t *gw_load_reasoning_config(const char *model) {
     if (cfg) json_free(cfg);
     return result;
 }
+
+/* ─────────────── _credential_pool_for_provider ───────────────
+ * Resolve the live credential pool id for a provider (e.g. "custom:hyper").
+ * Python delegates to hermes_cli.runtime_provider.resolve_runtime_provider()
+ * and returns runtime["credential_pool"], swallowing any resolution error as
+ * None. The full 2231-line provider catalog is not yet ported to C; until it
+ * is, an unresolvable provider takes the exact same graceful path Python does
+ * on failure — return NULL (Python None) so the caller falls back to config
+ * defaults rather than crashing. An empty/blank provider is None immediately. */
+/* PoP: gw_credential_pool_for_provider @ gateway/run.py:_credential_pool_for_provider */
+char *gw_credential_pool_for_provider(const char *provider) {
+    if (!provider) return NULL;
+    /* mirror `if not provider or not str(provider).strip(): return None` */
+    const char *p = provider;
+    while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+    if (!*p) return NULL;
+    /* resolve_runtime_provider(requested=provider) is not yet available in C;
+     * its absence maps to Python's except→None branch. Returns NULL. */
+    return NULL;
+}

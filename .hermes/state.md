@@ -26,8 +26,8 @@ session notes, not the current count:**
 (never hand-maintain). The port is ~two-thirds done as of 2026-07-22.**
 
 <!-- PARITY:AUTO -->
-| PORTED  | 452 / 774 (58.4%) |
-| REAL_GAP| 315 (40.7%) — no N/A |
+| PORTED  | 478 / 774 (61.8%) |
+| REAL_GAP| 289 (37.3%) — no N/A |
 | PARTIAL | 7 (0.8%) |
 | STUB    | 0 |
 
