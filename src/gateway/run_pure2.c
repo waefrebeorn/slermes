@@ -836,3 +836,35 @@ json_t *gw_load_voice_modes(const char *voice_modes_json) {
     json_free(data);
     return result;
 }
+
+/* ────────── _save_voice_modes ──────────
+ * Serialize a voice-modes mapping to the on-disk representation:
+ *   json.dumps(self._voice_mode, indent=2)
+ * The file write (mkdir parents + write_text) is a separate concern — this
+ * ports the serialization chokepoint. Pass the voice-mode object as a json_t;
+ * returns a malloc'd JSON string (indent=2), or NULL on bad input. */
+/* PoP: gw_save_voice_modes @ gateway/run.py:_save_voice_modes */
+char *gw_save_voice_modes(const json_t *voice_mode) {
+    if (!voice_mode) return NULL;
+    return json_serialize_pretty(voice_mode, 2);
+}
+
+/* ────────── _is_discord_auto_thread_lane ──────────
+ * True only for Discord threads Hermes just auto-created. Faithful to the
+ * Python guard on SessionSource fields. auto_thread_created and
+ * auto_thread_initial_name are adapter-set flags not carried on the C
+ * gw_session_source_t yet, so they are passed in explicitly. */
+/* PoP: gw_is_discord_auto_thread_lane @ gateway/run.py:_is_discord_auto_thread_lane */
+bool gw_is_discord_auto_thread_lane(const char *platform,
+                                    const char *chat_type,
+                                    const char *thread_id,
+                                    bool auto_thread_created,
+                                    const char *auto_thread_initial_name) {
+    if (!platform || strcmp(platform, "discord") != 0) return false;
+    if (!chat_type || strcmp(chat_type, "thread") != 0) return false;
+    if (!auto_thread_created) return false;
+    if (!thread_id || thread_id[0] == '\0') return false;
+    if (!auto_thread_initial_name || auto_thread_initial_name[0] == '\0')
+        return false;
+    return true;
+}

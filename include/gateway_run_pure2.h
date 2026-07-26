@@ -200,6 +200,18 @@ json_t *gw_checkpoint_agent_kwargs(bool cp_enabled,
 /* PoP: gw_load_voice_modes @ gateway/run.py:_load_voice_modes */
 json_t *gw_load_voice_modes(const char *voice_modes_json);
 
+/* run.py _save_voice_modes — serialize voice-mode object (indent=2). */
+/* PoP: gw_save_voice_modes @ gateway/run.py:_save_voice_modes */
+char *gw_save_voice_modes(const json_t *voice_mode);
+
+/* run.py _is_discord_auto_thread_lane — Discord auto-created thread predicate. */
+/* PoP: gw_is_discord_auto_thread_lane @ gateway/run.py:_is_discord_auto_thread_lane */
+bool gw_is_discord_auto_thread_lane(const char *platform,
+                                    const char *chat_type,
+                                    const char *thread_id,
+                                    bool auto_thread_created,
+                                    const char *auto_thread_initial_name);
+
 #ifdef __cplusplus
 }
 #endif
