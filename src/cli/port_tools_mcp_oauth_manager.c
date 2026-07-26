@@ -96,8 +96,7 @@ typedef struct mcp_oauth_manager {
     pthread_mutex_t entries_lock;
 } mcp_oauth_manager_t;
 
-/* PoP: cli_tools_mcp_oauth_manager__make_hermes_provider_class
- *      @ tools/mcp_oauth_manager.py:_make_hermes_provider_class */
+/* PoP: cli_tools_mcp_oauth_manager__make_hermes_provider_class @ tools/mcp_oauth_manager.py:_make_hermes_provider_class */
 
 /* Port of Python _make_hermes_provider_class.
  * Returns 1 if the in-tree OAuth SDK (libmcp_oauth) is available, else 0.
@@ -118,8 +117,7 @@ int cli_tools_mcp_oauth_manager__make_hermes_provider_class(void)
     return 1;
 }
 
-/* PoP: cli_tools_mcp_oauth_manager_get_or_build_provider
- *      @ tools/mcp_oauth_manager.py:get_or_build_provider */
+/* PoP: cli_tools_mcp_oauth_manager_get_or_build_provider @ tools/mcp_oauth_manager.py:get_or_build_provider */
 
 /* Port of Python get_or_build_provider.
  * Returns a cached provider for server_name, building one on first use.
@@ -195,8 +193,7 @@ int cli_tools_mcp_oauth_manager_get_or_build_provider(
     return (*provider_out != NULL) ? 0 : -1;
 }
 
-/* PoP: cli_tools_mcp_oauth_manager__build_provider
- *      @ tools/mcp_oauth_manager.py:_build_provider */
+/* PoP: cli_tools_mcp_oauth_manager__build_provider @ tools/mcp_oauth_manager.py:_build_provider */
 
 /* Port of Python _build_provider.
  * Builds a real mcp_oauth_provider_t backed by libmcp_oauth's storage.
@@ -250,8 +247,7 @@ int cli_tools_mcp_oauth_manager__build_provider(
     return 0;
 }
 
-/* PoP: cli_tools_mcp_oauth_manager_invalidate_if_disk_changed
- *      @ tools/mcp_oauth_manager.py:invalidate_if_disk_changed */
+/* PoP: cli_tools_mcp_oauth_manager_invalidate_if_disk_changed @ tools/mcp_oauth_manager.py:invalidate_if_disk_changed */
 
 /* Port of Python invalidate_if_disk_changed.
  * If the on-disk token file's mtime_ns differs from the last-seen value,
@@ -315,8 +311,7 @@ int cli_tools_mcp_oauth_manager_invalidate_if_disk_changed(
     return changed;
 }
 
-/* PoP: cli_tools_mcp_oauth_manager_handle_401
- *      @ tools/mcp_oauth_manager.py:handle_401 */
+/* PoP: cli_tools_mcp_oauth_manager_handle_401 @ tools/mcp_oauth_manager.py:handle_401 */
 
 /* Port of Python handle_401 — deduplicated 401 recovery.
  * Returns 1 (and *refreshed_out=1) if a fresh token is now available
@@ -376,8 +371,7 @@ int cli_tools_mcp_oauth_manager_handle_401(
     return 0;
 }
 
-/* PoP: cli_tools_mcp_oauth_manager_get_manager
- *      @ tools/mcp_oauth_manager.py:get_manager */
+/* PoP: cli_tools_mcp_oauth_manager_get_manager @ tools/mcp_oauth_manager.py:get_manager */
 
 /* Port of Python get_manager — process-wide singleton. */
 void *cli_tools_mcp_oauth_manager_get_manager(void)
@@ -400,8 +394,7 @@ void *cli_tools_mcp_oauth_manager_get_manager(void)
     return singleton;
 }
 
-/* PoP: cli_tools_mcp_oauth_manager_reset_manager_for_tests
- *      @ tools/mcp_oauth_manager.py:reset_manager_for_tests */
+/* PoP: cli_tools_mcp_oauth_manager_reset_manager_for_tests @ tools/mcp_oauth_manager.py:reset_manager_for_tests */
 
 /* Port of Python reset_manager_for_tests — clear all cached state. */
 void cli_tools_mcp_oauth_manager_reset_manager_for_tests(void)
@@ -421,4 +414,143 @@ void cli_tools_mcp_oauth_manager_reset_manager_for_tests(void)
     }
     pthread_mutex_unlock(&mgr->entries_lock);
     hermes_log(LOG_DEBUG, "mcp_oauth", "Reset manager for tests");
+}
+
+/* PoP: cli_tools_mcp_oauth_manager__same_endpoint @ tools/mcp_oauth_manager.py:_same_endpoint */
+/* Port of Python _same_endpoint: True if two URLs target the same endpoint,
+ * ignoring query/fragment. Compares scheme, host (case-insensitive netloc),
+ * and path with a trailing "/" stripped. Faithful to urllib.parse.urlsplit:
+ * netloc is everything between "://" and the next '/', '?' or '#'; path is
+ * from that '/' up to '?' or '#'. */
+int cli_tools_mcp_oauth_manager__same_endpoint(const char *a, const char *b)
+{
+    if (!a || !b) return 0;
+
+    /* Split one URL into scheme / netloc(lower) / path(no trailing slash). */
+    struct split { char scheme[64]; char netloc[512]; char path[1024]; };
+
+    struct split sa, sb;
+    /* inline splitter */
+    #define SPLIT(url, s) do {                                                 \
+        (s).scheme[0] = (s).netloc[0] = (s).path[0] = '\0';                    \
+        const char *p = (url);                                                 \
+        const char *sep = strstr(p, "://");                                    \
+        const char *rest;                                                      \
+        if (sep) {                                                             \
+            size_t sl = (size_t)(sep - p);                                     \
+            if (sl >= sizeof((s).scheme)) sl = sizeof((s).scheme) - 1;         \
+            memcpy((s).scheme, p, sl); (s).scheme[sl] = '\0';                  \
+            rest = sep + 3;                                                    \
+        } else {                                                              \
+            rest = p;                                                          \
+        }                                                                      \
+        /* netloc: up to '/', '?' or '#' */                                    \
+        size_t nl = 0;                                                         \
+        while (rest[nl] && rest[nl] != '/' && rest[nl] != '?' &&              \
+               rest[nl] != '#') nl++;                                          \
+        size_t ncopy = nl < sizeof((s).netloc) ? nl : sizeof((s).netloc) - 1; \
+        for (size_t i = 0; i < ncopy; i++) {                                   \
+            char c = rest[i];                                                  \
+            (s).netloc[i] = (c >= 'A' && c <= 'Z') ? (char)(c + 32) : c;       \
+        }                                                                      \
+        (s).netloc[ncopy] = '\0';                                             \
+        /* path: from netloc end to '?' or '#' */                             \
+        const char *pp = rest + nl;                                            \
+        size_t pl = 0;                                                         \
+        while (pp[pl] && pp[pl] != '?' && pp[pl] != '#') pl++;                \
+        size_t pcopy = pl < sizeof((s).path) ? pl : sizeof((s).path) - 1;      \
+        memcpy((s).path, pp, pcopy); (s).path[pcopy] = '\0';                   \
+        /* strip a single trailing '/' (rstrip('/') semantics) */             \
+        size_t plen = strlen((s).path);                                        \
+        while (plen > 0 && (s).path[plen - 1] == '/') (s).path[--plen] = '\0'; \
+    } while (0)
+
+    SPLIT(a, sa);
+    SPLIT(b, sb);
+    #undef SPLIT
+
+    return strcmp(sa.scheme, sb.scheme) == 0 &&
+           strcmp(sa.netloc, sb.netloc) == 0 &&
+           strcmp(sa.path, sb.path) == 0;
+}
+
+/* PoP: cli_tools_mcp_oauth_manager_evict @ tools/mcp_oauth_manager.py:evict */
+/* Port of Python MCPOAuthManager.evict: drop only the in-process provider for
+ * a server, preserving persisted OAuth state on disk. Mirrors Python's
+ * self._entries.pop(key, None) — the on-disk token file is untouched. */
+void cli_tools_mcp_oauth_manager_evict(const char *server_name)
+{
+    if (!server_name) return;
+    mcp_oauth_manager_t *mgr = cli_tools_mcp_oauth_manager_get_manager();
+    if (!mgr) return;
+
+    pthread_mutex_lock(&mgr->entries_lock);
+    for (int i = 0; i < MCP_OAUTH_MAX_SERVERS; i++) {
+        mcp_oauth_entry_t *e = &mgr->entries[i];
+        if (e->active && strcmp(e->server_name, server_name) == 0) {
+            if (e->provider) {
+                mcp_oauth_storage_free(e->provider->storage);
+                free(e->provider);
+            }
+            pthread_mutex_destroy(&e->lock);
+            memset(e, 0, sizeof(*e));
+            pthread_mutex_init(&e->lock, NULL);
+            hermes_log(LOG_DEBUG, "mcp_oauth",
+                       "evicted in-process provider '%s' (disk state kept)",
+                       server_name);
+            break;
+        }
+    }
+    pthread_mutex_unlock(&mgr->entries_lock);
+}
+
+/* PoP: cli_tools_mcp_oauth_manager_restore_entry @ tools/mcp_oauth_manager.py:restore_entry */
+/* Port of Python MCPOAuthManager.restore_entry: restore a provider entry that
+ * was removed for a failed reauthorization. Python uses
+ * self._entries.setdefault(key, entry) — restore ONLY if no live entry exists
+ * for that server (setdefault does not overwrite). A NULL entry is a no-op.
+ * Here the "entry" is identified by server_name + its cached provider fields;
+ * we re-populate a free slot iff the server is not already present. */
+int cli_tools_mcp_oauth_manager_restore_entry(
+    const char *server_name, const char *server_url,
+    const char *oauth_config)
+{
+    if (!server_name || !*server_name) return 0;
+    mcp_oauth_manager_t *mgr = cli_tools_mcp_oauth_manager_get_manager();
+    if (!mgr) return 0;
+
+    int restored = 0;
+    pthread_mutex_lock(&mgr->entries_lock);
+
+    /* setdefault: if an active entry already exists, do nothing. */
+    int present = 0, free_slot = -1;
+    for (int i = 0; i < MCP_OAUTH_MAX_SERVERS; i++) {
+        if (mgr->entries[i].active) {
+            if (strcmp(mgr->entries[i].server_name, server_name) == 0) {
+                present = 1;
+                break;
+            }
+        } else if (free_slot < 0) {
+            free_slot = i;
+        }
+    }
+
+    if (!present && free_slot >= 0) {
+        mcp_oauth_entry_t *e = &mgr->entries[free_slot];
+        memset(e, 0, sizeof(*e));
+        pthread_mutex_init(&e->lock, NULL);
+        snprintf(e->server_name, sizeof(e->server_name), "%s", server_name);
+        if (server_url)
+            snprintf(e->server_url, sizeof(e->server_url), "%s", server_url);
+        if (oauth_config)
+            snprintf(e->oauth_config, sizeof(e->oauth_config), "%s", oauth_config);
+        e->active = 1;
+        restored = 1;
+        hermes_log(LOG_DEBUG, "mcp_oauth",
+                   "restored provider entry '%s' after failed reauth",
+                   server_name);
+    }
+
+    pthread_mutex_unlock(&mgr->entries_lock);
+    return restored;
 }
