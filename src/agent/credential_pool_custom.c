@@ -11,6 +11,7 @@ No god headers — only the minimal includes each module requires. C11 only.
 #include "hermes_json.h"
 #include "hermes_yaml.h"
 #include "hermes_auth.h"
+#include "auth_helpers.h"
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,11 +33,41 @@ No god headers — only the minimal includes each module requires. C11 only.
  */
 
 /* PoP: label_from_token @ agent/credential_pool.py:label_from_token */
+/* Decode the JWT payload and return the first non-blank of email /
+ * preferred_username / upn; falls back to the supplied fallback. */
 const char *label_from_token(const char *token, const char *fallback) {
     if (!token || !*token) return fallback ? fallback : "";
-    
-    /* Simple JWT parsing - extract email/username from claims */
-    /* In C we just return fallback since full JWT parsing requires base64 decode */
+
+    char *payload = auth_decode_jwt_payload(token);
+    if (payload) {
+        static const char *keys[] = { "email", "preferred_username", "upn", NULL };
+        for (int i = 0; keys[i]; i++) {
+            char *v = auth_jwt_get_str(payload, keys[i]);
+            if (v) {
+                /* strip + require non-blank (Python: value.strip() truthy) */
+                char *start = v;
+                while (*start == ' ' || *start == '\t' || *start == '\n' ||
+                       *start == '\r') start++;
+                size_t len = strlen(start);
+                while (len > 0 && (start[len-1] == ' ' || start[len-1] == '\t' ||
+                       start[len-1] == '\n' || start[len-1] == '\r')) start[--len] = '\0';
+                if (*start) {
+                    /* Cache in a thread-local-ish static ring so the returned
+                     * const char* stays valid until the next few calls; the
+                     * Python API returns a str the caller copies immediately. */
+                    static char label_buf[4][512];
+                    static int slot = 0;
+                    slot = (slot + 1) & 3;
+                    snprintf(label_buf[slot], sizeof(label_buf[slot]), "%s", start);
+                    free(v);
+                    free(payload);
+                    return label_buf[slot];
+                }
+                free(v);
+            }
+        }
+        free(payload);
+    }
     return fallback ? fallback : "credential";
 }
 
