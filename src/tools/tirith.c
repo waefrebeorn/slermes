@@ -15,6 +15,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/utsname.h>
+#include <ctype.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <errno.h>
@@ -115,19 +117,50 @@ static const char* _hermes_bin_dir(char *out, size_t out_len) {
 }
 
 /* PoP: _detect_target @ tools/tirith_security.py:_detect_target */
+/* Return the Rust target triple for the current platform, or NULL. Windows
+ * is intentionally unsupported (tirith ships no Windows build). Mirrors
+ * Python's platform.system()/machine() mapping. */
 char* _detect_target(void) {
-    /* Simplified - just return platform string */
-    #ifdef __linux__
-    return strdup("linux-x86_64");
-    #elif __APPLE__
-    return strdup("macos-x86_64");
-    #else
-    return strdup("unknown");
-    #endif
+    struct utsname u;
+    if (uname(&u) != 0) return NULL;
+
+    /* Map OS: Darwin -> apple-darwin; Linux/Android -> unknown-linux-gnu. */
+    const char *plat = NULL;
+    if (strcmp(u.sysname, "Darwin") == 0) {
+        plat = "apple-darwin";
+    } else if (strcmp(u.sysname, "Linux") == 0 ||
+               strcmp(u.sysname, "Android") == 0) {
+        plat = "unknown-linux-gnu";
+    } else {
+        return NULL;
+    }
+
+    /* Map arch: x86_64/amd64 -> x86_64; aarch64/arm64 -> aarch64. */
+    char machine[64];
+    snprintf(machine, sizeof(machine), "%s", u.machine);
+    for (char *p = machine; *p; p++) *p = (char)tolower((unsigned char)*p);
+
+    const char *arch = NULL;
+    if (strcmp(machine, "x86_64") == 0 || strcmp(machine, "amd64") == 0) {
+        arch = "x86_64";
+    } else if (strcmp(machine, "aarch64") == 0 || strcmp(machine, "arm64") == 0) {
+        arch = "aarch64";
+    } else {
+        return NULL;
+    }
+
+    char triple[128];
+    snprintf(triple, sizeof(triple), "%s-%s", arch, plat);
+    return strdup(triple);
 }
 
 /* PoP: is_platform_supported @ tools/tirith_security.py:is_platform_supported */
+/* True when tirith ships a prebuilt binary for this OS+arch (i.e. when
+ * _detect_target() yields a triple rather than NULL). */
 bool is_platform_supported(void) {
+    char *target = _detect_target();
+    if (!target) return false;
+    free(target);
     return true;
 }
 
