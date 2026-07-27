@@ -9,6 +9,7 @@
  */
 
 #include "context_compressor_pure.h"
+#include "context_compressor_constants.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -467,4 +468,253 @@ double cc_resolve_model_threshold(const char *model,
                 return threshold_vals[i];
     }
     return default_threshold;
+}
+
+/* ── Runtime constant arrays (mirror Python module-level literals) ──────── */
+
+/* PoP: (constants) @ agent/context_compressor.py:_HISTORICAL_SUMMARY_PREFIXES */
+const char *cc_historical_summary_prefixes[] = {
+#if CC_NUM_HISTORICAL_PREFIXES > 0
+    CC_HISTORICAL_PREFIX_0,
+#endif
+#if CC_NUM_HISTORICAL_PREFIXES > 1
+    CC_HISTORICAL_PREFIX_1,
+#endif
+#if CC_NUM_HISTORICAL_PREFIXES > 2
+    CC_HISTORICAL_PREFIX_2,
+#endif
+#if CC_NUM_HISTORICAL_PREFIXES > 3
+    CC_HISTORICAL_PREFIX_3,
+#endif
+};
+const size_t cc_num_historical_prefixes = CC_NUM_HISTORICAL_PREFIXES;
+
+/* PoP: (constants) @ agent/context_compressor.py:_IMAGE_PART_TYPES */
+const char *cc_image_part_types[] = { "image_url", "input_image", "image" };
+const size_t cc_num_image_part_types = 3;
+
+/* ── _safe_int ─────────────────────────────────────────────────────────── */
+
+/* PoP: cc_safe_int @ agent/context_compressor.py:_safe_int */
+int cc_safe_int(const json_t *value, int *out) {
+    if (!value || value->type == JSON_NULL) { if (out) *out = 0; return 0; }
+    if (value->type == JSON_NUMBER) { if (out) *out = (int)value->num_val; return 1; }
+    if (value->type == JSON_STRING) {
+        const char *s = json_get_str(value, "", "");
+        char *end = NULL;
+        long v = strtol(s, &end, 10);
+        if (end != s && *end == '\0') { if (out) *out = (int)v; return 1; }
+    }
+    if (out) *out = 0;
+    return 0;
+}
+
+/* ── _skill_pruned_marker / _extract_pruned_skill_names ────────────────── */
+
+/* PoP: cc_skill_pruned_marker @ agent/context_compressor.py:_skill_pruned_marker */
+char *cc_skill_pruned_marker(const char *skill_name) {
+    size_t need = strlen(CC_SKILL_PRUNED_MARKER_PREFIX) + strlen(skill_name) + 64;
+    char *out = malloc(need);
+    if (!out) return NULL;
+    snprintf(out, need,
+             "%s content lost in compression; reload with skill_view(name='%s')]",
+             CC_SKILL_PRUNED_MARKER_PREFIX, skill_name ? skill_name : "");
+    return out;
+}
+
+/* PoP: cc_extract_pruned_skill_names @ agent/context_compressor.py:_extract_pruned_skill_names */
+int cc_extract_pruned_skill_names(const char *text, char **out_names, int *out_count, int limit) {
+    if (!text || !out_names || !out_count) return 0;
+    *out_count = 0;
+    /* marker: "[SKILL_PRUNED: ... reload with skill_view(name='NAME')]" */
+    hregex_t *re = regex_compile("^\\[SKILL_PRUNED:.*reload with skill_view\\(name='([^']+)'\\)\\]",
+                                 0);
+    if (!re) return 0;
+    int count = 0;
+    const char *p = text;
+    regex_match_t *m;
+    while (count < limit && (m = regex_search(re, p)) != NULL && m->matched) {
+        const char *name = (m->group_count > 1) ? m->groups[1] : NULL;
+        if (name) {
+            int dup = 0;
+            for (int i = 0; i < count; i++)
+                if (strcmp(out_names[i], name) == 0) { dup = 1; break; }
+            if (!dup) out_names[count++] = strdup(name);
+        }
+        regex_match_free(m);
+        /* advance past this match */
+        p = p + (m->groups[0] ? strlen(m->groups[0]) : 1);
+        if (*p == '\0') break;
+    }
+    regex_free(re);
+    *out_count = count;
+    return count;
+}
+
+/* ── _content_text_for_contains ────────────────────────────────────────── */
+
+/* PoP: cc_content_text_for_contains @ agent/context_compressor.py:_content_text_for_contains */
+char *cc_content_text_for_contains(const json_t *content) {
+    if (!content) return strdup("");
+    if (content->type == JSON_STRING) return strdup(content->str_val);
+    if (content->type != JSON_ARRAY) return strdup("");
+    /* join text parts + string parts */
+    size_t cap = 1024, len = 0;
+    char *out = malloc(cap);
+    if (!out) return strdup("");
+    out[0] = '\0';
+    int n = (int)json_len(content);
+    for (int i = 0; i < n; i++) {
+        json_t *item = json_get(content, (size_t)i);
+        const char *seg = NULL;
+        if (item && item->type == JSON_STRING) seg = item->str_val;
+        else if (item && item->type == JSON_OBJECT) {
+            const char *t = json_get_str(item, "type", "");
+            if (strcmp(t, "text") == 0) seg = json_get_str(item, "text", NULL);
+        }
+        if (!seg) continue;
+        size_t need = len + strlen(seg) + 1;
+        if (need > cap) { cap = need * 2; char *n2 = realloc(out, cap); if (!n2) { free(out); return strdup(""); } out = n2; }
+        memcpy(out + len, seg, strlen(seg));
+        len += strlen(seg);
+        out[len] = '\0';
+    }
+    return out;
+}
+
+/* ── _content_length_for_budget ────────────────────────────────────────── */
+
+/* PoP: cc_content_length_for_budget @ agent/context_compressor.py:_content_length_for_budget */
+int cc_content_length_for_budget(const json_t *raw_content) {
+    if (!raw_content) return 0;
+    if (raw_content->type == JSON_STRING) return (int)strlen(raw_content->str_val);
+    if (raw_content->type != JSON_ARRAY) {
+        char *s = json_serialize(raw_content);
+        int r = s ? (int)strlen(s) : 0;
+        free(s);
+        return r;
+    }
+    int total = 0;
+    int n = (int)json_len(raw_content);
+    for (int i = 0; i < n; i++) {
+        json_t *p = json_get(raw_content, (size_t)i);
+        if (!p) continue;
+        if (p->type == JSON_STRING) { total += (int)strlen(p->str_val); continue; }
+        if (p->type != JSON_OBJECT) { char *s = json_serialize(p); int r = s?(int)strlen(s):0; free(s); total += r; continue; }
+        const char *ptype = json_get_str(p, "type", "");
+        int is_img = 0;
+        for (size_t k = 0; k < cc_num_image_part_types; k++)
+            if (strcmp(ptype, cc_image_part_types[k]) == 0) { is_img = 1; break; }
+        if (is_img) total += CC_IMAGE_CHAR_EQUIVALENT;
+        else total += (int)strlen(json_get_str(p, "text", ""));
+    }
+    return total;
+}
+
+/* ── _is_image_part / _content_has_images / _strip_images_from_content ─── */
+
+/* PoP: cc_is_image_part @ agent/context_compressor.py:_is_image_part */
+int cc_is_image_part(const json_t *part) {
+    if (!part || part->type != JSON_OBJECT) return 0;
+    const char *t = json_get_str(part, "type", "");
+    for (size_t k = 0; k < cc_num_image_part_types; k++)
+        if (strcmp(t, cc_image_part_types[k]) == 0) return 1;
+    return 0;
+}
+
+/* PoP: cc_content_has_images @ agent/context_compressor.py:_content_has_images */
+int cc_content_has_images(const json_t *content) {
+    if (!content || content->type != JSON_ARRAY) return 0;
+    int n = (int)json_len(content);
+    for (int i = 0; i < n; i++)
+        if (cc_is_image_part(json_get(content, (size_t)i))) return 1;
+    return 0;
+}
+
+/* PoP: cc_strip_images_from_content @ agent/context_compressor.py:_strip_images_from_content */
+json_t *cc_strip_images_from_content(const json_t *content) {
+    if (!content || content->type != JSON_ARRAY) return NULL; /* caller keeps original */
+    int n = (int)json_len(content);
+    int has = 0;
+    for (int i = 0; i < n; i++)
+        if (cc_is_image_part(json_get(content, (size_t)i))) { has = 1; break; }
+    if (!has) return NULL;
+    json_t *out = json_array();
+    for (int i = 0; i < n; i++) {
+        json_t *p = json_get(content, (size_t)i);
+        if (cc_is_image_part(p)) {
+            json_t *ph = json_object();
+            json_set(ph, "type", json_string("text"));
+            json_set(ph, "text", json_string("[Attached image — stripped after compression]"));
+            json_append(out, ph);
+        } else {
+            json_append(out, json_copy(p));
+        }
+    }
+    return out;
+}
+
+/* ── _starts_with_summary_prefix / _strip_summary_prefix / _with_summary_prefix ─ */
+
+/* PoP: cc_starts_with_summary_prefix @ agent/context_compressor.py:_starts_with_summary_prefix */
+int cc_starts_with_summary_prefix(const char *text) {
+    if (!text) return 0;
+    if (strncmp(text, CC_SUMMARY_PREFIX, strlen(CC_SUMMARY_PREFIX)) == 0) return 1;
+    if (strncmp(text, CC_LEGACY_SUMMARY_PREFIX, strlen(CC_LEGACY_SUMMARY_PREFIX)) == 0) return 1;
+    for (size_t i = 0; i < cc_num_historical_prefixes; i++)
+        if (strncmp(text, cc_historical_summary_prefixes[i],
+                    strlen(cc_historical_summary_prefixes[i])) == 0) return 1;
+    return 0;
+}
+
+/* PoP: cc_strip_summary_prefix @ agent/context_compressor.py:_strip_summary_prefix */
+char *cc_strip_summary_prefix(const char *summary) {
+    if (!summary) return strdup("");
+    char *text = strdup(summary);
+    /* strip leading whitespace */
+    char *s = text;
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    /* merged-summary delimiter: keep only content after it */
+    char *delim = strstr(s, CC_MERGED_SUMMARY_DELIMITER);
+    if (delim) {
+        s = delim + strlen(CC_MERGED_SUMMARY_DELIMITER);
+        while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    }
+    /* strip any known prefix (current/legacy/historical) */
+    const char *prefixes[CC_NUM_HISTORICAL_PREFIXES + 2];
+    prefixes[0] = CC_SUMMARY_PREFIX;
+    prefixes[1] = CC_LEGACY_SUMMARY_PREFIX;
+    for (size_t i = 0; i < cc_num_historical_prefixes; i++)
+        prefixes[2 + i] = cc_historical_summary_prefixes[i];
+    for (int i = 0; i < (int)(cc_num_historical_prefixes + 2); i++) {
+        size_t pl = strlen(prefixes[i]);
+        if (strncmp(s, prefixes[i], pl) == 0) {
+            s += pl;
+            while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+            break;
+        }
+    }
+    /* strip end marker */
+    char *em = strstr(s, CC_SUMMARY_END_MARKER);
+    if (em) { *em = '\0'; }
+    /* trim trailing whitespace */
+    size_t L = strlen(s);
+    while (L > 0 && (s[L-1]==' '||s[L-1]=='\t'||s[L-1]=='\n'||s[L-1]=='\r')) s[--L]='\0';
+    char *res = strdup(s);
+    free(text);
+    return res;
+}
+
+/* PoP: cc_with_summary_prefix @ agent/context_compressor.py:_with_summary_prefix */
+char *cc_with_summary_prefix(const char *summary) {
+    char *body = cc_strip_summary_prefix(summary);
+    if (!body || *body == '\0') {
+        free(body);
+        return strdup(CC_SUMMARY_PREFIX);
+    }
+    size_t need = strlen(CC_SUMMARY_PREFIX) + strlen(body) + 2;
+    char *out = malloc(need);
+    snprintf(out, need, "%s\n%s", CC_SUMMARY_PREFIX, body);
+    free(body);
+    return out;
 }

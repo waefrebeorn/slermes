@@ -107,6 +107,43 @@ double cc_resolve_model_threshold(const char *model,
                                   int threshold_count,
                                   double default_threshold);
 
+/* ── batch 2: string/summary/image constants + helpers ────────────────── */
+
+/* Runtime constant arrays (mirror Python module-level literals). */
+extern const char *cc_historical_summary_prefixes[];
+extern const size_t cc_num_historical_prefixes;
+extern const char *cc_image_part_types[];
+extern const size_t cc_num_image_part_types;
+
+/* Best-effort integer coercion for telemetry fields. Returns 1 + sets *out on
+ * success, 0 otherwise (*out left 0). */
+int  cc_safe_int(const json_t *value, int *out);
+
+/* Canonical prune marker for skill_name (emit + survival-check share it). */
+char *cc_skill_pruned_marker(const char *skill_name);
+/* Skill names referenced by prune markers in text, in order (deduped). */
+int  cc_extract_pruned_skill_names(const char *text, char **out_names,
+                                   int *out_count, int limit);
+
+/* Flatten message content to a single string for substring checks. Caller frees. */
+char *cc_content_text_for_contains(const json_t *content);
+
+/* Effective char-length of a message's content for token budgeting (images
+ * count as CC_IMAGE_CHAR_EQUIVALENT each). */
+int  cc_content_length_for_budget(const json_t *raw_content);
+
+/* Multimodal image-part predicates. */
+int  cc_is_image_part(const json_t *part);
+int  cc_content_has_images(const json_t *content);
+/* Return a NEW content array with image parts replaced by placeholder text, or
+ * NULL when input is not a list / has no images (caller keeps original). */
+json_t *cc_strip_images_from_content(const json_t *content);
+
+/* Summary-prefix normalization (byte-pinned to Python's prefixes). */
+int  cc_starts_with_summary_prefix(const char *text);
+char *cc_strip_summary_prefix(const char *summary);  /* caller frees */
+char *cc_with_summary_prefix(const char *summary);   /* caller frees */
+
 #ifdef __cplusplus
 }
 #endif
