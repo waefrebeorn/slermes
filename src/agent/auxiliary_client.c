@@ -932,6 +932,7 @@ bool resolve_task(const hermes_config_t *cfg,
 /* ================================================================== */
 
 /* Port of Python: _nous_base_url() (line 1265) */
+/* PoP: nous_base_url @ agent/video_gen_provider.py:_base_url */
 const char *nous_base_url(void) {
     const char *url = getenv("NOUS_INFERENCE_BASE_URL");
     if (url && url[0]) return url;
@@ -984,6 +985,7 @@ void extract_url_query_params(const char *url,
 
 /* Port of Python: _nous_api_key() (line 1245) */
 /* Extract a usable Nous JWT from stored auth JSON provider dict. */
+/* PoP: nous_api_key @ agent/video_gen_provider.py:_api_key */
 const char *nous_api_key(json_node_t *provider) {
     static char key_buf[4096];
     key_buf[0] = '\0';

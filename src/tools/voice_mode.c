@@ -1071,6 +1071,7 @@ char *voice_listen(void) {
  *  Unlike Python we run the monitor inline (no separate thread needed by
  *  the caller): should_stop() is polled between blocks.
  * ================================================================ */
+/* PoP: voice_listen_for_speech @ tools/voice_mode.py:listen_for_speech */
 char *voice_listen_for_speech(int (*should_stop)(void),
                               int threshold, int sustained_ms, int calibration_ms,
                               int capture, void (*on_trigger)(void),

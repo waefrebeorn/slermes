@@ -154,6 +154,7 @@ static void build_and_emit_event(async_delegation_rec_t *rec, json_node_t *resul
 }
 
 /* PoP: finalize @ tools/async_delegation.py:_finalize */
+/* PoP: finalize @ tools/image_source.py:_finalize */
 static void finalize(async_delegation_rec_t *rec, json_node_t *result, const char *status) {
     double completed_at = now_sec();
     pthread_mutex_lock(&g_lock);

@@ -124,6 +124,7 @@ const char *tool_config_get_token(const char *tool_name) {
     return tool_config_get_api_key(tool_name);
 }
 
+/* PoP: tool_config_set @ hermes_cli/console_engine.py:_config_set */
 void tool_config_set(const char *tool_name, const char *key, const char *value) {
     if (!tool_name || !key || !value) return;
 

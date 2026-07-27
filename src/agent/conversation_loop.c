@@ -1634,6 +1634,7 @@ bool agent_inject_history(agent_state_t *state, const char *history_json) {
  * ================================================================ */
 
 /* Port of Python conversation_loop.py:_is_nous_inference_route */
+/* PoP: is_nous_inference_route @ agent/billing_links.py:is_nous_inference_route */
 bool is_nous_inference_route(const char *provider, const char *base_url) {
     if (!provider) return false;
     char prov[128];

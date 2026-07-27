@@ -120,6 +120,7 @@ static void ensure_weixin_dir(void) {
     }
 }
 
+/* PoP: ctx_token_path @ hermes_cli/windows_ssh_runtime.py:_token_path */
 static void ctx_token_path(char *buf, size_t sz) {
     const char *home = getenv("SLERMES_HOME");
     if (!home || !*home) home = getenv("HOME");

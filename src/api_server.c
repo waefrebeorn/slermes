@@ -431,6 +431,7 @@ static bool starts_with(const char *path, const char *prefix, char *suffix, size
 /**
  * GET /v1/sessions — list all sessions.
  */
+/* PoP: handle_sessions_list @ hermes_cli/console_engine.py:_sessions_list */
 static void handle_sessions_list(int fd, const char *query) {
     if (!g_agent || !g_agent->db) {
         send_error(fd, 503, "database not initialized");

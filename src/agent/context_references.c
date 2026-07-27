@@ -247,6 +247,7 @@ static char *resolve_path(const char *cwd, const char *target, const char *allow
 }
 
 /* Port of Python context_references.py:_ensure_reference_path_allowed(). */
+/* PoP: is_sensitive_path @ hermes_cli/web_server.py:_is_sensitive_path */
 static bool is_sensitive_path(const char *path) {
     const char *home = getenv("HOME");
     if (!home) return false;

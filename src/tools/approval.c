@@ -234,6 +234,7 @@ static bool matches_any(const char *str, const char **patterns) {
  * Port of Python tools/approval.py:_normalize_command_for_detection().
  * Returns a malloc'd normalized copy, or NULL on failure. */
 /* AG26: Port of Python tools/approval.py:_normalize_command_for_detection(). */
+/* PoP: approval_normalize_command @ hermes_cli/approvals_suggest.py:normalize_command */
 char *approval_normalize_command(const char *command) {
     if (!command) return NULL;
 

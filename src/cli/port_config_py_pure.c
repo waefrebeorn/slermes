@@ -22,6 +22,8 @@
  * ============================================================ */
 
 /* PoP: config_normalize_route_base_url @ hermes_cli/config.py:normalize_route_base_url */
+/* PoP: config_normalize_route_base_url @ agent/agent_init.py:_normalize_route_base_url */
+/* PoP: config_normalize_route_base_url @ hermes_cli/route_identity.py:normalize_route_base_url */
 char *config_normalize_route_base_url(const char *url) {
     if (!url) return strdup("");
     size_t n = strlen(url);

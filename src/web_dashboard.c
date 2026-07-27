@@ -592,6 +592,7 @@ static void handle_model_info(int fd) {
 }
 
 /* PoP: handle_model_options @ hermes_cli/moa_cmd.py:_model_options */
+/* PoP: handle_model_options @ gateway/platforms/api_server.py:_handle_model_options */
 static void handle_model_options(int fd) {
     json_t *root = json_new_object();
     if (root) {
@@ -697,6 +698,7 @@ static void handle_cron_jobs(int fd) {
 
 /* ── Logs endpoint ── */
 
+/* PoP: handle_logs @ hermes_cli/console_engine.py:_logs */
 static void handle_logs(int fd) {
     const char *home = getenv("HERMES_HOME");
     if (!home) home = getenv("HOME");

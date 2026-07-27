@@ -28,11 +28,13 @@ void cmd_session_search(const char *args, agent_state_t *state);
 void cmd_sessions(const char *args, agent_state_t *state);
 void cmd_snapshot(const char *args, agent_state_t *state);
 void cmd_stats(const char *args, agent_state_t *state);
+/* PoP: cmd_status @ hermes_cli/console_engine.py:_status */
 void cmd_status(const char *args, agent_state_t *state);
 void cmd_steer(const char *args, agent_state_t *state);
 void cmd_subgoal(const char *args, agent_state_t *state);
 void cmd_title(const char *args, agent_state_t *state);
 void cmd_undo(const char *args, agent_state_t *state);
+/* PoP: cmd_usage @ hermes_cli/curator.py:_cmd_usage */
 void cmd_usage(const char *args, agent_state_t *state);
 
 #endif /* SLERMES_CLI_CMD_SESSION_H */

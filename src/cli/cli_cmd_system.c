@@ -574,6 +574,7 @@ void cmd_deps(const char *args, agent_state_t *state) {
  * AG26: Port of Python hermes_cli/main.py:cmd_doctor().
  */
 /* PoP: cmd_doctor @ tools/computer_use/permissions.py:_doctor */
+/* PoP: cmd_doctor @ hermes_cli/console_engine.py:_doctor */
 void cmd_doctor(const char *args, agent_state_t *state) {
     /* Normalize subcommand */
     char subcmd[64] = "";
@@ -1301,6 +1302,7 @@ void cmd_redraw(const char *args, agent_state_t *state) {
 
 /* /reload: Reload .env */
 /* PoP: cmd_reload @ hermes_cli/bundles.py:_cmd_reload */
+/* PoP: cmd_reload @ hermes_cli/proxy_cli.py:cmd_reload */
 void cmd_reload(const char *args, agent_state_t *state) {
     if (args && args[0]) {
         if (strcmp(args, "plugins") == 0) {
@@ -1425,6 +1427,7 @@ void cmd_sethome(const char *args, agent_state_t *state) {
     printf("Home channel set to: %s\n", g_home_channel);
 }
 
+/* PoP: cmd_skin @ hermes_cli/main.py:cmd_skin */
 void cmd_skin(const char *args, agent_state_t *state) {
     (void)state;
     if (args && args[0]) {
@@ -1480,6 +1483,7 @@ void cmd_statusbar(const char *args, agent_state_t *state) {
 }
 
 /* /stop: Kill all running background processes */
+/* PoP: cmd_stop @ hermes_cli/proxy_cli.py:cmd_stop */
 void cmd_stop(const char *args, agent_state_t *state) {
     (void)args; (void)state;
     printf("Stopping all background processes...\n");

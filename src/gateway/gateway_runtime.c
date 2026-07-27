@@ -537,6 +537,7 @@ void gw_systemd_ready(void) {
 }
 
 /* External: defined in server.c */
+/* PoP: session_get_or_create @ gateway/turn_lease.py:_get_or_create */
 extern int session_get_or_create(const char *platform, const char *chat_id);
 
 /* ════════════════════════════════════════════════════════════════

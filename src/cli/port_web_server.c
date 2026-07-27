@@ -116,6 +116,7 @@ char *build_oauth_catalog(void)
 
 /* PoP: config_profile_scope @ hermes_cli/web_server.py:_profile_scope */
 /* Port of Python: _config_profile_scope */
+/* PoP: config_profile_scope @ gateway/platforms/api_server.py:_profile_scope */
 char *config_profile_scope(const char *profile)
 {
     if (!profile) return strdup("default");

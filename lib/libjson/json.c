@@ -391,6 +391,8 @@ json_t *json_object(void) {
  *  Public API: Array ops
  * ================================================================ */
 
+/* PoP: json_append @ hermes_cli/pty_session.py:append */
+/* PoP: json_append @ tools/environments/base.py:append */
 void json_append(json_t *arr, json_t *item) {
     if (!arr || !item || arr->type != JSON_ARRAY || oom_flag) return;
     size_t i = arr->c.count;

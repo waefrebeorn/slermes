@@ -145,6 +145,7 @@ static void *auto_title_thread_fn(void *arg) {
  * Safe to call from any thread.
  */
 /* Port of Python: auto_title_session */
+/* PoP: auto_title_session @ agent/title_generator.py:_auto_title_session */
 void auto_title_session(const char *session_id, const char *user_message,
                         const char *assistant_response) {
     if (!session_id || !*session_id) return;

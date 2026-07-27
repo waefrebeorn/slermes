@@ -27,6 +27,7 @@
 
 /* ---- local helpers ---- */
 
+/* PoP: config_path @ hermes_cli/console_engine.py:_config_path */
 static void config_path(char *buf, size_t sz) {
     char home[HERMES_PATH_MAX];
     hermes_get_home(home, sizeof home);

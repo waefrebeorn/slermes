@@ -283,6 +283,7 @@ void cleanup_vm(const char *task_id)
 }
 
 /* Port of Python: get_active_env */
+/* PoP: get_active_env @ tools/image_source.py:_get_active_env */
 const char *get_active_env(const char *task_id)
 {
     if (!task_id) {

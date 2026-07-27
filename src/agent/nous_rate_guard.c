@@ -95,6 +95,7 @@ static int atomic_write(const char *path, const char *content) {
 /* Port of Python agent/nous_rate_guard.py:record_nous_rate_limit().
  * Record that Nous Portal is rate-limited.
  * Writes reset_at timestamp to the shared state file. */
+/* PoP: nous_rate_guard_record @ cron/executions.py:_record */
 void nous_rate_guard_record(const char *hermes_home,
                              double reset_at,
                              double default_cooldown_secs) {

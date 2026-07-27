@@ -139,6 +139,7 @@ void hermes_file_permissions_harden(const char *hermes_home,
             chmod(cron_store_path, 0600);
     }
 }
+/* PoP: hermes_config_migrate @ hermes_cli/console_engine.py:_config_migrate */
 bool hermes_config_migrate(hermes_config_t *cfg, const char *config_dir) {
     if (!cfg) return false;
 

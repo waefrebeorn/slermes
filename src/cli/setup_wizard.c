@@ -311,6 +311,7 @@ static const backend_t BACKENDS[] = {
     {NULL, NULL}
 };
 
+/* PoP: select_terminal_backend @ hermes_cli/web_server.py:select_terminal_backend */
 static void select_terminal_backend(char *backend, size_t sz,
                                     char *cpu, size_t cpu_sz,
                                     char *mem, size_t mem_sz,
