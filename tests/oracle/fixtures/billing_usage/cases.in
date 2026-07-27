@@ -1,0 +1,29 @@
+# Oracle fixture for billing_usage port (agent/billing_usage.py)
+# Ops:
+#   renews <text>      -> format_renews
+#   model <json>       -> usage_model_from_account (account_info)
+
+# --- format_renews ---
+renews 2026-07-24
+renews 2026-07-24T11:05:01.000Z
+renews 
+renews not-a-date
+
+# --- usage_model_from_account ---
+# not logged in -> available=false
+model {"logged_in": false}
+
+# healthy paid plan with monthly allowance + topup + renews
+model {"logged_in": true, "paid_service_access": true, "paid_service_access_info": {"subscription_credits_remaining": 12.5, "purchased_credits_remaining": 40.0, "total_usable_credits": 52.5}, "subscription": {"plan": "Pro", "current_period_end": "2026-08-01T00:00:00Z", "monthly_credits": 50.0}}
+
+# low balance (< $5 total spendable)
+model {"logged_in": true, "paid_service_access": true, "paid_service_access_info": {"subscription_credits_remaining": 3.0, "purchased_credits_remaining": 0.0, "total_usable_credits": 3.0}, "subscription": {"plan": "Pro", "current_period_end": "2026-08-01T00:00:00Z", "monthly_credits": 50.0}}
+
+# free (no plan, no topup)
+model {"logged_in": true, "paid_service_access": null, "paid_service_access_info": {"subscription_credits_remaining": 0.0, "purchased_credits_remaining": 0.0, "total_usable_credits": 0.0}, "subscription": {"plan": null, "current_period_end": null, "monthly_credits": 0.0}}
+
+# depleted (paid_service_access == false)
+model {"logged_in": true, "paid_service_access": false, "paid_service_access_info": {"subscription_credits_remaining": 0.0, "purchased_credits_remaining": 0.0, "total_usable_credits": 0.0}, "subscription": {"plan": "Pro", "current_period_end": "2026-08-01T00:00:00Z", "monthly_credits": 50.0}}
+
+# topup-only (no monthly plan, has purchased balance)
+model {"logged_in": true, "paid_service_access": true, "paid_service_access_info": {"subscription_credits_remaining": 0.0, "purchased_credits_remaining": 25.0, "total_usable_credits": 25.0}, "subscription": {"plan": null, "current_period_end": null, "monthly_credits": 0.0}}
