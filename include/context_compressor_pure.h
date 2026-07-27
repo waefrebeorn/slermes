@@ -141,8 +141,42 @@ json_t *cc_strip_images_from_content(const json_t *content);
 
 /* Summary-prefix normalization (byte-pinned to Python's prefixes). */
 int  cc_starts_with_summary_prefix(const char *text);
-char *cc_strip_summary_prefix(const char *summary);  /* caller frees */
+char *cc_strip_summary_prefix(const char *summary);   /* caller frees */
 char *cc_with_summary_prefix(const char *summary);   /* caller frees */
+
+/* ── batch 3: summary classification + user-turn predicates + threshold math ─ */
+
+const char *cc_get_tool_call_id(const json_t *tool_call);
+const char *cc_get_tool_call_id_by_tc(const json_t *tc);
+
+int  cc_has_compressed_summary_metadata(const json_t *message);
+int  cc_is_context_summary_content(const json_t *content);
+/* "standalone" / "merged" / NULL (caller frees non-NULL) */
+char *cc_classify_summary_content(const json_t *content);
+int  cc_is_context_summary_message(const json_t *message);
+
+int  cc_is_blank_user_turn(const json_t *message);
+int  cc_is_synthetic_compression_user_turn(const json_t *message);
+int  cc_is_actionable_user_turn(const json_t *message);
+int  cc_transcript_has_real_user_turn(const json_t *messages);
+/* malloc'd int[] of removable indices, *out_count set; NULL when none */
+int *cc_blank_echo_indices_after(const json_t *messages, int user_idx, int *out_count);
+
+int  cc_find_context_summaries(const json_t *messages, int start, int end,
+                               int *out_idx, char **out_bodies, int limit);
+json_t *cc_strip_context_summary_handoff_message(const json_t *message); /* caller frees */
+
+long  cc_coerce_threshold_tokens_cap(const json_t *value);   /* -1 == None */
+double cc_effective_threshold_percent(long context_length, double threshold_percent);
+long  cc_compute_threshold_tokens(long context_length, double threshold_percent,
+                                  long max_tokens);
+long  cc_apply_threshold_tokens_cap(long threshold_tokens, long threshold_tokens_cap,
+                                    long context_length);
+
+void cc_restart_handoff_probe_bounds(const json_t *messages, int protect_first_n,
+                                     int *out_start, int *out_end);
+int  cc_effective_protect_first_n(int compression_count, int has_previous_summary,
+                                 int protect_first_n);
 
 #ifdef __cplusplus
 }

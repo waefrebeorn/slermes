@@ -718,3 +718,312 @@ char *cc_with_summary_prefix(const char *summary) {
     free(body);
     return out;
 }
+
+/* ── _get_tool_call_id ─────────────────────────────────────────────────── */
+
+/* PoP: cc_get_tool_call_id @ agent/context_compressor.py:_extract_tool_call_id */
+const char *cc_get_tool_call_id(const json_t *tool_call) {
+    if (!tool_call || tool_call->type != JSON_OBJECT) return "";
+    return json_get_str(tool_call, "id", "");
+}
+
+/* PoP: cc_get_tool_call_id_by_tc @ agent/context_compressor.py:_get_tool_call_id */
+const char *cc_get_tool_call_id_by_tc(const json_t *tc) {
+    if (!tc || tc->type != JSON_OBJECT) return "";
+    const char *v = json_get_str(tc, "call_id", "");
+    if (v && *v) return v;
+    return json_get_str(tc, "id", "");
+}
+
+/* ── summary-content classification family ─────────────────────────────── */
+
+/* PoP: cc_has_compressed_summary_metadata @ agent/context_compressor.py:_has_compressed_summary_metadata */
+int cc_has_compressed_summary_metadata(const json_t *message) {
+    if (!message || message->type != JSON_OBJECT) return 0;
+    json_t *v = json_obj_get(message, CC_COMPRESSED_SUMMARY_METADATA_KEY);
+    return (v && v->type != JSON_NULL && !(v->type == JSON_BOOL && !v->bool_val)
+            && !(v->type == JSON_STRING && strlen(v->str_val) == 0));
+}
+
+/* PoP: cc_is_context_summary_content @ agent/context_compressor.py:_is_context_summary_content */
+int cc_is_context_summary_content(const json_t *content) {
+    return cc_classify_summary_content(content) != NULL;
+}
+
+/* PoP: cc_classify_summary_content @ agent/context_compressor.py:classify_summary_content */
+/* Returns one of: "standalone", "merged", or NULL. Caller frees when non-NULL. */
+char *cc_classify_summary_content(const json_t *content) {
+    char *text = cc_content_text_for_contains(content);
+    if (!text) return NULL;
+    char *rt = NULL;
+    char *s = text;
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    char *delim = strstr(s, CC_MERGED_SUMMARY_DELIMITER);
+    if (delim) {
+        char *after = delim + strlen(CC_MERGED_SUMMARY_DELIMITER);
+        while (*after == ' ' || *after == '\t' || *after == '\n' || *after == '\r') after++;
+        rt = cc_starts_with_summary_prefix(after) ? strdup("merged") : NULL;
+    } else {
+        rt = cc_starts_with_summary_prefix(s) ? strdup("standalone") : NULL;
+    }
+    free(text);
+    return rt;
+}
+
+/* PoP: cc_is_context_summary_message @ agent/context_compressor.py:_is_context_summary_message */
+int cc_is_context_summary_message(const json_t *message) {
+    if (!message || message->type != JSON_OBJECT) return 0;
+    return cc_has_compressed_summary_metadata(message) ||
+           cc_is_context_summary_content(json_obj_get(message, "content"));
+}
+
+/* ── user-turn predicates ───────────────────────────────────────────────── */
+
+/* PoP: cc_is_blank_user_turn @ agent/context_compressor.py:_is_blank_user_turn */
+int cc_is_blank_user_turn(const json_t *message) {
+    if (!message || message->type != JSON_OBJECT) return 0;
+    if (strcmp(json_get_str(message, "role", ""), "user") != 0) return 0;
+    if (cc_has_compressed_summary_metadata(message)) return 0;
+    json_t *content = json_obj_get(message, "content");
+    if (cc_is_context_summary_content(content)) return 0;
+    if (content == NULL || (content->type == JSON_STRING && strlen(content->str_val) == 0))
+        return 1;
+    if (content->type != JSON_ARRAY) return 0;
+    if (json_len(content) == 0) return 1;
+    int n = (int)json_len(content);
+    for (int i = 0; i < n; i++) {
+        json_t *part = json_get(content, (size_t)i);
+        if (part && part->type == JSON_STRING) {
+            if (strlen(part->str_val) > 0) return 0;
+            continue;
+        }
+        if (part && part->type == JSON_OBJECT) {
+            const char *t = json_get_str(part, "type", "");
+            if (strcmp(t, "text") == 0 || strcmp(t, "input_text") == 0) {
+                const char *txt = json_get_str(part, "text", "");
+                if (strlen(txt) > 0) return 0;
+                continue;
+            }
+        }
+        return 0; /* image/audio/unknown structured block = user input */
+    }
+    return 1;
+}
+
+/* PoP: cc_is_synthetic_compression_user_turn @ agent/context_compressor.py:_is_synthetic_compression_user_turn */
+int cc_is_synthetic_compression_user_turn(const json_t *message) {
+    if (!message || message->type != JSON_OBJECT) return 0;
+    if (strcmp(json_get_str(message, "role", ""), "user") != 0) return 0;
+    if (cc_has_compressed_summary_metadata(message)) return 1;
+    json_t *content = json_obj_get(message, "content");
+    if (cc_is_context_summary_content(content)) return 1;
+    char *text = cc_content_text_for_contains(content);
+    int hit = 0;
+    if (text) {
+        /* strip */
+        char *s = text;
+        while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+        if (strcmp(s, CC_COMPRESSION_CONTINUATION_USER_CONTENT) == 0 ||
+            strcmp(s, CC_LEGACY_COMPRESSION_CONTINUATION_USER_CONTENT) == 0) {
+            hit = 1;
+        } else if (strncmp(s, CC_TODO_INJECTION_HEADER, strlen(CC_TODO_INJECTION_HEADER)) == 0
+                   && s[strlen(CC_TODO_INJECTION_HEADER)] == '\n') {
+            hit = 1;
+        }
+        free(text);
+    }
+    return hit;
+}
+
+/* PoP: cc_is_actionable_user_turn @ agent/context_compressor.py:_is_actionable_user_turn */
+int cc_is_actionable_user_turn(const json_t *message) {
+    if (!message || message->type != JSON_OBJECT) return 0;
+    if (strcmp(json_get_str(message, "role", ""), "user") != 0) return 0;
+    if (cc_has_compressed_summary_metadata(message)) return 0;
+    if (cc_is_context_summary_content(json_obj_get(message, "content"))) return 0;
+    return !cc_is_blank_user_turn(message);
+}
+
+/* PoP: cc_transcript_has_real_user_turn @ agent/context_compressor.py:_transcript_has_real_user_turn */
+int cc_transcript_has_real_user_turn(const json_t *messages) {
+    if (!messages || messages->type != JSON_ARRAY) return 0;
+    int n = (int)json_len(messages);
+    for (int i = 0; i < n; i++) {
+        json_t *msg = json_get(messages, (size_t)i);
+        if (!msg || msg->type != JSON_OBJECT) continue;
+        if (strcmp(json_get_str(msg, "role", ""), "user") != 0) continue;
+        if (cc_is_synthetic_compression_user_turn(msg)) continue;
+        return 1;
+    }
+    return 0;
+}
+
+/* PoP: cc_blank_echo_indices_after @ agent/context_compressor.py:_blank_echo_indices_after */
+/* Returns a malloc'd int array of removable indices; *out_count set. Caller frees.
+ * Returns NULL when no removable run. */
+int *cc_blank_echo_indices_after(const json_t *messages, int user_idx, int *out_count) {
+    static int empty[0];  /* not used; we always malloc */
+    (void)empty;
+    int *result = NULL;
+    *out_count = 0;
+    if (!messages || messages->type != JSON_ARRAY) return NULL;
+    int n = (int)json_len(messages);
+    if (user_idx < 0) return NULL;
+    int idx = user_idx + 1;
+    int cap = 0;
+    while (idx < n && cc_is_blank_user_turn(json_get(messages, (size_t)idx))) {
+        if (*out_count >= cap) { cap = cap ? cap*2 : 4; int *r2 = realloc(result, cap*sizeof(int)); if(!r2){free(result);*out_count=0;return NULL;} result = r2; }
+        result[(*out_count)++] = idx;
+        idx++;
+    }
+    if (*out_count == 0 || idx >= n) { free(result); *out_count = 0; return NULL; }
+    if (strcmp(json_get_str(json_get(messages, (size_t)idx), "role", ""), "assistant") != 0) {
+        free(result); *out_count = 0; return NULL;
+    }
+    return result;
+}
+
+/* ── summary discovery / unwrap ─────────────────────────────────────────── */
+
+/* PoP: cc_find_context_summaries @ agent/context_compressor.py:_find_context_summaries */
+/* Fills out_idx[] (caller-sized >= end-start) and out_bodies[] (caller frees each).
+ * Returns count of summaries found. */
+int cc_find_context_summaries(const json_t *messages, int start, int end,
+                              int *out_idx, char **out_bodies, int limit) {
+    if (!messages || messages->type != JSON_ARRAY) return 0;
+    int n = (int)json_len(messages);
+    int count = 0;
+    for (int idx = start; idx < end && idx < n && count < limit; idx++) {
+        json_t *msg = json_get(messages, (size_t)idx);
+        if (!cc_is_context_summary_message(msg)) continue;
+        char *body = cc_strip_summary_prefix(cc_content_text_for_contains(json_obj_get(msg, "content")));
+        out_idx[count] = idx;
+        out_bodies[count] = body;
+        count++;
+    }
+    return count;
+}
+
+/* PoP: cc_strip_context_summary_handoff_message @ agent/context_compressor.py:_strip_context_summary_handoff_message */
+/* Returns a NEW message json_t (caller frees) with stale handoff data dropped,
+ * merged prior-tail content preserved. Returns NULL on alloc failure. */
+json_t *cc_strip_context_summary_handoff_message(const json_t *message) {
+    if (!message || message->type != JSON_OBJECT) return json_copy(message);
+    json_t *content = json_obj_get(message, "content");
+    int is_summary = cc_is_context_summary_content(content) ||
+                     cc_has_compressed_summary_metadata(message);
+    if (!is_summary) return json_copy(message);
+
+    if (content->type == JSON_STRING) {
+        const char *c = content->str_val;
+        if (strstr(c, CC_MERGED_SUMMARY_DELIMITER)) {
+            char *prior = strdup(c);
+            char *d = strstr(prior, CC_MERGED_SUMMARY_DELIMITER);
+            *d = '\0';
+            char *p = prior;
+            while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+            if (strncmp(p, CC_MERGED_PRIOR_CONTEXT_HEADER, strlen(CC_MERGED_PRIOR_CONTEXT_HEADER)) == 0) {
+                p += strlen(CC_MERGED_PRIOR_CONTEXT_HEADER);
+                while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+            }
+            if (*p) {
+                json_t *out = json_copy(message);
+                json_set(out, "content", json_string(p));
+                json_obj_del(out, CC_COMPRESSED_SUMMARY_METADATA_KEY);
+                free(prior);
+                return out;
+            }
+            free(prior);
+        } else {
+            char *mc = strstr(c, CC_SUMMARY_END_MARKER);
+            if (mc) {
+                char *remainder = strdup(mc + strlen(CC_SUMMARY_END_MARKER));
+                char *r = remainder;
+                while (*r == ' ' || *r == '\t' || *r == '\n' || *r == '\r') r++;
+                if (*r) {
+                    json_t *out = json_copy(message);
+                    json_set(out, "content", json_string(r));
+                    json_obj_del(out, CC_COMPRESSED_SUMMARY_METADATA_KEY);
+                    free(remainder);
+                    return out;
+                }
+                free(remainder);
+            }
+        }
+    }
+    /* list content / unhandled: fall back to a copy */
+    return json_copy(message);
+}
+
+/* ── threshold math (pure) ──────────────────────────────────────────────── */
+
+/* PoP: cc_coerce_threshold_tokens_cap @ agent/context_compressor.py:_coerce_threshold_tokens_cap */
+long cc_coerce_threshold_tokens_cap(const json_t *value) {
+    if (!value || value->type == JSON_NULL) return -1; /* None */
+    long iv;
+    if (value->type == JSON_NUMBER) iv = (long)value->num_val;
+    else if (value->type == JSON_STRING) {
+        char *endp = NULL;
+        iv = strtol(value->str_val, &endp, 10);
+        if (endp == value->str_val || *endp != '\0') return -1;
+    } else return -1;
+    return iv > 0 ? iv : -1;
+}
+
+/* PoP: cc_effective_threshold_percent @ agent/context_compressor.py:_effective_threshold_percent */
+double cc_effective_threshold_percent(long context_length, double threshold_percent) {
+    if (context_length > 0 && context_length < CC_SMALL_CTX_WINDOW_LIMIT)
+        return (threshold_percent > CC_SMALL_CTX_THRESHOLD_PERCENT)
+                   ? threshold_percent : CC_SMALL_CTX_THRESHOLD_PERCENT;
+    return threshold_percent;
+}
+
+/* PoP: cc_compute_threshold_tokens @ agent/context_compressor.py:_compute_threshold_tokens */
+long cc_compute_threshold_tokens(long context_length, double threshold_percent,
+                                  long max_tokens) {
+    long effective_window = context_length - (max_tokens > 0 ? max_tokens : 0);
+    if (effective_window <= 0) effective_window = context_length;
+    long pct_value = (long)(effective_window * threshold_percent);
+    long floored = pct_value > CC_MINIMUM_CONTEXT_LENGTH ? pct_value : CC_MINIMUM_CONTEXT_LENGTH;
+    if (effective_window > 0 && floored >= effective_window) {
+        long r = (long)(effective_window * CC_MIN_CTX_TRIGGER_RATIO);
+        if (r > effective_window - 1) r = effective_window - 1;
+        if (r < 1) r = 1;
+        return r;
+    }
+    return floored;
+}
+
+/* PoP: cc_apply_threshold_tokens_cap @ agent/context_compressor.py:_apply_threshold_tokens_cap */
+/* Pure: returns the clamped threshold_tokens given cap + context_length. */
+long cc_apply_threshold_tokens_cap(long threshold_tokens, long threshold_tokens_cap,
+                                    long context_length) {
+    if (threshold_tokens_cap > 0) {
+        long effective_cap = (threshold_tokens_cap < context_length)
+                                 ? threshold_tokens_cap : context_length;
+        if (effective_cap < threshold_tokens) return effective_cap;
+    }
+    return threshold_tokens;
+}
+
+/* ── restart-handoff probe bounds (pure) ────────────────────────────────── */
+
+/* PoP: cc_restart_handoff_probe_bounds @ agent/context_compressor.py:_restart_handoff_probe_bounds */
+void cc_restart_handoff_probe_bounds(const json_t *messages, int protect_first_n,
+                                     int *out_start, int *out_end) {
+    *out_start = 0; *out_end = 0;
+    if (!messages || messages->type != JSON_ARRAY || protect_first_n <= 0) return;
+    int n = (int)json_len(messages);
+    int first_non_system = (n > 0 && strcmp(json_get_str(json_get(messages,0),"role",""),"system")==0) ? 1 : 0;
+    int end = first_non_system + protect_first_n + CC_RESTART_HANDOFF_PROBE_EXTRA_MESSAGES;
+    if (end > n) end = n;
+    *out_start = first_non_system;
+    *out_end = end;
+}
+
+/* PoP: cc_effective_protect_first_n @ agent/context_compressor.py:_effective_protect_first_n */
+int cc_effective_protect_first_n(int compression_count, int has_previous_summary,
+                                 int protect_first_n) {
+    if (compression_count >= 1 || has_previous_summary) return 0;
+    return protect_first_n > 0 ? protect_first_n : 0;
+}
