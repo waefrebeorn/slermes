@@ -588,8 +588,46 @@ static char *yaml_entry_to_json(const yaml_entry_t *e) {
     if (!e) return strdup("null");
 
     switch (e->type) {
-    case YVAL_STRING:
-        return json_escape_str(e->str_val);
+    case YVAL_STRING: {
+        /* YAML scalar coercion (mirrors PyYAML's implicit resolver):
+         * true/false/null map to JSON literals; canonical int/float forms
+         * become JSON numbers; everything else stays a string. Without this
+         * every `enabled: true` reached consumers as the STRING "true" and
+         * every port/timeout as a string number. */
+        const char *s = e->str_val ? e->str_val : "";
+        if (strcmp(s, "true") == 0 || strcmp(s, "True") == 0)
+            return strdup("true");
+        if (strcmp(s, "false") == 0 || strcmp(s, "False") == 0)
+            return strdup("false");
+        if (strcmp(s, "null") == 0 || strcmp(s, "~") == 0 || s[0] == '\0')
+            return strdup("null");
+        /* number? canonical decimal int or float only (no leading zeros
+         * except "0", optional sign, at most one dot, no trailing junk). */
+        {
+            const char *p = s;
+            if (*p == '-' || *p == '+') p++;
+            int digits = 0, dots = 0;
+            const char *q = p;
+            while (*q) {
+                if (*q >= '0' && *q <= '9') digits++;
+                else if (*q == '.' && dots == 0) dots++;
+                else { digits = 0; break; }
+                q++;
+            }
+            /* reject "007"-style (YAML treats as string in JSON contexts is
+             * debatable, but Python int("007") == 7 — PyYAML resolves it as
+             * int. Keep octal-looking values numeric-faithful to PyYAML. */
+            if (digits > 0) {
+                /* strip a leading '+' (JSON forbids it) */
+                if (s[0] == '+') {
+                    char *out = strdup(s + 1);
+                    return out;
+                }
+                return strdup(s);
+            }
+        }
+        return json_escape_str(s);
+    }
 
     case YVAL_LIST: {
         size_t cap = 256;

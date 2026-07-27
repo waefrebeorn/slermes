@@ -67,8 +67,13 @@ typedef json_t json_node_t;
 /* Double builder (convenience) */
 #define json_double(v)             json_number((double)(v))
 
-/* YAML parsing (compat - uses same parser) */
-#define json_parse_yaml(s) json_parse(s, NULL)
+/* YAML parsing — REAL libyaml-backed bridge (lib/libjson/json_yaml_bridge.c).
+ * Historically this macro aliased json_parse(s, NULL), which fails on any
+ * real YAML and silently returned NULL (config consumers fell back to
+ * defaults). json_parse_yaml_real parses YAML via libyaml and converts to a
+ * json_t tree; already-valid JSON input takes the strict json_parse path. */
+json_t *json_parse_yaml_real(const char *input);
+#define json_parse_yaml(s) json_parse_yaml_real(s)
 
 /* json_node_copy -> json_copy */
 #define json_node_copy json_copy

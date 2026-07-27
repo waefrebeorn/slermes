@@ -243,7 +243,12 @@ char *gw_own_policy_open_startup_violation(const gateway_config_t *cfg) {
         {"whatsapp", "WHATSAPP_DM_POLICY", "WHATSAPP_GROUP_POLICY", "WHATSAPP_ALLOW_ALL_USERS"},
     };
 
-    for (int i = 0; i < cfg->platform_count; i++) {
+    /* NOTE: gateway_config_load stores each platform at its FIXED enum index
+     * (platforms[GW_PLATFORM_WEIXIN] etc.) while platform_count is only a
+     * tally of how many were present. Iterating [0, platform_count) walks
+     * the wrong (mostly empty) prefix — scan every fixed slot instead,
+     * exactly like Python iterates config.platforms.items(). */
+    for (int i = 0; i < GW_MAX_PLATFORMS_CONFIG; i++) {
         const gw_platform_config_t *pc = &cfg->platforms[i];
         if (!pc->enabled) continue;
 

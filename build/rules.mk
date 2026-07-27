@@ -216,7 +216,7 @@ lib/libschemasanitizer.a: lib/libschemasanitizer/schema_sanitizer.o
 lib/libfuzzymatch.a: lib/libfuzzymatch/fuzzy_match.o
 	$(AR) rcs $@ $^
 
-lib/libjson.a: lib/libjson/json.o
+lib/libjson.a: lib/libjson/json.o lib/libjson/json_yaml_bridge.o
 	$(AR) rcs $@ $^
 
 lib/libhttp.a: lib/libhttp/http.o

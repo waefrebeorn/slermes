@@ -22,19 +22,61 @@ diffs them, so any drift between the C registry snapshot and the live registry
 is caught.
 """
 import sys
+import os
 import json
 import importlib.util
 
+# CRITICAL: as a script, sys.path[0] is tests/ — which contains hermes_cli/,
+# providers/ and agent/ TEST packages that shadow the real ones. auth.py
+# builds PROVIDER_REGISTRY partly from the providers catalog; with tests/
+# shadowing `providers`, newer entries (novita, fireworks, solar, upstage,
+# aliases) silently vanish and every `supports` flag flips to False.
+_TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path[:] = [p for p in sys.path if os.path.abspath(p or ".") != _TESTS_DIR]
+
 
 def _load_auth():
-    for base in sys.path:
-        cand = f"{base}/hermes_cli/auth.py"
+    # Resolve the LIVE hermes-agent tree first (same convention as the other
+    # sta_oracle_* scripts): sibling of the slermes checkout, then
+    # HERMES_AGENT_DIR, then the canonical ~/.hermes/hermes-agent install,
+    # and only then fall back to whatever is importable on sys.path. The
+    # sys.path scan alone silently loaded a STALE site-packages auth.py that
+    # predates newer providers (novita/fireworks/solar/...), flipping their
+    # supports flags to False while the C registry mirrored the live tree.
+    here = os.path.dirname(os.path.abspath(__file__))
+    candidates = [
+        os.path.join(here, "..", ".."),                    # hermes-agent-dev
+        os.environ.get("HERMES_AGENT_DIR", ""),
+        os.path.expanduser("~/.hermes/hermes-agent"),
+    ]
+    # NOTE: the runner overrides HOME to a temp dir, so expanduser can miss —
+    # also try the passwd-derived home explicitly.
+    try:
+        import pwd
+        real_home = pwd.getpwuid(os.getuid()).pw_dir
+        candidates.append(os.path.join(real_home, ".hermes", "hermes-agent"))
+    except Exception:
+        pass
+    seen = set()
+    for base in candidates + list(sys.path):
+        if not base or base in seen:
+            continue
+        seen.add(base)
+        cand = os.path.join(base, "hermes_cli", "auth.py")
+        if not os.path.isfile(cand):
+            continue
         try:
             spec = importlib.util.spec_from_file_location("live_auth", cand)
             mod = importlib.util.module_from_spec(spec)
+            # MUST register before exec: dataclasses resolves string field
+            # annotations via sys.modules[cls.__module__]; without this the
+            # @dataclass decorator inside auth.py raises AttributeError and
+            # the loader silently fell through to a stale registry.
+            sys.modules["live_auth"] = mod
             spec.loader.exec_module(mod)
             return mod
         except Exception:
+            sys.modules.pop("live_auth", None)
             continue
     import hermes_cli.auth as mod  # type: ignore
     return mod

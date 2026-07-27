@@ -71,7 +71,8 @@ int main(int argc, char **argv) {
     const gateway_config_t *cfg = gateway_config_get_global();
     char *r = cfg ? gw_own_policy_open_startup_violation(cfg) : NULL;
     if (r) {
-        printf("{\"out\":%s}\n", js(r));
+        /* Python oracle uses json.dumps default separators: '{"out": "..."}' */
+        printf("{\"out\": %s}\n", js(r));
         free(r);
     } else {
         printf("{\"out\": null}\n");

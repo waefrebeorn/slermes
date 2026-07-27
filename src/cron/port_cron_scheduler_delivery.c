@@ -358,7 +358,22 @@ int scheduler_resolve_single_delivery_target(const scheduler_job_t *job,
     char low[64];
     lc(low, deliver_value, sizeof(low));
     if (has_origin && strcasecmp(origin.platform, deliver_value) == 0) {
+        /* Python: prefer the platform's HOME channel when configured; only
+         * fall back to the origin chat when no home target exists. */
+        char *cid0 = scheduler_get_home_target_chat_id(deliver_value);
+        if (cid0 && cid0[0]) {
+            char *tid0 = scheduler_get_home_target_thread_id(deliver_value);
+            strncpy(out->platform, deliver_value, sizeof(out->platform) - 1);
+            strncpy(out->chat_id, cid0, sizeof(out->chat_id) - 1);
+            if (tid0 && tid0[0]) strncpy(out->thread_id, tid0, sizeof(out->thread_id) - 1);
+            free(cid0); free(tid0);
+            return 1;
+        }
+        free(cid0);
         target_from_origin(&origin, out);
+        /* Python keeps the caller-supplied platform name here, not origin's */
+        memset(out->platform, 0, sizeof(out->platform));
+        strncpy(out->platform, deliver_value, sizeof(out->platform) - 1);
         return 1;
     }
     if (!scheduler_is_known_delivery_platform(low)) return 0;
