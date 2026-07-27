@@ -119,23 +119,42 @@ int main(int argc, char **argv) {
             printf("}\n");
             free(rp); free(r);
         } else if (strcmp(op, "finding_dict") == 0) {
-            /* finding_dict <pattern_id> <severity> <category> <file> <line> <match> <desc>
-             * match/desc may contain spaces; parse the 6 fixed fields then take
-             * the remainder as description. */
-            char pid[64], sev[16], cat[24], fl[256];
-            int ln = 0;
-            int consumed = 0;
-            sscanf(rest, "%63s %15s %23s %255s %d %n", pid, sev, cat, fl, &ln, &consumed);
-            const char *desc = (consumed > 0 && rest[consumed]) ? rest + consumed + 1 : "";
+            /* Mirror sta_oracle_skills_guard.py exactly:
+             *   parts = rest.split(" ", 6)   -> 7 parts
+             *   Finding(pattern_id=parts[0], severity=parts[1], category=parts[2],
+             *           file=parts[3], line=int(parts[4] or 0),
+             *           match="",                 <-- oracle HARDCODES match empty
+             *           description=parts[6])     <-- remainder after the 6th space
+             * The fixture supplies only 5 fixed fields (pid sev cat file line)
+             * then a quoted description; the 6th split token is absorbed into the
+             * description remainder, and match is forced to "". So we split the
+             * first 6 fields (to locate the 6th space), take the rest as
+             * description, and clear match. */
+            char parts[7][1024];
+            for (int k = 0; k < 7; k++) parts[k][0] = '\0';
+            const char *p = rest;
+            for (int k = 0; k < 6 && *p; k++) {
+                while (*p == ' ') p++;                 /* skip run of spaces */
+                const char *start = p;
+                while (*p && *p != ' ') p++;
+                size_t len = (size_t)(p - start);
+                if (len >= sizeof(parts[k])) len = sizeof(parts[k]) - 1;
+                memcpy(parts[k], start, len);
+                parts[k][len] = '\0';
+                if (!*p) break;
+                p++;                                   /* consume one space */
+            }
+            /* p now points at the remainder after the 6th space == description. */
+            snprintf(parts[6], sizeof(parts[6]), "%s", p ? p : "");
             skills_guard_finding_t f;
             memset(&f, 0, sizeof(f));
-            snprintf(f.pattern_id, sizeof(f.pattern_id), "%s", pid);
-            snprintf(f.severity, sizeof(f.severity), "%s", sev);
-            snprintf(f.category, sizeof(f.category), "%s", cat);
-            snprintf(f.file, sizeof(f.file), "%s", fl);
-            f.line = ln;
-            snprintf(f.match, sizeof(f.match), "%s", "");  /* match not in fixture */
-            snprintf(f.description, sizeof(f.description), "%s", desc);
+            snprintf(f.pattern_id, sizeof(f.pattern_id), "%s", parts[0]);
+            snprintf(f.severity, sizeof(f.severity), "%s", parts[1]);
+            snprintf(f.category, sizeof(f.category), "%s", parts[2]);
+            snprintf(f.file, sizeof(f.file), "%s", parts[3]);
+            f.line = (int)strtol(parts[4], NULL, 10);
+            snprintf(f.match, sizeof(f.match), "%s", "");  /* oracle hardcodes "" */
+            snprintf(f.description, sizeof(f.description), "%s", parts[6]);
             char *r = skills_guard_finding_dict(&f);
             printf("{\"op\":\"finding_dict\",\"out\":%s}\n", r ? r : "{}");
             free(r);

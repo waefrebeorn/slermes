@@ -192,7 +192,9 @@ char *skills_guard_finding_dict(const skills_guard_finding_t *f) {
     size_t off = 0, cap = 2048;
     const char *keys[7] = {"pattern_id", "severity", "category", "file", "line", "match", "description"};
     const char *vals[7] = {f->pattern_id, f->severity, f->category, f->file, NULL, f->match, f->description};
-    off += (size_t)snprintf(out, cap - off, "{\"%s\":\"", keys[0]);
+    /* key[0] mirrors the loop body below: opening quote for the key only;
+     * sg_append_json_str() supplies the value's own opening/closing quotes. */
+    off += (size_t)snprintf(out, cap - off, "{\"%s\":", keys[0]);
     sg_append_json_str(out, &off, cap, vals[0]);
     for (int i = 1; i < 7; i++) {
         if (off + 1 < cap) out[off++] = ',';
