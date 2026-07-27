@@ -1,4 +1,4 @@
-# Prestige — v572 Slermes C Translation
+# Prestige — v665 Slermes C Translation
 
 ## Phase
 Mission 2 COMPLETE — Desktop parity 95/111 features
@@ -18,7 +18,7 @@ Mission 2 COMPLETE — Desktop parity 95/111 features
 - These are implicitly handled by the C event loop and state.db integration
 - v497: Mission 2 COMPLETE (95/111 desktop features)
 - v498: MISSION 2 COMPLETE commit
-- v572: FAÇADE AUDIT COMPLETE — 18 files / 52 fake-looking stubs rewritten as REAL ports (libhttp/libjson/libwebsocket/libcrypto/libbase64/libmcp_oauth + real subprocess/fs). Binary links clean, 36/36 tests pass.
+- v665: FAÇADE AUDIT COMPLETE — 18 files / 52 fake-looking stubs rewritten as REAL ports (libhttp/libjson/libwebsocket/libcrypto/libbase64/libmcp_oauth + real subprocess/fs). Binary links clean, 36/36 tests pass.
 
 ## Since v480 — 18 commits, 5 prestige cycles
 
@@ -43,9 +43,9 @@ Mission 2 COMPLETE — Desktop parity 95/111 features
 Mission 5: Documentation serving (serve ALL 749 upstream .md files via web_server.c)
 
 <!-- PARITY:AUTO -->
-| PORTED  | 479 / 774 (61.9%) |
-| REAL_GAP| 286 (37.0%) — no N/A |
-| PARTIAL | 9 (0.8%) |
+| PORTED  | 6,914 / 11,573 (59.7%) |
+| REAL_GAP| 4,624 (40.0%) — no N/A |
+| PARTIAL | 35 (0.8%) |
 | STUB    | 0 |
 
 _Generated from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._

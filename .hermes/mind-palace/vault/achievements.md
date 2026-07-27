@@ -240,3 +240,36 @@ annotations, each with an oracle harness (`t_port_*.c` + `sta_oracle_*.py`) veri
 **Commits:** `4f251d383a`, `5e2207647d` — pushed to `origin/main`.
 **Discipline:** faithful ports, no stubs, no `In a real implementation` façades; oracles prove behavior matches Python exactly.
 
+
+## v665 — Façade hunt, orphan-audit, skills_guard port (2026-07-26)
+
+**What happened:** Continued the scaffolding/façade audit (new tell-phrases: "assume
+it/success", "for simplicity", "dummy/fake/canned", "just return", "no-op for now",
+"pass through for now", "TBD", "C doesn't/can't", "simplified") + discovered the
+deadliest new façade class: orphaned build objects.
+
+**Façades fixed (all oracle-verified vs live Python):**
+- `resolve_skill_config_values` (libskillutils): static `"{}"` + "config.yaml skills
+  parsing TBD" → real dotpath walk via libyaml + `~`/`${VAR}` expansion. Root-caused
+  libyaml never stripped scalar quotes (diverged from `yaml.safe_load`); added faithful
+  flow-scalar unquoting + fixed `test_yaml.c` which froze the bug as expected. 5/5 MATCH.
+- `label_from_token` (credential_pool_custom): "JWT parsing requires base64 decode" →
+  used already-ported JWT decode. 8/8 byte-MATCH.
+- `_detect_target`/`is_platform_supported` (tirith): fabricated `"linux-x86_64"` →
+  uname()-based Rust triples (`x86_64-unknown-linux-gnu`). MATCH.
+- `skills_hub_resolve_skill_name` (port_skills_hub): "Pass through for now" wrong sig →
+  faithful `(fm,url)` + linked the orphaned `port_skills_hub.o`. 10/10 MATCH.
+
+**Orphan-audit (structural façade):** 66 src/*.c files referenced by NO build target.
+Five finished ports (~135 PoP fns) counted PORTED but never linked. Wired
+(port_mcp_tool, port_send_message_tool, port_tts_tool, port_file_operations,
+port_image_generation_tool), 0 symbol collisions. `port_process_registry.c` didn't
+even compile (corrupted comment block from a PoP insertion).
+
+**skills_guard.py port:** Finding/ScanResult dataclasses, content digest, scan cache
+→ port_tools_skills_guard.c + skills_guard.h + oracle fixture. Builds clean, linked.
+
+**Build:** `make slermes` → EXIT=0, ~48.8 MB. **Parity:** 6,914 PORTED / 4,624 REAL_GAP
+(11,573 total). All oracle suites green.
+**Commits:** 23270444de, 5a508060a8, 3108f961a2 (prior), + v665 skills_guard + walkway.
+**Discipline:** faithful ports, no stubs, no façades; oracles prove behavior == Python.

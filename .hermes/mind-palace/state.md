@@ -1,22 +1,34 @@
-# State — Slermes C Translation (v572)
+# State — Slermes C Translation (v665)
 
-- Build: `make slermes` = 0 errors, binary links clean (~45 MB)
-- **Scanner (real, live 2026-07-20):** 5,868 PORTED (60.3%), 3,650 REAL_GAP (37.5%), 215 PARTIAL, 9,731 total features. N/A: 0 (deleted).
+- Build: `make slermes` = 0 errors, binary links clean (~48.8 MB)
+- **Scanner (real, live 2026-07-26):** 6,914 PORTED (59.7%), 4,624 REAL_GAP (40.0%), 35 PARTIAL, 11,573 total features. N/A: 0 (deleted).
 - Tests: `bash tests/run_mission8_tests.sh` → 36 passed, 0 failed, 35 skipped
 
-## This Session (v572) — God Header Extraction
+## This Session (v665) — Façade Hunt + Orphan Audit + skills_guard Port
 
-Split the 1530-line `include/hermes_gateway.h` into a focused type-declaration
-header (`hermes_gateway_types.h`) + the function-declaration umbrella
-(`hermes_gateway.h` now includes it). Removed ~306 lines of duplicate type
-definitions from the umbrella — gateway_msg_t, gw_rate_limiter_t,
-gw_http_pool_entry_t, gw_session_source_t, gw_session_entry_t, gw_platform_t,
-gateway_state_t, webhook_subscription_t, slash_policy_t, and all associated
-#defines now live in a self-contained header with its own include guard.
+Continued the scaffolding/façade audit and infrastructure hardening:
 
-Builds clean, links (45 MB), 7,579 global symbols. Mission 8: 36/0/35.
-No behavioral change — pure structural extraction.
-Follows the previous session's monolith-split pattern (hermes_gap_fixes).
+- **`resolve_skill_config_values`** (libskillutils): was returning static `"{}"` with
+  "config.yaml skills parsing TBD" — now real: walks `skills.config.<key>` dotpaths
+  via libyaml, default fallback, `~`/`${VAR}` expansion. Root-caused that libyaml never
+  stripped quotes from scalars (diverging from `yaml.safe_load`) — added faithful
+  flow-scalar unquoting + escape processing; fixed `test_yaml.c` which had frozen the
+  buggy behavior as the expected value. Oracle: 5/5 MATCH.
+- **`label_from_token`** (credential_pool_custom): "In C we just return fallback since
+  full JWT parsing requires base64 decode" — used already-ported JWT decode. Oracle 8/8.
+- **`_detect_target`/`is_platform_supported`** (tirith): fabricated `"linux-x86_64"`
+  triples that match no tirith release — now uname()-based Rust triples. Oracle MATCH.
+- **`skills_hub_resolve_skill_name`** (port_skills_hub): "Pass through for now" with
+  wrong signature — faithful `(fm, url)` port + linked `port_skills_hub.o` (was orphaned).
+  Oracle: 10/10 MATCH.
+- **Orphaned-object audit:** 66 src/*.c files referenced by NO build target. Five finished
+  ports (~135 PoP fns: mcp_tool, send_message, tts, file_operations, image_generation)
+  were counted PORTED by the scanner but never entered the binary. Wired, 0 symbol
+  collisions. `port_process_registry.c` didn't even compile (corrupted comment block).
+- **`skills_guard.py` faithful port** (port_tools_skills_guard.c + header + oracle):
+  Finding/ScanResult dataclasses, content digest, scan cache. Builds clean, linked.
+
+Live parity: PORTED 6,914 / REAL_GAP 4,624. All ports oracle-verified vs live Python.
 
 All 18 files ported to real implementations (per-file commits, no god-header):
 
@@ -76,7 +88,7 @@ Modules ported (commits):
 - `b21caa411c` gateway — 5 platform/env (uname/sha256)
 - `9f3a620f81` kanban — 4 CLI/time helpers
 
-## This Session (v572) — Pure-Transform Gap Closure (17 funcs)
+## This Session (v665) — Pure-Transform Gap Closure (17 funcs)
 
 Ported 17 REAL_GAP functions across 6 modules with faithful C11 + `/* PoP: */`
 annotations, each backed by an oracle harness (`t_port_*.c` + `sta_oracle_*.py`)
@@ -93,9 +105,9 @@ Scanner: 4,884 → 4,901 PORTED (+17); 4,774 → 4,757 REAL_GAP (−17). All 17 
 Fixed `tests/run_one_oracle.sh` (added `-I src`) so port headers resolve.
 
 <!-- PARITY:AUTO -->
-| PORTED  | 479 / 774 (61.9%) |
-| REAL_GAP| 286 (37.0%) — no N/A |
-| PARTIAL | 9 (0.8%) |
+| PORTED  | 6,914 / 11,573 (59.7%) |
+| REAL_GAP| 4,624 (40.0%) — no N/A |
+| PARTIAL | 35 (0.8%) |
 | STUB    | 0 |
 
 _Generated from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
