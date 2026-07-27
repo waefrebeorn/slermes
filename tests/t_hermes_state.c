@@ -148,6 +148,124 @@ int main(void) {
                         &calls, &in_t, &out_t, &rzn, &cost);
     CHECK(calls == 2 && in_t == 17 && out_t == 8 && rzn == 3, "aux usage 17/8/3 x2");
 
+    /* ── archive lineage semantics (test_session_archiving.py) ──
+     * archiving the surfaced tip must archive the projected root too. */
+    hermes_state_create_session(db, "aroot", "cli");
+    hermes_state_create_session(db, "atip", "cli");
+    hermes_state_link_child(db, "atip", "aroot", "");     /* parent link */
+    /* root must be compression-ended for the lineage walk */
+    hermes_state_link_child(db, "aroot", "", "compression"); /* no-op parent, set reason */
+    {
+        /* aroot has no parent; use end_session-style update via link on child
+         * only. Set aroot's end_reason directly through the public surface:
+         * end_session gives first-writer-wins semantics. */
+        hermes_state_end_session(db, "aroot", "compression");
+    }
+    CHECK(hermes_state_set_session_archived(db, "atip", true), "archive tip returns true");
+    char *js = hermes_state_get_session(db, "aroot");
+    CHECK(js && strstr(js, "\"archived\":1"), "archiving tip archives projected root");
+    free(js);
+    js = hermes_state_get_session(db, "atip");
+    CHECK(js && strstr(js, "\"archived\":1"), "tip itself archived");
+    free(js);
+    CHECK(hermes_state_set_session_archived(db, "atip", false), "unarchive tip returns true");
+    js = hermes_state_get_session(db, "aroot");
+    CHECK(js && strstr(js, "\"archived\":0"), "unarchiving tip unarchives projected root");
+    free(js);
+
+    /* list_sessions_rich hides compression-away roots and archived rows */
+    hermes_state_set_session_archived(db, "atip", true);
+    char *lst = hermes_state_list_sessions_rich(db, false);
+    CHECK(strstr(lst, "\"atip\"") == NULL && strstr(lst, "\"aroot\"") == NULL,
+          "archived lineage hidden from default list");
+    free(lst);
+    lst = hermes_state_list_sessions_rich(db, true);
+    CHECK(strstr(lst, "\"atip\"") != NULL, "archived_only lists the tip");
+    CHECK(strstr(lst, "\"aroot\"") == NULL, "compression root hidden even in archived list");
+    free(lst);
+
+    /* pinned flag flips whole lineage too */
+    CHECK(hermes_state_set_session_pinned(db, "atip", true), "pin tip");
+    js = hermes_state_get_session(db, "aroot");
+    CHECK(js && strstr(js, "\"pinned\":1"), "pinning tip pins projected root");
+    free(js);
+
+    /* ── alternation repair (test_restore_alternation_repair.py) ── */
+    {
+        /* user, assistant, user, user, assistant -> repair merges user pair */
+        repair_msg_t r[5];
+        memset(r, 0, sizeof r);
+        r[0].role = strdup("user");      r[0].content = strdup("first ask");
+        r[1].role = strdup("assistant"); r[1].content = strdup("first reply");
+        r[2].role = strdup("user");      r[2].content = strdup("unanswered turn");
+        r[3].role = strdup("user");      r[3].content = strdup("next turn");
+        r[4].role = strdup("assistant"); r[4].content = strdup("next reply");
+        int cnt = 5;
+        int reps = hermes_state_repair_message_sequence(r, &cnt);
+        CHECK(reps == 1 && cnt == 4, "repair merges user;user pair (1 repair, 4 msgs)");
+        CHECK(strcmp(r[2].content, "unanswered turn\n\nnext turn") == 0,
+              "merged user content joined with blank line");
+        /* stability: running repair again is a no-op */
+        int reps2 = hermes_state_repair_message_sequence(r, &cnt);
+        CHECK(reps2 == 0 && cnt == 4, "repaired sequence is stable (no-op rerun)");
+        for (int i = 0; i < cnt; i++) {
+            free(r[i].role); free(r[i].content); free(r[i].tool_call_id);
+            free(r[i].tool_call_ids); free(r[i].finish_reason);
+            free(r[i].reasoning_content);
+        }
+    }
+    {
+        /* clean transcript -> no repairs */
+        repair_msg_t r[2];
+        memset(r, 0, sizeof r);
+        r[0].role = strdup("user");      r[0].content = strdup("ask");
+        r[1].role = strdup("assistant"); r[1].content = strdup("reply");
+        int cnt = 2;
+        CHECK(hermes_state_repair_message_sequence(r, &cnt) == 0 && cnt == 2,
+              "repair noop on clean transcript");
+        for (int i = 0; i < cnt; i++) { free(r[i].role); free(r[i].content); }
+    }
+    {
+        /* orphan tool result dropped; matched tool result kept; duplicate dropped */
+        repair_msg_t r[5];
+        memset(r, 0, sizeof r);
+        r[0].role = strdup("user");      r[0].content = strdup("go");
+        r[1].role = strdup("assistant"); r[1].tool_call_ids = strdup("call_1");
+        r[2].role = strdup("tool");      r[2].tool_call_id = strdup("call_1");
+        r[3].role = strdup("tool");      r[3].tool_call_id = strdup("call_1"); /* dup */
+        r[4].role = strdup("tool");      r[4].tool_call_id = strdup("call_9"); /* orphan */
+        int cnt = 5;
+        int reps = hermes_state_repair_message_sequence(r, &cnt);
+        CHECK(reps == 2 && cnt == 3, "duplicate + orphan tool results dropped");
+        for (int i = 0; i < cnt; i++) {
+            free(r[i].role); free(r[i].content); free(r[i].tool_call_id);
+            free(r[i].tool_call_ids); free(r[i].finish_reason);
+            free(r[i].reasoning_content);
+        }
+    }
+    {
+        /* consecutive assistants merge: tool_calls union + content concat */
+        repair_msg_t r[3];
+        memset(r, 0, sizeof r);
+        r[0].role = strdup("user");      r[0].content = strdup("go");
+        r[1].role = strdup("assistant"); r[1].content = strdup("part one");
+        r[1].tool_call_ids = strdup("call_a");
+        r[2].role = strdup("assistant"); r[2].content = strdup("part two");
+        r[2].tool_call_ids = strdup("call_b");
+        int cnt = 3;
+        int reps = hermes_state_repair_message_sequence(r, &cnt);
+        CHECK(reps == 1 && cnt == 2, "assistant;assistant merged");
+        CHECK(strcmp(r[1].content, "part one\npart two") == 0,
+              "assistant content concatenated with newline");
+        CHECK(strcmp(r[1].tool_call_ids, "call_a;call_b") == 0,
+              "tool_calls unioned in order");
+        for (int i = 0; i < cnt; i++) {
+            free(r[i].role); free(r[i].content); free(r[i].tool_call_id);
+            free(r[i].tool_call_ids); free(r[i].finish_reason);
+            free(r[i].reasoning_content);
+        }
+    }
+
     hermes_state_db_close(db);
     unlink(path);
 

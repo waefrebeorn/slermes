@@ -148,6 +148,63 @@ bool hermes_state_record_auxiliary_usage(hermes_state_db_t *db,
                                          bool has_estimated_cost,
                                          double estimated_cost_usd);
 
+/* ── Archive / pin / sweep / listing (hermes_state_archive.c) ───────────
+ * PoP: set_session_pinned @ hermes_state.py:set_session_pinned
+ * Like set_session_archived, flips the WHOLE compression lineage. */
+bool hermes_state_set_session_pinned(hermes_state_db_t *db,
+                                     const char *session_id, bool pinned);
+
+/* PoP: archive_stale_sessions @ hermes_state.py:archive_stale_sessions
+ * Archive lineage tips idle >= idle_days (latest message ts, fallback
+ * started_at). Returns count archived; <=0 idle_days is a no-op. */
+int hermes_state_archive_stale_sessions(hermes_state_db_t *db,
+                                        double idle_days, bool exclude_pinned);
+
+/* PoP: list_prune_candidates @ hermes_state.py:list_prune_candidates
+ * Dry-run listing (oldest-first by last_active). archived_filter: -1 any,
+ * 0 unarchived only, 1 archived only. Returns malloc'd JSON array. */
+char *hermes_state_list_prune_candidates(hermes_state_db_t *db,
+                                         double older_than_days,
+                                         const char *source,
+                                         bool require_ended,
+                                         int archived_filter);
+
+/* PoP: archive_sessions @ hermes_state.py:archive_sessions
+ * Bulk-archive matches (whole lineage each). Returns matches count. */
+int hermes_state_archive_sessions(hermes_state_db_t *db,
+                                  double older_than_days, const char *source);
+
+/* PoP: list_sessions_rich @ hermes_state.py:list_sessions_rich
+ * last_active DESC ordering; hides archived (or shows only archived) and
+ * compression-away roots. Returns malloc'd JSON array. */
+char *hermes_state_list_sessions_rich(hermes_state_db_t *db,
+                                      bool archived_only);
+
+/* ── Alternation repair (hermes_state_repair.c) ─────────────────────────
+ * Flat message record for repair_message_sequence. Strings are owned
+ * (malloc'd) by the caller; the repair frees strings of merged/dropped
+ * rows and compacts the array in place.
+ *   tool_call_ids: for assistant rows, ";"-separated "id[,call_id]" entries
+ *                  describing the turn's tool_calls (superset match #58168).
+ *   tool_call_id:  for tool rows, the id the result answers.
+ *   codex_items:   true when the row carries codex reasoning/message items
+ *                  (codex interims are exempt from Pass 0 merging). */
+typedef struct {
+    char *role;               /* "user" | "assistant" | "tool" | ... */
+    char *content;            /* plain-text content or NULL */
+    char *tool_call_id;       /* tool rows */
+    char *tool_call_ids;      /* assistant rows: ";"-joined id[,call_id] */
+    char *finish_reason;      /* "incomplete", "verification_required", ... */
+    char *reasoning_content;  /* thinking-provider reasoning or NULL */
+    bool  codex_items;        /* codex_reasoning_items/codex_message_items */
+} repair_msg_t;
+
+/* PoP: repair_message_sequence @ agent/agent_runtime_helpers.py:repair_message_sequence
+ * Three passes (merge assistant runs / drop orphan+duplicate tool results /
+ * merge user runs). Compacts msgs in place, updates *count, returns number
+ * of repairs. */
+int hermes_state_repair_message_sequence(repair_msg_t *msgs, int *count);
+
 #ifdef __cplusplus
 }
 #endif

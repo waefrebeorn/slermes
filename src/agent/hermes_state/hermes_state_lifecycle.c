@@ -46,21 +46,8 @@ bool hermes_state_end_session(hermes_state_db_t *db, const char *session_id,
     return ok;
 }
 
-/* PoP: set_session_archived @ hermes_state.py:set_session_archived */
-bool hermes_state_set_session_archived(hermes_state_db_t *db,
-                                       const char *session_id, bool archived) {
-    if (!db || !session_id || !*session_id) return false;
-    sqlite3_stmt *st = NULL;
-    if (sqlite3_prepare_v2(db->db,
-            "UPDATE sessions SET archived = ? WHERE id = ?",
-            -1, &st, NULL) != SQLITE_OK)
-        return false;
-    sqlite3_bind_int(st, 1, archived ? 1 : 0);
-    sqlite3_bind_text(st, 2, session_id, -1, SQLITE_TRANSIENT);
-    bool ok = sqlite3_step(st) == SQLITE_DONE;
-    sqlite3_finalize(st);
-    return ok;
-}
+/* set_session_archived lives in hermes_state_archive.c — the faithful
+ * version flips the WHOLE compression lineage via a recursive CTE. */
 
 /* PoP: (model_config setter) @ hermes_state.py compression-walk exclusion */
 bool hermes_state_set_model_config(hermes_state_db_t *db, const char *session_id,
