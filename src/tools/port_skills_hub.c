@@ -12,6 +12,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <strings.h>
 #include <stddef.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -314,13 +315,111 @@ bool skills_hub_is_valid_skill_name(const char *name)
     return hub_validate_skill_name(name);
 }
 
+/* PoP: skills_hub_source_is_valid_skill_name @ tools/skills_hub.py:_is_valid_skill_name */
+/* SkillSource._is_valid_skill_name: strip + lowercase the candidate, reject
+ * empty / reserved names (skill, readme, index, unnamed-skill), then match
+ * ^[a-z][a-z0-9_-]*$. NOTE: distinct from the module-level
+ * _validate_skill_name (hub_validate_skill_name). */
+static bool source_is_valid_skill_name(const char *name)
+{
+    if (!name) return false;
+    /* candidate = name.strip().lower() */
+    const char *s = name;
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    size_t len = strlen(s);
+    while (len > 0 && (s[len-1] == ' ' || s[len-1] == '\t' ||
+           s[len-1] == '\n' || s[len-1] == '\r')) len--;
+    if (len == 0 || len >= 256) return false;
+
+    char cand[256];
+    for (size_t i = 0; i < len; i++)
+        cand[i] = (char)tolower((unsigned char)s[i]);
+    cand[len] = '\0';
+
+    if (strcmp(cand, "skill") == 0 || strcmp(cand, "readme") == 0 ||
+        strcmp(cand, "index") == 0 || strcmp(cand, "unnamed-skill") == 0)
+        return false;
+
+    /* ^[a-z][a-z0-9_-]*$ */
+    if (!(cand[0] >= 'a' && cand[0] <= 'z')) return false;
+    for (size_t i = 1; i < len; i++) {
+        char c = cand[i];
+        if (!((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') ||
+              c == '_' || c == '-'))
+            return false;
+    }
+    return true;
+}
+
 /* Port of Python: _resolve_skill_name */
 /* PoP: skills_hub_resolve_skill_name @ tools/skills_hub.py:_resolve_skill_name */
-char *skills_hub_resolve_skill_name(const char *identifier)
+/* Pick a skill name from frontmatter or URL. Returns NULL when neither
+ * source produces a valid identifier — callers then prompt or refuse
+ * (a clean failure beats a useless auto-name like "SKILL"). Caller frees. */
+char *skills_hub_resolve_skill_name(json_t *fm, const char *url)
 {
-    if (!identifier) return strdup("");
-    /* Try to resolve via installed skills, then sources */
-    return strdup(identifier); /* Pass through for now */
+    /* 1. Frontmatter ``name:`` is authoritative when present and valid. */
+    if (fm) {
+        json_t *name_node = json_object_get(fm, "name");
+        const char *fm_name = name_node ? json_string_value(name_node) : NULL;
+        if (fm_name && source_is_valid_skill_name(fm_name)) {
+            /* Python returns fm_name.strip() */
+            const char *s = fm_name;
+            while (*s == ' ' || *s == '\t') s++;
+            size_t len = strlen(s);
+            while (len > 0 && (s[len-1] == ' ' || s[len-1] == '\t')) len--;
+            char *out = (char *)malloc(len + 1);
+            if (!out) return NULL;
+            memcpy(out, s, len);
+            out[len] = '\0';
+            return out;
+        }
+    }
+
+    /* 2. URL-slug heuristic: .../<name>/SKILL.md -> <name>;
+     *    .../<name>.md -> <name>. Validate each candidate. */
+    if (!url || !*url) return NULL;
+
+    /* urlparse(url).path: skip scheme://host, cut at ? or #. */
+    const char *path = url;
+    const char *scheme = strstr(url, "://");
+    if (scheme) {
+        path = strchr(scheme + 3, '/');
+        if (!path) return NULL;
+    }
+    size_t plen = strcspn(path, "?#");
+
+    /* Split path into non-empty segments. */
+    char *pathbuf = (char *)malloc(plen + 1);
+    if (!pathbuf) return NULL;
+    memcpy(pathbuf, path, plen);
+    pathbuf[plen] = '\0';
+
+    char *parts[64];
+    int nparts = 0;
+    for (char *tok = strtok(pathbuf, "/"); tok && nparts < 64;
+         tok = strtok(NULL, "/")) {
+        if (*tok) parts[nparts++] = tok;
+    }
+
+    char *result = NULL;
+    if (nparts >= 2 && strcasecmp(parts[nparts-1], "skill.md") == 0) {
+        if (source_is_valid_skill_name(parts[nparts-2]))
+            result = strdup(parts[nparts-2]);
+    }
+    if (!result && nparts >= 1) {
+        /* re.sub(r"\.md$", "", last, flags=IGNORECASE) */
+        char cand[256];
+        snprintf(cand, sizeof(cand), "%s", parts[nparts-1]);
+        size_t clen = strlen(cand);
+        if (clen > 3 && strcasecmp(cand + clen - 3, ".md") == 0)
+            cand[clen-3] = '\0';
+        if (source_is_valid_skill_name(cand))
+            result = strdup(cand);
+    }
+    free(pathbuf);
+    /* Nothing usable — let the caller handle it (Python returns None). */
+    return result;
 }
 
 /* ================================================================

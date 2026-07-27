@@ -175,6 +175,7 @@ PORT_OBJ = \
     src/cli/port_hermes_cli_toolset_validation.o \
     src/cli/port_tools_checkpoint_manager.o \
     src/tools/port_memory_tool.o \
+    src/tools/port_skills_hub.o \
     src/tools/environments.o \
     src/gateway/session.o \
     src/gateway/stream_consumer.o \
