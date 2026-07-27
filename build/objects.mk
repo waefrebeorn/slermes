@@ -176,6 +176,11 @@ PORT_OBJ = \
     src/cli/port_tools_checkpoint_manager.o \
     src/tools/port_memory_tool.o \
     src/tools/port_skills_hub.o \
+    src/tools/port_mcp_tool.o \
+    src/tools/port_send_message_tool.o \
+    src/tools/port_tts_tool.o \
+    src/tools/port_file_operations.o \
+    src/tools/port_image_generation_tool.o \
     src/tools/environments.o \
     src/gateway/session.o \
     src/gateway/stream_consumer.o \
