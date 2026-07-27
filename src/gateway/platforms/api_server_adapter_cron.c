@@ -14,11 +14,109 @@
 #include <ctype.h>
 #include <regex.h>
 
-/* ── Cron Module Availability ────────────────────────────────────── */
+/* ── Cron Module Wiring (real cron/jobs.py port: src/cron/port_cron_jobs.c) ── */
 
+#include "cron_jobs.h"
+#include "../../tools/cron_prompt_sanitize.h"
+
+/* Python: _CRON_AVAILABLE — the C cron jobs port is always linked in. */
 static bool cron_available(void) {
-    /* Check if cron module is linked in */
-    return true;  /* Simplified - would check for _CRON_AVAILABLE equivalent */
+    return true;
+}
+
+static char *cron_list_jobs(bool include_disabled) {
+    json_t *jobs = cronjobs_list_jobs(include_disabled);
+    if (!jobs) return strdup("[]");
+    char *out = json_serialize(jobs);
+    json_free(jobs);
+    return out ? out : strdup("[]");
+}
+
+static char *cron_get_job(const char *job_id) {
+    json_t *job = cronjobs_get_job(job_id);
+    if (!job) return NULL;
+    char *out = json_serialize(job);
+    json_free(job);
+    return out;
+}
+
+static char *cron_create_job(const char *prompt, const char *schedule, const char *name,
+                              const char *deliver, const char *origin_json,
+                              const char *skills, int repeat) {
+    json_t *origin = NULL;
+    if (origin_json && origin_json[0])
+        origin = json_parse(origin_json, NULL);
+
+    cronjobs_create_opts opts = {0};
+    opts.prompt = prompt;
+    opts.schedule = schedule;
+    opts.name = name && name[0] ? name : NULL;
+    opts.deliver = deliver;
+    opts.origin = origin;
+    opts.skill = skills;      /* single skill name or NULL */
+    opts.repeat = repeat;
+    opts.has_repeat = repeat > 0;
+    opts.attach_to_session = -1;
+
+    char *err = NULL;
+    json_t *job = cronjobs_create_job(&opts, &err);
+    if (origin) json_free(origin);
+    if (!job) { free(err); return NULL; }
+    free(err);
+    char *out = json_serialize(job);
+    json_free(job);
+    return out;
+}
+
+static char *cron_update_job(const char *job_id, const char *fields_json) {
+    json_t *updates = fields_json ? json_parse(fields_json, NULL) : NULL;
+    if (!updates) return NULL;
+    char *err = NULL;
+    json_t *job = cronjobs_update_job(job_id, updates, &err);
+    json_free(updates);
+    if (!job) { free(err); return NULL; }
+    free(err);
+    char *out = json_serialize(job);
+    json_free(job);
+    return out;
+}
+
+static bool cron_remove_job(const char *job_id) {
+    return cronjobs_remove_job(job_id);
+}
+
+static char *cron_pause_job(const char *job_id) {
+    json_t *job = cronjobs_pause_job(job_id, NULL);
+    if (!job) return NULL;
+    char *out = json_serialize(job);
+    json_free(job);
+    return out;
+}
+
+static char *cron_resume_job(const char *job_id) {
+    json_t *job = cronjobs_resume_job(job_id);
+    if (!job) return NULL;
+    char *out = json_serialize(job);
+    json_free(job);
+    return out;
+}
+
+static char *cron_trigger_job(const char *job_id) {
+    json_t *job = cronjobs_trigger_job(job_id);
+    if (!job) return NULL;
+    char *out = json_serialize(job);
+    json_free(job);
+    return out;
+}
+
+/* Port of Python tools/cronjob_tools.py:_scan_cron_prompt().
+ * Returns malloc'd error string when blocked, NULL when clean
+ * (adapter convention: NULL = no issues). */
+static char *scan_cron_prompt(const char *prompt) {
+    char *err = cron_prompt_sanitize_scan_prompt(prompt);
+    if (err && err[0]) return err;
+    free(err);
+    return NULL;
 }
 
 static char *cron_list_jobs(bool include_disabled);
@@ -382,63 +480,6 @@ void api_server_handle_run_job(api_server_adapter_t *adapter, int client_fd, con
     free(out);
     json_free(root);
     free(job_json);
-}
-
-/* ── Cron Module Stubs ───────────────────────────────────────────── */
-/* These would be implemented in cron/ module */
-
-static char *cron_list_jobs(bool include_disabled) {
-    (void)include_disabled;
-    return strdup("[]");
-}
-
-static char *cron_get_job(const char *job_id) {
-    (void)job_id;
-    return strdup("{\"id\":\"abc123\",\"name\":\"test\",\"schedule\":\"0 * * * *\",\"enabled\":true}");
-}
-
-static char *cron_create_job(const char *prompt, const char *schedule, const char *name,
-                              const char *deliver, const char *origin_json,
-                              const char *skills, int repeat) {
-    (void)prompt; (void)schedule; (void)name; (void)deliver;
-    (void)origin_json; (void)skills; (void)repeat;
-    char *uuid_str = uuid_v4();
-    if (!uuid_str) uuid_str = strdup("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-    char *out = malloc(256);
-    snprintf(out, 256, "{\"id\":\"%s\",\"name\":\"%s\",\"schedule\":\"%s\",\"enabled\":true}",
-             uuid_str + 28, name, schedule);
-    free(uuid_str);
-    return out;
-}
-
-static char *cron_update_job(const char *job_id, const char *fields_json) {
-    (void)job_id; (void)fields_json;
-    return strdup("{\"updated\":true}");
-}
-
-static bool cron_remove_job(const char *job_id) {
-    (void)job_id;
-    return true;
-}
-
-static char *cron_pause_job(const char *job_id) {
-    (void)job_id;
-    return strdup("{\"paused\":true}");
-}
-
-static char *cron_resume_job(const char *job_id) {
-    (void)job_id;
-    return strdup("{\"resumed\":true}");
-}
-
-static char *cron_trigger_job(const char *job_id) {
-    (void)job_id;
-    return strdup("{\"triggered\":true}");
-}
-
-static char *scan_cron_prompt(const char *prompt) {
-    (void)prompt;
-    return NULL;  /* No issues found */
 }
 
 /* End of api_server_adapter_cron.c */

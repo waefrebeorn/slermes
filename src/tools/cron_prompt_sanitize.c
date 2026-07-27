@@ -594,3 +594,150 @@ json_t *cron_prompt_sanitize_scan_skill_assembled(const char *assembled)
     if (err) free(err);
     return obj;
 }
+
+/* ================================================================
+ *  9. PoP: _scan_cron_prompt — STRICT user-prompt scan
+ *  Applied to the raw user-supplied cron prompt at create/update time.
+ *  Returns malloc'd error string when blocked, empty string when clean.
+ * ================================================================ */
+
+/* r'cat\s+[^\n]*(\.env|credentials|\.netrc|\.pgpass)' */
+static bool match_read_secrets(const char *s)
+{
+    const char *p = s;
+    while ((p = strcasestr_local(p, "cat")) != NULL) {
+        /* require word boundary before and whitespace after */
+        bool bstart = (p == s) || !isalnum((unsigned char)p[-1]);
+        const char *after = p + 3;
+        if (bstart && (*after == ' ' || *after == '\t')) {
+            /* rest of line */
+            const char *eol = strchr(after, '\n');
+            size_t n = eol ? (size_t)(eol - after) : strlen(after);
+            if (contains_ci_n(after, n, ".env") ||
+                contains_ci_n(after, n, "credentials") ||
+                contains_ci_n(after, n, ".netrc") ||
+                contains_ci_n(after, n, ".pgpass"))
+                return true;
+        }
+        p += 3;
+    }
+    return false;
+}
+
+/* r'rm\s+-rf\s+/' */
+static bool match_destructive_root_rm(const char *s)
+{
+    const char *p = s;
+    while ((p = strcasestr_local(p, "rm")) != NULL) {
+        bool bstart = (p == s) || !isalnum((unsigned char)p[-1]);
+        const char *q = p + 2;
+        if (bstart && (*q == ' ' || *q == '\t')) {
+            while (*q == ' ' || *q == '\t') q++;
+            if (strncasecmp(q, "-rf", 3) == 0) {
+                q += 3;
+                while (*q == ' ' || *q == '\t') q++;
+                if (*q == '/') return true;
+            }
+        }
+        p += 2;
+    }
+    return false;
+}
+
+/* exfil: curl/wget line that also carries a secret-var token in a URL,
+ * data payload, or Authorization header (the 5 Python exfil regexes all
+ * require: the tool name, a qualifying carrier, and _CRON_SECRET_VAR_RE
+ * on the same line). */
+static bool match_exfil_command(const char *s, const char **pid_out)
+{
+    const char *p = s;
+    while (*p) {
+        const char *eol = strchr(p, '\n');
+        size_t n = eol ? (size_t)(eol - p) : strlen(p);
+        char *line = malloc(n + 1);
+        if (!line) return false;
+        memcpy(line, p, n); line[n] = '\0';
+
+        bool is_curl = contains_ci(line, "curl");
+        bool is_wget = contains_ci(line, "wget");
+        if ((is_curl || is_wget) && contains_secret_var_token(line)) {
+            if (contains_ci(line, "http://") || contains_ci(line, "https://")) {
+                /* secret must appear AFTER the URL scheme to be "in" the
+                 * URL — approximate the Python regex by checking order */
+                const char *scheme = strcasestr_local(line, "http");
+                const char *dollar = strchr(line, '$');
+                if (scheme && dollar && dollar > scheme) {
+                    *pid_out = is_curl ? "exfil_curl_url" : "exfil_wget_url";
+                    free(line);
+                    return true;
+                }
+            }
+            if (is_curl && (contains_ci(line, "--data") || contains_ci(line, " -d ") ||
+                            contains_ci(line, "--form") || contains_ci(line, " -F "))) {
+                *pid_out = "exfil_curl_data";
+                free(line);
+                return true;
+            }
+            if (is_wget && (contains_ci(line, "--post-data=") ||
+                            contains_ci(line, "--post-file="))) {
+                *pid_out = "exfil_wget_post";
+                free(line);
+                return true;
+            }
+            if (is_curl && (contains_ci(line, "-H") || contains_ci(line, "--header")) &&
+                contains_ci(line, "authorization:")) {
+                *pid_out = "exfil_curl_auth_header";
+                free(line);
+                return true;
+            }
+        }
+        free(line);
+        if (!eol) break;
+        p = eol + 1;
+    }
+    return false;
+}
+
+static char *scan_blocked_msg(const char *pid)
+{
+    const char *fmt = "Blocked: prompt matches threat pattern '%s'. "
+        "Cron prompts must not contain injection or exfiltration payloads.";
+    size_t need = strlen(fmt) + strlen(pid) + 1;
+    char *msg = malloc(need);
+    if (msg) snprintf(msg, need, fmt, pid);
+    return msg;
+}
+
+/* PoP: cron_prompt_sanitize_scan_prompt @ tools/cronjob_tools.py:_scan_cron_prompt */
+/* Port of Python tools/cronjob_tools.py:_scan_cron_prompt().
+ * Strict pattern set for the raw user prompt. Returns malloc'd error string
+ * when blocked, or malloc'd empty string when the prompt is clean. */
+char *cron_prompt_sanitize_scan_prompt(const char *prompt)
+{
+    if (!prompt) return strdup("");
+    char *scan = strip_cron_safe_constructs(prompt);
+    if (!scan) return strdup("");
+
+    char *invisible_err = cron_prompt_sanitize_check_invisible(scan);
+    if (invisible_err && invisible_err[0]) { free(scan); return invisible_err; }
+    free(invisible_err);
+
+    const char *pid = NULL;
+    if (match_injection_directive(scan))        pid = "prompt_injection";
+    else if (match_deception_hide(scan))        pid = "deception_hide";
+    else if (match_sys_prompt_override(scan))   pid = "sys_prompt_override";
+    else if (match_disregard_rules(scan))       pid = "disregard_rules";
+    else if (match_read_secrets(scan))          pid = "read_secrets";
+    else if (contains_ci(scan, "authorized_keys")) pid = "ssh_backdoor";
+    else if (contains_ci(scan, "/etc/sudoers") || contains_ci(scan, "visudo"))
+                                                pid = "sudoers_mod";
+    else if (match_destructive_root_rm(scan))   pid = "destructive_root_rm";
+
+    if (!pid) {
+        const char *exfil_pid = NULL;
+        if (match_exfil_command(scan, &exfil_pid)) pid = exfil_pid;
+    }
+    free(scan);
+    if (pid) return scan_blocked_msg(pid);
+    return strdup("");
+}

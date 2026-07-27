@@ -45,4 +45,9 @@ json_t *cron_prompt_sanitize_strip_invisible(const char *prompt);
  * on allocation failure. */
 json_t *cron_prompt_sanitize_scan_skill_assembled(const char *assembled);
 
+/* Port of tools/cronjob_tools.py:_scan_cron_prompt.
+ * STRICT scan of the raw user-supplied cron prompt (create/update time).
+ * Returns malloc'd error string when blocked, malloc'd "" when clean. */
+char *cron_prompt_sanitize_scan_prompt(const char *prompt);
+
 #endif /* SLERMES_CRON_PROMPT_SANITIZE_H */
