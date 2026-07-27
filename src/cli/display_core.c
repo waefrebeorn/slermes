@@ -3044,8 +3044,9 @@ display_local_edit_snapshot_t *display_capture_local_edit_snapshot(const char *t
 char *display_diff_from_snapshot(display_local_edit_snapshot_t *snap) {
     if (!snap || snap->count == 0) return NULL;
 
-    /* Use difflib via external diff if available, or simple approach */
-    /* For now, generate a basic unified diff by comparing before/after */
+    /* Real unified diff via libdifflib (Python: difflib.unified_diff). */
+    extern char *difflib_unified_diff(const char *a, const char *b, int context_lines);
+
     char *all_diffs = NULL;
     size_t all_len = 0;
 
@@ -3062,37 +3063,49 @@ char *display_diff_from_snapshot(display_local_edit_snapshot_t *snap) {
         char *display_path = display_diff_path(path);
         if (!display_path) display_path = strdup(path);
 
-        /* Build a simple unified diff header */
+        /* unified_diff([] if before is None else ..., fromfile=a/<p>, tofile=b/<p>) */
+        char *body = difflib_unified_diff(before ? before : "",
+                                          after ? after : "", 3);
+        if (!body || !body[0]) {
+            free(body);
+            free(display_path);
+            if (after) free(after);
+            continue; /* empty diff -> skip chunk, same as Python */
+        }
+
+        /* difflib_unified_diff emits generic ---/+++ headers; replace them
+         * with the a/<path> b/<path> labels Python passes as
+         * fromfile/tofile. Skip up to two leading header lines. */
+        const char *hunks = body;
+        for (int h = 0; h < 2; h++) {
+            if (strncmp(hunks, "--- ", 4) == 0 || strncmp(hunks, "+++ ", 4) == 0) {
+                const char *nl = strchr(hunks, '\n');
+                if (!nl) break;
+                hunks = nl + 1;
+            }
+        }
+
         char hdr[512];
         int hdr_len = snprintf(hdr, sizeof(hdr),
                                "--- a/%s\n+++ b/%s\n", display_path, display_path);
         free(display_path);
 
-        /* Simple line-by-line diff - for brevity, just show changed file */
-        char *diff_section = (char *)malloc(all_len + hdr_len + 128);
-        if (!diff_section) {
+        size_t hunks_len = strlen(hunks);
+        char *merged = (char *)realloc(all_diffs,
+                                       all_len + (size_t)hdr_len + hunks_len + 1);
+        if (!merged) {
+            free(body);
             if (after) free(after);
             continue;
         }
-        if (all_diffs) {
-            memcpy(diff_section, all_diffs, all_len);
-            free(all_diffs);
-        }
-        memcpy(diff_section + all_len, hdr, hdr_len);
-        all_len += hdr_len;
+        all_diffs = merged;
+        memcpy(all_diffs + all_len, hdr, (size_t)hdr_len);
+        all_len += (size_t)hdr_len;
+        memcpy(all_diffs + all_len, hunks, hunks_len);
+        all_len += hunks_len;
+        all_diffs[all_len] = '\0';
 
-        if (before) {
-            /* Add - lines (simplified) */
-            int written = snprintf(diff_section + all_len, 64, "- (before content)\n");
-            if (written > 0) all_len += written;
-        }
-        if (after) {
-            int written = snprintf(diff_section + all_len, 64, "+ (after content)\n");
-            if (written > 0) all_len += written;
-        }
-        diff_section[all_len] = '\0';
-        all_diffs = diff_section;
-
+        free(body);
         if (after) free(after);
     }
 

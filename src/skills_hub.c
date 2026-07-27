@@ -1800,8 +1800,16 @@ typedef struct {
     bool fetched;
 } github_tree_cache_t;
 
+#define GITHUB_MAX_TAPS 32
+
+typedef struct {
+    char repo[256];
+    char path[256];
+} github_tap_t;
+
 typedef struct {
     github_auth_t *auth;
+    github_tap_t taps[GITHUB_MAX_TAPS];
     int tap_count;
     bool rate_limited;
     github_tree_cache_t tree_cache[8];
@@ -1813,10 +1821,38 @@ void github_source_init(github_source_t *src, github_auth_t *auth) {
     if (!src) return;
     memset(src, 0, sizeof(*src));
     src->auth = auth;
-    /* use default taps + extra_taps left as an exercise for callers */
-    src->tap_count = (int)GITHUB_DEFAULT_TAP_COUNT;
+    /* taps = list(DEFAULT_TAPS) */
+    for (size_t i = 0; i < GITHUB_DEFAULT_TAP_COUNT && i < GITHUB_MAX_TAPS; i++) {
+        snprintf(src->taps[i].repo, sizeof(src->taps[i].repo), "%s",
+                 g_github_default_taps[i].repo);
+        snprintf(src->taps[i].path, sizeof(src->taps[i].path), "%s",
+                 g_github_default_taps[i].path);
+        src->tap_count++;
+    }
     src->rate_limited = false;
     src->tree_cache_count = 0;
+}
+
+/* PoP: github_source_init_extra @ tools/skills_hub.py:GitHubSource.__init__ */
+/* Python: if extra_taps: self.taps.extend(extra_taps). Each extra tap is
+ * a {"repo": ..., "path": ...} dict; entries without a repo are skipped. */
+void github_source_init_extra(github_source_t *src, github_auth_t *auth,
+                              const json_node_t *extra_taps) {
+    github_source_init(src, auth);
+    if (!src || !extra_taps || extra_taps->type != JSON_ARRAY) return;
+    for (size_t i = 0; i < json_len((json_node_t *)extra_taps) &&
+                       src->tap_count < GITHUB_MAX_TAPS; i++) {
+        json_node_t *tap = json_get((json_node_t *)extra_taps, i);
+        if (!tap || tap->type != JSON_OBJECT) continue;
+        const char *repo = json_get_str(tap, "repo", "");
+        if (!repo[0]) continue;
+        const char *path = json_get_str(tap, "path", "");
+        snprintf(src->taps[src->tap_count].repo,
+                 sizeof(src->taps[0].repo), "%s", repo);
+        snprintf(src->taps[src->tap_count].path,
+                 sizeof(src->taps[0].path), "%s", path);
+        src->tap_count++;
+    }
 }
 
 /* PoP: github_source_source_id @ tools/skills_hub.py:GitHubSource.source_id */
@@ -2042,8 +2078,8 @@ int github_source_search(github_source_t *src, const char *query, int limit,
     for (int t = 0; t < src->tap_count && found < limit; t++) {
         /* For each tap, list directories via Contents API */
         char url[HERMES_PATH_MAX * 2];
-        const char *repo = g_github_default_taps[t].repo;
-        const char *path = g_github_default_taps[t].path;
+        const char *repo = src->taps[t].repo;
+        const char *path = src->taps[t].path;
         if (path[0])
             snprintf(url, sizeof(url), "https://api.github.com/repos/%s/contents/%s", repo, path);
         else

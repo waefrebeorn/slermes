@@ -136,75 +136,164 @@ char *difflib_unified_diff(const char *a, const char *b, int context_lines) {
     int na = split_lines(a, la, MAX_LINES);
     int nb = split_lines(b, lb, MAX_LINES);
 
-    /* Build result with dynamic buffer */
-    size_t buf_size = 65536;
-    char *result = (char *)calloc(buf_size, 1);
+    /* Dynamic output buffer (grows; no fixed-size overflow). */
+    size_t cap = 65536, len = 0;
+    char *result = (char *)malloc(cap);
     if (!result) { free_lines(la, na); free_lines(lb, nb); return strdup(""); }
-    int pos = 0;
+    result[0] = '\0';
 
-    /* Header */
-    pos += snprintf(result + pos, buf_size - (size_t)pos,
-                    "--- original\n+++ modified\n");
+#define UD_APPEND(...) do {                                                  \
+        int _need = snprintf(NULL, 0, __VA_ARGS__);                          \
+        if (_need > 0) {                                                     \
+            if (len + (size_t)_need + 1 > cap) {                             \
+                while (len + (size_t)_need + 1 > cap) cap *= 2;              \
+                char *_nr = (char *)realloc(result, cap);                    \
+                if (!_nr) goto ud_done;                                      \
+                result = _nr;                                                \
+            }                                                                \
+            len += (size_t)snprintf(result + len, cap - len, __VA_ARGS__);   \
+        }                                                                    \
+    } while (0)
 
-    /* Simple line-by-line diff (no LCS-based grouping for simplicity) */
-    int max_lines = (na > nb) ? na : nb;
-    int changed = 0, start = -1;
-
-    for (int i = 0; i < max_lines; i++) {
-        if (i < na && i < nb && strcmp(la[i], lb[i]) == 0) {
-            /* Same */
-            if (changed) {
-                /* End of a changed block */
-                int chunk_start = (start - context_lines < 0) ? 0 : start - context_lines;
-                int chunk_end = (i + context_lines > max_lines) ? max_lines : i + context_lines;
-
-                pos += snprintf(result + pos, buf_size - (size_t)pos,
-                                "@@ -%d,%d +%d,%d @@\n",
-                                start + 1, i - start,
-                                start + 1, i - start);
-
-                for (int j = chunk_start; j < chunk_end; j++) {
-                    if (j >= start && j < i) {
-                        /* In changed region */
-                        if (j < na) pos += snprintf(result + pos, buf_size - (size_t)pos, "-%s\n", la[j]);
-                        if (j < nb) pos += snprintf(result + pos, buf_size - (size_t)pos, "+%s\n", lb[j]);
-                    } else if (j < na && j < nb) {
-                        pos += snprintf(result + pos, buf_size - (size_t)pos, " %s\n", la[j]);
-                    }
+    /* Full LCS DP table for a faithful diff (uint16 lengths: lines are
+     * capped at MAX_LINES=2048 so they always fit). Table is
+     * (na+1) x (nb+1) — at most ~8.4 MB transiently. */
+    {
+        size_t W = (size_t)nb + 1;
+        unsigned short *dp = (unsigned short *)calloc(((size_t)na + 1) * W,
+                                                      sizeof(unsigned short));
+        /* match[i] = matched line in b for a[i], or -1 */
+        int *match = (int *)malloc(sizeof(int) * (size_t)(na > 0 ? na : 1));
+        if (!dp || !match) {
+            free(dp); free(match);
+            goto ud_done;
+        }
+        for (int i = na - 1; i >= 0; i--) {
+            for (int j = nb - 1; j >= 0; j--) {
+                if (strcmp(la[i], lb[j]) == 0)
+                    dp[(size_t)i * W + j] = (unsigned short)(dp[((size_t)i + 1) * W + j + 1] + 1);
+                else {
+                    unsigned short d = dp[((size_t)i + 1) * W + j];
+                    unsigned short r = dp[(size_t)i * W + j + 1];
+                    dp[(size_t)i * W + j] = d > r ? d : r;
                 }
-                changed = 0;
-            }
-        } else {
-            if (!changed) {
-                start = i;
-                changed = 1;
             }
         }
-    }
-
-    /* Handle trailing changed block */
-    if (changed) {
-        int chunk_start = (start - context_lines < 0) ? 0 : start - context_lines;
-        int chunk_end = max_lines;
-
-        pos += snprintf(result + pos, buf_size - (size_t)pos,
-                        "@@ -%d,%d +%d,%d @@\n",
-                        start + 1, max_lines - start,
-                        start + 1, max_lines - start);
-
-        for (int j = chunk_start; j < chunk_end; j++) {
-            if (j >= start) {
-                if (j < na) pos += snprintf(result + pos, buf_size - (size_t)pos, "-%s\n", la[j]);
-                if (j < nb) pos += snprintf(result + pos, buf_size - (size_t)pos, "+%s\n", lb[j]);
-            } else if (j < na && j < nb) {
-                pos += snprintf(result + pos, buf_size - (size_t)pos, " %s\n", la[j]);
+        for (int i = 0; i < na; i++) match[i] = -1;
+        {
+            int i = 0, j = 0;
+            while (i < na && j < nb) {
+                if (strcmp(la[i], lb[j]) == 0) { match[i] = j; i++; j++; }
+                else if (dp[((size_t)i + 1) * W + j] >= dp[(size_t)i * W + j + 1]) i++;
+                else j++;
             }
         }
+        free(dp);
+
+        /* Build opcodes (equal / replace-delete-insert runs), then group
+         * into hunks with `context_lines` context, like Python
+         * difflib.unified_diff(get_grouped_opcodes). */
+        UD_APPEND("--- original\n+++ modified\n");
+
+        int i = 0, j = 0;
+        while (i < na || j < nb) {
+            /* Skip an equal run */
+            int eq_start_i = i, eq_start_j = j;
+            while (i < na && match[i] == j) { i++; j++; }
+            int had_equal = (i > eq_start_i);
+            (void)eq_start_j;
+
+            if (i >= na && j >= nb) break;
+
+            /* Start of a changed region: back up for leading context */
+            int hunk_ai = i - context_lines;
+            if (hunk_ai < eq_start_i && had_equal) hunk_ai = (i - context_lines < eq_start_i) ? ((i - context_lines) > 0 ? (i - context_lines) : 0) : hunk_ai;
+            if (hunk_ai < 0) hunk_ai = 0;
+            if (!had_equal) hunk_ai = i;
+            int hunk_bj = j - (i - hunk_ai);
+
+            /* Consume changed + interleaved short-equal runs (equal runs
+             * shorter than 2*context merge adjacent hunks, like Python). */
+            int ci = i, cj = j;      /* cursors */
+            int last_change_i = i, last_change_j = j;
+            while (ci < na || cj < nb) {
+                if (ci < na && match[ci] == cj) {
+                    /* equal run — measure it */
+                    int run_i = ci, run_j = cj;
+                    while (run_i < na && match[run_i] == run_j) { run_i++; run_j++; }
+                    int run_len = run_i - ci;
+                    if (run_i >= na && run_j >= nb) {
+                        /* trailing equal run ends the hunk */
+                        break;
+                    }
+                    if (run_len > 2 * context_lines) break;
+                    /* short equal run: absorb into hunk and continue */
+                    ci = run_i; cj = run_j;
+                } else if (ci < na && (match[ci] < 0 || match[ci] < cj)) {
+                    ci++; last_change_i = ci; last_change_j = cj;
+                } else if (cj < nb) {
+                    cj++; last_change_i = ci; last_change_j = cj;
+                } else {
+                    ci++; last_change_i = ci; last_change_j = cj;
+                }
+            }
+
+            /* Trailing context */
+            int hunk_end_i = last_change_i + context_lines;
+            if (hunk_end_i > na) hunk_end_i = na;
+            /* clamp to the end of the trailing equal run */
+            {
+                int run_i = last_change_i, run_j = last_change_j;
+                while (run_i < na && match[run_i] == run_j &&
+                       run_i < last_change_i + context_lines) { run_i++; run_j++; }
+                hunk_end_i = run_i;
+            }
+            int hunk_end_j = last_change_j + (hunk_end_i - last_change_i);
+
+            int alen = hunk_end_i - hunk_ai;
+            int blen = hunk_end_j - hunk_bj;
+            int astart = alen > 0 ? hunk_ai + 1 : hunk_ai;
+            int bstart = blen > 0 ? hunk_bj + 1 : hunk_bj;
+            if (alen == 1) UD_APPEND("@@ -%d ", astart);
+            else UD_APPEND("@@ -%d,%d ", astart, alen);
+            if (blen == 1) UD_APPEND("+%d @@\n", bstart);
+            else UD_APPEND("+%d,%d @@\n", bstart, blen);
+
+            /* Emit hunk body */
+            int ei = hunk_ai, ej = hunk_bj;
+            while (ei < hunk_end_i || ej < hunk_end_j) {
+                if (ei < na && ei < hunk_end_i && match[ei] == ej) {
+                    UD_APPEND(" %s\n", la[ei]);
+                    ei++; ej++;
+                } else if (ei < hunk_end_i && ei < na &&
+                           (match[ei] < 0 || match[ei] >= hunk_end_j || match[ei] > ej)) {
+                    /* deletions first, like Python replace order (-then+) */
+                    if (match[ei] < 0 || match[ei] >= hunk_end_j) {
+                        UD_APPEND("-%s\n", la[ei]);
+                        ei++;
+                    } else {
+                        /* a[ei] matches later in b: emit inserts until we catch up */
+                        UD_APPEND("+%s\n", lb[ej]);
+                        ej++;
+                    }
+                } else if (ej < hunk_end_j && ej < nb) {
+                    UD_APPEND("+%s\n", lb[ej]);
+                    ej++;
+                } else if (ei < hunk_end_i && ei < na) {
+                    UD_APPEND("-%s\n", la[ei]);
+                    ei++;
+                } else break;
+            }
+
+            i = ci; j = cj;
+        }
+        free(match);
     }
 
+ud_done:
+#undef UD_APPEND
     free_lines(la, na);
     free_lines(lb, nb);
-
     return result;
 }
 

@@ -8,6 +8,15 @@
 
 #include "hermes_logger.h"
 #include "hermes_agent.h"
+
+/* From src/tools/checkpoint_manager.c (checkpoint_manager.h conflicts with
+ * hermes_agent.h on several legacy names, so declare just what we need). */
+typedef struct checkpoint_manager tool_checkpoint_mgr_t;
+extern tool_checkpoint_mgr_t *checkpoint_manager_create(bool enabled,
+    int max_snapshots, int max_total_size_mb, int max_file_size_mb);
+extern void checkpoint_manager_free(tool_checkpoint_mgr_t *self);
+extern char *checkpoint_manager_list(tool_checkpoint_mgr_t *self,
+                                     const char *working_dir);
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -84,20 +93,68 @@ int cli_tools_checkpoint_manager_ensure_checkpoint(
 /* PoP: cli_tools_checkpoint_manager_list_checkpoints @ tools/checkpoint_manager.py:list_checkpoints */
 
 /* Port of Python tools/checkpoint_manager.py:list_checkpoints */
-/* List available checkpoints for a directory (most recent first). */
+/* List available checkpoints for a directory (most recent first).
+ * Delegates to the real checkpoint_manager_list (git-shadow layer) and
+ * unpacks its JSON into parallel arrays. Caller frees each string and
+ * each array. */
 int cli_tools_checkpoint_manager_list_checkpoints(
     const char *working_dir, int max_snapshots,
     char ***out_hashes, char ***out_short, char ***out_timestamps,
     char ***out_reasons, int *out_count)
 {
     if (!working_dir || !out_hashes || !out_count) return -1;
+    *out_hashes = NULL;
+    if (out_short) *out_short = NULL;
+    if (out_timestamps) *out_timestamps = NULL;
+    if (out_reasons) *out_reasons = NULL;
+    *out_count = 0;
 
+    tool_checkpoint_mgr_t *mgr = checkpoint_manager_create(
+        true, max_snapshots > 0 ? max_snapshots : 20, 500, 10);
+    if (!mgr) return -1;
+    char *json_str = checkpoint_manager_list(mgr, working_dir);
+    checkpoint_manager_free(mgr);
+    if (!json_str) return -1;
+
+    char *err = NULL;
+    json_t *arr = json_parse(json_str, &err);
+    free(json_str);
+    free(err);
+    if (!arr || arr->type != JSON_ARRAY) {
+        if (arr) json_free(arr);
+        return -1;
+    }
+
+    size_t n = arr->c.count;
+    char **hashes = calloc(n + 1, sizeof(char *));
+    char **shorts = calloc(n + 1, sizeof(char *));
+    char **stamps = calloc(n + 1, sizeof(char *));
+    char **reasons = calloc(n + 1, sizeof(char *));
     int count = 0;
-    /* checkpoint_list from hermes_agent.h expects mgr + id/label arrays;
-     * for this port we call it with NULL mgr to list all, then filter. */
-    size_t n = checkpoint_list(NULL, NULL, NULL, (size_t)max_snapshots);
-    /* For now, return count=0 as a real implementation would need the mgr context */
-    (void)n;
+    if (hashes && shorts && stamps && reasons) {
+        for (size_t i = 0; i < n; i++) {
+            json_t *e = arr->c.items[i];
+            if (!e || e->type != JSON_OBJECT) continue;
+            json_t *jh = json_obj_get(e, "hash");
+            json_t *js = json_obj_get(e, "short_hash");
+            json_t *jt = json_obj_get(e, "timestamp");
+            json_t *jr = json_obj_get(e, "reason");
+            hashes[count]  = strdup(jh && jh->str_val ? jh->str_val : "");
+            shorts[count]  = strdup(js && js->str_val ? js->str_val : "");
+            stamps[count]  = strdup(jt && jt->str_val ? jt->str_val : "");
+            reasons[count] = strdup(jr && jr->str_val ? jr->str_val : "");
+            count++;
+        }
+    }
+    json_free(arr);
+
+    *out_hashes = hashes;
+    if (out_short) *out_short = shorts;
+    else { for (int i = 0; shorts && shorts[i]; i++) free(shorts[i]); free(shorts); }
+    if (out_timestamps) *out_timestamps = stamps;
+    else { for (int i = 0; stamps && stamps[i]; i++) free(stamps[i]); free(stamps); }
+    if (out_reasons) *out_reasons = reasons;
+    else { for (int i = 0; reasons && reasons[i]; i++) free(reasons[i]); free(reasons); }
     *out_count = count;
 
     hermes_log(LOG_DEBUG, "checkpoint", "list_checkpoints: %s count=%d", working_dir, count);
