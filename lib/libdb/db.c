@@ -201,7 +201,9 @@ static char *meta_to_json(const session_meta_t *meta) {
         "\"updated_at_str\":\"%s\","
         "\"tags\":%s,"
         "\"parent_id\":\"%s\","
-        "\"branch_point\":%d"
+        "\"branch_point\":%d,"
+        "\"ended_at\":%ld,"
+        "\"end_reason\":\"%s\""
         "}",
         meta->schema_version,
         meta->title,
@@ -220,7 +222,9 @@ static char *meta_to_json(const session_meta_t *meta) {
         (long)meta->updated_at, time_updated,
         tags_json,
         meta->parent_id,
-        meta->branch_point);
+        meta->branch_point,
+        (long)meta->ended_at,
+        meta->end_reason);
 
     return buf;
 }
@@ -259,6 +263,11 @@ static bool json_to_meta(const char *json_str, session_meta_t *meta) {
     if (val) { snprintf(meta->parent_id, sizeof(meta->parent_id), "%s", val); free(val); }
 
     meta->branch_point = json_extract_int(json_str, "branch_point");
+
+    /* SE01: session lifecycle (0/"" when absent — pre-fix sidecars) */
+    meta->ended_at = (time_t)json_extract_num(json_str, "ended_at");
+    val = json_extract_str(json_str, "end_reason");
+    if (val) { snprintf(meta->end_reason, sizeof(meta->end_reason), "%s", val); free(val); }
 
     /* Parse tags array */
     const char *tags_start = strstr(json_str, "\"tags\":");
