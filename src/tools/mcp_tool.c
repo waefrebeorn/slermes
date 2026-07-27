@@ -1109,6 +1109,26 @@ void mcp_init_all(void) {
                 }
             }
 
+            /* Security shape check — drop exfiltration/persistence/IOC-shaped
+             * stdio entries before spawn (PoP: _filter_suspicious_mcp_servers). */
+            if (cmd) {
+                extern bool hermes_cli_mcp_security_is_mcp_server_entry_suspicious(const char *name, json_t *entry);
+                json_t *entry = json_object();
+                json_set(entry, "command", json_string(cmd));
+                json_t *jargs = json_array();
+                for (int ai = 0; ai < arg_count; ai++)
+                    json_append(jargs, json_string(args[ai] ? args[ai] : ""));
+                json_set(entry, "args", jargs);
+                bool suspicious = hermes_cli_mcp_security_is_mcp_server_entry_suspicious(
+                                      dynamic_names[si], entry);
+                json_free(entry);
+                if (suspicious) {
+                    fprintf(stderr, "MCP: BLOCKED suspicious server '%s' "
+                            "(exfiltration/persistence shape)\n", dynamic_names[si]);
+                    goto skip_server;
+                }
+            }
+
             connect_stdio_server(dynamic_names[si], cmd, args, arg_count, timeout,
                                  root_count > 0 ? roots : NULL, root_count);
 

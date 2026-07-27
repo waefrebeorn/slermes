@@ -591,8 +591,40 @@ char *mcp_tool_interpolate_env_vars(const char *template)
 char *mcp_tool_filter_suspicious_mcp_servers(const char *servers_json)
 {
     if (!servers_json) return strdup("[]");
-    /* Filter out servers with suspicious configs */
-    return strdup(servers_json); /* Pass through for now */
+
+    /* servers is an object {name: cfg}; drop exfiltration/persistence-shaped
+     * entries via the ported mcp_security validator. */
+    extern bool hermes_cli_mcp_security_is_mcp_server_entry_suspicious(const char *name, json_t *entry);
+
+    char *err = NULL;
+    json_t *servers = json_parse(servers_json, &err);
+    if (!servers || servers->type != JSON_OBJECT) {
+        if (servers) json_free(servers);
+        free(err);
+        return strdup(servers_json);  /* not the expected shape — leave as-is */
+    }
+
+    json_t *safe = json_object();
+    for (size_t i = 0; i < servers->c.count; i++) {
+        const char *name = servers->c.keys[i];
+        json_t *cfg = servers->c.items[i];
+        if (!cfg || cfg->type != JSON_OBJECT) {
+            /* non-dict configs are preserved verbatim (Python parity) */
+            json_set(safe, name ? name : "", json_copy(cfg));
+            continue;
+        }
+        if (hermes_cli_mcp_security_is_mcp_server_entry_suspicious(name, cfg)) {
+            hermes_log(LOG_WARNING, "mcp",
+                       "Skipping suspicious MCP server '%s'", name ? name : "");
+            continue;
+        }
+        json_set(safe, name ? name : "", json_copy(cfg));
+    }
+
+    char *out = json_dumps(safe, 0);
+    json_free(servers);
+    json_free(safe);
+    return out ? out : strdup("{}");
 }
 
 /* Port of Python: _make_check_fn */

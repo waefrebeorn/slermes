@@ -164,6 +164,7 @@ PORT_OBJ = \
     src/skills/skills_parser.o \
     src/cli/port_auth_na.o \
     src/cli/port_auth_store.o \
+    src/cli/port_mcp_security.o \
     src/cli/port_kanban_db_na.o \
     src/cli/port_main_na.o \
     src/cli/port_web_server_extra.o \
