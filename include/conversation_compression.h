@@ -121,13 +121,27 @@ char *cc_compression_attempt_telemetry_line(const json_t *base_telemetry,
 typedef void (*cc_status_cb)(void *ctx, const char *kind, const char *text);
 void cc_emit_compaction_done(cc_status_cb cb, void *ctx);
 
-/* ── Cached-prompt memory retention check ────────────────────────────── */
-/* _cached_prompt_reflects_builtin_memory core: given the CURRENT rendered
- * memory/user blocks (NULL = snapshot unreadable → false), verify verbatim
- * containment + no leftover header for an emptied/disabled target. */
-bool cc_cached_prompt_reflects_builtin_memory(const char *memory_block,
-                                              const char *user_block,
-                                              const char *cached_prompt);
+/* ── Skew / guard / kwargs helpers ───────────────────────────────────── */
+bool cc_lock_api_is_absent_on_session_db(const void *lock_db);
+void cc_refresh_persisted_compression_guards(const void *compressor);
+json_t *cc_supported_compression_kwargs(bool has_memory_context,
+                                        const char *memory_context,
+                                        long long current_tokens,
+                                        const char *focus_topic,
+                                        bool force);
+void cc_activity_heartbeat_touch(void (*touch_activity)(const char *desc),
+                                 const char *desc);
+
+/* ── Codex app-server compaction route ───────────────────────────────── */
+typedef struct cc_codex_compact_result cc_codex_compact_result_t;
+typedef struct cc_codex_session_vtable cc_codex_session_vtable_t;
+typedef struct cc_codex_session_ctx cc_codex_session_ctx_t;
+json_t *cc_compress_context_via_codex_app_server(
+    json_t *messages, const char *system_message,
+    cc_codex_session_ctx_t *codex, long long approx_tokens,
+    int task_id_is_default, bool force);
+
+extern const char *CC_COMPACTION_STATUS;
 
 #ifdef __cplusplus
 }

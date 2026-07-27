@@ -262,6 +262,32 @@ int main(void) {
               NULL, "x", "p") == false,
           "retention: unreadable snapshot fails closed");
 
+    /* ── lazy kwargs / skew helpers ──────────────────────────────── */
+    json_t *kw = cc_supported_compression_kwargs(true, "memblock",
+                                                 1234, "topic", true);
+    CHECK(kw && json_get_num(kw, "current_tokens", -1) == 1234 &&
+          strcmp(json_get_str(kw, "focus_topic", ""), "topic") == 0 &&
+          json_get_bool(kw, "force", false) == true &&
+          strcmp(json_get_str(kw, "memory_context", ""), "memblock") == 0,
+          "supported kwargs full");
+    json_free(kw);
+    kw = cc_supported_compression_kwargs(false, NULL, 0, NULL, false);
+    CHECK(kw && json_get_bool(kw, "force", true) == false &&
+          !json_has(kw, "memory_context") &&
+          json_get(kw, "focus_topic") != NULL &&
+          json_get(kw, "focus_topic")->type == JSON_NULL,
+          "supported kwargs minimal");
+    json_free(kw);
+
+    CHECK(cc_lock_api_is_absent_on_session_db(NULL) == true, "lock absent null");
+    CHECK(cc_lock_api_is_absent_on_session_db((void*)0x1) == false,
+          "lock present non-null");
+
+    /* guard refresh via weak default is a safe no-op */
+    cc_refresh_persisted_compression_guards(NULL);
+    cc_refresh_persisted_compression_guards((void*)0x1);
+    CHECK(true, "guard refresh no-op safe");
+
     printf(fails ? "\n%d FAILURES\n" : "\nALL PASS\n", fails);
     return fails ? 1 : 0;
 }

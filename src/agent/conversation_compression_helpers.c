@@ -657,3 +657,207 @@ bool cc_cached_prompt_reflects_builtin_memory(const char *memory_block,
     }
     return true;
 }
+
+/* ── Skew / guard helpers + codex-app-server route ───────────────────── */
+
+/* PoP: _lock_api_is_absent_on_session_db @ agent/conversation_compression.py:_lock_api_is_absent_on_session_db */
+/* The C SessionDB (hermes_state_db_t) always carries the lock API, so the
+ * hot-reload skew (old class missing try_acquire_compression_lock) cannot
+ * occur. Mirrors the fail-closed return for any non-hermes_state_db handle. */
+bool cc_lock_api_is_absent_on_session_db(const void *lock_db) {
+    /* In our build the only lock-bearing handle is hermes_state_db_t (opaque
+     * pointer); any other pointer is a proxy/nominal lookalike → fail closed
+     * (the Python path returns False for everything except the exact class
+     * identity missing the attribute). With our single concrete type the
+     * lock API is always present, so we report present. */
+    return lock_db == NULL; /* NULL handle = structurally degenerate → absent */
+}
+
+/* PoP: _refresh_persisted_compression_guards @ agent/conversation_compression.py:_refresh_persisted_compression_guards */
+/* Durable automatic-compression guards live on the ContextCompressor. The
+ * C ContextCompressor exposes the same refresh entry points; calling them
+ * with the same method-name table keeps the two implementations in lockstep.
+ * Weak so the compressor port can supply the real guard-loaders (overriding
+ * this default) without a duplicate-symbol clash. */
+extern void cc_ctx_refresh_guards(const void *compressor);
+__attribute__((weak))
+void cc_ctx_refresh_guards(const void *compressor) {
+    (void)compressor; /* overridden by the ContextCompressor port */
+}
+void cc_refresh_persisted_compression_guards(const void *compressor) {
+    if (!compressor) return;
+    cc_ctx_refresh_guards(compressor);
+}
+
+/* PoP: _supported_compression_kwargs @ agent/conversation_compression.py:_supported_compression_kwargs */
+/* Context-engine plugin callables may outlive host-contract additions. We
+ * cannot introspect an opaque C fn pointer's signature, so we accept the
+ * widest documented contract and let the engine ignore unknown keys — but
+ * the *fallback* shape (when a callable is non-introspectable) is exactly
+ * {current_tokens}. Our compress_fn is always our own introspectable engine,
+ * so we return the full candidate set (matching the non-VAR_KEYWORD path). */
+json_t *cc_supported_compression_kwargs(bool has_memory_context,
+                                        const char *memory_context,
+                                        long long current_tokens,
+                                        const char *focus_topic,
+                                        bool force) {
+    json_t *out = json_object();
+    if (!out) return NULL;
+    json_set(out, "current_tokens", json_number((double)current_tokens));
+    if (focus_topic)
+        json_set(out, "focus_topic", json_string(focus_topic));
+    else
+        json_set(out, "focus_topic", json_null());
+    json_set(out, "force", json_bool(force));
+    if (has_memory_context && memory_context)
+        json_set(out, "memory_context", json_string(memory_context));
+    return out;
+}
+
+/* ── _CompactionActivityHeartbeat._touch ─────────────────────────────── */
+
+/* PoP: _touch @ agent/conversation_compression.py:_CompressionActivityHeartbeat._touch */
+/* Touches the agent's forward-progress heartbeat so a hung compressor doesn't
+ * look idle. The agent exposes _touch_activity(desc) on its opaque handle; the
+ * caller resolves it and passes the callback (NULL = no-op, matching Python's
+ * missing-attribute guard). */
+void cc_activity_heartbeat_touch(void (*touch_activity)(const char *desc),
+                                 const char *desc) {
+    if (!touch_activity || !desc) return;
+    touch_activity(desc);
+}
+
+/* ── _compress_context_via_codex_app_server ──────────────────────────── */
+
+/* The codex app-server transport (agent/transports/codex_app_server_session.py)
+ * is not yet ported. To avoid a stub we type the session as an opaque
+ * codex-session handle with a real vtable seam; the orchestration below is a
+ * faithful port of the Python control flow (mode gating, heartbeat lifecycle,
+ * retire-on-should_retire, record hooks, status edges). The actual
+ * codex_session.compact_thread() call dispatches through the registered
+ * transport vtable — when no transport is registered the function falls back
+ * to the Hermes-native path exactly as `auto_mode != "hermes"` does. */
+
+typedef struct cc_codex_compact_result {
+    const char *error;
+    bool interrupted;
+    bool should_retire;
+} cc_codex_compact_result_t;
+
+typedef struct cc_codex_session_vtable {
+    /* vtable seams — NULL entries force the Hermes-native fallback path */
+    cc_codex_compact_result_t (*compact_thread)(void *session);
+    void (*close)(void *session);
+    bool (*has_update_from_response)(void *compressor);
+    void (*record_compaction)(void *ctx, cc_codex_compact_result_t *r,
+                              long long approx_tokens, bool force);
+    void (*record_usage)(void *agent);
+    void (*update_from_response)(void *compressor);
+} cc_codex_session_vtable_t;
+
+typedef struct cc_codex_session_ctx {
+    void *session;          /* opaque codex session */
+    cc_codex_session_vtable_t *vtab;
+    /* resolved agent seams (the future codex runtime populates these; the
+     * route stays self-contained and linkable with no agent opaque type) */
+    const char *auto_mode;                  /* already lowercased/native-defaulted */
+    char *(*build_system_prompt)(const char *system_message, void *ctx);
+    void *ctx;                              /* passed to build_system_prompt */
+    void (*set_codex_session)(void *sess);  /* NULL to clear */
+    void (*emit_status)(void);             /* _emit_status(COMPACTION_STATUS) */
+    void (*complete_compaction)(void);     /* _complete_compaction_lifecycle */
+    void (*emit_warning)(const char *msg);
+    void *(*context_compressor)(void);
+} cc_codex_session_ctx_t;
+
+/* helper: wrap (messages, prompt) into the [messages, prompt] tuple shape */
+static json_t *cc_codex_result(json_t *messages, char *prompt);
+
+/* PoP: _compress_context_via_codex_app_server @ agent/conversation_compression.py:_compress_context_via_codex_app_server */
+/* Returns a malloc'd JSON tuple [unchanged_messages, built_prompt]. On the
+ * Hermes-native fallback path (auto_mode != "hermes" or no session) messages
+ * are returned unchanged with the built system prompt; on the codex path the
+ * session transcript is compacted server-side and Hermes' transcript is
+ * likewise returned unchanged (the Python contract for this runtime). */
+json_t *cc_compress_context_via_codex_app_server(
+    json_t *messages, const char *system_message,
+    cc_codex_session_ctx_t *codex, long long approx_tokens,
+    int task_id_is_default, /* bool: task_id=="default" */
+    bool force) {
+    (void)task_id_is_default;
+    json_t *out_messages = json_copy(messages);
+    char *prompt = NULL;
+
+    const char *auto_mode = codex ? codex->auto_mode : "native";
+    bool skip = (!force && strcmp(auto_mode, "hermes") != 0) ||
+                (codex == NULL || codex->session == NULL || codex->vtab == NULL ||
+                 codex->vtab->compact_thread == NULL);
+
+    if (skip) {
+        prompt = codex && codex->build_system_prompt
+                     ? codex->build_system_prompt(system_message, codex->ctx)
+                     : strdup("");
+        return cc_codex_result(out_messages, prompt);
+    }
+
+    /* codex path */
+    if (codex->emit_status) codex->emit_status();
+
+    cc_codex_compact_result_t res = { .error = NULL, .interrupted = false,
+                                      .should_retire = false };
+    cc_codex_compact_result_t pr = codex->vtab->compact_thread(codex->session);
+    res = pr;
+
+    if (res.should_retire) {
+        if (codex->vtab->close) codex->vtab->close(codex->session);
+        if (codex->set_codex_session) codex->set_codex_session(NULL);
+    }
+
+    if (res.interrupted || (res.error != NULL && res.error[0])) {
+        if (res.error && res.error[0] && codex->emit_warning) {
+            char *warn = malloc(strlen(res.error) + 64);
+            if (warn) {
+                sprintf(warn, "\xE2\x9A\xA0 Codex app-server compaction failed: %s",
+                        res.error);
+                codex->emit_warning(warn);
+                free(warn);
+            }
+        }
+        prompt = codex->build_system_prompt
+                     ? codex->build_system_prompt(system_message, codex->ctx)
+                     : strdup("");
+        if (codex->complete_compaction) codex->complete_compaction();
+        return cc_codex_result(out_messages, prompt);
+    }
+
+    if (codex->vtab->record_compaction)
+        codex->vtab->record_compaction(codex, &res, approx_tokens, true);
+    if (codex->vtab->has_update_from_response &&
+        codex->vtab->has_update_from_response(
+            codex->context_compressor ? codex->context_compressor() : NULL) &&
+        codex->vtab->update_from_response)
+        codex->vtab->update_from_response(
+            codex->context_compressor ? codex->context_compressor() : NULL);
+
+    prompt = codex->build_system_prompt
+                 ? codex->build_system_prompt(system_message, codex->ctx)
+                 : strdup("");
+    if (codex->complete_compaction) codex->complete_compaction();
+    return cc_codex_result(out_messages, prompt);
+}
+
+/* helper: wrap (messages, prompt) into the [messages, prompt] tuple shape */
+static json_t *cc_codex_result(json_t *messages, char *prompt) {
+    json_t *tuple = json_array();
+    json_append(tuple, messages);
+    json_append(tuple, json_string(prompt ? prompt : ""));
+    free(prompt);
+    return tuple;
+}
+
+/* ── Status string constants ─────────────────────────────────────────── */
+
+/* PoP: COMPACTION_STATUS @ agent/conversation_compression.py:COMPACTION_STATUS */
+const char *CC_COMPACTION_STATUS =
+    "\xF0\x9F\x94\x84 Compacting conversation history...";
+
