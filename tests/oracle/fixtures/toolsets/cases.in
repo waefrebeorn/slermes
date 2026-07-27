@@ -1,0 +1,28 @@
+resolve web
+resolve browser
+resolve debugging
+resolve safe
+resolve hermes-cli
+resolve hermes-discord
+resolve hermes-webhook
+resolve hermes-gateway
+resolve nope
+resolve coding
+validate web
+validate hermes-cli
+validate no-such
+validate all
+validate *
+bundle hermes-discord
+bundle hermes-feishu
+bundle hermes-webhook
+bundle web
+platform default_cli cli {}
+platform explicit cli {"platform_toolsets": {"cli": ["web", "terminal", "file"]}}
+platform mixed cli {"platform_toolsets": {"cli": ["hermes-cli", "spotify"]}}
+platform empty cli {"platform_toolsets": {"cli": []}}
+platform mcp cli {"platform_toolsets": {"cli": ["web", "srv1"]}, "mcp_servers": {"srv1": {"enabled": true}, "srv2": {"enabled": false}}}
+platform no_mcp cli {"platform_toolsets": {"cli": ["web", "no_mcp"]}, "mcp_servers": {"srv1": {"enabled": true}}}
+platform disabled cli {"platform_toolsets": {"cli": ["web", "terminal"]}, "agent": {"disabled_toolsets": ["terminal"]}}
+platform engine cli {"context": {"engine": "kv"}}
+platform discord_default discord {}
