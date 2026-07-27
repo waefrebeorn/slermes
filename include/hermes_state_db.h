@@ -206,6 +206,66 @@ typedef struct {
  * of repairs. */
 int hermes_state_repair_message_sequence(repair_msg_t *msgs, int *count);
 
+/* ================================================================
+ *  Compression locks + child publication (hermes_state_locks.c)
+ * ================================================================ */
+
+/* PoP: hermes_state_lock_holder_process_is_dead @ hermes_state.py:_compression_lock_holder_process_is_dead
+ * True only when a structured "pid=<n>:..." holder's local PID is provably
+ * gone (kill(pid,0) → ESRCH). Same-process / unstructured / doubt → false. */
+bool hermes_state_lock_holder_process_is_dead(const char *holder);
+
+/* PoP: hermes_state_try_acquire_compression_lock @ hermes_state.py:try_acquire_compression_lock
+ * Atomic DELETE-expired/dead + INSERT OR IGNORE + SELECT-confirm inside one
+ * BEGIN IMMEDIATE. True = caller owns the lock. */
+bool hermes_state_try_acquire_compression_lock(hermes_state_db_t *db,
+                                               const char *session_id,
+                                               const char *holder,
+                                               double ttl_seconds);
+
+/* PoP: hermes_state_release_compression_lock @ hermes_state.py:release_compression_lock
+ * Idempotent holder-checked DELETE. */
+void hermes_state_release_compression_lock(hermes_state_db_t *db,
+                                           const char *session_id,
+                                           const char *holder);
+
+/* PoP: hermes_state_refresh_compression_lock @ hermes_state.py:refresh_compression_lock
+ * Extend lease iff holder still owns the row (holder column alone — a
+ * starved-but-live owner past its own TTL must be able to revive). */
+bool hermes_state_refresh_compression_lock(hermes_state_db_t *db,
+                                           const char *session_id,
+                                           const char *holder,
+                                           double ttl_seconds);
+
+/* PoP: hermes_state_get_compression_lock_holder @ hermes_state.py:get_compression_lock_holder
+ * Current non-expired holder (malloc'd) or NULL. */
+char *hermes_state_get_compression_lock_holder(hermes_state_db_t *db,
+                                               const char *session_id);
+
+/* PoP: hermes_state_find_live_compression_child @ hermes_state.py:find_live_compression_child
+ * Unique live direct child id (malloc'd) of a compression-ended parent, or
+ * NULL when the parent is live / reason differs / 0 or 2+ candidates. */
+char *hermes_state_find_live_compression_child(hermes_state_db_t *db,
+                                               const char *parent_session_id);
+
+/* PoP: hermes_state_publish_compression_child @ hermes_state.py:publish_compression_child
+ * One transaction: lease check, child row inheriting parent routing/origin
+ * columns, compacted handoff insert, parent close (end_reason='compression').
+ * Returns 0 on success; negative code (-2 lease lost, -3 parent missing,
+ * -4 parent already ended, -5 empty handoff, -6/-7/-8 SQL) on rollback. */
+int hermes_state_publish_compression_child(hermes_state_db_t *db,
+                                           const char *parent_session_id,
+                                           const char *child_session_id,
+                                           const char *source,
+                                           const char *messages_json,
+                                           const char *model,
+                                           const char *model_config_json,
+                                           const char *system_prompt,
+                                           const char *cwd,
+                                           const char *profile_name,
+                                           const char *compression_lock_holder,
+                                           bool require_compression_lease);
+
 #ifdef __cplusplus
 }
 #endif
