@@ -1,0 +1,114 @@
+/*
+ * context_compressor_pure.h — Pure, self-contained helpers from
+ * agent/context_compressor.py that operate on json_t message arrays + strings.
+ *
+ * These are the "static helper" surface of the Python module that the
+ * compression orchestration (llm_client.c / context_engine.c /
+ * port_agent_context_compressor.c) calls. They carry NO agent handle, NO
+ * async/IO, so they live in their own translation unit with minimal includes
+ * (opaque json_t* + libjson + libredact + liberrorclassifier).
+ *
+ * Faithful ports of:
+ *   _is_summary_access_or_quota_error
+ *   _collect_ghosted_skill_names
+ *   _skill_view_call_sites
+ *   _collect_protected_skill_names
+ *   _redact_compaction_text
+ *   _serialized_length_for_budget
+ *   _image_part_label
+ *   _str_arg
+ *   _summarize_tool_result_unguarded
+ *   resolve_model_threshold
+ */
+
+#ifndef CONTEXT_COMPRESSOR_PURE_H
+#define CONTEXT_COMPRESSOR_PURE_H
+
+#include <stdbool.h>
+#include <stddef.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "hermes_json.h"  /* defines json_t (opaque struct) */
+
+/* Re-declare the small helpers owned by context.c we reuse (no agent dep). */
+char *context_compressor__skill_pruned_marker(const char *skill_name);
+int   context_compressor__extract_pruned_skill_names(const char *text,
+                                                      char **out_names,
+                                                      int *out_count,
+                                                      int limit);
+char *context_compressor_content_text(const json_t *content);
+
+/* ── _is_summary_access_or_quota_error ─────────────────────────────────── */
+/* True for non-retryable summary auth / permission / permanent-quota errors.
+ * Built on the ported liberrorclassifier + status-code inspection, mirroring
+ * Python's classify_api_error() + status_code + marker text scan. The caller
+ * passes the status code, error body text, and an already-classified reason
+ * (so this stays free of any exception/provider plumbing). */
+bool cc_is_summary_access_or_quota_error(int status_code,
+                                         const char *error_text,
+                                         int classified_reason);
+
+/* ── _skill_view_call_sites ───────────────────────────────────────────── */
+/* Yield (message_index, skill_name) for every skill_view tool call.
+ * Returns the count filled into sites[] (each entry is {index, name}); the
+ * caller frees every name via free(). */
+typedef struct { int index; char *name; } cc_skill_view_site_t;
+int cc_skill_view_call_sites(const json_t *messages,
+                             cc_skill_view_site_t *sites, int limit);
+
+/* ── _collect_ghosted_skill_names ─────────────────────────────────────── */
+/* Skill names whose instructions are about to be lost in compaction: either a
+ * [SKILL_PRUNED: ...] marker already in a message, or a RAW skill_view body in
+ * a tool message keyed by a captured call id. Fills out_names[] (caller frees
+ * each). Returns count. */
+int cc_collect_ghosted_skill_names(const json_t *turns,
+                                    char **out_names, int limit);
+
+/* ── _collect_protected_skill_names ───────────────────────────────────── */
+/* Lower-cased set of skill names whose skill_view bodies must survive the
+ * Phase-1 demotion. Fills out_names[] (caller frees each). Returns count. */
+int cc_collect_protected_skill_names(const json_t *messages,
+                                     int prune_boundary,
+                                     char **out_names, int limit);
+
+/* ── _redact_compaction_text ──────────────────────────────────────────── */
+/* Redact text crossing a compaction summary boundary. Force mode: overrides
+ * the security.redact_secrets=false opt-out (a summary is a persistence
+ * boundary). Caller frees. */
+char *cc_redact_compaction_text(const char *text);
+
+/* ── _serialized_length_for_budget ────────────────────────────────────── */
+/* Stable char-length for non-content replay/metadata fields. */
+int cc_serialized_length_for_budget(const json_t *value);
+
+/* ── _image_part_label ────────────────────────────────────────────────── */
+/* Render a multimodal image part as a short text label. Caller frees. */
+char *cc_image_part_label(const json_t *part);
+
+/* ── _str_arg ──────────────────────────────────────────────────────────── */
+/* Safely get a string tool arg, coercing non-str values to str. Caller frees. */
+char *cc_str_arg(const json_t *args, const char *key, const char *def);
+
+/* ── _summarize_tool_result_unguarded ─────────────────────────────────── */
+/* Build the 1-line tool summary (unguarded). Caller frees. */
+char *cc_summarize_tool_result_unguarded(const char *tool_name,
+                                         const char *tool_args,
+                                         const char *tool_content);
+
+/* ── resolve_model_threshold ──────────────────────────────────────────── */
+/* Resolve effective compression threshold for a model. Longest substring
+ * key wins. */
+double cc_resolve_model_threshold(const char *model,
+                                  const char *const *threshold_keys,
+                                  const double *threshold_vals,
+                                  int threshold_count,
+                                  double default_threshold);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* CONTEXT_COMPRESSOR_PURE_H */

@@ -510,11 +510,15 @@ static bool redact_is_enabled(void) {
  */
 /* Port of Python gateway/platforms/bluebubbles.py:_redact() */
 /* Port of Python hermes_cli/dump.py:_redact() */
-char *hermes_redact(const char *input) {
+/* Core redaction routine. When force is false, honors the security.redact_secrets
+ * opt-out (returns a copy unchanged). When force is true, always redacts —
+ * faithful to Python redact_sensitive_text(force=True), used for persistence
+ * boundaries (compaction summaries) where a leaked credential re-enters prompts
+ * indefinitely. */
+static char *redact_core(const char *input, bool force) {
     if (!input) return NULL;
 
-    /* Check if redaction is enabled */
-    if (!redact_is_enabled()) {
+    if (!force && !redact_is_enabled()) {
         return strdup(input);
     }
 
@@ -625,6 +629,17 @@ char *hermes_redact(const char *input) {
     }
 
     return result;
+}
+
+char *hermes_redact(const char *input) {
+    return redact_core(input, false);
+}
+
+/* PoP: redact_sensitive_text(force=True) @ agent/redact.py:redact_sensitive_text
+ * Force-redaction path used by compaction summary boundaries (the config
+ * opt-out is deliberately overridden — see context_compressor.py:_redact_compaction_text). */
+char *hermes_redact_force(const char *input) {
+    return redact_core(input, true);
 }
 
 /* ================================================================

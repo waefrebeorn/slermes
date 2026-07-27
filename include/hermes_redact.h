@@ -20,6 +20,10 @@ extern "C" {
 char *hermes_redact(const char *input);
 /* Like hermes_redact but preserves key:value patterns inside source code. */
 char *hermes_redact_code_file(const char *input);
+/* Force-redact regardless of the security.redact_secrets opt-out (used for
+ * compaction summary persistence boundaries — see
+ * context_compressor.py:_redact_compaction_text). Caller frees result. */
+char *hermes_redact_force(const char *input);
 /* Add a custom regex/string redaction pattern at runtime. */
 bool hermes_redact_add_pattern(const char *pattern);
 /* Clear all runtime-added patterns. */
