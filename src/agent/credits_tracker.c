@@ -19,6 +19,7 @@
  */
 #define _GNU_SOURCE
 #include "hermes_credits_tracker.h"
+#include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -241,7 +242,14 @@ bool credits_tracker_parse_headers(credits_state_t *state,
     if (!safe_int(version_raw, &version_val))
         return false;
     if (version_val != 1) {
-        /* version > 1 returns None (warning omitted in C for brevity) */
+        /* Python: version > 1 emits a one-time logger.warning */
+        static bool version_warning_emitted = false;
+        if (version_val > 1 && !version_warning_emitted) {
+            version_warning_emitted = true;
+            hermes_log(LOG_WARNING, "credits",
+                       "credits header version %lld unsupported, ignoring — update Hermes",
+                       (long long)version_val);
+        }
         return false;
     }
 
