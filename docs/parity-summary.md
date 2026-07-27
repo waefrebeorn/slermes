@@ -1,25 +1,28 @@
 # Slermes C11 Parity — Live State
 
-**Generated:** 2026-07-23 (post upstream re-pull) by `slermes_parity_battleground.py` (live scanner)
+**Generated:** 2026-07-27 (live scanner re-run) by `slermes_parity_battleground.py`
 
-## Overall Numbers (live, after re-pulling fresh upstream Python)
+## Overall Numbers (live)
 
 | Classification | Count | Percentage | Meaning |
 |----------------|-------|------------|---------|
-| **PORTED** | 6,532 | 58.5% | C11 implementation with PoP annotation |
-| **REAL_GAP** | 4,619 | 41.3% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |
-| **PARTIAL** | 23 | 0.2% | C fn exists, annotation needs fixing |
+| **PORTED** | 6,963 | 59.3% | C11 implementation with PoP annotation |
+| **REAL_GAP** | 4,781 | 40.7% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |
+| **PARTIAL** | 0 | 0.0% | All C fns now carry PoP annotations (Lane 0 closed v666) |
 | **STUB** | 0 | 0.0% | No stub functions remain |
-| **TOTAL** | 11,174 | 100% | All Python functions/methods scanned |
+| **TOTAL** | 11,744 | 100% | All Python functions/methods scanned |
 
-> **Honesty note (2026-07-23 upstream re-pull):** upstream added **+1,441** new
-> Python features (total 9,733 → 11,174). Slermes gained +98 ports in the same
-> window, so REAL_GAP rose **+1,320** (3,299 → 4,619) and % ported dropped 66%→58%.
-> This is the quarry growing faster than ports — **expected and honest, not a
-> regression.** Pre-pull baseline was 6,434 / 3,299 (66.1% / 33.9%).
-> The 23 PARTIAL are immediate annotation-only fixes (no new logic). v622 plan:
-> close ~1,000 REAL_GAP by reusing existing `port_*`/`lib/` helpers
-> (see `REUSE_GAP_PLAN_v622.md`).
+> **Honesty note (2026-07-27):** live totals are 11,744 features (upstream
+> grew from 9,733 at the 2026-07-23 re-pull to 11,744 — +2,011 new Python
+> since the re-pull; +570 since the v621 snapshot). PORTED climbed 6,532 →
+> 6,963 in the same window. REAL_GAP 4,619 → 4,781 because the quarry grew
+> faster than ports — **expected and honest, not a regression.** PARTIAL is
+> now **0** (all 37 misclassified PARTIALs received their PoP annotations in
+> v666). v622 plan remains: close ~1,000 REAL_GAP via port_*/lib reuse
+> (REUSE_GAP_PLAN_v622.md). First faithful reuse-port landed v667:
+> `agent/billing_links.py` (5/5, oracle-verified).
+
+
 
 > **This is a partial port, ~two-thirds done.** REAL_GAP is the honest count of Python
 > features not yet reimplemented in C — it is not zero and the docs do not claim

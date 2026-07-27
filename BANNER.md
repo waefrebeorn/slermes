@@ -2,15 +2,15 @@
 # ║           Slermes — C Translation                            ║
 # ║         of Hermes Agent (Nous Research)                      ║
 # ║                                                              ║
-# ║  Build: Clean  │  v665 │  Tests: 36/36  │  Oracle: 18 suites 0 mismatch + 1611/0 fuzz ║
-# ║  Ported: 6,914/11,573 (59.7%)  REAL_GAP: 4,624 (40.0%)  PARTIAL: 35  ║
-# ║  ✓ v573..v627: god-header purge, web_server/weixin heavy ports, batch PoP   ║
-# ║    annotation closure, recovery renumber, parity-page fix (55 commits).    ║
+# ║  Build: Clean  │  v667 │  Tests: 36/36  │  Oracle: 19 suites 0 mismatch + 1611/0 fuzz ║
+# ║  Ported: 6,963/11,744 (59.3%)  REAL_GAP: 4,781 (40.7%)  PARTIAL: 0  ║
+# ║  ✓ v666: close all 37 PARTIAL (Lane 0 of reuse plan) -> PARTIAL 0.          ║
+# ║  ✓ v667: faithful port of agent/billing_links.py (5/5, oracle-verified).     ║
 # ║    0 STUB, no god headers.                                          ║
 # ║  ⚠ Post upstream re-pull (2026-07-23): upstream added +1,441 Python features ║
-# ║    (9,733 -> 11,174); slermes gained +98 ports; REAL_GAP 3,299 -> 4,619.     ║
-# ║    Quarry grew faster than ports — honest, not a regression. v622 plan:      ║
-# ║    close ~1,000 REAL_GAP via port_*/lib reuse (REUSE_GAP_PLAN_v622.md).       ║
+# ║    (9,733 -> 11,574); slermes gained +229 ports since; REAL_GAP 4,619 ->     ║
+# ║    4,781. Quarry grew faster than ports — honest, not a regression. v622      ║
+# ║    plan: close ~1,000 REAL_GAP via port_*/lib reuse (REUSE_GAP_PLAN_v622.md).  ║
 # ║                                                              ║
 # ║  ⚠ GitHub shows "X commits ahead / Y behind NousResearch/hermes-agent:main".  ║
 # ║    That is the FORK-PARENT banner: this repo is registered on GitHub as a     ║
