@@ -25,6 +25,7 @@ typedef struct hermes_state_db hermes_state_db_t;
  * sqlite init: sessions + messages + session_model_usage + schema_version).
  * Returns NULL on failure. */
 hermes_state_db_t *hermes_state_db_open(const char *path);
+bool hermes_state_apply_telegram_topic_migration(hermes_state_db_t *db);
 void hermes_state_db_close(hermes_state_db_t *db);
 
 /* ── Session lifecycle ──────────────────────────────────────────────────
