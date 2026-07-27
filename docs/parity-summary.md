@@ -6,8 +6,8 @@
 
 | Classification | Count | Percentage | Meaning |
 |----------------|-------|------------|---------|
-| **PORTED** | 6,973 | 59.4% | C11 implementation with PoP annotation |
-| **REAL_GAP** | 4,771 | 40.6% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |
+| **PORTED** | 6,975 | 59.4% | C11 implementation with PoP annotation |
+| **REAL_GAP** | 4,769 | 40.6% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |
 | **PARTIAL** | 0 | 0.0% | All C fns now carry PoP annotations (Lane 0 closed v666) |
 | **STUB** | 0 | 0.0% | No stub functions remain |
 | **TOTAL** | 11,744 | 100% | All Python functions/methods scanned |
