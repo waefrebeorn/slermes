@@ -133,8 +133,27 @@ void cc_activity_heartbeat_touch(void (*touch_activity)(const char *desc),
                                  const char *desc);
 
 /* ── Codex app-server compaction route ───────────────────────────────── */
-typedef struct cc_codex_compact_result cc_codex_compact_result_t;
-typedef struct cc_codex_session_vtable cc_codex_session_vtable_t;
+
+/* Result of a codex-native compaction turn (mirrors the Python TurnResult
+ * fields the route consumes: error string, interrupted, should_retire). */
+typedef struct cc_codex_compact_result {
+    const char *error;        /* NULL = success; malloc'd string owned by caller */
+    bool interrupted;
+    bool should_retire;
+} cc_codex_compact_result_t;
+
+/* Vtable seam the codex transport binds into. NULL entries force the
+ * Hermes-native fallback path in cc_compress_context_via_codex_app_server. */
+typedef struct cc_codex_session_vtable {
+    cc_codex_compact_result_t (*compact_thread)(void *session);
+    void (*close)(void *session);
+    bool (*has_update_from_response)(void *compressor);
+    void (*record_compaction)(void *ctx, cc_codex_compact_result_t *r,
+                              long long approx_tokens, bool force);
+    void (*record_usage)(void *agent);
+    void (*update_from_response)(void *compressor);
+} cc_codex_session_vtable_t;
+
 typedef struct cc_codex_session_ctx cc_codex_session_ctx_t;
 json_t *cc_compress_context_via_codex_app_server(
     json_t *messages, const char *system_message,

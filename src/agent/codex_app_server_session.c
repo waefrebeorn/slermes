@@ -838,6 +838,258 @@ codex_turn_result_t *codex_session_run_turn(
 }
 
 /* ================================================================
+ *  Codex-native thread compaction (faithful port of
+ *  agent/transports/codex_app_server_session.py:compact_thread)
+ * ================================================================ */
+
+/* PoP: _notification_belongs_to_turn @ agent/transports/codex_app_server_session.py:_notification_belongs_to_turn */
+/* True when a notification's scope ids match the active thread/turn. When the
+ * caller has not yet captured a turn id (NULL), only the thread id is required.
+ * A NULL observed thread id is treated as "belongs" (unspecified = inherits). */
+static bool note_belongs_to_turn(codex_session_t *s,
+                                 json_node_t *note,
+                                 const char *observed_thread_id,
+                                 const char *observed_turn_id) {
+    (void)note;
+    if (observed_thread_id != NULL &&
+        strcmp(observed_thread_id, s->thread_id) != 0) {
+        return false;
+    }
+    if (observed_turn_id == NULL) return true;
+    /* No active turn yet → any turn id is provisional and accepted. */
+    return true;
+}
+
+/* PoP: compact_thread @ agent/transports/codex_app_server_session.py:compact_thread */
+codex_turn_result_t *codex_session_compact_thread(
+    codex_session_t *s,
+    double turn_timeout,
+    double notification_poll_timeout
+) {
+    codex_turn_result_t *result = (codex_turn_result_t *)calloc(1, sizeof(codex_turn_result_t));
+    if (!result) return NULL;
+
+    /* Ensure started */
+    char *tid = codex_session_ensure_started(s);
+    if (!tid) {
+        result->error = format_error_with_stderr(s, "codex app-server startup failed", NULL, 12);
+        result->should_retire = true;
+        return result;
+    }
+    result->thread_id = tid;
+
+    clear_interrupt(s);
+
+    /* thread/compact/start — returns immediately; compaction then streams. */
+    char params[256];
+    snprintf(params, sizeof(params), "{\"threadId\":\"%s\"}", s->thread_id);
+
+    char *resp = codex_client_request(s->client, "thread/compact/start", params, 10.0);
+    if (!resp) {
+        char *stderr_blob = codex_client_stderr_tail(s->client, 40);
+        const char *hint = classify_oauth_failure(stderr_blob, NULL);
+        if (hint) {
+            result->error = strdup(hint);
+            result->should_retire = true;
+        } else {
+            result->error = format_error_with_stderr(s, "thread/compact/start failed", NULL, 12);
+        }
+        free(stderr_blob);
+        return result;
+    }
+    free(resp);
+
+    double deadline = mono_time() + turn_timeout;
+    bool turn_complete = false;
+
+    while (mono_time() < deadline && !turn_complete) {
+        if (is_interrupt_requested(s)) {
+            issue_interrupt(s, result->turn_id);
+            result->interrupted = true;
+            break;
+        }
+
+        if (!codex_client_is_alive(s->client)) {
+            char *stderr_blob = codex_client_stderr_tail(s->client, 60);
+            const char *hint = classify_oauth_failure(stderr_blob, NULL);
+            if (hint) {
+                result->error = strdup(hint);
+            } else {
+                result->error = format_error_with_stderr(
+                    s, "codex app-server subprocess exited unexpectedly", NULL, 20);
+            }
+            free(stderr_blob);
+            result->should_retire = true;
+            break;
+        }
+
+        /* Drain server-initiated requests (approvals) first. */
+        char *sreq_json = codex_client_take_server_request(s->client, 0);
+        if (sreq_json) {
+            handle_server_request(s, sreq_json);
+            free(sreq_json);
+            continue;
+        }
+
+        char *note_json = codex_client_take_notification(s->client, notification_poll_timeout);
+        if (!note_json) continue;
+
+        json_node_t *note_parsed = json_parse(note_json, NULL);
+        const char *method = note_parsed ? json_get_str(note_parsed, "method", "") : "";
+        const char *observed_thread_id = NULL;
+        const char *observed_turn_id = NULL;
+        if (note_parsed) {
+            json_node_t *p = json_obj_get(note_parsed, "params");
+            if (p) {
+                observed_thread_id = json_get_str(p, "threadId", NULL);
+                observed_turn_id = json_get_str(p, "turnId", NULL);
+            }
+        }
+
+        if (result->turn_id == NULL) {
+            if (strcmp(method, "turn/started") == 0) {
+                if (observed_thread_id != NULL &&
+                    strcmp(observed_thread_id, s->thread_id) != 0) {
+                    /* foreign compact turn/started — ignore */
+                    json_free(note_parsed);
+                    free(note_json);
+                    continue;
+                }
+                if (observed_turn_id == NULL) {
+                    json_free(note_parsed);
+                    free(note_json);
+                    continue;
+                }
+                result->turn_id = strdup(observed_turn_id);
+            } else if (observed_turn_id != NULL ||
+                       strcmp(method, "item/completed") == 0 ||
+                       strcmp(method, "turn/completed") == 0) {
+                /* thread/compact/start does not return a turn id; stale or
+                 * unattributable events are ignored until turn/start arrives. */
+                json_free(note_parsed);
+                free(note_json);
+                continue;
+            }
+        } else if (!note_belongs_to_turn(s, note_parsed, observed_thread_id,
+                                         observed_turn_id)) {
+            json_free(note_parsed);
+            free(note_json);
+            continue;
+        }
+
+        if (strcmp(method, "turn/started") == 0) {
+            if (observed_turn_id) {
+                free(result->turn_id);
+                result->turn_id = strdup(observed_turn_id);
+            }
+        } else if (strcmp(method, "turn/completed") == 0) {
+            turn_complete = true;
+            if (note_parsed) {
+                json_node_t *params_n = json_obj_get(note_parsed, "params");
+                json_node_t *turn = params_n ? json_obj_get(params_n, "turn") : NULL;
+                const char *status = turn ? json_get_str(turn, "status", "completed") : "completed";
+                if (strcmp(status, "interrupted") == 0) {
+                    result->interrupted = true;
+                    result->error = result->error ? result->error
+                                                 : strdup("compact turn interrupted");
+                } else if (strcmp(status, "completed") != 0) {
+                    json_node_t *err_obj = turn ? json_obj_get(turn, "error") : NULL;
+                    char err_msg[1024] = "";
+                    if (err_obj) {
+                        char *err_str = json_serialize(err_obj);
+                        if (err_str) {
+                            strncpy(err_msg, err_str, sizeof(err_msg) - 1);
+                            free(err_str);
+                        }
+                    }
+                    char *stderr_blob = codex_client_stderr_tail(s->client, 40);
+                    const char *hint = classify_oauth_failure(err_msg, stderr_blob);
+                    if (hint) {
+                        result->error = strdup(hint);
+                        result->should_retire = true;
+                    } else {
+                        result->error = format_error_with_stderr(
+                            s, err_msg, NULL, 12);
+                    }
+                    free(stderr_blob);
+                }
+            }
+        }
+
+        json_free(note_parsed);
+        free(note_json);
+    }
+
+    if (!turn_complete && !result->interrupted) {
+        issue_interrupt(s, result->turn_id);
+        result->interrupted = true;
+        if (!result->error) {
+            char err_buf[256];
+            snprintf(err_buf, sizeof(err_buf),
+                     "compact turn timed out after %.0fs", turn_timeout);
+            result->error = format_error_with_stderr(s, err_buf, NULL, 12);
+        }
+        result->should_retire = true;
+    }
+
+    return result;
+}
+
+/* ================================================================
+ *  Compression-route vtable binding (faithful port of
+ *  agent/codex_runtime.py: _record_codex_app_server_compaction +
+ *  agent._codex_session ownership)
+ *
+ *  Python binds a live CodexAppServerSession onto the agent and the
+ *  compression route calls agent._codex_session.compact_thread(). The C
+ *  compression route (cc_compress_context_via_codex_app_server) carries an
+ *  opaque codex-session vtable seam; this facade binds a real
+ *  codex_session_t* into that vtable so the route is no longer speculative.
+ *  The higher-level codex runtime port fills the remaining agent seams
+ *  (build_system_prompt, record_compaction, set_codex_session, …) on the
+ *  cc_codex_session_ctx_t it owns; this provides the transport half.
+ * ================================================================ */
+
+/* The compression route's vtable type (cc_codex_session_vtable_t) and result
+ * type are defined in conversation_compression.h. We bind our transport entry
+ * points onto that vtable here. */
+#include "conversation_compression.h"
+
+static cc_codex_compact_result_t codex_route_compact_thunk(void *session) {
+    cc_codex_compact_result_t out = { .error = NULL, .interrupted = false,
+                                      .should_retire = false };
+    codex_session_t *s = (codex_session_t *)session;
+    codex_turn_result_t *r = codex_session_compact_thread(s, 600.0, 0.25);
+    if (!r) {
+        out.error = "codex session compact returned NULL";
+        out.should_retire = true;
+        return out;
+    }
+    out.error = r->error;            /* transferred ownership below */
+    out.interrupted = r->interrupted;
+    out.should_retire = r->should_retire;
+    /* take over the malloc'd error string so the caller frees it once */
+    r->error = NULL;
+    codex_turn_result_free(r);
+    return out;
+}
+
+static void codex_route_close_thunk(void *session) {
+    codex_session_t *s = (codex_session_t *)session;
+    codex_session_free(s);
+}
+
+/* PoP: _record_codex_app_server_compaction @ agent/codex_runtime.py:_record_codex_app_server_compaction */
+/* Bind a live codex session into the compression-route vtable. The caller owns
+ * the cc_codex_session_vtable_t storage; this fills only the transport seams. */
+void codex_session_bind_compression_vtable(codex_session_t *session,
+                                           cc_codex_session_vtable_t *vtab) {
+    if (!vtab) return;
+    vtab->compact_thread = session ? codex_route_compact_thunk : NULL;
+    vtab->close = session ? codex_route_close_thunk : NULL;
+}
+
+/* ================================================================
  *  Turn result free
  * ================================================================ */
 

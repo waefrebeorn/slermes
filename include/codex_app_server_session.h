@@ -112,6 +112,28 @@ codex_turn_result_t *codex_session_run_turn(
 /* Free a turn result */
 void codex_turn_result_free(codex_turn_result_t *r);
 
+/* Trigger Codex-native history compaction for the current thread.
+ * Sends thread/compact/start (returns immediately); the compaction progress
+ * streams through the same turn/item notifications as a normal turn. We wait
+ * for the matching turn/completed so callers can treat a successful return as
+ * a completed compaction boundary. Returns a turn result (caller frees it).
+ * Unlike run_turn, this does NOT project assistant messages — it only awaits
+ * completion and records status fields, mirroring Python's compact_thread. */
+codex_turn_result_t *codex_session_compact_thread(
+    codex_session_t *s,
+    double turn_timeout,
+    double notification_poll_timeout
+);
+
+/* The compression route (conversation_compression_helpers.c) carries an
+ * opaque codex-session vtable seam. Forward-declare its vtable type so the
+ * transport can bind a live session into it without including the compression
+ * header here. The higher-level codex runtime port fills the remaining
+ * agent seams; this binds the transport half (compact_thread + close). */
+typedef struct cc_codex_session_vtable cc_codex_session_vtable_t;
+void codex_session_bind_compression_vtable(codex_session_t *session,
+                                           cc_codex_session_vtable_t *vtab);
+
 #ifdef __cplusplus
 }
 #endif

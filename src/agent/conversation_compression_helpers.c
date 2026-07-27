@@ -738,22 +738,9 @@ void cc_activity_heartbeat_touch(void (*touch_activity)(const char *desc),
  * transport vtable — when no transport is registered the function falls back
  * to the Hermes-native path exactly as `auto_mode != "hermes"` does. */
 
-typedef struct cc_codex_compact_result {
-    const char *error;
-    bool interrupted;
-    bool should_retire;
-} cc_codex_compact_result_t;
-
-typedef struct cc_codex_session_vtable {
-    /* vtable seams — NULL entries force the Hermes-native fallback path */
-    cc_codex_compact_result_t (*compact_thread)(void *session);
-    void (*close)(void *session);
-    bool (*has_update_from_response)(void *compressor);
-    void (*record_compaction)(void *ctx, cc_codex_compact_result_t *r,
-                              long long approx_tokens, bool force);
-    void (*record_usage)(void *agent);
-    void (*update_from_response)(void *compressor);
-} cc_codex_session_vtable_t;
+/* cc_codex_compact_result_t and cc_codex_session_vtable_t are defined in
+ * conversation_compression.h (so the codex transport can bind the vtable).
+ * Only the ctx struct that carries the agent seams stays local. */
 
 typedef struct cc_codex_session_ctx {
     void *session;          /* opaque codex session */
