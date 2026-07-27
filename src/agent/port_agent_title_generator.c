@@ -79,17 +79,15 @@ char *summarize_user_message(const char *user_message) {
     return strdup(user_message);
 }
 
-/* PoP: persist_session_title @ agent/title_generator.py:_persist_session_title
- *
- * Predicate-guarded write with duplicate-collision recovery:
- *   - the write goes through the auto-if-empty predicate so a manual title
- *     set while generation was in flight is never overwritten;
- *   - on a uniqueness conflict, append a #N suffix via
- *     session_title_next_in_lineage and retry once; a still-conflicting or
- *     unchanged dedup re-raises (returns the conflict).
- * Returns the malloc'd title actually persisted, or NULL when a concurrent
- * manual title won the race / the write failed (caller frees; *result gets
- * the store outcome when non-NULL). */
+/* PoP: persist_session_title @ agent/title_generator.py:_persist_session_title */
+/* Predicate-guarded write with duplicate-collision recovery: the write goes
+ * through the auto-if-empty predicate so a manual title set while generation
+ * was in flight is never overwritten; on a uniqueness conflict, append a #N
+ * suffix via session_title_next_in_lineage and retry once; a still-colliding
+ * or unchanged dedup re-raises (returns the conflict). Returns the malloc'd
+ * title actually persisted, or NULL when a concurrent manual title won the
+ * race / the write failed (caller frees; *result gets the store outcome when
+ * non-NULL). */
 char *persist_session_title(db_t *session_db, const char *session_id,
                             const char *title,
                             session_title_result_t *result) {
