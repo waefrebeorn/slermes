@@ -179,10 +179,11 @@ int main(void) {
          ({ const char *v = yaml_get_string(doc, "empty_str");
             v && strcmp(v, "") == 0; }));
 
-    /* ── Quoted value with colon ── */
+    /* ── Quoted value with colon ── (YAML strips surrounding quotes, like
+     *     Python yaml.safe_load: "hello:world" -> hello:world) ── */
     TEST("yaml_get_string quoted colon",
          ({ const char *v = yaml_get_string(doc, "quoted_key");
-            v && strcmp(v, "\"hello:world\"") == 0; }));
+            v && strcmp(v, "hello:world") == 0; }));
 
     /* ── Multi-document ── */
     const char *multi_input =

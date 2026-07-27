@@ -177,6 +177,50 @@ static void parse_inline(yaml_entry_t *e, const char *val) {
         return;
     }
     e->type = YVAL_STRING;
+    /* Strip matching surrounding quotes (YAML flow scalars).
+     * Double-quoted: process \n \t \" \\ escapes. Single-quoted: literal,
+     * with '' -> '. Unquoted: stored verbatim (line already right-trimmed). */
+    size_t vlen = strlen(val);
+    if (vlen >= 2 && val[0] == '"' && val[vlen-1] == '"') {
+        char *buf = (char *)xmalloc(vlen);  /* <= vlen-1 chars + NUL */
+        if (!buf) { e->str_val = xstrdup(val); return; }
+        size_t bi = 0;
+        for (size_t k = 1; k < vlen - 1; k++) {
+            if (val[k] == '\\' && k + 1 < vlen - 1) {
+                char c = val[++k];
+                switch (c) {
+                    case 'n':  buf[bi++] = '\n'; break;
+                    case 't':  buf[bi++] = '\t'; break;
+                    case 'r':  buf[bi++] = '\r'; break;
+                    case '"':  buf[bi++] = '"';  break;
+                    case '\\': buf[bi++] = '\\'; break;
+                    case '0':  buf[bi++] = '\0'; break;
+                    default:   buf[bi++] = c;    break;
+                }
+            } else {
+                buf[bi++] = val[k];
+            }
+        }
+        buf[bi] = '\0';
+        e->str_val = buf;
+        return;
+    }
+    if (vlen >= 2 && val[0] == '\'' && val[vlen-1] == '\'') {
+        char *buf = (char *)xmalloc(vlen);
+        if (!buf) { e->str_val = xstrdup(val); return; }
+        size_t bi = 0;
+        for (size_t k = 1; k < vlen - 1; k++) {
+            if (val[k] == '\'' && k + 1 < vlen - 1 && val[k+1] == '\'') {
+                buf[bi++] = '\'';
+                k++;
+            } else {
+                buf[bi++] = val[k];
+            }
+        }
+        buf[bi] = '\0';
+        e->str_val = buf;
+        return;
+    }
     e->str_val = xstrdup(val);
 }
 

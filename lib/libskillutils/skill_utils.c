@@ -9,6 +9,7 @@
 
 #include "skill_utils.h"
 #include "yaml.h"
+#include "json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -869,8 +870,121 @@ yaml_doc_t *skill_yaml_load(const char *yaml_str)
     return doc;
 }
 
-/* Port of Python: resolve_skill_config_values — resolve skill config from config.yaml */
-/* C version: returns empty JSON string (config.yaml skills parsing TBD) */
-const char *resolve_skill_config_values(void) {
-    return "{}";
+/* ── expanduser / expandvars (mirrors os.path.expanduser + expandvars) ──── */
+/* Returns a malloc'd expanded copy. Expands a leading ~ to $HOME and any
+ * ${VAR} / $VAR occurrences to their environment values (empty when unset,
+ * matching os.path.expandvars leaving unknown names untouched... but Python's
+ * expandvars replaces known vars and leaves unknown ones literal). */
+static char *expand_user_and_vars(const char *value)
+{
+    if (!value) return NULL;
+    /* First expanduser: leading ~ or ~/... -> $HOME */
+    char stage1[4096];
+    if (value[0] == '~' && (value[1] == '\0' || value[1] == '/')) {
+        const char *home = getenv("HOME");
+        if (home && *home) {
+            snprintf(stage1, sizeof(stage1), "%s%s", home, value + 1);
+        } else {
+            snprintf(stage1, sizeof(stage1), "%s", value);
+        }
+    } else {
+        snprintf(stage1, sizeof(stage1), "%s", value);
+    }
+
+    /* Then expandvars: ${VAR} and $VAR. Unknown names left literal (Python). */
+    char out[4096];
+    size_t oi = 0;
+    for (size_t i = 0; stage1[i] && oi + 1 < sizeof(out); ) {
+        if (stage1[i] == '$') {
+            char name[256];
+            size_t ni = 0;
+            size_t j = i + 1;
+            int braced = 0;
+            if (stage1[j] == '{') { braced = 1; j++; }
+            while (stage1[j] && ni + 1 < sizeof(name) &&
+                   (isalnum((unsigned char)stage1[j]) || stage1[j] == '_')) {
+                name[ni++] = stage1[j++];
+            }
+            name[ni] = '\0';
+            if (braced) {
+                if (stage1[j] == '}') j++;
+                else { /* malformed — emit literally */ out[oi++] = stage1[i++]; continue; }
+            }
+            if (ni == 0) { out[oi++] = stage1[i++]; continue; }
+            const char *ev = getenv(name);
+            if (ev) {
+                for (size_t k = 0; ev[k] && oi + 1 < sizeof(out); k++) out[oi++] = ev[k];
+            } else {
+                /* leave literal $NAME / ${NAME} */
+                for (size_t k = i; k < j && oi + 1 < sizeof(out); k++) out[oi++] = stage1[k];
+            }
+            i = j;
+        } else {
+            out[oi++] = stage1[i++];
+        }
+    }
+    out[oi] = '\0';
+    return strdup(out);
+}
+
+/* Port of Python agent/skill_utils.py:resolve_skill_config_values.
+ * Resolve current values for skill config vars from config.yaml under the
+ * "skills.config.<key>" dotpath. Falls back to each var's declared default
+ * when the key is unset or blank; expands ~ and ${VAR} in path-like values.
+ * Returns a malloc'd JSON object string {logical_key: value, ...} (never NULL
+ * on success; "{}" when no vars). Caller frees. */
+/* PoP: resolve_skill_config_values @ agent/skill_utils.py:resolve_skill_config_values */
+char *resolve_skill_config_values(const char *config_path,
+                                  const skill_config_var_t *vars, int n_vars)
+{
+    json_t *result = json_object();
+    if (!result) return strdup("{}");
+
+    yaml_doc_t *doc = NULL;
+    if (config_path && config_path[0]) {
+        struct stat st;
+        if (stat(config_path, &st) == 0 && S_ISREG(st.st_mode)) {
+            char *err = NULL;
+            doc = yaml_parse_file(config_path, &err);
+            free(err);
+        }
+    }
+
+    for (int i = 0; i < n_vars; i++) {
+        const char *logical_key = vars[i].key;
+        if (!logical_key || !logical_key[0]) continue;
+
+        /* storage_key = "skills.config.<logical_key>" */
+        char storage_key[SKILL_UTILS_NAME_MAX + 32];
+        snprintf(storage_key, sizeof(storage_key), "skills.config.%s", logical_key);
+
+        const char *value = doc ? yaml_get_string(doc, storage_key) : NULL;
+
+        /* None or blank-string -> declared default */
+        int blank = 0;
+        if (value) {
+            const char *p = value;
+            while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+            if (*p == '\0') blank = 1;
+        }
+        if (!value || blank) value = vars[i].default_val;
+        if (!value) value = "";
+
+        /* Expand ~ / ${VAR} in path-like values (only when markers present,
+         * matching Python's "~" in value or "${" in value guard). */
+        if (strchr(value, '~') || strstr(value, "${")) {
+            char *expanded = expand_user_and_vars(value);
+            if (expanded) {
+                json_set(result, logical_key, json_string(expanded));
+                free(expanded);
+                continue;
+            }
+        }
+        json_set(result, logical_key, json_string(value));
+    }
+
+    if (doc) yaml_free(doc);
+    char *out = json_serialize(result);
+    json_free(result);
+    return out ? out : strdup("{}");
 }

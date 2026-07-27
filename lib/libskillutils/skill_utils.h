@@ -139,6 +139,16 @@ typedef struct {
 int extract_skill_config_vars(const skill_frontmatter_t *fm,
                               skill_config_var_t *vars, int max_vars);
 
+/**
+ * Resolve current values for skill config vars from config.yaml under the
+ * "skills.config.<key>" dotpath. Falls back to each var's declared default
+ * when unset/blank; expands ~ and ${VAR} in path-like values. Returns a
+ * malloc'd JSON object string {logical_key: value, ...} ("{}" when no vars).
+ * Caller frees.
+ */
+char *resolve_skill_config_values(const char *config_path,
+                                  const skill_config_var_t *vars, int n_vars);
+
 /* ── Description extraction ──────────────────────────────── */
 
 /** Extract truncated description (max 60 chars) from frontmatter. */
