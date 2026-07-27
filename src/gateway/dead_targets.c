@@ -185,25 +185,8 @@ bool dead_target_mark_dead(dead_target_registry_t *r, const char *platform,
     return !existed;
 }
 
-/* Remove a key from a JSON object (libjson exposes no delete primitive).
- * Reuses the idiom from src/tools/port_skills_sync.c. */
-static void json_object_delete(json_t *obj, const char *key) {
-    if (!obj || obj->type != JSON_OBJECT || !key) return;
-    for (size_t i = 0; i < obj->c.count; i++) {
-        if (strcmp(obj->c.keys[i], key) == 0) {
-            json_free(obj->c.items[i]);
-            free(obj->c.keys[i]);
-            for (size_t j = i + 1; j < obj->c.count; j++) {
-                obj->c.keys[j - 1] = obj->c.keys[j];
-                obj->c.items[j - 1] = obj->c.items[j];
-            }
-            obj->c.count--;
-            obj->c.keys = realloc(obj->c.keys, obj->c.count * sizeof(char *));
-            obj->c.items = realloc(obj->c.items, obj->c.count * sizeof(json_t *));
-            break;
-        }
-    }
-}
+/* Key deletion: canonical json_obj_del() lives in libjson. */
+#define json_object_delete(obj, key) ((void)json_obj_del((obj), (key)))
 
 /* PoP: dead_target_clear @ gateway/dead_targets.py:clear */
 bool dead_target_clear(dead_target_registry_t *r, const char *platform,

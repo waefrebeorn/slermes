@@ -165,8 +165,10 @@ bool web_is_backend_available(const char *backend)
     if (strcmp(backend, "brave-free") == 0) return web_has_env("BRAVE_SEARCH_API_KEY");
     if (strcmp(backend, "ddgs") == 0) return web_ddgs_package_importable();
     if (strcmp(backend, "xai") == 0) {
-        /* xai credentials check would go here */
-        return false;
+        /* Cheap probe — env var OR auth.json OAuth tokens (mirrors Python:
+         * must not trigger a network token refresh on every dispatch). */
+        extern bool has_xai_credentials(void);
+        return has_xai_credentials();
     }
 
     return false;

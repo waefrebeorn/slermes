@@ -128,22 +128,8 @@ static inline void json_array_remove(json_t *arr, size_t index) {
     arr->c.count--;
 }
 
-/* Delete object key. */
-static inline void json_object_del(json_t *obj, const char *key) {
-    if (!obj || obj->type != JSON_OBJECT) return;
-    size_t idx = (size_t)-1;
-    for (size_t i = 0; i < obj->c.count; i++) {
-        if (strcmp(obj->c.keys[i], key) == 0) { idx = i; break; }
-    }
-    if (idx == (size_t)-1) return;
-    free(obj->c.keys[idx]);
-    json_free(obj->c.items[idx]);
-    for (size_t i = idx; i + 1 < obj->c.count; i++) {
-        obj->c.keys[i] = obj->c.keys[i + 1];
-        obj->c.items[i] = obj->c.items[i + 1];
-    }
-    obj->c.count--;
-}
+/* Delete object key — canonical implementation lives in libjson (json_obj_del). */
+#define json_object_del(obj, key) ((void)json_obj_del((obj), (key)))
 
 #define json_string_value_safe(v)  ((v) && (v)->type == JSON_STRING ? (v)->str_val : NULL)
 

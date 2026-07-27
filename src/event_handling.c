@@ -111,6 +111,19 @@ static hit_t hit_test(app_state_t *app, int mx, int my) {
     return r;
 }
 
+/* Public hover updater (declared in app_state.h; lives here with hit_test). */
+void app_update_hover(app_state_t *app, int mx, int my) {
+    if (!app) return;
+    hit_t hit = hit_test(app, mx, my);
+    if (hit.type == HIT_SESSION) {
+        app_set_hover_message(app, hit.index);
+    } else if (hit.type == HIT_CHAT) {
+        chat_view_handle_hover(app, mx, my);
+    } else {
+        app_set_hover_message(app, -1);
+    }
+}
+
 /* ══════════════════════════════════════════════════════════════════════
  * Event Processing
  * ══════════════════════════════════════════════════════════════════════ */
@@ -336,15 +349,9 @@ bool event_handle_mouse(app_state_t *app, gc_event_t *ev) {
     hit_t hit = hit_test(app, ev->x, ev->y);
     
     if (ev->type == GC_EV_MOUSE_MOVE) {
-        /* Update hover state */
-        if (hit.type == HIT_SESSION) {
-            app_set_hover_message(app, hit.index);
-        } else if (hit.type == HIT_CHAT) {
-            chat_view_handle_hover(app, ev->x, ev->y);
-        }
+        app_update_hover(app, ev->x, ev->y);
         return true;
     }
-    
     if (ev->type == GC_EV_MOUSE_DOWN) {
         if (ev->button == 1) { /* Left click */
             switch (hit.type) {

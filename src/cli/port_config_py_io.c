@@ -34,6 +34,8 @@ static void config_path(char *buf, size_t sz) {
 }
 
 /* Read raw config.yaml (no defaults merge) -> json_t (caller frees). NULL on missing. */
+/* PoP: config_py_read_raw_config @ hermes_cli/config.py:read_raw_config */
+json_t *config_py_read_raw_config(void);
 static json_t *read_raw_config_file(void) {
     char path[HERMES_PATH_MAX];
     config_path(path, sizeof path);
@@ -50,6 +52,15 @@ static json_t *read_raw_config_file(void) {
     if (!cfg || cfg->type != JSON_OBJECT) { if (cfg) json_free(cfg); return json_new_object(); }
     return cfg;
 }
+
+/* Public wrapper: read raw config.yaml without defaults merge. Caller frees.
+ * Returns NULL when config.yaml is absent (mirrors read_raw_config() -> {}
+ * only when the file exists but parses empty). */
+json_t *config_py_read_raw_config(void) { return read_raw_config_file(); }
+
+/* Public config.yaml path accessor for port files (mirrors get_config_path()). */
+/* PoP: config_py_get_config_path @ hermes_cli/config.py:get_config_path */
+void config_py_get_config_path(char *buf, size_t sz) { config_path(buf, sz); }
 
 /* forward decl */
 static const char *json_string_value_or_empty(const json_t *n, const char *key);

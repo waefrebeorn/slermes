@@ -46,25 +46,7 @@ void port_skills_sync_state_cleanup(port_skills_sync_state_t *state)
     free(state);
 }
 
-/* Helper: delete a key from a JSON object */
-static void json_object_delete(json_t *obj, const char *key) {
-    if (!obj || obj->type != JSON_OBJECT || !key) return;
-    for (size_t i = 0; i < obj->c.count; i++) {
-        if (strcmp(obj->c.keys[i], key) == 0) {
-            json_free(obj->c.items[i]);
-            free(obj->c.keys[i]);
-            /* Shift remaining elements */
-            for (size_t j = i + 1; j < obj->c.count; j++) {
-                obj->c.keys[j - 1] = obj->c.keys[j];
-                obj->c.items[j - 1] = obj->c.items[j];
-            }
-            obj->c.count--;
-            obj->c.keys = realloc(obj->c.keys, obj->c.count * sizeof(char *));
-            obj->c.items = realloc(obj->c.items, obj->c.count * sizeof(json_t *));
-            break;
-        }
-    }
-}
+/* Key deletion: canonical json_obj_del() lives in libjson. */
 
 /* Forward declarations for functions used before definition */
 json_t *read_manifest(void);
@@ -1216,7 +1198,7 @@ json_t *sync_skills(bool quiet)
         if (!found && !json_obj_get(suppressed, key)) {
             json_t *removed = json_obj_get(manifest, key);
             if (removed) {
-                json_object_delete(manifest, key);
+                json_obj_del(manifest, key);
                 json_array_append(cleaned, json_string(key));
                 if (!quiet) printf("  ✓ cleaned %s from manifest\n", key);
             }
@@ -1413,7 +1395,7 @@ json_t *reset_bundled_skill(const char *name, bool restore)
     }
 
     if (in_manifest) {
-        json_object_delete(manifest, name);
+        json_obj_del(manifest, name);
         write_manifest(manifest);
     }
 
@@ -1543,7 +1525,7 @@ json_t *remove_pristine_bundled_skills(bool dry_run)
         char *dest = compute_relative_dest(src, bundled_dir);
         if (!dest || access(dest, F_OK) != 0) {
             if (dest && !dry_run && json_obj_get(manifest, name)) {
-                json_object_delete(manifest, name);
+                json_obj_del(manifest, name);
             }
             free(dest);
             continue;
@@ -1565,7 +1547,7 @@ json_t *remove_pristine_bundled_skills(bool dry_run)
             json_array_append(removed, json_string(name));
         } else {
             rmtree_writable(dest);
-            json_object_delete(manifest, name);
+            json_obj_del(manifest, name);
             json_array_append(removed, json_string(name));
         }
         free(dest);

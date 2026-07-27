@@ -637,16 +637,40 @@ json_t *send_message_send_telegram(const char *token, const char *chat_id,
     http_t *http = http_new(30);
     if (!http) { free(url); free(body); json_t *e = json_object(); json_set(e, "error", json_string("HTTP failed")); return e; }
     hermes_log(LOG_DEBUG, "port", "send_telegram: POST %s", url);
-    /* http_post would go here — for now build result from the request */
-
-    json_t *result = json_object();
-    json_set(result, "success", json_new_bool(true));
-    json_set(result, "platform", json_string("telegram"));
-    json_set(result, "chat_id", json_string(chat_id));
-    json_set(result, "message_id", json_string("tg_sent"));
-
+    http_resp_t *http_res = http_request(http, HTTP_POST, url,
+                                         "Content-Type: application/x-www-form-urlencoded",
+                                         body, strlen(body));
     free(url);
     free(body);
+
+    json_t *result = json_object();
+    if (http_res && http_res->body && strstr(http_res->body, "\"ok\":true")) {
+        json_set(result, "success", json_new_bool(true));
+        json_set(result, "platform", json_string("telegram"));
+        json_set(result, "chat_id", json_string(chat_id));
+        /* extract result.message_id from the Telegram response */
+        json_t *resp = json_parse(http_res->body, NULL);
+        const char *mid = NULL;
+        char midbuf[32] = "";
+        if (resp) {
+            json_t *r = json_obj_get(resp, "result");
+            if (r && r->type == JSON_OBJECT) {
+                double m = json_get_num(r, "message_id", -1);
+                if (m >= 0) { snprintf(midbuf, sizeof(midbuf), "%.0f", m); mid = midbuf; }
+            }
+        }
+        json_set(result, "message_id", json_string(mid ? mid : ""));
+        if (resp) json_free(resp);
+    } else {
+        const char *err_body = (http_res && http_res->body) ? http_res->body
+                                                            : "HTTP request failed";
+        json_set(result, "success", json_new_bool(false));
+        json_set(result, "platform", json_string("telegram"));
+        json_set(result, "chat_id", json_string(chat_id));
+        json_set(result, "error", json_string(err_body));
+    }
+    if (http_res) http_resp_free(http_res);
+    http_free(http);
     return result;
 }
 

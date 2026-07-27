@@ -53,6 +53,7 @@
 #include <sys/file.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <errno.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -429,18 +430,95 @@ bool desktop_update_check(desktop_update_info_t *info) {
 bool desktop_update_download(const char *url, const char *dest_path) {
     if (!url || !dest_path) return false;
     fprintf(stderr, "desktop_update_download: %s -> %s\n", url, dest_path);
-    /* TODO: implement HTTP download */
     g_desktop.update_info.downloading = true;
     g_desktop.update_info.download_progress = 0.0;
-    return false; /* stub */
+
+    http_t *http = http_new(120);
+    if (!http) { g_desktop.update_info.downloading = false; return false; }
+    http_resp_t *resp = http_get(http, url, NULL);
+    bool ok = false;
+    if (resp && resp->status >= 200 && resp->status < 300 && resp->body && resp->body_len > 0) {
+        /* atomic write: tmp + rename */
+        char tmp[1088];
+        snprintf(tmp, sizeof(tmp), "%s.tmp.%d", dest_path, (int)getpid());
+        FILE *f = fopen(tmp, "wb");
+        if (f) {
+            size_t wr = fwrite(resp->body, 1, resp->body_len, f);
+            fflush(f);
+            fclose(f);
+            if (wr == resp->body_len && rename(tmp, dest_path) == 0) {
+                chmod(dest_path, 0755);
+                ok = true;
+            } else {
+                unlink(tmp);
+            }
+        }
+    } else {
+        fprintf(stderr, "desktop_update_download: HTTP %d\n", resp ? resp->status : -1);
+    }
+    if (resp) http_resp_free(resp);
+    http_free(http);
+    g_desktop.update_info.downloading = false;
+    g_desktop.update_info.download_progress = ok ? 1.0 : 0.0;
+    return ok;
 }
 
 /* PoP: update_apply @ electron/main.cjs:update-relaunch */
 bool desktop_update_apply(const char *update_path) {
     if (!update_path) return false;
     fprintf(stderr, "desktop_update_apply: %s\n", update_path);
-    /* TODO: implement update application */
-    return false; /* stub */
+    /* Electron's update-relaunch = swap binary + relaunch. C analogue:
+     * replace our own executable with the downloaded binary, then exec it. */
+    char self[1024];
+    ssize_t n = readlink("/proc/self/exe", self, sizeof(self) - 1);
+    if (n <= 0) return false;
+    self[n] = '\0';
+
+    struct stat st;
+    if (stat(update_path, &st) != 0 || !S_ISREG(st.st_mode) || st.st_size == 0) {
+        fprintf(stderr, "desktop_update_apply: update file missing or empty\n");
+        return false;
+    }
+
+    /* keep a rollback copy, then move update into place */
+    char backup[1088];
+    snprintf(backup, sizeof(backup), "%s.old", self);
+    unlink(backup);
+    if (rename(self, backup) != 0) {
+        fprintf(stderr, "desktop_update_apply: cannot back up current binary: %s\n",
+                strerror(errno));
+        return false;
+    }
+    if (rename(update_path, self) != 0) {
+        /* cross-device rename fails: fall back to copy */
+        FILE *in = fopen(update_path, "rb");
+        FILE *out = in ? fopen(self, "wb") : NULL;
+        bool copied = false;
+        if (in && out) {
+            char buf[65536];
+            size_t r;
+            copied = true;
+            while ((r = fread(buf, 1, sizeof(buf), in)) > 0)
+                if (fwrite(buf, 1, r, out) != r) { copied = false; break; }
+        }
+        if (in) fclose(in);
+        if (out) fclose(out);
+        if (!copied) {
+            rename(backup, self);   /* roll back */
+            fprintf(stderr, "desktop_update_apply: install failed, rolled back\n");
+            return false;
+        }
+        unlink(update_path);
+    }
+    chmod(self, 0755);
+
+    /* relaunch (Electron app.relaunch() + app.exit()) */
+    execl(self, self, (char *)NULL);
+    /* only reached when exec failed — roll back */
+    fprintf(stderr, "desktop_update_apply: exec failed: %s — rolling back\n",
+            strerror(errno));
+    rename(backup, self);
+    return false;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════

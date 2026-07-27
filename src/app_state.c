@@ -370,10 +370,7 @@ message_entry_t *app_get_message(app_state_t *app, int idx) {
 }
 
 /* Hover state */
-void app_update_hover(app_state_t *app, int mx, int my) {
-    /* Hit testing logic would go here - moved to event_handling.c */
-    (void)app; (void)mx; (void)my;
-}
+/* app_update_hover is implemented in event_handling.c, where hit_test lives. */
 int app_hover_message(app_state_t *app) { return app ? app->hover_message : -1; }
 void app_set_hover_message(app_state_t *app, int idx) { if (app) app->hover_message = idx; }
 int app_hover_action(app_state_t *app) { return app ? app->hover_action : -1; }

@@ -68,6 +68,9 @@ size_t  json_len(const json_t *arr);
 
 /* === Object ops === */
 void    json_set(json_t *obj, const char *key, json_t *val);
+/* Remove a key from an object in place (Python dict.pop(key, None)).
+ * Returns true when the key existed and was removed. No-op on arrays/others. */
+bool    json_obj_del(json_t *obj, const char *key);
 json_t *json_obj_get(const json_t *obj, const char *key);
 const char *json_get_str(const json_t *obj, const char *key, const char *def);
 double  json_get_num(const json_t *obj, const char *key, double def);

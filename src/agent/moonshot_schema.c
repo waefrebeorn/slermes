@@ -118,15 +118,7 @@ static json_t *sanitize_object(json_t *obj, int depth) {
     /* Pass 4: when anyOf is present and parent also has type, strip parent type */
     json_t *anyof_val = json_obj_get(out, "anyOf");
     if (anyof_val) {
-        /* Strip type when anyOf is present — rebuild without type */
-        json_t *cleaned = json_object();
-        for (size_t i = 0; i < out->c.count; i++) {
-            if (strcmp(out->c.keys[i], "type") == 0) continue;
-            json_t *copy = json_copy(out->c.items[i]);
-            json_set(cleaned, out->c.keys[i], copy);
-        }
-        json_free(out);
-        return cleaned;
+        json_obj_del(out, "type");
     }
 
     return out;

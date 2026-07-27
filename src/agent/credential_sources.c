@@ -131,17 +131,11 @@ static bool clear_auth_store_provider(const char *provider) {
         return false;
     }
 
-    /* Find and remove the provider entry */
+    /* Find and remove the provider entry (case-insensitive match) */
     bool found = false;
     for (size_t i = 0; i < providers->c.count; i++) {
         if (strcasecmp(providers->c.keys[i], provider) == 0) {
-            /* Shift remaining entries */
-            for (size_t j = i; j < providers->c.count - 1; j++) {
-                providers->c.keys[j] = providers->c.keys[j + 1];
-                providers->c.items[j] = providers->c.items[j + 1];
-            }
-            providers->c.count--;
-            found = true;
+            found = json_obj_del(providers, providers->c.keys[i]);
             break;
         }
     }

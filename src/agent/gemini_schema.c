@@ -98,16 +98,7 @@ static json_t *sanitize_object(json_t *obj) {
              strcmp(type_str, "number") == 0 ||
              strcmp(type_str, "boolean") == 0) &&
             enum_has_non_string(enum_val)) {
-            /* Can't remove key from object without json_obj_del.
-             * Build a new object without the enum key. */
-            json_t *cleaned = json_object();
-            for (size_t i = 0; i < out->c.count; i++) {
-                if (strcmp(out->c.keys[i], "enum") == 0) continue;
-                json_t *copy = json_copy(out->c.items[i]);
-                json_set(cleaned, out->c.keys[i], copy);
-            }
-            json_free(out);
-            return cleaned;
+            json_obj_del(out, "enum");
         }
     }
 

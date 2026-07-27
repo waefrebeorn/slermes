@@ -17,8 +17,9 @@ bool anthropic_is_stream_unavailable_error(const char *error_msg) {
     if (strstr(lower, "stream") && strstr(lower, "not supported")) {
         result = true;
     } else if (strstr(lower, "invokemodelwithresponsestream")) {
-        /* is_streaming_access_denied_error check would go here */
-        result = true; /* Simplified: treat as stream unavailable */
+        /* Reuse the real Bedrock detector (message-based, same as Python). */
+        extern int cli_agent_bedrock_adapter_is_streaming_access_denied_error(const char *error_msg);
+        result = cli_agent_bedrock_adapter_is_streaming_access_denied_error(error_msg) != 0;
     }
     free(lower);
     return result;

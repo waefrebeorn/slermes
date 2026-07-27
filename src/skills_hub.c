@@ -920,25 +920,8 @@ bool hub_lock_record_uninstall(const char *skill_name) {
     if (!root) return false;
 
     json_t *installed = json_obj_get(root, "installed");
-    if (installed && installed->type == JSON_OBJECT) {
-        /* Remove the key by setting a null then freeing */
-        json_set(installed, skill_name, json_null());
-        /* We need to actually delete the key. json_set doesn't delete.
-         * Instead we rebuild without the entry. */
-    }
-
-    /* Simplified: rebuild installed object without the entry */
-    json_t *old_installed = json_obj_get(root, "installed");
-    json_t *new_installed = json_object();
-    if (old_installed && old_installed->type == JSON_OBJECT) {
-        for (size_t i = 0; i < old_installed->c.count; i++) {
-            if (strcmp(old_installed->c.keys[i], skill_name) != 0) {
-                json_set(new_installed, old_installed->c.keys[i],
-                         json_copy(old_installed->c.items[i]));
-            }
-        }
-    }
-    json_set(root, "installed", new_installed);
+    if (installed && installed->type == JSON_OBJECT)
+        json_obj_del(installed, skill_name);
 
     bool ok = lock_file_write(root);
     json_free(root);
