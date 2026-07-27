@@ -9,6 +9,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include "hermes_json.h"        /* json_t (config object) */
 #include "session_title.h"   /* db_t, session_title_result_t */
 
 #ifdef __cplusplus
@@ -20,6 +21,9 @@ void title_language(char *out, size_t out_sz);
 
 /* Whether automatic session title generation is enabled
  * (auxiliary.title_generation.enabled, default true; fail-open). */
+/* _auto_title_enabled (config-driven): read-only config accessor + truthy
+ * collapse. auto_title_from_config is the testable branch core. */
+bool auto_title_from_config(const json_t *cfg, bool default_enabled);
 bool auto_title_enabled(void);
 
 /* Collapse a slash-skill-expanded turn back to what the user typed.

@@ -44,27 +44,26 @@ void title_language(char *out, size_t out_sz) {
     json_free(cfg);
 }
 
+/* PoP: auto_title_from_config @ agent/title_generator.py:_auto_title_enabled */
+bool auto_title_from_config(const json_t *cfg, bool default_enabled) {
+    if (!cfg) return default_enabled;
+    json_t *enabled = config_py_get_nested(cfg, "auxiliary.title_generation.enabled");
+    if (!enabled) return default_enabled;
+    if (json_is_bool(enabled))       return json_is_true(enabled);
+    if (json_is_null(enabled))       return default_enabled;   /* None -> default */
+    if (json_is_string(enabled))     return is_truthy_value(json_string_value(enabled),
+                                                            default_enabled);
+    if (json_is_number(enabled))     return json_number_value(enabled) != 0.0;
+    return default_enabled;
+}
+
 /* PoP: auto_title_enabled @ agent/title_generator.py:_auto_title_enabled */
 bool auto_title_enabled(void) {
     /* Python: load_config_readonly() -> (auxiliary or {}).title_generation
      * or {} -> is_truthy_value(enabled, default=True); any failure -> True. */
-    json_t *cfg = config_py_load_config_impl(0);
-    if (!cfg) return true;
-
-    json_t *enabled = config_py_get_nested(cfg, "auxiliary.title_generation.enabled");
-    bool result = true;
-    if (enabled) {
-        if (json_is_bool(enabled)) {
-            result = json_is_true(enabled);
-        } else if (json_is_null(enabled)) {
-            result = true;   /* None -> default=True */
-        } else if (json_is_string(enabled)) {
-            result = is_truthy_value(json_string_value(enabled), true);
-        } else if (json_is_number(enabled)) {
-            result = json_number_value(enabled) != 0.0;   /* Python bool(value) */
-        }
-    }
-    json_free(cfg);
+    json_t *cfg = config_py_load_config_readonly();
+    bool result = auto_title_from_config(cfg, true);
+    if (cfg) json_free(cfg);
     return result;
 }
 

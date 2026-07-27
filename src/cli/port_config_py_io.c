@@ -252,7 +252,14 @@ int config_py_atomic_config_write(const char *config_path, const json_t *data) {
  * _persist_migration
  * ============================================================ */
 
-/* PoP: config_py_persist_migration @ hermes_cli/config.py:_persist_migration */
+/* PoP: config_py_load_config_readonly @ hermes_cli/config.py:load_config_readonly */
+json_t *config_py_load_config_readonly(void) {
+    /* Read-only access: load the merged/normalized config without the
+     * deepcopy flag (callers must not mutate the returned singleton). */
+    return config_py_load_config_impl(0);
+}
+
+/* PoP: _persist_migration @ hermes_cli/config.py:_persist_migration */
 int config_py_persist_migration(const json_t *config) {
     char path[HERMES_PATH_MAX];
     config_path(path, sizeof path);

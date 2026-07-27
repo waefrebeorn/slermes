@@ -214,6 +214,14 @@ int config_py_persist_migration(const json_t *config);
 /* PoP: _load_config_impl @ hermes_cli/config.py:_load_config_impl */
 json_t *config_py_load_config_impl(int want_deepcopy);
 
+/* load_config_readonly — the read-only config accessor used by feature-flag
+ * checkers (is_feature_on / *_enabled). Real thin wrapper over
+ * _load_config_impl (readonly = no mutation, no write path). The Python side
+ * reads the same merged config; this makes the dependent config-driven gaps
+ * genuinely portable instead of NULL-stubbed.
+ * PoP: load_config_readonly @ hermes_cli/config.py:load_config_readonly */
+json_t *config_py_load_config_readonly(void);
+
 /* _inject_profile_env_vars — inject profile env vars from config. */
 /* PoP: _inject_profile_env_vars @ hermes_cli/config.py:_inject_profile_env_vars */
 void config_py_inject_profile_env_vars(json_t *env, const json_t *config);
