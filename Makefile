@@ -27,7 +27,7 @@ include build/clean.mk
 
 # ── Legacy alias / backward compatibility ───────────────────────────
 
-.PHONY: help parity-walkway
+.PHONY: help parity parity-walkway
 
 help:
 	@echo "Slermes Build System -- modular Makefile"
@@ -43,6 +43,10 @@ help:
 	@echo "  static            Build fully static binary"
 	@echo "  fuzz              Build fuzz test harness"
 	@echo "  libs              Build all standalone .a libraries"
+	@echo ""
+	@echo "PARITY TARGETS:"
+	@echo "  make parity        # fail-closed live scan -> refresh all parity docs"
+	@echo "  make parity-walkway # legacy alias for 'make parity'"
 	@echo ""
 	@echo "TEST & QUALITY TARGETS:"
 	@echo "  test              Run the test suite (needs slermes)"
@@ -86,9 +90,24 @@ help:
 	@echo "  make clean all CC=clang                 # clean build with clang"
 	@echo "  make asan-test COVERAGE_THRESHOLD=10.0  # asan + 10%% coverage gate"
 
-# ── Parity walkway generation (kills barnacles) ──────────────────
-# Regenerates the PORTED/REAL_GAP/PARTIAL count blocks in all walkway files
-# from the live parity scanner. The prestige ritual now calls this instead of
-# a manual barnacle hunt — counts are never hand-copied, so they cannot drift.
-parity-walkway:
+# ── Parity truth (fail-closed, self-correcting) ────────────────
+# Regenerates the canonical live_parity_scan.json from the live scanner,
+# THEN refreshes every PARITY:AUTO sentinel block in walkway files.
+# The gate (scripts/parity_truth.py) REFUSES to emit unless the Python
+# ground-truth (agent/, tools/, ...) is actually checked out — so a missing
+# source can never produce a silent "0 gaps" lie. If the gate fails, the
+# walkway files are left untouched (no stale write).
+parity:
+	@python3 scripts/parity_truth.py
 	@python3 scripts/gen_parity_walkway.py
+
+# Rebase/PoP commit path: after pulling fresh Python from upstream
+# (git checkout upstream/main -- agent tools gateway cli.py hermes_cli cron),
+# reset the drift baseline so future `make parity` reports drift vs the new
+# upstream. Without this, upstream additions show as permanent NEW_GAP.
+parity-baseline:
+	@python3 tests/slermes_parity_battleground.py --update-baseline
+
+# Legacy alias / backward compatibility ───────────────────────────
+parity-walkway: parity
+

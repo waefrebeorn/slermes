@@ -26,6 +26,9 @@ import sys
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCANNER = os.path.join(REPO, "tests", "slermes_parity_battleground.py")
+# Fail-closed gate: the Python ground-truth must be checked out, or we refuse
+# to emit. This is the systemic cure for "silent 0-file scan -> confident lie".
+TRUTH = os.path.join(REPO, "scripts", "parity_truth.py")
 SENT_OPEN = "<!-- PARITY:AUTO -->"
 SENT_CLOSE = "<!-- /PARITY:AUTO -->"
 
@@ -47,14 +50,19 @@ BANNER = os.path.join(REPO, "BANNER.md")
 
 
 def compute():
-    out = subprocess.check_output([sys.executable, SCANNER, "--json"], cwd=REPO)
-    data = json.loads(out)["modules"]
-    ported = sum(v.get("ported", 0) for v in data.values())
-    real = sum(v.get("real_gaps", 0) for v in data.values())
-    partial = sum(v.get("partial", 0) for v in data.values())
-    total = ported + real + partial
-    pct = 100.0 * ported / total if total else 0.0
-    return dict(ported=ported, real=real, partial=partial, total=total, pct=pct)
+    # FAIL-CLOSED: delegate to parity_truth.py, which refuses to emit a number
+    # unless the Python ground-truth is actually checked out and the scanner
+    # actually consumed it. If the gate fails, we abort here (non-zero) so no
+    # walkway file is touched with a stale/phantom count.
+    r = subprocess.run([sys.executable, TRUTH], cwd=REPO)
+    if r.returncode != 0:
+        sys.exit(r.returncode)
+    with open(os.path.join(REPO, "live_parity_scan.json"), encoding="utf-8") as f:
+        doc = json.load(f)
+    tot = doc["totals"]
+    return dict(ported=tot["ported"], real=tot["real_gaps"],
+                partial=tot["partial"], total=tot["total"],
+                pct=tot["coverage_pct"])
 
 
 def block(d):

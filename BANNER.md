@@ -3,7 +3,7 @@
 # ║         of Hermes Agent (Nous Research)                      ║
 # ║                                                              ║
 # ║  Build: Clean  │  v670 │  Tests: 36/36  │  Oracle: 22 suites 0 mismatch + 1611/0 fuzz ║
-# ║  Ported: 7,108/11,744 (60.5%)  REAL_GAP: 4,634 (39.5%)  PARTIAL: 2  ║
+# ║  Ported: 6,857/11,537 (59.4%)  REAL_GAP: 4,445 (38.5%)  PARTIAL: 235  ║
 # ║  ✓ v666: close all 37 PARTIAL (Lane 0 of reuse plan) -> PARTIAL 0.          ║
 # ║  ✓ v667: faithful port of agent/billing_links.py (5/5, oracle-verified).     ║
 # ║  ✓ v668: faithful port of agent/billing_usage.py (7/9; 2 net fns honest     ║

@@ -24,6 +24,15 @@ coverage-filtered.info
 lib/libdb/sqlite3.h
 lib/libdb/sqlite3.c
 
+# Frozen/deprecated scanner snapshots — NEVER trust these as parity truth.
+# The authoritative live scan is produced by `make parity` (live_parity_scan.json).
+scan.json
+scan2.json
+scan3.json
+scan4.json
+scan5.json
+real_gaps_manifest.json
+
 # IDE / editor
 .vscode/
 .idea/
