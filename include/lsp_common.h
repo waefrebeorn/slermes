@@ -133,6 +133,41 @@ void lsp_client_set_notification_handler(lsp_client_t *c,
                                          const char *method,
                                          lsp_notification_handler h, void *user);
 
+/* ── manager: LSPService orchestration ─────────────────────────────────── */
+
+/* A server descriptor: maps file extensions to a spawn command. */
+typedef struct {
+    char *server_id;       /* owned */
+    char **command;        /* NULL-terminated argv (owned) */
+    char **extensions;     /* NULL-terminated ".py"/".ts"/... (owned) */
+    char *init_options;    /* owned JSON (optional) */
+    char *env_json;        /* owned JSON object of extra env (optional) */
+} lsp_server_desc_t;
+
+typedef struct lsp_service lsp_service_t;
+
+/* Create a service. servers is a NULL-terminated array of desc pointers
+ * (ownership transferred to the service). enabled gates all activity. */
+lsp_service_t *lsp_service_create(bool enabled, lsp_server_desc_t **servers);
+void lsp_service_destroy(lsp_service_t *svc);
+
+bool lsp_service_is_active(lsp_service_t *svc);
+
+/* Resolve the server for a file (by extension) and the workspace root
+ * (nearest ancestor containing .git, else file's dir). Returns the
+ * matched server_id (borrowed) or NULL; out_ws_root is malloc'd (free it). */
+const char *lsp_service_resolve(lsp_service_t *svc, const char *file_path,
+                                 char **out_ws_root);
+
+/* Bridge for the file_operations layer: open file in the matched server,
+ * wait for fresh diagnostics, return a malloc'd JSON array of diagnostics
+ * (caller frees) or NULL on failure/disabled. */
+char *lsp_service_get_diagnostics(lsp_service_t *svc, const char *file_path,
+                                   int timeout_ms);
+
+/* Snapshot current diagnostics as the delta baseline for file_path. */
+void lsp_service_snapshot_baseline(lsp_service_t *svc, const char *file_path);
+
 #ifdef __cplusplus
 }
 #endif
