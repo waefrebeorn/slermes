@@ -146,6 +146,11 @@ bool ws_fs_looks_binary(const unsigned char *data, size_t len);
 ws_path_status_t ws_fs_regular_file(const char *path,
                                    struct stat *out_stat);
 
+/* PoP: ws_fs_path @ hermes_cli/web_server.py:_fs_path
+ * strip; reject NUL; file: URL unwrap; expanduser; absolutize; resolve.
+ * Returns malloc'd absolute path on success, NULL on error. */
+char *ws_fs_path(const char *raw_path);
+
 /* Python `_fs_find_git_root`: walk parents up to 50 levels looking for
  * `.git` directory/file. Returns malloc'd absolute path, or NULL. */
 char *ws_fs_find_git_root(const char *start);

@@ -506,21 +506,21 @@ static const mime_pair_t k_mimetypes_fallback[] = {
     {".zip", "application/zip"},
     {".log", "text/plain"},
     {".py", "text/x-python"},
-    {".c", "text/x-c"},
-    {".h", "text/x-c"},
-    {".cpp", "text/x-c++"},
-    {".hpp", "text/x-c++"},
-    {".rs", "text/rust"},
-    {".go", "text/x-go"},
-    {".ts", "application/typescript"},
-    {".tsx", "application/typescript"},
-    {".jsx", "text/javascript"},
-    {".sh", "application/x-sh"},
-    {".toml", "application/toml"},
+    /* The entries below mirror what THIS system's live Python
+     * mimetypes.guess_type returns (Debian mime.types + Python builtins),
+     * oracle-verified. Extensions guess_type returns None for (.go, .tsx,
+     * .jsx, .toml, .ini, .cfg, .gz) are intentionally absent — they fall
+     * through to application/octet-stream, same as Python's
+     * `guessed or "application/octet-stream"`. */
+    {".c", "text/x-csrc"},
+    {".h", "text/x-chdr"},
+    {".cpp", "text/x-c++src"},
+    {".hpp", "text/x-c++hdr"},
+    {".rs", "application/rls-services+xml"},
+    {".ts", "text/vnd.trolltech.linguist"},
+    {".sh", "text/x-sh"},
     {".yaml", "application/yaml"},
     {".yml", "application/yaml"},
-    {".ini", "text/plain"},
-    {".cfg", "text/plain"},
 };
 
 const char *ws_fs_mime_type(const char *path) {
