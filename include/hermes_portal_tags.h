@@ -34,6 +34,11 @@ char *hermes_nous_portal_tags_json(void);
  */
 const char *hermes_version(void);
 
+/** Set / get the ambient conversation id (Python ContextVar equivalent).
+ *  Used by provider profiles for sticky session_id plumbing. */
+void hermes_set_conversation_context(const char *id);
+const char *hermes_get_conversation_context_id(void);
+
 #ifdef __cplusplus
 }
 #endif

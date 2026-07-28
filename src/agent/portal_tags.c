@@ -34,10 +34,21 @@ char *hermes_client_tag(void)
 /* Port of Python: _hermes_version */
 const char *hermes_version(void)
 {
-    /* Version string from hermes.h — must match the release tag.
-     * Python's _hermes_version() imports hermes_cli.__version__ at runtime;
-     * C uses the compile-time HERMES_VERSION macro. */
     return HERMES_VERSION;
+}
+
+/* Ambient conversation id (Python ContextVar equivalent). */
+static char *g_conversation_id = NULL;
+
+void hermes_set_conversation_context(const char *id)
+{
+    free(g_conversation_id);
+    g_conversation_id = id ? strdup(id) : NULL;
+}
+
+const char *hermes_get_conversation_context_id(void)
+{
+    return g_conversation_id;
 }
 
 /* Port of Python: nous_portal_tags (returns JSON string instead of list) */
