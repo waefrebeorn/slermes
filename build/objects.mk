@@ -305,7 +305,18 @@ PET_OBJ = \
     src/pet/port_pet_prompts.o
 
 # Custom GUI desktop (SDL2-based)
-DESKTOP_GUI_OBJ := src/gui_core.o src/desktop_gui.o src/slermes_home.o src/chat_render.o lib/libdb/sqlite3.o lib/libhttp/http.o lib/libjson/json.o lib/libbase64/base64.o lib/libcrypto/crypto.o
+# Full SDL GUI application object set (mirrors DESKTOP_APP_OBJ but uses the
+# SDL2 entry/event modules instead of the ncurses desktop_ui_* chain).
+DESKTOP_GUI_OBJ := \
+    src/gui_core.o src/desktop_gui.o src/slermes_home.o \
+    src/app_state.o src/session_db.o src/sidebar.o src/chat_view.o src/titlebar.o \
+    src/event_handling.o src/hud.o src/desktop_controller.o src/pet_ui.o \
+    src/chat_render.o src/chat_composer.o \
+    src/desktop_app_common.o src/desktop_sessions.o src/desktop_models.o \
+    src/desktop_profiles.o src/desktop_settings.o src/gateway_probe.o src/window_stubs.o \
+    src/hermes_env_keys.o src/file_ops.o \
+    src/agent/logger.o src/pty.o src/clipboard.o \
+    lib/libdb/sqlite3.o lib/libhttp/http.o lib/libjson/json.o lib/libbase64/base64.o lib/libcrypto/crypto.o
 DESKTOP_GUI_CFLAGS := $(shell pkg-config --cflags sdl2 SDL2_ttf 2>/dev/null)
 DESKTOP_GUI_LIBS := $(shell pkg-config --libs sdl2 SDL2_ttf 2>/dev/null) -lm -lssl -lcrypto -lz
 

@@ -81,7 +81,7 @@ static void draw_session_item(app_state_t *app, int x, int y, int w, int idx, bo
     int fh = gc_font_height(font);
     int sfh = gc_font_height(font_small);
     
-    session_entry_t *s = app_get_session(app, idx);
+    app_session_entry_t *s = app_get_session(app, idx);
     if (!s) return;
     
     gc_rect_t item_bg = {x + 8, y, w - 16, ITEM_H};

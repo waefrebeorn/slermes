@@ -39,6 +39,7 @@ help:
 	@echo "  tui               Build with ncurses full-screen TUI"
 	@echo "  desktop           Build legacy ncurses desktop app"
 	@echo "  desktop-gui       Build SDL2-based GUI desktop app"
+	@echo "  web_server        Build standalone web/dashboard server (API integration tests)"
 	@echo "  static            Build fully static binary"
 	@echo "  fuzz              Build fuzz test harness"
 	@echo "  libs              Build all standalone .a libraries"

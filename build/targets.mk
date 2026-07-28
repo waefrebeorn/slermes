@@ -2,7 +2,7 @@
 # Binary link targets: slermes, phase targets, desktop, tui, static, fuzz, desktop-gui
 # Included by top-level Makefile. Expected vars: CC, CFLAGS, LDFLAGS, PLATFORM_LDFLAGS, LIBS
 
-.PHONY: all phase1 phase2 phase3 phase4 phase5 libs tui desktop desktop-gui static fuzz
+.PHONY: all phase1 phase2 phase3 phase4 phase5 libs tui desktop desktop-gui web_server static fuzz
 
 all: phase5
 
@@ -40,7 +40,7 @@ slermes: $(PHASE5_OBJ) src/main.o $(HERMES_CLI_PORT_OBJ) $(HERMES_CLI_PORT_EXTRA
 # ncurses full-screen TUI build (shared libs from system)
 TUI_LIB_OBJ = $(filter-out lib/libcurses_widget/curses_widget.o, $(LIB_OBJ_FILTERED)) lib/libcurses_widget/curses_widget_tui.o
 tui: $(PHASE5_OBJ) $(TUI_OBJ) src/main.o $(HERMES_CLI_PORT_OBJ) $(HERMES_CLI_PORT_EXTRA_OBJ) $(PORT_OBJ) $(PET_OBJ) $(DESKTOP_CORE_OBJ) src/chat_render.o src/chat_composer.o $(TUI_LIB_OBJ) $(WHISPER_EXTRA_OBJ)
-	$(CC) $(CFLAGS) -DHAS_NCURSES_TUI -o slermes-tui $^ $(LDFLAGS) $(PLATFORM_LDFLAGS) $(LIBS) \
+	$(CC) $(CFLAGS) -DHAS_NCURSES_TUI -o slermes-tui $^ $(LDFLAGS) $(PLATFORM_LDFLAGS) $(LIBS) -lasound \
 		-L lib/syslib -L lib/libncurses/lib \
 		$(if $(NCURSES_LIBS),$(NCURSES_LIBS),-lncursesw) $(if $(PANEL_LIBS),$(PANEL_LIBS)) $(if $(TINFO_LIBS),$(TINFO_LIBS),-ltinfo) -lstdc++ \
 		$(if $(WHISPER_LIBS),$(WHISPER_LIBS))
@@ -54,9 +54,27 @@ desktop: $(DESKTOP_APP_OBJ) $(filter-out $(DESKTOP_LIBS_FILTER), $(LIB_OBJ_FILTE
 	@echo "hermes-desktop built — C11 Desktop App (replaces Electron shell)"
 
 # Custom GUI desktop (SDL2-based, our own framework)
-desktop-gui: $(DESKTOP_GUI_OBJ)
-	$(CC) $(CFLAGS) $(DESKTOP_GUI_CFLAGS) -o slermes-desktop-gui $(DESKTOP_GUI_OBJ) $(DESKTOP_GUI_LIBS)
+# Mirrors the ncurses `desktop` target: full SDL GUI application object set +
+# the shared lib objects, so all app_state/session_db/sidebar/chat_view/titlebar/
+# event_handling/hud/desktop_controller/pet_ui symbols resolve.
+desktop-gui: $(DESKTOP_GUI_OBJ) $(PET_OBJ) $(filter-out $(DESKTOP_LIBS_FILTER), $(LIB_OBJ_FILTERED)) $(WHISPER_EXTRA_OBJ)
+	$(CC) $(CFLAGS) $(DESKTOP_GUI_CFLAGS) -o slermes-desktop-gui $^ $(LDFLAGS) $(PLATFORM_LDFLAGS) $(LIBS) \
+		$(DESKTOP_GUI_LIBS) -lstdc++ \
+		$(if $(NCURSES_LIBS),$(NCURSES_LIBS),-lncursesw) $(if $(PANEL_LIBS),$(PANEL_LIBS)) $(if $(TINFO_LIBS),$(TINFO_LIBS),-ltinfo) \
+		$(if $(WHISPER_LIBS),$(WHISPER_LIBS))
 	@echo "slermes-desktop-gui built — custom graphical desktop app"
+
+# Standalone web server binary (src/web_server.c — its own main()).
+# Self-contained HTTP/WS implementation; pulls in sqlite3 + openssl + json +
+# http + crypto + base64 + skills libs, plus a few slermes core helpers.
+WEB_SERVER_OBJ := src/web_server.o src/slermes_home.o src/skills/skills_parser.o src/cli/paths.o
+web_server: $(WEB_SERVER_OBJ) $(filter-out lib/libtranscribe/transcribe.o, $(LIB_OBJ_FILTERED)) $(WHISPER_EXTRA_OBJ)
+	$(CC) $(CFLAGS) -o web_server $^ $(LDFLAGS) $(PLATFORM_LDFLAGS) $(LIBS) \
+		-lssl -lcrypto -lz -lm -lpthread -lstdc++ \
+		$(if $(WHISPER_LIBS),$(WHISPER_LIBS))
+	@echo "web_server built — standalone Slermes web/dashboard server"
+
+.PHONY: web_server
 
 # Static linking target — single binary with no runtime deps beyond kernel
 static: CFLAGS += -static -Os -s

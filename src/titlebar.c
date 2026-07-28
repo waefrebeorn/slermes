@@ -75,7 +75,7 @@ void statusbar_draw(app_state_t *app) {
     int y = h - STATUSBAR_H + (STATUSBAR_H - sfh) / 2;
     
     /* Left side: model pill info */
-    session_entry_t *s = app_get_session(app, app_selected_session(app));
+    app_session_entry_t *s = app_get_session(app, app_selected_session(app));
     if (s && s->model[0]) {
         char model_info[64];
         snprintf(model_info, sizeof(model_info), "Model: %s", s->model);
