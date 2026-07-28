@@ -87,9 +87,11 @@ make packaging    # Create distribution packages
 /config display.pet.enabled true
 ```
 
+---
+
 ## License
 
-slermes is licensed under the **Waefrebeorn Umbrella License v3.0**.
+This project is licensed under the **Waefrebeorn Umbrella License v3.0**.
 See the [LICENSE](LICENSE) file for the full license text.
 
 The Waefrebeorn Umbrella License is a custom source-available license.
