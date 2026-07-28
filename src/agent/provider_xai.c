@@ -12,6 +12,7 @@
 #include "hermes_json.h"
 #include "hermes_http.h"
 #include "provider.h"
+#include "provider_profile.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -196,6 +197,10 @@ static char *xai_build_request_body(const provider_t *p,
     json_object_set(root, "messages", msgs);
     if (tools_json && json_array_count(tools_json) > 0)
         json_object_set(root, "tools", json_copy(tools_json));
+
+    /* v650: apply ProviderProfile quirks on top of the shared body. */
+    apply_provider_profile(p, root);
+
     char *body = json_serialize(root);
     json_free(root);
     return body;
