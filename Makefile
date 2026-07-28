@@ -108,6 +108,12 @@ parity:
 parity-baseline:
 	@python3 tests/slermes_parity_battleground.py --update-baseline
 
+# Find future gaps: diff what slermes currently ports against the LATEST
+# upstream. Emits the actionable list of features upstream added that slermes
+# has not ported yet. Output: tests/.parity_drift_report.json
+parity-rebase-drift:
+	@python3 tests/slermes_parity_battleground.py --rebase-drift
+
 # Legacy alias / backward compatibility ───────────────────────────
 parity-walkway: parity
 

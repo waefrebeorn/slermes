@@ -961,6 +961,43 @@ class ParityAnalyzer:
         return reports
 
 # ── Upstream-drift engine ──────────────────────────────────────────────────────
+def git_rev(revspec):
+    """Return the resolved commit hash for a git revspec, or '' on failure."""
+    import subprocess as _sp
+    try:
+        return _sp.check_output(["git", "rev-parse", revspec],
+                                 cwd=HERMES_DIR, stderr=_sp.DEVNULL).decode().strip()
+    except Exception:
+        return ""
+
+def upstream_feature_set(revspec="upstream/main"):
+    """Feature set ('module.py:feature') of the Python source of truth at a git rev.
+    Reads trees directly via `git show` so no working-tree checkout is needed."""
+    import subprocess as _sp
+    fps = set()
+    try:
+        paths = _sp.check_output(
+            ["git", "ls-tree", "-r", "--name-only", revspec,
+             "agent/", "tools/", "gateway/", "cron/", "hermes_cli/", "cli.py"],
+            cwd=HERMES_DIR).decode().split()
+    except Exception:
+        return fps
+    for p in paths:
+        if not p.endswith(".py") or p.endswith("__init__.py"):
+            continue
+        try:
+            content = _sp.check_output(["git", "show", f"{revspec}:{p}"], cwd=HERMES_DIR)
+        except _sp.CalledProcessError:
+            continue
+        try:
+            tree = ast.parse(content)
+        except SyntaxError:
+            continue
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                fps.add(f"{p}:{node.name}")
+    return fps
+
 def feature_fingerprint(reports):
     """Return a set of 'module:feature' strings for the live Python tree."""
     fps = set()
@@ -974,27 +1011,52 @@ def load_baseline():
         try:
             with open(BASELINE_FILE) as f:
                 d = json.load(f)
-            return set(d.get("features", [])), d.get("generated_at", "")
+            return (set(d.get("features", [])), d.get("generated_at", ""),
+                    d.get("upstream_commit", ""))
         except Exception:
             pass
-    return None, ""
+    return None, "", ""
 
-def save_baseline(fps, generated_at):
+def save_baseline(fps, generated_at, upstream_commit=""):
     BASELINE_FILE.parent.mkdir(parents=True, exist_ok=True)
     with open(BASELINE_FILE, "w") as f:
-        json.dump({"generated_at": generated_at, "features": sorted(fps)}, f, indent=1)
+        json.dump({"generated_at": generated_at, "features": sorted(fps),
+                   "upstream_commit": upstream_commit}, f, indent=1)
 
-def compute_drift(reports):
+def compute_drift(reports, upstream_commit=""):
     live = feature_fingerprint(reports)
-    base, base_at = load_baseline()
+    base, base_at, base_up = load_baseline()
     if base is None:
         return {"status": "no_baseline", "new_gap_count": 0, "resolved_count": 0,
-                "baseline_at": "", "live_count": len(live)}
+                "baseline_at": "", "baseline_upstream_commit": base_up,
+                "live_count": len(live)}
     new_gaps = sorted(live - base)
     resolved = sorted(base - live)
     return {"status": "ok", "new_gap_count": len(new_gaps), "resolved_count": len(resolved),
-            "baseline_at": base_at, "live_count": len(live),
-            "new_gaps": new_gaps[:200], "resolved": resolved[:200]}
+            "baseline_at": base_at, "baseline_upstream_commit": base_up,
+            "live_count": len(live),
+            "new_gaps": new_gaps[:500], "resolved": resolved[:200]}
+
+def rebase_drift_report(live_reports, revspec="upstream/main"):
+    """Find gaps introduced by the LATEST upstream vs what slermes currently
+    ports. Diffs the live (ported) feature set against upstream's full feature
+    set. The result is the actionable 'future gaps' list for the rebase/PoP
+    commit path: every feature upstream has that slermes has not ported."""
+    live = feature_fingerprint(live_reports)
+    up = upstream_feature_set(revspec)
+    if not up:
+        return {"status": "no_upstream", "new_gap_count": 0,
+                "upstream_commit": git_rev(revspec),
+                "new_gaps_by_module": {}}
+    # Features upstream has that slermes does NOT currently port (per live scan).
+    missing = sorted(up - live)
+    by_mod = {}
+    for g in missing:
+        mod = g.split(":", 1)[0]
+        by_mod.setdefault(mod, []).append(g.split(":", 1)[1])
+    return {"status": "ok", "upstream_commit": git_rev(revspec),
+            "new_gap_count": len(missing),
+            "new_gaps_by_module": dict(sorted(by_mod.items(), key=lambda x: -len(x[1])))}
 
 # ── Formatters ────────────────────────────────────────────────────────────────
 class Formatter:
@@ -1066,31 +1128,55 @@ def main():
     ap.add_argument("--battleship", action="store_true")
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--update-baseline", action="store_true", help="Write the drift baseline from the live tree")
+    ap.add_argument("--upstream", default="upstream/main", help="Upstream rev to diff against (default: upstream/main)")
+    ap.add_argument("--rebase-drift", action="store_true",
+                    help="Find gaps introduced by the latest upstream vs what slermes ports. "
+                         "Emits the actionable 'future gaps' list for the rebase/PoP commit path.")
     ap.add_argument("--module", help="Substring filter")
     args = ap.parse_args()
 
     if not source_present():
         sys.stderr.write(
-            "FATAL: Python ground-truth not checked out. The scanner cannot run.\n"
-            "  Fix: cd %s && git checkout upstream/main -- agent tools gateway cli.py hermes_cli cron\n"
-            "  (or your fork's main). Then re-run.\n" % HERMES_DIR)
+            "FATAL: Python ground-truth not checked out. The scanner cannot run.\\n"
+            "  Fix: cd %s && git checkout upstream/main -- agent tools gateway cli.py hermes_cli cron\\n"
+            "  (or your fork's main). Then re-run.\\n" % HERMES_DIR)
         sys.exit(2)
 
     analyzer = ParityAnalyzer()
     reports = analyzer.scan_all()
 
     if len(reports) == 0:
-        sys.stderr.write("FATAL: scanner consumed 0 modules — source of truth not read. Aborting; writing nothing.\n")
+        sys.stderr.write("FATAL: scanner consumed 0 modules — source of truth not read. Aborting; writing nothing.\\n")
         sys.exit(5)
 
-    drift = compute_drift(reports)
+    drift = compute_drift(reports, git_rev(args.upstream))
 
     if args.module:
         reports = {k: v for k, v in reports.items() if args.module in k}
 
+    if args.rebase_drift:
+        rb = rebase_drift_report(reports, args.upstream)
+        if args.json:
+            print(json.dumps(rb, indent=2))
+        else:
+            print("=" * 72)
+            print("  REBASE/PoP DRIFT — gaps introduced by upstream (%s)" % rb.get("upstream_commit", "")[:12])
+            print("=" * 72)
+            print("  Total future gaps (upstream features not yet ported): %d" % rb["new_gap_count"])
+            for mod, feats in list(rb.get("new_gaps_by_module", {}).items())[:30]:
+                print("    %-50s +%d" % (mod, len(feats)))
+            print("  (full list in tests/.parity_drift_report.json)")
+        # Persist the actionable list for the commit path.
+        BASELINE_FILE.parent.mkdir(parents=True, exist_ok=True)
+        with open(BASELINE_FILE.parent / ".parity_drift_report.json", "w") as f:
+            json.dump(rb, f, indent=1)
+        return
+
     if args.update_baseline:
-        save_baseline(feature_fingerprint(reports), datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"))
-        print(f"Baseline written: {BASELINE_FILE} ({len(reports)} modules)")
+        save_baseline(feature_fingerprint(reports),
+                      datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                      git_rev(args.upstream))
+        print(f"Baseline written: {BASELINE_FILE} ({len(reports)} modules) upstream={git_rev(args.upstream)[:12]}")
 
     if args.json:
         print(Formatter.json_output(reports, drift))
@@ -1101,7 +1187,7 @@ def main():
         for name, rep in sorted(reports.items()):
             gaps = [g for g in rep.gaps if g.classification in ("REAL_GAP","STUB","PARTIAL")]
             if not gaps: continue
-            print(f"\n## {name} ({len(gaps)} issues)")
+            print(f"\\n## {name} ({len(gaps)} issues)")
             for g in gaps:
                 loc = f" @ {g.c_location}:{g.c_function}" if g.c_location else ""
                 print(f"  [{g.classification}] {g.python_feature.name}{loc}")
