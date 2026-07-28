@@ -499,6 +499,22 @@ int scheduler_cron_delivery_targets(const char **connected, int n_connected,
     return n;
 }
 
+/* ── PoP: scheduler_plugin_env_var_lookup @ cron/scheduler.py:_plugin_cron_env_var ── */
+/* Plugin-ONLY env-var lookup: built-ins never match here, exactly like the
+ * Python accessor which only consults the plugin platform registry. Returns
+ * the registered env var (static storage) or "" when not a plugin platform. */
+const char *scheduler_plugin_env_var_lookup(const char *name)
+{
+    if (!name || !name[0]) return "";
+    char low[64];
+    lc(low, name, sizeof(low));
+    for (int i = 0; i < g_plugin_count; i++) {
+        if (strcmp(low, g_plugin_platforms[i].name) == 0)
+            return g_plugin_platforms[i].env;
+    }
+    return "";
+}
+
 /* ── plugin registry ──────────────────────────────────────────────────────── */
 int scheduler_register_plugin_platform(const char *name, const char *env_var)
 {

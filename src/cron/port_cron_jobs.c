@@ -1648,6 +1648,43 @@ bool cronjobs_claim_job_for_fire(const char *job_id, int claim_ttl_seconds) {
     return ret;
 }
 
+/* PoP: cronjobs_heartbeat_run_claim @ cron/jobs.py:heartbeat_run_claim */
+/* Refresh a one-shot's run_claim timestamp while its run is alive. The
+ * compare-and-refresh on expected_owner prevents a stale runner from
+ * extending a claim another scheduler process has since taken over. */
+bool cronjobs_heartbeat_run_claim(const char *job_id,
+                                  const char *expected_owner) {
+    if (!job_id || !expected_owner || !expected_owner[0]) return false;
+    int lk = cronjobs_lock();
+    char *lerr = NULL;
+    json_t *jobs = cronjobs_load_jobs(&lerr);
+    free(lerr);
+    if (!jobs) { cronjobs_unlock(lk); return false; }
+
+    bool ret = false;
+    long idx = find_job_index(jobs, job_id);
+    if (idx >= 0) {
+        json_t *job = json_array_get(jobs, (size_t)idx);
+        const char *kind = json_object_get_string(
+            json_object_get(job, "schedule"), "kind", "");
+        if (strcmp(kind, "once") == 0) {
+            json_t *claim = json_object_get(job, "run_claim");
+            const char *by = json_is_object(claim)
+                ? json_object_get_string(claim, "by", NULL) : NULL;
+            if (by && strcmp(by, expected_owner) == 0) {
+                char *now_s = now_iso();
+                json_set(claim, "at", json_string(now_s ? now_s : ""));
+                free(now_s);
+                cronjobs_save_jobs(jobs);
+                ret = true;
+            }
+        }
+    }
+    json_free(jobs);
+    cronjobs_unlock(lk);
+    return ret;
+}
+
 /* ── Timezone helpers for due-check (mirror _timezone_offset_mismatch etc.) ── */
 
 /* Extract the numeric UTC offset (seconds) from an ISO string's trailing

@@ -40,6 +40,15 @@ char *cronjobs_job_output_dir(const char *job_id, char **err);
 /* Ensure cron dirs exist with 0700 perms. Returns true on success. */
 bool cronjobs_ensure_dirs(void);
 
+/* Current local time as an ISO-8601 string ("YYYY-MM-DD HH:MM:SS"),
+ * malloc'd (free()). Mirrors cron/scheduler.py:_hermes_now().isoformat().
+ * Implemented in port_cron_jobs.c (now_iso). */
+char *now_iso(void);
+
+/* Cron silent-run marker, matching cron/scheduler.py:SILENT_MARKER. A final
+ * response equal to this string marks a silent (no-delivery) run. */
+#define SCHEDULER_SILENT_MARKER "[SILENT]"
+
 /* ── Skill list normalization ─────────────────────────────────────── */
 /* Merge legacy single `skill` + list `skills` into a unique ordered array.
  * Returns a JSON array of strings (json_free). `skill` may be NULL; `skills`
@@ -134,6 +143,9 @@ void cronjobs_mark_job_run(const char *job_id, bool success,
 bool cronjobs_claim_dispatch(const char *job_id);
 bool cronjobs_advance_next_run(const char *job_id);
 bool cronjobs_claim_job_for_fire(const char *job_id, int claim_ttl_seconds);
+/* Refresh an owned one-shot run_claim (compare-and-refresh on owner). */
+bool cronjobs_heartbeat_run_claim(const char *job_id,
+                                  const char *expected_owner);
 /* Return jobs due now (array of normalized job dicts, json_free). */
 json_t *cronjobs_get_due_jobs(void);
 

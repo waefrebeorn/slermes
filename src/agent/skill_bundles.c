@@ -370,9 +370,160 @@ json_t *reload_bundles(void) {
 }
 
 /* Port of Python: build_bundle_invocation_message — build message from bundle */
-/* PoP: on_message @ gateway/platforms/qqbot/adapter.py:_on_message */
+/* PoP: build_bundle_invocation_message @ agent/skill_bundles.py:build_bundle_invocation_message */
+/* Returns {"message": str, "loaded": [names], "missing": [names]} or NULL
+ * when the bundle is unknown or loaded zero skills (Python returns None).
+ * Skill content is loaded via the skills tool surface (skills_view_handler)
+ * so path resolution, qualified names, and the skills dir stay in ONE place. */
+extern char *skills_view_handler(const char *args_json, const char *task_id);
+
 json_t *build_bundle_invocation_message(const char *cmd_key, const char *user_instruction) {
-    (void)cmd_key;
-    (void)user_instruction;
-    return NULL;
+    if (!cmd_key || !cmd_key[0]) return NULL;
+
+    /* Python cmd_key carries a leading '/'; accept both forms. */
+    const char *slug = cmd_key[0] == '/' ? cmd_key + 1 : cmd_key;
+
+    skill_bundle_registry_t reg;
+    memset(&reg, 0, sizeof(reg));
+    if (skill_bundles_scan(&reg) < 0) return NULL;
+    const skill_bundle_t *bundle = skill_bundle_find(&reg, slug);
+    if (!bundle) return NULL;
+
+    json_t *loaded_names = json_array();
+    json_t *missing = json_array();
+
+    /* skill blocks, accumulated */
+    size_t blocks_cap = 8192, blocks_len = 0;
+    char *blocks = malloc(blocks_cap);
+    if (!blocks) { json_free(loaded_names); json_free(missing); return NULL; }
+    blocks[0] = '\0';
+
+    char seen[BUNDLE_SKILLS_MAX][BUNDLE_SKILL_NAME];
+    int seen_n = 0;
+
+    for (int i = 0; i < bundle->skill_count; i++) {
+        const char *identifier = bundle->skills[i];
+        if (!identifier[0]) continue;
+        /* dedupe */
+        int dup = 0;
+        for (int s = 0; s < seen_n; s++)
+            if (strcmp(seen[s], identifier) == 0) { dup = 1; break; }
+        if (dup) continue;
+        snprintf(seen[seen_n], BUNDLE_SKILL_NAME, "%s", identifier);
+        if (seen_n < BUNDLE_SKILLS_MAX - 1) seen_n++;
+
+        /* Load via the tool surface. */
+        char args[BUNDLE_SKILL_NAME + 32];
+        snprintf(args, sizeof(args), "{\"name\":\"%s\"}", identifier);
+        char *resp = skills_view_handler(args, NULL);
+        json_t *doc = resp ? json_parse(resp, NULL) : NULL;
+        free(resp);
+
+        const char *content = doc ? json_get_str(doc, "content", NULL) : NULL;
+        if (!content || !content[0] ||
+            (doc && json_obj_get(doc, "error"))) {
+            json_append(missing, json_string(identifier));
+            if (doc) json_free(doc);
+            continue;
+        }
+
+        /* activation note + content block */
+        size_t need = strlen(content) + strlen(bundle->name) +
+                      strlen(identifier) + 256;
+        while (blocks_len + need + 4 > blocks_cap) {
+            blocks_cap = blocks_cap * 2 + need;
+            char *nb = realloc(blocks, blocks_cap);
+            if (!nb) break;
+            blocks = nb;
+        }
+        blocks_len += (size_t)snprintf(
+            blocks + blocks_len, blocks_cap - blocks_len,
+            "%s[Loaded as part of the \"%s\" skill bundle.]\n\n%s",
+            blocks_len ? "\n\n" : "", bundle->name, content);
+
+        json_append(loaded_names, json_string(identifier));
+        json_free(doc);
+    }
+
+    if (json_len(loaded_names) == 0) {
+        /* Python: if not skill_blocks: return None */
+        free(blocks);
+        json_free(loaded_names);
+        json_free(missing);
+        return NULL;
+    }
+
+    /* Header */
+    size_t hdr_cap = 2048 + strlen(bundle->instruction) +
+                     (user_instruction ? strlen(user_instruction) : 0);
+    /* loaded / missing name CSVs */
+    size_t csv_cap = 256;
+    for (size_t i = 0; i < json_len(loaded_names); i++)
+        csv_cap += strlen(json_get(loaded_names, i)->str_val) + 2;
+    for (size_t i = 0; i < json_len(missing); i++)
+        csv_cap += strlen(json_get(missing, i)->str_val) + 2;
+    hdr_cap += csv_cap * 2;
+
+    char *loaded_csv = malloc(csv_cap); loaded_csv[0] = '\0';
+    char *missing_csv = malloc(csv_cap); missing_csv[0] = '\0';
+    for (size_t i = 0; i < json_len(loaded_names); i++) {
+        if (i) strcat(loaded_csv, ", ");
+        strcat(loaded_csv, json_get(loaded_names, i)->str_val);
+    }
+    for (size_t i = 0; i < json_len(missing); i++) {
+        if (i) strcat(missing_csv, ", ");
+        strcat(missing_csv, json_get(missing, i)->str_val);
+    }
+
+    char *header = malloc(hdr_cap);
+    int off = snprintf(header, hdr_cap,
+        "[IMPORTANT: The user has invoked the \"%s\" skill bundle, "
+        "loading %zu skills together. Treat every skill below as active "
+        "guidance for this turn.]\n\nBundle: %s\nSkills loaded: %s",
+        bundle->name, json_len(loaded_names), bundle->name, loaded_csv);
+    if (json_len(missing) > 0)
+        off += snprintf(header + off, hdr_cap - (size_t)off,
+                        "\nSkills missing (skipped): %s", missing_csv);
+    if (bundle->instruction[0])
+        off += snprintf(header + off, hdr_cap - (size_t)off,
+                        "\n\nBundle instruction: %s", bundle->instruction);
+    if (user_instruction && user_instruction[0])
+        snprintf(header + off, hdr_cap - (size_t)off,
+                 "\n\nUser instruction: %s", user_instruction);
+    free(loaded_csv); free(missing_csv);
+
+    /* message = "\n\n".join([header, *skill_blocks]) */
+    size_t msg_cap = strlen(header) + blocks_len + 4;
+    char *message = malloc(msg_cap);
+    snprintf(message, msg_cap, "%s\n\n%s", header, blocks);
+    free(header); free(blocks);
+
+    json_t *result = json_object();
+    json_set(result, "message", json_string(message));
+    json_set(result, "loaded", loaded_names);
+    json_set(result, "missing", missing);
+    free(message);
+    return result;
+}
+
+/* PoP: resolve_bundle_command_key @ agent/skill_bundles.py:resolve_bundle_command_key */
+/* Resolve a user-typed command to its canonical bundle slash key.
+ * Hyphens/underscores interchangeable. Returns malloc'd "/slug" or NULL. */
+char *resolve_bundle_command_key(const char *command) {
+    if (!command || !command[0]) return NULL;
+
+    char norm[BUNDLE_SLUG_MAX];
+    snprintf(norm, sizeof(norm), "%s", command);
+    for (char *c = norm; *c; c++)
+        if (*c == '_') *c = '-';
+
+    skill_bundle_registry_t reg;
+    memset(&reg, 0, sizeof(reg));
+    if (skill_bundles_scan(&reg) < 0) return NULL;
+    if (!skill_bundle_find(&reg, norm)) return NULL;
+
+    size_t n = strlen(norm) + 2;
+    char *key = malloc(n);
+    if (key) snprintf(key, n, "/%s", norm);
+    return key;
 }
