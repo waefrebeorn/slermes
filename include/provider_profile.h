@@ -170,6 +170,13 @@ char *provider_profile_fetch_models_default(provider_profile_t *p,
                                             const char *base_url,
                                             double timeout);
 
+/* ── integration glue (provider_profile_apply.c) ───────────────────────── */
+/* Apply a ProviderProfile's per-provider request quirks onto an already-built
+ * chat-completions request body `root`. Called by provider_openai.c. Providers
+ * without a registered profile are left untouched. `root` may be mutated. */
+typedef struct provider_t provider_t;   /* forward decl */
+void apply_provider_profile(const provider_t *p, struct json_t *root);
+
 /* ── shared helper (chat_completions.py:_reasoning_config_for_model) ──── */
 /* Returns malloc'd JSON of the wire-compatible reasoning config (or NULL
  * when input is NULL). gpt-5.6 + effort=ultra -> effort=max. */

@@ -8,6 +8,7 @@
 
 #include "hermes_core_types.h"
 #include "provider.h"
+#include "provider_profile.h"
 #include "hermes_http.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -47,6 +48,10 @@ void register_provider_builtins(void) {
     register_provider(PROVIDER_BEDROCK, &PROVIDER_OPS_BEDROCK);
     register_provider(PROVIDER_CUSTOM, &PROVIDER_OPS_CUSTOM);
     register_provider(PROVIDER_CODEX, &PROVIDER_OPS_CODEX);
+    /* v649: register the ProviderProfile registry (idempotent) so request
+     * shaping can consult per-provider quirks (fixed_temperature, reasoning
+     * hooks, portal tags, etc.). */
+    provider_profiles_register_builtin();
 }
 
 /* Find provider ops by name (case-insensitive) */
