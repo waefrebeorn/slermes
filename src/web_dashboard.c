@@ -17,6 +17,8 @@
 #include "hermes_gateway_lifecycle.h"
 #include "hermes_insights.h"
 #include "provider_metadata.h"
+#include "provider.h"
+#include "provider_profile.h"
 #include "base64.h"
 #include "uuid.h"
 #include <stdio.h>
@@ -1391,33 +1393,79 @@ static void handle_api(int fd, const http_req_t *req) {
  * ═══════════════════════════════════════════════════════════════════════════ */
 
 static void handle_chat(int fd, const char *body) {
-    char session_id[256] = "";
-    char message[4096] = "";
+    /* v652: real chat — parse request, call the LLM via llm_chat_completion
+     * (reuses the full provider + ProviderProfile stack wired in v649-v651b).
+     * PoP: hermes_cli/web_server.py /api/chat proxy. */
+    static bool initialized = false;
+    if (!initialized) {
+        register_provider_builtins();
+        provider_profiles_register_builtin();
+        initialized = true;
+    }
+
+    /* Parse request body */
+    char provider[64] = "";
+    char model[128] = "";
+    char message[8192] = "";
     if (body && *body) {
         char *err = NULL;
         json_node_t *j = json_parse(body, &err);
         if (j && json_node_is_object(j)) {
-            const char *s = json_object_get_string((json_t*)j, "session_id", NULL);
-            if (s) snprintf(session_id, sizeof(session_id), "%s", s);
-            const char *m = json_object_get_string((json_t*)j, "message", NULL);
-            if (m) { strncpy(message, m, sizeof(message) - 1); message[sizeof(message)-1] = '\0'; }
+            const char *p = json_object_get_string((json_t*)j, "provider", NULL);
+            if (p) snprintf(provider, sizeof(provider), "%s", p);
+            const char *m = json_object_get_string((json_t*)j, "model", NULL);
+            if (m) snprintf(model, sizeof(model), "%s", m);
+            const char *msg = json_object_get_string((json_t*)j, "message", NULL);
+            if (msg) { strncpy(message, msg, sizeof(message) - 1); message[sizeof(message)-1] = '\0'; }
             json_free(j);
         } else { free(err); }
     }
-    json_t *resp = json_new_object();
-    if (resp) {
-        json_set(resp, "status", json_string("received"));
-        json_set(resp, "session_id", json_string(session_id[0] ? session_id : "default"));
-        if (message[0]) {
-            json_set(resp, "echo", json_string(message));
-            json_set(resp, "message_len", json_number((double)strlen(message)));
-        } else {
-            json_set(resp, "error", json_string("Empty message"));
-        }
-        char *j = json_serialize(resp);
+
+    if (!message[0]) {
+        send_json(fd, 400, "Bad Request", "{\"error\":\"Empty message\"}");
+        return;
+    }
+
+    /* Build config from hermes config + request overrides */
+    hermes_config_t cfg;
+    memset(&cfg, 0, sizeof(cfg));
+    hermes_config_load(&cfg, NULL);
+    llm_config_t lc;
+    memset(&lc, 0, sizeof(lc));
+    snprintf(lc.provider, sizeof(lc.provider), "%s", provider[0] ? provider : cfg.provider);
+    snprintf(lc.model, sizeof(lc.model), "%s", model[0] ? model : cfg.model);
+    snprintf(lc.base_url, sizeof(lc.base_url), "%s", cfg.base_url);
+    snprintf(lc.api_key, sizeof(lc.api_key), "%s", cfg.api_key);
+    lc.max_tokens = cfg.provider_cfg.max_tokens > 0 ? cfg.provider_cfg.max_tokens : 2048;
+    lc.temperature = cfg.provider_cfg.temperature > 0.0f ? cfg.provider_cfg.temperature : 0.7f;
+
+    /* Single user message */
+    message_t *msgs[1];
+    msgs[0] = message_new(MSG_USER, message);
+
+    llm_response_t *resp = llm_chat_completion(&lc, (const message_t **)msgs, 1, NULL);
+    message_free(msgs[0]);
+
+    if (!resp) {
+        send_json(fd, 502, "Bad Gateway", "{\"error\":\"LLM call failed\"}");
+        return;
+    }
+    const char *content = resp->content ? resp->content : "";
+    json_t *out = json_new_object();
+    if (out) {
+        json_set(out, "status", json_string("ok"));
+        json_set(out, "content", json_string(content));
+        json_set(out, "model", json_string(lc.model));
+        char *j = json_serialize(out);
         send_json(fd, 200, "OK", j ? j : "{}");
-        free(j); json_free(resp);
-    } else { send_json(fd, 500, "Error", "{\"error\":\"OOM\"}"); }
+        free(j);
+        json_free(out);
+    } else {
+        send_json(fd, 500, "Error", "{\"error\":\"OOM\"}");
+    }
+    if (resp->content) free(resp->content);
+    if (resp->reasoning) free(resp->reasoning);
+    free(resp);
 }
 
 static void handle_model_recommended(int fd) {
