@@ -46,6 +46,7 @@ json_t *web_git_review_push(const char *cwd);
 json_t *web_git_worktree_list(const char *cwd);
 json_t *web_git_branch_list(const char *cwd);
 json_t *web_git_branch_switch(const char *cwd, const char *branch);
+json_t *web_git_base_branch_list(const char *cwd);
 json_t *web_git_worktree_add(const char *cwd, const char *existing_branch,
                               const char *name, const char *branch,
                               const char *base);

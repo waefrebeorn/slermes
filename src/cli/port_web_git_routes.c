@@ -70,6 +70,19 @@ json_t *git_branches_route(const char *path) {
     return r;
 }
 
+/* ── git_base_branches_route ─────────────────────────────────────────────────
+ * PoP: git_base_branches_route @ hermes_cli/web_server.py:git_base_branches_route
+ * Python: return {"branches": await _git_op(_web_git.base_branch_list, _git_path(path))} */
+json_t *git_base_branches_route(const char *path) {
+    char *cwd = ws_fs_path(path);
+    if (!cwd) return git_op_error("invalid path");
+    json_t *br = web_git_base_branch_list(cwd);
+    free(cwd);
+    json_t *r = json_object();
+    json_set(r, "branches", br ? br : json_array());
+    return r;
+}
+
 /* ── git_review_list_route ────────────────────────────────────────────────────
  * PoP: git_review_list_route @ hermes_cli/web_server.py:git_review_list_route
  * Python: return await _git_op(_web_git.review_list, _git_path(path), scope, base) */

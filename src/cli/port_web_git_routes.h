@@ -17,6 +17,7 @@ extern "C" {
 json_t *git_status_route(const char *path);
 json_t *git_worktrees_route(const char *path);
 json_t *git_branches_route(const char *path);
+json_t *git_base_branches_route(const char *path);
 json_t *git_review_list_route(const char *path, const char *scope, const char *base);
 json_t *git_review_diff_route(const char *path, const char *file, const char *scope,
                               const char *base, bool staged);

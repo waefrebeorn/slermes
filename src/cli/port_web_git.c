@@ -38,6 +38,7 @@ static const char *TRUNK_BRANCHES[] = {"main", "master", NULL};
  * *out = "". *out_len (if non-NULL) receives the real byte count, which may
  * exceed strlen() because porcelain -z output contains embedded NULs. */
 /* PoP: web_git_run @ hermes_cli/web_git.py:web_git_run */
+/* PoP: web_git_run @ hermes_cli/web_git.py:_git */
 int web_git_run(const char *cwd, char **out, size_t *out_len,
                const char **args, size_t nargs) {
     *out = NULL;
@@ -438,6 +439,38 @@ static void classify_cb_adapter(const char *tag, const char *xy, const char *pat
     json_append(arr, classify(tag, xy, path));
 }
 
+/* PoP: fill_untracked_counts @ hermes_cli/web_git.py:_fill_untracked_counts */
+static void fill_untracked_counts(const char *cwd, json_t *files) {
+    for (size_t i = 0; i < json_len(files); i++) {
+        json_t *f = json_get(files, i);
+        const char *st = json_get_str(f, "status", "");
+        if (st[0] == '?' && st[1] == '\0' &&
+            (long)json_get_num(f, "added", 0) == 0 &&
+            (long)json_get_num(f, "removed", 0) == 0) {
+            json_set(f, "added",
+                     json_number(untracked_insertions(cwd,
+                                     json_get_str(f, "path", ""))));
+        }
+    }
+}
+
+/* Python: files.sort(key=lambda f: f["path"]) — stable insertion sort on
+ * the json array in place. */
+static void sort_files_by_path(json_t *files) {
+    size_t n = json_len(files);
+    for (size_t i = 1; i < n; i++) {
+        json_t *cur = json_get(files, i);
+        const char *cp = json_get_str(cur, "path", "");
+        size_t j = i;
+        while (j > 0 &&
+               strcmp(json_get_str(json_get(files, j - 1), "path", ""), cp) > 0) {
+            files->c.items[j] = files->c.items[j - 1];
+            j--;
+        }
+        files->c.items[j] = cur;
+    }
+}
+
 /* ── review_list ─────────────────────────────────────────────────────── */
 
 /* PoP: web_git_review_list @ hermes_cli/web_git.py:review_list */
@@ -493,8 +526,9 @@ json_t *web_git_review_list(const char *cwd, const char *scope, const char *base
             }
             free(raw);
         }
-        /* sort by path */
-        /* (insertion order acceptable; Python sorts — we keep stable add order) */
+        /* Python: files.sort(key=path); _fill_untracked_counts(cwd, files) */
+        sort_files_by_path(files);
+        fill_untracked_counts(cwd, files);
         json_t *res = json_object();
         json_set(res, "files", files);
         json_set(res, "base", json_string(base));
@@ -528,6 +562,9 @@ json_t *web_git_review_list(const char *cwd, const char *scope, const char *base
     for (size_t k = 0; k < nsu; k++) free(unstaged[k].path);
     free(staged); free(unstaged);
     free(raw);
+    /* Python: files.sort(key=path); _fill_untracked_counts(cwd, files) */
+    sort_files_by_path(files);
+    fill_untracked_counts(cwd, files);
     json_t *res = json_object();
     json_set(res, "files", files);
     json_set(res, "base", json_null());
@@ -774,6 +811,7 @@ json_t *web_git_review_commit_context(const char *cwd) {
 /* ── worktrees & branches ────────────────────────────────────────────── */
 
 /* PoP: web_git_worktree_list @ hermes_cli/web_git.py:worktree_list */
+/* PoP: web_git_worktree_list @ hermes_cli/web_git.py:_parse_worktrees */
 json_t *web_git_worktree_list(const char *cwd) {
     const char *a[] = {"worktree", "list", "--porcelain"};
     char *out = git_out(cwd, a, 3, NULL);
@@ -846,6 +884,7 @@ static char *main_root(const char *cwd) {
     return root;
 }
 
+/* PoP: git_default_branch @ hermes_cli/web_git.py:_default_branch */
 static char *git_default_branch(const char *cwd) {
     const char *a[] = {"symbolic-ref", "--quiet", "--short", "refs/remotes/origin/HEAD"};
     char *r = git_out(cwd, a, 4, NULL);
@@ -885,6 +924,7 @@ static char *sanitize_branch(const char *name) {
     return v;
 }
 
+/* PoP: slugify @ hermes_cli/web_git.py:_slugify */
 static char *slugify(const char *name) {
     char *s = strdup(name ? name : "");
     for (char *p = s; *p; p++) *p = (char)tolower((unsigned char)*p);
@@ -914,25 +954,28 @@ static char *unique_dir(const char *base) {
 }
 
 /* PoP: web_git_worktree_add @ hermes_cli/web_git.py:worktree_add */
+/* PoP: web_git_worktree_add @ hermes_cli/web_git.py:_ensure_repo */
 json_t *web_git_worktree_add(const char *cwd, const char *existing_branch,
                              const char *name, const char *branch, const char *base) {
-    /* ensure repo (init + root commit if needed) */
+    /* _ensure_repo: init + root commit if needed (no-op for committed repo) */
     const char *ii[] = {"rev-parse", "--is-inside-work-tree"};
     char *ins = git_out(cwd, ii, 2, NULL);
     bool inside = ins && strcmp(ins, "true") == 0;
     free(ins);
+    bool needs_root = false;
     if (!inside) {
         const char *ini[] = {"init"}; char *e = git_ok(cwd, ini, 1); free(e);
+        needs_root = true;
     } else {
         const char *vh[] = {"rev-parse", "--verify", "HEAD"};
         char *h = git_out(cwd, vh, 3, NULL);
-        bool has_head = h && *h;
+        needs_root = !(h && *h);
         free(h);
-        if (!has_head) {
-            const char *rc[] = {"-c", "user.email=hermes@localhost", "-c", "user.name=Hermes",
-                                 "commit", "--allow-empty", "-m", "Initial commit"};
-            char *e = git_ok(cwd, rc, 8); free(e);
-        }
+    }
+    if (needs_root) {
+        const char *rc[] = {"-c", "user.email=hermes@localhost", "-c", "user.name=Hermes",
+                             "commit", "--allow-empty", "-m", "Initial commit"};
+        char *e = git_ok(cwd, rc, 8); free(e);
     }
     char *root = main_root(cwd);
     json_t *res = json_object();
@@ -1048,6 +1091,63 @@ json_t *web_git_branch_switch(const char *cwd, const char *branch) {
     json_set(r, "branch", json_string(t));
     free(t);
     return r;
+}
+
+/* PoP: web_git_base_branch_list @ hermes_cli/web_git.py:base_branch_list */
+json_t *web_git_base_branch_list(const char *cwd) {
+    /* Local heads + remote-tracking refs for the base-branch picker.
+     * The remote default (origin/HEAD) is flagged so the UI preselects it. */
+    const char *a[] = {"for-each-ref",
+                       "--format=%(refname:short)\t%(committerdate:iso)",
+                       "--sort=-committerdate", "refs/heads", "refs/remotes"};
+    char *out = git_out(cwd, a, 5, NULL);
+    json_t *res = json_array();
+    if (!out || !*out) { free(out); return res; }
+
+    const char *sr[] = {"symbolic-ref", "--quiet", "--short",
+                        "refs/remotes/origin/HEAD"};
+    char *remote_default = git_out(cwd, sr, 4, NULL);
+    /* strip() */
+    if (remote_default) {
+        size_t rl = strlen(remote_default);
+        while (rl && (remote_default[rl-1] == '\n' || remote_default[rl-1] == '\r' ||
+                      remote_default[rl-1] == ' ')) remote_default[--rl] = '\0';
+    }
+    char *local_default = NULL;
+    if (!remote_default || !*remote_default)
+        local_default = git_default_branch(cwd);
+
+    char *line = strtok(out, "\n");
+    while (line) {
+        /* line.strip() */
+        while (*line == ' ' || *line == '\t') line++;
+        char *end = line + strlen(line);
+        while (end > line && (end[-1] == ' ' || end[-1] == '\t' ||
+                              end[-1] == '\r')) *--end = '\0';
+        if (*line) {
+            /* name = line.split("\t")[0] */
+            char *tab = strchr(line, '\t');
+            if (tab) *tab = '\0';
+            const char *name = line;
+            bool is_remote = strncmp(name, "origin/", 7) == 0;
+            bool is_default =
+                (remote_default && *remote_default &&
+                 strcmp(name, remote_default) == 0) ||
+                ((!remote_default || !*remote_default) &&
+                 local_default && *local_default &&
+                 strcmp(name, local_default) == 0);
+            json_t *o = json_object();
+            json_set(o, "name", json_string(name));
+            json_set(o, "isRemote", json_bool(is_remote));
+            json_set(o, "isDefault", json_bool(is_default));
+            json_append(res, o);
+        }
+        line = strtok(NULL, "\n");
+    }
+    free(out);
+    free(remote_default);
+    free(local_default);
+    return res;
 }
 
 /* ── ship flow (gh) ──────────────────────────────────────────────────── */
