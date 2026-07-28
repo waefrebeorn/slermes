@@ -106,8 +106,22 @@ static bool lex_next(yaml_lexer_t *lx, yaml_line_t *line) {
 
     const char *p = line->raw + line->indent;
     const char *comment = NULL;
-    for (const char *q = p; *q; q++) {
-        if (*q == '#' && (q == p || *(q-1) != '\\')) { comment = q; break; }
+    /* Scan for a comment '#', but NOT inside quoted strings — YAML values
+     * like `background: "#0b0e1a"` must keep their hex colors. Per YAML,
+     * '#' starts a comment at line start or after whitespace. */
+    {
+        char quote = '\0';
+        for (const char *q = p; *q; q++) {
+            if (quote) {
+                if (*q == quote) quote = '\0';
+                continue;
+            }
+            if (*q == '"' || *q == '\'') { quote = *q; continue; }
+            if (*q == '#' && (q == p || *(q-1) == ' ' || *(q-1) == '\t')) {
+                comment = q;
+                break;
+            }
+        }
     }
     size_t content_end = comment ? (size_t)(comment - line->raw) : raw_len;
     while (content_end > 0 && (line->raw[content_end-1] == ' ' || line->raw[content_end-1] == '\t'))
