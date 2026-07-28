@@ -17,6 +17,7 @@
 #include "hermes_json.h"
 #include "hermes_http.h"
 #include "provider.h"
+#include "provider_profile.h"
 
 #include <ctype.h>
 #include <stdio.h>
@@ -466,6 +467,9 @@ static char *bedrock_build_request_body(const provider_t *p,
         json_object_set(tool_config, "tools", json_copy(tools_json));
         json_object_set(root, "toolConfig", tool_config);
     }
+
+    /* v651b: apply ProviderProfile quirks (fixed_temperature, default_max_tokens) */
+    apply_provider_profile(p, root);
 
     char *body = json_serialize(root);
     json_free(root);

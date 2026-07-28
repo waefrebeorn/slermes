@@ -20,6 +20,7 @@
 #include "hermes_http.h"
 #include "hermes_url_safety.h"
 #include "provider.h"
+#include "provider_profile.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -612,6 +613,9 @@ static char *anthropic_build_request_body(const provider_t *p,
             json_set(root, "system", sys_blocks);
         }
     }
+
+    /* v651b: apply ProviderProfile quirks (fixed_temperature, default_max_tokens) */
+    apply_provider_profile(p, root);
 
     /* Serialize */
     char *body = json_serialize(root);

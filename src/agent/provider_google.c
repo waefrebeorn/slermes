@@ -16,6 +16,7 @@
 #include "hermes_json.h"
 #include "hermes_http.h"
 #include "provider.h"
+#include "provider_profile.h"
 #include "base64.h"
 #include "hermes_transport_common.h"
 #include <ctype.h>
@@ -429,6 +430,9 @@ static char *google_build_request_body(const provider_t *p,
 
     /* Streaming — Google uses a different endpoint for streaming */
     (void)streaming;
+
+    /* v651b: apply ProviderProfile quirks (fixed_temperature, default_max_tokens) */
+    apply_provider_profile(p, root);
 
     char *body = json_serialize(root);
     json_free(root);
