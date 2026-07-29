@@ -34,10 +34,15 @@ char *hermes_nous_portal_tags_json(void);
  */
 const char *hermes_version(void);
 
-/** Set / get the ambient conversation id (Python ContextVar equivalent).
+/** Set / get / reset the ambient conversation id (Python ContextVar equivalent).
  *  Used by provider profiles for sticky session_id plumbing. */
 void hermes_set_conversation_context(const char *id);
+void hermes_reset_conversation_context(void);
 const char *hermes_get_conversation_context_id(void);
+
+/** Build a Nous Portal conversation tag from a session id.
+ *  @return Newly allocated string "conversation=<session_id>". Caller must free(). */
+char *hermes_conversation_tag(const char *session_id);
 
 #ifdef __cplusplus
 }

@@ -42,6 +42,7 @@ static const char *CRED_SUFFIXES[] = {"_API_KEY", "_TOKEN", "_SECRET", "_KEY", N
 
 /* Port of Python hermes_cli/env_loader.py: load ~/.slermes/.env via libdotenv
  * and sanitize credential values. Must be called before any config/API init. */
+/* PoP: load_env @ tools.skills_tool.py:load_env */
 static bool load_env(void) {
     /* Determine HERMES_HOME */
     const char *home_env = getenv("SLERMES_HOME");

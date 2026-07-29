@@ -46,6 +46,7 @@ void completion_node_free(completion_node_t *node) {
 
 /* ── _clean ───────────────────────────────────────────────────────── */
 
+/* PoP: completion_clean @ hermes_cli.completion.py:_clean */
 char *completion_clean(const char *text, size_t maxlen) {
     if (!text) text = "";
     /* strip ' " \ then take first maxlen chars */

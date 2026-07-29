@@ -23,6 +23,7 @@
 /* From port_web_server_auth.c */
 extern bool ws_is_accepted_host(const char *host_header, const char *bound_host);
 
+/* PoP: is_loopback_host @ gateway.platforms.webhook.py:_is_loopback_host */
 /* _LOOPBACK_HOSTS = {"127.0.0.1", "::1", "localhost", "testclient"} */
 static bool is_loopback_host(const char *h) {
     if (!h) return false;

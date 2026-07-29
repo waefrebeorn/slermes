@@ -674,6 +674,7 @@ char *ws_fs_find_git_root(const char *start) {
  *     Python: strip; check NUL; expanduser(); resolve().
  *     Returns malloc'd absolute path on success, NULL on error (empty/NUL/invalid).
  */
+/* PoP: ws_fs_path @ hermes_cli.web_server.py:_fs_path */
 char *ws_fs_path(const char *raw_path) {
     if (!raw_path) return NULL;
     /* Strip whitespace */

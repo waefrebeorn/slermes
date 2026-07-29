@@ -31,6 +31,7 @@ const char *kanban_status_icon(const char *status) {
     return "?";
 }
 
+/* PoP: kanban_fmt_ts @ hermes_cli.kanban.py:_fmt_ts */
 char *kanban_fmt_ts(long ts) {
     if (!ts) return xstrdup("");
     struct tm tm;

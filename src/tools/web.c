@@ -516,6 +516,7 @@ static char *search_google(http_client_t *client, const char *query, int count) 
 }
 
 /* Perform a Brave Search */
+/* PoP: search_brave @ tools.online_research.py:search_brave */
 static char *search_brave(http_client_t *client, const char *query, int count) {
     const char *api_key = tool_config_get("brave", "api_key");
     if (!api_key) api_key = getenv("BRAVE_API_KEY");

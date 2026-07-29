@@ -210,6 +210,7 @@ static research_result_t *parse_duckduckgo_html(const char *html, int *out_count
     return results;
 }
 
+/* PoP: search_duckduckgo @ tools.online_research.py:search_duckduckgo */
 static research_result_t *search_duckduckgo(const char *query, int num_results) {
     char *encoded = url_encode(query);
     char url[1024];

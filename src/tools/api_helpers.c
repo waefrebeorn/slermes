@@ -28,6 +28,7 @@ static http_method_t parse_method(const char *method) {
 }
 
 /* Build bearer auth header from api_key */
+/* PoP: build_auth_header @ _build_auth_header,_build_auth_header */
 static char *build_auth_header(const char *api_key) {
     if (!api_key || !api_key[0]) return NULL;
     size_t len = strlen(api_key) + 32;

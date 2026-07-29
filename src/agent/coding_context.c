@@ -531,6 +531,7 @@ struct coding_runtime_mode_s {
     char cwd[PATH_MAX];
     char config_mode[16];
     char model[128];
+    const hermes_config_t *config;
 };
 
 coding_runtime_mode_t *coding_runtime_mode_create(
@@ -562,6 +563,7 @@ coding_runtime_mode_t *coding_runtime_mode_create(
     /* Model */
     if (model && model[0])
         snprintf(mode->model, sizeof(mode->model), "%s", model);
+    mode->config = config;
 
     return mode;
 }
@@ -617,7 +619,14 @@ const char **coding_runtime_mode_toolset_selection(
     return result;
 }
 
-/* AG26: Port of Python agent/coding_context.py:system_blocks() */
+/* AG26: Port of Python agent/coding_context.py:system_prompt_parts()
+ *       and agent/coding_context.py:system_prompt_parts():
+ *       system_prompt_parts() returns prefix/workspace/trailing blocks,
+ *       both implemented via coding_runtime_mode_system_blocks().
+ * PoP: system_prompt_parts @ agent/coding_context.py:system_prompt_parts
+ * PoP: system_blocks @ agent/coding_context.py:system_blocks
+ * PoP: coding_system_prompt_parts @ agent/coding_context.py:coding_system_prompt_parts
+ */
 char **coding_runtime_mode_system_blocks(
     const coding_runtime_mode_t *mode, int *out_count) {
 
@@ -626,13 +635,13 @@ char **coding_runtime_mode_system_blocks(
         return NULL;
     }
 
-    /* Allocate array for up to 2 blocks (brief + workspace) */
-    char **blocks = calloc(2, sizeof(char *));
+    /* Allocate array for up to 3 blocks (prefix/workspace/trailing) */
+    char **blocks = calloc(3, sizeof(char *));
     if (!blocks) { if (out_count) *out_count = 0; return NULL; }
 
     int count = 0;
 
-    /* Operating brief with edit-format guidance */
+    /* Prefix: operating brief with optional edit-format guidance */
     if (mode->profile->guidance && mode->profile->guidance[0]) {
         const char *edit_line = coding_context_edit_format_line(mode->model);
         if (edit_line && edit_line[0]) {
@@ -648,50 +657,28 @@ char **coding_runtime_mode_system_blocks(
         }
     }
 
-    /* Workspace block — in C we build a simplified version */
-    if (mode->cwd[0]) {
-        char git_branch[128] = "";
-        char git_status[256] = "";
-        char git_root[PATH_MAX];
+    /* Workspace block */
+    {
+        char *workspace = coding_context_build_workspace_block(mode->cwd);
+        if (workspace && workspace[0]) {
+            blocks[count++] = workspace;
+        } else {
+            free(workspace);
+        }
+    }
 
-        if (coding_context_find_git_root(mode->cwd, git_root, sizeof(git_root))) {
-            /* Try to get branch and status */
-            char cmd[512];
-            snprintf(cmd, sizeof(cmd), "cd %s && git rev-parse --abbrev-ref HEAD 2>/dev/null", git_root);
-            FILE *fp = popen(cmd, "r");
-            if (fp) {
-                if (fgets(git_branch, sizeof(git_branch), fp))
-                    git_branch[strcspn(git_branch, "\n")] = '\0';
-                pclose(fp);
-            }
-
-            snprintf(cmd, sizeof(cmd), "cd %s && git status --porcelain 2>/dev/null | head -20", git_root);
-            fp = popen(cmd, "r");
-            if (fp) {
-                char line[256];
-                int line_count = 0;
-                while (fgets(line, sizeof(line), fp) && line_count < 20) {
-                    if (strlen(git_status) + strlen(line) < sizeof(git_status) - 1)
-                        strcat(git_status, line);
-                    line_count++;
-                }
-                pclose(fp);
+    /* Trailing: operator instructions from config */
+    {
+        char *instructions = coding_context_coding_instructions(mode->config);
+        if (instructions && instructions[0]) {
+            size_t ilen = strlen(instructions) + 28;
+            blocks[count] = malloc(ilen);
+            if (blocks[count]) {
+                snprintf(blocks[count], ilen, "Operator instructions (from config):\n%s", instructions);
+                count++;
             }
         }
-
-        size_t ws_len = 512 + strlen(mode->cwd) + strlen(git_branch) + strlen(git_status);
-        blocks[count] = malloc(ws_len);
-        if (blocks[count]) {
-            snprintf(blocks[count], ws_len,
-                "Workspace: %s\n"
-                "Git branch: %s\n"
-                "Git status:\n%s",
-                mode->cwd,
-                git_branch[0] ? git_branch : "(unknown)",
-                git_status[0] ? git_status : "  (clean)"
-            );
-            count++;
-        }
+        free(instructions);
     }
 
     if (out_count) *out_count = count;
@@ -870,6 +857,8 @@ int coding_context_read_small(const char *path, char *out, size_t out_size, size
 /*
  * PoP: detect_project_facts @ agent/coding_context.py:detect_project_facts
  * PoP: _project_facts @ agent/coding_context.py:_project_facts
+ * Port of Python agent/coding_context.py:detect_project_facts /
+ * agent/coding_context.py:_project_facts
  * Detects manifests, package managers, verify commands, context files for a
  * root and renders them as workspace-snapshot lines into out (malloc'd, caller frees). */
 char *coding_context_project_facts(const char *root)
@@ -1119,6 +1108,8 @@ const char **coding_context_coding_selection(const char *platform, const char *c
     return r;
 }
 
+/* PoP: system_prompt_parts @ agent/coding_context.py:system_prompt_parts */
+/* PoP: coding_system_prompt_parts @ agent/coding_context.py:coding_system_prompt_parts */
 /* PoP: coding_system_blocks @ agent/coding_context.py:coding_system_blocks */
 char **coding_context_coding_system_blocks(const char *platform, const char *cwd, const hermes_config_t *config, const char *model, int *out_count)
 {

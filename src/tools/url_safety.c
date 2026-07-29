@@ -1055,6 +1055,7 @@ static void url_safe_urldecode(char *s) {
 
 /* Return malloc'd first sensitive query-param NAME, or NULL.
  * Mirrors sensitive_query_param_name: returns the key (not value). */
+/* PoP: url_safety_sensitive_query_param_name @ tools.url_safety.py:sensitive_query_param_name */
 char *url_safety_sensitive_query_param_name(const char *url) {
     if (!url || !*url) return NULL;
     /* find '?' */

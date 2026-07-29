@@ -95,7 +95,6 @@ PYTHON_SOURCE_DIRS = {
 SLERMES_SRC_DIRS = [
     SLERMES_DIR / "src",
     SLERMES_DIR / "src" / "agent",
-    SLERMES_DIR / "lib",
     SLERMES_DIR / "src" / "tools",
     SLERMES_DIR / "src" / "provider",
     SLERMES_DIR / "src" / "cli",
@@ -248,6 +247,7 @@ class CIndexer:
             re.compile(r'/\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)\s*\*/', re.MULTILINE),
             re.compile(r'/\*\s*PoP:\s+\w+__(\w+)\s+@\s+[\w/]+\.py:\(?(\w+)\)?', re.MULTILINE),
             re.compile(r'/\*\s*PoP:\s+\w+_(\w+)\s+@\s+[\w/]+\.py:\(?(\w+)\)?', re.MULTILINE),
+            re.compile(r'/\*[\s\S]*?\n\s*\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)', re.MULTILINE),
             re.compile(r'/\*\s*Port of Python\s+\w+_\w+\.py:(_?)\w+\(', re.MULTILINE),
             re.compile(r'/\*\s*Port of Python[^:]*:?\s*([\w.]+)', re.MULTILINE),
             re.compile(r'\*\s*Port of Python\s+[\w/]+\.py:([\w_]+)\(', re.MULTILINE),
@@ -261,8 +261,7 @@ class CIndexer:
             re.compile(r'\*\s*Port of Python\s+\w+\.py:([\w_]+)\(', re.MULTILINE),
             re.compile(r'/\*\s*port of Python[^:]*:?\s*([^*]+)\*/', re.MULTILINE),
             re.compile(r'/\*\s*Port of Python\s+agent/(\w+)\.py\s*\([^)]+\)\s*\*/', re.MULTILINE),
-            re.compile(r'/\*[\s\S]*?\n\s*\*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)', re.MULTILINE),
-            re.compile(r'\n\s*\*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)', re.MULTILINE),
+            re.compile(r'\n\s*\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)', re.MULTILINE),
         ]
         wrapper_pattern = re.compile(
             r'/\*\s*\n\s*\*(\w+\.c)\s*—\s*Name parity wrapper for Python agent/(\w+\.py)', re.MULTILINE)
@@ -284,6 +283,12 @@ class CIndexer:
                         continue
                     fpath = Path(root) / f
                     rel = fpath.relative_to(SLERMES_DIR)
+                    try:
+                        st = fpath.stat()
+                    except Exception:
+                        continue
+                    if st.st_size > 200 * 1024:
+                        continue
                     try:
                         with open(fpath) as fp:
                             content = fp.read()
@@ -313,6 +318,7 @@ class CIndexer:
                         self.structs.add(m.group(1))
 
                     pop_pattern = pop_patterns[0]
+                    matched = False
                     for pattern in pop_patterns:
                         for m in pattern.finditer(content):
                             if pattern is pop_patterns[15]:
@@ -330,7 +336,7 @@ class CIndexer:
                             line = bisect.bisect_right(self._line_offsets[rel_str], m.start())
                             c_func_name = self._find_annotation_target(content, m.start())
                             python_file = ""
-                            if pattern is pop_pattern or pattern.pattern.startswith(r'/\*[\s\S]*?'):
+                            if pattern is pop_pattern or pattern.pattern.startswith(r'/\*[\s\S]*?') or pattern.pattern.startswith(r'/\*\n'):
                                 python_file = m.group(2).strip()
                             self.pop_annotations.append(PopAnnotation(
                                 c_function=c_func_name, python_functions=py_funcs,
@@ -548,6 +554,7 @@ class ParityAnalyzer:
         add("agent/pet/store.py","src/pet/pet_store.c")
         add("agent/pet/render.py","src/pet/pet_render.c")
         add("agent/pet/__init__.py","src/pet/pet_commands.c")
+        add("agent/coding_context.py","src/agent/coding_context.c")
         # tools/ (compressed: topic -> real C home)
         for py, c in {
             "tools/approval.py":"src/tools/approval.c","tools/blueprints.py":"src/tools/blueprints.c",
@@ -590,7 +597,8 @@ class ParityAnalyzer:
             "tools/tts_tool.py":"src/tools/tts.c","tools/video_generation_tool.py":"src/tools/video_gen.c",
             "tools/vision_tools.py":"src/tools/vision.c","tools/voice_mode.py":"src/tools/voice.c",
             "tools/web_tools.py":"src/tools/web.c","tools/website_policy.py":"src/tools/website_policy.c",
-            "tools/write_approval.py":"src/tools/write_approval.c","tools/x_search_tool.py":"src/tools/x_search.c",
+            "tools/write_approval.py":"src/tools/write_approval.c",
+            "agent/redact.py":"src/tools/browser_redact.c","tools/x_search_tool.py":"src/tools/x_search.c",
             "tools/xai_http.py":"src/tools/xai_http.c","tools/yuanbao_tools.py":"src/tools/yuanbao_tools.c",
             "tools/kanban_tools.py":"src/tools/kanban_tools.c","tools/mcp_oauth.py":"src/tools/mcp_oauth.c",
             "tools/registry.py":"src/tools/registry.c","tools/web_tools.py":"src/tools/web.c",
@@ -717,7 +725,7 @@ class ParityAnalyzer:
                 sf = c_funcs[0]
                 if self._check_if_stub(sf.file, sf.name):
                     return GapEntry(py_file, feature, "REAL_GAP", c_location=sf.file, c_function=sf.name,
-                                    stub_reason="C function appears to be stub/trivial", severity="HIGH",
+                                    stub_reason="C function appears to be stub/trivial (forwarding wrapper or trivial pass-through)", severity="HIGH",
                                     da_flags=["DA-1:stub-in-impl"])
                 return GapEntry(py_file, feature, "PARTIAL", c_location=sf.file, c_function=sf.name,
                                 severity="MEDIUM", notes="C function exists in impl file but no PoP annotation",
@@ -731,6 +739,10 @@ class ParityAnalyzer:
                     c_funcs = self.c_index.find_c_function_with_prefix(feature.name, prefix)
                 if c_funcs:
                     sf = c_funcs[0]
+                    if self._check_if_stub(sf.file, sf.name):
+                        return GapEntry(py_file, feature, "REAL_GAP", c_location=sf.file, c_function=sf.name,
+                                        stub_reason="C function appears to be stub/trivial (forwarding wrapper or trivial pass-through)", severity="HIGH",
+                                        da_flags=["DA-1:stub-in-impl"])
                     return GapEntry(py_file, feature, "PARTIAL", c_location=sf.file, c_function=sf.name,
                                     severity="MEDIUM", notes=f"Found with {prefix} prefix (needs PoP)",
                                     da_flags=["DA-3:no-pop-annotation"])
@@ -743,19 +755,28 @@ class ParityAnalyzer:
                 c_funcs = self.c_index.find_vtable_defaults_global(py_file.replace('.py',''), feature.name)
             if c_funcs:
                 sf = c_funcs[0]
+                if self._check_if_stub(sf.file, sf.name):
+                    return GapEntry(py_file, feature, "REAL_GAP", c_location=sf.file, c_function=sf.name,
+                                    stub_reason="C function appears to be stub/trivial (forwarding wrapper or trivial pass-through)", severity="HIGH",
+                                    da_flags=["DA-1:stub-in-impl"])
                 return GapEntry(py_file, feature, "PARTIAL", c_location=sf.file, c_function=sf.name,
                                 severity="MEDIUM", notes="Found vtable default (needs PoP)",
                                 da_flags=["DA-3:no-pop-annotation"])
         c_funcs = self.c_index.find_c_function(feature.name, py_file, feature.parent_class)
         if c_funcs:
             sf = c_funcs[0]
-            if self._check_if_stub(sf.file, sf.name):
-                return GapEntry(py_file, feature, "REAL_GAP", c_location=sf.file, c_function=sf.name,
-                                stub_reason="C function appears to be stub/trivial", severity="HIGH",
-                                da_flags=["DA-1:stub-global"])
-            return GapEntry(py_file, feature, "PARTIAL", c_location=sf.file, c_function=sf.name,
-                            severity="MEDIUM", notes="C function exists globally but no PoP annotation",
-                            da_flags=["DA-3:no-pop-annotation"])
+            # Only credit PARTIAL if the C symbol lives in the expected impl file for this module.
+            # A match in a different file (e.g. a header-only alias or stale name-parity hit)
+            # is a false positive — it's a name collision in the global index, not this module's port.
+            if impl_file and sf.file == impl_file:
+                if self._check_if_stub(sf.file, sf.name):
+                    return GapEntry(py_file, feature, "REAL_GAP", c_location=sf.file, c_function=sf.name,
+                                    stub_reason="C function appears to be stub/trivial (forwarding wrapper or trivial pass-through)", severity="HIGH",
+                                    da_flags=["DA-1:stub-global"])
+                return GapEntry(py_file, feature, "PARTIAL", c_location=sf.file, c_function=sf.name,
+                                severity="MEDIUM", notes="C function exists in impl file but no PoP annotation",
+                                da_flags=["DA-3:no-pop-annotation"])
+            # Match in a different file — not credited as PORTED/PARTIAL. Falls through to wrapper check.
         _, claims = self.c_index.find_wrapper_for_module(py_file)
         if feature.name in claims:
             return GapEntry(py_file, feature, "REAL_GAP", severity="HIGH",
@@ -856,13 +877,23 @@ class ParityAnalyzer:
             elif ch=='}': depth-=1
             pos+=1
         body = content[body_start:pos].strip()
-        if not body or body==';': return True
-        if re.search(r'\(void\).*return\s+(NULL|0|false)', body): return True
-        lines=[l.strip() for l in body.split('\n') if l.strip() and not l.strip().startswith('//')]
-        if len(lines)<=2 and any('return' in l for l in lines): return True
-        if len(lines)<=5 and re.search(r'(?:hermes_log|LOG_\w+).*return\s+(NULL|0|false)\s*;', body, re.DOTALL): return True
-        ne=[l for l in body.split('\n') if l.strip()]
-        if len(ne)<=3 and any('return' in l for l in ne): return True
+        if not body or body == ';':
+            return True
+        non_blank = [line.strip() for line in body.split('\n')
+                     if line.strip() and not line.strip().startswith('//')]
+        # Trivial forwarding wrapper: <=2 non-blank lines all return something.
+        if len(non_blank) <= 2 and all('return' in line for line in non_blank):
+            return True
+        # Delegates to another function (common pattern: context->ctx, obj->obj_).
+        if len(non_blank) <= 3 and any('return' in line and ('->' in line or '.') for line in non_blank):
+            return True
+        # LOG+return NULL/false pattern (hermes_log + immediate return — stubs).
+        if len(non_blank) <= 5:
+            if re.search(r'(?:hermes_log|LOG_\w+).*return\s+(NULL|0|false)\s*;', body, re.DOTALL):
+                return True
+            # (void)-only body with immediate return.
+            if re.search(r'\(void\)[^;]*\{', body) and not re.search(r'=\s*[^;]+;', body):
+                return True
         return False
 
     # ── triple-DA per-module validation ──
@@ -911,7 +942,7 @@ class ParityAnalyzer:
                 if impl and self._c_func_count_for_impl(impl) > 0:
                     g.da_flags.append("DA-1:home-exists-needs-depth")
 
-    def scan_all(self):
+    def scan_all(self, module_filter: str = ""):
         reports = {}
         all_py = []
         agent = PYTHON_SOURCE_DIRS["agent"]
@@ -944,6 +975,11 @@ class ParityAnalyzer:
             if pf.name != "__init__.py":
                 all_py.append((pf, "hermes_cli/" + str(pf.relative_to(hc))))
         all_py.sort(key=lambda x: x[1])
+
+        # Apply module substring filter early so --module doesn't scan the
+        # entire Python tree (the main bottleneck).
+        if module_filter:
+            all_py = [(pf, d) for pf, d in all_py if module_filter in d]
 
         for pf, display in all_py:
             feats = self.extractor.extract_file(pf)
@@ -1143,16 +1179,13 @@ def main():
         sys.exit(2)
 
     analyzer = ParityAnalyzer()
-    reports = analyzer.scan_all()
+    reports = analyzer.scan_all(module_filter=args.module)
 
     if len(reports) == 0:
         sys.stderr.write("FATAL: scanner consumed 0 modules — source of truth not read. Aborting; writing nothing.\\n")
         sys.exit(5)
 
     drift = compute_drift(reports, git_rev(args.upstream))
-
-    if args.module:
-        reports = {k: v for k, v in reports.items() if args.module in k}
 
     if args.rebase_drift:
         rb = rebase_drift_report(reports, args.upstream)
