@@ -94,7 +94,6 @@ json_t *json_parse_yaml_real(const char *input);
 
 /* Array iteration */
 #define json_array_size(a)      json_len((a))
-#define json_array_get(a, i)    json_get((a), (i))
 
 /* Object iteration */
 static inline size_t json_object_size(const json_t *obj) {
