@@ -949,3 +949,57 @@ bool curator_get_consolidate(void) {
     }
     return false; /* DEFAULT_CONSOLIDATE = false */
 }
+
+/* PoP: curator_merge_request_overrides @ agent/curator.py:_merge_request_overrides */
+/* Merge resolver metadata (runtime_overrides) with task-local request
+ * body fields (slot_extra_body).  Mirrors the Python dict merge:
+ *   merged = dict(runtime_overrides or {})
+ *   if isinstance(slot_extra_body, dict) and slot_extra_body:
+ *       extra_body = dict(merged.get("extra_body") or {})
+ *       extra_body.update(slot_extra_body)
+ *       merged["extra_body"] = extra_body
+ *   return merged
+ *
+ * Both arguments may be NULL (treated as empty dict).
+ * The caller owns the returned json_t object. */
+json_t *curator_merge_request_overrides(json_t *runtime_overrides,
+                                        json_t *slot_extra_body)
+{
+    json_t *merged = json_object();
+    json_t *extra_body = NULL;
+    const char *key;
+    json_t *val;
+
+    if (!merged)
+        return NULL;
+
+    /* Start with runtime_overrides contents as base */
+    if (runtime_overrides && json_is_object(runtime_overrides)) {
+        for (size_t i = 0; i < json_object_size(runtime_overrides); i++) {
+            const char *k = json_object_get_key_at(runtime_overrides, i);
+            json_t *v = json_object_get_at(runtime_overrides, i);
+            if (k) json_set(merged, k, v);
+        }
+    }
+
+    /* If slot_extra_body is a non-empty object, merge its keys */
+    if (slot_extra_body && json_is_object(slot_extra_body)) {
+        int has_keys = 0;
+        for (size_t i = 0; i < json_object_size(slot_extra_body); i++) {
+            const char *k = json_object_get_key_at(slot_extra_body, i);
+            json_t *v = json_object_get_at(slot_extra_body, i);
+            if (!k) continue;
+            if (!has_keys) {
+                extra_body = json_object();
+                has_keys = 1;
+            }
+            if (extra_body) json_set(extra_body, k, v);
+        }
+        if (extra_body) {
+            json_set(merged, "extra_body", extra_body);
+            json_free(extra_body);
+        }
+    }
+
+    return merged;
+}

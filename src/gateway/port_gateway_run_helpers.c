@@ -231,3 +231,72 @@ void gw_profile_runtime_scope_exit(gw_profile_scope_token_t *tok)
         unsetenv("HERMES_HOME_OVERRIDE");
     secret_scope_reset_secret_scope(tok->prev_secret_scope);
 }
+
+/* PoP: gw_slack_ignored_channels_from_config @ gateway/run.py:_slack_ignored_channels_from_gateway_config */
+/* Port of Python gateway.run._slack_ignored_channels_from_gateway_config.
+ * Returns a csv_or_list (comma/semicolon/space/newline separated) set
+ * of Slack channel IDs that the generic gateway must never dispatch.
+ * The Slack adapter has the first-line drop, but this runner-level
+ * guard is intentionally duplicated as a fail-safe.
+ *
+ * Reads from platform_cfg.extra.ignored_channels or env var
+ * SLACK_IGNORED_CHANNELS. */
+char **gw_slack_ignored_channels_from_config(
+    const yaml_doc_t *platform_cfg,
+    int *out_count)
+{
+    const char *raw = NULL;
+    char **result = NULL;
+
+    /* Try platform_cfg.extra.ignored_channels first */
+    if (platform_cfg)
+        raw = yaml_get_string(platform_cfg, "extra.ignored_channels");
+
+    /* Fall back to SLACK_IGNORED_CHANNELS env var */
+    if (!raw || !*raw)
+        raw = getenv("SLACK_IGNORED_CHANNELS");
+
+    if (!raw || !*raw) {
+        if (out_count) *out_count = 0;
+        return NULL;
+    }
+
+    result = gw_csv_or_list_to_set(raw, out_count);
+    return result;
+}
+
+/* PoP: gw_is_slack_ignored_channel @ gateway/run.py:_is_slack_ignored_channel */
+/* Returns true if chat_id is in the Slack ignored list or is a wildcard. */
+bool gw_is_slack_ignored_channel(
+    const yaml_doc_t *platform_cfg,
+    const char *chat_id)
+{
+    char parent_channel[512];
+    int count = 0;
+    char **ignored;
+
+    if (!chat_id || !*chat_id)
+        return false;
+
+    gw_slack_parent_channel_id(chat_id, parent_channel, sizeof(parent_channel));
+    if (!parent_channel[0])
+        return false;
+
+    ignored = gw_slack_ignored_channels_from_config(platform_cfg, &count);
+    if (!ignored || count == 0) {
+        gw_strset_free(ignored);
+        return false;
+    }
+
+    bool result = (0 == strcmp("*", ignored[0]) && count == 1);
+    if (!result) {
+        for (int i = 0; i < count; i++) {
+            if (0 == strcmp(parent_channel, ignored[i])) {
+                result = true;
+                break;
+            }
+        }
+    }
+    gw_strset_free(ignored);
+    return result;
+}

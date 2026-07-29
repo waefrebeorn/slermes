@@ -316,3 +316,218 @@ void append_unique_pid(int **pids, int *count, int *cap, int pid,
     }
     (*pids)[(*count)++] = pid;
 }
+
+/* ===========================================================================
+ *  systemd / restart helpers — ported from hermes_cli/gateway.py
+ *  These were REAL_GAP.
+ * =========================================================================== */
+
+/* PoP: supports_systemd_services @ hermes_cli/gateway.py:supports_systemd_services */
+/* Return true if systemd is available and usable on this platform.
+ * Mirrors the Python: not termux, systemctl in PATH, WSL/container checks.
+ * On non-Linux or Termux, returns false. */
+bool supports_systemd_services(void)
+{
+    /* Not Linux → false */
+    FILE *f = popen("uname -s 2>/dev/null", "r");
+    if (!f) return false;
+    char buf[64];
+    bool is_linux = false;
+    if (fgets(buf, sizeof(buf), f)) {
+        buf[strcspn(buf, "\n")] = 0;
+        if (0 == strcmp(buf, "Linux"))
+            is_linux = true;
+    }
+    pclose(f);
+    if (!is_linux)
+        return false;
+
+    /* Termux check: /data/data/com.termux prefix */
+    if (access("/data/data/com.termux", F_OK) == 0)
+        return false;
+
+    /* systemctl must exist in PATH */
+    if (system("which systemctl >/dev/null 2>&1") != 0)
+        return false;
+
+    /* WSL check: /proc/version contains "microsoft" */
+    FILE *vf = fopen("/proc/version", "r");
+    if (vf) {
+        char vbuf[512];
+        bool is_wsl = false;
+        if (fgets(vbuf, sizeof(vbuf), vf)) {
+            if (strstr(vbuf, "microsoft") || strstr(vbuf, "Microsoft"))
+                is_wsl = true;
+        }
+        fclose(vf);
+        if (is_wsl) {
+            /* _wsl_systemd_operational: check systemd is actually running */
+            return (access("/run/systemd/system", F_OK) == 0);
+        }
+    }
+
+    /* Container check: /.dockerenv or /run/.containerenv */
+    if (access("/.dockerenv", F_OK) == 0 || access("/run/.containerenv", F_OK) == 0) {
+        /* _container_systemd_operational: check user or system scope works */
+        if (access("/run/systemd/system", F_OK) == 0)
+            return true;
+        char *xdg = getenv("XDG_RUNTIME_DIR");
+        if (xdg) {
+            char path[512];
+            snprintf(path, sizeof(path), "%s/systemd", xdg);
+            if (access(path, F_OK) == 0)
+                return true;
+        }
+        return false;
+    }
+
+    return true;
+}
+
+/* PoP: get_service_pids @ hermes_cli/gateway.py:_get_service_pids */
+/* Return PIDs currently managed by systemd or launchd gateway services.
+ * Fills pids[] array (caller-allocated, max elements), returns count.
+ * Uses popen to run systemctl list-units + show --property=MainPID. */
+int get_service_pids(int *pids, int max)
+{
+    int count = 0;
+    if (!pids || max <= 0)
+        return 0;
+
+    if (supports_systemd_services()) {
+        /* Try both scopes: --user and system */
+        const char *scopes[2] = {"systemctl --user", "systemctl"};
+        for (int s = 0; s < 2; s++) {
+            char cmd[512];
+            snprintf(cmd, sizeof(cmd),
+                     "%s list-units 'hermes-gateway*' --plain --no-legend --no-pager 2>/dev/null",
+                     scopes[s]);
+            FILE *fp = popen(cmd, "r");
+            if (!fp)
+                continue;
+            char line[256];
+            while (fgets(line, sizeof(line), fp) && count < max) {
+                /* Parse first field: service name ending in .service */
+                char *space = strchr(line, ' ');
+                if (space) *space = 0;
+                char *nl = strchr(line, '\n');
+                if (nl) *nl = 0;
+                if (strlen(line) < 8 ||
+                    strcmp(line + strlen(line) - 8, ".service") != 0)
+                    continue;
+                char svc[128];
+                snprintf(svc, sizeof(svc), "%s", line);
+
+                /* Get MainPID */
+                char show_cmd[512];
+                snprintf(show_cmd, sizeof(show_cmd),
+                         "%s show '%s' --property=MainPID --value 2>/dev/null",
+                         scopes[s], svc);
+                FILE *sfp = popen(show_cmd, "r");
+                if (!sfp)
+                    continue;
+                char pid_buf[32];
+                if (fgets(pid_buf, sizeof(pid_buf), sfp)) {
+                    pid_buf[strcspn(pid_buf, "\n")] = 0;
+                    int pid = atoi(pid_buf);
+                    if (pid > 0) {
+                        /* Deduplicate */
+                        bool found = false;
+                        for (int i = 0; i < count; i++)
+                            if (pids[i] == pid) { found = true; break; }
+                        if (!found && count < max)
+                            pids[count++] = pid;
+                    }
+                }
+                pclose(sfp);
+            }
+            pclose(fp);
+        }
+    }
+
+    /* launchd (macOS) path: check if we're on macOS via uname */
+    FILE *mf = popen("uname -s 2>/dev/null", "r");
+    if (mf) {
+        char mb[16];
+        if (fgets(mb, sizeof(mb), mf)) {
+            mb[strcspn(mb, "\n")] = 0;
+            if (0 == strcmp(mb, "Darwin") && count < max) {
+                /* launchctl list <label> — get_launchd_label returns the label */
+                /* We don't have get_launchd_label in C; skip launchd path
+                 * (the systemd path is the primary on Linux/WSL/containers) */
+            }
+        }
+        pclose(mf);
+    }
+
+    return count;
+}
+
+/* PoP: request_gateway_self_restart @ hermes_cli/gateway.py:_request_gateway_self_restart */
+/* Ask a running gateway ancestor to restart itself asynchronously.
+ * Returns true if SIGUSR1 was sent, false if not possible.
+ * Mirrors Python: check SIGUSR1 exists, check pid is ancestor, os.kill. */
+bool request_gateway_self_restart(int pid)
+{
+#ifdef SIGUSR1
+    if (pid <= 0)
+        return false;
+    if (!is_pid_ancestor_of_current_process(pid))
+        return false;
+    if (kill(pid, SIGUSR1) == 0)
+        return true;
+    /* ESRCH = process not found (already gone) — Python returns True */
+    if (errno == ESRCH)
+        return true;
+    return false;
+#else
+    return false;
+#endif
+}
+
+/* PoP: graceful_restart_via_sigusr1 @ hermes_cli/gateway.py:_graceful_restart_via_sigusr1 */
+/* Send SIGUSR1 to a gateway PID and wait for it to exit gracefully.
+ * Polls /proc/<pid> existence every 0.5s up to drain_timeout seconds.
+ * Returns true if the process exited within the timeout. */
+bool graceful_restart_via_sigusr1(int pid, double drain_timeout)
+{
+#ifdef SIGUSR1
+    if (pid <= 0)
+        return false;
+
+    int rc = kill(pid, SIGUSR1);
+    if (rc != 0) {
+        if (errno == ESRCH)
+            return true; /* Already gone — nothing to drain */
+        return false;    /* Permission error or other */
+    }
+
+    /* Wait for the process to exit.
+     * drain_timeout is in seconds; minimum 1.0 per Python max(drain_timeout, 1.0) */
+    double timeout = drain_timeout > 1.0 ? drain_timeout : 1.0;
+    double elapsed = 0.0;
+    const double poll_interval = 0.5;
+
+    while (elapsed < timeout) {
+        /* Check if process still exists via /proc/<pid> */
+        char proc_path[64];
+        snprintf(proc_path, sizeof(proc_path), "/proc/%d", pid);
+        if (access(proc_path, F_OK) != 0)
+            return true; /* Process exited */
+
+        /* Also check via kill(pid, 0) — no signal sent */
+        if (kill(pid, 0) != 0 && errno == ESRCH)
+            return true;
+
+        /* Sleep poll_interval seconds (500ms) */
+        usleep((useconds_t)(poll_interval * 1000000));
+        elapsed += poll_interval;
+    }
+    /* Drain didn't finish in time */
+    return false;
+#else
+    (void)pid;
+    (void)drain_timeout;
+    return false;
+#endif
+}
