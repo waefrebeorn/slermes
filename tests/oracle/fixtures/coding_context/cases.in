@@ -1,0 +1,10 @@
+[
+  {"op": "detect_profile_name", "mode": "auto", "platform": "cli", "cwd": "."},
+  {"op": "detect_profile_name", "mode": "on", "platform": "cli", "cwd": "."},
+  {"op": "detect_profile_name", "mode": "off", "platform": "cli", "cwd": "."},
+  {"op": "detect_profile_name", "mode": "focus", "platform": "cli", "cwd": "."},
+  {"op": "find_git_root", "cwd": "."},
+  {"op": "find_marker_root", "cwd": "."},
+  {"op": "coding_system_blocks", "platform": "cli", "cwd": ".", "model": "gpt-4"},
+  {"op": "build_workspace_block", "cwd": "."}
+]

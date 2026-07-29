@@ -51,6 +51,11 @@
 /* Forward declaration of runtime mode struct (defined at line ~526) */
 typedef struct coding_runtime_mode_s coding_runtime_mode_t;
 
+/* Forward declaration of coding_context_coding_instructions (defined later) */
+char *coding_context_coding_instructions(const hermes_config_t *config);
+/* Forward declaration of coding_context_build_workspace_block (defined later) */
+char *coding_context_build_workspace_block(const char *cwd);
+
 /* ================================================================== */
 /*  Constants (Port of Python module-level constants)                 */
 /* ================================================================== */
@@ -83,22 +88,6 @@ static const char *CONTEXT_FILES[] = {
 struct lockfile_map {
     const char *filename;
     const char *manager;
-};
-
-static const struct lockfile_map PY_LOCKFILES[] = {
-    {"uv.lock", "uv"},
-    {"poetry.lock", "poetry"},
-    {"Pipfile.lock", "pipenv"},
-    {NULL, NULL}
-};
-
-static const struct lockfile_map JS_LOCKFILES[] = {
-    {"pnpm-lock.yaml", "pnpm"},
-    {"bun.lockb", "bun"},
-    {"bun.lock", "bun"},
-    {"yarn.lock", "yarn"},
-    {"package-lock.json", "npm"},
-    {NULL, NULL}
 };
 
 /* package.json scripts / Makefile targets worth surfacing as verify commands */
@@ -1017,75 +1006,65 @@ char *coding_context_build_workspace_block(const char *cwd)
         "Workspace (snapshot at session start — re-check with `git` before acting on it):\n- Root: %s\n", root);
 
     if (has_git) {
-        char buf[4096];
-        if (coding_context_run_git(root, buf, sizeof(buf), "status --porcelain=2 --branch") == 0) {
-            char *parsed = coding_context_parse_git_status(buf);
-            if (parsed) {
-                json_t *p = json_parse(parsed, NULL);
-                free(parsed);
-                if (p && p->type == JSON_OBJECT) {
-                    json_t *b = json_object_get(p, "branch");
-                    json_t *c = json_object_get(p, "counts");
-                    const char *head = b ? json_get_str(b, "head", "") : "";
-                    if (head && head[0] && strcmp(head, "(detached)") != 0) {
-                        size_t need = len + 256;
-                        if (need >= cap) { cap = need+64; char *nb=realloc(out,cap); if(nb) out=nb; }
-                        len += (size_t)snprintf(out + len, cap - len, "- Branch: %s", head);
-                        const char *up = b ? json_get_str(b, "upstream", "") : "";
-                        if (up && up[0]) {
-                            const char *a = b ? json_get_str(b, "ahead", "0") : "0";
-                            const char *be = b ? json_get_str(b, "behind", "0") : "0";
-                            len += (size_t)snprintf(out + len, cap - len, " → %s (ahead %s, behind %s)", up, a, be);
+            char buf[4096];
+            /* Get branch info and status counts in one git call */
+            if (coding_context_run_git(root, buf, sizeof(buf), "status --porcelain=2 --branch") == 0) {
+                char *parsed = coding_context_parse_git_status(buf);
+                if (parsed) {
+                    json_t *p = json_parse(parsed, NULL);
+                    free(parsed);
+                    if (p && p->type == JSON_OBJECT) {
+                        json_t *b = json_object_get(p, "branch");
+                        json_t *c = json_object_get(p, "counts");
+                        const char *head = b ? json_get_str(b, "head", "") : "";
+                        if (head && head[0] && strcmp(head, "(detached)") != 0) {
+                            size_t need = len + 256;
+                            if (need >= cap) { cap = need+64; char *nb=realloc(out,cap); if(nb) out=nb; }
+                            len += (size_t)snprintf(out + len, cap - len, "- Branch: %s", head);
+                            const char *up = b ? json_get_str(b, "upstream", "") : "";
+                            if (up && up[0]) {
+                                const char *a = b ? json_get_str(b, "ahead", "0") : "0";
+                                const char *be = b ? json_get_str(b, "behind", "0") : "0";
+                                len += (size_t)snprintf(out + len, cap - len, " → %s (ahead %s, behind %s)", up, a, be);
+                            }
+                            len += (size_t)snprintf(out + len, cap - len, "\n");
+                        } else if (head && strcmp(head, "(detached)") == 0) {
+                            len += (size_t)snprintf(out + len, cap - len, "- Branch: (detached HEAD)\n");
                         }
-                        len += (size_t)snprintf(out + len, cap - len, "\n");
-                    } else if (head && strcmp(head, "(detached)") == 0) {
-                        len += (size_t)snprintf(out + len, cap - len, "- Branch: (detached HEAD)\n");
+                        /* status counts */
+                        int s = c ? (int)json_get_num(c, "staged", 0) : 0;
+                        int m = c ? (int)json_get_num(c, "modified", 0) : 0;
+                        int u = c ? (int)json_get_num(c, "untracked", 0) : 0;
+                        int cf2 = c ? (int)json_get_num(c, "conflicts", 0) : 0;
+                        char dirty[256]; dirty[0]='\0';
+                        struct { int n; const char *l; } ds[] = {{s,"staged"},{m,"modified"},{u,"untracked"},{cf2,"conflicts"},{0,NULL}};
+                        int any=0;
+                        for (int i=0; ds[i].l; i++) if (ds[i].n>0) { if(any)strcat(dirty,", "); char tmp[32]; snprintf(tmp,sizeof(tmp),"%d %s",ds[i].n,ds[i].l); strcat(dirty,tmp); any=1; }
+                        len += (size_t)snprintf(out + len, cap - len, "- Status: %s\n", any?dirty:"clean");
+                        json_free(p);
                     }
-                    json_free(p);
+                }
+            }
+            /* worktree detection */
+            char gdir[1024], cdir[1024];
+            if (coding_context_run_git(root, gdir, sizeof(gdir), "rev-parse --git-dir") == 0 &&
+                coding_context_run_git(root, cdir, sizeof(cdir), "rev-parse --git-common-dir") == 0) {
+                char ga[PATH_MAX], cb[PATH_MAX];
+                realpath(gdir, ga); realpath(cdir, cb);
+                if (strcmp(ga, cb) != 0) {
+                    len += (size_t)snprintf(out + len, cap - len, "- Worktree: linked (git state shared with primary tree)\n");
+                }
+            }
+            /* recent commits */
+            if (coding_context_run_git(root, buf, sizeof(buf), "log -3 --pretty='%h %s'") == 0 && buf[0]) {
+                len += (size_t)snprintf(out + len, cap - len, "- Recent commits:\n");
+                char *line = strtok(buf, "\n");
+                while (line) {
+                    len += (size_t)snprintf(out + len, cap - len, "    %s\n", line);
+                    line = strtok(NULL, "\n");
                 }
             }
         }
-        /* worktree detection */
-        char gdir[1024], cdir[1024];
-        if (coding_context_run_git(root, gdir, sizeof(gdir), "rev-parse --git-dir") == 0 &&
-            coding_context_run_git(root, cdir, sizeof(cdir), "rev-parse --git-common-dir") == 0) {
-            char ga[PATH_MAX], cb[PATH_MAX];
-            realpath(gdir, ga); realpath(cdir, cb);
-            if (strcmp(ga, cb) != 0) {
-                len += (size_t)snprintf(out + len, cap - len, "- Worktree: linked (git state shared with primary tree)\n");
-            }
-        }
-        /* status counts */
-        if (coding_context_run_git(root, buf, sizeof(buf), "status --porcelain=2 --branch") == 0) {
-            char *parsed = coding_context_parse_git_status(buf);
-            if (parsed) {
-                json_t *p = json_parse(parsed, NULL);
-                free(parsed);
-                if (p && p->type == JSON_OBJECT) {
-                    json_t *c = json_object_get(p, "counts");
-                    int s = c ? (int)json_get_num(c, "staged", 0) : 0;
-                    int m = c ? (int)json_get_num(c, "modified", 0) : 0;
-                    int u = c ? (int)json_get_num(c, "untracked", 0) : 0;
-                    int cf2 = c ? (int)json_get_num(c, "conflicts", 0) : 0;
-                    char dirty[256]; dirty[0]='\0';
-                    struct { int n; const char *l; } ds[] = {{s,"staged"},{m,"modified"},{u,"untracked"},{cf2,"conflicts"},{0,NULL}};
-                    int any=0;
-                    for (int i=0; ds[i].l; i++) if (ds[i].n>0) { if(any)strcat(dirty,", "); char tmp[32]; snprintf(tmp,sizeof(tmp),"%d %s",ds[i].n,ds[i].l); strcat(dirty,tmp); any=1; }
-                    len += (size_t)snprintf(out + len, cap - len, "- Status: %s\n", any?dirty:"clean");
-                    json_free(p);
-                }
-            }
-        }
-        /* recent commits */
-        if (coding_context_run_git(root, buf, sizeof(buf), "log -3 --pretty='%%h %%s'") == 0 && buf[0]) {
-            len += (size_t)snprintf(out + len, cap - len, "- Recent commits:\n");
-            char *line = strtok(buf, "\n");
-            while (line) {
-                len += (size_t)snprintf(out + len, cap - len, "    %s\n", line);
-                line = strtok(NULL, "\n");
-            }
-        }
-    }
 
     /* project facts */
     char *facts = coding_context_project_facts(root);
