@@ -2,15 +2,13 @@
 # run_oracles.sh — project-wide oracle runner with normalization + stale detection.
 #
 # Usage:
-#   bash tests/oracle/run_oracles.sh                  # run all registered ports
-#   bash tests/oracle/run_oracles.sh account_usage    # run single port
-#   bash tests/oracle/run_oracles.sh --baseline       # update baseline
-#   bash tests/oracle/run_oracles.sh --check          # fail on mismatch (CI mode)
+#   bash tests/oracle/run_oracles.sh                          # run all registered ports
+#   bash tests/oracle/run_oracles.sh coding_context   # run single port
+#   bash tests/oracle/run_oracles.sh --baseline       # update baseline (no failure on mismatch)
+#   bash tests/oracle/run_oracles.sh --check          # CI mode, fail on any mismatch (default)
 #
-# Normalization: before diffing, both C and Python outputs are piped through
-# a normalize step that strips dynamic fields (commit hashes, branch names,
-# untracked file lists, root paths). This ensures the oracle checks
-# structural correctness of the port, not runtime environment state.
+# All artifacts live under tests/oracle/build/ — never /tmp.
+# This keeps them version-controllable, inspectable, and survives reboots.
 #
 # Stale detection: results are appended to tests/oracle/results.jsonl with
 # a commit SHA + port name + case name + verdict. A CI run that sees a
@@ -38,13 +36,13 @@ for arg in "$@"; do
   esac
 done
 
-mkdir -p "$SLERMES_ROOT/tests/oracle"
+mkdir -p "$SLERMES_ROOT/tests/oracle/build"
 
 # Read ports from registry or filter.
 if [ -n "${PORT_FILTER:-}" ]; then
   PORTS=("$PORT_FILTER")
 else
-  # Parse registry.json for port names (simple python-free extraction).
+  # Parse registry.json for port names.
   mapfile -t PORTS < <(python3 -c "
 import json, sys
 r = json.load(open('$REGISTRY'))
@@ -58,7 +56,8 @@ for port in "${PORTS[@]}"; do
   echo "=== Oracle: $port (commit: $CURRENT_COMMIT) ==="
   
   # Run the oracle. The runner uses SLERMES_HOME/HERMES_HOME isolation,
-  # so neither side touches the real ~/.hermes.
+  # so neither side touches the real ~/.hermes. All artifacts go to
+  # tests/oracle/build/ instead of /tmp.
   if bash "$SLERMES_ROOT/tests/oracle/runners/run_oracle.sh" "$port" 2>&1; then
     VERDICT="pass"
   else
