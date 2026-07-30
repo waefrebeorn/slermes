@@ -54,9 +54,12 @@ bool is_write_denied(const char *path);
  */
 char *get_read_block_error(const char *path);
 
-/**
- * Set the hermes home and root paths for testing (avoids env dep).
- */
+/* Port of Python: agent/file_safety.py:get_write_denied_error(). */
+char *get_write_denied_error(const char *path, const char *verb);
+
+/* Port of Python: agent/file_safety.py:raise_if_read_blocked(). */
+void raise_if_read_blocked(const char *path);
+
 void file_safety_set_test_paths(const char *hermes_home, const char *hermes_root);
 
 /**

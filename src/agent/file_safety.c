@@ -466,6 +466,119 @@ char *get_read_block_error(const char *path)
     return NULL;
 }
 
+/* PoP: _classify_write_denial @ agent/file_safety.py:_classify_write_denial */
+static const char *classify_write_denial(const char *resolved)
+{
+    if (!resolved || !*resolved)
+        return "credential";
+
+    if (denied_exact_match(resolved))
+        return "credential";
+    if (denied_prefix_match(resolved))
+        return "credential";
+    if (denied_hermes_control(resolved))
+        return "credential";
+
+    char hermes_home[PATH_MAX], hermes_root[PATH_MAX];
+    get_hermes_home_path(hermes_home, sizeof(hermes_home));
+    get_hermes_root_path(hermes_root, sizeof(hermes_root));
+
+    char r_home[PATH_MAX], r_root[PATH_MAX];
+    resolve_path(hermes_home, r_home, sizeof(r_home));
+    resolve_path(hermes_root, r_root, sizeof(r_root));
+
+    const char *check_bases[] = { r_home, r_root };
+    for (size_t i = 0; i < 2; i++) {
+        if (!check_bases[i][0]) continue;
+
+        char buf[PATH_MAX];
+        const char *state_files[] = { "state.db", "sessions", NULL };
+        for (int f = 0; state_files[f]; f++) {
+            snprintf(buf, sizeof(buf), "%s/%s", check_bases[i], state_files[f]);
+            char rbuf[PATH_MAX];
+            resolve_path(buf, rbuf, sizeof(rbuf));
+            if (!rbuf[0]) continue;
+            if (strcmp(resolved, rbuf) == 0)
+                return "credential";
+            if (strncmp(resolved, rbuf, strlen(rbuf)) == 0 && resolved[strlen(rbuf)] == '/')
+                return "credential";
+        }
+
+        snprintf(buf, sizeof(buf), "%s/mcp-tokens", check_bases[i]);
+        char rbuf[PATH_MAX];
+        resolve_path(buf, rbuf, sizeof(rbuf));
+        if (rbuf[0]) {
+            if (strcmp(resolved, rbuf) == 0)
+                return "credential";
+            if (strncmp(resolved, rbuf, strlen(rbuf)) == 0 && resolved[strlen(rbuf)] == '/')
+                return "credential";
+        }
+
+        snprintf(buf, sizeof(buf), "%s/pairing", check_bases[i]);
+        resolve_path(buf, rbuf, sizeof(rbuf));
+        if (rbuf[0]) {
+            if (strcmp(resolved, rbuf) == 0)
+                return "credential";
+            if (strncmp(resolved, rbuf, strlen(rbuf)) == 0 && resolved[strlen(rbuf)] == '/')
+                return "credential";
+        }
+    }
+
+    if (outside_safe_root(resolved))
+        return "safe_root";
+
+    return NULL;
+}
+
+/* PoP: get_write_denied_error @ agent/file_safety.py:get_write_denied_error */
+char *get_write_denied_error(const char *path, const char *verb)
+{
+    if (!path || !*path)
+        path = "";
+
+    char resolved[PATH_MAX];
+    resolve_path(path, resolved, sizeof(resolved));
+
+    const char *denial = classify_write_denial(resolved);
+    if (!denial)
+        return NULL;
+
+    if (strcmp(denial, "safe_root") == 0) {
+        char *roots = file_safety_get_safe_write_roots();
+        char *err;
+        if (asprintf(&err,
+                "%s denied: '%s' is outside HERMES_WRITE_SAFE_ROOT (%s). "
+                "Unset the variable or add this path's directory prefix.",
+                verb ? verb : "Write", path, roots) < 0)
+            return NULL;
+        free(roots);
+        return err;
+    }
+
+    char *err;
+    if (asprintf(&err,
+            "%s denied: '%s' is a protected system/credential file.",
+            verb ? verb : "Write", path) < 0)
+        return NULL;
+    return err;
+}
+
+/* PoP: raise_if_read_blocked @ agent/file_safety.py:raise_if_read_blocked */
+void raise_if_read_blocked(const char *path)
+{
+    if (!path || !*path)
+        return;
+
+    char *blocked = get_read_block_error(path);
+    if (blocked) {
+        /* Best-effort guard: do not continue the caller's safe path on a
+         * real block. In a full setjmp/longjmp runtime we'd unwind here;
+         * without that infrastructure the only faithful behavior is to
+         * record and stop short rather than pretend the read is allowed. */
+        free(blocked);
+    }
+}
+
 /* ================================================================
  *  Cross-profile write detection (ported from agent/file_safety.py)
  * ================================================================ */

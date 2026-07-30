@@ -1,0 +1,2 @@
+# Test 1: Empty HERMES_WRITE_SAFE_ROOT
+# Expected: empty JSON array
