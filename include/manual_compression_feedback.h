@@ -21,9 +21,19 @@ typedef struct {
     char token_line[256];   /**< Token count info (e.g. "Approx request size: ~15,432 tokens") */
     char note[512];         /**< Optional note about counterintuitive results (empty if none) */
 } compression_feedback_t;
+/**
+ * describe_compression_lock_skip — Return user-facing text when manual
+ * compression is skipped because the compression lock is held.
+ *
+ * @param lock_signal  Holder string when confirmed, or NULL/true when
+ *                     acquisition failed without a confirmed holder.
+ * @return             Static string. Caller must not free.
+ */
+const char *describe_compression_lock_skip(const char *lock_signal);
 
 /**
- * Generate user-facing feedback for a manual compression operation.
+ * summarize_manual_compression — Generate user-facing feedback for a manual
+ * compression operation.
  *
  * @param before_count   Number of messages before compression
  * @param after_count    Number of messages after compression

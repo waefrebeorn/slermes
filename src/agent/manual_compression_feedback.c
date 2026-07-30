@@ -1,13 +1,33 @@
 /*
  * manual_compression_feedback.c — User-facing summaries for manual compression.
  *
- * Port of Python agent/manual_compression_feedback.py (49 lines).
+ * Port of Python agent/manual_compression_feedback.py (120 lines).
+ * Generates consistent feedback strings for /compress and similar commands.
+ *
  * MIT License — WuBu Slermes Project
  */
 
 #include "manual_compression_feedback.h"
 #include <stdio.h>
 #include <string.h>
+
+/* Port of Python manual_compression_feedback.py:describe_compression_lock_skip(). */
+const char *describe_compression_lock_skip(const char *lock_signal) {
+    if (lock_signal && lock_signal[0]) {
+        /* Use a static buffer since we can't allocate */
+        static char buf[512];
+        snprintf(buf, sizeof(buf),
+                 "⏳ Compression already in progress for this session "
+                 "(holder: %s). Please wait for it to finish.",
+                 lock_signal);
+        return buf;
+    }
+    return (
+        "⏳ Compression skipped: could not acquire this session's "
+        "compression lock. Another compression may still be running, or "
+        "the lock check failed — try again shortly."
+    );
+}
 
 /* Port of Python manual_compression_feedback.py:summarize_manual_compression(). */
 void summarize_manual_compression(int before_count, int after_count,
@@ -17,7 +37,7 @@ void summarize_manual_compression(int before_count, int after_count,
     if (!out) return;
     memset(out, 0, sizeof(*out));
 
-    bool noop = (after_count == before_count);
+    int noop = (after_count == before_count);
     out->noop = noop;
 
     if (noop) {
@@ -32,15 +52,15 @@ void summarize_manual_compression(int before_count, int after_count,
                      "Approx request size: ~%d tokens (unchanged)", before_tokens);
         } else {
             snprintf(out->token_line, sizeof(out->token_line),
-                     "Approx request size: ~%d \xe2\x86\x92 ~%d tokens",
+                     "Approx request size: ~%d → ~%d tokens",
                      before_tokens, after_tokens);
         }
     } else {
         snprintf(out->headline, sizeof(out->headline),
-                 "Compressed: %d \xe2\x86\x92 %d messages", before_count, after_count);
+                 "Compressed: %d → %d messages", before_count, after_count);
 
         snprintf(out->token_line, sizeof(out->token_line),
-                 "Approx request size: ~%d \xe2\x86\x92 ~%d tokens",
+                 "Approx request size: ~%d → ~%d tokens",
                  before_tokens, after_tokens);
     }
 
