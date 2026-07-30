@@ -12,10 +12,9 @@
 #include <string.h>
 
 /* Port of Python manual_compression_feedback.py:describe_compression_lock_skip(). */
-const char *describe_compression_lock_skip(const char *lock_signal) {
+char *describe_compression_lock_skip(const char *lock_signal) {
+    static char buf[512];
     if (lock_signal && lock_signal[0]) {
-        /* Use a static buffer since we can't allocate */
-        static char buf[512];
         snprintf(buf, sizeof(buf),
                  "⏳ Compression already in progress for this session "
                  "(holder: %s). Please wait for it to finish.",

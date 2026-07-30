@@ -29,7 +29,7 @@ typedef struct {
  *                     acquisition failed without a confirmed holder.
  * @return             Static string. Caller must not free.
  */
-const char *describe_compression_lock_skip(const char *lock_signal);
+char *describe_compression_lock_skip(const char *lock_signal);
 
 /**
  * summarize_manual_compression — Generate user-facing feedback for a manual
