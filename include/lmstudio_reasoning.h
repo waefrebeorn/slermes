@@ -5,7 +5,7 @@
  * vocabulary, then clamps against the model's allowed_options so the
  * server doesn't 400 on an unsupported effort.
  *
- * Pure C port of Python agent/lmstudio_reasoning.py (48 lines).
+ * Port of Python agent/lmstudio_reasoning.py
  */
 
 #ifndef HERMES_LMSTUDIO_REASONING_H
@@ -28,24 +28,17 @@ const char *lmstudio_map_effort_alias(const char *effort);
 /* ── Resolution ────────────────────────────────────────────── */
 
 /**
- * resolve_lmstudio_effort — Return the reasoning_effort string to send
- * to LM Studio, or NULL meaning "omit the field".
+ * resolve_lmstudio_effort — Return the reasoning_effort string to send to
+ * LM Studio, or NULL meaning "omit the field".
  *
- * @param enabled         Whether reasoning is enabled (nil→true).
- * @param effort          User's effort choice "low"/"medium"/"high"/NULL.
- * @param allowed_options NULL-terminated array of model's allowed
- *                        options (e.g. {"off","on",NULL}), or NULL
- *                        to skip clamping.
- * @return                Interned string (do NOT free) or NULL.
- *
- * When the user picks a level the model can't honour, returns NULL so
- * the caller omits the field and lets LM Studio use the model's default.
- * When allowed_options is NULL (probe failed), returns the resolved
- * effort without clamping.
+ * @param reasoning_config  Dict with 'enabled' (bool) and 'effort' (str) keys,
+ *                          or NULL. If 'enabled' is False, returns "none".
+ *                          If 'effort' is not set, returns "medium" (default).
+ * @param allowed_options   NULL-terminated array of model's allowed options
+ *                          (e.g. {"off","on",NULL}), or NULL to skip clamping.
+ * @return                  Interned string (do NOT free) or NULL.
  */
-const char *resolve_lmstudio_effort(bool enabled,
-                                    const char *effort,
-                                    const char *const *allowed_options);
+const char *resolve_lmstudio_effort(void *reasoning_config, const char *const *allowed_options);
 
 #ifdef __cplusplus
 }
