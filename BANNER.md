@@ -1,27 +1,74 @@
-# ╔══════════════════════════════════════════════════════════════╗
-# ║           Slermes — C Translation                            ║
-# ║         of Hermes Agent (Nous Research)                      ║
-# ║                                                              ║
-# ║  Build: Clean  │  v670 │  Tests: 36/36  │  Oracle: 22 suites 0 mismatch + 1611/0 fuzz ║
-# ║  Ported: 6,857/11,537 (59.4%)  REAL_GAP: 4,445 (38.5%)  PARTIAL: 235  ║
-# ║  ✓ v666: close all 37 PARTIAL (Lane 0 of reuse plan) -> PARTIAL 0.          ║
-# ║  ✓ v667: faithful port of agent/billing_links.py (5/5, oracle-verified).     ║
-# ║  ✓ v668: faithful port of agent/billing_usage.py (7/9; 2 net fns honest     ║
-# ║    REAL_GAP). First pure-cluster multi-function reuse port. 0 STUB.          ║
-# ║  ✓ v669: faithful port of agent/battery.py (4/7; 3 psutil/cache fns honest   ║
-# ║    REAL_GAP). Opaque battery_status_t + UTF-8 glyphs. 0 STUB.                ║
-# ║  ✓ v670: faithful port of hermes_cli/input_sanitize.py (3/3 -> module       ║
-# ║    CLOSED, oracle-verified). Pure string sanitizer, no god header.           ║
-# ║    0 STUB, no god headers.                                          ║
-# ║  ⚠ Post upstream re-pull (2026-07-23): upstream added +1,441 Python features ║
-# ║    (9,733 -> 11,574); slermes gained +229 ports since; REAL_GAP 4,619 ->     ║
-# ║    4,781. Quarry grew faster than ports — honest, not a regression. v622      ║
-# ║    plan: close ~1,000 REAL_GAP via port_*/lib reuse (REUSE_GAP_PLAN_v622.md).  ║
-# ║                                                              ║
-# ║  ⚠ GitHub shows "X commits ahead / Y behind NousResearch/hermes-agent:main".  ║
-# ║    That is the FORK-PARENT banner: this repo is registered on GitHub as a     ║
-# ║    fork of the Python quarry. Slermes is an INDEPENDENT C11 translation that  ║
-# ║    ports Python features but does NOT share git history with upstream — so    ║
-# ║    the ahead/behind count is expected and harmless, not a branch defect.      ║
-# ╚══════════════════════════════════════════════════════════════╝
-# 
+# SLERMES PRECISION WORKFLOW
+
+## Core Principle
+
+Slermes is a C11 translation of the Hermes Python agent, maintained as a
+**fork** of `NousResearch/hermes-agent` at `waefrebeorn/slermes`. The
+forking model means slermes diverges from upstream Python — it does NOT
+share git history with the upstream repo. The divergent count is the
+snapshot timer of the last sync point.
+
+## Stash → Pull → Fix → Pop Workflow
+
+This is the **exact workflow** used every time upstream gets new updates:
+
+```bash
+# 1. STASH — save our local work before pulling
+git stash
+
+# 2. PULL — fetch upstream changes (rebase or merge)
+git fetch upstream main
+git rebase upstream/main    # or: git merge upstream/main
+
+# 3. FIX — resolve any conflicts, re-run tests
+make clean && make
+bash tests/oracle/run_oracles.sh --check
+
+# 4. POP — restore our stashed work on top
+git stash pop
+
+# 5. VERIFY — confirm everything still works
+make clean && make
+bash tests/oracle/run_oracles.sh --check
+
+# 6. PUSH — push to our fork
+git push origin main
+```
+
+## The Divergent Count
+
+The divergent count between `origin/main` (our fork) and `upstream/main`
+(the Hermes Python quarry) is the **snapshot timer** of the last sync.
+
+- **0 commits ahead of origin/main, 0 commits behind** — our fork is
+  perfectly synced with our own pushed state
+- **N commits behind upstream/main** — this is expected and represents
+  the delta between the Python quarry and our C11 port since the last
+  pull. This is NOT a defect — it's the measure of work remaining.
+
+After a stash→pull→pop cycle, the diverging count resets to reflect the
+new upstream state. The count going down over time means we're closing
+the gap.
+
+## Key Files
+
+- `BANNER.md` — project banner showing build status and parity numbers
+- `tests/oracle/registry.json` — agnostic port→harness mapping
+- `tests/oracle/run_oracles.sh` — project-wide oracle runner
+- `tests/oracle/runners/run_oracle.sh` — per-port oracle runner
+- `tests/oracle/results.jsonl` — stale detection log (regression alerts)
+- `tests/oracle/build/` — oracle artifacts (never /tmp)
+
+## Verification
+
+```bash
+# After push, verify HEAD == origin/main (0 ahead, 0 behind our fork)
+git log --oneline origin/main..HEAD  # should be 0
+git log --oneline HEAD..origin/main  # should be 0
+```
+
+## Stale Detection
+
+The oracle runner (`run_oracles.sh`) appends verdicts to
+`tests/oracle/results.jsonl`. If a previously-passing port flips to
+FAIL, it's flagged as a regression. This prevents silent stale checks.
