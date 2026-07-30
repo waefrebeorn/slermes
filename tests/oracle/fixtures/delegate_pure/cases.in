@@ -1,0 +1,41 @@
+# Fixture for the PURE delegate_tool.py helpers (tests/t_port_delegate_pure.c).
+# One op per line.
+#   stringify <json>  -> stable text repr of a tool-result content node
+#   error <json>      -> conservative error detection on a content node
+#   role <str>        -> normalize role to leaf/orchestrator
+
+# === stringify: content block handling ===
+stringify "plain string result"
+stringify ["block one","block two"]
+stringify [{"text":"hello from block"},{"text":"second block"}]
+stringify {"key":"value","n":1}
+stringify [{"notext":"x"}]
+stringify 42
+stringify true
+stringify null
+
+# === error: conservative detection ===
+error {"error":"boom"}
+error {"status":"failed"}
+error {"status":"error"}
+error {"status":"timeout"}
+error {"status":"ok"}
+error {"error":null}
+error {"foo":"bar"}
+error "error: permission denied"
+error "Failed: something broke"
+error "Traceback (most recent call last)"
+error "Exception: value"
+error "normal output line"
+error "{\"status\": \"ok\"}"
+
+# === role: normalization ===
+role leaf
+role orchestrator
+role LEAF
+role Orchestrator
+role 
+role null
+role supervisor
+role worker
+role ORCHESTRATOR

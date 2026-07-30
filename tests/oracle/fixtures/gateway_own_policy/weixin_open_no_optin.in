@@ -1,0 +1,7 @@
+# weixin with dm_policy=open, no allow-all env -> violation
+gateway:
+  platforms:
+    weixin:
+      enabled: true
+      extra:
+        dm_policy: open

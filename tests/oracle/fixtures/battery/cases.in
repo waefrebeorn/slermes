@@ -1,0 +1,24 @@
+# Oracle fixture for battery port (agent/battery.py)
+# line: status <available> <percent|null> <plugged|null>
+
+# unavailable (no battery / read failed)
+status false null null
+
+# available but unknown percent
+status true null null
+
+# unknown plugged (platform can't tell) -> not charging
+status true 60 null
+
+# charging on AC -> category good, glyph bolt
+status true 82 true
+
+# not charging, thresholds
+status true 5 false
+status true 10 false
+status true 15 false
+status true 20 false
+status true 35 false
+status true 50 false
+status true 51 false
+status true 100 false

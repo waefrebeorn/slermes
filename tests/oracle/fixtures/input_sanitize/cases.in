@@ -1,0 +1,24 @@
+# Oracle fixture for input_sanitize (hermes_cli/input_sanitize.py)
+# One raw text per line. \e = ESC (0x1b), \n = newline.
+# Comments start with #.
+
+# clean text -> unchanged
+hello world
+
+# canonical ESC bracketed-paste markers stripped unconditionally
+\eplease\e summarize this
+paste\e[200~content here\e[201~done
+
+# degraded ^[[ forms
+^[[200~start ^[[201~end
+
+# boundary-only: embedded literal must stay intact
+literal[200~tag should remain
+mid[201~.keep this
+
+# trailing ~[[e corruption signature repeated >=4 -> collapsed, dropping [e
+spam me~[[e~[[e~[[e~[[e~[[e
+spam me[e~[[e~[[e~[[e~[[e~[[e
+
+# trailing ~[[e fewer than 4 -> unchanged
+just one~[[e

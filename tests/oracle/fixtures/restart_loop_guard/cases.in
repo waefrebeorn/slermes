@@ -1,0 +1,15 @@
+{
+  "home": "/tmp/oracle_rlg",
+  "now": 1000.0,
+  "cases": [
+    {"op": "record", "args": [60]},
+    {"op": "record", "args": [60]},
+    {"op": "is_tripped", "args": [3, 60]},
+    {"op": "record", "args": [60]},
+    {"op": "is_tripped", "args": [3, 60]},
+    {"op": "check_and_record", "args": [3, 60]},
+    {"op": "load", "args": []},
+    {"op": "clear", "args": []},
+    {"op": "load", "args": []}
+  ]
+}

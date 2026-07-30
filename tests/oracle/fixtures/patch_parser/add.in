@@ -1,0 +1,5 @@
+*** Begin Patch
+*** Add File: new.py
++line one
++line two
+*** End Patch

@@ -1,0 +1,14 @@
+{
+  "db": "/tmp/oracle_sqlite_util/x.db",
+  "ops": [
+    {"op": "add", "table": "t", "column": "a", "ddl": "a TEXT"},
+    {"op": "add", "table": "t", "column": "a", "ddl": "a TEXT"},
+    {"op": "add", "table": "t", "column": "b", "ddl": "b INTEGER"},
+    {"op": "add", "table": "nonexistent_tbl", "column": "c", "ddl": "c TEXT"},
+    {"op": "add", "table": "t", "column": "bad", "ddl": "bad INTEGER NOT VALID SYNTAX"},
+    {"op": "txn_begin"},
+    {"op": "txn_end", "committed": true},
+    {"op": "txn_begin"},
+    {"op": "txn_end", "committed": false}
+  ]
+}

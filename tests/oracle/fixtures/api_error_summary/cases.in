@@ -1,0 +1,16 @@
+# Fixture for api_error_summary oracle (t_port_api_error_summary.c).
+# One raw error string per line. Covers every branch the C port mirrors:
+#  - malformed streaming response
+#  - Cloudflare HTML page (title + Ray ID)
+#  - JSON error object {error:{message,code,type}}
+#  - JSON error object {error:{code only}}
+#  - JSON error string {error:"..."}
+#  - raw plain-text fallback (truncate at 400)
+<html><head><title>502 Bad Gateway</title></head><body>Ray ID: <strong>abc123def</strong></body></html>
+<!DOCTYPE html><html><head><title>Service Temporarily Unavailable</title></head></html>
+{"error":{"message":"Rate limit exceeded","code":"rate_limit_exceeded","type":"invalid_request_error"}}
+{"error":{"code":"insufficient_quota"}}
+{"error":"Internal server error"}
+expected ident at line 12: unexpected token
+This is a plain error message that is short enough to pass through unchanged.
+Very long plain text error message that clearly exceeds four hundred characters in length so the oracle and the C harness must both truncate it at the four hundred character boundary and produce identical prefixes even though the remainder would differ if not truncated properly by both implementations consistently.

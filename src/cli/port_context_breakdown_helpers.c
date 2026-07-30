@@ -1,0 +1,349 @@
+/*
+ * port_context_breakdown_helpers.c
+ *
+ * Pure, portable helper functions ported from agent/context_breakdown.py.
+ * Rough char/4 token heuristic (matches agent.model_metadata estimate). No
+ * agent-object introspection, no live message-estimation import — callers
+ * pass already-built parts/messages JSON. Only _memory_blocks (reads agent
+ * object) is coupled and stays REAL_GAP.
+ *
+ * C name <- python name (module prefix 'context_breakdown_'):
+ *   context_breakdown_chars_to_tokens   <- _chars_to_tokens
+ *   context_breakdown_json_tokens       <- _json_tokens
+ *   context_breakdown_tool_name         <- _tool_name
+ *   context_breakdown_split_tools       <- _split_tools
+ *   context_breakdown_strip_blocks      <- _strip_blocks
+ *   context_breakdown_compute           <- compute_session_context_breakdown
+ */
+
+#include "hermes_json.h"
+#include "hermes_core_types.h"
+#include "hermes_memory.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <stdbool.h>
+#include <sys/stat.h>
+
+static char *json_escape_string(const char *s)
+{
+    if (!s) s = "";
+    size_t need = 1;
+    for (const char *p = s; *p; p++) {
+        unsigned char c = (unsigned char)*p;
+        if (c == '"' || c == '\\') need += 2;
+        else if (c == '\n') need += 2;
+        else if (c == '\r') need += 2;
+        else if (c == '\t') need += 2;
+        else if (c < 0x20) need += 6;
+        else need += 1;
+    }
+    char *out = malloc(need + 1);
+    char *q = out;
+    *q++ = '"';
+    for (const char *p = s; *p; p++) {
+        unsigned char c = (unsigned char)*p;
+        if (c == '"') { *q++='\\'; *q++='"'; }
+        else if (c == '\\') { *q++='\\'; *q++='\\'; }
+        else if (c == '\n') { *q++='\\'; *q++='n'; }
+        else if (c == '\r') { *q++='\\'; *q++='r'; }
+        else if (c == '\t') { *q++='\\'; *q++='t'; }
+        else if (c < 0x20) { sprintf(q, "\\u%04x", c); q += 6; }
+        else *q++ = (char)c;
+    }
+    *q++ = '"';
+    *q = '\0';
+    return out;
+}
+
+/*
+ * PoP: _chars_to_tokens @ agent/context_breakdown.py:_chars_to_tokens */
+int context_breakdown_chars_to_tokens(const char *text)
+{
+    if (!text || !text[0]) return 0;
+    return ((int)strlen(text) + 3) / 4;
+}
+
+/*
+ * PoP: _json_tokens @ agent/context_breakdown.py:_json_tokens
+ * Tokens of a JSON-serialized value (takes JSON string). */
+int context_breakdown_json_tokens(const char *value_json)
+{
+    if (!value_json || !value_json[0]) return 0;
+    return ((int)strlen(value_json) + 3) / 4;
+}
+
+/*
+ * PoP: _tool_name @ agent/context_breakdown.py:_tool_name
+ * Extract tool name from a tool JSON object. Returns malloc'd string. */
+char *context_breakdown_tool_name(const char *tool_json)
+{
+    char *def = strdup("");
+    if (!tool_json || !tool_json[0]) return def;
+    json_t *t = json_parse(tool_json, NULL);
+    if (!t || t->type != JSON_OBJECT) { if (t) json_free(t); return def; }
+    const char *name = "";
+    json_t *fn = json_object_get(t, "function");
+    if (fn && fn->type == JSON_OBJECT) {
+        json_t *n = json_object_get(fn, "name");
+        if (n && n->type == JSON_STRING) name = json_string_value(n);
+    } else {
+        json_t *n = json_object_get(t, "name");
+        if (n && n->type == JSON_STRING) name = json_string_value(n);
+    }
+    free(def);
+    def = strdup(name);
+    json_free(t);
+    return def;
+}
+
+/*
+ * PoP: _split_tools @ agent/context_breakdown.py:_split_tools
+ * Split a tools JSON array into {builtin, mcp, subagent} buckets.
+ * Returns malloc'd JSON object. Caller frees. */
+char *context_breakdown_split_tools(const char *tools_json)
+{
+    char *out = strdup("{\"builtin\":[],\"mcp\":[],\"subagent\":[]}");
+    if (!tools_json || !tools_json[0]) return out;
+    json_t *tools = json_parse(tools_json, NULL);
+    if (!tools || tools->type != JSON_ARRAY) { if (tools) json_free(tools); return out; }
+    char *builtin = strdup("["), *mcp = strdup("["), *subagent = strdup("[");
+    int b1 = 1, m1 = 1, s1 = 1;
+    for (size_t i = 0; i < json_array_size(tools); i++) {
+        json_t *t = json_array_get(tools, i);
+        if (!t || t->type != JSON_OBJECT) continue;
+        char *tj = json_dumps(t, 0);
+        char *nm = context_breakdown_tool_name(tj);
+        char **dst = &builtin; int *first = &b1;
+        if (strncmp(nm, "mcp_", 4) == 0) { dst = &mcp; first = &m1; }
+        else if (strcmp(nm, "delegate_task") == 0) { dst = &subagent; first = &s1; }
+        size_t need = strlen(*dst) + strlen(tj) + 4;
+        char *n = realloc(*dst, need);
+        if (n) { *dst = n; strcat(*dst, *first ? "" : ","); strcat(*dst, tj); *first = 0; }
+        free(nm); free(tj);
+    }
+    strcat(builtin, "]");
+    strcat(mcp, "]");
+    strcat(subagent, "]");
+    free(out);
+    size_t cap = strlen(builtin) + strlen(mcp) + strlen(subagent) + 48;
+    out = malloc(cap);
+    snprintf(out, cap, "{\"builtin\":%s,\"mcp\":%s,\"subagent\":%s}", builtin, mcp, subagent);
+    free(builtin); free(mcp); free(subagent);
+    json_free(tools);
+    return out;
+}
+
+/*
+ * PoP: _strip_blocks @ agent/context_breakdown.py:_strip_blocks
+ * Remove each given block substring from text. Returns malloc'd string. */
+char *context_breakdown_strip_blocks(const char *text, const char *block)
+{
+    if (!text) text = "";
+    if (!block || !block[0]) return strdup(text);
+    /* naive: allocate generous buffer and replace occurrences */
+    char *out = malloc(strlen(text) + 1);
+    strcpy(out, text);
+    char *pos = out;
+    while ((pos = strstr(pos, block)) != NULL) {
+        memmove(pos, pos + strlen(block), strlen(pos + strlen(block)) + 1);
+    }
+    /* trim leading/trailing whitespace */
+    char *s = out;
+    while (*s==' '||*s=='\t'||*s=='\n'||*s=='\r') s++;
+    char *e = s + strlen(s);
+    while (e > s && (e[-1]==' '||e[-1]=='\t'||e[-1]=='\n'||e[-1]=='\r')) e--;
+    *e = '\0';
+    char *res = strdup(s);
+    free(out);
+    return res;
+}
+
+/* find first <available_skills>...</available_skills> block; returns malloc'd
+ * substring (without tags) or empty string. Caller frees. */
+static char *extract_skills_block(const char *text)
+{
+    const char *open = strstr(text, "<available_skills>");
+    if (!open) return strdup("");
+    const char *close = strstr(open, "</available_skills>");
+    if (!close) return strdup("");
+    const char *start = open + strlen("<available_skills>");
+    size_t len = (size_t)(close - start);
+    char *out = malloc(len + 1);
+    memcpy(out, start, len);
+    out[len] = '\0';
+    return out;
+}
+
+/*
+ * PoP: compute_session_context_breakdown @ agent/context_breakdown.py:compute_session_context_breakdown
+ * Faithful port. Takes the already-built parts + messages + tools JSON plus
+ * the agent scalars (context_max, measured_used, model). Returns malloc'd
+ * breakdown JSON. Caller frees.
+ *   messages_json  : JSON array of messages (estimated with char/4 heuristic)
+ *   stable, context, volatile : system-prompt part strings
+ *   skills_index   : explicit skills block (or "" to auto-extract from stable)
+ *   memory_block, user_block : memory text strings
+ *   tools_json     : JSON array of tool objects
+ *   context_max, measured_used : ints; model : string
+ */
+char *context_breakdown_compute(const char *messages_json,
+                                const char *stable, const char *context,
+                                const char *volatile_, const char *skills_index,
+                                const char *memory_block, const char *user_block,
+                                const char *tools_json, int context_max,
+                                int measured_used, const char *model)
+{
+    if (!stable) stable = "";
+    if (!context) context = "";
+    if (!volatile_) volatile_ = "";
+    if (!skills_index) skills_index = "";
+    if (!memory_block) memory_block = "";
+    if (!user_block) user_block = "";
+    if (!model) model = "";
+    if (!messages_json) messages_json = "[]";
+
+    char *skills = strdup(skills_index);
+    if (!skills[0]) { free(skills); skills = extract_skills_block(stable); }
+
+    char *memory_text = malloc(strlen(memory_block) + strlen(user_block) + 8);
+    if (memory_block[0] && user_block[0])
+        sprintf(memory_text, "%s\n\n%s", memory_block, user_block);
+    else if (memory_block[0]) strcpy(memory_text, memory_block);
+    else strcpy(memory_text, user_block);
+
+    char *system_core = context_breakdown_strip_blocks(stable, skills);
+    char *system_tail = context_breakdown_strip_blocks(volatile_, "");
+    /* also strip memory/user blocks from system_tail if present */
+    char *tmp = context_breakdown_strip_blocks(system_tail, memory_block);
+    free(system_tail); system_tail = tmp;
+    tmp = context_breakdown_strip_blocks(system_tail, user_block);
+    free(system_tail); system_tail = tmp;
+
+    char *system_prompt_text = malloc(strlen(system_core) + strlen(system_tail) + 8);
+    if (system_core[0] && system_tail[0])
+        sprintf(system_prompt_text, "%s\n\n%s", system_core, system_tail);
+    else if (system_core[0]) strcpy(system_prompt_text, system_core);
+    else strcpy(system_prompt_text, system_tail);
+
+    char *split = context_breakdown_split_tools(tools_json);
+    json_t *splitj = json_parse(split, NULL);
+    const char *builtin_j = "[]", *mcp_j = "[]", *subagent_j = "[]";
+    if (splitj && splitj->type == JSON_OBJECT) {
+        json_t *b = json_object_get(splitj, "builtin");
+        json_t *m = json_object_get(splitj, "mcp");
+        json_t *s = json_object_get(splitj, "subagent");
+        if (b) builtin_j = json_dumps(b, 0);
+        if (m) mcp_j = json_dumps(m, 0);
+        if (s) subagent_j = json_dumps(s, 0);
+    }
+
+    /* conversation tokens: rough char/4 over concatenated message JSON */
+    int conversation_tokens = context_breakdown_json_tokens(messages_json);
+
+    int t_system = context_breakdown_chars_to_tokens(system_prompt_text);
+    int t_tools = context_breakdown_json_tokens(builtin_j);
+    int t_rules = context_breakdown_chars_to_tokens(context);
+    int t_skills = context_breakdown_chars_to_tokens(skills);
+    int t_mcp = context_breakdown_json_tokens(mcp_j);
+    int t_sub = context_breakdown_json_tokens(subagent_j);
+    int t_mem = context_breakdown_chars_to_tokens(memory_text);
+
+    /* categories with colors */
+    struct { const char *id; const char *label; const char *color; int toks; } cats[8] = {
+        {"system_prompt", "System prompt", "var(--context-usage-system)", t_system},
+        {"tool_definitions", "Tool definitions", "var(--context-usage-tools)", t_tools},
+        {"rules", "Rules", "var(--context-usage-rules)", t_rules},
+        {"skills", "Skills", "var(--context-usage-skills)", t_skills},
+        {"mcp", "MCP", "var(--context-usage-mcp)", t_mcp},
+        {"subagent_definitions", "Subagent definitions", "var(--context-usage-subagents)", t_sub},
+        {"memory", "Memory", "var(--context-usage-memory)", t_mem},
+        {"conversation", "Conversation", "var(--context-usage-conversation)", conversation_tokens},
+    };
+    int estimated_total = 0;
+    for (int i = 0; i < 8; i++) estimated_total += cats[i].toks;
+
+    int context_used = (measured_used > 0) ? measured_used : estimated_total;
+    int context_percent = 0;
+    if (context_max > 0) {
+        long p = (long)context_used * 100 / context_max;
+        if (p < 0) p = 0; if (p > 100) p = 100;
+        context_percent = (int)p;
+    }
+
+    /* build category JSON array (only tokens>0) */
+    char *catbuf = strdup("");
+    for (int i = 0; i < 8; i++) {
+        if (cats[i].toks <= 0) continue;
+        char *eid = json_escape_string(cats[i].id);
+        char *elab = json_escape_string(cats[i].label);
+        char *ecol = json_escape_string(cats[i].color);
+        char entry[1024];
+        snprintf(entry, sizeof(entry),
+            "{\"color\":%s,\"id\":%s,\"label\":%s,\"tokens\":%d}", ecol, eid, elab, cats[i].toks);
+        size_t need = strlen(catbuf) + strlen(entry) + 4;
+        char *n = realloc(catbuf, need);
+        if (n) { catbuf = n; strcat(catbuf, (catbuf[0] && catbuf[0]!='[') ? "," : ""); strcat(catbuf, entry); }
+        free(eid); free(elab); free(ecol);
+    }
+    if (catbuf[0] == '\0') { free(catbuf); catbuf = strdup(""); }
+
+    char *emod = json_escape_string(model);
+    size_t cap = strlen(catbuf) + strlen(emod) + 256;
+    char *out = malloc(cap);
+    snprintf(out, cap,
+        "{\"categories\":[%s],\"context_max\":%d,\"context_percent\":%d,"
+        "\"context_used\":%d,\"estimated_total\":%d,\"model\":%s}",
+        catbuf, context_max, context_percent, context_used, estimated_total, emod);
+    free(emod); free(catbuf);
+    free(skills); free(memory_text); free(system_core); free(system_tail);
+    free(system_prompt_text); free(split);
+    if (splitj) json_free(splitj);
+    return out;
+}
+
+/* PoP: context_breakdown__memory_blocks @ agent/context_breakdown.py:_memory_blocks */
+/* Extract (memory_block, user_block) from the agent for breakdown accounting.
+ * memory_block = the memory manager's system-prompt snapshot (when a memory
+ * store is attached); user_block = the USER.md profile content under
+ * hermes_home (when present). Both out params receive malloc'd strings (caller
+ * frees); each is set to a malloc'd "" when the corresponding source is empty
+ * or absent. Fail-open: any error leaves the block empty rather than raising. */
+void context_breakdown__memory_blocks(const agent_state_t *agent,
+                                      char **memory_block_out,
+                                      char **user_block_out)
+{
+    char *memory_block = NULL;
+    char *user_block = NULL;
+
+    if (agent) {
+        /* memory scope: format the attached memory store's snapshot. */
+        if (agent->memory) {
+            char *snap = memory_format_snapshot(agent->memory, agent->memory->search_limit);
+            if (snap) memory_block = snap;
+        }
+        /* user scope: read USER.md from hermes_home. */
+        if (agent->hermes_home[0]) {
+            char path[HERMES_PATH_MAX + 16];
+            snprintf(path, sizeof(path), "%s/USER.md", agent->hermes_home);
+            struct stat st;
+            if (stat(path, &st) == 0 && st.st_size > 0) {
+                FILE *fp = fopen(path, "rb");
+                if (fp) {
+                    user_block = malloc((size_t)st.st_size + 1);
+                    if (user_block) {
+                        size_t n = fread(user_block, 1, (size_t)st.st_size, fp);
+                        user_block[n] = '\0';
+                    }
+                    fclose(fp);
+                }
+            }
+        }
+    }
+
+    if (memory_block_out) *memory_block_out = memory_block ? memory_block : strdup("");
+    else free(memory_block);
+    if (user_block_out) *user_block_out = user_block ? user_block : strdup("");
+    else free(user_block);
+}

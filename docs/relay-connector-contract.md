@@ -97,24 +97,6 @@ Frames (connector → gateway, over the WS):
 - `{"type":"interrupt_inbound", "session_key", "chat_id"}` (§5)
 - `{"type":"passthrough_forward", "forward": <PassthroughForward>, "bufferId"?}` (§5.1)
 
-**Channel context on inbound (design relay-channel-context).** When the source
-platform's descriptor advertised `supports_context` (§2) and the chat is
-multi-party (`chat_type` ∈ group/channel/thread/forum, never `dm`), the
-connector MAY attach two optional, additive fields to the inbound `MessageEvent`:
-
-- `context`: an array of read-only surrounding messages (same channel, oldest→
-  newest) — nearby non-addressed chatter the connector fetched (Model A) or
-  buffered (Model B). REFERENCE ONLY: it never triggers the agent (the trigger
-  decision was already made connector-side on the addressed event alone). The
-  gateway renders it into `MessageEvent.channel_context` (the same read-only
-  injection path history-backfill uses).
-- `context_error`: bool, true when the platform is context-capable but the
-  fetch/buffer failed and the connector fail-opened to an empty `context`
-  (observability marker; surfaced connector-side via the delivery span).
-
-Both absent ⇒ byte-identical to today. A connector that never sends them, or a
-`dm`, or a no-context platform, yields no `channel_context`.
-
 `PassthroughForward` is the wire form of a forwarded passthrough-plane request
 (Class-2/3 webhooks — Discord interactions, Twilio): `{platform, botId, method,
 path, headers: [[k,v],…], bodyB64}`. The body is base64-encoded so arbitrary
@@ -176,8 +158,7 @@ present (may be `null`); the rest are included only when set.
 | `chat_topic` | string\|null | yes | Channel topic/description (Discord, Slack). |
 | `user_id_alt` | string | no | Platform-specific stable alt id (Signal UUID, Feishu union_id). |
 | `chat_id_alt` | string | no | Alternate chat id (e.g. Signal group internal id). |
-| `scope_id` | string | no | Platform-neutral **scope** discriminator: Discord guild / Slack workspace / Matrix server. **REQUIRED for Discord/Slack scope isolation.** Session-key discriminator. (Canonical name as of the D-Q2.5 wire migration.) |
-| `guild_id` | string | no | **Legacy alias, no longer read by the connector.** As of D-Q2.5c the connector reads and writes only `scope_id`; the gateway's agent-wide `SessionSource.to_dict()` still emits `guild_id` (mirrored to `scope_id`) for non-relay session persistence, so it may still appear on the wire but the connector ignores it. Do not depend on it. |
+| `guild_id` | string | no | Discord guild / Slack workspace / Matrix server scope. **REQUIRED for Discord server isolation.** Session-key discriminator. |
 | `parent_chat_id` | string | no | Parent channel when `chat_id` refers to a thread. |
 | `message_id` | string | no | Id of the triggering message (for pin/reply/react). |
 
@@ -188,7 +169,7 @@ present (may be `null`); the rest are included only when set.
 
 ### SessionSource discriminators per platform
 
-| Platform | chat_id | chat_type | user_id | thread_id | scope_id |
+| Platform | chat_id | chat_type | user_id | thread_id | guild_id |
 | --- | --- | --- | --- | --- | --- |
 | **Discord** | channel id | `dm`/`group`/`thread` | author id | thread channel id (threads) | **guild id** (REQUIRED for server isolation) |
 | **Telegram** | chat id | `dm`/`group`/`forum` | from id | forum topic id (forums) | — |
@@ -392,7 +373,7 @@ The gateway calls the transport with action dicts. Source of truth:
 | --- | --- | --- |
 | `send` | `chat_id`, `content`, `reply_to?`, `metadata?` | `{success: bool, message_id?, error?}` |
 | `edit` | `chat_id`, `message_id`, `content`, `metadata?` | `{success: bool, error?}` |
-| `typing` | `chat_id`, `content?`, `metadata?` | `{success: bool}` |
+| `typing` | `chat_id` | `{success: bool}` |
 | `follow_up` | `session_key`, `kind`, `content`, `metadata?` | `{success: bool, message_id?, error?}` |
 | `send_media` | `chat_id`, `media_kind`, `source_url`, `content?` (caption), `filename?`, `reply_to?`, `metadata?` | `{success: bool, message_id?, error?}` |
 | `prompt` | `chat_id`, `prompt_kind`, `prompt_id`, `content` (the question), `options[]{id,label,style?}`, `timeout_s?`, `reply_to?`, `metadata?` | `{success: bool, message_id?, error?}` |
@@ -521,16 +502,6 @@ carry the data — never triggers an extra platform API call. `is_own` = the
 quoted message was authored by the fronted bot (same evidence as the
 `is_reply_to_bot` relevance marker). The gateway maps these onto the same
 MessageEvent reply-context fields native adapters populate.
-
-**`typing` `content?` (Slack status clear).** A `typing` frame normally omits
-`content` — the connector renders its platform's active indicator ("is
-typing…" Assistant status on Slack, one-shot typing elsewhere). An **empty
-string** `content` is an explicit *clear* request: on Slack the connector sets
-the Assistant thread status to `""`, dismissing it. The gateway emits the
-clear only for Slack (persistent status); one-shot platforms never receive it.
-Additive within `contract_version` 1, but note the deploy order: a connector
-predating gateway-gateway #154 ignores `content` and would *set* "is typing…"
-on a clear frame — deploy the connector first.
 
 **`follow_up` (A2 capability action).** Some inbound payloads carry a credential
 that acts on the **shared** bot identity (e.g. a Discord interaction follow-up

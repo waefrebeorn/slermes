@@ -1,0 +1,70 @@
+/**
+ * port_runtime_provider.c — Port of Python: cli.py (runtime provider helpers)
+ *
+ * Real C implementations for runtime provider functions.
+ */
+
+#include "hermes_logger.h"
+#include "hermes_json.h"
+#include "port_provider_registry.h"
+#include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
+/* Port of Python: getenv */
+char *getenv_fn(const char *name, const char *default_val)
+{
+    if (!name) {
+        hermes_log(LOG_WARNING, "port", "getenv_fn: null name");
+        return default_val ? strdup(default_val) : NULL;
+    }
+    const char *val = getenv(name);
+    if (val) {
+        hermes_log(LOG_DEBUG, "port", "getenv_fn: %s=%s", name, val);
+        return strdup(val);
+    }
+    hermes_log(LOG_DEBUG, "port", "getenv_fn: %s not set, using default", name);
+    return default_val ? strdup(default_val) : NULL;
+}
+
+/* Port of Python: _getenv */
+char *_getenv(void *ctx, void *name, void *default_val)
+{
+    if (!ctx) {
+        hermes_log(LOG_WARNING, "port", "_getenv: null context");
+        return NULL;
+    }
+    hermes_log(LOG_DEBUG, "port", "_getenv: called");
+    if (name) {
+        hermes_log(LOG_DEBUG, "port", "_getenv: name is set");
+    }
+    if (default_val) {
+        hermes_log(LOG_DEBUG, "port", "_getenv: default_val is set");
+    }
+    return getenv_fn((const char *)name, (const char *)default_val);
+}
+
+/* Port of Python: canonical_custom_identity.
+ * Real implementation: delegates to the config-backed provider registry, which
+ * reverse-looks-up base_url → custom:<name>, then the configured provider when
+ * it names a real ``providers:``/``custom_providers:`` entry. (The model-based
+ * recovery source is available via provider_canonical_custom_identity's 3rd
+ * arg; this 2-arg ABI passes model=NULL, matching the original call sites.) */
+char *canonical_custom_identity(const char *base_url, const char *config_provider)
+{
+    return provider_canonical_custom_identity(base_url, config_provider, NULL);
+}
+
+/* PoP: canonical_custom_identity @ hermes_cli/runtime_provider.py:canonical_custom_identity */
+char *_canonical_custom_identity(void *ctx, void *base_url, void *config_provider)
+{
+    if (!ctx) {
+        hermes_log(LOG_WARNING, "port", "canonical_custom_identity: null context");
+        return NULL;
+    }
+    hermes_log(LOG_DEBUG, "port", "canonical_custom_identity: called");
+    return canonical_custom_identity(
+        base_url ? (const char *)base_url : NULL,
+        config_provider ? (const char *)config_provider : NULL);
+}

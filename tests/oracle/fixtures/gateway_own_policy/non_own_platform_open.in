@@ -1,0 +1,7 @@
+# telegram (non-own-policy) with open policy -> never a violation
+gateway:
+  platforms:
+    telegram:
+      enabled: true
+      extra:
+        dm_policy: open

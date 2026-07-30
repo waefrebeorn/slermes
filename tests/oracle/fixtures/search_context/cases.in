@@ -1,0 +1,27 @@
+# Fixture for _parse_search_context_line (tests/t_port_search_context.c).
+# One line per case. The parser takes the RIGHTMOST "-<digits>-" separator,
+# so paths containing "-<digits>-" segments resolve to the last one.
+# "--" and lines without a "-<digits>-" separator -> null.
+
+# === basic path:line:content via context separator ===
+src/main.c-8-    int x = 0;
+dir/file.py-12-    return None
+a/b/c.py-3-print("hi")
+
+# === rightmost separator wins (path itself has -N- segment) ===
+dir/file-12-name.py-8-context here
+foo/bar-3-baz-9-real-line-is-nine
+
+# === separator must be followed by another '-' (digits alone don't match) ===
+just-a-number-42-line
+path-3-no-trailing-dash
+
+# === no separator -> null ===
+plain text without separators
+file.py:10:not a context line
+
+# === group separator / blank-ish markers -> null ===
+--
+
+# === digit-only path component before content is fine ===
+data/run-2024/log-5-    content starts

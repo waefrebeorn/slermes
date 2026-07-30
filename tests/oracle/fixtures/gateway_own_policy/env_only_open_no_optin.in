@@ -1,0 +1,5 @@
+# weixin open via WECOM? no -> use weixin env: WEIXIN_DM_POLICY=open, no opt-in
+gateway:
+  platforms:
+    weixin:
+      enabled: true

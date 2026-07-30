@@ -1,0 +1,1 @@
+[{"content": "helloí ½world"}, {"reasoning_details": [{"summary": "thinkí°€ing", "text": "ok"}]}, [{"a": "clean"}, {"b": "badí ½"}, {"c": "clean2"}], {"x": "aí ½bí°€c", "y": ["í ½inner"], "z": "plain"}, {"name": "no surrogates here", "list": [1, 2, "three"]}, {"arguments": "{\"query\": \"searchí ½\", \"deep\": {\"nested\": \"ví°€\"}}"}]

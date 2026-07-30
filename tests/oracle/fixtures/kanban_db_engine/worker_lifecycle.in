@@ -1,0 +1,17 @@
+{
+  "now": 1700000000,
+  "ops": [
+    {"op": "create", "args": {"name": "W1", "title": "Worker task 1", "assignee": "Worker1", "created_by": "spec", "workspace_kind": "scratch"}},
+    {"op": "create", "args": {"name": "W2", "title": "Worker task 2", "assignee": "Worker2", "created_by": "spec", "workspace_kind": "scratch"}},
+    {"op": "recompute", "args": {}},
+    {"op": "heartbeat", "args": {"task_id": "<W1>", "note": "before-claim"}},
+    {"op": "claim", "args": {"task_id": "<W1>"}},
+    {"op": "heartbeat", "args": {"task_id": "<W1>", "note": "alive"}},
+    {"op": "heartbeat", "args": {"task_id": "<W1>"}},
+    {"op": "respawn_guard", "args": {"task_id": "<W1>"}},
+    {"op": "respawn_guard", "args": {"task_id": "<W2>"}},
+    {"op": "claim", "args": {"task_id": "<W2>"}},
+    {"op": "complete", "args": {"task_id": "<W2>", "result": "ok", "summary": "done fast"}},
+    {"op": "respawn_guard", "args": {"task_id": "<W2>"}}
+  ]
+}

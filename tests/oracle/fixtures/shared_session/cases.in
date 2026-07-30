@@ -1,0 +1,19 @@
+dm		true	false
+group		true	false
+group		false	false
+channel		true	false
+channel		false	false
+thread	topic123	true	false
+thread	topic123	false	false
+thread		false	false
+thread		true	true
+group		true	true
+group		false	true
+channel		true	true
+thread	topic456	true	true
+thread	topic456	false	true
+dm		false	true
+dm	something	true	false
+group		true	false
+channel	chan1	false	false
+thread	t1	true	false

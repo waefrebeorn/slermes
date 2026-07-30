@@ -1,0 +1,109 @@
+/**
+ * @file hermes_telegram_network.h
+ * @brief Telegram network helper functions.
+ *
+ * Port of Python gateway/platforms/telegram_network.py.
+ * Provides: system DNS resolution, DoH queries, fallback IP discovery.
+ *
+ * MIT License — WuBu Slermes Project
+ */
+#ifndef HERMES_TELEGRAM_NETWORK_H
+#define HERMES_TELEGRAM_NETWORK_H
+
+#include <stddef.h>
+#include <stdbool.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * Resolve hostname to IPv4 addresses via system resolver (getaddrinfo).
+ * Port of Python _resolve_system_dns().
+ *
+ * @param hostname  Hostname to resolve (e.g. "api.telegram.org")
+ * @param out_ips   Output: malloc'd array of malloc'd IP strings.
+ *                  Caller must free with telegram_free_ip_list().
+ * @param out_count Output: number of IPs found (0 on error/empty).
+ * @return true on success (even if empty), false on allocation failure.
+ */
+bool telegram_resolve_system_dns(const char *hostname,
+                                 char ***out_ips,
+                                 size_t *out_count);
+
+/**
+ * Free an IP list returned by telegram_resolve_system_dns() or telegram_query_doh().
+ */
+void telegram_free_ip_list(char **ips, size_t count);
+
+/**
+ * Query a DNS-over-HTTPS provider for A records of a hostname.
+ * Port of Python _query_doh_provider().
+ *
+ * @param doh_url   DoH provider URL (e.g. "https://dns.google/resolve")
+ * @param hostname  Hostname to resolve
+ * @param extra_headers  Extra HTTP headers (e.g. "Accept: application/dns-json"), may be NULL
+ * @param timeout_sec    HTTP timeout in seconds
+ * @param out_ips   Output: malloc'd array of malloc'd IP strings.
+ * @param out_count Output: number of IPs found.
+ * @return true on success (even if empty), false on error.
+ */
+bool telegram_query_doh(const char *doh_url,
+                        const char *hostname,
+                        const char *extra_headers,
+                        int timeout_sec,
+                        char ***out_ips,
+                        size_t *out_count);
+
+/**
+ * Parse a DoH JSON response string into a list of A-record IPs.
+ * Port of Python _query_doh_provider() JSON parsing logic.
+ * Useful for testing without network access.
+ *
+ * @param doh_response  JSON response body from DoH provider
+ * @param out_ips       Output: malloc'd array of malloc'd IP strings.
+ * @param out_count     Output: number of IPs found.
+ * @return true on success (even if no A records), false on parse error.
+ */
+bool telegram_parse_doh_response(const char *doh_response,
+                                  char ***out_ips,
+                                  size_t *out_count);
+
+/**
+ * Discover Telegram API fallback IPs via DoH + system DNS fallback.
+ * Port of Python discover_fallback_ips().
+ *
+ * Queries Google and Cloudflare DoH providers, merges with system DNS
+ * results, deduplicates, validates via telegram_parse_fallback_ips(),
+ * and falls back to hardcoded seed IPs only when DoH yields nothing.
+ *
+ * @param hostname  Hostname to resolve (e.g. "api.telegram.org")
+ * @param out_ips   Output: malloc'd array of malloc'd IP strings.
+ * @param out_count Output: number of IPs found.
+ * @return true on success (even if empty), false on error.
+ */
+bool telegram_discover_fallback_ips(const char *hostname,
+                                     char ***out_ips,
+                                     size_t *out_count);
+
+/**
+ * Rewrite a URL to use a fallback IP while preserving the original hostname.
+ * Port of Python _rewrite_request_for_ip().
+ *
+ * Replaces the hostname in the URL with the given IP address.
+ * The original hostname is stored in the returned string as a Host header
+ * value in the format "URL|hostname" for the caller to split.
+ * Returns malloc'd string, caller must free(). NULL on error.
+ *
+ * Example:
+ *   telegram_rewrite_url_for_ip("https://api.telegram.org/bot123/",
+ *                                "149.154.167.220")
+ *   Returns "https://149.154.167.220/bot123/|api.telegram.org"
+ */
+char *telegram_rewrite_url_for_ip(const char *url, const char *ip);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* HERMES_TELEGRAM_NETWORK_H */

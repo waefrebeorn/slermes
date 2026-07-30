@@ -1,0 +1,22 @@
+# Fixture for the PURE file_text_ops helpers (tests/t_port_file_text_ops.c).
+# One op per line: escape <arg>  or  linenum <content>.
+# \n in content is a literal backslash-n token decoded to a real newline.
+# Keep linenum lines < 2000 chars so no truncation triggers (matches C max=0).
+
+# === escape_shell_arg: single-quote safety (shell injection defense) ===
+escape hello world
+escape it's a test
+escape with'quote'inside
+escape a'b'c
+escape path/with spaces and 'quotes'
+escape `rm -rf /`
+escape $VAR && echo pwned
+escape plain_no_specials
+
+# === linenum: compact n|content gutter ===
+linenum first line\nsecond line\nthird line
+linenum single
+linenum a\nb\nc\nd\ne
+linenum line with 'single quotes' and spaces
+linenum 
+linenum trailing newline\n

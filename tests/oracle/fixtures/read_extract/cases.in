@@ -1,0 +1,30 @@
+# Fixture for the PURE document-type helpers (tests/t_port_read_extract.c).
+# One op per line: ext <path>
+# _extension returns the lowercased suffix if in EXTRACTABLE_EXTENSIONS
+# (.ipynb/.docx/.xlsx), else ""; is_extractable_document is the bool.
+
+# === supported, case-insensitive ===
+ext report.DOCX
+ext data.xlsx
+ext notebook.ipynb
+ext NOTES.DOCX
+ext Book.XLSX
+ext Model.IPYNB
+
+# === unsupported types ===
+ext notes.txt
+ext doc.pdf
+ext script.py
+ext data.csv
+ext README.md
+ext image.png
+ext archive.zip
+
+# === no extension / dotfile / path edge cases ===
+ext Makefile
+ext .gitignore
+ext path/to/deep/report.DOCX
+ext /abs/path/file.xlsx
+ext weird.tar.gz
+ext .
+ext a.b.c.docx

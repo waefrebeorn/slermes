@@ -1,0 +1,78 @@
+[
+  {
+    "provider": "custom",
+    "model": "google/gemma-4-31b-it",
+    "base_url": "https://example.test/v1",
+    "custom_providers": [
+      {"name": "gemma", "base_url": "https://example.test/v1/", "model": "google/gemma-4-31b-it", "extra_body": {"thinking": true}}
+    ]
+  },
+  {
+    "provider": "custom",
+    "model": "google/gemma-4-31b-it",
+    "base_url": "https://example.test/v1",
+    "custom_providers": [
+      {"name": "gemma", "base_url": "https://example.test/v1/", "model": "google/gemma-4-31b-it", "extra_body": {"thinking": true}}
+    ],
+    "existing_extra_body": {"thinking": false}
+  },
+  {
+    "provider": "custom",
+    "model": "other-model",
+    "base_url": "https://example.test/v1",
+    "custom_providers": [
+      {"name": "gemma", "base_url": "https://example.test/v1/", "model": "google/gemma-4-31b-it", "extra_body": {"enable_thinking": true}}
+    ]
+  },
+  {
+    "provider": "custom:zai-coding-plan",
+    "model": "glm-5.2",
+    "base_url": "https://api.z.ai/api/coding/paas/v4",
+    "custom_providers": [
+      {"provider_key": "other-provider", "name": "Other Provider", "base_url": "https://api.z.ai/api/coding/paas/v4", "model": "glm-5.2", "extra_body": {"enable_thinking": true}},
+      {"provider_key": "zai-coding-plan", "name": "Z.AI Coding Plan", "base_url": "https://api.z.ai/api/coding/paas/v4/", "model": "glm-5.2", "extra_body": {"enable_thinking": false}}
+    ]
+  },
+  {
+    "provider": "custom",
+    "model": "gpt-4o",
+    "base_url": "https://api.openai.com/v1",
+    "custom_providers": [
+      {"name": "openai", "base_url": "https://api.openai.com/v1", "models": ["gpt-4o", "gpt-4o-mini"], "extra_body": {"service_tier": "flex"}},
+      {"name": "openai-other", "base_url": "https://api.openai.com/v1", "model": "gpt-5", "extra_body": {"service_tier": "default"}}
+    ]
+  },
+  {
+    "provider": "custom",
+    "model": "gpt-4o-mini",
+    "base_url": "https://api.openai.com/v1",
+    "custom_providers": [
+      {"name": "openai", "base_url": "https://api.openai.com/v1", "models": ["gpt-4o", "gpt-4o-mini"], "extra_body": {"service_tier": "flex"}},
+      {"name": "openai-other", "base_url": "https://api.openai.com/v1", "model": "gpt-5", "extra_body": {"service_tier": "default"}}
+    ]
+  },
+  {
+    "provider": "custom",
+    "model": "anything",
+    "base_url": "https://fallback.test/v1",
+    "custom_providers": [
+      {"name": "fb", "base_url": "https://fallback.test/v1", "extra_body": {"mode": "x"}}
+    ]
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-4o",
+    "base_url": "https://api.openai.com/v1",
+    "custom_providers": [
+      {"name": "openai", "base_url": "https://api.openai.com/v1", "model": "gpt-4o", "extra_body": {"service_tier": "flex"}}
+    ]
+  },
+  {
+    "provider": "custom",
+    "model": "gpt-4o",
+    "base_url": "https://nomatch.test/v1",
+    "custom_providers": [
+      {"name": "openai", "base_url": "https://api.openai.com/v1", "model": "gpt-4o", "extra_body": {"service_tier": "flex"}}
+    ]
+  }
+]

@@ -1,0 +1,399 @@
+{
+  "total": 177,
+  "real": 153,
+  "stub": 0,
+  "partial": 24,
+  "stub_file_count": 0,
+  "undefined_call_count": 47,
+  "stub_files": [],
+  "top_stubs": [],
+  "top_real": [
+    {
+      "file": "src/gateway/port_gateway_relay_ws_transport.c",
+      "func": "ws_transport_handle_frame",
+      "lines": 60
+    },
+    {
+      "file": "src/gateway/port_gateway_relay_ws_transport.c",
+      "func": "ws_request_response",
+      "lines": 52
+    },
+    {
+      "file": "src/agent/port_agent_antigravity_code_assist.c",
+      "func": "antigravity_parse_agent_model_ids",
+      "lines": 51
+    },
+    {
+      "file": "src/agent/port_agent_antigravity_code_assist.c",
+      "func": "antigravity_filter_agent_model_ids",
+      "lines": 36
+    },
+    {
+      "file": "src/gateway/port_gateway_relay_adapter.c",
+      "func": "relay_adapter_apply_descriptor",
+      "lines": 35
+    },
+    {
+      "file": "src/agent/port_agent_antigravity_code_assist.c",
+      "func": "antigravity_load_code_assist",
+      "lines": 33
+    },
+    {
+      "file": "src/gateway/port_gateway_relay_adapter.c",
+      "func": "relay_adapter_send_follow_up",
+      "lines": 31
+    },
+    {
+      "file": "src/agent/port_agent_antigravity_code_assist.c",
+      "func": "antigravity_ids_from_sort",
+      "lines": 29
+    },
+    {
+      "file": "src/agent/port_agent_antigravity_code_assist.c",
+      "func": "antigravity_build_headers",
+      "lines": 28
+    },
+    {
+      "file": "src/cli/port_kanban_db.c",
+      "func": "_git_toplevel",
+      "lines": 28
+    },
+    {
+      "file": "src/cli/port_kanban_db.c",
+      "func": "_git_common_dir",
+      "lines": 28
+    },
+    {
+      "file": "src/cli/port_kanban_db.c",
+      "func": "_git_dir",
+      "lines": 28
+    },
+    {
+      "file": "src/cli/port_kanban_db.c",
+      "func": "_git_current_branch",
+      "lines": 28
+    },
+    {
+      "file": "src/gateway/port_gateway_relay_adapter.c",
+      "func": "relay_adapter_capture_scope",
+      "lines": 27
+    },
+    {
+      "file": "src/cli/port_gateway.c",
+      "func": "_guard_named_profile_under_multiplexer",
+      "lines": 26
+    },
+    {
+      "file": "src/cli/port_main.c",
+      "func": "_restore_tui_workspace",
+      "lines": 26
+    },
+    {
+      "file": "src/cli/port_kanban_db.c",
+      "func": "_git_branch_exists",
+      "lines": 24
+    },
+    {
+      "file": "src/cli/port_cli_extra.c",
+      "func": "billing_auto_reload_flow",
+      "lines": 22
+    },
+    {
+      "file": "src/agent/port_agent_antigravity_code_assist.c",
+      "func": "antigravity_raw_model_ids",
+      "lines": 21
+    },
+    {
+      "file": "src/cli/port_gateway.c",
+      "func": "_capture_gateway_argv",
+      "lines": 21
+    },
+    {
+      "file": "src/cli/port_gateway.c",
+      "func": "launch_detached_gateway_restart_by_cmdline",
+      "lines": 20
+    },
+    {
+      "file": "src/cli/port_kanban_db_na.c",
+      "func": "_ensure_git_worktree",
+      "lines": 20
+    },
+    {
+      "file": "src/cli/port_main.c",
+      "func": "_atomic_replace_dir",
+      "lines": 20
+    },
+    {
+      "file": "src/cron/port_cron_scheduler_provider.c",
+      "func": "cron_reconcile",
+      "lines": 20
+    },
+    {
+      "file": "src/agent/port_agent_antigravity_code_assist.c",
+      "func": "antigravity_resolve_project_context",
+      "lines": 19
+    },
+    {
+      "file": "src/cli/port_kanban_db.c",
+      "func": "_nearest_existing_path",
+      "lines": 19
+    },
+    {
+      "file": "src/gateway/port_signal.c",
+      "func": "_remember_sent_message_timestamp",
+      "lines": 19
+    },
+    {
+      "file": "src/cli/port_kanban_db_na.c",
+      "func": "_fire_kanban_lifecycle_hook",
+      "lines": 17
+    },
+    {
+      "file": "src/cli/port_model_normalize.c",
+      "func": "_normalize_for_deepseek",
+      "lines": 17
+    },
+    {
+      "file": "src/gateway/port_gateway_relay_ws_transport.c",
+      "func": "ws_transport_dial_url",
+      "lines": 17
+    }
+  ],
+  "undefined_calls": [
+    {
+      "file": "src/agent/port_agent_coding_context.c",
+      "func": "detect_project_facts",
+      "undefined": "json_object_set"
+    },
+    {
+      "file": "src/agent/port_agent_coding_context.c",
+      "func": "detect_project_facts",
+      "undefined": "json_array_append"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_codex_pool_rate_limit_status",
+      "undefined": "json_new_object"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_codex_pool_rate_limit_status",
+      "undefined": "json_object_get"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_xai_oauth_state_from_store",
+      "undefined": "json_object_set"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_xai_oauth_state_from_store",
+      "undefined": "json_array_count"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_xai_oauth_state_from_store",
+      "undefined": "json_new_string"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_xai_oauth_state_from_store",
+      "undefined": "json_new_object"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_xai_oauth_state_from_store",
+      "undefined": "json_object_get"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_xai_oauth_state_from_store",
+      "undefined": "json_array_get"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_xai_oauth_state_has_usable_tokens",
+      "undefined": "json_object_get"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_profile_has_own_xai_oauth_state",
+      "undefined": "json_object_get"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_write_through_xai_oauth_to_global_root",
+      "undefined": "json_object_set"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_write_through_xai_oauth_to_global_root",
+      "undefined": "json_new_object"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_write_through_xai_oauth_to_global_root",
+      "undefined": "json_object_get"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_auth_file_cache_key",
+      "undefined": "json_object_set"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_auth_file_cache_key",
+      "undefined": "json_new_object"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_auth_file_cache_key",
+      "undefined": "json_new_number"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_auth_file_cache_key",
+      "undefined": "json_new_string"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "nous_token_has_billing_scope",
+      "undefined": "json_object_get"
+    },
+    {
+      "file": "src/cli/port_config.c",
+      "func": "_strip_dotted_keys",
+      "undefined": "json_object_set"
+    },
+    {
+      "file": "src/cli/port_config.c",
+      "func": "_strip_dotted_keys",
+      "undefined": "json_object_get"
+    },
+    {
+      "file": "src/cli/port_config.c",
+      "func": "_strip_dotted_keys",
+      "undefined": "json_new_null"
+    },
+    {
+      "file": "src/cli/port_config.c",
+      "func": "clear_model_endpoint_credentials",
+      "undefined": "json_object_set"
+    },
+    {
+      "file": "src/cli/port_config.c",
+      "func": "clear_model_endpoint_credentials",
+      "undefined": "json_new_object"
+    },
+    {
+      "file": "src/cli/port_config.c",
+      "func": "clear_model_endpoint_credentials",
+      "undefined": "json_new_string"
+    },
+    {
+      "file": "src/cli/port_config.c",
+      "func": "redact_config_value",
+      "undefined": "json_new_object"
+    },
+    {
+      "file": "src/cli/port_context_switch_guard.c",
+      "func": "context_switch_guard_merge_preflight_compression_warning",
+      "undefined": "json_object_get"
+    },
+    {
+      "file": "src/cli/port_context_switch_guard.c",
+      "func": "context_switch_guard_enrich_model_switch_warnings_for_gateway",
+      "undefined": "json_object_get"
+    },
+    {
+      "file": "src/cli/port_kanban_db_na.c",
+      "func": "_resolve_worktree_workspace",
+      "undefined": "json_object_set"
+    },
+    {
+      "file": "src/cli/port_kanban_db_na.c",
+      "func": "_resolve_worktree_workspace",
+      "undefined": "json_new_string"
+    },
+    {
+      "file": "src/cli/port_kanban_db_na.c",
+      "func": "_resolve_worktree_workspace",
+      "undefined": "json_new_object"
+    },
+    {
+      "file": "src/cli/port_kanban_db_na.c",
+      "func": "_worker_survived_termination",
+      "undefined": "json_object_get"
+    },
+    {
+      "file": "src/cli/port_kanban_db_na.c",
+      "func": "_dispatch_once_locked",
+      "undefined": "json_object_set"
+    },
+    {
+      "file": "src/cli/port_kanban_db_na.c",
+      "func": "_dispatch_once_locked",
+      "undefined": "json_new_object"
+    },
+    {
+      "file": "src/cli/port_kanban_db_na.c",
+      "func": "_dispatch_once_locked",
+      "undefined": "json_new_number"
+    },
+    {
+      "file": "src/cli/port_kanban_db_na.c",
+      "func": "_dispatch_once_locked",
+      "undefined": "json_new_string"
+    },
+    {
+      "file": "src/cli/port_main.c",
+      "func": "_build_provider_choices",
+      "undefined": "json_new_array"
+    },
+    {
+      "file": "src/cli/port_main.c",
+      "func": "_build_provider_choices",
+      "undefined": "json_new_string"
+    },
+    {
+      "file": "src/cli/port_main.c",
+      "func": "_build_provider_choices",
+      "undefined": "json_array_append"
+    },
+    {
+      "file": "src/cli/port_web_server.c",
+      "func": "field_is_set",
+      "undefined": "json_object_get"
+    },
+    {
+      "file": "src/gateway/port_api_server.c",
+      "func": "handle_cron_fire",
+      "undefined": "json_object_get"
+    },
+    {
+      "file": "src/gateway/port_base.c",
+      "func": "_read_httpx_body_with_limit",
+      "undefined": "json_new_string"
+    },
+    {
+      "file": "src/gateway/port_signal.c",
+      "func": "_extract_quote_author",
+      "undefined": "json_object_get"
+    },
+    {
+      "file": "src/gateway/platforms/port_signal_na.c",
+      "func": "_quote_references_own_message",
+      "undefined": "json_object_get"
+    },
+    {
+      "file": "src/gateway/platforms/port_signal_na.c",
+      "func": "_validate_send_result",
+      "undefined": "json_object_get"
+    },
+    {
+      "file": "src/cron/port_scheduler.c",
+      "func": "confirm_adapter_delivery",
+      "undefined": "json_object_get"
+    }
+  ]
+}

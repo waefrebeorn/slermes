@@ -1,0 +1,196 @@
+/* gateway_run_helpers.h — Pure helpers ported from gateway/run.py
+ *
+ * Opaque API: all functions are stateless pure transformations.
+ * No gateway state is accessed — these are leaf helpers.
+ *
+ * Port of: gateway/run.py module-level functions
+ * C11, minimal includes, no god headers.
+ */
+#ifndef GATEWAY_RUN_HELPERS_H
+#define GATEWAY_RUN_HELPERS_H
+
+#include <stdbool.h>
+#include <stddef.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* ── Platform helpers ───────────────────────────────────────────── */
+
+/* Normalise a platform value string (port of _gateway_platform_value).
+   Returns a lower-cased, stripped copy in out[0..out_size-1]. */
+void gw_platform_value(const char *platform, char *out, size_t out_size);
+
+/* True when platform is a raw-text surface (CLI, API, webhook).
+   Port of _gateway_surface_passes_raw_text. */
+bool gw_surface_passes_raw_text(const char *platform);
+
+/* ── Network / error helpers ─────────────────────────────────────── */
+
+/* True when exc_class_name is a transient network error class.
+   Port of _is_transient_network_error — checks class name against set. */
+bool gw_is_transient_network_error(const char *exc_class_name);
+
+/* Port of _gateway_provider_error_reply: map text to user-safe reply. */
+void gw_provider_error_reply(const char *text, char *out, size_t out_size);
+
+/* True when text looks like a provider error envelope.
+   Port of _looks_like_gateway_provider_error. */
+bool gw_looks_like_provider_error(const char *text);
+
+/* Port of _sanitize_gateway_final_response: redact + replace errors. */
+void gw_sanitize_final_response(const char *platform, const char *text,
+                                char *out, size_t out_size);
+
+/* Port of _prepare_gateway_status_message: filter/sanitize.
+   Returns 0 when message should be suppressed, 1 when out is filled. */
+int gw_prepare_status_message(const char *platform, const char *event_type,
+                              const char *message, char *out, size_t out_size);
+
+/* ── Secret redaction ────────────────────────────────────────────── */
+
+/* Port of _redact_gateway_user_facing_secrets */
+void gw_redact_secrets(const char *text, char *out, size_t out_size);
+
+/* Port of _redact_approval_command */
+void gw_redact_approval_command(const char *cmd, char *out, size_t out_size);
+
+/* ── Formatting helpers ──────────────────────────────────────────── */
+
+/* Port of _format_exec_approval_fallback. */
+void gw_format_exec_approval_fallback(const char *command,
+                                      const char *description,
+                                      const char *command_prefix,
+                                      bool allow_permanent,
+                                      bool allow_session,
+                                      bool smart_denied,
+                                      char *out, size_t out_size);
+
+/* Port of render_notice_line — extract notice text. */
+void gw_render_notice_line(const char *notice_text, char *out, size_t out_size);
+
+/* Port of _format_duration — seconds to "M:SS" or "H:MM:SS". */
+void gw_format_duration(double seconds, char *out, size_t out_size);
+
+/* ── Thread / progress helpers ───────────────────────────────────── */
+
+/* Port of _resolve_progress_thread_id. */
+void gw_resolve_progress_thread_id(const char *platform,
+                                   const char *source_thread_id,
+                                   const char *event_message_id,
+                                   char *out, size_t out_size);
+
+/* ── Display config helpers ──────────────────────────────────────── */
+
+/* Port of _has_platform_display_override — deeply inspect JSON-like config.
+   user_config is a JSON string; function uses libjson for traversal. */
+bool gw_has_display_override(const char *user_config_json,
+                             const char *platform_key,
+                             const char *setting);
+
+/* Port of _resolve_gateway_display_bool. Returns true/false default. */
+bool gw_resolve_display_bool(const char *user_config_json,
+                              const char *platform_key,
+                              const char *setting,
+                              bool default_val,
+                              const char *platform,
+                              const char *require_override_platforms_json);
+
+/* ── Timestamp / freshness helpers ───────────────────────────────── */
+
+/* Port of _coerce_gateway_timestamp — best-effort to epoch seconds.
+   Returns -1.0 on failure/unparseable.
+   Handles: datetime (epoch-magnitude), int/float (ms vs s),
+   ISO-8601 strings, numeric strings. */
+double gw_coerce_timestamp(double value, int is_ms,
+                           const char *iso_string,
+                           int is_iso_string);
+
+/* Port of _float_env — read env var as float. */
+double gw_float_env(const char *name, double default_val);
+
+/* Port of _is_fresh_gateway_interruption. */
+bool gw_is_fresh_interruption(double timestamp, double now, double window_secs);
+
+/* Port of build_resume_recovery_note — system prompt builder. */
+void gw_build_resume_recovery_note(const char *reason, const char *message,
+                                    bool interactive,
+                                    char *out, size_t out_size);
+
+/* ── Transcript replay helpers ───────────────────────────────────── */
+
+/* Port of _uses_telegram_observed_group_context. */
+bool gw_uses_observed_group_context(const char *channel_prompt);
+
+/* Port of _message_timestamps_enabled — deep config lookup. */
+bool gw_message_timestamps_enabled(const char *user_config_json);
+
+/* Port of _last_transcript_timestamp — find last usable row's timestamp.
+   Returns -1.0 when no usable timestamp found. */
+double gw_last_transcript_timestamp(const char *history_json);
+
+/* Port of _is_auto_continue_noise. */
+bool gw_is_auto_continue_noise(const char *content);
+
+/* Port of _strip_auto_continue_noise. */
+void gw_strip_auto_continue_noise(const char *content,
+                                   char *out, size_t out_size);
+
+/* ── Media helpers ───────────────────────────────────────────────── */
+
+/* Port of _format_duration (reused above). */
+/* Port of _event_media_type_at — returns mime type string. */
+void gw_event_media_type_at(const char *event_json, int index,
+                             char *out, size_t out_size);
+
+bool gw_event_media_is_image(const char *event_json, int index);
+bool gw_event_media_is_audio(const char *event_json, int index);
+bool gw_event_media_is_video(const char *event_json, int index);
+bool gw_event_media_is_stt_input(const char *event_json, int index);
+
+/* Port of _build_media_placeholder. */
+void gw_build_media_placeholder(const char *event_json,
+                                 char *out, size_t out_size);
+
+/* Port of _build_document_context_note. */
+void gw_build_document_context_note(const char *display_name,
+                                     const char *agent_path,
+                                     const char *mtype,
+                                     char *out, size_t out_size);
+
+/* ── Control / misc helpers ──────────────────────────────────────── */
+
+/* Port of _is_control_interrupt_message. */
+bool gw_is_control_interrupt_message(const char *message);
+
+/* Port of _skill_slug_from_frontmatter — parse YAML frontmatter.
+   Returns slug in slug_out, name in name_out. Both are NULL if missing. */
+void gw_skill_slug_from_frontmatter(const char *skill_md_content,
+                                     char *slug_out, size_t slug_size,
+                                     char *name_out, size_t name_size);
+
+/* Port of _check_unavailable_skill — check command_name against known skills.
+   Returns static string or NULL. */
+const char *gw_check_unavailable_skill(const char *command_name);
+
+/* Port of _platform_config_key */
+void gw_platform_config_key(const char *platform, char *out, size_t out_size);
+
+/* Port of _teams_pipeline_plugin_enabled */
+bool gw_teams_pipeline_plugin_enabled(void);
+
+/* Port of _gateway_config_home — path builder. */
+void gw_gateway_config_home(char *out, size_t out_size);
+
+/* Port of _parse_session_key — parse "platform:chat_id" format.
+   Returns platform in platform_out, id in id_out. Both empty on failure. */
+void gw_parse_session_key(const char *session_key,
+                           char *platform_out, size_t platform_size,
+                           char *id_out, size_t id_size);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* GATEWAY_RUN_HELPERS_H */

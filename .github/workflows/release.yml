@@ -1,0 +1,355 @@
+# ── GitHub Release: Build, package, and publish Slermes for all platforms ──
+# Triggered by pushing a v* tag (e.g., v0.18.0, v1.0.0)
+# Builds Linux x86_64 + ARM, macOS, Windows, Docker → attaches to GitHub Release
+#
+# FIRST RELEASE: push a v0.18.0 tag and this workflow runs automatically.
+# All artifacts are attached to the GitHub Release page.
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'         # v0.18.0, v1.0.0, etc.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release (e.g., v0.18.0)'
+        required: true
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  SQLITE_URL: "https://www.sqlite.org/2025/sqlite-amalgamation-3490100.zip"
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  # ─── Linux x86_64 native ────────────────────────────────────────────
+  linux-x86_64:
+    name: Linux x86_64
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install deps
+        run: |
+          sudo apt-get update -qq 2>&1 || true
+          sudo apt-get install -y -qq build-essential gcc libssl-dev \
+            libncurses-dev libwayland-dev pkg-config file unzip 2>&1 || true
+      - name: Fetch SQLite amalgamation
+        run: |
+          if [ ! -f lib/libdb/sqlite3.h ]; then
+            curl -sL "$SQLITE_URL" -o /tmp/sqlite.zip
+            unzip -o -q /tmp/sqlite.zip -d /tmp/sqlite/
+            cp /tmp/sqlite/sqlite-amalgamation-3490100/sqlite3.h lib/libdb/
+            cp /tmp/sqlite/sqlite-amalgamation-3490100/sqlite3.c lib/libdb/
+            rm -rf /tmp/sqlite.zip /tmp/sqlite/
+          fi
+      - name: Build (bypasses Make 4.3 pattern-rule bug)
+        run: CC=gcc bash ci-build.sh 2>&1
+      - name: Verify
+        run: |
+          file slermes
+          du -h slermes
+          ./slermes --version
+      - name: Build AppImage
+        run: bash packaging/appimage/build-appimage.sh 2>&1 || echo "AppImage build skipped"
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-linux-x86_64
+          path: |
+            slermes
+            Slermes-*.AppImage
+          if-no-files-found: warn
+
+  # ─── macOS arm64 ────────────────────────────────────────────────────
+  macos-arm64:
+    name: macOS (arm64)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install deps
+        run: |
+          brew update >/dev/null 2>&1
+          brew install pkg-config openssl file unzip || true
+      - name: Fetch SQLite amalgamation
+        run: |
+          if [ ! -f lib/libdb/sqlite3.h ]; then
+            curl -sL "$SQLITE_URL" -o /tmp/sqlite.zip
+            unzip -o -q /tmp/sqlite.zip -d /tmp/sqlite/
+            cp /tmp/sqlite/sqlite-amalgamation-3490100/sqlite3.h lib/libdb/
+            cp /tmp/sqlite/sqlite-amalgamation-3490100/sqlite3.c lib/libdb/
+            rm -rf /tmp/sqlite.zip /tmp/sqlite/
+          fi
+      - name: Build
+        run: make -j$(sysctl -n hw.logicalcpu) 2>&1
+      - name: Verify
+        run: |
+          file slermes
+          du -h slermes
+          ./slermes --version
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-macos-arm64
+          path: slermes
+          if-no-files-found: error
+
+  # ─── Linux ARM64 cross ──────────────────────────────────────────────
+  linux-aarch64:
+    name: Linux ARM64 (cross)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install toolchain
+        run: |
+          sudo apt-get update -qq 2>&1 || true
+          sudo apt-get install -y -qq gcc-aarch64-linux-gnu libssl-dev file unzip
+      - name: Fetch SQLite amalgamation
+        run: |
+          if [ ! -f lib/libdb/sqlite3.h ]; then
+            curl -sL "$SQLITE_URL" -o /tmp/sqlite.zip
+            unzip -o -q /tmp/sqlite.zip -d /tmp/sqlite/
+            cp /tmp/sqlite/sqlite-amalgamation-3490100/sqlite3.h lib/libdb/
+            cp /tmp/sqlite/sqlite-amalgamation-3490100/sqlite3.c lib/libdb/
+            rm -rf /tmp/sqlite.zip /tmp/sqlite/
+          fi
+      - name: Cross-compile (bypasses Make 4.3 pattern-rule bug)
+        run: |
+          CC=aarch64-linux-gnu-gcc AR=aarch64-linux-gnu-ar bash ci-build.sh 2>&1
+          if [ -f slermes ]; then
+            mv slermes slermes-linux-aarch64
+            file slermes-linux-aarch64
+          else
+            echo "WARNING: ARM64 binary not produced"
+          fi
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-linux-aarch64
+          path: slermes-linux-aarch64
+          if-no-files-found: warn
+
+  # ─── Linux ARMv7 cross ──────────────────────────────────────────────
+  linux-armv7:
+    name: Linux ARMv7 (cross)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install toolchain
+        run: |
+          sudo apt-get update -qq 2>&1 || true
+          sudo apt-get install -y -qq gcc-arm-linux-gnueabihf libssl-dev file unzip
+      - name: Fetch SQLite amalgamation
+        run: |
+          if [ ! -f lib/libdb/sqlite3.h ]; then
+            curl -sL "$SQLITE_URL" -o /tmp/sqlite.zip
+            unzip -o -q /tmp/sqlite.zip -d /tmp/sqlite/
+            cp /tmp/sqlite/sqlite-amalgamation-3490100/sqlite3.h lib/libdb/
+            cp /tmp/sqlite/sqlite-amalgamation-3490100/sqlite3.c lib/libdb/
+            rm -rf /tmp/sqlite.zip /tmp/sqlite/
+          fi
+      - name: Cross-compile (bypasses Make 4.3 pattern-rule bug)
+        run: |
+          CC=arm-linux-gnueabihf-gcc AR=arm-linux-gnueabihf-ar \
+            MAKE_OPTS="CFLAGS_EXTRA=-Wno-pointer-sign" bash ci-build.sh 2>&1
+          if [ -f slermes ]; then
+            mv slermes slermes-linux-armv7
+            file slermes-linux-armv7
+          else
+            echo "WARNING: ARMv7 binary not produced"
+          fi
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-linux-armv7
+          path: slermes-linux-armv7
+          if-no-files-found: warn
+
+  # ─── Windows x86_64 cross ───────────────────────────────────────────
+  windows-x86_64:
+    name: Windows x86_64 (cross)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install mingw
+        run: |
+          sudo apt-get update -qq 2>&1 || true
+          sudo apt-get install -y -qq mingw-w64 libssl-dev file unzip
+      - name: Fetch SQLite amalgamation
+        run: |
+          if [ ! -f lib/libdb/sqlite3.h ]; then
+            curl -sL "$SQLITE_URL" -o /tmp/sqlite.zip
+            unzip -o -q /tmp/sqlite.zip -d /tmp/sqlite/
+            cp /tmp/sqlite/sqlite-amalgamation-3490100/sqlite3.h lib/libdb/
+            cp /tmp/sqlite/sqlite-amalgamation-3490100/sqlite3.c lib/libdb/
+            rm -rf /tmp/sqlite.zip /tmp/sqlite/
+          fi
+      - name: Cross-compile (bypasses Make 4.3 pattern-rule bug)
+        run: |
+          CC=x86_64-w64-mingw32-gcc AR=x86_64-w64-mingw32-ar \
+            MAKE_OPTS="CFLAGS_EXTRA='-D_WIN32_WINNT=0x0A00 -Wno-pointer-sign'" \
+            bash ci-build.sh 2>&1
+          ls -la slermes slermes.exe 2>/dev/null || true
+          mv slermes slermes-windows-x86_64.exe 2>/dev/null || \
+          mv slermes.exe slermes-windows-x86_64.exe 2>/dev/null || \
+          echo "WARNING: binary not found after mingw build"
+          file slermes-windows-x86_64.exe 2>/dev/null || true
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-windows-x86_64
+          path: slermes-windows-x86_64.exe
+          if-no-files-found: warn
+
+  # ─── Docker image ───────────────────────────────────────────────────
+  docker:
+    name: Docker image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Log into registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: packaging/docker/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ─── Create GitHub Release (runs after all builds succeed) ──────────
+  create-release:
+    name: Create Release
+    needs:
+      - linux-x86_64
+      - macos-arm64
+      - linux-aarch64
+      - linux-armv7
+      - windows-x86_64
+      - docker
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # all history for release notes
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: Generate release notes
+        id: notes
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+          # Get log since last tag, or last 30 commits for first release
+          PREV_TAG=$(git tag --sort=-creatordate | head -2 | tail -1 || echo "")
+          if [ -n "$PREV_TAG" ] && [ "$PREV_TAG" != "$TAG" ]; then
+            LOG=$(git log --oneline --no-decorate "$PREV_TAG..$TAG" 2>/dev/null)
+          else
+            LOG=$(git log --oneline --no-decorate --max-count=30 2>/dev/null || echo "Initial release of Slermes")
+          fi
+
+          # Build artifact inventory
+          INVENTORY=""
+          for dir in artifacts/release-*; do
+            [ -d "$dir" ] || continue
+            for file in "$dir"/*; do
+              [ -f "$file" ] || continue
+              SIZE=$(du -h "$file" | cut -f1)
+              NAME=$(basename "$file")
+              INVENTORY="$INVENTORY- \`$NAME\` ($SIZE)\\n"
+            done
+          done
+
+          {
+            echo "log<<EOF"
+            echo "$LOG"
+            echo "EOF"
+            echo "inventory<<EOF"
+            echo -e "$INVENTORY"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.notes.outputs.tag }}"
+          gh release create "$TAG" \
+            --title "Slermes $TAG" \
+            --notes "$(cat <<-EONOTES
+          ## 📦 Slermes $TAG
+
+          **C11 Translation of NousResearch/hermes-agent** — zero Python, zero Electron, zero npm. Built from scratch in C11.
+
+          ### Artifacts
+
+          Platform       | Arch     | File
+          --------------|----------|------
+          Linux         | x86_64   | \`slermes\`
+          Linux         | x86_64   | \`Slermes-*.AppImage\`
+          Linux         | aarch64  | \`slermes-linux-aarch64\`
+          Linux         | armv7    | \`slermes-linux-armv7\`
+          macOS         | arm64    | \`slermes\`
+          Windows       | x86_64   | \`slermes-windows-x86_64.exe\`
+          Docker        | all      | \`ghcr.io/waefrebeorn/slermes:$TAG\`
+
+          ### Changes Since Last Release
+
+          \`\`\`
+          ${{ steps.notes.outputs.log }}
+          \`\`\`
+
+          ### Downloads
+
+          ${{ steps.notes.outputs.inventory }}
+
+          ---
+          *🌻 Slermes — C Language Hermes Agent. Built from scratch in C11. No Python. No Electron. No npm.*
+          EONOTES
+          )" 2>&1
+
+      - name: Upload release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.notes.outputs.tag }}"
+          for dir in artifacts/release-*; do
+            [ -d "$dir" ] || continue
+            for file in "$dir"/*; do
+              [ -f "$file" ] || continue
+              echo "Uploading: $file ($(du -h "$file" | cut -f1))"
+              gh release upload "$TAG" "$file" --clobber 2>&1
+            done
+          done
+          echo "=== Release $TAG assets uploaded ==="

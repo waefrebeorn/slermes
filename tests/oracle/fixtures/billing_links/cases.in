@@ -1,0 +1,22 @@
+# Oracle fixture for billing_links port (agent/billing_links.py)
+# Ops:
+#   is_nous <provider> <base_url>
+#   build <provider> <base_url> <model> [message]
+
+# --- is_nous_inference_route ---
+is_nous nous
+is_nous OpenAI https://api.openai.com/v1
+is_nous xai https://inference-api.nousresearch.com/v1
+is_nous foo https://api.openai.com/v1
+
+# --- build: Nous route (in-app preferred; billing_url = portal) ---
+build nous https://inference-api.nousresearch.com/v1 gpt-5 "out of credits"
+
+# --- build: exact slug match (OpenAI) ---
+build openai https://api.openai.com/v1 gpt-5
+
+# --- build: base_url host fallback (provider slug generic, host reveals upstream) ---
+build openai_compatible https://api.anthropic.com/v1 claude-opus
+
+# --- build: unknown provider degrades to readable label, no URL ---
+build weird_provider https://unknown.example.com/v1 model-x

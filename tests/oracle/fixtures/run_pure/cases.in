@@ -1,0 +1,89 @@
+# Fixture for the PURE gateway/run.py helpers (tests/t_port_run_pure.c).
+# One op per line. '|' separates fields; a leading '#' or blank line is ignored.
+
+# --- platform_value: normalize (lower/strip) ---
+platform_value Telegram
+platform_value  API_SERVER
+platform_value "  Discord  "
+platform_value 
+platform_value local
+
+# --- surface_raw: only local/api_server/webhook/msgraph_webhook pass raw ---
+surface_raw telegram
+surface_raw local
+surface_raw api_server
+surface_raw webhook
+surface_raw msgraph_webhook
+surface_raw discord
+surface_raw slack
+
+# --- nonconv: non-discord returns input unchanged; discord adds flag ---
+nonconv telegram|{"a": 1, "b": "x"}
+nonconv discord|{"a": 1}
+nonconv discord|
+nonconv slack|{"keep": true}
+
+# --- provider_error: shape + length heuristics ---
+provider_error HTTP 500 internal server error
+provider_error api call failed
+provider_error Provider authentication failed
+provider_error Some assistant prose that happens to mention HTTP 404 means not found and explains the status code at length in a paragraph that is clearly longer than the short envelope limit
+provider_error rate limited after 3 retries
+provider_error normal chat reply with no error markers
+provider_error 
+provider_error error code: 0x1a2b
+
+# --- provider_reply: category selection ---
+provider_reply 401 unauthorized
+provider_reply incorrect api key
+provider_reply cybersecurity risk detected
+provider_reply policy violation: content blocked
+provider_reply 429 too many requests
+provider_reply quota exceeded
+provider_reply some random failure text
+provider_reply rate limit hit
+
+# --- auto_noise / strip_auto ---
+auto_noise [System note: Your previous turn was interrupted. Resume it.
+auto_noise [System note: A new message arrived while you were down.
+auto_noise just a normal user question
+auto_noise [System note: Your previous turn was interrupted. Resume it. please continue with my real ask: what is 2+2?
+strip_auto [System note: Your previous turn was interrupted. Resume it. please continue with my real ask: what is 2+2?
+strip_auto [System note: A new message arrived while you were down. actual request here
+strip_auto normal text without note
+strip_auto [System note: Your previous turn was interrupted. Resume it.
+
+# --- telegramize: rewrite /Name -> /sanitized on telegram only ---
+telegramize telegram|Please run /Do-This-Now and /help
+telegramize telegram|/Already-Valid and /mixedCase_Name
+telegramize discord|/Do-This-Now should stay
+telegramize telegram|no command here
+telegramize telegram|/a/b/c path-like not a command mention
+
+# --- coerce: epoch sec, epoch ms, ISO, numeric string, invalid ---
+coerce 1700000000
+coerce 1700000000000
+coerce 2023-11-14T17:13:20Z
+coerce 2023-11-14T17:13:20+00:00
+coerce 12345.5
+coerce not-a-timestamp
+coerce 
+coerce 9999999999999999
+
+# --- ts_enabled: config dict ---
+ts_enabled {"gateway": {"message_timestamps": {"enabled": true}}}
+ts_enabled {"gateway": {"message_timestamps": {"enabled": false}}}
+ts_enabled {"gateway": {"message_timestamps": true}}
+ts_enabled {"gateway": {}}
+ts_enabled {}
+ts_enabled not_a_dict
+
+# --- transient: exception class name (+ optional cause/context) ---
+transient TimedOut
+transient NetworkError
+transient ValueError
+transient ConnectError
+transient ClientOSError
+transient SomeRandomError
+transient NotTransient cause=TimedOut
+transient NotTransient context=NetworkError

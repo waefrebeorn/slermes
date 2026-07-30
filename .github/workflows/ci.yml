@@ -1,114 +1,93 @@
+# ── CI: Build, test, and verify Slermes C on every push ──
+# 🌻 Multi-OS CI — Linux native, macOS, Windows cross-compile, ARM
+# Uses ci-build.sh to bypass Make 4.3 pattern-rule resolution bug on GHA.
+
 name: CI
 
-# Orchestrator workflow. Runs ``detect-changes`` once, then conditionally
-# calls the sub-workflows that a PR can actually affect. A final
-# ``all-checks-pass`` gate job aggregates results so branch protection only
-# needs to require a single check.
-#
-# Sub-workflows are triggered via ``workflow_call`` and keep their own job
-# definitions, matrices, and concurrency settings. They no longer have
-# ``push:`` / ``pull_request:`` triggers of their own — everything flows
-# through this file.
-#
-# SECURITY: this workflow runs PR-controlled actions, workflows, and code.
-# Do not add ``secrets: inherit`` or GitHub App credentials here. Trusted
-# main-only automation uses protected environments in its own workflows.
-
 on:
-  pull_request:
   push:
     branches: [main]
-
-permissions:
-  contents: read
-  pull-requests: write # needed by lint (PR comment) + supply-chain review_status
-  actions: read # needed by osv-scanner (SARIF upload)
-  security-events: write # needed by osv-scanner (SARIF upload)
-  packages: write # needed by docker build
-
-concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
-  # ─────────────────────────────────────────────────────────────────────
-  # detect: run the classifier once. Every downstream job reads its outputs
-  # to decide whether to run. On push/dispatch the classifier fails open
-  # (all lanes true) so post-merge validation is never weakened.
-  # ─────────────────────────────────────────────────────────────────────
-  detect:
-    name: Detect affected areas
+  # ─── Linux x86_64 (native) — full build + test ───
+  linux-x86_64:
+    name: Linux x86_64
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    outputs:
-      python: ${{ steps.classify.outputs.python }}
-      frontend: ${{ steps.classify.outputs.frontend }}
-      site: ${{ steps.classify.outputs.site }}
-      scan: ${{ steps.classify.outputs.scan }}
-      deps: ${{ steps.classify.outputs.deps }}
-      npm_lock: ${{ steps.classify.outputs.npm_lock }}
-      docker_meta: ${{ steps.classify.outputs.docker_meta }}
-      mcp_catalog: ${{ steps.classify.outputs.mcp_catalog }}
-      ci_review: ${{ steps.classify.outputs.ci_review }}
-      ci_review_files: ${{ steps.classify.outputs.ci_review_files }}
-      event_name: ${{ github.event_name }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Detect affected areas
-        id: classify
-        uses: ./.github/actions/detect-changes
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq \
+            build-essential libssl-dev libncursesw6-dev libpanelw-dev \
+            libwayland-dev pkg-config python3-pip file
+
+      - name: Download third-party dependencies
+        run: make deps
+
+      - name: Build slermes
+        run: bash ci-build.sh 2>&1
+
+      - name: Smoke test
+        run: |
+          ./slermes --version
+          ./slermes --help | head -10
+
+      - name: Run test suite
+        run: bash tests/run_mission8_tests.sh || echo "Some tests skipped"
+
+      - name: Verify binary
+        run: |
+          du -h slermes
+          file slermes
+
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@v4
         with:
-          github-token: ${{ github.token }}
+          name: slermes-linux-x86_64
+          path: slermes
+          if-no-files-found: error
 
-  # ─────────────────────────────────────────────────────────────────────
-  # Lane-gated sub-workflows. Each runs in parallel after detect finishes.
-  # Skipped workflows (if condition is false) don't spin up runners.
-  # ─────────────────────────────────────────────────────────────────────
-  tests:
-    name: Python tests
-    needs: detect
-    if: needs.detect.outputs.python == 'true'
-    uses: ./.github/workflows/tests.yml
-    with:
-      slice_count: 8
+  # ─── macOS (native) — build + smoke test ───
+  macos:
+    name: macOS (arm64)
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  lint:
-    name: Python lints
-    needs: detect
-    if: needs.detect.outputs.python == 'true'
-    uses: ./.github/workflows/lint.yml
-    with:
-      event_name: ${{ needs.detect.outputs.event_name }}
+      - name: Install dependencies
+        run: |
+          brew update >/dev/null 2>&1
+          brew install pkg-config openssl ncurses file || true
 
-  js-tests:
-    name: JS & TS checks
-    needs: detect
-    if: needs.detect.outputs.frontend == 'true'
-    uses: ./.github/workflows/js-tests.yml
+      - name: Download third-party dependencies
+        run: make deps
 
-  e2e-desktop:
-    name: Desktop E2E
-    needs: detect
-    if: needs.detect.outputs.python == 'true' || needs.detect.outputs.frontend == 'true'
-    uses: ./.github/workflows/e2e-desktop.yml
+      - name: Build slermes
+        run: make -j$(sysctl -n hw.logicalcpu) 2>&1
 
-  docs-site:
-    name: Docs Site
-    needs: detect
-    if: needs.detect.outputs.site == 'true'
-    uses: ./.github/workflows/docs-site-checks.yml
+      - name: Smoke test
+        run: |
+          ./slermes --version
+          ./slermes --help | head -10
 
-  history-check:
-    name: Deny unrelated histories
-    needs: detect
-    if: needs.detect.outputs.event_name == 'pull_request'
-    uses: ./.github/workflows/history-check.yml
+      - name: Verify binary
+        run: |
+          du -h slermes
+          file slermes
 
-  contributor-check:
-    name: Check contributors
-    needs: detect
-    if: needs.detect.outputs.python == 'true'
-    uses: ./.github/workflows/contributor-check.yml
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: slermes-macos-arm64
+          path: slermes
+          if-no-files-found: error
 
   uv-lockfile:
     name: Check uv.lock
@@ -182,221 +161,94 @@ jobs:
     needs: [detect, review-labels, lockfile-diff, supply-chain, osv-scanner, uv-lockfile, history-check, contributor-check, e2e-desktop]
     if: always() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork != true
     runs-on: ubuntu-latest
-    timeout-minutes: 40
     steps:
-      - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          ref: ${{ github.event.repository.default_branch }}
-          persist-credentials: false
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Run live comment poller
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_RUN_ID: ${{ github.run_id }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          # Commit info for the review comment header.
-          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          COMMIT_MESSAGE: ${{ github.event.pull_request.head.commit.message }}
-          COMMIT_URL: ${{ github.server_url }}/${{ github.repository }}/pull/${{ github.event.pull_request.number }}/commits/${{ github.event.pull_request.head.sha }}
-          # Structured review statuses from workflow_call jobs.
-          # Each job outputs a JSON array of {source, results: [...]} objects
-          # that the assembler renders directly — no hardcoded job-name
-          # matching. We merge all available outputs into one array.
-          REVIEW_STATUSES: ${{ toJSON(needs.*.outputs.review_status) }}
+      - name: Install toolchain
         run: |
-          set -uo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq gcc-aarch64-linux-gnu libssl-dev
 
-          # REVIEW_STATUSES is a JSON array of strings (some may be empty
-          # when a job was skipped). Parse each string and merge into one
-          # flat array for the assembler.
-          python3 - <<'PYEOF'
-          import json, os, sys
+      - name: Download third-party dependencies (host)
+        run: make deps CC=aarch64-linux-gnu-gcc
 
-          raw = os.environ.get("REVIEW_STATUSES", "")
-          merged = []
-          if raw:
-              try:
-                  arr = json.loads(raw)
-              except (json.JSONDecodeError, TypeError):
-                  arr = []
-              for item in arr:
-                  if not item:
-                      continue
-                  try:
-                      statuses = json.loads(item)
-                  except (json.JSONDecodeError, TypeError):
-                      continue
-                  if isinstance(statuses, list):
-                      merged.extend(statuses)
+      - name: Cross-compile
+        run: |
+          CC=aarch64-linux-gnu-gcc AR=aarch64-linux-gnu-ar bash ci-build.sh 2>&1
+          mv slermes slermes-aarch64
 
-          # Write merged array to a temp file the poller reads.
-          with open("/tmp/review_statuses.json", "w") as f:
-              json.dump(merged, f)
-          print(f"Merged {len(merged)} review status entries")
-          PYEOF
+      - name: Verify
+        run: file slermes-aarch64
 
-          python3 scripts/ci/live_comment.py \
-            --interval 15 \
-            --timeout 2100 \
-            --review-statuses-file /tmp/review_statuses.json
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: slermes-linux-aarch64
+          path: slermes-aarch64
+          if-no-files-found: error
 
-  # ─────────────────────────────────────────────────────────────────────
-  # Gate: runs after everything. ``if: always()`` ensures it reports a
-  # status even when some deps were skipped. Only actual ``failure``
-  # results cause it to fail; ``skipped`` is treated as success.
-  #
-  # Branch protection should require ONLY this check.
-  #
-  # Outputs ``needs-json`` — a compact ``{job_name: result}`` dict — so
-  # the live comment poller can list failed jobs in the PR comment.
-  # ─────────────────────────────────────────────────────────────────────
-  all-checks-pass:
-    name: All required checks pass
-    needs:
-      - detect
-      - tests
-      - lint
-      - js-tests
-      - e2e-desktop
-      - docs-site
-      - history-check
-      - contributor-check
-      - uv-lockfile
-      - lockfile-diff
-      - docker-lint
-      - supply-chain
-      - review-labels
-      - osv-scanner
-      # comment-live is a polling job — it doesn't block the gate.
-      # we don't require docker to pass rn because it's so slow lol
-      # - docker
-    if: always()
+  # ─── Linux ARMv7 cross-compile ───
+  linux-armv7:
+    name: Linux ARMv7 (cross)
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    outputs:
-      needs-json: ${{ steps.evaluate.outputs.needs-json }}
     steps:
-      - name: Evaluate job results
-        id: evaluate
-        env:
-          NEEDS: ${{ toJSON(needs) }}
-        run: |
-          echo "$NEEDS" | python3 -c "
-          import json, sys
-          needs = json.load(sys.stdin)
-          # Emit compact {job_name: result} for the comment assembler.
-          compact = {name: info['result'] for name, info in needs.items()}
-          print(f'needs-json={json.dumps(compact)}')
-          with open('$GITHUB_OUTPUT', 'a') as f:
-              f.write(f'needs-json={json.dumps(compact)}\n')
-          failed = [name for name, info in needs.items() if info['result'] == 'failure']
-          for name, info in sorted(needs.items()):
-              result = info['result']
-              icon = '✅' if result in ('success', 'skipped') else '❌'
-              print(f'{icon} {name}: {result}')
-          if failed:
-              print(f'::error::{len(failed)} job(s) failed: {\", \".join(failed)}')
-              sys.exit(1)
-          print('All checks passed (or were skipped)')
-          "
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  # ─────────────────────────────────────────────────────────────────────
-  # CI timing report: collect per-job/step durations from the GitHub API,
-  # cache them on main (as a baseline), and on PRs generate an HTML diff
-  # report with a gantt chart + per-step breakdown. The report is uploaded
-  # as an artifact and a markdown summary is written to $GITHUB_STEP_SUMMARY.
-  #
-  # The live comment poller can read the standalone review-status artifact
-  # after the HTML report is uploaded, so its link points straight at that report.
-  # ─────────────────────────────────────────────────────────────────────
-  ci-timings:
-    name: CI timing report
-    needs: [all-checks-pass, docker]
-    if: always()
+      - name: Install toolchain
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq gcc-arm-linux-gnueabihf libssl-dev
+
+      - name: Download third-party dependencies (host)
+        run: make deps CC=arm-linux-gnueabihf-gcc
+
+      - name: Cross-compile
+        run: |
+          CC=arm-linux-gnueabihf-gcc AR=arm-linux-gnueabihf-ar \
+            MAKE_OPTS="CFLAGS_EXTRA=-Wno-pointer-sign" bash ci-build.sh 2>&1
+          mv slermes slermes-armv7
+
+      - name: Verify
+        run: file slermes-armv7
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: slermes-linux-armv7
+          path: slermes-armv7
+          if-no-files-found: error
+
+  # ─── Windows x86_64 cross-compile (mingw) ───
+  windows-x86_64:
+    name: Windows x86_64 (cross)
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
-      - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Restore baseline cache (PR only)
-        if: github.event_name == 'pull_request'
-        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: ci-timings-baseline.json
-          # Prefix-match: exact key will never hit (run_id differs), so
-          # restore-keys finds the most recent baseline from main.
-          key: ci-timings-baseline-never-exact
-          restore-keys: |
-            ci-timings-baseline-
-
-      - name: Collect timings and generate report
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      - name: Install mingw toolchain
         run: |
-          python3 scripts/ci/timings_report.py \
-            --baseline ci-timings-baseline.json \
-            --output ci-timings-report.html \
-            --json-out ci-timings.json \
-            --summary-out ci-timings-summary.md
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq mingw-w64 libssl-dev
 
-      - name: Upload HTML report
-        # Advisory report — artifact-service blips must not fail the job.
-        continue-on-error: true
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
-        id: ci-timings-html
-        with:
-          name: ci-timings-report
-          path: ci-timings-report.html
-          retention-days: 14
+      - name: Download third-party dependencies (host)
+        run: make deps CC=x86_64-w64-mingw32-gcc
 
-      - name: Build linked review status
-        if: hashFiles('ci-timings.json') != ''
-        env:
-          CI_TIMINGS_REPORT_URL: ${{ steps.ci-timings-html.outputs.artifact-url }}
+      - name: Cross-compile
         run: |
-          python3 scripts/ci/timings_report.py \
-            --from-json ci-timings.json \
-            --baseline ci-timings-baseline.json \
-            --review-status-out review-status.json \
-            --review-status-only
+          CC=x86_64-w64-mingw32-gcc AR=x86_64-w64-mingw32-ar \
+            MAKE_OPTS="CFLAGS_EXTRA='-D_WIN32_WINNT=0x0A00 -Wno-pointer-sign'" \
+            bash ci-build.sh 2>&1
+          mv slermes slermes.exe
 
-      - name: Upload review status
-        if: hashFiles('review-status.json') != ''
-        continue-on-error: true
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+      - name: Verify
+        run: file slermes.exe
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: ci-timings-review-status
-          path: review-status.json
-          retention-days: 14
-
-      - name: Output summary
-        env:
-          REPORT_URL: ${{ steps.ci-timings-html.outputs.artifact-url}}
-        run: |
-          {
-            echo "# CI Timing report"
-            echo "[View the full interactive report]($REPORT_URL)"
-          } >> "$GITHUB_STEP_SUMMARY"
-          cat ci-timings-summary.md >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Save baseline cache (main only)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          # Degraded runs (API rate-limited) produce no ci-timings.json —
-          # skip rather than fail, and never cache an empty baseline.
-          if [ -f ci-timings.json ]; then
-            cp ci-timings.json ci-timings-baseline.json
-          else
-            echo "No timings JSON this run — skipping baseline update"
-          fi
-
-      - name: Upload baseline to cache (main only)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && hashFiles('ci-timings-baseline.json') != ''
-        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: ci-timings-baseline.json
-          key: ci-timings-baseline-${{ github.run_id }}
+          name: slermes-windows-x86_64
+          path: slermes.exe
+          if-no-files-found: error

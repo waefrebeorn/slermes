@@ -1,0 +1,51 @@
+#ifndef HERMES_PORTAL_TAGS_H
+#define HERMES_PORTAL_TAGS_H
+
+#include <stddef.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * Return the client=... tag for Nous Portal requests.
+ *
+ * Format: "client=hermes-client-v<MAJOR>.<MINOR>.<PATCH>".
+ *
+ * @return Newly allocated string. Caller must free().
+ */
+char *hermes_client_tag(void);
+
+/**
+ * Return the canonical list of Nous Portal product tags as a JSON array string.
+ *
+ * Always returns a fresh JSON string so callers can use it directly
+ * in extra_body / tags fields.
+ *
+ * @return Newly allocated JSON array string. Caller must free().
+ */
+char *hermes_nous_portal_tags_json(void);
+
+/**
+ * Return the Hermes version string (e.g. "0.15.1-slermes").
+ * Port of Python: _hermes_version()
+ *
+ * @return Pointer to static version string (NOT caller-owned).
+ */
+const char *hermes_version(void);
+
+/** Set / get / reset the ambient conversation id (Python ContextVar equivalent).
+ *  Used by provider profiles for sticky session_id plumbing. */
+void hermes_set_conversation_context(const char *id);
+void hermes_reset_conversation_context(void);
+const char *hermes_get_conversation_context_id(void);
+
+/** Build a Nous Portal conversation tag from a session id.
+ *  @return Newly allocated string "conversation=<session_id>". Caller must free(). */
+char *hermes_conversation_tag(const char *session_id);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* HERMES_PORTAL_TAGS_H */

@@ -1,0 +1,1 @@
+[{"content":"run it","role":"user"},{"content":"","role":"assistant","tool_calls":[{"id":"a"}]},{"content":"[command interrupted]","role":"tool","tool_call_id":"a"},{"content":"still there?","role":"user"},{"content":"yes","role":"assistant","tool_calls":[{"id":"b"}]},{"content":"ok","role":"tool","tool_call_id":"b"}]

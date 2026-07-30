@@ -1,0 +1,508 @@
+/*
+ * provider_custom.c — User-defined custom provider (P81).
+ *
+ * Provides OpenAI-compatible passthrough with user-defined base_url,
+ * api_key, and model name. No provider-specific behavior.
+ */
+
+#include "hermes_core_types.h"
+#include "hermes_json.h"
+#include "hermes_http.h"
+#include "provider.h"
+#include "provider_profile.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+static char *custom_build_url(const provider_t *p, const char *base_url) {
+    (void)p;
+    if (!base_url || !*base_url)
+        base_url = "http://localhost:8080/v1";
+    if (strstr(base_url, "/chat/completions"))
+        return strdup(base_url);
+    size_t len = strlen(base_url);
+    char *url = (char *)malloc(len + 20);
+    if (!url) return NULL;
+    snprintf(url, len + 20, "%s/chat/completions",
+             base_url[len-1] == '/' ? base_url : base_url);
+    char *ds = strstr(url, "//");
+    if (ds) { char *s = strstr(ds + 2, "//"); if (s) memmove(s, s + 1, strlen(s)); }
+    return url;
+}
+
+static char *custom_build_headers(const provider_t *p, const char *api_key) {
+    (void)p;
+    char *headers = (char *)malloc(512);
+    if (!headers) return NULL;
+    if (api_key && *api_key)
+        snprintf(headers, 512,
+            "Authorization: Bearer %s\r\n"
+            "Content-Type: application/json\r\n"
+            "Accept: application/json",
+            api_key);
+    else
+        snprintf(headers, 512,
+            "Content-Type: application/json\r\n"
+            "Accept: application/json");
+    return headers;
+}
+
+static char *custom_build_request_body(const provider_t *p,
+                                        const message_t **messages, size_t msg_count,
+                                        json_node_t *tools_json, bool streaming) {
+    json_t *root = json_new_object();
+    if (!root) return NULL;
+    json_object_set(root, "model", json_new_string(p->model[0] ? p->model : "default"));
+    json_object_set(root, "stream", json_new_bool(streaming));
+
+    /* LLM params from config */
+    int max_tok = p->config.max_tokens > 0 ? p->config.max_tokens : 4096;
+    json_object_set(root, "max_tokens", json_new_number(max_tok));
+    if (p->config.temperature >= 0.0f)
+        json_object_set(root, "temperature", json_new_number(p->config.temperature));
+    if (p->config.top_p > 0.0f && p->config.top_p < 1.0f)
+        json_object_set(root, "top_p", json_new_number(p->config.top_p));
+    if (p->config.stop_count > 0) {
+        json_t *stop_arr = json_new_array();
+        for (int i = 0; i < p->config.stop_count && i < HERMES_STOP_SEQUENCES_MAX; i++)
+            if (p->config.stop_sequences[i][0])
+                json_array_append(stop_arr, json_new_string(p->config.stop_sequences[i]));
+        if (json_array_count(stop_arr) > 0) json_object_set(root, "stop", stop_arr);
+        else json_free(stop_arr);
+    }
+    if (p->config.service_tier[0])
+        json_object_set(root, "service_tier", json_new_string(p->config.service_tier));
+
+    if (p->config.reasoning_effort[0])
+        json_object_set(root, "reasoning_effort", json_new_string(p->config.reasoning_effort));
+
+    if (p->config.presence_penalty != 0.0f)
+        json_object_set(root, "presence_penalty", json_new_number(p->config.presence_penalty));
+    if (p->config.frequency_penalty != 0.0f)
+        json_object_set(root, "frequency_penalty", json_new_number(p->config.frequency_penalty));
+    if (p->config.seed >= 0)
+        json_object_set(root, "seed", json_new_number(p->config.seed));
+    if (p->config.logprobs)
+        json_object_set(root, "logprobs", json_new_bool(true));
+    if (p->config.top_logprobs > 0) {
+        json_object_set(root, "logprobs", json_new_bool(true));
+        json_object_set(root, "top_logprobs", json_new_number(p->config.top_logprobs));
+    }
+    if (p->config.user[0])
+        json_object_set(root, "user", json_new_string(p->config.user));
+
+    /* response_format + metadata */
+    if (p->config.response_format[0]) {
+        json_t *rf = json_parse(p->config.response_format, NULL);
+        if (rf) {
+            /* B24: strict JSON schema enforcement */
+            if (p->config.response_format_strict)
+                json_object_set(rf, "strict", json_new_bool(true));
+            json_object_set(root, "response_format", json_copy(rf));
+            json_free(rf);
+        }
+    } else if (p->config.json_mode) {
+        json_t *rf = json_new_object();
+        json_object_set(rf, "type", json_new_string("json_object"));
+        json_object_set(root, "response_format", rf);
+    }
+    if (p->config.metadata[0]) {
+        json_t *md = json_parse(p->config.metadata, NULL);
+        if (md) { json_object_set(root, "metadata", md); json_free(md); }
+    }
+
+    /* L05: extra_body — merge arbitrary JSON fields into request body */
+    if (p->config.extra_body[0]) {
+        json_t *extra = json_parse(p->config.extra_body, NULL);
+        if (extra && extra->type == JSON_OBJECT) {
+            /* Iterate object keys */
+            for (size_t i = 0; i < extra->c.count; i++) {
+                if (extra->c.keys && extra->c.keys[i] && extra->c.items[i])
+                    json_set(root, extra->c.keys[i], json_copy(extra->c.items[i]));
+            }
+        }
+        json_free(extra);
+    }
+
+    /* tool_choice + parallel_tool_calls */
+    if (p->config.tool_choice[0]) {
+        json_t *tc = json_parse(p->config.tool_choice, NULL);
+        if (tc) { json_object_set(root, "tool_choice", tc); json_free(tc); }
+        else { json_object_set(root, "tool_choice", json_new_string(p->config.tool_choice)); }
+    }
+    if (!p->config.parallel_tool_calls)
+        json_object_set(root, "parallel_tool_calls", json_new_bool(false));
+
+    /* max_tool_calls */
+    if (p->config.max_tool_calls > 0)
+        json_object_set(root, "max_tool_calls", json_new_number(p->config.max_tool_calls));
+    if (p->config.n > 1)
+        json_object_set(root, "n", json_new_number(p->config.n));
+
+    /* L05: extra_body — merge arbitrary JSON fields into request body */
+    if (p->config.extra_body[0]) {
+        json_t *eb = json_parse(p->config.extra_body, NULL);
+        if (eb && eb->type == JSON_OBJECT) {
+            for (size_t i = 0; i < eb->c.count; i++) {
+                json_t *copy = json_copy(eb->c.items[i]);
+                if (copy)
+                    json_object_set(root, eb->c.keys[i], copy);
+            }
+        }
+        json_free(eb);
+    }
+
+    json_t *msgs = json_new_array();
+    if (!msgs) { json_free(root); return NULL; }
+    for (size_t i = 0; i < msg_count; i++) {
+        json_t *msg = json_new_object();
+        const char *role_str;
+        switch (messages[i]->role) {
+            case MSG_SYSTEM:    role_str = "system";    break;
+            case MSG_USER:      role_str = "user";      break;
+            case MSG_ASSISTANT: role_str = "assistant"; break;
+            case MSG_TOOL:      role_str = "tool";      break;
+            default:            role_str = "user";      break;
+        }
+        json_object_set(msg, "role", json_new_string(role_str));
+        json_object_set(msg, "content", json_new_string(
+            messages[i]->content ? messages[i]->content : ""));
+        if (messages[i]->role == MSG_TOOL && messages[i]->tool_call_id)
+            json_object_set(msg, "tool_call_id", json_new_string(messages[i]->tool_call_id));
+        if (messages[i]->role == MSG_ASSISTANT && messages[i]->tool_calls_count > 0) {
+            json_t *tcs = json_new_array();
+            for (int j = 0; j < messages[i]->tool_calls_count && j < 64; j++) {
+                json_t *tc = json_new_object();
+                json_object_set(tc, "id", json_new_string(messages[i]->tool_calls[j].id));
+                json_object_set(tc, "type", json_new_string("function"));
+                json_t *func = json_new_object();
+                json_object_set(func, "name", json_new_string(messages[i]->tool_calls[j].name));
+                json_object_set(func, "arguments", json_new_string(messages[i]->tool_calls[j].arguments));
+                json_object_set(tc, "function", func);
+                json_array_append(tcs, tc);
+            }
+            json_object_set(msg, "tool_calls", tcs);
+        }
+        json_array_append(msgs, msg);
+    }
+    json_object_set(root, "messages", msgs);
+    if (tools_json && json_array_count(tools_json) > 0)
+        json_object_set(root, "tools", json_copy(tools_json));
+
+    /* v650: apply ProviderProfile quirks on top of the shared body. */
+    apply_provider_profile(p, root);
+
+    char *body = json_serialize(root);
+    json_free(root);
+    return body;
+}
+
+static provider_response_t *custom_parse_response(const provider_t *p,
+                                                   const char *response_body) {
+    (void)p;
+    provider_response_t *resp = (provider_response_t *)calloc(1, sizeof(*resp));
+    if (!resp) return NULL;
+    char *err = NULL;
+    json_t *root = json_parse(response_body, &err);
+    if (!root) {
+        resp->content = (char *)malloc(256);
+        if (resp->content)
+            snprintf(resp->content, 256, "JSON parse error: %s", err ? err : "unknown");
+        free(err);
+        return resp;
+    }
+    json_t *usage = json_object_get(root, "usage");
+    if (usage) {
+        resp->input_tokens = (int)json_get_num(usage, "prompt_tokens", 0);
+        resp->output_tokens = (int)json_get_num(usage, "completion_tokens", 0);
+    }
+    /* Check for API error response */
+    json_t *error_obj = json_object_get(root, "error");
+    if (error_obj) {
+        const char *err_msg = json_get_str(error_obj, "message", "unknown error");
+        resp->content = (char *)malloc(1024);
+        if (resp->content)
+            snprintf(resp->content, 1024, "Custom provider API error: %s", err_msg);
+        json_free(root);
+        return resp;
+    }
+    json_t *choices = json_object_get(root, "choices");
+    if (choices && json_len(choices) > 0) {
+        json_t *choice = json_get(choices, 0);
+        json_t *message = json_object_get(choice, "message");
+        if (message) {
+            resp->content = strdup(json_get_str(message, "content", ""));
+            json_t *tcs = json_object_get(message, "tool_calls");
+            if (tcs && json_len(tcs) > 0) {
+                resp->tool_calls_count = (int)json_len(tcs);
+                for (int i = 0; i < resp->tool_calls_count && i < 64; i++) {
+                    json_t *tc = json_get(tcs, i);
+                    snprintf(resp->tool_calls[i].id, sizeof(resp->tool_calls[i].id), "%s",
+                             json_get_str(tc, "id", ""));
+                    json_t *func = json_object_get(tc, "function");
+                    if (func) {
+                        snprintf(resp->tool_calls[i].name, sizeof(resp->tool_calls[i].name), "%s",
+                                 json_get_str(func, "name", ""));
+                        snprintf(resp->tool_calls[i].arguments, sizeof(resp->tool_calls[i].arguments), "%s",
+                                 json_get_str(func, "arguments", "{}"));
+                    }
+                }
+            }
+        }
+        /* Extract finish_reason from choice level */
+        const char *fr = json_get_str(choice, "finish_reason", NULL);
+        if (fr) snprintf(resp->finish_reason, sizeof(resp->finish_reason), "%s", fr);
+    }
+    json_free(root);
+    return resp;
+}
+
+static provider_response_t *custom_parse_stream_chunk(const provider_t *p,
+                                                       const char *chunk) {
+    (void)p;
+    provider_response_t *resp = (provider_response_t *)calloc(1, sizeof(*resp));
+    if (!resp) return NULL;
+    if (!chunk) { resp->content = strdup(""); return resp; }
+/* HTTP layer already strips "data: " prefix — handle both cases */
+      const char *json_str = chunk;
+      if (strncmp(chunk, "data: ", 6) == 0)
+          json_str = chunk + 6;
+    if (strncmp(json_str, "[DONE]", 6) == 0) { resp->content = strdup(""); return resp; }
+    char *err = NULL;
+    json_t *root = json_parse(json_str, &err);
+    if (!root) { resp->content = strdup(""); free(err); return resp; }
+    json_t *choices = json_object_get(root, "choices");
+    if (choices && json_len(choices) > 0) {
+        json_t *choice = json_get(choices, 0);
+        /* B22: finish_reason */
+        { const char *fr = json_get_str(choice, "finish_reason", NULL); if (fr) snprintf(resp->finish_reason, sizeof(resp->finish_reason), "%s", fr); }
+        json_t *delta = json_object_get(choice, "delta");
+        if (delta) resp->content = strdup(json_get_str(delta, "content", ""));
+    }
+    json_free(root);
+    return resp;
+}
+
+static void custom_free_response(provider_response_t *resp) {
+    if (!resp) return;
+    free(resp->content);
+    free(resp->reasoning);
+    free(resp);
+}
+
+const provider_ops_t PROVIDER_OPS_CUSTOM = {
+    .build_url = custom_build_url,
+    .build_headers = custom_build_headers,
+    .build_request_body = custom_build_request_body,
+    .parse_response = custom_parse_response,
+    .parse_stream_chunk = custom_parse_stream_chunk,
+    .free_response = custom_free_response,
+    .name = "custom"
+};
+
+/* Port of Python: _normalized_custom_base_url */
+char *custom_normalized_base_url(const char *value) {
+    if (!value) return strdup("");
+    /* Strip whitespace */
+    while (*value == ' ' || *value == '\t') value++;
+    size_t len = strlen(value);
+    while (len > 0 && (value[len-1] == ' ' || value[len-1] == '\t')) len--;
+    /* Strip trailing slash */
+    while (len > 0 && value[len-1] == '/') len--;
+    char *result = malloc(len + 1);
+    if (!result) return NULL;
+    memcpy(result, value, len);
+    result[len] = '\0';
+    return result;
+}
+
+/* Port of Python: _custom_provider_model_matches
+ * agent_model matches the entry if its `model` equals agent_model, OR the
+ * entry has a `models` catalog (dict keys or list/tuple) containing
+ * agent_model. Empty model + empty catalog -> match (unfiltered). */
+bool custom_provider_model_matches(const char *agent_model, const json_t *entry)
+{
+    if (!entry || entry->type != JSON_OBJECT) return false;
+    char agent_norm[256];
+    {
+        const char *a = agent_model ? agent_model : "";
+        size_t j = 0;
+        for (size_t i = 0; a[i] && j + 1 < sizeof(agent_norm); i++) {
+            if (a[i] == ' ' || a[i] == '\t') continue;
+            agent_norm[j++] = (char)tolower((unsigned char)a[i]);
+        }
+        agent_norm[j] = '\0';
+    }
+
+    /* Multi-model catalog: dict keys or list/tuple of models. */
+    const json_t *models = json_object_get(entry, "models");
+    if (models) {
+        bool catalog_hit = false;
+        if (models->type == JSON_OBJECT) {
+            for (size_t i = 0; i < models->c.count; i++) {
+                const char *k = models->c.keys[i];
+                if (k) {
+                    /* normalize k */
+                    char kn[256]; size_t j = 0;
+                    for (size_t i2 = 0; k[i2] && j + 1 < sizeof(kn); i2++) {
+                        if (k[i2] == ' ' || k[i2] == '\t') continue;
+                        kn[j++] = (char)tolower((unsigned char)k[i2]);
+                    }
+                    kn[j] = '\0';
+                    if (strcmp(kn, agent_norm) == 0) { catalog_hit = true; break; }
+                }
+            }
+        } else if (models->type == JSON_ARRAY) {
+            for (size_t i = 0; i < json_array_size(models); i++) {
+                const json_t *m = json_get(models, i);
+                if (m && m->type == JSON_STRING) {
+                    const char *s = m->str_val;
+                    char mn[256]; size_t j = 0;
+                    for (size_t i2 = 0; s[i2] && j + 1 < sizeof(mn); i2++) {
+                        if (s[i2] == ' ' || s[i2] == '\t') continue;
+                        mn[j++] = (char)tolower((unsigned char)s[i2]);
+                    }
+                    mn[j] = '\0';
+                    if (strcmp(mn, agent_norm) == 0) { catalog_hit = true; break; }
+                }
+            }
+        }
+        if (catalog_hit) return true;
+    }
+
+    const char *provider_model = json_get_str(entry, "model", "");
+    if (!provider_model || !provider_model[0]) {
+        /* No model filter and no catalog -> matches anything. */
+        return !(models && (models->type == JSON_OBJECT || models->type == JSON_ARRAY));
+    }
+    /* normalize provider_model */
+    char pm[256]; size_t j = 0;
+    for (size_t i = 0; provider_model[i] && j + 1 < sizeof(pm); i++) {
+        if (provider_model[i] == ' ' || provider_model[i] == '\t') continue;
+        pm[j++] = (char)tolower((unsigned char)provider_model[i]);
+    }
+    pm[j] = '\0';
+    return strcmp(pm, agent_norm) == 0;
+}
+
+/* Port of Python: _custom_provider_extra_body_for_agent */
+json_t *custom_provider_extra_body_for_agent(
+    const char *provider, const char *model, const char *base_url,
+    const json_t *custom_providers) {
+    char prov_norm[256];
+    {
+        const char *p = provider ? provider : "";
+        size_t j = 0;
+        for (size_t i = 0; p[i] && j + 1 < sizeof(prov_norm); i++) {
+            if (p[i] == ' ' || p[i] == '\t') continue;
+            prov_norm[j++] = (char)tolower((unsigned char)p[i]);
+        }
+        prov_norm[j] = '\0';
+    }
+
+    const char *filter = NULL;
+    if (strcmp(prov_norm, "custom") == 0) {
+        filter = "";
+    } else if (strncmp(prov_norm, "custom:", 7) == 0) {
+        filter = prov_norm + 7;
+        /* strip leading spaces */
+        while (*filter == ' ') filter++;
+    } else {
+        return NULL;
+    }
+
+    if (!base_url) return NULL;
+    char *target_url = custom_normalized_base_url(base_url);
+    if (!target_url || !target_url[0]) {
+        free(target_url);
+        return NULL;
+    }
+
+    json_t *fallback = NULL;
+    if (!custom_providers || custom_providers->type != JSON_ARRAY) {
+        free(target_url);
+        return NULL;
+    }
+
+    size_t n = json_len(custom_providers);
+    for (size_t i = 0; i < n; i++) {
+        const json_t *entry = json_get(custom_providers, i);
+        if (!entry || entry->type != JSON_OBJECT) continue;
+
+        if (filter && filter[0]) {
+            const char *pk = json_get_str(entry, "provider_key", "");
+            const char *nm = json_get_str(entry, "name", "");
+            char pkn[256], nmn[256];
+            /* normalize pk */
+            {
+                size_t j = 0;
+                for (size_t k = 0; pk[k] && j + 1 < sizeof(pkn); k++) {
+                    if (pk[k] == ' ' || pk[k] == '\t') continue;
+                    pkn[j++] = (char)tolower((unsigned char)pk[k]);
+                }
+                pkn[j] = '\0';
+            }
+            {
+                size_t j = 0;
+                for (size_t k = 0; nm[k] && j + 1 < sizeof(nmn); k++) {
+                    if (nm[k] == ' ' || nm[k] == '\t') continue;
+                    nmn[j++] = (char)tolower((unsigned char)nm[k]);
+                }
+                nmn[j] = '\0';
+            }
+            if (strcmp(pkn, filter) != 0 && strcmp(nmn, filter) != 0)
+                continue;
+        }
+
+        const char *entry_url_str = json_get_str(entry, "base_url", NULL);
+        char *entry_url = entry_url_str ? custom_normalized_base_url(entry_url_str) : NULL;
+        if (!entry_url) continue;
+
+        bool url_match = (strcmp(entry_url, target_url) == 0);
+        free(entry_url);
+        if (!url_match) continue;
+
+        const json_t *extra_body = json_object_get(entry, "extra_body");
+        if (!extra_body || extra_body->type != JSON_OBJECT || extra_body->c.count == 0)
+            continue;
+
+        const char *provider_model = json_get_str(entry, "model", "");
+        if (provider_model && provider_model[0]) {
+            if (custom_provider_model_matches(model, entry)) {
+                free(target_url);
+                return json_copy((json_t *)extra_body);
+            }
+        } else {
+            if (!fallback)
+                fallback = json_copy((json_t *)extra_body);
+        }
+    }
+    free(target_url);
+    return fallback;
+}
+
+/* Port of Python: _merge_custom_provider_extra_body (pure merge variant). */
+json_t *custom_merge_extra_body(
+    const char *provider, const char *model, const char *base_url,
+    const json_t *custom_providers, const json_t *existing_extra_body) {
+    json_t *extra_body = custom_provider_extra_body_for_agent(
+        provider, model, base_url, custom_providers);
+    if (!extra_body) return existing_extra_body ? json_copy((json_t *)existing_extra_body) : NULL;
+
+    if (!existing_extra_body || existing_extra_body->type != JSON_OBJECT)
+        return extra_body;
+
+    /* Merge: start with extra_body, overlay existing overrides. */
+    json_t *merged = json_copy(extra_body);
+    json_free(extra_body);
+    if (!merged) return json_copy((json_t *)existing_extra_body);
+
+    for (size_t i = 0; i < existing_extra_body->c.count; i++) {
+        if (existing_extra_body->c.keys && existing_extra_body->c.keys[i] &&
+            existing_extra_body->c.items[i])
+            json_set(merged, existing_extra_body->c.keys[i],
+                     json_copy(existing_extra_body->c.items[i]));
+    }
+    return merged;
+}

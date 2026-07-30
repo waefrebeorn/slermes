@@ -51,26 +51,28 @@ FROM ghcr.io/astral-sh/uv:0.11.6-python3.13-trixie@sha256:b3c543b6c4f23a5f2df228
 FROM node:22-bookworm-slim@sha256:7af03b14a13c8cdd38e45058fd957bf00a72bbe17feac43b1c15a689c029c732 AS node_source
 FROM debian:13.4
 
-# Disable Python stdout buffering to ensure logs are printed immediately.
-# Do not write .pyc files at runtime: /opt/hermes is immutable in the
-# published container and writable state belongs under /opt/data.
-ENV PYTHONUNBUFFERED=1
-ENV PYTHONDONTWRITEBYTECODE=1
+# Stage 1: build
+FROM debian:13-slim AS build
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        gcc make libssl-dev pkg-config ca-certificates \
+        unzip curl && \
+    rm -rf /var/lib/apt/lists/*
+COPY . /build
+WORKDIR /build
+RUN mkdir -p lib/syslib && ln -sf /usr/lib/x86_64-linux-gnu/libncursesw.so.6 lib/syslib/libncursesw.so && \
+    ln -sf /usr/lib/x86_64-linux-gnu/libtinfo.so.6 lib/syslib/libtinfo.so && \
+    ln -sf /usr/lib/x86_64-linux-gnu/libpanelw.so.6 lib/syslib/libpanelw.so
+RUN make deps
+RUN bash ./scripts/build_third_party.sh whisper_cpp 2>&1 | tail -5 || echo "whisper skipped"
+RUN make -j$(nproc)
+RUN make static 2>/dev/null; true
 
-# Store Playwright browsers outside the volume mount so the build-time
-# install survives the /opt/data volume overlay at runtime.
-ENV PLAYWRIGHT_BROWSERS_PATH=/opt/hermes/.playwright
-
-# Install system dependencies in one layer, clear APT cache.
-# tini was previously PID 1 to reap orphaned zombie processes (MCP stdio
-# subprocesses, git, bun, etc.) that would otherwise accumulate when hermes
-# ran as PID 1. See #15012. Phase 2 of the s6-overlay supervision plan
-# replaces tini with s6-overlay's /init (PID 1 = s6-svscan), which reaps
-# zombies non-blockingly on SIGCHLD and additionally supervises the main
-# hermes process, the dashboard, and per-profile gateways.
-RUN apt-get -o Acquire::Retries=3 update && \
-    apt-get -o Acquire::Retries=3 install -y --no-install-recommends \
-    ca-certificates curl iputils-ping python3 python-is-python3 ripgrep ffmpeg gcc g++ make cmake python3-dev python3-venv libffi-dev libolm-dev procps git openssh-client docker-cli xz-utils && \
+# Stage 2: runtime
+FROM debian:13-slim
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        ca-certificates libssl3t64 && \
     rm -rf /var/lib/apt/lists/*
 
 # Prefer the fixed SQLite over Debian's vulnerable libsqlite3.so.0. Keep the
@@ -415,28 +417,13 @@ ENV HERMES_LAZY_INSTALL_TARGET=/opt/data/lazy-packages
 ENV PATH="/opt/hermes/bin:/opt/hermes/.venv/bin:/opt/data/.local/bin:${PATH}"
 RUN mkdir -p /opt/data
 VOLUME [ "/opt/data" ]
+ENV SLERMES_HOME=/opt/data
 
-# s6-overlay's /init is PID 1. It sets up the supervision tree, runs
-# /etc/cont-init.d/* (our stage2 hook), starts s6-rc services
-# declared in /etc/s6-overlay/s6-rc.d/, then exec's its remaining
-# argv as the container's "main program" with stdin/stdout/stderr
-# inherited (this is what makes interactive --tui work). When the
-# main program exits, /init begins stage 3 shutdown and the container
-# exits with the program's exit code. Replaces tini — see Phase 2 of
-# docs/plans/2026-05-07-s6-overlay-dynamic-subagent-gateways.md.
-#
-# We use the ENTRYPOINT+CMD split rather than CMD alone so the
-# wrapper is prepended to user-supplied args automatically:
-#
-#   docker run <image>                  → /init main-wrapper.sh   (CMD default)
-#   docker run <image> chat -q "hi"     → /init main-wrapper.sh chat -q hi
-#   docker run <image> sleep infinity   → /init main-wrapper.sh sleep infinity
-#   docker run <image> --tui            → /init main-wrapper.sh --tui
-#
-# main-wrapper.sh handles arg routing (bare-exec vs. hermes
-# subcommand vs. no-args), drops to the hermes user via s6-setuidgid,
-# and exec's the final program so its exit code becomes the container
-# exit code. Without the wrapper-as-ENTRYPOINT, leading-dash args
-# like `--version` would be intercepted by /init's POSIX shell.
-ENTRYPOINT [ "/init", "/opt/hermes/docker/main-wrapper.sh" ]
-CMD [ ]
+# Create non-root user
+RUN useradd -m -d /opt/data slermes && \
+    mkdir -p /opt/data && \
+    chown -R slermes:slermes /opt/data
+
+USER slermes
+ENTRYPOINT ["slermes"]
+CMD ["--help"]

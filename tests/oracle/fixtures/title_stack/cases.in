@@ -1,0 +1,46 @@
+# title_stack oracle fixtures — truthy / sanitize / describe / extract / summarize
+# \e -> ESC, \n -> newline, \x1e -> RS (SKILL_EXCERPT_JOINT)
+
+# --- is_truthy_value (utils.py) ---
+truthy 1 false
+truthy true false
+truthy TRUE false
+truthy  Yes  false
+truthy on false
+truthy off true
+truthy 0 true
+truthy no true
+truthy __none__ true
+truthy __none__ false
+truthy garbage true
+truthy  false
+
+# --- SessionDB.sanitize_title (hermes_state.py) ---
+sanitize hello world
+sanitize   spaced   out   title  
+sanitize tab\nand newline collapse
+sanitize ctrl\x1echars ok
+sanitize 
+sanitize aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+sanitize héllo wörld — unicode ok 🎉
+sanitize a​b‌c‍d
+sanitize ‪override‬ text‏
+
+# --- describe_skill_invocation / extract (agent/skill_commands.py) ---
+describe plain user message, not scaffolding
+extract plain user message, not scaffolding
+describe [IMPORTANT: The user has invoked the "work" skill. The full skill content is loaded below.]\n\nSKILL BODY HERE\n\nThe user has provided the following instruction alongside the skill invocation: fix the title leak
+extract [IMPORTANT: The user has invoked the "work" skill. The full skill content is loaded below.]\n\nSKILL BODY HERE\n\nThe user has provided the following instruction alongside the skill invocation: fix the title leak
+describe [IMPORTANT: The user has invoked the "work" skill. The full skill content is loaded below.]\n\nBODY ONLY, no instruction
+extract [IMPORTANT: The user has invoked the "work" skill. The full skill content is loaded below.]\n\nBODY ONLY, no instruction
+describe [IMPORTANT: The user has invoked the "/clean /work" skill bundle, loaded below.]\nUser instruction: do   both\t things\n\n[Loaded as part of the "/clean /work" bundle]\nskill body
+extract [IMPORTANT: The user has invoked the "/clean /work" skill bundle, loaded below.]\nUser instruction: do   both\t things\n\n[Loaded as part of the "/clean /work" bundle]\nskill body
+describe [IMPORTANT: The user has invoked the "work" skill. The full skill content is loaded below.]\n\nThe user has provided the following instruction alongside the skill invocation: head part\x1etail part after joint
+describe [IMPORTANT: The user has invoked the "work" skill. The full skill content is loaded below.]\n\nThe user has provided the following instruction alongside the skill invocation: \n\n[Runtime note: platform=telegram]
+describe [IMPORTANT: The user has invoked the "" skill. The full skill content is loaded below.]\n\nThe user has provided the following instruction alongside the skill invocation: nameless instruction
+describe [IMPORTANT: The user has invoked the unquoted skill body
+
+# --- _summarize_user_message (agent/title_generator.py) ---
+summarize ordinary message about fixing the build
+summarize [IMPORTANT: The user has invoked the "work" skill. The full skill content is loaded below.]\n\nBody\n\nThe user has provided the following instruction alongside the skill invocation: refactor the parser
+summarize 

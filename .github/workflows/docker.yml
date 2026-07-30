@@ -1,35 +1,20 @@
-name: Docker Build, Test, and Publish
+# ── Docker CI: Build and optionally publish slermes Docker image ──
+# 🌻 Slermes C — the agent that grows with you, Now in C
+
+name: Docker
 
 on:
-  # Trusted main pushes run this workflow directly so environment-scoped
-  # Docker Hub secrets are resolved by the top-level workflow, never across
-  # a reusable-workflow boundary.
   push:
     branches: [main]
-  release:
-    types: [published]
-  # CI calls this only for untrusted PR build/test coverage. Those runs never
-  # reach the protected publish or merge jobs below.
-  workflow_call:
-
-permissions:
-  contents: read
-
-# Concurrency: push/release runs are NEVER cancelled so every merge gets
-# its own image.  PR runs reuse a PR-scoped group with
-# cancel-in-progress: true so rapid pushes to the same PR collapse to
-# the latest commit.
-concurrency:
-  group: docker-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
 
 env:
-  IMAGE_NAME: nousresearch/hermes-agent
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  # Build and test the image for each architecture. This job runs PR code,
-  # so it must remain secret-free. Publishing happens in the separate,
-  # protected publish job after these tests pass.
   build:
     if: github.repository == 'NousResearch/hermes-agent'
     strategy:
@@ -197,63 +182,42 @@ jobs:
   merge:
     if: github.repository == 'NousResearch/hermes-agent' && (github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'release')
     runs-on: ubuntu-latest
-    needs: [publish]
-    timeout-minutes: 10
-    environment: container-publish
+    permissions:
+      contents: read
+      packages: write
+
     steps:
-      - name: Download digests
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
-        with:
-          path: /tmp/digests
-          pattern: digest-*
-          merge-multiple: true
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+        uses: docker/setup-buildx-action@v3
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create manifest list and push
-        working-directory: /tmp/digests
-        env:
-          IMAGE_NAME: ${{ env.IMAGE_NAME }}
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
-        run: |
-          set -euo pipefail
-          args=()
-          for digest_file in *; do
-            args+=("${IMAGE_NAME}@sha256:${digest_file}")
-          done
-          if [ "${{ github.event_name }}" = "release" ]; then
-            tags=(-t "${IMAGE_NAME}:${RELEASE_TAG}")
-          else
-            tags=(-t "${IMAGE_NAME}:main" -t "${IMAGE_NAME}:latest")
-          fi
-          # Retry: Docker Hub API + just-pushed digest eventual consistency
-          # can transiently fail the create; the operation is idempotent.
-          for i in 1 2 3; do
-            if docker buildx imagetools create "${tags[@]}" "${args[@]}"; then
-              break
-            fi
-            if [ "$i" = 3 ]; then
-              echo "::error::imagetools create failed after 3 attempts"
-              exit 1
-            fi
-            echo "::warning::imagetools create failed (attempt $i); retrying in 20s"
-            sleep 20
-          done
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix=
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
 
-      - name: Inspect image
-        env:
-          IMAGE_NAME: ${{ env.IMAGE_NAME }}
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
-        run: |
-          if [ "${{ github.event_name }}" = "release" ]; then
-            docker buildx imagetools inspect "${IMAGE_NAME}:${RELEASE_TAG}"
-          else
-            docker buildx imagetools inspect "${IMAGE_NAME}:main"
-          fi
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: packaging/docker/Dockerfile
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

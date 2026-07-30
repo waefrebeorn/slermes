@@ -1,0 +1,42 @@
+# Fixture for the PURE skills_hub path-validation helpers
+# (tests/t_port_skills_hub_path.c). One op per line. Multi-field ops use '|'.
+
+# === validate_skill: _validate_skill_name (allow_nested=False) ===
+validate_skill my-skill
+validate_skill my_skill_123
+validate_skill GoodName
+validate_skill a/b
+validate_skill ../escape
+validate_skill ../../etc/passwd
+validate_skill /absolute/path
+validate_skill C:drive
+validate_skill .
+validate_skill ..
+validate_skill ...
+validate_skill .hidden
+validate_skill 
+validate_skill foo/../bar
+validate_skill trailing-slash/
+
+# === validate_parent: _validate_install_parent_path (allow_nested=True) ===
+validate_parent mlops
+validate_parent mlops/training
+validate_parent my cat with spaces
+validate_parent ../../escape
+validate_parent /abs/parent
+validate_parent C:parent
+validate_parent .
+validate_parent 
+validate_parent a/../b
+
+# === lock_path: _normalize_lock_install_path(<skill>|<install_path>) ===
+lock_path my-skill|my-skill
+lock_path my-skill|mlops/training/my-skill
+lock_path my-skill|skills/my-skill
+lock_path my-skill|other-name
+lock_path my-skill|../escape/my-skill
+lock_path my-skill|/abs/my-skill
+lock_path my-skill|my-skill/extra
+lock_path my-skill|
+lock_path my-skill|../../my-skill
+lock_path bad/name|bad/name

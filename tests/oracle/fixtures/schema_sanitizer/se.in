@@ -1,0 +1,27 @@
+[
+  {
+    "function": {
+      "name": "pick_model",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "enum": ["Qwen/Qwen3.5-0.8B", "openai/gpt-oss-20b", "local/foo"],
+            "description": "hf id"
+          },
+          "mode": {"type": "string", "enum": ["fast", "slow"], "description": "m"}
+        }
+      }
+    }
+  },
+  {
+    "name": "responses_tool",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "owner": {"type": "string", "enum": ["org/repo", "solo"], "description": "o"}
+      }
+    }
+  }
+]

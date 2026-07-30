@@ -1,0 +1,45 @@
+# Fixture for commands_clamp_names (tests/t_port_command_clamp.c).
+# Entry: name|desc|key .  reserved: NAME .  ===  ends a case.
+# cmd_entry_t name cap = 32 (CMD_NAME_LIMIT).
+
+# === plain passthrough (desc + key survive) ===
+alpha|Alpha command|key_alpha
+beta|Beta command|key_beta
+===
+
+# === <=32 char collision: second dropped (NOT renamed) ===
+abc|first|k1
+abc|second|k2
+===
+
+# === truncation then collision -> rename with digit suffix ===
+this_is_a_very_long_command_name_exceeding_the_limit_by_far_12345|long1|k1
+this_is_a_very_long_command_name_exceeding_the_limit_by_far_99999|long2|k2
+===
+
+# === reserved name collides -> dropped ===
+reserved: keepme
+keepme|should drop|k
+keepme2|should keep|k2
+===
+
+# === key/desc passthrough + mixed lengths ===
+short|keep desc and key|the_key
+anothershort|another|k2
+yetanother|yet|k3
+===
+
+# === all 10 digit slots exhausted -> extra dropped ===
+tool_that_is_way_too_long_to_fit_in_thirty_two_characters_aaaa|t0|k0
+tool_that_is_way_too_long_to_fit_in_thirty_two_characters_aaab|t1|k1
+tool_that_is_way_too_long_to_fit_in_thirty_two_characters_aaac|t2|k2
+tool_that_is_way_too_long_to_fit_in_thirty_two_characters_aaad|t3|k3
+tool_that_is_way_too_long_to_fit_in_thirty_two_characters_aaae|t4|k4
+tool_that_is_way_too_long_to_fit_in_thirty_two_characters_aaaf|t5|k5
+tool_that_is_way_too_long_to_fit_in_thirty_two_characters_aaag|t6|k6
+tool_that_is_way_too_long_to_fit_in_thirty_two_characters_aaah|t7|k7
+tool_that_is_way_too_long_to_fit_in_thirty_two_characters_aaai|t8|k8
+tool_that_is_way_too_long_to_fit_in_thirty_two_characters_aaaj|t9|k9
+tool_that_is_way_too_long_to_fit_in_thirty_two_characters_aaak|t10|k10
+tool_that_is_way_too_long_to_fit_in_thirty_two_characters_aaal|t11|k11
+===

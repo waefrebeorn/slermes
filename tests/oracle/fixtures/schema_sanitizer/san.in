@@ -1,0 +1,47 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "tool_a",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "bare": "string",
+          "maybe": ["string", "null"],
+          "nested_combinator": {"anyOf": [{"type": "string"}, {"type": "integer"}]},
+          "with_ref": {"$ref": "#/$defs/Foo", "default": "x"},
+          "items_obj": {"type": "array", "items": "integer"},
+          "ap_true": {"type": "object", "additionalProperties": true},
+          "enum_passthrough": {"type": "string", "enum": ["a/b", "c"]},
+          "req_prune": {"type": "object", "required": ["present", "missing"], "properties": {"present": {"type": "string"}}}
+        },
+        "required": ["bare"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "tool_b",
+      "parameters": {
+        "allOf": [{"type": "object", "properties": {"x": {"type": "string"}}}],
+        "oneOf": [{"type": "string"}],
+        "enum": ["top/enum"],
+        "not": {"type": "null"}
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "tool_c",
+      "parameters": {
+        "type": "object",
+        "examples": [{"a": 1}],
+        "properties": {
+          "nullable_union": {"anyOf": [{"type": "string"}, {"type": "null"}], "description": "a field"}
+        }
+      }
+    }
+  }
+]

@@ -1,0 +1,18 @@
+# Extended fixture: digest / finding_dict / scan_skill_cached (v671 gap closure)
+# Relative to tests/oracle/fixtures/skills_guard/
+# NOTE: cache_dir is a sibling of sample_skill (NOT inside it) so that
+# content_digest(sample_skill) stays deterministic across runs.
+
+# content_digest on a single file and on the sample_skill directory
+content_digest sample_skill/SKILL.md
+content_digest sample_skill
+
+# full_content_hash (sha256: prefix)
+full_content_hash sample_skill/SKILL.md
+
+# _finding_dict — 7 fields (description contains quotes to test escaping)
+finding_dict env_exfil_curl critical exfiltration sample_skill/SKILL.md 12 "curl $KEY" "curl interpolating secret"
+
+# scan_skill_cached — first run is fresh (no cache), second run hits cache
+scan_skill_cached sample_skill community "" sample_skill_cache
+scan_skill_cached sample_skill community "" sample_skill_cache
