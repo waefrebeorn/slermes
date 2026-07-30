@@ -729,7 +729,9 @@ int coding_context_run_git(const char *cwd, char *out, size_t out_size,
     vsnprintf(args, sizeof(args), fmt, ap);
     va_end(ap);
 
-    char cmd[1152];
+    /* vsnprintf consumes %h/%s as float/str from varargs → use literal "git" binary
+     * and pass args via shell so git receives the exact --pretty= format string. */
+    char cmd[2048];
     snprintf(cmd, sizeof(cmd), "git -C %s %s", cwd, args);
 
     /* timeout guard */
@@ -1056,7 +1058,7 @@ char *coding_context_build_workspace_block(const char *cwd)
                 }
             }
             /* recent commits */
-            if (coding_context_run_git(root, buf, sizeof(buf), "log -3 --pretty='%h %s'") == 0 && buf[0]) {
+            if (coding_context_run_git(root, buf, sizeof(buf), "log -3 --pretty=format:%h %s") == 0 && buf[0]) {
                 len += (size_t)snprintf(out + len, cap - len, "- Recent commits:\n");
                 char *line = strtok(buf, "\n");
                 while (line) {
