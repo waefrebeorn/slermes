@@ -1058,7 +1058,7 @@ char *coding_context_build_workspace_block(const char *cwd)
                 }
             }
             /* recent commits */
-            if (coding_context_run_git(root, buf, sizeof(buf), "log -3 --pretty=format:%h %s") == 0 && buf[0]) {
+            if (coding_context_run_git(root, buf, sizeof(buf), "log -3 --pretty='%%h %%s'") == 0 && buf[0]) {
                 len += (size_t)snprintf(out + len, cap - len, "- Recent commits:\n");
                 char *line = strtok(buf, "\n");
                 while (line) {
