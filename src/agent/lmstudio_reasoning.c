@@ -2,7 +2,7 @@
  * lmstudio_reasoning.c — LM Studio reasoning-effort resolution.
  *
  * Port of Python agent/lmstudio_reasoning.py (60 lines).
- * Maps user's reasoning_config onto LM Studio's OpenAI-compatible
+ * Maps user's reasoning_config dict onto LM Studio's OpenAI-compatible
  * vocabulary, then clamps against the model's allowed_options.
  *
  * MIT License — WuBu Slermes Project
@@ -34,31 +34,48 @@ bool lmstudio_is_valid_effort(const char *effort) {
 static const char *ALIAS_FROM[]  = {"off", "on", NULL};
 static const char *ALIAS_TO[]    = {"none", "medium"};
 
-char *lmstudio_map_effort_alias(const char *effort) {
-    if (!effort || !effort[0]) return (char *)effort;
+const char *lmstudio_map_effort_alias(const char *effort) {
+    if (!effort || !effort[0]) return effort;
     for (int i = 0; ALIAS_FROM[i]; i++) {
         if (strcmp(effort, ALIAS_FROM[i]) == 0)
-            return (char *)ALIAS_TO[i];
+            return ALIAS_TO[i];
     }
-    return (char *)effort;
+    return effort;
 }
 
-/* ── Helper: lowercase a string into static buffer ──────────── */
+/* ── Helpers ───────────────────────────────────────────────── */
 
-static char *strlwr(char *dest, const char *src, size_t n) {
+static void strlwr(char *dest, const char *src, size_t n) {
+    if (!dest || n == 0) return;
     size_t i;
-    for (i = 0; src[i] && i < n - 1; i++)
+    for (i = 0; src[i] && i + 1 < n; i++)
         dest[i] = (char)(src[i] >= 'A' && src[i] <= 'Z' ? src[i] + 32 : src[i]);
     dest[i] = '\0';
-    return dest;
 }
 
 /* ── Resolution ────────────────────────────────────────────── */
 
-/* Internal: resolve with pre-parsed params */
-static const char *resolve_impl(int enabled, const char *effort, char *const *allowed_options) {
+/*
+ * resolve_lmstudio_effort — Return the reasoning_effort string to send to
+ * LM Studio, or NULL meaning "omit the field".
+ *
+ * Mirrors Python:
+ *   def resolve_lmstudio_effort(
+ *       reasoning_config: Optional[dict],
+ *       allowed_options: Optional[List[str]],
+ *   ) -> Optional[str]:
+ */
+const char *resolve_lmstudio_effort(const lmstudio_reasoning_config_t *reasoning_config, const char *const *allowed_options) {
     /* Default effort */
     const char *resolved = "medium";
+
+    if (!reasoning_config) {
+        /* No config provided: use defaults, ignore allowed_options clamping */
+        return resolved;
+    }
+
+    bool enabled = reasoning_config->enabled;
+    const char *effort = reasoning_config->effort;
 
     if (!enabled) {
         resolved = "none";
@@ -89,35 +106,4 @@ static const char *resolve_impl(int enabled, const char *effort, char *const *al
     }
 
     return resolved;
-}
-
-/* ── Python-compatible API ─────────────────────────────────── */
-
-/* Port of Python lmstudio_reasoning.py:resolve_lmstudio_effort().
- * reasoning_config is a dict-like object with:
- *   - 'enabled': bool (or None for default True)
- *   - 'effort': str (or None for default "medium")
- *
- * For simplicity, we accept a structured pointer instead of a Python dict.
- * Callers should populate this struct from their config source.
- */
-typedef struct {
-    int enabled;              /* 1 if reasoning is enabled, 0 if disabled */
-    const char *effort;       /* User's effort choice: "low", "medium", "high" */
-    char *const *allowed_options;  /* NULL-terminated array or NULL */
-} lmstudio_reasoning_config_t;
-
-/* Must be on one line for parity scanner regex */
-char *resolve_lmstudio_effort(void *reasoning_config, char *const *allowed_options) {
-    lmstudio_reasoning_config_t *cfg = (lmstudio_reasoning_config_t *)reasoning_config;
-
-    if (!cfg) {
-        /* No config provided: use defaults, ignore allowed_options clamping */
-        return "medium";
-    }
-
-    /* Use allowed_options from config if not provided as separate arg */
-    char *const *opts = allowed_options ? allowed_options : cfg->allowed_options;
-
-    return (char *)resolve_impl(cfg->enabled, cfg->effort, opts);
 }
