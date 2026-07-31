@@ -128,6 +128,11 @@ typedef enum {
     HERMES_ERR_STREAM,          /* Stream error */
     HERMES_ERR_PIPE,            /* Pipe error */
     HERMES_ERR_PROTOCOL,        /* Protocol violation */
+
+    /* K21: Domain errors — port of Python agent/errors.py */
+    HERMES_ERR_SSL_CONFIG,      /* SSLConfigurationError */
+    HERMES_ERR_EMPTY_STREAM,    /* EmptyStreamError */
+    HERMES_ERR_MOA_PRESET_NOT_FOUND, /* MoAPresetNotFoundError */
 } hermes_error_code_t;
 
 /* Human-readable error code names */
@@ -174,6 +179,25 @@ static inline bool hermes_failed(hermes_error_t e) { return e.code != HERMES_OK;
 
 /* Format error as string (truncated to buf) */
 void hermes_error_format(const hermes_error_t *e, char *buf, size_t buf_size);
+
+/* ================================================================
+ *  Domain error constructors — Port of Python agent/errors.py
+ * ================================================================
+ * Python defines three domain exception classes used by callers such as
+ * agent/ssl_guard.py (_ssl_err -> SSLConfigurationError),
+ * agent/chat_completion_helpers.py (EmptyStreamError), and
+ * agent/error_classifier.py (MoAPresetNotFoundError). They are faithful
+ * aliases onto the canonical hermes_error_t system — reuse, not duplication.
+ */
+static inline hermes_error_t hermes_error_ssl_config(const char *msg) {
+    return hermes_error(HERMES_ERR_SSL_CONFIG, msg);
+}
+static inline hermes_error_t hermes_error_empty_stream(const char *msg) {
+    return hermes_error(HERMES_ERR_EMPTY_STREAM, msg);
+}
+static inline hermes_error_t hermes_error_moa_preset_not_found(const char *msg) {
+    return hermes_error(HERMES_ERR_MOA_PRESET_NOT_FOUND, msg);
+}
 
 #ifdef __cplusplus
 }

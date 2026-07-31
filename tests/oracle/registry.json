@@ -446,6 +446,11 @@
       "harness": "tests/t_port_yuanbao_proto.c",
       "oracle": "tests/sta_oracle_yuanbao_proto.py",
       "fixtures": "tests/oracle/fixtures/yuanbao_proto"
+    },
+    "errors": {
+      "harness": "tests/t_port_errors.c",
+      "oracle": "tests/sta_oracle_errors.py",
+      "fixtures": "tests/oracle/fixtures/errors"
     }
   },
   "normalize": {

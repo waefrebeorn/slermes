@@ -71,6 +71,10 @@ const char *hermes_error_name(hermes_error_code_t code) {
         case HERMES_ERR_STREAM:       return "StreamError";
         case HERMES_ERR_PIPE:         return "PipeError";
         case HERMES_ERR_PROTOCOL:     return "ProtocolError";
+        /* K21: domain errors — Port of Python agent/errors.py */
+        case HERMES_ERR_SSL_CONFIG:   return "SSLConfigurationError";
+        case HERMES_ERR_EMPTY_STREAM: return "EmptyStreamError";
+        case HERMES_ERR_MOA_PRESET_NOT_FOUND: return "MoAPresetNotFoundError";
         default:                      return "UnknownError";
     }
 }

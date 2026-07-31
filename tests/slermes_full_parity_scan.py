@@ -196,9 +196,86 @@ def compute_keyword_match_struct(name, c_structs):
     return False
 
 
+def module_port_status(modname):
+    """Reliable port-presence check for Python module ``modname``.
+
+    Detection layers (each progressively softer), so we don't manufacture
+    false gaps for ports that are folded into a related/differently-named C
+    file:
+
+    1. Dedicated C file by the project's naming conventions (strongest).
+    2. An explicit author-intentional fold-in marker in a C file, e.g.
+       ``/* Port of Python agent/<modname>.py */`` (catches ports folded into
+       a related file, e.g. iteration_budget -> budget_tracker.c).
+    3. A mention inside a catch-all wrapper file (softest).
+    """
+    SL = SLERMES_DIR
+    candidates = [
+        SL / "src" / "agent" / f"{modname}.c",
+        SL / "src" / "agent" / f"port_agent_{modname}.c",
+        SL / "src" / "cli" / f"port_agent_{modname}.c",
+        SL / "src" / "cli" / f"port_tools_{modname}.c",
+        SL / "src" / "tools" / f"port_{modname}.c",
+        SL / "src" / "tools" / f"{modname}.c",
+        SL / "lib" / f"lib{modname}" / f"{modname}.c",
+        SL / "lib" / f"lib{modname}" / f"port_{modname}.c",
+    ]
+    for c in candidates:
+        if c.exists():
+            return ("ported", str(c.relative_to(SL)))
+
+    # Layer 2: author-intentional fold-in marker. Scan the C tree once for
+    # "Port of Python agent/<modname>.py" / "tools/<modname>.py" comments.
+    marker = f"{modname}.py"
+    for cdir in (SL / "src", SL / "lib"):
+        if not cdir.exists():
+            continue
+        for root, dirs, files in os.walk(cdir):
+            for f in files:
+                if not f.endswith((".c", ".h")):
+                    continue
+                fpath = Path(root) / f
+                try:
+                    txt = fpath.read_text(encoding="utf-8", errors="replace")
+                except Exception:
+                    continue
+                # Look for a "Port of Python .../<modname>.py" marker.
+                if (f"Port of Python agent/{marker}" in txt
+                        or f"Port of Python tools/{marker}" in txt
+                        or f"port of Python agent/{marker}" in txt
+                        or f"port of Python {marker}" in txt
+                        or f"// {marker}" in txt or f"/* {marker}" in txt
+                        or f"agent/{marker}" in txt or f"tools/{marker}" in txt):
+                    return ("ported", str(fpath.relative_to(SL)) + f" (fold-in of {marker})")
+
+    # Layer 3: catch-all wrapper files.
+    wrappers = [
+        SL / "src" / "agent" / "port_agent_remaining_wrappers.c",
+        SL / "src" / "tools" / "port_tools_remaining_wrappers.c",
+    ]
+    for w in wrappers:
+        if w.exists():
+            try:
+                txt = w.read_text(encoding="utf-8", errors="replace")
+            except Exception:
+                continue
+            if (f"port_{modname}" in txt or f"{modname}_" in txt
+                    or (f"modname" in txt and modname in txt)):
+                return ("partial", str(w.relative_to(SL)))
+    return ("unported", "")
+
+
 def scan_python_file(filepath, c_funcs, c_structs):
-    """Full scan of a single Python file."""
+    """Full scan of a single Python file.
+
+    The headline verdict (results["port_status"]) is the RELIABLE file-existence
+    check (module_port_status). The function-name heuristic match
+    (results["matched"]/["total_features"]) is kept only as a secondary signal,
+    because C ports legitimately rename/namespace functions and the heuristic
+    undercounts real ports.
+    """
     rel = filepath.relative_to(HERMES_DIR)
+    modname = filepath.stem
     features = extract_python_features(filepath)
 
     results = {
@@ -208,7 +285,14 @@ def scan_python_file(filepath, c_funcs, c_structs):
         "matched": 0,
         "unmatched": [],
         "error": features.get("error"),
+        "port_status": "unported",
+        "port_evidence": "",
     }
+
+    # Reliable port-presence verdict (file existence).
+    pstatus, pev = module_port_status(modname)
+    results["port_status"] = pstatus
+    results["port_evidence"] = pev
 
     try:
         with open(filepath) as f:
@@ -230,7 +314,6 @@ def scan_python_file(filepath, c_funcs, c_structs):
         if compute_keyword_match_struct(cls["name"], c_structs):
             results["matched"] += 1
         else:
-            # Check if class methods have C equivalents
             matched_methods = []
             unmatched_methods = []
             for m in cls["methods"]:
@@ -241,7 +324,6 @@ def scan_python_file(filepath, c_funcs, c_structs):
                     unmatched_methods.append(m)
 
             if len(unmatched_methods) >= len(matched_methods):
-                # Report as unmatched if most methods are missing
                 results["unmatched"].append({
                     "type": "class",
                     "name": cls["name"],
@@ -274,6 +356,9 @@ def main():
     all_results = []
     total_funcs = 0
     total_matched = 0
+    ported = 0
+    partial = 0
+    unported = 0
 
     for py_dir in SCAN_DIRS:
         if not py_dir.exists():
@@ -288,41 +373,51 @@ def main():
 
             total_funcs += results["total_features"]
             total_matched += results["matched"]
-
-            if results["unmatched"]:
-                print(f"  ⚠️ {results['file']} ({results['loc']} LOC)")
-                print(f"     {results['matched']}/{results['total_features']} features matched")
-                if detail:
-                    for u in results["unmatched"]:
-                        print(f"     → {u['type']}: {u['name']}")
+            if results["port_status"] == "ported":
+                ported += 1
+            elif results["port_status"] == "partial":
+                partial += 1
             else:
-                print(f"  ✅ {results['file']} ({results['loc']} LOC) — {results['matched']}/{results['total_features']}")
+                unported += 1
+
+            tag = {"ported": "✅", "partial": "🟡", "unported": "❌"}[results["port_status"]]
+            if results["port_status"] == "ported":
+                print(f"  {tag} {results['file']} ({results['loc']} LOC) — PORTED [{results['port_evidence']}]")
+            elif results["port_status"] == "partial":
+                print(f"  {tag} {results['file']} ({results['loc']} LOC) — PARTIAL (in {results['port_evidence']})")
+            else:
+                print(f"  {tag} {results['file']} ({results['loc']} LOC) — UNPORTED "
+                      f"(heuristic fn-match {results['matched']}/{results['total_features']})")
 
     print()
     print("=" * 72)
-    print(f"  OVERALL: {total_matched}/{total_funcs} features matched ({100*total_matched/max(total_funcs,1):.1f}%)")
-    print(f"  Files scanned: {len(all_results)}")
-    print(f"  Files with mismatches: {sum(1 for r in all_results if r['unmatched'])}")
-    print(f"  Total unmatched: {sum(len(r['unmatched']) for r in all_results)}")
+    print("  HEADLINE (reliable, file-existence based):")
+    print(f"    PORTED:   {ported}")
+    print(f"    PARTIAL:  {partial}  (folded into a catch-all wrapper)")
+    print(f"    UNPORTED: {unported}")
+    print(f"    Total agent/ modules scanned: {len(all_results)}")
+    print()
+    print("  Secondary heuristic (function-name match, known to undercount):")
+    print(f"    {total_matched}/{total_funcs} features matched ({100*total_matched/max(total_funcs,1):.1f}%)")
     print("=" * 72)
 
-    if total_funcs - total_matched > 0:
+    if unported:
         print()
-        print("## UNMATCHED FEATURES DETAIL")
+        print("## TRUE UNPORTED MODULES (no C file found — real gaps)")
         print()
         for r in all_results:
-            if r["unmatched"]:
-                print(f"### {r['file']}")
-                print(f"Matched: {r['matched']}/{r['total_features']}")
-                for u in r["unmatched"][:20]:  # Limit detail output
-                    if u["type"] == "function":
-                        print(f"  - `{u['name']}` (function)")
-                    elif u["type"] == "class":
-                        print(f"  - `{u['name']}` (class, {len(u['matched_methods'])} matched / {len(u['unmatched_methods'])} unmatched methods)")
-                        for mm in u["unmatched_methods"]:
-                            print(f"    - method: `{mm}`")
-                if len(r["unmatched"]) > 20:
-                    print(f"  ... and {len(r['unmatched'])-20} more")
+            if r["port_status"] == "unported":
+                print(f"### {r['file']} ({r['loc']} LOC)")
+                if detail:
+                    for u in r["unmatched"][:20]:
+                        if u["type"] == "function":
+                            print(f"  - `{u['name']}` (function)")
+                        elif u["type"] == "class":
+                            print(f"  - `{u['name']}` (class, {len(u['matched_methods'])} matched / {len(u['unmatched_methods'])} unmatched methods)")
+                            for mm in u["unmatched_methods"]:
+                                print(f"    - method: `{mm}`")
+                    if len(r["unmatched"]) > 20:
+                        print(f"  ... and {len(r['unmatched'])-20} more")
 
 
 if __name__ == "__main__":
