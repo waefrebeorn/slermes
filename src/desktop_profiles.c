@@ -58,7 +58,10 @@ bool desktop_profile_create(const char *name, const char *clone_from) {
             strncpy(p->provider, src->provider, sizeof(p->provider) - 1);
             strncpy(p->soul, src->soul, sizeof(p->soul) - 1);
             p->skill_count = src->skill_count;
+            p->scope = src->scope;
         }
+    } else {
+        p->scope = PROFILE_SCOPE_LOCAL;
     }
 
     /* Default profile is "default" */
@@ -199,12 +202,24 @@ const desktop_profile_t *desktop_profile_find(const char *name) {
 
 bool desktop_profile_set_scope(const char *name, profile_scope_t scope) {
     if (!name) return false;
-    fprintf(stderr, "desktop_profile_set_scope: %s -> scope %d (stub)", name, scope);
+    int idx = find_profile_by_name(name);
+    if (idx < 0) {
+        fprintf(stderr, "desktop_profile_set_scope: '%s' not found\n", name);
+        return false;
+    }
+    if (scope < PROFILE_SCOPE_LOCAL || scope > PROFILE_SCOPE_GLOBAL) {
+        fprintf(stderr, "desktop_profile_set_scope: invalid scope %d\n", scope);
+        return false;
+    }
+    g_desktop.profiles[idx].scope = scope;
+    notify_status("Profile scope: %s -> %d", name, scope);
     return true;
 }
 
 profile_scope_t desktop_profile_get_scope(const char *name) {
-    (void)name;
-    return PROFILE_SCOPE_LOCAL;
+    if (!name) return PROFILE_SCOPE_LOCAL;
+    int idx = find_profile_by_name(name);
+    if (idx < 0) return PROFILE_SCOPE_LOCAL;
+    return g_desktop.profiles[idx].scope;
 }
 

@@ -110,6 +110,7 @@ typedef struct {
     char   model[256];
     char   provider[64];
     char   soul[65536];  /* SOUL.md content */
+    profile_scope_t scope; /* LOCAL / WORKSPACE / GLOBAL */
 } desktop_profile_t;
 
 /* Profile lifecycle */
