@@ -499,6 +499,97 @@ static void _norm_to_orig(size_t *pm, size_t n_codepoints, size_t nstart, size_t
     free(norm_to_orig);
 }
 
+/* Preserve Unicode characters from the file in the replacement string.
+ * Mirrors Python's _preserve_unicode_in_replacement: the file region has
+ * Unicode (em-dashes, smart quotes) but old/new are ASCII; writing new_string
+ * verbatim would corrupt the file's Unicode. Diff old->new in normalized space
+ * and apply only the actual edits, keeping the file's original text (with its
+ * Unicode) for unchanged spans. Returns malloc'd string (caller frees). */
+static char *_preserve_unicode_in_replacement(const char *file_region,
+                                               const char *old_string,
+                                               const char *new_string)
+{
+    size_t *opm = NULL, onp = 0;
+    char *norm_old = _unicode_normalize_map(old_string, &opm, &onp);
+    if (!norm_old) return strdup(new_string);
+    size_t *fpm = NULL, fnp = 0;
+    char *norm_file = _unicode_normalize_map(file_region, &fpm, &fnp);
+    if (!norm_file) { free(norm_old); free(opm); return strdup(new_string); }
+
+    if (strcmp(norm_old, norm_file) != 0) { /* sanity: should match */
+        free(norm_old); free(opm); free(norm_file); free(fpm);
+        return strdup(new_string);
+    }
+
+    /* fpm is codepoint-indexed: fpm[i] = normalized codepoint index of the
+     * i-th file_region codepoint. We use it directly below to walk the file
+     * region during reconstruction (contraction-safe). */
+
+    /* LCS over normalized old vs new_string -> opcodes. */
+    int la = (int)strlen(norm_old), lb = (int)strlen(new_string);
+    int *dp = (int *)calloc((size_t)(la + 1) * (size_t)(lb + 1), sizeof(int));
+    if (!dp) { free(norm_old); free(opm); free(norm_file); free(fpm); return strdup(new_string); }
+    for (int i = 1; i <= la; i++)
+        for (int j = 1; j <= lb; j++)
+            dp[i * (lb + 1) + j] = (norm_old[i-1] == new_string[j-1])
+                ? dp[(i-1)*(lb+1)+j-1] + 1
+                : (dp[(i-1)*(lb+1)+j] > dp[i*(lb+1)+j-1] ? dp[(i-1)*(lb+1)+j] : dp[i*(lb+1)+j-1]);
+
+    size_t cap = strlen(new_string) + strlen(file_region) + 16;
+    char *out = (char *)malloc(cap);
+    if (!out) { free(dp); free(norm_old); free(opm); free(norm_file); free(fpm); return strdup(new_string); }
+    out[0] = '\0';
+
+    int i = la, j = lb;
+    typedef struct { int tag, i1, i2, j1, j2; } op_t;
+    op_t ops[4096]; int nops = 0;
+    while (i > 0 || j > 0) {
+        if (i > 0 && j > 0 && norm_old[i-1] == new_string[j-1]) {
+            ops[nops++] = (op_t){0, i-1, i, j-1, j}; i--; j--;
+        } else if (j > 0 && (i == 0 || dp[i*(lb+1)+j-1] >= dp[(i-1)*(lb+1)+j])) {
+            ops[nops++] = (op_t){2, i, i, j-1, j}; j--;          /* insert */
+        } else {
+            ops[nops++] = (op_t){1, i-1, i, j, j}; i--;          /* delete */
+        }
+    }
+    /* Reconstruct the output. For "equal" opcodes (unchanged spans) copy the
+     * file region's ORIGINAL bytes; for insert/delete use new_string. The op
+     * indices are in normalized space, so we walk the file region by its own
+     * codepoints using the forward fpm map (codepoint i's normalized index is
+     * fpm[i]). This is inherently contraction-safe: a file codepoint whose
+     * normalized index falls outside [i1,i2) is simply skipped, so an em-dash
+     * (1 file cp -> 2 normalized cps "--") is copied as one unit when its
+     * normalized index range is wholly inside [i1,i2). */
+    for (int k = nops - 1; k >= 0; k--) {
+        op_t o = ops[k];
+        if (o.tag == 0) { /* equal: keep file region's ORIGINAL text */
+            size_t bo = 0;   /* byte offset of current file codepoint */
+            size_t cp = 0;   /* file codepoint index */
+            /* advance to the first file cp whose normalized index >= i1 */
+            while (cp < fnp && fpm[cp] < (size_t)o.i1) {
+                bo += (size_t)_utf8_len((const unsigned char *)(file_region + bo));
+                cp++;
+            }
+            size_t eo = bo;
+            /* include file cps whose normalized index is in [i1, i2) */
+            while (cp < fnp && fpm[cp] < (size_t)o.i2) {
+                eo += (size_t)_utf8_len((const unsigned char *)(file_region + eo));
+                cp++;
+            }
+            size_t len = eo - bo;
+            if (len > cap - strlen(out) - 1) len = cap - strlen(out) - 1;
+            if (len) strncat(out, file_region + bo, len);
+        } else if (o.tag == 1) { /* delete: skip (already absent) */
+        } else { /* insert: use new_string span */
+            size_t len = o.j2 - o.j1;
+            if (len > cap - strlen(out) - 1) len = cap - strlen(out) - 1;
+            strncat(out, new_string + o.j1, len);
+        }
+    }
+    free(dp); free(norm_old); free(opm); free(norm_file); free(fpm); return out;
+    return out;
+}
+
 /* Strategy 7: unicode_normalized. */
 static int _fuzzy_unicode_normalized(const char *content, const char *pattern,
                                      size_t *match_start, size_t *match_len)
@@ -1408,6 +1499,25 @@ static char *apply_patch(const char *path, const char *old_str,
                 if (unescaped_new_str) {
                     effective_new_str = unescaped_new_str;
                 }
+            }
+        }
+    }
+
+    /* Unicode preservation (mirrors Python _preserve_unicode_in_replacement):
+     * for a unicode_normalized match, keep the file's original Unicode chars in
+     * unchanged spans (e.g. smart quotes stay smart) instead of writing the
+     * ASCII-normalized new_string verbatim. */
+    if (strcmp(strategy_used, "unicode_normalized") == 0 && effective_new_str[0]) {
+        char *region = (char *)malloc(match_length + 1);
+        if (region) {
+            memcpy(region, content + match_offset, match_length);
+            region[match_length] = '\0';
+            char *pres = _preserve_unicode_in_replacement(region, old_str, effective_new_str);
+            free(region);
+            if (pres) {
+                if (unescaped_new_str) { free(unescaped_new_str); unescaped_new_str = NULL; }
+                effective_new_str = pres;
+                unescaped_new_str = pres;
             }
         }
     }
