@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include "hermes_json.h"
+#include "libtooldispatch/tool_dispatch_helpers.h"
 
 /* PoP: _endpoint_scoped_context_length @ agent/model_metadata.py:_endpoint_scoped_context_length */
 int agent_model_metadata_u_endpoint_scoped_context_length(const char *arg) { (void)arg; return 0; }
@@ -107,53 +108,210 @@ int agent_pet_generate_atlas_atlas_to_webp_bytes(const char *arg) { (void)arg; r
 /* PoP: validate_atlas @ agent/pet/generate/atlas.py:validate_atlas */
 int agent_pet_generate_atlas_validate_atlas(const char *arg) { (void)arg; return 0; }
 
+/* The following 16 functions are NOT re-implemented here: the faithful C port
+ * of agent/tool_dispatch_helpers.py lives in lib/libtooldispatch/
+ * (tool_dispatch_helpers.c). These PoP wrappers delegate to that real module
+ * so they are no longer silent no-ops. The wrapper ABI is `int` (legacy PoP
+ * placeholder); return values map booleans to 1/0 and release any heap result. */
+
 /* PoP: _is_destructive_command @ agent/tool_dispatch_helpers.py:_is_destructive_command */
-int agent_tool_dispatch_helpers_u_is_destructive_command(const char *arg) { (void)arg; return 0; }
+int agent_tool_dispatch_helpers_u_is_destructive_command(const char *arg) {
+    return is_destructive_command(arg) ? 1 : 0;
+}
 
 /* PoP: _is_mcp_tool_parallel_safe @ agent/tool_dispatch_helpers.py:_is_mcp_tool_parallel_safe */
-int agent_tool_dispatch_helpers_u_is_mcp_tool_parallel_safe(const char *arg) { (void)arg; return 0; }
+int agent_tool_dispatch_helpers_u_is_mcp_tool_parallel_safe(const char *arg) {
+    return is_mcp_tool_parallel_safe(arg) ? 1 : 0;
+}
 
 /* PoP: _plan_tool_batch_segments @ agent/tool_dispatch_helpers.py:_plan_tool_batch_segments */
-int agent_tool_dispatch_helpers_u_plan_tool_batch_segments(const char *arg) { (void)arg; return 0; }
+int agent_tool_dispatch_helpers_u_plan_tool_batch_segments(const char *arg) {
+    char *segs = plan_tool_batch_segments(arg, NULL);
+    int ok = (segs != NULL) ? 1 : 0;
+    free(segs);
+    return ok;
+}
 
 /* PoP: _should_parallelize_tool_batch @ agent/tool_dispatch_helpers.py:_should_parallelize_tool_batch */
-int agent_tool_dispatch_helpers_u_should_parallelize_tool_batch(const char *arg) { (void)arg; return 0; }
+int agent_tool_dispatch_helpers_u_should_parallelize_tool_batch(const char *arg) {
+    /* arg is a JSON array of {"name":..,"arguments":..}; reuse the segment planner. */
+    char *segs = plan_tool_batch_segments(arg, NULL);
+    int parallel = 0;
+    if (segs) {
+        /* "parallel" appears when the whole batch is one parallel segment. */
+        parallel = (strstr(segs, "\"parallel\"") != NULL) ? 1 : 0;
+        free(segs);
+    }
+    return parallel;
+}
 
 /* PoP: _extract_parallel_scope_path @ agent/tool_dispatch_helpers.py:_extract_parallel_scope_path */
-int agent_tool_dispatch_helpers_u_extract_parallel_scope_path(const char *arg) { (void)arg; return 0; }
+int agent_tool_dispatch_helpers_u_extract_parallel_scope_path(const char *arg) {
+    /* arg is a JSON {"name":..,"arguments":..} object; decompose it. */
+    char *jerr = NULL;
+    json_t *obj = json_parse(arg ? arg : "{}", &jerr);
+    if (jerr) { free(jerr); return 0; }
+    if (!obj || obj->type != JSON_OBJECT) { if (obj) json_free(obj); return 0; }
+    const char *name = json_get_str(obj, "name", "");
+    const char *args = json_get_str(obj, "arguments", "{}");
+    parallel_scope_path_t p = extract_parallel_scope_path(name, args);
+    int ok = p.ok ? 1 : 0;
+    free_parallel_scope_path(&p);
+    json_free(obj);
+    return ok;
+}
 
 /* PoP: _paths_overlap @ agent/tool_dispatch_helpers.py:_paths_overlap */
-int agent_tool_dispatch_helpers_u_paths_overlap(const char *arg) { (void)arg; return 0; }
+int agent_tool_dispatch_helpers_u_paths_overlap(const char *arg) {
+    /* arg is a JSON [left, right] array. */
+    char *jerr = NULL;
+    json_t *arr = json_parse(arg ? arg : "[]", &jerr);
+    if (jerr) { free(jerr); return 0; }
+    if (!arr || arr->type != JSON_ARRAY || json_len(arr) < 2) { if (arr) json_free(arr); return 0; }
+    json_t *l = json_get(arr, 0), *r = json_get(arr, 1);
+    int ov = 0;
+    if (l && r && l->type == JSON_STRING && r->type == JSON_STRING)
+        ov = paths_overlap(l->str_val, r->str_val) ? 1 : 0;
+    json_free(arr);
+    return ov;
+}
 
 /* PoP: _is_multimodal_tool_result @ agent/tool_dispatch_helpers.py:_is_multimodal_tool_result */
-int agent_tool_dispatch_helpers_u_is_multimodal_tool_result(const char *arg) { (void)arg; return 0; }
+int agent_tool_dispatch_helpers_u_is_multimodal_tool_result(const char *arg) {
+    return is_multimodal_tool_result(arg) ? 1 : 0;
+}
 
 /* PoP: _multimodal_text_summary @ agent/tool_dispatch_helpers.py:_multimodal_text_summary */
-int agent_tool_dispatch_helpers_u_multimodal_text_summary(const char *arg) { (void)arg; return 0; }
+int agent_tool_dispatch_helpers_u_multimodal_text_summary(const char *arg) {
+    char *s = multimodal_text_summary_from_json(arg);
+    int ok = (s != NULL) ? 1 : 0;
+    free(s);
+    return ok;
+}
 
 /* PoP: _append_subdir_hint_to_multimodal @ agent/tool_dispatch_helpers.py:_append_subdir_hint_to_multimodal */
-int agent_tool_dispatch_helpers_u_append_subdir_hint_to_multimodal(const char *arg) { (void)arg; return 0; }
+int agent_tool_dispatch_helpers_u_append_subdir_hint_to_multimodal(const char *arg) {
+    /* arg is a JSON [result_json, hint] array. */
+    char *jerr = NULL;
+    json_t *arr = json_parse(arg ? arg : "[]", &jerr);
+    if (jerr) { free(jerr); return 0; }
+    if (!arr || arr->type != JSON_ARRAY || json_len(arr) < 2) { if (arr) json_free(arr); return 0; }
+    json_t *a = json_get(arr, 0), *b = json_get(arr, 1);
+    int ok = 0;
+    if (a && b && a->type == JSON_STRING && b->type == JSON_STRING) {
+        char *res = append_subdir_hint_to_multimodal(a->str_val, b->str_val);
+        ok = (res != NULL) ? 1 : 0;
+        free(res);
+    }
+    json_free(arr);
+    return ok;
+}
 
 /* PoP: _extract_file_mutation_targets @ agent/tool_dispatch_helpers.py:_extract_file_mutation_targets */
-int agent_tool_dispatch_helpers_u_extract_file_mutation_targets(const char *arg) { (void)arg; return 0; }
+int agent_tool_dispatch_helpers_u_extract_file_mutation_targets(const char *arg) {
+    /* arg is a JSON [tool_name, args_json] array. */
+    char *jerr = NULL;
+    json_t *arr = json_parse(arg ? arg : "[]", &jerr);
+    if (jerr) { free(jerr); return 0; }
+    if (!arr || arr->type != JSON_ARRAY || json_len(arr) < 2) { if (arr) json_free(arr); return 0; }
+    json_t *a = json_get(arr, 0), *b = json_get(arr, 1);
+    int n = 0;
+    if (a && b && a->type == JSON_STRING && b->type == JSON_STRING) {
+        size_t cnt = 0;
+        char **t = extract_file_mutation_targets(a->str_val, b->str_val, &cnt);
+        n = (int)cnt;
+        free_mutation_targets(t, cnt);
+    }
+    json_free(arr);
+    return n;
+}
 
 /* PoP: _extract_error_preview @ agent/tool_dispatch_helpers.py:_extract_error_preview */
-int agent_tool_dispatch_helpers_u_extract_error_preview(const char *arg) { (void)arg; return 0; }
+int agent_tool_dispatch_helpers_u_extract_error_preview(const char *arg) {
+    /* arg is a JSON [result, max_len] array. */
+    char *jerr = NULL;
+    json_t *arr = json_parse(arg ? arg : "[]", &jerr);
+    if (jerr) { free(jerr); return 0; }
+    if (!arr || arr->type != JSON_ARRAY) { if (arr) json_free(arr); return 0; }
+    json_t *a = json_get(arr, 0);
+    json_t *m = json_get(arr, 1);
+    int len = 180;
+    if (m && m->type == JSON_NUMBER) len = (int)m->num_val;
+    int ok = 0;
+    if (a && a->type == JSON_STRING) {
+        char *e = extract_error_preview(a->str_val, (size_t)len);
+        ok = (e != NULL) ? 1 : 0;
+        free(e);
+    }
+    json_free(arr);
+    return ok;
+}
 
 /* PoP: _trajectory_normalize_msg @ agent/tool_dispatch_helpers.py:_trajectory_normalize_msg */
-int agent_tool_dispatch_helpers_u_trajectory_normalize_msg(const char *arg) { (void)arg; return 0; }
+int agent_tool_dispatch_helpers_u_trajectory_normalize_msg(const char *arg) {
+    char *s = trajectory_normalize_msg_json(arg);
+    int ok = (s != NULL) ? 1 : 0;
+    free(s);
+    return ok;
+}
 
 /* PoP: make_tool_result_message @ agent/tool_dispatch_helpers.py:make_tool_result_message */
-int agent_tool_dispatch_helpers_make_tool_result_message(const char *arg) { (void)arg; return 0; }
+int agent_tool_dispatch_helpers_make_tool_result_message(const char *arg) {
+    /* arg is a JSON [name, content, tool_call_id] array. */
+    char *jerr = NULL;
+    json_t *arr = json_parse(arg ? arg : "[]", &jerr);
+    if (jerr) { free(jerr); return 0; }
+    if (!arr || arr->type != JSON_ARRAY) { if (arr) json_free(arr); return 0; }
+    const char *name = json_get_str(arr, "name", "");
+    const char *content = json_get_str(arr, "content", "");
+    const char *tcid = json_get_str(arr, "tool_call_id", "");
+    char *msg = make_tool_result_message_json(name, content, tcid);
+    int ok = (msg != NULL) ? 1 : 0;
+    free(msg);
+    json_free(arr);
+    return ok;
+}
 
 /* PoP: _is_untrusted_tool @ agent/tool_dispatch_helpers.py:_is_untrusted_tool */
-int agent_tool_dispatch_helpers_u_is_untrusted_tool(const char *arg) { (void)arg; return 0; }
+int agent_tool_dispatch_helpers_u_is_untrusted_tool(const char *arg) {
+    return is_untrusted_tool(arg) ? 1 : 0;
+}
 
 /* PoP: _tool_output_risk_metadata @ agent/tool_dispatch_helpers.py:_tool_output_risk_metadata */
-int agent_tool_dispatch_helpers_u_tool_output_risk_metadata(const char *arg) { (void)arg; return 0; }
+int agent_tool_dispatch_helpers_u_tool_output_risk_metadata(const char *arg) {
+    /* arg is a JSON [tool_name, content] array. */
+    char *jerr = NULL;
+    json_t *arr = json_parse(arg ? arg : "[]", &jerr);
+    if (jerr) { free(jerr); return 0; }
+    if (!arr || arr->type != JSON_ARRAY || json_len(arr) < 2) { if (arr) json_free(arr); return 0; }
+    json_t *a = json_get(arr, 0), *b = json_get(arr, 1);
+    int ok = 0;
+    if (a && b && a->type == JSON_STRING && b->type == JSON_STRING) {
+        char *meta = tool_output_risk_metadata(a->str_val, b->str_val);
+        ok = (meta != NULL) ? 1 : 0;
+        free(meta);
+    }
+    json_free(arr);
+    return ok;
+}
 
 /* PoP: _maybe_wrap_untrusted @ agent/tool_dispatch_helpers.py:_maybe_wrap_untrusted */
-int agent_tool_dispatch_helpers_u_maybe_wrap_untrusted(const char *arg) { (void)arg; return 0; }
+int agent_tool_dispatch_helpers_u_maybe_wrap_untrusted(const char *arg) {
+    /* arg is a JSON [name, content] array. */
+    char *jerr = NULL;
+    json_t *arr = json_parse(arg ? arg : "[]", &jerr);
+    if (jerr) { free(jerr); return 0; }
+    if (!arr || arr->type != JSON_ARRAY || json_len(arr) < 2) { if (arr) json_free(arr); return 0; }
+    json_t *a = json_get(arr, 0), *b = json_get(arr, 1);
+    int ok = 0;
+    if (a && b && a->type == JSON_STRING && b->type == JSON_STRING) {
+        char *w = maybe_wrap_untrusted(a->str_val, b->str_val);
+        ok = (w != NULL) ? 1 : 0;
+        free(w);
+    }
+    json_free(arr);
+    return ok;
+}
 
 /* PoP: can_change_plan @ agent/subscription_view.py:can_change_plan */
 int agent_subscription_view_can_change_plan(const char *arg) { (void)arg; return 0; }

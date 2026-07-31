@@ -216,6 +216,30 @@ bool is_mcp_tool_parallel_safe(const char *tool_name);
 /** Append a subdirectory hint to a multimodal tool result. Port of Python _append_subdir_hint_to_multimodal. */
 char *append_subdir_hint_to_multimodal(const char *result_json, const char *hint);
 
+/* ================================================================
+ *  Exported helpers (formerly static; reused by PoP wrappers)
+ * ================================================================ */
+
+/** Indirect-prompt-injection check. Port of Python _is_untrusted_tool. */
+bool is_untrusted_tool(const char *name);
+
+/** Wrap untrusted tool output in semantic delimiters. Port of Python _maybe_wrap_untrusted. */
+char *maybe_wrap_untrusted(const char *name, const char *content);
+
+/* ================================================================
+ *  Risk metadata + batch segmentation
+ * ================================================================ */
+
+/** Indirect-prompt-injection risk scan of tool output. Port of Python _tool_output_risk_metadata.
+ *  Returns malloc'd JSON metadata object, or NULL when nothing risky found. Caller frees. */
+char *tool_output_risk_metadata(const char *tool_name, const char *content);
+
+/** Parallel batch segment planner. Port of Python _plan_tool_batch_segments.
+ *  arg is a JSON array of {name, arguments} objects. Returns malloc'd JSON
+ *  array of [kind, [indices]] segments. Caller frees. */
+char *plan_tool_batch_segments(const char *tool_calls_json,
+                               const char *execution_cwd);
+
 #ifdef __cplusplus
 }
 #endif

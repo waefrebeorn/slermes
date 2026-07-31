@@ -7,6 +7,7 @@
 
 #include "tool_dispatch_helpers.h"
 #include "../libjson/json.h"
+#include "../libthreatpatterns/threat_patterns.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -686,7 +687,7 @@ static const int untrusted_tool_prefixes_count = sizeof(untrusted_tool_prefixes)
 #define UNTRUSTED_WRAP_MIN_CHARS 32
 
 /* Port of Python agent/tool_dispatch_helpers.py:_is_untrusted_tool */
-static bool is_untrusted_tool(const char *name) {
+bool is_untrusted_tool(const char *name) {
     if (!name) return false;
     for (int i = 0; i < untrusted_tool_names_count; i++) {
         if (strcmp(name, untrusted_tool_names[i]) == 0)
@@ -700,7 +701,7 @@ static bool is_untrusted_tool(const char *name) {
 }
 
 /* Port of Python agent/tool_dispatch_helpers.py:_maybe_wrap_untrusted */
-static char *maybe_wrap_untrusted(const char *name, const char *content) {
+char *maybe_wrap_untrusted(const char *name, const char *content) {
     if (!is_untrusted_tool(name))
         return content ? strdup(content) : strdup("");
     if (!content)
@@ -828,4 +829,96 @@ char *append_subdir_hint_to_multimodal(const char *result_json, const char *hint
     char *result = json_serialize(json);
     json_free(json);
     return result;
+}
+
+/* ================================================================
+ *  Tool-output risk metadata (indirect-prompt-injection scan)
+ * ================================================================ */
+
+/* Port of Python agent/tool_dispatch_helpers.py:_tool_output_risk_metadata.
+ * Runs the threat-pattern scanner over the tool output and returns a
+ * malloc'd JSON object describing the result, or NULL when no scanner
+ * is available / nothing risky found. Caller frees. */
+char *tool_output_risk_metadata(const char *tool_name, const char *content) {
+    (void)tool_name;
+    if (!content || !content[0])
+        return NULL;
+
+    threat_match_t match;
+    if (!threat_patterns_check_all(content, &match))
+        return NULL; /* no threat detected -> no metadata */
+
+    json_t *meta = json_object();
+    if (!meta)
+        return NULL;
+    json_set(meta, "detected", json_bool(true));
+    json_set(meta, "pattern_id", json_string(match.pattern_id[0] ? match.pattern_id : "unknown"));
+    json_set(meta, "match_text", json_string(match.match_text[0] ? match.match_text : ""));
+    char *out = json_serialize(meta);
+    json_free(meta);
+    return out;
+}
+
+/* ================================================================
+ *  Parallel batch segmentation planner
+ * ================================================================ */
+
+/* Port of Python agent/tool_dispatch_helpers.py:_plan_tool_batch_segments.
+ * arg is a JSON array of tool-call objects:
+ *   [ { "name": <str>, "arguments": <json-string> }, ... ]
+ * Returns a malloc'd JSON array of [kind, [call-indices]] segments, where
+ * kind is "parallel" or "sequential". Caller frees. */
+char *plan_tool_batch_segments(const char *tool_calls_json,
+                               const char *execution_cwd) {
+    (void)execution_cwd;
+    if (!tool_calls_json || !tool_calls_json[0])
+        return NULL;
+
+    char *jerr = NULL;
+    json_t *arr = json_parse(tool_calls_json, &jerr);
+    if (!arr || jerr) {
+        if (jerr) free(jerr);
+        if (arr) json_free(arr);
+        return NULL;
+    }
+    if (arr->type != JSON_ARRAY) {
+        json_free(arr);
+        return NULL;
+    }
+
+    int count = (int)json_len(arr);
+    const char **names = NULL;
+    const char **args = NULL;
+    if (count > 0) {
+        names = (const char **)calloc((size_t)count, sizeof(char *));
+        args  = (const char **)calloc((size_t)count, sizeof(char *));
+    }
+    for (int i = 0; i < count; i++) {
+        json_t *call = json_get(arr, (size_t)i);
+        if (!call || call->type != JSON_OBJECT) continue;
+        json_t *n = json_obj_get(call, "name");
+        json_t *a = json_obj_get(call, "arguments");
+        if (n && n->type == JSON_STRING) names[i] = n->str_val;
+        if (a && a->type == JSON_STRING) args[i] = a->str_val;
+        else args[i] = "{}";
+    }
+
+    bool whole = should_parallelize_tool_batch(names, args, count);
+
+    json_t *segments = json_array();
+    json_t *seg = json_array();
+    json_append(seg, json_string(whole ? "parallel" : "sequential"));
+    json_t *idx = json_array();
+    for (int i = 0; i < count; i++)
+        json_append(idx, json_number((double)i));
+    json_append(seg, idx);
+    json_append(segments, seg);
+
+    free(names);
+    free(args);
+    json_free(arr);
+
+    char *out = json_serialize(segments);
+    json_free(segments);
+    return out;
 }
