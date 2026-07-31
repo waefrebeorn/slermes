@@ -958,41 +958,97 @@ char *approval__sudo_stdin_block_result(const char *description) {
 /* PoP: approval__check_sudo_stdin_guard @ tools/approval.py:_check_sudo_stdin_guard */
 /* Detect `sudo -S` (stdin password) without configured SUDO_PASSWORD.
  * Returns a malloc'd JSON result string or NULL when not blocked. */
+static const char *HARDLINE_PATTERNS[] = {
+    /* 0 */ "(^|[\\n`]|[$(]|&&|[|][|]|;|[&]|[|])[[:space:]]*(sudo[[:space:]]+([^[:space:]]+[[:space:]]+)*)?(env[[:space:]]+([^[:space:]]+[[:space:]]+)*)?(exec[[:space:]]+|nohup[[:space:]]+|setsid[[:space:]]+|time[[:space:]]+)*rm[[:space:]]+(-[^[:space:]]+[[:space:]]+)*(\"/(\\.|\\.|/)*(\\.|\\.|\\*)*\"|'/(\\.|\\.|/)*(\\.|\\.|\\*)*'|/(\\.|\\.|/)*(\\.|\\.|\\*)*([[:space:]]|[;`|&]|\\)|$)|/(\\.|\\.|/)*(\\.|\\.|\\*)*$|/ \\*([[:space:]]|[;`|&]|\\)|$)|/ \\*$)",
+    /* 1 */ "(^|[\\n`]|[$(]|&&|[|][|]|;|[&]|[|])[[:space:]]*(sudo[[:space:]]+([^[:space:]]+[[:space:]]+)*)?(env[[:space:]]+([^[:space:]]+[[:space:]]+)*)?(exec[[:space:]]+|nohup[[:space:]]+|setsid[[:space:]]+|time[[:space:]]+)*rm[[:space:]]+(-[^[:space:]]+[[:space:]]+)*(\"/home([[:space:]]|[;`|&]|\\)|$)|'/home'([[:space:]]|[;`|&]|\\)|$)|/home([[:space:]]|[;`|&]|\\)|$)|/home$|\"/root([[:space:]]|[;`|&]|\\)|$)|'/root'([[:space:]]|[;`|&]|\\)|$)|/root([[:space:]]|[;`|&]|\\)|$)|/root$|\"/etc([[:space:]]|[;`|&]|\\)|$)|'/etc'([[:space:]]|[;`|&]|\\)|$)|/etc([[:space:]]|[;`|&]|\\)|$)|/etc$|\"/usr([[:space:]]|[;`|&]|\\)|$)|'/usr'([[:space:]]|[;`|&]|\\)|$)|/usr([[:space:]]|[;`|&]|\\)|$)|/usr$|\"/var([[:space:]]|[;`|&]|\\)|$)|'/var'([[:space:]]|[;`|&]|\\)|$)|/var([[:space:]]|[;`|&]|\\)|$)|/var$|\"/bin([[:space:]]|[;`|&]|\\)|$)|'/bin'([[:space:]]|[;`|&]|\\)|$)|/bin([[:space:]]|[;`|&]|\\)|$)|/bin$|\"/sbin([[:space:]]|[;`|&]|\\)|$)|'/sbin'([[:space:]]|[;`|&]|\\)|$)|/sbin([[:space:]]|[;`|&]|\\)|$)|/sbin$|\"/boot([[:space:]]|[;`|&]|\\)|$)|'/boot'([[:space:]]|[;`|&]|\\)|$)|/boot([[:space:]]|[;`|&]|\\)|$)|/boot$|\"/lib([[:space:]]|[;`|&]|\\)|$)|'/lib'([[:space:]]|[;`|&]|\\)|$)|/lib([[:space:]]|[;`|&]|\\)|$)|/lib$)",
+    /* 2 */ "(^|[\\n`]|[$(]|&&|[|][|]|;|[&]|[|])[[:space:]]*(sudo[[:space:]]+([^[:space:]]+[[:space:]]+)*)?(env[[:space:]]+([^[:space:]]+[[:space:]]+)*)?(exec[[:space:]]+|nohup[[:space:]]+|setsid[[:space:]]+|time[[:space:]]+)*rm[[:space:]]+(-[^[:space:]]+[[:space:]]+)*(\"~([[:space:]]|[;`|&]|\\)|$)|'~([[:space:]]|[;`|&]|\\)|$)|~([[:space:]]|[;`|&]|\\)|$)|~$|\"[$][{]?HOME}?(/?|/[*])?\"([[:space:]]|[;`|&]|\\)|$)|'[$][{]?HOME}?(/?|/[*])?([[:space:]]|[;`|&]|\\)|$)|[$][{]?HOME}?(/?|/[*])?([[:space:]]|[;`|&]|\\)|$)|[$][{]?HOME}?(/?|/[*])?$)",
+    /* 3 */ "(^|[^[:alnum:]_])mkfs([.[0-9a-z]+)?([^[:alnum:]_]|$)",
+    /* 4 */ "(^|[^[:alnum:]_])dd([^[:alnum:]_]|$).*of=/dev/(sd|nvme|hd|mmcblk|vd|xvd)[a-z0-9]*",
+    /* 5 */ ">[[:space:]]*/dev/(sd|nvme|hd|mmcblk|vd|xvd)[a-z0-9]*([^[:alnum:]_]|$)",
+    /* 6 */ ":\\(\\)[[:space:]]*\\{[[:space:]]*:([[:space:]]*\\|[[:space:]]*:)?[[:space:]]*&[[:space:]]*\\}[[:space:]]*;[[:space:]]*:",
+    /* 7 */ "(^|[^[:alnum:]_])kill[[:space:]]+(-[^[:space:]]+[[:space:]]+)*-1([^[:alnum:]_]|$)",
+    /* 8 */ "(^|[\\n`]|[$(]|&&|[|][|]|;|[&]|[|])[[:space:]]*(sudo[[:space:]]+([^[:space:]]+[[:space:]]+)*)?(env[[:space:]]+([^[:space:]]+[[:space:]]+)*)?(exec[[:space:]]+|nohup[[:space:]]+|setsid[[:space:]]+|time[[:space:]]+)*(shutdown|reboot|halt|poweroff)([^[:alnum:]_]|$)",
+    /* 9 */ "(^|[\\n`]|[$(]|&&|[|][|]|;|[&]|[|])[[:space:]]*(sudo[[:space:]]+([^[:space:]]+[[:space:]]+)*)?(env[[:space:]]+([^[:space:]]+[[:space:]]+)*)?(exec[[:space:]]+|nohup[[:space:]]+|setsid[[:space:]]+|time[[:space:]]+)*init[[:space:]]+[06]([^[:alnum:]_]|$)",
+    /* 10 */ "(^|[\\n`]|[$(]|&&|[|][|]|;|[&]|[|])[[:space:]]*(sudo[[:space:]]+([^[:space:]]+[[:space:]]+)*)?(env[[:space:]]+([^[:space:]]+[[:space:]]+)*)?(exec[[:space:]]+|nohup[[:space:]]+|setsid[[:space:]]+|time[[:space:]]+)*systemctl[[:space:]]+(poweroff|reboot|halt|kexec)([^[:alnum:]_]|$)",
+    /* 11 */ "(^|[\\n`]|[$(]|&&|[|][|]|;|[&]|[|])[[:space:]]*(sudo[[:space:]]+([^[:space:]]+[[:space:]]+)*)?(env[[:space:]]+([^[:space:]]+[[:space:]]+)*)?(exec[[:space:]]+|nohup[[:space:]]+|setsid[[:space:]]+|time[[:space:]]+)*telinit[[:space:]]+[06]([^[:alnum:]_]|$)",
+    NULL
+};
+
+
 char *approval__check_sudo_stdin_guard(const char *command) {
     if (getenv("SUDO_PASSWORD")) return NULL;
     if (!command) return NULL;
-    /* normalize lower for detection */
     char *low = strdup(command);
     if (!low) return NULL;
     for (char *c = low; *c; c++) *c = (char)tolower((unsigned char)*c);
-    int blocked = (strstr(low, "sudo -s") != NULL) || (strstr(low, "sudo -s ") != NULL);
+    /* Mirrors Python _SUDO_STDIN_RE: command-position anchored sudo -S */
+    hregex_t *re = regex_compile(
+        "(^|[;&|`\n]|&&|[|][|]|[$(])[[:space:]]*sudo[[:space:]]+-S([^[:alnum:]_]|$)", 1);
+    bool blocked = false;
+    if (re) {
+        regex_match_t *m = regex_search(re, low);
+        blocked = m && m->matched;
+        if (m) regex_match_free(m);
+        regex_free(re);
+    }
     free(low);
     if (blocked) return approval__sudo_stdin_block_result("sudo password guessing via stdin (sudo -S)");
     return NULL;
 }
 
-/* PoP: approval_detect_hardline_command @ tools/approval.py:detect_hardline_command */
-/* Check if a command matches the unconditional hardline blocklist.
- * Returns a malloc'd JSON result string or NULL when not hardline. */
 char *approval_detect_hardline_command(const char *command) {
     if (!command) return NULL;
-    static const char *HARDLINE[] = {
-        "rm -rf /", "rm -fr /", "mkfs", "dd if=", ":(){:|:&};:",
-        "shutdown", "reboot", "init 0", "init 6", NULL
-    };
-    char *low = strdup(command);
-    if (!low) return NULL;
-    for (char *c = low; *c; c++) *c = (char)tolower((unsigned char)*c);
-    char *result = NULL;
-    for (int i = 0; HARDLINE[i]; i++) {
-        if (strstr(low, HARDLINE[i])) {
-            result = approval__hardline_block_result(HARDLINE[i]);
-            break;
+    if (strlen(command) > 65536) return NULL;
+    /* Lowecase + strip line-continuations (matches shell semantics). */
+    size_t n = strlen(command);
+    char *norm = (char *)malloc(n + 1);
+    if (!norm) return NULL;
+    size_t o = 0;
+    for (size_t i = 0; i < n; i++) {
+        if (command[i] == '\\' && (command[i+1] == '\n' || command[i+1] == '\r')) {
+            i++; if (command[i] == '\r') i++; continue;
+        }
+        norm[o++] = (char)tolower((unsigned char)command[i]);
+    }
+    norm[o] = '\0';
+    static hregex_t *compiled[16] = {0};
+    static int compiled_count = -1;
+    if (compiled_count < 0) {
+        compiled_count = 0;
+        for (int i = 0; HARDLINE_PATTERNS[i] && compiled_count < 16; i++) {
+            compiled[compiled_count] = regex_compile(HARDLINE_PATTERNS[i], 1);
+            if (compiled[compiled_count]) compiled_count++;
         }
     }
-    free(low);
+    char *result = NULL;
+    for (int i = 0; i < compiled_count; i++) {
+        regex_match_t *m = regex_search(compiled[i], norm);
+        if (m && m->matched) {
+            static const char *DESC[] = {
+                "recursive delete of root or system directory",
+                "recursive delete of system directory",
+                "recursive delete of home directory",
+                "format filesystem (mkfs)",
+                "dd to raw block device",
+                "redirect to raw block device",
+                "fork bomb",
+                "kill all processes",
+                "system shutdown/reboot",
+                "init 0/6 (shutdown/reboot)",
+                "systemctl poweroff/reboot",
+                "telinit 0/6 (shutdown/reboot)"
+            };
+            const char *d = (i < (int)(sizeof(DESC)/sizeof(DESC[0]))) ? DESC[i] : "hardline command";
+            result = approval__hardline_block_result(d);
+            regex_match_free(m);
+            break;
+        }
+        if (m) regex_match_free(m);
+    }
+    free(norm);
     return result;
 }
+
 
 /* --- Tirith description formatting --------------------------------------- */
 
