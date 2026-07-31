@@ -17,18 +17,28 @@ from pathlib import Path
 HERMES_DIR = Path("/home/wubu/hermes-agent-dev")
 SLERMES_DIR = HERMES_DIR / "slermes"
 
-# Directories to scan for Python source
+# Directories to scan for Python source. The C port surface is agent/ + tools/
+# (the "core narrow waist" + real model tools); hermes_cli/ and gateway/ are the
+# Python delivery/edge layer whose ports land under src/cli, src/gateway,
+# src/agent. Scanning all four gives a complete coverage measurement.
 SCAN_DIRS = [
     HERMES_DIR / "agent",
+    HERMES_DIR / "tools",
+    HERMES_DIR / "hermes_cli",
+    HERMES_DIR / "gateway",
 ]
 
-# Directories to scan for C source
+# Directories to scan for C source (used by the secondary heuristic index).
 C_SRC_DIRS = [
     SLERMES_DIR / "src",
     SLERMES_DIR / "lib",
 ]
 
-# Files to EXCLUDE from Python scan (SDK wrappers, configs, etc.)
+# Per-directory files to EXCLUDE (SDK wrappers, pure config, tests, __init__,
+# and intentional out-of-process ML boundaries). neutts_synth is a standalone
+# subprocess helper that shells out to the third-party `neutts` Python package
+# (500MB model, espeak-ng, numpy) — by design it lives in a separate process
+# and is NOT a C port target.
 EXCLUDE_FILES = {
     "__init__.py",
     "portal_tags.py",
@@ -36,7 +46,14 @@ EXCLUDE_FILES = {
     "runtime_cwd.py",
     "jiter_preload.py",
     "copilot_acp_client.py",
+    "neutts_synth.py",
 }
+
+# Substrings that mark a Python file as NOT a port target (tests, blueprints,
+# generated, vendored SDK clients).
+EXCLUDE_SUBSTR = (
+    "_test.py", "tests/", "/test_", "conftest", "_pb2", "sdk",
+)
 
 # Function name → C file mapping (known ports, for verification)
 KNOWN_C_PORTS = {}
@@ -215,8 +232,11 @@ def module_port_status(modname):
         SL / "src" / "agent" / f"port_agent_{modname}.c",
         SL / "src" / "cli" / f"port_agent_{modname}.c",
         SL / "src" / "cli" / f"port_tools_{modname}.c",
+        SL / "src" / "cli" / f"port_{modname}.c",
         SL / "src" / "tools" / f"port_{modname}.c",
         SL / "src" / "tools" / f"{modname}.c",
+        SL / "src" / "gateway" / f"port_{modname}.c",
+        SL / "src" / "gateway" / f"{modname}.c",
         SL / "lib" / f"lib{modname}" / f"{modname}.c",
         SL / "lib" / f"lib{modname}" / f"port_{modname}.c",
     ]
@@ -242,10 +262,13 @@ def module_port_status(modname):
                 # Look for a "Port of Python .../<modname>.py" marker.
                 if (f"Port of Python agent/{marker}" in txt
                         or f"Port of Python tools/{marker}" in txt
+                        or f"Port of Python hermes_cli/{marker}" in txt
+                        or f"Port of Python gateway/{marker}" in txt
                         or f"port of Python agent/{marker}" in txt
                         or f"port of Python {marker}" in txt
                         or f"// {marker}" in txt or f"/* {marker}" in txt
-                        or f"agent/{marker}" in txt or f"tools/{marker}" in txt):
+                        or f"agent/{marker}" in txt or f"tools/{marker}" in txt
+                        or f"hermes_cli/{marker}" in txt or f"gateway/{marker}" in txt):
                     return ("ported", str(fpath.relative_to(SL)) + f" (fold-in of {marker})")
 
     # Layer 3: catch-all wrapper files.
@@ -367,6 +390,10 @@ def main():
         for pyfile in sorted(py_dir.glob("*.py")):
             if pyfile.name in EXCLUDE_FILES:
                 continue
+            # Skip non-port-target files (tests, vendored SDK clients, etc.)
+            relstr = str(pyfile.relative_to(HERMES_DIR))
+            if any(s in relstr for s in EXCLUDE_SUBSTR):
+                continue
 
             results = scan_python_file(pyfile, c_funcs, c_structs)
             all_results.append(results)
@@ -395,7 +422,7 @@ def main():
     print(f"    PORTED:   {ported}")
     print(f"    PARTIAL:  {partial}  (folded into a catch-all wrapper)")
     print(f"    UNPORTED: {unported}")
-    print(f"    Total agent/ modules scanned: {len(all_results)}")
+    print(f"    Total Python modules scanned (agent/tools/hermes_cli/gateway): {len(all_results)}")
     print()
     print("  Secondary heuristic (function-name match, known to undercount):")
     print(f"    {total_matched}/{total_funcs} features matched ({100*total_matched/max(total_funcs,1):.1f}%)")
