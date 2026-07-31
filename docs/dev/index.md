@@ -123,12 +123,20 @@ make test
 
 ## Parity Scanning
 
-The `slermes_parity_battleground.py` scanner compares Python Hermes features against C11 Slermes implementations.
+The `slermes_parity_battleground.py` scanner compares Python Hermes features against C11 Slermes implementations. It is a **static** check — it counts functions present/missing, it does not execute anything.
 
 **Output classifications:**
-- `PORTED` — C function with PoP annotation
-- `N/A` — Python-only (async, SDK, CLI, image processing)
-- `REAL_GAP` — Missing C implementation (should be 0)
+- `PORTED` — C function with PoP annotation (present, not necessarily correct)
+- `REAL_GAP` — Missing C implementation (honest gap, not yet ported)
+- `PARTIAL` — C fn exists but incomplete
+- `STUB` — C fn is a façade (const return / no-op body)
+
+> **The scanner is blind to FAPs.** A fn can be `PORTED` and still produce output
+> that diverges from LIVE Python. That behavioral-divergence class is a **FAP
+> (Functional Alignment Problem)** and is detected only by the oracle harness:
+> `bash tests/oracle/run_oracles.sh` → any `cases: MISMATCH` is a FAP. See
+> `docs/fap.md` for the canonical definition and triage. Never call it "drift" or
+> "desync".
 
 Adding a PoP annotation:
 ```c

@@ -20,6 +20,9 @@ The **[Parity Summary](parity-summary.md)** is the single source of truth: it is
 regenerated from the live scanner (`tests/slermes_parity_battleground.py`) and
 gives the exact PORTED / REAL_GAP / PARTIAL breakdown per module. Any completion
 figure not in that file is stale — trust the scanner, not prose.
+The scanner is static (it counts functions, it does not execute). Behavioral
+correctness vs LIVE Python — **FAPs (Functional Alignment Problems)** — is tracked
+separately by the oracle harness; see **[FAP](fap.md)**.
 
 ## Quick Start
 

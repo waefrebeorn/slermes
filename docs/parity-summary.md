@@ -103,6 +103,23 @@ Rewriting from scratch in C **is** the point of this project, so nothing is
 an N/A class at all; it reports only PORTED / PARTIAL / STUB / REAL_GAP. Any
 older note below that called a subsystem "N/A" was reclassified as REAL_GAP.
 
+## The scanner is blind to FAPs — behavioral correctness is a separate axis
+
+The table above is a **static** count of *missing or shaped-wrong* functions.
+It can report `PORTED 11,500+ / REAL_GAP 0 / PARTIAL 0` (build green) while
+**real behavioral FAPs still exist** — C functions that are ported and compile
+but produce output that diverges from LIVE Python Hermes. Examples found by the
+oracle harness: a C provider-auth table with different membership than Python's
+`PROVIDER_REGISTRY`, and C json serialization that differs in key order from
+Python's `json.dumps`.
+
+That defect class is a **FAP (Functional Alignment Problem)**. The parity scanner
+cannot detect it — only running the oracle harness can (`bash
+tests/oracle/run_oracles.sh` → any `cases: MISMATCH` is a FAP). See `docs/fap.md`
+for the canonical definition, the real-vs-false FAP distinction, and the triage
+procedure. Treat the oracle green/red result, not the PORTED count, as the
+behavioral-completeness signal.
+
 ## How Gaps Were Closed (historical)
 
 ### Batch 3 — Missing PoP Annotations (8 gaps closed)

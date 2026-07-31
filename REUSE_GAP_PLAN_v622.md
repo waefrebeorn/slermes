@@ -55,12 +55,21 @@ _config_path,_config_set,_config_migrate`), `hermes_cli/web_server.py` (`_is_sen
 4. Annotate `/* PoP: c_fn @ module.py:py_fn */` immediately before each C fn (pattern at idx 0).
 5. Register `.o` in `build/objects.mk` (append to `PHASE5_OBJ`, NOT a dead `*_PORT_REGEN`).
 6. `rm -f slermes <touched>.o && make slermes`; run module oracle where one exists.
+   **FAP note:** the scanner only checks statics. A ported fn can still diverge
+   from LIVE Python at runtime — that is a **FAP (Functional Alignment Problem)**,
+   found only by the oracle harness (`bash tests/oracle/run_oracles.sh` → any
+   `cases: MISMATCH` is a FAP; see `docs/fap.md`). If a `t_port_<mod>.c` +
+   `sta_oracle_<mod>.py` pair exists, it MUST be registered in
+   `tests/oracle/registry.json` so its FAPs actually run; an unregistered port
+   hides its FAPs. Run the oracle after every port touch — MATCH = behavioral done.
 7. Re-run scanner; confirm `real_gaps` dropped and `c_function` populated (not None).
 8. Commit all files together with `v622:` prefix; push `origin main` (force-with-lease).
 
 ## Definition of done
 - PARTIAL → 0 (23 annotation fixes).
 - ~1,000 REAL_GAP closed across Lanes 1–4 using reused helpers (no stubs; oracle-verified where a suite exists).
+- Oracle harness wired for every ported module with a `t_port_*`/`sta_oracle_*`
+  pair (no silent FAPs from unregistered ports).
 - BANNER/parity-summary updated each lane; live parity re-run after each push.
 
 ## Out of scope (do NOT fake)

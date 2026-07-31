@@ -100,6 +100,29 @@ These are Python CLI modules that already work through the C binary.
 | `hermes_cli/plugins.py` | 58 | Plugin management |
 | ... | ... | ... |
 
+## FAP — the behavioral layer the scanner is blind to
+
+`REAL_GAP`/`PARTIAL`/`STUB` count *missing or shaped-wrong* functions. They say
+nothing about functions that **are** ported but **behave differently** from LIVE
+Python. That class is a **FAP (Functional Alignment Problem)** — see
+`docs/fap.md` for the canonical definition. In one sentence: *a C fn that is
+statically "ported" but whose runtime output diverges from LIVE Python, found only
+by running the oracle harness.* Do not call it "drift", "desync", "divergence", or
+"defect" — call it a **FAP** so every doc, commit, and review means the same
+thing.
+
+The function-level scanner can report `PORTED 11,500+ / REAL_GAP 0 / PARTIAL 0`
+and the build can be green while **real FAPs still exist** — e.g. a C
+provider-auth table with different membership than Python's `PROVIDER_REGISTRY`,
+or C json serialization that differs in key order from Python's `json.dumps`.
+Those are invisible to the scanner and only surface when the oracle harness runs
+(`bash tests/oracle/run_oracles.sh` → any `cases: MISMATCH` is a FAP).
+
+**Closure rule:** a port is not "done" until its oracle reports `MATCH`. If a
+port has an oracle harness (`tests/t_port_<name>.c` + `tests/sta_oracle_<name>.py`)
+it MUST be registered in `tests/oracle/registry.json`; an unregistered port never
+runs, so its FAPs stay silent.
+
 ## Methodology
 
 ### For each module:

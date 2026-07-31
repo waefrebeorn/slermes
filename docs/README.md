@@ -52,7 +52,7 @@ The result is not a fork that follows upstream's architecture. It's our own code
 
 | Source | Slermes | Notes |
 |--------|---------|-------|
-| 647 Python modules | **760 port_*.c files** | 1:1 behavioral parity with PoP annotations |
+| 647 Python modules | **760 port_*.c files** | 1:1 behavioral parity with PoP annotations. Behavioral correctness (vs LIVE Python) is tracked separately as **FAPs** — see `fap.md`. |
 | Electron/TypeScript desktop (470 files) | **desktop_gui.c + gui_core.c** | Our own SDL2 widget framework — ~30/111 features done |
 | Petdex (floating pets, pet overlay, gallery) | ✅ Done | Floating animated pet + gallery picker + scale control |
 | Voice (TTS/STT) | ✅ Done | Voice mode indicator, Ctrl+V toggle, clipboard image detection |

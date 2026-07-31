@@ -6,6 +6,13 @@
 ## Definition
 PoP-annotated C fn whose entire body (after stripping comments, `hermes_log`, `(void)arg`) is a single `return <hardcoded const>`. Passes scanner + depth-check, does none of the Python's real work.
 
+> **Scope note — façades are NOT FAPs.** This audit finds *shaped-wrong* functions
+> (const-return / no-op bodies). A different, complementary defect class is the
+> **FAP (Functional Alignment Problem)**: a C fn that *is* ported and *does* run,
+> but whose output diverges from LIVE Python. The façade audit cannot catch FAPs —
+> only the oracle harness (`tests/oracle/`, see `docs/fap.md`) can. When triaging,
+> call the behavioral-divergence class a **FAP**, never "drift" or "desync".
+
 ## Totals (as measured v546)
 - TRUE FAÇADES found: **133**
   - **fraudulent** (caller lied to / real work skipped): **110** → **ALL ERADICATED in v547**
