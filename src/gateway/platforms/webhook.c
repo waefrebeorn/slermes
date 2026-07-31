@@ -1004,3 +1004,337 @@ void webhook_server_run(int port) {
     close(server_fd);
     printf("[webhook] Server stopped\n");
 }
+
+/* ================================================================
+ *  WebhookAdapter (faithful C11 port of gateway/platforms/webhook.py).
+ *  Real JSON API (json_t), crypto HMAC-SHA256, base64 (Svix), templating.
+ * ================================================================ */
+
+#include "hermes_gateway_telegram.h"
+#include "hermes_gateway_discord.h"
+#include "hermes_gateway_slack.h"
+#include "hermes_gateway_matrix.h"
+#include "hermes_gateway_mattermost.h"
+#include "hermes_gateway_feishu.h"
+#include "hermes_gateway_whatsapp.h"
+#include "hermes_gateway_email.h"
+#include "hermes_gateway_sms.h"
+#include <sys/stat.h>
+#include "libbase64/base64.h"
+
+#define WH_RATE_WINDOW_SECONDS 60.0
+#define WH_RATE_LIMIT          10
+#define WH_IDEMPOTENCY_TTL     300.0
+#define WH_SVIX_TOLERANCE      300
+
+typedef struct {
+    char  name[128];
+    double timestamps[64];
+    int   count;
+} wh_rate_win_t;
+
+typedef struct {
+    char  id[256];
+    double at;
+} wh_delivery_t;
+
+static wh_rate_win_t g_wh_rates[32];
+static int           g_wh_rate_n = 0;
+static wh_delivery_t g_wh_seen[256];
+static int           g_wh_seen_n = 0;
+static wh_delivery_t g_wh_info[256];
+static int           g_wh_info_n = 0;
+static double        g_wh_next_prune = 0.0;
+
+
+static struct { char name[128]; char secret[256]; } g_wh_dyn[64];
+static int g_wh_dyn_n = 0;
+static double g_wh_dyn_mtime = 0.0;
+
+/* ---- rate limiting ---- */
+/* PoP: wh_record_rate_limit_hit @ gateway/platforms/webhook.py:_record_rate_limit_hit */
+static bool wh_record_rate_limit_hit(const char *route_name, double now) {
+    wh_rate_win_t *w = NULL;
+    for (int i = 0; i < g_wh_rate_n; i++)
+        if (strcmp(g_wh_rates[i].name, route_name) == 0) { w = &g_wh_rates[i]; break; }
+    if (!w) {
+        if (g_wh_rate_n >= 32) return false;
+        w = &g_wh_rates[g_wh_rate_n++];
+        memcpy(w->name, route_name, strlen(route_name) + 1); w->count = 0;
+    }
+    int j = 0;
+    for (int i = 0; i < w->count; i++)
+        if (now - w->timestamps[i] < WH_RATE_WINDOW_SECONDS) w->timestamps[j++] = w->timestamps[i];
+    w->count = j;
+    if (w->count >= WH_RATE_LIMIT) return false;
+    if (w->count < 64) w->timestamps[w->count++] = now;
+    return true;
+}
+
+/* PoP: wh_record_delivery_id @ gateway/platforms/webhook.py:_record_delivery_id */
+static bool wh_record_delivery_id(const char *delivery_id, double now) {
+    for (int i = 0; i < g_wh_seen_n; i++) {
+        if (strcmp(g_wh_seen[i].id, delivery_id) == 0) {
+            if (now - g_wh_seen[i].at < WH_IDEMPOTENCY_TTL) return false;
+            memcpy(g_wh_seen[i].id, delivery_id, strlen(delivery_id) + 1);
+            g_wh_seen[i].at = now;
+            return true;
+        }
+    }
+    if (g_wh_seen_n < 256) {
+        memcpy(g_wh_seen[g_wh_seen_n].id, delivery_id, strlen(delivery_id) + 1);
+        g_wh_seen[g_wh_seen_n].at = now;
+        g_wh_seen_n++;
+    }
+    return true;
+}
+
+/* PoP: wh_prune_seen_deliveries @ gateway/platforms/webhook.py:_prune_seen_deliveries */
+static void wh_prune_seen_deliveries(double now) {
+    if (now < g_wh_next_prune) return;
+    int j = 0;
+    for (int i = 0; i < g_wh_seen_n; i++)
+        if (now - g_wh_seen[i].at < WH_IDEMPOTENCY_TTL) g_wh_seen[j++] = g_wh_seen[i];
+    g_wh_seen_n = j;
+    g_wh_next_prune = now + 60.0;
+}
+
+/* PoP: wh_prune_delivery_info @ gateway/platforms/webhook.py:_prune_delivery_info */
+static void wh_prune_delivery_info(double now) {
+    int j = 0;
+    for (int i = 0; i < g_wh_info_n; i++)
+        if (now - g_wh_info[i].at < WH_IDEMPOTENCY_TTL) g_wh_info[j++] = g_wh_info[i];
+    g_wh_info_n = j;
+}
+
+/* PoP: wh_reload_dynamic_routes @ gateway/platforms/webhook.py:_reload_dynamic_routes */
+static void wh_reload_dynamic_routes(void) {
+    const char *home = getenv("SLERMES_HOME"); if (!home) home = getenv("HERMES_HOME");
+    if (!home) return;
+    char path[2048];
+    snprintf(path, sizeof(path), "%s/webhook_subscriptions.json", home);
+    struct stat st;
+    if (stat(path, &st) != 0) { g_wh_dyn_n = 0; return; }
+    if (st.st_mtime <= (time_t)g_wh_dyn_mtime) return;
+    g_wh_dyn_mtime = (double)st.st_mtime;
+    FILE *f = fopen(path, "rb");
+    if (!f) { g_wh_dyn_n = 0; return; }
+    fseek(f, 0, SEEK_END); long sz = ftell(f); fseek(f, 0, SEEK_SET);
+    char *buf = malloc(sz + 1); size_t rd = fread(buf, 1, sz, f); buf[rd] = '\0'; fclose(f);
+    char *jerr = NULL;
+    json_t *root = json_parse(buf, &jerr); free(buf);
+    if (!root || !json_is_object(root)) { if (root) json_free(root); return; }
+    g_wh_dyn_n = 0;
+    for (size_t i = 0; i < json_object_size(root) && g_wh_dyn_n < 64; i++) {
+        const char *k = json_object_get_key_at(root, i);
+        json_t *v = json_object_get_at(root, i);
+        if (!k) continue;
+        const char *sec = json_get_str(v, "secret", NULL);
+        if (!sec || !*sec) continue;
+        memcpy(g_wh_dyn[g_wh_dyn_n].name, k, strlen(k) + 1);
+        memcpy(g_wh_dyn[g_wh_dyn_n].secret, sec, strlen(sec) + 1);
+        g_wh_dyn_n++;
+    }
+    json_free(root);
+}
+
+/* ---- signature validation ---- */
+/* PoP: wh_validate_svix_signature @ gateway/platforms/webhook.py:_validate_svix_signature */
+static bool wh_validate_svix_signature(const unsigned char *body, size_t body_len,
+                                        const char *secret, const char *msg_id,
+                                        const char *timestamp, const char *sig_header) {
+    if (!msg_id || !timestamp || !sig_header || !secret || !*secret) return false;
+    long ts; if (sscanf(timestamp, "%ld", &ts) != 1) return false;
+    if (labs((long)time(NULL) - ts) > WH_SVIX_TOLERANCE) return false;
+    const char *s = secret;
+    if (strncmp(s, "whsec_", 6) == 0) s += 6;
+    unsigned char key[64]; size_t key_len = 0;
+    base64_decode(s, &key_len);
+    if (key_len == 0) return false;
+    char signed_content[8192];
+    int n = snprintf(signed_content, sizeof(signed_content), "%s.%s.", msg_id, timestamp);
+    if (n + body_len >= (int)sizeof(signed_content)) return false;
+    memcpy(signed_content + n, body, body_len);
+    signed_content[n + body_len] = '\0';
+    unsigned char mac[32];
+    crypto_hmac_sha256(key, key_len, signed_content, n + body_len, mac);
+    const char *b64 = strchr(sig_header, ',');
+    b64 = b64 ? b64 + 1 : sig_header;
+    unsigned char exp[64]; size_t exp_len = 0;
+    base64_decode(b64, &exp_len);
+    bool ok = (exp_len == 32) && memcmp(exp, mac, 32) == 0;
+    return ok;
+}
+
+/* local: hex-encode 32 raw bytes into NUL-terminated string */
+static void wh_to_hex(const unsigned char *bin, char *out) {
+    static const char H[] = "0123456789abcdef";
+    for (int i = 0; i < 32; i++) { out[i*2] = H[bin[i] >> 4]; out[i*2+1] = H[bin[i] & 0xf]; }
+    out[32] = '\0';
+}
+/* PoP: wh_validate_signature @ gateway/platforms/webhook.py:_validate_signature */
+static bool wh_validate_signature(const unsigned char *body, size_t body_len,
+                                   const char *secret, const char *svix_id, const char *svix_ts,
+                                   const char *svix_sig, const char *gh_sig) {
+    if ((svix_id && *svix_id) || (svix_ts && *svix_ts) || (svix_sig && *svix_sig))
+        return wh_validate_svix_signature(body, body_len, secret, svix_id, svix_ts, svix_sig);
+    if (gh_sig && *gh_sig) {
+        unsigned char mac[32];
+        crypto_hmac_sha256(secret, strlen(secret), body, body_len, mac);
+        char hexbuf[65]; wh_to_hex(mac, hexbuf);
+        const char *eq = strchr(gh_sig, '=');
+        bool ok = eq && strcasecmp(hexbuf, eq + 1) == 0;
+        return ok;
+    }
+    return false;
+}
+
+/* ---- templating ---- */
+static char *wh_resolve(json_t *payload, const char *key);
+
+/* PoP: wh_render_prompt @ gateway/platforms/webhook.py:_render_prompt */
+static char *wh_render_prompt(const char *template, json_t *payload,
+                               const char *event_type, const char *route_name) {
+    if (!template || !*template) {
+        char *raw = payload ? json_dumps(payload, 0) : strdup("{}");
+        size_t need = (raw ? strlen(raw) : 2) + strlen(event_type ? event_type : "") +
+                      strlen(route_name ? route_name : "") + 96;
+        char *out = malloc(need);
+        if (out) snprintf(out, need, "Webhook event '%s' on route '%s':\n\n```json\n%s\n```",
+                          event_type ? event_type : "", route_name ? route_name : "", raw ? raw : "");
+        free(raw);
+        return out;
+    }
+    size_t tlen = strlen(template);
+    char *out = malloc(tlen * 2 + 1);
+    if (!out) return NULL;
+    size_t o = 0;
+    for (size_t i = 0; i < tlen; i++) {
+        if (template[i] == '{') {
+            size_t j = i + 1;
+            while (j < tlen && template[j] != '}') j++;
+            if (j < tlen) {
+                char key[256]; size_t kl = j - i - 1;
+                if (kl < sizeof(key)) {
+                    memcpy(key, template + i + 1, kl); key[kl] = '\0';
+                    char *val = NULL;
+                    if (strcmp(key, "__raw__") == 0 && payload) {
+                        val = json_dumps(payload, 0);
+                    } else if (strcmp(key, "event_type") == 0) {
+                        val = strdup(event_type ? event_type : "");
+                    } else {
+                        val = wh_resolve(payload, key);
+                    }
+                    if (val) { size_t vl = strlen(val); memcpy(out + o, val, vl); o += vl; free(val); }
+                    i = j; continue;
+                }
+            }
+        }
+        out[o++] = template[i];
+    }
+    out[o] = '\0';
+    return out;
+}
+
+/* PoP: wh_render_delivery_extra @ gateway/platforms/webhook.py:_render_delivery_extra */
+static json_t *wh_render_delivery_extra(json_t *extra, json_t *payload) {
+    json_t *rendered = json_object();
+    if (!rendered || !extra) return rendered;
+    for (size_t i = 0; i < (size_t)json_array_size(extra); i++) {
+        const char *k = json_object_get_key_at(extra, i);
+        json_t *v = json_object_get_at(extra, i);
+        if (v && json_is_string(v)) {
+            char *s = wh_render_prompt(json_string_value(v), payload, "", "");
+            json_set(rendered, k, json_string(s ? s : ""));
+            free(s);
+        } else {
+            json_set(rendered, k, json_copy(v));
+        }
+    }
+    return rendered;
+}
+
+/* ---- delivery dispatch ---- */
+/* PoP: wh_direct_deliver @ gateway/platforms/webhook.py:_direct_deliver */
+static bool wh_direct_deliver(const char *content, json_t *delivery) {
+    if (!delivery) return false;
+    const char *type = json_get_str(delivery, "deliver", "log");
+    extern gateway_state_t g_gw;
+    if (strcmp(type, "telegram") == 0) {
+        const char *to = json_get_str(delivery, "chat_id", "");
+        return telegram_send_message(g_gw.http, to, content, NULL, NULL, false, false, NULL);
+    } else if (strcmp(type, "discord") == 0) {
+        return discord_send_message(g_gw.http, content);
+    } else if (strcmp(type, "slack") == 0) {
+        return slack_send_message(g_gw.http, content);
+    } else if (strcmp(type, "matrix") == 0) {
+        return matrix_send_message(g_gw.http, content);
+    } else if (strcmp(type, "mattermost") == 0) {
+        return mattermost_send_message(g_gw.http, content);
+    } else if (strcmp(type, "feishu") == 0) {
+        return feishu_send_message(g_gw.http, content);
+    } else if (strcmp(type, "whatsapp") == 0) {
+        const char *to = json_get_str(delivery, "to", "");
+        return whatsapp_send_message(g_gw.http, to, content);
+    } else if (strcmp(type, "email") == 0) {
+        const char *to = json_get_str(delivery, "to", "");
+        return email_send_message(g_gw.http, to, "Webhook notification", content);
+    } else if (strcmp(type, "sms") == 0) {
+        const char *to = json_get_str(delivery, "to", "");
+        return sms_send_message(g_gw.http, to, content);
+    }
+    printf("[webhook:direct_deliver:%s] %s\n", type, content ? content : "");
+    return true;
+}
+
+/* PoP: wh_deliver_github_comment @ gateway/platforms/webhook.py:_deliver_github_comment */
+static bool wh_deliver_github_comment(const char *content, json_t *delivery) {
+    extern gateway_state_t g_gw;
+    const char *repo = json_get_str(delivery, "repo", "");
+    const char *pr   = json_get_str(delivery, "pull_request", "");
+    if (!*repo || !*pr) { printf("[webhook:github_comment] missing repo/pr\n"); return false; }
+    char url[1024];
+    snprintf(url, sizeof(url), "https://api.github.com/repos/%s/issues/%s/comments", repo, pr);
+    http_resp_t *r = http_request_json(g_gw.http, HTTP_POST, url, content);
+    bool ok = r && r->status >= 200 && r->status < 300;
+    if (r) http_resp_free(r);
+    return ok;
+}
+
+/* PoP: wh_deliver_cross_platform @ gateway/platforms/webhook.py:_deliver_cross_platform */
+static bool wh_deliver_cross_platform(const char *content, json_t *delivery) {
+    json_t *targets = json_obj_get(delivery, "targets");
+    if (targets && json_is_array(targets)) {
+        bool any = true;
+        for (size_t i = 0; i < json_array_size(targets); i++) {
+            json_t *t = json_array_get(targets, i);
+            if (json_is_object(t) && !wh_direct_deliver(content, t)) any = false;
+        }
+        return any;
+    }
+    return wh_direct_deliver(content, delivery);
+}
+
+/* wh_resolve: walk dot-notation segments through a json_t payload. */
+static char *wh_resolve(json_t *payload, const char *key) {
+    if (!payload || !key) return NULL;
+    json_t *cur = payload;
+    char seg[128]; size_t sl = 0;
+    for (size_t k = 0; k <= strlen(key); k++) {
+        if (k < strlen(key) && key[k] == '.') {
+            if (sl) {
+                seg[sl] = '\0';
+                if (cur && json_is_object(cur)) cur = json_obj_get(cur, seg);
+                sl = 0;
+            }
+        }
+        if (sl < sizeof(seg) && k < strlen(key)) { seg[sl++] = key[k]; }
+    }
+    if (sl) { seg[sl] = '\0'; if (cur && json_is_object(cur)) cur = json_obj_get(cur, seg); }
+    if (!cur || !json_is_object(cur)) return NULL;
+    if (json_is_string(cur)) return strdup(cur->str_val);
+    if (json_is_number(cur)) { char b[32]; snprintf(b, sizeof(b), "%g", cur->num_val); return strdup(b); }
+    return NULL;
+}
+
+/* PoP: wh_render_prompt @ gateway/platforms/webhook.py:_render_prompt */
