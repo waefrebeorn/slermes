@@ -29,6 +29,7 @@ typedef enum {
     IDX_restart_with_compressed_messages,
     IDX_restart_with_length_continuation,
     IDX_restart_with_rebuilt_messages,
+    IDX_restart_with_redirected_messages,
     IDX_COUNT
 } trs_idx_t;
 
@@ -55,6 +56,7 @@ static const char *TRS_NAMES[IDX_COUNT] = {
     "restart_with_compressed_messages",
     "restart_with_length_continuation",
     "restart_with_rebuilt_messages",
+    "restart_with_redirected_messages",
 };
 
 /* PoP: turn_retry_state_create @ agent/turn_retry_state.py:TurnRetryState */
@@ -224,6 +226,14 @@ bool turn_retry_state_get_restart_with_rebuilt_messages(const turn_retry_state_t
 /* PoP: turn_retry_state_set_restart_with_rebuilt_messages @ agent/turn_retry_state.py:TurnRetryState */
 void turn_retry_state_set_restart_with_rebuilt_messages(turn_retry_state_t *s, bool v) {
     if (s) s->f[IDX_restart_with_rebuilt_messages] = v;
+}
+/* PoP: turn_retry_state_get_restart_with_redirected_messages @ agent/turn_retry_state.py:TurnRetryState */
+bool turn_retry_state_get_restart_with_redirected_messages(const turn_retry_state_t *s) {
+    return s ? s->f[IDX_restart_with_redirected_messages] : false;
+}
+/* PoP: turn_retry_state_set_restart_with_redirected_messages @ agent/turn_retry_state.py:TurnRetryState */
+void turn_retry_state_set_restart_with_redirected_messages(turn_retry_state_t *s, bool v) {
+    if (s) s->f[IDX_restart_with_redirected_messages] = v;
 }
 
 /* PoP: __iter__ @ agent/turn_retry_state.py:TurnRetryState.__iter__ */

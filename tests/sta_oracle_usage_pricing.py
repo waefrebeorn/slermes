@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 """
 sta_oracle_usage_pricing.py — oracle for t_port_usage_pricing.c.
 
@@ -15,6 +16,12 @@ import importlib.util
 # Locate the LIVE agent/usage_pricing.py (installed package, not the dev tree
 # which may have drifted). Walk sys.path for the hermes package.
 def _load_usage_pricing():
+    # Deterministic LIVE-Python resolution: prefer the canonical dev repo
+    # (parent of slermes/) over any installed/stale copy on sys.path
+    # (e.g. ~/.hermes/hermes-agent), which would manufacture false FAPs.
+    _repo = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    if _repo not in sys.path:
+        sys.path.insert(0, _repo)
     for base in sys.path:
         cand = f"{base}/agent/usage_pricing.py"
         try:

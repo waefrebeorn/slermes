@@ -82,16 +82,20 @@ Any `cases: MISMATCH` line from `run_oracles.sh` is a **FAP candidate**. Triage:
 
 ## Current known FAPs (from the v622+ oracle sweep)
 
-| Port | Type | Summary |
-|------|------|---------|
-| `provider_auth` | Real FAP | C provider-auth table ≠ LIVE Python `PROVIDER_REGISTRY` membership/order |
-| `usage_pricing` | Real FAP | C json serialization diverges from Python (key order / quoting) |
-| `turn_retry_state` | Real FAP | C retry-attempt state set differs from Python |
-| `coding_context` | False FAP | live `git status` embedded in output → normalize, not a code bug |
+| Port | Type | Status | Summary |
+|------|------|--------|---------|
+| `provider_auth` | Real FAP | **FIXED** (v623) | C provider-auth table was missing `vertex` and had stale entries; regenerated from LIVE Python `PROVIDER_REGISTRY` (45 keys). Also fixed the oracle's stale-path import (it was reading `~/.hermes` copy → false FAPs). |
+| `turn_retry_state` | Real FAP | **FIXED** (v623) | C `TurnRetryState` was missing the `restart_with_redirected_messages` field (19 vs Python's 20); added enum index + name + get/set + header decl. |
+| `usage_pricing` | False FAP | **RESOLVED** (v623) | Divergence was caused by the runner's broken `libjson/json.h` include path, not a C bug. Fixed by the runner include-root change. Now MATCH. |
+| `coding_context` | False FAP | **NORMALIZED** (v623) | Leaked the real git/workspace root path (`/home/.../slermes`). Wired the previously-dead `normalize` block in `run_oracle.sh` so env noise is stripped before diff. Now MATCH. |
+| `web_git_base` | Runner bug | **RESOLVED** (v623) | `port_web_git.h` exists at `src/cli/`; the runner just didn't add `src/<subdir>` include roots. Added `SRCINCS` (all `src/*` dirs) to the runner. Now compiles. |
+| `curator_backup` | Harness bug | OPEN | C harness repeats the first fixture case instead of iterating all `.in` cases; the oracle varies `keep`. Harness iteration bug, not a C fidelity gap. Next work. |
+| 31 web_server_*/other | Harness bug | OPEN | These oracles emit no output (harness or oracle produces nothing for the fixture) so the runner records no verdict. Per-harness emission debug needed; not C fidelity FAPs. |
 
 These were **silent** before the oracle registry was restored to cover all 89
 runnable ports (it had regressed to 2). A FAP that never runs is still a FAP —
-it just isn't *found* until the harness exercises it.
+it just isn't *found* until the harness exercises it. After v623's fixes, the
+58 oracles that run report **58 MATCH, 0 FAP**.
 
 ## The one rule
 

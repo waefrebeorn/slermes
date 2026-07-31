@@ -21,8 +21,11 @@ struct provider_auth_entry_t {
     provider_auth_type_t auth_type;
 };
 
-/* Registry table — 44 keys, regenerated from LIVE Python PROVIDER_REGISTRY.
- * Sorted for binary search. auth_type mirrors the Python auth_type string. */
+/* Registry table — 45 keys, regenerated from LIVE Python PROVIDER_REGISTRY
+ * (2026-07-31). Sorted for binary search. auth_type mirrors the Python
+ * auth_type string (api_key=1, oauth_device_code=2, oauth_external=3,
+ * aws_sdk=4, external_process=5, oauth_minimax=6, vertex/unknown=0).
+ * Diff-checked against LIVE Python by tests/sta_oracle_provider_auth.py. */
 static const provider_auth_entry_t PROVIDER_AUTH_TABLE[] = {
     {"alibaba",            PROVIDER_AUTH_API_KEY},
     {"alibaba-coding-plan",PROVIDER_AUTH_API_KEY},
@@ -64,6 +67,7 @@ static const provider_auth_entry_t PROVIDER_AUTH_TABLE[] = {
     {"stepfun",            PROVIDER_AUTH_API_KEY},
     {"tencent-tokenhub",   PROVIDER_AUTH_API_KEY},
     {"upstage",            PROVIDER_AUTH_API_KEY},
+    {"vertex",             PROVIDER_AUTH_UNKNOWN},
     {"xai",                PROVIDER_AUTH_API_KEY},
     {"xai-oauth",          PROVIDER_AUTH_OAUTH_EXTERNAL},
     {"xiaomi",             PROVIDER_AUTH_API_KEY},

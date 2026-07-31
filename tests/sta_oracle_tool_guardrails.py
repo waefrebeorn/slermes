@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 """
 sta_oracle_tool_guardrails.py — oracle for t_port_tool_guardrails.c.
 
@@ -13,6 +14,12 @@ import importlib.util
 
 
 def _load():
+    # Deterministic LIVE-Python resolution: prefer the canonical dev repo
+    # (parent of slermes/) over any installed/stale copy on sys.path
+    # (e.g. ~/.hermes/hermes-agent), which would manufacture false FAPs.
+    _repo = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    if _repo not in sys.path:
+        sys.path.insert(0, _repo)
     for base in sys.path:
         cand = f"{base}/agent/tool_guardrails.py"
         try:

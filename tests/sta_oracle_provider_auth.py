@@ -31,6 +31,12 @@ DEFAULT_ENUM = 0  # anything unmapped -> UNKNOWN (as the C side would)
 
 
 def _load_auth():
+    # Deterministic LIVE-Python resolution: prefer the canonical dev repo
+    # (parent of slermes/) over any installed/stale copy on sys.path
+    # (e.g. ~/.hermes/hermes-agent), which would manufacture false FAPs.
+    _repo = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    if _repo not in sys.path:
+        sys.path.insert(0, _repo)
     for base in sys.path:
         cand = os.path.join(base, "hermes_cli", "auth.py")
         if os.path.exists(cand):

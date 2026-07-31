@@ -456,7 +456,8 @@
       "da16ca2fb3.*\\n",
       "044c90d1ac.*\\n",
       "b556892c9a.*\\n",
-      "ffa3fabfef.*\\n"
+      "ffa3fabfef.*\\n",
+      "\"/home/[^\"]*/slermes\""
     ],
     "strip_fields": [
       "root",

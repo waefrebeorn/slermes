@@ -72,6 +72,8 @@ bool turn_retry_state_get_restart_with_length_continuation(const turn_retry_stat
 void turn_retry_state_set_restart_with_length_continuation(turn_retry_state_t *s, bool v);
 bool turn_retry_state_get_restart_with_rebuilt_messages(const turn_retry_state_t *s);
 void turn_retry_state_set_restart_with_rebuilt_messages(turn_retry_state_t *s, bool v);
+bool turn_retry_state_get_restart_with_redirected_messages(const turn_retry_state_t *s);
+void turn_retry_state_set_restart_with_redirected_messages(turn_retry_state_t *s, bool v);
 
 /* Iteration support (mirrors Python __iter__ -> (name, value) pairs), as a
  * null-terminated array of {name, value}. Caller frees with
