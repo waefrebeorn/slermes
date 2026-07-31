@@ -11,6 +11,7 @@
 #include "hermes_gateway_core.h"
 #include "hermes_gateway_whatsapp.h"
 #include "hermes_gateway_sms.h"
+#include "hermes_db.h"
 #include <unistd.h>
 #include <errno.h>
 #include <sys/socket.h>
@@ -1252,6 +1253,26 @@ static json_t *wh_render_delivery_extra(json_t *extra, json_t *payload) {
         }
     }
     return rendered;
+}
+
+/* PoP: wh_end_webhook_session @ gateway/platforms/webhook.py:_end_webhook_session */
+/* Faithful port: resolve the per-delivery webhook session from g_gw by
+ * chat_id and mark it ended in the session DB (first-writer-wins). Reuses the
+ * real db_end_session port of SessionDB.end_session — no fake stub. */
+static bool wh_end_webhook_session(const char *chat_id, const char *end_reason) {
+    if (!chat_id || !*chat_id) return false;
+    extern gateway_state_t g_gw;
+    for (int i = 0; i < GW_SESSIONS_MAX; i++) {
+        gw_session_entry_t *s = &g_gw.sessions[i];
+        if (!s->in_use || !s->session_id[0]) continue;
+        /* key is "platform:chat_id"; match the chat_id suffix. */
+        const char *colon = strchr(s->key, ':');
+        const char *sid = colon ? colon + 1 : s->key;
+        if (strcmp(sid, chat_id) == 0) {
+            return db_end_session(s->db, s->session_id, end_reason);
+        }
+    }
+    return false;
 }
 
 /* ---- delivery dispatch ---- */

@@ -482,6 +482,7 @@ bool db_load_meta(const db_t *db, const char *session_id, session_meta_t *meta) 
 
 bool db_tag_add(db_t *db, const char *session_id, const char *tag) {
     if (!db || !session_id || !tag || !*tag) return false;
+    if (strlen(tag) >= SESSION_TAG_LEN) return false;
     session_meta_t meta;
     if (!db_load_meta(db, session_id, &meta))
         db_meta_init(&meta);
@@ -493,9 +494,24 @@ bool db_tag_add(db_t *db, const char *session_id, const char *tag) {
 
     /* Check limit */
     if (meta.tag_count >= SESSION_TAGS_MAX) return false;
-
     snprintf(meta.tags[meta.tag_count], SESSION_TAG_LEN, "%s", tag);
     meta.tag_count++;
+    return db_save_meta(db, session_id, &meta);
+}
+
+/* Faithful port of SessionDB.end_session: mark a session ended (first
+ * writer wins — no-op if already ended). Persists ended_at + end_reason
+ * into the session sidecar meta, so prune_sessions can reap it. */
+bool db_end_session(db_t *db, const char *session_id, const char *end_reason) {
+    if (!db || !session_id || !*session_id) return false;
+    session_meta_t meta;
+    if (!db_load_meta(db, session_id, &meta))
+        db_meta_init(&meta);
+    if (meta.ended_at != 0)
+        return true; /* already ended: first-reason-wins no-op */
+    meta.ended_at = time(NULL);
+    snprintf(meta.end_reason, sizeof(meta.end_reason), "%s",
+             (end_reason && *end_reason) ? end_reason : "webhook_end");
     return db_save_meta(db, session_id, &meta);
 }
 

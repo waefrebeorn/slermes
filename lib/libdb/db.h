@@ -95,6 +95,11 @@ bool db_load_meta(const db_t *db, const char *session_id, session_meta_t *meta);
 /* Initialize metadata with defaults (title, model, timestamps). */
 void db_meta_init(session_meta_t *meta);
 
+/* SE01: Mark a session ended (first writer wins — no-op if already ended).
+ * Persists ended_at + end_reason into the session sidecar meta. Port of
+ * SessionDB.end_session. */
+bool db_end_session(db_t *db, const char *session_id, const char *end_reason);
+
 /* === L19: Tag CRUD operations === */
 
 /* Add a tag to a session. Returns true if added. Max SESSION_TAGS_MAX per session. */

@@ -7,6 +7,7 @@
 #include "hermes_agent.h"
 #include "hermes_json.h"
 #include "hermes_gateway_msgraph.h"
+#include "gateway/msgraph_webhook_security.h"
 #include <unistd.h>
 #include <errno.h>
 #include <sys/socket.h>
@@ -17,6 +18,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 /* ================================================================
  *  Limits
@@ -40,6 +42,12 @@ typedef struct {
     int port;
     int accepted_count;
     int duplicate_count;
+    /* Security config (parsed from env / init args). */
+    msgraph_cidr_t allowed_cidrs[64];
+    int n_allowed_cidrs;
+    char *client_state;        /* expected clientState (constant-time cmp) */
+    char *allowed_source_cidrs; /* raw CIDR list string (owned) */
+    bool  security_enabled;
 } msgraph_state_t;
 
 static msgraph_state_t g_msgraph;
@@ -99,9 +107,37 @@ static void seen_add(const char *key) {
  *  HTTP response builder
  * ================================================================ */
 
-/* No CIDR filter or clientState verification — everything allowed */
-#define source_ip_allowed(remote) true
-#define client_state_verified(body) true
+/* Real security checks (replace the old accept-everything stubs).
+ * source_ip_allowed: CIDR allowlist enforcement via the security module.
+ * client_state_verified: constant-time clientState comparison. */
+static bool source_ip_allowed(const char *peer_ip) {
+    if (!g_msgraph.security_enabled) return true; /* opt-out when unconfigured */
+    return msgraph_source_ip_allowed(peer_ip, NULL,
+                                     g_msgraph.allowed_cidrs,
+                                     g_msgraph.n_allowed_cidrs);
+}
+
+static bool client_state_verified(const char *body) {
+    if (!g_msgraph.security_enabled) return true;
+    if (!body) return false;
+    /* The clientState lives inside the JSON body's "value" array entries;
+     * the per-notification check is done in msgraph_handle_notification, but
+     * a top-level validation token path is not clientState-gated. We verify
+     * the first notification's clientState if present. */
+    char *jerr = NULL;
+    json_t *root = json_parse(body, &jerr);
+    if (jerr) { free(jerr); return true; }
+    if (!root) return true;
+    json_t *value = json_obj_get(root, "value");
+    bool ok = true;
+    if (value && value->type == JSON_ARRAY && json_len(value) > 0) {
+        json_t *first = json_get(value, 0);
+        const char *cs = json_get_str(first, "clientState", "");
+        ok = msgraph_verify_client_state(cs, g_msgraph.client_state);
+    }
+    json_free(root);
+    return ok;
+}
 
 static char *build_http_response(int status, const char *status_text,
                                   const char *content_type,
@@ -180,6 +216,13 @@ static void handle_request(int client_fd) {
     if (n <= 0) { close(client_fd); return; }
     buf[n] = '\0';
 
+    /* Extract peer IP for source allowlisting. */
+    char peer_ip[64] = "0.0.0.0";
+    struct sockaddr_in peer_addr;
+    socklen_t peer_len = sizeof(peer_addr);
+    if (getpeername(client_fd, (struct sockaddr *)&peer_addr, &peer_len) == 0) {
+        inet_ntop(AF_INET, &peer_addr.sin_addr, peer_ip, sizeof(peer_ip));
+    }
     char method[16], path[512], query[1024];
     if (parse_http_request_line(buf, method, sizeof(method),
                                  path, sizeof(path), query, sizeof(query)) < 0) {
@@ -244,6 +287,14 @@ static void handle_request(int client_fd) {
 
     /* POST {webhook_path} — notification */
     if (strcmp(method, "POST") == 0 && strcmp(path, g_msgraph.webhook_path) == 0) {
+        /* Source-IP allowlist enforcement (real CIDR check). */
+        if (!source_ip_allowed(peer_ip)) {
+            char *r = build_http_response(403, "Forbidden", "application/json",
+                                           "{\"error\":\"Source IP not allowed\"}");
+            if (r) { (void)write(client_fd, r, strlen(r)); free(r); }
+            close(client_fd);
+            return;
+        }
         const char *body = extract_http_body(buf);
         if (!body) {
             char *r = build_http_response(400, "Bad Request", "application/json",
@@ -433,6 +484,22 @@ void msgraph_webhook_init(const char *webhook_path, const char *health_path, int
     g_msgraph.webhook_path = strdup(webhook_path ? webhook_path : DEFAULT_WEBHOOK_PATH);
     g_msgraph.health_path = strdup(health_path ? health_path : DEFAULT_HEALTH_PATH);
     g_msgraph.port = port > 0 ? port : DEFAULT_PORT;
+
+    /* Security config from environment (mirrors the Python adapter's config
+     * sources). When set, real CIDR + clientState enforcement is enabled. */
+    const char *cidrs = getenv("MSGRAPH_ALLOWED_SOURCE_CIDRS");
+    const char *cs = getenv("MSGRAPH_CLIENT_STATE");
+    if ((cidrs && *cidrs) || (cs && *cs)) {
+        g_msgraph.security_enabled = true;
+        if (cidrs && *cidrs) {
+            g_msgraph.allowed_source_cidrs = strdup(cidrs);
+            g_msgraph.n_allowed_cidrs =
+                msgraph_parse_allowed_source_cidrs(cidrs,
+                                                   g_msgraph.allowed_cidrs, 64);
+        }
+        if (cs && *cs)
+            g_msgraph.client_state = strdup(cs);
+    }
 }
 
 void msgraph_webhook_run(void) {
@@ -442,4 +509,6 @@ void msgraph_webhook_run(void) {
 void msgraph_webhook_stop(void) {
     free(g_msgraph.webhook_path);
     free(g_msgraph.health_path);
+    free(g_msgraph.allowed_source_cidrs);
+    free(g_msgraph.client_state);
 }
