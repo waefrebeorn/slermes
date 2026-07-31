@@ -47,6 +47,14 @@ LINKCMD=$(make -B -n slermes 2>/dev/null \
 # Normalize: replace the output target and the main object.
 LINKCMD=${LINKCMD// -o slermes / -o "$BUILD_DIR/tt_$NAME" }
 LINKCMD=${LINKCMD//src\/main.o /$HARNESS }
+# The harness recompiles fresh from the link recipe, which carries no -I flags.
+# Harnesses include both "hermes_json.h" (in include/) and "libjson/json.h"
+# (in lib/libjson/). The real build injects per-lib include roots via
+# build/libs-config.mk; replicate that here. NOTE: an include of "libjson/json.h"
+# resolves against -I lib (=> lib/libjson/json.h), NOT -I lib/libjson, so the
+# root "lib" must be present alongside the per-lib dirs.
+LIBINCS="-I lib $(grep -oE 'lib/lib[a-z0-9_]+' build/libs-config.mk 2>/dev/null | sed 's#^#-I #' | tr '\n' ' ')"
+LINKCMD="$LINKCMD $LIBINCS"
 # Always rebuild the harness from the current object closure (never reuse a
 # stale binary from a prior run with a different object set).
 rm -f "$BUILD_DIR/tt_$NAME"
