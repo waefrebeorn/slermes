@@ -286,28 +286,105 @@ void desktop_notification_clear(void) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
- *  File Dialogs (stubs — platform backends override)
+ *  File Dialogs — real implementation (zenity/kdialog, curses fallback)
  * ═══════════════════════════════════════════════════════════════════════ */
+
+/* Try a desktop-native selector via popen; returns malloc'd path or NULL.
+ * cmd is the full shell command that prints a single path to stdout. */
+static char *desktop_run_selector(const char *cmd) {
+    FILE *f = popen(cmd, "r");
+    if (!f) return NULL;
+    char buf[4096];
+    if (!fgets(buf, sizeof(buf), f)) { pclose(f); return NULL; }
+    pclose(f);
+    size_t n = strlen(buf);
+    while (n > 0 && (buf[n-1] == '\n' || buf[n-1] == '\r')) buf[--n] = '\0';
+    if (n == 0) return NULL;
+    return strdup(buf);
+}
 
 /* PoP: file_dialog_open @ electron/main.cjs:selectPaths */
 char *desktop_file_dialog_open(const char *title, const char *filter) {
-    (void)title; (void)filter;
-    /* TODO: implement native file dialog */
-    fprintf(stderr, "desktop_file_dialog_open: stub (title='%s')\n", title ? title : "");
-    return NULL;
+    (void)filter;
+    /* Prefer desktop-native selectors. */
+    char cmd[1024];
+    if (system("command -v zenity >/dev/null 2>&1") == 0) {
+        snprintf(cmd, sizeof(cmd), "zenity --file-selection --title '%s'",
+                 title ? title : "Open");
+        char *r = desktop_run_selector(cmd);
+        if (r) return r;
+    }
+    if (system("command -v kdialog >/dev/null 2>&1") == 0) {
+        snprintf(cmd, sizeof(cmd), "kdialog --getopenfilename . '%s'",
+                 title ? title : "Open");
+        char *r = desktop_run_selector(cmd);
+        if (r) return r;
+    }
+    /* Fallback: read a path from stdin (headless / SSH / WSL context). */
+    fprintf(stderr, "desktop_file_dialog_open: no GUI selector; reading path from stdin: ");
+    char buf[4096];
+    if (!fgets(buf, sizeof(buf), stdin)) return NULL;
+    size_t n = strlen(buf);
+    while (n > 0 && (buf[n-1] == '\n' || buf[n-1] == '\r')) buf[--n] = '\0';
+    if (n == 0) return NULL;
+    FILE *t = fopen(buf, "rb");
+    if (!t) { fprintf(stderr, "desktop_file_dialog_open: file not found: %s\n", buf); return NULL; }
+    fclose(t);
+    return strdup(buf);
 }
 
 /* PoP: file_dialog_save @ electron/main.cjs:selectPaths */
 char *desktop_file_dialog_save(const char *title, const char *default_name, const char *filter) {
-    (void)title; (void)default_name; (void)filter;
-    fprintf(stderr, "desktop_file_dialog_save: stub (title='%s')\n", title ? title : "");
-    return NULL;
+    (void)filter;
+    char cmd[1024];
+    if (system("command -v zenity >/dev/null 2>&1") == 0) {
+        snprintf(cmd, sizeof(cmd), "zenity --file-selection --save --confirm-overwrite --title '%s'%s%s",
+                 title ? title : "Save",
+                 default_name ? " --filename " : "",
+                 default_name ? default_name : "");
+        char *r = desktop_run_selector(cmd);
+        if (r) return r;
+    }
+    if (system("command -v kdialog >/dev/null 2>&1") == 0) {
+        snprintf(cmd, sizeof(cmd), "kdialog --getsavefilename . '%s'",
+                 default_name ? default_name : "");
+        char *r = desktop_run_selector(cmd);
+        if (r) return r;
+    }
+    fprintf(stderr, "desktop_file_dialog_save: no GUI selector; reading path from stdin: ");
+    char buf[4096];
+    if (!fgets(buf, sizeof(buf), stdin)) return NULL;
+    size_t n = strlen(buf);
+    while (n > 0 && (buf[n-1] == '\n' || buf[n-1] == '\r')) buf[--n] = '\0';
+    if (n == 0) return NULL;
+    return strdup(buf);
 }
 
 char *desktop_file_dialog_pick_dir(const char *title) {
-    (void)title;
-    fprintf(stderr, "desktop_file_dialog_pick_dir: stub\n");
-    return NULL;
+    char cmd[1024];
+    if (system("command -v zenity >/dev/null 2>&1") == 0) {
+        snprintf(cmd, sizeof(cmd), "zenity --file-selection --directory --title '%s'",
+                 title ? title : "Select Directory");
+        char *r = desktop_run_selector(cmd);
+        if (r) return r;
+    }
+    if (system("command -v kdialog >/dev/null 2>&1") == 0) {
+        snprintf(cmd, sizeof(cmd), "kdialog --getexistingdirectory .");
+        char *r = desktop_run_selector(cmd);
+        if (r) return r;
+    }
+    fprintf(stderr, "desktop_file_dialog_pick_dir: no GUI selector; reading dir from stdin: ");
+    char buf[4096];
+    if (!fgets(buf, sizeof(buf), stdin)) return NULL;
+    size_t n = strlen(buf);
+    while (n > 0 && (buf[n-1] == '\n' || buf[n-1] == '\r')) buf[--n] = '\0';
+    if (n == 0) return NULL;
+    struct stat st;
+    if (stat(buf, &st) != 0 || !S_ISDIR(st.st_mode)) {
+        fprintf(stderr, "desktop_file_dialog_pick_dir: not a directory: %s\n", buf);
+        return NULL;
+    }
+    return strdup(buf);
 }
 
 /* PoP: open_external @ electron/main.cjs:openExternal */
@@ -728,9 +805,32 @@ static bool g_voice_speaking = false;
 bool desktop_voice_output_speak(const char *text) {
     if (!text || g_voice_speaking) return false;
     g_voice_speaking = true;
-    fprintf(stderr, "desktop_voice_output_speak: speaking (stub): %s", text);
-    /* In real implementation, this would call TTS engine */
+
+    /* Prefer an available TTS engine; speak asynchronously so callers don't block. */
+    char cmd[8200];
+    if (system("command -v espeak >/dev/null 2>&1") == 0) {
+        snprintf(cmd, sizeof(cmd), "espeak --stdin >/dev/null 2>&1 & echo '%s' | espeak >/dev/null 2>&1 &",
+                 text);
+        system(cmd);
+        g_voice_speaking = false;
+        return true;
+    }
+    if (system("command -v festival >/dev/null 2>&1") == 0) {
+        snprintf(cmd, sizeof(cmd), "echo '%s' | festival --tts >/dev/null 2>&1 &", text);
+        system(cmd);
+        g_voice_speaking = false;
+        return true;
+    }
+#ifdef __APPLE__
+    snprintf(cmd, sizeof(cmd), "say '%s' >/dev/null 2>&1 &", text);
+    system(cmd);
+    g_voice_speaking = false;
     return true;
+#endif
+    /* No TTS engine available — record state, report inability honestly. */
+    fprintf(stderr, "desktop_voice_output_speak: no TTS engine (espeak/festival/say) available\n");
+    g_voice_speaking = false;
+    return false;
 }
 
 bool desktop_voice_output_stop(void) {
@@ -813,18 +913,52 @@ chat_rendered_msg_t *desktop_reasoning_render(const char *reasoning_text,
 
 /* PoP: context_menu @ apps/desktop/src/app/chat/index.tsx */
 bool desktop_context_menu_show(int x, int y, const context_menu_item_t *items,
-                                int item_count, context_menu_cb cb) {
+                               int item_count, context_menu_cb cb) {
     if (!items || item_count <= 0) return false;
+    (void)x; (void)y;
 
-    fprintf(stderr, "desktop_context_menu_show: showing %d items at (%d, %d) (stub)",
-            item_count, x, y);
-    /* In real implementation, this would show a platform-native context menu */
+    /* Prefer a desktop-native list selector. */
+    if (system("command -v zenity >/dev/null 2>&1") == 0) {
+        /* Build a zenity --list command with the item labels. */
+        char cmd[8192];
+        int pos = snprintf(cmd, sizeof(cmd), "zenity --list --title 'Menu' --column 'Action'");
+        for (int i = 0; i < item_count && pos < (int)sizeof(cmd) - 256; i++) {
+            pos += snprintf(cmd + pos, sizeof(cmd) - (size_t)pos, " '%s'",
+                            items[i].label ? items[i].label : "");
+        }
+        FILE *f = popen(cmd, "r");
+        if (f) {
+            char buf[1024];
+            if (fgets(buf, sizeof(buf), f)) {
+                size_t n = strlen(buf);
+                while (n > 0 && (buf[n-1] == '\n' || buf[n-1] == '\r')) buf[--n] = '\0';
+                pclose(f);
+                for (int i = 0; i < item_count; i++) {
+                    if (items[i].label && strcmp(items[i].label, buf) == 0) {
+                        if (cb) cb(items[i].label);
+                        return true;
+                    }
+                }
+            } else { pclose(f); }
+        }
+    }
+
+    /* Fallback: numbered prompt on stdin (headless / SSH / WSL). */
+    fprintf(stderr, "context menu:\n");
+    for (int i = 0; i < item_count; i++)
+        fprintf(stderr, "  %d) %s\n", i + 1, items[i].label ? items[i].label : "");
+    fprintf(stderr, "choice: ");
+    char buf[256];
+    if (!fgets(buf, sizeof(buf), stdin)) return false;
+    int choice = atoi(buf);
+    if (choice < 1 || choice > item_count) return false;
+    if (cb) cb(items[choice - 1].label);
     return true;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
  *  Profile Scope, Auxiliary Models, Model Analytics, Model Visibility
- * ═══════════════════════════════════════════════════════════════════════ */
+ * ═════════════════════════════════════════════════════════════════════ */
 
 /* PoP: profile_scope @ apps/desktop/src/app/profile/index.tsx */
 
@@ -966,8 +1100,9 @@ bool desktop_show_in_folder(const char *path) {
         snprintf(cmd, sizeof(cmd), "xdg-open \"%s\"", path);
     }
 #endif
-    fprintf(stderr, "desktop_show_in_folder: %s (stub)", cmd);
-    return true;
+    fprintf(stderr, "desktop_show_in_folder: %s\n", cmd);
+    int rc = system(cmd);
+    return rc == 0;
 }
 
 /* PoP: dark_mode @ apps/desktop/src/app/settings/index.tsx */

@@ -101,6 +101,13 @@ const desktop_model_t *desktop_model_find(const char *model_id);
  *  Profile Management
  * ═══════════════════════════════════════════════════════════════════════ */
 
+/* PoP: profile_scope @ apps/desktop/src/app/profile/index.tsx */
+typedef enum {
+    PROFILE_SCOPE_LOCAL = 0,
+    PROFILE_SCOPE_WORKSPACE,
+    PROFILE_SCOPE_GLOBAL,
+} profile_scope_t;
+
 typedef struct {
     char   name[128];
     char   path[1024];
@@ -369,12 +376,6 @@ bool desktop_context_menu_show(int x, int y, const context_menu_item_t *items,
  * ═══════════════════════════════════════════════════════════════════════ */
 
 /* PoP: profile_scope @ apps/desktop/src/app/profile/index.tsx */
-typedef enum {
-    PROFILE_SCOPE_LOCAL = 0,
-    PROFILE_SCOPE_WORKSPACE,
-    PROFILE_SCOPE_GLOBAL,
-} profile_scope_t;
-
 bool desktop_profile_set_scope(const char *name, profile_scope_t scope);
 profile_scope_t desktop_profile_get_scope(const char *name);
 
