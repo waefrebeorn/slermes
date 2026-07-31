@@ -23,6 +23,7 @@
 #include "hermes_auth.h"
 #include <sys/stat.h>
 #include "hermes_redact.h"
+#include "context_compressor_pure.h"  /* cc_reinject_pruned_skill_markers, context_compressor__extract_pruned_skill_names */
 
 /* ================================================================
  *  Time helpers
@@ -937,6 +938,27 @@ static char *llm_compress_messages(const message_t **msgs, size_t count,
     char *summary = NULL;
     if (resp && resp->content) {
         summary = strdup(resp->content);
+    }
+    /* Ghost-skill defense (#32106): the summarizer routinely paraphrases
+     * [SKILL_PRUNED: ...] reload markers into vague prose, erasing the
+     * instruction. Restore any marker the model dropped (collected from the
+     * turns being summarized) before the summary is inserted. Mirrors
+     * Python _reinject_pruned_skill_markers in _generate_summary. */
+    if (summary) {
+        char *names[64];
+        int ncount = 0;
+        context_compressor__extract_pruned_skill_names(text, names, &ncount, 64);
+        if (ncount > 0) {
+            char *reinjected = NULL;
+            cc_reinject_pruned_skill_markers(summary,
+                                             (const char **)names, ncount,
+                                             &reinjected);
+            for (int i = 0; i < ncount; i++) free(names[i]);
+            if (reinjected) {
+                free(summary);
+                summary = reinjected;
+            }
+        }
     }
     llm_response_free(resp);
     message_free(sys);

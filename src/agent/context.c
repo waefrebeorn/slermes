@@ -883,6 +883,22 @@ int context_compressor__extract_pruned_skill_names(const char *text,
  * Python: build the marker for each skill missing from *summary*, append under
  * "## Pruned Skills", route the block through _redact_compaction_text (C:
  * hermes_redact), append to summary. Caller frees *out. */
+/* Forward declaration (definition follows below). */
+int context_compressor__reinject_pruned_skill_markers(const char *summary,
+                                                       const char **skill_names,
+                                                       int skill_count,
+                                                       char **out);
+
+/* Public cc_ wrapper so the live compression path (llm_client.c) can invoke the
+ * ghost-skill re-injection without reaching into context.c statics. */
+int cc_reinject_pruned_skill_markers(const char *summary,
+                                     const char **skill_names,
+                                     int skill_count,
+                                     char **out) {
+    return context_compressor__reinject_pruned_skill_markers(summary, skill_names,
+                                                             skill_count, out);
+}
+
 int context_compressor__reinject_pruned_skill_markers(const char *summary,
                                                        const char **skill_names,
                                                        int skill_count,

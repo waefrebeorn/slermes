@@ -123,7 +123,13 @@ int  cc_safe_int(const json_t *value, int *out);
 char *cc_skill_pruned_marker(const char *skill_name);
 /* Skill names referenced by prune markers in text, in order (deduped). */
 int  cc_extract_pruned_skill_names(const char *text, char **out_names,
-                                   int *out_count, int limit);
+                                  int *out_count, int limit);
+/* Deterministic restore of prune markers the summarizer dropped: builds the
+ * marker for each skill missing from *summary*, appends under "## Pruned
+ * Skills", redacts, and sets *out (caller frees). Caller frees skill_names[]. */
+int  cc_reinject_pruned_skill_markers(const char *summary,
+                                     const char **skill_names,
+                                     int skill_count, char **out);
 
 /* Flatten message content to a single string for substring checks. Caller frees. */
 char *cc_content_text_for_contains(const json_t *content);
