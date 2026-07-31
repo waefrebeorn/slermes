@@ -91,11 +91,14 @@ Any `cases: MISMATCH` line from `run_oracles.sh` is a **FAP candidate**. Triage:
 | `web_git_base` | Runner bug | **RESOLVED** (v623) | `port_web_git.h` exists at `src/cli/`; the runner just didn't add `src/<subdir>` include roots. Added `SRCINCS` (all `src/*` dirs) to the runner. Now compiles. |
 | `curator_backup` | Harness bug | OPEN | C harness repeats the first fixture case instead of iterating all `.in` cases; the oracle varies `keep`. Harness iteration bug, not a C fidelity gap. Next work. |
 | 31 web_server_*/other | Harness bug | OPEN | These oracles emit no output (harness or oracle produces nothing for the fixture) so the runner records no verdict. Per-harness emission debug needed; not C fidelity FAPs. |
+| 17 oracles (title_stack, run_pure, kanban_util, web_server_*, etc.) | Env/install | OPEN | Their Python oracle `import hermes_state` (and similar) which **does not exist in the dev repo** — it only lives in the stale `~/.hermes/hermes-agent/` install, which has version skew with the dev repo's `agent/` modules (`SKILL_EXCERPT_JOINT` missing). The oracle crashes (ImportError) so no verdict is recorded. **This is a broken/version-skewed Python-Hermes install, not a C fidelity gap and not a harness bug.** Restore a consistent Python-Hermes source tree (refresh the install from the dev repo) to unblock; do NOT mutate the user's live Python env blindly. |
 
 These were **silent** before the oracle registry was restored to cover all 89
 runnable ports (it had regressed to 2). A FAP that never runs is still a FAP —
 it just isn't *found* until the harness exercises it. After v623's fixes, the
-58 oracles that run report **58 MATCH, 0 FAP**.
+72 oracles that run report **156 MATCH lines, 0 FAP, 0 compile failures** across
+89 registered ports (was 2/136 coverage with 4 real divergences). The 17
+env-blocked oracles are gated by an external install issue outside the C port.
 
 ## The one rule
 
