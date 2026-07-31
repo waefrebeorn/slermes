@@ -1,0 +1,1 @@
+{"op": "endpoint", "db": "@DB@", "body": {"older_than_days": 0.5}}

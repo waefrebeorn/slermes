@@ -1,0 +1,1 @@
+{"op": "frames", "exec": {"config reset": {"status": "confirm_required", "command": "config reset"}}, "script": [{"type": "input", "line": "config reset"}, {"type": "input", "line": "other"}, {"type": "confirm", "command": "wrong"}, {"type": "confirm", "command": "config reset"}]}

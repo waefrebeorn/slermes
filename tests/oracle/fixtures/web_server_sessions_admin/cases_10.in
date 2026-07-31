@@ -1,0 +1,1 @@
+{"op": "session_count", "db": "@DB@", "source": "telegram", "include_archived": true}

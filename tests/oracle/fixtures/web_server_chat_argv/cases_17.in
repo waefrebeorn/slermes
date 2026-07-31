@@ -1,0 +1,1 @@
+{"op": "build_env", "base": {"PATH": "/usr/bin"}, "profile_dir": "/home/u/.hermes/profiles/work", "gateway": "ws://127.0.0.1:9119/api/ws?token=t"}

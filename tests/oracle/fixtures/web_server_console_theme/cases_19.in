@@ -1,0 +1,1 @@
+{"op": "frames", "exec": {"status": {"status": "ok", "output": "fine"}}, "script": [{"type": "ping"}, {"type": "cancel"}, {"type": "input", "line": "  status  "}, {"type": "input", "line": ""}, {"type": "bogus"}]}

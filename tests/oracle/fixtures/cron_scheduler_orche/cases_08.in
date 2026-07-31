@@ -1,0 +1,1 @@
+{"op": "summarize_fail", "job_id": "job-42", "error": "boom: secret=AKIA123"}

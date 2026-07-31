@@ -1,0 +1,1 @@
+{"op": "send_result", "status": "error", "command": "bad", "output": "boom", "id": 5}

@@ -1,0 +1,1 @@
+{"op": "normalize", "updates": {"context_from": 42, "enabled_toolsets": "a,b"}, "home": "@SBX@/home"}

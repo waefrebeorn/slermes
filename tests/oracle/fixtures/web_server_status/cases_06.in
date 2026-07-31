@@ -1,0 +1,1 @@
+{"op": "active_sessions", "sessions": [{"id": "x", "started_at": 1000.0, "last_active": 1700000000.0, "ended_at": null}]}

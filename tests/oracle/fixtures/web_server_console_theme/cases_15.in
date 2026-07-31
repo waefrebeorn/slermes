@@ -1,0 +1,1 @@
+{"op": "send_result", "status": "confirm_required", "command": "rmjob", "confirm_msg": "Delete job 4?", "id": 8}

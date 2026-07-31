@@ -16,6 +16,7 @@
 #           fixtures under tests/oracle/fixtures/<subdir>/*.in
 set -euo pipefail
 cd "$(dirname "$0")/../../.."   # slermes root (runners/ is 3 deep under root)
+ROOT="$(pwd)"
 
 # All artifacts live under tests/oracle/build/ — never /tmp.
 # This keeps them version-controllable, inspectable, and survives reboots.
@@ -64,6 +65,14 @@ rm -f "$BUILD_DIR/tt_$NAME"
 # CFLAGS in the captured command use -O2 -g etc.; keep them. Build it.
 TMPH="$BUILD_DIR/home_$NAME"
 rm -rf "$TMPH"; mkdir -p "$TMPH/.hermes/cron"
+# Several oracles locate the live Python source via
+#   Path.home() / ".hermes/hermes-agent/..."
+# Under the runner's HOME=$TMPH isolation this would resolve into the temp
+# home and never find the source. Symlink that exact path back to the
+# developer tree (the slermes parent) so the oracles read the real source
+# without escaping the isolated home. DEV_ROOT = parent of the slermes root.
+DEV_ROOT="$(cd "$ROOT/.." && pwd)"
+ln -sfn "$DEV_ROOT" "$TMPH/.hermes/hermes-agent"
 
 # shellcheck disable=SC2086
 bash -c "$LINKCMD -Wl,--allow-multiple-definition" 2>&1 | grep -iE 'error|undefined' || true
@@ -126,20 +135,24 @@ for f in "$FIX"/*.in; do
   case="$(basename "$f" .in)"
   extra=""
   [ -f "$FIX/args.$case" ] && extra="$(cat "$FIX/args.$case")"
-  # Fixtures use the @SBX@ placeholder for the sandbox/home root. The working
-  # oracles substitute it themselves; to keep every oracle uniform we substitute
-  # @SBX@ -> TMPH here (TMPH is the isolated shared home exported to both sides)
-  # in a temp copy, and feed that to BOTH the harness and the oracle.
+  # Fixtures use placeholders the harness/oracle must resolve:
+  #   @SBX@ -> TMPH (the isolated shared home exported to both sides)
+  #   @NOW@ -> a fixed timestamp (so time-relative ops are deterministic and
+  #            identical on both the C and Python sides)
+  # We substitute both in a temp copy and feed that to BOTH sides.
   FSUB="$(mktemp)"
-  sed "s#@SBX@#$TMPH#g" "$f" > "$FSUB"
+  sed -e "s#@SBX@#$TMPH#g" -e "s#@NOW@#1700000000.0#g" "$f" > "$FSUB"
   # The C engine resolves its home via SLERMES_HOME (kanban_home()), while the
   # Python profiles module resolves via HERMES_HOME (get_default_hermes_root()).
   # They honor DIFFERENT env vars, so we export BOTH to the same temp dir for
   # BOTH the harness and the oracle. That gives each side a single, shared,
   # isolated home so profiles the harness writes are exactly what the oracle
   # reads (and neither ever touches the developer's real ~/.hermes).
+  # The harness's stdout is also piped to the oracle's stdin: oracles such as
+  # file_safety_roots read the C output from stdin rather than argv, and this
+  # is harmless for oracles that ignore stdin.
   SLERMES_HOME="$TMPH" HERMES_HOME="$TMPH" HOME="$TMPH" "$BUILD_DIR/tt_$NAME" "$FSUB" $extra > "$BUILD_DIR/oracle_${NAME}_c_${case}.json" 2>/dev/null
-  SLERMES_HOME="$TMPH" HERMES_HOME="$TMPH" HOME="$TMPH" python3 "$ORACLE" "$FSUB" $extra > "$BUILD_DIR/oracle_${NAME}_py_${case}.json" 2>/dev/null
+  SLERMES_HOME="$TMPH" HERMES_HOME="$TMPH" HOME="$TMPH" python3 "$ROOT/tests/oracle/_oracle_boot.py" "$ORACLE" "$FSUB" $extra < "$BUILD_DIR/oracle_${NAME}_c_${case}.json" > "$BUILD_DIR/oracle_${NAME}_py_${case}.json" 2>/dev/null
   normalize_out "$BUILD_DIR/oracle_${NAME}_c_${case}.json" > "$BUILD_DIR/oracle_${NAME}_c_${case}_norm.json"
   normalize_out "$BUILD_DIR/oracle_${NAME}_py_${case}.json" > "$BUILD_DIR/oracle_${NAME}_py_${case}_norm.json"
   if diff -q "$BUILD_DIR/oracle_${NAME}_c_${case}_norm.json" "$BUILD_DIR/oracle_${NAME}_py_${case}_norm.json" >/dev/null; then

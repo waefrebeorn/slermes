@@ -1,0 +1,1 @@
+{"op": "auth", "state": {"auth_required": true, "bound_host": "0.0.0.0", "session_token": "sekrit"}, "req": {}, "mint": true, "double_consume": true}

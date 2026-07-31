@@ -1,0 +1,1 @@
+{"op": "normalize", "updates": {"script": "../escape.sh"}, "home": "@SBX@/home"}

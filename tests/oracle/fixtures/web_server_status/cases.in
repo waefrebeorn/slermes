@@ -1,6 +1,0 @@
-{"op":"error_ring","record":7}
-{"op":"error_ring","record":60}
-{"op":"error_ring","record":0}
-{"op":"active_sessions","sessions":[{"id":"a","started_at":1000.0,"last_active":@NOW@,"ended_at":null},{"id":"b","started_at":1000.0,"last_active":@NOW@,"ended_at":null},{"id":"c","started_at":1000.0,"last_active":1.0,"ended_at":null},{"id":"d","started_at":1000.0,"last_active":@NOW@,"ended_at":999.0}]}
-{"op":"active_sessions","sessions":[]}
-{"op":"active_sessions","sessions":[{"id":"x","started_at":1000.0,"last_active":@NOW@,"ended_at":null}]}

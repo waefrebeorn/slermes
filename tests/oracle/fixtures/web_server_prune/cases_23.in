@@ -1,0 +1,1 @@
+{"op": "endpoint", "db": "@DB@", "body": {"older_than_days": 0.5, "started_before": 1500000000, "dry_run": true}}

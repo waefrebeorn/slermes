@@ -14,6 +14,7 @@ This is the exact source text the C port was translated from — no reimplementa
 """
 import os
 import re
+import ast
 import sys
 import json
 from datetime import datetime
@@ -52,14 +53,25 @@ ns = {
 
 
 def _load():
-    with open(RUNPY, "r", encoding="utf-8") as f:
-        lines = f.readlines()
-    buf = []
-    for (a, b) in REGIONS:
-        buf.append("".join(lines[a - 1:b]))
-    src = "\n".join(buf)
-    # Provide _sanitize_telegram_name via a tiny faithful shim if the import
-    # path is unavailable; hermes_cli.commands is importable here.
+    # Extract the pure helper regions of gateway/run.py by AST: every TOP-LEVEL
+    # statement EXCEPT import statements (the module's broken imports are skipped,
+    # but all function/constant/class/conditional definitions run normally, so
+    # main() finds every name it references -- including ones defined inside
+    # top-level if/try blocks). Immune to line-number drift.
+    rp = RUNPY if os.path.exists(RUNPY) else os.path.join(os.path.dirname(
+        os.path.abspath(__file__)), "..", "..", "gateway", "run.py")
+    full = open(rp, encoding="utf-8").read()
+    tree = ast.parse(full)
+    pieces = []
+    # Include ALL top-level nodes (imports included). With the dev tree on
+    # sys.path (via the oracle bootstrap), gateway/run.py's own imports resolve
+    # correctly, so every name main() needs (incl. COMPACTION_STATUS, which is
+    # imported at module top level) is bound in ns.
+    for node in tree.body:
+        seg = ast.get_source_segment(full, node)
+        if seg:
+            pieces.append(seg)
+    src = "\n\n".join(pieces)
     try:
         from hermes_cli.commands import _sanitize_telegram_name
         ns["_sanitize_telegram_name"] = _sanitize_telegram_name
@@ -70,6 +82,28 @@ def _load():
             name = re.sub(r"_{2,}", "_", name)
             return name.strip("_")
         ns["_sanitize_telegram_name"] = _sanitize_telegram_name
+    # gateway/run.py imports these module-level status constants; since we
+    # skip imports during extraction, pre-populate them so any top-level code
+    # referencing them resolves.
+    try:
+        from agent.conversation_compression import (
+            COMPACTION_STATUS,
+            COMPRESSION_RETRY_CONTEXT_REDUCED_STATUS_TEMPLATE,
+            COMPRESSION_RETRY_MESSAGES_STATUS_TEMPLATE,
+            COMPRESSION_RETRY_TOKENS_STATUS_TEMPLATE,
+            IDLE_COMPACTION_STATUS_TEMPLATE,
+        )
+        for _n in ("COMPACTION_STATUS",
+                   "COMPRESSION_RETRY_CONTEXT_REDUCED_STATUS_TEMPLATE",
+                   "COMPRESSION_RETRY_MESSAGES_STATUS_TEMPLATE",
+                   "COMPRESSION_RETRY_TOKENS_STATUS_TEMPLATE",
+                   "IDLE_COMPACTION_STATUS_TEMPLATE"):
+            ns[_n] = globals()[_n]
+    except Exception:
+        pass
+
+    ns["__file__"] = rp
+    ns["__name__"] = "gateway_run_pure_oracle"
     exec(src, ns)
 
 

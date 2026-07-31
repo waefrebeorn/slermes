@@ -1,0 +1,1 @@
+{"op": "gates", "state": {"auth_required": false, "bound_host": "127.0.0.1", "session_token": "tok"}, "req": {"client_host": "127.0.0.1", "host_header": "localhost:9119", "origin_header": "https://"}}

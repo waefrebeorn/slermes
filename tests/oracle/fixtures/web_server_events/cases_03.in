@@ -1,0 +1,1 @@
+{"op": "close_reason", "text": "origin http://attacker.example.com rejected because the configured allowlist does not contain this origin value at all here padding"}

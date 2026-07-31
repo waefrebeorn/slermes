@@ -1,0 +1,1 @@
+{"op": "frames", "exec": {}, "script": [{"_busy": true}, {"type": "input", "line": "x"}, {"type": "cancel"}, {"type": "input", "line": "boom"}]}

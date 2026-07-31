@@ -1,0 +1,1 @@
+{"op": "build_env", "base": {"PATH": "/usr/bin", "NODE_ENV": "development"}, "resume": "20260101_000000_aaaaaa", "sidecar": "ws://127.0.0.1:9119/api/pub?token=t&channel=c", "asf": "/tmp/asf", "gateway": "ws://127.0.0.1:9119/api/ws?token=t"}

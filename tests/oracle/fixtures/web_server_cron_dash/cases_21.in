@@ -1,0 +1,1 @@
+{"op": "normalize", "updates": {"script": "good.sh", "deliver": "origin"}, "home": "@SBX@/home"}

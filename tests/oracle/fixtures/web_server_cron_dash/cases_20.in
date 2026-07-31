@@ -1,0 +1,1 @@
+{"op": "normalize", "updates": {"model": "  gpt-x  ", "provider": "", "workdir": null, "base_url": "https://api.example.com///", "deliver": "  ", "context_from": "a, b\nc", "enabled_toolsets": ["web", " terminal ", ""]}, "home": "@SBX@/home"}

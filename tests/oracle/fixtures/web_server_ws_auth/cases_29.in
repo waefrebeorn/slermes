@@ -1,0 +1,1 @@
+{"op": "query_token", "state": {"auth_required": false, "bound_host": "127.0.0.1", "session_token": "sekrit"}, "path": "/api/files/download", "token": "wrong"}

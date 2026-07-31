@@ -1,0 +1,1 @@
+{"op": "build_env", "base": {"COLORTERM": "16color", "HERMES_TUI_INLINE": "0"}}

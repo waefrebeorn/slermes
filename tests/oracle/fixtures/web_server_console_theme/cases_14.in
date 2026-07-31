@@ -1,0 +1,1 @@
+{"op": "send_result", "status": "confirm_required", "command": "config reset", "id": 7}

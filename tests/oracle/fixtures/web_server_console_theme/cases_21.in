@@ -1,0 +1,1 @@
+{"op": "frames", "exec": {"config reset": {"status": "confirm_required", "command": "config reset"}, "exit": {"status": "exit", "command": "exit"}}, "script": [{"type": "input", "line": "config reset"}, {"type": "cancel"}, {"type": "confirm", "command": "config reset"}, {"type": "input", "line": "exit"}]}
