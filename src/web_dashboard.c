@@ -33,6 +33,7 @@
 #include <dirent.h>
 #include <errno.h>
 #include <time.h>
+#include <openssl/sha.h>
 
 #define DASH_PORT   9119
 #define DASH_BACKLOG 16
@@ -940,6 +941,7 @@ static void serve_static(int fd, const char *p) {
 static void handle_chat(int fd, const char *body);
 static void handle_model_recommended(int fd);
 static void handle_media(int fd, const http_req_t *req);
+static void handle_ws_upgrade(int fd, const http_req_t *req);
 static void handle_fs_list(int fd, const http_req_t *req);
 static void handle_fs_read_text(int fd, const char *path);
 static void handle_fs_read_data(int fd, const char *path);
@@ -953,6 +955,117 @@ static void handle_providers_oauth_submit(int fd, const char *body);
 static void handle_providers_oauth_sessions(int fd, const char *path);
 static void handle_memory_providers(int fd, const char *path);
 static void handle_toolsets_toggle(int fd, const char *path, const char *body);
+
+/* ── WebSocket: real RFC6455 upgrade + minimal echo (replaces 501) ── */
+static void handle_ws_upgrade(int fd, const http_req_t *req) {
+    /* If the client did not request an Upgrade, reply 426 (correct
+     * semantics) instead of a misleading 501. */
+    bool has_upgrade = false;
+    if (req && req->raw_buf) {
+        const char *u = strstr(req->raw_buf, "Upgrade:");
+        if (u) {
+            const char *v = strchr(u, ':');
+            if (v && strstr(v, "websocket")) has_upgrade = true;
+        }
+    }
+    if (!has_upgrade) {
+        const char *hdr =
+            "HTTP/1.1 426 Upgrade Required\r\n"
+            "Upgrade: websocket\r\nConnection: Upgrade\r\n"
+            "Content-Length: 0\r\nConnection: close\r\n\r\n";
+        write(fd, hdr, strlen(hdr));
+        return;
+    }
+
+    /* Extract Sec-WebSocket-Key */
+    char *key = NULL;
+    if (req && req->raw_buf) {
+        const char *k = strstr(req->raw_buf, "Sec-WebSocket-Key:");
+        if (k) {
+            k = strchr(k, ':') + 1;
+            while (*k == ' ' || *k == '\t') k++;
+            size_t len = 0;
+            while (k[len] && k[len] != '\r' && k[len] != '\n') len++;
+            key = (char*)malloc(len + 1);
+            if (key) { memcpy(key, k, len); key[len] = '\0'; }
+        }
+    }
+    if (!key) { send_err(fd, 400, "Missing Sec-WebSocket-Key"); return; }
+
+    /* accept = base64(sha1(key + GUID)) */
+    static const char *GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+    char combined[256];
+    int cl = snprintf(combined, sizeof(combined), "%s%s", key, GUID);
+    unsigned char sha[20];
+    SHA1((unsigned char*)combined, (size_t)cl, sha);
+    char *accept_b64 = base64_encode(sha, 20);
+    free(key);
+    if (!accept_b64) { send_err(fd, 500, "Internal error"); return; }
+
+    char hdr[512];
+    int n = snprintf(hdr, sizeof(hdr),
+        "HTTP/1.1 101 Switching Protocols\r\n"
+        "Upgrade: websocket\r\nConnection: Upgrade\r\n"
+        "Sec-WebSocket-Accept: %s\r\n\r\n", accept_b64);
+    free(accept_b64);
+    write(fd, hdr, (size_t)n);
+
+    /* Minimal frame loop: decode masked client frames, echo text/binary,
+     * answer ping, break on close. Server frames are sent unmasked. */
+    unsigned char buf[65536];
+    while (1) {
+        ssize_t got = read(fd, buf, 2);
+        if (got < 2) break;
+        unsigned char b0 = buf[0], b1 = buf[1];
+        int opcode = b0 & 0x0f;
+        int fin = (b0 & 0x80) != 0;
+        int masked = (b1 & 0x80) != 0;
+        long len = b1 & 0x7f;
+        if (len == 126) {
+            if (read(fd, buf, 2) < 2) break;
+            len = ((long)buf[0] << 8) | buf[1];
+        } else if (len == 127) {
+            if (read(fd, buf, 8) < 8) break;
+            len = 0;
+            for (int i = 0; i < 8; i++) len = (len << 8) | buf[i];
+        }
+        unsigned char mask[4] = {0};
+        if (masked) { if (read(fd, mask, 4) < 4) break; }
+        if (len < 0 || len > (long)(sizeof(buf) - 16)) break;
+        if (len > 0) {
+            size_t need = (size_t)len, off = 0;
+            while (off < need) {
+                ssize_t r = read(fd, buf + off, need - off);
+                if (r <= 0) break;
+                off += (size_t)r;
+            }
+            if (masked) for (long i = 0; i < len; i++) buf[i] ^= mask[i & 3];
+        }
+        if (opcode == 0x8) { /* close */
+            unsigned char close_hdr[2] = { 0x88, 0x00 };
+            write(fd, close_hdr, 2);
+            break;
+        }
+        if (opcode == 0x9) { /* ping -> pong */
+            unsigned char pong[2] = { 0x8a, 0x00 };
+            write(fd, pong, 2);
+            continue;
+        }
+        if (opcode == 0x1 || opcode == 0x2) { /* text/binary -> echo */
+            if (!fin) continue; /* ignore fragmented frames in this minimal loop */
+            unsigned char out[65544];
+            size_t ol = (size_t)len;
+            out[0] = (unsigned char)(0x80 | opcode); /* FIN + opcode */
+            if (ol < 126) { out[1] = (unsigned char)ol; n = 2; }
+            else if (ol < 65536) { out[1] = 126; out[2] = (unsigned char)(ol>>8); out[3] = (unsigned char)(ol&0xff); n = 4; }
+            else { out[1] = 127; for (int i=0;i<8;i++) out[2+i]=(unsigned char)((ol>>(8*(7-i)))&0xff); n = 10; }
+            if (ol > 0) memcpy(out + n, buf, ol);
+            n += (int)ol;
+            if (write(fd, out, (size_t)n) < 0) break;
+        }
+        /* 0x0 continuation / 0xa pong: ignored */
+    }
+}
 
 static void handle_api(int fd, const http_req_t *req) {
     /* ── Auth gate ── */
@@ -1371,9 +1484,9 @@ static void handle_api(int fd, const http_req_t *req) {
     /* ── Toolset toggle ── */
     if (is_toolsets_toggle) { handle_toolsets_toggle(fd, p, req->body); return; }
 
-    /* ── WebSocket: not supported ── */
+    /* ── WebSocket: real upgrade + minimal echo (replaces 501) ── */
     if (is_ws) {
-        send_json(fd, 501, "Not Implemented", "{\"error\":\"WebSocket not supported in C build\"}");
+        handle_ws_upgrade(fd, req);
         return;
     }
 
@@ -1385,7 +1498,7 @@ static void handle_api(int fd, const http_req_t *req) {
 
     /* ── Fallback: 404 ── */
     send_err(fd, 404, "Not found");
-}
+    }
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -1633,8 +1746,79 @@ static void handle_fs_git_root(int fd) {
 }
 
 static void handle_files_download(int fd, const http_req_t *req) {
-    (void)req;
-    send_json(fd, 501, "Not Implemented", "{\"message\":\"File download via gateway\"}");
+    /* Faithful /api/files/download: stream a local file back as a binary
+     * attachment instead of 501. The target path arrives as a `path=` query
+     * param or JSON body field (mirrors handle_media / handle_fs_* siblings). */
+    char file_path[2048] = {0};
+
+    if (req && req->raw_buf) {
+        const char *qp = strstr(req->raw_buf, "path=");
+        if (qp) {
+            qp += 5;
+            /* Take up to next &, space, or CR */
+            size_t k = 0;
+            while (*qp && *qp != '&' && *qp != ' ' && *qp != '\r' && *qp != '\n'
+                   && k < sizeof(file_path) - 1) {
+                file_path[k++] = *qp++;
+            }
+        }
+    }
+    if (file_path[0] == '\0' && req && req->body_len > 0) {
+        /* Fallback: JSON body {"path": "..."} */
+        const char *b = req->body;
+        const char *q = strstr(b, "\"path\"");
+        if (q) {
+            q = strchr(q, ':');
+            if (q) {
+                q++;
+                while (*q == ' ' || *q == '\t') q++;
+                if (*q == '"') {
+                    q++;
+                    size_t k = 0;
+                    while (*q && *q != '"' && k < sizeof(file_path) - 1)
+                        file_path[k++] = *q++;
+                }
+            }
+        }
+    }
+
+    if (file_path[0] == '\0') {
+        send_json(fd, 400, "Bad Request", "{\"error\":\"missing path\"}");
+        return;
+    }
+
+    FILE *f = fopen(file_path, "rb");
+    if (!f) {
+        send_json(fd, 404, "Not Found", "{\"error\":\"File not found\"}");
+        return;
+    }
+    fseek(f, 0, SEEK_END);
+    long sz = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    if (sz <= 0) { fclose(f); send_json(fd, 404, "Not Found", "{\"error\":\"empty file\"}"); return; }
+
+    /* Derive a filename for Content-Disposition */
+    const char *fname = strrchr(file_path, '/');
+    fname = fname ? fname + 1 : file_path;
+
+    char hdr[2048];
+    int n = snprintf(hdr, sizeof(hdr),
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: application/octet-stream\r\n"
+        "Content-Disposition: attachment; filename=\"%s\"\r\n"
+        "Content-Length: %ld\r\n"
+        "Access-Control-Allow-Origin: *\r\n"
+        "Connection: close\r\n\r\n",
+        fname, sz);
+    write(fd, hdr, (size_t)n);
+
+    /* Stream the file in chunks */
+    unsigned char chunk[65536];
+    size_t rd;
+    while ((rd = fread(chunk, 1, sizeof(chunk), f)) > 0) {
+        if (write(fd, chunk, rd) < 0) break;
+    }
+    fclose(f);
 }
 
 static void handle_profiles_active(int fd) {
