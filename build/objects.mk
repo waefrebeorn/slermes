@@ -4,6 +4,9 @@
 
 CLI_OBJ = src/cli/cli.o src/cli/commands.o src/cli/config.o src/cli/config_env.o src/cli/config_platforms.o src/cli/config_profile.o src/cli/config_diff.o src/cli/config_io.o src/cli/config_schema.o src/cli/config_migrate.o src/cli/config_setup.o src/cli/config_schema.o src/cli/paths.o src/cli/display.o src/cli/display_core.o src/cli/main.o src/cli/doctor.o src/cli/setup_wizard.o src/cli/cli_gaps.o src/cli/port_context_switch_guard.o src/cli/port_gateway_windows.o src/cli/port_nous_billing.o src/cli/port_voice.o src/cli/port_config_pure.o src/cli/port_status_helpers.o src/cli/port_cli_logs.o src/cli/cli_cmd_system.o src/cli/cli_cmd_help.o src/cli/cli_cmd_session.o src/cli/cli_cmd_config.o src/cli/cli_cmd_misc.o src/cli/cli_cmd_gateway.o src/cli/cli_cmd_skills.o src/cli/cli_cmd_tools.o src/cli/cli_cmd_mcp.o src/cli/cli_cmd_kanban.o src/cli/cli_cmd_security.o src/cli/cli_cmd_memory.o src/cli/cli_cmd_display.o src/cli/port_model_cost_guard.o src/cli/port_cli_profiles.o src/cli/port_web_server_status.o src/cli/port_web_server_managed_files.o src/cli/port_web_server_fs.o src/cli/port_web_server_events.o src/cli/port_web_server_console.o src/cli/port_web_server_themes.o src/cli/port_web_server_ws_auth.o src/cli/hermes_cli_ws_tickets.o src/cli/port_web_server_chat_argv.o src/cli/port_web_server_cron_dash.o src/cli/port_web_server_sessions_admin.o src/cli/port_web_server_session_detail.o src/cli/port_web_server_session_endpoints.o src/cli/port_web_server_prune.o \
     src/cli/port_web_server_paths.o \
+    src/cli/port_msgraph_webhook_helpers.o \
+    src/cli/port_pairing_helpers.o \
+    src/cli/port_webhook_helpers.o \
 
 # Auto-generated hermes_cli/ port objects (empty — placeholder)
 HERMES_CLI_PORT_OBJ = \
