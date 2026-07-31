@@ -9,22 +9,12 @@
 
 #include "hermes_logger.h"
 #include "libjson/json.h"
+#include "port_models_net.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
 #include <sys/stat.h>
-
-/* Resolve the shared Hermes home dir (HERMES_HOME / SLERMES_HOME / HOME). */
-void hermes_home_dir(char *out, size_t sz)
-{
-    const char *h = getenv("HERMES_HOME");
-    if (h && h[0]) { snprintf(out, sz, "%s", h); return; }
-    h = getenv("SLERMES_HOME");
-    if (h && h[0]) { snprintf(out, sz, "%s", h); return; }
-    h = getenv("HOME");
-    snprintf(out, sz, "%s/.hermes", h ? h : ".");
-}
 
 /* PoP: _nous_recommended_disk_path @ hermes_cli/models.py:_nous_recommended_disk_path */
 /* Returns malloc'd path to the persisted recommended-models cache JSON. Caller frees. */

@@ -23,26 +23,10 @@
 #include <dirent.h>
 
 #include "hermes_file_safety.h"
+#include "hermes_util_str.h"
 
 /* Declared in src/gateway/platforms/base.h / defined in base_ext2.c. */
 char *validate_media_delivery_path(const char *path);
-
-/* ================================================================
- *  Path / home resolution helpers (faithful to hermes_constants.py)
- * ================================================================ */
-
-/* Resolve HERMES_HOME: $HERMES_HOME, else ~/.hermes. */
-static void hermes_home_dir(char *out, size_t sz)
-{
-    const char *env = getenv("HERMES_HOME");
-    if (env && *env) {
-        snprintf(out, sz, "%s", env);
-        return;
-    }
-    const char *home = getenv("HOME");
-    if (!home) home = "/root";
-    snprintf(out, sz, "%s/.hermes", home);
-}
 
 /* Resolve HERMES_ROOT: $HERMES_ROOT, else same as HERMES_HOME. */
 static void hermes_root_dir(char *out, size_t sz)

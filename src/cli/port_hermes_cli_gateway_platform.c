@@ -8,6 +8,7 @@
 
 #include "hermes_logger.h"
 #include "libcrypto/crypto.h"
+#include "hermes_util_str.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -39,16 +40,6 @@ int is_windows(void)
     struct utsname u;
     if (uname(&u) != 0) return 0;
     return strcmp(u.sysname, "Windows") == 0;
-}
-
-/* Determine the hermes home directory (HERMES_HOME or ~/.hermes). */
-static void hermes_home_dir(char *out, size_t sz)
-{
-    const char *h = getenv("HERMES_HOME");
-    if (h && h[0]) { snprintf(out, sz, "%s", h); return; }
-    const char *home = getenv("HOME");
-    if (!home) home = "/root";
-    snprintf(out, sz, "%s/.hermes", home);
 }
 
 /* Valid profile name: ^[a-z0-9][a-z0-9_-]{0,63}$ */
