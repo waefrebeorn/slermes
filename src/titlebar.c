@@ -5,7 +5,6 @@
  */
 
 #define _GNU_SOURCE
-#include "hermes.h"
 #include "titlebar.h"
 #include "app_state_internal.h"
 #include "gui_core.h"

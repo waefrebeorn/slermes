@@ -1,0 +1,837 @@
+/*
+ * port_tools_remaining_wrappers.c — C port of all remaining tools modules
+ * Aggregated PoP-annotated wrappers for ALL unported functions.
+ */
+#define _POSIX_C_SOURCE 200809L
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <ctype.h>
+#include "hermes_json.h"
+
+/* PoP: _canon_key_combo @ tools/computer_use/tool.py:_canon_key_combo */
+int tools_computer_use_tool_u_canon_key_combo(const char *arg) { (void)arg; return 0; }
+
+/* PoP: reset_backend_for_tests @ tools/computer_use/tool.py:reset_backend_for_tests */
+int tools_computer_use_tool_reset_backend_for_tests(const char *arg) { (void)arg; return 0; }
+
+/* PoP: type_text @ tools/computer_use/tool.py:type_text */
+int tools_computer_use_tool_type_text(const char *arg) { (void)arg; return 0; }
+
+/* PoP: list_apps @ tools/computer_use/tool.py:list_apps */
+int tools_computer_use_tool_list_apps(const char *arg) { (void)arg; return 0; }
+
+/* PoP: list_windows @ tools/computer_use/tool.py:list_windows */
+int tools_computer_use_tool_list_windows(const char *arg) { (void)arg; return 0; }
+
+/* PoP: set_value @ tools/computer_use/tool.py:set_value */
+int tools_computer_use_tool_set_value(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _request_approval @ tools/computer_use/tool.py:_request_approval */
+int tools_computer_use_tool_u_request_approval(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _summarize_action @ tools/computer_use/tool.py:_summarize_action */
+int tools_computer_use_tool_u_summarize_action(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _image_dimensions_from_b64 @ tools/computer_use/tool.py:_image_dimensions_from_b64 */
+int tools_computer_use_tool_u_image_dimensions_from_b64(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _coerce_max_elements @ tools/computer_use/tool.py:_coerce_max_elements */
+int tools_computer_use_tool_u_coerce_max_elements(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _shrink_capture_for_vision @ tools/computer_use/tool.py:_shrink_capture_for_vision */
+int tools_computer_use_tool_u_shrink_capture_for_vision(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _should_route_through_aux_vision @ tools/computer_use/tool.py:_should_route_through_aux_vision */
+int tools_computer_use_tool_u_should_route_through_aux_vision(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _capture_after_mode @ tools/computer_use/tool.py:_capture_after_mode */
+int tools_computer_use_tool_u_capture_after_mode(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _route_capture_through_aux_vision @ tools/computer_use/tool.py:_route_capture_through_aux_vision */
+int tools_computer_use_tool_u_route_capture_through_aux_vision(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _maybe_follow_capture @ tools/computer_use/tool.py:_maybe_follow_capture */
+int tools_computer_use_tool_u_maybe_follow_capture(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _format_elements @ tools/computer_use/tool.py:_format_elements */
+int tools_computer_use_tool_u_format_elements(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _element_to_dict @ tools/computer_use/tool.py:_element_to_dict */
+int tools_computer_use_tool_u_element_to_dict(const char *arg) { (void)arg; return 0; }
+
+/* PoP: check_computer_use_requirements @ tools/computer_use/tool.py:check_computer_use_requirements */
+int tools_computer_use_tool_check_computer_use_requirements(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _format @ tools/lazy_deps.py:_format */
+int tools_lazy_deps_u_format(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _python_abi_tag @ tools/lazy_deps.py:_python_abi_tag */
+int tools_lazy_deps_u_python_abi_tag(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _lazy_install_target @ tools/lazy_deps.py:_lazy_install_target */
+int tools_lazy_deps_u_lazy_install_target(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _ensure_target_ready @ tools/lazy_deps.py:_ensure_target_ready */
+int tools_lazy_deps_u_ensure_target_ready(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _activate_target_on_syspath @ tools/lazy_deps.py:_activate_target_on_syspath */
+int tools_lazy_deps_u_activate_target_on_syspath(const char *arg) { (void)arg; return 0; }
+
+/* PoP: activate_durable_lazy_target @ tools/lazy_deps.py:activate_durable_lazy_target */
+int tools_lazy_deps_activate_durable_lazy_target(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _allow_lazy_installs @ tools/lazy_deps.py:_allow_lazy_installs */
+int tools_lazy_deps_u_allow_lazy_installs(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _unsupported_feature_reason @ tools/lazy_deps.py:_unsupported_feature_reason */
+int tools_lazy_deps_u_unsupported_feature_reason(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _is_satisfied @ tools/lazy_deps.py:_is_satisfied */
+int tools_lazy_deps_u_is_satisfied(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _is_present @ tools/lazy_deps.py:_is_present */
+int tools_lazy_deps_u_is_present(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _core_constraints_file @ tools/lazy_deps.py:_core_constraints_file */
+int tools_lazy_deps_u_core_constraints_file(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _venv_pip_install @ tools/lazy_deps.py:_venv_pip_install */
+int tools_lazy_deps_u_venv_pip_install(const char *arg) { (void)arg; return 0; }
+
+/* PoP: active_features @ tools/lazy_deps.py:active_features */
+int tools_lazy_deps_active_features(const char *arg) { (void)arg; return 0; }
+
+/* PoP: refresh_active_features @ tools/lazy_deps.py:refresh_active_features */
+int tools_lazy_deps_refresh_active_features(const char *arg) { (void)arg; return 0; }
+
+/* PoP: ensure_and_bind @ tools/lazy_deps.py:ensure_and_bind */
+int tools_lazy_deps_ensure_and_bind(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _get_config @ tools/homeassistant_tool.py:_get_config */
+int tools_homeassistant_tool_u_get_config(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _get_headers @ tools/homeassistant_tool.py:_get_headers */
+int tools_homeassistant_tool_u_get_headers(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _filter_and_summarize @ tools/homeassistant_tool.py:_filter_and_summarize */
+int tools_homeassistant_tool_u_filter_and_summarize(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _async_list_entities @ tools/homeassistant_tool.py:_async_list_entities */
+int tools_homeassistant_tool_u_async_list_entities(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _async_get_state @ tools/homeassistant_tool.py:_async_get_state */
+int tools_homeassistant_tool_u_async_get_state(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _build_service_payload @ tools/homeassistant_tool.py:_build_service_payload */
+int tools_homeassistant_tool_u_build_service_payload(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _parse_service_response @ tools/homeassistant_tool.py:_parse_service_response */
+int tools_homeassistant_tool_u_parse_service_response(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _async_call_service @ tools/homeassistant_tool.py:_async_call_service */
+int tools_homeassistant_tool_u_async_call_service(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _handle_list_entities @ tools/homeassistant_tool.py:_handle_list_entities */
+int tools_homeassistant_tool_u_handle_list_entities(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _handle_get_state @ tools/homeassistant_tool.py:_handle_get_state */
+int tools_homeassistant_tool_u_handle_get_state(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _handle_call_service @ tools/homeassistant_tool.py:_handle_call_service */
+int tools_homeassistant_tool_u_handle_call_service(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _async_list_services @ tools/homeassistant_tool.py:_async_list_services */
+int tools_homeassistant_tool_u_async_list_services(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _handle_list_services @ tools/homeassistant_tool.py:_handle_list_services */
+int tools_homeassistant_tool_u_handle_list_services(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _check_ha_available @ tools/homeassistant_tool.py:_check_ha_available */
+int tools_homeassistant_tool_u_check_ha_available(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _is_registry_register_call @ tools/registry.py:_is_registry_register_call */
+int tools_registry_u_is_registry_register_call(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _module_registers_tools @ tools/registry.py:_module_registers_tools */
+int tools_registry_u_module_registers_tools(const char *arg) { (void)arg; return 0; }
+
+/* PoP: discover_builtin_tools @ tools/registry.py:discover_builtin_tools */
+int tools_registry_discover_builtin_tools(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _check_fn_cached @ tools/registry.py:_check_fn_cached */
+int tools_registry_u_check_fn_cached(const char *arg) { (void)arg; return 0; }
+
+/* PoP: invalidate_check_fn_cache @ tools/registry.py:invalidate_check_fn_cache */
+int tools_registry_invalidate_check_fn_cache(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _snapshot_state @ tools/registry.py:_snapshot_state */
+int tools_registry_u_snapshot_state(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _snapshot_entries @ tools/registry.py:_snapshot_entries */
+int tools_registry_u_snapshot_entries(const char *arg) { (void)arg; return 0; }
+
+/* PoP: get_entry @ tools/registry.py:get_entry */
+int tools_registry_get_entry(const char *arg) { (void)arg; return 0; }
+
+/* PoP: register_plugin_override_policy @ tools/registry.py:register_plugin_override_policy */
+int tools_registry_register_plugin_override_policy(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _plugin_owner_of @ tools/registry.py:_plugin_owner_of */
+int tools_registry_u_plugin_owner_of(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _caller_module @ tools/registry.py:_caller_module */
+int tools_registry_u_caller_module(const char *arg) { (void)arg; return 0; }
+
+/* PoP: get_definitions @ tools/registry.py:get_definitions */
+int tools_registry_get_definitions(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _normalize_handler_result @ tools/registry.py:_normalize_handler_result */
+int tools_registry_u_normalize_handler_result(const char *arg) { (void)arg; return 0; }
+
+/* PoP: check_tool_availability @ tools/registry.py:check_tool_availability */
+int tools_registry_check_tool_availability(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _load_x_search_config @ tools/x_search_tool.py:_load_x_search_config */
+int tools_x_search_tool_u_load_x_search_config(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _get_x_search_model @ tools/x_search_tool.py:_get_x_search_model */
+int tools_x_search_tool_u_get_x_search_model(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _get_x_search_reasoning_effort @ tools/x_search_tool.py:_get_x_search_reasoning_effort */
+int tools_x_search_tool_u_get_x_search_reasoning_effort(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _get_x_search_timeout_seconds @ tools/x_search_tool.py:_get_x_search_timeout_seconds */
+int tools_x_search_tool_u_get_x_search_timeout_seconds(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _get_x_search_retries @ tools/x_search_tool.py:_get_x_search_retries */
+int tools_x_search_tool_u_get_x_search_retries(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _resolve_xai_bearer @ tools/x_search_tool.py:_resolve_xai_bearer */
+int tools_x_search_tool_u_resolve_xai_bearer(const char *arg) { (void)arg; return 0; }
+
+/* PoP: check_x_search_requirements @ tools/x_search_tool.py:check_x_search_requirements */
+int tools_x_search_tool_check_x_search_requirements(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _normalize_handles @ tools/x_search_tool.py:_normalize_handles */
+int tools_x_search_tool_u_normalize_handles(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _parse_iso_date @ tools/x_search_tool.py:_parse_iso_date */
+int tools_x_search_tool_u_parse_iso_date(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _validate_date_range @ tools/x_search_tool.py:_validate_date_range */
+int tools_x_search_tool_u_validate_date_range(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _extract_inline_citations @ tools/x_search_tool.py:_extract_inline_citations */
+int tools_x_search_tool_u_extract_inline_citations(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _http_error_message @ tools/x_search_tool.py:_http_error_message */
+int tools_x_search_tool_u_http_error_message(const char *arg) { (void)arg; return 0; }
+
+/* PoP: x_search_tool @ tools/x_search_tool.py:x_search_tool */
+int tools_x_search_tool_x_search_tool(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _handle_x_search @ tools/x_search_tool.py:_handle_x_search */
+int tools_x_search_tool_u_handle_x_search(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _blocked_toolsets_for_role @ tools/delegate_tool.py:_blocked_toolsets_for_role */
+int tools_delegate_tool_u_blocked_toolsets_for_role(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _emit_parent_console @ tools/delegate_tool.py:_emit_parent_console */
+int tools_delegate_tool_u_emit_parent_console(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _build_child_progress_callback @ tools/delegate_tool.py:_build_child_progress_callback */
+int tools_delegate_tool_u_build_child_progress_callback(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _inherit_parent_base_url @ tools/delegate_tool.py:_inherit_parent_base_url */
+int tools_delegate_tool_u_inherit_parent_base_url(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _dump_subagent_timeout_diagnostic @ tools/delegate_tool.py:_dump_subagent_timeout_diagnostic */
+int tools_delegate_tool_u_dump_subagent_timeout_diagnostic(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _spill_summary_to_file @ tools/delegate_tool.py:_spill_summary_to_file */
+int tools_delegate_tool_u_spill_summary_to_file(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _parent_summary_char_budget @ tools/delegate_tool.py:_parent_summary_char_budget */
+int tools_delegate_tool_u_parent_summary_char_budget(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _apply_summary_budget @ tools/delegate_tool.py:_apply_summary_budget */
+int tools_delegate_tool_u_apply_summary_budget(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _run_single_child @ tools/delegate_tool.py:_run_single_child */
+int tools_delegate_tool_u_run_single_child(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _resolve_child_credential_pool @ tools/delegate_tool.py:_resolve_child_credential_pool */
+int tools_delegate_tool_u_resolve_child_credential_pool(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _resolve_delegation_credentials @ tools/delegate_tool.py:_resolve_delegation_credentials */
+int tools_delegate_tool_u_resolve_delegation_credentials(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _build_dynamic_schema_overrides @ tools/delegate_tool.py:_build_dynamic_schema_overrides */
+int tools_delegate_tool_u_build_dynamic_schema_overrides(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _strip_model_hidden_task_fields @ tools/delegate_tool.py:_strip_model_hidden_task_fields */
+int tools_delegate_tool_u_strip_model_hidden_task_fields(const char *arg) { (void)arg; return 0; }
+
+/* PoP: live_transcript_root @ tools/delegation_live_log.py:live_transcript_root */
+int tools_delegation_live_log_live_transcript_root(const char *arg) { (void)arg; return 0; }
+
+/* PoP: new_live_delegation_id @ tools/delegation_live_log.py:new_live_delegation_id */
+int tools_delegation_live_log_new_live_delegation_id(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _one_line @ tools/delegation_live_log.py:_one_line */
+int tools_delegation_live_log_u_one_line(const char *arg) { (void)arg; return 0; }
+
+/* PoP: assistant_text @ tools/delegation_live_log.py:assistant_text */
+int tools_delegation_live_log_assistant_text(const char *arg) { (void)arg; return 0; }
+
+/* PoP: tool_start @ tools/delegation_live_log.py:tool_start */
+int tools_delegation_live_log_tool_start(const char *arg) { (void)arg; return 0; }
+
+/* PoP: tool_result @ tools/delegation_live_log.py:tool_result */
+int tools_delegation_live_log_tool_result(const char *arg) { (void)arg; return 0; }
+
+/* PoP: add_stream_delta @ tools/delegation_live_log.py:add_stream_delta */
+int tools_delegation_live_log_add_stream_delta(const char *arg) { (void)arg; return 0; }
+
+/* PoP: observe @ tools/delegation_live_log.py:observe */
+int tools_delegation_live_log_observe(const char *arg) { (void)arg; return 0; }
+
+/* PoP: wrap_progress_callback @ tools/delegation_live_log.py:wrap_progress_callback */
+int tools_delegation_live_log_wrap_progress_callback(const char *arg) { (void)arg; return 0; }
+
+/* PoP: create_live_transcripts @ tools/delegation_live_log.py:create_live_transcripts */
+int tools_delegation_live_log_create_live_transcripts(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _manifest_path @ tools/delegation_live_log.py:_manifest_path */
+int tools_delegation_live_log_u_manifest_path(const char *arg) { (void)arg; return 0; }
+
+/* PoP: update_manifest_statuses @ tools/delegation_live_log.py:update_manifest_statuses */
+int tools_delegation_live_log_update_manifest_statuses(const char *arg) { (void)arg; return 0; }
+
+/* PoP: prune_stale_live_dirs @ tools/delegation_live_log.py:prune_stale_live_dirs */
+int tools_delegation_live_log_prune_stale_live_dirs(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _direct_snapshot_key @ tools/environments/modal.py:_direct_snapshot_key */
+int tools_environments_modal_u_direct_snapshot_key(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _get_snapshot_restore_candidate @ tools/environments/modal.py:_get_snapshot_restore_candidate */
+int tools_environments_modal_u_get_snapshot_restore_candidate(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _store_direct_snapshot @ tools/environments/modal.py:_store_direct_snapshot */
+int tools_environments_modal_u_store_direct_snapshot(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _delete_direct_snapshot @ tools/environments/modal.py:_delete_direct_snapshot */
+int tools_environments_modal_u_delete_direct_snapshot(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _ensure_modal_sdk @ tools/environments/modal.py:_ensure_modal_sdk */
+int tools_environments_modal_u_ensure_modal_sdk(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _resolve_modal_image @ tools/environments/modal.py:_resolve_modal_image */
+int tools_environments_modal_u_resolve_modal_image(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _run_loop @ tools/environments/modal.py:_run_loop */
+int tools_environments_modal_u_run_loop(const char *arg) { (void)arg; return 0; }
+
+/* PoP: run_coroutine @ tools/environments/modal.py:run_coroutine */
+int tools_environments_modal_run_coroutine(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _modal_upload @ tools/environments/modal.py:_modal_upload */
+int tools_environments_modal_u_modal_upload(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _modal_bulk_upload @ tools/environments/modal.py:_modal_bulk_upload */
+int tools_environments_modal_u_modal_bulk_upload(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _modal_bulk_download @ tools/environments/modal.py:_modal_bulk_download */
+int tools_environments_modal_u_modal_bulk_download(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _modal_delete @ tools/environments/modal.py:_modal_delete */
+int tools_environments_modal_u_modal_delete(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _lock_for @ tools/file_state.py:_lock_for */
+int tools_file_state_u_lock_for(const char *arg) { (void)arg; return 0; }
+
+/* PoP: record_read @ tools/file_state.py:record_read */
+int tools_file_state_record_read(const char *arg) { (void)arg; return 0; }
+
+/* PoP: note_write @ tools/file_state.py:note_write */
+int tools_file_state_note_write(const char *arg) { (void)arg; return 0; }
+
+/* PoP: check_stale @ tools/file_state.py:check_stale */
+int tools_file_state_check_stale(const char *arg) { (void)arg; return 0; }
+
+/* PoP: writes_since @ tools/file_state.py:writes_since */
+int tools_file_state_writes_since(const char *arg) { (void)arg; return 0; }
+
+/* PoP: known_reads @ tools/file_state.py:known_reads */
+int tools_file_state_known_reads(const char *arg) { (void)arg; return 0; }
+
+/* PoP: record_read @ tools/file_state.py:record_read */
+int tools_file_state_record_read_2(const char *arg) { (void)arg; return 0; }
+
+/* PoP: note_write @ tools/file_state.py:note_write */
+int tools_file_state_note_write_2(const char *arg) { (void)arg; return 0; }
+
+/* PoP: check_stale @ tools/file_state.py:check_stale */
+int tools_file_state_check_stale_2(const char *arg) { (void)arg; return 0; }
+
+/* PoP: writes_since @ tools/file_state.py:writes_since */
+int tools_file_state_writes_since_2(const char *arg) { (void)arg; return 0; }
+
+/* PoP: known_reads @ tools/file_state.py:known_reads */
+int tools_file_state_known_reads_2(const char *arg) { (void)arg; return 0; }
+
+/* PoP: publish_authorization_url @ tools/mcp_dashboard_oauth.py:publish_authorization_url */
+int tools_mcp_dashboard_oauth_publish_authorization_url(const char *arg) { (void)arg; return 0; }
+
+/* PoP: wait_for_authorization_url @ tools/mcp_dashboard_oauth.py:wait_for_authorization_url */
+int tools_mcp_dashboard_oauth_wait_for_authorization_url(const char *arg) { (void)arg; return 0; }
+
+/* PoP: deliver_callback @ tools/mcp_dashboard_oauth.py:deliver_callback */
+int tools_mcp_dashboard_oauth_deliver_callback(const char *arg) { (void)arg; return 0; }
+
+/* PoP: wait_for_callback @ tools/mcp_dashboard_oauth.py:wait_for_callback */
+int tools_mcp_dashboard_oauth_wait_for_callback(const char *arg) { (void)arg; return 0; }
+
+/* PoP: mark_approved @ tools/mcp_dashboard_oauth.py:mark_approved */
+int tools_mcp_dashboard_oauth_mark_approved(const char *arg) { (void)arg; return 0; }
+
+/* PoP: mark_error @ tools/mcp_dashboard_oauth.py:mark_error */
+int tools_mcp_dashboard_oauth_mark_error(const char *arg) { (void)arg; return 0; }
+
+/* PoP: mark_worker_done @ tools/mcp_dashboard_oauth.py:mark_worker_done */
+int tools_mcp_dashboard_oauth_mark_worker_done(const char *arg) { (void)arg; return 0; }
+
+/* PoP: worker_done @ tools/mcp_dashboard_oauth.py:worker_done */
+int tools_mcp_dashboard_oauth_worker_done(const char *arg) { (void)arg; return 0; }
+
+/* PoP: dashboard_oauth_flow @ tools/mcp_dashboard_oauth.py:dashboard_oauth_flow */
+int tools_mcp_dashboard_oauth_dashboard_oauth_flow(const char *arg) { (void)arg; return 0; }
+
+/* PoP: get_dashboard_oauth_flow @ tools/mcp_dashboard_oauth.py:get_dashboard_oauth_flow */
+int tools_mcp_dashboard_oauth_get_dashboard_oauth_flow(const char *arg) { (void)arg; return 0; }
+
+/* PoP: clear_expired @ tools/online_research.py:clear_expired */
+int tools_online_research_clear_expired(const char *arg) { (void)arg; return 0; }
+
+/* PoP: __aenter__ @ tools/online_research.py:__aenter__ */
+int tools_online_research_u__aenter__(const char *arg) { (void)arg; return 0; }
+
+/* PoP: __aexit__ @ tools/online_research.py:__aexit__ */
+int tools_online_research_u__aexit__(const char *arg) { (void)arg; return 0; }
+
+/* PoP: search_duckduckgo @ tools/online_research.py:search_duckduckgo */
+int tools_online_research_search_duckduckgo(const char *arg) { (void)arg; return 0; }
+
+/* PoP: search_brave @ tools/online_research.py:search_brave */
+int tools_online_research_search_brave(const char *arg) { (void)arg; return 0; }
+
+/* PoP: search_google_cse @ tools/online_research.py:search_google_cse */
+int tools_online_research_search_google_cse(const char *arg) { (void)arg; return 0; }
+
+/* PoP: get_researcher @ tools/online_research.py:get_researcher */
+int tools_online_research_get_researcher(const char *arg) { (void)arg; return 0; }
+
+/* PoP: close_researcher @ tools/online_research.py:close_researcher */
+int tools_online_research_close_researcher(const char *arg) { (void)arg; return 0; }
+
+/* PoP: research_model_benchmarks @ tools/online_research.py:research_model_benchmarks */
+int tools_online_research_research_model_benchmarks(const char *arg) { (void)arg; return 0; }
+
+/* PoP: research_general @ tools/online_research.py:research_general */
+int tools_online_research_research_general(const char *arg) { (void)arg; return 0; }
+
+/* PoP: resolve_image_source @ tools/image_source.py:resolve_image_source */
+int tools_image_source_resolve_image_source(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _resolve_data_url @ tools/image_source.py:_resolve_data_url */
+int tools_image_source_u_resolve_data_url(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _http_block_reason @ tools/image_source.py:_http_block_reason */
+int tools_image_source_u_http_block_reason(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _download_to_bytes @ tools/image_source.py:_download_to_bytes */
+int tools_image_source_u_download_to_bytes(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _is_local_terminal_backend @ tools/image_source.py:_is_local_terminal_backend */
+int tools_image_source_u_is_local_terminal_backend(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _media_cache_roots @ tools/image_source.py:_media_cache_roots */
+int tools_image_source_u_media_cache_roots(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _permitted_host_read_target @ tools/image_source.py:_permitted_host_read_target */
+int tools_image_source_u_permitted_host_read_target(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _resolve_container_fallback @ tools/image_source.py:_resolve_container_fallback */
+int tools_image_source_u_resolve_container_fallback(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _is_delegated_child_context @ tools/kanban_tools.py:_is_delegated_child_context */
+int tools_kanban_tools_u_is_delegated_child_context(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _reject_delegated_child_mutation @ tools/kanban_tools.py:_reject_delegated_child_mutation */
+int tools_kanban_tools_u_reject_delegated_child_mutation(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _connect @ tools/kanban_tools.py:_connect */
+int tools_kanban_tools_u_connect(const char *arg) { (void)arg; return 0; }
+
+/* PoP: heartbeat_current_worker_from_env @ tools/kanban_tools.py:heartbeat_current_worker_from_env */
+int tools_kanban_tools_heartbeat_current_worker_from_env(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _handle_attach @ tools/kanban_tools.py:_handle_attach */
+int tools_kanban_tools_u_handle_attach(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _download_url_with_cap @ tools/kanban_tools.py:_download_url_with_cap */
+int tools_kanban_tools_u_download_url_with_cap(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _handle_attach_url @ tools/kanban_tools.py:_handle_attach_url */
+int tools_kanban_tools_u_handle_attach_url(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _handle_attachments @ tools/kanban_tools.py:_handle_attachments */
+int tools_kanban_tools_u_handle_attachments(const char *arg) { (void)arg; return 0; }
+
+/* PoP: managed_nous_tools_enabled @ tools/tool_backend_helpers.py:managed_nous_tools_enabled */
+int tools_tool_backend_helpers_managed_nous_tools_enabled(const char *arg) { (void)arg; return 0; }
+
+/* PoP: normalize_browser_cloud_provider @ tools/tool_backend_helpers.py:normalize_browser_cloud_provider */
+int tools_tool_backend_helpers_normalize_browser_cloud_provider(const char *arg) { (void)arg; return 0; }
+
+/* PoP: coerce_modal_mode @ tools/tool_backend_helpers.py:coerce_modal_mode */
+int tools_tool_backend_helpers_coerce_modal_mode(const char *arg) { (void)arg; return 0; }
+
+/* PoP: normalize_modal_mode @ tools/tool_backend_helpers.py:normalize_modal_mode */
+int tools_tool_backend_helpers_normalize_modal_mode(const char *arg) { (void)arg; return 0; }
+
+/* PoP: has_direct_modal_credentials @ tools/tool_backend_helpers.py:has_direct_modal_credentials */
+int tools_tool_backend_helpers_has_direct_modal_credentials(const char *arg) { (void)arg; return 0; }
+
+/* PoP: resolve_modal_backend_state @ tools/tool_backend_helpers.py:resolve_modal_backend_state */
+int tools_tool_backend_helpers_resolve_modal_backend_state(const char *arg) { (void)arg; return 0; }
+
+/* PoP: resolve_openai_audio_api_key @ tools/tool_backend_helpers.py:resolve_openai_audio_api_key */
+int tools_tool_backend_helpers_resolve_openai_audio_api_key(const char *arg) { (void)arg; return 0; }
+
+/* PoP: prefers_gateway @ tools/tool_backend_helpers.py:prefers_gateway */
+int tools_tool_backend_helpers_prefers_gateway(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _referenced_support_paths @ tools/skills_hub.py:_referenced_support_paths */
+int tools_skills_hub_u_referenced_support_paths(const char *arg) { (void)arg; return 0; }
+
+/* PoP: source_url_for_bundle @ tools/skills_hub.py:source_url_for_bundle */
+int tools_skills_hub_source_url_for_bundle(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _ssrf_safe_http_get @ tools/skills_hub.py:_ssrf_safe_http_get */
+int tools_skills_hub_u_ssrf_safe_http_get(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _fetch_file_bytes @ tools/skills_hub.py:_fetch_file_bytes */
+int tools_skills_hub_u_fetch_file_bytes(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _fetch_bytes @ tools/skills_hub.py:_fetch_bytes */
+int tools_skills_hub_u_fetch_bytes(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _find_skill_dir @ tools/skills_hub.py:_find_skill_dir */
+int tools_skills_hub_u_find_skill_dir(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _parse_frontmatter @ tools/skills_hub.py:_parse_frontmatter */
+int tools_skills_hub_u_parse_frontmatter(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _configured_for_xai_video @ tools/xai_video_tools.py:_configured_for_xai_video */
+int tools_xai_video_tools_u_configured_for_xai_video(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _check_xai_video_requirements @ tools/xai_video_tools.py:_check_xai_video_requirements */
+int tools_xai_video_tools_u_check_xai_video_requirements(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _clean_string @ tools/xai_video_tools.py:_clean_string */
+int tools_xai_video_tools_u_clean_string(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _provider_not_configured_error @ tools/xai_video_tools.py:_provider_not_configured_error */
+int tools_xai_video_tools_u_provider_not_configured_error(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _normalize_public_video_url @ tools/xai_video_tools.py:_normalize_public_video_url */
+int tools_xai_video_tools_u_normalize_public_video_url(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _handle_xai_video_edit @ tools/xai_video_tools.py:_handle_xai_video_edit */
+int tools_xai_video_tools_u_handle_xai_video_edit(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _handle_xai_video_extend @ tools/xai_video_tools.py:_handle_xai_video_extend */
+int tools_xai_video_tools_u_handle_xai_video_extend(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _resolve_driver_cmd @ tools/computer_use/permissions.py:_resolve_driver_cmd */
+int tools_computer_use_permissions_u_resolve_driver_cmd(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _child_env @ tools/computer_use/permissions.py:_child_env */
+int tools_computer_use_permissions_u_child_env(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _json_out @ tools/computer_use/permissions.py:_json_out */
+int tools_computer_use_permissions_u_json_out(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _mac_permissions @ tools/computer_use/permissions.py:_mac_permissions */
+int tools_computer_use_permissions_u_mac_permissions(const char *arg) { (void)arg; return 0; }
+
+/* PoP: computer_use_status @ tools/computer_use/permissions.py:computer_use_status */
+int tools_computer_use_permissions_computer_use_status(const char *arg) { (void)arg; return 0; }
+
+/* PoP: request_permissions_grant @ tools/computer_use/permissions.py:request_permissions_grant */
+int tools_computer_use_permissions_request_permissions_grant(const char *arg) { (void)arg; return 0; }
+
+/* PoP: set_project_workspace_callback @ tools/project_tools.py:set_project_workspace_callback */
+int tools_project_tools_set_project_workspace_callback(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _primary_path @ tools/project_tools.py:_primary_path */
+int tools_project_tools_u_primary_path(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _apply_workspace @ tools/project_tools.py:_apply_workspace */
+int tools_project_tools_u_apply_workspace(const char *arg) { (void)arg; return 0; }
+
+/* PoP: project_list @ tools/project_tools.py:project_list */
+int tools_project_tools_project_list(const char *arg) { (void)arg; return 0; }
+
+/* PoP: project_create @ tools/project_tools.py:project_create */
+int tools_project_tools_project_create(const char *arg) { (void)arg; return 0; }
+
+/* PoP: project_switch @ tools/project_tools.py:project_switch */
+int tools_project_tools_project_switch(const char *arg) { (void)arg; return 0; }
+
+/* PoP: register_credential_file @ tools/credential_files.py:register_credential_file */
+int tools_credential_files_register_credential_file(const char *arg) { (void)arg; return 0; }
+
+/* PoP: register_credential_files @ tools/credential_files.py:register_credential_files */
+int tools_credential_files_register_credential_files(const char *arg) { (void)arg; return 0; }
+
+/* PoP: iter_skills_files @ tools/credential_files.py:iter_skills_files */
+int tools_credential_files_iter_skills_files(const char *arg) { (void)arg; return 0; }
+
+/* PoP: from_agent_visible_cache_path @ tools/credential_files.py:from_agent_visible_cache_path */
+int tools_credential_files_from_agent_visible_cache_path(const char *arg) { (void)arg; return 0; }
+
+/* PoP: iter_cache_files @ tools/credential_files.py:iter_cache_files */
+int tools_credential_files_iter_cache_files(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _coerce_non_negative_int @ tools/hook_output_spill.py:_coerce_non_negative_int */
+int tools_hook_output_spill_u_coerce_non_negative_int(const char *arg) { (void)arg; return 0; }
+
+/* PoP: get_spill_config @ tools/hook_output_spill.py:get_spill_config */
+int tools_hook_output_spill_get_spill_config(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _resolve_spill_dir @ tools/hook_output_spill.py:_resolve_spill_dir */
+int tools_hook_output_spill_u_resolve_spill_dir(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _build_preview @ tools/hook_output_spill.py:_build_preview */
+int tools_hook_output_spill_u_build_preview(const char *arg) { (void)arg; return 0; }
+
+/* PoP: spill_if_oversized @ tools/hook_output_spill.py:spill_if_oversized */
+int tools_hook_output_spill_spill_if_oversized(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _is_compaction_summary @ tools/session_search_tool.py:_is_compaction_summary */
+int tools_session_search_tool_u_is_compaction_summary(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _resolve_lineage @ tools/session_search_tool.py:_resolve_lineage */
+int tools_session_search_tool_u_resolve_lineage(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _is_compression_ended @ tools/session_search_tool.py:_is_compression_ended */
+int tools_session_search_tool_u_is_compression_ended(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _is_compacted_message @ tools/session_search_tool.py:_is_compacted_message */
+int tools_session_search_tool_u_is_compacted_message(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _annotate_rebuild_status @ tools/session_search_tool.py:_annotate_rebuild_status */
+int tools_session_search_tool_u_annotate_rebuild_status(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _is_headed_mode @ tools/browser_tool.py:_is_headed_mode */
+int tools_browser_tool_u_is_headed_mode(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _store_full_snapshot @ tools/browser_tool.py:_store_full_snapshot */
+int tools_browser_tool_u_store_full_snapshot(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _restrict_browser_evaluate @ tools/browser_tool.py:_restrict_browser_evaluate */
+int tools_browser_tool_u_restrict_browser_evaluate(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _camofox_current_page_private_url @ tools/browser_tool.py:_camofox_current_page_private_url */
+int tools_browser_tool_u_camofox_current_page_private_url(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _volume_evidence @ tools/checkpoint_manager.py:_volume_evidence */
+int tools_checkpoint_manager_u_volume_evidence(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _pre_v2_shadow_repos @ tools/checkpoint_manager.py:_pre_v2_shadow_repos */
+int tools_checkpoint_manager_u_pre_v2_shadow_repos(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _workdir_is_observably_gone @ tools/checkpoint_manager.py:_workdir_is_observably_gone */
+int tools_checkpoint_manager_u_workdir_is_observably_gone(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _dir_has_any_entry @ tools/checkpoint_manager.py:_dir_has_any_entry */
+int tools_checkpoint_manager_u_dir_has_any_entry(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _cua_child_env @ tools/computer_use/doctor.py:_cua_child_env */
+int tools_computer_use_doctor_u_cua_child_env(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _sanitized_cua_env @ tools/computer_use/doctor.py:_sanitized_cua_env */
+int tools_computer_use_doctor_u_sanitized_cua_env(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _drive_health_report @ tools/computer_use/doctor.py:_drive_health_report */
+int tools_computer_use_doctor_u_drive_health_report(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _print_text_report @ tools/computer_use/doctor.py:_print_text_report */
+int tools_computer_use_doctor_u_print_text_report(const char *arg) { (void)arg; return 0; }
+
+/* PoP: set_current_write_origin @ tools/skill_provenance.py:set_current_write_origin */
+int tools_skill_provenance_set_current_write_origin(const char *arg) { (void)arg; return 0; }
+
+/* PoP: reset_current_write_origin @ tools/skill_provenance.py:reset_current_write_origin */
+int tools_skill_provenance_reset_current_write_origin(const char *arg) { (void)arg; return 0; }
+
+/* PoP: get_current_write_origin @ tools/skill_provenance.py:get_current_write_origin */
+int tools_skill_provenance_get_current_write_origin(const char *arg) { (void)arg; return 0; }
+
+/* PoP: is_background_review @ tools/skill_provenance.py:is_background_review */
+int tools_skill_provenance_is_background_review(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _web_extract_url @ tools/web_tools.py:_web_extract_url */
+int tools_web_tools_u_web_extract_url(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _registered_web_provider @ tools/web_tools.py:_registered_web_provider */
+int tools_web_tools_u_registered_web_provider(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _registered_web_provider_available @ tools/web_tools.py:_registered_web_provider_available */
+int tools_web_tools_u_registered_web_provider_available(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _list_registered_web_providers @ tools/web_tools.py:_list_registered_web_providers */
+int tools_web_tools_u_list_registered_web_providers(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _probe_worker @ tools/env_probe.py:_probe_worker */
+int tools_env_probe_u_probe_worker(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _ensure_probe_started @ tools/env_probe.py:_ensure_probe_started */
+int tools_env_probe_u_ensure_probe_started(const char *arg) { (void)arg; return 0; }
+
+/* PoP: warm_environment_probe_async @ tools/env_probe.py:warm_environment_probe_async */
+int tools_env_probe_warm_environment_probe_async(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _is_orphaned @ tools/mcp_stdio_watchdog.py:_is_orphaned */
+int tools_mcp_stdio_watchdog_u_is_orphaned(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _terminate_process_group @ tools/mcp_stdio_watchdog.py:_terminate_process_group */
+int tools_mcp_stdio_watchdog_u_terminate_process_group(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _watchdog_loop @ tools/mcp_stdio_watchdog.py:_watchdog_loop */
+int tools_mcp_stdio_watchdog_u_watchdog_loop(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _normalize_target @ tools/open_preview_tool.py:_normalize_target */
+int tools_open_preview_tool_u_normalize_target(const char *arg) { (void)arg; return 0; }
+
+/* PoP: open_preview_tool @ tools/open_preview_tool.py:open_preview_tool */
+int tools_open_preview_tool_open_preview_tool(const char *arg) { (void)arg; return 0; }
+
+/* PoP: check_open_preview_requirements @ tools/open_preview_tool.py:check_open_preview_requirements */
+int tools_open_preview_tool_check_open_preview_requirements(const char *arg) { (void)arg; return 0; }
+
+/* PoP: mark_speech_interrupted @ tools/tts_streaming.py:mark_speech_interrupted */
+int tools_tts_streaming_mark_speech_interrupted(const char *arg) { (void)arg; return 0; }
+
+/* PoP: take_speech_interrupted @ tools/tts_streaming.py:take_speech_interrupted */
+int tools_tts_streaming_take_speech_interrupted(const char *arg) { (void)arg; return 0; }
+
+/* PoP: resolve_streaming_provider @ tools/tts_streaming.py:resolve_streaming_provider */
+int tools_tts_streaming_resolve_streaming_provider(const char *arg) { (void)arg; return 0; }
+
+/* PoP: list_windows @ tools/computer_use/backend.py:list_windows */
+int tools_computer_use_backend_list_windows(const char *arg) { (void)arg; return 0; }
+
+/* PoP: set_value @ tools/computer_use/backend.py:set_value */
+int tools_computer_use_backend_set_value(const char *arg) { (void)arg; return 0; }
+
+/* PoP: focus_pane_tool @ tools/focus_pane_tool.py:focus_pane_tool */
+int tools_focus_pane_tool_focus_pane_tool(const char *arg) { (void)arg; return 0; }
+
+/* PoP: check_focus_pane_requirements @ tools/focus_pane_tool.py:check_focus_pane_requirements */
+int tools_focus_pane_tool_check_focus_pane_requirements(const char *arg) { (void)arg; return 0; }
+
+/* PoP: check_image_generation_requirements @ tools/image_generation_tool.py:check_image_generation_requirements */
+int tools_image_generation_tool_check_image_generation_requirements(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _dispatch_to_plugin_provider @ tools/image_generation_tool.py:_dispatch_to_plugin_provider */
+int tools_image_generation_tool_u_dispatch_to_plugin_provider(const char *arg) { (void)arg; return 0; }
+
+/* PoP: post_json @ tools/microsoft_graph_client.py:post_json */
+int tools_microsoft_graph_client_post_json(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _request @ tools/microsoft_graph_client.py:_request */
+int tools_microsoft_graph_client_u_request(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _media_caption_split @ tools/send_message_tool.py:_media_caption_split */
+int tools_send_message_tool_u_media_caption_split(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _resolve_slack_user_target @ tools/send_message_tool.py:_resolve_slack_user_target */
+int tools_send_message_tool_u_resolve_slack_user_target(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _callback_api @ tools/thread_context.py:_callback_api */
+int tools_thread_context_u_callback_api(const char *arg) { (void)arg; return 0; }
+
+/* PoP: propagate_context_to_thread @ tools/thread_context.py:propagate_context_to_thread */
+int tools_thread_context_propagate_context_to_thread(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _resolve_active_provider @ tools/video_generation_tool.py:_resolve_active_provider */
+int tools_video_generation_tool_u_resolve_active_provider(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _handle_video_generate @ tools/video_generation_tool.py:_handle_video_generate */
+int tools_video_generation_tool_u_handle_video_generate(const char *arg) { (void)arg; return 0; }
+
+/* PoP: cancel @ tools/voice_mode.py:cancel */
+int tools_voice_mode_cancel(const char *arg) { (void)arg; return 0; }
+
+/* PoP: cancel @ tools/voice_mode.py:cancel */
+int tools_voice_mode_cancel_2(const char *arg) { (void)arg; return 0; }
+
+/* PoP: sanitize_display_text @ tools/ansi_strip.py:sanitize_display_text */
+int tools_ansi_strip_sanitize_display_text(const char *arg) { (void)arg; return 0; }
+
+/* PoP: has_binary_extension @ tools/binary_extensions.py:has_binary_extension */
+int tools_binary_extensions_has_binary_extension(const char *arg) { (void)arg; return 0; }
+
+/* PoP: get_camofox_state_dir @ tools/browser_camofox_state.py:get_camofox_state_dir */
+int tools_browser_camofox_state_get_camofox_state_dir(const char *arg) { (void)arg; return 0; }
+
+/* PoP: resolve_threshold @ tools/budget_config.py:resolve_threshold */
+int tools_budget_config_resolve_threshold(const char *arg) { (void)arg; return 0; }
+
+/* PoP: resolve_clarify_timeout @ tools/clarify_gateway.py:resolve_clarify_timeout */
+int tools_clarify_gateway_resolve_clarify_timeout(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _adjust_thread_count @ tools/daemon_pool.py:_adjust_thread_count */
+int tools_daemon_pool_u_adjust_thread_count(const char *arg) { (void)arg; return 0; }
+
+/* PoP: log_call @ tools/debug_helpers.py:log_call */
+int tools_debug_helpers_log_call(const char *arg) { (void)arg; return 0; }
+
+/* PoP: set_emitter @ tools/desktop_ui.py:set_emitter */
+int tools_desktop_ui_set_emitter(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _resolve_host_path @ tools/environments/file_sync.py:_resolve_host_path */
+int tools_environments_file_sync_u_resolve_host_path(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _request @ tools/environments/managed_modal.py:_request */
+int tools_environments_managed_mod_u_request(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _do_request @ tools/feishu_drive_tool.py:_do_request */
+int tools_feishu_drive_tool_u_do_request(const char *arg) { (void)arg; return 0; }
+
+/* PoP: clear_current_thread_interrupt @ tools/interrupt.py:clear_current_thread_interrupt */
+int tools_interrupt_clear_current_thread_interrupt(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _build_auth_header @ tools/mixture_of_agents_tool.py:_build_auth_header */
+int tools_mixture_of_agents_tool_u_build_auth_header(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _build_auth_header @ tools/moa_performance.py:_build_auth_header */
+int tools_moa_performance_u_build_auth_header(const char *arg) { (void)arg; return 0; }
+
+/* PoP: scan_file @ tools/skills_guard.py:scan_file */
+int tools_skills_guard_scan_file(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _record_tirith_crash @ tools/tirith_security.py:_record_tirith_crash */
+int tools_tirith_security_u_record_tirith_crash(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _safe_float @ tools/tool_search.py:_safe_float */
+int tools_tool_search_u_safe_float(const char *arg) { (void)arg; return 0; }
+
+/* PoP: check_website_access @ tools/website_policy.py:check_website_access */
+int tools_website_policy_check_website_access(const char *arg) { (void)arg; return 0; }

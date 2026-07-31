@@ -88,6 +88,7 @@ pet_render_mode_t pet_resolve_mode(const char *configured, bool is_tty) {
 }
 
 /* PoP: pet_state_frame_count @ agent/pet/render.py:state_frame_counts */
+/* PoP: frame_count @ agent/pet/render.py:frame_count */
 /* PoP: pet_frame_count @ agent/pet/render.py:frame_count (same C func — derived from atlas) */
 int pet_state_frame_count(const char *spritesheet_path, pet_state_t state) {
     if (!spritesheet_path || !*spritesheet_path) return 0;

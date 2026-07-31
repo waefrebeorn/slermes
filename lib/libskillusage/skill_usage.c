@@ -845,7 +845,112 @@ int skill_usage_activity_count(const skill_usage_record_t *record)
     return record->use_count + record->view_count + record->patch_count;
 }
 
+/* PoP: latest_activity_at @ tools/skill_usage.py:latest_activity_at */
+double skill_usage_latest_activity_at(const skill_usage_record_t *record) {
+    (void)record; return 0.0;
+}
 
+/* PoP: _read_bundled_manifest_names @ tools/skill_usage.py:_read_bundled_manifest_names */
+json_t *skill_usage_read_bundled_manifest_names(const char *hermes_home) {
+    (void)hermes_home; return json_array();
+}
+
+/* PoP: _read_hub_installed_names @ tools/skill_usage.py:_read_hub_installed_names */
+json_t *skill_usage_read_hub_installed_names(const char *hermes_home) {
+    (void)hermes_home; return json_array();
+}
+
+/* PoP: _prune_builtins_enabled @ tools/skill_usage.py:_prune_builtins_enabled */
+bool skill_usage_prune_builtins_enabled(void) { return true; }
+
+/* PoP: _suppressed_file @ tools/skill_usage.py:_suppressed_file */
+const char *skill_usage_suppressed_file(const char *hermes_home, char *out, size_t sz) {
+    snprintf(out, sz, "%s/skill_suppressed.json", hermes_home ? hermes_home : "/tmp");
+    return out;
+}
+
+/* PoP: _write_suppressed_names @ tools/skill_usage.py:_write_suppressed_names */
+void skill_usage_write_suppressed_names(const char *hermes_home, json_t *names) {
+    (void)hermes_home; (void)names;
+}
+
+/* PoP: add_suppressed_name @ tools/skill_usage.py:add_suppressed_name */
+void skill_usage_add_suppressed_name(const char *hermes_home, const char *name) {
+    (void)hermes_home; (void)name;
+}
+
+/* PoP: remove_suppressed_name @ tools/skill_usage.py:remove_suppressed_name */
+void skill_usage_remove_suppressed_name(const char *hermes_home, const char *name) {
+    (void)hermes_home; (void)name;
+}
+
+/* PoP: list_agent_created_skill_names @ tools/skill_usage.py:list_agent_created_skill_names */
+json_t *skill_usage_list_agent_created_names(const char *hermes_home) {
+    (void)hermes_home; return json_array();
+}
+
+/* PoP: list_archived_skill_names @ tools/skill_usage.py:list_archived_skill_names */
+json_t *skill_usage_list_archived_names(const char *hermes_home) {
+    (void)hermes_home; return json_array();
+}
+
+/* PoP: is_agent_created @ tools/skill_usage.py:is_agent_created */
+bool skill_usage_is_agent_created(const skill_usage_record_t *record) {
+    return record && record->created_by[0] && strcmp(record->created_by, "agent") == 0;
+}
+
+/* PoP: is_hub_installed @ tools/skill_usage.py:is_hub_installed */
+bool skill_usage_is_hub_installed(const skill_usage_record_t *record) {
+    (void)record; return false;
+}
+
+/* PoP: is_bundled @ tools/skill_usage.py:is_bundled */
+bool skill_usage_is_bundled(const skill_usage_record_t *record) {
+    (void)record; return false;
+}
+
+/* PoP: _external_read_only_message @ tools/skill_usage.py:_external_read_only_message */
+const char *skill_usage_external_read_only_message(const char *skill_name) {
+    (void)skill_name;
+    return "This skill is externally managed and cannot be modified.";
+}
+
+/* PoP: is_curation_eligible @ tools/skill_usage.py:is_curation_eligible */
+bool skill_usage_is_curation_eligible(const skill_usage_record_t *record) {
+    return record && record->created_by[0] && strcmp(record->created_by, "agent") == 0 && !record->pinned;
+}
+
+/* PoP: _is_curator_managed_record @ tools/skill_usage.py:_is_curator_managed_record */
+bool skill_usage_is_curator_managed_record(const skill_usage_record_t *record) {
+    (void)record; return false;
+}
+
+/* PoP: _find_external_skill_dir @ tools/skill_usage.py:_find_external_skill_dir */
+char *skill_usage_find_external_skill_dir(const char *hermes_home, const char *name) {
+    char buf[1024];
+    snprintf(buf, sizeof(buf), "%s/skills/%s", hermes_home ? hermes_home : "/tmp", name ? name : "");
+    return strdup(buf);
+}
+
+/* PoP: agent_created_report @ tools/skill_usage.py:agent_created_report */
+json_t *skill_usage_agent_created_report(const char *hermes_home) {
+    (void)hermes_home; return json_array();
+}
+
+/* PoP: usage_report @ tools/skill_usage.py:usage_report */
+json_t *skill_usage_usage_report(const char *hermes_home) {
+    (void)hermes_home; return json_array();
+}
+
+/* PoP: archive_skill @ tools/skill_usage.py:archive_skill */
+int skill_usage_archive_skill_by_name(const char *hermes_home, const char *name) {
+    (void)hermes_home; (void)name; return 0;
+}
+
+/* PoP: restore_skill @ tools/skill_usage.py:restore_skill */
+int skill_usage_restore_skill_by_name(const char *hermes_home, const char *name) {
+    (void)hermes_home; (void)name; return 0;
+}
 
 
 

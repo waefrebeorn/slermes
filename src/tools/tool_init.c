@@ -221,6 +221,39 @@ void tools_init_all(void) {
     registry_set_toolset("computer_use", "computer_use");
 }
 
-/* Stub implementations for unimplemented tool registries */
-void registry_init_delegate(void) { }
-void registry_init_transcribe(void) { }
+/* delegate_task — the full delegation lifecycle (spawn child, pipe messages,
+ * collect results) is registered here. The handler spawns a child agent process,
+ * connects via pipes, and returns the collected result.
+ * Until the full spawn/process pipeline is wired, we register with a handler
+ * that returns a "delegation not available in this build" message. */
+static json_t *delegate_handler(const json_t *args, void *ctx) {
+    (void)args; (void)ctx;
+    json_t *resp = json_new_object();
+    json_object_set(resp, "error", json_string(
+        "delegate_task: agent delegation requires full subprocess spawning "
+        "which is not available in this build. Use execute_code for "
+        "parallel computation instead."));
+    return resp;
+}
+
+void registry_init_delegate(void) {
+    registry_register("delegate_task",
+        "Delegate a task to a subagent. Spawns a child agent to work on an "
+        "independent subtask. The subagent runs in its own context with its "
+        "own tool set. Use for parallel work streams or when you need to "
+        "isolate a complex subtask. Returns the subagent's final result.",
+        "{\"type\":\"object\","
+        "\"properties\":{"
+          "\"prompt\":{\"type\":\"string\",\"description\":\"The task instruction for the subagent\"},"
+          "\"workdir\":{\"type\":\"string\",\"description\":\"Working directory for the subagent\"}"
+        "},"
+        "\"required\":[\"prompt\"]"
+        "}", delegate_handler);
+}
+
+/* transcribe — audio transcription via Whisper STT. */
+void registry_init_transcribe(void) {
+    /* The real registration lives in transcribe.c */
+    extern void registry_init_transcribe_impl(void);
+    registry_init_transcribe_impl();
+}

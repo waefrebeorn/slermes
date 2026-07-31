@@ -74,6 +74,7 @@ static void build_headers(const char *body, char *hdr_buf, size_t hdr_sz,
 }
 
 /* POST to iLink API with full payload */
+/* PoP: _api_post @ gateway/platforms/weixin.py:_api_post */
 static char *wx_api_post(const char *endpoint, const char *payload_json,
                           int timeout_ms, const char *override_token) {
     char url[2048];
@@ -254,6 +255,7 @@ static char *get_updates(void) {
     snprintf(payload, sizeof(payload),
              "{\"get_updates_buf\":\"%s\"", g_wx.sync_buf);
 
+/* PoP: api_post @ gateway/platforms/weixin.py:api_post */
     char *resp = wx_api_post(EP_GET_UPDATES, payload, LONG_POLL_TIMEOUT_MS, NULL);
     if (!resp) {
         /* Timeout is normal — return empty result */

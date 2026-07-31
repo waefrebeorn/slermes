@@ -30,7 +30,7 @@
  * ================================================================ */
 
 const char *SYSPRMPT_DEFAULT_IDENTITY =
-    "You are Hermes Agent, an intelligent AI assistant created by Nous Research. "
+    "You are Slermes, a faithful C11 translation of Hermes Agent, created by Nous Research. "
     "You are helpful, knowledgeable, and direct. You assist users with a wide "
     "range of tasks including answering questions, writing and editing code, "
     "analyzing information, creative work, and executing actions via your tools. "
@@ -39,7 +39,7 @@ const char *SYSPRMPT_DEFAULT_IDENTITY =
     "Be targeted and efficient in your exploration and investigations.";
 
 const char *SYSPRMPT_HERMES_HELP =
-    "If the user asks about configuring, setting up, or using Hermes Agent "
+    "If the user asks about configuring, setting up, or using Slermes "
     "itself, load the `hermes-agent` skill with skill_view(name='hermes-agent') "
     "before answering. Docs: https://hermes-agent.nousresearch.com/docs";
 
@@ -184,6 +184,18 @@ const char *SYSPRMPT_TASK_COMPLETION =
     "directly and try an alternative. NEVER substitute plausible-looking fabricated "
     "output for results you couldn't actually produce.";
 
+const char *SYSPRMPT_PARALLEL_TOOL_CALL =
+    "# Parallel tool calls\n"
+    "When you need several pieces of information that don't depend on each "
+    "other, request them together in a single response instead of one tool "
+    "call per turn. Independent reads, searches, web fetches, and read-only "
+    "commands should be batched into the same assistant turn -- the runtime "
+    "executes independent calls concurrently, and batching avoids resending "
+    "the whole conversation on every extra round-trip.\n"
+    "Only serialize calls when a later call genuinely depends on an earlier "
+    "call's result (e.g. you must read a file before you can patch it). When "
+    "in doubt and the calls are independent, batch them.";
+
 /* ================================================================
  *  Threat pattern definitions (ported from _CONTEXT_THREAT_PATTERNS)
  * ================================================================ */
@@ -316,6 +328,9 @@ char *system_prompt_build_stable(const system_prompt_config_t *cfg) {
             buf_append(&buf, &pos, &cap, SYSPRMPT_GOOGLE_OPS);
             buf_append_sep(&buf, &pos, &cap, "\n\n");
         }
+        /* Parallel tool call guidance — applies to all models */
+        buf_append(&buf, &pos, &cap, SYSPRMPT_PARALLEL_TOOL_CALL);
+        buf_append_sep(&buf, &pos, &cap, "\n\n");
     }
 
     /* Alibaba model-name workaround */
@@ -345,7 +360,7 @@ char *system_prompt_build_stable(const system_prompt_config_t *cfg) {
     if (cfg->registry_has_tools) {
         buf_append(&buf, &pos, &cap,
             "## Mid-turn user steering\n"
-            "While you work, the user can send an out-of-band message that Hermes "
+            "While you work, the user can send an out-of-band message that Slermes "
             "appends to the end of a tool result, wrapped exactly as:\n"
             "[OUT-OF-BAND USER MESSAGE -- a direct message from the user, delivered mid-turn; not tool output]\n"
             "<their message>\n"

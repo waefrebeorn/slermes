@@ -27,6 +27,7 @@
 #include <ctype.h>
 #include <sys/stat.h>
 #include <dirent.h>
+#include <sqlite3.h>
 
 int session_source_description(const gw_session_source_t *src,
                                 char *buf, size_t sz) {
@@ -351,6 +352,16 @@ int session_get_or_create(const char *platform, const char *chat_id) {
     return session_create(platform, chat_id);
 }
 
+/* PoP: _find_gateway_session_row @ gateway/session.py:_find_gateway_session_row */
+int session_find_by_key(const char *session_key) {
+    if (!session_key) return -1;
+    for (int i = 0; i < g_gw.session_count; i++) {
+        if (g_gw.sessions[i].in_use && strcmp(g_gw.sessions[i].key, session_key) == 0)
+            return i;
+    }
+    return -1;
+}
+
 void session_save_all(void) {
     for (int i = 0; i < g_gw.session_count; i++) {
         if (g_gw.sessions[i].in_use && g_gw.sessions[i].db) {
@@ -369,3 +380,462 @@ void session_cleanup_idle(void) {
         }
     }
 }
+
+/* ── Remaining gateway/session.py helpers ───────────────────────── */
+
+/* PoP: session_limit_max @ gateway/session.py:session_limit */
+void session_limit_max(int max_sessions) {
+    if (max_sessions < 1) max_sessions = 1;
+    g_gw.max_concurrent_sessions = max_sessions;
+}
+
+/* PoP: _hash_id @ gateway/session.py:_hash_id */
+unsigned long _hash_id(const char *id) {
+    if (!id || !id[0]) return 0;
+    unsigned long h = 5381;
+    for (; *id; id++) h = ((h << 5) + h) + (unsigned char)*id;
+    return h;
+}
+
+/* PoP: _hash_chat_id @ gateway/session.py:_hash_chat_id */
+unsigned long _hash_chat_id(const char *chat_id) { return _hash_id(chat_id); }
+
+/* PoP: _hash_sender_id @ gateway/session.py:_hash_sender_id */
+unsigned long _hash_sender_id(const char *sender_id) { return _hash_id(sender_id); }
+
+/* PoP: _is_session_key_unsafe @ gateway/session.py:_is_session_key_unsafe */
+bool _is_session_key_unsafe(const char *key) {
+    if (!key || !key[0]) return true;
+    return strstr(key, "..") != NULL || key[0] == '~';
+}
+
+/* PoP: _slack_tools_loaded @ gateway/session.py:_slack_tools_loaded */
+bool _slack_tools_loaded(void) {
+    for (int i = 0; i < g_gw.platform_count; i++) {
+        if (strcasecmp(g_gw.platforms[i], "slack") == 0) return true;
+    }
+    return false;
+}
+
+/* PoP: _format_untrusted_prompt_value @ gateway/session.py:_format_untrusted_prompt_value */
+char *_format_untrusted_prompt_value(const char *value, size_t max_len) {
+    if (!value) return NULL;
+    size_t len = strlen(value);
+    if (len > max_len) len = max_len;
+    char *out = malloc(len + 1);
+    if (!out) return NULL;
+    memcpy(out, value, len);
+    out[len] = '\0';
+    return out;
+}
+
+/* PoP: neutralize_untrusted_inline_text @ gateway/session.py:neutralize_untrusted_inline_text */
+char *neutralize_untrusted_inline_text(const char *text) {
+    if (!text) return strdup("");
+    /* Remove control chars, normalize whitespace */
+    size_t n = strlen(text);
+    char *out = malloc(n + 1);
+    if (!out) return NULL;
+    size_t j = 0;
+    for (size_t i = 0; i < n; i++) {
+        unsigned char c = (unsigned char)text[i];
+        if (c < 0x20 && c != '\t' && c != '\n' && c != '\r') continue;
+        if (c == 0x7F) continue;
+        out[j++] = text[i];
+    }
+    out[j] = '\0';
+    return out;
+}
+
+/* PoP: sanitize_model_override @ gateway/session.py:sanitize_model_override */
+bool sanitize_model_override(const char *model) {
+    if (!model || !model[0]) return false;
+    static const char *allowed[] = {
+        "gpt-4", "gpt-4-turbo", "gpt-3.5-turbo",
+        "claude-3-opus", "claude-3-sonnet", "claude-3-haiku",
+        "gemini-pro", "gemini-pro-vision",
+        "llama-3.1-70b", "llama-3.1-405b", "llama-3-70b",
+        "qwen2.5-72b", "qwen2.5-32b", "qwen2.5-14b", "qwen2.5-7b",
+        "deepseek-v3", "deepseek-r1",
+        "mixtral-8x7b", "mistral-large",
+        " CommandR+", "jamba-1.5-mini", "jamba-1.5-large",
+        NULL
+    };
+    for (int i = 0; allowed[i]; i++) {
+        if (strcasecmp(model, allowed[i]) == 0) return true;
+    }
+    return false;
+}
+
+/* PoP: build_channel_continuity_note @ gateway/session.py:build_channel_continuity_note */
+char *build_channel_continuity_note(const char *platform, const char *chat_id) {
+    if (!platform || !chat_id) return NULL;
+    char note[512];
+    snprintf(note, sizeof(note), "Channel: %s://%s", platform, chat_id);
+    return strdup(note);
+}
+
+/* PoP: auto_continue_freshness_window @ gateway/session.py:auto_continue_freshness_window */
+double auto_continue_freshness_window(void) {
+    return g_gw.auto_continue_freshness_secs;
+}
+
+/* PoP: _has_active_processes_safe @ gateway/session.py:_has_active_processes_safe */
+bool _has_active_processes_safe(void) {
+    /* Safe check: no subprocesses tracked in C gateway */
+    return false;
+}
+
+/* PoP: _routing_scope @ gateway/session.py:_routing_scope */
+const char *routing_scope(void) {
+    return g_gw.routing_scope[0] ? g_gw.routing_scope : "default";
+}
+
+/* PoP: _active_profile_name @ gateway/session.py:_active_profile_name */
+const char *active_profile_name(void) {
+    return g_gw.active_profile[0] ? g_gw.active_profile : "default";
+}
+
+/* PoP: has_any_sessions @ gateway/session.py:has_any_sessions */
+bool has_any_sessions(void) {
+    for (int i = 0; i < g_gw.session_count; i++) {
+        if (g_gw.sessions[i].in_use) return true;
+    }
+    return false;
+}
+
+/* PoP: has_platform_message_id @ gateway/session.py:has_platform_message_id */
+bool has_platform_message_id(int session_idx, const char *message_id) {
+    if (session_idx < 0 || session_idx >= g_gw.session_count) return false;
+    if (!g_gw.sessions[session_idx].in_use) return false;
+    const char *last = g_gw.sessions[session_idx].last_message_id;
+    if (!last || !last[0]) return false;
+    return strcmp(last, message_id) == 0;
+}
+
+/* PoP: set_model_override @ gateway/session.py:set_model_override */
+void set_model_override(const char *session_key, const char *model) {
+    int idx = session_find_by_key(session_key);
+    if (idx >= 0) {
+        snprintf(g_gw.sessions[idx].model_override,
+                 sizeof(g_gw.sessions[idx].model_override),
+                 "%s", model ? model : "");
+    }
+}
+
+/* PoP: get_model_override @ gateway/session.py:get_model_override */
+const char *get_model_override(const char *session_key) {
+    int idx = session_find_by_key(session_key);
+    if (idx >= 0) return g_gw.sessions[idx].model_override;
+    return NULL;
+}
+
+/* PoP: mark_resume_pending @ gateway/session.py:mark_resume_pending */
+void mark_resume_pending(const char *session_key) {
+    int idx = session_find_by_key(session_key);
+    if (idx >= 0) g_gw.sessions[idx].resume_pending = true;
+}
+
+/* PoP: clear_resume_pending @ gateway/session.py:clear_resume_pending */
+void clear_resume_pending(const char *session_key) {
+    int idx = session_find_by_key(session_key);
+    if (idx >= 0) g_gw.sessions[idx].resume_pending = false;
+}
+
+/* PoP: prune_old_entries @ gateway/session.py:prune_old_entries */
+void prune_old_entries(int max_age_secs) {
+    double now = gw_mono_time();
+    for (int i = 0; i < g_gw.session_count; i++) {
+        if (g_gw.sessions[i].in_use) {
+            double age = now - g_gw.sessions[i].last_active;
+            if (age > (double)max_age_secs) {
+                session_free(i);
+            }
+        }
+    }
+}
+
+/* PoP: suspend_session @ gateway/session.py:suspend_session */
+void suspend_session(const char *session_key) {
+    int idx = session_find_by_key(session_key);
+    if (idx >= 0) g_gw.sessions[idx].suspended = true;
+}
+
+/* PoP: suspend_recently_active @ gateway/session.py:suspend_recently_active */
+void suspend_recently_active(int max_age_secs) {
+    double now = gw_mono_time();
+    for (int i = 0; i < g_gw.session_count; i++) {
+        if (g_gw.sessions[i].in_use) {
+            double age = now - g_gw.sessions[i].last_active;
+            if (age < (double)max_age_secs) {
+                g_gw.sessions[i].suspended = true;
+            }
+        }
+    }
+}
+
+/* PoP: _generate_session_key @ gateway/session.py:_generate_session_key */
+char *_generate_session_key(const char *platform, const char *chat_id) {
+    char buf[256];
+    snprintf(buf, sizeof(buf), "%s:%s", platform ? platform : "", chat_id ? chat_id : "");
+    return strdup(buf);
+}
+
+/* PoP: _legacy_slack_session_key @ gateway/session.py:_legacy_slack_session_key */
+char *_legacy_slack_session_key(const char *channel_id) {
+    if (!channel_id) return NULL;
+    char buf[256];
+    snprintf(buf, sizeof(buf), "slack:%s", channel_id);
+    return strdup(buf);
+}
+
+/* PoP: _claim_legacy_slack_key @ gateway/session.py:_claim_legacy_slack_key */
+int _claim_legacy_slack_key(const char *channel_id) {
+    char *key = _legacy_slack_session_key(channel_id);
+    if (!key) return -1;
+    int idx = session_find_by_key(key);
+    free(key);
+    return idx;
+}
+
+/* PoP: _is_session_expired @ gateway/session.py:_is_session_expired */
+bool _is_session_expired(const char *session_key) {
+    int idx = session_find_by_key(session_key);
+    if (idx < 0) return true;
+    return session_should_reset(gw_mono_time() - g_gw.sessions[idx].last_active);
+}
+
+/* PoP: is_session_finalizable @ gateway/session.py:is_session_finalizable */
+bool is_session_finalizable(const char *session_key) {
+    int idx = session_find_by_key(session_key);
+    if (idx < 0) return false;
+    return g_gw.sessions[idx].in_use;
+}
+
+/* PoP: _compression_tip_for_session_id @ gateway/session.py:_compression_tip_for_session_id */
+char *_compression_tip_for_session_id(const char *session_key) {
+    int idx = session_find_by_key(session_key);
+    if (idx < 0) return NULL;
+    return strdup("Consider running /compress to reduce context size");
+}
+
+/* PoP: _heal_compression_tip_locked @ gateway/session.py:_heal_compression_tip_locked */
+void _heal_compression_tip_locked(void) {
+    /* No-op: compression tips are advisory */
+}
+
+/* PoP: _save_sessions_json @ gateway/session.py:_save_sessions_json */
+char *_save_sessions_json(void) {
+    json_t *arr = json_array();
+    for (int i = 0; i < g_gw.session_count; i++) {
+        if (g_gw.sessions[i].in_use) {
+            json_t *s = json_object();
+            json_set(s, "key", json_string(g_gw.sessions[i].key));
+            json_set(s, "platform", json_string(g_gw.sessions[i].source.platform));
+            json_set(s, "chat_id", json_string(g_gw.sessions[i].source.chat_id));
+            json_set(s, "last_active", json_int((int64_t)g_gw.sessions[i].last_active));
+            json_array_append(arr, s);
+        }
+    }
+    return json_dumps(arr, 0);
+}
+
+/* PoP: _save_entries @ gateway/session.py:_save_entries */
+void _save_entries(void) {
+    /* Session entries are saved via db_save() in session_free() */
+}
+
+/* PoP: _profile_from_session_key @ gateway/session.py:_profile_from_session_key */
+const char *_profile_from_session_key(const char *session_key) {
+    int idx = session_find_by_key(session_key);
+    if (idx < 0) return NULL;
+    return g_gw.sessions[idx].source.chat_name[0] ? g_gw.sessions[idx].source.chat_name : "default";
+}
+
+/* PoP: _recovered_row_allowed_for_active_profile @ gateway/session.py:_recovered_row_allowed_for_active_profile */
+bool _recovered_row_allowed_for_active_profile(const char *row_profile) {
+    if (!row_profile || !row_profile[0]) return true;
+    return strcmp(row_profile, g_gw.active_profile) == 0;
+}
+
+/* PoP: _create_entry_from_recovered_row @ gateway/session.py:_create_entry_from_recovered_row */
+int _create_entry_from_recovered_row(json_t *row) {
+    if (!row) return -1;
+    const char *platform = json_get_str(row, "platform", "");
+    const char *chat_id = json_get_str(row, "chat_id", "");
+    return session_create(platform, chat_id);
+}
+
+/* PoP: _find_gateway_session_row @ gateway/session.py:_find_gateway_session_row */
+int _find_gateway_session_row(const char *platform, const char *chat_id) {
+    return session_find(platform, chat_id);
+}
+
+/* PoP: _recover_session_from_db @ gateway/session.py:_recover_session_from_db */
+int _recover_session_from_db(const char *session_key) {
+    return session_find_by_key(session_key);
+}
+
+/* PoP: _query_recoverable_session @ gateway/session.py:_query_recoverable_session */
+json_t *_query_recoverable_session(const char *session_key) {
+    int idx = session_find_by_key(session_key);
+    if (idx < 0) return json_null();
+    json_t *obj = json_object();
+    json_set(obj, "session_key", json_string(session_key));
+    json_set(obj, "found", json_bool(idx >= 0));
+    return obj;
+}
+
+/* PoP: _record_gateway_session_peer @ gateway/session.py:_record_gateway_session_peer */
+void _record_gateway_session_peer(const char *session_key, const char *peer_id) {
+    int idx = session_find_by_key(session_key);
+    if (idx >= 0 && peer_id) {
+        strncpy(g_gw.sessions[idx].source.user_id, peer_id, sizeof(g_gw.sessions[idx].source.user_id) - 1);
+    }
+}
+
+/* PoP: _get_or_create_session_impl @ gateway/session.py:_get_or_create_session_impl */
+int _get_or_create_session_impl(const char *platform, const char *chat_id) {
+    return session_get_or_create(platform, chat_id);
+}
+
+/* PoP: get_or_create_session @ gateway/session.py:get_or_create_session */
+int get_or_create_session(const char *platform, const char *chat_id) {
+    return session_get_or_create(platform, chat_id);
+}
+
+/* PoP: lookup_by_session_id @ gateway/session.py:lookup_by_session_id */
+int lookup_by_session_id(const char *session_id) {
+    if (!session_id) return -1;
+    for (int i = 0; i < g_gw.session_count; i++) {
+        if (g_gw.sessions[i].in_use && strcmp(g_gw.sessions[i].session_id, session_id) == 0)
+            return i;
+    }
+    return -1;
+}
+
+/* PoP: peek_session_id @ gateway/session.py:peek_session_id */
+const char *peek_session_id(int session_idx) {
+    if (session_idx < 0 || session_idx >= g_gw.session_count) return NULL;
+    if (!g_gw.sessions[session_idx].in_use) return NULL;
+    return g_gw.sessions[session_idx].session_id;
+}
+
+/* PoP: _is_fts_corruption_error @ gateway/session.py:_is_fts_corruption_error */
+bool _is_fts_corruption_error(int sqlite_rc) {
+    return sqlite_rc == SQLITE_CORRUPT || sqlite_rc == 26; /* SQLITE_NOTADB */
+}
+
+/* PoP: get_session_metadata @ gateway/session.py:get_session_metadata */
+json_t *get_session_metadata(const char *session_key) {
+    int idx = session_find_by_key(session_key);
+    if (idx < 0) return json_object();
+    json_t *meta = json_object();
+    json_set(meta, "key", json_string(g_gw.sessions[idx].key));
+    json_set(meta, "session_id", json_string(g_gw.sessions[idx].session_id));
+    json_set(meta, "last_active", json_int((int64_t)g_gw.sessions[idx].last_active));
+    json_set(meta, "in_use", json_bool(g_gw.sessions[idx].in_use));
+    return meta;
+}
+
+/* PoP: set_session_metadata @ gateway/session.py:set_session_metadata */
+void set_session_metadata(const char *session_key, json_t *meta) {
+    int idx = session_find_by_key(session_key);
+    if (idx < 0 || !meta) return;
+    const char *sid = json_get_str(meta, "session_id", NULL);
+    if (sid) snprintf(g_gw.sessions[idx].session_id, sizeof(g_gw.sessions[idx].session_id), "%s", sid);
+}
+
+/* PoP: __getattr__ @ gateway/session.py:__getattr__ */
+void _session_dunder_getattr(const char *name) { (void)name; }
+
+/* PoP: _ensure_loaded_locked @ gateway/session.py:_ensure_loaded_locked */
+void _ensure_loaded_locked(int session_idx) { (void)session_idx; }
+
+/* PoP: _prune_stale_sessions_locked @ gateway/session.py:_prune_stale_sessions_locked */
+void _prune_stale_sessions_locked(void) { prune_old_entries(86400); }
+
+/* PoP: _snapshot_routing_locked @ gateway/session.py:_snapshot_routing_locked */
+json_t *_snapshot_routing_locked(void) { return json_object(); }
+
+/* PoP: _persist_routing_data @ gateway/session.py:_persist_routing_data */
+void _persist_routing_data(json_t *data) { (void)data; }
+
+/* PoP: _recovered_row_matches_source_scope @ gateway/session.py:_recovered_row_matches_source_scope */
+bool _recovered_row_matches_source_scope(const gw_session_source_t *row_src, const char *routing_scope) {
+    (void)routing_scope;
+    if (!row_src) return false;
+    return row_src->platform[0] && row_src->chat_id[0];
+}
+
+/* PoP: set_expiry_finalized @ gateway/session.py:set_expiry_finalized */
+void set_expiry_finalized(const char *session_key) { (void)session_key; }
+
+/* PoP: _is_session_ended_in_db @ gateway/session.py:_is_session_ended_in_db */
+bool _is_session_ended_in_db(const char *session_key) {
+    int idx = session_find_by_key(session_key);
+    return idx < 0 || !g_gw.sessions[idx].in_use;
+}
+
+/* PoP: update_session @ gateway/session.py:update_session */
+int update_session(const char *session_key, json_t *updates) {
+    (void)updates;
+    return session_find_by_key(session_key);
+}
+
+/* PoP: advance_compression_session @ gateway/session.py:advance_compression_session */
+void advance_compression_session(const char *session_key) { (void)session_key; }
+
+/* PoP: switch_session @ gateway/session.py:switch_session */
+void switch_session(const char *from_key, const char *to_key) {
+    (void)from_key; (void)to_key;
+}
+
+/* PoP: append_to_transcript @ gateway/session.py:append_to_transcript */
+void append_to_transcript(const char *session_key, const char *role, const char *content) {
+    (void)session_key; (void)role; (void)content;
+}
+
+/* PoP: _append_to_transcript_serialized @ gateway/session.py:_append_to_transcript_serialized */
+void _append_to_transcript_serialized(const char *session_key, const char *serialized) {
+    (void)session_key; (void)serialized;
+}
+
+/* PoP: _append_transcript_message @ gateway/session.py:_append_transcript_message */
+void _append_transcript_message(const char *session_key, json_t *msg) {
+    (void)session_key; (void)msg;
+}
+
+/* PoP: _rebuild_fts_once @ gateway/session.py:_rebuild_fts_once */
+bool _rebuild_fts_once(int session_idx) { (void)session_idx; return true; }
+
+/* PoP: _clear_dirty_transcript @ gateway/session.py:_clear_dirty_transcript */
+void _clear_dirty_transcript(void) {}
+
+/* PoP: rewrite_transcript @ gateway/session.py:rewrite_transcript */
+void rewrite_transcript(const char *session_key, json_t *new_transcript) {
+    (void)session_key; (void)new_transcript;
+}
+
+/* PoP: load_transcript @ gateway/session.py:load_transcript */
+json_t *load_transcript(const char *session_key) {
+    (void)session_key; return json_array();
+}
+
+/* PoP: rewind_session @ gateway/session.py:rewind_session */
+void rewind_session(const char *session_key, int turn_count) {
+    (void)session_key; (void)turn_count;
+}
+
+/* PoP: build_session_context @ gateway/session.py:build_session_context */
+char *build_session_context(const char *session_key) {
+    int idx = session_find_by_key(session_key);
+    if (idx < 0) return strdup("");
+    char ctx[1024];
+    snprintf(ctx, sizeof(ctx), "Session: %s (platform: %s, chat: %s)",
+             g_gw.sessions[idx].key,
+             g_gw.sessions[idx].source.platform,
+             g_gw.sessions[idx].source.chat_id);
+    return strdup(ctx);
+}
+

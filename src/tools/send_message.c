@@ -757,12 +757,13 @@ char *send_message_handler(const char *args_json, const char *task_id) {
 
 void registry_init_send_message(void) {
     registry_register("send_message",
-        "Send a message to a platform. Supports: 'stdout' (console), 'local' (file), "
-        "or 'platform:target' for platform routing (e.g., 'telegram:-100123456', "
-        "'discord:#channel'). "
-        "Use 'media_path' to attach files (images, audio, video, documents). "
-        "The MEDIA: prefix in message text is also supported for backward compat. "
-        "Optional 'thread_id' for threaded conversations (e.g., Telegram topic IDs). "
-        "D06: 'inline_buttons' array for inline keyboards [{text, url?, callback_data?, row?}].",
+        "Send a message to a connected messaging platform, or list available targets.\n"
+        "IMPORTANT: When the user asks to send to a specific channel or person "
+        "(not just a bare platform name), call send_message(action='list') FIRST to see "
+        "available targets, then send to the correct one.\n"
+        "If the user just says a platform name like 'send to telegram', send directly "
+        "to the home channel without listing first.\n"
+        "To send an image or file, include MEDIA:<local_path> (e.g. 'MEDIA:/tmp/report.pdf') "
+        "in the message — the platform will deliver it as a native media attachment.",
         SCHEMA, send_message_handler);
 }

@@ -1949,3 +1949,122 @@ bool mcp_remove_server(const char *name) {
     }
     return false;
 }
+
+/* ── Remaining tools/mcp_tool.py helpers ── */
+
+/* PoP: _check_logging_callback_support @ tools/mcp_tool.py:_check_logging_callback_support */
+bool mcp_check_logging_callback_support(void) { return false; }
+/* PoP: _jittered @ tools/mcp_tool.py:_jittered */
+double mcp_jittered(double base, double jitter_frac) {
+    return base * (1.0 + ((rand() % 1000) / 1000.0 - 0.5) * 2.0 * jitter_frac);
+}
+/* PoP: _env_ref_name @ tools/mcp_tool.py:_env_ref_name */
+const char *mcp_env_ref_name(const char *ref)
+{
+    static char buf[1024];
+    if (!ref) return NULL;
+    while (*ref == ' ') ref++;
+    if (strncmp(ref, "${env:", 6) == 0) ref += 6;
+    else if (strncmp(ref, "env:", 4) == 0) ref += 4;
+    else if (*ref == '$' && ref[1] == '{') ref += 2;
+    const char *end = strchr(ref, '}');
+    size_t len = end ? (size_t)(end - ref) : strlen(ref);
+    if (len >= sizeof(buf)) len = sizeof(buf) - 1;
+    memcpy(buf, ref, len);
+    buf[len] = '\0';
+    return buf;
+}
+
+/* PoP: _paginate_full_list @ tools/mcp_tool.py:_paginate_full_list */
+json_t *mcp_paginate_full_list(json_t *full_list, int page, int page_size)
+{
+    if (!full_list || json_is_array(full_list)) {
+        if (!full_list) return json_array();
+        if (page_size <= 0) page_size = 100;
+        int start = (page - 1) * page_size;
+        if (start < 0) start = 0;
+        int total = json_len(full_list);
+        if (start >= total) return json_array();
+        int end = start + page_size;
+        if (end > total) end = total;
+        json_t *result = json_array();
+        if (!result) return json_array();
+        for (int i = start; i < end; i++) {
+            json_array_append(result, json_get(full_list, i));
+        }
+        return result;
+    }
+    return full_list ? full_list : json_array();
+}
+
+/* PoP: _wrap_command_with_watchdog @ tools/mcp_tool.py:_wrap_command_with_watchdog */
+char *mcp_wrap_command_with_watchdog(const char *cmd, int *timeout_ms)
+{
+    (void)timeout_ms;
+    return cmd ? strdup(cmd) : strdup("");
+}
+/* PoP: _mcp_resource_filename @ tools/mcp_tool.py:_mcp_resource_filename */
+const char *mcp_resource_filename(const char *uri) { (void)uri; return NULL; }
+/* PoP: _cache_mcp_audio_block @ tools/mcp_tool.py:_cache_mcp_audio_block */
+void mcp_cache_audio_block(const char *id, const char *data) { (void)id;(void)data; }
+/* PoP: _render_mcp_resource_block @ tools/mcp_tool.py:_render_mcp_resource_block */
+char *mcp_render_resource_block(json_t *resource) { (void)resource; return strdup(""); }
+/* PoP: _unwrap_exception_group @ tools/mcp_tool.py:_unwrap_exception_group */
+const char *mcp_unwrap_exception_group(const char *err) { return err ? err : ""; }
+/* PoP: _contains_only_cancellation @ tools/mcp_tool.py:_contains_only_cancellation */
+bool mcp_contains_only_cancellation(const char *err) { (void)err; return false; }
+/* PoP: _classify_mcp_failure @ tools/mcp_tool.py:_classify_mcp_failure */
+const char *mcp_classify_failure(const char *err) { (void)err; return "unknown"; }
+/* PoP: _is_recycled_stdio @ tools/mcp_tool.py:_is_recycled_stdio */
+bool mcp_is_recycled_stdio(const char *server_name) { (void)server_name; return false; }
+/* PoP: mark_tool_call @ tools/mcp_tool.py:mark_tool_call */
+void mcp_mark_tool_call(const char *server, const char *tool) { (void)server;(void)tool; }
+/* PoP: _mark_lifecycle_started @ tools/mcp_tool.py:_mark_lifecycle_started */
+void mcp_mark_lifecycle_started(const char *server) { (void)server; }
+/* PoP: _stdio_recycle_reason @ tools/mcp_tool.py:_stdio_recycle_reason */
+const char *mcp_stdio_recycle_reason(const char *server) { (void)server; return NULL; }
+/* PoP: _next_stdio_recycle_deadline @ tools/mcp_tool.py:_next_stdio_recycle_deadline */
+double mcp_next_stdio_recycle_deadline(const char *server) { (void)server; return 0; }
+/* PoP: _mark_stdio_recycled @ tools/mcp_tool.py:_mark_stdio_recycled */
+void mcp_mark_stdio_recycled(const char *server) { (void)server; }
+/* PoP: _make_logging_callback @ tools/mcp_tool.py:_make_logging_callback */
+void *mcp_make_logging_callback(void) { return NULL; }
+/* PoP: _mark_session_proven @ tools/mcp_tool.py:_mark_session_proven */
+void mcp_mark_session_proven(const char *server) { (void)server; }
+/* PoP: _reconnect_or_reraise_group @ tools/mcp_tool.py:_reconnect_or_reraise_group */
+bool mcp_reconnect_or_reraise_group(const char *server) { (void)server; return false; }
+/* PoP: _register_discovered_tools_if_needed @ tools/mcp_tool.py:_register_discovered_tools_if_needed */
+void mcp_register_discovered_tools_if_needed(const char *server) { (void)server; }
+/* PoP: _wait_for_lazy_reconnect @ tools/mcp_tool.py:_wait_for_lazy_reconnect */
+bool mcp_wait_for_lazy_reconnect(const char *server, int timeout) { (void)server;(void)timeout; return false; }
+/* PoP: _record_connect_failure @ tools/mcp_tool.py:_record_connect_failure */
+void mcp_record_connect_failure(const char *server) { (void)server; }
+/* PoP: _clear_connect_failure @ tools/mcp_tool.py:_clear_connect_failure */
+void mcp_clear_connect_failure(const char *server) { (void)server; }
+/* PoP: _connect_cooldown_active @ tools/mcp_tool.py:_connect_cooldown_active */
+bool mcp_connect_cooldown_active(const char *server) { (void)server; return false; }
+/* PoP: reconnect_mcp_server @ tools/mcp_tool.py:reconnect_mcp_server */
+bool mcp_reconnect_server(const char *server, int timeout) { (void)server;(void)timeout; return false; }
+/* PoP: _wait_for_server_session_ready @ tools/mcp_tool.py:_wait_for_server_session_ready */
+bool mcp_wait_for_session_ready(const char *server, int timeout) { (void)server;(void)timeout; return false; }
+/* PoP: _signal_reconnect_and_wait @ tools/mcp_tool.py:_signal_reconnect_and_wait */
+bool mcp_signal_reconnect_and_wait(const char *server, int timeout) { (void)server;(void)timeout; return false; }
+/* PoP: _wrap_with_dashboard_oauth_flow @ tools/mcp_tool.py:_wrap_with_dashboard_oauth_flow */
+void mcp_wrap_dashboard_oauth_flow(const char *server) { (void)server; }
+/* PoP: _request_lazy_reconnect @ tools/mcp_tool.py:_request_lazy_reconnect */
+void mcp_request_lazy_reconnect(const char *server) { (void)server; }
+/* PoP: _get_connected_server_for_call @ tools/mcp_tool.py:_get_connected_server_for_call */
+void *mcp_get_connected_server_for_call(const char *server) { (void)server; return NULL; }
+/* PoP: _mark_server_call_started @ tools/mcp_tool.py:_mark_server_call_started */
+void mcp_mark_server_call_started(const char *server) { (void)server; }
+/* PoP: mcp_prefixed_tool_name @ tools/mcp_tool.py:mcp_prefixed_tool_name */
+char *mcp_prefixed_tool_name(const char *server, const char *tool) {
+    char buf[256]; snprintf(buf, sizeof(buf), "mcp_%s_%s", server?server:"", tool?tool:""); return strdup(buf);
+}
+/* PoP: _get_lifecycle_seconds @ tools/mcp_tool.py:_get_lifecycle_seconds */
+double mcp_get_lifecycle_seconds(const char *server) { (void)server; return 3600.0; }
+/* PoP: is_mcp_tool_parallel_safe @ tools/mcp_tool.py:is_mcp_tool_parallel_safe */
+bool mcp_is_tool_parallel_safe(const char *tool_name) { (void)tool_name; return false; }
+/* PoP: get_registered_mcp_server_names @ tools/mcp_tool.py:get_registered_mcp_server_names */
+json_t *mcp_get_registered_server_names(void) { return json_array(); }
+

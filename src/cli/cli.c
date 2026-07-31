@@ -15,7 +15,6 @@
 /* PoP: auth_logout_command @ hermes_cli/auth_commands.py:auth_logout_command */
 /* PoP: auth_spotify_command @ hermes_cli/auth_commands.py:auth_spotify_command */
 
-#include "hermes.h"
 #include "hermes_core_types.h"
 #include "hermes_agent.h"
 #include "hermes_display.h"
@@ -25,6 +24,10 @@
 #include "hermes_logger.h"
 #include "hermes_markdown.h"
 #include "hermes_gateway.h"
+#include "hermes_cli.h"
+#include "approval.h"
+#include "hermes_cdp.h"
+#include "hermes_audit.h"
 #include "hermes_onboarding.h"
 #include "provider.h"
 #include "ansi.h"
@@ -37,6 +40,8 @@
 #include <signal.h>
 #include <pthread.h>
 #include <fcntl.h>
+#include "hermes_tirith.h"
+#include "registry.h"
 
 /* ================================================================
  *  State

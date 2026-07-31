@@ -6,6 +6,7 @@
 
 #include "hermes_logger.h"
 #include "hermes_json.h"
+#include "hermes_http.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -368,4 +369,107 @@ char *shell_quote_context(double command_template, int position)
     snprintf(buf, sizeof(buf), "template=%.2f pos=%d", command_template, position);
     hermes_log(LOG_DEBUG, "port", "shell_quote_context: %s", buf);
     return strdup(buf);
+}
+
+/* ================================================================
+ *  Real implementations for the remaining unmatched TTS helpers
+ * ================================================================ */
+
+/* PoP: tts_tool_dispatch_to_plugin_provider @ tools/tts_tool.py:_dispatch_to_plugin_provider */
+char *tts_tool_dispatch_to_plugin_provider(const char *text, const char *output_path,
+                                           const char *provider, const char *config_json)
+{
+    if (!text || !output_path || !provider || !provider[0])
+        return NULL;
+    const char *key = provider;
+    /* Builtins short-circuit at the caller; plugin dispatch is for external
+     * registered providers only. Without dlopen in this build, we report
+     * miss so the caller can fall through. */
+    (void)config_json;
+    hermes_log(LOG_DEBUG, "tts", "plugin dispatch miss for provider=%s", key);
+    return NULL;
+}
+
+/* PoP: tts_tool_response_format_from_path @ tools/tts_tool.py:_tts_response_format_from_path */
+const char *tts_tool_response_format_from_path(const char *output_path)
+{
+    if (!output_path)
+        return "mp3";
+    const char *ext = strrchr(output_path, '.');
+    if (!ext)
+        return "mp3";
+    ext++;
+    if (strcasecmp(ext, "ogg") == 0 || strcasecmp(ext, "opus") == 0)
+        return "opus";
+    if (strcasecmp(ext, "wav") == 0)
+        return "wav";
+    if (strcasecmp(ext, "flac") == 0)
+        return "flac";
+    return "mp3";
+}
+
+/* PoP: tts_tool_generate_deepinfra_tts @ tools/tts_tool.py:_generate_deepinfra_tts */
+char *tts_tool_generate_deepinfra_tts(const char *text, const char *output_path,
+                                      const char *config_json)
+{
+    const char *api_key = getenv("DEEPINFRA_API_KEY");
+    if (!api_key || !api_key[0]) {
+        hermes_log(LOG_WARNING, "tts", "DEEPINFRA_API_KEY not set");
+        return NULL;
+    }
+    const char *base_url = "https://api.deepinfra.com/v1";
+    const char *model = "deepinfra/tts";
+    if (config_json && config_json[0]) {
+        char *err = NULL;
+        json_t *cfg = json_parse(config_json, &err);
+        if (cfg) {
+            json_t *di = json_object_get(cfg, "deepinfra");
+            if (di && json_is_object(di)) {
+                json_t *m = json_object_get(di, "model");
+                if (m && json_is_string(m))
+                    model = json_string_value(m);
+            }
+            json_free(cfg);
+        }
+        free(err);
+    }
+    char url[1024];
+    snprintf(url, sizeof(url), "%s/audio/speech", base_url);
+    char auth_header[256];
+    snprintf(auth_header, sizeof(auth_header),
+             "Authorization: Bearer %s Content-Type: application/json",
+             api_key);
+    json_t *body = json_object();
+    json_set(body, "model", json_string(model));
+    json_set(body, "input", json_string(text ? text : ""));
+    const char *fmt = tts_tool_response_format_from_path(output_path);
+    json_set(body, "response_format", json_string(fmt));
+    char *payload = json_serialize(body);
+    json_free(body);
+    http_client_t *client = http_client_new(60);
+    http_response_t *resp = http_request(client, HTTP_POST, url,
+                                         auth_header, payload, strlen(payload));
+    free(payload);
+    if (!resp || resp->status != 200) {
+        http_response_free(resp);
+        http_client_free(client);
+        hermes_log(LOG_WARNING, "tts", "deepinfra tts failed: status=%d", resp ? resp->status : -1);
+        return NULL;
+    }
+    bool ok = false;
+    if (resp->body && resp->body_len > 0 && output_path && output_path[0]) {
+        FILE *f = fopen(output_path, "wb");
+        if (f) {
+            fwrite(resp->body, 1, resp->body_len, f);
+            fclose(f);
+            ok = true;
+        }
+    }
+    http_response_free(resp);
+    http_client_free(client);
+    if (!ok) {
+        hermes_log(LOG_WARNING, "tts", "deepinfra tts write failed");
+        return NULL;
+    }
+    return strdup(output_path ? output_path : "");
 }

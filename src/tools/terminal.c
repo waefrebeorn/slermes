@@ -48,18 +48,23 @@
 
 #define DEFAULT_TIMEOUT 180
 
-/* Schema for the terminal tool */
+/* Schema for the terminal tool — faithful port of Python TERMINAL_SCHEMA.
+ * Parameter descriptions are the full operational guidance from the Python source. */
 static const char *SCHEMA = "{"
     "\"type\":\"object\","
     "\"properties\":{"
-      "\"command\":{\"type\":\"string\",\"description\":\"Shell command to execute\"},"
-      "\"timeout\":{\"type\":\"number\",\"description\":\"Timeout in seconds\",\"default\":180},"
-      "\"pty\":{\"type\":\"boolean\",\"description\":\"Use pseudo-terminal for interactive commands\",\"default\":false},"
+      "\"command\":{\"type\":\"string\",\"description\":\"The command to execute on the VM\"},"
+      "\"background\":{\"type\":\"boolean\",\"description\":\"Run the command in the background. Almost always pair with notify_on_complete=true — without it, the process runs silently and you'll have no way to learn it finished short of calling process(action='poll') yourself (easy to forget, leading to silent blindness on long jobs). Two legitimate patterns: (1) Long-lived processes that never exit (servers, watchers, daemons) — these stay silent because there's no exit to notify on. (2) Long-running bounded tasks (tests, builds, deploys, CI pollers, batch jobs) — these MUST set notify_on_complete=true. For short commands, prefer foreground with a generous timeout instead.\",\"default\":false},"
+      "\"timeout\":{\"type\":\"integer\",\"description\":\"Max seconds to wait (default: 180, foreground max: 600). Returns INSTANTLY when command finishes — set high for long tasks, you won't wait unnecessarily. Foreground timeout above 600s is rejected; use background=true for longer commands.\",\"minimum\":1,\"default\":180},"
+      "\"workdir\":{\"type\":\"string\",\"description\":\"Working directory for this command (absolute path). Defaults to the session working directory.\"},"
+      "\"pty\":{\"type\":\"boolean\",\"description\":\"Run in pseudo-terminal (PTY) mode for interactive CLI tools like Codex, Claude Code, or Python REPL. Only works with local and SSH backends. Default: false.\",\"default\":false},"
       "\"force\":{\"type\":\"boolean\",\"description\":\"Skip dangerous command check (use after user confirms)\",\"default\":false},"
       "\"env\":{\"type\":\"string\",\"description\":\"Environment variables in KEY=VALUE KEY2=VALUE2 format\"},"
-      "\"workdir\":{\"type\":\"string\",\"description\":\"Working directory for the command\"},"
-      "\"backend\":{\"type\":\"string\",\"description\":\"Execution backend: local (default), docker, docker-compose, ssh, modal, singularity\"}"
-      "\"docker_image\":{\"type\":\"string\",\"description\":\"Docker image override for backend=docker\"}"
+      "\"backend\":{\"type\":\"string\",\"description\":\"Execution backend: local (default), docker, docker-compose, ssh, modal, singularity\",\"default\":\"local\"},"
+      "\"docker_image\":{\"type\":\"string\",\"description\":\"Docker image override for backend=docker\"},"
+      "\"notify_on_complete\":{\"type\":\"boolean\",\"description\":\"When true (and background=true), you'll be automatically notified exactly once when the process finishes. This is the right choice for almost every long-running task — tests, builds, deployments, multi-item batch jobs. Use this and keep working on other things; the system notifies you on exit.\",\"default\":false},"
+      "\"notify_on_failure\":{\"type\":\"boolean\",\"description\":\"When true, sends a failure alert if the process exits with non-zero status. Default: true (recommended).\",\"default\":true},"
+      "\"watch_patterns\":{\"type\":\"array\",\"items\":{\"type\":\"string\"},\"description\":\"Strings to watch for in background process output. HARD RATE LIMIT: at most 1 notification per 15 seconds per process. After 3 consecutive 15-second windows with dropped matches, watch_patterns is automatically disabled. USE ONLY for truly rare, one-shot mid-process signals on LONG-LIVED processes that never exit on their own.\"}"
     "},"
     "\"required\":[\"command\"]"
 "}";
@@ -2102,8 +2107,36 @@ void registry_init_terminal(void) {
         }
     }
     registry_register("terminal",
-        "Execute a shell command. Returns stdout, stderr, and exit code. "
-        "Use for running code, compiling, testing, and system operations.",
+        "Execute shell commands on a Linux environment. Filesystem, current working directory, "
+        "and exported environment variables persist between calls.\n"
+        "Do NOT use cat/head/tail to read files — use read_file instead.\n"
+        "Do NOT use grep/rg/find to search — use search_files instead.\n"
+        "Do NOT use ls to list directories — use search_files(target='files') instead.\n"
+        "Do NOT use sed/awk to edit files — use patch instead.\n"
+        "Do NOT use echo/cat heredoc to create files — use write_file instead.\n"
+        "Reserve terminal for: builds, installs, git, processes, scripts, network, package "
+        "managers, and anything that needs a shell.\n"
+        "Because exported environment state persists, activate a virtualenv or export setup "
+        "variables once per session; do not re-source the same environment before every command "
+        "unless a command proves the shell state was reset.\n"
+        "Foreground (default): Commands return INSTANTLY when done, even if the timeout is high. "
+        "Set timeout=300 for long builds/scripts — you'll still get the result in seconds if it's fast. "
+        "Prefer foreground for short commands.\n"
+        "Background: Set background=true to get a session_id. Almost always pair with "
+        "notify_on_complete=true — bg without notify runs SILENTLY and you have no way to learn it "
+        "finished short of calling process(action='poll') yourself. Two legitimate uses:\n"
+        "  (1) Long-lived processes that never exit (servers, watchers, daemons) — silent is correct.\n"
+        "  (2) Long-running bounded tasks (tests, builds, deploys, CI pollers, batch jobs) — MUST set "
+        "notify_on_complete=true. Without it you'll either forget to poll or sit blocked waiting.\n"
+        "For servers/watchers, do NOT use shell-level background wrappers (nohup/disown/setsid/trailing '&') "
+        "in foreground mode. Use background=true so Slermes can track lifecycle and output.\n"
+        "After starting a server, verify readiness with a health check or log signal, then run tests in a "
+        "separate terminal() call. Avoid blind sleep loops.\n"
+        "Use process(action='poll') for progress checks, process(action='wait') to block until done.\n"
+        "Working directory: Use 'workdir' for per-command cwd.\n"
+        "PTY mode: Set pty=true for interactive CLI tools (Codex, Claude Code, Python REPL).\n"
+        "Do NOT use vim/nano/interactive tools without pty=true — they hang without a pseudo-terminal. "
+        "Pipe git output to cat if it might page.",
         SCHEMA, terminal_handler);
 }
 

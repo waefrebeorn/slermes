@@ -7,8 +7,10 @@
  */
 #define _GNU_SOURCE
 #include "gateway_run_helpers.h"
+#include "gateway_run_pure2.h"  /* gw_load_gateway_config() */
 #include "hermes_core_types.h"    /* bool */
 #include "hermes_redact.h"        /* hermes_redact */
+#include "hermes_skill_commands.h" /* skill_cmd_* functions */
 
 #include <stdio.h>
 #include <strings.h>
@@ -1308,12 +1310,55 @@ void gw_skill_slug_from_frontmatter(const char *skill_md_content,
 /* PoP: gw_check_unavailable_skill @ gateway/run.py:_check_unavailable_skill */
 const char *gw_check_unavailable_skill(const char *command_name)
 {
-    /* Returns a string if the command is a known disabled/unavailable skill,
-     * NULL if it's not a known skill reference. */
-    /* This is a stub — the full version needs skill registry access.
-     * For parity, we return NULL (no match). The full implementation
-     * would scan installed vs available skills. */
-    (void)command_name;
+    /* Returns a malloc'd string if the command matches a known disabled or
+     * installable-but-not-installed skill, NULL if no match found. */
+    if (!command_name || !command_name[0]) return NULL;
+
+    /* Normalize: command uses hyphens, skill names may use hyphens or underscores */
+    char normalized[256];
+    snprintf(normalized, sizeof(normalized), "%s", command_name);
+    for (int i = 0; normalized[i]; i++) {
+        if (normalized[i] == '_') normalized[i] = '-';
+        normalized[i] = tolower((unsigned char)normalized[i]);
+    }
+
+    /* Load gateway config to get disabled skills list */
+    hermes_config_t *cfg = gw_load_gateway_config();
+    if (!cfg) return NULL;
+
+    /* Ensure skills are scanned */
+    skill_cmd_scan_filtered(NULL);
+
+    int count = 0;
+    const skill_cmd_entry_t *all_skills = skill_cmd_get_all(&count);
+    if (all_skills && count > 0) {
+        for (int i = 0; i < count; i++) {
+            if (!all_skills[i].slug[0]) continue;
+            /* Check if slug matches normalized command */
+            char slug_norm[256];
+            snprintf(slug_norm, sizeof(slug_norm), "%s", all_skills[i].slug);
+            for (int j = 0; slug_norm[j]; j++) {
+                if (slug_norm[j] == '_') slug_norm[j] = '-';
+                slug_norm[j] = tolower((unsigned char)slug_norm[j]);
+            }
+            if (strcmp(slug_norm, normalized) == 0) {
+                /* Check if this skill is disabled */
+                if (skill_cmd_is_disabled(all_skills[i].slug, cfg->skills.disabled)) {
+                    char *msg = malloc(512);
+                    if (msg) {
+                        snprintf(msg, 512,
+                            "The **%s** skill is installed but disabled.\n"
+                            "Enable it with: `hermes skills config`",
+                            command_name);
+                    }
+                    free(cfg);
+                    return msg;
+                }
+            }
+        }
+    }
+
+    free(cfg);
     return NULL;
 }
 

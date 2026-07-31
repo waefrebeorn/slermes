@@ -866,13 +866,30 @@ char *file_hash_handler(const char *args_json, const char *task_id) {
 /* PoP: registry_init_file @ tools/file_operations.py:FileOperations.__init__ */
 void registry_init_file(void) {
     registry_register("read_file",
-        "Read a text file with line numbers. Returns content, total lines, file size.",
+        "Read a text file with line numbers and pagination. Use this instead of "
+        "cat/head/tail in terminal. Output format: 'LINE_NUM|CONTENT'. Suggests "
+        "similar filenames if not found. Use offset and limit for large files. "
+        "Reads exceeding ~100K characters are truncated on a line boundary and "
+        "return a next_offset; continue with offset to read the rest. Jupyter "
+        "notebooks (.ipynb), Word documents (.docx), and Excel workbooks (.xlsx) "
+        "are auto-extracted to readable text. NOTE: Cannot read images or other "
+        "binary files — use vision_analyze for images.",
         SCHEMA_READ, file_read_handler);
     registry_register("write_file",
-        "Write content to a file (creates parent directories). Overwrites existing.",
+        "Write content to a file, completely replacing existing content. Use this "
+        "instead of echo/cat heredoc in terminal. Creates parent directories "
+        "automatically. OVERWRITES the entire file — use 'patch' for targeted "
+        "edits. Auto-runs syntax checks on .py/.json/.yaml/.toml and other linted "
+        "languages; only NEW errors introduced by this write are surfaced "
+        "(pre-existing errors are filtered out).",
         SCHEMA_WRITE, file_write_handler);
     registry_register("search_files",
-        "Search file contents using grep. Returns matching lines with line numbers.",
+        "Search file contents or find files by name. Use this instead of "
+        "grep/rg/find/ls in terminal. Ripgrep-backed, faster than shell equivalents.\n"
+        "Content search (target='content'): Regex search inside files. Output "
+        "modes: full matches with line numbers, file paths only, or match counts.\n"
+        "File search (target='files'): Find files by glob pattern (e.g., '*.py', "
+        "'*config*'). Also use this instead of ls — results sorted by modification time.",
         SCHEMA_SEARCH, file_search_handler);
     registry_register("file_diff",
         "Generate unified diff between two files. Shows added/removed/changed lines. "

@@ -16,10 +16,10 @@
  *                 (turn orchestration in codex_session_run_turn)
  */
 
-#include "hermes.h"
-#include "codex_app_server_session.h"
 #include "hermes_core_types.h"
 #include "hermes_json.h"
+#include "codex_app_server_session.h"
+#include "hermes_redact.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -1054,6 +1054,7 @@ codex_turn_result_t *codex_session_compact_thread(
  * type are defined in conversation_compression.h. We bind our transport entry
  * points onto that vtable here. */
 #include "conversation_compression.h"
+#include "hermes_redact.h"
 
 static cc_codex_compact_result_t codex_route_compact_thunk(void *session) {
     cc_codex_compact_result_t out = { .error = NULL, .interrupted = false,

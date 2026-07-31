@@ -25,7 +25,9 @@ phase5: slermes
 # Main binary link
 WHISPER_LIBS := $(wildcard lib/whisper_cpp/lib/libwhisper.a lib/whisper_cpp/lib/libggml.a lib/whisper_cpp/lib/libggml-base.a lib/whisper_cpp/lib/libggml-cpu.a)
 # When whisper is available: replace stubs with real wrapper; otherwise keep stubs
-WHISPER_EXTRA_OBJ := $(if $(WHISPER_LIBS),lib/whisper_cpp/whisper_wrapper.o)
+# C11 Whisper: pure C11 replacement for whisper.cpp C++ wrapper
+C11_WHISPER_OBJ = lib/c11_whisper/c11_whisper_model.o lib/c11_whisper/c11_whisper_math.o lib/c11_whisper/c11_whisper_encoder.o lib/c11_whisper/c11_whisper_compat.o
+WHISPER_EXTRA_OBJ := $(if $(WHISPER_LIBS),$(C11_WHISPER_OBJ))
 LIB_OBJ_FILTERED := $(if $(WHISPER_LIBS),$(filter-out lib/whisper_cpp/whisper_stubs.o,$(LIB_OBJ)),$(LIB_OBJ))
 # Detect system ncurses libs (full paths — app_desktop.o always needs them)
 NCURSES_LIBS := $(wildcard /usr/lib/x86_64-linux-gnu/libncursesw.so /usr/lib/x86_64-linux-gnu/libncursesw.so.6)

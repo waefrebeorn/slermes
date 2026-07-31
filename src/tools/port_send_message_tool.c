@@ -600,7 +600,6 @@ json_t *send_message_send_telegram(const char *token, const char *chat_id,
                                     const char *text, const char **media_files,
                                     const char *thread_id, bool disable_preview, bool force_doc)
 {
-    (void)media_files;  /* media attachment not yet implemented in C */
     (void)disable_preview;
     (void)force_doc;
 
@@ -613,6 +612,110 @@ json_t *send_message_send_telegram(const char *token, const char *chat_id,
     if (!chat_id) chat_id = "";
 
     hermes_log(LOG_INFO, "port", "send_telegram: chat=%s thread=%s", chat_id, thread_id ? thread_id : "none");
+
+    /* Check if we have media files to send — use sendPhoto or sendDocument */
+    if (media_files && media_files[0] && media_files[0][0]) {
+        const char *media_path = media_files[0];
+        /* Determine if it's an image or a document */
+        const char *ext = strrchr(media_path, '.');
+        bool is_image = false;
+        if (ext) {
+            ext++; /* skip the dot */
+            is_image = (strcasecmp(ext, "jpg") == 0 || strcasecmp(ext, "jpeg") == 0 ||
+                        strcasecmp(ext, "png") == 0 || strcasecmp(ext, "webp") == 0 ||
+                        strcasecmp(ext, "gif") == 0);
+        }
+
+        const char *api_method = is_image ? "sendPhoto" : "sendDocument";
+        size_t url_len = strlen("https://api.telegram.org/bot") + strlen(token) +
+                         strlen("/") + strlen(api_method) + 1;
+        char *url = malloc(url_len);
+        if (!url) { json_t *e = json_object(); json_set(e, "error", json_string("OOM")); return e; }
+        snprintf(url, url_len, "https://api.telegram.org/bot%s/%s", token, api_method);
+
+        /* Use the real libhttp multipart builder (RFC 2046) — no hand-rolled
+         * body, no shelled-out curl, no dropped-auth. Telegram Bot API accepts
+         * multipart/form-data for sendPhoto/sendDocument. */
+        http_t *http = http_new(30);
+        if (!http) { free(url); json_t *e = json_object(); json_set(e, "error", json_string("HTTP failed")); return e; }
+
+        http_multipart_form_t *form = http_multipart_form_new();
+        if (!form) { free(url); http_free(http); json_t *e = json_object(); json_set(e, "error", json_string("OOM")); return e; }
+
+        /* chat_id field */
+        http_multipart_add_field(form, "chat_id", chat_id);
+
+        /* Read media file */
+        FILE *media_fp = fopen(media_path, "rb");
+        if (!media_fp) {
+            json_t *e = json_object();
+            char eb[512];
+            snprintf(eb, sizeof(eb), "Cannot open media file: %s", media_path);
+            json_set(e, "error", json_string(eb));
+            http_multipart_form_free(form);
+            http_free(http);
+            free(url);
+            return e;
+        }
+        fseek(media_fp, 0, SEEK_END);
+        long media_size = ftell(media_fp);
+        fseek(media_fp, 0, SEEK_SET);
+        char *media_data = malloc((size_t)media_size);
+        if (!media_data) { fclose(media_fp); http_multipart_form_free(form); http_free(http); free(url); return NULL; }
+        fread(media_data, 1, (size_t)media_size, media_fp);
+        fclose(media_fp);
+
+        const char *content_type = is_image ? "image/jpeg" : "application/octet-stream";
+        const char *field_name = is_image ? "photo" : "document";
+        http_multipart_add_file(form, field_name, "media", media_data, (size_t)media_size, content_type);
+        free(media_data);
+
+        if (text && text[0]) {
+            http_multipart_add_field(form, "caption", text);
+        }
+
+        char auth_hdr[512];
+        snprintf(auth_hdr, sizeof(auth_hdr), "Authorization: Bearer %s", token);
+        hermes_log(LOG_DEBUG, "port", "send_telegram: POST %s (multipart)", url);
+        http_resp_t *http_res = http_post_multipart(http, url, auth_hdr, form);
+        http_multipart_form_free(form);
+        free(url);
+
+        json_t *result = json_object();
+        if (!http_res) {
+            json_set(result, "success", json_new_bool(false));
+            json_set(result, "platform", json_string("telegram"));
+            json_set(result, "chat_id", json_string(chat_id));
+            json_set(result, "error", json_string("HTTP request failed"));
+            return result;
+        }
+
+        if (http_res->body && strstr(http_res->body, "\"ok\":true")) {
+            json_set(result, "success", json_new_bool(true));
+            json_set(result, "platform", json_string("telegram"));
+            json_set(result, "chat_id", json_string(chat_id));
+            json_t *resp = json_parse(http_res->body, NULL);
+            if (resp) {
+                json_t *r = json_obj_get(resp, "result");
+                if (r && r->type == JSON_OBJECT) {
+                    double mid = json_get_num(r, "message_id", -1);
+                    if (mid >= 0) { char mbuf[32]; snprintf(mbuf, sizeof(mbuf), "%.0f", mid); json_set(result, "message_id", json_string(mbuf)); }
+                }
+                json_free(resp);
+            }
+        } else {
+            const char *err_body = http_res->body ? http_res->body : "HTTP request failed";
+            json_set(result, "success", json_new_bool(false));
+            json_set(result, "platform", json_string("telegram"));
+            json_set(result, "chat_id", json_string(chat_id));
+            json_set(result, "error", json_string(err_body));
+        }
+        http_resp_free(http_res);
+        http_free(http);
+        return result;
+    }
+
+    /* No media files — text-only message via sendMessage API */
 
     /* Build Telegram API URL */
     size_t url_len = strlen("https://api.telegram.org/bot") + strlen(token) +

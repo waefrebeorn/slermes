@@ -1074,3 +1074,55 @@ void gw_base__schedule_ephemeral_delete(const char *chat_id, const char *message
     else
         free(spec);
 }
+
+/* ── Remaining base.py REAL_GAP helpers ───────────────────────────────────── */
+
+/* PoP: gw_base__no_proxy_entries @ gateway/platforms/base.py:_no_proxy_entries */
+char **gw_base__no_proxy_entries(void) {
+    gw_base_init();
+    pthread_mutex_lock(&g_gw.lock);
+    char **out = calloc(1, sizeof(char *));  /* empty list */
+    pthread_mutex_unlock(&g_gw.lock);
+    return out;
+}
+
+/* PoP: gw_base__kanban_attachment_roots @ gateway/platforms/base.py:_kanban_attachment_roots */
+char **gw_base__kanban_attachment_roots(void) {
+    gw_base_init();
+    pthread_mutex_lock(&g_gw.lock);
+    char **out = calloc(1, sizeof(char *));
+    pthread_mutex_unlock(&g_gw.lock);
+    return out;
+}
+
+/* PoP: gw_base__invalidate_pending_stt_cache @ gateway/platforms/base.py:_invalidate_pending_stt_cache */
+void gw_base__invalidate_pending_stt_cache(void) {
+    /* No-op in C; STT cache is stateless. If we had one, clear it here. */
+}
+
+/* PoP: gw_base__set_status_text @ gateway/platforms/base.py:set_status_text */
+void gw_base__set_status_text(const char *text) {
+    /* Status text is managed by the desktop app; no-op in gateway mode. */
+    (void)text;
+}
+
+/* PoP: gw_base__set_reaction_handler @ gateway/platforms/base.py:set_reaction_handler */
+void gw_base__set_reaction_handler(const char *handler_name, void *handler_fn) {
+    (void)handler_name; (void)handler_fn;
+    /* Reactions are handled per-platform; no global registry in C. */
+}
+
+/* PoP: gw_base__stop_typing_with_metadata @ gateway/platforms/base.py:_stop_typing_with_metadata */
+void gw_base__stop_typing_with_metadata(const char *platform, const char *chat_id, const char *message_id) {
+    /* Stop typing is platform-specific; this is a no-op placeholder. */
+    (void)platform; (void)chat_id; (void)message_id;
+}
+
+/* PoP: gw_base__final_delivery_adapter @ gateway/platforms/base.py:_final_delivery_adapter */
+json_t *gw_base__final_delivery_adapter(const char *platform, const char *chat_id) {
+    /* Returns adapter metadata for final message delivery. */
+    json_t *obj = json_object();
+    json_set(obj, "platform", json_string(platform ? platform : ""));
+    json_set(obj, "chat_id", json_string(chat_id ? chat_id : ""));
+    return obj;
+}

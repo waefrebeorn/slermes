@@ -4,7 +4,14 @@
  * hermes_config_* protos stay in include/hermes_core_types.h.
  */
 
-#include "hermes.h"
+#include "hermes_core_types.h"
+#include "config_schema.h"
+#include "hermes_yaml.h"
+#include "hermes_json.h"
+#include "hermes_auth.h"
+#include "provider_metadata.h"
+#include "curses_widget.h"
+#include "hermes_provider_xai.h"
 #include "hermes_core_types.h"
 #include "config_schema.h"
 #include "hermes_yaml.h"

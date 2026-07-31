@@ -11,6 +11,7 @@
 #define HERMES_APPROVAL_H
 
 #include <stdbool.h>
+#include "hermes_core_types.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -31,6 +32,26 @@ void approval_set_gateway_send(bool (*fn)(const char *, const char *, const char
 
 /* Core allow/deny decision for a tool invocation (tools/approval.py:check). */
 int approval_check(const char *tool_name, const char *args_json);
+
+/* Gateway approval wiring + clarify async prompts + cache + timeout */
+void approval_reset_session(void);
+void approval_set_allowlist_path(const char *path);
+void approval_save_allowlist(void);
+void approval_set_gateway_wait(char *(*fn)(int timeout_sec));
+void gw_approval_set_context(const char *platform, const char *chat_id);
+void clarify_set_gateway_send(bool (*fn)(const char *, const char *, const char *,
+                                         const char **, int, const char *),
+                               const char *platform, const char *chat_id);
+void clarify_set_gateway_wait(char *(*fn)(int timeout_sec));
+void clarify_set_gateway_begin(void (*fn)(const char *, const char *, const char *,
+                                          const char *, const char (*)[256], int));
+void clarify_set_gateway_context(const char *platform, const char *chat_id,
+                                  bool (*send_fn)(const char *, const char *, const char *));
+int approval_cache_count(void);
+const char *approval_cache_entry(int index);
+void approval_cache_clear_last(int n);
+void approval_set_timeout(int seconds);
+int approval_get_timeout(void);
 
 #ifdef __cplusplus
 }

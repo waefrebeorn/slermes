@@ -410,6 +410,7 @@ static bool looks_like_gateway_process(pid_t pid) {
 /* ── JSON record helpers ─────────────────────────────────────────────── */
 
 /* Read + parse a JSON object file. Returns json_t* (caller json_free) or NULL. */
+/* PoP: _read_json_file @ gateway/status.py:_read_json_file */
 static json_t *read_json_file(const char *path) {
     FILE *f = fopen(path, "rb");
     if (!f) return NULL;

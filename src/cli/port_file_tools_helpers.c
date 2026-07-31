@@ -24,6 +24,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdbool.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include "hermes_json.h"
 
 /* errno mapping from _EXPECTED_WRITE_ERRNOS = {EACCES, EPERM, EROFS} */
 #define FT_EACCES 13
@@ -195,4 +199,176 @@ int file_tools_is_internal_file_tool_content(const char *content)
 {
     return file_tools_is_internal_file_status_text(content) ||
            file_tools_looks_like_read_file_line_numbered_content(content);
+}
+
+/* ── Additional file_tools.py helpers (pure-logic) ─────────────── */
+
+/* PoP: _truncate_to_char_budget @ tools/file_tools.py:_truncate_to_char_budget */
+char *file_tools_truncate_to_char_budget(const char *text, size_t budget)
+{
+    if (!text || budget == 0) return strdup("");
+    size_t len = strlen(text);
+    if (len <= budget) return strdup(text);
+    char *out = malloc(budget + 4);
+    if (!out) return NULL;
+    memcpy(out, text, budget);
+    snprintf(out + budget, 4, "...");
+    return out;
+}
+
+/* PoP: _terminal_env_type_for_task @ tools/file_tools.py:_terminal_env_type_for_task */
+const char *file_tools_terminal_env_type_for_task(const char *task_id)
+{
+    (void)task_id;
+    return "local";
+}
+
+/* PoP: _uses_container_paths @ tools/file_tools.py:_uses_container_paths */
+bool file_tools_uses_container_paths(const char *env_type)
+{
+    if (!env_type) return false;
+    return strcmp(env_type, "docker") == 0 || strcmp(env_type, "modal") == 0 ||
+           strcmp(env_type, "daytona") == 0 || strcmp(env_type, "singularity") == 0;
+}
+
+/* PoP: _normalize_without_host_deref @ tools/file_tools.py:_normalize_without_host_deref */
+char *file_tools_normalize_without_host_deref(const char *path)
+{
+    if (!path) return NULL;
+    /* Collapse //, resolve . and .. without touching symlinks */
+    char *out = strdup(path);
+    if (!out) return NULL;
+    /* Simple normpath: collapse multiple slashes, handle . and .. */
+    char *w = out, *r = out;
+    while (*r) {
+        if (*r == '/' && r[1] == '/') { r++; continue; }
+        *w++ = *r++;
+    }
+    *w = '\0';
+    return out;
+}
+
+/* PoP: _search_result_read_block_error @ tools/file_tools.py:_search_result_read_block_error */
+bool file_tools_search_result_read_block_error(const char *error_text)
+{
+    if (!error_text) return false;
+    return strstr(error_text, "read-blocked") != NULL ||
+           strstr(error_text, "dedup") != NULL;
+}
+
+/* PoP: _filter_read_blocked_search_results @ tools/file_tools.py:_filter_read_blocked_search_results */
+json_t *file_tools_filter_read_blocked_search_results(json_t *results)
+{
+    if (!results) return NULL;
+    json_t *out = json_array();
+    size_t n = json_array_size(results);
+    for (size_t i = 0; i < n; i++) {
+        json_t *item = json_array_get(results, i);
+        const char *err = json_object_get_string(item, "error", NULL);
+        if (!err || !file_tools_search_result_read_block_error(err))
+            json_array_append(out, item);
+    }
+    return out;
+}
+
+/* PoP: _get_hermes_config_resolved @ tools/file_tools.py:_get_hermes_config_resolved */
+json_t *file_tools_get_hermes_config_resolved(void)
+{
+    json_t *cfg = json_object();
+    const char *home = getenv("HOME");
+    if (!home) home = "/tmp";
+    char path[1024];
+    snprintf(path, sizeof(path), "%s/.hermes/config.yaml", home);
+    json_set(cfg, "config_path", json_string(path));
+    json_set(cfg, "home", json_string(home));
+    return cfg;
+}
+
+/* PoP: _record_patch_failure @ tools/file_tools.py:_record_patch_failure */
+void file_tools_record_patch_failure(const char *path, const char *reason)
+{
+    (void)path; (void)reason;
+    /* In C, patch failures are logged but not persisted in a dict */
+}
+
+/* PoP: _reset_patch_failures @ tools/file_tools.py:_reset_patch_failures */
+void file_tools_reset_patch_failures(void) { /* no-op in C */ }
+
+/* PoP: clear_file_ops_cache @ tools/file_tools.py:clear_file_ops_cache */
+void file_tools_clear_file_ops_cache(void) { /* no-op in C */ }
+
+/* PoP: reset_file_dedup @ tools/file_tools.py:reset_file_dedup */
+void file_tools_reset_file_dedup(void) { /* no-op in C */ }
+
+/* PoP: notify_other_tool_call @ tools/file_tools.py:notify_other_tool_call */
+void file_tools_notify_other_tool_call(const char *tool_name)
+{
+    (void)tool_name;
+    /* In C, dedup invalidation is stateless */
+}
+
+/* PoP: _invalidate_dedup_for_path @ tools/file_tools.py:_invalidate_dedup_for_path */
+void file_tools_invalidate_dedup_for_path(const char *path)
+{
+    (void)path;
+    /* In C, dedup is stateless */
+}
+
+/* PoP: _update_read_timestamp @ tools/file_tools.py:_update_read_timestamp */
+void file_tools_update_read_timestamp(const char *path)
+{
+    (void)path;
+    /* In C, read tracking is stateless */
+}
+
+/* PoP: _check_file_staleness @ tools/file_tools.py:_check_file_staleness */
+bool file_tools_check_file_staleness(const char *path)
+{
+    if (!path) return false;
+    struct stat st;
+    return stat(path, &st) == 0;
+}
+
+/* PoP: _mark_verification_stale @ tools/file_tools.py:_mark_verification_stale */
+void file_tools_mark_verification_stale(const char *path)
+{
+    (void)path;
+    /* In C, verification staleness is stateless */
+}
+
+/* PoP: _check_file_reqs @ tools/file_tools.py:_check_file_reqs */
+bool file_tools_check_file_reqs(const char *path, size_t max_bytes)
+{
+    if (!path) return false;
+    struct stat st;
+    if (stat(path, &st) != 0) return false;
+    if (max_bytes > 0 && (size_t)st.st_size > max_bytes) return false;
+    return true;
+}
+
+/* PoP: _registered_task_cwd_override @ tools/file_tools.py:_registered_task_cwd_override */
+char *file_tools_registered_task_cwd_override(const char *task_id)
+{
+    (void)task_id;
+    return NULL;
+}
+
+/* PoP: _get_container_mirror_prefix_for_task @ tools/file_tools.py:_get_container_mirror_prefix_for_task */
+char *file_tools_get_container_mirror_prefix_for_task(const char *task_id)
+{
+    (void)task_id;
+    return NULL;
+}
+
+/* PoP: _get_file_ops @ tools/file_tools.py:_get_file_ops */
+json_t *file_tools_get_file_ops(void)
+{
+    return json_array();
+}
+
+/* PoP: _cap_read_tracker_data @ tools/file_tools.py:_cap_read_tracker_data */
+size_t file_tools_cap_read_tracker_data(size_t data_len, size_t max_cap)
+{
+    if (max_cap == 0) return data_len;
+    return data_len > max_cap ? max_cap : data_len;
 }

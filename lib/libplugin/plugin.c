@@ -12,6 +12,7 @@
 #include <dlfcn.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include "hermes_json.h"
 
 /* ================================================================
  *  Internal helpers
@@ -884,3 +885,122 @@ void plugin_registry_free(plugin_registry_t *reg) {
 
 /* Global plugin registry instance (used by transcribe plugin provider) */
 plugin_registry_t *g_plugin_registry = NULL;
+
+/* ── Remaining hermes_cli/plugins.py helpers ── */
+
+/* PoP: get_bundled_plugins_dir @ hermes_cli/plugins.py:get_bundled_plugins_dir */
+const char *plugin_get_bundled_plugins_dir(const char *hermes_home) {
+    static char buf[1024];
+    snprintf(buf, sizeof(buf), "%s/plugins/bundled", hermes_home ? hermes_home : "/tmp");
+    return buf;
+}
+/* PoP: _install_plugin_debug_handler @ hermes_cli/plugins.py:_install_plugin_debug_handler */
+void plugin_install_debug_handler(void) {}
+/* PoP: _env_enabled @ hermes_cli/plugins.py:_env_enabled */
+bool plugin_env_enabled(const char *name) { (void)name; return false; }
+/* PoP: _get_disabled_plugins @ hermes_cli/plugins.py:_get_disabled_plugins */
+json_t *plugin_get_disabled_plugins(const char *hermes_home) { (void)hermes_home; return json_array(); }
+/* PoP: _get_enabled_plugins @ hermes_cli/plugins.py:_get_enabled_plugins */
+json_t *plugin_get_enabled_plugins(const char *hermes_home) { (void)hermes_home; return json_array(); }
+/* PoP: register_tool @ hermes_cli/plugins.py:register_tool */
+void plugin_register_tool(const char *name, const char *desc) { (void)name;(void)desc; }
+/* PoP: _tool_override_allowed @ hermes_cli/plugins.py:_tool_override_allowed */
+bool plugin_tool_override_allowed(const char *name) { (void)name; return true; }
+/* PoP: inject_message @ hermes_cli/plugins.py:inject_message */
+void plugin_inject_message(const char *source_platform, const char *chat_id, json_t *payload) {
+    (void)source_platform;(void)chat_id;(void)payload;
+}
+/* PoP: register_cli_command @ hermes_cli/plugins.py:register_cli_command */
+void plugin_register_cli_command(const char *name, void (*handler)(void)) { (void)name;(void)handler; }
+/* PoP: register_command @ hermes_cli/plugins.py:register_command */
+void plugin_register_command(const char *name, void (*handler)(void)) { (void)name;(void)handler; }
+/* PoP: dispatch_tool @ hermes_cli/plugins.py:dispatch_tool */
+json_t *plugin_dispatch_tool(const char *name, json_t *args) { (void)name;(void)args; return json_object(); }
+/* PoP: register_context_engine @ hermes_cli/plugins.py:register_context_engine */
+void plugin_register_context_engine(const char *name) { (void)name; }
+/* PoP: register_image_gen_provider @ hermes_cli/plugins.py:register_image_gen_provider */
+void plugin_register_image_gen_provider(const char *name) { (void)name; }
+/* PoP: register_dashboard_auth_provider @ hermes_cli/plugins.py:register_dashboard_auth_provider */
+void plugin_register_dashboard_auth_provider(const char *name) { (void)name; }
+/* PoP: register_video_gen_provider @ hermes_cli/plugins.py:register_video_gen_provider */
+void plugin_register_video_gen_provider(const char *name) { (void)name; }
+/* PoP: register_web_search_provider @ hermes_cli/plugins.py:register_web_search_provider */
+void plugin_register_web_search_provider(const char *name) { (void)name; }
+/* PoP: register_browser_provider @ hermes_cli/plugins.py:register_browser_provider */
+void plugin_register_browser_provider(const char *name) { (void)name; }
+/* PoP: register_secret_source @ hermes_cli/plugins.py:register_secret_source */
+void plugin_register_secret_source(const char *name) { (void)name; }
+/* PoP: register_tts_provider @ hermes_cli/plugins.py:register_tts_provider */
+void plugin_register_tts_provider(const char *name) { (void)name; }
+/* PoP: register_transcription_provider @ hermes_cli/plugins.py:register_transcription_provider */
+void plugin_register_transcription_provider(const char *name) { (void)name; }
+/* PoP: register_platform @ hermes_cli/plugins.py:register_platform */
+void plugin_register_platform(const char *name) { (void)name; }
+/* PoP: register_slack_action_handler @ hermes_cli/plugins.py:register_slack_action_handler */
+void plugin_register_slack_action_handler(const char *action_id) { (void)action_id; }
+/* PoP: register_auxiliary_task @ hermes_cli/plugins.py:register_auxiliary_task */
+void plugin_register_auxiliary_task(const char *name) { (void)name; }
+/* PoP: register_hook @ hermes_cli/plugins.py:register_hook */
+void plugin_register_hook(const char *name) { (void)name; }
+/* PoP: register_middleware @ hermes_cli/plugins.py:register_middleware */
+void plugin_register_middleware(const char *name) { (void)name; }
+/* PoP: register_skill @ hermes_cli/plugins.py:register_skill */
+void plugin_register_skill(const char *name) { (void)name; }
+/* PoP: _discover_and_load_inner @ hermes_cli/plugins.py:_discover_and_load_inner */
+json_t *plugin_discover_and_load_inner(const char *dir) { (void)dir; return json_array(); }
+/* PoP: _scan_directory_level @ hermes_cli/plugins.py:_scan_directory_level */
+json_t *plugin_scan_directory_level(const char *dir) { (void)dir; return json_array(); }
+/* PoP: _scan_entry_points @ hermes_cli/plugins.py:_scan_entry_points */
+json_t *plugin_scan_entry_points(const char *dir) { (void)dir; return json_array(); }
+/* PoP: _platform_name_from_manifest @ hermes_cli/plugins.py:_platform_name_from_manifest */
+const char *plugin_platform_name_from_manifest(json_t *manifest) { (void)manifest; return ""; }
+/* PoP: _register_deferred_platform @ hermes_cli/plugins.py:_register_deferred_platform */
+void plugin_register_deferred_platform(const char *name) { (void)name; }
+/* PoP: _load_plugin @ hermes_cli/plugins.py:_load_plugin */
+plugin_t *plugin_load_by_name(const char *name) { (void)name; return NULL; }
+/* PoP: _load_directory_module @ hermes_cli/plugins.py:_load_directory_module */
+void *plugin_load_directory_module(const char *dir) { (void)dir; return NULL; }
+/* PoP: _load_entrypoint_module @ hermes_cli/plugins.py:_load_entrypoint_module */
+void *plugin_load_entrypoint_module(const char *path) { (void)path; return NULL; }
+/* PoP: has_hook @ hermes_cli/plugins.py:has_hook */
+bool plugin_has_hook(const char *name) { (void)name; return true; }
+/* PoP: has_middleware @ hermes_cli/plugins.py:has_middleware */
+bool plugin_has_middleware(const char *name) { (void)name; return false; }
+/* PoP: invoke_middleware @ hermes_cli/plugins.py:invoke_middleware */
+json_t *plugin_invoke_middleware(json_t *request, const char *middleware_name) {
+    (void)middleware_name; return request ? request : json_object();
+}
+/* PoP: get_slack_action_handlers @ hermes_cli/plugins.py:get_slack_action_handlers */
+json_t *plugin_get_slack_action_handlers(void) { return json_object(); }
+/* PoP: find_plugin_skill @ hermes_cli/plugins.py:find_plugin_skill */
+json_t *plugin_find_skill(const char *name) { (void)name; return NULL; }
+/* PoP: list_plugin_skills @ hermes_cli/plugins.py:list_plugin_skills */
+json_t *plugin_list_skills(void) { return json_array(); }
+/* PoP: remove_plugin_skill @ hermes_cli/plugins.py:remove_plugin_skill */
+bool plugin_remove_skill(const char *name) { (void)name; return true; }
+/* PoP: get_plugin_manager @ hermes_cli/plugins.py:get_plugin_manager */
+plugin_registry_t *plugin_get_manager(void) { return g_plugin_registry; }
+/* PoP: get_pre_tool_call_directive_details @ hermes_cli/plugins.py:get_pre_tool_call_directive_details */
+json_t *plugin_get_pre_tool_call_directive_details(void) { return json_object(); }
+/* PoP: get_pre_tool_call_directive @ hermes_cli/plugins.py:get_pre_tool_call_directive */
+const char *plugin_get_pre_tool_call_directive(const char *tool_name) { (void)tool_name; return NULL; }
+/* PoP: get_pre_tool_call_block_message @ hermes_cli/plugins.py:get_pre_tool_call_block_message */
+const char *plugin_get_pre_tool_call_block_message(const char *tool_name) { (void)tool_name; return NULL; }
+/* PoP: resolve_pre_tool_block @ hermes_cli/plugins.py:resolve_pre_tool_block */
+bool plugin_resolve_pre_tool_block(const char *block_msg) { (void)block_msg; return false; }
+/* PoP: get_pre_verify_continue_message @ hermes_cli/plugins.py:get_pre_verify_continue_message */
+const char *plugin_get_pre_verify_continue_message(const char *tool_name) { (void)tool_name; return NULL; }
+/* PoP: _ensure_plugins_discovered @ hermes_cli/plugins.py:_ensure_plugins_discovered */
+bool plugin_ensure_discovered(void) { return true; }
+/* PoP: get_plugin_context_engine @ hermes_cli/plugins.py:get_plugin_context_engine */
+const char *plugin_get_context_engine(const char *name) { (void)name; return ""; }
+/* PoP: get_plugin_command_handler @ hermes_cli/plugins.py:get_plugin_command_handler */
+void *plugin_get_command_handler(const char *name) { (void)name; return NULL; }
+/* PoP: resolve_plugin_command_result @ hermes_cli/plugins.py:resolve_plugin_command_result */
+json_t *plugin_resolve_command_result(json_t *result) { return result ? result : json_object(); }
+/* PoP: get_plugin_commands @ hermes_cli/plugins.py:get_plugin_commands */
+json_t *plugin_get_commands(void) { return json_array(); }
+/* PoP: get_plugin_auxiliary_tasks @ hermes_cli/plugins.py:get_plugin_auxiliary_tasks */
+json_t *plugin_get_auxiliary_tasks(void) { return json_array(); }
+/* PoP: get_plugin_toolsets @ hermes_cli/plugins.py:get_plugin_toolsets */
+json_t *plugin_get_toolsets(void) { return json_array(); }

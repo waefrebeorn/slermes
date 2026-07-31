@@ -73,6 +73,34 @@ static int g_max_concurrent_default = 3;
 static int g_max_spawn_depth_default = 1;
 static int g_child_max_turns_default = 30;
 
+/* Spawn-pause gate (mirrors Python tools/delegate_tool.py:
+ *   _spawn_paused + _spawn_pause_lock).
+ * Active children keep running; only NEW delegate_task spawns fail fast until
+ * unblocked. Read/written under g_spawn_pause_lock. */
+static bool g_spawn_paused = false;
+static pthread_mutex_t g_spawn_pause_lock = PTHREAD_MUTEX_INITIALIZER;
+
+/* PoP: set_spawn_paused @ tools/delegate_tool.py:set_spawn_paused */
+/* Port of Python tools/delegate_tool.py:set_spawn_paused().
+ * Globally block/unblock new delegate_task spawns. Returns the NEW state. */
+bool set_spawn_paused(bool paused) {
+    pthread_mutex_lock(&g_spawn_pause_lock);
+    g_spawn_paused = paused;
+    bool new_state = g_spawn_paused;
+    pthread_mutex_unlock(&g_spawn_pause_lock);
+    return new_state;
+}
+
+/* PoP: is_spawn_paused @ tools/delegate_tool.py:is_spawn_paused */
+/* Port of Python tools/delegate_tool.py:is_spawn_paused().
+ * Returns true when new delegate spawns are currently blocked. */
+bool is_spawn_paused(void) {
+    pthread_mutex_lock(&g_spawn_pause_lock);
+    bool state = g_spawn_paused;
+    pthread_mutex_unlock(&g_spawn_pause_lock);
+    return state;
+}
+
 static const char *g_delegation_blocked_tools[] = {
     "delegate_task",
     "clarify",
@@ -247,8 +275,9 @@ void delegate_list(json_node_t *result) {
 /* PoP: delegate_pause @ tools/delegate_tool.py:pause */
 /* PoP: delegate_pause @ hermes_cli/goals.py:pause */
 static void delegate_pause(bool paused, json_node_t *result) {
-    json_object_set(result, "paused", json_new_bool(paused));
-    json_object_set(result, "message", json_new_string(paused ? "Delegation spawning paused" : "Delegation spawning resumed"));
+    bool new_state = set_spawn_paused(paused);
+    json_object_set(result, "paused", json_new_bool(new_state));
+    json_object_set(result, "message", json_new_string(new_state ? "Delegation spawning paused" : "Delegation spawning resumed"));
 }
 
 /* PoP: list_active_subagents @ src/tools/delegate.c:delegate_health */

@@ -26,6 +26,7 @@
 
 #include <stddef.h>
 #include <stdbool.h>
+#include "hermes_json.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -303,6 +304,62 @@ bool plugin_satisfies_dep(const plugin_t *p, const plugin_dep_t *dep);
 /* Check all dependencies of a plugin against the registry.
  * Returns 0 if all satisfied, or count of unsatisfied deps. */
 int plugin_check_deps(const plugin_t *p, plugin_registry_t *reg);
+
+/* ── hermes_cli/plugins.py ports ── */
+const char *plugin_get_bundled_plugins_dir(const char *hermes_home);
+void plugin_install_debug_handler(void);
+bool plugin_env_enabled(const char *name);
+json_t *plugin_get_disabled_plugins(const char *hermes_home);
+json_t *plugin_get_enabled_plugins(const char *hermes_home);
+void plugin_register_tool(const char *name, const char *desc);
+bool plugin_tool_override_allowed(const char *name);
+void plugin_inject_message(const char *source_platform, const char *chat_id, json_t *payload);
+void plugin_register_cli_command(const char *name, void (*handler)(void));
+void plugin_register_command(const char *name, void (*handler)(void));
+json_t *plugin_dispatch_tool(const char *name, json_t *args);
+void plugin_register_context_engine(const char *name);
+void plugin_register_image_gen_provider(const char *name);
+void plugin_register_dashboard_auth_provider(const char *name);
+void plugin_register_video_gen_provider(const char *name);
+void plugin_register_web_search_provider(const char *name);
+void plugin_register_browser_provider(const char *name);
+void plugin_register_secret_source(const char *name);
+void plugin_register_tts_provider(const char *name);
+void plugin_register_transcription_provider(const char *name);
+void plugin_register_platform(const char *name);
+void plugin_register_slack_action_handler(const char *action_id);
+void plugin_register_auxiliary_task(const char *name);
+void plugin_register_hook(const char *name);
+void plugin_register_middleware(const char *name);
+void plugin_register_skill(const char *name);
+json_t *plugin_discover_and_load_inner(const char *dir);
+json_t *plugin_scan_directory_level(const char *dir);
+json_t *plugin_scan_entry_points(const char *dir);
+const char *plugin_platform_name_from_manifest(json_t *manifest);
+void plugin_register_deferred_platform(const char *name);
+plugin_t *plugin_load_by_name(const char *name);
+void *plugin_load_directory_module(const char *dir);
+void *plugin_load_entrypoint_module(const char *path);
+bool plugin_has_hook(const char *name);
+bool plugin_has_middleware(const char *name);
+json_t *plugin_invoke_middleware(json_t *request, const char *middleware_name);
+json_t *plugin_get_slack_action_handlers(void);
+json_t *plugin_find_skill(const char *name);
+json_t *plugin_list_skills(void);
+bool plugin_remove_skill(const char *name);
+plugin_registry_t *plugin_get_manager(void);
+json_t *plugin_get_pre_tool_call_directive_details(void);
+const char *plugin_get_pre_tool_call_directive(const char *tool_name);
+const char *plugin_get_pre_tool_call_block_message(const char *tool_name);
+bool plugin_resolve_pre_tool_block(const char *block_msg);
+const char *plugin_get_pre_verify_continue_message(const char *tool_name);
+bool plugin_ensure_discovered(void);
+const char *plugin_get_context_engine(const char *name);
+void *plugin_get_command_handler(const char *name);
+json_t *plugin_resolve_command_result(json_t *result);
+json_t *plugin_get_commands(void);
+json_t *plugin_get_auxiliary_tasks(void);
+json_t *plugin_get_toolsets(void);
 
 #ifdef __cplusplus
 }

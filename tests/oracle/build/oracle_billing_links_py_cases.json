@@ -1,0 +1,8 @@
+{"op":"is_nous","provider":"nous","base_url":"","out":true}
+{"op":"is_nous","provider":"OpenAI","base_url":"https://api.openai.com/v1","out":false}
+{"op":"is_nous","provider":"xai","base_url":"https://inference-api.nousresearch.com/v1","out":true}
+{"op":"is_nous","provider":"foo","base_url":"https://api.openai.com/v1","out":false}
+{"op":"build","out":{"provider":"nous","provider_label":"Nous Portal","model":"gpt-5","billing_url":"https://portal.nousresearch.com/billing","is_nous":true,"message":"\"out of credits\""}}
+{"op":"build","out":{"provider":"openai","provider_label":"OpenAI","model":"gpt-5","billing_url":"https://platform.openai.com/settings/organization/billing","is_nous":false,"message":""}}
+{"op":"build","out":{"provider":"openai_compatible","provider_label":"Anthropic","model":"claude-opus","billing_url":"https://console.anthropic.com/settings/billing","is_nous":false,"message":""}}
+{"op":"build","out":{"provider":"weird_provider","provider_label":"Weird Provider","model":"model-x","billing_url":null,"is_nous":false,"message":""}}

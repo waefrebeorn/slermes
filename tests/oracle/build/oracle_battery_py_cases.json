@@ -1,0 +1,12 @@
+{"available":false,"percent":null,"plugged":null,"category":"dim","glyph":"🔋","format":""}
+{"available":true,"percent":null,"plugged":null,"category":"dim","glyph":"🔋","format":""}
+{"available":true,"percent":60,"plugged":null,"category":"good","glyph":"🔋","format":"🔋 60%"}
+{"available":true,"percent":82,"plugged":true,"category":"good","glyph":"⚡","format":"⚡ 82%"}
+{"available":true,"percent":5,"plugged":false,"category":"critical","glyph":"🔋","format":"🔋 5%"}
+{"available":true,"percent":10,"plugged":false,"category":"critical","glyph":"🔋","format":"🔋 10%"}
+{"available":true,"percent":15,"plugged":false,"category":"bad","glyph":"🔋","format":"🔋 15%"}
+{"available":true,"percent":20,"plugged":false,"category":"bad","glyph":"🔋","format":"🔋 20%"}
+{"available":true,"percent":35,"plugged":false,"category":"warn","glyph":"🔋","format":"🔋 35%"}
+{"available":true,"percent":50,"plugged":false,"category":"warn","glyph":"🔋","format":"🔋 50%"}
+{"available":true,"percent":51,"plugged":false,"category":"good","glyph":"🔋","format":"🔋 51%"}
+{"available":true,"percent":100,"plugged":false,"category":"good","glyph":"🔋","format":"🔋 100%"}

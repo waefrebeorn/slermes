@@ -12,6 +12,8 @@ extern "C" {
 #endif
 
 #include <stdbool.h>
+#include <stddef.h>   /* size_t */
+#include "hermes_core_types.h"   /* security_config_t */
 
 /* Core safety checks */
 
@@ -163,3 +165,12 @@ char *url_safety_redirect_target_from_response(bool is_redirect,
 #endif
 
 #endif /* HERMES_URL_SAFETY_H */
+
+/* Load blocklist from security config */
+void url_blocklist_load_config(const security_config_t *cfg);
+
+/* Command allowlist */
+bool allowlist_add(const char *tool, const char *pattern);
+bool allowlist_remove(const char *tool, const char *pattern);
+void allowlist_clear(void);
+bool allowlist_check(const char *tool, const char *command);

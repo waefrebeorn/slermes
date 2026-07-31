@@ -117,7 +117,7 @@ void config_py_ensure_default_soul_md(const char *home) {
     if (!f) return;
     const char *def =
         "# SOUL.md — Hermes Agent\n\n"
-        "You are Hermes, a helpful, harmless, and honest AI assistant.\n";
+        "You are Slermes, a helpful, harmless, and honest AI assistant.\n";
     fwrite(def, 1, strlen(def), f);
     fclose(f);
     config_py_secure_file(soul);

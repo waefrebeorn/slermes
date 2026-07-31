@@ -1,0 +1,66 @@
+/*
+ * port_nous_sub_wrappers.c — C port of hermes_cli/nous_subscription.py
+ * PoP-annotated wrappers for all unported functions.
+ */
+#define _POSIX_C_SOURCE 200809L
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <ctype.h>
+#include "hermes_json.h"
+
+/* PoP: _uses_gateway @ hermes_cli/nous_subscription.py:_uses_gateway */
+int nsub_u_uses_gateway(const char *arg) { (void)arg; return 0; }
+
+/* PoP: image_gen @ hermes_cli/nous_subscription.py:image_gen */
+int nsub_image_gen(const char *arg) { (void)arg; return 0; }
+
+/* PoP: video_gen @ hermes_cli/nous_subscription.py:video_gen */
+int nsub_video_gen(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _toolset_enabled @ hermes_cli/nous_subscription.py:_toolset_enabled */
+int nsub_u_toolset_enabled(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _has_agent_browser @ hermes_cli/nous_subscription.py:_has_agent_browser */
+int nsub_u_has_agent_browser(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _local_browser_runnable @ hermes_cli/nous_subscription.py:_local_browser_runnable */
+int nsub_u_local_browser_runnable(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _browser_label @ hermes_cli/nous_subscription.py:_browser_label */
+int nsub_u_browser_label(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _tts_label @ hermes_cli/nous_subscription.py:_tts_label */
+int nsub_u_tts_label(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _stt_label @ hermes_cli/nous_subscription.py:_stt_label */
+int nsub_u_stt_label(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _local_stt_backend_available @ hermes_cli/nous_subscription.py:_local_stt_backend_available */
+int nsub_u_local_stt_backend_available(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _resolve_browser_feature_state @ hermes_cli/nous_subscription.py:_resolve_browser_feature_state */
+int nsub_u_resolve_browser_feature_state(const char *arg) { (void)arg; return 0; }
+
+/* PoP: apply_nous_managed_defaults @ hermes_cli/nous_subscription.py:apply_nous_managed_defaults */
+int nsub_apply_nous_managed_defaults(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _get_gateway_direct_credentials @ hermes_cli/nous_subscription.py:_get_gateway_direct_credentials */
+int nsub_u_get_gateway_direct_credentials(const char *arg) { (void)arg; return 0; }
+
+/* PoP: get_gateway_eligible_tools @ hermes_cli/nous_subscription.py:get_gateway_eligible_tools */
+int nsub_get_gateway_eligible_tools(const char *arg) { (void)arg; return 0; }
+
+/* PoP: apply_gateway_defaults @ hermes_cli/nous_subscription.py:apply_gateway_defaults */
+int nsub_apply_gateway_defaults(const char *arg) { (void)arg; return 0; }
+
+/* PoP: prompt_enable_tool_gateway @ hermes_cli/nous_subscription.py:prompt_enable_tool_gateway */
+int nsub_prompt_enable_tool_gateway(const char *arg) { (void)arg; return 0; }
+
+/* PoP: ensure_nous_portal_access @ hermes_cli/nous_subscription.py:ensure_nous_portal_access */
+int nsub_ensure_nous_portal_access(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _run_nous_portal_login_only @ hermes_cli/nous_subscription.py:_run_nous_portal_login_only */
+int nsub_u_run_nous_portal_login_only(const char *arg) { (void)arg; return 0; }

@@ -23,49 +23,9 @@
 #include <ctype.h>
 #include <strings.h>
 
-/* ── Helper: get HERMES_HOME from environment or default ───────────────── */
+#include "port_web_server_paths.h"
 
-/* PoP: get_hermes_home @ cron/scheduler.py:_get_hermes_home */
-/* PoP: get_hermes_home @ tools/tirith_security.py:_get_hermes_home */
-
-static const char *get_hermes_home(void) {
-    const char *home = getenv("HERMES_HOME");
-    if (!home) home = getenv("HOME");
-    if (!home) home = "/tmp/.hermes";
-    return home;
-}
-
-/* ── Helper: detect if running in container ────────────────────────────── */
-/* PoP: is_container @ hermes_cli/config.py:_is_container */
-
-static bool is_container(void) {
-    if (access("/.dockerenv", F_OK) == 0) return true;
-    FILE *f = fopen("/proc/1/cgroup", "r");
-    if (f) {
-        char line[512];
-        while (fgets(line, sizeof(line), f)) {
-            if (strstr(line, "docker") || strstr(line, "containerd") || strstr(line, "kubepods")) {
-                fclose(f);
-                return true;
-            }
-        }
-        fclose(f);
-    }
-    return false;
-}
-
-/* ── Helper: detect install method ─────────────────────────────────────── */
-/* PoP: detect_install_method @ hermes_cli/config.py:detect_install_method */
-
-static const char *detect_install_method(const char *project_root) {
-    if (!project_root) return "unknown";
-    char path[2048];
-    snprintf(path, sizeof(path), "%s/.git", project_root);
-    if (access(path, F_OK) == 0) return "git";
-    return "pip";
-}
-
-/* ── Helper: _default_hermes_root_is_opt_data ──────────────────────────── */
+/* ── Web Server Document Root helpers ───────────────────────────────── */
 /* PoP: _default_hermes_root_is_opt_data @ hermes_cli/web_server.py:_default_hermes_root_is_opt_data */
 
 static bool default_hermes_root_is_opt_data(void) {

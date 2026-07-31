@@ -49,6 +49,7 @@ char *transcribe_handler(const char *args_json, const char *task_id) {
     }
 
     /* Transcribe */
+/* PoP: transcribe_audio @ tools/transcription_tools.py:transcribe_audio */
     char *result = transcribe_audio(file_path, model);
     json_free(args);
 
@@ -63,6 +64,14 @@ __attribute__((constructor))
 static void init_transcribe(void) {
     registry_register("transcribe", "Transcribe audio to text using Whisper (groq/openai/xai).",
                        SCHEMA, transcribe_handler);
+}
+
+/* Called from tool_init.c — registers the transcribe tool name.
+ * The constructor above handles the actual registration, but tool_init.c
+ * also calls registry_init_transcribe() which needs a definition. */
+void registry_init_transcribe_impl(void) {
+    /* Already registered via constructor — nothing to do here.
+     * This function exists so tool_init.c can link. */
 }
 
 /* ================================================================

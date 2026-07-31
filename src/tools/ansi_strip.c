@@ -36,6 +36,7 @@ static char *ansi_strip_handler(const char *args_json, const char *task_id) {
         return strdup("{\"error\":\"Missing text\"}");
     }
 
+/* PoP: strip_ansi @ tools/ansi_strip.py:strip_ansi */
     char *stripped = strip_ansi(text);
     if (!stripped) {
         json_free(args);

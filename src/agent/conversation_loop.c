@@ -9,10 +9,10 @@
  * Turn finalization delegated to turn_finalizer.c:finalize_turn().
  */
 
-#include "hermes.h"
 #include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_agent.h"
+#include "approval.h"
 #include "provider.h"
 #include "plugin.h"
 #include "hermes_system_prompt.h"
@@ -42,6 +42,9 @@
 #include <strings.h>
 #ifndef _WIN32
 #include <pthread.h>
+#include "hermes_sanitize.h"
+#include "hermes_memory.h"
+#include "registry.h"
 #endif
 
 /* ================================================================

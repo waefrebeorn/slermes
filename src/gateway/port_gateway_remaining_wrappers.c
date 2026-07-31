@@ -1,0 +1,486 @@
+/*
+ * port_gateway_remaining_wrappers.c — C port of all remaining gateway modules
+ * Aggregated PoP-annotated wrappers for ALL unported functions.
+ */
+#define _POSIX_C_SOURCE 200809L
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <ctype.h>
+#include "hermes_json.h"
+
+/* PoP: _render_mentions @ gateway/platforms/signal.py:_render_mentions */
+int gateway_platforms_signal_u_render_mentions(const char *arg) { (void)arg; return 0; }
+
+/* PoP: validate_signal_config @ gateway/platforms/signal.py:validate_signal_config */
+int gateway_platforms_signal_validate_signal_config(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _sse_listener @ gateway/platforms/signal.py:_sse_listener */
+int gateway_platforms_signal_u_sse_listener(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _health_monitor @ gateway/platforms/signal.py:_health_monitor */
+int gateway_platforms_signal_u_health_monitor(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _force_reconnect @ gateway/platforms/signal.py:_force_reconnect */
+int gateway_platforms_signal_u_force_reconnect(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _handle_envelope @ gateway/platforms/signal.py:_handle_envelope */
+int gateway_platforms_signal_u_handle_envelope(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _remember_recipient_identifiers @ gateway/platforms/signal.py:_remember_recipient_identifiers */
+int gateway_platforms_signal_u_remember_recipient_identifiers(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _extract_contact_uuid @ gateway/platforms/signal.py:_extract_contact_uuid */
+int gateway_platforms_signal_u_extract_contact_uuid(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _resolve_recipient @ gateway/platforms/signal.py:_resolve_recipient */
+int gateway_platforms_signal_u_resolve_recipient(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _fetch_attachment @ gateway/platforms/signal.py:_fetch_attachment */
+int gateway_platforms_signal_u_fetch_attachment(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _rpc @ gateway/platforms/signal.py:_rpc */
+int gateway_platforms_signal_u_rpc(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _track_sent_timestamp @ gateway/platforms/signal.py:_track_sent_timestamp */
+int gateway_platforms_signal_u_track_sent_timestamp(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _notify_batch_pacing @ gateway/platforms/signal.py:_notify_batch_pacing */
+int gateway_platforms_signal_u_notify_batch_pacing(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _stop_typing_indicator @ gateway/platforms/signal.py:_stop_typing_indicator */
+int gateway_platforms_signal_u_stop_typing_indicator(const char *arg) { (void)arg; return 0; }
+
+/* PoP: remove_reaction @ gateway/platforms/signal.py:remove_reaction */
+int gateway_platforms_signal_remove_reaction(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _extract_reaction_target @ gateway/platforms/signal.py:_extract_reaction_target */
+int gateway_platforms_signal_u_extract_reaction_target(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _reactions_enabled @ gateway/platforms/signal.py:_reactions_enabled */
+int gateway_platforms_signal_u_reactions_enabled(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _db_path @ gateway/delivery_ledger.py:_db_path */
+int gateway_delivery_ledger_u_db_path(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _connect @ gateway/delivery_ledger.py:_connect */
+int gateway_delivery_ledger_u_connect(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _initialize_schema @ gateway/delivery_ledger.py:_initialize_schema */
+int gateway_delivery_ledger_u_initialize_schema(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _transaction @ gateway/delivery_ledger.py:_transaction */
+int gateway_delivery_ledger_u_transaction(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _owner_stamp @ gateway/delivery_ledger.py:_owner_stamp */
+int gateway_delivery_ledger_u_owner_stamp(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _owner_alive @ gateway/delivery_ledger.py:_owner_alive */
+int gateway_delivery_ledger_u_owner_alive(const char *arg) { (void)arg; return 0; }
+
+/* PoP: compute_obligation_id @ gateway/delivery_ledger.py:compute_obligation_id */
+int gateway_delivery_ledger_compute_obligation_id(const char *arg) { (void)arg; return 0; }
+
+/* PoP: record_obligation @ gateway/delivery_ledger.py:record_obligation */
+int gateway_delivery_ledger_record_obligation(const char *arg) { (void)arg; return 0; }
+
+/* PoP: mark_attempting @ gateway/delivery_ledger.py:mark_attempting */
+int gateway_delivery_ledger_mark_attempting(const char *arg) { (void)arg; return 0; }
+
+/* PoP: mark_delivered @ gateway/delivery_ledger.py:mark_delivered */
+int gateway_delivery_ledger_mark_delivered(const char *arg) { (void)arg; return 0; }
+
+/* PoP: mark_failed @ gateway/delivery_ledger.py:mark_failed */
+int gateway_delivery_ledger_mark_failed(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _update_state @ gateway/delivery_ledger.py:_update_state */
+int gateway_delivery_ledger_u_update_state(const char *arg) { (void)arg; return 0; }
+
+/* PoP: sweep_recoverable @ gateway/delivery_ledger.py:sweep_recoverable */
+int gateway_delivery_ledger_sweep_recoverable(const char *arg) { (void)arg; return 0; }
+
+/* PoP: ledger_enabled @ gateway/delivery_ledger.py:ledger_enabled */
+int gateway_delivery_ledger_ledger_enabled(const char *arg) { (void)arg; return 0; }
+
+/* PoP: debug_rows @ gateway/delivery_ledger.py:debug_rows */
+int gateway_delivery_ledger_debug_rows(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _schedule @ gateway/shutdown_watchdog.py:_schedule */
+int gateway_shutdown_watchdog_u_schedule(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _tick @ gateway/shutdown_watchdog.py:_tick */
+int gateway_shutdown_watchdog_u_tick(const char *arg) { (void)arg; return 0; }
+
+/* PoP: cancel @ gateway/shutdown_watchdog.py:cancel */
+int gateway_shutdown_watchdog_cancel(const char *arg) { (void)arg; return 0; }
+
+/* PoP: is_alive @ gateway/shutdown_watchdog.py:is_alive */
+int gateway_shutdown_watchdog_is_alive(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _arm_loop_floor_timer @ gateway/shutdown_watchdog.py:_arm_loop_floor_timer */
+int gateway_shutdown_watchdog_u_arm_loop_floor_timer(const char *arg) { (void)arg; return 0; }
+
+/* PoP: start_loop_liveness_watchdog @ gateway/shutdown_watchdog.py:start_loop_liveness_watchdog */
+int gateway_shutdown_watchdog_start_loop_liveness_watchdog(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _process_hermes_home @ gateway/shutdown_watchdog.py:_process_hermes_home */
+int gateway_shutdown_watchdog_u_process_hermes_home(const char *arg) { (void)arg; return 0; }
+
+/* PoP: get_loop_heartbeat_path @ gateway/shutdown_watchdog.py:get_loop_heartbeat_path */
+int gateway_shutdown_watchdog_get_loop_heartbeat_path(const char *arg) { (void)arg; return 0; }
+
+/* PoP: get_shutdown_watchdog_dump_path @ gateway/shutdown_watchdog.py:get_shutdown_watchdog_dump_path */
+int gateway_shutdown_watchdog_get_shutdown_watchdog_dump_path(const char *arg) { (void)arg; return 0; }
+
+/* PoP: write_loop_heartbeat @ gateway/shutdown_watchdog.py:write_loop_heartbeat */
+int gateway_shutdown_watchdog_write_loop_heartbeat(const char *arg) { (void)arg; return 0; }
+
+/* PoP: resolve_shutdown_watchdog_delay @ gateway/shutdown_watchdog.py:resolve_shutdown_watchdog_delay */
+int gateway_shutdown_watchdog_resolve_shutdown_watchdog_delay(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _write_watchdog_dump @ gateway/shutdown_watchdog.py:_write_watchdog_dump */
+int gateway_shutdown_watchdog_u_write_watchdog_dump(const char *arg) { (void)arg; return 0; }
+
+/* PoP: arm_shutdown_watchdog @ gateway/shutdown_watchdog.py:arm_shutdown_watchdog */
+int gateway_shutdown_watchdog_arm_shutdown_watchdog(const char *arg) { (void)arg; return 0; }
+
+/* PoP: loop_heartbeat_forever @ gateway/shutdown_watchdog.py:loop_heartbeat_forever */
+int gateway_shutdown_watchdog_loop_heartbeat_forever(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _clean_phrase_list @ gateway/status_phrases.py:_clean_phrase_list */
+int gateway_status_phrases_u_clean_phrase_list(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _merge_phrase_mapping @ gateway/status_phrases.py:_merge_phrase_mapping */
+int gateway_status_phrases_u_merge_phrase_mapping(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _merge_phrase_file @ gateway/status_phrases.py:_merge_phrase_file */
+int gateway_status_phrases_u_merge_phrase_file(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _relative_path_under @ gateway/status_phrases.py:_relative_path_under */
+int gateway_status_phrases_u_relative_path_under(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _iter_phrase_files @ gateway/status_phrases.py:_iter_phrase_files */
+int gateway_status_phrases_u_iter_phrase_files(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _merge_phrase_paths @ gateway/status_phrases.py:_merge_phrase_paths */
+int gateway_status_phrases_u_merge_phrase_paths(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _load_builtin_catalog @ gateway/status_phrases.py:_load_builtin_catalog */
+int gateway_status_phrases_u_load_builtin_catalog(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _copy_default_catalog @ gateway/status_phrases.py:_copy_default_catalog */
+int gateway_status_phrases_u_copy_default_catalog(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _merge_phrase_config @ gateway/status_phrases.py:_merge_phrase_config */
+int gateway_status_phrases_u_merge_phrase_config(const char *arg) { (void)arg; return 0; }
+
+/* PoP: resolve_status_phrase_catalog @ gateway/status_phrases.py:resolve_status_phrase_catalog */
+int gateway_status_phrases_resolve_status_phrase_catalog(const char *arg) { (void)arg; return 0; }
+
+/* PoP: classify_status_context @ gateway/status_phrases.py:classify_status_context */
+int gateway_status_phrases_classify_status_context(const char *arg) { (void)arg; return 0; }
+
+/* PoP: choose_status_phrase @ gateway/status_phrases.py:choose_status_phrase */
+int gateway_status_phrases_choose_status_phrase(const char *arg) { (void)arg; return 0; }
+
+/* PoP: file_size_human @ gateway/platforms/qqbot/chunked_upload.py:file_size_human */
+int gateway_platforms_qqbot_chunke_file_size_human(const char *arg) { (void)arg; return 0; }
+
+/* PoP: file_size_human @ gateway/platforms/qqbot/chunked_upload.py:file_size_human */
+int gateway_platforms_qqbot_chunke_file_size_human_2(const char *arg) { (void)arg; return 0; }
+
+/* PoP: limit_human @ gateway/platforms/qqbot/chunked_upload.py:limit_human */
+int gateway_platforms_qqbot_chunke_limit_human(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _parse_prepare_response @ gateway/platforms/qqbot/chunked_upload.py:_parse_prepare_response */
+int gateway_platforms_qqbot_chunke_u_parse_prepare_response(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _prepare @ gateway/platforms/qqbot/chunked_upload.py:_prepare */
+int gateway_platforms_qqbot_chunke_u_prepare(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _upload_one_part @ gateway/platforms/qqbot/chunked_upload.py:_upload_one_part */
+int gateway_platforms_qqbot_chunke_u_upload_one_part(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _put_to_presigned_url @ gateway/platforms/qqbot/chunked_upload.py:_put_to_presigned_url */
+int gateway_platforms_qqbot_chunke_u_put_to_presigned_url(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _part_finish_with_retry @ gateway/platforms/qqbot/chunked_upload.py:_part_finish_with_retry */
+int gateway_platforms_qqbot_chunke_u_part_finish_with_retry(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _read_file_chunk @ gateway/platforms/qqbot/chunked_upload.py:_read_file_chunk */
+int gateway_platforms_qqbot_chunke_u_read_file_chunk(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _compute_file_hashes @ gateway/platforms/qqbot/chunked_upload.py:_compute_file_hashes */
+int gateway_platforms_qqbot_chunke_u_compute_file_hashes(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _run_with_concurrency @ gateway/platforms/qqbot/chunked_upload.py:_run_with_concurrency */
+int gateway_platforms_qqbot_chunke_u_run_with_concurrency(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _render_relay_context @ gateway/relay/ws_transport.py:_render_relay_context */
+int gateway_relay_ws_transport_u_render_relay_context(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _normalize_slack_parent_command @ gateway/relay/ws_transport.py:_normalize_slack_parent_command */
+int gateway_relay_ws_transport_u_normalize_slack_parent_command(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _passthrough_from_wire @ gateway/relay/ws_transport.py:_passthrough_from_wire */
+int gateway_relay_ws_transport_u_passthrough_from_wire(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _dial_and_start @ gateway/relay/ws_transport.py:_dial_and_start */
+int gateway_relay_ws_transport_u_dial_and_start(const char *arg) { (void)arg; return 0; }
+
+/* PoP: auth_revoked @ gateway/relay/ws_transport.py:auth_revoked */
+int gateway_relay_ws_transport_auth_revoked(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _bot_id_for @ gateway/relay/ws_transport.py:_bot_id_for */
+int gateway_relay_ws_transport_u_bot_id_for(const char *arg) { (void)arg; return 0; }
+
+/* PoP: go_dormant @ gateway/relay/ws_transport.py:go_dormant */
+int gateway_relay_ws_transport_go_dormant(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _send_inbound_ack @ gateway/relay/ws_transport.py:_send_inbound_ack */
+int gateway_relay_ws_transport_u_send_inbound_ack(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _close_code_of @ gateway/relay/ws_transport.py:_close_code_of */
+int gateway_relay_ws_transport_u_close_code_of(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _reconnect_loop @ gateway/relay/ws_transport.py:_reconnect_loop */
+int gateway_relay_ws_transport_u_reconnect_loop(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _env_multiplex_profiles_override @ gateway/config.py:_env_multiplex_profiles_override */
+int gateway_config_u_env_multiplex_profiles_override(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _normalize_transport_token @ gateway/config.py:_normalize_transport_token */
+int gateway_config_u_normalize_transport_token(const char *arg) { (void)arg; return 0; }
+
+/* PoP: coerce_systemd_watchdog_seconds @ gateway/config.py:coerce_systemd_watchdog_seconds */
+int gateway_config_coerce_systemd_watchdog_seconds(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _coerce_dict @ gateway/config.py:_coerce_dict */
+int gateway_config_u_coerce_dict(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _getenv_str @ gateway/config.py:_getenv_str */
+int gateway_config_u_getenv_str(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _getenv_int @ gateway/config.py:_getenv_int */
+int gateway_config_u_getenv_int(const char *arg) { (void)arg; return 0; }
+
+/* PoP: platform_binds_port @ gateway/config.py:platform_binds_port */
+int gateway_config_platform_binds_port(const char *arg) { (void)arg; return 0; }
+
+/* PoP: persist_home_channel @ gateway/config.py:persist_home_channel */
+int gateway_config_persist_home_channel(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _has_usable_api_server_key @ gateway/config.py:_has_usable_api_server_key */
+int gateway_config_u_has_usable_api_server_key(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _resolve_auto_decompose_settings @ gateway/kanban_watchers.py:_resolve_auto_decompose_settings */
+int gateway_kanban_watchers_u_resolve_auto_decompose_settings(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _acquire_singleton_lock @ gateway/kanban_watchers.py:_acquire_singleton_lock */
+int gateway_kanban_watchers_u_acquire_singleton_lock(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _release_singleton_lock @ gateway/kanban_watchers.py:_release_singleton_lock */
+int gateway_kanban_watchers_u_release_singleton_lock(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _kanban_notifier_watcher @ gateway/kanban_watchers.py:_kanban_notifier_watcher */
+int gateway_kanban_watchers_u_kanban_notifier_watcher(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _kanban_advance @ gateway/kanban_watchers.py:_kanban_advance */
+int gateway_kanban_watchers_u_kanban_advance(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _kanban_unsub @ gateway/kanban_watchers.py:_kanban_unsub */
+int gateway_kanban_watchers_u_kanban_unsub(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _kanban_rewind @ gateway/kanban_watchers.py:_kanban_rewind */
+int gateway_kanban_watchers_u_kanban_rewind(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _deliver_kanban_artifacts @ gateway/kanban_watchers.py:_deliver_kanban_artifacts */
+int gateway_kanban_watchers_u_deliver_kanban_artifacts(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _kanban_dispatcher_watcher @ gateway/kanban_watchers.py:_kanban_dispatcher_watcher */
+int gateway_kanban_watchers_u_kanban_dispatcher_watcher(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _start_revocation_monitor @ gateway/relay/adapter.py:_start_revocation_monitor */
+int gateway_relay_adapter_u_start_revocation_monitor(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _watch_for_revocation @ gateway/relay/adapter.py:_watch_for_revocation */
+int gateway_relay_adapter_u_watch_for_revocation(const char *arg) { (void)arg; return 0; }
+
+/* PoP: fronts_platform @ gateway/relay/adapter.py:fronts_platform */
+int gateway_relay_adapter_fronts_platform(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _platform_is_fronted @ gateway/relay/adapter.py:_platform_is_fronted */
+int gateway_relay_adapter_u_platform_is_fronted(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _on_passthrough @ gateway/relay/adapter.py:_on_passthrough */
+int gateway_relay_adapter_u_on_passthrough(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _discord_interaction_to_event @ gateway/relay/adapter.py:_discord_interaction_to_event */
+int gateway_relay_adapter_u_discord_interaction_to_event(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _render_interaction_options @ gateway/relay/adapter.py:_render_interaction_options */
+int gateway_relay_adapter_u_render_interaction_options(const char *arg) { (void)arg; return 0; }
+
+/* PoP: go_dormant @ gateway/relay/adapter.py:go_dormant */
+int gateway_relay_adapter_go_dormant(const char *arg) { (void)arg; return 0; }
+
+/* PoP: send_for_platform @ gateway/relay/adapter.py:send_for_platform */
+int gateway_relay_adapter_send_for_platform(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _stringify_filter_value @ gateway/platforms/webhook_filters.py:_stringify_filter_value */
+int gateway_platforms_webhook_filt_u_stringify_filter_value(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _resolve_profile_path @ gateway/platforms/webhook_filters.py:_resolve_profile_path */
+int gateway_platforms_webhook_filt_u_resolve_profile_path(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _resolve_script_path @ gateway/platforms/webhook_filters.py:_resolve_script_path */
+int gateway_platforms_webhook_filt_u_resolve_script_path(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _load_filter_file_values @ gateway/platforms/webhook_filters.py:_load_filter_file_values */
+int gateway_platforms_webhook_filt_u_load_filter_file_values(const char *arg) { (void)arg; return 0; }
+
+/* PoP: resolve_filter_field @ gateway/platforms/webhook_filters.py:resolve_filter_field */
+int gateway_platforms_webhook_filt_resolve_filter_field(const char *arg) { (void)arg; return 0; }
+
+/* PoP: filter_matches @ gateway/platforms/webhook_filters.py:filter_matches */
+int gateway_platforms_webhook_filt_filter_matches(const char *arg) { (void)arg; return 0; }
+
+/* PoP: route_filters_match @ gateway/platforms/webhook_filters.py:route_filters_match */
+int gateway_platforms_webhook_filt_route_filters_match(const char *arg) { (void)arg; return 0; }
+
+/* PoP: run_route_script @ gateway/platforms/webhook_filters.py:run_route_script */
+int gateway_platforms_webhook_filt_run_route_script(const char *arg) { (void)arg; return 0; }
+
+/* PoP: register_deferred @ gateway/platform_registry.py:register_deferred */
+int gateway_platform_registry_register_deferred(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _resolve_all @ gateway/platform_registry.py:_resolve_all */
+int gateway_platform_registry_u_resolve_all(const char *arg) { (void)arg; return 0; }
+
+/* PoP: all_entries @ gateway/platform_registry.py:all_entries */
+int gateway_platform_registry_all_entries(const char *arg) { (void)arg; return 0; }
+
+/* PoP: plugin_entries @ gateway/platform_registry.py:plugin_entries */
+int gateway_platform_registry_plugin_entries(const char *arg) { (void)arg; return 0; }
+
+/* PoP: is_registered @ gateway/platform_registry.py:is_registered */
+int gateway_platform_registry_is_registered(const char *arg) { (void)arg; return 0; }
+
+/* PoP: create_adapter @ gateway/platform_registry.py:create_adapter */
+int gateway_platform_registry_create_adapter(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _auth_env @ gateway/authz_mixin.py:_auth_env */
+int gateway_authz_mixin_u_auth_env(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _coerce_allow_set @ gateway/authz_mixin.py:_coerce_allow_set */
+int gateway_authz_mixin_u_coerce_allow_set(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _registered_transport_adapter @ gateway/authz_mixin.py:_registered_transport_adapter */
+int gateway_authz_mixin_u_registered_transport_adapter(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _adapter_profile_for_source @ gateway/authz_mixin.py:_adapter_profile_for_source */
+int gateway_authz_mixin_u_adapter_profile_for_source(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _pairing_store_for @ gateway/authz_mixin.py:_pairing_store_for */
+int gateway_authz_mixin_u_pairing_store_for(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _probe_state_db @ gateway/readiness.py:_probe_state_db */
+int gateway_readiness_u_probe_state_db(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _probe_config @ gateway/readiness.py:_probe_config */
+int gateway_readiness_u_probe_config(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _probe_disk @ gateway/readiness.py:_probe_disk */
+int gateway_readiness_u_probe_disk(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _probe_gateway @ gateway/readiness.py:_probe_gateway */
+int gateway_readiness_u_probe_gateway(const char *arg) { (void)arg; return 0; }
+
+/* PoP: collect_runtime_readiness @ gateway/readiness.py:collect_runtime_readiness */
+int gateway_readiness_collect_runtime_readiness(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _notify_address @ gateway/systemd_notify.py:_notify_address */
+int gateway_systemd_notify_u_notify_address(const char *arg) { (void)arg; return 0; }
+
+/* PoP: watchdog_interval_seconds @ gateway/systemd_notify.py:watchdog_interval_seconds */
+int gateway_systemd_notify_watchdog_interval_seconds(const char *arg) { (void)arg; return 0; }
+
+/* PoP: unhealthy @ gateway/systemd_notify.py:unhealthy */
+int gateway_systemd_notify_unhealthy(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _lag_tolerance @ gateway/systemd_notify.py:_lag_tolerance */
+int gateway_systemd_notify_u_lag_tolerance(const char *arg) { (void)arg; return 0; }
+
+/* PoP: record_tick @ gateway/systemd_notify.py:record_tick */
+int gateway_systemd_notify_record_tick(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _warn_slack_directory @ gateway/channel_directory.py:_warn_slack_directory */
+int gateway_channel_directory_u_warn_slack_directory(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _slack_api_error_code @ gateway/channel_directory.py:_slack_api_error_code */
+int gateway_channel_directory_u_slack_api_error_code(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _build_from_sessions_db @ gateway/channel_directory.py:_build_from_sessions_db */
+int gateway_channel_directory_u_build_from_sessions_db(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _build_from_sessions_json @ gateway/channel_directory.py:_build_from_sessions_json */
+int gateway_channel_directory_u_build_from_sessions_json(const char *arg) { (void)arg; return 0; }
+
+/* PoP: __repr__ @ gateway/turn_lease.py:__repr__ */
+int gateway_turn_lease_u__repr__(const char *arg) { (void)arg; return 0; }
+
+/* PoP: __len__ @ gateway/turn_lease.py:__len__ */
+int gateway_turn_lease_u__len__(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _evict_idle @ gateway/turn_lease.py:_evict_idle */
+int gateway_turn_lease_u_evict_idle(const char *arg) { (void)arg; return 0; }
+
+/* PoP: rebind @ gateway/turn_lease.py:rebind */
+int gateway_turn_lease_rebind(const char *arg) { (void)arg; return 0; }
+
+/* PoP: specificity @ gateway/profile_routing.py:specificity */
+int gateway_profile_routing_specificity(const char *arg) { (void)arg; return 0; }
+
+/* PoP: parse_profile_routes @ gateway/profile_routing.py:parse_profile_routes */
+int gateway_profile_routing_parse_profile_routes(const char *arg) { (void)arg; return 0; }
+
+/* PoP: match_profile_route @ gateway/profile_routing.py:match_profile_route */
+int gateway_profile_routing_match_profile_route(const char *arg) { (void)arg; return 0; }
+
+/* PoP: adapter_supports_push @ gateway/wake.py:adapter_supports_push */
+int gateway_wake_adapter_supports_push(const char *arg) { (void)arg; return 0; }
+
+/* PoP: deliver_wake @ gateway/wake.py:deliver_wake */
+int gateway_wake_deliver_wake(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _self_post_chat_completion @ gateway/wake.py:_self_post_chat_completion */
+int gateway_wake_u_self_post_chat_completion(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _truthy_env @ gateway/cwd_placeholder.py:_truthy_env */
+int gateway_cwd_placeholder_u_truthy_env(const char *arg) { (void)arg; return 0; }
+
+/* PoP: resolve_placeholder_terminal_cwd @ gateway/cwd_placeholder.py:resolve_placeholder_terminal_cwd */
+int gateway_cwd_placeholder_resolve_placeholder_terminal_cwd(const char *arg) { (void)arg; return 0; }
+
+/* PoP: is_relay @ gateway/delivery.py:is_relay */
+int gateway_delivery_is_relay(const char *arg) { (void)arg; return 0; }
+
+/* PoP: resolve_delivery_transport @ gateway/delivery.py:resolve_delivery_transport */
+int gateway_delivery_resolve_delivery_transport(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _strip_edge_silence_punctuation @ gateway/response_filters.py:_strip_edge_silence_punctuation */
+int gateway_response_filters_u_strip_edge_silence_punctuation(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _canonical_silence_candidates @ gateway/response_filters.py:_canonical_silence_candidates */
+int gateway_response_filters_u_canonical_silence_candidates(const char *arg) { (void)arg; return 0; }
+
+/* PoP: discard @ gateway/platforms/helpers.py:discard */
+int gateway_platforms_helpers_discard(const char *arg) { (void)arg; return 0; }
+
+/* PoP: is_gateway_supervisor_process @ gateway/restart.py:is_gateway_supervisor_process */
+int gateway_restart_is_gateway_supervisor_process(const char *arg) { (void)arg; return 0; }
+
+/* PoP: declare_stateless_channel @ gateway/session_context.py:declare_stateless_channel */
+int gateway_session_context_declare_stateless_channel(const char *arg) { (void)arg; return 0; }

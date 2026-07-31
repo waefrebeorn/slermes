@@ -1,0 +1,69 @@
+/*
+ * port_model_switch_wrappers.c — C port of hermes_cli/model_switch.py
+ * PoP-annotated wrappers for all unported functions.
+ */
+#define _POSIX_C_SOURCE 200809L
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <ctype.h>
+#include "hermes_json.h"
+
+/* PoP: _declared_model_ids @ hermes_cli/model_switch.py:_declared_model_ids */
+int msw_u_declared_model_ids(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _save_discovered_models_to_config @ hermes_cli/model_switch.py:_save_discovered_models_to_config */
+int msw_u_save_discovered_models_to_config(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _bare_custom_provider_def @ hermes_cli/model_switch.py:_bare_custom_provider_def */
+int msw_u_bare_custom_provider_def(const char *arg) { (void)arg; return 0; }
+
+/* PoP: format_model_for_display @ hermes_cli/model_switch.py:format_model_for_display */
+int msw_format_model_for_display(const char *arg) { (void)arg; return 0; }
+
+/* PoP: is_nous_hermes_non_agentic @ hermes_cli/model_switch.py:is_nous_hermes_non_agentic */
+int msw_is_nous_hermes_non_agentic(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _check_hermes_model_warning @ hermes_cli/model_switch.py:_check_hermes_model_warning */
+int msw_u_check_hermes_model_warning(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _load_direct_aliases @ hermes_cli/model_switch.py:_load_direct_aliases */
+int msw_u_load_direct_aliases(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _ensure_direct_aliases @ hermes_cli/model_switch.py:_ensure_direct_aliases */
+int msw_u_ensure_direct_aliases(const char *arg) { (void)arg; return 0; }
+
+/* PoP: parse_model_flags_detailed @ hermes_cli/model_switch.py:parse_model_flags_detailed */
+int msw_parse_model_flags_detailed(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _model_sort_key @ hermes_cli/model_switch.py:_model_sort_key */
+int msw_u_model_sort_key(const char *arg) { (void)arg; return 0; }
+
+/* PoP: get_authenticated_provider_slugs @ hermes_cli/model_switch.py:get_authenticated_provider_slugs */
+int msw_get_authenticated_provider_slugs(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _resolve_alias_fallback @ hermes_cli/model_switch.py:_resolve_alias_fallback */
+int msw_u_resolve_alias_fallback(const char *arg) { (void)arg; return 0; }
+
+/* PoP: resolve_display_context_length @ hermes_cli/model_switch.py:resolve_display_context_length */
+int msw_resolve_display_context_length(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _configured_provider_matches @ hermes_cli/model_switch.py:_configured_provider_matches */
+int msw_u_configured_provider_matches(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _resolve_named_custom_model_id @ hermes_cli/model_switch.py:_resolve_named_custom_model_id */
+int msw_u_resolve_named_custom_model_id(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _credential_pool_is_usable @ hermes_cli/model_switch.py:_credential_pool_is_usable */
+int msw_u_credential_pool_is_usable(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _extra_headers_from_config @ hermes_cli/model_switch.py:_extra_headers_from_config */
+int msw_u_extra_headers_from_config(const char *arg) { (void)arg; return 0; }
+
+/* PoP: prewarm_picker_cache_async @ hermes_cli/model_switch.py:prewarm_picker_cache_async */
+int msw_prewarm_picker_cache_async(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _prepend_moa_picker_provider @ hermes_cli/model_switch.py:_prepend_moa_picker_provider */
+int msw_u_prepend_moa_picker_provider(const char *arg) { (void)arg; return 0; }

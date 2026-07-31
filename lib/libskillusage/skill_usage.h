@@ -17,6 +17,7 @@ extern "C" {
 
 #include <stdbool.h>
 #include <stddef.h>
+#include "hermes_json.h"
 
 /** Maximum skill name length */
 #define SKILL_USAGE_MAX_NAME 128
@@ -198,6 +199,29 @@ int skill_usage_activity_count(const skill_usage_record_t *record);
  * @param out_buf  Buffer (minimum 32 bytes).
  */
 void skill_usage_now_iso(char *out_buf);
+
+/* Additional tools/skill_usage.py ports */
+double skill_usage_latest_activity_at(const skill_usage_record_t *record);
+json_t *skill_usage_read_bundled_manifest_names(const char *hermes_home);
+json_t *skill_usage_read_hub_installed_names(const char *hermes_home);
+bool skill_usage_prune_builtins_enabled(void);
+const char *skill_usage_suppressed_file(const char *hermes_home, char *out, size_t sz);
+void skill_usage_write_suppressed_names(const char *hermes_home, json_t *names);
+void skill_usage_add_suppressed_name(const char *hermes_home, const char *name);
+void skill_usage_remove_suppressed_name(const char *hermes_home, const char *name);
+json_t *skill_usage_list_agent_created_names(const char *hermes_home);
+json_t *skill_usage_list_archived_names(const char *hermes_home);
+bool skill_usage_is_agent_created(const skill_usage_record_t *record);
+bool skill_usage_is_hub_installed(const skill_usage_record_t *record);
+bool skill_usage_is_bundled(const skill_usage_record_t *record);
+const char *skill_usage_external_read_only_message(const char *skill_name);
+bool skill_usage_is_curation_eligible(const skill_usage_record_t *record);
+bool skill_usage_is_curator_managed_record(const skill_usage_record_t *record);
+char *skill_usage_find_external_skill_dir(const char *hermes_home, const char *name);
+json_t *skill_usage_agent_created_report(const char *hermes_home);
+json_t *skill_usage_usage_report(const char *hermes_home);
+int skill_usage_archive_skill_by_name(const char *hermes_home, const char *name);
+int skill_usage_restore_skill_by_name(const char *hermes_home, const char *name);
 
 #ifdef __cplusplus
 }

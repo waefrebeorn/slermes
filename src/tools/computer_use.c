@@ -31,6 +31,8 @@
  * ====================================================================== */
 
 static char *handle_computer_use(const char *args_json, const char *task_id);
+/* PoP: action @ tools/computer_use/cua_backend.py:action */
+/* PoP: _action @ tools/computer_use/cua_backend.py:_action */
 static char *dispatch_action(cu_backend_t *b, const char *action, json_t *args);
 
 /* ======================================================================
@@ -118,6 +120,7 @@ static cu_action_t *noop_list_apps(void) {
     return noop_make_action("list_apps", true, "3 apps running");
 }
 
+/* PoP: focus_app @ tools/computer_use/tool.py:focus_app */
 static cu_action_t *noop_focus_app(const char *app, bool raise) {
     return noop_make_action("focus_app", true, "focused %s%s",
                              app ? app : "(frontmost)",

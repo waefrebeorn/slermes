@@ -5,7 +5,6 @@
  * Configured via --platform flag (single) or config.yaml gateway.platforms list.
  */
 
-#include "hermes.h"
 #include "hermes_core_types.h"
 #include "gw_server_internals.h"
 #include "gw_pollers.h"
@@ -19,6 +18,9 @@
 #include "hermes_telegram_filter.h"
 #include "hermes_gateway_runner.h"
 #include "port_gateway_run_agent.h"
+#include "hermes_gateway.h"
+#include "approval.h"
+#include "hermes_cdp.h"
 #include <pthread.h>
 #include <errno.h>
 #include <stdio.h>
@@ -26,7 +28,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <signal.h>
-#include <pthread.h>
 #include <strings.h>
 #include <time.h>
 #include <ctype.h>
@@ -35,6 +36,9 @@
 
 #include "hermes_gateway_config.h"
 #include "port_gateway_run_deps.h"
+#include "hermes_redact.h"
+#include "hermes_tirith.h"
+#include "hermes_cron.h"
 
 /* ============================================================================
  *  Hook pipeline appliers (defined here; declared in gw_server_internals.h).

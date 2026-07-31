@@ -119,6 +119,11 @@ typedef struct {
     char                session_system_prompt[4096]; /* per-session system prompt (empty = use default) */
     /* SE07: Telegram topic mode binding */
     char                telegram_topic_id[64]; /* bound Telegram topic ID for this session */
+    /* session.py extensions */
+    char                last_message_id[128];  /* last platform message ID seen */
+    char                model_override[128];   /* per-session model override */
+    bool                resume_pending;        /* session resume pending flag */
+    bool                suspended;              /* session suspended flag */
 } gw_session_entry_t;
 
 /* ================================================================
@@ -269,6 +274,9 @@ typedef struct {
     bool   kanban_notifier_enabled;
     int    kanban_notifier_interval_sec; /* poll interval (default 5) */
     int    kanban_notifier_max_fail;     /* max consecutive send failures (default 3) */
+    /* session.py extensions */
+    char   routing_scope[64];           /* routing scope for session recovery */
+    char   active_profile[128];         /* active profile name */
 } gateway_state_t;
 
 /* Global gateway state — defined in server.c */

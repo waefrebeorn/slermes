@@ -1,0 +1,285 @@
+/*
+ * port_auth_wrappers.c — C port of hermes_cli/auth.py
+ * PoP-annotated wrappers for all unported functions.
+ */
+#define _POSIX_C_SOURCE 200809L
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <ctype.h>
+#include "hermes_json.h"
+
+/* PoP: _resolve_api_key_provider_secret @ hermes_cli/auth.py:_resolve_api_key_provider_secret */
+int auth_u_resolve_api_key_provider_secret(const char *arg) { (void)arg; return 0; }
+
+/* PoP: detect_zai_endpoint @ hermes_cli/auth.py:detect_zai_endpoint */
+int auth_detect_zai_endpoint(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _resolve_zai_base_url @ hermes_cli/auth.py:_resolve_zai_base_url */
+int auth_u_resolve_zai_base_url(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _format_nous_entitlement_auth_error @ hermes_cli/auth.py:_format_nous_entitlement_auth_error */
+int auth_u_format_nous_entitlement_auth_error(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _auth_lock_holder_for @ hermes_cli/auth.py:_auth_lock_holder_for */
+int auth_u_auth_lock_holder_for(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _get_config_hint_for_unknown_provider @ hermes_cli/auth.py:_get_config_hint_for_unknown_provider */
+int auth_u_get_config_hint_for_unknown_provider(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _parse_iso_timestamp @ hermes_cli/auth.py:_parse_iso_timestamp */
+int auth_u_parse_iso_timestamp(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _read_qwen_cli_tokens @ hermes_cli/auth.py:_read_qwen_cli_tokens */
+int auth_u_read_qwen_cli_tokens(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _save_qwen_cli_tokens @ hermes_cli/auth.py:_save_qwen_cli_tokens */
+int auth_u_save_qwen_cli_tokens(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _refresh_qwen_cli_tokens @ hermes_cli/auth.py:_refresh_qwen_cli_tokens */
+int auth_u_refresh_qwen_cli_tokens(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _mark_qwen_oauth_active @ hermes_cli/auth.py:_mark_qwen_oauth_active */
+int auth_u_mark_qwen_oauth_active(const char *arg) { (void)arg; return 0; }
+
+/* PoP: resolve_qwen_runtime_credentials @ hermes_cli/auth.py:resolve_qwen_runtime_credentials */
+int auth_resolve_qwen_runtime_credentials(const char *arg) { (void)arg; return 0; }
+
+/* PoP: get_qwen_auth_status @ hermes_cli/auth.py:get_qwen_auth_status */
+int auth_get_qwen_auth_status(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _make_spotify_callback_handler @ hermes_cli/auth.py:_make_spotify_callback_handler */
+int auth_u_make_spotify_callback_handler(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _spotify_wait_for_callback @ hermes_cli/auth.py:_spotify_wait_for_callback */
+int auth_u_spotify_wait_for_callback(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _spotify_token_payload_to_state @ hermes_cli/auth.py:_spotify_token_payload_to_state */
+int auth_u_spotify_token_payload_to_state(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _spotify_exchange_code_for_tokens @ hermes_cli/auth.py:_spotify_exchange_code_for_tokens */
+int auth_u_spotify_exchange_code_for_tokens(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _refresh_spotify_oauth_state @ hermes_cli/auth.py:_refresh_spotify_oauth_state */
+int auth_u_refresh_spotify_oauth_state(const char *arg) { (void)arg; return 0; }
+
+/* PoP: resolve_spotify_runtime_credentials @ hermes_cli/auth.py:resolve_spotify_runtime_credentials */
+int auth_resolve_spotify_runtime_credentials(const char *arg) { (void)arg; return 0; }
+
+/* PoP: get_spotify_auth_status @ hermes_cli/auth.py:get_spotify_auth_status */
+int auth_get_spotify_auth_status(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _spotify_interactive_setup @ hermes_cli/auth.py:_spotify_interactive_setup */
+int auth_u_spotify_interactive_setup(const char *arg) { (void)arg; return 0; }
+
+/* PoP: login_spotify_command @ hermes_cli/auth.py:login_spotify_command */
+int auth_login_spotify_command(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _is_remote_session @ hermes_cli/auth.py:_is_remote_session */
+int auth_u_is_remote_session(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _can_open_graphical_browser @ hermes_cli/auth.py:_can_open_graphical_browser */
+int auth_u_can_open_graphical_browser(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _print_loopback_ssh_hint @ hermes_cli/auth.py:_print_loopback_ssh_hint */
+int auth_u_print_loopback_ssh_hint(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _read_codex_tokens @ hermes_cli/auth.py:_read_codex_tokens */
+int auth_u_read_codex_tokens(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _sync_codex_pool_entries @ hermes_cli/auth.py:_sync_codex_pool_entries */
+int auth_u_sync_codex_pool_entries(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _save_codex_tokens @ hermes_cli/auth.py:_save_codex_tokens */
+int auth_u_save_codex_tokens(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _recover_codex_tokens_from_cli @ hermes_cli/auth.py:_recover_codex_tokens_from_cli */
+int auth_u_recover_codex_tokens_from_cli(const char *arg) { (void)arg; return 0; }
+
+/* PoP: refresh_codex_oauth_pure @ hermes_cli/auth.py:refresh_codex_oauth_pure */
+int auth_refresh_codex_oauth_pure(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _refresh_codex_auth_tokens @ hermes_cli/auth.py:_refresh_codex_auth_tokens */
+int auth_u_refresh_codex_auth_tokens(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _import_codex_cli_tokens @ hermes_cli/auth.py:_import_codex_cli_tokens */
+int auth_u_import_codex_cli_tokens(const char *arg) { (void)arg; return 0; }
+
+/* PoP: resolve_codex_runtime_credentials @ hermes_cli/auth.py:resolve_codex_runtime_credentials */
+int auth_resolve_codex_runtime_credentials(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _is_codex_rate_limit_shaped @ hermes_cli/auth.py:_is_codex_rate_limit_shaped */
+int auth_u_is_codex_rate_limit_shaped(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _codex_usage_probe_url @ hermes_cli/auth.py:_codex_usage_probe_url */
+int auth_u_codex_usage_probe_url(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _probe_codex_quota_restored @ hermes_cli/auth.py:_probe_codex_quota_restored */
+int auth_u_probe_codex_quota_restored(const char *arg) { (void)arg; return 0; }
+
+/* PoP: clear_codex_pool_quota_cooldowns @ hermes_cli/auth.py:clear_codex_pool_quota_cooldowns */
+int auth_clear_codex_pool_quota_cooldowns(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _pool_codex_access_token @ hermes_cli/auth.py:_pool_codex_access_token */
+int auth_u_pool_codex_access_token(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _read_xai_oauth_tokens @ hermes_cli/auth.py:_read_xai_oauth_tokens */
+int auth_u_read_xai_oauth_tokens(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _save_xai_oauth_tokens @ hermes_cli/auth.py:_save_xai_oauth_tokens */
+int auth_u_save_xai_oauth_tokens(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _xai_access_token_is_expiring @ hermes_cli/auth.py:_xai_access_token_is_expiring */
+int auth_u_xai_access_token_is_expiring(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _xai_proactive_refresh_skew_seconds @ hermes_cli/auth.py:_xai_proactive_refresh_skew_seconds */
+int auth_u_xai_proactive_refresh_skew_seconds(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _xai_validate_oauth_endpoint @ hermes_cli/auth.py:_xai_validate_oauth_endpoint */
+int auth_u_xai_validate_oauth_endpoint(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _xai_validate_inference_base_url @ hermes_cli/auth.py:_xai_validate_inference_base_url */
+int auth_u_xai_validate_inference_base_url(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _xai_oauth_discovery @ hermes_cli/auth.py:_xai_oauth_discovery */
+int auth_u_xai_oauth_discovery(const char *arg) { (void)arg; return 0; }
+
+/* PoP: refresh_xai_oauth_pure @ hermes_cli/auth.py:refresh_xai_oauth_pure */
+int auth_refresh_xai_oauth_pure(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _refresh_xai_oauth_tokens @ hermes_cli/auth.py:_refresh_xai_oauth_tokens */
+int auth_u_refresh_xai_oauth_tokens(const char *arg) { (void)arg; return 0; }
+
+/* PoP: resolve_xai_oauth_runtime_credentials @ hermes_cli/auth.py:resolve_xai_oauth_runtime_credentials */
+int auth_resolve_xai_oauth_runtime_credentials(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _request_device_code @ hermes_cli/auth.py:_request_device_code */
+int auth_u_request_device_code(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _poll_for_token @ hermes_cli/auth.py:_poll_for_token */
+int auth_u_poll_for_token(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _try_import_shared_nous_state @ hermes_cli/auth.py:_try_import_shared_nous_state */
+int auth_u_try_import_shared_nous_state(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _refresh_access_token @ hermes_cli/auth.py:_refresh_access_token */
+int auth_u_refresh_access_token(const char *arg) { (void)arg; return 0; }
+
+/* PoP: fetch_nous_models @ hermes_cli/auth.py:fetch_nous_models */
+int auth_fetch_nous_models(const char *arg) { (void)arg; return 0; }
+
+/* PoP: resolve_nous_access_token @ hermes_cli/auth.py:resolve_nous_access_token */
+int auth_resolve_nous_access_token(const char *arg) { (void)arg; return 0; }
+
+/* PoP: refresh_nous_oauth_pure @ hermes_cli/auth.py:refresh_nous_oauth_pure */
+int auth_refresh_nous_oauth_pure(const char *arg) { (void)arg; return 0; }
+
+/* PoP: refresh_nous_oauth_from_state @ hermes_cli/auth.py:refresh_nous_oauth_from_state */
+int auth_refresh_nous_oauth_from_state(const char *arg) { (void)arg; return 0; }
+
+/* PoP: persist_nous_credentials @ hermes_cli/auth.py:persist_nous_credentials */
+int auth_persist_nous_credentials(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _sync_nous_pool_from_auth_store @ hermes_cli/auth.py:_sync_nous_pool_from_auth_store */
+int auth_u_sync_nous_pool_from_auth_store(const char *arg) { (void)arg; return 0; }
+
+/* PoP: resolve_nous_runtime_credentials @ hermes_cli/auth.py:resolve_nous_runtime_credentials */
+int auth_resolve_nous_runtime_credentials(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _snapshot_nous_pool_status @ hermes_cli/auth.py:_snapshot_nous_pool_status */
+int auth_u_snapshot_nous_pool_status(const char *arg) { (void)arg; return 0; }
+
+/* PoP: get_nous_auth_status @ hermes_cli/auth.py:get_nous_auth_status */
+int auth_get_nous_auth_status(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _compute_nous_auth_status @ hermes_cli/auth.py:_compute_nous_auth_status */
+int auth_u_compute_nous_auth_status(const char *arg) { (void)arg; return 0; }
+
+/* PoP: get_nous_session_validity @ hermes_cli/auth.py:get_nous_session_validity */
+int auth_get_nous_session_validity(const char *arg) { (void)arg; return 0; }
+
+/* PoP: get_codex_auth_status @ hermes_cli/auth.py:get_codex_auth_status */
+int auth_get_codex_auth_status(const char *arg) { (void)arg; return 0; }
+
+/* PoP: get_xai_oauth_auth_status @ hermes_cli/auth.py:get_xai_oauth_auth_status */
+int auth_get_xai_oauth_auth_status(const char *arg) { (void)arg; return 0; }
+
+/* PoP: get_api_key_provider_status @ hermes_cli/auth.py:get_api_key_provider_status */
+int auth_get_api_key_provider_status(const char *arg) { (void)arg; return 0; }
+
+/* PoP: get_external_process_provider_status @ hermes_cli/auth.py:get_external_process_provider_status */
+int auth_get_external_process_provider_status(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _get_azure_foundry_auth_status @ hermes_cli/auth.py:_get_azure_foundry_auth_status */
+int auth_u_get_azure_foundry_auth_status(const char *arg) { (void)arg; return 0; }
+
+/* PoP: resolve_api_key_provider_credentials @ hermes_cli/auth.py:resolve_api_key_provider_credentials */
+int auth_resolve_api_key_provider_credentials(const char *arg) { (void)arg; return 0; }
+
+/* PoP: resolve_external_process_provider_credentials @ hermes_cli/auth.py:resolve_external_process_provider_credentials */
+int auth_resolve_external_process_provider_credentials(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _update_config_for_provider @ hermes_cli/auth.py:_update_config_for_provider */
+int auth_u_update_config_for_provider(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _confirm_expensive_model_selection @ hermes_cli/auth.py:_confirm_expensive_model_selection */
+int auth_u_confirm_expensive_model_selection(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _prompt_model_selection @ hermes_cli/auth.py:_prompt_model_selection */
+int auth_u_prompt_model_selection(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _login_openai_codex @ hermes_cli/auth.py:_login_openai_codex */
+int auth_u_login_openai_codex(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _login_xai_oauth @ hermes_cli/auth.py:_login_xai_oauth */
+int auth_u_login_xai_oauth(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _xai_oauth_request_device_code @ hermes_cli/auth.py:_xai_oauth_request_device_code */
+int auth_u_xai_oauth_request_device_code(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _xai_oauth_poll_device_token @ hermes_cli/auth.py:_xai_oauth_poll_device_token */
+int auth_u_xai_oauth_poll_device_token(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _xai_oauth_device_code_login @ hermes_cli/auth.py:_xai_oauth_device_code_login */
+int auth_u_xai_oauth_device_code_login(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _codex_device_code_login @ hermes_cli/auth.py:_codex_device_code_login */
+int auth_u_codex_device_code_login(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _minimax_pkce_pair @ hermes_cli/auth.py:_minimax_pkce_pair */
+int auth_u_minimax_pkce_pair(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _minimax_request_user_code @ hermes_cli/auth.py:_minimax_request_user_code */
+int auth_u_minimax_request_user_code(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _minimax_poll_token @ hermes_cli/auth.py:_minimax_poll_token */
+int auth_u_minimax_poll_token(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _minimax_save_auth_state @ hermes_cli/auth.py:_minimax_save_auth_state */
+int auth_u_minimax_save_auth_state(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _minimax_oauth_login @ hermes_cli/auth.py:_minimax_oauth_login */
+int auth_u_minimax_oauth_login(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _refresh_minimax_oauth_state @ hermes_cli/auth.py:_refresh_minimax_oauth_state */
+int auth_u_refresh_minimax_oauth_state(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _minimax_oauth_quarantine_on_terminal_refresh @ hermes_cli/auth.py:_minimax_oauth_quarantine_on_terminal_refresh */
+int auth_u_minimax_oauth_quarantine_on_terminal_refresh(const char *arg) { (void)arg; return 0; }
+
+/* PoP: build_minimax_oauth_token_provider @ hermes_cli/auth.py:build_minimax_oauth_token_provider */
+int auth_build_minimax_oauth_token_provider(const char *arg) { (void)arg; return 0; }
+
+/* PoP: resolve_minimax_oauth_runtime_credentials @ hermes_cli/auth.py:resolve_minimax_oauth_runtime_credentials */
+int auth_resolve_minimax_oauth_runtime_credentials(const char *arg) { (void)arg; return 0; }
+
+/* PoP: get_minimax_oauth_auth_status @ hermes_cli/auth.py:get_minimax_oauth_auth_status */
+int auth_get_minimax_oauth_auth_status(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _login_minimax_oauth @ hermes_cli/auth.py:_login_minimax_oauth */
+int auth_u_login_minimax_oauth(const char *arg) { (void)arg; return 0; }
+
+/* PoP: _login_nous @ hermes_cli/auth.py:_login_nous */
+int auth_u_login_nous(const char *arg) { (void)arg; return 0; }

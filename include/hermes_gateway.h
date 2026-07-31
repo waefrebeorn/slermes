@@ -98,3 +98,5 @@
 
 /** @} */
 #endif /* HERMES_GATEWAY_H */
+/* Entry point — gateway main */
+int hermes_gateway_main(int argc, char **argv);

@@ -66,6 +66,7 @@ static int json_len;
 
 /* Forward declarations */
 static char g_current_path[1024]; /* path of current request, used by handlers */
+static char g_current_method[16] = "GET"; /* HTTP method of current request */
 static int g_client_fd = -1;      /* client fd of current request, for direct responses */
 static void h_session_detail(void);
 static void h_session_patch(void);
@@ -390,10 +391,16 @@ static void h_sessions(void) {
     }
     /* Check for /api/sessions/{id} — GET=detail, PATCH=update, DELETE=delete */
     if (sub[0] && sub[0] != '/') {
-        /* Has a session ID */
-        const char *method = "GET"; /* TODO: get method from request */
-        /* For now, default to detail. Method-specific routes would need
-           the HTTP method passed through. We return detail for any sub-path. */
+        /* Has a session ID — dispatch by HTTP method */
+        if (strcmp(g_current_method, "PATCH") == 0 || strcmp(g_current_method, "PUT") == 0) {
+            h_session_patch();
+            return;
+        }
+        if (strcmp(g_current_method, "DELETE") == 0) {
+            h_session_delete();
+            return;
+        }
+        /* Default: GET — return session detail */
         h_session_detail();
         return;
     }
@@ -3321,6 +3328,12 @@ static void *handle_client(void *arg) {
 
     char method[16], path[1024];
     if (sscanf(buf, "%15s %1023s", method, path) < 2) { close(fd); return NULL; }
+
+    /* Store the method for handler dispatch */
+    snprintf(g_current_method, sizeof(g_current_method), "%s", method);
+
+    /* Store the path for handler dispatch */
+    snprintf(g_current_path, sizeof(g_current_path), "%s", path);
 
     /* Strip query string */
     char *q = strchr(path, '?');

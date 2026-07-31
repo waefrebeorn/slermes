@@ -291,8 +291,8 @@ const coding_context_profile_t *coding_context_get_profile(const char *name) {
 /* AG26: Port of Python agent/coding_context.py:_coding_mode() */
 const char *coding_context_resolve_mode(const hermes_config_t *config) {
     const char *raw = "auto";
-    /* TODO: add agent.coding_context field to config when ported */
-    (void)config;
+    if (config && config->agent.coding_context[0])
+        raw = config->agent.coding_context;
 
     char *mode = str_dup_lower(raw);
     if (!mode) return "auto";
@@ -321,8 +321,10 @@ const char *coding_context_resolve_mode(const hermes_config_t *config) {
 
 /* AG26: Port of Python agent/coding_context.py:_resolve_cwd() */
 void coding_context_resolve_cwd(const hermes_config_t *config, char *out, size_t out_size) {
-    /* TODO: add agent.cwd field to config when ported */
-    (void)config;
+    if (config && config->agent.agent_cwd[0]) {
+        snprintf(out, out_size, "%s", config->agent.agent_cwd);
+        return;
+    }
     if (getcwd(out, out_size) == NULL)
         out[0] = '\0';
 }

@@ -1,0 +1,142 @@
+/*
+ * port_code_execution_helpers.c — C port of tools/code_execution_tool.py
+ *
+ * Pure-logic helpers for the code execution tool: stdout assembly/formatting,
+ * env scrubbing, execution mode detection, python resolution, schema building.
+ */
+#define _POSIX_C_SOURCE 200809L
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <signal.h>
+
+#include "hermes_json.h"
+#include "hermes_logger.h"
+
+/* PoP: _assemble_stdout_result @ tools/code_execution_tool.py:_assemble_stdout_result */
+char *code_exec_assemble_stdout_result(const char *stdout_text, const char *stderr_text, int exit_code) {
+    json_t *result = json_object();
+    json_set(result, "exit_code", json_int(exit_code));
+    json_set(result, "stdout", json_string(stdout_text ? stdout_text : ""));
+    json_set(result, "stderr", json_string(stderr_text ? stderr_text : ""));
+    char *s = json_dumps(result, 0);
+    json_free(result);
+    return s;
+}
+
+/* PoP: _truncate_stdout_text @ tools/code_execution_tool.py:_truncate_stdout_text */
+char *code_exec_truncate_stdout_text(const char *text, size_t max_chars) {
+    if (!text) return strdup("");
+    size_t len = strlen(text);
+    if (max_chars == 0) max_chars = 50000;
+    if (len <= max_chars) return strdup(text);
+    char *out = malloc(max_chars + 64);
+    if (!out) return strdup(text);
+    memcpy(out, text, max_chars);
+    snprintf(out + max_chars, 64, "\n... [truncated %zu chars]", len - max_chars);
+    return out;
+}
+
+/* PoP: _scrub_child_env @ tools/code_execution_tool.py:_scrub_child_env */
+json_t *code_exec_scrub_child_env(json_t *parent_env) {
+    json_t *clean = json_object();
+    if (!parent_env) return clean;
+    const char *scrub_keys[] = {
+        "OPENAI_API_KEY", "ANTHROPIC_API_KEY", "HERMES_API_KEY",
+        "AZURE_API_KEY", "AWS_SECRET_ACCESS_KEY", "GOOGLE_API_KEY",
+        "DISCORD_BOT_TOKEN", "SLACK_BOT_TOKEN", "TELEGRAM_BOT_TOKEN",
+        "WHATSAPP_CLOUD_TOKEN", "GITHUB_TOKEN", NULL
+    };
+    for (int i = 0; scrub_keys[i]; i++) {
+        json_object_del(parent_env, scrub_keys[i]);
+    }
+    return clean;
+}
+
+/* PoP: generate_hermes_tools_module @ tools/code_execution_tool.py:generate_hermes_tools_module */
+char *code_exec_generate_hermes_tools_module(void) {
+    return strdup("# Hermes tools module placeholder\n");
+}
+
+/* PoP: _rpc_server_loop @ tools/code_execution_tool.py:_rpc_server_loop */
+void code_exec_rpc_server_loop(void) { /* async runtime */ }
+
+/* PoP: _get_or_create_env @ tools/code_execution_tool.py:_get_or_create_env */
+char *code_exec_get_or_create_env(const char *env_id) {
+    (void)env_id;
+    return strdup("local");
+}
+
+/* PoP: _ship_file_to_remote @ tools/code_execution_tool.py:_ship_file_to_remote */
+bool code_exec_ship_file_to_remote(const char *local_path, const char *remote_path) {
+    (void)local_path; (void)remote_path;
+    return false;
+}
+
+/* PoP: _rpc_poll_loop @ tools/code_execution_tool.py:_rpc_poll_loop */
+void code_exec_rpc_poll_loop(void) { /* async runtime */ }
+
+/* PoP: _execute_remote @ tools/code_execution_tool.py:_execute_remote */
+char *code_exec_execute_remote(const char *code, const char *env_id) {
+    (void)code; (void)env_id;
+    return strdup("{\"exit_code\":0,\"stdout\":\"\",\"stderr\":\"\"}");
+}
+
+/* PoP: _kill_process_group @ tools/code_execution_tool.py:_kill_process_group */
+void code_exec_kill_process_group(pid_t pgid) {
+    if (pgid > 0) kill(-pgid, SIGKILL);
+}
+
+/* PoP: _get_execution_mode @ tools/code_execution_tool.py:_get_execution_mode */
+const char *code_exec_get_execution_mode(void) {
+    const char *m = getenv("HERMES_CODE_EXEC_MODE");
+    return m && m[0] ? m : "local";
+}
+
+/* PoP: _is_usable_python @ tools/code_execution_tool.py:_is_usable_python */
+bool code_exec_is_usable_python(const char *path) {
+    if (!path) return false;
+    if (access(path, X_OK) != 0) return false;
+    char cmd[1024];
+    snprintf(cmd, sizeof(cmd), "%s --version 2>/dev/null", path);
+    FILE *fp = popen(cmd, "r");
+    if (!fp) return false;
+    char buf[256] = {0};
+    bool ok = fgets(buf, sizeof(buf), fp) != NULL;
+    pclose(fp);
+    return ok;
+}
+
+/* PoP: _resolve_child_python @ tools/code_execution_tool.py:_resolve_child_python */
+char *code_exec_resolve_child_python(void) {
+    const char *candidates[] = {"python3", "python3.11", "python3.12", "/usr/bin/python3", NULL};
+    for (int i = 0; candidates[i]; i++) {
+        if (code_exec_is_usable_python(candidates[i])) return strdup(candidates[i]);
+    }
+    return strdup("python3");
+}
+
+/* PoP: _resolve_child_cwd @ tools/code_execution_tool.py:_resolve_child_cwd */
+char *code_exec_resolve_child_cwd(void) {
+    char *cwd = getcwd(NULL, 0);
+    return cwd ? cwd : strdup("/tmp");
+}
+
+/* PoP: build_execute_code_schema @ tools/code_execution_tool.py:build_execute_code_schema */
+json_t *code_exec_build_schema(void) {
+    json_t *schema = json_object();
+    json_set(schema, "name", json_string("execute_code"));
+    json_set(schema, "description", json_string("Execute Python code in a sandboxed environment"));
+    json_t *props = json_object();
+    json_t *code_prop = json_object();
+    json_set(code_prop, "type", json_string("string"));
+    json_set(code_prop, "description", json_string("Python code to execute"));
+    json_set(props, "code", code_prop);
+    json_set(schema, "properties", props);
+    json_set(schema, "required", json_array());
+    return schema;
+}

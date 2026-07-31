@@ -555,6 +555,8 @@ typedef struct {
     char  moa_model[128];          /* agent.mixture_of_agents.model */
     char  moa_strategy[32];        /* agent.mixture_of_agents.strategy: round_robin | weighted | parallel */
     int   moa_workers;             /* agent.mixture_of_agents.num_workers */
+    char  coding_context[32];      /* agent.coding_context: auto|focus|on|off */
+    char  agent_cwd[HERMES_PATH_MAX]; /* agent.cwd: working directory override */
 } agent_config_t;
 
 /* ================================================================

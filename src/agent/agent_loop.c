@@ -8,6 +8,7 @@
  * 4. If LLM returns tool_calls → execute each, append results, loop
  * 5. Repeat until max_iterations or final response
  */
+#define _XOPEN_SOURCE 700  /* strptime() — glibc X/Open extension */
 
 #include "hermes_memory.h"
 #include "hermes_core_types.h"
@@ -28,6 +29,9 @@
 #include "provider_metadata.h"
 #include "hermes_tool_guardrails.h"
 #include "acp/edit_approval.h"
+#include "hermes_http.h"
+#include <time.h>
+#include <strings.h>
 /* (hermes_gap_fixes.h removed: split into todo_hydrate.h / file_mutation_verifier.h / api_error_summary.h; this TU used no symbols from it) */
 #include <stdio.h>
 #include <stdlib.h>
@@ -781,17 +785,227 @@ int _image_error_max_dimension(const char *error_str) {
 
 /* Port of Python agent/conversation_loop.py:_try_refresh_nous_paid_entitlement_credentials().
  * Refresh Nous runtime credentials after a fresh paid-entitlement check.
- * Returns true if credentials were refreshed. */
+ * Returns true if credentials were refreshed.
+ *
+ * Implementation: loads auth.json for the "nous" provider, checks the
+ * access_token expiry, and if expired or force-refreshed, POSTs to the
+ * portal OAuth refresh endpoint with the refresh token to get a new
+ * access token. Mirrors hermes_cli/auth.py:refresh_nous_oauth_pure().
+ * If no refresh is needed (token still valid), returns false — same as
+ * Python's no-op path. */
+static json_t *_arl_load_nous_state(void) {
+    /* Reuse the auth.json reader from chat_completion_helpers —
+     * but that's static, so we inline the equivalent logic here. */
+    const char *home = getenv("HERMES_HOME");
+    char path[4096];
+    if (home && *home)
+        snprintf(path, sizeof(path), "%s/auth.json", home);
+    else {
+        const char *h = getenv("HOME");
+        if (!h || !*h) return NULL;
+        snprintf(path, sizeof(path), "%s/.hermes/auth.json", h);
+    }
+    FILE *f = fopen(path, "r");
+    if (!f) return NULL;
+    fseek(f, 0, SEEK_END); long size = ftell(f); fseek(f, 0, SEEK_SET);
+    if (size <= 0) { fclose(f); return NULL; }
+    char *buf = malloc((size_t)size + 1);
+    if (!buf) { fclose(f); return NULL; }
+    size_t n = fread(buf, 1, (size_t)size, f);
+    fclose(f); buf[n] = '\0';
+    json_t *store = json_parse(buf, NULL);
+    free(buf);
+    if (!store) return NULL;
+    json_t *providers = json_obj_get(store, "providers");
+    json_t *state = providers ? json_obj_get(providers, "nous") : NULL;
+    json_t *result = state ? json_copy(state) : NULL;
+    json_free(store);
+    return result;
+}
+
+static int _arl_save_nous_state(json_t *new_state) {
+    /* Write the updated nous provider state back to auth.json.
+     * We load the full auth.json, update the nous key, and write it back. */
+    const char *home = getenv("HERMES_HOME");
+    char path[4096];
+    if (home && *home)
+        snprintf(path, sizeof(path), "%s/auth.json", home);
+    else {
+        const char *h = getenv("HOME");
+        if (!h || !*h) return -1;
+        snprintf(path, sizeof(path), "%s/.hermes/auth.json", h);
+    }
+    /* Load existing auth.json */
+    FILE *f = fopen(path, "r");
+    json_t *store = NULL;
+    if (f) {
+        fseek(f, 0, SEEK_END); long sz = ftell(f); fseek(f, 0, SEEK_SET);
+        if (sz > 0) {
+            char *buf = malloc((size_t)sz + 1);
+            if (buf) {
+                size_t rd = fread(buf, 1, (size_t)sz, f);
+                buf[rd] = '\0';
+                store = json_parse(buf, NULL);
+                free(buf);
+            }
+        }
+        fclose(f);
+    }
+    if (!store) store = json_new_object();
+    json_t *providers = json_obj_get(store, "providers");
+    if (!providers) {
+        providers = json_new_object();
+        json_object_set(store, "providers", providers);
+    }
+    /* Replace the nous entry */
+    json_object_set(providers, "nous", new_state);
+    /* Write back */
+    char *json_str = json_dumps(store, 0);
+    json_free(store);
+    if (!json_str) return -1;
+    f = fopen(path, "w");
+    if (!f) { free(json_str); return -1; }
+    fputs(json_str, f);
+    fclose(f);
+    free(json_str);
+    return 0;
+}
+
 bool _try_refresh_nous_paid_entitlement_credentials(agent_state_t *state) {
     if (!state) return false;
 
-    /* Check if we have a Nous provider configuration */
-    if (state->llm.provider[0] && strcasecmp(state->llm.provider, "nous") == 0) {
-        /* Try to refresh credentials - this would call into auth system */
-        /* TODO: Implement actual Nous credential refresh via auth store */
+    /* Only refresh for Nous provider */
+    if (!state->llm.provider[0] || strcasecmp(state->llm.provider, "nous") != 0)
+        return false;
+
+    /* Load the current auth state */
+    json_t *auth_state = _arl_load_nous_state();
+    if (!auth_state) {
+        hermes_log(LOG_WARNING, "agent",
+            "nous credential refresh: no auth state found");
         return false;
     }
-    return false;
+
+    /* Check if access token is still valid */
+    const char *access_token = json_object_get_string(auth_state, "access_token", "");
+    const char *expires_at = json_object_get_string(auth_state, "expires_at", "");
+    const char *refresh_token = json_object_get_string(auth_state, "refresh_token", "");
+    const char *portal_url = json_object_get_string(auth_state, "portal_base_url",
+                                                      "https://portal.nousresearch.com");
+
+    /* If we have a valid access token that hasn't expired, no refresh needed */
+    if (access_token[0] && expires_at[0]) {
+        /* Simple expiry check: compare expires_at against current time.
+         * expires_at is ISO 8601 format. We do a basic parse. */
+        time_t now = time(NULL);
+        /* Try to parse ISO 8601 — basic approach, compare strings.
+         * A real implementation would use strptime, but for a simple
+         * freshness check we look at whether we're within 60s of expiry. */
+        struct tm tm_expires = {0};
+        if (strptime(expires_at, "%Y-%m-%dT%H:%M:%S", &tm_expires)) {
+            time_t expires = mktime(&tm_expires);
+            if (expires - now > 60) {
+                /* Token still valid — no refresh needed */
+                json_free(auth_state);
+                return false;
+            }
+        }
+        /* If we can't parse, attempt refresh anyway */
+    }
+
+    /* Need refresh — check we have a refresh token */
+    if (!refresh_token[0]) {
+        hermes_log(LOG_WARNING, "agent",
+            "nous credential refresh: no refresh token, re-auth required");
+        json_free(auth_state);
+        return false;
+    }
+
+    /* POST to the portal OAuth refresh endpoint */
+    /* Build request: grant_type=refresh_token&refresh_token=...&client_id=... */
+    const char *client_id = json_object_get_string(auth_state, "client_id",
+                                                     "hermes-cl87");
+    char url[512];
+    snprintf(url, sizeof(url), "%s/oauth/token", portal_url);
+
+    /* Build form-encoded body */
+    char body[4096];
+    snprintf(body, sizeof(body),
+        "grant_type=refresh_token&refresh_token=%s&client_id=%s",
+        refresh_token, client_id);
+
+    /* Make the HTTP request */
+    http_t *client = http_new(30);
+    if (!client) {
+        json_free(auth_state);
+        return false;
+    }
+    http_resp_t *resp = http_request(client, HTTP_POST, url,
+        "Content-Type: application/x-www-form-urlencoded\r\n"
+        "Accept: application/json\r\n",
+        body, strlen(body));
+    http_free(client);
+
+    if (!resp || resp->status < 200 || resp->status >= 300) {
+        hermes_log(LOG_WARNING, "agent",
+            "nous credential refresh: HTTP %d from %s",
+            resp ? resp->status : 0, url);
+        if (resp) http_resp_free(resp);
+        json_free(auth_state);
+        return false;
+    }
+
+    /* Parse the response JSON */
+    json_t *refreshed = json_parse(resp->body, NULL);
+    http_resp_free(resp);
+    if (!refreshed) {
+        hermes_log(LOG_WARNING, "agent",
+            "nous credential refresh: failed to parse response");
+        json_free(auth_state);
+        return false;
+    }
+
+    /* Extract new tokens */
+    const char *new_access = json_object_get_string(refreshed, "access_token", "");
+    const char *new_refresh = json_object_get_string(refreshed, "refresh_token", "");
+    const char *new_scope = json_object_get_string(refreshed, "scope", "");
+    int expires_in = (int)json_get_num(refreshed, "expires_in", 0);
+
+    if (!new_access[0]) {
+        hermes_log(LOG_WARNING, "agent",
+            "nous credential refresh: no access_token in response");
+        json_free(refreshed);
+        json_free(auth_state);
+        return false;
+    }
+
+    /* Update auth state */
+    json_object_set(auth_state, "access_token", json_string(new_access));
+    if (new_refresh[0])
+        json_object_set(auth_state, "refresh_token", json_string(new_refresh));
+    if (new_scope[0])
+        json_object_set(auth_state, "scope", json_string(new_scope));
+    if (expires_in > 0) {
+        /* Compute new expires_at */
+        time_t exp = time(NULL) + expires_in;
+        char exp_str[32];
+        strftime(exp_str, sizeof(exp_str), "%Y-%m-%dT%H:%M:%S", gmtime(&exp));
+        json_object_set(auth_state, "expires_at", json_string(exp_str));
+    }
+
+    /* Save updated state back to auth.json */
+    _arl_save_nous_state(auth_state);
+
+    /* Update the agent state's API key with the new access token */
+    snprintf(state->llm.api_key, sizeof(state->llm.api_key), "%s", new_access);
+
+    hermes_log(LOG_INFO, "agent",
+        "nous credential refresh: success, new token valid until %s",
+        json_object_get_string(auth_state, "expires_at", "unknown"));
+
+    json_free(refreshed);
+    json_free(auth_state);
+    return true;
 }
 
 /* Port of Python agent/conversation_loop.py:_restore_or_build_system_prompt().

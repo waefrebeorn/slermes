@@ -31,3 +31,14 @@ int commands_count(void);
 const char *commands_list_json(void);
 
 #endif /* HERMES_CLI_H */
+
+/* /command runtime toggles */
+void commands_set_verbose(int level);
+void commands_set_yolo(bool enabled);
+void commands_set_fast(bool enabled);
+int  commands_get_verbose(void);
+bool commands_get_yolo(void);
+bool commands_get_fast(void);
+
+/* CLI entry point */
+int cli_main(int argc, char **argv);

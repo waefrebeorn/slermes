@@ -9,7 +9,8 @@
 /* PoP: C entry point (port of cli.py) */
 
 #include "hermes_core_types.h"
-#include "hermes.h"
+#include "hermes_cli.h"
+#include "hermes_gateway.h"
 #include "hermes_agent.h"
 #include "registry.h"
 #include "app_state.h"

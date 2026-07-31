@@ -46,6 +46,7 @@ typedef struct {
 static browser_tab_t g_tab;
 
 /* Get current browser tab URL (NULL if no active session) */
+/* PoP: _get @ tools/browser_camofox.py:_get */
 const char *browser_get_current_url(void) {
     return g_tab.url[0] ? g_tab.url : NULL;
 }

@@ -998,6 +998,7 @@ bool registry_deregister(const char *name) {
 
 /* Return sorted unique toolset names present in the registry.
  * Caller frees the returned NULL-terminated char* array. */
+/* PoP: get_registered_toolset_names @ tools/registry.py:get_registered_toolset_names */
 char **registry_get_registered_toolset_names(size_t *out_n) {
     pthread_mutex_lock(&g_registry_mutex);
     char **names = calloc(g_registry.count + 1, sizeof(char*));
@@ -1045,6 +1046,7 @@ char **registry_get_tool_names_for_toolset(const char *toolset, size_t *out_n) {
 
 /* Return sorted names of every registered tool.
  * Caller frees the returned NULL-terminated char* array. */
+/* PoP: get_all_tool_names @ tools/registry.py:get_all_tool_names */
 char **registry_get_all_tool_names(size_t *out_n) {
     pthread_mutex_lock(&g_registry_mutex);
     char **names = calloc(g_registry.count + 1, sizeof(char*));

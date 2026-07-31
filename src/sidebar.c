@@ -5,7 +5,6 @@
  */
 
 #define _GNU_SOURCE
-#include "hermes.h"
 #include "sidebar.h"
 #include "app_state_internal.h"
 #include "session_db.h"

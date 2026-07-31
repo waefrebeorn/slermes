@@ -251,6 +251,7 @@ void idempotency_cache_free(idempotency_cache_t *cache) {
     free(cache);
 }
 
+/* PoP: _purge @ gateway/platforms/api_server.py:_purge */
 static void cache_purge(idempotency_cache_t *cache) {
     time_t now = time(NULL);
     struct cache_entry **pp = &cache->head;

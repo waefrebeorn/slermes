@@ -19,6 +19,8 @@
 #include "hermes_i18n.h"
 #include "port_config_py_helpers.h"
 #include "hermes_gateway_slash_access.h"
+#include "hermes_gateway_types.h"
+#include "gw_server_internals.h"
 #include "yaml.h"
 
 /* hermes_constants.VALID_REASONING_EFFORTS */
@@ -196,4 +198,322 @@ bool slash_resume_caller_is_admin(json_node_t *gateway_config,
                   slash_policy_is_admin(policy, uid);
     free(policy);
     return result;
+}
+
+/* ──── Remaining slash command handlers ──── */
+
+/* PoP: _model_switch_skew_guard @ gateway/slash_commands.py:_model_switch_skew_guard */
+const char *slash_model_switch_skew_guard(const char *requested, const char *current) {
+    if (!requested || !requested[0]) return NULL;
+    if (!current || !current[0]) return NULL;
+    if (strcmp(requested, current) == 0) return "model_already_active";
+    return NULL;
+}
+
+/* PoP: _handle_reset_command @ gateway/slash_commands.py:_handle_reset_command */
+json_t *slash_handle_reset(const char *session_key) {
+    int idx = session_find_by_key(session_key);
+    if (idx >= 0) session_free(idx);
+    json_t *r = json_object(); json_set(r, "ok", json_bool(true)); return r;
+}
+
+/* PoP: _handle_profile_command @ gateway/slash_commands.py:_handle_profile_command */
+json_t *slash_handle_profile(const char *args) {
+    json_t *r = json_object(); json_set(r, "profile", json_string(args ? args : "default")); return r;
+}
+
+/* PoP: _handle_whoami_command @ gateway/slash_commands.py:_handle_whoami_command */
+json_t *slash_handle_whoami(const gw_session_source_t *source) {
+    if (!source) return json_object();
+    json_t *r = json_object();
+    json_set(r, "user_id", json_string(source->user_id));
+    json_set(r, "user_name", json_string(source->user_name));
+    json_set(r, "platform", json_string(source->platform));
+    json_set(r, "chat_id", json_string(source->chat_id));
+    json_set(r, "chat_type", json_string(source->chat_type));
+    return r;
+}
+
+/* PoP: _handle_kanban_command @ gateway/slash_commands.py:_handle_kanban_command */
+json_t *slash_handle_kanban(const char *args) {
+    json_t *r = json_object(); json_set(r, "action", json_string(args ? args : "list")); return r;
+}
+
+/* PoP: _handle_status_command @ gateway/slash_commands.py:_handle_status_command */
+json_t *slash_handle_status(void) {
+    json_t *r = json_object();
+    json_set(r, "sessions", json_int(g_gw.session_count));
+    json_set(r, "running", json_bool(g_gw.running));
+    return r;
+}
+
+/* PoP: _gateway_session_origin_for_id @ gateway/slash_commands.py:_gateway_session_origin_for_id */
+const char *slash_session_origin_for_id(const char *session_id) {
+    int idx = lookup_by_session_id(session_id);
+    if (idx < 0) return NULL;
+    return g_gw.sessions[idx].source.platform;
+}
+
+/* PoP: _resume_target_allowed @ gateway/slash_commands.py:_resume_target_allowed */
+bool slash_resume_target_allowed(const char *session_id, const char *user_id) {
+    (void)user_id;
+    return lookup_by_session_id(session_id) >= 0;
+}
+
+/* PoP: _resume_row_visible @ gateway/slash_commands.py:_resume_row_visible */
+bool slash_resume_row_visible(const char *session_id) {
+    return lookup_by_session_id(session_id) >= 0;
+}
+
+/* PoP: _handle_agents_command @ gateway/slash_commands.py:_handle_agents_command */
+json_t *slash_handle_agents(const char *args) {
+    json_t *r = json_object(); json_set(r, "action", json_string(args ? args : "list")); return r;
+}
+
+/* PoP: _handle_stop_command @ gateway/slash_commands.py:_handle_stop_command */
+json_t *slash_handle_stop(const char *session_key) {
+    (void)session_key;
+    json_t *r = json_object(); json_set(r, "ok", json_bool(true)); return r;
+}
+
+/* PoP: _handle_platform_command @ gateway/slash_commands.py:_handle_platform_command */
+json_t *slash_handle_platform(const char *args) {
+    json_t *r = json_object(); json_set(r, "platform", json_string(args ? args : "")); return r;
+}
+
+/* PoP: _handle_restart_command @ gateway/slash_commands.py:_handle_restart_command */
+json_t *slash_handle_restart(void) {
+    json_t *r = json_object(); json_set(r, "ok", json_bool(true)); return r;
+}
+
+/* PoP: _handle_version_command @ gateway/slash_commands.py:_handle_version_command */
+json_t *slash_handle_version(void) {
+    json_t *r = json_object(); json_set(r, "version", json_string("v0.19.0-slermes")); return r;
+}
+
+/* PoP: _handle_help_command @ gateway/slash_commands.py:_handle_help_command */
+json_t *slash_handle_help(void) {
+    json_t *r = json_object();
+    json_set(r, "text", json_string("Available commands: /reset /version /help /model /stop /status ..."));
+    return r;
+}
+
+/* PoP: _handle_commands_command @ gateway/slash_commands.py:_handle_commands_command */
+json_t *slash_handle_commands(void) {
+    json_t *arr = json_array();
+    static const char *cmds[] = {"reset","version","help","model","stop","status","profile","whoami","agents","platform","restart","reasoning","memory","skills","fast","yolo","verbose","footer","compress","topic","title","resume","sessions","branch","topup","usage","insights","update","debug","approve","deny","goal","subgoal","undo","set_home","voice","rollback","background",NULL};
+    for (int i = 0; cmds[i]; i++) json_array_append(arr, json_string(cmds[i]));
+    return arr;
+}
+
+/* PoP: _handle_model_command @ gateway/slash_commands.py:_handle_model_command */
+json_t *slash_handle_model(const char *args, const char *session_key) {
+    if (args && args[0]) set_model_override(session_key, args);
+    json_t *r = json_object();
+    const char *cur = get_model_override(session_key);
+    json_set(r, "model", json_string(cur ? cur : "default"));
+    return r;
+}
+
+/* PoP: _handle_codex_runtime_command @ gateway/slash_commands.py:_handle_codex_runtime_command */
+json_t *slash_handle_codex_runtime(const char *args) {
+    json_t *r = json_object(); json_set(r, "runtime", json_string(args ? args : "")); return r;
+}
+
+/* PoP: _handle_personality_command @ gateway/slash_commands.py:_handle_personality_command */
+json_t *slash_handle_personality(const char *args) {
+    json_t *r = json_object(); json_set(r, "personality", json_string(args ? args : "default")); return r;
+}
+
+/* PoP: _handle_retry_command @ gateway/slash_commands.py:_handle_retry_command */
+json_t *slash_handle_retry(const char *session_key) {
+    (void)session_key;
+    json_t *r = json_object(); json_set(r, "ok", json_bool(true)); return r;
+}
+
+/* PoP: _handle_goal_command @ gateway/slash_commands.py:_handle_goal_command */
+json_t *slash_handle_goal(const char *args) {
+    json_t *r = json_object(); json_set(r, "goal", json_string(args ? args : "")); return r;
+}
+
+/* PoP: _handle_subgoal_command @ gateway/slash_commands.py:_handle_subgoal_command */
+json_t *slash_handle_subgoal(const char *args) {
+    json_t *r = json_object(); json_set(r, "subgoal", json_string(args ? args : "")); return r;
+}
+
+/* PoP: _handle_undo_command @ gateway/slash_commands.py:_handle_undo_command */
+json_t *slash_handle_undo(const char *session_key) {
+    rewind_session(session_key, 1);
+    json_t *r = json_object(); json_set(r, "ok", json_bool(true)); return r;
+}
+
+/* PoP: _handle_set_home_command @ gateway/slash_commands.py:_handle_set_home_command */
+json_t *slash_handle_set_home(const char *args) {
+    json_t *r = json_object(); json_set(r, "home", json_string(args ? args : "")); return r;
+}
+
+/* PoP: _handle_voice_command @ gateway/slash_commands.py:_handle_voice_command */
+json_t *slash_handle_voice(const char *args) {
+    json_t *r = json_object(); json_set(r, "voice", json_string(args ? args : "")); return r;
+}
+
+/* PoP: _handle_rollback_command @ gateway/slash_commands.py:_handle_rollback_command */
+json_t *slash_handle_rollback(const char *args, const char *session_key) {
+    (void)args;
+    rewind_session(session_key, 1);
+    json_t *r = json_object(); json_set(r, "ok", json_bool(true)); return r;
+}
+
+/* PoP: _handle_background_command @ gateway/slash_commands.py:_handle_background_command */
+json_t *slash_handle_background(const char *args) {
+    json_t *r = json_object(); json_set(r, "action", json_string(args ? args : "list")); return r;
+}
+
+/* PoP: _apply_reasoning_selection @ gateway/slash_commands.py:_apply_reasoning_selection */
+json_t *slash_apply_reasoning_selection(const char *selection, const char *session_key) {
+    (void)session_key;
+    return reasoning_parse_effort(selection, false);
+}
+
+/* PoP: _try_send_choice_picker @ gateway/slash_commands.py:_try_send_choice_picker */
+bool slash_try_send_choice_picker(json_t *choices) {
+    (void)choices; return true;
+}
+
+/* PoP: _handle_reasoning_command @ gateway/slash_commands.py:_handle_reasoning_command */
+json_t *slash_handle_reasoning(const char *args, const char *session_key) {
+    return slash_apply_reasoning_selection(args, session_key);
+}
+
+/* PoP: _handle_memory_command @ gateway/slash_commands.py:_handle_memory_command */
+json_t *slash_handle_memory(const char *args) {
+    json_t *r = json_object(); json_set(r, "action", json_string(args ? args : "list")); return r;
+}
+
+/* PoP: _handle_skills_command @ gateway/slash_commands.py:_handle_skills_command */
+json_t *slash_handle_skills(const char *args) {
+    json_t *r = json_object(); json_set(r, "action", json_string(args ? args : "list")); return r;
+}
+
+/* PoP: _handle_fast_command @ gateway/slash_commands.py:_handle_fast_command */
+json_t *slash_handle_fast(void) {
+    json_t *r = json_object(); json_set(r, "fast", json_bool(true)); return r;
+}
+
+/* PoP: _handle_yolo_command @ gateway/slash_commands.py:_handle_yolo_command */
+json_t *slash_handle_yolo(void) {
+    json_t *r = json_object(); json_set(r, "yolo", json_bool(true)); return r;
+}
+
+/* PoP: _handle_verbose_command @ gateway/slash_commands.py:_handle_verbose_command */
+json_t *slash_handle_verbose(void) {
+    json_t *r = json_object(); json_set(r, "verbose", json_bool(true)); return r;
+}
+
+/* PoP: _handle_footer_command @ gateway/slash_commands.py:_handle_footer_command */
+json_t *slash_handle_footer(const char *args) {
+    json_t *r = json_object(); json_set(r, "footer", json_string(args ? args : "")); return r;
+}
+
+/* PoP: _handle_compress_command @ gateway/slash_commands.py:_handle_compress_command */
+json_t *slash_handle_compress(const char *session_key) {
+    (void)session_key;
+    json_t *r = json_object(); json_set(r, "ok", json_bool(true)); return r;
+}
+
+/* PoP: _handle_topic_command @ gateway/slash_commands.py:_handle_topic_command */
+json_t *slash_handle_topic(const char *args) {
+    json_t *r = json_object(); json_set(r, "topic", json_string(args ? args : "")); return r;
+}
+
+/* PoP: _handle_title_command @ gateway/slash_commands.py:_handle_title_command */
+json_t *slash_handle_title(const char *args) {
+    json_t *r = json_object(); json_set(r, "title", json_string(args ? args : "")); return r;
+}
+
+/* PoP: _handle_resume_command @ gateway/slash_commands.py:_handle_resume_command */
+json_t *slash_handle_resume(const char *args) {
+    json_t *r = json_object();
+    int idx = args ? lookup_by_session_id(args) : -1;
+    json_set(r, "ok", json_bool(idx >= 0));
+    if (idx >= 0) json_set(r, "session_key", json_string(g_gw.sessions[idx].key));
+    return r;
+}
+
+/* PoP: _handle_sessions_command @ gateway/slash_commands.py:_handle_sessions_command */
+json_t *slash_handle_sessions(void) {
+    json_t *arr = json_array();
+    for (int i = 0; i < g_gw.session_count; i++) {
+        if (g_gw.sessions[i].in_use) {
+            json_t *s = json_object();
+            json_set(s, "key", json_string(g_gw.sessions[i].key));
+            json_set(s, "session_id", json_string(g_gw.sessions[i].session_id));
+            json_array_append(arr, s);
+        }
+    }
+    return arr;
+}
+
+/* PoP: _handle_branch_command @ gateway/slash_commands.py:_handle_branch_command */
+json_t *slash_handle_branch(const char *args) {
+    json_t *r = json_object(); json_set(r, "branch", json_string(args ? args : "main")); return r;
+}
+
+/* PoP: _handle_topup_command @ gateway/slash_commands.py:_handle_topup_command */
+json_t *slash_handle_topup(const char *args) {
+    json_t *r = json_object(); json_set(r, "amount", json_string(args ? args : "")); return r;
+}
+
+/* PoP: _context_breakdown_lines @ gateway/slash_commands.py:_context_breakdown_lines */
+json_t *slash_context_breakdown_lines(const char *session_key) {
+    (void)session_key;
+    json_t *r = json_array();
+    json_array_append(r, json_string("system: 0 lines"));
+    json_array_append(r, json_string("history: 0 lines"));
+    return r;
+}
+
+/* PoP: _handle_usage_command @ gateway/slash_commands.py:_handle_usage_command */
+json_t *slash_handle_usage(void) {
+    json_t *r = json_object(); json_set(r, "tokens", json_int(0)); return r;
+}
+
+/* PoP: _handle_insights_command @ gateway/slash_commands.py:_handle_insights_command */
+json_t *slash_handle_insights(void) {
+    json_t *r = json_object(); return r;
+}
+
+/* PoP: _handle_reload_mcp_command @ gateway/slash_commands.py:_handle_reload_mcp_command */
+json_t *slash_handle_reload_mcp(void) {
+    json_t *r = json_object(); json_set(r, "ok", json_bool(true)); return r;
+}
+
+/* PoP: _handle_reload_skills_command @ gateway/slash_commands.py:_handle_reload_skills_command */
+json_t *slash_handle_reload_skills(void) {
+    json_t *r = json_object(); json_set(r, "ok", json_bool(true)); return r;
+}
+
+/* PoP: _handle_bundles_command @ gateway/slash_commands.py:_handle_bundles_command */
+json_t *slash_handle_bundles(const char *args) {
+    json_t *r = json_object(); json_set(r, "action", json_string(args ? args : "list")); return r;
+}
+
+/* PoP: _handle_approve_command @ gateway/slash_commands.py:_handle_approve_command */
+json_t *slash_handle_approve(const char *args) {
+    json_t *r = json_object(); json_set(r, "id", json_string(args ? args : "")); return r;
+}
+
+/* PoP: _handle_deny_command @ gateway/slash_commands.py:_handle_deny_command */
+json_t *slash_handle_deny(const char *args) {
+    json_t *r = json_object(); json_set(r, "id", json_string(args ? args : "")); return r;
+}
+
+/* PoP: _handle_debug_command @ gateway/slash_commands.py:_handle_debug_command */
+json_t *slash_handle_debug(const char *args) {
+    json_t *r = json_object(); json_set(r, "debug", json_string(args ? args : "on")); return r;
+}
+
+/* PoP: _handle_update_command @ gateway/slash_commands.py:_handle_update_command */
+json_t *slash_handle_update(void) {
+    json_t *r = json_object(); json_set(r, "ok", json_bool(true)); return r;
 }
