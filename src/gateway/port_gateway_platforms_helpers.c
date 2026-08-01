@@ -201,13 +201,15 @@ char *gateway_platforms_helpers_convert_table_to_bullets(const char *text)
         if (strncmp(q, "```", 3) == 0) { in_fence = !in_fence; goto emit; }
         if (in_fence) goto emit;
         if (strchr(ln, '|') && i + 1 < n && is_table_separator_line(lines[i + 1])) {
-            /* gather table block */
-            char **block = malloc(sizeof(char *) * (n - i + 1));
+            /* gather table block: count trailing consecutive table rows first */
+            int j = i + 2;
+            while (j < n && gateway_platforms_helpers_is_table_row(lines[j])) j++;
+            int block_n = (j - i);            /* header + sep + data rows */
+            char **block = malloc(sizeof(char *) * (block_n + 1));
             int bn = 0;
             block[bn++] = ln;
             block[bn++] = lines[i + 1];
-            int j = i + 2;
-            while (j < n && gateway_platforms_helpers_is_table_row(lines[j])) block[bn++] = lines[j];
+            for (int k = i + 2; k < j; k++) block[bn++] = lines[k];
             block[bn] = NULL;
             char *rendered = gateway_platforms_helpers_render_table_block(block, bn);
             size_t rl = strlen(rendered);
