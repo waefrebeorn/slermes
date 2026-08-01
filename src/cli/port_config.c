@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <ctype.h>
 #include <unistd.h>
 
 /*
@@ -167,11 +168,78 @@ json_t* clear_model_endpoint_credentials(json_t* model_cfg, bool clear_api_key, 
     return result;
 }
 
-/* Port of Python: redact_config_value */
-json_t* redact_config_value(json_t* value, int depth)
-{
+/* Port of Python: redact_config_value
+ * Recursively walk dicts/lists; any key (case-insensitive) in the secret set
+ * with a non-empty string value is masked via mask_secret(head=4,tail=4,floor=12).
+ * Mirrors hermes_cli/config.py:_SECRET_CONFIG_KEYS + agent.redact.mask_secret. */
+static int redact_is_secret_key(const char *key) {
+    static const char *SECRET[] = {
+        "api_key","apikey","key","token","access_token","refresh_token","id_token",
+        "secret","client_secret","password","passwd","auth","authorization",
+        "private_key","bearer","jwt", NULL
+    };
+    if (!key) return 0;
+    size_t n = strlen(key);
+    char *low = malloc(n + 1);
+    if (!low) return 0;
+    for (size_t i = 0; i < n; i++) low[i] = (char)tolower((unsigned char)key[i]);
+    low[n] = '\0';
+    int hit = 0;
+    for (int i = 0; SECRET[i]; i++) if (strcmp(low, SECRET[i]) == 0) { hit = 1; break; }
+    free(low);
+    return hit;
+}
+
+/* Mask a secret: empty -> ""; len<12 -> "***"; else head4...tail4. */
+static char *redact_mask_secret(const char *v) {
+    size_t n = strlen(v);
+    if (n == 0) return strdup("");
+    if (n < 12) return strdup("***");
+    size_t need = 4 + 3 + 4 + 1;
+    char *out = malloc(need);
+    if (!out) return NULL;
+    memcpy(out, v, 4);
+    out[4] = '.'; out[5] = '.'; out[6] = '.';
+    memcpy(out + 7, v + n - 4, 4);
+    out[need - 1] = '\0';
+    return out;
+}
+
+static json_t *redact_config_value_impl(json_t *value, int depth) {
     if (!value) return json_new_object();
     if (depth > 20) return json_copy(value);
-    hermes_log(LOG_DEBUG, "port", "redact_config_value: depth=%d", depth);
+    if (value->type == JSON_OBJECT) {
+        json_t *out = json_new_object();
+        if (!out) return NULL;
+        size_t n = json_object_size(value);
+        for (size_t idx = 0; idx < n; idx++) {
+            const char *k = json_object_get_key_at(value, idx);
+            json_t *v = json_object_get_at(value, idx);
+            if (!k || !v) continue;
+            if (redact_is_secret_key(k) && v->type == JSON_STRING && json_string_value(v)[0]) {
+                char *m = redact_mask_secret(json_string_value(v));
+                json_object_set(out, k, json_new_string(m ? m : "***"));
+                free(m);
+            } else {
+                json_object_set(out, k, redact_config_value_impl(v, depth + 1));
+            }
+        }
+        return out;
+    }
+    if (value->type == JSON_ARRAY) {
+        json_t *out = json_new_array();
+        if (!out) return NULL;
+        size_t n = json_array_size(value);
+        for (size_t i = 0; i < n; i++) {
+            json_t *v = json_array_get(value, i);
+            json_array_append(out, redact_config_value_impl(v, depth + 1));
+        }
+        return out;
+    }
     return json_copy(value);
+}
+
+json_t* redact_config_value(json_t* value, int depth)
+{
+    return redact_config_value_impl(value, depth);
 }

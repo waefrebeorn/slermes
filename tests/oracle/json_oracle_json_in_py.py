@@ -18,6 +18,7 @@ MAP = {
     "is_signal_rate_limit_error":  ("/home/wubu/hermes-agent-dev/gateway/platforms/signal_rate_limit.py", "_is_signal_rate_limit_error"),
     "scale_to_zero_enabled":       ("/home/wubu/hermes-agent-dev/gateway/scale_to_zero.py", "scale_to_zero_enabled"),
     "messaging_is_relay_only_or_absent": ("/home/wubu/hermes-agent-dev/gateway/scale_to_zero.py", "messaging_is_relay_only_or_absent"),
+    "redact_config_value": ("/home/wubu/hermes-agent-dev/hermes_cli/config.py", "redact_config_value"),
 }
 
 mp, pyf = MAP[func]
@@ -36,5 +37,7 @@ if isinstance(r, bool):
     print("1" if r else "0")
 elif isinstance(r, float):
     print("%.10g" % r)
+elif isinstance(r, (dict, list)):
+    print(json.dumps(r, sort_keys=True))
 else:
     print(r)
