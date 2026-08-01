@@ -144,6 +144,12 @@ def candidate_funcs(cfile):
                 break
         if not found:
             continue
+        # The python counterpart must accept a single string arg (the harness
+        # calls it with `value`). Functions expecting a dict/list/iterable
+        # (e.g. scale_to_zero_enabled(environ: dict)) are NOT comparable to the
+        # C `const char *` port and would crash the oracle.
+        if not pyfn_string_compatible(pymod, pyfn):
+            continue
         out.append((fn, pymod, pyfn, rib))
     return out
 
@@ -175,6 +181,44 @@ def pyfn_returns_bool(pymod, pyfn):
             if not rets:
                 return False
             return all(r in ("True", "False", "true", "false") or "bool(" in r for r in rets)
+        except Exception:
+            return False
+    return False
+
+
+def pyfn_string_compatible(pymod, pyfn):
+    """Return True if the live python function takes a single string-compatible
+    positional argument (so the integration harness can call it with `value`).
+    Skip functions whose python signature expects a dict / list / iterable
+    (e.g. scale_to_zero_enabled(environ: dict)) — those are NOT comparable to a
+    C `const char *` port and would crash the oracle with a type error."""
+    pyrel = pymod.replace(".", "/") + ".py"
+    for base in (os.path.dirname(SL), SL):
+        path = os.path.join(base, pyrel)
+        if not os.path.isfile(path):
+            continue
+        try:
+            import importlib.util, inspect
+            spec = importlib.util.spec_from_file_location("sc_" + pymod.replace(".", "_"), path)
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+            fn = getattr(mod, pyfn, None)
+            if fn is None:
+                return False
+            sig = inspect.signature(fn)
+            params = list(sig.parameters.values())
+            # Exactly one parameter that is positional-or-keyword (or positional-only),
+            # and NOT annotated as dict/list/iterable.
+            pos = [p for p in params if p.kind in (
+                inspect.Parameter.POSITIONAL_ONLY, inspect.Parameter.POSITIONAL_OR_KEYWORD)]
+            if len(pos) != 1:
+                return False
+            ann = pos[0].annotation
+            if ann is not inspect.Parameter.empty:
+                s = str(ann).lower()
+                if any(k in s for k in ("dict", "list", "iterable", "sequence", "mapping", "dataframe", "tuple")):
+                    return False
+            return True
         except Exception:
             return False
     return False

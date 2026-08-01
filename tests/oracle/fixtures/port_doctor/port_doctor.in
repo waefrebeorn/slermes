@@ -1,0 +1,50 @@
+[
+{
+"op": "doctor_has_provider_env_config",
+"value": ""
+},
+{
+"op": "doctor_has_provider_env_config",
+"value": "x"
+},
+{
+"op": "doctor_has_provider_env_config",
+"value": "hello world"
+},
+{
+"op": "doctor_has_provider_env_config",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "doctor_has_provider_env_config",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "doctor_has_provider_env_config",
+"value": "user@example.com"
+},
+{
+"op": "doctor_has_provider_env_config",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "doctor_has_provider_env_config",
+"value": "key:value;key2:v2"
+},
+{
+"op": "doctor_has_provider_env_config",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "doctor_has_provider_env_config",
+"value": "CamelCaseString"
+},
+{
+"op": "doctor_has_provider_env_config",
+"value": "12345"
+},
+{
+"op": "doctor_has_provider_env_config",
+"value": "  spaced  "
+}
+]
