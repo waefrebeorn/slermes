@@ -64,7 +64,7 @@ LINKCMD=$(echo "$LINKCMD" | sed -E 's#-DHERMES_VERSION=[^ ]*#-DHERMES_VERSION=0#
 # src/cli/) via quote-includes, which need each src/<subdir> on the path.
 SRCINCS=$(find src -type d 2>/dev/null | sed 's#^#-I #' | tr '\n' ' ')
 LIBINCS="-I lib $(grep -oE 'lib/lib[a-z0-9_]+' build/libs-config.mk 2>/dev/null | sed 's#^#-I #' | tr '\n' ' ')"
-LINKCMD="$LINKCMD $LIBINCS $SRCINCS"
+LINKCMD="$LINKCMD $LIBINCS $SRCINCS -D_XOPEN_SOURCE=700 -D_GNU_SOURCE"
 # Always rebuild the harness from the current object closure (never reuse a
 # stale binary from a prior run with a different object set).
 rm -f "$BUILD_DIR/tt_$NAME"
