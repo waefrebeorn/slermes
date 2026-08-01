@@ -11,6 +11,10 @@
 #include "cli.h"
 #include "port_hermes_cli_kanban_helpers.h"
 
+/* cli_display_error is defined in cli/display.c (centralized styled error
+ * printer); route kanban's error prints through it instead of raw printf. */
+void cli_display_error(const char *msg);
+
 /* /kanban: Kanban board management */
 /* PoP: cmd_kanban @ hermes_cli/main.py:cmd_kanban */
 void cmd_kanban(const char *args, agent_state_t *state) {
@@ -72,7 +76,7 @@ void cmd_kanban(const char *args, agent_state_t *state) {
             }
             free(result);
         } else {
-            printf("Error: kanban_list returned NULL\n");
+            cli_display_error("kanban_list returned NULL");
         }
         return;
     }
@@ -88,7 +92,7 @@ void cmd_kanban(const char *args, agent_state_t *state) {
             printf("Task %s:\n%s\n", id, result);
             free(result);
         } else {
-            printf("Error: kanban_show returned NULL (task not found?)\n");
+            cli_display_error("kanban_show returned NULL (task not found?)");
         }
         return;
     }
@@ -114,7 +118,7 @@ void cmd_kanban(const char *args, agent_state_t *state) {
             }
             free(result);
         } else {
-            printf("Error: kanban_create returned NULL\n");
+            cli_display_error("kanban_create returned NULL");
         }
         return;
     }
@@ -131,7 +135,7 @@ void cmd_kanban(const char *args, agent_state_t *state) {
             printf("Result: %s\n", result);
             free(result);
         } else {
-            printf("Error: kanban_complete returned NULL\n");
+            cli_display_error("kanban_complete returned NULL");
         }
         return;
     }
@@ -148,7 +152,7 @@ void cmd_kanban(const char *args, agent_state_t *state) {
             printf("Result: %s\n", result);
             free(result);
         } else {
-            printf("Error: kanban_block returned NULL\n");
+            cli_display_error("kanban_block returned NULL");
         }
         return;
     }
@@ -164,7 +168,7 @@ void cmd_kanban(const char *args, agent_state_t *state) {
             printf("Result: %s\n", result);
             free(result);
         } else {
-            printf("Error: kanban_unblock returned NULL\n");
+            cli_display_error("kanban_unblock returned NULL");
         }
         return;
     }
@@ -185,7 +189,7 @@ void cmd_kanban(const char *args, agent_state_t *state) {
             printf("Result: %s\n", result);
             free(result);
         } else {
-            printf("Error: kanban_link returned NULL\n");
+            cli_display_error("kanban_link returned NULL");
         }
         return;
     }
