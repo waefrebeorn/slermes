@@ -4,7 +4,7 @@
  * Emits JSON lines consumed by tests/sta_oracle_display_shell.py which
  * recomputes the SAME functions from LIVE agent/display.py.
  */
-#include "port_agent_display.c"
+#include "port_agent_display.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

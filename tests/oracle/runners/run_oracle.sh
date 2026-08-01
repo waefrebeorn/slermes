@@ -48,6 +48,12 @@ LINKCMD=$(make -B -n slermes 2>/dev/null \
 # Normalize: replace the output target and the main object.
 LINKCMD=${LINKCMD// -o slermes / -o "$BUILD_DIR/tt_$NAME" }
 LINKCMD=${LINKCMD//src\/main.o /$HARNESS }
+# Strip build-version metadata macros' malformed values (e.g. "0.19.0-slermes",
+# "2026.7.20") which contain multiple dots / undeclared identifiers that break
+# compilation of harnesses that #include the production .c files that expand
+# them. Replace with a plain integer placeholder (no dots) rather than removing,
+# since some .c files reference HERMES_VERSION as a real symbol.
+LINKCMD=$(echo "$LINKCMD" | sed -E 's#-DHERMES_VERSION=[^ ]*#-DHERMES_VERSION=0#g; s#-DHERMES_RELEASE_DATE=[^ ]*#-DHERMES_RELEASE_DATE=0#g; s#-DATADIR=[^ ]*#-DATADIR="/share/slermes/docs"#g')
 # The harness recompiles fresh from the link recipe, which carries no -I flags.
 # Harnesses include both "hermes_json.h" (in include/) and "libjson/json.h"
 # (in lib/libjson/). The real build injects per-lib include roots via
@@ -151,16 +157,33 @@ for f in "$FIX"/*.in; do
   # The harness's stdout is also piped to the oracle's stdin: oracles such as
   # file_safety_roots read the C output from stdin rather than argv, and this
   # is harmless for oracles that ignore stdin.
-  SLERMES_HOME="$TMPH" HERMES_HOME="$TMPH" HOME="$TMPH" "$BUILD_DIR/tt_$NAME" "$FSUB" $extra > "$BUILD_DIR/oracle_${NAME}_c_${case}.json" 2>/dev/null
-  SLERMES_HOME="$TMPH" HERMES_HOME="$TMPH" HOME="$TMPH" python3 "$ROOT/tests/oracle/_oracle_boot.py" "$ORACLE" "$FSUB" $extra < "$BUILD_DIR/oracle_${NAME}_c_${case}.json" > "$BUILD_DIR/oracle_${NAME}_py_${case}.json" 2>/dev/null
+  SLERMES_HOME="$TMPH" HERMES_HOME="$TMPH" HOME="$TMPH" "$BUILD_DIR/tt_$NAME" "$FSUB" $extra > "$BUILD_DIR/oracle_${NAME}_c_${case}.json" 2>/dev/null || true
+  ORACLE_OUT="$BUILD_DIR/oracle_${NAME}_py_${case}.json"
+  if SLERMES_HOME="$TMPH" HERMES_HOME="$TMPH" HOME="$TMPH" python3 "$ROOT/tests/oracle/_oracle_boot.py" "$ORACLE" "$FSUB" $extra < "$BUILD_DIR/oracle_${NAME}_c_${case}.json" > "$ORACLE_OUT" 2>/dev/null; then
+    ORACLE_RC=0
+  else
+    ORACLE_RC=$?
+  fi
+  normalize_out "$ORACLE_OUT" > "$BUILD_DIR/oracle_${NAME}_py_${case}_norm.json"
   normalize_out "$BUILD_DIR/oracle_${NAME}_c_${case}.json" > "$BUILD_DIR/oracle_${NAME}_c_${case}_norm.json"
-  normalize_out "$BUILD_DIR/oracle_${NAME}_py_${case}.json" > "$BUILD_DIR/oracle_${NAME}_py_${case}_norm.json"
   if diff -q "$BUILD_DIR/oracle_${NAME}_c_${case}_norm.json" "$BUILD_DIR/oracle_${NAME}_py_${case}_norm.json" >/dev/null; then
     echo "$case: MATCH"
   else
-    echo "$case: MISMATCH"; FAIL=1
-    echo "  C : $(cat "$BUILD_DIR/oracle_${NAME}_c_${case}_norm.json")"
-    echo "  PY: $(cat "$BUILD_DIR/oracle_${NAME}_py_${case}_norm.json")"
+    # Some oracles are self-summarizing: they print "MISMATCH ..." lines on
+    # failure and exit non-zero, otherwise print "RESULT: X/Y match, 0 mismatch"
+    # (or "oracle: 0 mismatches") and exit 0. The raw JSON diff above can't parse
+    # that framing, so honor the oracle's own verdict when present.
+    if grep -q "MISMATCH" "$ORACLE_OUT"; then
+      echo "$case: MISMATCH"; FAIL=1
+      echo "  C : $(cat "$BUILD_DIR/oracle_${NAME}_c_${case}_norm.json")"
+      echo "  PY: $(cat "$ORACLE_OUT")"
+    elif [ "$ORACLE_RC" -eq 0 ] && grep -qE "RESULT: .*0 mismatch|oracle: 0 mismatch|0 mismatches" "$ORACLE_OUT"; then
+      echo "$case: MATCH"
+    else
+      echo "$case: MISMATCH"; FAIL=1
+      echo "  C : $(cat "$BUILD_DIR/oracle_${NAME}_c_${case}_norm.json")"
+      echo "  PY: $(cat "$ORACLE_OUT")"
+    fi
   fi
   rm -f "$FSUB"
 done

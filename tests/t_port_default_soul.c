@@ -1,5 +1,7 @@
 /* Oracle harness: hermes_cli/default_soul.py vs LIVE Python. */
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "cli/port_default_soul.h"
 
 static const char *jstr(const char *s){

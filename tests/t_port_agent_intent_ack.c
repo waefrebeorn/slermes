@@ -1,6 +1,11 @@
 /* Oracle harness: agent/agent_runtime_helpers.intent_ack_continuation_mode vs LIVE Python. */
 #include <stdio.h>
-#include "agent/port_agent_intent_ack.h"
+#include <string.h>
+#include <stdlib.h>
+
+/* ported in src/agent/port_agent_intent_ack.c (no standalone header) */
+void agent_intent_ack_continuation_mode(const char *mode, const char *api_mode,
+                                        const char *model, char *out, size_t outsz);
 
 static const char *jstr(const char *s){
     static char b[4][1024]; static int bi=0; int idx=bi; char *q=b[idx]; bi=(bi+1)&3; *q++='"';

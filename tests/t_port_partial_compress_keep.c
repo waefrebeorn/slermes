@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-int cmd_compress_coerce_keep(const char *value);
+int cmd_compress_coerce_keep_value(const char *value);
 
 struct Case { const char *name; const char *token; };
 static const struct Case CASES[] = {
@@ -32,7 +32,7 @@ int main(void)
 {
     setvbuf(stdout, NULL, _IONBF, 0);
     for (int i = 0; i < NCASES; i++) {
-        int r = cmd_compress_coerce_keep(CASES[i].token);
+        int r = cmd_compress_coerce_keep_value(CASES[i].token);
         char tok_json[64];
         if (CASES[i].token)
             snprintf(tok_json, sizeof(tok_json), "\"%s\"", CASES[i].token);

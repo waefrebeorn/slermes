@@ -82,6 +82,10 @@ hermes_cli/web_dist/
 apps/desktop/build/
 apps/desktop/dist/
 
+# Oracle harness build artifacts (compiled t_port_*.c binaries + generated
+# C/PY json fixtures). Regenerated on every run; never tracked.
+tests/oracle/build/
+
 # tsc-emitted artifacts (a stray `tsc -b` compiles into src/, and vite then
 # resolves the stale .js OVER the .tsx — never track these)
 apps/desktop/src/**/*.js

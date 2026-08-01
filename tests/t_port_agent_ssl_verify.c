@@ -1,5 +1,6 @@
 /* Oracle harness: agent/ssl_verify.py vs LIVE Python. */
 #include <stdio.h>
+#include <stdlib.h>
 #include "agent/port_agent_ssl_verify.h"
 
 static const char *js(const char *s) {

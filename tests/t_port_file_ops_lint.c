@@ -7,12 +7,14 @@
  *       tests/t_port_file_ops_lint.c src/tools/port_file_operations.o \
  *       src/agent/file_safety.o lib/libjson/json.o -o /tmp/t_lint
  */
-#include "port_file_operations.h"
+/* ported in src/tools/port_file_operations.c (no standalone header) */
+char *file_ops_delete_path(const char *path);
 #include "file_ops_lint.h"
 #include "hermes_file_safety.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 /* minimal hermes_log stub so the test links without the full logger */
 void hermes_log(int level, const char *fmt, ...) { (void)level; (void)fmt; }
