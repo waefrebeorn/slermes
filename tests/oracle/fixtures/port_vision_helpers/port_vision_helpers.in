@@ -1,0 +1,98 @@
+[
+{
+"op": "vision_validate_image_path",
+"value": ""
+},
+{
+"op": "vision_validate_image_path",
+"value": "x"
+},
+{
+"op": "vision_validate_image_path",
+"value": "hello world"
+},
+{
+"op": "vision_validate_image_path",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "vision_validate_image_path",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "vision_validate_image_path",
+"value": "user@example.com"
+},
+{
+"op": "vision_validate_image_path",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "vision_validate_image_path",
+"value": "key:value;key2:v2"
+},
+{
+"op": "vision_validate_image_path",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "vision_validate_image_path",
+"value": "CamelCaseString"
+},
+{
+"op": "vision_validate_image_path",
+"value": "12345"
+},
+{
+"op": "vision_validate_image_path",
+"value": "  spaced  "
+},
+{
+"op": "vision_url_shape_ok",
+"value": ""
+},
+{
+"op": "vision_url_shape_ok",
+"value": "x"
+},
+{
+"op": "vision_url_shape_ok",
+"value": "hello world"
+},
+{
+"op": "vision_url_shape_ok",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "vision_url_shape_ok",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "vision_url_shape_ok",
+"value": "user@example.com"
+},
+{
+"op": "vision_url_shape_ok",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "vision_url_shape_ok",
+"value": "key:value;key2:v2"
+},
+{
+"op": "vision_url_shape_ok",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "vision_url_shape_ok",
+"value": "CamelCaseString"
+},
+{
+"op": "vision_url_shape_ok",
+"value": "12345"
+},
+{
+"op": "vision_url_shape_ok",
+"value": "  spaced  "
+}
+]

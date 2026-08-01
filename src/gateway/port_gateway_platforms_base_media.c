@@ -591,16 +591,40 @@ char *base_platform_normalize_media_tag_path(const char *raw)
 
 /* ================================================================
  *  _path_lacks_deliverable_extension
- *  Faithful to: not Path(path).suffix  (true only when basename
- *  has no extension, e.g. Caddyfile, Makefile).
+ *  Faithful to: not Path(path).suffix  OR  suffix not in MEDIA_DELIVERY_EXTS.
+ *  Python returns True when the basename has no extension (e.g. Caddyfile,
+ *  Makefile) OR its extension is not in the deliverable-extensions set
+ *  (.png/.mp4/.pdf/.zip/... — see gateway/platforms/base.py MEDIA_DELIVERY_EXTS).
+ *  A path like "user@example.com" has suffix ".com" which is NOT a deliverable
+ *  extension, so it lacks a deliverable extension -> True.
  * ================================================================ */
 /* PoP: base_platform_path_lacks_deliverable_extension @ gateway/platforms/base.py:_path_lacks_deliverable_extension */
 bool base_platform_path_lacks_deliverable_extension(const char *path)
 {
+    static const char *const DELIV_EXTS[] = {
+        ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tiff", ".svg",
+        ".mp4", ".mov", ".avi", ".mkv", ".webm",
+        ".mp3", ".wav", ".ogg", ".opus", ".m4a", ".flac",
+        ".pdf", ".docx", ".doc", ".odt", ".rtf", ".txt", ".md", ".epub",
+        ".xlsx", ".xls", ".ods", ".csv", ".tsv", ".json", ".xml", ".yaml", ".yml",
+        ".pptx", ".ppt", ".odp", ".key",
+        ".zip", ".tar", ".gz", ".tgz", ".bz2", ".xz", ".7z", ".rar", ".apk", ".ipa",
+        ".html", ".htm",
+        NULL
+    };
     if (!path || !*path) return true;
     const char *base = strrchr(path, '/');
     base = base ? base + 1 : path;
-    return strrchr(base, '.') == NULL;
+    const char *dot = strrchr(base, '.');
+    if (!dot || !dot[1]) return true;            /* no extension at all */
+    /* case-insensitive suffix match against deliverable set */
+    size_t slen = strlen(dot);
+    for (int i = 0; DELIV_EXTS[i]; i++) {
+        size_t elen = strlen(DELIV_EXTS[i]);
+        if (elen != slen) continue;
+        if (strncasecmp(dot, DELIV_EXTS[i], elen) == 0) return false; /* has deliverable ext */
+    }
+    return true;                                 /* extension not in deliverable set */
 }
 
 /* ================================================================

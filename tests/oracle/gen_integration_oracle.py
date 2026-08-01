@@ -188,10 +188,20 @@ def pyfn_returns_bool(pymod, pyfn):
 
 def pyfn_string_compatible(pymod, pyfn):
     """Return True if the live python function takes a single string-compatible
-    positional argument (so the integration harness can call it with `value`).
-    Skip functions whose python signature expects a dict / list / iterable
-    (e.g. scale_to_zero_enabled(environ: dict)) — those are NOT comparable to a
-    C `const char *` port and would crash the oracle with a type error."""
+    positional argument AND returns a scalar (so the integration harness can call
+    it with `value` and compare the output). Reject functions that:
+      * expect a dict / list / iterable / object (Path, URL, SSLContext,
+        Exception, Node, ...) instead of a plain string, or
+      * raise on a plain string (object-attr access, deliberate validation) — not
+        oracle-comparable, or
+      * return a non-scalar (object / coroutine / list / dict).
+    A function that does `arg.relative_to()` / `arg.is_dir()` on its first arg
+    crashes on a string -> probe-call rejects it. Functions that raise on bad
+    input (ValueError/TypeError) are also rejected: their C port returns a safe
+    sentinel and the divergence is a false FAP, not a C bug."""
+    OBJ_ANNOT = ("dict", "list", "iterable", "sequence", "mapping", "dataframe",
+                 "tuple", "path", "url", "sslcontext", "exception", "node",
+                 "object", "model", "message", "response", "request")
     pyrel = pymod.replace(".", "/") + ".py"
     for base in (os.path.dirname(SL), SL):
         path = os.path.join(base, pyrel)
@@ -207,8 +217,6 @@ def pyfn_string_compatible(pymod, pyfn):
                 return False
             sig = inspect.signature(fn)
             params = list(sig.parameters.values())
-            # Exactly one parameter that is positional-or-keyword (or positional-only),
-            # and NOT annotated as dict/list/iterable.
             pos = [p for p in params if p.kind in (
                 inspect.Parameter.POSITIONAL_ONLY, inspect.Parameter.POSITIONAL_OR_KEYWORD)]
             if len(pos) != 1:
@@ -216,9 +224,19 @@ def pyfn_string_compatible(pymod, pyfn):
             ann = pos[0].annotation
             if ann is not inspect.Parameter.empty:
                 s = str(ann).lower()
-                if any(k in s for k in ("dict", "list", "iterable", "sequence", "mapping", "dataframe", "tuple")):
+                if any(k in s for k in OBJ_ANNOT):
                     return False
-            return True
+            # Runtime probe: hand it a string; reject if it raises anything
+            # (AttributeError = treats arg as object; ValueError/TypeError =
+            # deliberate validation that means it isn't a free string fn) or
+            # returns a non-scalar.
+            try:
+                r = fn("__probe_string__")
+            except Exception:
+                return False
+            if isinstance(r, (str, int, float, bool, type(None))):
+                return True
+            return False
         except Exception:
             return False
     return False
