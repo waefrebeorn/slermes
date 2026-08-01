@@ -55,20 +55,26 @@ live one).
 
 ## B3 — Agent "remaining wrappers" (`agent/port_agent_remaining_wrappers.c`)
 
-- **Dead functions:** `agent_model_metadata_u_*`, `agent_credits_tracker_*`,
-  `agent_display_build_status_phrase`, and others.
-- **Live equivalent:** `agent/model_metadata.c`, `agent/context_engine.c`,
-  `agent/credits_tracker` (if present).
-- **Special case — `agent_display_build_status_phrase`:** This is a
-  **wrong-contract stub** — C signature `(const char *arg) → int` does NOT match
-  Python `build_status_phrase(tool_name, args, max_len=49) → str|None`, and it
-  depends on an unported chain (`_TOOL_VERBS`, `build_tool_preview`,
-  `tool_verb_connector`). It cannot be faithfully wired without porting that
-  chain first.
-- **Recommendation: DELETE** the file, except port any *unique* logic in the
-  `agent_model_metadata_u_*` helpers into `model_metadata.c` if a gap exists.
-  `agent_display_build_status_phrase` should be deleted (stub) unless its
-  dependency chain is ported in a dedicated task.
+- **CORRECTION (reclassified from earlier draft):** This cluster is **Class A
+  (unique orphans), NOT Class B (redundant).** Verified: 15 of its functions
+  have NO live implementation anywhere in src/ (e.g.
+  `should_parallelize_tool_batch`, `is_untrusted_tool`,
+  `tool_output_risk_metadata`, `maybe_wrap_untrusted`,
+  `plan_tool_batch_segments`, `paths_overlap`, `is_multimodal_tool_result`,
+  `trajectory_normalize_msg`). A few overlap with live code
+  (`is_mcp_tool_parallel_safe` in `tools/mcp_tool.c`,
+  `extract_file_mutation_targets`/`make_tool_result_message` in sibling port
+  files) but the bulk are the ported Python tool-dispatch parallelization /
+  untrusted-tool logic with no live caller yet.
+- **Disposition: WIRE (Class A), do NOT delete.** The live parallel-tool path
+  (`agent/conversation_loop.c`, `agent/port_agent_tool_executor.c`) handles
+  parallel calls but does not yet call these `u_*` helpers. Wiring them
+  requires care (must integrate with the live parallel path, not a blind call)
+  — track as Class-A assembly work, not a delete.
+- Note: `agent_display_build_status_phrase` (also in this file) remains a
+  wrong-contract stub (C `(const char*)->int` != Python
+  `(tool_name,args,max_len)->str`); leave documented, port its dependency
+  chain in a dedicated task if needed.
 
 ---
 

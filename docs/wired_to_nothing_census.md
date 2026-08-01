@@ -28,11 +28,14 @@
 #         adapter is the gateway-intended variant that was never switched on.
 #     - tools/port_skills_tool_wrappers.c (sklt_*, ~970 fns):
 #         duplicate of live skills_hub.c / agent/skill_*.c normalization.
-#     - agent/port_agent_remaining_wrappers.c (agent_model_metadata_u_*,
-#         agent_credits_tracker_*, agent_display_build_status_phrase):
-#         duplicate of live agent/model_metadata.c / context_engine.c.
-#         NOTE: agent_display_build_status_phrase is ALSO a wrong-contract
-#         stub (C sig (const char*)->int != Python (tool_name,args,max_len)->str).
+#     - agent/port_agent_remaining_wrappers.c: RECLASSIFIED Class A (see note).
+#         Verified NOT redundant: 15 fns have no live impl (should_parallelize_
+#         tool_batch, is_untrusted_tool, tool_output_risk_metadata,
+#         maybe_wrap_untrusted, plan_tool_batch_segments, paths_overlap,
+#         is_multimodal_tool_result, trajectory_normalize_msg). These are
+#         unique tool-dispatch helpers (Class A) — WIRE, do NOT delete.
+#         (agent_display_build_status_phrase in same file is a wrong-contract
+#         stub: C (const char*)->int != Python (tool_name,args,max_len)->str.)
 #
 # CLASS C — Whole unwired subsystems needing their assembler built
 #           (not just a caller): desktop/* GUI + Electron app, window_*/pty
