@@ -588,7 +588,7 @@ class ParityAnalyzer:
             "tools/skill_usage.py":"src/tools/skills.c","tools/skill_manager_tool.py":"src/tools/skill_manager.c",
             "tools/skills_ast_audit.py":"src/tools/skills_ast_audit.c","tools/skills_guard.py":"src/tools/skills_guard.c",
             "tools/skills_hub.py":"src/tools/skills_hub.c","tools/skills_sync.py":"src/tools/skills_sync.c",
-            "tools/skills_tool.py":"src/tools/skills_tool.c","tools/slash_confirm.py":"src/tools/slash_confirm.c",
+            "tools/skills_tool.py":"src/tools/port_skills_tool.c","tools/slash_confirm.py":"src/tools/slash_confirm.c",
             "tools/terminal_tool.py":"src/tools/terminal.c","tools/thread_context.py":"src/tools/thread_context.c",
             "tools/threat_patterns.py":"src/tools/threat_patterns.c","tools/tirith_security.py":"src/tools/tirith.c",
             "tools/todo_tool.py":"src/tools/todo.c","tools/tool_backend_helpers.py":"src/tools/tool_backend_helpers.c",
