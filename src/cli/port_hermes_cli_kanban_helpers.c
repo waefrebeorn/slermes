@@ -14,6 +14,7 @@
 #include <limits.h>
 #include <time.h>
 #include "hermes_json.h"
+#include "port_hermes_cli_kanban_helpers.h"
 
 /*
  * PoP: _fmt_ts @ hermes_cli/kanban.py:_fmt_ts
@@ -134,33 +135,6 @@ char *parse_kanban_branch_flag(const char *value, char *err, size_t errsz)
  *  Additional kanban.py CLI-arg / formatting / profile helpers
  *  (faithful ports; pure, no DB coupling)
  * =========================================================================== */
-
-/* Minimal task shape used by _task_to_dict / _fmt_task_line ports.
- * Mirrors the Python kb.Task attribute set. */
-typedef struct {
-    const char *id;
-    const char *title;
-    const char *body;
-    const char *assignee;
-    const char *status;
-    int         priority;
-    const char *tenant;
-    const char *workspace_kind;
-    const char *workspace_path;
-    const char *branch_name;
-    const char *project_id;
-    const char *created_by;
-    long        created_at;
-    long        started_at;
-    long        completed_at;
-    const char *result;
-    char      **skills;
-    int         skills_len;
-    int         max_retries;
-    const char *session_id;
-    const char *workflow_template_id;
-    const char *current_step_key;
-} kb_task_t;
 
 /* Status icon map (subset; mirrors Python _STATUS_ICONS). */
 static const char *kanban_status_icon(const char *status)

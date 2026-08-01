@@ -9,6 +9,7 @@
 #include "hermes_core_types.h"
 
 #include "cli.h"
+#include "port_hermes_cli_kanban_helpers.h"
 
 /* /kanban: Kanban board management */
 /* PoP: cmd_kanban @ hermes_cli/main.py:cmd_kanban */
@@ -47,11 +48,20 @@ void cmd_kanban(const char *args, agent_state_t *state) {
                     printf("Kanban tasks (%zu):\n", tasks->c.count);
                     for (size_t i = 0; i < tasks->c.count; i++) {
                         json_t *t = tasks->c.items[i];
-                        const char *id = json_get_str(t, "id", "?");
-                        const char *title = json_get_str(t, "title", "?");
-                        const char *status = json_get_str(t, "status", "?");
-                        const char *assignee = json_get_str(t, "assignee", "");
-                        printf("  %-12s %-8s %-12s %s\n", id, status, assignee, title);
+                        /* Bridge JSON task -> kb_task_t and render via the
+                         * ported formatter (was orphaned; now assembled). */
+                        kb_task_t kt;
+                        memset(&kt, 0, sizeof(kt));
+                        kt.id        = json_get_str(t, "id", "");
+                        kt.title     = json_get_str(t, "title", "");
+                        kt.assignee  = json_get_str(t, "assignee", "");
+                        kt.status    = json_get_str(t, "status", "");
+                        kt.tenant    = json_get_str(t, "tenant", "");
+                        kt.priority  = (int)json_get_num(t, "priority", 0);
+                        kt.created_at = (long)json_get_num(t, "created_at", 0);
+                        char *line = fmt_task_line(&kt);
+                        printf("  %s\n", line ? line : "(unable to format)");
+                        free(line);
                     }
                 } else {
                     printf("Result: %s\n", result);
