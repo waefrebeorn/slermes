@@ -163,14 +163,50 @@ char* cli_gateway_shutdown_forensics_format_context_for_log(json_node_t *ctx) {
     json_node_t *parent = json_object_get(ctx, "parent");
     const char *parent_cmd = parent ? json_object_get_string(parent, "cmdline", "(unknown)") : "(unknown)";
     const char *parent_name = parent ? json_object_get_string(parent, "name", "?") : "?";
-    int ppid_val = parent ? (int)json_object_get_number(parent, "pid", 0) : 0;
+    /* parent_pid: number; "?" when missing (Python: parent.get("pid") or "?") */
+    char parent_pid[32];
+    json_node_t *pid_node = parent ? json_object_get(parent, "pid") : NULL;
+    if (pid_node && !json_is_null(pid_node)) {
+        snprintf(parent_pid, sizeof(parent_pid), "%g", json_get_num(parent, "pid", 0));
+    } else {
+        snprintf(parent_pid, sizeof(parent_pid), "?");
+    }
     int under_systemd = json_get_bool(ctx, "under_systemd", false);
-    double load = json_object_get_number(ctx, "loadavg_1m", -1.0);
-    char buf[2048];
-    snprintf(buf, sizeof(buf),
-        "signal=%s under_systemd=%s parent_pid=%d parent_name=%s loadavg_1m=%.2f parent_cmdline=%s",
-        sig, under_systemd ? "yes" : "no", ppid_val, parent_name, load, parent_cmd);
-    return strdup(buf);
+    /* loadavg_1m: "?" when missing/null (Python: isinstance(load,(int,float)) else "?") */
+    json_node_t *load_node = json_object_get(ctx, "loadavg_1m");
+    char load_str[32];
+    if (load_node && !json_is_null(load_node)) {
+        snprintf(load_str, sizeof(load_str), "%.2f", json_get_num(ctx, "loadavg_1m", 0.0));
+    } else {
+        snprintf(load_str, sizeof(load_str), "?");
+    }
+    /* extras */
+    char extras[512];
+    extras[0] = '\0';
+    json_node_t *takeover = json_object_get(ctx, "takeover_marker");
+    if (takeover && !json_is_null(takeover)) {
+        int for_self = json_get_bool(ctx, "takeover_marker_for_self", false);
+        snprintf(extras, sizeof(extras), " takeover_marker_present=%s", for_self ? "self" : "other");
+    }
+    json_node_t *planned = json_object_get(ctx, "planned_stop_marker");
+    if (planned && !json_is_null(planned)) {
+        strncat(extras, " planned_stop_marker_present=yes", sizeof(extras) - strlen(extras) - 1);
+    }
+    json_node_t *tracer = json_object_get(ctx, "tracer_pid");
+    if (tracer && !json_is_null(tracer)) {
+        char tbuf[64];
+        snprintf(tbuf, sizeof(tbuf), " tracer_pid=%g", json_get_num(ctx, "tracer_pid", 0));
+        strncat(extras, tbuf, sizeof(extras) - strlen(extras) - 1);
+    }
+    /* parent_cmdline is emitted repr-style (single-quoted) like Python !r */
+    size_t need = strlen(sig) + strlen(parent_pid) + strlen(parent_name)
+                + strlen(load_str) + strlen(parent_cmd) + strlen(extras) + 128;
+    char *buf = malloc(need);
+    if (!buf) return strdup("(oom)");
+    snprintf(buf, need,
+        "signal=%s under_systemd=%s parent_pid=%s parent_name=%s loadavg_1m=%s%s parent_cmdline='%s'",
+        sig, under_systemd ? "yes" : "no", parent_pid, parent_name, load_str, extras, parent_cmd);
+    return buf;
 }
 
 /* PoP: cli_gateway_shutdown_forensics_context_as_json @ gateway/shutdown_forensics.py:context_as_json */
