@@ -168,7 +168,19 @@ json_node_t* cli_tools_video_generation_tool__normalize_reference_images(json_no
             if (json_node_is_string(item)) {
                 const char *s = json_node_get_string(item);
                 if (s && *s) {
-                    json_array_append(result, json_new_string(s));
+                    /* Trim whitespace (Python: item.strip()) */
+                    while (*s == ' ') s++;
+                    size_t len = strlen(s);
+                    while (len > 0 && s[len-1] == ' ') len--;
+                    if (len > 0) {
+                        char *trimmed = (char*)malloc(len + 1);
+                        if (trimmed) {
+                            memcpy(trimmed, s, len);
+                            trimmed[len] = '\0';
+                            json_array_append(result, json_new_string(trimmed));
+                            free(trimmed);
+                        }
+                    }
                 }
             }
         }
