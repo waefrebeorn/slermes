@@ -686,6 +686,246 @@
       "harness": "tests/t_port_yuanbao_markdown.c",
       "oracle": "tests/sta_oracle_yuanbao_markdown.py",
       "fixtures": "tests/oracle/fixtures/yuanbao_markdown"
+    },
+    "agent_delegation_context": {
+      "harness": "tests/t_port_agent_delegation_context.c",
+      "oracle": "tests/sta_oracle_agent_delegation_context.py",
+      "fixtures": "tests/oracle/fixtures/agent_delegation_context"
+    },
+    "agent_process_bootstrap": {
+      "harness": "tests/t_port_agent_process_bootstrap.c",
+      "oracle": "tests/sta_oracle_agent_process_bootstrap.py",
+      "fixtures": "tests/oracle/fixtures/agent_process_bootstrap"
+    },
+    "agent_prompt_builder": {
+      "harness": "tests/t_port_agent_prompt_builder.c",
+      "oracle": "tests/sta_oracle_agent_prompt_builder.py",
+      "fixtures": "tests/oracle/fixtures/agent_prompt_builder"
+    },
+    "agent_secret_scope": {
+      "harness": "tests/t_port_agent_secret_scope.c",
+      "oracle": "tests/sta_oracle_agent_secret_scope.py",
+      "fixtures": "tests/oracle/fixtures/agent_secret_scope"
+    },
+    "tools_approval": {
+      "harness": "tests/t_port_tools_approval.c",
+      "oracle": "tests/sta_oracle_tools_approval.py",
+      "fixtures": "tests/oracle/fixtures/tools_approval"
+    },
+    "tools_browser_camofox": {
+      "harness": "tests/t_port_tools_browser_camofox.c",
+      "oracle": "tests/sta_oracle_tools_browser_camofox.py",
+      "fixtures": "tests/oracle/fixtures/tools_browser_camofox"
+    },
+    "tools_clarify_gateway": {
+      "harness": "tests/t_port_tools_clarify_gateway.c",
+      "oracle": "tests/sta_oracle_tools_clarify_gateway.py",
+      "fixtures": "tests/oracle/fixtures/tools_clarify_gateway"
+    },
+    "tools_clarify_tool": {
+      "harness": "tests/t_port_tools_clarify_tool.c",
+      "oracle": "tests/sta_oracle_tools_clarify_tool.py",
+      "fixtures": "tests/oracle/fixtures/tools_clarify_tool"
+    },
+    "tools_credential_files": {
+      "harness": "tests/t_port_tools_credential_files.c",
+      "oracle": "tests/sta_oracle_tools_credential_files.py",
+      "fixtures": "tests/oracle/fixtures/tools_credential_files"
+    },
+    "tools_delegate_tool": {
+      "harness": "tests/t_port_tools_delegate_tool.c",
+      "oracle": "tests/sta_oracle_tools_delegate_tool.py",
+      "fixtures": "tests/oracle/fixtures/tools_delegate_tool"
+    },
+    "tools_env_passthrough": {
+      "harness": "tests/t_port_tools_env_passthrough.c",
+      "oracle": "tests/sta_oracle_tools_env_passthrough.py",
+      "fixtures": "tests/oracle/fixtures/tools_env_passthrough"
+    },
+    "tools_env_probe": {
+      "harness": "tests/t_port_tools_env_probe.c",
+      "oracle": "tests/sta_oracle_tools_env_probe.py",
+      "fixtures": "tests/oracle/fixtures/tools_env_probe"
+    },
+    "tools_feishu_drive_tool": {
+      "harness": "tests/t_port_tools_feishu_drive_tool.c",
+      "oracle": "tests/sta_oracle_tools_feishu_drive_tool.py",
+      "fixtures": "tests/oracle/fixtures/tools_feishu_drive_tool"
+    },
+    "tools_image_generation_tool": {
+      "harness": "tests/t_port_tools_image_generation_tool.c",
+      "oracle": "tests/sta_oracle_tools_image_generation_tool.py",
+      "fixtures": "tests/oracle/fixtures/tools_image_generation_tool"
+    },
+    "tools_interrupt": {
+      "harness": "tests/t_port_tools_interrupt.c",
+      "oracle": "tests/sta_oracle_tools_interrupt.py",
+      "fixtures": "tests/oracle/fixtures/tools_interrupt"
+    },
+    "tools_kanban_tools": {
+      "harness": "tests/t_port_tools_kanban_tools.c",
+      "oracle": "tests/sta_oracle_tools_kanban_tools.py",
+      "fixtures": "tests/oracle/fixtures/tools_kanban_tools"
+    },
+    "tools_managed_tool_gateway": {
+      "harness": "tests/t_port_tools_managed_tool_gateway.c",
+      "oracle": "tests/sta_oracle_tools_managed_tool_gateway.py",
+      "fixtures": "tests/oracle/fixtures/tools_managed_tool_gateway"
+    },
+    "tools_mcp_oauth_manager": {
+      "harness": "tests/t_port_tools_mcp_oauth_manager.c",
+      "oracle": "tests/sta_oracle_tools_mcp_oauth_manager.py",
+      "fixtures": "tests/oracle/fixtures/tools_mcp_oauth_manager"
+    },
+    "tools_microsoft_graph_auth": {
+      "harness": "tests/t_port_tools_microsoft_graph_auth.c",
+      "oracle": "tests/sta_oracle_tools_microsoft_graph_auth.py",
+      "fixtures": "tests/oracle/fixtures/tools_microsoft_graph_auth"
+    },
+    "tools_mixture_of_agents_tool": {
+      "harness": "tests/t_port_tools_mixture_of_agents_tool.c",
+      "oracle": "tests/sta_oracle_tools_mixture_of_agents_tool.py",
+      "fixtures": "tests/oracle/fixtures/tools_mixture_of_agents_tool"
+    },
+    "tools_moa_performance": {
+      "harness": "tests/t_port_tools_moa_performance.c",
+      "oracle": "tests/sta_oracle_tools_moa_performance.py",
+      "fixtures": "tests/oracle/fixtures/tools_moa_performance"
+    },
+    "tools_openrouter_client": {
+      "harness": "tests/t_port_tools_openrouter_client.c",
+      "oracle": "tests/sta_oracle_tools_openrouter_client.py",
+      "fixtures": "tests/oracle/fixtures/tools_openrouter_client"
+    },
+    "tools_process_registry": {
+      "harness": "tests/t_port_tools_process_registry.c",
+      "oracle": "tests/sta_oracle_tools_process_registry.py",
+      "fixtures": "tests/oracle/fixtures/tools_process_registry"
+    },
+    "tools_read_terminal_tool": {
+      "harness": "tests/t_port_tools_read_terminal_tool.c",
+      "oracle": "tests/sta_oracle_tools_read_terminal_tool.py",
+      "fixtures": "tests/oracle/fixtures/tools_read_terminal_tool"
+    },
+    "tools_skill_manager_tool": {
+      "harness": "tests/t_port_tools_skill_manager_tool.c",
+      "oracle": "tests/sta_oracle_tools_skill_manager_tool.py",
+      "fixtures": "tests/oracle/fixtures/tools_skill_manager_tool"
+    },
+    "tools_skill_usage": {
+      "harness": "tests/t_port_tools_skill_usage.c",
+      "oracle": "tests/sta_oracle_tools_skill_usage.py",
+      "fixtures": "tests/oracle/fixtures/tools_skill_usage"
+    },
+    "tools_skills_hub": {
+      "harness": "tests/t_port_tools_skills_hub.c",
+      "oracle": "tests/sta_oracle_tools_skills_hub.py",
+      "fixtures": "tests/oracle/fixtures/tools_skills_hub"
+    },
+    "tools_skills_sync": {
+      "harness": "tests/t_port_tools_skills_sync.c",
+      "oracle": "tests/sta_oracle_tools_skills_sync.py",
+      "fixtures": "tests/oracle/fixtures/tools_skills_sync"
+    },
+    "tools_threat_patterns": {
+      "harness": "tests/t_port_tools_threat_patterns.c",
+      "oracle": "tests/sta_oracle_tools_threat_patterns.py",
+      "fixtures": "tests/oracle/fixtures/tools_threat_patterns"
+    },
+    "tools_tirith_security": {
+      "harness": "tests/t_port_tools_tirith_security.c",
+      "oracle": "tests/sta_oracle_tools_tirith_security.py",
+      "fixtures": "tests/oracle/fixtures/tools_tirith_security"
+    },
+    "tools_todo_tool": {
+      "harness": "tests/t_port_tools_todo_tool.c",
+      "oracle": "tests/sta_oracle_tools_todo_tool.py",
+      "fixtures": "tests/oracle/fixtures/tools_todo_tool"
+    },
+    "tools_tool_backend_helpers": {
+      "harness": "tests/t_port_tools_tool_backend_helpers.c",
+      "oracle": "tests/sta_oracle_tools_tool_backend_helpers.py",
+      "fixtures": "tests/oracle/fixtures/tools_tool_backend_helpers"
+    },
+    "tools_tool_output_limits": {
+      "harness": "tests/t_port_tools_tool_output_limits.c",
+      "oracle": "tests/sta_oracle_tools_tool_output_limits.py",
+      "fixtures": "tests/oracle/fixtures/tools_tool_output_limits"
+    },
+    "tools_tts_tool": {
+      "harness": "tests/t_port_tools_tts_tool.c",
+      "oracle": "tests/sta_oracle_tools_tts_tool.py",
+      "fixtures": "tests/oracle/fixtures/tools_tts_tool"
+    },
+    "tools_url_safety": {
+      "harness": "tests/t_port_tools_url_safety.c",
+      "oracle": "tests/sta_oracle_tools_url_safety.py",
+      "fixtures": "tests/oracle/fixtures/tools_url_safety"
+    },
+    "tools_video_generation_tool": {
+      "harness": "tests/t_port_tools_video_generation_tool.c",
+      "oracle": "tests/sta_oracle_tools_video_generation_tool.py",
+      "fixtures": "tests/oracle/fixtures/tools_video_generation_tool"
+    },
+    "tools_voice_mode": {
+      "harness": "tests/t_port_tools_voice_mode.c",
+      "oracle": "tests/sta_oracle_tools_voice_mode.py",
+      "fixtures": "tests/oracle/fixtures/tools_voice_mode"
+    },
+    "tools_web_tools": {
+      "harness": "tests/t_port_tools_web_tools.c",
+      "oracle": "tests/sta_oracle_tools_web_tools.py",
+      "fixtures": "tests/oracle/fixtures/tools_web_tools"
+    },
+    "tools_website_policy": {
+      "harness": "tests/t_port_tools_website_policy.c",
+      "oracle": "tests/sta_oracle_tools_website_policy.py",
+      "fixtures": "tests/oracle/fixtures/tools_website_policy"
+    },
+    "tools_write_approval": {
+      "harness": "tests/t_port_tools_write_approval.c",
+      "oracle": "tests/sta_oracle_tools_write_approval.py",
+      "fixtures": "tests/oracle/fixtures/tools_write_approval"
+    },
+    "tools_yuanbao_tools": {
+      "harness": "tests/t_port_tools_yuanbao_tools.c",
+      "oracle": "tests/sta_oracle_tools_yuanbao_tools.py",
+      "fixtures": "tests/oracle/fixtures/tools_yuanbao_tools"
+    },
+    "hermes_cli__parser": {
+      "harness": "tests/t_port_hermes_cli__parser.c",
+      "oracle": "tests/sta_oracle_hermes_cli__parser.py",
+      "fixtures": "tests/oracle/fixtures/hermes_cli__parser"
+    },
+    "hermes_cli__subprocess_compat": {
+      "harness": "tests/t_port_hermes_cli__subprocess_compat.c",
+      "oracle": "tests/sta_oracle_hermes_cli__subprocess_compat.py",
+      "fixtures": "tests/oracle/fixtures/hermes_cli__subprocess_compat"
+    },
+    "hermes_cli_banner": {
+      "harness": "tests/t_port_hermes_cli_banner.c",
+      "oracle": "tests/sta_oracle_hermes_cli_banner.py",
+      "fixtures": "tests/oracle/fixtures/hermes_cli_banner"
+    },
+    "hermes_cli_blueprint_cmd": {
+      "harness": "tests/t_port_hermes_cli_blueprint_cmd.c",
+      "oracle": "tests/sta_oracle_hermes_cli_blueprint_cmd.py",
+      "fixtures": "tests/oracle/fixtures/hermes_cli_blueprint_cmd"
+    },
+    "hermes_cli_browser_connect": {
+      "harness": "tests/t_port_hermes_cli_browser_connect.c",
+      "oracle": "tests/sta_oracle_hermes_cli_browser_connect.py",
+      "fixtures": "tests/oracle/fixtures/hermes_cli_browser_connect"
+    },
+    "hermes_cli_callbacks": {
+      "harness": "tests/t_port_hermes_cli_callbacks.c",
+      "oracle": "tests/sta_oracle_hermes_cli_callbacks.py",
+      "fixtures": "tests/oracle/fixtures/hermes_cli_callbacks"
+    },
+    "hermes_cli_checkpoints": {
+      "harness": "tests/t_port_hermes_cli_checkpoints.c",
+      "oracle": "tests/sta_oracle_hermes_cli_checkpoints.py",
+      "fixtures": "tests/oracle/fixtures/hermes_cli_checkpoints"
     }
   },
   "normalize": {
