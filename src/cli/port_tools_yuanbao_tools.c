@@ -41,9 +41,11 @@ json_node_t* cli_tools_yuanbao_tools_get_group_info(const char *group_code) {
         return result;
     }
     hermes_log(LOG_INFO, "yuanbao_tools", "get_group_info: group=%s", group_code);
+    /* No adapter available: mirror Python's no-adapter branch exactly
+     * ({"success":False,"error":"Yuanbao adapter is not connected"}) — do NOT
+     * add group_code, which Python omits in this path. */
     json_object_set(result, "success", json_new_bool(0));
     json_object_set(result, "error", json_new_string("Yuanbao adapter is not connected"));
-    json_object_set(result, "group_code", json_new_string(group_code));
     return result;
 }
 

@@ -28,5 +28,12 @@ elif func=="missing_provider_error":
     cfg = inp if (inp is not None and inp != "") else None
     out = mod._missing_provider_error(cfg)
     print(json.dumps(json.loads(out), sort_keys=True))
+elif func=="get_group_info":
+    import asyncio
+    spec=importlib.util.spec_from_file_location("yb","/home/wubu/hermes-agent-dev/tools/yuanbao_tools.py")
+    mod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
+    gc = inp if (inp is not None and inp != "") else ""
+    out = asyncio.run(mod.get_group_info(gc))
+    print(json.dumps(out, sort_keys=True))
 else:
     print(f"unknown {func}", file=sys.stderr); sys.exit(4)
