@@ -165,6 +165,17 @@ char *fmt_task_line(const kb_task_t *t)
     int n = snprintf(buf, sizeof(buf), "%s %s  %-8s  %-20s", icon, id, status, assignee);
     if (tenant[0]) { snprintf(buf + n, sizeof(buf) - n, " [%s]", tenant); n = (int)strlen(buf); }
     snprintf(buf + n, sizeof(buf) - n, "  %s", title);
+    n = (int)strlen(buf);
+    /* Include the creation timestamp when present (assembles fmt_kanban_ts,
+     * which is otherwise orphaned — it was ported alongside this formatter). */
+    if (t && t->created_at) {
+        char *ts = fmt_kanban_ts(t->created_at);
+        if (ts) {
+            snprintf(buf + n, sizeof(buf) - n, "  [created %s]", ts);
+            n = (int)strlen(buf);
+            free(ts);
+        }
+    }
     return strdup(buf);
 }
 
