@@ -12,6 +12,7 @@
 #include "session_crud.h"
 #include "session_search.h"
 #include "delegate.h"
+#include "agent/port_agent_display_helpers.h"
 
 /* PoP: cmd_agents @ hermes_cli/main.py:cmd_agents */
 void cmd_agents(const char *args, agent_state_t *state) {
@@ -1097,8 +1098,13 @@ void cmd_sessions(const char *args, agent_state_t *state) {
     printf("Saved sessions (%zu):\n", count);
     for (size_t i = 0; i < count; i++) {
         printf("  %s", entries[i].id);
-        if (entries[i].meta.title[0])
-            printf(" \u2014 %s", entries[i].meta.title);
+        if (entries[i].meta.title[0]) {
+            char one[256];
+            agent_display_oneline(entries[i].meta.title, one, sizeof(one));
+            char prev[128];
+            agent_display_truncate_preview(one, 60, prev, sizeof(prev));
+            printf(" \u2014 %s", prev);
+        }
         printf("\n");
     }
     free(entries);
