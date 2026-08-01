@@ -9,6 +9,9 @@
 #include <string.h>
 #include <stdbool.h>
 #include "hermes_json.h"
+#include "profile_store.h"
+#include "slermes_home.h"
+#include "tools/process_registry.h"
 
 /* PoP: _handle_rollback_command @ hermes_cli/cli_commands_mixin.py:_handle_rollback_command */
 int ccm_handle_rollback_command(const char *args) {
@@ -20,7 +23,13 @@ int ccm_handle_snapshot_command(const char *args) {
 }
 /* PoP: _handle_stop_command @ hermes_cli/cli_commands_mixin.py:_handle_stop_command */
 int ccm_handle_stop_command(const char *args) {
-    (void)args; return 0;
+    (void)args;
+    int killed = process_registry_kill_all(NULL);
+    if (killed > 0)
+        printf("  Stopping background process(es)...\n  Stopped %d process(es).\n", killed);
+    else
+        printf("  No running background processes.\n");
+    return 0;
 }
 /* PoP: _handle_agents_command @ hermes_cli/cli_commands_mixin.py:_handle_agents_command */
 int ccm_handle_agents_command(const char *args) {
@@ -48,7 +57,12 @@ int ccm_handle_tools_command(const char *args) {
 }
 /* PoP: _handle_profile_command @ hermes_cli/cli_commands_mixin.py:_handle_profile_command */
 int ccm_handle_profile_command(const char *args) {
-    (void)args; return 0;
+    (void)args;
+    char *name = profile_get_active_name();
+    const char *home = slermes_home();
+    printf("\n  Profile: %s\n  Home:    %s\n\n", name ? name : "default", home ? home : "");
+    free(name);
+    return 0;
 }
 /* PoP: _handle_handoff_command @ hermes_cli/cli_commands_mixin.py:_handle_handoff_command */
 int ccm_handle_handoff_command(const char *args) {
