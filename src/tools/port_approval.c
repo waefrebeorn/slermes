@@ -198,12 +198,18 @@ char *strip_optional_shell_quotes(const char *word)
 /* PoP: is_simple_shell_literal @ tools/approval.py:_is_simple_shell_literal */
 bool is_simple_shell_literal(const char *word)
 {
-    if (!word) return false;
+    /* Faithful port of tools/approval.py _is_simple_shell_literal:
+     *   bool(value and _SIMPLE_SHELL_LITERAL_RE.fullmatch(value))
+     * where _SIMPLE_SHELL_LITERAL_RE = r"^[A-Za-z0-9_./:@%%+=,-]+$".
+     * Empty string is NOT a literal; only the allowed character class passes. */
+    if (!word || !*word) return false;
     for (const char *p = word; *p; p++) {
-        if (*p == '$' || *p == '`' || *p == '\'' || *p == '"' || *p == '\\')
-            return false;
-        if (*p == '|' || *p == '&' || *p == ';' || *p == '>' || *p == '<')
-            return false;
+        char c = *p;
+        bool ok = (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
+                  (c >= '0' && c <= '9') || c == '_' || c == '.' || c == '/' ||
+                  c == ':' || c == '@' || c == '%' || c == '+' || c == '=' ||
+                  c == ',' || c == '-';
+        if (!ok) return false;
     }
     return true;
 }
@@ -488,14 +494,18 @@ bool command_matches_permanent_allowlist(const char *command)
 /* Port of Python: _has_allowlist_shell_operator */
 bool has_allowlist_shell_operator(const char *command)
 {
+    /* Faithful port of tools/approval.py _has_allowlist_shell_operator:
+     *   bool(_ALLOWLIST_SHELL_OPERATOR_RE.search(command or ""))
+     * where _ALLOWLIST_SHELL_OPERATOR_RE = r"(?:\n|&&|\|\||[;&|<>`]|\$\()". */
     if (!command) return false;
-    if (strstr(command, " | ") || strstr(command, " && ") ||
-        strstr(command, " || ") || strstr(command, " ; ") ||
-        strstr(command, " > ") || strstr(command, " >> ") ||
-        strstr(command, " < ")) {
-        hermes_log(LOG_DEBUG, "port", "has_allowlist_shell_operator: operators found in '%s'",
-                   command);
-        return true;
+    for (const char *p = command; *p; p++) {
+        char c = *p;
+        /* regex class [;&|<>`] matches each of these as a single char */
+        if (c == '\n' || c == ';' || c == '&' || c == '|' || c == '<' ||
+            c == '>' || c == '`') {
+            return true;
+        }
+        if (c == '$' && p[1] == '(') return true;     /* only $() */
     }
     return false;
 }

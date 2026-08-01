@@ -117,7 +117,17 @@ def candidate_funcs(cfile):
         pymod = (g2[:-3].replace("/", ".")) if g2 else primary
         if not pymod:
             continue
-        pyfn = g3 or g1  # explicit :func suffix wins; else the PoP name itself
+        # Only trust g3/g1 as the mapping when the nearest PoP is THIS function's
+        # own annotation (g1 == fn or g1 == "_"+fn). Otherwise it's a far-above
+        # PoP meant for a different function -> fall back to the _<cfunc> convention.
+        is_own = (g1 == fn or g1 == "_" + fn)
+        if is_own:
+            cands = [c for c in (g3, g1) if c]
+        else:
+            cands = [fn, "_" + fn]
+        pyfn = resolve_pyfn(pymod, cands)
+        if not pyfn:
+            continue
         body = extract_body(cfile, fn)
         if IO_BLOCK.search(body):
             continue
@@ -132,6 +142,27 @@ def candidate_funcs(cfile):
             continue
         out.append((fn, pymod, pyfn))
     return out
+
+
+def resolve_pyfn(pymod, candidates):
+    """Return the first candidate that actually exists in the live python module,
+    else None. This makes the C->Py mapping correct even when a function lacks a
+    precise PoP annotation (falls back to the _<cfunc> convention)."""
+    pyrel = pymod.replace(".", "/") + ".py"
+    for base in (os.path.dirname(SL), SL):
+        path = os.path.join(base, pyrel)
+        if os.path.isfile(path):
+            try:
+                import importlib.util
+                spec = importlib.util.spec_from_file_location("rp_" + pymod.replace(".", "_"), path)
+                mod = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(mod)
+                for c in candidates:
+                    if c and hasattr(mod, c):
+                        return c
+            except Exception:
+                return None
+    return None
 
 
 def gen_harness(mod, cfile, funcs, sigs):
@@ -167,7 +198,7 @@ def gen_harness(mod, cfile, funcs, sigs):
             L.append('    json_t *o = json_new_object(); json_set(o, "fn", json_string("%s"));' % fn)
             L.append('    json_set(o, "out", json_string(out ? out : "")); return o;')
         elif ret == "bool":
-            L.append("    int v = (int)%s(value);" % fn)
+            L.append("    bool v = (bool)%s(value);" % fn)
             L.append('    json_t *o = json_new_object(); json_set(o, "fn", json_string("%s"));' % fn)
             L.append('    json_set(o, "out", json_bool(v)); return o;')
         else:
@@ -188,8 +219,9 @@ def gen_harness(mod, cfile, funcs, sigs):
     L.append("        json_t *c = json_get(root, i);")
     L.append('        const char *op = json_get_str(c, "op", "");')
     L.append("        json_t *o = NULL;")
-    for fn, _, _ in funcs:
-        L.append('        if (strcmp(op, "%s") == 0) o = emit_%s(c);' % (fn, fn))
+    for k, (fn, _, _) in enumerate(funcs):
+        kw = "if" if k == 0 else "else if"
+        L.append('        %s (strcmp(op, "%s") == 0) o = emit_%s(c);' % (kw, fn, fn))
     L.append('        else { o = json_new_object(); json_set(o, "fn", json_string(op)); }')
     L.append("        char *ser = json_serialize(o); printf(\"%s\\n\", ser); free(ser); json_free(o);")
     L.append("    }")
