@@ -33,6 +33,12 @@ FIX[web_windows_build_number]='1.2.3,windows|0.19.0,windows|1.0,linux'
 FIX[allows_private_ip_resolution]='localhost,http|example.com,https|10.0.0.1,http'
 FIX[match_host_against_rule]='api.example.com,*.example.com|evil.com,*.example.com|foo.com,foo.com'
 FIX[compact_text]='  hello   world  |a b c|  spaced   out  '
+FIX[is_codex_gpt54_or_gpt55]='gpt-5.4,codex|gpt-5.5,codex|claude-3,anthropic|gpt-4o,openai'
+FIX[is_codex_spark]='spark-1,codex|spark-x,codex|gpt-4,openai|other,codex'
+FIX[thinking_timeout_is_thinking_timeout]='timeout: model still thinking,claude-3,timeout occurred|done,claude-3,x|thinking,claude-3,rate limit'
+FIX[toolset_allowed_for_platform]='browser,web|browser,desktop|cli,web|unknown,linux'
+FIX[provider_supports_explicit_api_mode]='openai,openai|anthropic,openai|none,openai|openai,none'
+FIX[query_matches]='File Open,open|Settings,set|My Document,xyz|Abc,abc'
 
 FAIL=0
 for fn in "${!FIX[@]}"; do
