@@ -1,0 +1,242 @@
+[
+{
+"op": "profile_exists",
+"value": ""
+},
+{
+"op": "profile_exists",
+"value": "x"
+},
+{
+"op": "profile_exists",
+"value": "hello world"
+},
+{
+"op": "profile_exists",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "profile_exists",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "profile_exists",
+"value": "user@example.com"
+},
+{
+"op": "profile_exists",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "profile_exists",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "profile_exists",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "profile_exists",
+"value": "CamelCaseString"
+},
+{
+"op": "profile_exists",
+"value": "12345"
+},
+{
+"op": "profile_exists",
+"value": "  spaced  "
+},
+{
+"op": "profile_exists",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "profile_exists",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "profile_exists",
+"value": "key:value;key2:value2"
+},
+{
+"op": "to_epoch",
+"value": ""
+},
+{
+"op": "to_epoch",
+"value": "x"
+},
+{
+"op": "to_epoch",
+"value": "hello world"
+},
+{
+"op": "to_epoch",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "to_epoch",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "to_epoch",
+"value": "user@example.com"
+},
+{
+"op": "to_epoch",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "to_epoch",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "to_epoch",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "to_epoch",
+"value": "CamelCaseString"
+},
+{
+"op": "to_epoch",
+"value": "12345"
+},
+{
+"op": "to_epoch",
+"value": "  spaced  "
+},
+{
+"op": "to_epoch",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "to_epoch",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "to_epoch",
+"value": "key:value;key2:value2"
+},
+{
+"op": "looks_like_path",
+"value": ""
+},
+{
+"op": "looks_like_path",
+"value": "x"
+},
+{
+"op": "looks_like_path",
+"value": "hello world"
+},
+{
+"op": "looks_like_path",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "looks_like_path",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "looks_like_path",
+"value": "user@example.com"
+},
+{
+"op": "looks_like_path",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "looks_like_path",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "looks_like_path",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "looks_like_path",
+"value": "CamelCaseString"
+},
+{
+"op": "looks_like_path",
+"value": "12345"
+},
+{
+"op": "looks_like_path",
+"value": "  spaced  "
+},
+{
+"op": "looks_like_path",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "looks_like_path",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "looks_like_path",
+"value": "key:value;key2:value2"
+},
+{
+"op": "is_windows_batch_shim",
+"value": ""
+},
+{
+"op": "is_windows_batch_shim",
+"value": "x"
+},
+{
+"op": "is_windows_batch_shim",
+"value": "hello world"
+},
+{
+"op": "is_windows_batch_shim",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "is_windows_batch_shim",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "is_windows_batch_shim",
+"value": "user@example.com"
+},
+{
+"op": "is_windows_batch_shim",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "is_windows_batch_shim",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "is_windows_batch_shim",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "is_windows_batch_shim",
+"value": "CamelCaseString"
+},
+{
+"op": "is_windows_batch_shim",
+"value": "12345"
+},
+{
+"op": "is_windows_batch_shim",
+"value": "  spaced  "
+},
+{
+"op": "is_windows_batch_shim",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "is_windows_batch_shim",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "is_windows_batch_shim",
+"value": "key:value;key2:value2"
+}
+]

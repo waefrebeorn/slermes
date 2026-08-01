@@ -1,0 +1,62 @@
+[
+{
+"op": "hermes_cli_default_soul_is_legacy",
+"value": ""
+},
+{
+"op": "hermes_cli_default_soul_is_legacy",
+"value": "x"
+},
+{
+"op": "hermes_cli_default_soul_is_legacy",
+"value": "hello world"
+},
+{
+"op": "hermes_cli_default_soul_is_legacy",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "hermes_cli_default_soul_is_legacy",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "hermes_cli_default_soul_is_legacy",
+"value": "user@example.com"
+},
+{
+"op": "hermes_cli_default_soul_is_legacy",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "hermes_cli_default_soul_is_legacy",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "hermes_cli_default_soul_is_legacy",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "hermes_cli_default_soul_is_legacy",
+"value": "CamelCaseString"
+},
+{
+"op": "hermes_cli_default_soul_is_legacy",
+"value": "12345"
+},
+{
+"op": "hermes_cli_default_soul_is_legacy",
+"value": "  spaced  "
+},
+{
+"op": "hermes_cli_default_soul_is_legacy",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "hermes_cli_default_soul_is_legacy",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "hermes_cli_default_soul_is_legacy",
+"value": "key:value;key2:value2"
+}
+]

@@ -1,0 +1,62 @@
+[
+{
+"op": "tools_url_safety_has_sensitive_query_params",
+"value": ""
+},
+{
+"op": "tools_url_safety_has_sensitive_query_params",
+"value": "x"
+},
+{
+"op": "tools_url_safety_has_sensitive_query_params",
+"value": "hello world"
+},
+{
+"op": "tools_url_safety_has_sensitive_query_params",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "tools_url_safety_has_sensitive_query_params",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "tools_url_safety_has_sensitive_query_params",
+"value": "user@example.com"
+},
+{
+"op": "tools_url_safety_has_sensitive_query_params",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "tools_url_safety_has_sensitive_query_params",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "tools_url_safety_has_sensitive_query_params",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "tools_url_safety_has_sensitive_query_params",
+"value": "CamelCaseString"
+},
+{
+"op": "tools_url_safety_has_sensitive_query_params",
+"value": "12345"
+},
+{
+"op": "tools_url_safety_has_sensitive_query_params",
+"value": "  spaced  "
+},
+{
+"op": "tools_url_safety_has_sensitive_query_params",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "tools_url_safety_has_sensitive_query_params",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "tools_url_safety_has_sensitive_query_params",
+"value": "key:value;key2:value2"
+}
+]

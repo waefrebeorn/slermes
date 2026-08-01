@@ -1,0 +1,242 @@
+[
+{
+"op": "pcmd_ensure_basic_auth_plugin_enabled_in_config",
+"value": ""
+},
+{
+"op": "pcmd_ensure_basic_auth_plugin_enabled_in_config",
+"value": "x"
+},
+{
+"op": "pcmd_ensure_basic_auth_plugin_enabled_in_config",
+"value": "hello world"
+},
+{
+"op": "pcmd_ensure_basic_auth_plugin_enabled_in_config",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "pcmd_ensure_basic_auth_plugin_enabled_in_config",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "pcmd_ensure_basic_auth_plugin_enabled_in_config",
+"value": "user@example.com"
+},
+{
+"op": "pcmd_ensure_basic_auth_plugin_enabled_in_config",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "pcmd_ensure_basic_auth_plugin_enabled_in_config",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "pcmd_ensure_basic_auth_plugin_enabled_in_config",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "pcmd_ensure_basic_auth_plugin_enabled_in_config",
+"value": "CamelCaseString"
+},
+{
+"op": "pcmd_ensure_basic_auth_plugin_enabled_in_config",
+"value": "12345"
+},
+{
+"op": "pcmd_ensure_basic_auth_plugin_enabled_in_config",
+"value": "  spaced  "
+},
+{
+"op": "pcmd_ensure_basic_auth_plugin_enabled_in_config",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "pcmd_ensure_basic_auth_plugin_enabled_in_config",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "pcmd_ensure_basic_auth_plugin_enabled_in_config",
+"value": "key:value;key2:value2"
+},
+{
+"op": "pcmd_run_composite_ui",
+"value": ""
+},
+{
+"op": "pcmd_run_composite_ui",
+"value": "x"
+},
+{
+"op": "pcmd_run_composite_ui",
+"value": "hello world"
+},
+{
+"op": "pcmd_run_composite_ui",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "pcmd_run_composite_ui",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "pcmd_run_composite_ui",
+"value": "user@example.com"
+},
+{
+"op": "pcmd_run_composite_ui",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "pcmd_run_composite_ui",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "pcmd_run_composite_ui",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "pcmd_run_composite_ui",
+"value": "CamelCaseString"
+},
+{
+"op": "pcmd_run_composite_ui",
+"value": "12345"
+},
+{
+"op": "pcmd_run_composite_ui",
+"value": "  spaced  "
+},
+{
+"op": "pcmd_run_composite_ui",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "pcmd_run_composite_ui",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "pcmd_run_composite_ui",
+"value": "key:value;key2:value2"
+},
+{
+"op": "pcmd_run_composite_fallback",
+"value": ""
+},
+{
+"op": "pcmd_run_composite_fallback",
+"value": "x"
+},
+{
+"op": "pcmd_run_composite_fallback",
+"value": "hello world"
+},
+{
+"op": "pcmd_run_composite_fallback",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "pcmd_run_composite_fallback",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "pcmd_run_composite_fallback",
+"value": "user@example.com"
+},
+{
+"op": "pcmd_run_composite_fallback",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "pcmd_run_composite_fallback",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "pcmd_run_composite_fallback",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "pcmd_run_composite_fallback",
+"value": "CamelCaseString"
+},
+{
+"op": "pcmd_run_composite_fallback",
+"value": "12345"
+},
+{
+"op": "pcmd_run_composite_fallback",
+"value": "  spaced  "
+},
+{
+"op": "pcmd_run_composite_fallback",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "pcmd_run_composite_fallback",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "pcmd_run_composite_fallback",
+"value": "key:value;key2:value2"
+},
+{
+"op": "pcmd_git_pull_plugin_dir",
+"value": ""
+},
+{
+"op": "pcmd_git_pull_plugin_dir",
+"value": "x"
+},
+{
+"op": "pcmd_git_pull_plugin_dir",
+"value": "hello world"
+},
+{
+"op": "pcmd_git_pull_plugin_dir",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "pcmd_git_pull_plugin_dir",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "pcmd_git_pull_plugin_dir",
+"value": "user@example.com"
+},
+{
+"op": "pcmd_git_pull_plugin_dir",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "pcmd_git_pull_plugin_dir",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "pcmd_git_pull_plugin_dir",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "pcmd_git_pull_plugin_dir",
+"value": "CamelCaseString"
+},
+{
+"op": "pcmd_git_pull_plugin_dir",
+"value": "12345"
+},
+{
+"op": "pcmd_git_pull_plugin_dir",
+"value": "  spaced  "
+},
+{
+"op": "pcmd_git_pull_plugin_dir",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "pcmd_git_pull_plugin_dir",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "pcmd_git_pull_plugin_dir",
+"value": "key:value;key2:value2"
+}
+]

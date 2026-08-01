@@ -1,0 +1,2042 @@
+[
+{
+"op": "moa_u_redact_reference_text",
+"value": ""
+},
+{
+"op": "moa_u_redact_reference_text",
+"value": "x"
+},
+{
+"op": "moa_u_redact_reference_text",
+"value": "hello world"
+},
+{
+"op": "moa_u_redact_reference_text",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_redact_reference_text",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_redact_reference_text",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_redact_reference_text",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_redact_reference_text",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_redact_reference_text",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_redact_reference_text",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_redact_reference_text",
+"value": "12345"
+},
+{
+"op": "moa_u_redact_reference_text",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_redact_reference_text",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_redact_reference_text",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_redact_reference_text",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_moa_privacy_mode",
+"value": ""
+},
+{
+"op": "moa_u_moa_privacy_mode",
+"value": "x"
+},
+{
+"op": "moa_u_moa_privacy_mode",
+"value": "hello world"
+},
+{
+"op": "moa_u_moa_privacy_mode",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_moa_privacy_mode",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_moa_privacy_mode",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_moa_privacy_mode",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_moa_privacy_mode",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_moa_privacy_mode",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_moa_privacy_mode",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_moa_privacy_mode",
+"value": "12345"
+},
+{
+"op": "moa_u_moa_privacy_mode",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_moa_privacy_mode",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_moa_privacy_mode",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_moa_privacy_mode",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_redact_reference_outputs",
+"value": ""
+},
+{
+"op": "moa_u_redact_reference_outputs",
+"value": "x"
+},
+{
+"op": "moa_u_redact_reference_outputs",
+"value": "hello world"
+},
+{
+"op": "moa_u_redact_reference_outputs",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_redact_reference_outputs",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_redact_reference_outputs",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_redact_reference_outputs",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_redact_reference_outputs",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_redact_reference_outputs",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_redact_reference_outputs",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_redact_reference_outputs",
+"value": "12345"
+},
+{
+"op": "moa_u_redact_reference_outputs",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_redact_reference_outputs",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_redact_reference_outputs",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_redact_reference_outputs",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_redact_trace_messages",
+"value": ""
+},
+{
+"op": "moa_u_redact_trace_messages",
+"value": "x"
+},
+{
+"op": "moa_u_redact_trace_messages",
+"value": "hello world"
+},
+{
+"op": "moa_u_redact_trace_messages",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_redact_trace_messages",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_redact_trace_messages",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_redact_trace_messages",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_redact_trace_messages",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_redact_trace_messages",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_redact_trace_messages",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_redact_trace_messages",
+"value": "12345"
+},
+{
+"op": "moa_u_redact_trace_messages",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_redact_trace_messages",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_redact_trace_messages",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_redact_trace_messages",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_redact_trace_accounting",
+"value": ""
+},
+{
+"op": "moa_u_redact_trace_accounting",
+"value": "x"
+},
+{
+"op": "moa_u_redact_trace_accounting",
+"value": "hello world"
+},
+{
+"op": "moa_u_redact_trace_accounting",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_redact_trace_accounting",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_redact_trace_accounting",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_redact_trace_accounting",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_redact_trace_accounting",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_redact_trace_accounting",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_redact_trace_accounting",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_redact_trace_accounting",
+"value": "12345"
+},
+{
+"op": "moa_u_redact_trace_accounting",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_redact_trace_accounting",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_redact_trace_accounting",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_redact_trace_accounting",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_slot_label",
+"value": ""
+},
+{
+"op": "moa_u_slot_label",
+"value": "x"
+},
+{
+"op": "moa_u_slot_label",
+"value": "hello world"
+},
+{
+"op": "moa_u_slot_label",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_slot_label",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_slot_label",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_slot_label",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_slot_label",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_slot_label",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_slot_label",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_slot_label",
+"value": "12345"
+},
+{
+"op": "moa_u_slot_label",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_slot_label",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_slot_label",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_slot_label",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_slot_reasoning_config",
+"value": ""
+},
+{
+"op": "moa_u_slot_reasoning_config",
+"value": "x"
+},
+{
+"op": "moa_u_slot_reasoning_config",
+"value": "hello world"
+},
+{
+"op": "moa_u_slot_reasoning_config",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_slot_reasoning_config",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_slot_reasoning_config",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_slot_reasoning_config",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_slot_reasoning_config",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_slot_reasoning_config",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_slot_reasoning_config",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_slot_reasoning_config",
+"value": "12345"
+},
+{
+"op": "moa_u_slot_reasoning_config",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_slot_reasoning_config",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_slot_reasoning_config",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_slot_reasoning_config",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_aggregator_reasoning_config",
+"value": ""
+},
+{
+"op": "moa_u_aggregator_reasoning_config",
+"value": "x"
+},
+{
+"op": "moa_u_aggregator_reasoning_config",
+"value": "hello world"
+},
+{
+"op": "moa_u_aggregator_reasoning_config",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_aggregator_reasoning_config",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_aggregator_reasoning_config",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_aggregator_reasoning_config",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_aggregator_reasoning_config",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_aggregator_reasoning_config",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_aggregator_reasoning_config",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_aggregator_reasoning_config",
+"value": "12345"
+},
+{
+"op": "moa_u_aggregator_reasoning_config",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_aggregator_reasoning_config",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_aggregator_reasoning_config",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_aggregator_reasoning_config",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_slot_runtime",
+"value": ""
+},
+{
+"op": "moa_u_slot_runtime",
+"value": "x"
+},
+{
+"op": "moa_u_slot_runtime",
+"value": "hello world"
+},
+{
+"op": "moa_u_slot_runtime",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_slot_runtime",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_slot_runtime",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_slot_runtime",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_slot_runtime",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_slot_runtime",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_slot_runtime",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_slot_runtime",
+"value": "12345"
+},
+{
+"op": "moa_u_slot_runtime",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_slot_runtime",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_slot_runtime",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_slot_runtime",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_merge_slot_extra_body",
+"value": ""
+},
+{
+"op": "moa_u_merge_slot_extra_body",
+"value": "x"
+},
+{
+"op": "moa_u_merge_slot_extra_body",
+"value": "hello world"
+},
+{
+"op": "moa_u_merge_slot_extra_body",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_merge_slot_extra_body",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_merge_slot_extra_body",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_merge_slot_extra_body",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_merge_slot_extra_body",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_merge_slot_extra_body",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_merge_slot_extra_body",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_merge_slot_extra_body",
+"value": "12345"
+},
+{
+"op": "moa_u_merge_slot_extra_body",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_merge_slot_extra_body",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_merge_slot_extra_body",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_merge_slot_extra_body",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_maybe_apply_moa_cache_control",
+"value": ""
+},
+{
+"op": "moa_u_maybe_apply_moa_cache_control",
+"value": "x"
+},
+{
+"op": "moa_u_maybe_apply_moa_cache_control",
+"value": "hello world"
+},
+{
+"op": "moa_u_maybe_apply_moa_cache_control",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_maybe_apply_moa_cache_control",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_maybe_apply_moa_cache_control",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_maybe_apply_moa_cache_control",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_maybe_apply_moa_cache_control",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_maybe_apply_moa_cache_control",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_maybe_apply_moa_cache_control",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_maybe_apply_moa_cache_control",
+"value": "12345"
+},
+{
+"op": "moa_u_maybe_apply_moa_cache_control",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_maybe_apply_moa_cache_control",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_maybe_apply_moa_cache_control",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_maybe_apply_moa_cache_control",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_run_reference",
+"value": ""
+},
+{
+"op": "moa_u_run_reference",
+"value": "x"
+},
+{
+"op": "moa_u_run_reference",
+"value": "hello world"
+},
+{
+"op": "moa_u_run_reference",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_run_reference",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_run_reference",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_run_reference",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_run_reference",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_run_reference",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_run_reference",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_run_reference",
+"value": "12345"
+},
+{
+"op": "moa_u_run_reference",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_run_reference",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_run_reference",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_run_reference",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_trim_messages_for_reference",
+"value": ""
+},
+{
+"op": "moa_u_trim_messages_for_reference",
+"value": "x"
+},
+{
+"op": "moa_u_trim_messages_for_reference",
+"value": "hello world"
+},
+{
+"op": "moa_u_trim_messages_for_reference",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_trim_messages_for_reference",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_trim_messages_for_reference",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_trim_messages_for_reference",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_trim_messages_for_reference",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_trim_messages_for_reference",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_trim_messages_for_reference",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_trim_messages_for_reference",
+"value": "12345"
+},
+{
+"op": "moa_u_trim_messages_for_reference",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_trim_messages_for_reference",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_trim_messages_for_reference",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_trim_messages_for_reference",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_run_references_parallel",
+"value": ""
+},
+{
+"op": "moa_u_run_references_parallel",
+"value": "x"
+},
+{
+"op": "moa_u_run_references_parallel",
+"value": "hello world"
+},
+{
+"op": "moa_u_run_references_parallel",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_run_references_parallel",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_run_references_parallel",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_run_references_parallel",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_run_references_parallel",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_run_references_parallel",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_run_references_parallel",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_run_references_parallel",
+"value": "12345"
+},
+{
+"op": "moa_u_run_references_parallel",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_run_references_parallel",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_run_references_parallel",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_run_references_parallel",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_truncate_tool_result",
+"value": ""
+},
+{
+"op": "moa_u_truncate_tool_result",
+"value": "x"
+},
+{
+"op": "moa_u_truncate_tool_result",
+"value": "hello world"
+},
+{
+"op": "moa_u_truncate_tool_result",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_truncate_tool_result",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_truncate_tool_result",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_truncate_tool_result",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_truncate_tool_result",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_truncate_tool_result",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_truncate_tool_result",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_truncate_tool_result",
+"value": "12345"
+},
+{
+"op": "moa_u_truncate_tool_result",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_truncate_tool_result",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_truncate_tool_result",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_truncate_tool_result",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_render_tool_calls",
+"value": ""
+},
+{
+"op": "moa_u_render_tool_calls",
+"value": "x"
+},
+{
+"op": "moa_u_render_tool_calls",
+"value": "hello world"
+},
+{
+"op": "moa_u_render_tool_calls",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_render_tool_calls",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_render_tool_calls",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_render_tool_calls",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_render_tool_calls",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_render_tool_calls",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_render_tool_calls",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_render_tool_calls",
+"value": "12345"
+},
+{
+"op": "moa_u_render_tool_calls",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_render_tool_calls",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_render_tool_calls",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_render_tool_calls",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_reference_messages",
+"value": ""
+},
+{
+"op": "moa_u_reference_messages",
+"value": "x"
+},
+{
+"op": "moa_u_reference_messages",
+"value": "hello world"
+},
+{
+"op": "moa_u_reference_messages",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_reference_messages",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_reference_messages",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_reference_messages",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_reference_messages",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_reference_messages",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_reference_messages",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_reference_messages",
+"value": "12345"
+},
+{
+"op": "moa_u_reference_messages",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_reference_messages",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_reference_messages",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_reference_messages",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_preset_temperature",
+"value": ""
+},
+{
+"op": "moa_u_preset_temperature",
+"value": "x"
+},
+{
+"op": "moa_u_preset_temperature",
+"value": "hello world"
+},
+{
+"op": "moa_u_preset_temperature",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_preset_temperature",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_preset_temperature",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_preset_temperature",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_preset_temperature",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_preset_temperature",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_preset_temperature",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_preset_temperature",
+"value": "12345"
+},
+{
+"op": "moa_u_preset_temperature",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_preset_temperature",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_preset_temperature",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_preset_temperature",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_is_failed_reference",
+"value": ""
+},
+{
+"op": "moa_u_is_failed_reference",
+"value": "x"
+},
+{
+"op": "moa_u_is_failed_reference",
+"value": "hello world"
+},
+{
+"op": "moa_u_is_failed_reference",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_is_failed_reference",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_is_failed_reference",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_is_failed_reference",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_is_failed_reference",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_is_failed_reference",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_is_failed_reference",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_is_failed_reference",
+"value": "12345"
+},
+{
+"op": "moa_u_is_failed_reference",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_is_failed_reference",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_is_failed_reference",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_is_failed_reference",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_successful_references",
+"value": ""
+},
+{
+"op": "moa_u_successful_references",
+"value": "x"
+},
+{
+"op": "moa_u_successful_references",
+"value": "hello world"
+},
+{
+"op": "moa_u_successful_references",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_successful_references",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_successful_references",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_successful_references",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_successful_references",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_successful_references",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_successful_references",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_successful_references",
+"value": "12345"
+},
+{
+"op": "moa_u_successful_references",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_successful_references",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_successful_references",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_successful_references",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_failed_reference_labels",
+"value": ""
+},
+{
+"op": "moa_u_failed_reference_labels",
+"value": "x"
+},
+{
+"op": "moa_u_failed_reference_labels",
+"value": "hello world"
+},
+{
+"op": "moa_u_failed_reference_labels",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_failed_reference_labels",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_failed_reference_labels",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_failed_reference_labels",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_failed_reference_labels",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_failed_reference_labels",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_failed_reference_labels",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_failed_reference_labels",
+"value": "12345"
+},
+{
+"op": "moa_u_failed_reference_labels",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_failed_reference_labels",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_failed_reference_labels",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_failed_reference_labels",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_degraded_notice",
+"value": ""
+},
+{
+"op": "moa_u_degraded_notice",
+"value": "x"
+},
+{
+"op": "moa_u_degraded_notice",
+"value": "hello world"
+},
+{
+"op": "moa_u_degraded_notice",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_degraded_notice",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_degraded_notice",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_degraded_notice",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_degraded_notice",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_degraded_notice",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_degraded_notice",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_degraded_notice",
+"value": "12345"
+},
+{
+"op": "moa_u_degraded_notice",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_degraded_notice",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_degraded_notice",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_degraded_notice",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_aggregate_moa_context",
+"value": ""
+},
+{
+"op": "moa_aggregate_moa_context",
+"value": "x"
+},
+{
+"op": "moa_aggregate_moa_context",
+"value": "hello world"
+},
+{
+"op": "moa_aggregate_moa_context",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_aggregate_moa_context",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_aggregate_moa_context",
+"value": "user@example.com"
+},
+{
+"op": "moa_aggregate_moa_context",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_aggregate_moa_context",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_aggregate_moa_context",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_aggregate_moa_context",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_aggregate_moa_context",
+"value": "12345"
+},
+{
+"op": "moa_aggregate_moa_context",
+"value": "  spaced  "
+},
+{
+"op": "moa_aggregate_moa_context",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_aggregate_moa_context",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_aggregate_moa_context",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_attach_reference_guidance",
+"value": ""
+},
+{
+"op": "moa_u_attach_reference_guidance",
+"value": "x"
+},
+{
+"op": "moa_u_attach_reference_guidance",
+"value": "hello world"
+},
+{
+"op": "moa_u_attach_reference_guidance",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_attach_reference_guidance",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_attach_reference_guidance",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_attach_reference_guidance",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_attach_reference_guidance",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_attach_reference_guidance",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_attach_reference_guidance",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_attach_reference_guidance",
+"value": "12345"
+},
+{
+"op": "moa_u_attach_reference_guidance",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_attach_reference_guidance",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_attach_reference_guidance",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_attach_reference_guidance",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_consume_reference_usage",
+"value": ""
+},
+{
+"op": "moa_consume_reference_usage",
+"value": "x"
+},
+{
+"op": "moa_consume_reference_usage",
+"value": "hello world"
+},
+{
+"op": "moa_consume_reference_usage",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_consume_reference_usage",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_consume_reference_usage",
+"value": "user@example.com"
+},
+{
+"op": "moa_consume_reference_usage",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_consume_reference_usage",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_consume_reference_usage",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_consume_reference_usage",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_consume_reference_usage",
+"value": "12345"
+},
+{
+"op": "moa_consume_reference_usage",
+"value": "  spaced  "
+},
+{
+"op": "moa_consume_reference_usage",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_consume_reference_usage",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_consume_reference_usage",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_record_late_reference_accounting",
+"value": ""
+},
+{
+"op": "moa_u_record_late_reference_accounting",
+"value": "x"
+},
+{
+"op": "moa_u_record_late_reference_accounting",
+"value": "hello world"
+},
+{
+"op": "moa_u_record_late_reference_accounting",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_record_late_reference_accounting",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_record_late_reference_accounting",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_record_late_reference_accounting",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_record_late_reference_accounting",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_record_late_reference_accounting",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_record_late_reference_accounting",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_record_late_reference_accounting",
+"value": "12345"
+},
+{
+"op": "moa_u_record_late_reference_accounting",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_record_late_reference_accounting",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_record_late_reference_accounting",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_record_late_reference_accounting",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_consume_and_save_trace",
+"value": ""
+},
+{
+"op": "moa_consume_and_save_trace",
+"value": "x"
+},
+{
+"op": "moa_consume_and_save_trace",
+"value": "hello world"
+},
+{
+"op": "moa_consume_and_save_trace",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_consume_and_save_trace",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_consume_and_save_trace",
+"value": "user@example.com"
+},
+{
+"op": "moa_consume_and_save_trace",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_consume_and_save_trace",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_consume_and_save_trace",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_consume_and_save_trace",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_consume_and_save_trace",
+"value": "12345"
+},
+{
+"op": "moa_consume_and_save_trace",
+"value": "  spaced  "
+},
+{
+"op": "moa_consume_and_save_trace",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_consume_and_save_trace",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_consume_and_save_trace",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_prepare",
+"value": ""
+},
+{
+"op": "moa_prepare",
+"value": "x"
+},
+{
+"op": "moa_prepare",
+"value": "hello world"
+},
+{
+"op": "moa_prepare",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_prepare",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_prepare",
+"value": "user@example.com"
+},
+{
+"op": "moa_prepare",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_prepare",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_prepare",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_prepare",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_prepare",
+"value": "12345"
+},
+{
+"op": "moa_prepare",
+"value": "  spaced  "
+},
+{
+"op": "moa_prepare",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_prepare",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_prepare",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_rebase_prepared_request",
+"value": ""
+},
+{
+"op": "moa_rebase_prepared_request",
+"value": "x"
+},
+{
+"op": "moa_rebase_prepared_request",
+"value": "hello world"
+},
+{
+"op": "moa_rebase_prepared_request",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_rebase_prepared_request",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_rebase_prepared_request",
+"value": "user@example.com"
+},
+{
+"op": "moa_rebase_prepared_request",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_rebase_prepared_request",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_rebase_prepared_request",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_rebase_prepared_request",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_rebase_prepared_request",
+"value": "12345"
+},
+{
+"op": "moa_rebase_prepared_request",
+"value": "  spaced  "
+},
+{
+"op": "moa_rebase_prepared_request",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_rebase_prepared_request",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_rebase_prepared_request",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_u_call_prepared_aggregator",
+"value": ""
+},
+{
+"op": "moa_u_call_prepared_aggregator",
+"value": "x"
+},
+{
+"op": "moa_u_call_prepared_aggregator",
+"value": "hello world"
+},
+{
+"op": "moa_u_call_prepared_aggregator",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_u_call_prepared_aggregator",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_u_call_prepared_aggregator",
+"value": "user@example.com"
+},
+{
+"op": "moa_u_call_prepared_aggregator",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_u_call_prepared_aggregator",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_u_call_prepared_aggregator",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_u_call_prepared_aggregator",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_u_call_prepared_aggregator",
+"value": "12345"
+},
+{
+"op": "moa_u_call_prepared_aggregator",
+"value": "  spaced  "
+},
+{
+"op": "moa_u_call_prepared_aggregator",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_u_call_prepared_aggregator",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_u_call_prepared_aggregator",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_consume_reference_usage_2",
+"value": ""
+},
+{
+"op": "moa_consume_reference_usage_2",
+"value": "x"
+},
+{
+"op": "moa_consume_reference_usage_2",
+"value": "hello world"
+},
+{
+"op": "moa_consume_reference_usage_2",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_consume_reference_usage_2",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_consume_reference_usage_2",
+"value": "user@example.com"
+},
+{
+"op": "moa_consume_reference_usage_2",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_consume_reference_usage_2",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_consume_reference_usage_2",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_consume_reference_usage_2",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_consume_reference_usage_2",
+"value": "12345"
+},
+{
+"op": "moa_consume_reference_usage_2",
+"value": "  spaced  "
+},
+{
+"op": "moa_consume_reference_usage_2",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_consume_reference_usage_2",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_consume_reference_usage_2",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_last_aggregator_slot",
+"value": ""
+},
+{
+"op": "moa_last_aggregator_slot",
+"value": "x"
+},
+{
+"op": "moa_last_aggregator_slot",
+"value": "hello world"
+},
+{
+"op": "moa_last_aggregator_slot",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_last_aggregator_slot",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_last_aggregator_slot",
+"value": "user@example.com"
+},
+{
+"op": "moa_last_aggregator_slot",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_last_aggregator_slot",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_last_aggregator_slot",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_last_aggregator_slot",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_last_aggregator_slot",
+"value": "12345"
+},
+{
+"op": "moa_last_aggregator_slot",
+"value": "  spaced  "
+},
+{
+"op": "moa_last_aggregator_slot",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_last_aggregator_slot",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_last_aggregator_slot",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_consume_and_save_trace_2",
+"value": ""
+},
+{
+"op": "moa_consume_and_save_trace_2",
+"value": "x"
+},
+{
+"op": "moa_consume_and_save_trace_2",
+"value": "hello world"
+},
+{
+"op": "moa_consume_and_save_trace_2",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_consume_and_save_trace_2",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_consume_and_save_trace_2",
+"value": "user@example.com"
+},
+{
+"op": "moa_consume_and_save_trace_2",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_consume_and_save_trace_2",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_consume_and_save_trace_2",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_consume_and_save_trace_2",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_consume_and_save_trace_2",
+"value": "12345"
+},
+{
+"op": "moa_consume_and_save_trace_2",
+"value": "  spaced  "
+},
+{
+"op": "moa_consume_and_save_trace_2",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_consume_and_save_trace_2",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_consume_and_save_trace_2",
+"value": "key:value;key2:value2"
+},
+{
+"op": "moa_build_moa_facade",
+"value": ""
+},
+{
+"op": "moa_build_moa_facade",
+"value": "x"
+},
+{
+"op": "moa_build_moa_facade",
+"value": "hello world"
+},
+{
+"op": "moa_build_moa_facade",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "moa_build_moa_facade",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "moa_build_moa_facade",
+"value": "user@example.com"
+},
+{
+"op": "moa_build_moa_facade",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "moa_build_moa_facade",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "moa_build_moa_facade",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "moa_build_moa_facade",
+"value": "CamelCaseString"
+},
+{
+"op": "moa_build_moa_facade",
+"value": "12345"
+},
+{
+"op": "moa_build_moa_facade",
+"value": "  spaced  "
+},
+{
+"op": "moa_build_moa_facade",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "moa_build_moa_facade",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "moa_build_moa_facade",
+"value": "key:value;key2:value2"
+}
+]

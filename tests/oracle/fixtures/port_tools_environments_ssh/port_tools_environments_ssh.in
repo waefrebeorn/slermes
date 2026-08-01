@@ -1,0 +1,62 @@
+[
+{
+"op": "cli_tools_environments_ssh__ensure_remote_dirs",
+"value": ""
+},
+{
+"op": "cli_tools_environments_ssh__ensure_remote_dirs",
+"value": "x"
+},
+{
+"op": "cli_tools_environments_ssh__ensure_remote_dirs",
+"value": "hello world"
+},
+{
+"op": "cli_tools_environments_ssh__ensure_remote_dirs",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_tools_environments_ssh__ensure_remote_dirs",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cli_tools_environments_ssh__ensure_remote_dirs",
+"value": "user@example.com"
+},
+{
+"op": "cli_tools_environments_ssh__ensure_remote_dirs",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_tools_environments_ssh__ensure_remote_dirs",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cli_tools_environments_ssh__ensure_remote_dirs",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cli_tools_environments_ssh__ensure_remote_dirs",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_tools_environments_ssh__ensure_remote_dirs",
+"value": "12345"
+},
+{
+"op": "cli_tools_environments_ssh__ensure_remote_dirs",
+"value": "  spaced  "
+},
+{
+"op": "cli_tools_environments_ssh__ensure_remote_dirs",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cli_tools_environments_ssh__ensure_remote_dirs",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_tools_environments_ssh__ensure_remote_dirs",
+"value": "key:value;key2:value2"
+}
+]

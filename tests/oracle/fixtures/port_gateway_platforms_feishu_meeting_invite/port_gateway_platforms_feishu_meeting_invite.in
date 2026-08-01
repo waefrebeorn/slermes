@@ -1,0 +1,62 @@
+[
+{
+"op": "cli_gateway_platforms_feishu_meeting_invite__int_field",
+"value": ""
+},
+{
+"op": "cli_gateway_platforms_feishu_meeting_invite__int_field",
+"value": "x"
+},
+{
+"op": "cli_gateway_platforms_feishu_meeting_invite__int_field",
+"value": "hello world"
+},
+{
+"op": "cli_gateway_platforms_feishu_meeting_invite__int_field",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_gateway_platforms_feishu_meeting_invite__int_field",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cli_gateway_platforms_feishu_meeting_invite__int_field",
+"value": "user@example.com"
+},
+{
+"op": "cli_gateway_platforms_feishu_meeting_invite__int_field",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_gateway_platforms_feishu_meeting_invite__int_field",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cli_gateway_platforms_feishu_meeting_invite__int_field",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cli_gateway_platforms_feishu_meeting_invite__int_field",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_gateway_platforms_feishu_meeting_invite__int_field",
+"value": "12345"
+},
+{
+"op": "cli_gateway_platforms_feishu_meeting_invite__int_field",
+"value": "  spaced  "
+},
+{
+"op": "cli_gateway_platforms_feishu_meeting_invite__int_field",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cli_gateway_platforms_feishu_meeting_invite__int_field",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_gateway_platforms_feishu_meeting_invite__int_field",
+"value": "key:value;key2:value2"
+}
+]

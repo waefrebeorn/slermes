@@ -1,0 +1,2102 @@
+[
+{
+"op": "envl_u_msys_to_windows_path",
+"value": ""
+},
+{
+"op": "envl_u_msys_to_windows_path",
+"value": "x"
+},
+{
+"op": "envl_u_msys_to_windows_path",
+"value": "hello world"
+},
+{
+"op": "envl_u_msys_to_windows_path",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_msys_to_windows_path",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_msys_to_windows_path",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_msys_to_windows_path",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_msys_to_windows_path",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_msys_to_windows_path",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_msys_to_windows_path",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_msys_to_windows_path",
+"value": "12345"
+},
+{
+"op": "envl_u_msys_to_windows_path",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_msys_to_windows_path",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_msys_to_windows_path",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_msys_to_windows_path",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_resolve_local_initial_cwd",
+"value": ""
+},
+{
+"op": "envl_u_resolve_local_initial_cwd",
+"value": "x"
+},
+{
+"op": "envl_u_resolve_local_initial_cwd",
+"value": "hello world"
+},
+{
+"op": "envl_u_resolve_local_initial_cwd",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_resolve_local_initial_cwd",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_resolve_local_initial_cwd",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_resolve_local_initial_cwd",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_resolve_local_initial_cwd",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_resolve_local_initial_cwd",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_resolve_local_initial_cwd",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_resolve_local_initial_cwd",
+"value": "12345"
+},
+{
+"op": "envl_u_resolve_local_initial_cwd",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_resolve_local_initial_cwd",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_resolve_local_initial_cwd",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_resolve_local_initial_cwd",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_windows_to_msys_path",
+"value": ""
+},
+{
+"op": "envl_u_windows_to_msys_path",
+"value": "x"
+},
+{
+"op": "envl_u_windows_to_msys_path",
+"value": "hello world"
+},
+{
+"op": "envl_u_windows_to_msys_path",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_windows_to_msys_path",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_windows_to_msys_path",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_windows_to_msys_path",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_windows_to_msys_path",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_windows_to_msys_path",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_windows_to_msys_path",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_windows_to_msys_path",
+"value": "12345"
+},
+{
+"op": "envl_u_windows_to_msys_path",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_windows_to_msys_path",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_windows_to_msys_path",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_windows_to_msys_path",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_bash_safe_path",
+"value": ""
+},
+{
+"op": "envl_u_bash_safe_path",
+"value": "x"
+},
+{
+"op": "envl_u_bash_safe_path",
+"value": "hello world"
+},
+{
+"op": "envl_u_bash_safe_path",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_bash_safe_path",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_bash_safe_path",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_bash_safe_path",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_bash_safe_path",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_bash_safe_path",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_bash_safe_path",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_bash_safe_path",
+"value": "12345"
+},
+{
+"op": "envl_u_bash_safe_path",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_bash_safe_path",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_bash_safe_path",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_bash_safe_path",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_quote_bash_path",
+"value": ""
+},
+{
+"op": "envl_u_quote_bash_path",
+"value": "x"
+},
+{
+"op": "envl_u_quote_bash_path",
+"value": "hello world"
+},
+{
+"op": "envl_u_quote_bash_path",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_quote_bash_path",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_quote_bash_path",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_quote_bash_path",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_quote_bash_path",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_quote_bash_path",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_quote_bash_path",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_quote_bash_path",
+"value": "12345"
+},
+{
+"op": "envl_u_quote_bash_path",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_quote_bash_path",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_quote_bash_path",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_quote_bash_path",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_cwd_usable",
+"value": ""
+},
+{
+"op": "envl_u_cwd_usable",
+"value": "x"
+},
+{
+"op": "envl_u_cwd_usable",
+"value": "hello world"
+},
+{
+"op": "envl_u_cwd_usable",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_cwd_usable",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_cwd_usable",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_cwd_usable",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_cwd_usable",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_cwd_usable",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_cwd_usable",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_cwd_usable",
+"value": "12345"
+},
+{
+"op": "envl_u_cwd_usable",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_cwd_usable",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_cwd_usable",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_cwd_usable",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_resolve_safe_cwd",
+"value": ""
+},
+{
+"op": "envl_u_resolve_safe_cwd",
+"value": "x"
+},
+{
+"op": "envl_u_resolve_safe_cwd",
+"value": "hello world"
+},
+{
+"op": "envl_u_resolve_safe_cwd",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_resolve_safe_cwd",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_resolve_safe_cwd",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_resolve_safe_cwd",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_resolve_safe_cwd",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_resolve_safe_cwd",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_resolve_safe_cwd",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_resolve_safe_cwd",
+"value": "12345"
+},
+{
+"op": "envl_u_resolve_safe_cwd",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_resolve_safe_cwd",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_resolve_safe_cwd",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_resolve_safe_cwd",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_build_provider_env_blocklist",
+"value": ""
+},
+{
+"op": "envl_u_build_provider_env_blocklist",
+"value": "x"
+},
+{
+"op": "envl_u_build_provider_env_blocklist",
+"value": "hello world"
+},
+{
+"op": "envl_u_build_provider_env_blocklist",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_build_provider_env_blocklist",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_build_provider_env_blocklist",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_build_provider_env_blocklist",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_build_provider_env_blocklist",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_build_provider_env_blocklist",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_build_provider_env_blocklist",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_build_provider_env_blocklist",
+"value": "12345"
+},
+{
+"op": "envl_u_build_provider_env_blocklist",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_build_provider_env_blocklist",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_build_provider_env_blocklist",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_build_provider_env_blocklist",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_inject_context_hermes_home",
+"value": ""
+},
+{
+"op": "envl_u_inject_context_hermes_home",
+"value": "x"
+},
+{
+"op": "envl_u_inject_context_hermes_home",
+"value": "hello world"
+},
+{
+"op": "envl_u_inject_context_hermes_home",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_inject_context_hermes_home",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_inject_context_hermes_home",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_inject_context_hermes_home",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_inject_context_hermes_home",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_inject_context_hermes_home",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_inject_context_hermes_home",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_inject_context_hermes_home",
+"value": "12345"
+},
+{
+"op": "envl_u_inject_context_hermes_home",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_inject_context_hermes_home",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_inject_context_hermes_home",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_inject_context_hermes_home",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_inject_session_context_env",
+"value": ""
+},
+{
+"op": "envl_u_inject_session_context_env",
+"value": "x"
+},
+{
+"op": "envl_u_inject_session_context_env",
+"value": "hello world"
+},
+{
+"op": "envl_u_inject_session_context_env",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_inject_session_context_env",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_inject_session_context_env",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_inject_session_context_env",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_inject_session_context_env",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_inject_session_context_env",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_inject_session_context_env",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_inject_session_context_env",
+"value": "12345"
+},
+{
+"op": "envl_u_inject_session_context_env",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_inject_session_context_env",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_inject_session_context_env",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_inject_session_context_env",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_scrub_delegated_child_kanban_env",
+"value": ""
+},
+{
+"op": "envl_u_scrub_delegated_child_kanban_env",
+"value": "x"
+},
+{
+"op": "envl_u_scrub_delegated_child_kanban_env",
+"value": "hello world"
+},
+{
+"op": "envl_u_scrub_delegated_child_kanban_env",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_scrub_delegated_child_kanban_env",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_scrub_delegated_child_kanban_env",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_scrub_delegated_child_kanban_env",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_scrub_delegated_child_kanban_env",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_scrub_delegated_child_kanban_env",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_scrub_delegated_child_kanban_env",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_scrub_delegated_child_kanban_env",
+"value": "12345"
+},
+{
+"op": "envl_u_scrub_delegated_child_kanban_env",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_scrub_delegated_child_kanban_env",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_scrub_delegated_child_kanban_env",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_scrub_delegated_child_kanban_env",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_hermes_subprocess_env",
+"value": ""
+},
+{
+"op": "envl_hermes_subprocess_env",
+"value": "x"
+},
+{
+"op": "envl_hermes_subprocess_env",
+"value": "hello world"
+},
+{
+"op": "envl_hermes_subprocess_env",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_hermes_subprocess_env",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_hermes_subprocess_env",
+"value": "user@example.com"
+},
+{
+"op": "envl_hermes_subprocess_env",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_hermes_subprocess_env",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_hermes_subprocess_env",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_hermes_subprocess_env",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_hermes_subprocess_env",
+"value": "12345"
+},
+{
+"op": "envl_hermes_subprocess_env",
+"value": "  spaced  "
+},
+{
+"op": "envl_hermes_subprocess_env",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_hermes_subprocess_env",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_hermes_subprocess_env",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_find_bash",
+"value": ""
+},
+{
+"op": "envl_u_find_bash",
+"value": "x"
+},
+{
+"op": "envl_u_find_bash",
+"value": "hello world"
+},
+{
+"op": "envl_u_find_bash",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_find_bash",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_find_bash",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_find_bash",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_find_bash",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_find_bash",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_find_bash",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_find_bash",
+"value": "12345"
+},
+{
+"op": "envl_u_find_bash",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_find_bash",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_find_bash",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_find_bash",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_looks_like_msys_spawn_failure",
+"value": ""
+},
+{
+"op": "envl_u_looks_like_msys_spawn_failure",
+"value": "x"
+},
+{
+"op": "envl_u_looks_like_msys_spawn_failure",
+"value": "hello world"
+},
+{
+"op": "envl_u_looks_like_msys_spawn_failure",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_looks_like_msys_spawn_failure",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_looks_like_msys_spawn_failure",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_looks_like_msys_spawn_failure",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_looks_like_msys_spawn_failure",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_looks_like_msys_spawn_failure",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_looks_like_msys_spawn_failure",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_looks_like_msys_spawn_failure",
+"value": "12345"
+},
+{
+"op": "envl_u_looks_like_msys_spawn_failure",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_looks_like_msys_spawn_failure",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_looks_like_msys_spawn_failure",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_looks_like_msys_spawn_failure",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_mandatory_aslr_enabled",
+"value": ""
+},
+{
+"op": "envl_u_mandatory_aslr_enabled",
+"value": "x"
+},
+{
+"op": "envl_u_mandatory_aslr_enabled",
+"value": "hello world"
+},
+{
+"op": "envl_u_mandatory_aslr_enabled",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_mandatory_aslr_enabled",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_mandatory_aslr_enabled",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_mandatory_aslr_enabled",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_mandatory_aslr_enabled",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_mandatory_aslr_enabled",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_mandatory_aslr_enabled",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_mandatory_aslr_enabled",
+"value": "12345"
+},
+{
+"op": "envl_u_mandatory_aslr_enabled",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_mandatory_aslr_enabled",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_mandatory_aslr_enabled",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_mandatory_aslr_enabled",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_git_root_from_bash",
+"value": ""
+},
+{
+"op": "envl_u_git_root_from_bash",
+"value": "x"
+},
+{
+"op": "envl_u_git_root_from_bash",
+"value": "hello world"
+},
+{
+"op": "envl_u_git_root_from_bash",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_git_root_from_bash",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_git_root_from_bash",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_git_root_from_bash",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_git_root_from_bash",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_git_root_from_bash",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_git_root_from_bash",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_git_root_from_bash",
+"value": "12345"
+},
+{
+"op": "envl_u_git_root_from_bash",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_git_root_from_bash",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_git_root_from_bash",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_git_root_from_bash",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_git_bash_aslr_help",
+"value": ""
+},
+{
+"op": "envl_u_git_bash_aslr_help",
+"value": "x"
+},
+{
+"op": "envl_u_git_bash_aslr_help",
+"value": "hello world"
+},
+{
+"op": "envl_u_git_bash_aslr_help",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_git_bash_aslr_help",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_git_bash_aslr_help",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_git_bash_aslr_help",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_git_bash_aslr_help",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_git_bash_aslr_help",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_git_bash_aslr_help",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_git_bash_aslr_help",
+"value": "12345"
+},
+{
+"op": "envl_u_git_bash_aslr_help",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_git_bash_aslr_help",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_git_bash_aslr_help",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_git_bash_aslr_help",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_bash_starts",
+"value": ""
+},
+{
+"op": "envl_u_bash_starts",
+"value": "x"
+},
+{
+"op": "envl_u_bash_starts",
+"value": "hello world"
+},
+{
+"op": "envl_u_bash_starts",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_bash_starts",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_bash_starts",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_bash_starts",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_bash_starts",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_bash_starts",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_bash_starts",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_bash_starts",
+"value": "12345"
+},
+{
+"op": "envl_u_bash_starts",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_bash_starts",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_bash_starts",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_bash_starts",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_git_bash_bin_dirs",
+"value": ""
+},
+{
+"op": "envl_u_git_bash_bin_dirs",
+"value": "x"
+},
+{
+"op": "envl_u_git_bash_bin_dirs",
+"value": "hello world"
+},
+{
+"op": "envl_u_git_bash_bin_dirs",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_git_bash_bin_dirs",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_git_bash_bin_dirs",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_git_bash_bin_dirs",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_git_bash_bin_dirs",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_git_bash_bin_dirs",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_git_bash_bin_dirs",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_git_bash_bin_dirs",
+"value": "12345"
+},
+{
+"op": "envl_u_git_bash_bin_dirs",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_git_bash_bin_dirs",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_git_bash_bin_dirs",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_git_bash_bin_dirs",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_prepend_git_bash_dirs",
+"value": ""
+},
+{
+"op": "envl_u_prepend_git_bash_dirs",
+"value": "x"
+},
+{
+"op": "envl_u_prepend_git_bash_dirs",
+"value": "hello world"
+},
+{
+"op": "envl_u_prepend_git_bash_dirs",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_prepend_git_bash_dirs",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_prepend_git_bash_dirs",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_prepend_git_bash_dirs",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_prepend_git_bash_dirs",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_prepend_git_bash_dirs",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_prepend_git_bash_dirs",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_prepend_git_bash_dirs",
+"value": "12345"
+},
+{
+"op": "envl_u_prepend_git_bash_dirs",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_prepend_git_bash_dirs",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_prepend_git_bash_dirs",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_prepend_git_bash_dirs",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_find_shell",
+"value": ""
+},
+{
+"op": "envl_u_find_shell",
+"value": "x"
+},
+{
+"op": "envl_u_find_shell",
+"value": "hello world"
+},
+{
+"op": "envl_u_find_shell",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_find_shell",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_find_shell",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_find_shell",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_find_shell",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_find_shell",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_find_shell",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_find_shell",
+"value": "12345"
+},
+{
+"op": "envl_u_find_shell",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_find_shell",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_find_shell",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_find_shell",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_resolve_hermes_bin_dir",
+"value": ""
+},
+{
+"op": "envl_u_resolve_hermes_bin_dir",
+"value": "x"
+},
+{
+"op": "envl_u_resolve_hermes_bin_dir",
+"value": "hello world"
+},
+{
+"op": "envl_u_resolve_hermes_bin_dir",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_resolve_hermes_bin_dir",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_resolve_hermes_bin_dir",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_resolve_hermes_bin_dir",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_resolve_hermes_bin_dir",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_resolve_hermes_bin_dir",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_resolve_hermes_bin_dir",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_resolve_hermes_bin_dir",
+"value": "12345"
+},
+{
+"op": "envl_u_resolve_hermes_bin_dir",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_resolve_hermes_bin_dir",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_resolve_hermes_bin_dir",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_resolve_hermes_bin_dir",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_prepend_hermes_bin_dir",
+"value": ""
+},
+{
+"op": "envl_u_prepend_hermes_bin_dir",
+"value": "x"
+},
+{
+"op": "envl_u_prepend_hermes_bin_dir",
+"value": "hello world"
+},
+{
+"op": "envl_u_prepend_hermes_bin_dir",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_prepend_hermes_bin_dir",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_prepend_hermes_bin_dir",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_prepend_hermes_bin_dir",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_prepend_hermes_bin_dir",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_prepend_hermes_bin_dir",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_prepend_hermes_bin_dir",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_prepend_hermes_bin_dir",
+"value": "12345"
+},
+{
+"op": "envl_u_prepend_hermes_bin_dir",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_prepend_hermes_bin_dir",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_prepend_hermes_bin_dir",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_prepend_hermes_bin_dir",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_append_missing_sane_path_entries",
+"value": ""
+},
+{
+"op": "envl_u_append_missing_sane_path_entries",
+"value": "x"
+},
+{
+"op": "envl_u_append_missing_sane_path_entries",
+"value": "hello world"
+},
+{
+"op": "envl_u_append_missing_sane_path_entries",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_append_missing_sane_path_entries",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_append_missing_sane_path_entries",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_append_missing_sane_path_entries",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_append_missing_sane_path_entries",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_append_missing_sane_path_entries",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_append_missing_sane_path_entries",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_append_missing_sane_path_entries",
+"value": "12345"
+},
+{
+"op": "envl_u_append_missing_sane_path_entries",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_append_missing_sane_path_entries",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_append_missing_sane_path_entries",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_append_missing_sane_path_entries",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_apply_windows_msys_bash_env_defaults",
+"value": ""
+},
+{
+"op": "envl_u_apply_windows_msys_bash_env_defaults",
+"value": "x"
+},
+{
+"op": "envl_u_apply_windows_msys_bash_env_defaults",
+"value": "hello world"
+},
+{
+"op": "envl_u_apply_windows_msys_bash_env_defaults",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_apply_windows_msys_bash_env_defaults",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_apply_windows_msys_bash_env_defaults",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_apply_windows_msys_bash_env_defaults",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_apply_windows_msys_bash_env_defaults",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_apply_windows_msys_bash_env_defaults",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_apply_windows_msys_bash_env_defaults",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_apply_windows_msys_bash_env_defaults",
+"value": "12345"
+},
+{
+"op": "envl_u_apply_windows_msys_bash_env_defaults",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_apply_windows_msys_bash_env_defaults",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_apply_windows_msys_bash_env_defaults",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_apply_windows_msys_bash_env_defaults",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_path_env_key",
+"value": ""
+},
+{
+"op": "envl_u_path_env_key",
+"value": "x"
+},
+{
+"op": "envl_u_path_env_key",
+"value": "hello world"
+},
+{
+"op": "envl_u_path_env_key",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_path_env_key",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_path_env_key",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_path_env_key",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_path_env_key",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_path_env_key",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_path_env_key",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_path_env_key",
+"value": "12345"
+},
+{
+"op": "envl_u_path_env_key",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_path_env_key",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_path_env_key",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_path_env_key",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_make_run_env",
+"value": ""
+},
+{
+"op": "envl_u_make_run_env",
+"value": "x"
+},
+{
+"op": "envl_u_make_run_env",
+"value": "hello world"
+},
+{
+"op": "envl_u_make_run_env",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_make_run_env",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_make_run_env",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_make_run_env",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_make_run_env",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_make_run_env",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_make_run_env",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_make_run_env",
+"value": "12345"
+},
+{
+"op": "envl_u_make_run_env",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_make_run_env",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_make_run_env",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_make_run_env",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_read_terminal_shell_init_config",
+"value": ""
+},
+{
+"op": "envl_u_read_terminal_shell_init_config",
+"value": "x"
+},
+{
+"op": "envl_u_read_terminal_shell_init_config",
+"value": "hello world"
+},
+{
+"op": "envl_u_read_terminal_shell_init_config",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_read_terminal_shell_init_config",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_read_terminal_shell_init_config",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_read_terminal_shell_init_config",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_read_terminal_shell_init_config",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_read_terminal_shell_init_config",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_read_terminal_shell_init_config",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_read_terminal_shell_init_config",
+"value": "12345"
+},
+{
+"op": "envl_u_read_terminal_shell_init_config",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_read_terminal_shell_init_config",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_read_terminal_shell_init_config",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_read_terminal_shell_init_config",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_resolve_shell_init_files",
+"value": ""
+},
+{
+"op": "envl_u_resolve_shell_init_files",
+"value": "x"
+},
+{
+"op": "envl_u_resolve_shell_init_files",
+"value": "hello world"
+},
+{
+"op": "envl_u_resolve_shell_init_files",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_resolve_shell_init_files",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_resolve_shell_init_files",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_resolve_shell_init_files",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_resolve_shell_init_files",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_resolve_shell_init_files",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_resolve_shell_init_files",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_resolve_shell_init_files",
+"value": "12345"
+},
+{
+"op": "envl_u_resolve_shell_init_files",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_resolve_shell_init_files",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_resolve_shell_init_files",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_resolve_shell_init_files",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_prepend_shell_init",
+"value": ""
+},
+{
+"op": "envl_u_prepend_shell_init",
+"value": "x"
+},
+{
+"op": "envl_u_prepend_shell_init",
+"value": "hello world"
+},
+{
+"op": "envl_u_prepend_shell_init",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_prepend_shell_init",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_prepend_shell_init",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_prepend_shell_init",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_prepend_shell_init",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_prepend_shell_init",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_prepend_shell_init",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_prepend_shell_init",
+"value": "12345"
+},
+{
+"op": "envl_u_prepend_shell_init",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_prepend_shell_init",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_prepend_shell_init",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_prepend_shell_init",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_get_temp_dir",
+"value": ""
+},
+{
+"op": "envl_get_temp_dir",
+"value": "x"
+},
+{
+"op": "envl_get_temp_dir",
+"value": "hello world"
+},
+{
+"op": "envl_get_temp_dir",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_get_temp_dir",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_get_temp_dir",
+"value": "user@example.com"
+},
+{
+"op": "envl_get_temp_dir",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_get_temp_dir",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_get_temp_dir",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_get_temp_dir",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_get_temp_dir",
+"value": "12345"
+},
+{
+"op": "envl_get_temp_dir",
+"value": "  spaced  "
+},
+{
+"op": "envl_get_temp_dir",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_get_temp_dir",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_get_temp_dir",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_quote_cwd_for_cd",
+"value": ""
+},
+{
+"op": "envl_u_quote_cwd_for_cd",
+"value": "x"
+},
+{
+"op": "envl_u_quote_cwd_for_cd",
+"value": "hello world"
+},
+{
+"op": "envl_u_quote_cwd_for_cd",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_quote_cwd_for_cd",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_quote_cwd_for_cd",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_quote_cwd_for_cd",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_quote_cwd_for_cd",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_quote_cwd_for_cd",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_quote_cwd_for_cd",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_quote_cwd_for_cd",
+"value": "12345"
+},
+{
+"op": "envl_u_quote_cwd_for_cd",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_quote_cwd_for_cd",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_quote_cwd_for_cd",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_quote_cwd_for_cd",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_quote_shell_path",
+"value": ""
+},
+{
+"op": "envl_u_quote_shell_path",
+"value": "x"
+},
+{
+"op": "envl_u_quote_shell_path",
+"value": "hello world"
+},
+{
+"op": "envl_u_quote_shell_path",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_quote_shell_path",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_quote_shell_path",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_quote_shell_path",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_quote_shell_path",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_quote_shell_path",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_quote_shell_path",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_quote_shell_path",
+"value": "12345"
+},
+{
+"op": "envl_u_quote_shell_path",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_quote_shell_path",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_quote_shell_path",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_quote_shell_path",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_update_cwd",
+"value": ""
+},
+{
+"op": "envl_u_update_cwd",
+"value": "x"
+},
+{
+"op": "envl_u_update_cwd",
+"value": "hello world"
+},
+{
+"op": "envl_u_update_cwd",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_update_cwd",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_update_cwd",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_update_cwd",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_update_cwd",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_update_cwd",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_update_cwd",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_update_cwd",
+"value": "12345"
+},
+{
+"op": "envl_u_update_cwd",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_update_cwd",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_update_cwd",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_update_cwd",
+"value": "key:value;key2:value2"
+},
+{
+"op": "envl_u_extract_cwd_from_output",
+"value": ""
+},
+{
+"op": "envl_u_extract_cwd_from_output",
+"value": "x"
+},
+{
+"op": "envl_u_extract_cwd_from_output",
+"value": "hello world"
+},
+{
+"op": "envl_u_extract_cwd_from_output",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "envl_u_extract_cwd_from_output",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "envl_u_extract_cwd_from_output",
+"value": "user@example.com"
+},
+{
+"op": "envl_u_extract_cwd_from_output",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "envl_u_extract_cwd_from_output",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "envl_u_extract_cwd_from_output",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "envl_u_extract_cwd_from_output",
+"value": "CamelCaseString"
+},
+{
+"op": "envl_u_extract_cwd_from_output",
+"value": "12345"
+},
+{
+"op": "envl_u_extract_cwd_from_output",
+"value": "  spaced  "
+},
+{
+"op": "envl_u_extract_cwd_from_output",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "envl_u_extract_cwd_from_output",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "envl_u_extract_cwd_from_output",
+"value": "key:value;key2:value2"
+}
+]

@@ -1,0 +1,1442 @@
+[
+{
+"op": "msf_bedrock_region_geo_prefix",
+"value": ""
+},
+{
+"op": "msf_bedrock_region_geo_prefix",
+"value": "x"
+},
+{
+"op": "msf_bedrock_region_geo_prefix",
+"value": "hello world"
+},
+{
+"op": "msf_bedrock_region_geo_prefix",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_bedrock_region_geo_prefix",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_bedrock_region_geo_prefix",
+"value": "user@example.com"
+},
+{
+"op": "msf_bedrock_region_geo_prefix",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_bedrock_region_geo_prefix",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_bedrock_region_geo_prefix",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_bedrock_region_geo_prefix",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_bedrock_region_geo_prefix",
+"value": "12345"
+},
+{
+"op": "msf_bedrock_region_geo_prefix",
+"value": "  spaced  "
+},
+{
+"op": "msf_bedrock_region_geo_prefix",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_bedrock_region_geo_prefix",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_bedrock_region_geo_prefix",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_bedrock_model_routable_from_region",
+"value": ""
+},
+{
+"op": "msf_bedrock_model_routable_from_region",
+"value": "x"
+},
+{
+"op": "msf_bedrock_model_routable_from_region",
+"value": "hello world"
+},
+{
+"op": "msf_bedrock_model_routable_from_region",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_bedrock_model_routable_from_region",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_bedrock_model_routable_from_region",
+"value": "user@example.com"
+},
+{
+"op": "msf_bedrock_model_routable_from_region",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_bedrock_model_routable_from_region",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_bedrock_model_routable_from_region",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_bedrock_model_routable_from_region",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_bedrock_model_routable_from_region",
+"value": "12345"
+},
+{
+"op": "msf_bedrock_model_routable_from_region",
+"value": "  spaced  "
+},
+{
+"op": "msf_bedrock_model_routable_from_region",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_bedrock_model_routable_from_region",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_bedrock_model_routable_from_region",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_u_prune_replaced_custom_model_config_credentials",
+"value": ""
+},
+{
+"op": "msf_u_prune_replaced_custom_model_config_credentials",
+"value": "x"
+},
+{
+"op": "msf_u_prune_replaced_custom_model_config_credentials",
+"value": "hello world"
+},
+{
+"op": "msf_u_prune_replaced_custom_model_config_credentials",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_u_prune_replaced_custom_model_config_credentials",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_u_prune_replaced_custom_model_config_credentials",
+"value": "user@example.com"
+},
+{
+"op": "msf_u_prune_replaced_custom_model_config_credentials",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_u_prune_replaced_custom_model_config_credentials",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_u_prune_replaced_custom_model_config_credentials",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_u_prune_replaced_custom_model_config_credentials",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_u_prune_replaced_custom_model_config_credentials",
+"value": "12345"
+},
+{
+"op": "msf_u_prune_replaced_custom_model_config_credentials",
+"value": "  spaced  "
+},
+{
+"op": "msf_u_prune_replaced_custom_model_config_credentials",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_u_prune_replaced_custom_model_config_credentials",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_u_prune_replaced_custom_model_config_credentials",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_u_prompt_auth_credentials_choice",
+"value": ""
+},
+{
+"op": "msf_u_prompt_auth_credentials_choice",
+"value": "x"
+},
+{
+"op": "msf_u_prompt_auth_credentials_choice",
+"value": "hello world"
+},
+{
+"op": "msf_u_prompt_auth_credentials_choice",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_u_prompt_auth_credentials_choice",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_u_prompt_auth_credentials_choice",
+"value": "user@example.com"
+},
+{
+"op": "msf_u_prompt_auth_credentials_choice",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_u_prompt_auth_credentials_choice",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_u_prompt_auth_credentials_choice",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_u_prompt_auth_credentials_choice",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_u_prompt_auth_credentials_choice",
+"value": "12345"
+},
+{
+"op": "msf_u_prompt_auth_credentials_choice",
+"value": "  spaced  "
+},
+{
+"op": "msf_u_prompt_auth_credentials_choice",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_u_prompt_auth_credentials_choice",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_u_prompt_auth_credentials_choice",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_u_model_flow_openrouter",
+"value": ""
+},
+{
+"op": "msf_u_model_flow_openrouter",
+"value": "x"
+},
+{
+"op": "msf_u_model_flow_openrouter",
+"value": "hello world"
+},
+{
+"op": "msf_u_model_flow_openrouter",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_u_model_flow_openrouter",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_u_model_flow_openrouter",
+"value": "user@example.com"
+},
+{
+"op": "msf_u_model_flow_openrouter",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_u_model_flow_openrouter",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_u_model_flow_openrouter",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_u_model_flow_openrouter",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_u_model_flow_openrouter",
+"value": "12345"
+},
+{
+"op": "msf_u_model_flow_openrouter",
+"value": "  spaced  "
+},
+{
+"op": "msf_u_model_flow_openrouter",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_u_model_flow_openrouter",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_u_model_flow_openrouter",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_u_print_moa_preset",
+"value": ""
+},
+{
+"op": "msf_u_print_moa_preset",
+"value": "x"
+},
+{
+"op": "msf_u_print_moa_preset",
+"value": "hello world"
+},
+{
+"op": "msf_u_print_moa_preset",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_u_print_moa_preset",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_u_print_moa_preset",
+"value": "user@example.com"
+},
+{
+"op": "msf_u_print_moa_preset",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_u_print_moa_preset",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_u_print_moa_preset",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_u_print_moa_preset",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_u_print_moa_preset",
+"value": "12345"
+},
+{
+"op": "msf_u_print_moa_preset",
+"value": "  spaced  "
+},
+{
+"op": "msf_u_print_moa_preset",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_u_print_moa_preset",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_u_print_moa_preset",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_u_model_flow_moa",
+"value": ""
+},
+{
+"op": "msf_u_model_flow_moa",
+"value": "x"
+},
+{
+"op": "msf_u_model_flow_moa",
+"value": "hello world"
+},
+{
+"op": "msf_u_model_flow_moa",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_u_model_flow_moa",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_u_model_flow_moa",
+"value": "user@example.com"
+},
+{
+"op": "msf_u_model_flow_moa",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_u_model_flow_moa",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_u_model_flow_moa",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_u_model_flow_moa",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_u_model_flow_moa",
+"value": "12345"
+},
+{
+"op": "msf_u_model_flow_moa",
+"value": "  spaced  "
+},
+{
+"op": "msf_u_model_flow_moa",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_u_model_flow_moa",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_u_model_flow_moa",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_u_model_flow_nous",
+"value": ""
+},
+{
+"op": "msf_u_model_flow_nous",
+"value": "x"
+},
+{
+"op": "msf_u_model_flow_nous",
+"value": "hello world"
+},
+{
+"op": "msf_u_model_flow_nous",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_u_model_flow_nous",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_u_model_flow_nous",
+"value": "user@example.com"
+},
+{
+"op": "msf_u_model_flow_nous",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_u_model_flow_nous",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_u_model_flow_nous",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_u_model_flow_nous",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_u_model_flow_nous",
+"value": "12345"
+},
+{
+"op": "msf_u_model_flow_nous",
+"value": "  spaced  "
+},
+{
+"op": "msf_u_model_flow_nous",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_u_model_flow_nous",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_u_model_flow_nous",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_u_model_flow_openai_codex",
+"value": ""
+},
+{
+"op": "msf_u_model_flow_openai_codex",
+"value": "x"
+},
+{
+"op": "msf_u_model_flow_openai_codex",
+"value": "hello world"
+},
+{
+"op": "msf_u_model_flow_openai_codex",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_u_model_flow_openai_codex",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_u_model_flow_openai_codex",
+"value": "user@example.com"
+},
+{
+"op": "msf_u_model_flow_openai_codex",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_u_model_flow_openai_codex",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_u_model_flow_openai_codex",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_u_model_flow_openai_codex",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_u_model_flow_openai_codex",
+"value": "12345"
+},
+{
+"op": "msf_u_model_flow_openai_codex",
+"value": "  spaced  "
+},
+{
+"op": "msf_u_model_flow_openai_codex",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_u_model_flow_openai_codex",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_u_model_flow_openai_codex",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_u_model_flow_xai_oauth",
+"value": ""
+},
+{
+"op": "msf_u_model_flow_xai_oauth",
+"value": "x"
+},
+{
+"op": "msf_u_model_flow_xai_oauth",
+"value": "hello world"
+},
+{
+"op": "msf_u_model_flow_xai_oauth",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_u_model_flow_xai_oauth",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_u_model_flow_xai_oauth",
+"value": "user@example.com"
+},
+{
+"op": "msf_u_model_flow_xai_oauth",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_u_model_flow_xai_oauth",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_u_model_flow_xai_oauth",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_u_model_flow_xai_oauth",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_u_model_flow_xai_oauth",
+"value": "12345"
+},
+{
+"op": "msf_u_model_flow_xai_oauth",
+"value": "  spaced  "
+},
+{
+"op": "msf_u_model_flow_xai_oauth",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_u_model_flow_xai_oauth",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_u_model_flow_xai_oauth",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_u_model_flow_qwen_oauth",
+"value": ""
+},
+{
+"op": "msf_u_model_flow_qwen_oauth",
+"value": "x"
+},
+{
+"op": "msf_u_model_flow_qwen_oauth",
+"value": "hello world"
+},
+{
+"op": "msf_u_model_flow_qwen_oauth",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_u_model_flow_qwen_oauth",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_u_model_flow_qwen_oauth",
+"value": "user@example.com"
+},
+{
+"op": "msf_u_model_flow_qwen_oauth",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_u_model_flow_qwen_oauth",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_u_model_flow_qwen_oauth",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_u_model_flow_qwen_oauth",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_u_model_flow_qwen_oauth",
+"value": "12345"
+},
+{
+"op": "msf_u_model_flow_qwen_oauth",
+"value": "  spaced  "
+},
+{
+"op": "msf_u_model_flow_qwen_oauth",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_u_model_flow_qwen_oauth",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_u_model_flow_qwen_oauth",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_u_model_flow_minimax_oauth",
+"value": ""
+},
+{
+"op": "msf_u_model_flow_minimax_oauth",
+"value": "x"
+},
+{
+"op": "msf_u_model_flow_minimax_oauth",
+"value": "hello world"
+},
+{
+"op": "msf_u_model_flow_minimax_oauth",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_u_model_flow_minimax_oauth",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_u_model_flow_minimax_oauth",
+"value": "user@example.com"
+},
+{
+"op": "msf_u_model_flow_minimax_oauth",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_u_model_flow_minimax_oauth",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_u_model_flow_minimax_oauth",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_u_model_flow_minimax_oauth",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_u_model_flow_minimax_oauth",
+"value": "12345"
+},
+{
+"op": "msf_u_model_flow_minimax_oauth",
+"value": "  spaced  "
+},
+{
+"op": "msf_u_model_flow_minimax_oauth",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_u_model_flow_minimax_oauth",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_u_model_flow_minimax_oauth",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_u_model_flow_custom",
+"value": ""
+},
+{
+"op": "msf_u_model_flow_custom",
+"value": "x"
+},
+{
+"op": "msf_u_model_flow_custom",
+"value": "hello world"
+},
+{
+"op": "msf_u_model_flow_custom",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_u_model_flow_custom",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_u_model_flow_custom",
+"value": "user@example.com"
+},
+{
+"op": "msf_u_model_flow_custom",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_u_model_flow_custom",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_u_model_flow_custom",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_u_model_flow_custom",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_u_model_flow_custom",
+"value": "12345"
+},
+{
+"op": "msf_u_model_flow_custom",
+"value": "  spaced  "
+},
+{
+"op": "msf_u_model_flow_custom",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_u_model_flow_custom",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_u_model_flow_custom",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_u_model_flow_azure_foundry",
+"value": ""
+},
+{
+"op": "msf_u_model_flow_azure_foundry",
+"value": "x"
+},
+{
+"op": "msf_u_model_flow_azure_foundry",
+"value": "hello world"
+},
+{
+"op": "msf_u_model_flow_azure_foundry",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_u_model_flow_azure_foundry",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_u_model_flow_azure_foundry",
+"value": "user@example.com"
+},
+{
+"op": "msf_u_model_flow_azure_foundry",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_u_model_flow_azure_foundry",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_u_model_flow_azure_foundry",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_u_model_flow_azure_foundry",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_u_model_flow_azure_foundry",
+"value": "12345"
+},
+{
+"op": "msf_u_model_flow_azure_foundry",
+"value": "  spaced  "
+},
+{
+"op": "msf_u_model_flow_azure_foundry",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_u_model_flow_azure_foundry",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_u_model_flow_azure_foundry",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_u_model_flow_named_custom",
+"value": ""
+},
+{
+"op": "msf_u_model_flow_named_custom",
+"value": "x"
+},
+{
+"op": "msf_u_model_flow_named_custom",
+"value": "hello world"
+},
+{
+"op": "msf_u_model_flow_named_custom",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_u_model_flow_named_custom",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_u_model_flow_named_custom",
+"value": "user@example.com"
+},
+{
+"op": "msf_u_model_flow_named_custom",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_u_model_flow_named_custom",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_u_model_flow_named_custom",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_u_model_flow_named_custom",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_u_model_flow_named_custom",
+"value": "12345"
+},
+{
+"op": "msf_u_model_flow_named_custom",
+"value": "  spaced  "
+},
+{
+"op": "msf_u_model_flow_named_custom",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_u_model_flow_named_custom",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_u_model_flow_named_custom",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_u_model_flow_copilot",
+"value": ""
+},
+{
+"op": "msf_u_model_flow_copilot",
+"value": "x"
+},
+{
+"op": "msf_u_model_flow_copilot",
+"value": "hello world"
+},
+{
+"op": "msf_u_model_flow_copilot",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_u_model_flow_copilot",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_u_model_flow_copilot",
+"value": "user@example.com"
+},
+{
+"op": "msf_u_model_flow_copilot",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_u_model_flow_copilot",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_u_model_flow_copilot",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_u_model_flow_copilot",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_u_model_flow_copilot",
+"value": "12345"
+},
+{
+"op": "msf_u_model_flow_copilot",
+"value": "  spaced  "
+},
+{
+"op": "msf_u_model_flow_copilot",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_u_model_flow_copilot",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_u_model_flow_copilot",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_u_model_flow_copilot_acp",
+"value": ""
+},
+{
+"op": "msf_u_model_flow_copilot_acp",
+"value": "x"
+},
+{
+"op": "msf_u_model_flow_copilot_acp",
+"value": "hello world"
+},
+{
+"op": "msf_u_model_flow_copilot_acp",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_u_model_flow_copilot_acp",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_u_model_flow_copilot_acp",
+"value": "user@example.com"
+},
+{
+"op": "msf_u_model_flow_copilot_acp",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_u_model_flow_copilot_acp",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_u_model_flow_copilot_acp",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_u_model_flow_copilot_acp",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_u_model_flow_copilot_acp",
+"value": "12345"
+},
+{
+"op": "msf_u_model_flow_copilot_acp",
+"value": "  spaced  "
+},
+{
+"op": "msf_u_model_flow_copilot_acp",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_u_model_flow_copilot_acp",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_u_model_flow_copilot_acp",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_u_model_flow_kimi",
+"value": ""
+},
+{
+"op": "msf_u_model_flow_kimi",
+"value": "x"
+},
+{
+"op": "msf_u_model_flow_kimi",
+"value": "hello world"
+},
+{
+"op": "msf_u_model_flow_kimi",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_u_model_flow_kimi",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_u_model_flow_kimi",
+"value": "user@example.com"
+},
+{
+"op": "msf_u_model_flow_kimi",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_u_model_flow_kimi",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_u_model_flow_kimi",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_u_model_flow_kimi",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_u_model_flow_kimi",
+"value": "12345"
+},
+{
+"op": "msf_u_model_flow_kimi",
+"value": "  spaced  "
+},
+{
+"op": "msf_u_model_flow_kimi",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_u_model_flow_kimi",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_u_model_flow_kimi",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_u_model_flow_stepfun",
+"value": ""
+},
+{
+"op": "msf_u_model_flow_stepfun",
+"value": "x"
+},
+{
+"op": "msf_u_model_flow_stepfun",
+"value": "hello world"
+},
+{
+"op": "msf_u_model_flow_stepfun",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_u_model_flow_stepfun",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_u_model_flow_stepfun",
+"value": "user@example.com"
+},
+{
+"op": "msf_u_model_flow_stepfun",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_u_model_flow_stepfun",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_u_model_flow_stepfun",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_u_model_flow_stepfun",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_u_model_flow_stepfun",
+"value": "12345"
+},
+{
+"op": "msf_u_model_flow_stepfun",
+"value": "  spaced  "
+},
+{
+"op": "msf_u_model_flow_stepfun",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_u_model_flow_stepfun",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_u_model_flow_stepfun",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_u_model_flow_bedrock_api_key",
+"value": ""
+},
+{
+"op": "msf_u_model_flow_bedrock_api_key",
+"value": "x"
+},
+{
+"op": "msf_u_model_flow_bedrock_api_key",
+"value": "hello world"
+},
+{
+"op": "msf_u_model_flow_bedrock_api_key",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_u_model_flow_bedrock_api_key",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_u_model_flow_bedrock_api_key",
+"value": "user@example.com"
+},
+{
+"op": "msf_u_model_flow_bedrock_api_key",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_u_model_flow_bedrock_api_key",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_u_model_flow_bedrock_api_key",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_u_model_flow_bedrock_api_key",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_u_model_flow_bedrock_api_key",
+"value": "12345"
+},
+{
+"op": "msf_u_model_flow_bedrock_api_key",
+"value": "  spaced  "
+},
+{
+"op": "msf_u_model_flow_bedrock_api_key",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_u_model_flow_bedrock_api_key",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_u_model_flow_bedrock_api_key",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_u_model_flow_bedrock",
+"value": ""
+},
+{
+"op": "msf_u_model_flow_bedrock",
+"value": "x"
+},
+{
+"op": "msf_u_model_flow_bedrock",
+"value": "hello world"
+},
+{
+"op": "msf_u_model_flow_bedrock",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_u_model_flow_bedrock",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_u_model_flow_bedrock",
+"value": "user@example.com"
+},
+{
+"op": "msf_u_model_flow_bedrock",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_u_model_flow_bedrock",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_u_model_flow_bedrock",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_u_model_flow_bedrock",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_u_model_flow_bedrock",
+"value": "12345"
+},
+{
+"op": "msf_u_model_flow_bedrock",
+"value": "  spaced  "
+},
+{
+"op": "msf_u_model_flow_bedrock",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_u_model_flow_bedrock",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_u_model_flow_bedrock",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_u_model_flow_vertex",
+"value": ""
+},
+{
+"op": "msf_u_model_flow_vertex",
+"value": "x"
+},
+{
+"op": "msf_u_model_flow_vertex",
+"value": "hello world"
+},
+{
+"op": "msf_u_model_flow_vertex",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_u_model_flow_vertex",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_u_model_flow_vertex",
+"value": "user@example.com"
+},
+{
+"op": "msf_u_model_flow_vertex",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_u_model_flow_vertex",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_u_model_flow_vertex",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_u_model_flow_vertex",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_u_model_flow_vertex",
+"value": "12345"
+},
+{
+"op": "msf_u_model_flow_vertex",
+"value": "  spaced  "
+},
+{
+"op": "msf_u_model_flow_vertex",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_u_model_flow_vertex",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_u_model_flow_vertex",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_u_select_zai_endpoint",
+"value": ""
+},
+{
+"op": "msf_u_select_zai_endpoint",
+"value": "x"
+},
+{
+"op": "msf_u_select_zai_endpoint",
+"value": "hello world"
+},
+{
+"op": "msf_u_select_zai_endpoint",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_u_select_zai_endpoint",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_u_select_zai_endpoint",
+"value": "user@example.com"
+},
+{
+"op": "msf_u_select_zai_endpoint",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_u_select_zai_endpoint",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_u_select_zai_endpoint",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_u_select_zai_endpoint",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_u_select_zai_endpoint",
+"value": "12345"
+},
+{
+"op": "msf_u_select_zai_endpoint",
+"value": "  spaced  "
+},
+{
+"op": "msf_u_select_zai_endpoint",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_u_select_zai_endpoint",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_u_select_zai_endpoint",
+"value": "key:value;key2:value2"
+},
+{
+"op": "msf_u_model_flow_anthropic",
+"value": ""
+},
+{
+"op": "msf_u_model_flow_anthropic",
+"value": "x"
+},
+{
+"op": "msf_u_model_flow_anthropic",
+"value": "hello world"
+},
+{
+"op": "msf_u_model_flow_anthropic",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "msf_u_model_flow_anthropic",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "msf_u_model_flow_anthropic",
+"value": "user@example.com"
+},
+{
+"op": "msf_u_model_flow_anthropic",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "msf_u_model_flow_anthropic",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "msf_u_model_flow_anthropic",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "msf_u_model_flow_anthropic",
+"value": "CamelCaseString"
+},
+{
+"op": "msf_u_model_flow_anthropic",
+"value": "12345"
+},
+{
+"op": "msf_u_model_flow_anthropic",
+"value": "  spaced  "
+},
+{
+"op": "msf_u_model_flow_anthropic",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "msf_u_model_flow_anthropic",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "msf_u_model_flow_anthropic",
+"value": "key:value;key2:value2"
+}
+]

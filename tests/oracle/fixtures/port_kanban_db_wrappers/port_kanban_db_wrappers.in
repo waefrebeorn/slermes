@@ -1,0 +1,1502 @@
+[
+{
+"op": "kdbport_u_assert_not_delegated_child_mutation",
+"value": ""
+},
+{
+"op": "kdbport_u_assert_not_delegated_child_mutation",
+"value": "x"
+},
+{
+"op": "kdbport_u_assert_not_delegated_child_mutation",
+"value": "hello world"
+},
+{
+"op": "kdbport_u_assert_not_delegated_child_mutation",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_u_assert_not_delegated_child_mutation",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_u_assert_not_delegated_child_mutation",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_u_assert_not_delegated_child_mutation",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_u_assert_not_delegated_child_mutation",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_u_assert_not_delegated_child_mutation",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_u_assert_not_delegated_child_mutation",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_u_assert_not_delegated_child_mutation",
+"value": "12345"
+},
+{
+"op": "kdbport_u_assert_not_delegated_child_mutation",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_u_assert_not_delegated_child_mutation",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_u_assert_not_delegated_child_mutation",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_u_assert_not_delegated_child_mutation",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_scoped_current_board",
+"value": ""
+},
+{
+"op": "kdbport_scoped_current_board",
+"value": "x"
+},
+{
+"op": "kdbport_scoped_current_board",
+"value": "hello world"
+},
+{
+"op": "kdbport_scoped_current_board",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_scoped_current_board",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_scoped_current_board",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_scoped_current_board",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_scoped_current_board",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_scoped_current_board",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_scoped_current_board",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_scoped_current_board",
+"value": "12345"
+},
+{
+"op": "kdbport_scoped_current_board",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_scoped_current_board",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_scoped_current_board",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_scoped_current_board",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_from_row",
+"value": ""
+},
+{
+"op": "kdbport_from_row",
+"value": "x"
+},
+{
+"op": "kdbport_from_row",
+"value": "hello world"
+},
+{
+"op": "kdbport_from_row",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_from_row",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_from_row",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_from_row",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_from_row",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_from_row",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_from_row",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_from_row",
+"value": "12345"
+},
+{
+"op": "kdbport_from_row",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_from_row",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_from_row",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_from_row",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_from_row_2",
+"value": ""
+},
+{
+"op": "kdbport_from_row_2",
+"value": "x"
+},
+{
+"op": "kdbport_from_row_2",
+"value": "hello world"
+},
+{
+"op": "kdbport_from_row_2",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_from_row_2",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_from_row_2",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_from_row_2",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_from_row_2",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_from_row_2",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_from_row_2",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_from_row_2",
+"value": "12345"
+},
+{
+"op": "kdbport_from_row_2",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_from_row_2",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_from_row_2",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_from_row_2",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_u_sqlite_connect",
+"value": ""
+},
+{
+"op": "kdbport_u_sqlite_connect",
+"value": "x"
+},
+{
+"op": "kdbport_u_sqlite_connect",
+"value": "hello world"
+},
+{
+"op": "kdbport_u_sqlite_connect",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_u_sqlite_connect",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_u_sqlite_connect",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_u_sqlite_connect",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_u_sqlite_connect",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_u_sqlite_connect",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_u_sqlite_connect",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_u_sqlite_connect",
+"value": "12345"
+},
+{
+"op": "kdbport_u_sqlite_connect",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_u_sqlite_connect",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_u_sqlite_connect",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_u_sqlite_connect",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_u_maybe_checkpoint_wal",
+"value": ""
+},
+{
+"op": "kdbport_u_maybe_checkpoint_wal",
+"value": "x"
+},
+{
+"op": "kdbport_u_maybe_checkpoint_wal",
+"value": "hello world"
+},
+{
+"op": "kdbport_u_maybe_checkpoint_wal",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_u_maybe_checkpoint_wal",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_u_maybe_checkpoint_wal",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_u_maybe_checkpoint_wal",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_u_maybe_checkpoint_wal",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_u_maybe_checkpoint_wal",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_u_maybe_checkpoint_wal",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_u_maybe_checkpoint_wal",
+"value": "12345"
+},
+{
+"op": "kdbport_u_maybe_checkpoint_wal",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_u_maybe_checkpoint_wal",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_u_maybe_checkpoint_wal",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_u_maybe_checkpoint_wal",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_u_prune_corrupt_backups",
+"value": ""
+},
+{
+"op": "kdbport_u_prune_corrupt_backups",
+"value": "x"
+},
+{
+"op": "kdbport_u_prune_corrupt_backups",
+"value": "hello world"
+},
+{
+"op": "kdbport_u_prune_corrupt_backups",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_u_prune_corrupt_backups",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_u_prune_corrupt_backups",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_u_prune_corrupt_backups",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_u_prune_corrupt_backups",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_u_prune_corrupt_backups",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_u_prune_corrupt_backups",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_u_prune_corrupt_backups",
+"value": "12345"
+},
+{
+"op": "kdbport_u_prune_corrupt_backups",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_u_prune_corrupt_backups",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_u_prune_corrupt_backups",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_u_prune_corrupt_backups",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_u_integrity_messages_ok",
+"value": ""
+},
+{
+"op": "kdbport_u_integrity_messages_ok",
+"value": "x"
+},
+{
+"op": "kdbport_u_integrity_messages_ok",
+"value": "hello world"
+},
+{
+"op": "kdbport_u_integrity_messages_ok",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_u_integrity_messages_ok",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_u_integrity_messages_ok",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_u_integrity_messages_ok",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_u_integrity_messages_ok",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_u_integrity_messages_ok",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_u_integrity_messages_ok",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_u_integrity_messages_ok",
+"value": "12345"
+},
+{
+"op": "kdbport_u_integrity_messages_ok",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_u_integrity_messages_ok",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_u_integrity_messages_ok",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_u_integrity_messages_ok",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_u_run_integrity_check",
+"value": ""
+},
+{
+"op": "kdbport_u_run_integrity_check",
+"value": "x"
+},
+{
+"op": "kdbport_u_run_integrity_check",
+"value": "hello world"
+},
+{
+"op": "kdbport_u_run_integrity_check",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_u_run_integrity_check",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_u_run_integrity_check",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_u_run_integrity_check",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_u_run_integrity_check",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_u_run_integrity_check",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_u_run_integrity_check",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_u_run_integrity_check",
+"value": "12345"
+},
+{
+"op": "kdbport_u_run_integrity_check",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_u_run_integrity_check",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_u_run_integrity_check",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_u_run_integrity_check",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_u_repairable_index_names",
+"value": ""
+},
+{
+"op": "kdbport_u_repairable_index_names",
+"value": "x"
+},
+{
+"op": "kdbport_u_repairable_index_names",
+"value": "hello world"
+},
+{
+"op": "kdbport_u_repairable_index_names",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_u_repairable_index_names",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_u_repairable_index_names",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_u_repairable_index_names",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_u_repairable_index_names",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_u_repairable_index_names",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_u_repairable_index_names",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_u_repairable_index_names",
+"value": "12345"
+},
+{
+"op": "kdbport_u_repairable_index_names",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_u_repairable_index_names",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_u_repairable_index_names",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_u_repairable_index_names",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_u_attempt_index_reindex_repair",
+"value": ""
+},
+{
+"op": "kdbport_u_attempt_index_reindex_repair",
+"value": "x"
+},
+{
+"op": "kdbport_u_attempt_index_reindex_repair",
+"value": "hello world"
+},
+{
+"op": "kdbport_u_attempt_index_reindex_repair",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_u_attempt_index_reindex_repair",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_u_attempt_index_reindex_repair",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_u_attempt_index_reindex_repair",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_u_attempt_index_reindex_repair",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_u_attempt_index_reindex_repair",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_u_attempt_index_reindex_repair",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_u_attempt_index_reindex_repair",
+"value": "12345"
+},
+{
+"op": "kdbport_u_attempt_index_reindex_repair",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_u_attempt_index_reindex_repair",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_u_attempt_index_reindex_repair",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_u_attempt_index_reindex_repair",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_repair_db",
+"value": ""
+},
+{
+"op": "kdbport_repair_db",
+"value": "x"
+},
+{
+"op": "kdbport_repair_db",
+"value": "hello world"
+},
+{
+"op": "kdbport_repair_db",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_repair_db",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_repair_db",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_repair_db",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_repair_db",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_repair_db",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_repair_db",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_repair_db",
+"value": "12345"
+},
+{
+"op": "kdbport_repair_db",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_repair_db",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_repair_db",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_repair_db",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_u_migrate_add_optional_columns",
+"value": ""
+},
+{
+"op": "kdbport_u_migrate_add_optional_columns",
+"value": "x"
+},
+{
+"op": "kdbport_u_migrate_add_optional_columns",
+"value": "hello world"
+},
+{
+"op": "kdbport_u_migrate_add_optional_columns",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_u_migrate_add_optional_columns",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_u_migrate_add_optional_columns",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_u_migrate_add_optional_columns",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_u_migrate_add_optional_columns",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_u_migrate_add_optional_columns",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_u_migrate_add_optional_columns",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_u_migrate_add_optional_columns",
+"value": "12345"
+},
+{
+"op": "kdbport_u_migrate_add_optional_columns",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_u_migrate_add_optional_columns",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_u_migrate_add_optional_columns",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_u_migrate_add_optional_columns",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_set_model_override",
+"value": ""
+},
+{
+"op": "kdbport_set_model_override",
+"value": "x"
+},
+{
+"op": "kdbport_set_model_override",
+"value": "hello world"
+},
+{
+"op": "kdbport_set_model_override",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_set_model_override",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_set_model_override",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_set_model_override",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_set_model_override",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_set_model_override",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_set_model_override",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_set_model_override",
+"value": "12345"
+},
+{
+"op": "kdbport_set_model_override",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_set_model_override",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_set_model_override",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_set_model_override",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_u_safe_attachment_name",
+"value": ""
+},
+{
+"op": "kdbport_u_safe_attachment_name",
+"value": "x"
+},
+{
+"op": "kdbport_u_safe_attachment_name",
+"value": "hello world"
+},
+{
+"op": "kdbport_u_safe_attachment_name",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_u_safe_attachment_name",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_u_safe_attachment_name",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_u_safe_attachment_name",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_u_safe_attachment_name",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_u_safe_attachment_name",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_u_safe_attachment_name",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_u_safe_attachment_name",
+"value": "12345"
+},
+{
+"op": "kdbport_u_safe_attachment_name",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_u_safe_attachment_name",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_u_safe_attachment_name",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_u_safe_attachment_name",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_u_collision_free_path",
+"value": ""
+},
+{
+"op": "kdbport_u_collision_free_path",
+"value": "x"
+},
+{
+"op": "kdbport_u_collision_free_path",
+"value": "hello world"
+},
+{
+"op": "kdbport_u_collision_free_path",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_u_collision_free_path",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_u_collision_free_path",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_u_collision_free_path",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_u_collision_free_path",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_u_collision_free_path",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_u_collision_free_path",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_u_collision_free_path",
+"value": "12345"
+},
+{
+"op": "kdbport_u_collision_free_path",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_u_collision_free_path",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_u_collision_free_path",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_u_collision_free_path",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_store_attachment_bytes",
+"value": ""
+},
+{
+"op": "kdbport_store_attachment_bytes",
+"value": "x"
+},
+{
+"op": "kdbport_store_attachment_bytes",
+"value": "hello world"
+},
+{
+"op": "kdbport_store_attachment_bytes",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_store_attachment_bytes",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_store_attachment_bytes",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_store_attachment_bytes",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_store_attachment_bytes",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_store_attachment_bytes",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_store_attachment_bytes",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_store_attachment_bytes",
+"value": "12345"
+},
+{
+"op": "kdbport_store_attachment_bytes",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_store_attachment_bytes",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_store_attachment_bytes",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_store_attachment_bytes",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_u_merge_completion_prose_artifacts",
+"value": ""
+},
+{
+"op": "kdbport_u_merge_completion_prose_artifacts",
+"value": "x"
+},
+{
+"op": "kdbport_u_merge_completion_prose_artifacts",
+"value": "hello world"
+},
+{
+"op": "kdbport_u_merge_completion_prose_artifacts",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_u_merge_completion_prose_artifacts",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_u_merge_completion_prose_artifacts",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_u_merge_completion_prose_artifacts",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_u_merge_completion_prose_artifacts",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_u_merge_completion_prose_artifacts",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_u_merge_completion_prose_artifacts",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_u_merge_completion_prose_artifacts",
+"value": "12345"
+},
+{
+"op": "kdbport_u_merge_completion_prose_artifacts",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_u_merge_completion_prose_artifacts",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_u_merge_completion_prose_artifacts",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_u_merge_completion_prose_artifacts",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_u_persist_scratch_completion_artifacts",
+"value": ""
+},
+{
+"op": "kdbport_u_persist_scratch_completion_artifacts",
+"value": "x"
+},
+{
+"op": "kdbport_u_persist_scratch_completion_artifacts",
+"value": "hello world"
+},
+{
+"op": "kdbport_u_persist_scratch_completion_artifacts",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_u_persist_scratch_completion_artifacts",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_u_persist_scratch_completion_artifacts",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_u_persist_scratch_completion_artifacts",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_u_persist_scratch_completion_artifacts",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_u_persist_scratch_completion_artifacts",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_u_persist_scratch_completion_artifacts",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_u_persist_scratch_completion_artifacts",
+"value": "12345"
+},
+{
+"op": "kdbport_u_persist_scratch_completion_artifacts",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_u_persist_scratch_completion_artifacts",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_u_persist_scratch_completion_artifacts",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_u_persist_scratch_completion_artifacts",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_u_insert_completion_attachment",
+"value": ""
+},
+{
+"op": "kdbport_u_insert_completion_attachment",
+"value": "x"
+},
+{
+"op": "kdbport_u_insert_completion_attachment",
+"value": "hello world"
+},
+{
+"op": "kdbport_u_insert_completion_attachment",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_u_insert_completion_attachment",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_u_insert_completion_attachment",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_u_insert_completion_attachment",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_u_insert_completion_attachment",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_u_insert_completion_attachment",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_u_insert_completion_attachment",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_u_insert_completion_attachment",
+"value": "12345"
+},
+{
+"op": "kdbport_u_insert_completion_attachment",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_u_insert_completion_attachment",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_u_insert_completion_attachment",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_u_insert_completion_attachment",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_u_unique_attachment_path",
+"value": ""
+},
+{
+"op": "kdbport_u_unique_attachment_path",
+"value": "x"
+},
+{
+"op": "kdbport_u_unique_attachment_path",
+"value": "hello world"
+},
+{
+"op": "kdbport_u_unique_attachment_path",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_u_unique_attachment_path",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_u_unique_attachment_path",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_u_unique_attachment_path",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_u_unique_attachment_path",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_u_unique_attachment_path",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_u_unique_attachment_path",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_u_unique_attachment_path",
+"value": "12345"
+},
+{
+"op": "kdbport_u_unique_attachment_path",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_u_unique_attachment_path",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_u_unique_attachment_path",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_u_unique_attachment_path",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_u_managed_scratch_path_info",
+"value": ""
+},
+{
+"op": "kdbport_u_managed_scratch_path_info",
+"value": "x"
+},
+{
+"op": "kdbport_u_managed_scratch_path_info",
+"value": "hello world"
+},
+{
+"op": "kdbport_u_managed_scratch_path_info",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_u_managed_scratch_path_info",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_u_managed_scratch_path_info",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_u_managed_scratch_path_info",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_u_managed_scratch_path_info",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_u_managed_scratch_path_info",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_u_managed_scratch_path_info",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_u_managed_scratch_path_info",
+"value": "12345"
+},
+{
+"op": "kdbport_u_managed_scratch_path_info",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_u_managed_scratch_path_info",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_u_managed_scratch_path_info",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_u_managed_scratch_path_info",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_decompose_triage_task",
+"value": ""
+},
+{
+"op": "kdbport_decompose_triage_task",
+"value": "x"
+},
+{
+"op": "kdbport_decompose_triage_task",
+"value": "hello world"
+},
+{
+"op": "kdbport_decompose_triage_task",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_decompose_triage_task",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_decompose_triage_task",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_decompose_triage_task",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_decompose_triage_task",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_decompose_triage_task",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_decompose_triage_task",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_decompose_triage_task",
+"value": "12345"
+},
+{
+"op": "kdbport_decompose_triage_task",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_decompose_triage_task",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_decompose_triage_task",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_decompose_triage_task",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_u_protocol_violation_streak",
+"value": ""
+},
+{
+"op": "kdbport_u_protocol_violation_streak",
+"value": "x"
+},
+{
+"op": "kdbport_u_protocol_violation_streak",
+"value": "hello world"
+},
+{
+"op": "kdbport_u_protocol_violation_streak",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_u_protocol_violation_streak",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_u_protocol_violation_streak",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_u_protocol_violation_streak",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_u_protocol_violation_streak",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_u_protocol_violation_streak",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_u_protocol_violation_streak",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_u_protocol_violation_streak",
+"value": "12345"
+},
+{
+"op": "kdbport_u_protocol_violation_streak",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_u_protocol_violation_streak",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_u_protocol_violation_streak",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_u_protocol_violation_streak",
+"value": "key:value;key2:value2"
+},
+{
+"op": "kdbport_list_runs",
+"value": ""
+},
+{
+"op": "kdbport_list_runs",
+"value": "x"
+},
+{
+"op": "kdbport_list_runs",
+"value": "hello world"
+},
+{
+"op": "kdbport_list_runs",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "kdbport_list_runs",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "kdbport_list_runs",
+"value": "user@example.com"
+},
+{
+"op": "kdbport_list_runs",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "kdbport_list_runs",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "kdbport_list_runs",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "kdbport_list_runs",
+"value": "CamelCaseString"
+},
+{
+"op": "kdbport_list_runs",
+"value": "12345"
+},
+{
+"op": "kdbport_list_runs",
+"value": "  spaced  "
+},
+{
+"op": "kdbport_list_runs",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "kdbport_list_runs",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "kdbport_list_runs",
+"value": "key:value;key2:value2"
+}
+]

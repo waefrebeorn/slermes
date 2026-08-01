@@ -1,0 +1,242 @@
+[
+{
+"op": "cronjobs_parse_duration",
+"value": ""
+},
+{
+"op": "cronjobs_parse_duration",
+"value": "x"
+},
+{
+"op": "cronjobs_parse_duration",
+"value": "hello world"
+},
+{
+"op": "cronjobs_parse_duration",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cronjobs_parse_duration",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cronjobs_parse_duration",
+"value": "user@example.com"
+},
+{
+"op": "cronjobs_parse_duration",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cronjobs_parse_duration",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cronjobs_parse_duration",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cronjobs_parse_duration",
+"value": "CamelCaseString"
+},
+{
+"op": "cronjobs_parse_duration",
+"value": "12345"
+},
+{
+"op": "cronjobs_parse_duration",
+"value": "  spaced  "
+},
+{
+"op": "cronjobs_parse_duration",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cronjobs_parse_duration",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cronjobs_parse_duration",
+"value": "key:value;key2:value2"
+},
+{
+"op": "cronjobs_remove_job",
+"value": ""
+},
+{
+"op": "cronjobs_remove_job",
+"value": "x"
+},
+{
+"op": "cronjobs_remove_job",
+"value": "hello world"
+},
+{
+"op": "cronjobs_remove_job",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cronjobs_remove_job",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cronjobs_remove_job",
+"value": "user@example.com"
+},
+{
+"op": "cronjobs_remove_job",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cronjobs_remove_job",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cronjobs_remove_job",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cronjobs_remove_job",
+"value": "CamelCaseString"
+},
+{
+"op": "cronjobs_remove_job",
+"value": "12345"
+},
+{
+"op": "cronjobs_remove_job",
+"value": "  spaced  "
+},
+{
+"op": "cronjobs_remove_job",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cronjobs_remove_job",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cronjobs_remove_job",
+"value": "key:value;key2:value2"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": ""
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "x"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "hello world"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "user@example.com"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "CamelCaseString"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "12345"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "  spaced  "
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "key:value;key2:value2"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": ""
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "x"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "hello world"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "user@example.com"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "CamelCaseString"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "12345"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "  spaced  "
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "key:value;key2:value2"
+}
+]

@@ -1,0 +1,1202 @@
+[
+{
+"op": "uninst_log_info",
+"value": ""
+},
+{
+"op": "uninst_log_info",
+"value": "x"
+},
+{
+"op": "uninst_log_info",
+"value": "hello world"
+},
+{
+"op": "uninst_log_info",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "uninst_log_info",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "uninst_log_info",
+"value": "user@example.com"
+},
+{
+"op": "uninst_log_info",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "uninst_log_info",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "uninst_log_info",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "uninst_log_info",
+"value": "CamelCaseString"
+},
+{
+"op": "uninst_log_info",
+"value": "12345"
+},
+{
+"op": "uninst_log_info",
+"value": "  spaced  "
+},
+{
+"op": "uninst_log_info",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "uninst_log_info",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "uninst_log_info",
+"value": "key:value;key2:value2"
+},
+{
+"op": "uninst_log_success",
+"value": ""
+},
+{
+"op": "uninst_log_success",
+"value": "x"
+},
+{
+"op": "uninst_log_success",
+"value": "hello world"
+},
+{
+"op": "uninst_log_success",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "uninst_log_success",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "uninst_log_success",
+"value": "user@example.com"
+},
+{
+"op": "uninst_log_success",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "uninst_log_success",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "uninst_log_success",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "uninst_log_success",
+"value": "CamelCaseString"
+},
+{
+"op": "uninst_log_success",
+"value": "12345"
+},
+{
+"op": "uninst_log_success",
+"value": "  spaced  "
+},
+{
+"op": "uninst_log_success",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "uninst_log_success",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "uninst_log_success",
+"value": "key:value;key2:value2"
+},
+{
+"op": "uninst_log_warn",
+"value": ""
+},
+{
+"op": "uninst_log_warn",
+"value": "x"
+},
+{
+"op": "uninst_log_warn",
+"value": "hello world"
+},
+{
+"op": "uninst_log_warn",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "uninst_log_warn",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "uninst_log_warn",
+"value": "user@example.com"
+},
+{
+"op": "uninst_log_warn",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "uninst_log_warn",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "uninst_log_warn",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "uninst_log_warn",
+"value": "CamelCaseString"
+},
+{
+"op": "uninst_log_warn",
+"value": "12345"
+},
+{
+"op": "uninst_log_warn",
+"value": "  spaced  "
+},
+{
+"op": "uninst_log_warn",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "uninst_log_warn",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "uninst_log_warn",
+"value": "key:value;key2:value2"
+},
+{
+"op": "uninst_find_shell_configs",
+"value": ""
+},
+{
+"op": "uninst_find_shell_configs",
+"value": "x"
+},
+{
+"op": "uninst_find_shell_configs",
+"value": "hello world"
+},
+{
+"op": "uninst_find_shell_configs",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "uninst_find_shell_configs",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "uninst_find_shell_configs",
+"value": "user@example.com"
+},
+{
+"op": "uninst_find_shell_configs",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "uninst_find_shell_configs",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "uninst_find_shell_configs",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "uninst_find_shell_configs",
+"value": "CamelCaseString"
+},
+{
+"op": "uninst_find_shell_configs",
+"value": "12345"
+},
+{
+"op": "uninst_find_shell_configs",
+"value": "  spaced  "
+},
+{
+"op": "uninst_find_shell_configs",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "uninst_find_shell_configs",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "uninst_find_shell_configs",
+"value": "key:value;key2:value2"
+},
+{
+"op": "uninst_remove_path_from_shell_configs",
+"value": ""
+},
+{
+"op": "uninst_remove_path_from_shell_configs",
+"value": "x"
+},
+{
+"op": "uninst_remove_path_from_shell_configs",
+"value": "hello world"
+},
+{
+"op": "uninst_remove_path_from_shell_configs",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "uninst_remove_path_from_shell_configs",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "uninst_remove_path_from_shell_configs",
+"value": "user@example.com"
+},
+{
+"op": "uninst_remove_path_from_shell_configs",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "uninst_remove_path_from_shell_configs",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "uninst_remove_path_from_shell_configs",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "uninst_remove_path_from_shell_configs",
+"value": "CamelCaseString"
+},
+{
+"op": "uninst_remove_path_from_shell_configs",
+"value": "12345"
+},
+{
+"op": "uninst_remove_path_from_shell_configs",
+"value": "  spaced  "
+},
+{
+"op": "uninst_remove_path_from_shell_configs",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "uninst_remove_path_from_shell_configs",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "uninst_remove_path_from_shell_configs",
+"value": "key:value;key2:value2"
+},
+{
+"op": "uninst_remove_wrapper_script",
+"value": ""
+},
+{
+"op": "uninst_remove_wrapper_script",
+"value": "x"
+},
+{
+"op": "uninst_remove_wrapper_script",
+"value": "hello world"
+},
+{
+"op": "uninst_remove_wrapper_script",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "uninst_remove_wrapper_script",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "uninst_remove_wrapper_script",
+"value": "user@example.com"
+},
+{
+"op": "uninst_remove_wrapper_script",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "uninst_remove_wrapper_script",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "uninst_remove_wrapper_script",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "uninst_remove_wrapper_script",
+"value": "CamelCaseString"
+},
+{
+"op": "uninst_remove_wrapper_script",
+"value": "12345"
+},
+{
+"op": "uninst_remove_wrapper_script",
+"value": "  spaced  "
+},
+{
+"op": "uninst_remove_wrapper_script",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "uninst_remove_wrapper_script",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "uninst_remove_wrapper_script",
+"value": "key:value;key2:value2"
+},
+{
+"op": "uninst_u_node_symlink_candidate_dirs",
+"value": ""
+},
+{
+"op": "uninst_u_node_symlink_candidate_dirs",
+"value": "x"
+},
+{
+"op": "uninst_u_node_symlink_candidate_dirs",
+"value": "hello world"
+},
+{
+"op": "uninst_u_node_symlink_candidate_dirs",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "uninst_u_node_symlink_candidate_dirs",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "uninst_u_node_symlink_candidate_dirs",
+"value": "user@example.com"
+},
+{
+"op": "uninst_u_node_symlink_candidate_dirs",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "uninst_u_node_symlink_candidate_dirs",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "uninst_u_node_symlink_candidate_dirs",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "uninst_u_node_symlink_candidate_dirs",
+"value": "CamelCaseString"
+},
+{
+"op": "uninst_u_node_symlink_candidate_dirs",
+"value": "12345"
+},
+{
+"op": "uninst_u_node_symlink_candidate_dirs",
+"value": "  spaced  "
+},
+{
+"op": "uninst_u_node_symlink_candidate_dirs",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "uninst_u_node_symlink_candidate_dirs",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "uninst_u_node_symlink_candidate_dirs",
+"value": "key:value;key2:value2"
+},
+{
+"op": "uninst_remove_node_symlinks",
+"value": ""
+},
+{
+"op": "uninst_remove_node_symlinks",
+"value": "x"
+},
+{
+"op": "uninst_remove_node_symlinks",
+"value": "hello world"
+},
+{
+"op": "uninst_remove_node_symlinks",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "uninst_remove_node_symlinks",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "uninst_remove_node_symlinks",
+"value": "user@example.com"
+},
+{
+"op": "uninst_remove_node_symlinks",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "uninst_remove_node_symlinks",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "uninst_remove_node_symlinks",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "uninst_remove_node_symlinks",
+"value": "CamelCaseString"
+},
+{
+"op": "uninst_remove_node_symlinks",
+"value": "12345"
+},
+{
+"op": "uninst_remove_node_symlinks",
+"value": "  spaced  "
+},
+{
+"op": "uninst_remove_node_symlinks",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "uninst_remove_node_symlinks",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "uninst_remove_node_symlinks",
+"value": "key:value;key2:value2"
+},
+{
+"op": "uninst_uninstall_gateway_service",
+"value": ""
+},
+{
+"op": "uninst_uninstall_gateway_service",
+"value": "x"
+},
+{
+"op": "uninst_uninstall_gateway_service",
+"value": "hello world"
+},
+{
+"op": "uninst_uninstall_gateway_service",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "uninst_uninstall_gateway_service",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "uninst_uninstall_gateway_service",
+"value": "user@example.com"
+},
+{
+"op": "uninst_uninstall_gateway_service",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "uninst_uninstall_gateway_service",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "uninst_uninstall_gateway_service",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "uninst_uninstall_gateway_service",
+"value": "CamelCaseString"
+},
+{
+"op": "uninst_uninstall_gateway_service",
+"value": "12345"
+},
+{
+"op": "uninst_uninstall_gateway_service",
+"value": "  spaced  "
+},
+{
+"op": "uninst_uninstall_gateway_service",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "uninst_uninstall_gateway_service",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "uninst_uninstall_gateway_service",
+"value": "key:value;key2:value2"
+},
+{
+"op": "uninst_u_hermes_path_markers",
+"value": ""
+},
+{
+"op": "uninst_u_hermes_path_markers",
+"value": "x"
+},
+{
+"op": "uninst_u_hermes_path_markers",
+"value": "hello world"
+},
+{
+"op": "uninst_u_hermes_path_markers",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "uninst_u_hermes_path_markers",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "uninst_u_hermes_path_markers",
+"value": "user@example.com"
+},
+{
+"op": "uninst_u_hermes_path_markers",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "uninst_u_hermes_path_markers",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "uninst_u_hermes_path_markers",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "uninst_u_hermes_path_markers",
+"value": "CamelCaseString"
+},
+{
+"op": "uninst_u_hermes_path_markers",
+"value": "12345"
+},
+{
+"op": "uninst_u_hermes_path_markers",
+"value": "  spaced  "
+},
+{
+"op": "uninst_u_hermes_path_markers",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "uninst_u_hermes_path_markers",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "uninst_u_hermes_path_markers",
+"value": "key:value;key2:value2"
+},
+{
+"op": "uninst_remove_path_from_windows_registry",
+"value": ""
+},
+{
+"op": "uninst_remove_path_from_windows_registry",
+"value": "x"
+},
+{
+"op": "uninst_remove_path_from_windows_registry",
+"value": "hello world"
+},
+{
+"op": "uninst_remove_path_from_windows_registry",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "uninst_remove_path_from_windows_registry",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "uninst_remove_path_from_windows_registry",
+"value": "user@example.com"
+},
+{
+"op": "uninst_remove_path_from_windows_registry",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "uninst_remove_path_from_windows_registry",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "uninst_remove_path_from_windows_registry",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "uninst_remove_path_from_windows_registry",
+"value": "CamelCaseString"
+},
+{
+"op": "uninst_remove_path_from_windows_registry",
+"value": "12345"
+},
+{
+"op": "uninst_remove_path_from_windows_registry",
+"value": "  spaced  "
+},
+{
+"op": "uninst_remove_path_from_windows_registry",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "uninst_remove_path_from_windows_registry",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "uninst_remove_path_from_windows_registry",
+"value": "key:value;key2:value2"
+},
+{
+"op": "uninst_remove_hermes_env_vars_windows",
+"value": ""
+},
+{
+"op": "uninst_remove_hermes_env_vars_windows",
+"value": "x"
+},
+{
+"op": "uninst_remove_hermes_env_vars_windows",
+"value": "hello world"
+},
+{
+"op": "uninst_remove_hermes_env_vars_windows",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "uninst_remove_hermes_env_vars_windows",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "uninst_remove_hermes_env_vars_windows",
+"value": "user@example.com"
+},
+{
+"op": "uninst_remove_hermes_env_vars_windows",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "uninst_remove_hermes_env_vars_windows",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "uninst_remove_hermes_env_vars_windows",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "uninst_remove_hermes_env_vars_windows",
+"value": "CamelCaseString"
+},
+{
+"op": "uninst_remove_hermes_env_vars_windows",
+"value": "12345"
+},
+{
+"op": "uninst_remove_hermes_env_vars_windows",
+"value": "  spaced  "
+},
+{
+"op": "uninst_remove_hermes_env_vars_windows",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "uninst_remove_hermes_env_vars_windows",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "uninst_remove_hermes_env_vars_windows",
+"value": "key:value;key2:value2"
+},
+{
+"op": "uninst_remove_portable_tooling_windows",
+"value": ""
+},
+{
+"op": "uninst_remove_portable_tooling_windows",
+"value": "x"
+},
+{
+"op": "uninst_remove_portable_tooling_windows",
+"value": "hello world"
+},
+{
+"op": "uninst_remove_portable_tooling_windows",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "uninst_remove_portable_tooling_windows",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "uninst_remove_portable_tooling_windows",
+"value": "user@example.com"
+},
+{
+"op": "uninst_remove_portable_tooling_windows",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "uninst_remove_portable_tooling_windows",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "uninst_remove_portable_tooling_windows",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "uninst_remove_portable_tooling_windows",
+"value": "CamelCaseString"
+},
+{
+"op": "uninst_remove_portable_tooling_windows",
+"value": "12345"
+},
+{
+"op": "uninst_remove_portable_tooling_windows",
+"value": "  spaced  "
+},
+{
+"op": "uninst_remove_portable_tooling_windows",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "uninst_remove_portable_tooling_windows",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "uninst_remove_portable_tooling_windows",
+"value": "key:value;key2:value2"
+},
+{
+"op": "uninst_u_is_default_hermes_home",
+"value": ""
+},
+{
+"op": "uninst_u_is_default_hermes_home",
+"value": "x"
+},
+{
+"op": "uninst_u_is_default_hermes_home",
+"value": "hello world"
+},
+{
+"op": "uninst_u_is_default_hermes_home",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "uninst_u_is_default_hermes_home",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "uninst_u_is_default_hermes_home",
+"value": "user@example.com"
+},
+{
+"op": "uninst_u_is_default_hermes_home",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "uninst_u_is_default_hermes_home",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "uninst_u_is_default_hermes_home",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "uninst_u_is_default_hermes_home",
+"value": "CamelCaseString"
+},
+{
+"op": "uninst_u_is_default_hermes_home",
+"value": "12345"
+},
+{
+"op": "uninst_u_is_default_hermes_home",
+"value": "  spaced  "
+},
+{
+"op": "uninst_u_is_default_hermes_home",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "uninst_u_is_default_hermes_home",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "uninst_u_is_default_hermes_home",
+"value": "key:value;key2:value2"
+},
+{
+"op": "uninst_u_discover_named_profiles",
+"value": ""
+},
+{
+"op": "uninst_u_discover_named_profiles",
+"value": "x"
+},
+{
+"op": "uninst_u_discover_named_profiles",
+"value": "hello world"
+},
+{
+"op": "uninst_u_discover_named_profiles",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "uninst_u_discover_named_profiles",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "uninst_u_discover_named_profiles",
+"value": "user@example.com"
+},
+{
+"op": "uninst_u_discover_named_profiles",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "uninst_u_discover_named_profiles",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "uninst_u_discover_named_profiles",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "uninst_u_discover_named_profiles",
+"value": "CamelCaseString"
+},
+{
+"op": "uninst_u_discover_named_profiles",
+"value": "12345"
+},
+{
+"op": "uninst_u_discover_named_profiles",
+"value": "  spaced  "
+},
+{
+"op": "uninst_u_discover_named_profiles",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "uninst_u_discover_named_profiles",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "uninst_u_discover_named_profiles",
+"value": "key:value;key2:value2"
+},
+{
+"op": "uninst_u_uninstall_profile",
+"value": ""
+},
+{
+"op": "uninst_u_uninstall_profile",
+"value": "x"
+},
+{
+"op": "uninst_u_uninstall_profile",
+"value": "hello world"
+},
+{
+"op": "uninst_u_uninstall_profile",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "uninst_u_uninstall_profile",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "uninst_u_uninstall_profile",
+"value": "user@example.com"
+},
+{
+"op": "uninst_u_uninstall_profile",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "uninst_u_uninstall_profile",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "uninst_u_uninstall_profile",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "uninst_u_uninstall_profile",
+"value": "CamelCaseString"
+},
+{
+"op": "uninst_u_uninstall_profile",
+"value": "12345"
+},
+{
+"op": "uninst_u_uninstall_profile",
+"value": "  spaced  "
+},
+{
+"op": "uninst_u_uninstall_profile",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "uninst_u_uninstall_profile",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "uninst_u_uninstall_profile",
+"value": "key:value;key2:value2"
+},
+{
+"op": "uninst_run_gui_uninstall",
+"value": ""
+},
+{
+"op": "uninst_run_gui_uninstall",
+"value": "x"
+},
+{
+"op": "uninst_run_gui_uninstall",
+"value": "hello world"
+},
+{
+"op": "uninst_run_gui_uninstall",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "uninst_run_gui_uninstall",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "uninst_run_gui_uninstall",
+"value": "user@example.com"
+},
+{
+"op": "uninst_run_gui_uninstall",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "uninst_run_gui_uninstall",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "uninst_run_gui_uninstall",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "uninst_run_gui_uninstall",
+"value": "CamelCaseString"
+},
+{
+"op": "uninst_run_gui_uninstall",
+"value": "12345"
+},
+{
+"op": "uninst_run_gui_uninstall",
+"value": "  spaced  "
+},
+{
+"op": "uninst_run_gui_uninstall",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "uninst_run_gui_uninstall",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "uninst_run_gui_uninstall",
+"value": "key:value;key2:value2"
+},
+{
+"op": "uninst_run_uninstall",
+"value": ""
+},
+{
+"op": "uninst_run_uninstall",
+"value": "x"
+},
+{
+"op": "uninst_run_uninstall",
+"value": "hello world"
+},
+{
+"op": "uninst_run_uninstall",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "uninst_run_uninstall",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "uninst_run_uninstall",
+"value": "user@example.com"
+},
+{
+"op": "uninst_run_uninstall",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "uninst_run_uninstall",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "uninst_run_uninstall",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "uninst_run_uninstall",
+"value": "CamelCaseString"
+},
+{
+"op": "uninst_run_uninstall",
+"value": "12345"
+},
+{
+"op": "uninst_run_uninstall",
+"value": "  spaced  "
+},
+{
+"op": "uninst_run_uninstall",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "uninst_run_uninstall",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "uninst_run_uninstall",
+"value": "key:value;key2:value2"
+},
+{
+"op": "uninst_u_print_uninstall_dry_run",
+"value": ""
+},
+{
+"op": "uninst_u_print_uninstall_dry_run",
+"value": "x"
+},
+{
+"op": "uninst_u_print_uninstall_dry_run",
+"value": "hello world"
+},
+{
+"op": "uninst_u_print_uninstall_dry_run",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "uninst_u_print_uninstall_dry_run",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "uninst_u_print_uninstall_dry_run",
+"value": "user@example.com"
+},
+{
+"op": "uninst_u_print_uninstall_dry_run",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "uninst_u_print_uninstall_dry_run",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "uninst_u_print_uninstall_dry_run",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "uninst_u_print_uninstall_dry_run",
+"value": "CamelCaseString"
+},
+{
+"op": "uninst_u_print_uninstall_dry_run",
+"value": "12345"
+},
+{
+"op": "uninst_u_print_uninstall_dry_run",
+"value": "  spaced  "
+},
+{
+"op": "uninst_u_print_uninstall_dry_run",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "uninst_u_print_uninstall_dry_run",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "uninst_u_print_uninstall_dry_run",
+"value": "key:value;key2:value2"
+},
+{
+"op": "uninst_u_perform_uninstall",
+"value": ""
+},
+{
+"op": "uninst_u_perform_uninstall",
+"value": "x"
+},
+{
+"op": "uninst_u_perform_uninstall",
+"value": "hello world"
+},
+{
+"op": "uninst_u_perform_uninstall",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "uninst_u_perform_uninstall",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "uninst_u_perform_uninstall",
+"value": "user@example.com"
+},
+{
+"op": "uninst_u_perform_uninstall",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "uninst_u_perform_uninstall",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "uninst_u_perform_uninstall",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "uninst_u_perform_uninstall",
+"value": "CamelCaseString"
+},
+{
+"op": "uninst_u_perform_uninstall",
+"value": "12345"
+},
+{
+"op": "uninst_u_perform_uninstall",
+"value": "  spaced  "
+},
+{
+"op": "uninst_u_perform_uninstall",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "uninst_u_perform_uninstall",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "uninst_u_perform_uninstall",
+"value": "key:value;key2:value2"
+}
+]

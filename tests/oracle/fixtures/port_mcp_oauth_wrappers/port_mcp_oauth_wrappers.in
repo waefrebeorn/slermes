@@ -1,0 +1,2102 @@
+[
+{
+"op": "mcpo_u_get_token_dir",
+"value": ""
+},
+{
+"op": "mcpo_u_get_token_dir",
+"value": "x"
+},
+{
+"op": "mcpo_u_get_token_dir",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_get_token_dir",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_get_token_dir",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_get_token_dir",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_get_token_dir",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_get_token_dir",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_get_token_dir",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_get_token_dir",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_get_token_dir",
+"value": "12345"
+},
+{
+"op": "mcpo_u_get_token_dir",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_get_token_dir",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_get_token_dir",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_get_token_dir",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_u_safe_filename",
+"value": ""
+},
+{
+"op": "mcpo_u_safe_filename",
+"value": "x"
+},
+{
+"op": "mcpo_u_safe_filename",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_safe_filename",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_safe_filename",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_safe_filename",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_safe_filename",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_safe_filename",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_safe_filename",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_safe_filename",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_safe_filename",
+"value": "12345"
+},
+{
+"op": "mcpo_u_safe_filename",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_safe_filename",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_safe_filename",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_safe_filename",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_u_find_free_port",
+"value": ""
+},
+{
+"op": "mcpo_u_find_free_port",
+"value": "x"
+},
+{
+"op": "mcpo_u_find_free_port",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_find_free_port",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_find_free_port",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_find_free_port",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_find_free_port",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_find_free_port",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_find_free_port",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_find_free_port",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_find_free_port",
+"value": "12345"
+},
+{
+"op": "mcpo_u_find_free_port",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_find_free_port",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_find_free_port",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_find_free_port",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_u_reserve_callback_port",
+"value": ""
+},
+{
+"op": "mcpo_u_reserve_callback_port",
+"value": "x"
+},
+{
+"op": "mcpo_u_reserve_callback_port",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_reserve_callback_port",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_reserve_callback_port",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_reserve_callback_port",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_reserve_callback_port",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_reserve_callback_port",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_reserve_callback_port",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_reserve_callback_port",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_reserve_callback_port",
+"value": "12345"
+},
+{
+"op": "mcpo_u_reserve_callback_port",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_reserve_callback_port",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_reserve_callback_port",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_reserve_callback_port",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_u_cached_redirect_port",
+"value": ""
+},
+{
+"op": "mcpo_u_cached_redirect_port",
+"value": "x"
+},
+{
+"op": "mcpo_u_cached_redirect_port",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_cached_redirect_port",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_cached_redirect_port",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_cached_redirect_port",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_cached_redirect_port",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_cached_redirect_port",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_cached_redirect_port",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_cached_redirect_port",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_cached_redirect_port",
+"value": "12345"
+},
+{
+"op": "mcpo_u_cached_redirect_port",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_cached_redirect_port",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_cached_redirect_port",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_cached_redirect_port",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_u_cached_redirect_uri",
+"value": ""
+},
+{
+"op": "mcpo_u_cached_redirect_uri",
+"value": "x"
+},
+{
+"op": "mcpo_u_cached_redirect_uri",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_cached_redirect_uri",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_cached_redirect_uri",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_cached_redirect_uri",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_cached_redirect_uri",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_cached_redirect_uri",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_cached_redirect_uri",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_cached_redirect_uri",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_cached_redirect_uri",
+"value": "12345"
+},
+{
+"op": "mcpo_u_cached_redirect_uri",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_cached_redirect_uri",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_cached_redirect_uri",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_cached_redirect_uri",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_u_is_interactive",
+"value": ""
+},
+{
+"op": "mcpo_u_is_interactive",
+"value": "x"
+},
+{
+"op": "mcpo_u_is_interactive",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_is_interactive",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_is_interactive",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_is_interactive",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_is_interactive",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_is_interactive",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_is_interactive",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_is_interactive",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_is_interactive",
+"value": "12345"
+},
+{
+"op": "mcpo_u_is_interactive",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_is_interactive",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_is_interactive",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_is_interactive",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_u_raise_if_non_interactive",
+"value": ""
+},
+{
+"op": "mcpo_u_raise_if_non_interactive",
+"value": "x"
+},
+{
+"op": "mcpo_u_raise_if_non_interactive",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_raise_if_non_interactive",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_raise_if_non_interactive",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_raise_if_non_interactive",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_raise_if_non_interactive",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_raise_if_non_interactive",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_raise_if_non_interactive",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_raise_if_non_interactive",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_raise_if_non_interactive",
+"value": "12345"
+},
+{
+"op": "mcpo_u_raise_if_non_interactive",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_raise_if_non_interactive",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_raise_if_non_interactive",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_raise_if_non_interactive",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_force_interactive_oauth",
+"value": ""
+},
+{
+"op": "mcpo_force_interactive_oauth",
+"value": "x"
+},
+{
+"op": "mcpo_force_interactive_oauth",
+"value": "hello world"
+},
+{
+"op": "mcpo_force_interactive_oauth",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_force_interactive_oauth",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_force_interactive_oauth",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_force_interactive_oauth",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_force_interactive_oauth",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_force_interactive_oauth",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_force_interactive_oauth",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_force_interactive_oauth",
+"value": "12345"
+},
+{
+"op": "mcpo_force_interactive_oauth",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_force_interactive_oauth",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_force_interactive_oauth",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_force_interactive_oauth",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_suppress_interactive_oauth",
+"value": ""
+},
+{
+"op": "mcpo_suppress_interactive_oauth",
+"value": "x"
+},
+{
+"op": "mcpo_suppress_interactive_oauth",
+"value": "hello world"
+},
+{
+"op": "mcpo_suppress_interactive_oauth",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_suppress_interactive_oauth",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_suppress_interactive_oauth",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_suppress_interactive_oauth",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_suppress_interactive_oauth",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_suppress_interactive_oauth",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_suppress_interactive_oauth",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_suppress_interactive_oauth",
+"value": "12345"
+},
+{
+"op": "mcpo_suppress_interactive_oauth",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_suppress_interactive_oauth",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_suppress_interactive_oauth",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_suppress_interactive_oauth",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_u_can_open_browser",
+"value": ""
+},
+{
+"op": "mcpo_u_can_open_browser",
+"value": "x"
+},
+{
+"op": "mcpo_u_can_open_browser",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_can_open_browser",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_can_open_browser",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_can_open_browser",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_can_open_browser",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_can_open_browser",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_can_open_browser",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_can_open_browser",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_can_open_browser",
+"value": "12345"
+},
+{
+"op": "mcpo_u_can_open_browser",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_can_open_browser",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_can_open_browser",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_can_open_browser",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_u_read_json",
+"value": ""
+},
+{
+"op": "mcpo_u_read_json",
+"value": "x"
+},
+{
+"op": "mcpo_u_read_json",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_read_json",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_read_json",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_read_json",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_read_json",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_read_json",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_read_json",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_read_json",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_read_json",
+"value": "12345"
+},
+{
+"op": "mcpo_u_read_json",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_read_json",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_read_json",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_read_json",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_u_write_json",
+"value": ""
+},
+{
+"op": "mcpo_u_write_json",
+"value": "x"
+},
+{
+"op": "mcpo_u_write_json",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_write_json",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_write_json",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_write_json",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_write_json",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_write_json",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_write_json",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_write_json",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_write_json",
+"value": "12345"
+},
+{
+"op": "mcpo_u_write_json",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_write_json",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_write_json",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_write_json",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_u_tokens_path",
+"value": ""
+},
+{
+"op": "mcpo_u_tokens_path",
+"value": "x"
+},
+{
+"op": "mcpo_u_tokens_path",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_tokens_path",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_tokens_path",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_tokens_path",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_tokens_path",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_tokens_path",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_tokens_path",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_tokens_path",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_tokens_path",
+"value": "12345"
+},
+{
+"op": "mcpo_u_tokens_path",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_tokens_path",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_tokens_path",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_tokens_path",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_u_client_info_path",
+"value": ""
+},
+{
+"op": "mcpo_u_client_info_path",
+"value": "x"
+},
+{
+"op": "mcpo_u_client_info_path",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_client_info_path",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_client_info_path",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_client_info_path",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_client_info_path",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_client_info_path",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_client_info_path",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_client_info_path",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_client_info_path",
+"value": "12345"
+},
+{
+"op": "mcpo_u_client_info_path",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_client_info_path",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_client_info_path",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_client_info_path",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_u_meta_path",
+"value": ""
+},
+{
+"op": "mcpo_u_meta_path",
+"value": "x"
+},
+{
+"op": "mcpo_u_meta_path",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_meta_path",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_meta_path",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_meta_path",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_meta_path",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_meta_path",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_meta_path",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_meta_path",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_meta_path",
+"value": "12345"
+},
+{
+"op": "mcpo_u_meta_path",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_meta_path",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_meta_path",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_meta_path",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_get_tokens",
+"value": ""
+},
+{
+"op": "mcpo_get_tokens",
+"value": "x"
+},
+{
+"op": "mcpo_get_tokens",
+"value": "hello world"
+},
+{
+"op": "mcpo_get_tokens",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_get_tokens",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_get_tokens",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_get_tokens",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_get_tokens",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_get_tokens",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_get_tokens",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_get_tokens",
+"value": "12345"
+},
+{
+"op": "mcpo_get_tokens",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_get_tokens",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_get_tokens",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_get_tokens",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_set_tokens",
+"value": ""
+},
+{
+"op": "mcpo_set_tokens",
+"value": "x"
+},
+{
+"op": "mcpo_set_tokens",
+"value": "hello world"
+},
+{
+"op": "mcpo_set_tokens",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_set_tokens",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_set_tokens",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_set_tokens",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_set_tokens",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_set_tokens",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_set_tokens",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_set_tokens",
+"value": "12345"
+},
+{
+"op": "mcpo_set_tokens",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_set_tokens",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_set_tokens",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_set_tokens",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_get_client_info",
+"value": ""
+},
+{
+"op": "mcpo_get_client_info",
+"value": "x"
+},
+{
+"op": "mcpo_get_client_info",
+"value": "hello world"
+},
+{
+"op": "mcpo_get_client_info",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_get_client_info",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_get_client_info",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_get_client_info",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_get_client_info",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_get_client_info",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_get_client_info",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_get_client_info",
+"value": "12345"
+},
+{
+"op": "mcpo_get_client_info",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_get_client_info",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_get_client_info",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_get_client_info",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_set_client_info",
+"value": ""
+},
+{
+"op": "mcpo_set_client_info",
+"value": "x"
+},
+{
+"op": "mcpo_set_client_info",
+"value": "hello world"
+},
+{
+"op": "mcpo_set_client_info",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_set_client_info",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_set_client_info",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_set_client_info",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_set_client_info",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_set_client_info",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_set_client_info",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_set_client_info",
+"value": "12345"
+},
+{
+"op": "mcpo_set_client_info",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_set_client_info",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_set_client_info",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_set_client_info",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_save_oauth_metadata",
+"value": ""
+},
+{
+"op": "mcpo_save_oauth_metadata",
+"value": "x"
+},
+{
+"op": "mcpo_save_oauth_metadata",
+"value": "hello world"
+},
+{
+"op": "mcpo_save_oauth_metadata",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_save_oauth_metadata",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_save_oauth_metadata",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_save_oauth_metadata",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_save_oauth_metadata",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_save_oauth_metadata",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_save_oauth_metadata",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_save_oauth_metadata",
+"value": "12345"
+},
+{
+"op": "mcpo_save_oauth_metadata",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_save_oauth_metadata",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_save_oauth_metadata",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_save_oauth_metadata",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_load_oauth_metadata",
+"value": ""
+},
+{
+"op": "mcpo_load_oauth_metadata",
+"value": "x"
+},
+{
+"op": "mcpo_load_oauth_metadata",
+"value": "hello world"
+},
+{
+"op": "mcpo_load_oauth_metadata",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_load_oauth_metadata",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_load_oauth_metadata",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_load_oauth_metadata",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_load_oauth_metadata",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_load_oauth_metadata",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_load_oauth_metadata",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_load_oauth_metadata",
+"value": "12345"
+},
+{
+"op": "mcpo_load_oauth_metadata",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_load_oauth_metadata",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_load_oauth_metadata",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_load_oauth_metadata",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_poison_client_registration",
+"value": ""
+},
+{
+"op": "mcpo_poison_client_registration",
+"value": "x"
+},
+{
+"op": "mcpo_poison_client_registration",
+"value": "hello world"
+},
+{
+"op": "mcpo_poison_client_registration",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_poison_client_registration",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_poison_client_registration",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_poison_client_registration",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_poison_client_registration",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_poison_client_registration",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_poison_client_registration",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_poison_client_registration",
+"value": "12345"
+},
+{
+"op": "mcpo_poison_client_registration",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_poison_client_registration",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_poison_client_registration",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_poison_client_registration",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_has_cached_tokens",
+"value": ""
+},
+{
+"op": "mcpo_has_cached_tokens",
+"value": "x"
+},
+{
+"op": "mcpo_has_cached_tokens",
+"value": "hello world"
+},
+{
+"op": "mcpo_has_cached_tokens",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_has_cached_tokens",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_has_cached_tokens",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_has_cached_tokens",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_has_cached_tokens",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_has_cached_tokens",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_has_cached_tokens",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_has_cached_tokens",
+"value": "12345"
+},
+{
+"op": "mcpo_has_cached_tokens",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_has_cached_tokens",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_has_cached_tokens",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_has_cached_tokens",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_u_make_callback_handler",
+"value": ""
+},
+{
+"op": "mcpo_u_make_callback_handler",
+"value": "x"
+},
+{
+"op": "mcpo_u_make_callback_handler",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_make_callback_handler",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_make_callback_handler",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_make_callback_handler",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_make_callback_handler",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_make_callback_handler",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_make_callback_handler",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_make_callback_handler",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_make_callback_handler",
+"value": "12345"
+},
+{
+"op": "mcpo_u_make_callback_handler",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_make_callback_handler",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_make_callback_handler",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_make_callback_handler",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_u_make_redirect_handler",
+"value": ""
+},
+{
+"op": "mcpo_u_make_redirect_handler",
+"value": "x"
+},
+{
+"op": "mcpo_u_make_redirect_handler",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_make_redirect_handler",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_make_redirect_handler",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_make_redirect_handler",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_make_redirect_handler",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_make_redirect_handler",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_make_redirect_handler",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_make_redirect_handler",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_make_redirect_handler",
+"value": "12345"
+},
+{
+"op": "mcpo_u_make_redirect_handler",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_make_redirect_handler",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_make_redirect_handler",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_make_redirect_handler",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_u_wait_for_callback",
+"value": ""
+},
+{
+"op": "mcpo_u_wait_for_callback",
+"value": "x"
+},
+{
+"op": "mcpo_u_wait_for_callback",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_wait_for_callback",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_wait_for_callback",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_wait_for_callback",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_wait_for_callback",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_wait_for_callback",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_wait_for_callback",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_wait_for_callback",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_wait_for_callback",
+"value": "12345"
+},
+{
+"op": "mcpo_u_wait_for_callback",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_wait_for_callback",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_wait_for_callback",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_wait_for_callback",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_u_make_callback_waiter",
+"value": ""
+},
+{
+"op": "mcpo_u_make_callback_waiter",
+"value": "x"
+},
+{
+"op": "mcpo_u_make_callback_waiter",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_make_callback_waiter",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_make_callback_waiter",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_make_callback_waiter",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_make_callback_waiter",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_make_callback_waiter",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_make_callback_waiter",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_make_callback_waiter",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_make_callback_waiter",
+"value": "12345"
+},
+{
+"op": "mcpo_u_make_callback_waiter",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_make_callback_waiter",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_make_callback_waiter",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_make_callback_waiter",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_u_paste_callback_reader",
+"value": ""
+},
+{
+"op": "mcpo_u_paste_callback_reader",
+"value": "x"
+},
+{
+"op": "mcpo_u_paste_callback_reader",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_paste_callback_reader",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_paste_callback_reader",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_paste_callback_reader",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_paste_callback_reader",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_paste_callback_reader",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_paste_callback_reader",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_paste_callback_reader",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_paste_callback_reader",
+"value": "12345"
+},
+{
+"op": "mcpo_u_paste_callback_reader",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_paste_callback_reader",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_paste_callback_reader",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_paste_callback_reader",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_remove_oauth_tokens",
+"value": ""
+},
+{
+"op": "mcpo_remove_oauth_tokens",
+"value": "x"
+},
+{
+"op": "mcpo_remove_oauth_tokens",
+"value": "hello world"
+},
+{
+"op": "mcpo_remove_oauth_tokens",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_remove_oauth_tokens",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_remove_oauth_tokens",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_remove_oauth_tokens",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_remove_oauth_tokens",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_remove_oauth_tokens",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_remove_oauth_tokens",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_remove_oauth_tokens",
+"value": "12345"
+},
+{
+"op": "mcpo_remove_oauth_tokens",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_remove_oauth_tokens",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_remove_oauth_tokens",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_remove_oauth_tokens",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_u_configure_callback_port",
+"value": ""
+},
+{
+"op": "mcpo_u_configure_callback_port",
+"value": "x"
+},
+{
+"op": "mcpo_u_configure_callback_port",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_configure_callback_port",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_configure_callback_port",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_configure_callback_port",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_configure_callback_port",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_configure_callback_port",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_configure_callback_port",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_configure_callback_port",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_configure_callback_port",
+"value": "12345"
+},
+{
+"op": "mcpo_u_configure_callback_port",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_configure_callback_port",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_configure_callback_port",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_configure_callback_port",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_u_resolve_redirect_uri",
+"value": ""
+},
+{
+"op": "mcpo_u_resolve_redirect_uri",
+"value": "x"
+},
+{
+"op": "mcpo_u_resolve_redirect_uri",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_resolve_redirect_uri",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_resolve_redirect_uri",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_resolve_redirect_uri",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_resolve_redirect_uri",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_resolve_redirect_uri",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_resolve_redirect_uri",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_resolve_redirect_uri",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_resolve_redirect_uri",
+"value": "12345"
+},
+{
+"op": "mcpo_u_resolve_redirect_uri",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_resolve_redirect_uri",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_resolve_redirect_uri",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_resolve_redirect_uri",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_u_build_client_metadata",
+"value": ""
+},
+{
+"op": "mcpo_u_build_client_metadata",
+"value": "x"
+},
+{
+"op": "mcpo_u_build_client_metadata",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_build_client_metadata",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_build_client_metadata",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_build_client_metadata",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_build_client_metadata",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_build_client_metadata",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_build_client_metadata",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_build_client_metadata",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_build_client_metadata",
+"value": "12345"
+},
+{
+"op": "mcpo_u_build_client_metadata",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_build_client_metadata",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_build_client_metadata",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_build_client_metadata",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_u_maybe_preregister_client",
+"value": ""
+},
+{
+"op": "mcpo_u_maybe_preregister_client",
+"value": "x"
+},
+{
+"op": "mcpo_u_maybe_preregister_client",
+"value": "hello world"
+},
+{
+"op": "mcpo_u_maybe_preregister_client",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_u_maybe_preregister_client",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_u_maybe_preregister_client",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_u_maybe_preregister_client",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_u_maybe_preregister_client",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_u_maybe_preregister_client",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_u_maybe_preregister_client",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_u_maybe_preregister_client",
+"value": "12345"
+},
+{
+"op": "mcpo_u_maybe_preregister_client",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_u_maybe_preregister_client",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_u_maybe_preregister_client",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_u_maybe_preregister_client",
+"value": "key:value;key2:value2"
+},
+{
+"op": "mcpo_build_oauth_auth",
+"value": ""
+},
+{
+"op": "mcpo_build_oauth_auth",
+"value": "x"
+},
+{
+"op": "mcpo_build_oauth_auth",
+"value": "hello world"
+},
+{
+"op": "mcpo_build_oauth_auth",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "mcpo_build_oauth_auth",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "mcpo_build_oauth_auth",
+"value": "user@example.com"
+},
+{
+"op": "mcpo_build_oauth_auth",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "mcpo_build_oauth_auth",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "mcpo_build_oauth_auth",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "mcpo_build_oauth_auth",
+"value": "CamelCaseString"
+},
+{
+"op": "mcpo_build_oauth_auth",
+"value": "12345"
+},
+{
+"op": "mcpo_build_oauth_auth",
+"value": "  spaced  "
+},
+{
+"op": "mcpo_build_oauth_auth",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "mcpo_build_oauth_auth",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "mcpo_build_oauth_auth",
+"value": "key:value;key2:value2"
+}
+]

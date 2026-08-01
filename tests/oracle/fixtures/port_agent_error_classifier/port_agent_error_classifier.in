@@ -1,0 +1,122 @@
+[
+{
+"op": "cli_agent_error_classifier_is_auth",
+"value": ""
+},
+{
+"op": "cli_agent_error_classifier_is_auth",
+"value": "x"
+},
+{
+"op": "cli_agent_error_classifier_is_auth",
+"value": "hello world"
+},
+{
+"op": "cli_agent_error_classifier_is_auth",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_agent_error_classifier_is_auth",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cli_agent_error_classifier_is_auth",
+"value": "user@example.com"
+},
+{
+"op": "cli_agent_error_classifier_is_auth",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_agent_error_classifier_is_auth",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cli_agent_error_classifier_is_auth",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cli_agent_error_classifier_is_auth",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_agent_error_classifier_is_auth",
+"value": "12345"
+},
+{
+"op": "cli_agent_error_classifier_is_auth",
+"value": "  spaced  "
+},
+{
+"op": "cli_agent_error_classifier_is_auth",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cli_agent_error_classifier_is_auth",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_agent_error_classifier_is_auth",
+"value": "key:value;key2:value2"
+},
+{
+"op": "cli_agent_error_classifier__extract_status_code",
+"value": ""
+},
+{
+"op": "cli_agent_error_classifier__extract_status_code",
+"value": "x"
+},
+{
+"op": "cli_agent_error_classifier__extract_status_code",
+"value": "hello world"
+},
+{
+"op": "cli_agent_error_classifier__extract_status_code",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_agent_error_classifier__extract_status_code",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cli_agent_error_classifier__extract_status_code",
+"value": "user@example.com"
+},
+{
+"op": "cli_agent_error_classifier__extract_status_code",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_agent_error_classifier__extract_status_code",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cli_agent_error_classifier__extract_status_code",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cli_agent_error_classifier__extract_status_code",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_agent_error_classifier__extract_status_code",
+"value": "12345"
+},
+{
+"op": "cli_agent_error_classifier__extract_status_code",
+"value": "  spaced  "
+},
+{
+"op": "cli_agent_error_classifier__extract_status_code",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cli_agent_error_classifier__extract_status_code",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_agent_error_classifier__extract_status_code",
+"value": "key:value;key2:value2"
+}
+]

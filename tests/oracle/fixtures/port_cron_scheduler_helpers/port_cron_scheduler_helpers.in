@@ -1,0 +1,62 @@
+[
+{
+"op": "scheduler_is_cron_silence_response",
+"value": ""
+},
+{
+"op": "scheduler_is_cron_silence_response",
+"value": "x"
+},
+{
+"op": "scheduler_is_cron_silence_response",
+"value": "hello world"
+},
+{
+"op": "scheduler_is_cron_silence_response",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "scheduler_is_cron_silence_response",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "scheduler_is_cron_silence_response",
+"value": "user@example.com"
+},
+{
+"op": "scheduler_is_cron_silence_response",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "scheduler_is_cron_silence_response",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "scheduler_is_cron_silence_response",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "scheduler_is_cron_silence_response",
+"value": "CamelCaseString"
+},
+{
+"op": "scheduler_is_cron_silence_response",
+"value": "12345"
+},
+{
+"op": "scheduler_is_cron_silence_response",
+"value": "  spaced  "
+},
+{
+"op": "scheduler_is_cron_silence_response",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "scheduler_is_cron_silence_response",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "scheduler_is_cron_silence_response",
+"value": "key:value;key2:value2"
+}
+]

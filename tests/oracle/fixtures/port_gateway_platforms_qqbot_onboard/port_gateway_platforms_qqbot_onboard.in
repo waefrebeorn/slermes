@@ -1,0 +1,62 @@
+[
+{
+"op": "qqbot_onboard__render_qr",
+"value": ""
+},
+{
+"op": "qqbot_onboard__render_qr",
+"value": "x"
+},
+{
+"op": "qqbot_onboard__render_qr",
+"value": "hello world"
+},
+{
+"op": "qqbot_onboard__render_qr",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "qqbot_onboard__render_qr",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "qqbot_onboard__render_qr",
+"value": "user@example.com"
+},
+{
+"op": "qqbot_onboard__render_qr",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "qqbot_onboard__render_qr",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "qqbot_onboard__render_qr",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "qqbot_onboard__render_qr",
+"value": "CamelCaseString"
+},
+{
+"op": "qqbot_onboard__render_qr",
+"value": "12345"
+},
+{
+"op": "qqbot_onboard__render_qr",
+"value": "  spaced  "
+},
+{
+"op": "qqbot_onboard__render_qr",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "qqbot_onboard__render_qr",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "qqbot_onboard__render_qr",
+"value": "key:value;key2:value2"
+}
+]

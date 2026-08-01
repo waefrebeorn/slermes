@@ -1,0 +1,62 @@
+[
+{
+"op": "agent_ssl_verify_coerce_insecure",
+"value": ""
+},
+{
+"op": "agent_ssl_verify_coerce_insecure",
+"value": "x"
+},
+{
+"op": "agent_ssl_verify_coerce_insecure",
+"value": "hello world"
+},
+{
+"op": "agent_ssl_verify_coerce_insecure",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "agent_ssl_verify_coerce_insecure",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "agent_ssl_verify_coerce_insecure",
+"value": "user@example.com"
+},
+{
+"op": "agent_ssl_verify_coerce_insecure",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "agent_ssl_verify_coerce_insecure",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "agent_ssl_verify_coerce_insecure",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "agent_ssl_verify_coerce_insecure",
+"value": "CamelCaseString"
+},
+{
+"op": "agent_ssl_verify_coerce_insecure",
+"value": "12345"
+},
+{
+"op": "agent_ssl_verify_coerce_insecure",
+"value": "  spaced  "
+},
+{
+"op": "agent_ssl_verify_coerce_insecure",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "agent_ssl_verify_coerce_insecure",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "agent_ssl_verify_coerce_insecure",
+"value": "key:value;key2:value2"
+}
+]

@@ -1,0 +1,62 @@
+[
+{
+"op": "cli_agent_display__is_shell_boundary_echo",
+"value": ""
+},
+{
+"op": "cli_agent_display__is_shell_boundary_echo",
+"value": "x"
+},
+{
+"op": "cli_agent_display__is_shell_boundary_echo",
+"value": "hello world"
+},
+{
+"op": "cli_agent_display__is_shell_boundary_echo",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_agent_display__is_shell_boundary_echo",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cli_agent_display__is_shell_boundary_echo",
+"value": "user@example.com"
+},
+{
+"op": "cli_agent_display__is_shell_boundary_echo",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_agent_display__is_shell_boundary_echo",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cli_agent_display__is_shell_boundary_echo",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cli_agent_display__is_shell_boundary_echo",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_agent_display__is_shell_boundary_echo",
+"value": "12345"
+},
+{
+"op": "cli_agent_display__is_shell_boundary_echo",
+"value": "  spaced  "
+},
+{
+"op": "cli_agent_display__is_shell_boundary_echo",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cli_agent_display__is_shell_boundary_echo",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_agent_display__is_shell_boundary_echo",
+"value": "key:value;key2:value2"
+}
+]

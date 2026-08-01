@@ -1,0 +1,122 @@
+[
+{
+"op": "cli_agent_web_search_provider_supports_search",
+"value": ""
+},
+{
+"op": "cli_agent_web_search_provider_supports_search",
+"value": "x"
+},
+{
+"op": "cli_agent_web_search_provider_supports_search",
+"value": "hello world"
+},
+{
+"op": "cli_agent_web_search_provider_supports_search",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_agent_web_search_provider_supports_search",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cli_agent_web_search_provider_supports_search",
+"value": "user@example.com"
+},
+{
+"op": "cli_agent_web_search_provider_supports_search",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_agent_web_search_provider_supports_search",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cli_agent_web_search_provider_supports_search",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cli_agent_web_search_provider_supports_search",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_agent_web_search_provider_supports_search",
+"value": "12345"
+},
+{
+"op": "cli_agent_web_search_provider_supports_search",
+"value": "  spaced  "
+},
+{
+"op": "cli_agent_web_search_provider_supports_search",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cli_agent_web_search_provider_supports_search",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_agent_web_search_provider_supports_search",
+"value": "key:value;key2:value2"
+},
+{
+"op": "cli_agent_web_search_provider_supports_extract",
+"value": ""
+},
+{
+"op": "cli_agent_web_search_provider_supports_extract",
+"value": "x"
+},
+{
+"op": "cli_agent_web_search_provider_supports_extract",
+"value": "hello world"
+},
+{
+"op": "cli_agent_web_search_provider_supports_extract",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_agent_web_search_provider_supports_extract",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cli_agent_web_search_provider_supports_extract",
+"value": "user@example.com"
+},
+{
+"op": "cli_agent_web_search_provider_supports_extract",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_agent_web_search_provider_supports_extract",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cli_agent_web_search_provider_supports_extract",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cli_agent_web_search_provider_supports_extract",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_agent_web_search_provider_supports_extract",
+"value": "12345"
+},
+{
+"op": "cli_agent_web_search_provider_supports_extract",
+"value": "  spaced  "
+},
+{
+"op": "cli_agent_web_search_provider_supports_extract",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cli_agent_web_search_provider_supports_extract",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_agent_web_search_provider_supports_extract",
+"value": "key:value;key2:value2"
+}
+]

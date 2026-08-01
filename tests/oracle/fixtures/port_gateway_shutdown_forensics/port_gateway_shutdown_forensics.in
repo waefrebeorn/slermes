@@ -1,0 +1,62 @@
+[
+{
+"op": "cli_gateway_shutdown_forensics__parse_systemd_duration_to_us",
+"value": ""
+},
+{
+"op": "cli_gateway_shutdown_forensics__parse_systemd_duration_to_us",
+"value": "x"
+},
+{
+"op": "cli_gateway_shutdown_forensics__parse_systemd_duration_to_us",
+"value": "hello world"
+},
+{
+"op": "cli_gateway_shutdown_forensics__parse_systemd_duration_to_us",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_gateway_shutdown_forensics__parse_systemd_duration_to_us",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cli_gateway_shutdown_forensics__parse_systemd_duration_to_us",
+"value": "user@example.com"
+},
+{
+"op": "cli_gateway_shutdown_forensics__parse_systemd_duration_to_us",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_gateway_shutdown_forensics__parse_systemd_duration_to_us",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cli_gateway_shutdown_forensics__parse_systemd_duration_to_us",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cli_gateway_shutdown_forensics__parse_systemd_duration_to_us",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_gateway_shutdown_forensics__parse_systemd_duration_to_us",
+"value": "12345"
+},
+{
+"op": "cli_gateway_shutdown_forensics__parse_systemd_duration_to_us",
+"value": "  spaced  "
+},
+{
+"op": "cli_gateway_shutdown_forensics__parse_systemd_duration_to_us",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cli_gateway_shutdown_forensics__parse_systemd_duration_to_us",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_gateway_shutdown_forensics__parse_systemd_duration_to_us",
+"value": "key:value;key2:value2"
+}
+]

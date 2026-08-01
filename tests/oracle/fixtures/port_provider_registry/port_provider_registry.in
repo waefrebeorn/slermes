@@ -1,0 +1,122 @@
+[
+{
+"op": "provider_loopback_hostname",
+"value": ""
+},
+{
+"op": "provider_loopback_hostname",
+"value": "x"
+},
+{
+"op": "provider_loopback_hostname",
+"value": "hello world"
+},
+{
+"op": "provider_loopback_hostname",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "provider_loopback_hostname",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "provider_loopback_hostname",
+"value": "user@example.com"
+},
+{
+"op": "provider_loopback_hostname",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "provider_loopback_hostname",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "provider_loopback_hostname",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "provider_loopback_hostname",
+"value": "CamelCaseString"
+},
+{
+"op": "provider_loopback_hostname",
+"value": "12345"
+},
+{
+"op": "provider_loopback_hostname",
+"value": "  spaced  "
+},
+{
+"op": "provider_loopback_hostname",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "provider_loopback_hostname",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "provider_loopback_hostname",
+"value": "key:value;key2:value2"
+},
+{
+"op": "provider_anthropic_base_url_override_ok",
+"value": ""
+},
+{
+"op": "provider_anthropic_base_url_override_ok",
+"value": "x"
+},
+{
+"op": "provider_anthropic_base_url_override_ok",
+"value": "hello world"
+},
+{
+"op": "provider_anthropic_base_url_override_ok",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "provider_anthropic_base_url_override_ok",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "provider_anthropic_base_url_override_ok",
+"value": "user@example.com"
+},
+{
+"op": "provider_anthropic_base_url_override_ok",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "provider_anthropic_base_url_override_ok",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "provider_anthropic_base_url_override_ok",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "provider_anthropic_base_url_override_ok",
+"value": "CamelCaseString"
+},
+{
+"op": "provider_anthropic_base_url_override_ok",
+"value": "12345"
+},
+{
+"op": "provider_anthropic_base_url_override_ok",
+"value": "  spaced  "
+},
+{
+"op": "provider_anthropic_base_url_override_ok",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "provider_anthropic_base_url_override_ok",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "provider_anthropic_base_url_override_ok",
+"value": "key:value;key2:value2"
+}
+]

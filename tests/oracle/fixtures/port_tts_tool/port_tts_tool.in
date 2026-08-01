@@ -1,0 +1,182 @@
+[
+{
+"op": "tts_tool_is_command_provider_config",
+"value": ""
+},
+{
+"op": "tts_tool_is_command_provider_config",
+"value": "x"
+},
+{
+"op": "tts_tool_is_command_provider_config",
+"value": "hello world"
+},
+{
+"op": "tts_tool_is_command_provider_config",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "tts_tool_is_command_provider_config",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "tts_tool_is_command_provider_config",
+"value": "user@example.com"
+},
+{
+"op": "tts_tool_is_command_provider_config",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "tts_tool_is_command_provider_config",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "tts_tool_is_command_provider_config",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "tts_tool_is_command_provider_config",
+"value": "CamelCaseString"
+},
+{
+"op": "tts_tool_is_command_provider_config",
+"value": "12345"
+},
+{
+"op": "tts_tool_is_command_provider_config",
+"value": "  spaced  "
+},
+{
+"op": "tts_tool_is_command_provider_config",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "tts_tool_is_command_provider_config",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "tts_tool_is_command_provider_config",
+"value": "key:value;key2:value2"
+},
+{
+"op": "tts_tool_get_command_tts_timeout",
+"value": ""
+},
+{
+"op": "tts_tool_get_command_tts_timeout",
+"value": "x"
+},
+{
+"op": "tts_tool_get_command_tts_timeout",
+"value": "hello world"
+},
+{
+"op": "tts_tool_get_command_tts_timeout",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "tts_tool_get_command_tts_timeout",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "tts_tool_get_command_tts_timeout",
+"value": "user@example.com"
+},
+{
+"op": "tts_tool_get_command_tts_timeout",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "tts_tool_get_command_tts_timeout",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "tts_tool_get_command_tts_timeout",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "tts_tool_get_command_tts_timeout",
+"value": "CamelCaseString"
+},
+{
+"op": "tts_tool_get_command_tts_timeout",
+"value": "12345"
+},
+{
+"op": "tts_tool_get_command_tts_timeout",
+"value": "  spaced  "
+},
+{
+"op": "tts_tool_get_command_tts_timeout",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "tts_tool_get_command_tts_timeout",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "tts_tool_get_command_tts_timeout",
+"value": "key:value;key2:value2"
+},
+{
+"op": "tts_tool_stream_tts_to_speaker",
+"value": ""
+},
+{
+"op": "tts_tool_stream_tts_to_speaker",
+"value": "x"
+},
+{
+"op": "tts_tool_stream_tts_to_speaker",
+"value": "hello world"
+},
+{
+"op": "tts_tool_stream_tts_to_speaker",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "tts_tool_stream_tts_to_speaker",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "tts_tool_stream_tts_to_speaker",
+"value": "user@example.com"
+},
+{
+"op": "tts_tool_stream_tts_to_speaker",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "tts_tool_stream_tts_to_speaker",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "tts_tool_stream_tts_to_speaker",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "tts_tool_stream_tts_to_speaker",
+"value": "CamelCaseString"
+},
+{
+"op": "tts_tool_stream_tts_to_speaker",
+"value": "12345"
+},
+{
+"op": "tts_tool_stream_tts_to_speaker",
+"value": "  spaced  "
+},
+{
+"op": "tts_tool_stream_tts_to_speaker",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "tts_tool_stream_tts_to_speaker",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "tts_tool_stream_tts_to_speaker",
+"value": "key:value;key2:value2"
+}
+]

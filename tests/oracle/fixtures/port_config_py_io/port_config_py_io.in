@@ -1,0 +1,62 @@
+[
+{
+"op": "config_py_ensure_hermes_home_managed",
+"value": ""
+},
+{
+"op": "config_py_ensure_hermes_home_managed",
+"value": "x"
+},
+{
+"op": "config_py_ensure_hermes_home_managed",
+"value": "hello world"
+},
+{
+"op": "config_py_ensure_hermes_home_managed",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "config_py_ensure_hermes_home_managed",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "config_py_ensure_hermes_home_managed",
+"value": "user@example.com"
+},
+{
+"op": "config_py_ensure_hermes_home_managed",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "config_py_ensure_hermes_home_managed",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "config_py_ensure_hermes_home_managed",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "config_py_ensure_hermes_home_managed",
+"value": "CamelCaseString"
+},
+{
+"op": "config_py_ensure_hermes_home_managed",
+"value": "12345"
+},
+{
+"op": "config_py_ensure_hermes_home_managed",
+"value": "  spaced  "
+},
+{
+"op": "config_py_ensure_hermes_home_managed",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "config_py_ensure_hermes_home_managed",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "config_py_ensure_hermes_home_managed",
+"value": "key:value;key2:value2"
+}
+]

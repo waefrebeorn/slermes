@@ -1,0 +1,182 @@
+[
+{
+"op": "cli_tools_url_safety__is_blocked_ip",
+"value": ""
+},
+{
+"op": "cli_tools_url_safety__is_blocked_ip",
+"value": "x"
+},
+{
+"op": "cli_tools_url_safety__is_blocked_ip",
+"value": "hello world"
+},
+{
+"op": "cli_tools_url_safety__is_blocked_ip",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_tools_url_safety__is_blocked_ip",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cli_tools_url_safety__is_blocked_ip",
+"value": "user@example.com"
+},
+{
+"op": "cli_tools_url_safety__is_blocked_ip",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_tools_url_safety__is_blocked_ip",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cli_tools_url_safety__is_blocked_ip",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cli_tools_url_safety__is_blocked_ip",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_tools_url_safety__is_blocked_ip",
+"value": "12345"
+},
+{
+"op": "cli_tools_url_safety__is_blocked_ip",
+"value": "  spaced  "
+},
+{
+"op": "cli_tools_url_safety__is_blocked_ip",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cli_tools_url_safety__is_blocked_ip",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_tools_url_safety__is_blocked_ip",
+"value": "key:value;key2:value2"
+},
+{
+"op": "cli_tools_url_safety_is_always_blocked_url",
+"value": ""
+},
+{
+"op": "cli_tools_url_safety_is_always_blocked_url",
+"value": "x"
+},
+{
+"op": "cli_tools_url_safety_is_always_blocked_url",
+"value": "hello world"
+},
+{
+"op": "cli_tools_url_safety_is_always_blocked_url",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_tools_url_safety_is_always_blocked_url",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cli_tools_url_safety_is_always_blocked_url",
+"value": "user@example.com"
+},
+{
+"op": "cli_tools_url_safety_is_always_blocked_url",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_tools_url_safety_is_always_blocked_url",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cli_tools_url_safety_is_always_blocked_url",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cli_tools_url_safety_is_always_blocked_url",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_tools_url_safety_is_always_blocked_url",
+"value": "12345"
+},
+{
+"op": "cli_tools_url_safety_is_always_blocked_url",
+"value": "  spaced  "
+},
+{
+"op": "cli_tools_url_safety_is_always_blocked_url",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cli_tools_url_safety_is_always_blocked_url",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_tools_url_safety_is_always_blocked_url",
+"value": "key:value;key2:value2"
+},
+{
+"op": "cli_tools_url_safety_is_safe_url",
+"value": ""
+},
+{
+"op": "cli_tools_url_safety_is_safe_url",
+"value": "x"
+},
+{
+"op": "cli_tools_url_safety_is_safe_url",
+"value": "hello world"
+},
+{
+"op": "cli_tools_url_safety_is_safe_url",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_tools_url_safety_is_safe_url",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cli_tools_url_safety_is_safe_url",
+"value": "user@example.com"
+},
+{
+"op": "cli_tools_url_safety_is_safe_url",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_tools_url_safety_is_safe_url",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cli_tools_url_safety_is_safe_url",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cli_tools_url_safety_is_safe_url",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_tools_url_safety_is_safe_url",
+"value": "12345"
+},
+{
+"op": "cli_tools_url_safety_is_safe_url",
+"value": "  spaced  "
+},
+{
+"op": "cli_tools_url_safety_is_safe_url",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cli_tools_url_safety_is_safe_url",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_tools_url_safety_is_safe_url",
+"value": "key:value;key2:value2"
+}
+]

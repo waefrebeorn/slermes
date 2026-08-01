@@ -1,0 +1,62 @@
+[
+{
+"op": "tsc_try_lazy_install_stt",
+"value": ""
+},
+{
+"op": "tsc_try_lazy_install_stt",
+"value": "x"
+},
+{
+"op": "tsc_try_lazy_install_stt",
+"value": "hello world"
+},
+{
+"op": "tsc_try_lazy_install_stt",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "tsc_try_lazy_install_stt",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "tsc_try_lazy_install_stt",
+"value": "user@example.com"
+},
+{
+"op": "tsc_try_lazy_install_stt",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "tsc_try_lazy_install_stt",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "tsc_try_lazy_install_stt",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "tsc_try_lazy_install_stt",
+"value": "CamelCaseString"
+},
+{
+"op": "tsc_try_lazy_install_stt",
+"value": "12345"
+},
+{
+"op": "tsc_try_lazy_install_stt",
+"value": "  spaced  "
+},
+{
+"op": "tsc_try_lazy_install_stt",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "tsc_try_lazy_install_stt",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "tsc_try_lazy_install_stt",
+"value": "key:value;key2:value2"
+}
+]

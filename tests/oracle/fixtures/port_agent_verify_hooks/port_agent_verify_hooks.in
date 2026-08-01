@@ -1,0 +1,62 @@
+[
+{
+"op": "agent_verify_hooks_max_verify_nudges",
+"value": ""
+},
+{
+"op": "agent_verify_hooks_max_verify_nudges",
+"value": "x"
+},
+{
+"op": "agent_verify_hooks_max_verify_nudges",
+"value": "hello world"
+},
+{
+"op": "agent_verify_hooks_max_verify_nudges",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "agent_verify_hooks_max_verify_nudges",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "agent_verify_hooks_max_verify_nudges",
+"value": "user@example.com"
+},
+{
+"op": "agent_verify_hooks_max_verify_nudges",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "agent_verify_hooks_max_verify_nudges",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "agent_verify_hooks_max_verify_nudges",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "agent_verify_hooks_max_verify_nudges",
+"value": "CamelCaseString"
+},
+{
+"op": "agent_verify_hooks_max_verify_nudges",
+"value": "12345"
+},
+{
+"op": "agent_verify_hooks_max_verify_nudges",
+"value": "  spaced  "
+},
+{
+"op": "agent_verify_hooks_max_verify_nudges",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "agent_verify_hooks_max_verify_nudges",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "agent_verify_hooks_max_verify_nudges",
+"value": "key:value;key2:value2"
+}
+]

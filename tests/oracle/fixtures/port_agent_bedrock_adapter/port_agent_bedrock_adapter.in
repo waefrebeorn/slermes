@@ -1,0 +1,182 @@
+[
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": ""
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "x"
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "hello world"
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "user@example.com"
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "12345"
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "  spaced  "
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "key:value;key2:value2"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_stale_connection_error",
+"value": ""
+},
+{
+"op": "cli_agent_bedrock_adapter_is_stale_connection_error",
+"value": "x"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_stale_connection_error",
+"value": "hello world"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_stale_connection_error",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_stale_connection_error",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_stale_connection_error",
+"value": "user@example.com"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_stale_connection_error",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_stale_connection_error",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_stale_connection_error",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_stale_connection_error",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_stale_connection_error",
+"value": "12345"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_stale_connection_error",
+"value": "  spaced  "
+},
+{
+"op": "cli_agent_bedrock_adapter_is_stale_connection_error",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_stale_connection_error",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_stale_connection_error",
+"value": "key:value;key2:value2"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_streaming_access_denied_error",
+"value": ""
+},
+{
+"op": "cli_agent_bedrock_adapter_is_streaming_access_denied_error",
+"value": "x"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_streaming_access_denied_error",
+"value": "hello world"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_streaming_access_denied_error",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_streaming_access_denied_error",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_streaming_access_denied_error",
+"value": "user@example.com"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_streaming_access_denied_error",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_streaming_access_denied_error",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_streaming_access_denied_error",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_streaming_access_denied_error",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_streaming_access_denied_error",
+"value": "12345"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_streaming_access_denied_error",
+"value": "  spaced  "
+},
+{
+"op": "cli_agent_bedrock_adapter_is_streaming_access_denied_error",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_streaming_access_denied_error",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_agent_bedrock_adapter_is_streaming_access_denied_error",
+"value": "key:value;key2:value2"
+}
+]

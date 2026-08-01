@@ -1,0 +1,122 @@
+[
+{
+"op": "base_platform_path_under_denied_prefix",
+"value": ""
+},
+{
+"op": "base_platform_path_under_denied_prefix",
+"value": "x"
+},
+{
+"op": "base_platform_path_under_denied_prefix",
+"value": "hello world"
+},
+{
+"op": "base_platform_path_under_denied_prefix",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "base_platform_path_under_denied_prefix",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "base_platform_path_under_denied_prefix",
+"value": "user@example.com"
+},
+{
+"op": "base_platform_path_under_denied_prefix",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "base_platform_path_under_denied_prefix",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "base_platform_path_under_denied_prefix",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "base_platform_path_under_denied_prefix",
+"value": "CamelCaseString"
+},
+{
+"op": "base_platform_path_under_denied_prefix",
+"value": "12345"
+},
+{
+"op": "base_platform_path_under_denied_prefix",
+"value": "  spaced  "
+},
+{
+"op": "base_platform_path_under_denied_prefix",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "base_platform_path_under_denied_prefix",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "base_platform_path_under_denied_prefix",
+"value": "key:value;key2:value2"
+},
+{
+"op": "base_platform_path_lacks_deliverable_extension",
+"value": ""
+},
+{
+"op": "base_platform_path_lacks_deliverable_extension",
+"value": "x"
+},
+{
+"op": "base_platform_path_lacks_deliverable_extension",
+"value": "hello world"
+},
+{
+"op": "base_platform_path_lacks_deliverable_extension",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "base_platform_path_lacks_deliverable_extension",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "base_platform_path_lacks_deliverable_extension",
+"value": "user@example.com"
+},
+{
+"op": "base_platform_path_lacks_deliverable_extension",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "base_platform_path_lacks_deliverable_extension",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "base_platform_path_lacks_deliverable_extension",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "base_platform_path_lacks_deliverable_extension",
+"value": "CamelCaseString"
+},
+{
+"op": "base_platform_path_lacks_deliverable_extension",
+"value": "12345"
+},
+{
+"op": "base_platform_path_lacks_deliverable_extension",
+"value": "  spaced  "
+},
+{
+"op": "base_platform_path_lacks_deliverable_extension",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "base_platform_path_lacks_deliverable_extension",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "base_platform_path_lacks_deliverable_extension",
+"value": "key:value;key2:value2"
+}
+]

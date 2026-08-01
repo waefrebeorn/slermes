@@ -1,0 +1,62 @@
+[
+{
+"op": "browser__should_inject_engine",
+"value": ""
+},
+{
+"op": "browser__should_inject_engine",
+"value": "x"
+},
+{
+"op": "browser__should_inject_engine",
+"value": "hello world"
+},
+{
+"op": "browser__should_inject_engine",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "browser__should_inject_engine",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "browser__should_inject_engine",
+"value": "user@example.com"
+},
+{
+"op": "browser__should_inject_engine",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "browser__should_inject_engine",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "browser__should_inject_engine",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "browser__should_inject_engine",
+"value": "CamelCaseString"
+},
+{
+"op": "browser__should_inject_engine",
+"value": "12345"
+},
+{
+"op": "browser__should_inject_engine",
+"value": "  spaced  "
+},
+{
+"op": "browser__should_inject_engine",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "browser__should_inject_engine",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "browser__should_inject_engine",
+"value": "key:value;key2:value2"
+}
+]

@@ -1,0 +1,1082 @@
+[
+{
+"op": "bb_check_bluebubbles_requirements",
+"value": ""
+},
+{
+"op": "bb_check_bluebubbles_requirements",
+"value": "x"
+},
+{
+"op": "bb_check_bluebubbles_requirements",
+"value": "hello world"
+},
+{
+"op": "bb_check_bluebubbles_requirements",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "bb_check_bluebubbles_requirements",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "bb_check_bluebubbles_requirements",
+"value": "user@example.com"
+},
+{
+"op": "bb_check_bluebubbles_requirements",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "bb_check_bluebubbles_requirements",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "bb_check_bluebubbles_requirements",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "bb_check_bluebubbles_requirements",
+"value": "CamelCaseString"
+},
+{
+"op": "bb_check_bluebubbles_requirements",
+"value": "12345"
+},
+{
+"op": "bb_check_bluebubbles_requirements",
+"value": "  spaced  "
+},
+{
+"op": "bb_check_bluebubbles_requirements",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "bb_check_bluebubbles_requirements",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "bb_check_bluebubbles_requirements",
+"value": "key:value;key2:value2"
+},
+{
+"op": "bb_u_normalize_server_url",
+"value": ""
+},
+{
+"op": "bb_u_normalize_server_url",
+"value": "x"
+},
+{
+"op": "bb_u_normalize_server_url",
+"value": "hello world"
+},
+{
+"op": "bb_u_normalize_server_url",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "bb_u_normalize_server_url",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "bb_u_normalize_server_url",
+"value": "user@example.com"
+},
+{
+"op": "bb_u_normalize_server_url",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "bb_u_normalize_server_url",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "bb_u_normalize_server_url",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "bb_u_normalize_server_url",
+"value": "CamelCaseString"
+},
+{
+"op": "bb_u_normalize_server_url",
+"value": "12345"
+},
+{
+"op": "bb_u_normalize_server_url",
+"value": "  spaced  "
+},
+{
+"op": "bb_u_normalize_server_url",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "bb_u_normalize_server_url",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "bb_u_normalize_server_url",
+"value": "key:value;key2:value2"
+},
+{
+"op": "bb_u_api_url",
+"value": ""
+},
+{
+"op": "bb_u_api_url",
+"value": "x"
+},
+{
+"op": "bb_u_api_url",
+"value": "hello world"
+},
+{
+"op": "bb_u_api_url",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "bb_u_api_url",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "bb_u_api_url",
+"value": "user@example.com"
+},
+{
+"op": "bb_u_api_url",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "bb_u_api_url",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "bb_u_api_url",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "bb_u_api_url",
+"value": "CamelCaseString"
+},
+{
+"op": "bb_u_api_url",
+"value": "12345"
+},
+{
+"op": "bb_u_api_url",
+"value": "  spaced  "
+},
+{
+"op": "bb_u_api_url",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "bb_u_api_url",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "bb_u_api_url",
+"value": "key:value;key2:value2"
+},
+{
+"op": "bb_u_compile_mention_patterns",
+"value": ""
+},
+{
+"op": "bb_u_compile_mention_patterns",
+"value": "x"
+},
+{
+"op": "bb_u_compile_mention_patterns",
+"value": "hello world"
+},
+{
+"op": "bb_u_compile_mention_patterns",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "bb_u_compile_mention_patterns",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "bb_u_compile_mention_patterns",
+"value": "user@example.com"
+},
+{
+"op": "bb_u_compile_mention_patterns",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "bb_u_compile_mention_patterns",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "bb_u_compile_mention_patterns",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "bb_u_compile_mention_patterns",
+"value": "CamelCaseString"
+},
+{
+"op": "bb_u_compile_mention_patterns",
+"value": "12345"
+},
+{
+"op": "bb_u_compile_mention_patterns",
+"value": "  spaced  "
+},
+{
+"op": "bb_u_compile_mention_patterns",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "bb_u_compile_mention_patterns",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "bb_u_compile_mention_patterns",
+"value": "key:value;key2:value2"
+},
+{
+"op": "bb_u_message_matches_mention_patterns",
+"value": ""
+},
+{
+"op": "bb_u_message_matches_mention_patterns",
+"value": "x"
+},
+{
+"op": "bb_u_message_matches_mention_patterns",
+"value": "hello world"
+},
+{
+"op": "bb_u_message_matches_mention_patterns",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "bb_u_message_matches_mention_patterns",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "bb_u_message_matches_mention_patterns",
+"value": "user@example.com"
+},
+{
+"op": "bb_u_message_matches_mention_patterns",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "bb_u_message_matches_mention_patterns",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "bb_u_message_matches_mention_patterns",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "bb_u_message_matches_mention_patterns",
+"value": "CamelCaseString"
+},
+{
+"op": "bb_u_message_matches_mention_patterns",
+"value": "12345"
+},
+{
+"op": "bb_u_message_matches_mention_patterns",
+"value": "  spaced  "
+},
+{
+"op": "bb_u_message_matches_mention_patterns",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "bb_u_message_matches_mention_patterns",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "bb_u_message_matches_mention_patterns",
+"value": "key:value;key2:value2"
+},
+{
+"op": "bb_u_clean_mention_text",
+"value": ""
+},
+{
+"op": "bb_u_clean_mention_text",
+"value": "x"
+},
+{
+"op": "bb_u_clean_mention_text",
+"value": "hello world"
+},
+{
+"op": "bb_u_clean_mention_text",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "bb_u_clean_mention_text",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "bb_u_clean_mention_text",
+"value": "user@example.com"
+},
+{
+"op": "bb_u_clean_mention_text",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "bb_u_clean_mention_text",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "bb_u_clean_mention_text",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "bb_u_clean_mention_text",
+"value": "CamelCaseString"
+},
+{
+"op": "bb_u_clean_mention_text",
+"value": "12345"
+},
+{
+"op": "bb_u_clean_mention_text",
+"value": "  spaced  "
+},
+{
+"op": "bb_u_clean_mention_text",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "bb_u_clean_mention_text",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "bb_u_clean_mention_text",
+"value": "key:value;key2:value2"
+},
+{
+"op": "bb_u_api_post",
+"value": ""
+},
+{
+"op": "bb_u_api_post",
+"value": "x"
+},
+{
+"op": "bb_u_api_post",
+"value": "hello world"
+},
+{
+"op": "bb_u_api_post",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "bb_u_api_post",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "bb_u_api_post",
+"value": "user@example.com"
+},
+{
+"op": "bb_u_api_post",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "bb_u_api_post",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "bb_u_api_post",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "bb_u_api_post",
+"value": "CamelCaseString"
+},
+{
+"op": "bb_u_api_post",
+"value": "12345"
+},
+{
+"op": "bb_u_api_post",
+"value": "  spaced  "
+},
+{
+"op": "bb_u_api_post",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "bb_u_api_post",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "bb_u_api_post",
+"value": "key:value;key2:value2"
+},
+{
+"op": "bb_u_webhook_url",
+"value": ""
+},
+{
+"op": "bb_u_webhook_url",
+"value": "x"
+},
+{
+"op": "bb_u_webhook_url",
+"value": "hello world"
+},
+{
+"op": "bb_u_webhook_url",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "bb_u_webhook_url",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "bb_u_webhook_url",
+"value": "user@example.com"
+},
+{
+"op": "bb_u_webhook_url",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "bb_u_webhook_url",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "bb_u_webhook_url",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "bb_u_webhook_url",
+"value": "CamelCaseString"
+},
+{
+"op": "bb_u_webhook_url",
+"value": "12345"
+},
+{
+"op": "bb_u_webhook_url",
+"value": "  spaced  "
+},
+{
+"op": "bb_u_webhook_url",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "bb_u_webhook_url",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "bb_u_webhook_url",
+"value": "key:value;key2:value2"
+},
+{
+"op": "bb_u_webhook_register_url",
+"value": ""
+},
+{
+"op": "bb_u_webhook_register_url",
+"value": "x"
+},
+{
+"op": "bb_u_webhook_register_url",
+"value": "hello world"
+},
+{
+"op": "bb_u_webhook_register_url",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "bb_u_webhook_register_url",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "bb_u_webhook_register_url",
+"value": "user@example.com"
+},
+{
+"op": "bb_u_webhook_register_url",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "bb_u_webhook_register_url",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "bb_u_webhook_register_url",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "bb_u_webhook_register_url",
+"value": "CamelCaseString"
+},
+{
+"op": "bb_u_webhook_register_url",
+"value": "12345"
+},
+{
+"op": "bb_u_webhook_register_url",
+"value": "  spaced  "
+},
+{
+"op": "bb_u_webhook_register_url",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "bb_u_webhook_register_url",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "bb_u_webhook_register_url",
+"value": "key:value;key2:value2"
+},
+{
+"op": "bb_u_webhook_register_url_for_log",
+"value": ""
+},
+{
+"op": "bb_u_webhook_register_url_for_log",
+"value": "x"
+},
+{
+"op": "bb_u_webhook_register_url_for_log",
+"value": "hello world"
+},
+{
+"op": "bb_u_webhook_register_url_for_log",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "bb_u_webhook_register_url_for_log",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "bb_u_webhook_register_url_for_log",
+"value": "user@example.com"
+},
+{
+"op": "bb_u_webhook_register_url_for_log",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "bb_u_webhook_register_url_for_log",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "bb_u_webhook_register_url_for_log",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "bb_u_webhook_register_url_for_log",
+"value": "CamelCaseString"
+},
+{
+"op": "bb_u_webhook_register_url_for_log",
+"value": "12345"
+},
+{
+"op": "bb_u_webhook_register_url_for_log",
+"value": "  spaced  "
+},
+{
+"op": "bb_u_webhook_register_url_for_log",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "bb_u_webhook_register_url_for_log",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "bb_u_webhook_register_url_for_log",
+"value": "key:value;key2:value2"
+},
+{
+"op": "bb_u_find_registered_webhooks",
+"value": ""
+},
+{
+"op": "bb_u_find_registered_webhooks",
+"value": "x"
+},
+{
+"op": "bb_u_find_registered_webhooks",
+"value": "hello world"
+},
+{
+"op": "bb_u_find_registered_webhooks",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "bb_u_find_registered_webhooks",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "bb_u_find_registered_webhooks",
+"value": "user@example.com"
+},
+{
+"op": "bb_u_find_registered_webhooks",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "bb_u_find_registered_webhooks",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "bb_u_find_registered_webhooks",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "bb_u_find_registered_webhooks",
+"value": "CamelCaseString"
+},
+{
+"op": "bb_u_find_registered_webhooks",
+"value": "12345"
+},
+{
+"op": "bb_u_find_registered_webhooks",
+"value": "  spaced  "
+},
+{
+"op": "bb_u_find_registered_webhooks",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "bb_u_find_registered_webhooks",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "bb_u_find_registered_webhooks",
+"value": "key:value;key2:value2"
+},
+{
+"op": "bb_u_register_webhook",
+"value": ""
+},
+{
+"op": "bb_u_register_webhook",
+"value": "x"
+},
+{
+"op": "bb_u_register_webhook",
+"value": "hello world"
+},
+{
+"op": "bb_u_register_webhook",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "bb_u_register_webhook",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "bb_u_register_webhook",
+"value": "user@example.com"
+},
+{
+"op": "bb_u_register_webhook",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "bb_u_register_webhook",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "bb_u_register_webhook",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "bb_u_register_webhook",
+"value": "CamelCaseString"
+},
+{
+"op": "bb_u_register_webhook",
+"value": "12345"
+},
+{
+"op": "bb_u_register_webhook",
+"value": "  spaced  "
+},
+{
+"op": "bb_u_register_webhook",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "bb_u_register_webhook",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "bb_u_register_webhook",
+"value": "key:value;key2:value2"
+},
+{
+"op": "bb_u_unregister_webhook",
+"value": ""
+},
+{
+"op": "bb_u_unregister_webhook",
+"value": "x"
+},
+{
+"op": "bb_u_unregister_webhook",
+"value": "hello world"
+},
+{
+"op": "bb_u_unregister_webhook",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "bb_u_unregister_webhook",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "bb_u_unregister_webhook",
+"value": "user@example.com"
+},
+{
+"op": "bb_u_unregister_webhook",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "bb_u_unregister_webhook",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "bb_u_unregister_webhook",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "bb_u_unregister_webhook",
+"value": "CamelCaseString"
+},
+{
+"op": "bb_u_unregister_webhook",
+"value": "12345"
+},
+{
+"op": "bb_u_unregister_webhook",
+"value": "  spaced  "
+},
+{
+"op": "bb_u_unregister_webhook",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "bb_u_unregister_webhook",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "bb_u_unregister_webhook",
+"value": "key:value;key2:value2"
+},
+{
+"op": "bb_u_resolve_chat_guid",
+"value": ""
+},
+{
+"op": "bb_u_resolve_chat_guid",
+"value": "x"
+},
+{
+"op": "bb_u_resolve_chat_guid",
+"value": "hello world"
+},
+{
+"op": "bb_u_resolve_chat_guid",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "bb_u_resolve_chat_guid",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "bb_u_resolve_chat_guid",
+"value": "user@example.com"
+},
+{
+"op": "bb_u_resolve_chat_guid",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "bb_u_resolve_chat_guid",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "bb_u_resolve_chat_guid",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "bb_u_resolve_chat_guid",
+"value": "CamelCaseString"
+},
+{
+"op": "bb_u_resolve_chat_guid",
+"value": "12345"
+},
+{
+"op": "bb_u_resolve_chat_guid",
+"value": "  spaced  "
+},
+{
+"op": "bb_u_resolve_chat_guid",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "bb_u_resolve_chat_guid",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "bb_u_resolve_chat_guid",
+"value": "key:value;key2:value2"
+},
+{
+"op": "bb_u_create_chat_for_handle",
+"value": ""
+},
+{
+"op": "bb_u_create_chat_for_handle",
+"value": "x"
+},
+{
+"op": "bb_u_create_chat_for_handle",
+"value": "hello world"
+},
+{
+"op": "bb_u_create_chat_for_handle",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "bb_u_create_chat_for_handle",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "bb_u_create_chat_for_handle",
+"value": "user@example.com"
+},
+{
+"op": "bb_u_create_chat_for_handle",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "bb_u_create_chat_for_handle",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "bb_u_create_chat_for_handle",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "bb_u_create_chat_for_handle",
+"value": "CamelCaseString"
+},
+{
+"op": "bb_u_create_chat_for_handle",
+"value": "12345"
+},
+{
+"op": "bb_u_create_chat_for_handle",
+"value": "  spaced  "
+},
+{
+"op": "bb_u_create_chat_for_handle",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "bb_u_create_chat_for_handle",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "bb_u_create_chat_for_handle",
+"value": "key:value;key2:value2"
+},
+{
+"op": "bb_mark_read",
+"value": ""
+},
+{
+"op": "bb_mark_read",
+"value": "x"
+},
+{
+"op": "bb_mark_read",
+"value": "hello world"
+},
+{
+"op": "bb_mark_read",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "bb_mark_read",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "bb_mark_read",
+"value": "user@example.com"
+},
+{
+"op": "bb_mark_read",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "bb_mark_read",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "bb_mark_read",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "bb_mark_read",
+"value": "CamelCaseString"
+},
+{
+"op": "bb_mark_read",
+"value": "12345"
+},
+{
+"op": "bb_mark_read",
+"value": "  spaced  "
+},
+{
+"op": "bb_mark_read",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "bb_mark_read",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "bb_mark_read",
+"value": "key:value;key2:value2"
+},
+{
+"op": "bb_u_download_attachment",
+"value": ""
+},
+{
+"op": "bb_u_download_attachment",
+"value": "x"
+},
+{
+"op": "bb_u_download_attachment",
+"value": "hello world"
+},
+{
+"op": "bb_u_download_attachment",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "bb_u_download_attachment",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "bb_u_download_attachment",
+"value": "user@example.com"
+},
+{
+"op": "bb_u_download_attachment",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "bb_u_download_attachment",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "bb_u_download_attachment",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "bb_u_download_attachment",
+"value": "CamelCaseString"
+},
+{
+"op": "bb_u_download_attachment",
+"value": "12345"
+},
+{
+"op": "bb_u_download_attachment",
+"value": "  spaced  "
+},
+{
+"op": "bb_u_download_attachment",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "bb_u_download_attachment",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "bb_u_download_attachment",
+"value": "key:value;key2:value2"
+},
+{
+"op": "bb_u_extract_payload_record",
+"value": ""
+},
+{
+"op": "bb_u_extract_payload_record",
+"value": "x"
+},
+{
+"op": "bb_u_extract_payload_record",
+"value": "hello world"
+},
+{
+"op": "bb_u_extract_payload_record",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "bb_u_extract_payload_record",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "bb_u_extract_payload_record",
+"value": "user@example.com"
+},
+{
+"op": "bb_u_extract_payload_record",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "bb_u_extract_payload_record",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "bb_u_extract_payload_record",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "bb_u_extract_payload_record",
+"value": "CamelCaseString"
+},
+{
+"op": "bb_u_extract_payload_record",
+"value": "12345"
+},
+{
+"op": "bb_u_extract_payload_record",
+"value": "  spaced  "
+},
+{
+"op": "bb_u_extract_payload_record",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "bb_u_extract_payload_record",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "bb_u_extract_payload_record",
+"value": "key:value;key2:value2"
+}
+]

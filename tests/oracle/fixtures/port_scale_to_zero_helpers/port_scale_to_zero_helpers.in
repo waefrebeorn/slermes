@@ -1,0 +1,122 @@
+[
+{
+"op": "scale_to_zero_enabled",
+"value": ""
+},
+{
+"op": "scale_to_zero_enabled",
+"value": "x"
+},
+{
+"op": "scale_to_zero_enabled",
+"value": "hello world"
+},
+{
+"op": "scale_to_zero_enabled",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "scale_to_zero_enabled",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "scale_to_zero_enabled",
+"value": "user@example.com"
+},
+{
+"op": "scale_to_zero_enabled",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "scale_to_zero_enabled",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "scale_to_zero_enabled",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "scale_to_zero_enabled",
+"value": "CamelCaseString"
+},
+{
+"op": "scale_to_zero_enabled",
+"value": "12345"
+},
+{
+"op": "scale_to_zero_enabled",
+"value": "  spaced  "
+},
+{
+"op": "scale_to_zero_enabled",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "scale_to_zero_enabled",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "scale_to_zero_enabled",
+"value": "key:value;key2:value2"
+},
+{
+"op": "scale_to_zero_messaging_is_relay_only_or_absent",
+"value": ""
+},
+{
+"op": "scale_to_zero_messaging_is_relay_only_or_absent",
+"value": "x"
+},
+{
+"op": "scale_to_zero_messaging_is_relay_only_or_absent",
+"value": "hello world"
+},
+{
+"op": "scale_to_zero_messaging_is_relay_only_or_absent",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "scale_to_zero_messaging_is_relay_only_or_absent",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "scale_to_zero_messaging_is_relay_only_or_absent",
+"value": "user@example.com"
+},
+{
+"op": "scale_to_zero_messaging_is_relay_only_or_absent",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "scale_to_zero_messaging_is_relay_only_or_absent",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "scale_to_zero_messaging_is_relay_only_or_absent",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "scale_to_zero_messaging_is_relay_only_or_absent",
+"value": "CamelCaseString"
+},
+{
+"op": "scale_to_zero_messaging_is_relay_only_or_absent",
+"value": "12345"
+},
+{
+"op": "scale_to_zero_messaging_is_relay_only_or_absent",
+"value": "  spaced  "
+},
+{
+"op": "scale_to_zero_messaging_is_relay_only_or_absent",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "scale_to_zero_messaging_is_relay_only_or_absent",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "scale_to_zero_messaging_is_relay_only_or_absent",
+"value": "key:value;key2:value2"
+}
+]

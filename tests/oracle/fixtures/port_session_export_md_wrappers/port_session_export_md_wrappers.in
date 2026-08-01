@@ -1,0 +1,1142 @@
+[
+{
+"op": "sexmd_u_iso_timestamp",
+"value": ""
+},
+{
+"op": "sexmd_u_iso_timestamp",
+"value": "x"
+},
+{
+"op": "sexmd_u_iso_timestamp",
+"value": "hello world"
+},
+{
+"op": "sexmd_u_iso_timestamp",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "sexmd_u_iso_timestamp",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "sexmd_u_iso_timestamp",
+"value": "user@example.com"
+},
+{
+"op": "sexmd_u_iso_timestamp",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "sexmd_u_iso_timestamp",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "sexmd_u_iso_timestamp",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "sexmd_u_iso_timestamp",
+"value": "CamelCaseString"
+},
+{
+"op": "sexmd_u_iso_timestamp",
+"value": "12345"
+},
+{
+"op": "sexmd_u_iso_timestamp",
+"value": "  spaced  "
+},
+{
+"op": "sexmd_u_iso_timestamp",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "sexmd_u_iso_timestamp",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "sexmd_u_iso_timestamp",
+"value": "key:value;key2:value2"
+},
+{
+"op": "sexmd_u_frontmatter_value",
+"value": ""
+},
+{
+"op": "sexmd_u_frontmatter_value",
+"value": "x"
+},
+{
+"op": "sexmd_u_frontmatter_value",
+"value": "hello world"
+},
+{
+"op": "sexmd_u_frontmatter_value",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "sexmd_u_frontmatter_value",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "sexmd_u_frontmatter_value",
+"value": "user@example.com"
+},
+{
+"op": "sexmd_u_frontmatter_value",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "sexmd_u_frontmatter_value",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "sexmd_u_frontmatter_value",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "sexmd_u_frontmatter_value",
+"value": "CamelCaseString"
+},
+{
+"op": "sexmd_u_frontmatter_value",
+"value": "12345"
+},
+{
+"op": "sexmd_u_frontmatter_value",
+"value": "  spaced  "
+},
+{
+"op": "sexmd_u_frontmatter_value",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "sexmd_u_frontmatter_value",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "sexmd_u_frontmatter_value",
+"value": "key:value;key2:value2"
+},
+{
+"op": "sexmd_u_frontmatter_line",
+"value": ""
+},
+{
+"op": "sexmd_u_frontmatter_line",
+"value": "x"
+},
+{
+"op": "sexmd_u_frontmatter_line",
+"value": "hello world"
+},
+{
+"op": "sexmd_u_frontmatter_line",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "sexmd_u_frontmatter_line",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "sexmd_u_frontmatter_line",
+"value": "user@example.com"
+},
+{
+"op": "sexmd_u_frontmatter_line",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "sexmd_u_frontmatter_line",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "sexmd_u_frontmatter_line",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "sexmd_u_frontmatter_line",
+"value": "CamelCaseString"
+},
+{
+"op": "sexmd_u_frontmatter_line",
+"value": "12345"
+},
+{
+"op": "sexmd_u_frontmatter_line",
+"value": "  spaced  "
+},
+{
+"op": "sexmd_u_frontmatter_line",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "sexmd_u_frontmatter_line",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "sexmd_u_frontmatter_line",
+"value": "key:value;key2:value2"
+},
+{
+"op": "sexmd_u_message_heading",
+"value": ""
+},
+{
+"op": "sexmd_u_message_heading",
+"value": "x"
+},
+{
+"op": "sexmd_u_message_heading",
+"value": "hello world"
+},
+{
+"op": "sexmd_u_message_heading",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "sexmd_u_message_heading",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "sexmd_u_message_heading",
+"value": "user@example.com"
+},
+{
+"op": "sexmd_u_message_heading",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "sexmd_u_message_heading",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "sexmd_u_message_heading",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "sexmd_u_message_heading",
+"value": "CamelCaseString"
+},
+{
+"op": "sexmd_u_message_heading",
+"value": "12345"
+},
+{
+"op": "sexmd_u_message_heading",
+"value": "  spaced  "
+},
+{
+"op": "sexmd_u_message_heading",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "sexmd_u_message_heading",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "sexmd_u_message_heading",
+"value": "key:value;key2:value2"
+},
+{
+"op": "sexmd_u_render_content",
+"value": ""
+},
+{
+"op": "sexmd_u_render_content",
+"value": "x"
+},
+{
+"op": "sexmd_u_render_content",
+"value": "hello world"
+},
+{
+"op": "sexmd_u_render_content",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "sexmd_u_render_content",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "sexmd_u_render_content",
+"value": "user@example.com"
+},
+{
+"op": "sexmd_u_render_content",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "sexmd_u_render_content",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "sexmd_u_render_content",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "sexmd_u_render_content",
+"value": "CamelCaseString"
+},
+{
+"op": "sexmd_u_render_content",
+"value": "12345"
+},
+{
+"op": "sexmd_u_render_content",
+"value": "  spaced  "
+},
+{
+"op": "sexmd_u_render_content",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "sexmd_u_render_content",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "sexmd_u_render_content",
+"value": "key:value;key2:value2"
+},
+{
+"op": "sexmd_u_render_tool_calls",
+"value": ""
+},
+{
+"op": "sexmd_u_render_tool_calls",
+"value": "x"
+},
+{
+"op": "sexmd_u_render_tool_calls",
+"value": "hello world"
+},
+{
+"op": "sexmd_u_render_tool_calls",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "sexmd_u_render_tool_calls",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "sexmd_u_render_tool_calls",
+"value": "user@example.com"
+},
+{
+"op": "sexmd_u_render_tool_calls",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "sexmd_u_render_tool_calls",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "sexmd_u_render_tool_calls",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "sexmd_u_render_tool_calls",
+"value": "CamelCaseString"
+},
+{
+"op": "sexmd_u_render_tool_calls",
+"value": "12345"
+},
+{
+"op": "sexmd_u_render_tool_calls",
+"value": "  spaced  "
+},
+{
+"op": "sexmd_u_render_tool_calls",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "sexmd_u_render_tool_calls",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "sexmd_u_render_tool_calls",
+"value": "key:value;key2:value2"
+},
+{
+"op": "sexmd_u_session_id",
+"value": ""
+},
+{
+"op": "sexmd_u_session_id",
+"value": "x"
+},
+{
+"op": "sexmd_u_session_id",
+"value": "hello world"
+},
+{
+"op": "sexmd_u_session_id",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "sexmd_u_session_id",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "sexmd_u_session_id",
+"value": "user@example.com"
+},
+{
+"op": "sexmd_u_session_id",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "sexmd_u_session_id",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "sexmd_u_session_id",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "sexmd_u_session_id",
+"value": "CamelCaseString"
+},
+{
+"op": "sexmd_u_session_id",
+"value": "12345"
+},
+{
+"op": "sexmd_u_session_id",
+"value": "  spaced  "
+},
+{
+"op": "sexmd_u_session_id",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "sexmd_u_session_id",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "sexmd_u_session_id",
+"value": "key:value;key2:value2"
+},
+{
+"op": "sexmd_u_segments",
+"value": ""
+},
+{
+"op": "sexmd_u_segments",
+"value": "x"
+},
+{
+"op": "sexmd_u_segments",
+"value": "hello world"
+},
+{
+"op": "sexmd_u_segments",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "sexmd_u_segments",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "sexmd_u_segments",
+"value": "user@example.com"
+},
+{
+"op": "sexmd_u_segments",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "sexmd_u_segments",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "sexmd_u_segments",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "sexmd_u_segments",
+"value": "CamelCaseString"
+},
+{
+"op": "sexmd_u_segments",
+"value": "12345"
+},
+{
+"op": "sexmd_u_segments",
+"value": "  spaced  "
+},
+{
+"op": "sexmd_u_segments",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "sexmd_u_segments",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "sexmd_u_segments",
+"value": "key:value;key2:value2"
+},
+{
+"op": "sexmd_u_message_count",
+"value": ""
+},
+{
+"op": "sexmd_u_message_count",
+"value": "x"
+},
+{
+"op": "sexmd_u_message_count",
+"value": "hello world"
+},
+{
+"op": "sexmd_u_message_count",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "sexmd_u_message_count",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "sexmd_u_message_count",
+"value": "user@example.com"
+},
+{
+"op": "sexmd_u_message_count",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "sexmd_u_message_count",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "sexmd_u_message_count",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "sexmd_u_message_count",
+"value": "CamelCaseString"
+},
+{
+"op": "sexmd_u_message_count",
+"value": "12345"
+},
+{
+"op": "sexmd_u_message_count",
+"value": "  spaced  "
+},
+{
+"op": "sexmd_u_message_count",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "sexmd_u_message_count",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "sexmd_u_message_count",
+"value": "key:value;key2:value2"
+},
+{
+"op": "sexmd_u_render_messages",
+"value": ""
+},
+{
+"op": "sexmd_u_render_messages",
+"value": "x"
+},
+{
+"op": "sexmd_u_render_messages",
+"value": "hello world"
+},
+{
+"op": "sexmd_u_render_messages",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "sexmd_u_render_messages",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "sexmd_u_render_messages",
+"value": "user@example.com"
+},
+{
+"op": "sexmd_u_render_messages",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "sexmd_u_render_messages",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "sexmd_u_render_messages",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "sexmd_u_render_messages",
+"value": "CamelCaseString"
+},
+{
+"op": "sexmd_u_render_messages",
+"value": "12345"
+},
+{
+"op": "sexmd_u_render_messages",
+"value": "  spaced  "
+},
+{
+"op": "sexmd_u_render_messages",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "sexmd_u_render_messages",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "sexmd_u_render_messages",
+"value": "key:value;key2:value2"
+},
+{
+"op": "sexmd_u_export_body_without_hash",
+"value": ""
+},
+{
+"op": "sexmd_u_export_body_without_hash",
+"value": "x"
+},
+{
+"op": "sexmd_u_export_body_without_hash",
+"value": "hello world"
+},
+{
+"op": "sexmd_u_export_body_without_hash",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "sexmd_u_export_body_without_hash",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "sexmd_u_export_body_without_hash",
+"value": "user@example.com"
+},
+{
+"op": "sexmd_u_export_body_without_hash",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "sexmd_u_export_body_without_hash",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "sexmd_u_export_body_without_hash",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "sexmd_u_export_body_without_hash",
+"value": "CamelCaseString"
+},
+{
+"op": "sexmd_u_export_body_without_hash",
+"value": "12345"
+},
+{
+"op": "sexmd_u_export_body_without_hash",
+"value": "  spaced  "
+},
+{
+"op": "sexmd_u_export_body_without_hash",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "sexmd_u_export_body_without_hash",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "sexmd_u_export_body_without_hash",
+"value": "key:value;key2:value2"
+},
+{
+"op": "sexmd_u_body_for_digest",
+"value": ""
+},
+{
+"op": "sexmd_u_body_for_digest",
+"value": "x"
+},
+{
+"op": "sexmd_u_body_for_digest",
+"value": "hello world"
+},
+{
+"op": "sexmd_u_body_for_digest",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "sexmd_u_body_for_digest",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "sexmd_u_body_for_digest",
+"value": "user@example.com"
+},
+{
+"op": "sexmd_u_body_for_digest",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "sexmd_u_body_for_digest",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "sexmd_u_body_for_digest",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "sexmd_u_body_for_digest",
+"value": "CamelCaseString"
+},
+{
+"op": "sexmd_u_body_for_digest",
+"value": "12345"
+},
+{
+"op": "sexmd_u_body_for_digest",
+"value": "  spaced  "
+},
+{
+"op": "sexmd_u_body_for_digest",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "sexmd_u_body_for_digest",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "sexmd_u_body_for_digest",
+"value": "key:value;key2:value2"
+},
+{
+"op": "sexmd_render_session_markdown",
+"value": ""
+},
+{
+"op": "sexmd_render_session_markdown",
+"value": "x"
+},
+{
+"op": "sexmd_render_session_markdown",
+"value": "hello world"
+},
+{
+"op": "sexmd_render_session_markdown",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "sexmd_render_session_markdown",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "sexmd_render_session_markdown",
+"value": "user@example.com"
+},
+{
+"op": "sexmd_render_session_markdown",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "sexmd_render_session_markdown",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "sexmd_render_session_markdown",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "sexmd_render_session_markdown",
+"value": "CamelCaseString"
+},
+{
+"op": "sexmd_render_session_markdown",
+"value": "12345"
+},
+{
+"op": "sexmd_render_session_markdown",
+"value": "  spaced  "
+},
+{
+"op": "sexmd_render_session_markdown",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "sexmd_render_session_markdown",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "sexmd_render_session_markdown",
+"value": "key:value;key2:value2"
+},
+{
+"op": "sexmd_safe_session_filename",
+"value": ""
+},
+{
+"op": "sexmd_safe_session_filename",
+"value": "x"
+},
+{
+"op": "sexmd_safe_session_filename",
+"value": "hello world"
+},
+{
+"op": "sexmd_safe_session_filename",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "sexmd_safe_session_filename",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "sexmd_safe_session_filename",
+"value": "user@example.com"
+},
+{
+"op": "sexmd_safe_session_filename",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "sexmd_safe_session_filename",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "sexmd_safe_session_filename",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "sexmd_safe_session_filename",
+"value": "CamelCaseString"
+},
+{
+"op": "sexmd_safe_session_filename",
+"value": "12345"
+},
+{
+"op": "sexmd_safe_session_filename",
+"value": "  spaced  "
+},
+{
+"op": "sexmd_safe_session_filename",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "sexmd_safe_session_filename",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "sexmd_safe_session_filename",
+"value": "key:value;key2:value2"
+},
+{
+"op": "sexmd_file_sha256",
+"value": ""
+},
+{
+"op": "sexmd_file_sha256",
+"value": "x"
+},
+{
+"op": "sexmd_file_sha256",
+"value": "hello world"
+},
+{
+"op": "sexmd_file_sha256",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "sexmd_file_sha256",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "sexmd_file_sha256",
+"value": "user@example.com"
+},
+{
+"op": "sexmd_file_sha256",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "sexmd_file_sha256",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "sexmd_file_sha256",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "sexmd_file_sha256",
+"value": "CamelCaseString"
+},
+{
+"op": "sexmd_file_sha256",
+"value": "12345"
+},
+{
+"op": "sexmd_file_sha256",
+"value": "  spaced  "
+},
+{
+"op": "sexmd_file_sha256",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "sexmd_file_sha256",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "sexmd_file_sha256",
+"value": "key:value;key2:value2"
+},
+{
+"op": "sexmd_verify_export_file",
+"value": ""
+},
+{
+"op": "sexmd_verify_export_file",
+"value": "x"
+},
+{
+"op": "sexmd_verify_export_file",
+"value": "hello world"
+},
+{
+"op": "sexmd_verify_export_file",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "sexmd_verify_export_file",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "sexmd_verify_export_file",
+"value": "user@example.com"
+},
+{
+"op": "sexmd_verify_export_file",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "sexmd_verify_export_file",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "sexmd_verify_export_file",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "sexmd_verify_export_file",
+"value": "CamelCaseString"
+},
+{
+"op": "sexmd_verify_export_file",
+"value": "12345"
+},
+{
+"op": "sexmd_verify_export_file",
+"value": "  spaced  "
+},
+{
+"op": "sexmd_verify_export_file",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "sexmd_verify_export_file",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "sexmd_verify_export_file",
+"value": "key:value;key2:value2"
+},
+{
+"op": "sexmd_redact_session_data",
+"value": ""
+},
+{
+"op": "sexmd_redact_session_data",
+"value": "x"
+},
+{
+"op": "sexmd_redact_session_data",
+"value": "hello world"
+},
+{
+"op": "sexmd_redact_session_data",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "sexmd_redact_session_data",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "sexmd_redact_session_data",
+"value": "user@example.com"
+},
+{
+"op": "sexmd_redact_session_data",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "sexmd_redact_session_data",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "sexmd_redact_session_data",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "sexmd_redact_session_data",
+"value": "CamelCaseString"
+},
+{
+"op": "sexmd_redact_session_data",
+"value": "12345"
+},
+{
+"op": "sexmd_redact_session_data",
+"value": "  spaced  "
+},
+{
+"op": "sexmd_redact_session_data",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "sexmd_redact_session_data",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "sexmd_redact_session_data",
+"value": "key:value;key2:value2"
+},
+{
+"op": "sexmd_write_session_markdown",
+"value": ""
+},
+{
+"op": "sexmd_write_session_markdown",
+"value": "x"
+},
+{
+"op": "sexmd_write_session_markdown",
+"value": "hello world"
+},
+{
+"op": "sexmd_write_session_markdown",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "sexmd_write_session_markdown",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "sexmd_write_session_markdown",
+"value": "user@example.com"
+},
+{
+"op": "sexmd_write_session_markdown",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "sexmd_write_session_markdown",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "sexmd_write_session_markdown",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "sexmd_write_session_markdown",
+"value": "CamelCaseString"
+},
+{
+"op": "sexmd_write_session_markdown",
+"value": "12345"
+},
+{
+"op": "sexmd_write_session_markdown",
+"value": "  spaced  "
+},
+{
+"op": "sexmd_write_session_markdown",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "sexmd_write_session_markdown",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "sexmd_write_session_markdown",
+"value": "key:value;key2:value2"
+},
+{
+"op": "sexmd_append_manifest_entry",
+"value": ""
+},
+{
+"op": "sexmd_append_manifest_entry",
+"value": "x"
+},
+{
+"op": "sexmd_append_manifest_entry",
+"value": "hello world"
+},
+{
+"op": "sexmd_append_manifest_entry",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "sexmd_append_manifest_entry",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "sexmd_append_manifest_entry",
+"value": "user@example.com"
+},
+{
+"op": "sexmd_append_manifest_entry",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "sexmd_append_manifest_entry",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "sexmd_append_manifest_entry",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "sexmd_append_manifest_entry",
+"value": "CamelCaseString"
+},
+{
+"op": "sexmd_append_manifest_entry",
+"value": "12345"
+},
+{
+"op": "sexmd_append_manifest_entry",
+"value": "  spaced  "
+},
+{
+"op": "sexmd_append_manifest_entry",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "sexmd_append_manifest_entry",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "sexmd_append_manifest_entry",
+"value": "key:value;key2:value2"
+}
+]

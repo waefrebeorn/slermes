@@ -1,0 +1,122 @@
+[
+{
+"op": "aux__client_streams_internally",
+"value": ""
+},
+{
+"op": "aux__client_streams_internally",
+"value": "x"
+},
+{
+"op": "aux__client_streams_internally",
+"value": "hello world"
+},
+{
+"op": "aux__client_streams_internally",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "aux__client_streams_internally",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "aux__client_streams_internally",
+"value": "user@example.com"
+},
+{
+"op": "aux__client_streams_internally",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "aux__client_streams_internally",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "aux__client_streams_internally",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "aux__client_streams_internally",
+"value": "CamelCaseString"
+},
+{
+"op": "aux__client_streams_internally",
+"value": "12345"
+},
+{
+"op": "aux__client_streams_internally",
+"value": "  spaced  "
+},
+{
+"op": "aux__client_streams_internally",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "aux__client_streams_internally",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "aux__client_streams_internally",
+"value": "key:value;key2:value2"
+},
+{
+"op": "aux__is_streaming_rejected_error",
+"value": ""
+},
+{
+"op": "aux__is_streaming_rejected_error",
+"value": "x"
+},
+{
+"op": "aux__is_streaming_rejected_error",
+"value": "hello world"
+},
+{
+"op": "aux__is_streaming_rejected_error",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "aux__is_streaming_rejected_error",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "aux__is_streaming_rejected_error",
+"value": "user@example.com"
+},
+{
+"op": "aux__is_streaming_rejected_error",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "aux__is_streaming_rejected_error",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "aux__is_streaming_rejected_error",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "aux__is_streaming_rejected_error",
+"value": "CamelCaseString"
+},
+{
+"op": "aux__is_streaming_rejected_error",
+"value": "12345"
+},
+{
+"op": "aux__is_streaming_rejected_error",
+"value": "  spaced  "
+},
+{
+"op": "aux__is_streaming_rejected_error",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "aux__is_streaming_rejected_error",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "aux__is_streaming_rejected_error",
+"value": "key:value;key2:value2"
+}
+]

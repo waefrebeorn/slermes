@@ -1,0 +1,182 @@
+[
+{
+"op": "config_coerce_ssl_verify",
+"value": ""
+},
+{
+"op": "config_coerce_ssl_verify",
+"value": "x"
+},
+{
+"op": "config_coerce_ssl_verify",
+"value": "hello world"
+},
+{
+"op": "config_coerce_ssl_verify",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "config_coerce_ssl_verify",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "config_coerce_ssl_verify",
+"value": "user@example.com"
+},
+{
+"op": "config_coerce_ssl_verify",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "config_coerce_ssl_verify",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "config_coerce_ssl_verify",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "config_coerce_ssl_verify",
+"value": "CamelCaseString"
+},
+{
+"op": "config_coerce_ssl_verify",
+"value": "12345"
+},
+{
+"op": "config_coerce_ssl_verify",
+"value": "  spaced  "
+},
+{
+"op": "config_coerce_ssl_verify",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "config_coerce_ssl_verify",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "config_coerce_ssl_verify",
+"value": "key:value;key2:value2"
+},
+{
+"op": "config_coerce_config_version",
+"value": ""
+},
+{
+"op": "config_coerce_config_version",
+"value": "x"
+},
+{
+"op": "config_coerce_config_version",
+"value": "hello world"
+},
+{
+"op": "config_coerce_config_version",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "config_coerce_config_version",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "config_coerce_config_version",
+"value": "user@example.com"
+},
+{
+"op": "config_coerce_config_version",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "config_coerce_config_version",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "config_coerce_config_version",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "config_coerce_config_version",
+"value": "CamelCaseString"
+},
+{
+"op": "config_coerce_config_version",
+"value": "12345"
+},
+{
+"op": "config_coerce_config_version",
+"value": "  spaced  "
+},
+{
+"op": "config_coerce_config_version",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "config_coerce_config_version",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "config_coerce_config_version",
+"value": "key:value;key2:value2"
+},
+{
+"op": "config_is_env_config_key",
+"value": ""
+},
+{
+"op": "config_is_env_config_key",
+"value": "x"
+},
+{
+"op": "config_is_env_config_key",
+"value": "hello world"
+},
+{
+"op": "config_is_env_config_key",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "config_is_env_config_key",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "config_is_env_config_key",
+"value": "user@example.com"
+},
+{
+"op": "config_is_env_config_key",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "config_is_env_config_key",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "config_is_env_config_key",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "config_is_env_config_key",
+"value": "CamelCaseString"
+},
+{
+"op": "config_is_env_config_key",
+"value": "12345"
+},
+{
+"op": "config_is_env_config_key",
+"value": "  spaced  "
+},
+{
+"op": "config_is_env_config_key",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "config_is_env_config_key",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "config_is_env_config_key",
+"value": "key:value;key2:value2"
+}
+]

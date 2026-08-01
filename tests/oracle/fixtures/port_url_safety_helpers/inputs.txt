@@ -1,0 +1,16 @@
+
+x
+hello world
+a,b,c
+{"a":1,"b":[2,3]}
+[{"id":1},{"id":2}]
+user@example.com
+https://example.com/path?q=1
+line1
+line2
+line3
+/abs/path/to/file.txt
+CamelCaseString
+12345
+  spaced  
+<html><body>hi</body></html>

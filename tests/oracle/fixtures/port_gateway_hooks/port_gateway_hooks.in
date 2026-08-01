@@ -1,0 +1,62 @@
+[
+{
+"op": "cli_gateway_hooks_discover_and_load",
+"value": ""
+},
+{
+"op": "cli_gateway_hooks_discover_and_load",
+"value": "x"
+},
+{
+"op": "cli_gateway_hooks_discover_and_load",
+"value": "hello world"
+},
+{
+"op": "cli_gateway_hooks_discover_and_load",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_gateway_hooks_discover_and_load",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cli_gateway_hooks_discover_and_load",
+"value": "user@example.com"
+},
+{
+"op": "cli_gateway_hooks_discover_and_load",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_gateway_hooks_discover_and_load",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cli_gateway_hooks_discover_and_load",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cli_gateway_hooks_discover_and_load",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_gateway_hooks_discover_and_load",
+"value": "12345"
+},
+{
+"op": "cli_gateway_hooks_discover_and_load",
+"value": "  spaced  "
+},
+{
+"op": "cli_gateway_hooks_discover_and_load",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cli_gateway_hooks_discover_and_load",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_gateway_hooks_discover_and_load",
+"value": "key:value;key2:value2"
+}
+]

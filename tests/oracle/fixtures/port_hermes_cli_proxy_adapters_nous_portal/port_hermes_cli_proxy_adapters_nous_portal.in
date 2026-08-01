@@ -1,0 +1,62 @@
+[
+{
+"op": "cli_hermes_cli_proxy_adapters_nous_portal_is_authenticated",
+"value": ""
+},
+{
+"op": "cli_hermes_cli_proxy_adapters_nous_portal_is_authenticated",
+"value": "x"
+},
+{
+"op": "cli_hermes_cli_proxy_adapters_nous_portal_is_authenticated",
+"value": "hello world"
+},
+{
+"op": "cli_hermes_cli_proxy_adapters_nous_portal_is_authenticated",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_hermes_cli_proxy_adapters_nous_portal_is_authenticated",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cli_hermes_cli_proxy_adapters_nous_portal_is_authenticated",
+"value": "user@example.com"
+},
+{
+"op": "cli_hermes_cli_proxy_adapters_nous_portal_is_authenticated",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_hermes_cli_proxy_adapters_nous_portal_is_authenticated",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cli_hermes_cli_proxy_adapters_nous_portal_is_authenticated",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cli_hermes_cli_proxy_adapters_nous_portal_is_authenticated",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_hermes_cli_proxy_adapters_nous_portal_is_authenticated",
+"value": "12345"
+},
+{
+"op": "cli_hermes_cli_proxy_adapters_nous_portal_is_authenticated",
+"value": "  spaced  "
+},
+{
+"op": "cli_hermes_cli_proxy_adapters_nous_portal_is_authenticated",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cli_hermes_cli_proxy_adapters_nous_portal_is_authenticated",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_hermes_cli_proxy_adapters_nous_portal_is_authenticated",
+"value": "key:value;key2:value2"
+}
+]

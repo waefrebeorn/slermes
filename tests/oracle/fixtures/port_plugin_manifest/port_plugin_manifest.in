@@ -1,0 +1,62 @@
+[
+{
+"op": "plugin_manifest_kind_is_valid",
+"value": ""
+},
+{
+"op": "plugin_manifest_kind_is_valid",
+"value": "x"
+},
+{
+"op": "plugin_manifest_kind_is_valid",
+"value": "hello world"
+},
+{
+"op": "plugin_manifest_kind_is_valid",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "plugin_manifest_kind_is_valid",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "plugin_manifest_kind_is_valid",
+"value": "user@example.com"
+},
+{
+"op": "plugin_manifest_kind_is_valid",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "plugin_manifest_kind_is_valid",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "plugin_manifest_kind_is_valid",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "plugin_manifest_kind_is_valid",
+"value": "CamelCaseString"
+},
+{
+"op": "plugin_manifest_kind_is_valid",
+"value": "12345"
+},
+{
+"op": "plugin_manifest_kind_is_valid",
+"value": "  spaced  "
+},
+{
+"op": "plugin_manifest_kind_is_valid",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "plugin_manifest_kind_is_valid",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "plugin_manifest_kind_is_valid",
+"value": "key:value;key2:value2"
+}
+]

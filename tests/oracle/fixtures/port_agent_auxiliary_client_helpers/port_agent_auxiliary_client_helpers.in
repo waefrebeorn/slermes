@@ -1,0 +1,722 @@
+[
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": ""
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "x"
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "hello world"
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "user@example.com"
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "CamelCaseString"
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "12345"
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "  spaced  "
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "key:value;key2:value2"
+},
+{
+"op": "aux__is_invalid_aux_response_error",
+"value": ""
+},
+{
+"op": "aux__is_invalid_aux_response_error",
+"value": "x"
+},
+{
+"op": "aux__is_invalid_aux_response_error",
+"value": "hello world"
+},
+{
+"op": "aux__is_invalid_aux_response_error",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "aux__is_invalid_aux_response_error",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "aux__is_invalid_aux_response_error",
+"value": "user@example.com"
+},
+{
+"op": "aux__is_invalid_aux_response_error",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "aux__is_invalid_aux_response_error",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "aux__is_invalid_aux_response_error",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "aux__is_invalid_aux_response_error",
+"value": "CamelCaseString"
+},
+{
+"op": "aux__is_invalid_aux_response_error",
+"value": "12345"
+},
+{
+"op": "aux__is_invalid_aux_response_error",
+"value": "  spaced  "
+},
+{
+"op": "aux__is_invalid_aux_response_error",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "aux__is_invalid_aux_response_error",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "aux__is_invalid_aux_response_error",
+"value": "key:value;key2:value2"
+},
+{
+"op": "aux__resolve_aux_verify",
+"value": ""
+},
+{
+"op": "aux__resolve_aux_verify",
+"value": "x"
+},
+{
+"op": "aux__resolve_aux_verify",
+"value": "hello world"
+},
+{
+"op": "aux__resolve_aux_verify",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "aux__resolve_aux_verify",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "aux__resolve_aux_verify",
+"value": "user@example.com"
+},
+{
+"op": "aux__resolve_aux_verify",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "aux__resolve_aux_verify",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "aux__resolve_aux_verify",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "aux__resolve_aux_verify",
+"value": "CamelCaseString"
+},
+{
+"op": "aux__resolve_aux_verify",
+"value": "12345"
+},
+{
+"op": "aux__resolve_aux_verify",
+"value": "  spaced  "
+},
+{
+"op": "aux__resolve_aux_verify",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "aux__resolve_aux_verify",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "aux__resolve_aux_verify",
+"value": "key:value;key2:value2"
+},
+{
+"op": "aux__maybe_wrap_anthropic",
+"value": ""
+},
+{
+"op": "aux__maybe_wrap_anthropic",
+"value": "x"
+},
+{
+"op": "aux__maybe_wrap_anthropic",
+"value": "hello world"
+},
+{
+"op": "aux__maybe_wrap_anthropic",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "aux__maybe_wrap_anthropic",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "aux__maybe_wrap_anthropic",
+"value": "user@example.com"
+},
+{
+"op": "aux__maybe_wrap_anthropic",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "aux__maybe_wrap_anthropic",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "aux__maybe_wrap_anthropic",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "aux__maybe_wrap_anthropic",
+"value": "CamelCaseString"
+},
+{
+"op": "aux__maybe_wrap_anthropic",
+"value": "12345"
+},
+{
+"op": "aux__maybe_wrap_anthropic",
+"value": "  spaced  "
+},
+{
+"op": "aux__maybe_wrap_anthropic",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "aux__maybe_wrap_anthropic",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "aux__maybe_wrap_anthropic",
+"value": "key:value;key2:value2"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": ""
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "x"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "hello world"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "user@example.com"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "CamelCaseString"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "12345"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "  spaced  "
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "key:value;key2:value2"
+},
+{
+"op": "aux__recoverable_pool_provider",
+"value": ""
+},
+{
+"op": "aux__recoverable_pool_provider",
+"value": "x"
+},
+{
+"op": "aux__recoverable_pool_provider",
+"value": "hello world"
+},
+{
+"op": "aux__recoverable_pool_provider",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "aux__recoverable_pool_provider",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "aux__recoverable_pool_provider",
+"value": "user@example.com"
+},
+{
+"op": "aux__recoverable_pool_provider",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "aux__recoverable_pool_provider",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "aux__recoverable_pool_provider",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "aux__recoverable_pool_provider",
+"value": "CamelCaseString"
+},
+{
+"op": "aux__recoverable_pool_provider",
+"value": "12345"
+},
+{
+"op": "aux__recoverable_pool_provider",
+"value": "  spaced  "
+},
+{
+"op": "aux__recoverable_pool_provider",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "aux__recoverable_pool_provider",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "aux__recoverable_pool_provider",
+"value": "key:value;key2:value2"
+},
+{
+"op": "aux__recover_provider_pool",
+"value": ""
+},
+{
+"op": "aux__recover_provider_pool",
+"value": "x"
+},
+{
+"op": "aux__recover_provider_pool",
+"value": "hello world"
+},
+{
+"op": "aux__recover_provider_pool",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "aux__recover_provider_pool",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "aux__recover_provider_pool",
+"value": "user@example.com"
+},
+{
+"op": "aux__recover_provider_pool",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "aux__recover_provider_pool",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "aux__recover_provider_pool",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "aux__recover_provider_pool",
+"value": "CamelCaseString"
+},
+{
+"op": "aux__recover_provider_pool",
+"value": "12345"
+},
+{
+"op": "aux__recover_provider_pool",
+"value": "  spaced  "
+},
+{
+"op": "aux__recover_provider_pool",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "aux__recover_provider_pool",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "aux__recover_provider_pool",
+"value": "key:value;key2:value2"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": ""
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "x"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "hello world"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "user@example.com"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "CamelCaseString"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "12345"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "  spaced  "
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "key:value;key2:value2"
+},
+{
+"op": "aux__cached_client_accepts_slash_models",
+"value": ""
+},
+{
+"op": "aux__cached_client_accepts_slash_models",
+"value": "x"
+},
+{
+"op": "aux__cached_client_accepts_slash_models",
+"value": "hello world"
+},
+{
+"op": "aux__cached_client_accepts_slash_models",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "aux__cached_client_accepts_slash_models",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "aux__cached_client_accepts_slash_models",
+"value": "user@example.com"
+},
+{
+"op": "aux__cached_client_accepts_slash_models",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "aux__cached_client_accepts_slash_models",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "aux__cached_client_accepts_slash_models",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "aux__cached_client_accepts_slash_models",
+"value": "CamelCaseString"
+},
+{
+"op": "aux__cached_client_accepts_slash_models",
+"value": "12345"
+},
+{
+"op": "aux__cached_client_accepts_slash_models",
+"value": "  spaced  "
+},
+{
+"op": "aux__cached_client_accepts_slash_models",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "aux__cached_client_accepts_slash_models",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "aux__cached_client_accepts_slash_models",
+"value": "key:value;key2:value2"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": ""
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "x"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "hello world"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "user@example.com"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "CamelCaseString"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "12345"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "  spaced  "
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "key:value;key2:value2"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": ""
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "x"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "hello world"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "user@example.com"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "CamelCaseString"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "12345"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "  spaced  "
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "key:value;key2:value2"
+},
+{
+"op": "aux__validate_llm_response",
+"value": ""
+},
+{
+"op": "aux__validate_llm_response",
+"value": "x"
+},
+{
+"op": "aux__validate_llm_response",
+"value": "hello world"
+},
+{
+"op": "aux__validate_llm_response",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "aux__validate_llm_response",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "aux__validate_llm_response",
+"value": "user@example.com"
+},
+{
+"op": "aux__validate_llm_response",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "aux__validate_llm_response",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "aux__validate_llm_response",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "aux__validate_llm_response",
+"value": "CamelCaseString"
+},
+{
+"op": "aux__validate_llm_response",
+"value": "12345"
+},
+{
+"op": "aux__validate_llm_response",
+"value": "  spaced  "
+},
+{
+"op": "aux__validate_llm_response",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "aux__validate_llm_response",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "aux__validate_llm_response",
+"value": "key:value;key2:value2"
+}
+]

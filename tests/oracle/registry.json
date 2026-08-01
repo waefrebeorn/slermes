@@ -926,6 +926,766 @@
       "harness": "tests/t_port_hermes_cli_checkpoints.c",
       "oracle": "tests/sta_oracle_hermes_cli_checkpoints.py",
       "fixtures": "tests/oracle/fixtures/hermes_cli_checkpoints"
+    },
+    "port_url_safety_helpers": {
+      "harness": "tests/t_port_port_url_safety_helpers.c",
+      "oracle": "tests/sta_oracle_port_url_safety_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_url_safety_helpers"
+    },
+    "port_agent_auxiliary_client_helpers": {
+      "harness": "tests/t_port_port_agent_auxiliary_client_helpers.c",
+      "oracle": "tests/sta_oracle_port_agent_auxiliary_client_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_agent_auxiliary_client_helpers"
+    },
+    "port_agent_auxiliary_client_runtime": {
+      "harness": "tests/t_port_port_agent_auxiliary_client_runtime.c",
+      "oracle": "tests/sta_oracle_port_agent_auxiliary_client_runtime.py",
+      "fixtures": "tests/oracle/fixtures/port_agent_auxiliary_client_runtime"
+    },
+    "port_agent_redact_helpers": {
+      "harness": "tests/t_port_port_agent_redact_helpers.c",
+      "oracle": "tests/sta_oracle_port_agent_redact_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_agent_redact_helpers"
+    },
+    "port_agent_remaining_wrappers": {
+      "harness": "tests/t_port_port_agent_remaining_wrappers.c",
+      "oracle": "tests/sta_oracle_port_agent_remaining_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_agent_remaining_wrappers"
+    },
+    "port_agent_replay_cleanup": {
+      "harness": "tests/t_port_port_agent_replay_cleanup.c",
+      "oracle": "tests/sta_oracle_port_agent_replay_cleanup.py",
+      "fixtures": "tests/oracle/fixtures/port_agent_replay_cleanup"
+    },
+    "port_agent_secret_scope": {
+      "harness": "tests/t_port_port_agent_secret_scope.c",
+      "oracle": "tests/sta_oracle_port_agent_secret_scope.py",
+      "fixtures": "tests/oracle/fixtures/port_agent_secret_scope"
+    },
+    "port_agent_ssl_verify": {
+      "harness": "tests/t_port_port_agent_ssl_verify.c",
+      "oracle": "tests/sta_oracle_port_agent_ssl_verify.py",
+      "fixtures": "tests/oracle/fixtures/port_agent_ssl_verify"
+    },
+    "port_agent_tool_executor": {
+      "harness": "tests/t_port_port_agent_tool_executor.c",
+      "oracle": "tests/sta_oracle_port_agent_tool_executor.py",
+      "fixtures": "tests/oracle/fixtures/port_agent_tool_executor"
+    },
+    "port_agent_verify_hooks": {
+      "harness": "tests/t_port_port_agent_verify_hooks.c",
+      "oracle": "tests/sta_oracle_port_agent_verify_hooks.py",
+      "fixtures": "tests/oracle/fixtures/port_agent_verify_hooks"
+    },
+    "port_context_compressor_wrappers": {
+      "harness": "tests/t_port_port_context_compressor_wrappers.c",
+      "oracle": "tests/sta_oracle_port_context_compressor_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_context_compressor_wrappers"
+    },
+    "port_memory_manager_wrappers": {
+      "harness": "tests/t_port_port_memory_manager_wrappers.c",
+      "oracle": "tests/sta_oracle_port_memory_manager_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_memory_manager_wrappers"
+    },
+    "port_moa_loop_wrappers": {
+      "harness": "tests/t_port_port_moa_loop_wrappers.c",
+      "oracle": "tests/sta_oracle_port_moa_loop_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_moa_loop_wrappers"
+    },
+    "port_skill_utils_wrappers": {
+      "harness": "tests/t_port_port_skill_utils_wrappers.c",
+      "oracle": "tests/sta_oracle_port_skill_utils_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_skill_utils_wrappers"
+    },
+    "port_verif_evidence_wrappers": {
+      "harness": "tests/t_port_port_verif_evidence_wrappers.c",
+      "oracle": "tests/sta_oracle_port_verif_evidence_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_verif_evidence_wrappers"
+    },
+    "port_agent_anthropic_adapter": {
+      "harness": "tests/t_port_port_agent_anthropic_adapter.c",
+      "oracle": "tests/sta_oracle_port_agent_anthropic_adapter.py",
+      "fixtures": "tests/oracle/fixtures/port_agent_anthropic_adapter"
+    },
+    "port_agent_bedrock_adapter": {
+      "harness": "tests/t_port_port_agent_bedrock_adapter.c",
+      "oracle": "tests/sta_oracle_port_agent_bedrock_adapter.py",
+      "fixtures": "tests/oracle/fixtures/port_agent_bedrock_adapter"
+    },
+    "port_agent_browser_provider_methods": {
+      "harness": "tests/t_port_port_agent_browser_provider_methods.c",
+      "oracle": "tests/sta_oracle_port_agent_browser_provider_methods.py",
+      "fixtures": "tests/oracle/fixtures/port_agent_browser_provider_methods"
+    },
+    "port_agent_context_compressor": {
+      "harness": "tests/t_port_port_agent_context_compressor.c",
+      "oracle": "tests/sta_oracle_port_agent_context_compressor.py",
+      "fixtures": "tests/oracle/fixtures/port_agent_context_compressor"
+    },
+    "port_agent_display": {
+      "harness": "tests/t_port_port_agent_display.c",
+      "oracle": "tests/sta_oracle_port_agent_display.py",
+      "fixtures": "tests/oracle/fixtures/port_agent_display"
+    },
+    "port_agent_error_classifier": {
+      "harness": "tests/t_port_port_agent_error_classifier.c",
+      "oracle": "tests/sta_oracle_port_agent_error_classifier.py",
+      "fixtures": "tests/oracle/fixtures/port_agent_error_classifier"
+    },
+    "port_agent_model_metadata": {
+      "harness": "tests/t_port_port_agent_model_metadata.c",
+      "oracle": "tests/sta_oracle_port_agent_model_metadata.py",
+      "fixtures": "tests/oracle/fixtures/port_agent_model_metadata"
+    },
+    "port_agent_web_search_provider": {
+      "harness": "tests/t_port_port_agent_web_search_provider.c",
+      "oracle": "tests/sta_oracle_port_agent_web_search_provider.py",
+      "fixtures": "tests/oracle/fixtures/port_agent_web_search_provider"
+    },
+    "port_auth_na": {
+      "harness": "tests/t_port_port_auth_na.c",
+      "oracle": "tests/sta_oracle_port_auth_na.py",
+      "fixtures": "tests/oracle/fixtures/port_auth_na"
+    },
+    "port_auth_store": {
+      "harness": "tests/t_port_port_auth_store.c",
+      "oracle": "tests/sta_oracle_port_auth_store.py",
+      "fixtures": "tests/oracle/fixtures/port_auth_store"
+    },
+    "port_auth_wrappers": {
+      "harness": "tests/t_port_port_auth_wrappers.c",
+      "oracle": "tests/sta_oracle_port_auth_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_auth_wrappers"
+    },
+    "port_azure_detect": {
+      "harness": "tests/t_port_port_azure_detect.c",
+      "oracle": "tests/sta_oracle_port_azure_detect.py",
+      "fixtures": "tests/oracle/fixtures/port_azure_detect"
+    },
+    "port_blueprint_catalog_helpers": {
+      "harness": "tests/t_port_port_blueprint_catalog_helpers.c",
+      "oracle": "tests/sta_oracle_port_blueprint_catalog_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_blueprint_catalog_helpers"
+    },
+    "port_cli_commands_mixin_wrappers": {
+      "harness": "tests/t_port_port_cli_commands_mixin_wrappers.c",
+      "oracle": "tests/sta_oracle_port_cli_commands_mixin_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_cli_commands_mixin_wrappers"
+    },
+    "port_cli_gateway_wrappers": {
+      "harness": "tests/t_port_port_cli_gateway_wrappers.c",
+      "oracle": "tests/sta_oracle_port_cli_gateway_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_cli_gateway_wrappers"
+    },
+    "port_cli_pet_input": {
+      "harness": "tests/t_port_port_cli_pet_input.c",
+      "oracle": "tests/sta_oracle_port_cli_pet_input.py",
+      "fixtures": "tests/oracle/fixtures/port_cli_pet_input"
+    },
+    "port_cli_profiles": {
+      "harness": "tests/t_port_port_cli_profiles.c",
+      "oracle": "tests/sta_oracle_port_cli_profiles.py",
+      "fixtures": "tests/oracle/fixtures/port_cli_profiles"
+    },
+    "port_cli_remaining_wrappers": {
+      "harness": "tests/t_port_port_cli_remaining_wrappers.c",
+      "oracle": "tests/sta_oracle_port_cli_remaining_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_cli_remaining_wrappers"
+    },
+    "port_commands_wrappers": {
+      "harness": "tests/t_port_port_commands_wrappers.c",
+      "oracle": "tests/sta_oracle_port_commands_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_commands_wrappers"
+    },
+    "port_config_helpers": {
+      "harness": "tests/t_port_port_config_helpers.c",
+      "oracle": "tests/sta_oracle_port_config_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_config_helpers"
+    },
+    "port_config_py_io": {
+      "harness": "tests/t_port_port_config_py_io.c",
+      "oracle": "tests/sta_oracle_port_config_py_io.py",
+      "fixtures": "tests/oracle/fixtures/port_config_py_io"
+    },
+    "port_config_py_pure": {
+      "harness": "tests/t_port_port_config_py_pure.c",
+      "oracle": "tests/sta_oracle_port_config_py_pure.py",
+      "fixtures": "tests/oracle/fixtures/port_config_py_pure"
+    },
+    "port_context_breakdown_helpers": {
+      "harness": "tests/t_port_port_context_breakdown_helpers.c",
+      "oracle": "tests/sta_oracle_port_context_breakdown_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_context_breakdown_helpers"
+    },
+    "port_cron_jobs_helpers": {
+      "harness": "tests/t_port_port_cron_jobs_helpers.c",
+      "oracle": "tests/sta_oracle_port_cron_jobs_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_cron_jobs_helpers"
+    },
+    "port_dashboard_auth_cookies": {
+      "harness": "tests/t_port_port_dashboard_auth_cookies.c",
+      "oracle": "tests/sta_oracle_port_dashboard_auth_cookies.py",
+      "fixtures": "tests/oracle/fixtures/port_dashboard_auth_cookies"
+    },
+    "port_default_soul": {
+      "harness": "tests/t_port_port_default_soul.c",
+      "oracle": "tests/sta_oracle_port_default_soul.py",
+      "fixtures": "tests/oracle/fixtures/port_default_soul"
+    },
+    "port_display_tool_preview": {
+      "harness": "tests/t_port_port_display_tool_preview.c",
+      "oracle": "tests/sta_oracle_port_display_tool_preview.py",
+      "fixtures": "tests/oracle/fixtures/port_display_tool_preview"
+    },
+    "port_doctor": {
+      "harness": "tests/t_port_port_doctor.c",
+      "oracle": "tests/sta_oracle_port_doctor.py",
+      "fixtures": "tests/oracle/fixtures/port_doctor"
+    },
+    "port_doctor_helpers": {
+      "harness": "tests/t_port_port_doctor_helpers.c",
+      "oracle": "tests/sta_oracle_port_doctor_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_doctor_helpers"
+    },
+    "port_drain_control_helpers": {
+      "harness": "tests/t_port_port_drain_control_helpers.c",
+      "oracle": "tests/sta_oracle_port_drain_control_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_drain_control_helpers"
+    },
+    "port_file_tools_helpers": {
+      "harness": "tests/t_port_port_file_tools_helpers.c",
+      "oracle": "tests/sta_oracle_port_file_tools_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_file_tools_helpers"
+    },
+    "port_gateway_hooks": {
+      "harness": "tests/t_port_port_gateway_hooks.c",
+      "oracle": "tests/sta_oracle_port_gateway_hooks.py",
+      "fixtures": "tests/oracle/fixtures/port_gateway_hooks"
+    },
+    "port_gateway_platform_registry": {
+      "harness": "tests/t_port_port_gateway_platform_registry.c",
+      "oracle": "tests/sta_oracle_port_gateway_platform_registry.py",
+      "fixtures": "tests/oracle/fixtures/port_gateway_platform_registry"
+    },
+    "port_gateway_platforms_feishu_meeting_invite": {
+      "harness": "tests/t_port_port_gateway_platforms_feishu_meeting_invite.c",
+      "oracle": "tests/sta_oracle_port_gateway_platforms_feishu_meeting_invite.py",
+      "fixtures": "tests/oracle/fixtures/port_gateway_platforms_feishu_meeting_invite"
+    },
+    "port_gateway_platforms_helpers": {
+      "harness": "tests/t_port_port_gateway_platforms_helpers.c",
+      "oracle": "tests/sta_oracle_port_gateway_platforms_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_gateway_platforms_helpers"
+    },
+    "port_gateway_platforms_qqbot_keyboards": {
+      "harness": "tests/t_port_port_gateway_platforms_qqbot_keyboards.c",
+      "oracle": "tests/sta_oracle_port_gateway_platforms_qqbot_keyboards.py",
+      "fixtures": "tests/oracle/fixtures/port_gateway_platforms_qqbot_keyboards"
+    },
+    "port_gateway_platforms_qqbot_onboard": {
+      "harness": "tests/t_port_port_gateway_platforms_qqbot_onboard.c",
+      "oracle": "tests/sta_oracle_port_gateway_platforms_qqbot_onboard.py",
+      "fixtures": "tests/oracle/fixtures/port_gateway_platforms_qqbot_onboard"
+    },
+    "port_gateway_platforms_signal_rate_limit": {
+      "harness": "tests/t_port_port_gateway_platforms_signal_rate_limit.c",
+      "oracle": "tests/sta_oracle_port_gateway_platforms_signal_rate_limit.py",
+      "fixtures": "tests/oracle/fixtures/port_gateway_platforms_signal_rate_limit"
+    },
+    "port_gateway_response_filters": {
+      "harness": "tests/t_port_port_gateway_response_filters.c",
+      "oracle": "tests/sta_oracle_port_gateway_response_filters.py",
+      "fixtures": "tests/oracle/fixtures/port_gateway_response_filters"
+    },
+    "port_gateway_shutdown_forensics": {
+      "harness": "tests/t_port_port_gateway_shutdown_forensics.c",
+      "oracle": "tests/sta_oracle_port_gateway_shutdown_forensics.py",
+      "fixtures": "tests/oracle/fixtures/port_gateway_shutdown_forensics"
+    },
+    "port_gateway_windows_wrappers": {
+      "harness": "tests/t_port_port_gateway_windows_wrappers.c",
+      "oracle": "tests/sta_oracle_port_gateway_windows_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_gateway_windows_wrappers"
+    },
+    "port_goals_helpers": {
+      "harness": "tests/t_port_port_goals_helpers.c",
+      "oracle": "tests/sta_oracle_port_goals_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_goals_helpers"
+    },
+    "port_hermes_cli_backup": {
+      "harness": "tests/t_port_port_hermes_cli_backup.c",
+      "oracle": "tests/sta_oracle_port_hermes_cli_backup.py",
+      "fixtures": "tests/oracle/fixtures/port_hermes_cli_backup"
+    },
+    "port_hermes_cli_main_helpers": {
+      "harness": "tests/t_port_port_hermes_cli_main_helpers.c",
+      "oracle": "tests/sta_oracle_port_hermes_cli_main_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_hermes_cli_main_helpers"
+    },
+    "port_hermes_cli_memory_setup": {
+      "harness": "tests/t_port_port_hermes_cli_memory_setup.c",
+      "oracle": "tests/sta_oracle_port_hermes_cli_memory_setup.py",
+      "fixtures": "tests/oracle/fixtures/port_hermes_cli_memory_setup"
+    },
+    "port_hermes_cli_prompt_size": {
+      "harness": "tests/t_port_port_hermes_cli_prompt_size.c",
+      "oracle": "tests/sta_oracle_port_hermes_cli_prompt_size.py",
+      "fixtures": "tests/oracle/fixtures/port_hermes_cli_prompt_size"
+    },
+    "port_hermes_cli_proxy_adapters_nous_portal": {
+      "harness": "tests/t_port_port_hermes_cli_proxy_adapters_nous_portal.c",
+      "oracle": "tests/sta_oracle_port_hermes_cli_proxy_adapters_nous_portal.py",
+      "fixtures": "tests/oracle/fixtures/port_hermes_cli_proxy_adapters_nous_portal"
+    },
+    "port_hermes_cli_security_advisories": {
+      "harness": "tests/t_port_port_hermes_cli_security_advisories.c",
+      "oracle": "tests/sta_oracle_port_hermes_cli_security_advisories.py",
+      "fixtures": "tests/oracle/fixtures/port_hermes_cli_security_advisories"
+    },
+    "port_hermes_cli_toolset_validation": {
+      "harness": "tests/t_port_port_hermes_cli_toolset_validation.c",
+      "oracle": "tests/sta_oracle_port_hermes_cli_toolset_validation.py",
+      "fixtures": "tests/oracle/fixtures/port_hermes_cli_toolset_validation"
+    },
+    "port_kanban_db": {
+      "harness": "tests/t_port_port_kanban_db.c",
+      "oracle": "tests/sta_oracle_port_kanban_db.py",
+      "fixtures": "tests/oracle/fixtures/port_kanban_db"
+    },
+    "port_kanban_db_wrappers": {
+      "harness": "tests/t_port_port_kanban_db_wrappers.c",
+      "oracle": "tests/sta_oracle_port_kanban_db_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_kanban_db_wrappers"
+    },
+    "port_lazy_deps_helpers": {
+      "harness": "tests/t_port_port_lazy_deps_helpers.c",
+      "oracle": "tests/sta_oracle_port_lazy_deps_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_lazy_deps_helpers"
+    },
+    "port_learning_graph_render": {
+      "harness": "tests/t_port_port_learning_graph_render.c",
+      "oracle": "tests/sta_oracle_port_learning_graph_render.py",
+      "fixtures": "tests/oracle/fixtures/port_learning_graph_render"
+    },
+    "port_learning_mutations": {
+      "harness": "tests/t_port_port_learning_mutations.c",
+      "oracle": "tests/sta_oracle_port_learning_mutations.py",
+      "fixtures": "tests/oracle/fixtures/port_learning_mutations"
+    },
+    "port_main_wrappers": {
+      "harness": "tests/t_port_port_main_wrappers.c",
+      "oracle": "tests/sta_oracle_port_main_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_main_wrappers"
+    },
+    "port_managed_uv_wrappers": {
+      "harness": "tests/t_port_port_managed_uv_wrappers.c",
+      "oracle": "tests/sta_oracle_port_managed_uv_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_managed_uv_wrappers"
+    },
+    "port_model_setup_wrappers": {
+      "harness": "tests/t_port_port_model_setup_wrappers.c",
+      "oracle": "tests/sta_oracle_port_model_setup_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_model_setup_wrappers"
+    },
+    "port_model_switch_wrappers": {
+      "harness": "tests/t_port_port_model_switch_wrappers.c",
+      "oracle": "tests/sta_oracle_port_model_switch_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_model_switch_wrappers"
+    },
+    "port_models_helpers": {
+      "harness": "tests/t_port_port_models_helpers.c",
+      "oracle": "tests/sta_oracle_port_models_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_models_helpers"
+    },
+    "port_models_net": {
+      "harness": "tests/t_port_port_models_net.c",
+      "oracle": "tests/sta_oracle_port_models_net.py",
+      "fixtures": "tests/oracle/fixtures/port_models_net"
+    },
+    "port_nous_account_wrappers": {
+      "harness": "tests/t_port_port_nous_account_wrappers.c",
+      "oracle": "tests/sta_oracle_port_nous_account_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_nous_account_wrappers"
+    },
+    "port_nous_sub_wrappers": {
+      "harness": "tests/t_port_port_nous_sub_wrappers.c",
+      "oracle": "tests/sta_oracle_port_nous_sub_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_nous_sub_wrappers"
+    },
+    "port_other_remaining_wrappers": {
+      "harness": "tests/t_port_port_other_remaining_wrappers.c",
+      "oracle": "tests/sta_oracle_port_other_remaining_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_other_remaining_wrappers"
+    },
+    "port_platforms_base_helpers": {
+      "harness": "tests/t_port_port_platforms_base_helpers.c",
+      "oracle": "tests/sta_oracle_port_platforms_base_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_platforms_base_helpers"
+    },
+    "port_plugin_manifest": {
+      "harness": "tests/t_port_port_plugin_manifest.c",
+      "oracle": "tests/sta_oracle_port_plugin_manifest.py",
+      "fixtures": "tests/oracle/fixtures/port_plugin_manifest"
+    },
+    "port_plugins_cmd_wrappers": {
+      "harness": "tests/t_port_port_plugins_cmd_wrappers.c",
+      "oracle": "tests/sta_oracle_port_plugins_cmd_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_plugins_cmd_wrappers"
+    },
+    "port_plugins_wrappers": {
+      "harness": "tests/t_port_port_plugins_wrappers.c",
+      "oracle": "tests/sta_oracle_port_plugins_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_plugins_wrappers"
+    },
+    "port_provider_registry": {
+      "harness": "tests/t_port_port_provider_registry.c",
+      "oracle": "tests/sta_oracle_port_provider_registry.py",
+      "fixtures": "tests/oracle/fixtures/port_provider_registry"
+    },
+    "port_scale_to_zero_helpers": {
+      "harness": "tests/t_port_port_scale_to_zero_helpers.c",
+      "oracle": "tests/sta_oracle_port_scale_to_zero_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_scale_to_zero_helpers"
+    },
+    "port_session_export_md_wrappers": {
+      "harness": "tests/t_port_port_session_export_md_wrappers.c",
+      "oracle": "tests/sta_oracle_port_session_export_md_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_session_export_md_wrappers"
+    },
+    "port_session_export_wrappers": {
+      "harness": "tests/t_port_port_session_export_wrappers.c",
+      "oracle": "tests/sta_oracle_port_session_export_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_session_export_wrappers"
+    },
+    "port_tools_browser_camofox": {
+      "harness": "tests/t_port_port_tools_browser_camofox.c",
+      "oracle": "tests/sta_oracle_port_tools_browser_camofox.py",
+      "fixtures": "tests/oracle/fixtures/port_tools_browser_camofox"
+    },
+    "port_tools_clarify_gateway": {
+      "harness": "tests/t_port_port_tools_clarify_gateway.c",
+      "oracle": "tests/sta_oracle_port_tools_clarify_gateway.py",
+      "fixtures": "tests/oracle/fixtures/port_tools_clarify_gateway"
+    },
+    "port_tools_env_passthrough": {
+      "harness": "tests/t_port_port_tools_env_passthrough.c",
+      "oracle": "tests/sta_oracle_port_tools_env_passthrough.py",
+      "fixtures": "tests/oracle/fixtures/port_tools_env_passthrough"
+    },
+    "port_tools_env_probe": {
+      "harness": "tests/t_port_port_tools_env_probe.c",
+      "oracle": "tests/sta_oracle_port_tools_env_probe.py",
+      "fixtures": "tests/oracle/fixtures/port_tools_env_probe"
+    },
+    "port_tools_environments_ssh": {
+      "harness": "tests/t_port_port_tools_environments_ssh.c",
+      "oracle": "tests/sta_oracle_port_tools_environments_ssh.py",
+      "fixtures": "tests/oracle/fixtures/port_tools_environments_ssh"
+    },
+    "port_tools_fal_common": {
+      "harness": "tests/t_port_port_tools_fal_common.c",
+      "oracle": "tests/sta_oracle_port_tools_fal_common.py",
+      "fixtures": "tests/oracle/fixtures/port_tools_fal_common"
+    },
+    "port_tools_managed_tool_gateway": {
+      "harness": "tests/t_port_port_tools_managed_tool_gateway.c",
+      "oracle": "tests/sta_oracle_port_tools_managed_tool_gateway.py",
+      "fixtures": "tests/oracle/fixtures/port_tools_managed_tool_gateway"
+    },
+    "port_tools_path_security": {
+      "harness": "tests/t_port_port_tools_path_security.c",
+      "oracle": "tests/sta_oracle_port_tools_path_security.py",
+      "fixtures": "tests/oracle/fixtures/port_tools_path_security"
+    },
+    "port_tools_tool_search": {
+      "harness": "tests/t_port_port_tools_tool_search.c",
+      "oracle": "tests/sta_oracle_port_tools_tool_search.py",
+      "fixtures": "tests/oracle/fixtures/port_tools_tool_search"
+    },
+    "port_tools_url_safety": {
+      "harness": "tests/t_port_port_tools_url_safety.c",
+      "oracle": "tests/sta_oracle_port_tools_url_safety.py",
+      "fixtures": "tests/oracle/fixtures/port_tools_url_safety"
+    },
+    "port_tools_website_policy": {
+      "harness": "tests/t_port_port_tools_website_policy.c",
+      "oracle": "tests/sta_oracle_port_tools_website_policy.py",
+      "fixtures": "tests/oracle/fixtures/port_tools_website_policy"
+    },
+    "port_tools_write_approval": {
+      "harness": "tests/t_port_port_tools_write_approval.c",
+      "oracle": "tests/sta_oracle_port_tools_write_approval.py",
+      "fixtures": "tests/oracle/fixtures/port_tools_write_approval"
+    },
+    "port_uninstall_wrappers": {
+      "harness": "tests/t_port_port_uninstall_wrappers.c",
+      "oracle": "tests/sta_oracle_port_uninstall_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_uninstall_wrappers"
+    },
+    "port_verification_stop_helpers": {
+      "harness": "tests/t_port_port_verification_stop_helpers.c",
+      "oracle": "tests/sta_oracle_port_verification_stop_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_verification_stop_helpers"
+    },
+    "port_web_server": {
+      "harness": "tests/t_port_port_web_server.c",
+      "oracle": "tests/sta_oracle_port_web_server.py",
+      "fixtures": "tests/oracle/fixtures/port_web_server"
+    },
+    "port_web_server_fs": {
+      "harness": "tests/t_port_port_web_server_fs.c",
+      "oracle": "tests/sta_oracle_port_web_server_fs.py",
+      "fixtures": "tests/oracle/fixtures/port_web_server_fs"
+    },
+    "port_web_server_managed_files": {
+      "harness": "tests/t_port_port_web_server_managed_files.c",
+      "oracle": "tests/sta_oracle_port_web_server_managed_files.py",
+      "fixtures": "tests/oracle/fixtures/port_web_server_managed_files"
+    },
+    "port_web_server_sessions_admin": {
+      "harness": "tests/t_port_port_web_server_sessions_admin.c",
+      "oracle": "tests/sta_oracle_port_web_server_sessions_admin.py",
+      "fixtures": "tests/oracle/fixtures/port_web_server_sessions_admin"
+    },
+    "port_web_server_themes": {
+      "harness": "tests/t_port_port_web_server_themes.c",
+      "oracle": "tests/sta_oracle_port_web_server_themes.py",
+      "fixtures": "tests/oracle/fixtures/port_web_server_themes"
+    },
+    "port_webhook_helpers": {
+      "harness": "tests/t_port_port_webhook_helpers.c",
+      "oracle": "tests/sta_oracle_port_webhook_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_webhook_helpers"
+    },
+    "port_whatsapp_cloud_helpers": {
+      "harness": "tests/t_port_port_whatsapp_cloud_helpers.c",
+      "oracle": "tests/sta_oracle_port_whatsapp_cloud_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_whatsapp_cloud_helpers"
+    },
+    "port_whatsapp_common_helpers": {
+      "harness": "tests/t_port_port_whatsapp_common_helpers.c",
+      "oracle": "tests/sta_oracle_port_whatsapp_common_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_whatsapp_common_helpers"
+    },
+    "port_windows_ssh_wrappers": {
+      "harness": "tests/t_port_port_windows_ssh_wrappers.c",
+      "oracle": "tests/sta_oracle_port_windows_ssh_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_windows_ssh_wrappers"
+    },
+    "port_cron_jobs": {
+      "harness": "tests/t_port_port_cron_jobs.c",
+      "oracle": "tests/sta_oracle_port_cron_jobs.py",
+      "fixtures": "tests/oracle/fixtures/port_cron_jobs"
+    },
+    "port_cron_scheduler_delivery": {
+      "harness": "tests/t_port_port_cron_scheduler_delivery.c",
+      "oracle": "tests/sta_oracle_port_cron_scheduler_delivery.py",
+      "fixtures": "tests/oracle/fixtures/port_cron_scheduler_delivery"
+    },
+    "port_cron_scheduler_helpers": {
+      "harness": "tests/t_port_port_cron_scheduler_helpers.c",
+      "oracle": "tests/sta_oracle_port_cron_scheduler_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_cron_scheduler_helpers"
+    },
+    "port_cron_scheduler_runtime": {
+      "harness": "tests/t_port_port_cron_scheduler_runtime.c",
+      "oracle": "tests/sta_oracle_port_cron_scheduler_runtime.py",
+      "fixtures": "tests/oracle/fixtures/port_cron_scheduler_runtime"
+    },
+    "port_cron_scheduler_script": {
+      "harness": "tests/t_port_port_cron_scheduler_script.c",
+      "oracle": "tests/sta_oracle_port_cron_scheduler_script.py",
+      "fixtures": "tests/oracle/fixtures/port_cron_scheduler_script"
+    },
+    "port_lifecycle_guard": {
+      "harness": "tests/t_port_port_lifecycle_guard.c",
+      "oracle": "tests/sta_oracle_port_lifecycle_guard.py",
+      "fixtures": "tests/oracle/fixtures/port_lifecycle_guard"
+    },
+    "port_bluebubbles_wrappers": {
+      "harness": "tests/t_port_port_bluebubbles_wrappers.c",
+      "oracle": "tests/sta_oracle_port_bluebubbles_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_bluebubbles_wrappers"
+    },
+    "port_gateway_drain_control": {
+      "harness": "tests/t_port_port_gateway_drain_control.c",
+      "oracle": "tests/sta_oracle_port_gateway_drain_control.py",
+      "fixtures": "tests/oracle/fixtures/port_gateway_drain_control"
+    },
+    "port_gateway_platforms_base_media": {
+      "harness": "tests/t_port_port_gateway_platforms_base_media.c",
+      "oracle": "tests/sta_oracle_port_gateway_platforms_base_media.py",
+      "fixtures": "tests/oracle/fixtures/port_gateway_platforms_base_media"
+    },
+    "port_gateway_remaining_wrappers": {
+      "harness": "tests/t_port_port_gateway_remaining_wrappers.c",
+      "oracle": "tests/sta_oracle_port_gateway_remaining_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_gateway_remaining_wrappers"
+    },
+    "port_gateway_run": {
+      "harness": "tests/t_port_port_gateway_run.c",
+      "oracle": "tests/sta_oracle_port_gateway_run.py",
+      "fixtures": "tests/oracle/fixtures/port_gateway_run"
+    },
+    "port_gateway_run_deps": {
+      "harness": "tests/t_port_port_gateway_run_deps.c",
+      "oracle": "tests/sta_oracle_port_gateway_run_deps.py",
+      "fixtures": "tests/oracle/fixtures/port_gateway_run_deps"
+    },
+    "port_gateway_run_wrappers": {
+      "harness": "tests/t_port_port_gateway_run_wrappers.c",
+      "oracle": "tests/sta_oracle_port_gateway_run_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_gateway_run_wrappers"
+    },
+    "port_qqbot_wrappers": {
+      "harness": "tests/t_port_port_qqbot_wrappers.c",
+      "oracle": "tests/sta_oracle_port_qqbot_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_qqbot_wrappers"
+    },
+    "port_slash_commands": {
+      "harness": "tests/t_port_port_slash_commands.c",
+      "oracle": "tests/sta_oracle_port_slash_commands.py",
+      "fixtures": "tests/oracle/fixtures/port_slash_commands"
+    },
+    "port_status_wrappers": {
+      "harness": "tests/t_port_port_status_wrappers.c",
+      "oracle": "tests/sta_oracle_port_status_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_status_wrappers"
+    },
+    "port_weixin_wrappers": {
+      "harness": "tests/t_port_port_weixin_wrappers.c",
+      "oracle": "tests/sta_oracle_port_weixin_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_weixin_wrappers"
+    },
+    "port_yuanbao_wrappers": {
+      "harness": "tests/t_port_port_yuanbao_wrappers.c",
+      "oracle": "tests/sta_oracle_port_yuanbao_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_yuanbao_wrappers"
+    },
+    "port_approval": {
+      "harness": "tests/t_port_port_approval.c",
+      "oracle": "tests/sta_oracle_port_approval.py",
+      "fixtures": "tests/oracle/fixtures/port_approval"
+    },
+    "port_approval_wrappers": {
+      "harness": "tests/t_port_port_approval_wrappers.c",
+      "oracle": "tests/sta_oracle_port_approval_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_approval_wrappers"
+    },
+    "port_async_delegation_wrappers": {
+      "harness": "tests/t_port_port_async_delegation_wrappers.c",
+      "oracle": "tests/sta_oracle_port_async_delegation_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_async_delegation_wrappers"
+    },
+    "port_browser_tool_helpers": {
+      "harness": "tests/t_port_port_browser_tool_helpers.c",
+      "oracle": "tests/sta_oracle_port_browser_tool_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_browser_tool_helpers"
+    },
+    "port_cua_backend_wrappers": {
+      "harness": "tests/t_port_port_cua_backend_wrappers.c",
+      "oracle": "tests/sta_oracle_port_cua_backend_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_cua_backend_wrappers"
+    },
+    "port_env_base_wrappers": {
+      "harness": "tests/t_port_port_env_base_wrappers.c",
+      "oracle": "tests/sta_oracle_port_env_base_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_env_base_wrappers"
+    },
+    "port_env_docker_wrappers": {
+      "harness": "tests/t_port_port_env_docker_wrappers.c",
+      "oracle": "tests/sta_oracle_port_env_docker_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_env_docker_wrappers"
+    },
+    "port_env_local_wrappers": {
+      "harness": "tests/t_port_port_env_local_wrappers.c",
+      "oracle": "tests/sta_oracle_port_env_local_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_env_local_wrappers"
+    },
+    "port_file_operations": {
+      "harness": "tests/t_port_port_file_operations.c",
+      "oracle": "tests/sta_oracle_port_file_operations.py",
+      "fixtures": "tests/oracle/fixtures/port_file_operations"
+    },
+    "port_image_generation_tool": {
+      "harness": "tests/t_port_port_image_generation_tool.c",
+      "oracle": "tests/sta_oracle_port_image_generation_tool.py",
+      "fixtures": "tests/oracle/fixtures/port_image_generation_tool"
+    },
+    "port_mcp_oauth_wrappers": {
+      "harness": "tests/t_port_port_mcp_oauth_wrappers.c",
+      "oracle": "tests/sta_oracle_port_mcp_oauth_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_mcp_oauth_wrappers"
+    },
+    "port_mcp_tool": {
+      "harness": "tests/t_port_port_mcp_tool.c",
+      "oracle": "tests/sta_oracle_port_mcp_tool.py",
+      "fixtures": "tests/oracle/fixtures/port_mcp_tool"
+    },
+    "port_process_registry": {
+      "harness": "tests/t_port_port_process_registry.c",
+      "oracle": "tests/sta_oracle_port_process_registry.py",
+      "fixtures": "tests/oracle/fixtures/port_process_registry"
+    },
+    "port_skill_mgr_tool_wrappers": {
+      "harness": "tests/t_port_port_skill_mgr_tool_wrappers.c",
+      "oracle": "tests/sta_oracle_port_skill_mgr_tool_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_skill_mgr_tool_wrappers"
+    },
+    "port_skill_usage_wrappers": {
+      "harness": "tests/t_port_port_skill_usage_wrappers.c",
+      "oracle": "tests/sta_oracle_port_skill_usage_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_skill_usage_wrappers"
+    },
+    "port_skills_hub": {
+      "harness": "tests/t_port_port_skills_hub.c",
+      "oracle": "tests/sta_oracle_port_skills_hub.py",
+      "fixtures": "tests/oracle/fixtures/port_skills_hub"
+    },
+    "port_terminal_tool_wrappers": {
+      "harness": "tests/t_port_port_terminal_tool_wrappers.c",
+      "oracle": "tests/sta_oracle_port_terminal_tool_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_terminal_tool_wrappers"
+    },
+    "port_tools_async_delegation": {
+      "harness": "tests/t_port_port_tools_async_delegation.c",
+      "oracle": "tests/sta_oracle_port_tools_async_delegation.py",
+      "fixtures": "tests/oracle/fixtures/port_tools_async_delegation"
+    },
+    "port_tools_read_extract": {
+      "harness": "tests/t_port_port_tools_read_extract.c",
+      "oracle": "tests/sta_oracle_port_tools_read_extract.py",
+      "fixtures": "tests/oracle/fixtures/port_tools_read_extract"
+    },
+    "port_tools_remaining_wrappers": {
+      "harness": "tests/t_port_port_tools_remaining_wrappers.c",
+      "oracle": "tests/sta_oracle_port_tools_remaining_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_tools_remaining_wrappers"
+    },
+    "port_toolsets": {
+      "harness": "tests/t_port_port_toolsets.c",
+      "oracle": "tests/sta_oracle_port_toolsets.py",
+      "fixtures": "tests/oracle/fixtures/port_toolsets"
+    },
+    "port_transcription_wrappers": {
+      "harness": "tests/t_port_port_transcription_wrappers.c",
+      "oracle": "tests/sta_oracle_port_transcription_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_transcription_wrappers"
+    },
+    "port_tts_tool": {
+      "harness": "tests/t_port_port_tts_tool.c",
+      "oracle": "tests/sta_oracle_port_tts_tool.py",
+      "fixtures": "tests/oracle/fixtures/port_tts_tool"
+    },
+    "port_vision_helpers": {
+      "harness": "tests/t_port_port_vision_helpers.c",
+      "oracle": "tests/sta_oracle_port_vision_helpers.py",
+      "fixtures": "tests/oracle/fixtures/port_vision_helpers"
+    },
+    "port_vision_wrappers": {
+      "harness": "tests/t_port_port_vision_wrappers.c",
+      "oracle": "tests/sta_oracle_port_vision_wrappers.py",
+      "fixtures": "tests/oracle/fixtures/port_vision_wrappers"
     }
   },
   "normalize": {

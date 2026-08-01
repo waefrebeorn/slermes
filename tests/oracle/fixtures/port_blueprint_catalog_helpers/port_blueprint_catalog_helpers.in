@@ -1,0 +1,62 @@
+[
+{
+"op": "blueprint_catalog_validate_slot_type",
+"value": ""
+},
+{
+"op": "blueprint_catalog_validate_slot_type",
+"value": "x"
+},
+{
+"op": "blueprint_catalog_validate_slot_type",
+"value": "hello world"
+},
+{
+"op": "blueprint_catalog_validate_slot_type",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "blueprint_catalog_validate_slot_type",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "blueprint_catalog_validate_slot_type",
+"value": "user@example.com"
+},
+{
+"op": "blueprint_catalog_validate_slot_type",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "blueprint_catalog_validate_slot_type",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "blueprint_catalog_validate_slot_type",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "blueprint_catalog_validate_slot_type",
+"value": "CamelCaseString"
+},
+{
+"op": "blueprint_catalog_validate_slot_type",
+"value": "12345"
+},
+{
+"op": "blueprint_catalog_validate_slot_type",
+"value": "  spaced  "
+},
+{
+"op": "blueprint_catalog_validate_slot_type",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "blueprint_catalog_validate_slot_type",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "blueprint_catalog_validate_slot_type",
+"value": "key:value;key2:value2"
+}
+]

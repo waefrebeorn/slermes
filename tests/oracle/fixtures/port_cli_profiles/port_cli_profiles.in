@@ -1,0 +1,302 @@
+[
+{
+"op": "profile_dir_exists",
+"value": ""
+},
+{
+"op": "profile_dir_exists",
+"value": "x"
+},
+{
+"op": "profile_dir_exists",
+"value": "hello world"
+},
+{
+"op": "profile_dir_exists",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "profile_dir_exists",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "profile_dir_exists",
+"value": "user@example.com"
+},
+{
+"op": "profile_dir_exists",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "profile_dir_exists",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "profile_dir_exists",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "profile_dir_exists",
+"value": "CamelCaseString"
+},
+{
+"op": "profile_dir_exists",
+"value": "12345"
+},
+{
+"op": "profile_dir_exists",
+"value": "  spaced  "
+},
+{
+"op": "profile_dir_exists",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "profile_dir_exists",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "profile_dir_exists",
+"value": "key:value;key2:value2"
+},
+{
+"op": "profile_archive_member_safe",
+"value": ""
+},
+{
+"op": "profile_archive_member_safe",
+"value": "x"
+},
+{
+"op": "profile_archive_member_safe",
+"value": "hello world"
+},
+{
+"op": "profile_archive_member_safe",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "profile_archive_member_safe",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "profile_archive_member_safe",
+"value": "user@example.com"
+},
+{
+"op": "profile_archive_member_safe",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "profile_archive_member_safe",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "profile_archive_member_safe",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "profile_archive_member_safe",
+"value": "CamelCaseString"
+},
+{
+"op": "profile_archive_member_safe",
+"value": "12345"
+},
+{
+"op": "profile_archive_member_safe",
+"value": "  spaced  "
+},
+{
+"op": "profile_archive_member_safe",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "profile_archive_member_safe",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "profile_archive_member_safe",
+"value": "key:value;key2:value2"
+},
+{
+"op": "profile_has_bundled_skills_opt_out",
+"value": ""
+},
+{
+"op": "profile_has_bundled_skills_opt_out",
+"value": "x"
+},
+{
+"op": "profile_has_bundled_skills_opt_out",
+"value": "hello world"
+},
+{
+"op": "profile_has_bundled_skills_opt_out",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "profile_has_bundled_skills_opt_out",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "profile_has_bundled_skills_opt_out",
+"value": "user@example.com"
+},
+{
+"op": "profile_has_bundled_skills_opt_out",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "profile_has_bundled_skills_opt_out",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "profile_has_bundled_skills_opt_out",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "profile_has_bundled_skills_opt_out",
+"value": "CamelCaseString"
+},
+{
+"op": "profile_has_bundled_skills_opt_out",
+"value": "12345"
+},
+{
+"op": "profile_has_bundled_skills_opt_out",
+"value": "  spaced  "
+},
+{
+"op": "profile_has_bundled_skills_opt_out",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "profile_has_bundled_skills_opt_out",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "profile_has_bundled_skills_opt_out",
+"value": "key:value;key2:value2"
+},
+{
+"op": "profile_count_skills",
+"value": ""
+},
+{
+"op": "profile_count_skills",
+"value": "x"
+},
+{
+"op": "profile_count_skills",
+"value": "hello world"
+},
+{
+"op": "profile_count_skills",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "profile_count_skills",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "profile_count_skills",
+"value": "user@example.com"
+},
+{
+"op": "profile_count_skills",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "profile_count_skills",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "profile_count_skills",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "profile_count_skills",
+"value": "CamelCaseString"
+},
+{
+"op": "profile_count_skills",
+"value": "12345"
+},
+{
+"op": "profile_count_skills",
+"value": "  spaced  "
+},
+{
+"op": "profile_count_skills",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "profile_count_skills",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "profile_count_skills",
+"value": "key:value;key2:value2"
+},
+{
+"op": "profile_gateway_running",
+"value": ""
+},
+{
+"op": "profile_gateway_running",
+"value": "x"
+},
+{
+"op": "profile_gateway_running",
+"value": "hello world"
+},
+{
+"op": "profile_gateway_running",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "profile_gateway_running",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "profile_gateway_running",
+"value": "user@example.com"
+},
+{
+"op": "profile_gateway_running",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "profile_gateway_running",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "profile_gateway_running",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "profile_gateway_running",
+"value": "CamelCaseString"
+},
+{
+"op": "profile_gateway_running",
+"value": "12345"
+},
+{
+"op": "profile_gateway_running",
+"value": "  spaced  "
+},
+{
+"op": "profile_gateway_running",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "profile_gateway_running",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "profile_gateway_running",
+"value": "key:value;key2:value2"
+}
+]

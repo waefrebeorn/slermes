@@ -1,0 +1,122 @@
+[
+{
+"op": "image_gen_looks_like_absolute_file_path",
+"value": ""
+},
+{
+"op": "image_gen_looks_like_absolute_file_path",
+"value": "x"
+},
+{
+"op": "image_gen_looks_like_absolute_file_path",
+"value": "hello world"
+},
+{
+"op": "image_gen_looks_like_absolute_file_path",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "image_gen_looks_like_absolute_file_path",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "image_gen_looks_like_absolute_file_path",
+"value": "user@example.com"
+},
+{
+"op": "image_gen_looks_like_absolute_file_path",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "image_gen_looks_like_absolute_file_path",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "image_gen_looks_like_absolute_file_path",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "image_gen_looks_like_absolute_file_path",
+"value": "CamelCaseString"
+},
+{
+"op": "image_gen_looks_like_absolute_file_path",
+"value": "12345"
+},
+{
+"op": "image_gen_looks_like_absolute_file_path",
+"value": "  spaced  "
+},
+{
+"op": "image_gen_looks_like_absolute_file_path",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "image_gen_looks_like_absolute_file_path",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "image_gen_looks_like_absolute_file_path",
+"value": "key:value;key2:value2"
+},
+{
+"op": "image_gen_is_krea_model",
+"value": ""
+},
+{
+"op": "image_gen_is_krea_model",
+"value": "x"
+},
+{
+"op": "image_gen_is_krea_model",
+"value": "hello world"
+},
+{
+"op": "image_gen_is_krea_model",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "image_gen_is_krea_model",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "image_gen_is_krea_model",
+"value": "user@example.com"
+},
+{
+"op": "image_gen_is_krea_model",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "image_gen_is_krea_model",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "image_gen_is_krea_model",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "image_gen_is_krea_model",
+"value": "CamelCaseString"
+},
+{
+"op": "image_gen_is_krea_model",
+"value": "12345"
+},
+{
+"op": "image_gen_is_krea_model",
+"value": "  spaced  "
+},
+{
+"op": "image_gen_is_krea_model",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "image_gen_is_krea_model",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "image_gen_is_krea_model",
+"value": "key:value;key2:value2"
+}
+]

@@ -1,0 +1,62 @@
+[
+{
+"op": "browser_provider_close_session",
+"value": ""
+},
+{
+"op": "browser_provider_close_session",
+"value": "x"
+},
+{
+"op": "browser_provider_close_session",
+"value": "hello world"
+},
+{
+"op": "browser_provider_close_session",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "browser_provider_close_session",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "browser_provider_close_session",
+"value": "user@example.com"
+},
+{
+"op": "browser_provider_close_session",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "browser_provider_close_session",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "browser_provider_close_session",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "browser_provider_close_session",
+"value": "CamelCaseString"
+},
+{
+"op": "browser_provider_close_session",
+"value": "12345"
+},
+{
+"op": "browser_provider_close_session",
+"value": "  spaced  "
+},
+{
+"op": "browser_provider_close_session",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "browser_provider_close_session",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "browser_provider_close_session",
+"value": "key:value;key2:value2"
+}
+]

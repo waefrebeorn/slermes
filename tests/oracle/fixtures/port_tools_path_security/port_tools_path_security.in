@@ -1,0 +1,62 @@
+[
+{
+"op": "cli_tools_path_security_has_traversal_component",
+"value": ""
+},
+{
+"op": "cli_tools_path_security_has_traversal_component",
+"value": "x"
+},
+{
+"op": "cli_tools_path_security_has_traversal_component",
+"value": "hello world"
+},
+{
+"op": "cli_tools_path_security_has_traversal_component",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_tools_path_security_has_traversal_component",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cli_tools_path_security_has_traversal_component",
+"value": "user@example.com"
+},
+{
+"op": "cli_tools_path_security_has_traversal_component",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_tools_path_security_has_traversal_component",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cli_tools_path_security_has_traversal_component",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cli_tools_path_security_has_traversal_component",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_tools_path_security_has_traversal_component",
+"value": "12345"
+},
+{
+"op": "cli_tools_path_security_has_traversal_component",
+"value": "  spaced  "
+},
+{
+"op": "cli_tools_path_security_has_traversal_component",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cli_tools_path_security_has_traversal_component",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_tools_path_security_has_traversal_component",
+"value": "key:value;key2:value2"
+}
+]

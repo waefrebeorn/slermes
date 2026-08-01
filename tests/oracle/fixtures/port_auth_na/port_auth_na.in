@@ -1,0 +1,62 @@
+[
+{
+"op": "coerce_ttl_seconds",
+"value": ""
+},
+{
+"op": "coerce_ttl_seconds",
+"value": "x"
+},
+{
+"op": "coerce_ttl_seconds",
+"value": "hello world"
+},
+{
+"op": "coerce_ttl_seconds",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "coerce_ttl_seconds",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "coerce_ttl_seconds",
+"value": "user@example.com"
+},
+{
+"op": "coerce_ttl_seconds",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "coerce_ttl_seconds",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "coerce_ttl_seconds",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "coerce_ttl_seconds",
+"value": "CamelCaseString"
+},
+{
+"op": "coerce_ttl_seconds",
+"value": "12345"
+},
+{
+"op": "coerce_ttl_seconds",
+"value": "  spaced  "
+},
+{
+"op": "coerce_ttl_seconds",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "coerce_ttl_seconds",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "coerce_ttl_seconds",
+"value": "key:value;key2:value2"
+}
+]

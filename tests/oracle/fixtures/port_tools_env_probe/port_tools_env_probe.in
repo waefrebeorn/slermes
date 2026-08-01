@@ -1,0 +1,122 @@
+[
+{
+"op": "cli_tools_env_probe__has_pip_module",
+"value": ""
+},
+{
+"op": "cli_tools_env_probe__has_pip_module",
+"value": "x"
+},
+{
+"op": "cli_tools_env_probe__has_pip_module",
+"value": "hello world"
+},
+{
+"op": "cli_tools_env_probe__has_pip_module",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_tools_env_probe__has_pip_module",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cli_tools_env_probe__has_pip_module",
+"value": "user@example.com"
+},
+{
+"op": "cli_tools_env_probe__has_pip_module",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_tools_env_probe__has_pip_module",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cli_tools_env_probe__has_pip_module",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cli_tools_env_probe__has_pip_module",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_tools_env_probe__has_pip_module",
+"value": "12345"
+},
+{
+"op": "cli_tools_env_probe__has_pip_module",
+"value": "  spaced  "
+},
+{
+"op": "cli_tools_env_probe__has_pip_module",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cli_tools_env_probe__has_pip_module",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_tools_env_probe__has_pip_module",
+"value": "key:value;key2:value2"
+},
+{
+"op": "cli_tools_env_probe__detect_pep668",
+"value": ""
+},
+{
+"op": "cli_tools_env_probe__detect_pep668",
+"value": "x"
+},
+{
+"op": "cli_tools_env_probe__detect_pep668",
+"value": "hello world"
+},
+{
+"op": "cli_tools_env_probe__detect_pep668",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_tools_env_probe__detect_pep668",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cli_tools_env_probe__detect_pep668",
+"value": "user@example.com"
+},
+{
+"op": "cli_tools_env_probe__detect_pep668",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_tools_env_probe__detect_pep668",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cli_tools_env_probe__detect_pep668",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cli_tools_env_probe__detect_pep668",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_tools_env_probe__detect_pep668",
+"value": "12345"
+},
+{
+"op": "cli_tools_env_probe__detect_pep668",
+"value": "  spaced  "
+},
+{
+"op": "cli_tools_env_probe__detect_pep668",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cli_tools_env_probe__detect_pep668",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_tools_env_probe__detect_pep668",
+"value": "key:value;key2:value2"
+}
+]

@@ -1,0 +1,302 @@
+[
+{
+"op": "is_known_auth_provider",
+"value": ""
+},
+{
+"op": "is_known_auth_provider",
+"value": "x"
+},
+{
+"op": "is_known_auth_provider",
+"value": "hello world"
+},
+{
+"op": "is_known_auth_provider",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "is_known_auth_provider",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "is_known_auth_provider",
+"value": "user@example.com"
+},
+{
+"op": "is_known_auth_provider",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "is_known_auth_provider",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "is_known_auth_provider",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "is_known_auth_provider",
+"value": "CamelCaseString"
+},
+{
+"op": "is_known_auth_provider",
+"value": "12345"
+},
+{
+"op": "is_known_auth_provider",
+"value": "  spaced  "
+},
+{
+"op": "is_known_auth_provider",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "is_known_auth_provider",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "is_known_auth_provider",
+"value": "key:value;key2:value2"
+},
+{
+"op": "is_runtime_provider_routable",
+"value": ""
+},
+{
+"op": "is_runtime_provider_routable",
+"value": "x"
+},
+{
+"op": "is_runtime_provider_routable",
+"value": "hello world"
+},
+{
+"op": "is_runtime_provider_routable",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "is_runtime_provider_routable",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "is_runtime_provider_routable",
+"value": "user@example.com"
+},
+{
+"op": "is_runtime_provider_routable",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "is_runtime_provider_routable",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "is_runtime_provider_routable",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "is_runtime_provider_routable",
+"value": "CamelCaseString"
+},
+{
+"op": "is_runtime_provider_routable",
+"value": "12345"
+},
+{
+"op": "is_runtime_provider_routable",
+"value": "  spaced  "
+},
+{
+"op": "is_runtime_provider_routable",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "is_runtime_provider_routable",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "is_runtime_provider_routable",
+"value": "key:value;key2:value2"
+},
+{
+"op": "clear_provider_auth",
+"value": ""
+},
+{
+"op": "clear_provider_auth",
+"value": "x"
+},
+{
+"op": "clear_provider_auth",
+"value": "hello world"
+},
+{
+"op": "clear_provider_auth",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "clear_provider_auth",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "clear_provider_auth",
+"value": "user@example.com"
+},
+{
+"op": "clear_provider_auth",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "clear_provider_auth",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "clear_provider_auth",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "clear_provider_auth",
+"value": "CamelCaseString"
+},
+{
+"op": "clear_provider_auth",
+"value": "12345"
+},
+{
+"op": "clear_provider_auth",
+"value": "  spaced  "
+},
+{
+"op": "clear_provider_auth",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "clear_provider_auth",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "clear_provider_auth",
+"value": "key:value;key2:value2"
+},
+{
+"op": "auth_config_provider_matches",
+"value": ""
+},
+{
+"op": "auth_config_provider_matches",
+"value": "x"
+},
+{
+"op": "auth_config_provider_matches",
+"value": "hello world"
+},
+{
+"op": "auth_config_provider_matches",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "auth_config_provider_matches",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "auth_config_provider_matches",
+"value": "user@example.com"
+},
+{
+"op": "auth_config_provider_matches",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "auth_config_provider_matches",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "auth_config_provider_matches",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "auth_config_provider_matches",
+"value": "CamelCaseString"
+},
+{
+"op": "auth_config_provider_matches",
+"value": "12345"
+},
+{
+"op": "auth_config_provider_matches",
+"value": "  spaced  "
+},
+{
+"op": "auth_config_provider_matches",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "auth_config_provider_matches",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "auth_config_provider_matches",
+"value": "key:value;key2:value2"
+},
+{
+"op": "auth_should_reset_config_provider_on_logout",
+"value": ""
+},
+{
+"op": "auth_should_reset_config_provider_on_logout",
+"value": "x"
+},
+{
+"op": "auth_should_reset_config_provider_on_logout",
+"value": "hello world"
+},
+{
+"op": "auth_should_reset_config_provider_on_logout",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "auth_should_reset_config_provider_on_logout",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "auth_should_reset_config_provider_on_logout",
+"value": "user@example.com"
+},
+{
+"op": "auth_should_reset_config_provider_on_logout",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "auth_should_reset_config_provider_on_logout",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "auth_should_reset_config_provider_on_logout",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "auth_should_reset_config_provider_on_logout",
+"value": "CamelCaseString"
+},
+{
+"op": "auth_should_reset_config_provider_on_logout",
+"value": "12345"
+},
+{
+"op": "auth_should_reset_config_provider_on_logout",
+"value": "  spaced  "
+},
+{
+"op": "auth_should_reset_config_provider_on_logout",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "auth_should_reset_config_provider_on_logout",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "auth_should_reset_config_provider_on_logout",
+"value": "key:value;key2:value2"
+}
+]

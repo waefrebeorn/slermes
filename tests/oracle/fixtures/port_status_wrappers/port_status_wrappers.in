@@ -1,0 +1,1142 @@
+[
+{
+"op": "gstat_u_get_starts_log_path",
+"value": ""
+},
+{
+"op": "gstat_u_get_starts_log_path",
+"value": "x"
+},
+{
+"op": "gstat_u_get_starts_log_path",
+"value": "hello world"
+},
+{
+"op": "gstat_u_get_starts_log_path",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gstat_u_get_starts_log_path",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "gstat_u_get_starts_log_path",
+"value": "user@example.com"
+},
+{
+"op": "gstat_u_get_starts_log_path",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gstat_u_get_starts_log_path",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "gstat_u_get_starts_log_path",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "gstat_u_get_starts_log_path",
+"value": "CamelCaseString"
+},
+{
+"op": "gstat_u_get_starts_log_path",
+"value": "12345"
+},
+{
+"op": "gstat_u_get_starts_log_path",
+"value": "  spaced  "
+},
+{
+"op": "gstat_u_get_starts_log_path",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "gstat_u_get_starts_log_path",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gstat_u_get_starts_log_path",
+"value": "key:value;key2:value2"
+},
+{
+"op": "gstat_record_start_and_check_storm",
+"value": ""
+},
+{
+"op": "gstat_record_start_and_check_storm",
+"value": "x"
+},
+{
+"op": "gstat_record_start_and_check_storm",
+"value": "hello world"
+},
+{
+"op": "gstat_record_start_and_check_storm",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gstat_record_start_and_check_storm",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "gstat_record_start_and_check_storm",
+"value": "user@example.com"
+},
+{
+"op": "gstat_record_start_and_check_storm",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gstat_record_start_and_check_storm",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "gstat_record_start_and_check_storm",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "gstat_record_start_and_check_storm",
+"value": "CamelCaseString"
+},
+{
+"op": "gstat_record_start_and_check_storm",
+"value": "12345"
+},
+{
+"op": "gstat_record_start_and_check_storm",
+"value": "  spaced  "
+},
+{
+"op": "gstat_record_start_and_check_storm",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "gstat_record_start_and_check_storm",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gstat_record_start_and_check_storm",
+"value": "key:value;key2:value2"
+},
+{
+"op": "gstat_u_get_process_hermes_home",
+"value": ""
+},
+{
+"op": "gstat_u_get_process_hermes_home",
+"value": "x"
+},
+{
+"op": "gstat_u_get_process_hermes_home",
+"value": "hello world"
+},
+{
+"op": "gstat_u_get_process_hermes_home",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gstat_u_get_process_hermes_home",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "gstat_u_get_process_hermes_home",
+"value": "user@example.com"
+},
+{
+"op": "gstat_u_get_process_hermes_home",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gstat_u_get_process_hermes_home",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "gstat_u_get_process_hermes_home",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "gstat_u_get_process_hermes_home",
+"value": "CamelCaseString"
+},
+{
+"op": "gstat_u_get_process_hermes_home",
+"value": "12345"
+},
+{
+"op": "gstat_u_get_process_hermes_home",
+"value": "  spaced  "
+},
+{
+"op": "gstat_u_get_process_hermes_home",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "gstat_u_get_process_hermes_home",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gstat_u_get_process_hermes_home",
+"value": "key:value;key2:value2"
+},
+{
+"op": "gstat_u_canonical_hermes_home",
+"value": ""
+},
+{
+"op": "gstat_u_canonical_hermes_home",
+"value": "x"
+},
+{
+"op": "gstat_u_canonical_hermes_home",
+"value": "hello world"
+},
+{
+"op": "gstat_u_canonical_hermes_home",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gstat_u_canonical_hermes_home",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "gstat_u_canonical_hermes_home",
+"value": "user@example.com"
+},
+{
+"op": "gstat_u_canonical_hermes_home",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gstat_u_canonical_hermes_home",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "gstat_u_canonical_hermes_home",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "gstat_u_canonical_hermes_home",
+"value": "CamelCaseString"
+},
+{
+"op": "gstat_u_canonical_hermes_home",
+"value": "12345"
+},
+{
+"op": "gstat_u_canonical_hermes_home",
+"value": "  spaced  "
+},
+{
+"op": "gstat_u_canonical_hermes_home",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "gstat_u_canonical_hermes_home",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gstat_u_canonical_hermes_home",
+"value": "key:value;key2:value2"
+},
+{
+"op": "gstat_u_same_hermes_home",
+"value": ""
+},
+{
+"op": "gstat_u_same_hermes_home",
+"value": "x"
+},
+{
+"op": "gstat_u_same_hermes_home",
+"value": "hello world"
+},
+{
+"op": "gstat_u_same_hermes_home",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gstat_u_same_hermes_home",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "gstat_u_same_hermes_home",
+"value": "user@example.com"
+},
+{
+"op": "gstat_u_same_hermes_home",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gstat_u_same_hermes_home",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "gstat_u_same_hermes_home",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "gstat_u_same_hermes_home",
+"value": "CamelCaseString"
+},
+{
+"op": "gstat_u_same_hermes_home",
+"value": "12345"
+},
+{
+"op": "gstat_u_same_hermes_home",
+"value": "  spaced  "
+},
+{
+"op": "gstat_u_same_hermes_home",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "gstat_u_same_hermes_home",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gstat_u_same_hermes_home",
+"value": "key:value;key2:value2"
+},
+{
+"op": "gstat_normalize_updated_at",
+"value": ""
+},
+{
+"op": "gstat_normalize_updated_at",
+"value": "x"
+},
+{
+"op": "gstat_normalize_updated_at",
+"value": "hello world"
+},
+{
+"op": "gstat_normalize_updated_at",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gstat_normalize_updated_at",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "gstat_normalize_updated_at",
+"value": "user@example.com"
+},
+{
+"op": "gstat_normalize_updated_at",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gstat_normalize_updated_at",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "gstat_normalize_updated_at",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "gstat_normalize_updated_at",
+"value": "CamelCaseString"
+},
+{
+"op": "gstat_normalize_updated_at",
+"value": "12345"
+},
+{
+"op": "gstat_normalize_updated_at",
+"value": "  spaced  "
+},
+{
+"op": "gstat_normalize_updated_at",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "gstat_normalize_updated_at",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gstat_normalize_updated_at",
+"value": "key:value;key2:value2"
+},
+{
+"op": "gstat_u_clear_running_pid_cache",
+"value": ""
+},
+{
+"op": "gstat_u_clear_running_pid_cache",
+"value": "x"
+},
+{
+"op": "gstat_u_clear_running_pid_cache",
+"value": "hello world"
+},
+{
+"op": "gstat_u_clear_running_pid_cache",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gstat_u_clear_running_pid_cache",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "gstat_u_clear_running_pid_cache",
+"value": "user@example.com"
+},
+{
+"op": "gstat_u_clear_running_pid_cache",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gstat_u_clear_running_pid_cache",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "gstat_u_clear_running_pid_cache",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "gstat_u_clear_running_pid_cache",
+"value": "CamelCaseString"
+},
+{
+"op": "gstat_u_clear_running_pid_cache",
+"value": "12345"
+},
+{
+"op": "gstat_u_clear_running_pid_cache",
+"value": "  spaced  "
+},
+{
+"op": "gstat_u_clear_running_pid_cache",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "gstat_u_clear_running_pid_cache",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gstat_u_clear_running_pid_cache",
+"value": "key:value;key2:value2"
+},
+{
+"op": "gstat_u_file_cache_signature",
+"value": ""
+},
+{
+"op": "gstat_u_file_cache_signature",
+"value": "x"
+},
+{
+"op": "gstat_u_file_cache_signature",
+"value": "hello world"
+},
+{
+"op": "gstat_u_file_cache_signature",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gstat_u_file_cache_signature",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "gstat_u_file_cache_signature",
+"value": "user@example.com"
+},
+{
+"op": "gstat_u_file_cache_signature",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gstat_u_file_cache_signature",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "gstat_u_file_cache_signature",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "gstat_u_file_cache_signature",
+"value": "CamelCaseString"
+},
+{
+"op": "gstat_u_file_cache_signature",
+"value": "12345"
+},
+{
+"op": "gstat_u_file_cache_signature",
+"value": "  spaced  "
+},
+{
+"op": "gstat_u_file_cache_signature",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "gstat_u_file_cache_signature",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gstat_u_file_cache_signature",
+"value": "key:value;key2:value2"
+},
+{
+"op": "gstat_u_running_pid_cache_signature",
+"value": ""
+},
+{
+"op": "gstat_u_running_pid_cache_signature",
+"value": "x"
+},
+{
+"op": "gstat_u_running_pid_cache_signature",
+"value": "hello world"
+},
+{
+"op": "gstat_u_running_pid_cache_signature",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gstat_u_running_pid_cache_signature",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "gstat_u_running_pid_cache_signature",
+"value": "user@example.com"
+},
+{
+"op": "gstat_u_running_pid_cache_signature",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gstat_u_running_pid_cache_signature",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "gstat_u_running_pid_cache_signature",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "gstat_u_running_pid_cache_signature",
+"value": "CamelCaseString"
+},
+{
+"op": "gstat_u_running_pid_cache_signature",
+"value": "12345"
+},
+{
+"op": "gstat_u_running_pid_cache_signature",
+"value": "  spaced  "
+},
+{
+"op": "gstat_u_running_pid_cache_signature",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "gstat_u_running_pid_cache_signature",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gstat_u_running_pid_cache_signature",
+"value": "key:value;key2:value2"
+},
+{
+"op": "gstat_runtime_status_is_stale",
+"value": ""
+},
+{
+"op": "gstat_runtime_status_is_stale",
+"value": "x"
+},
+{
+"op": "gstat_runtime_status_is_stale",
+"value": "hello world"
+},
+{
+"op": "gstat_runtime_status_is_stale",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gstat_runtime_status_is_stale",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "gstat_runtime_status_is_stale",
+"value": "user@example.com"
+},
+{
+"op": "gstat_runtime_status_is_stale",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gstat_runtime_status_is_stale",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "gstat_runtime_status_is_stale",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "gstat_runtime_status_is_stale",
+"value": "CamelCaseString"
+},
+{
+"op": "gstat_runtime_status_is_stale",
+"value": "12345"
+},
+{
+"op": "gstat_runtime_status_is_stale",
+"value": "  spaced  "
+},
+{
+"op": "gstat_runtime_status_is_stale",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "gstat_runtime_status_is_stale",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gstat_runtime_status_is_stale",
+"value": "key:value;key2:value2"
+},
+{
+"op": "gstat_runtime_status_pid_is_live",
+"value": ""
+},
+{
+"op": "gstat_runtime_status_pid_is_live",
+"value": "x"
+},
+{
+"op": "gstat_runtime_status_pid_is_live",
+"value": "hello world"
+},
+{
+"op": "gstat_runtime_status_pid_is_live",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gstat_runtime_status_pid_is_live",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "gstat_runtime_status_pid_is_live",
+"value": "user@example.com"
+},
+{
+"op": "gstat_runtime_status_pid_is_live",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gstat_runtime_status_pid_is_live",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "gstat_runtime_status_pid_is_live",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "gstat_runtime_status_pid_is_live",
+"value": "CamelCaseString"
+},
+{
+"op": "gstat_runtime_status_pid_is_live",
+"value": "12345"
+},
+{
+"op": "gstat_runtime_status_pid_is_live",
+"value": "  spaced  "
+},
+{
+"op": "gstat_runtime_status_pid_is_live",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "gstat_runtime_status_pid_is_live",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gstat_runtime_status_pid_is_live",
+"value": "key:value;key2:value2"
+},
+{
+"op": "gstat_u_validated_scoped_lock_gateway_owner",
+"value": ""
+},
+{
+"op": "gstat_u_validated_scoped_lock_gateway_owner",
+"value": "x"
+},
+{
+"op": "gstat_u_validated_scoped_lock_gateway_owner",
+"value": "hello world"
+},
+{
+"op": "gstat_u_validated_scoped_lock_gateway_owner",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gstat_u_validated_scoped_lock_gateway_owner",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "gstat_u_validated_scoped_lock_gateway_owner",
+"value": "user@example.com"
+},
+{
+"op": "gstat_u_validated_scoped_lock_gateway_owner",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gstat_u_validated_scoped_lock_gateway_owner",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "gstat_u_validated_scoped_lock_gateway_owner",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "gstat_u_validated_scoped_lock_gateway_owner",
+"value": "CamelCaseString"
+},
+{
+"op": "gstat_u_validated_scoped_lock_gateway_owner",
+"value": "12345"
+},
+{
+"op": "gstat_u_validated_scoped_lock_gateway_owner",
+"value": "  spaced  "
+},
+{
+"op": "gstat_u_validated_scoped_lock_gateway_owner",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "gstat_u_validated_scoped_lock_gateway_owner",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gstat_u_validated_scoped_lock_gateway_owner",
+"value": "key:value;key2:value2"
+},
+{
+"op": "gstat_u_scoped_lock_owner_state",
+"value": ""
+},
+{
+"op": "gstat_u_scoped_lock_owner_state",
+"value": "x"
+},
+{
+"op": "gstat_u_scoped_lock_owner_state",
+"value": "hello world"
+},
+{
+"op": "gstat_u_scoped_lock_owner_state",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gstat_u_scoped_lock_owner_state",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "gstat_u_scoped_lock_owner_state",
+"value": "user@example.com"
+},
+{
+"op": "gstat_u_scoped_lock_owner_state",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gstat_u_scoped_lock_owner_state",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "gstat_u_scoped_lock_owner_state",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "gstat_u_scoped_lock_owner_state",
+"value": "CamelCaseString"
+},
+{
+"op": "gstat_u_scoped_lock_owner_state",
+"value": "12345"
+},
+{
+"op": "gstat_u_scoped_lock_owner_state",
+"value": "  spaced  "
+},
+{
+"op": "gstat_u_scoped_lock_owner_state",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "gstat_u_scoped_lock_owner_state",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gstat_u_scoped_lock_owner_state",
+"value": "key:value;key2:value2"
+},
+{
+"op": "gstat_u_wait_for_scoped_lock_owner_exit",
+"value": ""
+},
+{
+"op": "gstat_u_wait_for_scoped_lock_owner_exit",
+"value": "x"
+},
+{
+"op": "gstat_u_wait_for_scoped_lock_owner_exit",
+"value": "hello world"
+},
+{
+"op": "gstat_u_wait_for_scoped_lock_owner_exit",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gstat_u_wait_for_scoped_lock_owner_exit",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "gstat_u_wait_for_scoped_lock_owner_exit",
+"value": "user@example.com"
+},
+{
+"op": "gstat_u_wait_for_scoped_lock_owner_exit",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gstat_u_wait_for_scoped_lock_owner_exit",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "gstat_u_wait_for_scoped_lock_owner_exit",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "gstat_u_wait_for_scoped_lock_owner_exit",
+"value": "CamelCaseString"
+},
+{
+"op": "gstat_u_wait_for_scoped_lock_owner_exit",
+"value": "12345"
+},
+{
+"op": "gstat_u_wait_for_scoped_lock_owner_exit",
+"value": "  spaced  "
+},
+{
+"op": "gstat_u_wait_for_scoped_lock_owner_exit",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "gstat_u_wait_for_scoped_lock_owner_exit",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gstat_u_wait_for_scoped_lock_owner_exit",
+"value": "key:value;key2:value2"
+},
+{
+"op": "gstat_u_snapshot_gateway_children",
+"value": ""
+},
+{
+"op": "gstat_u_snapshot_gateway_children",
+"value": "x"
+},
+{
+"op": "gstat_u_snapshot_gateway_children",
+"value": "hello world"
+},
+{
+"op": "gstat_u_snapshot_gateway_children",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gstat_u_snapshot_gateway_children",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "gstat_u_snapshot_gateway_children",
+"value": "user@example.com"
+},
+{
+"op": "gstat_u_snapshot_gateway_children",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gstat_u_snapshot_gateway_children",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "gstat_u_snapshot_gateway_children",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "gstat_u_snapshot_gateway_children",
+"value": "CamelCaseString"
+},
+{
+"op": "gstat_u_snapshot_gateway_children",
+"value": "12345"
+},
+{
+"op": "gstat_u_snapshot_gateway_children",
+"value": "  spaced  "
+},
+{
+"op": "gstat_u_snapshot_gateway_children",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "gstat_u_snapshot_gateway_children",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gstat_u_snapshot_gateway_children",
+"value": "key:value;key2:value2"
+},
+{
+"op": "gstat_reap_gateway_children",
+"value": ""
+},
+{
+"op": "gstat_reap_gateway_children",
+"value": "x"
+},
+{
+"op": "gstat_reap_gateway_children",
+"value": "hello world"
+},
+{
+"op": "gstat_reap_gateway_children",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gstat_reap_gateway_children",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "gstat_reap_gateway_children",
+"value": "user@example.com"
+},
+{
+"op": "gstat_reap_gateway_children",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gstat_reap_gateway_children",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "gstat_reap_gateway_children",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "gstat_reap_gateway_children",
+"value": "CamelCaseString"
+},
+{
+"op": "gstat_reap_gateway_children",
+"value": "12345"
+},
+{
+"op": "gstat_reap_gateway_children",
+"value": "  spaced  "
+},
+{
+"op": "gstat_reap_gateway_children",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "gstat_reap_gateway_children",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gstat_reap_gateway_children",
+"value": "key:value;key2:value2"
+},
+{
+"op": "gstat_take_over_scoped_lock_holder",
+"value": ""
+},
+{
+"op": "gstat_take_over_scoped_lock_holder",
+"value": "x"
+},
+{
+"op": "gstat_take_over_scoped_lock_holder",
+"value": "hello world"
+},
+{
+"op": "gstat_take_over_scoped_lock_holder",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gstat_take_over_scoped_lock_holder",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "gstat_take_over_scoped_lock_holder",
+"value": "user@example.com"
+},
+{
+"op": "gstat_take_over_scoped_lock_holder",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gstat_take_over_scoped_lock_holder",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "gstat_take_over_scoped_lock_holder",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "gstat_take_over_scoped_lock_holder",
+"value": "CamelCaseString"
+},
+{
+"op": "gstat_take_over_scoped_lock_holder",
+"value": "12345"
+},
+{
+"op": "gstat_take_over_scoped_lock_holder",
+"value": "  spaced  "
+},
+{
+"op": "gstat_take_over_scoped_lock_holder",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "gstat_take_over_scoped_lock_holder",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gstat_take_over_scoped_lock_holder",
+"value": "key:value;key2:value2"
+},
+{
+"op": "gstat_u_terminate_scoped_lock_owner_once",
+"value": ""
+},
+{
+"op": "gstat_u_terminate_scoped_lock_owner_once",
+"value": "x"
+},
+{
+"op": "gstat_u_terminate_scoped_lock_owner_once",
+"value": "hello world"
+},
+{
+"op": "gstat_u_terminate_scoped_lock_owner_once",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gstat_u_terminate_scoped_lock_owner_once",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "gstat_u_terminate_scoped_lock_owner_once",
+"value": "user@example.com"
+},
+{
+"op": "gstat_u_terminate_scoped_lock_owner_once",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gstat_u_terminate_scoped_lock_owner_once",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "gstat_u_terminate_scoped_lock_owner_once",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "gstat_u_terminate_scoped_lock_owner_once",
+"value": "CamelCaseString"
+},
+{
+"op": "gstat_u_terminate_scoped_lock_owner_once",
+"value": "12345"
+},
+{
+"op": "gstat_u_terminate_scoped_lock_owner_once",
+"value": "  spaced  "
+},
+{
+"op": "gstat_u_terminate_scoped_lock_owner_once",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "gstat_u_terminate_scoped_lock_owner_once",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gstat_u_terminate_scoped_lock_owner_once",
+"value": "key:value;key2:value2"
+},
+{
+"op": "gstat_get_running_pid_cached",
+"value": ""
+},
+{
+"op": "gstat_get_running_pid_cached",
+"value": "x"
+},
+{
+"op": "gstat_get_running_pid_cached",
+"value": "hello world"
+},
+{
+"op": "gstat_get_running_pid_cached",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gstat_get_running_pid_cached",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "gstat_get_running_pid_cached",
+"value": "user@example.com"
+},
+{
+"op": "gstat_get_running_pid_cached",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gstat_get_running_pid_cached",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "gstat_get_running_pid_cached",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "gstat_get_running_pid_cached",
+"value": "CamelCaseString"
+},
+{
+"op": "gstat_get_running_pid_cached",
+"value": "12345"
+},
+{
+"op": "gstat_get_running_pid_cached",
+"value": "  spaced  "
+},
+{
+"op": "gstat_get_running_pid_cached",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "gstat_get_running_pid_cached",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gstat_get_running_pid_cached",
+"value": "key:value;key2:value2"
+}
+]

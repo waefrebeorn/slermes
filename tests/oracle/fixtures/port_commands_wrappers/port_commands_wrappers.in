@@ -1,0 +1,242 @@
+[
+{
+"op": "cmd_is_gateway_known_command",
+"value": ""
+},
+{
+"op": "cmd_is_gateway_known_command",
+"value": "x"
+},
+{
+"op": "cmd_is_gateway_known_command",
+"value": "hello world"
+},
+{
+"op": "cmd_is_gateway_known_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cmd_is_gateway_known_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cmd_is_gateway_known_command",
+"value": "user@example.com"
+},
+{
+"op": "cmd_is_gateway_known_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cmd_is_gateway_known_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cmd_is_gateway_known_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cmd_is_gateway_known_command",
+"value": "CamelCaseString"
+},
+{
+"op": "cmd_is_gateway_known_command",
+"value": "12345"
+},
+{
+"op": "cmd_is_gateway_known_command",
+"value": "  spaced  "
+},
+{
+"op": "cmd_is_gateway_known_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cmd_is_gateway_known_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cmd_is_gateway_known_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "cmd_should_bypass_active_session",
+"value": ""
+},
+{
+"op": "cmd_should_bypass_active_session",
+"value": "x"
+},
+{
+"op": "cmd_should_bypass_active_session",
+"value": "hello world"
+},
+{
+"op": "cmd_should_bypass_active_session",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cmd_should_bypass_active_session",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cmd_should_bypass_active_session",
+"value": "user@example.com"
+},
+{
+"op": "cmd_should_bypass_active_session",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cmd_should_bypass_active_session",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cmd_should_bypass_active_session",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cmd_should_bypass_active_session",
+"value": "CamelCaseString"
+},
+{
+"op": "cmd_should_bypass_active_session",
+"value": "12345"
+},
+{
+"op": "cmd_should_bypass_active_session",
+"value": "  spaced  "
+},
+{
+"op": "cmd_should_bypass_active_session",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cmd_should_bypass_active_session",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cmd_should_bypass_active_session",
+"value": "key:value;key2:value2"
+},
+{
+"op": "cmd_telegram_effective_priority",
+"value": ""
+},
+{
+"op": "cmd_telegram_effective_priority",
+"value": "x"
+},
+{
+"op": "cmd_telegram_effective_priority",
+"value": "hello world"
+},
+{
+"op": "cmd_telegram_effective_priority",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cmd_telegram_effective_priority",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cmd_telegram_effective_priority",
+"value": "user@example.com"
+},
+{
+"op": "cmd_telegram_effective_priority",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cmd_telegram_effective_priority",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cmd_telegram_effective_priority",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cmd_telegram_effective_priority",
+"value": "CamelCaseString"
+},
+{
+"op": "cmd_telegram_effective_priority",
+"value": "12345"
+},
+{
+"op": "cmd_telegram_effective_priority",
+"value": "  spaced  "
+},
+{
+"op": "cmd_telegram_effective_priority",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cmd_telegram_effective_priority",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cmd_telegram_effective_priority",
+"value": "key:value;key2:value2"
+},
+{
+"op": "cmd_is_skill_command",
+"value": ""
+},
+{
+"op": "cmd_is_skill_command",
+"value": "x"
+},
+{
+"op": "cmd_is_skill_command",
+"value": "hello world"
+},
+{
+"op": "cmd_is_skill_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cmd_is_skill_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cmd_is_skill_command",
+"value": "user@example.com"
+},
+{
+"op": "cmd_is_skill_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cmd_is_skill_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cmd_is_skill_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cmd_is_skill_command",
+"value": "CamelCaseString"
+},
+{
+"op": "cmd_is_skill_command",
+"value": "12345"
+},
+{
+"op": "cmd_is_skill_command",
+"value": "  spaced  "
+},
+{
+"op": "cmd_is_skill_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cmd_is_skill_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cmd_is_skill_command",
+"value": "key:value;key2:value2"
+}
+]

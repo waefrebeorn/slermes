@@ -1,0 +1,62 @@
+[
+{
+"op": "ws_theme_font_choice_allowed",
+"value": ""
+},
+{
+"op": "ws_theme_font_choice_allowed",
+"value": "x"
+},
+{
+"op": "ws_theme_font_choice_allowed",
+"value": "hello world"
+},
+{
+"op": "ws_theme_font_choice_allowed",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ws_theme_font_choice_allowed",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ws_theme_font_choice_allowed",
+"value": "user@example.com"
+},
+{
+"op": "ws_theme_font_choice_allowed",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ws_theme_font_choice_allowed",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ws_theme_font_choice_allowed",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ws_theme_font_choice_allowed",
+"value": "CamelCaseString"
+},
+{
+"op": "ws_theme_font_choice_allowed",
+"value": "12345"
+},
+{
+"op": "ws_theme_font_choice_allowed",
+"value": "  spaced  "
+},
+{
+"op": "ws_theme_font_choice_allowed",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ws_theme_font_choice_allowed",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ws_theme_font_choice_allowed",
+"value": "key:value;key2:value2"
+}
+]

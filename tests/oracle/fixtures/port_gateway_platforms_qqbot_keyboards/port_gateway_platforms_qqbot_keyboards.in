@@ -1,0 +1,62 @@
+[
+{
+"op": "cli_gateway_platforms_qqbot_keyboards_parse_update_prompt_button_data",
+"value": ""
+},
+{
+"op": "cli_gateway_platforms_qqbot_keyboards_parse_update_prompt_button_data",
+"value": "x"
+},
+{
+"op": "cli_gateway_platforms_qqbot_keyboards_parse_update_prompt_button_data",
+"value": "hello world"
+},
+{
+"op": "cli_gateway_platforms_qqbot_keyboards_parse_update_prompt_button_data",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_gateway_platforms_qqbot_keyboards_parse_update_prompt_button_data",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "cli_gateway_platforms_qqbot_keyboards_parse_update_prompt_button_data",
+"value": "user@example.com"
+},
+{
+"op": "cli_gateway_platforms_qqbot_keyboards_parse_update_prompt_button_data",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_gateway_platforms_qqbot_keyboards_parse_update_prompt_button_data",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "cli_gateway_platforms_qqbot_keyboards_parse_update_prompt_button_data",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "cli_gateway_platforms_qqbot_keyboards_parse_update_prompt_button_data",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_gateway_platforms_qqbot_keyboards_parse_update_prompt_button_data",
+"value": "12345"
+},
+{
+"op": "cli_gateway_platforms_qqbot_keyboards_parse_update_prompt_button_data",
+"value": "  spaced  "
+},
+{
+"op": "cli_gateway_platforms_qqbot_keyboards_parse_update_prompt_button_data",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "cli_gateway_platforms_qqbot_keyboards_parse_update_prompt_button_data",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_gateway_platforms_qqbot_keyboards_parse_update_prompt_button_data",
+"value": "key:value;key2:value2"
+}
+]

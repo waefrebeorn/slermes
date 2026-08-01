@@ -1,0 +1,62 @@
+[
+{
+"op": "azure_looks_like_anthropic_path",
+"value": ""
+},
+{
+"op": "azure_looks_like_anthropic_path",
+"value": "x"
+},
+{
+"op": "azure_looks_like_anthropic_path",
+"value": "hello world"
+},
+{
+"op": "azure_looks_like_anthropic_path",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "azure_looks_like_anthropic_path",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "azure_looks_like_anthropic_path",
+"value": "user@example.com"
+},
+{
+"op": "azure_looks_like_anthropic_path",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "azure_looks_like_anthropic_path",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "azure_looks_like_anthropic_path",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "azure_looks_like_anthropic_path",
+"value": "CamelCaseString"
+},
+{
+"op": "azure_looks_like_anthropic_path",
+"value": "12345"
+},
+{
+"op": "azure_looks_like_anthropic_path",
+"value": "  spaced  "
+},
+{
+"op": "azure_looks_like_anthropic_path",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "azure_looks_like_anthropic_path",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "azure_looks_like_anthropic_path",
+"value": "key:value;key2:value2"
+}
+]

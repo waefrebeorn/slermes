@@ -1,0 +1,2462 @@
+[
+{
+"op": "ccm_handle_rollback_command",
+"value": ""
+},
+{
+"op": "ccm_handle_rollback_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_rollback_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_rollback_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_rollback_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_rollback_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_rollback_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_rollback_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_rollback_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_rollback_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_rollback_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_rollback_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_rollback_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_rollback_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_rollback_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_snapshot_command",
+"value": ""
+},
+{
+"op": "ccm_handle_snapshot_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_snapshot_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_snapshot_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_snapshot_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_snapshot_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_snapshot_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_snapshot_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_snapshot_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_snapshot_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_snapshot_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_snapshot_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_snapshot_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_snapshot_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_snapshot_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_stop_command",
+"value": ""
+},
+{
+"op": "ccm_handle_stop_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_stop_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_stop_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_stop_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_stop_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_stop_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_stop_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_stop_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_stop_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_stop_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_stop_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_stop_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_stop_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_stop_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_agents_command",
+"value": ""
+},
+{
+"op": "ccm_handle_agents_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_agents_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_agents_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_agents_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_agents_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_agents_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_agents_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_agents_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_agents_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_agents_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_agents_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_agents_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_agents_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_agents_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_journey_command",
+"value": ""
+},
+{
+"op": "ccm_handle_journey_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_journey_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_journey_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_journey_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_journey_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_journey_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_journey_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_journey_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_journey_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_journey_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_journey_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_journey_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_journey_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_journey_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_paste_command",
+"value": ""
+},
+{
+"op": "ccm_handle_paste_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_paste_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_paste_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_paste_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_paste_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_paste_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_paste_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_paste_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_paste_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_paste_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_paste_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_paste_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_paste_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_paste_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_copy_command",
+"value": ""
+},
+{
+"op": "ccm_handle_copy_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_copy_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_copy_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_copy_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_copy_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_copy_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_copy_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_copy_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_copy_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_copy_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_copy_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_copy_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_copy_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_copy_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_image_command",
+"value": ""
+},
+{
+"op": "ccm_handle_image_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_image_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_image_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_image_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_image_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_image_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_image_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_image_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_image_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_image_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_image_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_image_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_image_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_image_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_tools_command",
+"value": ""
+},
+{
+"op": "ccm_handle_tools_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_tools_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_tools_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_tools_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_tools_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_tools_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_tools_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_tools_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_tools_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_tools_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_tools_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_tools_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_tools_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_tools_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_profile_command",
+"value": ""
+},
+{
+"op": "ccm_handle_profile_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_profile_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_profile_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_profile_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_profile_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_profile_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_profile_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_profile_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_profile_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_profile_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_profile_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_profile_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_profile_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_profile_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_handoff_command",
+"value": ""
+},
+{
+"op": "ccm_handle_handoff_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_handoff_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_handoff_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_handoff_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_handoff_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_handoff_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_handoff_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_handoff_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_handoff_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_handoff_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_handoff_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_handoff_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_handoff_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_handoff_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_resume_command",
+"value": ""
+},
+{
+"op": "ccm_handle_resume_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_resume_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_resume_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_resume_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_resume_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_resume_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_resume_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_resume_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_resume_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_resume_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_resume_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_resume_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_resume_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_resume_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_sessions_command",
+"value": ""
+},
+{
+"op": "ccm_handle_sessions_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_sessions_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_sessions_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_sessions_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_sessions_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_sessions_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_sessions_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_sessions_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_sessions_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_sessions_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_sessions_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_sessions_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_sessions_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_sessions_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_branch_command",
+"value": ""
+},
+{
+"op": "ccm_handle_branch_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_branch_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_branch_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_branch_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_branch_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_branch_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_branch_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_branch_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_branch_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_branch_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_branch_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_branch_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_branch_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_branch_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_personality_command",
+"value": ""
+},
+{
+"op": "ccm_handle_personality_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_personality_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_personality_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_personality_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_personality_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_personality_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_personality_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_personality_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_personality_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_personality_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_personality_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_personality_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_personality_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_personality_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_pet_command",
+"value": ""
+},
+{
+"op": "ccm_handle_pet_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_pet_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_pet_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_pet_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_pet_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_pet_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_pet_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_pet_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_pet_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_pet_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_pet_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_pet_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_pet_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_pet_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_hatch_command",
+"value": ""
+},
+{
+"op": "ccm_handle_hatch_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_hatch_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_hatch_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_hatch_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_hatch_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_hatch_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_hatch_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_hatch_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_hatch_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_hatch_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_hatch_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_hatch_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_hatch_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_hatch_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_cron_command",
+"value": ""
+},
+{
+"op": "ccm_handle_cron_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_cron_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_cron_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_cron_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_cron_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_cron_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_cron_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_cron_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_cron_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_cron_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_cron_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_cron_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_cron_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_cron_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_suggestions_command",
+"value": ""
+},
+{
+"op": "ccm_handle_suggestions_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_suggestions_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_suggestions_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_suggestions_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_suggestions_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_suggestions_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_suggestions_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_suggestions_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_suggestions_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_suggestions_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_suggestions_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_suggestions_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_suggestions_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_suggestions_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_blueprint_command",
+"value": ""
+},
+{
+"op": "ccm_handle_blueprint_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_blueprint_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_blueprint_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_blueprint_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_blueprint_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_blueprint_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_blueprint_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_blueprint_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_blueprint_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_blueprint_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_blueprint_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_blueprint_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_blueprint_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_blueprint_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_curator_command",
+"value": ""
+},
+{
+"op": "ccm_handle_curator_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_curator_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_curator_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_curator_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_curator_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_curator_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_curator_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_curator_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_curator_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_curator_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_curator_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_curator_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_curator_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_curator_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_kanban_command",
+"value": ""
+},
+{
+"op": "ccm_handle_kanban_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_kanban_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_kanban_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_kanban_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_kanban_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_kanban_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_kanban_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_kanban_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_kanban_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_kanban_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_kanban_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_kanban_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_kanban_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_kanban_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_skills_command",
+"value": ""
+},
+{
+"op": "ccm_handle_skills_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_skills_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_skills_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_skills_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_skills_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_skills_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_skills_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_skills_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_skills_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_skills_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_skills_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_skills_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_skills_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_skills_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_learn_command",
+"value": ""
+},
+{
+"op": "ccm_handle_learn_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_learn_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_learn_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_learn_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_learn_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_learn_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_learn_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_learn_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_learn_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_learn_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_learn_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_learn_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_learn_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_learn_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_memory_command",
+"value": ""
+},
+{
+"op": "ccm_handle_memory_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_memory_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_memory_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_memory_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_memory_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_memory_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_memory_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_memory_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_memory_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_memory_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_memory_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_memory_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_memory_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_memory_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_background_command",
+"value": ""
+},
+{
+"op": "ccm_handle_background_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_background_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_background_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_background_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_background_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_background_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_background_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_background_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_background_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_background_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_background_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_background_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_background_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_background_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_bundles_command",
+"value": ""
+},
+{
+"op": "ccm_handle_bundles_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_bundles_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_bundles_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_bundles_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_bundles_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_bundles_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_bundles_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_bundles_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_bundles_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_bundles_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_bundles_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_bundles_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_bundles_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_bundles_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_browser_command",
+"value": ""
+},
+{
+"op": "ccm_handle_browser_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_browser_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_browser_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_browser_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_browser_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_browser_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_browser_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_browser_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_browser_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_browser_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_browser_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_browser_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_browser_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_browser_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_goal_command",
+"value": ""
+},
+{
+"op": "ccm_handle_goal_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_goal_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_goal_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_goal_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_goal_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_goal_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_goal_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_goal_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_goal_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_goal_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_goal_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_goal_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_goal_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_goal_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_goal_draft",
+"value": ""
+},
+{
+"op": "ccm_handle_goal_draft",
+"value": "x"
+},
+{
+"op": "ccm_handle_goal_draft",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_goal_draft",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_goal_draft",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_goal_draft",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_goal_draft",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_goal_draft",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_goal_draft",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_goal_draft",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_goal_draft",
+"value": "12345"
+},
+{
+"op": "ccm_handle_goal_draft",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_goal_draft",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_goal_draft",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_goal_draft",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_subgoal_command",
+"value": ""
+},
+{
+"op": "ccm_handle_subgoal_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_subgoal_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_subgoal_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_subgoal_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_subgoal_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_subgoal_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_subgoal_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_subgoal_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_subgoal_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_subgoal_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_subgoal_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_subgoal_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_subgoal_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_subgoal_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_skin_command",
+"value": ""
+},
+{
+"op": "ccm_handle_skin_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_skin_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_skin_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_skin_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_skin_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_skin_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_skin_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_skin_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_skin_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_skin_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_skin_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_skin_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_skin_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_skin_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_prompt_compose_command",
+"value": ""
+},
+{
+"op": "ccm_handle_prompt_compose_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_prompt_compose_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_prompt_compose_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_prompt_compose_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_prompt_compose_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_prompt_compose_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_prompt_compose_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_prompt_compose_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_prompt_compose_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_prompt_compose_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_prompt_compose_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_prompt_compose_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_prompt_compose_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_prompt_compose_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_footer_command",
+"value": ""
+},
+{
+"op": "ccm_handle_footer_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_footer_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_footer_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_footer_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_footer_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_footer_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_footer_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_footer_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_footer_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_footer_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_footer_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_footer_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_footer_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_footer_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_timestamps_command",
+"value": ""
+},
+{
+"op": "ccm_handle_timestamps_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_timestamps_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_timestamps_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_timestamps_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_timestamps_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_timestamps_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_timestamps_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_timestamps_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_timestamps_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_timestamps_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_timestamps_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_timestamps_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_timestamps_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_timestamps_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_reasoning_command",
+"value": ""
+},
+{
+"op": "ccm_handle_reasoning_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_reasoning_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_reasoning_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_reasoning_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_reasoning_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_reasoning_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_reasoning_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_reasoning_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_reasoning_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_reasoning_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_reasoning_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_reasoning_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_reasoning_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_reasoning_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_busy_command",
+"value": ""
+},
+{
+"op": "ccm_handle_busy_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_busy_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_busy_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_busy_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_busy_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_busy_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_busy_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_busy_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_busy_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_busy_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_busy_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_busy_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_busy_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_busy_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_fast_command",
+"value": ""
+},
+{
+"op": "ccm_handle_fast_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_fast_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_fast_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_fast_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_fast_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_fast_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_fast_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_fast_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_fast_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_fast_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_fast_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_fast_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_fast_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_fast_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_debug_command",
+"value": ""
+},
+{
+"op": "ccm_handle_debug_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_debug_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_debug_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_debug_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_debug_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_debug_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_debug_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_debug_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_debug_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_debug_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_debug_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_debug_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_debug_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_debug_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_update_command",
+"value": ""
+},
+{
+"op": "ccm_handle_update_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_update_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_update_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_update_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_update_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_update_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_update_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_update_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_update_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_update_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_update_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_update_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_update_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_update_command",
+"value": "key:value;key2:value2"
+},
+{
+"op": "ccm_handle_voice_command",
+"value": ""
+},
+{
+"op": "ccm_handle_voice_command",
+"value": "x"
+},
+{
+"op": "ccm_handle_voice_command",
+"value": "hello world"
+},
+{
+"op": "ccm_handle_voice_command",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "ccm_handle_voice_command",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "ccm_handle_voice_command",
+"value": "user@example.com"
+},
+{
+"op": "ccm_handle_voice_command",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "ccm_handle_voice_command",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "ccm_handle_voice_command",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "ccm_handle_voice_command",
+"value": "CamelCaseString"
+},
+{
+"op": "ccm_handle_voice_command",
+"value": "12345"
+},
+{
+"op": "ccm_handle_voice_command",
+"value": "  spaced  "
+},
+{
+"op": "ccm_handle_voice_command",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "ccm_handle_voice_command",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "ccm_handle_voice_command",
+"value": "key:value;key2:value2"
+}
+]

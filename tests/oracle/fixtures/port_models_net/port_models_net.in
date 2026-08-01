@@ -1,0 +1,62 @@
+[
+{
+"op": "models_is_github_models_base_url",
+"value": ""
+},
+{
+"op": "models_is_github_models_base_url",
+"value": "x"
+},
+{
+"op": "models_is_github_models_base_url",
+"value": "hello world"
+},
+{
+"op": "models_is_github_models_base_url",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "models_is_github_models_base_url",
+"value": "[{\"id\":1},{\"id\":2}]"
+},
+{
+"op": "models_is_github_models_base_url",
+"value": "user@example.com"
+},
+{
+"op": "models_is_github_models_base_url",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "models_is_github_models_base_url",
+"value": "line1\nline2\nline3"
+},
+{
+"op": "models_is_github_models_base_url",
+"value": "/abs/path/to/file.txt"
+},
+{
+"op": "models_is_github_models_base_url",
+"value": "CamelCaseString"
+},
+{
+"op": "models_is_github_models_base_url",
+"value": "12345"
+},
+{
+"op": "models_is_github_models_base_url",
+"value": "  spaced  "
+},
+{
+"op": "models_is_github_models_base_url",
+"value": "<html><body>hi</body></html>"
+},
+{
+"op": "models_is_github_models_base_url",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "models_is_github_models_base_url",
+"value": "key:value;key2:value2"
+}
+]
