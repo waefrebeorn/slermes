@@ -8,6 +8,10 @@
 #include "commands_shared.h"
 #include "hermes_core_types.h"
 
+/* format_directory_for_display is defined in port_gateway_channel_directory.c
+ * (same dir, non-static) and renders the cached channel directory. */
+char *format_directory_for_display(void);
+
 /* /gateway: Gateway management command with subcommands */
 void cmd_gateway(const char *args, agent_state_t *state) {
     if (!args || !args[0]) {
@@ -35,11 +39,15 @@ void cmd_gateway(const char *args, agent_state_t *state) {
         printf("  All 19 C platforms compiled in.\n");
         printf("  Set gateway.platforms in config.yaml to activate.\n");
         if (strcmp(args, "list") == 0) {
-            printf("\nAvailable platforms:\n");
-            printf("  telegram, discord, slack, matrix, mattermost,\n");
-            printf("  webhook, whatsapp, email, signal, sms,\n");
-            printf("  homeassistant, feishu, wecom, dingtalk, qqbot,\n");
-            printf("  bluebubbles, msgraph_webhook, weixin, yuanbao\n");
+            /* Render the actual cached channel directory (was an orphaned
+             * ported formatter; the hardcoded list below is replaced). */
+            char *dir_txt = format_directory_for_display();
+            if (dir_txt) {
+                printf("\n%s\n", dir_txt);
+                free(dir_txt);
+            } else {
+                printf("\nNo channel directory cached yet.\n");
+            }
         }
         return;
     }
