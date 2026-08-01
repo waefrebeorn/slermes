@@ -315,48 +315,96 @@ void cmd_copy(const char *args, agent_state_t *state) {
 /* /cron: Manage scheduled tasks */
 void cmd_cron(const char *args, agent_state_t *state) {
     (void)state;
-    if (args && args[0]) {
-        if (strcmp(args, "list") == 0 || strcmp(args, "-l") == 0) {
-            /* Render the real job store (was a raw `ls -la` of the cron dir,
-             * which showed files, not jobs). cron_cmd_handler lazy-inits the
-             * store and returns jobs with last_run_ago (format_time_ago). */
-            char *resp = cron_cmd_handler("{\"action\":\"list\"}", "");
-            if (!resp) { printf("Error: cron store unavailable.\n"); return; }
-            json_t *root = json_parse(resp, NULL);
-            free(resp);
-            if (!root) { printf("Error: failed to parse cron list.\n"); return; }
-            json_t *jobs = json_obj_get(root, "jobs");
-            if (!jobs || jobs->type != JSON_ARRAY || json_len(jobs) == 0) {
-                printf("No scheduled cron tasks.\n");
-            } else {
-                printf("Scheduled tasks (%zu):\n", json_len(jobs));
-                for (size_t i = 0; i < json_len(jobs); i++) {
-                    json_t *j = json_get(jobs, i);
-                    const char *name = json_get_str(j, "name", "?");
-                    const char *sched = json_get_str(j, "schedule", "?");
-                    bool active = json_get_bool(j, "active", false);
-                    const char *ago = json_get_str(j, "last_run_ago", "");
-                    printf("  %-20s %-8s %s", name,
-                           active ? "active" : "paused", sched);
-                    if (ago && ago[0]) printf("  (last: %s)", ago);
-                    printf("\n");
-                }
-            }
-            json_free(root);
-            return;
-        }
-        printf("Usage: /cron [list]\n");
+    if (!args || !args[0]) {
+        /* Show cron config */
+        char cron_dir[HERMES_PATH_MAX];
+        hermes_get_home(cron_dir, sizeof(cron_dir));
+        strncat(cron_dir, "/cron", sizeof(cron_dir) - strlen(cron_dir) - 1);
+        printf("Cron scheduler: active\n");
+        printf("  Directory: %s\n", cron_dir);
+        printf("  Config: cron.dir, cron.max_concurrent_jobs, cron.job_timeout\n");
+        printf("  Use /cron list to show scheduled tasks.\n");
+        printf("  Actions: list, add name=.. schedule=.. command=.., edit, remove,\n");
+        printf("           pause, resume, run-now (all take name=..).\n");
         return;
     }
-    /* Show cron config */
-    char cron_dir[HERMES_PATH_MAX];
-    hermes_get_home(cron_dir, sizeof(cron_dir));
-    strncat(cron_dir, "/cron", sizeof(cron_dir) - strlen(cron_dir) - 1);
-    printf("Cron scheduler: active\n");
-    printf("  Directory: %s\n", cron_dir);
-    printf("  Config: cron.dir, cron.max_concurrent_jobs, cron.job_timeout\n");
-    printf("  Use cronjob tool to create/manage tasks.\n");
-    printf("  Use /cron list to show scheduled tasks.\n");
+
+    /* Build a JSON args object from key=value tokens. */
+    char argbuf[1024];
+    snprintf(argbuf, sizeof(argbuf), "%s", args);
+    /* First token is the action. */
+    char *action = argbuf;
+    char *sp = strchr(action, ' ');
+    if (sp) { *sp = '\0'; sp++; } else sp = action + strlen(action);
+    if (strcmp(action, "list") == 0 || strcmp(action, "-l") == 0) action = "list";
+
+    /* Collect remaining key=value pairs. */
+    char pairs[512] = "";
+    char *tok = sp;
+    while (*tok) {
+        while (*tok == ' ') tok++;
+        if (!*tok) break;
+        char *eq = strchr(tok, '=');
+        char *nl = strchr(tok, ' ');
+        if (eq && (!nl || eq < nl)) {
+            *eq = '\0';
+            char *k = tok;
+            char *v = eq + 1;
+            if (nl) { *nl = '\0'; }
+            char esc[256];
+            /* minimal JSON string escape for the value */
+            char *o = esc; *o = '\0';
+            for (char *c = v; *c && o - esc < (int)sizeof(esc) - 2; c++) {
+                if (*c == '"' || *c == '\\') { *o++ = '\\'; }
+                *o++ = *c;
+            }
+            *o = '\0';
+            if (pairs[0]) strncat(pairs, ",", sizeof(pairs) - strlen(pairs) - 1);
+            char kv[320];
+            snprintf(kv, sizeof(kv), "\"%s\":\"%s\"", k, esc);
+            strncat(pairs, kv, sizeof(pairs) - strlen(pairs) - 1);
+            tok = nl ? nl + 1 : tok + strlen(tok);
+        } else {
+            tok += strlen(tok); /* skip stray token */
+        }
+    }
+
+    char req[640];
+    snprintf(req, sizeof(req),
+             "{\"action\":\"%s\"%s%s}", action, pairs[0] ? "," : "", pairs);
+
+    char *resp = cron_cmd_handler(req, "");
+    if (!resp) { printf("Error: cron store unavailable.\n"); return; }
+    json_t *root = json_parse(resp, NULL);
+    free(resp);
+    if (!root) { printf("Error: failed to parse cron response.\n"); return; }
+
+    if (strcmp(action, "list") == 0) {
+        json_t *jobs = json_obj_get(root, "jobs");
+        if (!jobs || jobs->type != JSON_ARRAY || json_len(jobs) == 0) {
+            printf("No scheduled cron tasks.\n");
+        } else {
+            printf("Scheduled tasks (%zu):\n", json_len(jobs));
+            for (size_t i = 0; i < json_len(jobs); i++) {
+                json_t *j = json_get(jobs, i);
+                const char *name = json_get_str(j, "name", "?");
+                const char *sched = json_get_str(j, "schedule", "?");
+                bool active = json_get_bool(j, "active", false);
+                const char *ago = json_get_str(j, "last_run_ago", "");
+                printf("  %-20s %-8s %s", name,
+                       active ? "active" : "paused", sched);
+                if (ago && ago[0]) printf("  (last: %s)", ago);
+                printf("\n");
+            }
+        }
+    } else {
+        const char *st = json_get_str(root, "status", "");
+        const char *err = json_get_str(root, "error", "");
+        if (err && err[0]) printf("cron: %s\n", err);
+        else if (st && st[0]) printf("cron: %s\n", st);
+        else printf("cron: done\n");
+    }
+    json_free(root);
 }
 
 /* ─── /dashboard — Launch web dashboard ─── */
