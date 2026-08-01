@@ -237,28 +237,37 @@ double cli_gateway_platforms_yuanbao_sticker__multiset_char_hit_ratio(const char
 /* PoP: cli_gateway_platforms_yuanbao_sticker__bigram_jaccard @ gateway/platforms/yuanbao_sticker.py:_bigram_jaccard */
 double cli_gateway_platforms_yuanbao_sticker__bigram_jaccard(const char *a, const char *b) {
     /*
-     * Calculate bigram Jaccard similarity.
+     * Bigram Jaccard similarity. Mirrors Python exactly: uses SET semantics
+     * over unique bigrams (duplicates collapse), not bag/multiset counts.
      */
     size_t len_a = strlen(a);
     size_t len_b = strlen(b);
     if (len_a < 2 || len_b < 2) return 0.0;
-    /* Simple bigram set intersection */
-    int intersection = 0;
-    int union_count = 0;
-    size_t i, j;
-    for (i = 0; i < len_a - 1; i++) {
-        for (j = 0; j < len_b - 1; j++) {
-            if (a[i] == b[j] && a[i+1] == b[j+1]) {
-                intersection++;
-                break;
-            }
-        }
-        union_count++;
+    /* Collect unique bigrams of a into arrays of 2-char strings. */
+    #define MAX_BI 512
+    char ba[MAX_BI][3]; size_t na = 0;
+    char bb[MAX_BI][3]; size_t nb = 0;
+    size_t i;
+    for (i = 0; i + 1 < len_a && na < MAX_BI; i++) {
+        char bg[3] = {a[i], a[i+1], '\0'};
+        int dup = 0;
+        for (size_t k = 0; k < na; k++) if (ba[k][0]==bg[0] && ba[k][1]==bg[1]) { dup=1; break; }
+        if (!dup) { ba[na][0]=bg[0]; ba[na][1]=bg[1]; ba[na][2]='\0'; na++; }
     }
-    union_count += (int)(len_b - 1);
-    union_count -= intersection;
+    for (i = 0; i + 1 < len_b && nb < MAX_BI; i++) {
+        char bg[3] = {b[i], b[i+1], '\0'};
+        int dup = 0;
+        for (size_t k = 0; k < nb; k++) if (bb[k][0]==bg[0] && bb[k][1]==bg[1]) { dup=1; break; }
+        if (!dup) { bb[nb][0]=bg[0]; bb[nb][1]=bg[1]; bb[nb][2]='\0'; nb++; }
+    }
+    size_t inter = 0;
+    for (size_t x = 0; x < na; x++)
+        for (size_t y = 0; y < nb; y++)
+            if (ba[x][0]==bb[y][0] && ba[x][1]==bb[y][1]) { inter++; break; }
+    size_t union_count = na + nb - inter;
     if (union_count == 0) return 0.0;
-    return (double)intersection / (double)union_count;
+    return (double)inter / (double)union_count;
+    #undef MAX_BI
 }
 
 /* PoP: cli_gateway_platforms_yuanbao_sticker__longest_subsequence_ratio @ gateway/platforms/yuanbao_sticker.py:_longest_subsequence_ratio */
