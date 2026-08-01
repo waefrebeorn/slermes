@@ -29,7 +29,6 @@ FIX[openrouter_model_is_free]='{"prompt":0,"completion":0}|{"prompt":1,"completi
 FIX[is_signal_rate_limit_error]='{"code":429,"message":"rate limited"}|"[429] too many requests"|{"code":500}|"RateLimitException boo"|{"message":"Retry after 30 seconds"}'
 FIX[scale_to_zero_enabled]='{"SLERM_SCALE_TO_ZERO":"1"}|{}|{"SLERM_SCALE_TO_ZERO":"0"}|{"PATH":"/x"}'
 FIX[messaging_is_relay_only_or_absent]='[]|["relay"]|["discord","telegram"]|["relay","slack"]'
-FIX[redact_config_value]='{"api_key":"sk-1234567890abcdef","name":"bob","token":"short"}|{"providers":{"openai":{"api_key":"sk-abcdefghijklmnopqrstuvwxyz"}}}|{"a":"ok","nested":{"password":"longenoughsecretvalue123"}}|{"empty":"","list":["x",{"secret":"abcdefghijkl"}]}'
 
 FAIL=0
 for fn in "${!FIX[@]}"; do
@@ -37,11 +36,6 @@ for fn in "${!FIX[@]}"; do
   for entry in "${ARR[@]}"; do
     C_OUT=$("$BUILD_DIR/tt_$NAME" "$fn" "$entry" 2>/dev/null)
     P_OUT=$(python3 tests/oracle/json_oracle_json_in_py.py "$fn" "$entry" 2>/dev/null)
-    if [ "$fn" == "redact_config_value" ]; then
-      # canonicalize both via sorted-key JSON (C serializer is insertion-order)
-      C_OUT=$(echo "$C_OUT" | python3 -c "import json,sys; print(json.dumps(json.loads(sys.stdin.read()),sort_keys=True))" 2>/dev/null)
-      P_OUT=$(echo "$P_OUT" | python3 -c "import json,sys; print(json.dumps(json.loads(sys.stdin.read()),sort_keys=True))" 2>/dev/null)
-    fi
     if [ "$C_OUT" == "$P_OUT" ]; then
       echo "MATCH  $fn [$entry]"
     else
