@@ -130,7 +130,7 @@ for line in open(src, encoding='utf-8', errors='replace'):
     except Exception:
         pass
     out.append(line)
-open(src, 'w').write('\n'.join(out) + '\n')
+sys.stdout.write('\n'.join(out) + '\n')
 PY
     mv "$tmp2" "$tmp"
   fi
