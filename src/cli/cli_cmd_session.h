@@ -37,4 +37,7 @@ void cmd_undo(const char *args, agent_state_t *state);
 /* PoP: cmd_usage @ hermes_cli/curator.py:_cmd_usage */
 void cmd_usage(const char *args, agent_state_t *state);
 
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/pt_input_extras.py:install_ignored_terminal_sequences */
+int cli_pt_input_extras_install_ignored_terminal_sequences(void);
+
 #endif /* SLERMES_CLI_CMD_SESSION_H */
