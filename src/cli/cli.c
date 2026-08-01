@@ -746,30 +746,49 @@ int cli_main(int argc, char **argv) {
                 goto start_interactive;
             }
             static const char *known_subcmds[] = {
-                "status", "dump", "logs", "tools", "plugins", "secrets",
-                "cron", "skills", "help", "commands", "model", "config",
-                "history", "sessions", "usage", "insights", "copy", NULL
+                "agents", "approve", "auth", "background", "backup", "branch",
+                "browser", "bundles", "busy", "clear", "commands", "completions",
+                "compress", "config", "conv", "copy", "cron", "curator",
+                "dashboard", "debug", "deny", "deps", "doctor", "dump",
+                "exit", "fast", "footer", "gateway", "goal", "handoff",
+                "help", "history", "image", "indicator", "insights", "kanban",
+                "key", "load", "logs", "mcp", "memory", "model", "new",
+                "paste", "personality", "pet", "platform", "platforms",
+                "plugins", "profile", "queue", "reasoning", "recap", "redraw",
+                "reload", "reload-mcp", "reload-skills", "reset", "restart",
+                "resume", "retry", "rollback", "save", "secrets", "send",
+                "session-export", "session-import", "session-search", "sessions",
+                "sethome", "setup", "skills", "skills-hub", "skin", "snapshot",
+                "stats", "status", "statusbar", "steer", "stop", "subgoal",
+                "title", "tools", "tools-verify", "toolsets", "topic", "undo",
+                "uninstall", "update", "usage", "verbose", "voice", "webhook",
+                "whoami", "yolo", NULL
             };
+            bool known = false;
             for (int i = 0; known_subcmds[i]; i++) {
                 if (strcasecmp(cmd, known_subcmds[i]) == 0) {
-                    /* Build full slash command string */
+                    known = true;
                     char cmd_input[8192];
                     snprintf(cmd_input, sizeof(cmd_input), "/%s", known_subcmds[i]);
-                    /* Append remaining args */
                     for (int j = arg_start + 1; j < argc; j++) {
                         size_t clen = strlen(cmd_input);
                         snprintf(cmd_input + clen, sizeof(cmd_input) - clen, " %s", argv[j]);
                     }
                     commands_dispatch(cmd_input, &g_cli.agent);
-                    /* Also try skill command if dispatch failed */
-                    if (!commands_try_skill(cmd_input, &g_cli.agent)) {
-                        /* CL13: Try user-defined quick command */
+                    if (!commands_try_skill(cmd_input, &g_cli.agent))
                         commands_try_quick(cmd_input, &g_cli.agent);
-                    }
                     agent_close_db(&g_cli.agent);
                     agent_free(&g_cli.agent);
                     return 0;
                 }
+            }
+            /* L04+: Reject unknown single-token non-slash commands instead of
+             * sending them to the LLM (mirrors Python argparse rejection).
+             * Multi-token args are treated as chat messages. */
+            if (argc - arg_start == 1 && cmd[0] != '/') {
+                fprintf(stderr, "Unknown command: %s. Run 'slermes --help' for the command list.\n", cmd);
+                agent_free(&g_cli.agent);
+                return 1;
             }
         }
 
