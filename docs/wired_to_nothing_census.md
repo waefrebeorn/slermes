@@ -12,12 +12,19 @@
 # CLASS A — Unique orphaned helpers (SAFE TO WIRE):
 #   Ported helpers with NO live equivalent; their caller prints raw/empty
 #   instead of using them. Wiring improves output and assembles the Lego.
-#   Examples wired so far:
+#   Assembled this mission (10 wired):
 #     - fmt_task_line / fmt_kanban_ts        -> /kanban list   (cli_cmd_kanban.c)
 #     - agent_display_oneline / agent_display_truncate_preview -> /sessions (cli_cmd_session.c)
 #     - format_directory_for_display         -> /gateway list (cli_cmd_gateway.c)
+#     - cli_display_error                    -> /kanban errors (cli_cmd_kanban.c)
+#     - format_time_ago                      -> /cron list last_run_ago (cron_cli.c)
+#     - relative_time                        -> /sessions last-activity (cli_cmd_session.c)
+#     - kanban formatters (prior turns)      -> /kanban list
 #
 # CLASS B — Redundant parallel ports (DO NOT WIRE; human keep-or-delete call):
+#   B1 gateway adapter (~1,100): keep api_server.c vs adopt adapter (your call).
+#   B2 port_skills_tool_wrappers.c (23 empty stubs): DELETED.
+#   B3 port_agent_remaining_wrappers.c: RECLASSIFIED Class A (unique helpers, no live equivalent).
 #   Complete alternative implementations that DUPLICATE a live subsystem.
 #   Wiring them would violate AGENTS.md ("extend, don't duplicate",
 #   "no dead code wired in without E2E proof"). These are architecture
