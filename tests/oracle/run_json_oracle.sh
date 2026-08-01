@@ -24,12 +24,13 @@ rm -f "$BUILD_DIR/tt_$NAME"
 bash -c "$COMPILE" >/tmp/json_oracle_compile.log 2>&1 || { echo "COMPILE FAILED"; tail -5 /tmp/json_oracle_compile.log; exit 1; }
 bash -c "$LINKCMD -Wl,--allow-multiple-definition" >/tmp/json_oracle_link.log 2>&1 || { echo "LINK FAILED"; grep -iE 'error|undefined' /tmp/json_oracle_link.log | head; exit 1; }
 
-FUNCS=(context_as_json format_context_for_log normalize_reference_images)
+FUNCS=(context_as_json format_context_for_log normalize_reference_images missing_provider_error)
 # Fixtures per func
 declare -A FIX
 FIX[context_as_json]='{}|{"signal":"SIGTERM","under_systemd":true,"parent":{"cmdline":"/bin/x","name":"x","pid":7},"loadavg_1m":1.5}|{"signal":"SIGKILL","under_systemd":false,"takeover_marker":1,"takeover_marker_for_self":true,"planned_stop_marker":2,"tracer_pid":99}|{"signal":"?","under_systemd":false}'
 FIX[format_context_for_log]='{}|{"signal":"SIGTERM","under_systemd":true,"parent":{"cmdline":"/bin/x","name":"x","pid":7},"loadavg_1m":1.5}|{"signal":"SIGKILL","under_systemd":false,"takeover_marker":1,"takeover_marker_for_self":true,"planned_stop_marker":2,"tracer_pid":99}|{"signal":"?","under_systemd":false}'
 FIX[normalize_reference_images]='"hello"|["a","b "," c "]|""|null|["","x"]|42'
+FIX[missing_provider_error]='|fal-provider'
 FAIL=0
 for fn in "${FUNCS[@]}"; do
   IFS='|' read -ra ARR <<< "${FIX[$fn]}"

@@ -12,6 +12,7 @@
 extern char *cli_gateway_shutdown_forensics_context_as_json(json_node_t *ctx);
 extern char *cli_gateway_shutdown_forensics_format_context_for_log(json_node_t *ctx);
 extern json_node_t *cli_tools_video_generation_tool__normalize_reference_images(json_node_t *value);
+extern json_node_t *cli_tools_video_generation_tool__missing_provider_error(const char *configured);
 
 static char *canon_json(const char *s) {
     char *err = NULL;
@@ -23,30 +24,41 @@ static char *canon_json(const char *s) {
 }
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s <func> <json>\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s <func> <arg>\n", argv[0]); return 2; }
     const char *func = argv[1];
     const char *input = argv[2];
-    char *err = NULL;
-    json_node_t *ctx = json_parse(input, &err);
-    if (!ctx) { fprintf(stderr, "json_parse error: %s\n", err ? err : "?"); free(err); return 3; }
     char *raw = NULL;
     json_node_t *node_ret = NULL;
     if (strcmp(func, "context_as_json") == 0) {
+        char *err = NULL;
+        json_node_t *ctx = json_parse(input, &err);
+        if (!ctx) { fprintf(stderr, "json_parse error: %s\n", err ? err : "?"); free(err); return 3; }
         raw = cli_gateway_shutdown_forensics_context_as_json(ctx);
+        json_free(ctx);
     } else if (strcmp(func, "format_context_for_log") == 0) {
+        char *err = NULL;
+        json_node_t *ctx = json_parse(input, &err);
+        if (!ctx) { fprintf(stderr, "json_parse error: %s\n", err ? err : "?"); free(err); return 3; }
         raw = cli_gateway_shutdown_forensics_format_context_for_log(ctx);
+        json_free(ctx);
     } else if (strcmp(func, "normalize_reference_images") == 0) {
+        char *err = NULL;
+        json_node_t *ctx = json_parse(input, &err);
+        if (!ctx) { fprintf(stderr, "json_parse error: %s\n", err ? err : "?"); free(err); return 3; }
         node_ret = cli_tools_video_generation_tool__normalize_reference_images(ctx);
-        /* serialize node result; NULL -> emit "null" */
-        if (node_ret) { raw = json_serialize(node_ret); }
-        else { raw = strdup("null"); }
+        if (node_ret) { raw = json_serialize(node_ret); } else { raw = strdup("null"); }
+        json_free(ctx);
+    } else if (strcmp(func, "missing_provider_error") == 0) {
+        /* input is a plain string (configured provider or empty) */
+        node_ret = cli_tools_video_generation_tool__missing_provider_error(input && input[0] ? input : NULL);
+        if (node_ret) { raw = json_serialize(node_ret); } else { raw = strdup("null"); }
     } else {
-        fprintf(stderr, "unknown func %s\n", func); json_free(ctx); return 4;
+        fprintf(stderr, "unknown func %s\n", func); return 4;
     }
-    json_free(ctx);
     if (node_ret) json_free(node_ret);
     if (!raw) { printf("(null)\n"); return 0; }
-    if (strcmp(func, "context_as_json") == 0 || strcmp(func, "normalize_reference_images") == 0) {
+    if (strcmp(func, "context_as_json") == 0 || strcmp(func, "normalize_reference_images") == 0
+        || strcmp(func, "missing_provider_error") == 0) {
         char *c = canon_json(raw);
         printf("%s\n", c ? c : "");
         free(c);

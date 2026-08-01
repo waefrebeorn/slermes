@@ -118,18 +118,34 @@ int cli_tools_video_generation_tool_check_video_generation_requirements(void) {
 json_node_t* cli_tools_video_generation_tool__missing_provider_error(const char *configured) {
     /*
      * Build a JSON error response for missing provider.
+     * Mirrors Python's error_response(*) contract exactly:
+     *   {success:False, video:None, error, error_type,
+     *    model:"", prompt:"", aspect_ratio:"", provider}
      */
     json_node_t *err = json_new_object();
     if (!err) return NULL;
-    json_object_set(err, "error", json_new_string("No video generation backend is configured."));
-    json_object_set(err, "error_type", json_new_string("no_provider_configured"));
+    json_object_set(err, "success", json_new_bool(false));
     json_object_set(err, "video", json_new_null());
     if (configured && configured[0]) {
+        char msg[512];
+        snprintf(msg, sizeof(msg),
+            "video_gen.provider='%s' is set but no plugin registered that name. "
+            "Run `hermes plugins list` to see installed video gen backends, or "
+            "`hermes tools` → Video Generation to pick one.", configured);
+        json_object_set(err, "error", json_new_string(msg));
+        json_object_set(err, "error_type", json_new_string("provider_not_registered"));
         json_object_set(err, "provider", json_new_string(configured));
         hermes_log(LOG_WARNING, "video_gen", "_missing_provider_error: provider=%s not registered", configured);
     } else {
+        json_object_set(err, "error",
+            json_new_string("No video generation backend is configured. Run `hermes tools` → Video Generation to enable one (xAI, FAL, or Google Veo)."));
+        json_object_set(err, "error_type", json_new_string("no_provider_configured"));
+        json_object_set(err, "provider", json_new_string(""));
         hermes_log(LOG_WARNING, "video_gen", "_missing_provider_error: no provider configured");
     }
+    json_object_set(err, "model", json_new_string(""));
+    json_object_set(err, "prompt", json_new_string(""));
+    json_object_set(err, "aspect_ratio", json_new_string(""));
     return err;
 }
 
