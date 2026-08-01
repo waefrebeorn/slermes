@@ -16,6 +16,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+
+/* Forward declaration: ported formatter in cli/port_hermes_cli_main_helpers.c
+ * (renders an ISO timestamp as "X ago"). Assembles this orphaned helper. */
+char *format_time_ago(const char *iso_ts);
 
 /* Forward declarations from scheduler.c */
 extern cron_sqlite_store_t *g_cron_store;
@@ -73,6 +78,20 @@ char *cron_cmd_handler(const char *args_json, const char *task_id) {
                 json_set(j, "retry_count", json_number(e->retry_count));
                 json_set(j, "max_retries", json_number(e->max_retries));
                 json_set(j, "last_run", json_number((double)e->last_run));
+                /* Enrich with a human-readable "X ago" string (assembles the
+                 * orphaned format_time_ago formatter). Non-breaking: adds a
+                 * field, leaves last_run intact. */
+                if (e->last_run > 0) {
+                    struct tm tm;
+                    gmtime_r(&e->last_run, &tm);
+                    char iso[32];
+                    strftime(iso, sizeof(iso), "%Y-%m-%dT%H:%M:%SZ", &tm);
+                    char *ago = format_time_ago(iso);
+                    if (ago) {
+                        json_set(j, "last_run_ago", json_string(ago));
+                        free(ago);
+                    }
+                }
                 json_set(j, "chain_from", json_string(e->chain_from));
                 json_set(j, "template_name", json_string(e->template_name));
                 json_set(j, "script_type", json_string(e->script_type));
