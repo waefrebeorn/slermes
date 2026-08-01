@@ -13,6 +13,11 @@
 #include "port_models_net.h"
 #include "port_models_helpers.h"
 #include "model_catalog.h"
+
+/* format_price_per_mtok is defined in port_models_helpers.c (no header decl).
+ * Converts a per-token price string to "$X.XX/MTok" / "free" / "?". Assembles
+ * this orphaned formatter (matches Python models.py _format_price_per_mtok). */
+char *format_price_per_mtok(const char *per_token_str);
 #include "model_normalize.h"
 #include "libjson/json.h"
 
@@ -180,6 +185,13 @@ char *models_fetch_novita_pricing(http_fetch_fn fetch, void *ctx, int force_refr
             json_t *entry = json_object();
             json_set(entry, "prompt", json_string(pb));
             json_set(entry, "completion", json_string(cb));
+            /* Assemble the orphaned format_price_per_mtok formatter: add
+             * human-readable "$X.XX/MTok" strings (matches Python models.py
+             * _format_price_per_mtok display path). Non-breaking: extra fields. */
+            char *pd = format_price_per_mtok(pb);
+            char *cd = format_price_per_mtok(cb);
+            if (pd) { json_set(entry, "prompt_display", json_string(pd)); free(pd); }
+            if (cd) { json_set(entry, "completion_display", json_string(cd)); free(cd); }
             json_set(out, idj->str_val, entry);
         }
     }
