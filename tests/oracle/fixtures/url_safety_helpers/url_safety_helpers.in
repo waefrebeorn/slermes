@@ -1,0 +1,12 @@
+[
+  {"op": "tools_url_safety_has_sensitive_query_params", "value": "https://example.com/path"},
+  {"op": "tools_url_safety_has_sensitive_query_params", "value": "https://api.example.com/login?password=secret123"},
+  {"op": "tools_url_safety_has_sensitive_query_params", "value": "https://x.com/send?token=abc.def.ghi&user=1"},
+  {"op": "tools_url_safety_has_sensitive_query_params", "value": "postgres://user:pass@db.host:5432/app"},
+  {"op": "tools_url_safety_has_sensitive_query_params", "value": "https://site.com/?api_key=sk_live_12345"},
+  {"op": "tools_url_safety_has_sensitive_query_params", "value": "ftp://anon@host/pub/file"},
+  {"op": "tools_url_safety_has_sensitive_query_params", "value": "https://graph.facebook.com/me?access_token=EAAC"},
+  {"op": "tools_url_safety_has_sensitive_query_params", "value": "https://cdn.example.com/static/app.js"},
+  {"op": "tools_url_safety_has_sensitive_query_params", "value": ""},
+  {"op": "tools_url_safety_has_sensitive_query_params", "value": "redis://:secret@cache:6379"}
+]

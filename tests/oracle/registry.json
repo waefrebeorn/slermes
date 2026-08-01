@@ -937,7 +937,14 @@
       "044c90d1ac.*\\n",
       "b556892c9a.*\\n",
       "ffa3fabfef.*\\n",
-      "\"/home/[^\"]*/slermes\""
+      "\"/home/[^\"]*/slermes\"",
+      "Root: .*\\n",
+      "Branch: .*\\n",
+      "Status: .*\\n",
+      "Recent commits:\\n(?:    .*\\n)*",
+      "Worktree: .*\\n",
+      "\"\\/home\\/[^\"\\/]*(?:\\/[^\"\\/]*)*\\/slermes\"",
+      "\"\\/tmp\\/[^\"\\/]*(?:\\/[^\"\\/]*)*\""
     ],
     "strip_fields": [
       "root",
