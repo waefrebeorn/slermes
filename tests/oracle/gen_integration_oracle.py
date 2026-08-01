@@ -131,6 +131,10 @@ def candidate_funcs(cfile):
         body = extract_body(cfile, fn)
         if IO_BLOCK.search(body):
             continue
+        # Detect whether the python function returns bool so the harness emits a
+        # JSON bool (not an int). C signatures for these are often `int` but the
+        # python returns `bool`, and `0` != `false` in raw JSON diffing.
+        rib = pyfn_returns_bool(pymod, pyfn)
         # CRITICAL: only keep if the python source + function actually exist.
         pyrel = pymod.replace(".", "/") + ".py"
         found = False
@@ -140,8 +144,40 @@ def candidate_funcs(cfile):
                 break
         if not found:
             continue
-        out.append((fn, pymod, pyfn))
+        out.append((fn, pymod, pyfn, rib))
     return out
+
+
+def pyfn_returns_bool(pymod, pyfn):
+    """Return True if the live python function `pyfn` in module `pymod` returns
+    bool (via a `-> bool` annotation OR a body that only returns True/False)."""
+    pyrel = pymod.replace(".", "/") + ".py"
+    for base in (os.path.dirname(SL), SL):
+        path = os.path.join(base, pyrel)
+        if not os.path.isfile(path):
+            continue
+        try:
+            import importlib.util
+            spec = importlib.util.spec_from_file_location("rib_" + pymod.replace(".", "_"), path)
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+            fn = getattr(mod, pyfn, None)
+            if fn is None:
+                return False
+            ann = getattr(fn, "__annotations__", {}).get("return")
+            if ann is not None:
+                return "bool" in str(ann)
+            # fall back: inspect the source body for return True/False only
+            import inspect
+            src = inspect.getsource(fn)
+            rets = re.findall(r"return\s+(.+)", src)
+            rets = [r.strip() for r in rets]
+            if not rets:
+                return False
+            return all(r in ("True", "False", "true", "false") or "bool(" in r for r in rets)
+        except Exception:
+            return False
+    return False
 
 
 def resolve_pyfn(pymod, candidates):
@@ -177,7 +213,7 @@ def gen_harness(mod, cfile, funcs, sigs):
     L.append("#include <stdlib.h>")
     L.append("#include <string.h>")
     L.append("")
-    for fn, _, _ in funcs:
+    for fn, _, _, _ in funcs:
         ret = sigs[fn][0]
         L.append("extern %s %s(const char *);" % (ret, fn))
     L.append("")
@@ -189,7 +225,7 @@ def gen_harness(mod, cfile, funcs, sigs):
     L.append("    size_t r = fread(buf, 1, (size_t)n, f); buf[r] = '\\0'; fclose(f); return buf;")
     L.append("}")
     L.append("")
-    for fn, _, _ in funcs:
+    for fn, _, _, rib in funcs:
         ret = sigs[fn][0]
         L.append("static json_t *emit_%s(const json_t *c){" % fn)
         L.append('    const char *value = json_get_str(c, "value", "");')
@@ -197,8 +233,11 @@ def gen_harness(mod, cfile, funcs, sigs):
             L.append("    const char *out = %s(value);" % fn)
             L.append('    json_t *o = json_new_object(); json_set(o, "fn", json_string("%s"));' % fn)
             L.append('    json_set(o, "out", json_string(out ? out : "")); return o;')
-        elif ret == "bool":
-            L.append("    bool v = (bool)%s(value);" % fn)
+        elif ret == "bool" or (rib and ret in ("int", "long", "size_t", "unsigned", "uint")):
+            if ret == "bool":
+                L.append("    bool v = (bool)%s(value);" % fn)
+            else:
+                L.append("    bool v = (%s(value) ? true : false);" % fn)
             L.append('    json_t *o = json_new_object(); json_set(o, "fn", json_string("%s"));' % fn)
             L.append('    json_set(o, "out", json_bool(v)); return o;')
         else:
@@ -219,7 +258,7 @@ def gen_harness(mod, cfile, funcs, sigs):
     L.append("        json_t *c = json_get(root, i);")
     L.append('        const char *op = json_get_str(c, "op", "");')
     L.append("        json_t *o = NULL;")
-    for k, (fn, _, _) in enumerate(funcs):
+    for k, (fn, _, _, _) in enumerate(funcs):
         kw = "if" if k == 0 else "else if"
         L.append('        %s (strcmp(op, "%s") == 0) o = emit_%s(c);' % (kw, fn, fn))
     L.append('        else { o = json_new_object(); json_set(o, "fn", json_string(op)); }')
@@ -231,15 +270,17 @@ def gen_harness(mod, cfile, funcs, sigs):
 
 
 def gen_oracle(mod, funcs):
-    mods = sorted(set(pym for _, pym, _ in funcs))
+    mods = sorted(set(pym for _, pym, _, _ in funcs))
     L = []
     L.append('"""AUTO-GENERATED integration oracle for %s (gen_integration_oracle.py)."""' % mod)
     L.append("import os, sys, json, importlib.util")
     L.append("")
     L.append("MODS = {}")
     L.append("def _load(rel):")
-    L.append("    repo = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))")
-    L.append("    if repo not in sys.path: sys.path.insert(0, repo)")
+    L.append("    repo = os.path.realpath(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))")
+    L.append("    devroot = os.path.dirname(repo)  # hermes_cli/ lives in the dev-tree parent of slermes")
+    L.append("    for p in (repo, devroot):")
+    L.append("        if p not in sys.path: sys.path.insert(0, p)")
     L.append("    for base in sys.path:")
     L.append("        cand = os.path.join(base, rel)")
     L.append("        try:")
@@ -254,7 +295,7 @@ def gen_oracle(mod, funcs):
         L.append("MODS[%r] = _load(%r)" % (m, m.replace(".", "/") + ".py"))
     L.append("")
     L.append("DISPATCH = {")
-    for fn, pymod, pyfn in funcs:
+    for fn, pymod, pyfn, _ in funcs:
         L.append("    %r: (%r, %r)," % (fn, pymod, pyfn))
     L.append("}")
     L.append("")
@@ -285,7 +326,7 @@ def gen_oracle(mod, funcs):
 
 def gen_fixture(mod, funcs):
     return json.dumps(
-        [{"op": fn, "value": fx} for fn, _, _ in funcs for fx in FIXTURES],
+        [{"op": fn, "value": fx} for fn, _, _, _ in funcs for fx in FIXTURES],
         ensure_ascii=False, indent=0)
 
 

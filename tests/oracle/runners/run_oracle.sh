@@ -65,11 +65,18 @@ LINKCMD=$(echo "$LINKCMD" | sed -E 's#-DHERMES_VERSION=[^ ]*#-DHERMES_VERSION=0#
 SRCINCS=$(find src -type d 2>/dev/null | sed 's#^#-I #' | tr '\n' ' ')
 LIBINCS="-I lib $(grep -oE 'lib/lib[a-z0-9_]+' build/libs-config.mk 2>/dev/null | sed 's#^#-I #' | tr '\n' ' ')"
 LINKCMD="$LINKCMD $LIBINCS $SRCINCS -D_XOPEN_SOURCE=700 -D_GNU_SOURCE"
+# Isolated temp home (absolute so it resolves regardless of cwd).
+TMPH="$(pwd)/$BUILD_DIR/home_$NAME"
+# The harness .c is NOT part of the `slermes` make graph, so `make -n` never
+# prints its compile command. Compile it explicitly here (with the same
+# include roots + version-macro fixes) so harness edits actually take effect
+# and the linked binary is never a stale object from a prior run.
+mkdir -p "$BUILD_DIR/obj/tests"
+COMPILE="gcc -c $HARNESS -o $BUILD_DIR/obj/tests/t_port_$NAME.o $LIBINCS $SRCINCS -D_XOPEN_SOURCE=700 -D_GNU_SOURCE"
+COMPILE=$(echo "$COMPILE" | sed -E 's#-DHERMES_VERSION=[^ ]*#-DHERMES_VERSION=0#g; s#-DHERMES_RELEASE_DATE=[^ ]*#-DHERMES_RELEASE_DATE=0#g; s#-DATADIR=[^ ]*#-DATADIR="/share/slermes/docs"#g')
 # Always rebuild the harness from the current object closure (never reuse a
 # stale binary from a prior run with a different object set).
 rm -f "$BUILD_DIR/tt_$NAME"
-# CFLAGS in the captured command use -O2 -g etc.; keep them. Build it.
-TMPH="$BUILD_DIR/home_$NAME"
 rm -rf "$TMPH"; mkdir -p "$TMPH/.hermes/cron"
 # Several oracles locate the live Python source via
 #   Path.home() / ".hermes/hermes-agent/..."
@@ -81,7 +88,13 @@ DEV_ROOT="$(cd "$ROOT/.." && pwd)"
 ln -sfn "$DEV_ROOT" "$TMPH/.hermes/hermes-agent"
 
 # shellcheck disable=SC2086
-bash -c "$LINKCMD -Wl,--allow-multiple-definition" 2>&1 | grep -iE 'error|undefined' || true
+bash -c "$COMPILE" >/tmp/oracle_compile.log 2>&1 || true
+# shellcheck disable=SC2086
+bash -c "$LINKCMD -Wl,--allow-multiple-definition" >/tmp/oracle_link.log 2>&1 || true
+if [ ! -f "$BUILD_DIR/tt_$NAME" ]; then
+  echo "LINK FAILED for $NAME:" >&2
+  grep -iE 'error|undefined|multiple' /tmp/oracle_link.log | head -5 >&2
+fi
 
 FAIL=0
 # Load normalize rules from registry.json (strip_patterns: regex on raw output;
@@ -137,6 +150,25 @@ PY
   cat "$tmp"; rm -f "$tmp"
 }
 
+# (a) ENV-ISOLATION: both the C harness and the Python oracle run with a
+# sanitized env so non-pure / env-dependent functions oracle deterministically
+# instead of leaking the developer's real environment (proxy/auth/CI/SSH/creds,
+# and a bare HOME that would resolve to the real ~/.hermes). We override the
+# isolation vars via `env $ISO` (NOT `env -i`, which nukes LANG/locale and can
+# segfault the C runtime). The harness/oracle also honor SLERMES_HOME /
+# HERMES_HOME / HOME -> the isolated temp dir, and @SBX@/@NOTREPO@ placeholders
+# in fixtures point at absolute sandbox paths, so a bare "." cwd is never the
+# real repo.
+ISO="SLERMES_HOME=$TMPH HERMES_HOME=$TMPH HOME=$TMPH XDG_CONFIG_HOME=$TMPH/.config XDG_DATA_HOME=$TMPH/.local/share"
+ISO="$ISO TMPDIR=$TMPH"
+# Clear only leak-prone NETWORK/PROXY vars that can change a function's real
+# behavior. Do NOT blank credential/CI vars (AWS_PROFILE, SSH_AUTH_SOCK,
+# GOOGLE_APPLICATION_CREDENTIALS, CI, ...) — several python modules read those
+# at import time and would fail to load under isolation, and they never leak
+# into pure-function outputs anyway. Also do NOT override PATH: the python
+# oracle must keep the venv on PATH (httpx and other deps live there).
+ISO="$ISO HTTP_PROXY= HTTPS_PROXY= http_proxy= https_proxy= NO_PROXY= no_proxy= ALL_PROXY= all_proxy="
+
 for f in "$FIX"/*.in; do
   case="$(basename "$f" .in)"
   extra=""
@@ -161,9 +193,9 @@ for f in "$FIX"/*.in; do
   # The harness's stdout is also piped to the oracle's stdin: oracles such as
   # file_safety_roots read the C output from stdin rather than argv, and this
   # is harmless for oracles that ignore stdin.
-  SLERMES_HOME="$TMPH" HERMES_HOME="$TMPH" HOME="$TMPH" "$BUILD_DIR/tt_$NAME" "$FSUB" $extra > "$BUILD_DIR/oracle_${NAME}_c_${case}.json" 2>/dev/null || true
+  env $ISO "$ROOT/tests/oracle/build/tt_$NAME" "$FSUB" $extra > "$BUILD_DIR/oracle_${NAME}_c_${case}.json" 2>/dev/null || true
   ORACLE_OUT="$BUILD_DIR/oracle_${NAME}_py_${case}.json"
-  if SLERMES_HOME="$TMPH" HERMES_HOME="$TMPH" HOME="$TMPH" python3 "$ROOT/tests/oracle/_oracle_boot.py" "$ORACLE" "$FSUB" $extra < "$BUILD_DIR/oracle_${NAME}_c_${case}.json" > "$ORACLE_OUT" 2>/dev/null; then
+  if env $ISO python3 "$ROOT/tests/oracle/_oracle_boot.py" "$ORACLE" "$FSUB" $extra < "$BUILD_DIR/oracle_${NAME}_c_${case}.json" > "$ORACLE_OUT" 2>/dev/null; then
     ORACLE_RC=0
   else
     ORACLE_RC=$?
