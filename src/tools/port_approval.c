@@ -1006,6 +1006,7 @@ char *approval__check_sudo_stdin_guard(const char *command) {
     return NULL;
 }
 
+/* PoP: detect_hardline_command @ tools/approval.py:detect_hardline_command */
 char *approval_detect_hardline_command(const char *command) {
     if (!command) return NULL;
     if (strlen(command) > 65536) return NULL;
