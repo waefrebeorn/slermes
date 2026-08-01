@@ -389,8 +389,10 @@ int openrouter_model_is_free(const char *pricing_json)
     if (!p || p->type != JSON_OBJECT) { if (p) json_free(p); return 0; }
     json_t *prom = json_object_get(p, "prompt");
     json_t *comp = json_object_get(p, "completion");
-    int r = 0;
-    if (prom && comp && json_number_value(prom)==0.0 && json_number_value(comp)==0.0) r = 1;
+    /* Python defaults missing prompt/completion to "0" -> 0.0 (free). */
+    double pv = prom ? json_number_value(prom) : 0.0;
+    double cv = comp ? json_number_value(comp) : 0.0;
+    int r = (pv == 0.0 && cv == 0.0) ? 1 : 0;
     json_free(p);
     return r;
 }

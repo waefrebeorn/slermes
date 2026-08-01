@@ -141,15 +141,23 @@ char *tts_tool_resolve_command_provider_config(const char *provider, const char 
 /* PoP: tts_tool_get_command_tts_timeout @ tools/tts_tool.py:_get_command_tts_timeout */
 int tts_tool_get_command_tts_timeout(const char *config_json)
 {
-    if (!config_json) return 300;
+    /* Mirror Python: config.get("timeout", config.get("timeout_seconds", 120)),
+     * then float(); if missing/<=0 -> 120. The previous port read the value
+     * from inside the "timeout" node (json_get_num(t,"timeout",...)) which
+     * always fell back to the default. */
+    if (!config_json) return 120;
     char *err = NULL;
     json_t *config = json_parse(config_json, &err);
     free(err);
-    if (!config) return 300;
+    if (!config) return 120;
     json_t *t = json_obj_get(config, "timeout");
-    int result = t ? (int)json_get_num(t, "timeout", 300) : 300;
+    if (!t) t = json_obj_get(config, "timeout_seconds");
+    double result = 120.0;
+    if (t && json_number_value(t) > 0.0) {
+        result = json_number_value(t);
+    }
     json_free(config);
-    return result;
+    return (int)result;
 }
 
 /* Port of Python: _get_command_tts_output_format */

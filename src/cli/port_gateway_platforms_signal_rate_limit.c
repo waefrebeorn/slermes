@@ -57,7 +57,7 @@ int cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error(const ch
         if (m) message = m;
     }
 
-    if (code == 429) {            /* SIGNAL_RPC_ERROR_RATELIMIT */
+    if (code == -5) {            /* SIGNAL_RPC_ERROR_RATELIMIT = -5 (signal-cli v0.14.3+) */
         if (doc) json_free(doc);
         return 1;
     }
