@@ -8,6 +8,10 @@
 #include "commands_shared.h"
 #include "hermes_core_types.h"
 
+/* relative_time is defined in cli/port_hermes_cli_main_helpers.c (no header).
+ * Renders a time_t as "Xm ago" / "yesterday" / date. Assembles this orphan. */
+char *relative_time(long ts);
+
 #include "send_message.h"
 #include "session_crud.h"
 #include "session_search.h"
@@ -1239,8 +1243,9 @@ void cmd_status(const char *args, agent_state_t *state) {
     if (state->chat_id[0])
         printf("Chat:          %s\n", state->chat_id);
     time_t now = time(NULL);
+    (void)now;
     if (state->last_activity_ts > 0)
-        printf("Last activity: %lds ago\n", (long)(now - state->last_activity_ts));
+        printf("Last activity: %s\n", relative_time(state->last_activity_ts));
     if (state->interrupt_message[0])
         printf("Interrupt:     %s\n", state->interrupt_message);
 }
