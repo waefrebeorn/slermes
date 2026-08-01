@@ -1,3 +1,4 @@
+#define _XOPEN_SOURCE 700
 #define _GNU_SOURCE
 /*
  * port_tools_managed_tool_gateway.c — C port of tools/managed_tool_gateway.py
