@@ -10,6 +10,11 @@
 #include "hermes_cdp.h"
 #include "hermes_agent.h"
 #include "hermes_display.h"
+
+/* cron_cmd_handler is defined in cron/cron_cli.c (no header); it lazy-inits
+ * the job store and returns a malloc'd JSON with a "jobs" array (each job
+ * carries last_run_ago from format_time_ago). Used by /cron list below. */
+char *cron_cmd_handler(const char *args_json, const char *task_id);
 #include "hermes_plugin.h"
 #include "hermes_skin.h"
 #include "registry.h"
@@ -312,18 +317,32 @@ void cmd_cron(const char *args, agent_state_t *state) {
     (void)state;
     if (args && args[0]) {
         if (strcmp(args, "list") == 0 || strcmp(args, "-l") == 0) {
-            char cron_dir[HERMES_PATH_MAX];
-            hermes_get_home(cron_dir, sizeof(cron_dir));
-            strncat(cron_dir, "/cron", sizeof(cron_dir) - strlen(cron_dir) - 1);
-            printf("Scheduled tasks in %s:\n", cron_dir);
-            char cmd[HERMES_PATH_MAX + 32];
-            snprintf(cmd, sizeof(cmd), "ls -la %s/ 2>/dev/null || echo '(empty)'", cron_dir);
-            FILE *fp = popen(cmd, "r");
-            if (fp) {
-                char line[256];
-                while (fgets(line, sizeof(line), fp)) printf("  %s", line);
-                pclose(fp);
+            /* Render the real job store (was a raw `ls -la` of the cron dir,
+             * which showed files, not jobs). cron_cmd_handler lazy-inits the
+             * store and returns jobs with last_run_ago (format_time_ago). */
+            char *resp = cron_cmd_handler("{\"action\":\"list\"}", "");
+            if (!resp) { printf("Error: cron store unavailable.\n"); return; }
+            json_t *root = json_parse(resp, NULL);
+            free(resp);
+            if (!root) { printf("Error: failed to parse cron list.\n"); return; }
+            json_t *jobs = json_obj_get(root, "jobs");
+            if (!jobs || jobs->type != JSON_ARRAY || json_len(jobs) == 0) {
+                printf("No scheduled cron tasks.\n");
+            } else {
+                printf("Scheduled tasks (%zu):\n", json_len(jobs));
+                for (size_t i = 0; i < json_len(jobs); i++) {
+                    json_t *j = json_get(jobs, i);
+                    const char *name = json_get_str(j, "name", "?");
+                    const char *sched = json_get_str(j, "schedule", "?");
+                    bool active = json_get_bool(j, "active", false);
+                    const char *ago = json_get_str(j, "last_run_ago", "");
+                    printf("  %-20s %-8s %s", name,
+                           active ? "active" : "paused", sched);
+                    if (ago && ago[0]) printf("  (last: %s)", ago);
+                    printf("\n");
+                }
             }
+            json_free(root);
             return;
         }
         printf("Usage: /cron [list]\n");
