@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:11:11Z",
+  "generated_at": "2026-08-02T19:13:30Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -273383,10 +273383,10 @@
     },
     "tools/approval.py": {
       "total": 94,
-      "ported": 74,
+      "ported": 84,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 20,
+      "real_gaps": 10,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 94,
@@ -274040,17 +274040,24 @@
             "decorators": [],
             "line_number": 866
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_approval_remaining.c",
+          "c_function": "apr_normalize_command_for_detection",
+          "pop_annotation": {
+            "c_function": "apr_normalize_command_for_detection",
+            "python_functions": [
+              "_normalize_command_for_detection"
+            ],
+            "c_file": "src/tools/port_approval_remaining.c",
+            "python_file": "tools/approval.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalize_command_for_detection @ tools/approval.py:_normalize_command_for_detection */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/approval.py",
@@ -274990,17 +274997,24 @@
             "decorators": [],
             "line_number": 1988
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_approval_remaining.c",
+          "c_function": "apr_detect_dangerous_command",
+          "pop_annotation": {
+            "c_function": "apr_detect_dangerous_command",
+            "python_functions": [
+              "detect_dangerous_command"
+            ],
+            "c_file": "src/tools/port_approval_remaining.c",
+            "python_file": "tools/approval.py",
+            "line": 148,
+            "is_consolidated": false,
+            "full_text": "/* PoP: detect_dangerous_command @ tools/approval.py:detect_dangerous_command */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/approval.py",
@@ -275318,17 +275332,24 @@
             "decorators": [],
             "line_number": 2172
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_approval_remaining.c",
+          "c_function": "apr_is_approved",
+          "pop_annotation": {
+            "c_function": "apr_is_approved",
+            "python_functions": [
+              "is_approved"
+            ],
+            "c_file": "src/tools/port_approval_remaining.c",
+            "python_file": "tools/approval.py",
+            "line": 211,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_approved @ tools/approval.py:is_approved */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/approval.py",
@@ -275340,17 +275361,24 @@
             "decorators": [],
             "line_number": 2186
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_approval_remaining.c",
+          "c_function": "apr_approve_permanent",
+          "pop_annotation": {
+            "c_function": "apr_approve_permanent",
+            "python_functions": [
+              "approve_permanent"
+            ],
+            "c_file": "src/tools/port_approval_remaining.c",
+            "python_file": "tools/approval.py",
+            "line": 219,
+            "is_consolidated": false,
+            "full_text": "/* PoP: approve_permanent @ tools/approval.py:approve_permanent */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/approval.py",
@@ -275391,17 +275419,24 @@
             "decorators": [],
             "line_number": 2201
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_approval_remaining.c",
+          "c_function": "apr_has_allowlist_shell_operator",
+          "pop_annotation": {
+            "c_function": "apr_has_allowlist_shell_operator",
+            "python_functions": [
+              "_has_allowlist_shell_operator"
+            ],
+            "c_file": "src/tools/port_approval_remaining.c",
+            "python_file": "tools/approval.py",
+            "line": 66,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _has_allowlist_shell_operator @ tools/approval.py:_has_allowlist_shell_operator */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/approval.py",
@@ -275413,17 +275448,24 @@
             "decorators": [],
             "line_number": 2206
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_approval_remaining.c",
+          "c_function": "apr_command_matches_permanent_allowlist",
+          "pop_annotation": {
+            "c_function": "apr_command_matches_permanent_allowlist",
+            "python_functions": [
+              "_command_matches_permanent_allowlist"
+            ],
+            "c_file": "src/tools/port_approval_remaining.c",
+            "python_file": "tools/approval.py",
+            "line": 112,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _command_matches_permanent_allowlist @ tools/approval.py:_command_matches_permanent_allowlist */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/approval.py",
@@ -275435,17 +275477,24 @@
             "decorators": [],
             "line_number": 2240
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_approval_remaining.c",
+          "c_function": "apr_load_permanent_allowlist",
+          "pop_annotation": {
+            "c_function": "apr_load_permanent_allowlist",
+            "python_functions": [
+              "load_permanent_allowlist"
+            ],
+            "c_file": "src/tools/port_approval_remaining.c",
+            "python_file": "tools/approval.py",
+            "line": 178,
+            "is_consolidated": false,
+            "full_text": "/* PoP: load_permanent_allowlist @ tools/approval.py:load_permanent_allowlist */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/approval.py",
@@ -275457,17 +275506,24 @@
             "decorators": [],
             "line_number": 2258
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_approval_remaining.c",
+          "c_function": "apr_save_permanent_allowlist",
+          "pop_annotation": {
+            "c_function": "apr_save_permanent_allowlist",
+            "python_functions": [
+              "save_permanent_allowlist"
+            ],
+            "c_file": "src/tools/port_approval_remaining.c",
+            "python_file": "tools/approval.py",
+            "line": 195,
+            "is_consolidated": false,
+            "full_text": "/* PoP: save_permanent_allowlist @ tools/approval.py:save_permanent_allowlist */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/approval.py",
@@ -275617,17 +275673,24 @@
             "decorators": [],
             "line_number": 2493
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_approval_remaining.c",
+          "c_function": "apr_get_approval_timeout",
+          "pop_annotation": {
+            "c_function": "apr_get_approval_timeout",
+            "python_functions": [
+              "_get_approval_timeout"
+            ],
+            "c_file": "src/tools/port_approval_remaining.c",
+            "python_file": "tools/approval.py",
+            "line": 100,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_approval_timeout @ tools/approval.py:_get_approval_timeout */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/approval.py",
@@ -275697,17 +275760,24 @@
             "decorators": [],
             "line_number": 2541
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_approval_remaining.c",
+          "c_function": "apr_strip_line_comment",
+          "pop_annotation": {
+            "c_function": "apr_strip_line_comment",
+            "python_functions": [
+              "_strip_line_comment"
+            ],
+            "c_file": "src/tools/port_approval_remaining.c",
+            "python_file": "tools/approval.py",
+            "line": 80,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _strip_line_comment @ tools/approval.py:_strip_line_comment */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/approval.py",
