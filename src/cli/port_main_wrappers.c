@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <sys/stat.h>
 #include <errno.h>
 #include "hermes_json.h"
 #include "port_config_py_helpers.h"
@@ -561,7 +562,18 @@ int main_u_pe_machine_or_none(const char *arg) {
 int main_u_desktop_exe_integrity_error(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _desktop_backup_unpacked_dir @ hermes_cli/main.py:_desktop_backup_unpacked_dir */
-int main_u_desktop_backup_unpacked_dir(const char *arg) { (void)arg; return 0; }
+int main_u_desktop_backup_unpacked_dir(const char *arg) {
+    /* Python: unpacked = packaged_executable.parent; return
+     * unpacked.parent / (unpacked.name + ".bak"). Arg = packaged exe path. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    char dir[1024];
+    snprintf(dir, sizeof(dir), "%s", arg);
+    char *slash = strrchr(dir, '/');
+    if (!slash) { printf(".bak\n"); return 0; }
+    *slash = '\0';
+    printf("%s/%s.bak\n", dir, slash + 1);
+    return 0;
+}
 
 /* PoP: _rollback_desktop_from_backup @ hermes_cli/main.py:_rollback_desktop_from_backup */
 int main_u_rollback_desktop_from_backup(const char *arg) { (void)arg; return 0; }
@@ -723,7 +735,21 @@ int main_u_count_commits_between(const char *arg) {
 }
 
 /* PoP: _should_skip_upstream_prompt @ hermes_cli/main.py:_should_skip_upstream_prompt */
-int main_u_should_skip_upstream_prompt(const char *arg) { (void)arg; return 0; }
+int main_u_should_skip_upstream_prompt(const char *arg) {
+    /* Python: (get_hermes_home() / ".skip_upstream_prompt").exists().
+     * Arg = optional hermes home (defaults to env). */
+    char path[1200];
+    if (arg && *arg) snprintf(path, sizeof(path), "%s/.skip_upstream_prompt", arg);
+    else {
+        const char *hh = getenv("HERMES_HOME");
+        if (hh && *hh) snprintf(path, sizeof(path), "%s/.skip_upstream_prompt", hh);
+        else snprintf(path, sizeof(path), "%s/.hermes/.skip_upstream_prompt",
+                      getenv("HOME") ? getenv("HOME") : ".");
+    }
+    struct stat st;
+    printf("%d\n", stat(path, &st) == 0);
+    return 0;
+}
 
 /* PoP: _mark_skip_upstream_prompt @ hermes_cli/main.py:_mark_skip_upstream_prompt */
 int main_u_mark_skip_upstream_prompt(const char *arg) { (void)arg; return 0; }

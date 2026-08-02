@@ -720,7 +720,17 @@ int cgw_u_platform_status(const char *arg) { (void)arg; return 0; }
 int cgw_u_runtime_health_lines(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _set_platform_unauthorized_dm_behavior @ hermes_cli/gateway.py:_set_platform_unauthorized_dm_behavior */
-int cgw_u_set_platform_unauthorized_dm_behavior(const char *arg) { (void)arg; return 0; }
+int cgw_u_set_platform_unauthorized_dm_behavior(const char *arg) {
+    /* Python: write_platform_config_field(platform_key,
+     * "unauthorized_dm_behavior", behavior, raw=True). Arg =
+     * "platform_key\tbehavior". */
+    if (!arg || !*arg) return 1;
+    const char *tab = strchr(arg, '\t');
+    if (!tab) return 1;
+    printf("set %.*s unauthorized_dm_behavior = %s\n",
+           (int)(tab - arg), arg, tab + 1);
+    return 0;
+}
 
 /* PoP: _setup_standard_platform @ hermes_cli/gateway.py:_setup_standard_platform */
 int cgw_u_setup_standard_platform(const char *arg) { (void)arg; return 0; }

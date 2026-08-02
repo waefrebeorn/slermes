@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <signal.h>
 #include "hermes_json.h"
 #include "registry.h"
 
@@ -225,7 +226,13 @@ int tools_registry_u_check_fn_cached(const char *arg) { (void)arg; return 0; }
 int tools_registry_invalidate_check_fn_cache(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _snapshot_state @ tools/registry.py:_snapshot_state */
-int tools_registry_u_snapshot_state(const char *arg) { (void)arg; return 0; }
+int tools_registry_u_snapshot_state(const char *arg) {
+    /* Python: locked list(self._tools.values()), dict(self._toolset_checks).
+     * Arg = "tool\ttool..." — echo as a JSON array of names. */
+    if (!arg || !*arg) { printf("[[],{}]\n"); return 0; }
+    printf("[[%s],{}]\n", arg);
+    return 0;
+}
 
 /* PoP: _snapshot_entries @ tools/registry.py:_snapshot_entries */
 int tools_registry_u_snapshot_entries(const char *arg) {
@@ -720,7 +727,19 @@ int tools_kanban_tools_u_handle_attachments(const char *arg) { (void)arg; return
 int tools_tool_backend_helpers_managed_nous_tools_enabled(const char *arg) { (void)arg; return 0; }
 
 /* PoP: normalize_browser_cloud_provider @ tools/tool_backend_helpers.py:normalize_browser_cloud_provider */
-int tools_tool_backend_helpers_normalize_browser_cloud_provider(const char *arg) { (void)arg; return 0; }
+int tools_tool_backend_helpers_normalize_browser_cloud_provider(const char *arg) {
+    /* Python: str(value or default).strip().lower() or default. */
+    const char *v = arg ? arg : "";
+    while (*v == ' ' || *v == '\t') v++;
+    char buf[128];
+    size_t n = strlen(v);
+    if (n == 0) { printf("general-browser\n"); return 0; }
+    if (n >= sizeof(buf)) n = sizeof(buf) - 1;
+    memcpy(buf, v, n); buf[n] = '\0';
+    for (char *p = buf; *p; p++) *p = (char)tolower((unsigned char)*p);
+    printf("%s\n", buf[0] ? buf : "general-browser");
+    return 0;
+}
 
 /* PoP: coerce_modal_mode @ tools/tool_backend_helpers.py:coerce_modal_mode */
 int tools_tool_backend_helpers_coerce_modal_mode(const char *arg) { (void)arg; return 0; }
@@ -1025,7 +1044,24 @@ int tools_mcp_stdio_watchdog_u_is_orphaned(const char *arg) {
 int tools_mcp_stdio_watchdog_u_terminate_process_group(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _watchdog_loop @ tools/mcp_stdio_watchdog.py:_watchdog_loop */
-int tools_mcp_stdio_watchdog_u_watchdog_loop(const char *arg) { (void)arg; return 0; }
+int tools_mcp_stdio_watchdog_u_watchdog_loop(const char *arg) {
+    /* Python: while proc alive: if orphaned(original_ppid):
+     * terminate_process_group(proc); return; sleep(_POLL_INTERVAL_S).
+     * Arg = "pid\tppid" (empty = one pass with no-op). */
+    if (!arg || !*arg) { printf("watchdog pass\n"); return 0; }
+    long pid = strtol(arg, NULL, 10);
+    const char *tab = strchr(arg, '\t');
+    long ppid = tab ? strtol(tab + 1, NULL, 10) : 0;
+    if (pid <= 0) { printf("watchdog pass\n"); return 0; }
+    /* single orphan check: if ppid is gone (or reparented to 1), kill. */
+    if (ppid > 1 && kill((pid_t)ppid, 0) != 0) {
+        kill(-(pid_t)pid, SIGTERM);
+        printf("orphaned %ld terminated\n", pid);
+        return 0;
+    }
+    printf("watchdog ok %ld\n", pid);
+    return 0;
+}
 
 /* PoP: _normalize_target @ tools/open_preview_tool.py:_normalize_target */
 int tools_open_preview_tool_u_normalize_target(const char *arg) { (void)arg; return 0; }

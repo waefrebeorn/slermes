@@ -95,7 +95,20 @@ int smt_u_validate_category(const char *arg) { (void)arg; return 0; }
 int smt_u_validate_frontmatter(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_skill_dir @ tools/skill_manager_tool.py:_resolve_skill_dir */
-int smt_u_resolve_skill_dir(const char *arg) { (void)arg; return 0; }
+int smt_u_resolve_skill_dir(const char *arg) {
+    /* Python: _skills_dir()/category/name if category else _skills_dir()/name.
+     * Arg = "name\tcategory" (category optional, tab-separated). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *base = getenv("HERMES_SKILLS_DIR");
+    if (!base || !*base) base = getenv("HOME") ? getenv("HOME") : ".";
+    if (!tab) {
+        printf("%s/.hermes/skills/%s\n", base, arg);
+        return 0;
+    }
+    printf("%s/.hermes/skills/%s/%.*s\n", base, tab + 1, (int)(tab - arg), arg);
+    return 0;
+}
 
 /* PoP: _find_skill_in_other_profiles @ tools/skill_manager_tool.py:_find_skill_in_other_profiles */
 int smt_u_find_skill_in_other_profiles(const char *arg) { (void)arg; return 0; }

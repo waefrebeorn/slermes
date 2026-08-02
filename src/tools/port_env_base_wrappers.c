@@ -68,7 +68,34 @@ int envb_u_popen_bash(const char *arg) { (void)arg; return 0; }
 int envb_u_load_json_store(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _save_json_store @ tools/environments/base.py:_save_json_store */
-int envb_u_save_json_store(const char *arg) { (void)arg; return 0; }
+int envb_u_save_json_store(const char *arg) {
+    /* Python: mkdir(parents=True); path.write_text(json.dumps(data,
+     * indent=2)). Arg = "path\tdata" (data passed through as JSON). */
+    if (!arg || !*arg) return 0;
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("saved %s\n", arg); return 0; }
+    char path[1024];
+    size_t plen = (size_t)(tab - arg);
+    if (plen >= sizeof(path)) plen = sizeof(path) - 1;
+    memcpy(path, arg, plen); path[plen] = '\0';
+    /* mkdir -p the parent */
+    char dir[1024];
+    snprintf(dir, sizeof(dir), "%s", path);
+    char *slash = strrchr(dir, '/');
+    if (slash) {
+        *slash = '\0';
+        char cmd[1200];
+        snprintf(cmd, sizeof(cmd), "mkdir -p '%s'", dir);
+        system(cmd);
+    }
+    FILE *fp = fopen(path, "w");
+    if (fp) {
+        fputs(tab + 1, fp);
+        fclose(fp);
+    }
+    printf("saved %s\n", path);
+    return 0;
+}
 
 /* PoP: _file_mtime_key @ tools/environments/base.py:_file_mtime_key */
 int envb_u_file_mtime_key(const char *arg) { (void)arg; return 0; }

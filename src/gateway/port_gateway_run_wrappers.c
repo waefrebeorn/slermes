@@ -208,7 +208,14 @@ int grun_u_refresh_fallback_model(const char *arg) { (void)arg; return 0; }
 int grun_u_apply_fallback_chain_to_agent(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _snapshot_running_agents @ gateway/run.py:_snapshot_running_agents */
-int grun_u_snapshot_running_agents(const char *arg) { (void)arg; return 0; }
+int grun_u_snapshot_running_agents(const char *arg) {
+    /* Python: {session_key: agent for ... if agent is not the pending
+     * sentinel}. Arg = "session_key\tagent..." pairs (agent != "PENDING"
+     * kept). */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _claim_active_session_slot @ gateway/run.py:_claim_active_session_slot */
 int grun_u_claim_active_session_slot(const char *arg) { (void)arg; return 0; }

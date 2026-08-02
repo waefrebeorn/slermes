@@ -94,7 +94,24 @@ int msw_u_resolve_named_custom_model_id(const char *arg) { (void)arg; return 0; 
 int msw_u_credential_pool_is_usable(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _extra_headers_from_config @ hermes_cli/model_switch.py:_extra_headers_from_config */
-int msw_u_extra_headers_from_config(const char *arg) { (void)arg; return 0; }
+int msw_u_extra_headers_from_config(const char *arg) {
+    /* Python: {} if not dict; else normalize_extra_headers(
+     * entry.get("extra_headers")). Arg = entry JSON. */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    json_t *entry = json_parse(arg, NULL);
+    if (!entry || !json_is_object(entry)) {
+        if (entry) json_free(entry);
+        printf("{}\n");
+        return 0;
+    }
+    json_t *eh = json_obj_get(entry, "extra_headers");
+    if (!eh || !json_is_object(eh)) { json_free(entry); printf("{}\n"); return 0; }
+    char *ser = json_serialize(eh);
+    printf("%s\n", ser ? ser : "{}");
+    free(ser);
+    json_free(entry);
+    return 0;
+}
 
 /* PoP: prewarm_picker_cache_async @ hermes_cli/model_switch.py:prewarm_picker_cache_async */
 int msw_prewarm_picker_cache_async(const char *arg) { (void)arg; return 0; }

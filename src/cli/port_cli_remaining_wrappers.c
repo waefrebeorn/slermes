@@ -612,7 +612,21 @@ int hermes_cli_security_audit_u_discover_mcp(const char *arg) { (void)arg; retur
 int hermes_cli_security_audit_u_http_post_json(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _http_get_json @ hermes_cli/security_audit.py:_http_get_json */
-int hermes_cli_security_audit_u_http_get_json(const char *arg) { (void)arg; return 0; }
+int hermes_cli_security_audit_u_http_get_json(const char *arg) {
+    /* Python: urllib GET with timeout; json.loads of the response.
+     * Arg = URL. The C port fetches via curl and passes the body through. */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    char cmd[1400];
+    snprintf(cmd, sizeof(cmd), "curl -sS --max-time 10 '%s' 2>/dev/null", arg);
+    FILE *fp = popen(cmd, "r");
+    if (!fp) { printf("{}\n"); return 0; }
+    char buf[8192];
+    size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+    pclose(fp);
+    buf[n] = '\0';
+    printf("%s\n", n > 0 ? buf : "{}");
+    return 0;
+}
 
 /* PoP: _osv_query_batch @ hermes_cli/security_audit.py:_osv_query_batch */
 int hermes_cli_security_audit_u_osv_query_batch(const char *arg) { (void)arg; return 0; }
@@ -889,10 +903,22 @@ int hermes_cli_skin_engine_init_skin_from_config(const char *arg) { (void)arg; r
 int hermes_cli_skin_engine_get_active_prompt_symbol(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_active_help_header @ hermes_cli/skin_engine.py:get_active_help_header */
-int hermes_cli_skin_engine_get_active_help_header(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skin_engine_get_active_help_header(const char *arg) {
+    /* Python: get_active_skin().get_branding("help_header", fallback);
+     * fallback on error. Arg = fallback. */
+    if (!arg || !*arg) { printf("/help\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: get_active_goodbye @ hermes_cli/skin_engine.py:get_active_goodbye */
-int hermes_cli_skin_engine_get_active_goodbye(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skin_engine_get_active_goodbye(const char *arg) {
+    /* Python: get_active_skin().get_branding("goodbye", fallback); fallback
+     * on error. Arg = fallback. */
+    if (!arg || !*arg) { printf("bye\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: get_prompt_toolkit_style_overrides @ hermes_cli/skin_engine.py:get_prompt_toolkit_style_overrides */
 int hermes_cli_skin_engine_get_prompt_toolkit_style_overrides(const char *arg) { (void)arg; return 0; }
@@ -1340,7 +1366,17 @@ int hermes_cli_browser_connect_chrome_debug_data_dir(const char *arg) {
 }
 
 /* PoP: _chrome_debug_args @ hermes_cli/browser_connect.py:_chrome_debug_args */
-int hermes_cli_browser_connect_u_chrome_debug_args(const char *arg) { (void)arg; return 0; }
+int hermes_cli_browser_connect_u_chrome_debug_args(const char *arg) {
+    /* Python: [--remote-debugging-port=<port>,
+     * --user-data-dir=<dir>, --no-first-run, --no-default-browser-check].
+     * Arg = "port\tdir". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("--remote-debugging-port=%s\n", arg); return 0; }
+    printf("--remote-debugging-port=%.*s\n--user-data-dir=%s\n--no-first-run\n--no-default-browser-check\n",
+           (int)(tab - arg), arg, tab + 1);
+    return 0;
+}
 
 /* PoP: discover_local_cdp_url @ hermes_cli/browser_connect.py:discover_local_cdp_url */
 int hermes_cli_browser_connect_discover_local_cdp_url(const char *arg) { (void)arg; return 0; }
@@ -1518,7 +1554,21 @@ int hermes_cli_projects_db_reconcile_discovered_repos_policy(const char *arg) { 
 int hermes_cli_projects_db_clear_discovered_repos(const char *arg) { (void)arg; return 0; }
 
 /* PoP: append @ hermes_cli/pty_session.py:append */
-int hermes_cli_pty_session_append(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pty_session_append(const char *arg) {
+    /* Python: self._buf.extend(data); drop overflow from front and mark
+     * truncated. Arg = "cap\tdata" (echoes kept data). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long cap = tab ? strtol(arg, NULL, 10) : 0;
+    const char *data = tab ? tab + 1 : arg;
+    size_t dlen = strlen(data);
+    if (cap > 0 && (long)dlen > cap) {
+        printf("%.*s\n", (int)cap, data + (dlen - (size_t)cap));
+        return 0;
+    }
+    printf("%s\n", data);
+    return 0;
+}
 
 /* PoP: truncated @ hermes_cli/pty_session.py:truncated */
 int hermes_cli_pty_session_truncated(const char *arg) {
@@ -1588,7 +1638,23 @@ int hermes_cli_webhook_u_get_webhook_base_url(const char *arg) { (void)arg; retu
 int hermes_cli_webhook_u_setup_hint(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _require_webhook_enabled @ hermes_cli/webhook.py:_require_webhook_enabled */
-int hermes_cli_webhook_u_require_webhook_enabled(const char *arg) { (void)arg; return 0; }
+int hermes_cli_webhook_u_require_webhook_enabled(const char *arg) {
+    /* Python: True if _is_webhook_enabled(); else print setup hint and
+     * return False. Arg = "1"/"0" enabled flag (empty = check env). */
+    if (arg && *arg) {
+        int enabled = (strcmp(arg, "1") == 0 || strcmp(arg, "true") == 0);
+        if (enabled) { printf("1\n"); return 0; }
+        printf("webhook disabled — run 'hermes webhook enable' to set it up\n0\n");
+        return 0;
+    }
+    const char *v = getenv("HERMES_WEBHOOK_ENABLED");
+    if (v && *v && strcmp(v, "0") != 0 && strcasecmp(v, "false") != 0) {
+        printf("1\n");
+        return 0;
+    }
+    printf("webhook disabled — run 'hermes webhook enable' to set it up\n0\n");
+    return 0;
+}
 
 /* PoP: _cmd_subscribe @ hermes_cli/webhook.py:_cmd_subscribe */
 int hermes_cli_webhook_u_cmd_subscribe(const char *arg) { (void)arg; return 0; }
@@ -2377,7 +2443,12 @@ int hermes_cli_moa_config_u_coerce_degraded_reference_policy(const char *arg) { 
 int hermes_cli_moa_config_coerce_privacy_filter(const char *arg) { (void)arg; return 0; }
 
 /* PoP: moa_usage @ hermes_cli/moa_config.py:moa_usage */
-int hermes_cli_moa_config_moa_usage(const char *arg) { (void)arg; return 0; }
+int hermes_cli_moa_config_moa_usage(const char *arg) {
+    /* Python: the /moa usage string. */
+    (void)arg;
+    printf("Usage: /moa <prompt>  (runs one prompt through the default MoA preset, then restores your model; pick a preset from the model picker to switch for the session)\n");
+    return 0;
+}
 
 /* PoP: _print_aiohttp_missing @ hermes_cli/proxy/cli.py:_print_aiohttp_missing */
 int hermes_cli_proxy_cli_u_print_aiohttp_missing(const char *arg) {
@@ -2495,7 +2566,29 @@ int hermes_cli_memory_oauth_memory_oauth_status(const char *arg) { (void)arg; re
 int hermes_cli_moa_cmd_u_pick_slot(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _format_slot @ hermes_cli/moa_cmd.py:_format_slot */
-int hermes_cli_moa_cmd_u_format_slot(const char *arg) { (void)arg; return 0; }
+int hermes_cli_moa_cmd_u_format_slot(const char *arg) {
+    /* Python: f"{provider}:{model}" + [reasoning=<effort>] when set.
+     * Arg = JSON slot. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *slot = json_parse(arg, NULL);
+    if (!slot || !json_is_object(slot)) {
+        if (slot) json_free(slot);
+        printf("%s\n", arg);
+        return 0;
+    }
+    const char *provider = json_get_str(slot, "provider", "");
+    const char *model = json_get_str(slot, "model", "");
+    const char *effort = json_get_str(slot, "reasoning_effort", "");
+    if (effort && *effort) {
+        /* trim */
+        while (*effort == ' ' || *effort == '\t') effort++;
+        printf("%s:%s [reasoning=%s]\n", provider, model, effort);
+    } else {
+        printf("%s:%s\n", provider, model);
+    }
+    json_free(slot);
+    return 0;
+}
 
 /* PoP: _print_config @ hermes_cli/moa_cmd.py:_print_config */
 int hermes_cli_moa_cmd_u_print_config(const char *arg) { (void)arg; return 0; }
@@ -2687,7 +2780,21 @@ int hermes_cli_suggestions_cmd_u_resolve_origin(const char *arg) { (void)arg; re
 int hermes_cli_suggestions_cmd_handle_suggestions_command(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _confirm @ hermes_cli/checkpoints.py:_confirm */
-int hermes_cli_checkpoints_u_confirm(const char *arg) { (void)arg; return 0; }
+int hermes_cli_checkpoints_u_confirm(const char *arg) {
+    /* Python: input(f"{prompt} [y/N]: ").strip().lower() in {"y","yes"};
+     * False on EOF/KeyboardInterrupt. Arg = prompt. */
+    if (!arg) arg = "";
+    printf("%s [y/N]: ", arg);
+    fflush(stdout);
+    char line[512];
+    if (!fgets(line, sizeof(line), stdin)) { printf("\n"); printf("0\n"); return 0; }
+    for (char *p = line; *p; p++) {
+        if (*p == '\n' || *p == '\r') { *p = '\0'; break; }
+    }
+    for (char *p = line; *p; p++) *p = (char)tolower((unsigned char)*p);
+    printf("%d\n", strcmp(line, "y") == 0 || strcmp(line, "yes") == 0);
+    return 0;
+}
 
 /* PoP: cmd_clear_legacy @ hermes_cli/checkpoints.py:cmd_clear_legacy */
 int hermes_cli_checkpoints_cmd_clear_legacy(const char *arg) { (void)arg; return 0; }

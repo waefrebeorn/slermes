@@ -232,7 +232,18 @@ int gateway_shutdown_watchdog_start_loop_liveness_watchdog(const char *arg) { (v
 int gateway_shutdown_watchdog_u_process_hermes_home(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_loop_heartbeat_path @ gateway/shutdown_watchdog.py:get_loop_heartbeat_path */
-int gateway_shutdown_watchdog_get_loop_heartbeat_path(const char *arg) { (void)arg; return 0; }
+int gateway_shutdown_watchdog_get_loop_heartbeat_path(const char *arg) {
+    /* Python: base / "state" / "gateway.heartbeat" where base = home or
+     * _process_hermes_home(). Arg = optional home. */
+    if (!arg || !*arg) {
+        const char *hh = getenv("HERMES_HOME");
+        if (hh && *hh) printf("%s/state/gateway.heartbeat\n", hh);
+        else printf("%s/.hermes/state/gateway.heartbeat\n", getenv("HOME") ? getenv("HOME") : ".");
+        return 0;
+    }
+    printf("%s/state/gateway.heartbeat\n", arg);
+    return 0;
+}
 
 /* PoP: get_shutdown_watchdog_dump_path @ gateway/shutdown_watchdog.py:get_shutdown_watchdog_dump_path */
 int gateway_shutdown_watchdog_get_shutdown_watchdog_dump_path(const char *arg) { (void)arg; return 0; }
