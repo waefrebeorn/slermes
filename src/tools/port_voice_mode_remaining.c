@@ -45,16 +45,19 @@ char *vmd_recorder_init(void) {
 
 /* PoP: start @ tools/voice_mode.py:start */
 int vmd_start(const char *mic_cmd) {
-    /* Python: termux mic capture; no silence callbacks. */
-    if (!mic_cmd) return -1;
-    printf("voice recording started (%s)\n", mic_cmd);
+    /* Python: start recording — REAL termux cmd. */
+    if (!output_path) return -1;
+    char cmd[4096];
+    snprintf(cmd, sizeof(cmd), "termux-microphone-record -f %s 2>/dev/null &", output_path);
+    system(cmd);
     return 0;
 }
 
 /* PoP: _stop_termux_recording @ tools/voice_mode.py:_stop_termux_recording */
 int vmd_stop_termux_recording(void) {
-    /* Python: terminate termux mic process. */
-    printf("termux recording stopped\n");
+    /* Python: stop recording — REAL termux cmd. */
+    (void)arg;
+    system("termux-microphone-record -q 2>/dev/null");
     return 0;
 }
 

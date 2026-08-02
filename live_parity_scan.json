@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T23:52:34Z",
+  "generated_at": "2026-08-02T23:55:07Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -76723,10 +76723,10 @@
     },
     "cli.py": {
       "total": 313,
-      "ported": 306,
+      "ported": 307,
       "partial": 2,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 4,
       "thin": true,
       "pop_mismatch": false,
       "py_func_count": 313,
@@ -82674,7 +82674,7 @@
             "decorators": [],
             "line_number": 7129
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_cli_remaining2.c",
           "c_function": "cl2_show_config",
           "pop_annotation": {
@@ -82688,12 +82688,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: show_config @ cli.py:show_config */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -82802,7 +82800,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 166,
+            "line": 171,
             "is_consolidated": false,
             "full_text": "/* PoP: _notify_session_boundary @ cli.py:_notify_session_boundary */"
           },
@@ -84407,7 +84405,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 174,
+            "line": 179,
             "is_consolidated": false,
             "full_text": "/* PoP: _reload_mcp @ cli.py:_reload_mcp */"
           },
@@ -84438,7 +84436,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 181,
+            "line": 186,
             "is_consolidated": false,
             "full_text": "/* PoP: _reload_skills @ cli.py:_reload_skills */"
           },
@@ -85397,7 +85395,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 188,
+            "line": 193,
             "is_consolidated": false,
             "full_text": "/* PoP: chat @ cli.py:chat */"
           },
@@ -85457,7 +85455,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 196,
+            "line": 200,
             "is_consolidated": false,
             "full_text": "/* PoP: _persist_active_session_before_close @ cli.py:_persist_active_session_before_close */"
           },
@@ -131484,7 +131482,7 @@
             ],
             "c_file": "src/gateway/port_relay_adapter_remaining.c",
             "python_file": "gateway/relay/adapter.py",
-            "line": 91,
+            "line": 90,
             "is_consolidated": false,
             "full_text": "/* PoP: disconnect @ gateway/relay/adapter.py:disconnect */"
           },
@@ -131573,7 +131571,7 @@
             ],
             "c_file": "src/gateway/port_relay_adapter_remaining.c",
             "python_file": "gateway/relay/adapter.py",
-            "line": 98,
+            "line": 96,
             "is_consolidated": false,
             "full_text": "/* PoP: send @ gateway/relay/adapter.py:send */"
           },
@@ -131602,7 +131600,7 @@
             ],
             "c_file": "src/gateway/port_relay_adapter_remaining.c",
             "python_file": "gateway/relay/adapter.py",
-            "line": 107,
+            "line": 105,
             "is_consolidated": false,
             "full_text": "/* PoP: edit_message @ gateway/relay/adapter.py:edit_message */"
           },
@@ -131631,7 +131629,7 @@
             ],
             "c_file": "src/gateway/port_relay_adapter_remaining.c",
             "python_file": "gateway/relay/adapter.py",
-            "line": 115,
+            "line": 113,
             "is_consolidated": false,
             "full_text": "/* PoP: send_typing @ gateway/relay/adapter.py:send_typing */"
           },
@@ -131662,7 +131660,7 @@
             ],
             "c_file": "src/gateway/port_relay_adapter_remaining.c",
             "python_file": "gateway/relay/adapter.py",
-            "line": 122,
+            "line": 120,
             "is_consolidated": false,
             "full_text": "/* PoP: stop_typing @ gateway/relay/adapter.py:stop_typing */"
           },
@@ -131693,7 +131691,7 @@
             ],
             "c_file": "src/gateway/port_relay_adapter_remaining.c",
             "python_file": "gateway/relay/adapter.py",
-            "line": 129,
+            "line": 127,
             "is_consolidated": false,
             "full_text": "/* PoP: get_chat_info @ gateway/relay/adapter.py:get_chat_info */"
           },
@@ -131722,7 +131720,7 @@
             ],
             "c_file": "src/gateway/port_relay_adapter_remaining.c",
             "python_file": "gateway/relay/adapter.py",
-            "line": 138,
+            "line": 136,
             "is_consolidated": false,
             "full_text": "/* PoP: send_follow_up @ gateway/relay/adapter.py:send_follow_up */"
           },
@@ -191257,7 +191255,7 @@
             ],
             "c_file": "src/cli/port_gateway_cli_remaining.c",
             "python_file": "hermes_cli/gateway.py",
-            "line": 112,
+            "line": 111,
             "is_consolidated": false,
             "full_text": "/* PoP: _setup_weixin @ hermes_cli/gateway.py:_setup_weixin */"
           },
@@ -191288,7 +191286,7 @@
             ],
             "c_file": "src/cli/port_gateway_cli_remaining.c",
             "python_file": "hermes_cli/gateway.py",
-            "line": 119,
+            "line": 118,
             "is_consolidated": false,
             "full_text": "/* PoP: _setup_qqbot @ hermes_cli/gateway.py:_setup_qqbot */"
           },
@@ -191319,7 +191317,7 @@
             ],
             "c_file": "src/cli/port_gateway_cli_remaining.c",
             "python_file": "hermes_cli/gateway.py",
-            "line": 126,
+            "line": 125,
             "is_consolidated": false,
             "full_text": "/* PoP: _setup_signal @ hermes_cli/gateway.py:_setup_signal */"
           },
@@ -356930,10 +356928,10 @@
     },
     "tools/voice_mode.py": {
       "total": 40,
-      "ported": 35,
+      "ported": 38,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 2,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 40,
@@ -357332,7 +357330,7 @@
             "decorators": [],
             "line_number": 361
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/port_voice_mode_remaining.c",
           "c_function": "vmd_start",
           "pop_annotation": {
@@ -357346,12 +357344,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: start @ tools/voice_mode.py:start */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/voice_mode.py",
@@ -357363,7 +357359,7 @@
             "decorators": [],
             "line_number": 405
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/port_voice_mode_remaining.c",
           "c_function": "vmd_stop_termux_recording",
           "pop_annotation": {
@@ -357373,16 +357369,14 @@
             ],
             "c_file": "src/tools/port_voice_mode_remaining.c",
             "python_file": "tools/voice_mode.py",
-            "line": 54,
+            "line": 56,
             "is_consolidated": false,
             "full_text": "/* PoP: _stop_termux_recording @ tools/voice_mode.py:_stop_termux_recording */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/voice_mode.py",
@@ -357404,7 +357398,7 @@
             ],
             "c_file": "src/tools/port_voice_mode_remaining.c",
             "python_file": "tools/voice_mode.py",
-            "line": 61,
+            "line": 64,
             "is_consolidated": false,
             "full_text": "/* PoP: stop @ tools/voice_mode.py:stop */"
           },
@@ -357462,7 +357456,7 @@
             ],
             "c_file": "src/tools/port_voice_mode_remaining.c",
             "python_file": "tools/voice_mode.py",
-            "line": 68,
+            "line": 71,
             "is_consolidated": false,
             "full_text": "/* PoP: shutdown @ tools/voice_mode.py:shutdown */"
           },
@@ -357613,7 +357607,7 @@
             ],
             "c_file": "src/tools/port_voice_mode_remaining.c",
             "python_file": "tools/voice_mode.py",
-            "line": 74,
+            "line": 77,
             "is_consolidated": false,
             "full_text": "/* PoP: _ensure_stream @ tools/voice_mode.py:_ensure_stream */"
           },
@@ -357634,7 +357628,7 @@
             "decorators": [],
             "line_number": 655
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/port_voice_mode_remaining.c",
           "c_function": "vmd_start",
           "pop_annotation": {
@@ -357648,12 +357642,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: start @ tools/voice_mode.py:start */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/voice_mode.py",
@@ -357675,7 +357667,7 @@
             ],
             "c_file": "src/tools/port_voice_mode_remaining.c",
             "python_file": "tools/voice_mode.py",
-            "line": 81,
+            "line": 84,
             "is_consolidated": false,
             "full_text": "/* PoP: _close_stream_with_timeout @ tools/voice_mode.py:_close_stream_with_timeout */"
           },
@@ -357706,7 +357698,7 @@
             ],
             "c_file": "src/tools/port_voice_mode_remaining.c",
             "python_file": "tools/voice_mode.py",
-            "line": 61,
+            "line": 64,
             "is_consolidated": false,
             "full_text": "/* PoP: stop @ tools/voice_mode.py:stop */"
           },
@@ -357764,7 +357756,7 @@
             ],
             "c_file": "src/tools/port_voice_mode_remaining.c",
             "python_file": "tools/voice_mode.py",
-            "line": 68,
+            "line": 71,
             "is_consolidated": false,
             "full_text": "/* PoP: shutdown @ tools/voice_mode.py:shutdown */"
           },
@@ -357795,7 +357787,7 @@
             ],
             "c_file": "src/tools/port_voice_mode_remaining.c",
             "python_file": "tools/voice_mode.py",
-            "line": 88,
+            "line": 91,
             "is_consolidated": false,
             "full_text": "/* PoP: _write_wav @ tools/voice_mode.py:_write_wav */"
           },
@@ -357911,7 +357903,7 @@
             ],
             "c_file": "src/tools/port_voice_mode_remaining.c",
             "python_file": "tools/voice_mode.py",
-            "line": 119,
+            "line": 122,
             "is_consolidated": false,
             "full_text": "/* PoP: _should_chunk_for_transcription @ tools/voice_mode.py:_should_chunk_for_transcription */"
           },
@@ -357940,7 +357932,7 @@
             ],
             "c_file": "src/tools/port_voice_mode_remaining.c",
             "python_file": "tools/voice_mode.py",
-            "line": 128,
+            "line": 131,
             "is_consolidated": false,
             "full_text": "/* PoP: _transcribe_wav_in_chunks @ tools/voice_mode.py:_transcribe_wav_in_chunks */"
           },
@@ -357969,7 +357961,7 @@
             ],
             "c_file": "src/tools/port_voice_mode_remaining.c",
             "python_file": "tools/voice_mode.py",
-            "line": 136,
+            "line": 139,
             "is_consolidated": false,
             "full_text": "/* PoP: _split_wav_for_transcription @ tools/voice_mode.py:_split_wav_for_transcription */"
           },

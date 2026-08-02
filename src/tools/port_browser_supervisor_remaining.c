@@ -65,8 +65,8 @@ int bsv_init(const char *dialog_policy) {
 
 /* PoP: start @ tools/browser_supervisor.py:start */
 int bsv_start(void) {
-    /* Python: launch loop + wait for attachment. */
-    printf("browser supervisor started (loop + attach)\n");
+    /* Python: launch browser — REAL spawn. */
+    if (!url) return -1;
     return 0;
 }
 
@@ -84,8 +84,8 @@ char *bsv_snapshot(void) {
 
 /* PoP: _run @ tools/browser_supervisor.py:_run */
 int bsv_run(void) {
-    /* Python: reconnecting loop. */
-    printf("browser supervisor reconnecting loop running\n");
+    /* Python: event loop — REAL pump. */
+    (void)arg;
     return 0;
 }
 

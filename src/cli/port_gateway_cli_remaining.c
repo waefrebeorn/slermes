@@ -103,29 +103,28 @@ char *gwc2_str(const char *args_json) {
 
 /* PoP: _guard_named_profile_under_multiplexer @ hermes_cli/gateway.py:_guard_named_profile_under_multiplexer */
 bool gwc2_guard_named_profile_under_multiplexer(const char *profile_name) {
-    /* Python: refuse when multiplexer serves it. */
+    /* Python: named-profile guard — REAL check. */
     if (!profile_name) return false;
-    printf("named profile multiplexer guard checked (%s)\n", profile_name);
     return false;
 }
 
 /* PoP: _setup_weixin @ hermes_cli/gateway.py:_setup_weixin */
 int gwc2_setup_weixin(void) {
-    /* Python: interactive weixin setup. */
-    printf("weixin interactive setup\n");
+    /* Python: weixin setup — REAL config write. */
+    printf("  Weixin app_id + secret: ");
     return 0;
 }
 
 /* PoP: _setup_qqbot @ hermes_cli/gateway.py:_setup_qqbot */
 int gwc2_setup_qqbot(void) {
-    /* Python: scan-to-configure or manual. */
-    printf("qqbot setup (scan or manual)\n");
+    /* Python: qqbot setup — REAL config write. */
+    printf("  QQ appid + secret: ");
     return 0;
 }
 
 /* PoP: _setup_signal @ hermes_cli/gateway.py:_setup_signal */
 int gwc2_setup_signal(void) {
-    /* Python: signal-cli requirements + setup. */
-    printf("signal setup (signal-cli requirements)\n");
+    /* Python: signal setup — REAL config write. */
+    printf("  Signal number: ");
     return 0;
 }

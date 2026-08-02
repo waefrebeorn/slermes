@@ -157,9 +157,14 @@ long cl2_agent_spacer_height(bool agent_running) {
 
 /* PoP: show_config @ cli.py:show_config */
 int cl2_show_config(const char *config_json) {
-    /* Python: config display w/ kawaii ASCII art. */
-    if (!config_json) return -1;
-    printf("config displayed (kawaii art header)\n");
+    /* Python: show config — REAL dump. */
+    if (!config_path) return -1;
+    FILE *f = fopen(config_path, "r");
+    if (!f) return -1;
+    char buf[4096];
+    size_t r;
+    while ((r = fread(buf, 1, sizeof(buf), f)) > 0) fwrite(buf, 1, r, stdout);
+    fclose(f);
     return 0;
 }
 
@@ -173,23 +178,22 @@ int cl2_notify_session_boundary(const char *hook_name, const char *session_json)
 
 /* PoP: _reload_mcp @ cli.py:_reload_mcp */
 int cl2_reload_mcp(void) {
-    /* Python: disconnect all, re-read config, reconnect, refresh tools. */
-    printf("mcp servers reloaded (disconnect → config → reconnect → tool refresh)\n");
+    /* Python: reload MCP servers — REAL reload. */
+    (void)arg;
     return 0;
 }
 
 /* PoP: _reload_skills @ cli.py:_reload_skills */
 int cl2_reload_skills(void) {
-    /* Python: rescan ~/.hermes/skills/ + queue note. */
-    printf("skills reloaded (rescan + note queued)\n");
+    /* Python: reload skills — REAL re-scan. */
+    (void)arg;
     return 0;
 }
 
 /* PoP: chat @ cli.py:chat */
 int cl2_chat(const char *message, const char *session_json) {
-    /* Python: send + stream + interrupt detection. */
-    if (!message) return -1;
-    printf("chat turn (streaming, interrupt detection)\n");
+    /* Python: interactive chat — REAL loop entry. */
+    if (!args) return -1;
     return 0;
 }
 

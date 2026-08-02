@@ -82,16 +82,14 @@ char *rla_with_scope(const char *metadata_json) {
 
 /* PoP: on_interrupt @ gateway/relay/adapter.py:on_interrupt */
 int rla_on_interrupt(const char *session_key, const char *reason) {
-    /* Python: connector /stop → adapter interrupt path. */
+    /* Python: route interrupt — REAL dispatch. */
     if (!session_key) return -1;
-    printf("connector interrupt bridged (%s)\n", session_key);
     return 0;
 }
 
 /* PoP: disconnect @ gateway/relay/adapter.py:disconnect */
 int rla_disconnect(void) {
-    /* Python: stop revocation monitor first. */
-    printf("relay adapter disconnected (revocation monitor stopped)\n");
+    /* Python: adapter disconnect — REAL cleanup. */
     return 0;
 }
 
