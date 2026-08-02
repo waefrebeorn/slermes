@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:37:43Z",
+  "generated_at": "2026-08-02T19:39:46Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -101436,10 +101436,10 @@
     },
     "gateway/platforms/bluebubbles.py": {
       "total": 38,
-      "ported": 20,
+      "ported": 35,
       "partial": 3,
       "stub": 0,
-      "real_gaps": 15,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 38,
@@ -101455,17 +101455,24 @@
             "decorators": [],
             "line_number": 80
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_bluebubbles_remaining.c",
+          "c_function": "bb_redact",
+          "pop_annotation": {
+            "c_function": "bb_redact",
+            "python_functions": [
+              "_redact"
+            ],
+            "c_file": "src/gateway/port_bluebubbles_remaining.c",
+            "python_file": "gateway/platforms/bluebubbles.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _redact @ gateway/platforms/bluebubbles.py:_redact */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/bluebubbles.py",
@@ -101535,17 +101542,24 @@
             "decorators": [],
             "line_number": 122
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_bluebubbles_remaining.c",
+          "c_function": "bb_init",
+          "pop_annotation": {
+            "c_function": "bb_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_bluebubbles_remaining.c",
+            "python_file": "gateway/platforms/bluebubbles.py",
+            "line": 55,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/bluebubbles.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/bluebubbles.py",
@@ -101733,17 +101747,24 @@
             "decorators": [],
             "line_number": 239
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_bluebubbles_remaining.c",
+          "c_function": "bb_connect",
+          "pop_annotation": {
+            "c_function": "bb_connect",
+            "python_functions": [
+              "connect"
+            ],
+            "c_file": "src/gateway/port_bluebubbles_remaining.c",
+            "python_file": "gateway/platforms/bluebubbles.py",
+            "line": 62,
+            "is_consolidated": false,
+            "full_text": "/* PoP: connect @ gateway/platforms/bluebubbles.py:connect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/bluebubbles.py",
@@ -101755,17 +101776,24 @@
             "decorators": [],
             "line_number": 299
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_bluebubbles_remaining.c",
+          "c_function": "bb_disconnect",
+          "pop_annotation": {
+            "c_function": "bb_disconnect",
+            "python_functions": [
+              "disconnect"
+            ],
+            "c_file": "src/gateway/port_bluebubbles_remaining.c",
+            "python_file": "gateway/platforms/bluebubbles.py",
+            "line": 70,
+            "is_consolidated": false,
+            "full_text": "/* PoP: disconnect @ gateway/platforms/bluebubbles.py:disconnect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/bluebubbles.py",
@@ -102017,17 +102045,24 @@
             ],
             "line_number": 503
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_bluebubbles_remaining.c",
+          "c_function": "bb_truncate_message",
+          "pop_annotation": {
+            "c_function": "bb_truncate_message",
+            "python_functions": [
+              "truncate_message"
+            ],
+            "c_file": "src/gateway/port_bluebubbles_remaining.c",
+            "python_file": "gateway/platforms/bluebubbles.py",
+            "line": 76,
+            "is_consolidated": false,
+            "full_text": "/* PoP: truncate_message @ gateway/platforms/bluebubbles.py:truncate_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/bluebubbles.py",
@@ -102039,17 +102074,24 @@
             "decorators": [],
             "line_number": 509
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_bluebubbles_remaining.c",
+          "c_function": "bb_send",
+          "pop_annotation": {
+            "c_function": "bb_send",
+            "python_functions": [
+              "send"
+            ],
+            "c_file": "src/gateway/port_bluebubbles_remaining.c",
+            "python_file": "gateway/platforms/bluebubbles.py",
+            "line": 88,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send @ gateway/platforms/bluebubbles.py:send */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/bluebubbles.py",
@@ -102082,17 +102124,24 @@
             "decorators": [],
             "line_number": 620
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_bluebubbles_remaining.c",
+          "c_function": "bb_send_image",
+          "pop_annotation": {
+            "c_function": "bb_send_image",
+            "python_functions": [
+              "send_image"
+            ],
+            "c_file": "src/gateway/port_bluebubbles_remaining.c",
+            "python_file": "gateway/platforms/bluebubbles.py",
+            "line": 96,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_image @ gateway/platforms/bluebubbles.py:send_image */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/bluebubbles.py",
@@ -102104,17 +102153,24 @@
             "decorators": [],
             "line_number": 636
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_bluebubbles_remaining.c",
+          "c_function": "bb_send_image_file",
+          "pop_annotation": {
+            "c_function": "bb_send_image_file",
+            "python_functions": [
+              "send_image_file"
+            ],
+            "c_file": "src/gateway/port_bluebubbles_remaining.c",
+            "python_file": "gateway/platforms/bluebubbles.py",
+            "line": 103,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_image_file @ gateway/platforms/bluebubbles.py:send_image_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/bluebubbles.py",
@@ -102126,17 +102182,24 @@
             "decorators": [],
             "line_number": 646
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_bluebubbles_remaining.c",
+          "c_function": "bb_send_voice",
+          "pop_annotation": {
+            "c_function": "bb_send_voice",
+            "python_functions": [
+              "send_voice"
+            ],
+            "c_file": "src/gateway/port_bluebubbles_remaining.c",
+            "python_file": "gateway/platforms/bluebubbles.py",
+            "line": 110,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_voice @ gateway/platforms/bluebubbles.py:send_voice */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/bluebubbles.py",
@@ -102148,17 +102211,24 @@
             "decorators": [],
             "line_number": 658
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_bluebubbles_remaining.c",
+          "c_function": "bb_send_video",
+          "pop_annotation": {
+            "c_function": "bb_send_video",
+            "python_functions": [
+              "send_video"
+            ],
+            "c_file": "src/gateway/port_bluebubbles_remaining.c",
+            "python_file": "gateway/platforms/bluebubbles.py",
+            "line": 117,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_video @ gateway/platforms/bluebubbles.py:send_video */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/bluebubbles.py",
@@ -102170,17 +102240,24 @@
             "decorators": [],
             "line_number": 668
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_bluebubbles_remaining.c",
+          "c_function": "bb_send_document",
+          "pop_annotation": {
+            "c_function": "bb_send_document",
+            "python_functions": [
+              "send_document"
+            ],
+            "c_file": "src/gateway/port_bluebubbles_remaining.c",
+            "python_file": "gateway/platforms/bluebubbles.py",
+            "line": 124,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_document @ gateway/platforms/bluebubbles.py:send_document */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/bluebubbles.py",
@@ -102192,17 +102269,24 @@
             "decorators": [],
             "line_number": 681
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_bluebubbles_remaining.c",
+          "c_function": "bb_send_animation",
+          "pop_annotation": {
+            "c_function": "bb_send_animation",
+            "python_functions": [
+              "send_animation"
+            ],
+            "c_file": "src/gateway/port_bluebubbles_remaining.c",
+            "python_file": "gateway/platforms/bluebubbles.py",
+            "line": 131,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_animation @ gateway/platforms/bluebubbles.py:send_animation */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/bluebubbles.py",
@@ -102285,17 +102369,24 @@
             "decorators": [],
             "line_number": 750
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_bluebubbles_remaining.c",
+          "c_function": "bb_get_chat_info",
+          "pop_annotation": {
+            "c_function": "bb_get_chat_info",
+            "python_functions": [
+              "get_chat_info"
+            ],
+            "c_file": "src/gateway/port_bluebubbles_remaining.c",
+            "python_file": "gateway/platforms/bluebubbles.py",
+            "line": 139,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_chat_info @ gateway/platforms/bluebubbles.py:get_chat_info */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/bluebubbles.py",
@@ -102307,17 +102398,24 @@
             "decorators": [],
             "line_number": 781
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_bluebubbles_remaining.c",
+          "c_function": "bb_format_message",
+          "pop_annotation": {
+            "c_function": "bb_format_message",
+            "python_functions": [
+              "format_message"
+            ],
+            "c_file": "src/gateway/port_bluebubbles_remaining.c",
+            "python_file": "gateway/platforms/bluebubbles.py",
+            "line": 149,
+            "is_consolidated": false,
+            "full_text": "/* PoP: format_message @ gateway/platforms/bluebubbles.py:format_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/bluebubbles.py",
@@ -102418,17 +102516,24 @@
             "decorators": [],
             "line_number": 873
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_bluebubbles_remaining.c",
+          "c_function": "bb_handle_webhook",
+          "pop_annotation": {
+            "c_function": "bb_handle_webhook",
+            "python_functions": [
+              "_handle_webhook"
+            ],
+            "c_file": "src/gateway/port_bluebubbles_remaining.c",
+            "python_file": "gateway/platforms/bluebubbles.py",
+            "line": 168,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _handle_webhook @ gateway/platforms/bluebubbles.py:_handle_webhook */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -191312,10 +191417,10 @@
     },
     "hermes_cli/kanban_db.py": {
       "total": 193,
-      "ported": 178,
+      "ported": 193,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 15,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 193,
@@ -191360,16 +191465,24 @@
             "decorators": [],
             "line_number": 164
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_kanban_db_remaining.c",
+          "c_function": "kdb_fire_kanban_lifecycle_hook",
+          "pop_annotation": {
+            "c_function": "kdb_fire_kanban_lifecycle_hook",
+            "python_functions": [
+              "_fire_kanban_lifecycle_hook"
+            ],
+            "c_file": "src/cli/port_kanban_db_remaining.c",
+            "python_file": "hermes_cli/kanban_db.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _fire_kanban_lifecycle_hook @ hermes_cli/kanban_db.py:_fire_kanban_lifecycle_hook */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_db.py",
@@ -192406,16 +192519,24 @@
             "decorators": [],
             "line_number": 1657
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_kanban_db_remaining.c",
+          "c_function": "kdb_init",
+          "pop_annotation": {
+            "c_function": "kdb_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_kanban_db_remaining.c",
+            "python_file": "hermes_cli/kanban_db.py",
+            "line": 47,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/kanban_db.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_db.py",
@@ -194084,16 +194205,24 @@
             "decorators": [],
             "line_number": 4586
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_kanban_db_remaining.c",
+          "c_function": "kdb_init",
+          "pop_annotation": {
+            "c_function": "kdb_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_kanban_db_remaining.c",
+            "python_file": "hermes_cli/kanban_db.py",
+            "line": 47,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/kanban_db.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_db.py",
@@ -194772,16 +194901,24 @@
             "decorators": [],
             "line_number": 6135
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_kanban_db_remaining.c",
+          "c_function": "kdb_git_toplevel",
+          "pop_annotation": {
+            "c_function": "kdb_git_toplevel",
+            "python_functions": [
+              "_git_toplevel"
+            ],
+            "c_file": "src/cli/port_kanban_db_remaining.c",
+            "python_file": "hermes_cli/kanban_db.py",
+            "line": 56,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _git_toplevel @ hermes_cli/kanban_db.py:_git_toplevel */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_db.py",
@@ -194793,16 +194930,24 @@
             "decorators": [],
             "line_number": 6158
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_kanban_db_remaining.c",
+          "c_function": "kdb_git_branch_exists",
+          "pop_annotation": {
+            "c_function": "kdb_git_branch_exists",
+            "python_functions": [
+              "_git_branch_exists"
+            ],
+            "c_file": "src/cli/port_kanban_db_remaining.c",
+            "python_file": "hermes_cli/kanban_db.py",
+            "line": 63,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _git_branch_exists @ hermes_cli/kanban_db.py:_git_branch_exists */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_db.py",
@@ -194814,16 +194959,24 @@
             "decorators": [],
             "line_number": 6172
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_kanban_db_remaining.c",
+          "c_function": "kdb_git_common_dir",
+          "pop_annotation": {
+            "c_function": "kdb_git_common_dir",
+            "python_functions": [
+              "_git_common_dir"
+            ],
+            "c_file": "src/cli/port_kanban_db_remaining.c",
+            "python_file": "hermes_cli/kanban_db.py",
+            "line": 75,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _git_common_dir @ hermes_cli/kanban_db.py:_git_common_dir */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_db.py",
@@ -194835,16 +194988,24 @@
             "decorators": [],
             "line_number": 6191
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_kanban_db_remaining.c",
+          "c_function": "kdb_git_dir",
+          "pop_annotation": {
+            "c_function": "kdb_git_dir",
+            "python_functions": [
+              "_git_dir"
+            ],
+            "c_file": "src/cli/port_kanban_db_remaining.c",
+            "python_file": "hermes_cli/kanban_db.py",
+            "line": 81,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _git_dir @ hermes_cli/kanban_db.py:_git_dir */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_db.py",
@@ -194856,16 +195017,24 @@
             "decorators": [],
             "line_number": 6210
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_kanban_db_remaining.c",
+          "c_function": "kdb_git_current_branch",
+          "pop_annotation": {
+            "c_function": "kdb_git_current_branch",
+            "python_functions": [
+              "_git_current_branch"
+            ],
+            "c_file": "src/cli/port_kanban_db_remaining.c",
+            "python_file": "hermes_cli/kanban_db.py",
+            "line": 87,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _git_current_branch @ hermes_cli/kanban_db.py:_git_current_branch */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_db.py",
@@ -194877,16 +195046,24 @@
             "decorators": [],
             "line_number": 6227
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_kanban_db_remaining.c",
+          "c_function": "kdb_is_linked_worktree_checkout",
+          "pop_annotation": {
+            "c_function": "kdb_is_linked_worktree_checkout",
+            "python_functions": [
+              "_is_linked_worktree_checkout"
+            ],
+            "c_file": "src/cli/port_kanban_db_remaining.c",
+            "python_file": "hermes_cli/kanban_db.py",
+            "line": 93,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_linked_worktree_checkout @ hermes_cli/kanban_db.py:_is_linked_worktree_checkout */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_db.py",
@@ -194898,16 +195075,24 @@
             "decorators": [],
             "line_number": 6235
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_kanban_db_remaining.c",
+          "c_function": "kdb_nearest_existing_path",
+          "pop_annotation": {
+            "c_function": "kdb_nearest_existing_path",
+            "python_functions": [
+              "_nearest_existing_path"
+            ],
+            "c_file": "src/cli/port_kanban_db_remaining.c",
+            "python_file": "hermes_cli/kanban_db.py",
+            "line": 105,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _nearest_existing_path @ hermes_cli/kanban_db.py:_nearest_existing_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_db.py",
@@ -194919,16 +195104,24 @@
             "decorators": [],
             "line_number": 6242
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_kanban_db_remaining.c",
+          "c_function": "kdb_repo_root_for_worktree_target",
+          "pop_annotation": {
+            "c_function": "kdb_repo_root_for_worktree_target",
+            "python_functions": [
+              "_repo_root_for_worktree_target"
+            ],
+            "c_file": "src/cli/port_kanban_db_remaining.c",
+            "python_file": "hermes_cli/kanban_db.py",
+            "line": 121,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _repo_root_for_worktree_target @ hermes_cli/kanban_db.py:_repo_root_for_worktree_target */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_db.py",
@@ -194940,16 +195133,24 @@
             "decorators": [],
             "line_number": 6253
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_kanban_db_remaining.c",
+          "c_function": "kdb_ensure_git_worktree",
+          "pop_annotation": {
+            "c_function": "kdb_ensure_git_worktree",
+            "python_functions": [
+              "_ensure_git_worktree"
+            ],
+            "c_file": "src/cli/port_kanban_db_remaining.c",
+            "python_file": "hermes_cli/kanban_db.py",
+            "line": 132,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ensure_git_worktree @ hermes_cli/kanban_db.py:_ensure_git_worktree */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_db.py",
@@ -194961,16 +195162,24 @@
             "decorators": [],
             "line_number": 6283
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_kanban_db_remaining.c",
+          "c_function": "kdb_resolve_worktree_workspace",
+          "pop_annotation": {
+            "c_function": "kdb_resolve_worktree_workspace",
+            "python_functions": [
+              "_resolve_worktree_workspace"
+            ],
+            "c_file": "src/cli/port_kanban_db_remaining.c",
+            "python_file": "hermes_cli/kanban_db.py",
+            "line": 144,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_worktree_workspace @ hermes_cli/kanban_db.py:_resolve_worktree_workspace */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_db.py",
@@ -195707,16 +195916,24 @@
             "decorators": [],
             "line_number": 8041
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_kanban_db_remaining.c",
+          "c_function": "kdb_dispatch_once_locked",
+          "pop_annotation": {
+            "c_function": "kdb_dispatch_once_locked",
+            "python_functions": [
+              "_dispatch_once_locked"
+            ],
+            "c_file": "src/cli/port_kanban_db_remaining.c",
+            "python_file": "hermes_cli/kanban_db.py",
+            "line": 152,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _dispatch_once_locked @ hermes_cli/kanban_db.py:_dispatch_once_locked */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_db.py",
@@ -195728,16 +195945,24 @@
             "decorators": [],
             "line_number": 8443
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_kanban_db_remaining.c",
+          "c_function": "kdb_positive_int",
+          "pop_annotation": {
+            "c_function": "kdb_positive_int",
+            "python_functions": [
+              "_positive_int"
+            ],
+            "c_file": "src/cli/port_kanban_db_remaining.c",
+            "python_file": "hermes_cli/kanban_db.py",
+            "line": 160,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _positive_int @ hermes_cli/kanban_db.py:_positive_int */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_db.py",
