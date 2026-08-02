@@ -12,7 +12,20 @@
 #include "hermes_json.h"
 
 /* PoP: bedrock_region_geo_prefix @ hermes_cli/model_setup_flows.py:bedrock_region_geo_prefix */
-int msf_bedrock_region_geo_prefix(const char *arg) { (void)arg; return 0; }
+int msf_bedrock_region_geo_prefix(const char *arg) {
+    /* Python: us./eu./ap./ca./sa./me./af. prefix map. Arg = region. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *r = arg;
+    if (strncasecmp(r, "us-", 3) == 0 || strncasecmp(r, "us_gov", 6) == 0) { printf("us.\n"); return 0; }
+    if (strncasecmp(r, "eu-", 3) == 0) { printf("eu.\n"); return 0; }
+    if (strncasecmp(r, "ap-", 3) == 0) { printf("ap.\n"); return 0; }
+    if (strncasecmp(r, "ca-", 3) == 0) { printf("ca.\n"); return 0; }
+    if (strncasecmp(r, "sa-", 3) == 0) { printf("sa.\n"); return 0; }
+    if (strncasecmp(r, "me-", 3) == 0) { printf("me.\n"); return 0; }
+    if (strncasecmp(r, "af-", 3) == 0) { printf("af.\n"); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: bedrock_model_routable_from_region @ hermes_cli/model_setup_flows.py:bedrock_model_routable_from_region */
 int msf_bedrock_model_routable_from_region(const char *arg) { (void)arg; return 0; }

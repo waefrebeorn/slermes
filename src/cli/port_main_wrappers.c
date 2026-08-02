@@ -298,7 +298,13 @@ int main_u_termux_workspace_install_context(const char *arg) { (void)arg; return
 int main_u_tui_need_npm_install(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _iter_tui_build_inputs @ hermes_cli/main.py:_iter_tui_build_inputs */
-int main_u_iter_tui_build_inputs(const char *arg) { (void)arg; return 0; }
+int main_u_iter_tui_build_inputs(const char *arg) {
+    /* Python: yield existing TUI build inputs. Arg = files (one per line,
+     * empty = none). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _tui_need_rebuild @ hermes_cli/main.py:_tui_need_rebuild */
 int main_u_tui_need_rebuild(const char *arg) { (void)arg; return 0; }
@@ -965,7 +971,12 @@ int main_u_mark_skip_upstream_prompt(const char *arg) {
 }
 
 /* PoP: _sync_fork_with_upstream @ hermes_cli/main.py:_sync_fork_with_upstream */
-int main_u_sync_fork_with_upstream(const char *arg) { (void)arg; return 0; }
+int main_u_sync_fork_with_upstream(const char *arg) {
+    /* Python: git push origin main --force-with-lease. Arg = "rc" (0 = ok). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%d\n", strtol(arg, NULL, 10) == 0 ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _sync_with_upstream_if_needed @ hermes_cli/main.py:_sync_with_upstream_if_needed */
 int main_u_sync_with_upstream_if_needed(const char *arg) { (void)arg; return 0; }

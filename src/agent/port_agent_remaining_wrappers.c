@@ -1083,7 +1083,19 @@ int agent_trace_upload_load_session_messages(const char *arg) { (void)arg; retur
 int agent_trace_upload_upload_session_trace(const char *arg) { (void)arg; return 0; }
 
 /* PoP: sanitize_memory_context @ agent/context_engine.py:sanitize_memory_context */
-int agent_context_engine_sanitize_memory_context(const char *arg) { (void)arg; return 0; }
+int agent_context_engine_sanitize_memory_context(const char *arg) {
+    /* Python: redact + head/tail truncate. Arg = "text\tmax_chars". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *text = arg;
+    long max_chars = tab ? strtol(tab + 1, NULL, 10) : 12000;
+    long len = (long)strlen(text);
+    if (len <= max_chars) { printf("%s\n", text); return 0; }
+    long head = max_chars * 2 / 3;
+    long tail = max_chars - head - 3;
+    printf("%.*s...%.*s\n", (int)head, text, (int)(tail > 0 ? tail : 0), text + (len - (tail > 0 ? tail : 0)));
+    return 0;
+}
 
 /* PoP: automatic_compaction_status_message @ agent/context_engine.py:automatic_compaction_status_message */
 int agent_context_engine_automatic_compaction_status_message(const char *arg) { (void)arg; return 0; }
@@ -1153,7 +1165,13 @@ int agent_memory_provider_on_turn_start(const char *arg) {
 int agent_memory_provider_on_session_switch(const char *arg) { (void)arg; return 0; }
 
 /* PoP: on_pre_compress @ agent/memory_provider.py:on_pre_compress */
-int agent_memory_provider_on_pre_compress(const char *arg) { (void)arg; return 0; }
+int agent_memory_provider_on_pre_compress(const char *arg) {
+    /* Python: extract insights or empty string (default). Arg = messages
+     * JSON. */
+    (void)arg;
+    printf("\n");
+    return 0;
+}
 
 /* PoP: on_delegation @ agent/memory_provider.py:on_delegation */
 int agent_memory_provider_on_delegation(const char *arg) {

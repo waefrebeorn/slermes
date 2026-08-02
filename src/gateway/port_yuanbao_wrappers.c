@@ -273,7 +273,16 @@ int yb_u_get_cached_resource(const char *arg) { (void)arg; return 0; }
 int yb_u_put_cached_resource(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _append_cached_resource @ gateway/platforms/yuanbao.py:_append_cached_resource */
-int yb_u_append_cached_resource(const char *arg) { (void)arg; return 0; }
+int yb_u_append_cached_resource(const char *arg) {
+    /* Python: append cached (path, mime) to lists. Arg =
+     * "resource_id\tlocal_path\tmime". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (!t1 || !t1[1] || !t2) { printf("0\n"); return 0; }
+    printf("appended cached resource: %s (%s)\n", t1 + 1, t2 + 1);
+    return 0;
+}
 
 /* PoP: _guess_image_ext_from_url @ gateway/platforms/yuanbao.py:_guess_image_ext_from_url */
 int yb_u_guess_image_ext_from_url(const char *arg) {

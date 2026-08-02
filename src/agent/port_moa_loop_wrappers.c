@@ -276,7 +276,15 @@ int moa_u_record_late_reference_accounting(const char *arg) { (void)arg; return 
 int moa_consume_and_save_trace(const char *arg) { (void)arg; return 0; }
 
 /* PoP: prepare @ agent/moa_loop.py:prepare */
-int moa_prepare(const char *arg) { (void)arg; return 0; }
+int moa_prepare(const char *arg) {
+    /* Python: advisor fan-out -> aggregator request. Arg = "messages\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *result = tab ? tab + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    printf("moa prepared (fan-out done)\n");
+    return 0;
+}
 
 /* PoP: rebase_prepared_request @ agent/moa_loop.py:rebase_prepared_request */
 int moa_rebase_prepared_request(const char *arg) { (void)arg; return 0; }

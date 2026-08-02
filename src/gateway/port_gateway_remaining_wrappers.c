@@ -122,7 +122,27 @@ int gateway_platforms_signal_u_stop_typing_indicator(const char *arg) { (void)ar
 int gateway_platforms_signal_remove_reaction(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _extract_reaction_target @ gateway/platforms/signal.py:_extract_reaction_target */
-int gateway_platforms_signal_u_extract_reaction_target(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_signal_u_extract_reaction_target(const char *arg) {
+    /* Python: (sender, timestamp_ms) from raw envelope or None. Arg = raw
+     * JSON. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (!j || !json_is_object(j)) {
+        if (j) json_free(j);
+        printf("\n");
+        return 0;
+    }
+    const char *author = json_get_str(j, "sender", "");
+    const char *ts = json_get_str(j, "timestamp_ms", "");
+    if (!author[0] || !ts[0]) {
+        printf("\n");
+        json_free(j);
+        return 0;
+    }
+    printf("%s\t%s\n", author, ts);
+    json_free(j);
+    return 0;
+}
 
 /* PoP: _reactions_enabled @ gateway/platforms/signal.py:_reactions_enabled */
 int gateway_platforms_signal_u_reactions_enabled(const char *arg) { (void)arg; return 0; }
@@ -1196,7 +1216,18 @@ int gateway_systemd_notify_record_tick(const char *arg) { (void)arg; return 0; }
 int gateway_channel_directory_u_warn_slack_directory(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _slack_api_error_code @ gateway/channel_directory.py:_slack_api_error_code */
-int gateway_channel_directory_u_slack_api_error_code(const char *arg) { (void)arg; return 0; }
+int gateway_channel_directory_u_slack_api_error_code(const char *arg) {
+    /* Python: response.error str or None. Arg = response JSON. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (j && json_is_object(j)) {
+        const char *v = json_get_str(j, "error", "");
+        if (v[0]) { printf("%s\n", v); json_free(j); return 0; }
+    }
+    if (j) json_free(j);
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _build_from_sessions_db @ gateway/channel_directory.py:_build_from_sessions_db */
 int gateway_channel_directory_u_build_from_sessions_db(const char *arg) { (void)arg; return 0; }

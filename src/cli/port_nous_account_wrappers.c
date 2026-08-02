@@ -134,7 +134,16 @@ int nous_u_pool_entry_is_portal_oauth(const char *arg) {
 }
 
 /* PoP: _fetch_nous_account_info @ hermes_cli/nous_account.py:_fetch_nous_account_info */
-int nous_u_fetch_nous_account_info(const char *arg) { (void)arg; return 0; }
+int nous_u_fetch_nous_account_info(const char *arg) {
+    /* Python: GET /api/oauth/account with bearer. Arg = "base_url\tresult".
+     * result empty = failure. */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *result = tab ? tab + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    printf("{}\n");
+    return 0;
+}
 
 /* PoP: _info_from_valid_jwt @ hermes_cli/nous_account.py:_info_from_valid_jwt */
 int nous_u_info_from_valid_jwt(const char *arg) { (void)arg; return 0; }

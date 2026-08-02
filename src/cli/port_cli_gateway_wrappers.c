@@ -377,7 +377,16 @@ int cgw_u_user_systemd_private_socket_path(const char *arg) {
 }
 
 /* PoP: _user_systemd_socket_ready @ hermes_cli/gateway.py:_user_systemd_socket_ready */
-int cgw_u_user_systemd_socket_ready(const char *arg) { (void)arg; return 0; }
+int cgw_u_user_systemd_socket_ready(const char *arg) {
+    /* Python: dbus socket OR private socket exists. Arg = "dbus\tprivate"
+     * (1/0 each). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int dbus = arg[0] == '1';
+    int priv = tab && tab[1] == '1';
+    printf("%d\n", (dbus || priv) ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _ensure_user_systemd_env @ hermes_cli/gateway.py:_ensure_user_systemd_env */
 int cgw_u_ensure_user_systemd_env(const char *arg) { (void)arg; return 0; }

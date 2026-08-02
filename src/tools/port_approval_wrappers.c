@@ -71,7 +71,36 @@ int appr_u_grep_safe_detection_variant(const char *arg) {
 int appr_u_interpreter_family(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _shell_segment_tokens @ tools/approval.py:_shell_segment_tokens */
-int appr_u_shell_segment_tokens(const char *arg) { (void)arg; return 0; }
+int appr_u_shell_segment_tokens(const char *arg) {
+    /* Python: shlex tokenize; None on malformed quotes. Arg = segment. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    int in_q = 0;
+    char qc = 0;
+    const char *p = arg;
+    while (*p) {
+        char c = *p++;
+        if (in_q) {
+            if (c == qc) in_q = 0;
+        } else if (c == '\'' || c == '\"') {
+            in_q = 1; qc = c;
+        }
+    }
+    if (in_q) { printf("\n1\n"); return 0; }
+    /* simple whitespace tokenizer (punctuation <> split) */
+    int first = 1;
+    const char *q = arg;
+    while (*q) {
+        while (*q == ' ' || *q == '\t') q++;
+        if (!*q) break;
+        const char *start = q;
+        while (*q && *q != ' ' && *q != '\t') q++;
+        if (!first) printf("\n");
+        printf("%.*s", (int)(q - start), start);
+        first = 0;
+    }
+    printf("\n0\n");
+    return 0;
+}
 
 /* PoP: _iter_top_level_shell_segments @ tools/approval.py:_iter_top_level_shell_segments */
 int appr_u_iter_top_level_shell_segments(const char *arg) { (void)arg; return 0; }

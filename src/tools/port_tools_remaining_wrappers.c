@@ -1180,7 +1180,15 @@ int tools_tool_backend_helpers_resolve_openai_audio_api_key(const char *arg) {
 }
 
 /* PoP: prefers_gateway @ tools/tool_backend_helpers.py:prefers_gateway */
-int tools_tool_backend_helpers_prefers_gateway(const char *arg) { (void)arg; return 0; }
+int tools_tool_backend_helpers_prefers_gateway(const char *arg) {
+    /* Python: config <section>.use_gateway truthy. Arg = "use_gateway\t1/0". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab[1] == '1') { printf("1\n"); return 0; }
+    if (strcmp(arg, "1") == 0 || strcasecmp(arg, "true") == 0 || strcasecmp(arg, "yes") == 0) { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _referenced_support_paths @ tools/skills_hub.py:_referenced_support_paths */
 int tools_skills_hub_u_referenced_support_paths(const char *arg) { (void)arg; return 0; }

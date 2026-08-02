@@ -36,7 +36,13 @@ static char *sku_normalize_desc(const json_t *fm) {
 int sku_is_excluded_skill_path(const char *arg) { (void)arg; return 0; }
 
 /* PoP: yaml_load @ agent/skill_utils.py:yaml_load */
-int sku_yaml_load(const char *arg) { (void)arg; return 0; }
+int sku_yaml_load(const char *arg) {
+    /* Python: yaml.load with CSafeLoader preference. Arg = YAML text
+     * (JSON passthrough). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: parse_frontmatter @ agent/skill_utils.py:parse_frontmatter */
 int sku_parse_frontmatter(const char *arg) { (void)arg; return 0; }

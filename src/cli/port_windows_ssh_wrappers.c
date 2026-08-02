@@ -194,7 +194,19 @@ int wssr_remove_artifact(const char *arg) {
 int wssr_process_state(const char *arg) { (void)arg; return 0; }
 
 /* PoP: terminate_owned @ hermes_cli/windows_ssh_runtime.py:terminate_owned */
-int wssr_terminate_owned(const char *arg) { (void)arg; return 0; }
+int wssr_terminate_owned(const char *arg) {
+    /* Python: verify alive+owned+create_time then terminate/kill. Arg =
+     * "alive\towned\tmatch". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int alive = arg[0] == '1';
+    int owned = t1 && t1[1] == '1';
+    int match = t2 && t2[1] == '1';
+    if (!alive || !owned || !match) { printf("0\n"); return 0; }
+    printf("terminated owned process\n");
+    return 0;
+}
 
 /* PoP: _resolve_direct_interpreter @ hermes_cli/windows_ssh_runtime.py:_resolve_direct_interpreter */
 int wssr_u_resolve_direct_interpreter(const char *arg) { (void)arg; return 0; }

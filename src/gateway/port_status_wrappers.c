@@ -125,7 +125,18 @@ int gstat_u_running_pid_cache_signature(const char *arg) {
 }
 
 /* PoP: runtime_status_is_stale @ gateway/status.py:runtime_status_is_stale */
-int gstat_runtime_status_is_stale(const char *arg) { (void)arg; return 0; }
+int gstat_runtime_status_is_stale(const char *arg) {
+    /* Python: missing/unparseable timestamp -> stale. Arg = "updated_at\tttl". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab || !tab[1]) { printf("1\n"); return 0; }
+    double ttl = strtod(tab + 1, NULL);
+    if (ttl <= 0) ttl = 60;
+    double age = strtod(arg, NULL);
+    if (age <= 0) { printf("1\n"); return 0; }
+    printf("%d\n", age > ttl ? 1 : 0);
+    return 0;
+}
 
 /* PoP: runtime_status_pid_is_live @ gateway/status.py:runtime_status_pid_is_live */
 int gstat_runtime_status_pid_is_live(const char *arg) { (void)arg; return 0; }

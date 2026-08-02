@@ -2159,7 +2159,33 @@ int hermes_cli_journey_u_fade(const char *arg) {
 }
 
 /* PoP: _row_to_text @ hermes_cli/journey.py:_row_to_text */
-int hermes_cli_journey_u_row_to_text(const char *arg) { (void)arg; return 0; }
+int hermes_cli_journey_u_row_to_text(const char *arg) {
+    /* Python: concat row chunks with style/alpha. Arg = "color\tchunks"
+     * (chunks = text\tstyle\talpha per line). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *color = arg;
+    const char *chunks = tab ? tab + 1 : "";
+    const char *p = chunks;
+    while (*p) {
+        const char *nl = strchr(p, '\n');
+        size_t len = nl ? (size_t)(nl - p) : strlen(p);
+        char line[1600];
+        if (len >= sizeof(line)) len = sizeof(line) - 1;
+        memcpy(line, p, len); line[len] = '\0';
+        const char *t1 = strchr(line, '\t');
+        const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+        const char *txt = line;
+        const char *style = t1 ? t1 + 1 : "";
+        double alpha = t2 ? strtod(t2 + 1, NULL) : 1.0;
+        (void)style; (void)alpha;
+        if (color[0]) printf("\033[%sm%s\033[0m", color[0] == 'y' ? "33" : "2", txt);
+        else printf("%s", txt);
+        p = nl ? nl + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _term_size @ hermes_cli/journey.py:_term_size */
 int hermes_cli_journey_u_term_size(const char *arg) {
@@ -2527,7 +2553,12 @@ int hermes_cli_dump_u_config_overrides(const char *arg) { (void)arg; return 0; }
 int hermes_cli_dump_run_dump(const char *arg) { (void)arg; return 0; }
 
 /* PoP: projects_db_path @ hermes_cli/projects_db.py:projects_db_path */
-int hermes_cli_projects_db_projects_db_path(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_db_projects_db_path(const char *arg) {
+    /* Python: $HERMES_HOME/projects.db. Arg = hermes_home. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s/projects.db\n", arg);
+    return 0;
+}
 
 /* PoP: _new_project_id @ hermes_cli/projects_db.py:_new_project_id */
 int hermes_cli_projects_db_u_new_project_id(const char *arg) {
@@ -3703,7 +3734,16 @@ int hermes_cli_oneshot_run_oneshot(const char *arg) { (void)arg; return 0; }
 int hermes_cli_oneshot_u_create_session_db_for_oneshot(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _oneshot_clarify_callback @ hermes_cli/oneshot.py:_oneshot_clarify_callback */
-int hermes_cli_oneshot_u_oneshot_clarify_callback(const char *arg) { (void)arg; return 0; }
+int hermes_cli_oneshot_u_oneshot_clarify_callback(const char *arg) {
+    /* Python: oneshot no-user guidance. Arg = choices (tab-sep, empty =
+     * none). */
+    if (!arg || !*arg) {
+        printf("[oneshot mode: no user available. Make the most reasonable assumption you can and continue.]\n");
+        return 0;
+    }
+    printf("[oneshot mode: no user available. Pick the best option from %s using your own judgment and continue.]\n", arg);
+    return 0;
+}
 
 /* PoP: is_routing_aggregator @ hermes_cli/providers.py:is_routing_aggregator */
 int hermes_cli_providers_is_routing_aggregator(const char *arg) { (void)arg; return 0; }
@@ -3979,7 +4019,23 @@ int hermes_cli_gateway_enroll_u_post_enroll(const char *arg) { (void)arg; return
 int hermes_cli_gateway_enroll_cmd_gateway_enroll(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _has_configured_mcp_servers @ hermes_cli/mcp_startup.py:_has_configured_mcp_servers */
-int hermes_cli_mcp_startup_u_has_configured_mcp_servers(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_startup_u_has_configured_mcp_servers(const char *arg) {
+    /* Python: mcp_servers dict non-empty; conservative True on error. Arg =
+     * "servers_json\tconfig_error". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab[1] == '1') { printf("1\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (j && json_is_object(j)) {
+        size_t n = json_object_size(j);
+        printf("%d\n", n > 0 ? 1 : 0);
+        json_free(j);
+        return 0;
+    }
+    if (j) json_free(j);
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _resolve_discovery_timeout @ hermes_cli/mcp_startup.py:_resolve_discovery_timeout */
 int hermes_cli_mcp_startup_u_resolve_discovery_timeout(const char *arg) { (void)arg; return 0; }
