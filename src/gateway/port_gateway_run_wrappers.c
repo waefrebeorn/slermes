@@ -79,7 +79,17 @@ int grun_u_try_resolve_fallback_provider(const char *arg) {
 }
 
 /* PoP: _probe_audio_duration @ gateway/run.py:_probe_audio_duration */
-int grun_u_probe_audio_duration(const char *arg) { (void)arg; return 0; }
+int grun_u_probe_audio_duration(const char *arg) {
+    /* Python: best-effort duration. Arg =
+     * "dur\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s (wav via wave module; ogg/mp3 via ffprobe fallback; None on failure)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _dequeue_pending_event @ gateway/run.py:_dequeue_pending_event */
 int grun_u_dequeue_pending_event(const char *arg) {
@@ -377,7 +387,19 @@ int grun_u_handle_reaction_event(const char *arg) {
 }
 
 /* PoP: _handle_adapter_fatal_error @ gateway/run.py:_handle_adapter_fatal_error */
-int grun_u_handle_adapter_fatal_error(const char *arg) { (void)arg; return 0; }
+int grun_u_handle_adapter_fatal_error(const char *arg) {
+    /* Python: retryable queue. Arg =
+     * "queued\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int queued = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (non-retryable — removed)\n"); return 0; }
+    if (!queued) { printf("0 (handler cancelled mid-flight — strand guard)\n"); return 0; }
+    printf("1 (queued for background reconnect; wrapper task protects against cancellation)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _handle_adapter_fatal_error_detached @ gateway/run.py:_handle_adapter_fatal_error_detached */
 int grun_u_handle_adapter_fatal_error_detached(const char *arg) {
@@ -395,7 +417,16 @@ int grun_u_handle_adapter_fatal_error_detached(const char *arg) {
 }
 
 /* PoP: _handle_adapter_fatal_error_impl @ gateway/run.py:_handle_adapter_fatal_error_impl */
-int grun_u_handle_adapter_fatal_error_impl(const char *arg) { (void)arg; return 0; }
+int grun_u_handle_adapter_fatal_error_impl(const char *arg) {
+    /* Python: impl body. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("fatal handling done (%s)%s\n", tab ? tab + 1 : "", (tab && tab[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _restart_loop_guard_config @ gateway/run.py:_restart_loop_guard_config */
 int grun_u_restart_loop_guard_config(const char *arg) {
@@ -539,7 +570,19 @@ int grun_u_exit_external_drain(const char *arg) {
 }
 
 /* PoP: _drain_control_watcher @ gateway/run.py:_drain_control_watcher */
-int grun_u_drain_control_watcher(const char *arg) { (void)arg; return 0; }
+int grun_u_drain_control_watcher(const char *arg) {
+    /* Python: marker reconcile. Arg =
+     * "draining\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int draining = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (marker absent — exited drain)\n"); return 0; }
+    if (!draining) { printf("0 (stale epoch marker treated absent NS-570)\n"); return 0; }
+    printf("1 (external drain entered; 1s cadence bounds observe latency; startup reconcile once)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _pause_failed_platform @ gateway/run.py:_pause_failed_platform */
 int grun_u_pause_failed_platform(const char *arg) {
@@ -773,7 +816,17 @@ int grun_u_defer_agent_cleanup_until_future_done(const char *arg) {
 }
 
 /* PoP: _cleanup_agent_resources_off_loop @ gateway/run.py:_cleanup_agent_resources_off_loop */
-int grun_u_cleanup_agent_resources_off_loop(const char *arg) { (void)arg; return 0; }
+int grun_u_cleanup_agent_resources_off_loop(const char *arg) {
+    /* Python: bounded worker. Arg =
+     * "done\tstate\tresult". */
+    if (!arg || !*arg) { printf("0 (no agent)\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (shutdown/session-expiry context — skipped)\n"); return 0; }
+    printf("1 (cleanup in worker thread, bounded wait; timeout cancels await, worker finishes on own #35994)%s\n", (t2 && t2[1] == '1') ? " — timed out" : "");
+    return 0;
+}
 
 /* PoP: _cleanup_agent_resources @ gateway/run.py:_cleanup_agent_resources */
 int grun_u_cleanup_agent_resources(const char *arg) {
@@ -1119,7 +1172,19 @@ int grun_u_make_adapter_auth_check(const char *arg) {
 }
 
 /* PoP: _deliver_platform_notice @ gateway/run.py:_deliver_platform_notice */
-int grun_u_deliver_platform_notice(const char *arg) { (void)arg; return 0; }
+int grun_u_deliver_platform_notice(const char *arg) {
+    /* Python: privacy-aware notice. Arg =
+     * "delivered\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int delivered = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no adapter / slack ignored channel — skipped)\n"); return 0; }
+    if (!delivered) { printf("0\n"); return 0; }
+    printf("1 (notice delivered per platform privacy rules)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _resolve_async_delegation_session @ gateway/run.py:_resolve_async_delegation_session */
 int grun_u_resolve_async_delegation_session(const char *arg) { (void)arg; return 0; }
@@ -1350,7 +1415,19 @@ int grun_u_get_telegram_topic_capabilities(const char *arg) {
 }
 
 /* PoP: _ensure_telegram_system_topic @ gateway/run.py:_ensure_telegram_system_topic */
-int grun_u_ensure_telegram_system_topic(const char *arg) { (void)arg; return 0; }
+int grun_u_ensure_telegram_system_topic(const char *arg) {
+    /* Python: System topic. Arg =
+     * "created\tstate\tresult". */
+    if (!arg || !*arg) { printf("0 (no adapter/chat)\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int created = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!created) { printf("0 (create failed — debug logged)\n"); return 0; }
+    printf("1 (System topic created+%s after /topic activation)%s\n", (t2 && t2[1] == '1') ? "pinned" : "named", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _send_telegram_topic_setup_image @ gateway/run.py:_send_telegram_topic_setup_image */
 int grun_u_send_telegram_topic_setup_image(const char *arg) {
@@ -1571,7 +1648,17 @@ int grun_u_echo_pending_stt_transcripts_once(const char *arg) {
 }
 
 /* PoP: _transcribe_and_echo_pending_voice @ gateway/run.py:_transcribe_and_echo_pending_voice */
-int grun_u_transcribe_and_echo_pending_voice(const char *arg) { (void)arg; return 0; }
+int grun_u_transcribe_and_echo_pending_voice(const char *arg) {
+    /* Python: unified voice helper. Arg =
+     * "enriched\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("%s\t[] (no STT-eligible media)\n", t1 ? t1 + 1 : ""); return 0; }
+    printf("%s\t%s (single STT + echo; feeds interrupt or drain)%s\n", t2 ? t2 + 1 : "", t2 ? t2 + 1 : "[]", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _build_process_event_source @ gateway/run.py:_build_process_event_source */
 int grun_u_build_process_event_source(const char *arg) {

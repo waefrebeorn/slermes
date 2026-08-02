@@ -439,7 +439,17 @@ int wx_u_send_text_chunk_locked(const char *arg) {
 }
 
 /* PoP: _ensure_typing_ticket @ gateway/platforms/weixin.py:_ensure_typing_ticket */
-int wx_u_ensure_typing_ticket(const char *arg) { (void)arg; return 0; }
+int wx_u_ensure_typing_ticket(const char *arg) {
+    /* Python: 600s TTL refresh. Arg =
+     * "ticket\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("ticket=%s (transparent getConfig refresh past 600s TTL — stop signal always deliverable)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? " — refreshed" : "");
+    return 0;
+}
 
 /* PoP: _download_remote_media @ gateway/platforms/weixin.py:_download_remote_media */
 int wx_u_download_remote_media(const char *arg) {

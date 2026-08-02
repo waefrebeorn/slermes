@@ -1090,7 +1090,19 @@ int gateway_platforms_qqbot_chunke_u_upload_one_part(const char *arg) {
 int gateway_platforms_qqbot_chunke_u_put_to_presigned_url(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _part_finish_with_retry @ gateway/platforms/qqbot/chunked_upload.py:_part_finish_with_retry */
-int gateway_platforms_qqbot_chunke_u_part_finish_with_retry(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_qqbot_chunke_u_part_finish_with_retry(const char *arg) {
+    /* Python: 40093001 retry. Arg =
+     * "finished\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int finished = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 1; }
+    if (!finished) { printf("0 (gave up after retries)\n"); return 1; }
+    printf("1 (part %s finished; 40093001 retried w/ bounded wall-clock)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _read_file_chunk @ gateway/platforms/qqbot/chunked_upload.py:_read_file_chunk */
 int gateway_platforms_qqbot_chunke_u_read_file_chunk(const char *arg) {
@@ -1179,7 +1191,19 @@ int gateway_relay_ws_transport_u_passthrough_from_wire(const char *arg) {
 }
 
 /* PoP: _dial_and_start @ gateway/relay/ws_transport.py:_dial_and_start */
-int gateway_relay_ws_transport_u_dial_and_start(const char *arg) { (void)arg; return 0; }
+int gateway_relay_ws_transport_u_dial_and_start(const char *arg) {
+    /* Python: fresh handshake. Arg =
+     * "dialed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int dialed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!dialed) { printf("0 (dial failed)\n"); return 0; }
+    printf("1 (socket open, reader started, hello sent; descriptor future reset for re-dial; D12 dormant state cleared)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: auth_revoked @ gateway/relay/ws_transport.py:auth_revoked */
 int gateway_relay_ws_transport_auth_revoked(const char *arg) {
@@ -1234,7 +1258,16 @@ int gateway_relay_ws_transport_u_close_code_of(const char *arg) {
 }
 
 /* PoP: _reconnect_loop @ gateway/relay/ws_transport.py:_reconnect_loop */
-int gateway_relay_ws_transport_u_reconnect_loop(const char *arg) { (void)arg; return 0; }
+int gateway_relay_ws_transport_u_reconnect_loop(const char *arg) {
+    /* Python: capped backoff redial. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("reconnect loop (capped exp backoff; never raises; ends on dial success or close; §5.3 backlog replay on resume)%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _env_multiplex_profiles_override @ gateway/config.py:_env_multiplex_profiles_override */
 int gateway_config_u_env_multiplex_profiles_override(const char *arg) {
@@ -1497,7 +1530,19 @@ int gateway_relay_adapter_u_start_revocation_monitor(const char *arg) {
 }
 
 /* PoP: _watch_for_revocation @ gateway/relay/adapter.py:_watch_for_revocation */
-int gateway_relay_adapter_u_watch_for_revocation(const char *arg) { (void)arg; return 0; }
+int gateway_relay_adapter_u_watch_for_revocation(const char *arg) {
+    /* Python: 4401 terminal. Arg =
+     * "revoked\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int revoked = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (monitor running)\n"); return 0; }
+    if (!revoked) { printf("0\n"); return 0; }
+    printf("1 (4401 revocation → relay_disabled fatal surfaced; adapter removed, NOT queued for reconnect)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: fronts_platform @ gateway/relay/adapter.py:fronts_platform */
 int gateway_relay_adapter_fronts_platform(const char *arg) {

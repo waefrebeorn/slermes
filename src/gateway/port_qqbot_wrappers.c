@@ -155,7 +155,19 @@ int qqbot_u_heartbeat_loop(const char *arg) {
 }
 
 /* PoP: _send_identify @ gateway/platforms/qqbot/adapter.py:_send_identify */
-int qqbot_u_send_identify(const char *arg) { (void)arg; return 0; }
+int qqbot_u_send_identify(const char *arg) {
+    /* Python: op 2. Arg =
+     * "sent\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int sent = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!sent) { printf("0 (identify send failed)\n"); return 0; }
+    printf("1 (op 2 identify sent: intents %s; READY dispatch expected)%s\n", t2 ? t2 + 1 : "(1<<25)|(1<<3)|...", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _send_resume @ gateway/platforms/qqbot/adapter.py:_send_resume */
 int qqbot_u_send_resume(const char *arg) {

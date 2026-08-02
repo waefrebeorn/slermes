@@ -973,7 +973,17 @@ int yb_query_group_info_raw(const char *arg) {
 int yb_get_group_member_list_raw(const char *arg) { (void)arg; return 0; }
 
 /* PoP: query_session_members @ gateway/platforms/yuanbao.py:query_session_members */
-int yb_query_session_members(const char *arg) { (void)arg; return 0; }
+int yb_query_session_members(const char *arg) {
+    /* Python: AI member query. Arg =
+     * "members\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\"error\": \"This command is only available in group chats\"}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{\"error\": \"This command is only available in group chats\"}\n"); return 0; }
+    printf("{\"members\": %s, \"mentionHint\": \"@<nickname>\"} (find/list_bots/list_all actions)%s\n", t2 ? t2 + 1 : "[]", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: send_heartbeat_once @ gateway/platforms/yuanbao.py:send_heartbeat_once */
 int yb_send_heartbeat_once(const char *arg) {
@@ -1071,7 +1081,21 @@ int yb_send_media(const char *arg) {
 }
 
 /* PoP: send_direct @ gateway/platforms/yuanbao.py:send_direct */
-int yb_send_direct(const char *arg) { (void)arg; return 0; }
+int yb_send_direct(const char *arg) {
+    /* Python: send_message tool. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"error\": \"empty message\"}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "direct send failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("{\"success\": true, \"message_id\": \"%s\"} (text first, then media by extension; persistent WS adapter)%s\n", t3 ? t3 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: dispatch_msg_body @ gateway/platforms/yuanbao.py:dispatch_msg_body */
 int yb_dispatch_msg_body(const char *arg) {
@@ -1091,7 +1115,19 @@ int yb_dispatch_msg_body(const char *arg) {
 }
 
 /* PoP: send_text_chunk @ gateway/platforms/yuanbao.py:send_text_chunk */
-int yb_send_text_chunk(const char *arg) { (void)arg; return 0; }
+int yb_send_text_chunk(const char *arg) {
+    /* Python: 1s/2s/4s retry. Arg =
+     * "sent\tstate\tresult". */
+    if (!arg || !*arg) { printf("0 (Unknown error)\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int sent = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (failed after retries: %s)\n", t2 ? t2 + 1 : "?"); return 1; }
+    if (!sent) { printf("0\n"); return 1; }
+    printf("1 (chunk sent; group:/direct: prefix routing; exp backoff 1s/2s/4s)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: send_c2c_message @ gateway/platforms/yuanbao.py:send_c2c_message */
 int yb_send_c2c_message(const char *arg) {

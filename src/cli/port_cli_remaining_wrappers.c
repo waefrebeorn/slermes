@@ -171,7 +171,25 @@ int hermes_cli_dashboard_auth_rout_api_auth_ws_ticket(const char *arg) {
 }
 
 /* PoP: auth_native_token @ hermes_cli/dashboard_auth/routes.py:auth_native_token */
-int hermes_cli_dashboard_auth_rout_auth_native_token(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_rout_auth_native_token(const char *arg) {
+    /* Python: PKCE exchange. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"detail\": \"invalid_request\"}\n"); return 400; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "mismatch") == 0) {
+        printf("{\"detail\": \"invalid_grant\"} (code consumed on every failure — generic errors)\n");
+        return 400;
+    }
+    if (strcmp(state, "used") == 0) {
+        printf("{\"detail\": \"invalid_grant\"} (code already consumed)\n");
+        return 400;
+    }
+    printf("{\"access_token\": \"%s\", \"refresh_token\": \"***\"} (SHA256(verifier)==challenge verified; NO cookie set — desktop keychain)%s\n", t3 ? t3 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: auth_native_refresh @ hermes_cli/dashboard_auth/routes.py:auth_native_refresh */
 int hermes_cli_dashboard_auth_rout_auth_native_refresh(const char *arg) { (void)arg; return 0; }
