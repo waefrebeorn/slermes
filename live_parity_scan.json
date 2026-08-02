@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:06:13Z",
+  "generated_at": "2026-08-02T20:08:21Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -12846,10 +12846,10 @@
     },
     "agent/chat_completion_helpers.py": {
       "total": 29,
-      "ported": 18,
+      "ported": 29,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 11,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 29,
@@ -12865,16 +12865,24 @@
             "decorators": [],
             "line_number": 60
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completion_helpers_remaining.c",
+          "c_function": "cch_ra_ref",
+          "pop_annotation": {
+            "c_function": "cch_ra_ref",
+            "python_functions": [
+              "_ra"
+            ],
+            "c_file": "src/agent/port_chat_completion_helpers_remaining.c",
+            "python_file": "agent/chat_completion_helpers.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ra @ agent/chat_completion_helpers.py:_ra */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/chat_completion_helpers.py",
@@ -12886,16 +12894,24 @@
             "decorators": [],
             "line_number": 71
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completion_helpers_remaining.c",
+          "c_function": "cch_estimate_request_context_tokens",
+          "pop_annotation": {
+            "c_function": "cch_estimate_request_context_tokens",
+            "python_functions": [
+              "estimate_request_context_tokens"
+            ],
+            "c_file": "src/agent/port_chat_completion_helpers_remaining.c",
+            "python_file": "agent/chat_completion_helpers.py",
+            "line": 31,
+            "is_consolidated": false,
+            "full_text": "/* PoP: estimate_request_context_tokens @ agent/chat_completion_helpers.py:estimate_request_context_tokens */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/chat_completion_helpers.py",
@@ -12907,16 +12923,24 @@
             "decorators": [],
             "line_number": 124
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completion_helpers_remaining.c",
+          "c_function": "cch_is_openai_codex_backend",
+          "pop_annotation": {
+            "c_function": "cch_is_openai_codex_backend",
+            "python_functions": [
+              "_is_openai_codex_backend"
+            ],
+            "c_file": "src/agent/port_chat_completion_helpers_remaining.c",
+            "python_file": "agent/chat_completion_helpers.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_openai_codex_backend @ agent/chat_completion_helpers.py:_is_openai_codex_backend */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/chat_completion_helpers.py",
@@ -13015,16 +13039,24 @@
             "decorators": [],
             "line_number": 191
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completion_helpers_remaining.c",
+          "c_function": "cch_env_float",
+          "pop_annotation": {
+            "c_function": "cch_env_float",
+            "python_functions": [
+              "_env_float"
+            ],
+            "c_file": "src/agent/port_chat_completion_helpers_remaining.c",
+            "python_file": "agent/chat_completion_helpers.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _env_float @ agent/chat_completion_helpers.py:_env_float */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/chat_completion_helpers.py",
@@ -13326,16 +13358,24 @@
             "decorators": [],
             "line_number": 506
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completion_helpers_remaining.c",
+          "c_function": "cch_interruptible_api_call",
+          "pop_annotation": {
+            "c_function": "cch_interruptible_api_call",
+            "python_functions": [
+              "interruptible_api_call"
+            ],
+            "c_file": "src/agent/port_chat_completion_helpers_remaining.c",
+            "python_file": "agent/chat_completion_helpers.py",
+            "line": 61,
+            "is_consolidated": false,
+            "full_text": "/* PoP: interruptible_api_call @ agent/chat_completion_helpers.py:interruptible_api_call */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/chat_completion_helpers.py",
@@ -13347,16 +13387,24 @@
             "decorators": [],
             "line_number": 984
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completion_helpers_remaining.c",
+          "c_function": "cch_build_api_kwargs",
+          "pop_annotation": {
+            "c_function": "cch_build_api_kwargs",
+            "python_functions": [
+              "build_api_kwargs"
+            ],
+            "c_file": "src/agent/port_chat_completion_helpers_remaining.c",
+            "python_file": "agent/chat_completion_helpers.py",
+            "line": 69,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_api_kwargs @ agent/chat_completion_helpers.py:build_api_kwargs */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/chat_completion_helpers.py",
@@ -13368,16 +13416,24 @@
             "decorators": [],
             "line_number": 1245
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completion_helpers_remaining.c",
+          "c_function": "cch_build_assistant_message",
+          "pop_annotation": {
+            "c_function": "cch_build_assistant_message",
+            "python_functions": [
+              "build_assistant_message"
+            ],
+            "c_file": "src/agent/port_chat_completion_helpers_remaining.c",
+            "python_file": "agent/chat_completion_helpers.py",
+            "line": 77,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_assistant_message @ agent/chat_completion_helpers.py:build_assistant_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/chat_completion_helpers.py",
@@ -13505,16 +13561,24 @@
             "decorators": [],
             "line_number": 1577
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completion_helpers_remaining.c",
+          "c_function": "cch_try_activate_fallback",
+          "pop_annotation": {
+            "c_function": "cch_try_activate_fallback",
+            "python_functions": [
+              "try_activate_fallback"
+            ],
+            "c_file": "src/agent/port_chat_completion_helpers_remaining.c",
+            "python_file": "agent/chat_completion_helpers.py",
+            "line": 85,
+            "is_consolidated": false,
+            "full_text": "/* PoP: try_activate_fallback @ agent/chat_completion_helpers.py:try_activate_fallback */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/chat_completion_helpers.py",
@@ -13526,16 +13590,24 @@
             "decorators": [],
             "line_number": 1952
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completion_helpers_remaining.c",
+          "c_function": "cch_handle_max_iterations",
+          "pop_annotation": {
+            "c_function": "cch_handle_max_iterations",
+            "python_functions": [
+              "handle_max_iterations"
+            ],
+            "c_file": "src/agent/port_chat_completion_helpers_remaining.c",
+            "python_file": "agent/chat_completion_helpers.py",
+            "line": 93,
+            "is_consolidated": false,
+            "full_text": "/* PoP: handle_max_iterations @ agent/chat_completion_helpers.py:handle_max_iterations */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/chat_completion_helpers.py",
@@ -13547,16 +13619,24 @@
             "decorators": [],
             "line_number": 2214
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completion_helpers_remaining.c",
+          "c_function": "cch_cleanup_task_resources",
+          "pop_annotation": {
+            "c_function": "cch_cleanup_task_resources",
+            "python_functions": [
+              "cleanup_task_resources"
+            ],
+            "c_file": "src/agent/port_chat_completion_helpers_remaining.c",
+            "python_file": "agent/chat_completion_helpers.py",
+            "line": 100,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cleanup_task_resources @ agent/chat_completion_helpers.py:cleanup_task_resources */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/chat_completion_helpers.py",
@@ -13597,16 +13677,24 @@
             "decorators": [],
             "line_number": 2294
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completion_helpers_remaining.c",
+          "c_function": "cch_interruptible_streaming_api_call",
+          "pop_annotation": {
+            "c_function": "cch_interruptible_streaming_api_call",
+            "python_functions": [
+              "interruptible_streaming_api_call"
+            ],
+            "c_file": "src/agent/port_chat_completion_helpers_remaining.c",
+            "python_file": "agent/chat_completion_helpers.py",
+            "line": 108,
+            "is_consolidated": false,
+            "full_text": "/* PoP: interruptible_streaming_api_call @ agent/chat_completion_helpers.py:interruptible_streaming_api_call */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -322417,10 +322505,10 @@
     },
     "tools/moa_performance.py": {
       "total": 39,
-      "ported": 28,
+      "ported": 39,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 11,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 39,
@@ -322436,16 +322524,24 @@
             "decorators": [],
             "line_number": 46
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_moa_performance_remaining.c",
+          "c_function": "moa_to_dict",
+          "pop_annotation": {
+            "c_function": "moa_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/tools/port_moa_performance_remaining.c",
+            "python_file": "tools/moa_performance.py",
+            "line": 25,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ tools/moa_performance.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/moa_performance.py",
@@ -322459,16 +322555,24 @@
             ],
             "line_number": 60
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_moa_performance_remaining.c",
+          "c_function": "moa_from_dict",
+          "pop_annotation": {
+            "c_function": "moa_from_dict",
+            "python_functions": [
+              "from_dict"
+            ],
+            "c_file": "src/tools/port_moa_performance_remaining.c",
+            "python_file": "tools/moa_performance.py",
+            "line": 33,
+            "is_consolidated": false,
+            "full_text": "/* PoP: from_dict @ tools/moa_performance.py:from_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/moa_performance.py",
@@ -322480,16 +322584,24 @@
             "decorators": [],
             "line_number": 67
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_moa_performance_remaining.c",
+          "c_function": "moa_cache_init",
+          "pop_annotation": {
+            "c_function": "moa_cache_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_moa_performance_remaining.c",
+            "python_file": "tools/moa_performance.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/moa_performance.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/moa_performance.py",
@@ -322733,16 +322845,24 @@
             "decorators": [],
             "line_number": 223
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_moa_performance_remaining.c",
+          "c_function": "moa_cache_init",
+          "pop_annotation": {
+            "c_function": "moa_cache_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_moa_performance_remaining.c",
+            "python_file": "tools/moa_performance.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/moa_performance.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/moa_performance.py",
@@ -322812,16 +322932,24 @@
             "decorators": [],
             "line_number": 257
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_moa_performance_remaining.c",
+          "c_function": "moa_cache_get",
+          "pop_annotation": {
+            "c_function": "moa_cache_get",
+            "python_functions": [
+              "get"
+            ],
+            "c_file": "src/tools/port_moa_performance_remaining.c",
+            "python_file": "tools/moa_performance.py",
+            "line": 48,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get @ tools/moa_performance.py:get */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/moa_performance.py",
@@ -322833,16 +322961,24 @@
             "decorators": [],
             "line_number": 278
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_moa_performance_remaining.c",
+          "c_function": "moa_cache_set",
+          "pop_annotation": {
+            "c_function": "moa_cache_set",
+            "python_functions": [
+              "set"
+            ],
+            "c_file": "src/tools/port_moa_performance_remaining.c",
+            "python_file": "tools/moa_performance.py",
+            "line": 56,
+            "is_consolidated": false,
+            "full_text": "/* PoP: set @ tools/moa_performance.py:set */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/moa_performance.py",
@@ -322883,16 +323019,24 @@
             "decorators": [],
             "line_number": 307
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_moa_performance_remaining.c",
+          "c_function": "moa_cache_init",
+          "pop_annotation": {
+            "c_function": "moa_cache_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_moa_performance_remaining.c",
+            "python_file": "tools/moa_performance.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/moa_performance.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/moa_performance.py",
@@ -323107,16 +323251,24 @@
             "decorators": [],
             "line_number": 474
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_moa_performance_remaining.c",
+          "c_function": "moa_cache_init",
+          "pop_annotation": {
+            "c_function": "moa_cache_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_moa_performance_remaining.c",
+            "python_file": "tools/moa_performance.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/moa_performance.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/moa_performance.py",
@@ -323186,16 +323338,24 @@
             "decorators": [],
             "line_number": 512
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_moa_performance_remaining.c",
+          "c_function": "moa_cache_get",
+          "pop_annotation": {
+            "c_function": "moa_cache_get",
+            "python_functions": [
+              "get"
+            ],
+            "c_file": "src/tools/port_moa_performance_remaining.c",
+            "python_file": "tools/moa_performance.py",
+            "line": 48,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get @ tools/moa_performance.py:get */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/moa_performance.py",
@@ -323207,16 +323367,24 @@
             "decorators": [],
             "line_number": 537
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_moa_performance_remaining.c",
+          "c_function": "moa_cache_set",
+          "pop_annotation": {
+            "c_function": "moa_cache_set",
+            "python_functions": [
+              "set"
+            ],
+            "c_file": "src/tools/port_moa_performance_remaining.c",
+            "python_file": "tools/moa_performance.py",
+            "line": 56,
+            "is_consolidated": false,
+            "full_text": "/* PoP: set @ tools/moa_performance.py:set */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/moa_performance.py",
@@ -323228,16 +323396,24 @@
             "decorators": [],
             "line_number": 577
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_moa_performance_remaining.c",
+          "c_function": "moa_cache_init",
+          "pop_annotation": {
+            "c_function": "moa_cache_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_moa_performance_remaining.c",
+            "python_file": "tools/moa_performance.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/moa_performance.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/moa_performance.py",
