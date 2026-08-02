@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:04:42Z",
+  "generated_at": "2026-08-02T21:06:48Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -224262,10 +224262,10 @@
     },
     "hermes_cli/nous_subscription.py": {
       "total": 26,
-      "ported": 20,
+      "ported": 26,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 6,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 26,
@@ -224312,16 +224312,24 @@
             ],
             "line_number": 80
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_nous_subscription_remaining.c",
+          "c_function": "nsub_web",
+          "pop_annotation": {
+            "c_function": "nsub_web",
+            "python_functions": [
+              "web"
+            ],
+            "c_file": "src/cli/port_nous_subscription_remaining.c",
+            "python_file": "hermes_cli/nous_subscription.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: web @ hermes_cli/nous_subscription.py:web */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/nous_subscription.py",
@@ -224366,16 +224374,24 @@
             ],
             "line_number": 88
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_nous_subscription_remaining.c",
+          "c_function": "nsub_tts",
+          "pop_annotation": {
+            "c_function": "nsub_tts",
+            "python_functions": [
+              "tts"
+            ],
+            "c_file": "src/cli/port_nous_subscription_remaining.c",
+            "python_file": "hermes_cli/nous_subscription.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: tts @ hermes_cli/nous_subscription.py:tts */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/nous_subscription.py",
@@ -224420,16 +224436,24 @@
             ],
             "line_number": 96
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_nous_subscription_remaining.c",
+          "c_function": "nsub_browser",
+          "pop_annotation": {
+            "c_function": "nsub_browser",
+            "python_functions": [
+              "browser"
+            ],
+            "c_file": "src/cli/port_nous_subscription_remaining.c",
+            "python_file": "hermes_cli/nous_subscription.py",
+            "line": 44,
+            "is_consolidated": false,
+            "full_text": "/* PoP: browser @ hermes_cli/nous_subscription.py:browser */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/nous_subscription.py",
@@ -224474,16 +224498,24 @@
             ],
             "line_number": 104
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_nous_subscription_remaining.c",
+          "c_function": "nsub_modal",
+          "pop_annotation": {
+            "c_function": "nsub_modal",
+            "python_functions": [
+              "modal"
+            ],
+            "c_file": "src/cli/port_nous_subscription_remaining.c",
+            "python_file": "hermes_cli/nous_subscription.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: modal @ hermes_cli/nous_subscription.py:modal */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/nous_subscription.py",
@@ -224495,16 +224527,24 @@
             "decorators": [],
             "line_number": 107
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_nous_subscription_remaining.c",
+          "c_function": "nsub_items",
+          "pop_annotation": {
+            "c_function": "nsub_items",
+            "python_functions": [
+              "items"
+            ],
+            "c_file": "src/cli/port_nous_subscription_remaining.c",
+            "python_file": "hermes_cli/nous_subscription.py",
+            "line": 54,
+            "is_consolidated": false,
+            "full_text": "/* PoP: items @ hermes_cli/nous_subscription.py:items */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/nous_subscription.py",
@@ -224516,16 +224556,24 @@
             "decorators": [],
             "line_number": 113
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_nous_subscription_remaining.c",
+          "c_function": "nsub_model_config_dict",
+          "pop_annotation": {
+            "c_function": "nsub_model_config_dict",
+            "python_functions": [
+              "_model_config_dict"
+            ],
+            "c_file": "src/cli/port_nous_subscription_remaining.c",
+            "python_file": "hermes_cli/nous_subscription.py",
+            "line": 60,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _model_config_dict @ hermes_cli/nous_subscription.py:_model_config_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/nous_subscription.py",
