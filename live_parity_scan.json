@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:49:29Z",
+  "generated_at": "2026-08-02T21:51:28Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -91910,10 +91910,10 @@
     },
     "gateway/code_skew.py": {
       "total": 4,
-      "ported": 0,
+      "ported": 4,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 4,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 4,
@@ -91929,16 +91929,24 @@
             "decorators": [],
             "line_number": 26
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_code_skew_remaining.c",
+          "c_function": "csk_fingerprint",
+          "pop_annotation": {
+            "c_function": "csk_fingerprint",
+            "python_functions": [
+              "_fingerprint"
+            ],
+            "c_file": "src/gateway/port_code_skew_remaining.c",
+            "python_file": "gateway/code_skew.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _fingerprint @ gateway/code_skew.py:_fingerprint */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/code_skew.py",
@@ -91950,16 +91958,24 @@
             "decorators": [],
             "line_number": 41
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_code_skew_remaining.c",
+          "c_function": "csk_record_boot_fingerprint",
+          "pop_annotation": {
+            "c_function": "csk_record_boot_fingerprint",
+            "python_functions": [
+              "record_boot_fingerprint"
+            ],
+            "c_file": "src/gateway/port_code_skew_remaining.c",
+            "python_file": "gateway/code_skew.py",
+            "line": 51,
+            "is_consolidated": false,
+            "full_text": "/* PoP: record_boot_fingerprint @ gateway/code_skew.py:record_boot_fingerprint */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/code_skew.py",
@@ -91971,16 +91987,24 @@
             "decorators": [],
             "line_number": 48
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_code_skew_remaining.c",
+          "c_function": "csk_short",
+          "pop_annotation": {
+            "c_function": "csk_short",
+            "python_functions": [
+              "_short"
+            ],
+            "c_file": "src/gateway/port_code_skew_remaining.c",
+            "python_file": "gateway/code_skew.py",
+            "line": 59,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _short @ gateway/code_skew.py:_short */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/code_skew.py",
@@ -91992,16 +92016,24 @@
             "decorators": [],
             "line_number": 56
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_code_skew_remaining.c",
+          "c_function": "csk_detect_code_skew",
+          "pop_annotation": {
+            "c_function": "csk_detect_code_skew",
+            "python_functions": [
+              "detect_code_skew"
+            ],
+            "c_file": "src/gateway/port_code_skew_remaining.c",
+            "python_file": "gateway/code_skew.py",
+            "line": 70,
+            "is_consolidated": false,
+            "full_text": "/* PoP: detect_code_skew @ gateway/code_skew.py:detect_code_skew */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -96639,10 +96671,10 @@
     },
     "gateway/platform_registry.py": {
       "total": 11,
-      "ported": 7,
+      "ported": 11,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 4,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 11,
@@ -96658,16 +96690,24 @@
             "decorators": [],
             "line_number": 169
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platform_registry_remaining.c",
+          "c_function": "prg_init",
+          "pop_annotation": {
+            "c_function": "prg_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_platform_registry_remaining.c",
+            "python_file": "gateway/platform_registry.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platform_registry.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platform_registry.py",
@@ -96708,16 +96748,24 @@
             "decorators": [],
             "line_number": 202
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platform_registry_remaining.c",
+          "c_function": "prg_resolve",
+          "pop_annotation": {
+            "c_function": "prg_resolve",
+            "python_functions": [
+              "_resolve"
+            ],
+            "c_file": "src/gateway/port_platform_registry_remaining.c",
+            "python_file": "gateway/platform_registry.py",
+            "line": 26,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve @ gateway/platform_registry.py:_resolve */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platform_registry.py",
@@ -96758,16 +96806,24 @@
             "decorators": [],
             "line_number": 231
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platform_registry_remaining.c",
+          "c_function": "prg_register",
+          "pop_annotation": {
+            "c_function": "prg_register",
+            "python_functions": [
+              "register"
+            ],
+            "c_file": "src/gateway/port_platform_registry_remaining.c",
+            "python_file": "gateway/platform_registry.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: register @ gateway/platform_registry.py:register */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platform_registry.py",
@@ -96808,16 +96864,24 @@
             "decorators": [],
             "line_number": 255
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platform_registry_remaining.c",
+          "c_function": "prg_get",
+          "pop_annotation": {
+            "c_function": "prg_get",
+            "python_functions": [
+              "get"
+            ],
+            "c_file": "src/gateway/port_platform_registry_remaining.c",
+            "python_file": "gateway/platform_registry.py",
+            "line": 42,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get @ gateway/platform_registry.py:get */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platform_registry.py",
