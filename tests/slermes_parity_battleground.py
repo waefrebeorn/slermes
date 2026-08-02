@@ -704,11 +704,131 @@ class ParityAnalyzer:
             add(py, c)
         return M
 
+    # ── recursive bootleg detection (fixes the false-global-gap blind spot) ──
+    # The parity scanner counts any PoP-annotated C function as PORTED, so a
+    # function that delegates to a bootleg stub (or is itself a bootleg stub)
+    # reports parity but does no real work => a FALSE global gap. This method
+    # builds a call graph over the *ported* TUs (port_*.c / port_*.h) and
+    # classifies a function as BOOTLEG if, after ignoring calls to REAL/
+    # external functions (library calls and the live cli_cmd_*.c handlers,
+    # which are defined OUTSIDE the ported set), its body does no observable
+    # work and every remaining internal callee is itself bootleg.
+    _REAL_SIGNALS = [
+        r'\bprintf\s*\(', r'\bfprintf\s*\(', r'\bputs\s*\(', r'\bfputs\s*\(',
+        r'\bfwrite\s*\(', r'\bperror\s*\(', r'\bhermes_log\b', r'\blog_',
+        r'\bfopen\s*\(', r'\bopen\s*\(', r'\bfclose\s*\(', r'\bclose\s*\(',
+        r'\bjson_object_set', r'\bjson_array_append', r'\bjson_set',
+        r'\bconfig_py_save', r'\bconfig_py_atomic', r'\bwrite_config',
+        r'\bsystem\s*\(', r'\bexecl', r'\bfork\s*\(', r'\bpopen\s*\(',
+        r'\bcurl', r'\bhttp_', r'\bsocket\s*\(',
+        r'\bmalloc\s*\(', r'\bcalloc\s*\(', r'\brealloc\s*\(',
+        r'\bstrcpy', r'\bstrcat', r'\bsnprintf\s*\(', r'\bsprintf\s*\(',
+        r'\bfgets\s*\(', r'\bfread\s*\(', r'\bsqlite',
+        r'\byaml_', r'\bjson_parse', r'\bjson_new',
+        r'\bprocess_registry', r'\bclipboard',
+    ]
+    _REAL_RE = [re.compile(p) for p in _REAL_SIGNALS]
+    _CALLEE = re.compile(r'(?<![.\w])([a-zA-Z_]\w*)\s*\(')
+    _FUNC_DEF = re.compile(
+        r'(?:static\s+|inline\s+)?(?:const\s+|unsigned\s+)?'
+        r'(?:[\w:]+\s+)+?(\*?\w+)\s*\(([^;]*?)\)\s*\{', re.S)
+
+    def _ensure_port_graph(self):
+        if hasattr(self, '_port_defined'):
+            return
+        defined = {}
+        for fname, rels in self.c_index._filename_index.items():
+            if not (fname.startswith('port_') and (fname.endswith('.c') or fname.endswith('.h'))):
+                continue
+            for rel in rels:
+                content, _ = self.c_index._get_cached_content(rel)
+                for m in self._FUNC_DEF.finditer(content):
+                    name = m.group(1)
+                    if name in ('if','while','for','switch','return','sizeof','catch'):
+                        continue
+                    body_start = m.end(); depth = 1; pos = body_start
+                    in_s=in_c=in_lc=in_bc=False
+                    while pos < len(content) and depth > 0:
+                        ch = content[pos]; prev = content[pos-1] if pos>0 else '\0'
+                        if in_lc:
+                            if ch=='\n': in_lc=False
+                            pos+=1; continue
+                        if in_bc:
+                            if ch=='/' and prev=='*': in_bc=False
+                            pos+=1; continue
+                        if in_s:
+                            if ch=='"' and prev!='\\': in_s=False
+                            pos+=1; continue
+                        if in_c:
+                            if ch=="'" and prev!='\\': in_c=False
+                            pos+=1; continue
+                        if ch=='/' and pos+1<len(content):
+                            if content[pos+1]=='/': in_lc=True; pos+=2; continue
+                            if content[pos+1]=='*': in_bc=True; pos+=2; continue
+                        if ch=='"': in_s=True
+                        elif ch=="'": in_c=True
+                        elif ch=='{': depth+=1
+                        elif ch=='}': depth-=1
+                        pos+=1
+                    if name not in defined:
+                        defined[name] = content[body_start:pos]
+        self._port_defined = defined
+        self._port_memo = {}
+
+    def _recursive_bootleg(self, name, stack=None):
+        defined = self._port_defined
+        memo = self._port_memo
+        if name not in defined:
+            return False
+        if name in memo:
+            return memo[name]
+        if stack is None:
+            stack = set()
+        if name in stack:
+            return False
+        stack.add(name)
+        body = defined[name]
+        if body.strip() in ('{}', ';'):
+            memo[name] = True; stack.discard(name); return True
+        if any(rx.search(body) for rx in self._REAL_RE):
+            memo[name] = False; stack.discard(name); return False
+        callees = set(c for c in self._CALLEE.findall(body)
+                      if c not in ('if','while','for','switch','return','sizeof','catch','do'))
+        internal = [c for c in callees if c in defined]
+        if [c for c in callees if c not in defined]:
+            memo[name] = False; stack.discard(name); return False
+        nb = [ln.strip() for ln in body.split('\n')
+              if ln.strip() and not ln.strip().startswith('//')]
+        if not nb:
+            memo[name] = True; stack.discard(name); return True
+        def stmt_bootleg(s):
+            if s.startswith('(void)'):
+                return True
+            if re.match(r'^return\s+(0|NULL|null|false|FALSE|"\s*"|\'\0\')\s*;?$', s):
+                return True
+            if re.match(r'^return\s+[\w]+\s*;?$', s):
+                v = re.match(r'^return\s+([\w]+)\s*;?$', s).group(1)
+                return self._recursive_bootleg(v, stack) if v in defined else True
+            if re.match(r'^return\s+[\w]+\s*\([^;]*\)\s*;?$', s):
+                v = re.match(r'^return\s+([\w]+)\s*\(', s).group(1)
+                return self._recursive_bootleg(v, stack) if v in defined else True
+            if re.match(r'^return\s+', s):
+                return False
+            return True
+        res = all(stmt_bootleg(st) for st in nb)
+        memo[name] = res; stack.discard(name); return res
+
     # ── classification (preserved; adds da_flags) ──
     def classify_feature(self, py_file, feature):
         pop_annotations = self.c_index.find_pop_for_python(feature.name, py_file)
         if pop_annotations:
             pop = pop_annotations[0]
+            self._ensure_port_graph()
+            if self._recursive_bootleg(pop.c_function):
+                return GapEntry(py_file, feature, "REAL_GAP", c_location=pop.c_file,
+                                c_function=pop.c_function, pop_annotation=pop,
+                                stub_reason="C function is a recursive bootleg (delegates to / is a no-op stub)",
+                                severity="HIGH", da_flags=["DA-2:bootleg-body"])
             return GapEntry(py_file, feature, "PORTED", c_location=pop.c_file,
                             c_function=pop.c_function, pop_annotation=pop,
                             severity="LOW", notes="Explicit PoP annotation")

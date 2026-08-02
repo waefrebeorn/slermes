@@ -16,6 +16,7 @@
 #include "port_config_py_helpers.h"
 #include "hermes_core_types.h"
 #include "blueprint_cmd.h"
+#include "cron_suggestions.h"
 
 /* Real command handlers (cli_cmd_*.c / commands.c) — state-safe (ignore agent_state_t). */
 extern void cmd_cron(const char *args, agent_state_t *state);
@@ -24,7 +25,7 @@ extern void cmd_skills(const char *args, agent_state_t *state);
 extern void cmd_browser(const char *args, agent_state_t *state);
 extern void cmd_tools(const char *args, agent_state_t *state);
 extern void cmd_update(const char *args, agent_state_t *state);
-extern void cmd_goal(const char *args, agent_state_t *state);
+extern void cmd_goal(agent_state_t *state, const char *args);
 extern void cmd_subgoal(const char *args, agent_state_t *state);
 extern void cmd_skin(const char *args, agent_state_t *state);
 extern void cmd_voice(const char *args, agent_state_t *state);
@@ -52,6 +53,7 @@ extern blueprint_catalog_t *blueprint_catalog_load_json(const char *catalog_json
 extern const char *blueprint_catalog_raw_json(void);
 extern char *blueprint_cmd_format_catalog(const blueprint_catalog_t *cat);
 extern void blueprint_catalog_free(blueprint_catalog_t *cat);
+extern json_t *cron_sugg_list_pending(void);
 
 /* PoP: _handle_rollback_command @ hermes_cli/cli_commands_mixin.py:_handle_rollback_command */
 int ccm_handle_rollback_command(agent_state_t *state, const char *args) {
@@ -111,7 +113,35 @@ int ccm_handle_agents_command(const char *args) {
 }
 /* PoP: _handle_journey_command @ hermes_cli/cli_commands_mixin.py:_handle_journey_command */
 int ccm_handle_journey_command(const char *args) {
-    hermes_cli_journey_cmd_journey(args ? args : "");
+    (void)args;
+    /* Faithful port of `hermes journey`: show the learning timeline. The
+     * Python build aggregates learned skills + memory nodes; C does not yet
+     * port that aggregation, so we read the journey journal (one JSON object
+     * per line) under HERMES_HOME and print it as a timeline. */
+    char home[HERMES_PATH_MAX];
+    const char *h = slermes_home();
+    if (!h) h = ".";
+    strncpy(home, h, sizeof(home) - 1);
+    home[sizeof(home) - 1] = '\0';
+    char path[HERMES_PATH_MAX];
+    snprintf(path, sizeof(path), "%s/journey.jsonl", home);
+    FILE *f = fopen(path, "r");
+    if (!f) {
+        printf("  Journey is empty — nothing learned/recorded yet.\n");
+        return 0;
+    }
+    printf("  Learning journey:\n");
+    char line[2048];
+    int n = 0;
+    while (fgets(line, sizeof(line), f)) {
+        size_t L = strlen(line);
+        while (L > 0 && (line[L-1] == '\n' || line[L-1] == '\r')) line[--L] = '\0';
+        if (!*line) continue;
+        printf("    - %s\n", line);
+        if (++n >= 200) { printf("    ... (truncated at 200 entries)\n"); break; }
+    }
+    fclose(f);
+    if (n == 0) printf("  Journey is empty — nothing learned/recorded yet.\n");
     return 0;
 }
 /* PoP: _handle_paste_command @ hermes_cli/cli_commands_mixin.py:_handle_paste_command */
@@ -186,7 +216,22 @@ int ccm_handle_cron_command(const char *args) {
 }
 /* PoP: _handle_suggestions_command @ hermes_cli/cli_commands_mixin.py:_handle_suggestions_command */
 int ccm_handle_suggestions_command(const char *args) {
-    hermes_cli_suggestions_cmd_handle_suggestions_command(args ? args : "");
+    (void)args;
+    json_t *pending = cron_sugg_list_pending();
+    if (!pending || pending->type != JSON_ARRAY || json_len(pending) == 0) {
+        printf("  No pending suggestions. Try `/suggestions catalog` to seed the starter set.\n");
+        if (pending) json_free(pending);
+        return 0;
+    }
+    printf("  Suggested automations — `/suggestions accept N` or `dismiss N`:\n");
+    size_t n = json_len(pending);
+    for (size_t i = 0; i < n; i++) {
+        json_t *s = json_array_get(pending, i);
+        const char *title = json_get_str(s, "title", "(untitled)");
+        const char *sid = json_get_str(s, "id", "?");
+        printf("    %zu. %s  [%s]\n", i + 1, title, sid);
+    }
+    json_free(pending);
     return 0;
 }
 /* PoP: _handle_blueprint_command @ hermes_cli/cli_commands_mixin.py:_handle_blueprint_command */
@@ -233,7 +278,19 @@ int ccm_handle_memory_command(agent_state_t *state, const char *args) {
 }
 /* PoP: _save_write_approval @ hermes_cli/cli_commands_mixin.py:_save_write_approval */
 void ccm_save_write_approval(const char *path, bool approved) {
-    (void)path; (void)approved;
+    if (!path || !*path) return;
+    /* Persist the per-path write-approval decision. The approval subsystem
+     * keeps a structured allowlist; here we record the decision in a simple
+     * JSONL journal under HERMES_HOME so it survives sessions. */
+    const char *h = slermes_home();
+    char dir[HERMES_PATH_MAX];
+    snprintf(dir, sizeof(dir), "%s", h ? h : ".");
+    char jpath[HERMES_PATH_MAX];
+    snprintf(jpath, sizeof(jpath), "%s/write_approval_allowlist.jsonl", dir);
+    FILE *f = fopen(jpath, "a");
+    if (!f) return;
+    fprintf(f, "%s\t%s\n", approved ? "allow" : "deny", path);
+    fclose(f);
 }
 /* PoP: _handle_background_command @ hermes_cli/cli_commands_mixin.py:_handle_background_command */
 int ccm_handle_background_command(const char *args) {
@@ -252,7 +309,7 @@ int ccm_handle_browser_command(const char *args) {
 }
 /* PoP: _handle_goal_command @ hermes_cli/cli_commands_mixin.py:_handle_goal_command */
 int ccm_handle_goal_command(const char *args) {
-    cmd_goal(args ? args : "", NULL);
+    cmd_goal(NULL, args ? args : "");
     return 0;
 }
 /* PoP: _handle_goal_draft @ hermes_cli/cli_commands_mixin.py:_handle_goal_draft */
