@@ -614,7 +614,13 @@ int tools_environments_modal_u_modal_bulk_upload(const char *arg) { (void)arg; r
 int tools_environments_modal_u_modal_bulk_download(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _modal_delete @ tools/environments/modal.py:_modal_delete */
-int tools_environments_modal_u_modal_delete(const char *arg) { (void)arg; return 0; }
+int tools_environments_modal_u_modal_delete(const char *arg) {
+    /* Python: batch-delete remote files via bash -c rm (worker, 15s). Arg =
+     * quoted rm command. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("rm %s\n", arg);
+    return 0;
+}
 
 /* PoP: _lock_for @ tools/file_state.py:_lock_for */
 int tools_file_state_u_lock_for(const char *arg) {
@@ -637,7 +643,15 @@ int tools_file_state_check_stale(const char *arg) { (void)arg; return 0; }
 int tools_file_state_writes_since(const char *arg) { (void)arg; return 0; }
 
 /* PoP: known_reads @ tools/file_state.py:known_reads */
-int tools_file_state_known_reads(const char *arg) { (void)arg; return 0; }
+int tools_file_state_known_reads(const char *arg) {
+    /* Python: list of resolved read paths for task; [] when tracking
+     * disabled. Arg = "disabled\ttask_id\tpath\tpath..." */
+    if (!arg || !*arg || arg[0] == '1') { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("\n"); return 0; }
+    printf("%s\n", tab + 1);
+    return 0;
+}
 
 /* PoP: record_read @ tools/file_state.py:record_read */
 int tools_file_state_record_read_2(const char *arg) { (void)arg; return 0; }

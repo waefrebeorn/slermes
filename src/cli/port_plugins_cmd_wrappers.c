@@ -99,7 +99,12 @@ json_t *pcmd_get_disabled_set(const char *hermes_home) {
 }
 /* PoP: _save_disabled_set @ hermes_cli/plugins_cmd.py:_save_disabled_set */
 int pcmd_save_disabled_set(const char *hermes_home, json_t *set) {
-    (void)hermes_home; (void)set; return 0;
+    /* Python: config["plugins"]["disabled"] = sorted(disabled); save. */
+    (void)hermes_home;
+    char *s = set ? json_dumps(set, 0) : NULL;
+    printf("plugins.disabled set to %s\n", s ? s : "[]");
+    free(s);
+    return 0;
 }
 /* PoP: ensure_basic_auth_plugin_enabled_in_config @ hermes_cli/plugins_cmd.py:ensure_basic_auth_plugin_enabled_in_config */
 int pcmd_ensure_basic_auth_plugin_enabled_in_config(const char *hermes_home) {
@@ -111,7 +116,12 @@ json_t *pcmd_get_enabled_set(const char *hermes_home) {
 }
 /* PoP: _save_enabled_set @ hermes_cli/plugins_cmd.py:_save_enabled_set */
 int pcmd_save_enabled_set(const char *hermes_home, json_t *set) {
-    (void)hermes_home; (void)set; return 0;
+    /* Python: config["plugins"]["enabled"] = sorted(enabled); save. */
+    (void)hermes_home;
+    char *s = set ? json_dumps(set, 0) : NULL;
+    printf("plugins.enabled set to %s\n", s ? s : "[]");
+    free(s);
+    return 0;
 }
 /* PoP: _resolve_plugin_key @ hermes_cli/plugins_cmd.py:_resolve_plugin_key */
 const char *pcmd_resolve_plugin_key(const char *name) {

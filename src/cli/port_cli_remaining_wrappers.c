@@ -1473,7 +1473,25 @@ int hermes_cli_active_sessions_u_write_entries(const char *arg) {
 }
 
 /* PoP: _process_start_time @ hermes_cli/active_sessions.py:_process_start_time */
-int hermes_cli_active_sessions_u_process_start_time(const char *arg) { (void)arg; return 0; }
+int hermes_cli_active_sessions_u_process_start_time(const char *arg) {
+    /* Python: psutil.Process(pid).create_time() or None. Arg = pid. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    long pid = strtol(arg, NULL, 10);
+    if (pid <= 0) { printf("\n"); return 0; }
+    char cmd[200];
+    snprintf(cmd, sizeof(cmd),
+             "ps -o lstart= -p %ld 2>/dev/null | head -1", pid);
+    FILE *fp = popen(cmd, "r");
+    if (!fp) { printf("\n"); return 0; }
+    char buf[128];
+    size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+    pclose(fp);
+    buf[n] = '\0';
+    if (!n || !buf[0]) { printf("\n"); return 0; }
+    printf("%s", buf);
+    if (buf[n-1] != '\n') printf("\n");
+    return 0;
+}
 
 /* PoP: _optional_float @ hermes_cli/active_sessions.py:_optional_float */
 int hermes_cli_active_sessions_u_optional_float(const char *arg) {
@@ -1917,7 +1935,28 @@ int hermes_cli_dump_u_dotenv_key_names(const char *arg) { (void)arg; return 0; }
 int hermes_cli_dump_u_get_git_commit(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _count_skills @ hermes_cli/dump.py:_count_skills */
-int hermes_cli_dump_u_count_skills(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dump_u_count_skills(const char *arg) {
+    /* Python: count SKILL.md under <home>/skills (excluding excluded paths).
+     * Arg = "skills_dir\texcluded\texcluded..." */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    size_t dlen = tab ? (size_t)(tab - arg) : strlen(arg);
+    char dir[1024];
+    if (dlen >= sizeof(dir)) dlen = sizeof(dir) - 1;
+    memcpy(dir, arg, dlen); dir[dlen] = '\0';
+    if (dlen == 0) { printf("0\n"); return 0; }
+    char cmd[1300];
+    snprintf(cmd, sizeof(cmd), "find '%s' -name SKILL.md 2>/dev/null | wc -l", dir);
+    FILE *fp = popen(cmd, "r");
+    if (!fp) { printf("0\n"); return 0; }
+    char buf[64];
+    size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+    pclose(fp);
+    buf[n] = '\0';
+    long count = strtol(buf, NULL, 10);
+    printf("%ld\n", count);
+    return 0;
+}
 
 /* PoP: _count_mcp_servers @ hermes_cli/dump.py:_count_mcp_servers */
 int hermes_cli_dump_u_count_mcp_servers(const char *arg) {
@@ -2763,7 +2802,27 @@ int hermes_cli_dashboard_auth_toke_token_auth_middleware(const char *arg) { (voi
 int hermes_cli_fallback_cmd_u_read_chain(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _write_chain @ hermes_cli/fallback_cmd.py:_write_chain */
-int hermes_cli_fallback_cmd_u_write_chain(const char *arg) { (void)arg; return 0; }
+int hermes_cli_fallback_cmd_u_write_chain(const char *arg) {
+    /* Python: config["fallback_providers"] = chain; drop fallback_model.
+     * Arg = "chain_json\tconfig_json". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *chain = tab ? arg : arg;
+    const char *cfg = tab ? tab + 1 : "";
+    json_t *config = json_parse(cfg, NULL);
+    if (!config || !json_is_object(config)) {
+        if (config) json_free(config);
+        config = json_object();
+    }
+    json_t *ch = json_parse(chain, NULL);
+    if (ch) { json_set(config, "fallback_providers", ch); }
+    json_obj_del(config, "fallback_model");
+    char *s = json_dumps(config, 0);
+    printf("%s\n", s ? s : "{}");
+    free(s);
+    json_free(config);
+    return 0;
+}
 
 /* PoP: _snapshot_auth_active_provider @ hermes_cli/fallback_cmd.py:_snapshot_auth_active_provider */
 int hermes_cli_fallback_cmd_u_snapshot_auth_active_provider(const char *arg) {
@@ -2808,7 +2867,25 @@ int hermes_cli_managed_scope_u_cached_read(const char *arg) { (void)arg; return 
 int hermes_cli_managed_scope_load_managed_config(const char *arg) { (void)arg; return 0; }
 
 /* PoP: load_managed_env @ hermes_cli/managed_scope.py:load_managed_env */
-int hermes_cli_managed_scope_load_managed_env(const char *arg) { (void)arg; return 0; }
+int hermes_cli_managed_scope_load_managed_env(const char *arg) {
+    /* Python: parse managed .env KEY=VALUE; {} when absent. Arg = .env
+     * contents. */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    printf("{\n");
+    const char *p = arg;
+    while (*p) {
+        const char *nl = strchr(p, '\n');
+        size_t len = nl ? (size_t)(nl - p) : strlen(p);
+        if (len && p[0] != '#') {
+            const char *eq = memchr(p, '=', len);
+            if (eq) printf("  %.*s: %.*s\n", (int)(eq - p), p,
+                           (int)(len - (size_t)(eq - p) - 1), eq + 1);
+        }
+        p = nl ? nl + 1 : p + len;
+    }
+    printf("}\n");
+    return 0;
+}
 
 /* PoP: apply_managed_overlay @ hermes_cli/managed_scope.py:apply_managed_overlay */
 int hermes_cli_managed_scope_apply_managed_overlay(const char *arg) { (void)arg; return 0; }

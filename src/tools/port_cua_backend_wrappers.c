@@ -278,7 +278,12 @@ int cua_u_signal_shutdown_locked(const char *arg) { (void)arg; return 0; }
 int cua_u_call_tool_async(const char *arg) { (void)arg; return 0; }
 
 /* PoP: capabilities_discovered @ tools/computer_use/cua_backend.py:capabilities_discovered */
-int cua_capabilities_discovered(const char *arg) { (void)arg; return 0; }
+int cua_capabilities_discovered(const char *arg) {
+    /* Python: bool(self._capabilities). Arg = "0" or "1". */
+    if (arg && arg[0] == '1') { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: capability_version @ tools/computer_use/cua_backend.py:capability_version */
 int cua_capability_version(void) {

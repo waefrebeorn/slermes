@@ -473,7 +473,40 @@ int gateway_status_phrases_u_merge_phrase_file(const char *arg) {
 int gateway_status_phrases_u_relative_path_under(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _iter_phrase_files @ gateway/status_phrases.py:_iter_phrase_files */
-int gateway_status_phrases_u_iter_phrase_files(const char *arg) { (void)arg; return 0; }
+int gateway_status_phrases_u_iter_phrase_files(const char *arg) {
+    /* Python: [path] if file yaml/yml; sorted dir children; else []. Arg =
+     * path (or path + "\tDIR" hint). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    size_t plen = tab ? (size_t)(tab - arg) : strlen(arg);
+    char path[1024];
+    if (plen >= sizeof(path)) plen = sizeof(path) - 1;
+    memcpy(path, arg, plen); path[plen] = '\0';
+    if (tab) {
+        char cmd[1200];
+        snprintf(cmd, sizeof(cmd),
+                 "for f in '%s'/*.yaml '%s'/*.yml; do [ -f \"$f\" ] && echo \"$f\"; done 2>/dev/null | sort",
+                 path, path);
+        FILE *fp = popen(cmd, "r");
+        if (!fp) { printf("\n"); return 0; }
+        char buf[4096];
+        size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+        pclose(fp);
+        buf[n] = '\0';
+        printf("%s", buf);
+        return 0;
+    }
+    struct stat st;
+    if (stat(path, &st) == 0 && S_ISREG(st.st_mode)) {
+        size_t n = strlen(path);
+        if (n >= 4 && (strcmp(path + n - 4, ".yaml") == 0 || strcmp(path + n - 4, ".yml") == 0)) {
+            printf("%s\n", path);
+            return 0;
+        }
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _merge_phrase_paths @ gateway/status_phrases.py:_merge_phrase_paths */
 int gateway_status_phrases_u_merge_phrase_paths(const char *arg) {

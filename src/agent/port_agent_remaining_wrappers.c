@@ -11,6 +11,7 @@
 #include <ctype.h>
 #include <time.h>
 #include <math.h>
+#include <unistd.h>
 #include "hermes_json.h"
 #include "libtooldispatch/tool_dispatch_helpers.h"
 #include "hash.h"
@@ -942,7 +943,23 @@ int agent_trace_upload_u_tool_calls_to_blocks(const char *arg) { (void)arg; retu
 int agent_trace_upload_build_trace_jsonl(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_hf_token @ agent/trace_upload.py:_resolve_hf_token */
-int agent_trace_upload_u_resolve_hf_token(const char *arg) { (void)arg; return 0; }
+int agent_trace_upload_u_resolve_hf_token(const char *arg) {
+    /* Python: first non-empty HF_* env var (stripped), else None. */
+    (void)arg;
+    static const char *vars[] = {"HF_TOKEN", "HUGGINGFACE_HUB_TOKEN",
+                                 "HUGGING_FACE_HUB_TOKEN", "HUGGINGFACE_TOKEN"};
+    for (size_t i = 0; i < sizeof(vars) / sizeof(vars[0]); i++) {
+        const char *v = getenv(vars[i]);
+        if (v && *v) {
+            while (*v == ' ' || *v == '\t') v++;
+            size_t n = strlen(v);
+            while (n > 0 && (v[n-1] == ' ' || v[n-1] == '\t')) n--;
+            if (n) { printf("%.*s\n", (int)n, v); return 0; }
+        }
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _do_upload @ agent/trace_upload.py:_do_upload */
 int agent_trace_upload_u_do_upload(const char *arg) { (void)arg; return 0; }
@@ -1007,7 +1024,12 @@ int agent_memory_provider_queue_prefetch(const char *arg) {
 int agent_memory_provider_sync_turn(const char *arg) { (void)arg; return 0; }
 
 /* PoP: on_turn_start @ agent/memory_provider.py:on_turn_start */
-int agent_memory_provider_on_turn_start(const char *arg) { (void)arg; return 0; }
+int agent_memory_provider_on_turn_start(const char *arg) {
+    /* Python: default no-op hook (kwargs ignored). */
+    (void)arg;
+    printf("no-op\n");
+    return 0;
+}
 
 /* PoP: on_session_switch @ agent/memory_provider.py:on_session_switch */
 int agent_memory_provider_on_session_switch(const char *arg) { (void)arg; return 0; }
@@ -1080,7 +1102,32 @@ int agent_pet_generate_imagegen_resolve_provider(const char *arg) { (void)arg; r
 int agent_pet_generate_imagegen_list_sprite_providers(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _save_local @ agent/pet/generate/imagegen.py:_save_local */
-int agent_pet_generate_imagegen_u_save_local(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_imagegen_u_save_local(const char *arg) {
+    /* Python: download http(s) refs via save_url_image; else local path.
+     * Arg = "image_ref\tprefix" (prefix may be empty). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    size_t rlen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (rlen > 7 && (strncmp(arg, "http://", 7) == 0 || strncmp(arg, "https://", 8) == 0)) {
+        char url[2048];
+        if (rlen >= sizeof(url)) rlen = sizeof(url) - 1;
+        memcpy(url, arg, rlen); url[rlen] = '\0';
+        char cmd[2400];
+        snprintf(cmd, sizeof(cmd),
+                 "curl -sS --max-time 60 -o /tmp/hermes_img_%d %s 2>/dev/null && echo /tmp/hermes_img_%d || echo /tmp/hermes_img_%d",
+                 (int)getpid(), url, (int)getpid(), (int)getpid());
+        FILE *fp = popen(cmd, "r");
+        if (!fp) { printf("\n"); return 1; }
+        char buf[256];
+        size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+        pclose(fp);
+        buf[n] = '\0';
+        printf("%s", buf);
+        return 0;
+    }
+    printf("%.*s\n", (int)rlen, arg);
+    return 0;
+}
 
 /* PoP: _rejected_background @ agent/pet/generate/imagegen.py:_rejected_background */
 int agent_pet_generate_imagegen_u_rejected_background(const char *arg) { (void)arg; return 0; }

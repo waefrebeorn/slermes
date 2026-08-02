@@ -167,7 +167,30 @@ int envb_get_temp_dir(const char *arg) { (void)arg; return 0; }
 int envb_init_session(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _quote_cwd_for_cd @ tools/environments/base.py:_quote_cwd_for_cd */
-int envb_u_quote_cwd_for_cd(const char *arg) { (void)arg; return 0; }
+int envb_u_quote_cwd_for_cd(const char *arg) {
+    /* Python: "~" -> "~"; "~/" -> "$HOME"; "~/x" -> "$HOME/<quoted x>";
+     * else shlex.quote. Arg = cwd. */
+    if (!arg || !*arg) { printf("''\n"); return 0; }
+    if (strcmp(arg, "~") == 0) { printf("~\n"); return 0; }
+    if (strcmp(arg, "~/") == 0) { printf("$HOME\n"); return 0; }
+    if (strncmp(arg, "~/", 2) == 0) {
+        const char *rest = arg + 2;
+        int needs_quote = 0;
+        for (const char *p = rest; *p; p++) {
+            if (!(isalnum((unsigned char)*p) || *p == '_' || *p == '-' || *p == '.' || *p == '/')) { needs_quote = 1; break; }
+        }
+        if (needs_quote) printf("$HOME/'%s'\n", rest);
+        else printf("$HOME/%s\n", rest);
+        return 0;
+    }
+    int needs_quote = 0;
+    for (const char *p = arg; *p; p++) {
+        if (!(isalnum((unsigned char)*p) || *p == '_' || *p == '-' || *p == '.' || *p == '/')) { needs_quote = 1; break; }
+    }
+    if (needs_quote) printf("'%s'\n", arg);
+    else printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _quote_shell_path @ tools/environments/base.py:_quote_shell_path */
 int envb_u_quote_shell_path(const char *arg) {

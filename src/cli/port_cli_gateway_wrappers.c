@@ -129,7 +129,32 @@ int cgw_u_read_gateway_runtime_status(const char *arg) {
 }
 
 /* PoP: _gateway_runtime_status_for_pid @ hermes_cli/gateway.py:_gateway_runtime_status_for_pid */
-int cgw_u_gateway_runtime_status_for_pid(const char *arg) { (void)arg; return 0; }
+int cgw_u_gateway_runtime_status_for_pid(const char *arg) {
+    /* Python: runtime status whose pid matches, else None. Arg =
+     * "pid\tstatus_json" (status empty = none). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab || !tab[1]) { printf("\n"); return 0; }
+    long want = strtol(arg, NULL, 10);
+    json_t *st = json_parse(tab + 1, NULL);
+    if (!st || !json_is_object(st)) {
+        if (st) json_free(st);
+        printf("\n");
+        return 0;
+    }
+    const char *pid_s = json_get_str(st, "pid", "");
+    long got = pid_s ? strtol(pid_s, NULL, 10) : -1;
+    if (want > 0 && got == want) {
+        char *s = json_dumps(st, 0);
+        printf("%s\n", s ? s : "");
+        free(s);
+        json_free(st);
+        return 0;
+    }
+    printf("\n");
+    json_free(st);
+    return 0;
+}
 
 /* PoP: _wait_for_systemd_service_restart @ hermes_cli/gateway.py:_wait_for_systemd_service_restart */
 int cgw_u_wait_for_systemd_service_restart(const char *arg) { (void)arg; return 0; }
@@ -537,7 +562,26 @@ int cgw_u_systemd_watchdog_service_fields(const char *arg) {
 int cgw_generate_systemd_unit(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _normalize_service_definition @ hermes_cli/gateway.py:_normalize_service_definition */
-int cgw_u_normalize_service_definition(const char *arg) { (void)arg; return 0; }
+int cgw_u_normalize_service_definition(const char *arg) {
+    /* Python: strip() + rstrip each line + join. Arg = unit text. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    while (*arg == '\n' || *arg == '\r' || *arg == ' ' || *arg == '\t') arg++;
+    size_t n = strlen(arg);
+    while (n > 0 && (arg[n-1] == '\n' || arg[n-1] == '\r' || arg[n-1] == ' ' || arg[n-1] == '\t')) n--;
+    const char *p = arg;
+    int first = 1;
+    while (p < arg + n) {
+        const char *nl = memchr(p, '\n', (size_t)(arg + n - p));
+        size_t len = nl ? (size_t)(nl - p) : (size_t)(arg + n - p);
+        while (len > 0 && (p[len-1] == ' ' || p[len-1] == '\t' || p[len-1] == '\r')) len--;
+        if (!first) printf("\n");
+        printf("%.*s", (int)len, p);
+        first = 0;
+        p = nl ? nl + 1 : arg + n;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _strip_optional_systemd_directives @ hermes_cli/gateway.py:_strip_optional_systemd_directives */
 int cgw_u_strip_optional_systemd_directives(const char *arg) { (void)arg; return 0; }

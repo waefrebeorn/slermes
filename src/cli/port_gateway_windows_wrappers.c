@@ -139,7 +139,19 @@ int gw_get_startup_entry_path(const char *arg) {
 }
 
 /* PoP: _legacy_startup_entry_path @ hermes_cli/gateway_windows.py:_legacy_startup_entry_path */
-int gw_u_legacy_startup_entry_path(const char *arg) { (void)arg; return 0; }
+int gw_u_legacy_startup_entry_path(const char *arg) {
+    /* Python: <startup_dir>/<sanitized task name>.cmd (Windows-only). Arg =
+     * "startup_dir\ttask_name". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("\n"); return 0; }
+    size_t dlen = (size_t)(tab - arg);
+    char dir[1024];
+    if (dlen >= sizeof(dir)) dlen = sizeof(dir) - 1;
+    memcpy(dir, arg, dlen); dir[dlen] = '\0';
+    printf("%s/%s.cmd\n", dir, tab + 1);
+    return 0;
+}
 
 /* PoP: _stable_gateway_working_dir @ hermes_cli/gateway_windows.py:_stable_gateway_working_dir */
 int gw_u_stable_gateway_working_dir(const char *arg) { (void)arg; return 0; }

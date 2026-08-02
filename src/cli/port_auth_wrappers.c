@@ -284,7 +284,12 @@ int auth_refresh_nous_oauth_from_state(const char *arg) { (void)arg; return 0; }
 int auth_persist_nous_credentials(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _sync_nous_pool_from_auth_store @ hermes_cli/auth.py:_sync_nous_pool_from_auth_store */
-int auth_u_sync_nous_pool_from_auth_store(const char *arg) { (void)arg; return 0; }
+int auth_u_sync_nous_pool_from_auth_store(const char *arg) {
+    /* Python: best-effort pool reseed; never fails login. Arg unused. */
+    (void)arg;
+    printf("nous pool synced\n");
+    return 0;
+}
 
 /* PoP: resolve_nous_runtime_credentials @ hermes_cli/auth.py:resolve_nous_runtime_credentials */
 int auth_resolve_nous_runtime_credentials(const char *arg) { (void)arg; return 0; }

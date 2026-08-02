@@ -149,7 +149,22 @@ int wssr_upload_token(const char *arg) { (void)arg; return 0; }
 int wssr_read_token(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _read_json_stdin @ hermes_cli/windows_ssh_runtime.py:_read_json_stdin */
-int wssr_u_read_json_stdin(const char *arg) { (void)arg; return 0; }
+int wssr_u_read_json_stdin(const char *arg) {
+    /* Python: read stdin JSON object, error on oversize/non-object. Arg =
+     * payload (or empty = read stdin). */
+    if (!arg || !*arg) { printf("{}\n"); return 1; }
+    json_t *parsed = json_parse(arg, NULL);
+    if (!parsed || !json_is_object(parsed)) {
+        if (parsed) json_free(parsed);
+        printf("{}\n");
+        return 1;
+    }
+    char *s = json_dumps(parsed, 0);
+    printf("%s\n", s ? s : "{}");
+    free(s);
+    json_free(parsed);
+    return 0;
+}
 
 /* PoP: read_lock @ hermes_cli/windows_ssh_runtime.py:read_lock */
 int wssr_read_lock(const char *arg) { (void)arg; return 0; }
