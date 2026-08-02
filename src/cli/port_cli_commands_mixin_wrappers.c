@@ -16,6 +16,12 @@
 #include "port_config_py_helpers.h"
 #include "hermes_core_types.h"
 
+/* Real command handlers (cli_cmd_*.c) — state-safe (ignore agent_state_t). */
+extern void cmd_cron(const char *args, agent_state_t *state);
+extern void cmd_kanban(const char *args, agent_state_t *state);
+extern void cmd_skills(const char *args, agent_state_t *state);
+extern void cmd_browser(const char *args, agent_state_t *state);
+
 /* PoP: _handle_rollback_command @ hermes_cli/cli_commands_mixin.py:_handle_rollback_command */
 int ccm_handle_rollback_command(const char *args) {
     (void)args; return 0;
@@ -129,7 +135,8 @@ int ccm_handle_hatch_command(const char *args) {
 }
 /* PoP: _handle_cron_command @ hermes_cli/cli_commands_mixin.py:_handle_cron_command */
 int ccm_handle_cron_command(const char *args) {
-    (void)args; return 0;
+    cmd_cron(args ? args : "", NULL);
+    return 0;
 }
 /* PoP: _handle_suggestions_command @ hermes_cli/cli_commands_mixin.py:_handle_suggestions_command */
 int ccm_handle_suggestions_command(const char *args) {
@@ -145,11 +152,13 @@ int ccm_handle_curator_command(const char *args) {
 }
 /* PoP: _handle_kanban_command @ hermes_cli/cli_commands_mixin.py:_handle_kanban_command */
 int ccm_handle_kanban_command(const char *args) {
-    (void)args; return 0;
+    cmd_kanban(args ? args : "", NULL);
+    return 0;
 }
 /* PoP: _handle_skills_command @ hermes_cli/cli_commands_mixin.py:_handle_skills_command */
 int ccm_handle_skills_command(const char *args) {
-    (void)args; return 0;
+    cmd_skills(args ? args : "", NULL);
+    return 0;
 }
 /* PoP: _handle_learn_command @ hermes_cli/cli_commands_mixin.py:_handle_learn_command */
 int ccm_handle_learn_command(const char *args) {
@@ -173,7 +182,8 @@ int ccm_handle_bundles_command(const char *args) {
 }
 /* PoP: _handle_browser_command @ hermes_cli/cli_commands_mixin.py:_handle_browser_command */
 int ccm_handle_browser_command(const char *args) {
-    (void)args; return 0;
+    cmd_browser(args ? args : "", NULL);
+    return 0;
 }
 /* PoP: _handle_goal_command @ hermes_cli/cli_commands_mixin.py:_handle_goal_command */
 int ccm_handle_goal_command(const char *args) {
