@@ -891,7 +891,16 @@ int agent_agent_runtime_helpers_note_turn_persisted(const char *arg) { (void)arg
 int agent_agent_runtime_helpers_sync_credential_pool_entry_id(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _get_hermes_oauth_file @ agent/anthropic_adapter.py:_get_hermes_oauth_file */
-int agent_anthropic_adapter_u_get_hermes_oauth_file(const char *arg) { (void)arg; return 0; }
+int agent_anthropic_adapter_u_get_hermes_oauth_file(const char *arg) {
+    /* Python: get_hermes_home() / ".anthropic_oauth.json". */
+    (void)arg;
+    const char *hh = getenv("HERMES_HOME");
+    char base[1024];
+    if (hh && *hh) snprintf(base, sizeof(base), "%s", hh);
+    else snprintf(base, sizeof(base), "%s/.hermes", getenv("HOME") ? getenv("HOME") : ".");
+    printf("%s/.anthropic_oauth.json\n", base);
+    return 0;
+}
 
 /* PoP: _safe_text @ agent/anthropic_adapter.py:_safe_text */
 int agent_anthropic_adapter_u_safe_text(const char *arg) { (void)arg; return 0; }

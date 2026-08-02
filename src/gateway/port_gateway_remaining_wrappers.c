@@ -166,7 +166,15 @@ int gateway_delivery_ledger_mark_delivered(const char *arg) {
 }
 
 /* PoP: mark_failed @ gateway/delivery_ledger.py:mark_failed */
-int gateway_delivery_ledger_mark_failed(const char *arg) { (void)arg; return 0; }
+int gateway_delivery_ledger_mark_failed(const char *arg) {
+    /* Python: _update_state(obligation_id, "failed", error=error).
+     * Arg = "obligation_id\terror". */
+    if (!arg || !*arg) return 0;
+    const char *tab = strchr(arg, '\t');
+    if (tab) printf("ledger %.*s -> failed (%s)\n", (int)(tab - arg), arg, tab + 1);
+    else printf("ledger %s -> failed\n", arg);
+    return 0;
+}
 
 /* PoP: _update_state @ gateway/delivery_ledger.py:_update_state */
 int gateway_delivery_ledger_u_update_state(const char *arg) { (void)arg; return 0; }

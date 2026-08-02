@@ -15,10 +15,22 @@
 int nsub_u_uses_gateway(const char *arg) { (void)arg; return 0; }
 
 /* PoP: image_gen @ hermes_cli/nous_subscription.py:image_gen */
-int nsub_image_gen(const char *arg) { (void)arg; return 0; }
+int nsub_image_gen(const char *arg) {
+    /* Python property: features["image_gen"]. */
+    static char g_v[64] = "";
+    if (arg && *arg) snprintf(g_v, sizeof(g_v), "%s", arg);
+    printf("%s\n", g_v);
+    return 0;
+}
 
 /* PoP: video_gen @ hermes_cli/nous_subscription.py:video_gen */
-int nsub_video_gen(const char *arg) { (void)arg; return 0; }
+int nsub_video_gen(const char *arg) {
+    /* Python property: features["video_gen"]. */
+    static char g_v[64] = "";
+    if (arg && *arg) snprintf(g_v, sizeof(g_v), "%s", arg);
+    printf("%s\n", g_v);
+    return 0;
+}
 
 /* PoP: _toolset_enabled @ hermes_cli/nous_subscription.py:_toolset_enabled */
 int nsub_u_toolset_enabled(const char *arg) { (void)arg; return 0; }

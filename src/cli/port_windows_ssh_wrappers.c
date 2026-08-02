@@ -69,7 +69,12 @@ int wssr_u_log_path(const char *arg) {
 int wssr_u_current_sid(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _system_sid @ hermes_cli/windows_ssh_runtime.py:_system_sid */
-int wssr_u_system_sid(const char *arg) { (void)arg; return 0; }
+int wssr_u_system_sid(const char *arg) {
+    /* Python: the SYSTEM SID "S-1-5-18" via the win32 bridge. */
+    (void)arg;
+    printf("S-1-5-18\n");
+    return 0;
+}
 
 /* PoP: _security_attributes @ hermes_cli/windows_ssh_runtime.py:_security_attributes */
 int wssr_u_security_attributes(const char *arg) { (void)arg; return 0; }
