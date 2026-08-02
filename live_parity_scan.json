@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:06:48Z",
+  "generated_at": "2026-08-02T21:09:07Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -110732,10 +110732,10 @@
     },
     "gateway/platforms/qqbot/chunked_upload.py": {
       "total": 17,
-      "ported": 11,
+      "ported": 17,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 6,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 17,
@@ -110751,17 +110751,24 @@
             "decorators": [],
             "line_number": 80
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_chunked_upload_remaining.c",
+          "c_function": "qcu_init",
+          "pop_annotation": {
+            "c_function": "qcu_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_qqbot_chunked_upload_remaining.c",
+            "python_file": "gateway/platforms/qqbot/chunked_upload.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/qqbot/chunked_upload.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/chunked_upload.py",
@@ -110804,17 +110811,24 @@
             "decorators": [],
             "line_number": 95
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_chunked_upload_remaining.c",
+          "c_function": "qcu_init",
+          "pop_annotation": {
+            "c_function": "qcu_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_qqbot_chunked_upload_remaining.c",
+            "python_file": "gateway/platforms/qqbot/chunked_upload.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/qqbot/chunked_upload.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/chunked_upload.py",
@@ -110917,17 +110931,24 @@
             "decorators": [],
             "line_number": 211
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_chunked_upload_remaining.c",
+          "c_function": "qcu_init",
+          "pop_annotation": {
+            "c_function": "qcu_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_qqbot_chunked_upload_remaining.c",
+            "python_file": "gateway/platforms/qqbot/chunked_upload.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/qqbot/chunked_upload.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/chunked_upload.py",
@@ -110939,17 +110960,24 @@
             "decorators": [],
             "line_number": 221
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_chunked_upload_remaining.c",
+          "c_function": "qcu_upload",
+          "pop_annotation": {
+            "c_function": "qcu_upload",
+            "python_functions": [
+              "upload"
+            ],
+            "c_file": "src/gateway/port_qqbot_chunked_upload_remaining.c",
+            "python_file": "gateway/platforms/qqbot/chunked_upload.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: upload @ gateway/platforms/qqbot/chunked_upload.py:upload */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/chunked_upload.py",
@@ -111077,17 +111105,24 @@
             "decorators": [],
             "line_number": 494
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_chunked_upload_remaining.c",
+          "c_function": "qcu_complete",
+          "pop_annotation": {
+            "c_function": "qcu_complete",
+            "python_functions": [
+              "_complete"
+            ],
+            "c_file": "src/gateway/port_qqbot_chunked_upload_remaining.c",
+            "python_file": "gateway/platforms/qqbot/chunked_upload.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _complete @ gateway/platforms/qqbot/chunked_upload.py:_complete */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/chunked_upload.py",
@@ -111099,17 +111134,24 @@
             "decorators": [],
             "line_number": 533
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_chunked_upload_remaining.c",
+          "c_function": "qcu_format_size",
+          "pop_annotation": {
+            "c_function": "qcu_format_size",
+            "python_functions": [
+              "format_size"
+            ],
+            "c_file": "src/gateway/port_qqbot_chunked_upload_remaining.c",
+            "python_file": "gateway/platforms/qqbot/chunked_upload.py",
+            "line": 47,
+            "is_consolidated": false,
+            "full_text": "/* PoP: format_size @ gateway/platforms/qqbot/chunked_upload.py:format_size */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/chunked_upload.py",
@@ -113603,10 +113645,10 @@
     },
     "gateway/platforms/signal_rate_limit.py": {
       "total": 14,
-      "ported": 8,
+      "ported": 14,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 6,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 14,
@@ -113622,16 +113664,24 @@
             "decorators": [],
             "line_number": 53
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_rate_limit_remaining.c",
+          "c_function": "srl_init",
+          "pop_annotation": {
+            "c_function": "srl_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_signal_rate_limit_remaining.c",
+            "python_file": "gateway/platforms/signal_rate_limit.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/signal_rate_limit.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal_rate_limit.py",
@@ -113730,16 +113780,24 @@
             "decorators": [],
             "line_number": 147
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_rate_limit_remaining.c",
+          "c_function": "srl_signal_send_timeout",
+          "pop_annotation": {
+            "c_function": "srl_signal_send_timeout",
+            "python_functions": [
+              "_signal_send_timeout"
+            ],
+            "c_file": "src/gateway/port_signal_rate_limit_remaining.c",
+            "python_file": "gateway/platforms/signal_rate_limit.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _signal_send_timeout @ gateway/platforms/signal_rate_limit.py:_signal_send_timeout */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal_rate_limit.py",
@@ -113751,16 +113809,24 @@
             "decorators": [],
             "line_number": 180
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_rate_limit_remaining.c",
+          "c_function": "srl_init",
+          "pop_annotation": {
+            "c_function": "srl_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_signal_rate_limit_remaining.c",
+            "python_file": "gateway/platforms/signal_rate_limit.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/signal_rate_limit.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal_rate_limit.py",
@@ -113917,16 +113983,24 @@
             "decorators": [],
             "line_number": 325
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_rate_limit_remaining.c",
+          "c_function": "srl_state",
+          "pop_annotation": {
+            "c_function": "srl_state",
+            "python_functions": [
+              "state"
+            ],
+            "c_file": "src/gateway/port_signal_rate_limit_remaining.c",
+            "python_file": "gateway/platforms/signal_rate_limit.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: state @ gateway/platforms/signal_rate_limit.py:state */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal_rate_limit.py",
@@ -113938,16 +114012,24 @@
             "decorators": [],
             "line_number": 351
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_rate_limit_remaining.c",
+          "c_function": "srl_get_scheduler",
+          "pop_annotation": {
+            "c_function": "srl_get_scheduler",
+            "python_functions": [
+              "get_scheduler"
+            ],
+            "c_file": "src/gateway/port_signal_rate_limit_remaining.c",
+            "python_file": "gateway/platforms/signal_rate_limit.py",
+            "line": 42,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_scheduler @ gateway/platforms/signal_rate_limit.py:get_scheduler */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal_rate_limit.py",
@@ -113959,16 +114041,24 @@
             "decorators": [],
             "line_number": 365
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_rate_limit_remaining.c",
+          "c_function": "srl_reset_scheduler",
+          "pop_annotation": {
+            "c_function": "srl_reset_scheduler",
+            "python_functions": [
+              "_reset_scheduler"
+            ],
+            "c_file": "src/gateway/port_signal_rate_limit_remaining.c",
+            "python_file": "gateway/platforms/signal_rate_limit.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _reset_scheduler @ gateway/platforms/signal_rate_limit.py:_reset_scheduler */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
