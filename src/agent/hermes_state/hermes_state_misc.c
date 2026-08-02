@@ -1447,3 +1447,189 @@ void hermes_state_set_compression_ineffective_count(hermes_state_db_t *db, const
     sqlite3_step(st);
     sqlite3_finalize(st);
 }
+
+/* ── gateway routing index ─────────────────────────────────────────────── */
+
+/* PoP: hermes_state_save_gateway_routing_entry @ hermes_state.py:save_gateway_routing_entry */
+bool hermes_state_save_gateway_routing_entry(hermes_state_db_t *db, const char *scope,
+                                             const char *session_key, const char *entry_json) {
+    if (!db || !scope || !session_key) return false;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "INSERT INTO gateway_routing (scope, session_key, entry_json, updated_at) "
+            "VALUES (?1, ?2, ?3, ?4) "
+            "ON CONFLICT(scope, session_key) DO UPDATE SET "
+            "entry_json = excluded.entry_json, updated_at = excluded.updated_at",
+            -1, &st, NULL) != SQLITE_OK) return false;
+    sqlite3_bind_text(st, 1, scope, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(st, 2, session_key, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(st, 3, entry_json ? entry_json : "{}", -1, SQLITE_TRANSIENT);
+    sqlite3_bind_double(st, 4, hermes_state_now_epoch());
+    bool ok = sqlite3_step(st) == SQLITE_DONE;
+    sqlite3_finalize(st);
+    return ok;
+}
+
+/* PoP: hermes_state_replace_gateway_routing_entries @ hermes_state.py:replace_gateway_routing_entries */
+bool hermes_state_replace_gateway_routing_entries(hermes_state_db_t *db, const char *scope,
+                                                  const char *pairs_arg) {
+    /* Atomically replace the routing index for *scope*: keys absent from the
+     * incoming set are removed. Arg = tab-separated "key\tvalue" pairs. */
+    if (!db || !scope) return false;
+    sqlite3_exec(db->db, "BEGIN IMMEDIATE", NULL, NULL, NULL);
+    sqlite3_stmt *del = NULL;
+    bool ok = true;
+    if (sqlite3_prepare_v2(db->db, "DELETE FROM gateway_routing WHERE scope = ?", -1, &del, NULL) == SQLITE_OK) {
+        sqlite3_bind_text(del, 1, scope, -1, SQLITE_TRANSIENT);
+        sqlite3_step(del);
+        sqlite3_finalize(del);
+    } else {
+        ok = false;
+    }
+    if (ok && pairs_arg && *pairs_arg) {
+        char *copy = strdup(pairs_arg);
+        char *save = NULL;
+        for (char *pair = strtok_r(copy, "\t", &save); pair; pair = strtok_r(NULL, "\t", &save)) {
+            char *eq = strchr(pair, '\x01'); /* key\x01value encoding */
+            const char *key = pair;
+            const char *val = eq ? eq + 1 : "";
+            if (eq) *eq = '\0';
+            if (!*key) continue;
+            sqlite3_stmt *ins = NULL;
+            if (sqlite3_prepare_v2(db->db,
+                    "INSERT INTO gateway_routing (scope, session_key, entry_json, updated_at) "
+                    "VALUES (?1, ?2, ?3, ?4)", -1, &ins, NULL) == SQLITE_OK) {
+                sqlite3_bind_text(ins, 1, scope, -1, SQLITE_TRANSIENT);
+                sqlite3_bind_text(ins, 2, key, -1, SQLITE_TRANSIENT);
+                sqlite3_bind_text(ins, 3, val, -1, SQLITE_TRANSIENT);
+                sqlite3_bind_double(ins, 4, hermes_state_now_epoch());
+                if (sqlite3_step(ins) != SQLITE_DONE) ok = false;
+                sqlite3_finalize(ins);
+            } else {
+                ok = false;
+            }
+        }
+        free(copy);
+    }
+    sqlite3_exec(db->db, ok ? "COMMIT" : "ROLLBACK", NULL, NULL, NULL);
+    return ok;
+}
+/* PoP: hermes_state_load_gateway_routing_entries @ hermes_state.py:load_gateway_routing_entries */
+char *hermes_state_load_gateway_routing_entries(hermes_state_db_t *db, const char *scope) {
+    if (!db || !scope) return strdup("{}");
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "SELECT session_key, entry_json FROM gateway_routing WHERE scope = ?", -1, &st, NULL) != SQLITE_OK)
+        return strdup("{}");
+    sqlite3_bind_text(st, 1, scope, -1, SQLITE_TRANSIENT);
+    json_t *o = json_object();
+    while (sqlite3_step(st) == SQLITE_ROW) {
+        const unsigned char *k = sqlite3_column_text(st, 0);
+        const unsigned char *v = sqlite3_column_text(st, 1);
+        json_set(o, (const char *)(k ? k : (const unsigned char *)""),
+                 json_string((const char *)(v ? v : (const unsigned char *)"")));
+    }
+    sqlite3_finalize(st);
+    char *out = json_serialize(o);
+    json_free(o);
+    return out;
+}
+
+/* PoP: hermes_state_delete_gateway_routing_entries @ hermes_state.py:delete_gateway_routing_entries */
+void hermes_state_delete_gateway_routing_entries(hermes_state_db_t *db, const char *scope,
+                                                 const char *session_keys_json) {
+    if (!db || !scope) return;
+    json_t *keys = json_parse(session_keys_json ? session_keys_json : "[]", NULL);
+    if (!keys || keys->type != JSON_ARRAY) { if (keys) json_free(keys); return; }
+    for (size_t i = 0; i < json_len(keys); i++) {
+        json_t *k = json_get(keys, i);
+        if (!k || !json_is_string(k)) continue;
+        sqlite3_stmt *st = NULL;
+        if (sqlite3_prepare_v2(db->db,
+                "DELETE FROM gateway_routing WHERE scope = ? AND session_key = ?", -1, &st, NULL) != SQLITE_OK)
+            continue;
+        sqlite3_bind_text(st, 1, scope, -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(st, 2, json_string_value(k), -1, SQLITE_TRANSIENT);
+        sqlite3_step(st);
+        sqlite3_finalize(st);
+    }
+    json_free(keys);
+}
+
+/* PoP: hermes_state_list_gateway_sessions @ hermes_state.py:list_gateway_sessions */
+char *hermes_state_list_gateway_sessions(hermes_state_db_t *db, const char *platform, bool active_only) {
+    /* Newest row per session_key; platform filters on source; active_only
+     * restricts to non-ended rows. */
+    if (!db) return strdup("[]");
+    char sql[1600];
+    snprintf(sql, sizeof(sql),
+        "SELECT sessions.*, "
+        "COALESCE((SELECT MAX(m.timestamp) FROM messages m "
+        "          WHERE m.session_id = sessions.id), sessions.started_at) AS last_active "
+        "FROM sessions "
+        "WHERE session_key IS NOT NULL %s %s "
+        "AND started_at = (SELECT MAX(s2.started_at) FROM sessions s2 "
+        "                  WHERE s2.session_key = sessions.session_key)",
+        platform && *platform ? "AND LOWER(source) = LOWER(?1)" : "",
+        active_only ? "AND ended_at IS NULL" : "");
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db, sql, -1, &st, NULL) != SQLITE_OK) return strdup("[]");
+    if (platform && *platform) sqlite3_bind_text(st, 1, platform, -1, SQLITE_TRANSIENT);
+    json_t *arr = json_array();
+    while (sqlite3_step(st) == SQLITE_ROW) {
+        json_t *o = json_object();
+        for (int c = 0; c < sqlite3_column_count(st); c++) {
+            const char *col = sqlite3_column_name(st, c);
+            const unsigned char *v = sqlite3_column_text(st, c);
+            json_set(o, col, v ? json_string((const char *)v) : json_null());
+        }
+        json_append(arr, o);
+    }
+    sqlite3_finalize(st);
+    char *out = json_serialize(arr);
+    json_free(arr);
+    return out;
+}
+
+/* PoP: hermes_state_find_session_by_origin @ hermes_state.py:find_session_by_origin */
+char *hermes_state_find_session_by_origin(hermes_state_db_t *db, const char *source,
+                                          const char *chat_id, const char *thread_id,
+                                          const char *user_id) {
+    /* Most recent live session for a platform + chat origin; exact sender
+     * matches preferred when user_id is provided. */
+    if (!db || !source || !chat_id) return NULL;
+    char sql[1600];
+    if (user_id && *user_id) {
+        snprintf(sql, sizeof(sql),
+            "SELECT * FROM sessions WHERE source = ?1 AND chat_id = ?2 %s "
+            "AND ended_at IS NULL AND user_id = ?4 ORDER BY started_at DESC LIMIT 1",
+            thread_id && *thread_id ? "AND thread_id = ?3" : "");
+    } else {
+        snprintf(sql, sizeof(sql),
+            "SELECT * FROM sessions WHERE source = ?1 AND chat_id = ?2 %s "
+            "AND ended_at IS NULL ORDER BY started_at DESC LIMIT 1",
+            thread_id && *thread_id ? "AND thread_id = ?3" : "");
+    }
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db, sql, -1, &st, NULL) != SQLITE_OK) return NULL;
+    sqlite3_bind_text(st, 1, source, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(st, 2, chat_id, -1, SQLITE_TRANSIENT);
+    int idx = 3;
+    if (thread_id && *thread_id) sqlite3_bind_text(st, idx++, thread_id, -1, SQLITE_TRANSIENT);
+    if (user_id && *user_id) sqlite3_bind_text(st, idx, user_id, -1, SQLITE_TRANSIENT);
+    char *out = NULL;
+    if (sqlite3_step(st) == SQLITE_ROW) {
+        json_t *o = json_object();
+        for (int c = 0; c < sqlite3_column_count(st); c++) {
+            const char *col = sqlite3_column_name(st, c);
+            const unsigned char *v = sqlite3_column_text(st, c);
+            json_set(o, col, v ? json_string((const char *)v) : json_null());
+        }
+        out = json_serialize(o);
+        json_free(o);
+    }
+    sqlite3_finalize(st);
+    return out;
+}
+
+
