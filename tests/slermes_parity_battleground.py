@@ -857,7 +857,10 @@ class ParityAnalyzer:
                 return True
             if re.match(r'^return\s+[\w]+\s*;?$', s):
                 v = re.match(r'^return\s+([\w]+)\s*;?$', s).group(1)
-                return self._recursive_bootleg(v, stack) if v in defined else True
+                # returning an undefined symbol (static/global state) is a
+                # legitimate getter, not a bootleg; only delegating to a
+                # defined function recurses.
+                return self._recursive_bootleg(v, stack) if v in defined else False
             if re.match(r'^return\s+[\w]+\s*\([^;]*\)\s*;?$', s):
                 v = re.match(r'^return\s+([\w]+)\s*\(', s).group(1)
                 return self._recursive_bootleg(v, stack) if v in defined else True

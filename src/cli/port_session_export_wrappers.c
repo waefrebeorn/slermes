@@ -400,4 +400,14 @@ int sexp_u_fenced_text(const char *arg) {
 }
 
 /* PoP: _finish_markdown @ hermes_cli/session_export.py:_finish_markdown */
-int sexp_u_finish_markdown(const char *arg) { (void)arg; return 0; }
+int sexp_u_finish_markdown(const char *arg) {
+    /* Python: strip trailing empty lines, join, add one final newline. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    size_t n = strlen(arg);
+    while (n > 0 && (arg[n-1] == '\n' || arg[n-1] == '\r')) n--;
+    while (n >= 1 && arg[n-1] == '\n') n--;
+    /* also drop blank lines at the tail */
+    while (n >= 2 && arg[n-1] == '\n' && (arg[n-2] == '\n' || arg[n-2] == '\r')) n--;
+    printf("%.*s\n", (int)n, arg);
+    return 0;
+}

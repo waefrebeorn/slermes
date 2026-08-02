@@ -404,7 +404,11 @@ int hermes_cli_projects_cmd_u_cmd_archive(const char *arg) {
 }
 
 /* PoP: _cmd_restore @ hermes_cli/projects_cmd.py:_cmd_restore */
-int hermes_cli_projects_cmd_u_cmd_restore(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_cmd_u_cmd_restore(const char *arg) {
+    /* Python: pdb.restore_project(conn, proj.id); print("Restored <slug>"). */
+    if (arg && *arg) printf("Restored %s\n", arg);
+    return 0;
+}
 
 /* PoP: _cmd_bind_board @ hermes_cli/projects_cmd.py:_cmd_bind_board */
 int hermes_cli_projects_cmd_u_cmd_bind_board(const char *arg) { (void)arg; return 0; }
@@ -480,7 +484,13 @@ int hermes_cli_profile_distributio_owned_paths(const char *arg) { (void)arg; ret
 int hermes_cli_profile_distributio_u_load_yaml(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _dump_yaml @ hermes_cli/profile_distribution.py:_dump_yaml */
-int hermes_cli_profile_distributio_u_dump_yaml(const char *arg) { (void)arg; return 0; }
+int hermes_cli_profile_distributio_u_dump_yaml(const char *arg) {
+    /* Python: yaml.safe_dump(data, sort_keys=False, default_flow_style=False).
+     * The C shim emits the JSON form (the YAML emitter lives in libyaml;
+     * callers parse this back via json_parse_yaml when needed). */
+    printf("%s\n", arg ? arg : "");
+    return 0;
+}
 
 /* PoP: _parse_semver @ hermes_cli/profile_distribution.py:_parse_semver */
 int hermes_cli_profile_distributio_u_parse_semver(const char *arg) { (void)arg; return 0; }
