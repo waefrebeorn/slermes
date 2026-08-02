@@ -1,9 +1,9 @@
-# Ranked fix queue — 3223 bootleg functions
+# Ranked fix queue — 3232 bootleg functions
 
-- A  (delegate to real fn): 29
-- Bt (trivial direct-port): 195
-- Bx (direct but needs deps): 1049
-- C  (deep subsystem):        1950
+- A  (delegate to real fn): 30
+- Bt (trivial direct-port): 198
+- Bx (direct but needs deps): 1052
+- C  (deep subsystem):        1952
 
 ## Top of queue (automatable first)
 
@@ -29,6 +29,7 @@
 - [A] tools/interrupt.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
 - [A] cli.py :: status -> agent_error_classifier_u_classify_by_status  (cands: cmd_status)
 - [A] tools/environments/managed_modal.py :: cleanup -> tt_u_atexit_cleanup
+- [A] agent/secret_sources/_cache.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
 - [A] gateway/dead_targets.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
 - [A] gateway/restart_loop_guard.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
 - [A] gateway/stream_dispatch.py :: dispatch -> adel_u_persist_dispatch  (cands: dispatch)
@@ -157,13 +158,13 @@
 - [Bt] hermes_cli/inventory.py :: build_model_options_payload -> hermes_cli_inventory_build_model_options_payload
 - [Bt] hermes_cli/middleware.py :: _has_middleware -> hermes_cli_middleware_u_has_middleware
 - [Bt] tools/online_research.py :: set -> sku_u_normalize_string_set
-- [Bt] agent/memory_provider.py :: on_memory_write -> agent_memory_provider_on_memory_write
 - [Bt] gateway/platforms/yuanbao_proto.py :: _encode_bytes -> yb_decode_varint
 - [Bt] gateway/platforms/yuanbao_proto.py :: _encode_message -> yb_decode_varint
 - [Bt] tools/file_tools.py :: _is_expected_write_exception -> file_tools_is_expected_write_exception
 - [Bt] agent/context_engine.py :: get_automatic_compaction_status_message -> agent_context_engine_get_automatic_compaction_status_message
 - [Bt] agent/display.py :: get_friendly_tool_labels -> cli_agent_display__get_friendly_tool_labels
 - [Bt] agent/display.py :: set_friendly_tool_labels -> cli_agent_display__set_friendly_tool_labels
+- [Bt] agent/memory_provider.py :: on_memory_write -> agent_memory_provider_on_memory_write
 - [Bt] agent/trace_upload.py :: _resolve_hf_token -> agent_trace_upload_u_resolve_hf_token
 - [Bt] gateway/platforms/webhook_filters.py :: _stringify_filter_value -> gateway_platforms_webhook_filt_u_stringify_filter_value
 - [Bt] hermes_cli/mcp_picker.py :: _format_row -> hermes_cli_mcp_picker_u_format_row
@@ -187,6 +188,7 @@
 - [Bt] tools/project_tools.py :: set_project_workspace_callback -> tools_project_tools_set_project_workspace_callback
 - [Bt] agent/billing_view.py :: display -> agent_rate_limit_tracker_format_rate_limit_display
 - [Bt] agent/pet/generate/imagegen.py :: _forced_provider_from_env -> agent_pet_generate_imagegen_u_forced_provider_from_env
+- [Bt] hermes_cli/gateway_enroll.py :: _resolve_identity_token -> hermes_cli_gateway_enroll_u_resolve_identity_token
 - [Bt] hermes_cli/proxy/cli.py :: _print_aiohttp_missing -> hermes_cli_proxy_cli_u_print_aiohttp_missing
 - [Bt] tools/skill_usage.py :: _parse_iso_timestamp -> su_parse_iso_timestamp
 - [Bt] agent/account_usage.py :: _codex_backend_urls -> agent_account_usage_u_codex_backend_urls
@@ -198,12 +200,10 @@
 - [Bt] hermes_cli/stdio.py :: _default_windows_editor -> hermes_cli_stdio_u_default_windows_editor
 - [Bt] tools/checkpoint_manager.py :: _dir_has_any_entry -> tools_checkpoint_manager_u_dir_has_any_entry
 - [Bt] tools/computer_use/doctor.py :: _sanitized_cua_env -> tools_computer_use_doctor_u_sanitized_cua_env
+- [Bt] tools/env_probe.py :: _reset_cache_for_tests -> cli_tools_env_probe__reset_cache_for_tests
 - [Bt] tools/skill_provenance.py :: is_background_review -> tools_skill_provenance_is_background_review
 - [Bt] agent/battery.py :: read_battery -> agent_battery_read_battery
 - [Bt] agent/bounded_response.py :: read_error_body_or_default -> agent_bounded_response_read_error_body_or_default
 - [Bt] hermes_cli/dep_ensure.py :: _has_system_browser -> hermes_cli_dep_ensure_u_has_system_browser
 - [Bt] hermes_cli/diagnostics_upload.py :: share_to_nous -> hermes_cli_diagnostics_upload_share_to_nous
 - [Bt] tools/interrupt.py :: set -> sku_u_normalize_string_set
-- [Bt] tools/moa_performance.py :: _build_auth_header -> tools_moa_performance_u_build_auth_header
-- [Bt] tools/moa_performance.py :: set -> sku_u_normalize_string_set
-- [Bt] tools/moa_performance.py :: set -> sku_u_normalize_string_set

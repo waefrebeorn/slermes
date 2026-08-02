@@ -1,10 +1,10 @@
 {
- "total": 3223,
+ "total": 3232,
  "by_cat": {
-  "A": 29,
-  "Bt": 195,
-  "Bx": 1049,
-  "C": 1950
+  "A": 30,
+  "Bt": 198,
+  "Bx": 1052,
+  "C": 1952
  },
  "by_module": {
   "agent/account_usage.py": 4,
@@ -36,8 +36,10 @@
   "agent/insights.py": 1,
   "agent/jiter_preload.py": 1,
   "agent/kanban_stop.py": 4,
+  "agent/lsp/client.py": 2,
+  "agent/lsp/manager.py": 1,
   "agent/memory_manager.py": 31,
-  "agent/memory_provider.py": 9,
+  "agent/memory_provider.py": 8,
   "agent/moa_loop.py": 34,
   "agent/moa_trace.py": 3,
   "agent/model_metadata.py": 16,
@@ -55,6 +57,11 @@
   "agent/redact.py": 2,
   "agent/runtime_cwd.py": 1,
   "agent/secret_scope.py": 1,
+  "agent/secret_sources/_cache.py": 1,
+  "agent/secret_sources/base.py": 1,
+  "agent/secret_sources/bitwarden.py": 1,
+  "agent/secret_sources/command.py": 1,
+  "agent/secret_sources/onepassword.py": 1,
   "agent/skill_commands.py": 2,
   "agent/skill_utils.py": 25,
   "agent/stream_single_writer.py": 2,
@@ -64,6 +71,9 @@
   "agent/tool_executor.py": 4,
   "agent/tool_result_classification.py": 1,
   "agent/trace_upload.py": 8,
+  "agent/transports/codex_app_server.py": 2,
+  "agent/transports/codex_app_server_session.py": 1,
+  "agent/transports/types.py": 1,
   "agent/turn_context.py": 9,
   "agent/turn_finalizer.py": 2,
   "agent/verification_evidence.py": 18,
@@ -290,6 +300,7 @@
   "hermes_cli/webhook.py": 10,
   "hermes_cli/win_pty_bridge.py": 2,
   "hermes_cli/windows_ssh_runtime.py": 26,
+  "hermes_state.py": 1,
   "tools/ansi_strip.py": 1,
   "tools/approval.py": 28,
   "tools/async_delegation.py": 29,
@@ -340,7 +351,7 @@
   "tools/mcp_dashboard_oauth.py": 10,
   "tools/mcp_oauth.py": 34,
   "tools/mcp_stdio_watchdog.py": 3,
-  "tools/mcp_tool.py": 2,
+  "tools/mcp_tool.py": 1,
   "tools/microsoft_graph_client.py": 2,
   "tools/mixture_of_agents_tool.py": 1,
   "tools/moa_performance.py": 3,
@@ -368,7 +379,7 @@
   "tools/tts_tool.py": 1,
   "tools/url_safety.py": 1,
   "tools/video_generation_tool.py": 2,
-  "tools/voice_mode.py": 6,
+  "tools/voice_mode.py": 4,
   "tools/web_tools.py": 4,
   "tools/website_policy.py": 1,
   "tools/x_search_tool.py": 14,
@@ -584,6 +595,16 @@
    "file": "src/tools/port_terminal_tool_wrappers.c",
    "cat": "A",
    "candidates": []
+  },
+  {
+   "module": "agent/secret_sources/_cache.py",
+   "py": "clear",
+   "c": "sku_u_external_dirs_cache_clear",
+   "file": "src/agent/port_skill_utils_wrappers.c",
+   "cat": "A",
+   "candidates": [
+    "cmd_clear"
+   ]
   },
   {
    "module": "gateway/dead_targets.py",
@@ -1618,14 +1639,6 @@
    "candidates": []
   },
   {
-   "module": "agent/memory_provider.py",
-   "py": "on_memory_write",
-   "c": "agent_memory_provider_on_memory_write",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
    "module": "gateway/platforms/yuanbao_proto.py",
    "py": "_encode_bytes",
    "c": "yb_decode_varint",
@@ -1670,6 +1683,14 @@
    "py": "set_friendly_tool_labels",
    "c": "cli_agent_display__set_friendly_tool_labels",
    "file": "src/cli/port_display_tool_preview.c",
+   "cat": "Bt",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_provider.py",
+   "py": "on_memory_write",
+   "c": "agent_memory_provider_on_memory_write",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
    "cat": "Bt",
    "candidates": []
   },
@@ -1858,6 +1879,14 @@
    "candidates": []
   },
   {
+   "module": "hermes_cli/gateway_enroll.py",
+   "py": "_resolve_identity_token",
+   "c": "hermes_cli_gateway_enroll_u_resolve_identity_token",
+   "file": "src/cli/port_cli_remaining_wrappers.c",
+   "cat": "Bt",
+   "candidates": []
+  },
+  {
    "module": "hermes_cli/proxy/cli.py",
    "py": "_print_aiohttp_missing",
    "c": "hermes_cli_proxy_cli_u_print_aiohttp_missing",
@@ -1942,6 +1971,14 @@
    "py": "_sanitized_cua_env",
    "c": "tools_computer_use_doctor_u_sanitized_cua_env",
    "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bt",
+   "candidates": []
+  },
+  {
+   "module": "tools/env_probe.py",
+   "py": "_reset_cache_for_tests",
+   "c": "cli_tools_env_probe__reset_cache_for_tests",
+   "file": "src/cli/port_tools_env_probe.c",
    "cat": "Bt",
    "candidates": []
   },
@@ -2078,6 +2115,14 @@
    "py": "check_webhook_requirements",
    "c": "webhook_check_requirements",
    "file": "src/cli/port_webhook_helpers.c",
+   "cat": "Bt",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/codex_runtime_switch.py",
+   "py": "check_codex_binary_ok",
+   "c": "hermes_cli_codex_runtime_switc_check_codex_binary_ok",
+   "file": "src/cli/port_cli_remaining_wrappers.c",
    "cat": "Bt",
    "candidates": []
   },
@@ -9330,14 +9375,6 @@
    "candidates": []
   },
   {
-   "module": "hermes_cli/gateway_enroll.py",
-   "py": "_resolve_identity_token",
-   "c": "hermes_cli_gateway_enroll_u_resolve_identity_token",
-   "file": "src/cli/port_cli_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
    "module": "hermes_cli/mcp_startup.py",
    "py": "_has_configured_mcp_servers",
    "c": "hermes_cli_mcp_startup_u_has_configured_mcp_servers",
@@ -9754,14 +9791,6 @@
    "candidates": []
   },
   {
-   "module": "tools/env_probe.py",
-   "py": "_reset_cache_for_tests",
-   "c": "cli_tools_env_probe__reset_cache_for_tests",
-   "file": "src/cli/port_tools_env_probe.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
    "module": "tools/skill_provenance.py",
    "py": "get_current_write_origin",
    "c": "tools_skill_provenance_get_current_write_origin",
@@ -9914,6 +9943,14 @@
    "candidates": []
   },
   {
+   "module": "agent/lsp/client.py",
+   "py": "state",
+   "c": "agent_subscription_view_build_subscription_state",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
    "module": "agent/redact.py",
    "py": "_canonical_url_param_name",
    "c": "agent_redact_u_canonical_url_param_name",
@@ -9949,6 +9986,14 @@
    "module": "agent/stream_single_writer.py",
    "py": "stream_writer_is_current",
    "c": "agent_stream_single_writer_stream_writer_is_current",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/transports/codex_app_server.py",
+   "py": "request",
+   "c": "agent_chat_completion_helpers_u_dispatch_nonstreaming_api_re_st",
    "file": "src/agent/port_agent_remaining_wrappers.c",
    "cat": "Bx",
    "candidates": []
@@ -10005,14 +10050,6 @@
    "module": "hermes_cli/checkpoints.py",
    "py": "cmd_clear_legacy",
    "c": "hermes_cli_checkpoints_cmd_clear_legacy",
-   "file": "src/cli/port_cli_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/codex_runtime_switch.py",
-   "py": "check_codex_binary_ok",
-   "c": "hermes_cli_codex_runtime_switc_check_codex_binary_ok",
    "file": "src/cli/port_cli_remaining_wrappers.c",
    "cat": "Bx",
    "candidates": []
@@ -10158,6 +10195,38 @@
    "py": "_is_install_tree",
    "c": "agent_runtime_cwd_u_is_install_tree",
    "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/secret_sources/base.py",
+   "py": "remediation",
+   "c": "cgw_u_print_system_scope_remediation",
+   "file": "src/cli/port_cli_gateway_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/secret_sources/bitwarden.py",
+   "py": "remediation",
+   "c": "cgw_u_print_system_scope_remediation",
+   "file": "src/cli/port_cli_gateway_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/secret_sources/command.py",
+   "py": "remediation",
+   "c": "cgw_u_print_system_scope_remediation",
+   "file": "src/cli/port_cli_gateway_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/secret_sources/onepassword.py",
+   "py": "remediation",
+   "c": "cgw_u_print_system_scope_remediation",
+   "file": "src/cli/port_cli_gateway_wrappers.c",
    "cat": "Bx",
    "candidates": []
   },
@@ -22490,70 +22559,6 @@
    "candidates": []
   },
   {
-   "module": "agent/memory_provider.py",
-   "py": "on_delegation",
-   "c": "agent_memory_provider_on_delegation",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_provider.py",
-   "py": "on_pre_compress",
-   "c": "agent_memory_provider_on_pre_compress",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_provider.py",
-   "py": "on_session_switch",
-   "c": "agent_memory_provider_on_session_switch",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_provider.py",
-   "py": "on_turn_start",
-   "c": "agent_memory_provider_on_turn_start",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_provider.py",
-   "py": "prefetch",
-   "c": "agent_memory_provider_queue_prefetch",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_provider.py",
-   "py": "queue_prefetch",
-   "c": "agent_memory_provider_queue_prefetch",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_provider.py",
-   "py": "shutdown",
-   "c": "grun_u_notify_active_sessions_of_shutdown",
-   "file": "src/gateway/port_gateway_run_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_provider.py",
-   "py": "sync_turn",
-   "c": "agent_memory_provider_sync_turn",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
    "module": "agent/turn_context.py",
    "py": "_compression_warrants_another_preflight_pass",
    "c": "agent_turn_context_u_compression_warrants_another_preflight__ss",
@@ -23037,6 +23042,62 @@
    "module": "agent/display.py",
    "py": "start",
    "c": "agent_memory_provider_on_turn_start",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_provider.py",
+   "py": "on_delegation",
+   "c": "agent_memory_provider_on_delegation",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_provider.py",
+   "py": "on_pre_compress",
+   "c": "agent_memory_provider_on_pre_compress",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_provider.py",
+   "py": "on_session_switch",
+   "c": "agent_memory_provider_on_session_switch",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_provider.py",
+   "py": "on_turn_start",
+   "c": "agent_memory_provider_on_turn_start",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_provider.py",
+   "py": "prefetch",
+   "c": "agent_memory_provider_queue_prefetch",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_provider.py",
+   "py": "queue_prefetch",
+   "c": "agent_memory_provider_queue_prefetch",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_provider.py",
+   "py": "sync_turn",
+   "c": "agent_memory_provider_sync_turn",
    "file": "src/agent/port_agent_remaining_wrappers.c",
    "cat": "C",
    "candidates": []
@@ -24442,54 +24503,6 @@
    "candidates": []
   },
   {
-   "module": "tools/voice_mode.py",
-   "py": "cancel",
-   "c": "tools_voice_mode_cancel",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/voice_mode.py",
-   "py": "cancel",
-   "c": "tools_voice_mode_cancel",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/voice_mode.py",
-   "py": "shutdown",
-   "c": "grun_u_notify_active_sessions_of_shutdown",
-   "file": "src/gateway/port_gateway_run_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/voice_mode.py",
-   "py": "shutdown",
-   "c": "grun_u_notify_active_sessions_of_shutdown",
-   "file": "src/gateway/port_gateway_run_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/voice_mode.py",
-   "py": "start",
-   "c": "agent_memory_provider_on_turn_start",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/voice_mode.py",
-   "py": "start",
-   "c": "agent_memory_provider_on_turn_start",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
    "module": "agent/billing_view.py",
    "py": "_dev_fixture_billing_state",
    "c": "agent_billing_view_u_dev_fixture_billing_state",
@@ -25202,6 +25215,38 @@
    "candidates": []
   },
   {
+   "module": "tools/voice_mode.py",
+   "py": "cancel",
+   "c": "tools_voice_mode_cancel",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/voice_mode.py",
+   "py": "cancel",
+   "c": "tools_voice_mode_cancel",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/voice_mode.py",
+   "py": "start",
+   "c": "agent_memory_provider_on_turn_start",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/voice_mode.py",
+   "py": "start",
+   "c": "agent_memory_provider_on_turn_start",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
    "module": "tools/web_tools.py",
    "py": "_list_registered_web_providers",
    "c": "tools_web_tools_u_list_registered_web_providers",
@@ -25570,6 +25615,14 @@
    "candidates": []
   },
   {
+   "module": "agent/lsp/client.py",
+   "py": "start",
+   "c": "agent_memory_provider_on_turn_start",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
    "module": "agent/prompt_caching.py",
    "py": "_apply_system_cache_markers",
    "c": "agent_prompt_caching_u_apply_system_cache_markers",
@@ -25589,6 +25642,14 @@
    "module": "agent/skill_commands.py",
    "py": "split_stacked_skill_commands",
    "c": "agent_skill_commands_split_stacked_skill_commands",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/transports/codex_app_server.py",
+   "py": "close",
+   "c": "agent_bounded_response_u_safe_close",
    "file": "src/agent/port_agent_remaining_wrappers.c",
    "cat": "C",
    "candidates": []
@@ -25890,22 +25951,6 @@
    "candidates": []
   },
   {
-   "module": "tools/mcp_tool.py",
-   "py": "shutdown",
-   "c": "grun_u_notify_active_sessions_of_shutdown",
-   "file": "src/gateway/port_gateway_run_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/mcp_tool.py",
-   "py": "start",
-   "c": "agent_memory_provider_on_turn_start",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
    "module": "tools/microsoft_graph_client.py",
    "py": "_request",
    "c": "tools_microsoft_graph_client_u_request",
@@ -25978,6 +26023,14 @@
    "candidates": []
   },
   {
+   "module": "agent/lsp/manager.py",
+   "py": "start",
+   "c": "agent_memory_provider_on_turn_start",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
    "module": "agent/moonshot_schema.py",
    "py": "_ensure_required_array",
    "c": "agent_moonshot_schema_u_ensure_required_array",
@@ -26021,6 +26074,22 @@
    "module": "agent/tool_result_classification.py",
    "py": "tool_may_have_side_effect",
    "c": "agent_tool_result_classificati_tool_may_have_side_effect",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/transports/codex_app_server_session.py",
+   "py": "close",
+   "c": "agent_bounded_response_u_safe_close",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/transports/types.py",
+   "py": "type",
+   "c": "agent_credential_pool_u_normalize_pool_auth_type",
    "file": "src/agent/port_agent_remaining_wrappers.c",
    "cat": "C",
    "candidates": []
@@ -26146,6 +26215,14 @@
    "candidates": []
   },
   {
+   "module": "hermes_state.py",
+   "py": "close",
+   "c": "agent_bounded_response_u_safe_close",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
    "module": "tools/browser_supervisor.py",
    "py": "start",
    "c": "agent_memory_provider_on_turn_start",
@@ -26174,6 +26251,14 @@
    "py": "_do_request",
    "c": "tools_feishu_drive_tool_u_do_request",
    "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/mcp_tool.py",
+   "py": "start",
+   "c": "agent_memory_provider_on_turn_start",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
    "cat": "C",
    "candidates": []
   },
