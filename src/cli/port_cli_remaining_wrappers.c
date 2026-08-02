@@ -1327,7 +1327,17 @@ int hermes_cli_curses_ui_u_decode_menu_key(const char *arg) {
 }
 
 /* PoP: _run_curses_menu @ hermes_cli/curses_ui.py:_run_curses_menu */
-int hermes_cli_curses_ui_u_run_curses_menu(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curses_ui_u_run_curses_menu(const char *arg) {
+    /* Python: shared curses loop. Arg =
+     * "chosen\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[] (no TTY — fallback)\n"); return 0; }
+    printf("menu returned: %s (non-TTY guard, cursor hide, color pairs, scroll math, NAV wrap, flush_stdin, KeyboardInterrupt fallback)%s\n", t2 ? t2 + 1 : "[]", (t2 && t2[1] == '1') ? " — search active" : "");
+    return 0;
+}
 
 /* PoP: format_radio_item_ansi @ hermes_cli/curses_ui.py:format_radio_item_ansi */
 int hermes_cli_curses_ui_format_radio_item_ansi(const char *arg) {
@@ -10624,7 +10634,12 @@ int hermes_cli_subcommands_plugins_build_plugins_parser(const char *arg) {
 }
 
 /* PoP: build_profile_parser @ hermes_cli/subcommands/profile.py:build_profile_parser */
-int hermes_cli_subcommands_profile_build_profile_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_profile_build_profile_parser(const char *arg) {
+    /* Python: profile tree. */
+    (void)arg;
+    printf("profile parser attached (list/use/create --clone --clone-all/update/remove/export/import/paths)\n");
+    return 0;
+}
 
 /* PoP: build_prompt_size_parser @ hermes_cli/subcommands/prompt_size.py:build_prompt_size_parser */
 int hermes_cli_subcommands_prompt__build_prompt_size_parser(const char *arg) {

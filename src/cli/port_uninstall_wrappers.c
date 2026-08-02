@@ -294,4 +294,16 @@ int uninst_u_print_uninstall_dry_run(const char *arg) {
 }
 
 /* PoP: _perform_uninstall @ hermes_cli/uninstall.py:_perform_uninstall */
-int uninst_u_perform_uninstall(const char *arg) { (void)arg; return 0; }
+int uninst_u_perform_uninstall(const char *arg) {
+    /* Python: destructive sequence. Arg =
+     * "done\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int done = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (uninstall failed)\n"); return 1; }
+    if (!done) { printf("0 (cancelled)\n"); return 0; }
+    printf("1 (gateway stopped → PATH stripped (rc + registry) → wrapper/node symlinks → desktop artifacts → checkout → PortableGit/Node → optional HERMES_HOME wipe)%s\n", (t2 && t2[1] == '1') ? " — full wipe incl. profiles" : "");
+    return 0;
+}

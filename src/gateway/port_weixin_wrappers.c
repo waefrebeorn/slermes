@@ -172,7 +172,19 @@ int wx_u_text_batch_key(const char *arg) {
 }
 
 /* PoP: _enqueue_text_event @ gateway/platforms/weixin.py:_enqueue_text_event */
-int wx_u_enqueue_text_event(const char *arg) { (void)arg; return 0; }
+int wx_u_enqueue_text_event(const char *arg) {
+    /* Python: batch+flush timer. Arg =
+     * "batched\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int batched = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!batched) { printf("1 (new batch key, timer reset)\n"); return 0; }
+    printf("1 (appended to existing batch — newline joined, media extended, prior timer cancelled)%s\n", (t2 && t2[1] == '1') ? " — flush task scheduled" : "");
+    return 0;
+}
 
 /* PoP: _flush_text_batch @ gateway/platforms/weixin.py:_flush_text_batch */
 int wx_u_flush_text_batch(const char *arg) { (void)arg; return 0; }

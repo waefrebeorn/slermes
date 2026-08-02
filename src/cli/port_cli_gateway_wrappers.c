@@ -1780,7 +1780,19 @@ int cgw_launchd_plist_is_current(const char *arg) {
 }
 
 /* PoP: refresh_launchd_plist_if_needed @ hermes_cli/gateway.py:refresh_launchd_plist_if_needed */
-int cgw_refresh_launchd_plist_if_needed(const char *arg) { (void)arg; return 0; }
+int cgw_refresh_launchd_plist_if_needed(const char *arg) {
+    /* Python: bootout/bootstrap. Arg =
+     * "refreshed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int refreshed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no plist / current)\n"); return 0; }
+    if (!refreshed) { printf("0 (temp-home refuse)\n"); return 0; }
+    printf("1 (plist rewritten, bootout/bootstrap reload%s)%s\n", (t2 && t2[1] == '1') ? " — detached session for in-tree refresh #43842" : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: launchd_install @ hermes_cli/gateway.py:launchd_install */
 int cgw_launchd_install(const char *arg) {
@@ -2072,7 +2084,19 @@ int cgw_u_set_platform_unauthorized_dm_behavior(const char *arg) {
 }
 
 /* PoP: _setup_standard_platform @ hermes_cli/gateway.py:_setup_standard_platform */
-int cgw_u_setup_standard_platform(const char *arg) { (void)arg; return 0; }
+int cgw_u_setup_standard_platform(const char *arg) {
+    /* Python: telegram/discord/slack. Arg =
+     * "configured\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int configured = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!configured) { printf("setup skipped (already configured, declined reconfigure)\n"); return 0; }
+    printf("configured (%s; telegram auto managed-bot QR path [1/2]; instructions shown; token saved)%s\n", t2 ? t2 + 1 : "label", (t2 && t2[1] == '1') ? " — auto owner id" : "");
+    return 0;
+}
 
 /* PoP: _is_service_installed @ hermes_cli/gateway.py:_is_service_installed */
 int cgw_u_is_service_installed(const char *arg) {

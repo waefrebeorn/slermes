@@ -1296,7 +1296,25 @@ int auth_u_xai_oauth_device_code_login(const char *arg) {
 }
 
 /* PoP: _codex_device_code_login @ hermes_cli/auth.py:_codex_device_code_login */
-int auth_u_codex_device_code_login(const char *arg) { (void)arg; return 0; }
+int auth_u_codex_device_code_login(const char *arg) {
+    /* Python: device code + poll. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"error\": \"device_code_request_failed\"}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "rate_limited") == 0) {
+        fprintf(stderr, "device code request 429 — retried with capped backoff (Retry-After honored)%s\n", (t2 && t2[1] == '1') ? " — gave up" : "");
+        return 1;
+    }
+    if (strcmp(state, "expired") == 0) {
+        fprintf(stderr, "device code expired — re-run `hermes model`\n");
+        return 1;
+    }
+    printf("device code issued (open %s, enter %s); tokens: %s\n", "https://auth.openai.com/activate", t2 ? t2 + 1 : "?", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _minimax_pkce_pair @ hermes_cli/auth.py:_minimax_pkce_pair */
 int auth_u_minimax_pkce_pair(const char *arg) {

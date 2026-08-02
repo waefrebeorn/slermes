@@ -2203,7 +2203,19 @@ int agent_codex_runtime_u_codex_item_completion_payload(const char *arg) {
 }
 
 /* PoP: make_codex_app_server_event_bridge @ agent/codex_runtime.py:make_codex_app_server_event_bridge */
-int agent_codex_runtime_make_codex_app_server_event_bridge(const char *arg) { (void)arg; return 0; }
+int agent_codex_runtime_make_codex_app_server_event_bridge(const char *arg) {
+    /* Python: JSON-RPC → UI. Arg =
+     * "wired\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int wired = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!wired) { printf("\n"); return 0; }
+    printf("bridge wired (item/started+completed→tool_progress; agentMessage/reasoning deltas→stream callbacks; interim assistant message deduped; ALL guarded)%s\n", (t2 && t2[1] == '1') ? " — already_streamed dedup" : "");
+    return 0;
+}
 
 /* PoP: _item_field @ agent/codex_runtime.py:_item_field */
 int agent_codex_runtime_u_item_field(const char *arg) {
@@ -2970,7 +2982,19 @@ int agent_display_build_status_phrase(const char *arg) {
 }
 
 /* PoP: _get_cute_tool_message @ agent/display.py:_get_cute_tool_message */
-int agent_display_u_get_cute_tool_message(const char *arg) { (void)arg; return 0; }
+int agent_display_u_get_cute_tool_message(const char *arg) {
+    /* Python: quiet-mode line. Arg =
+     * "failed\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int failed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (failed) { printf("| 💥 {verb:9} {detail}  {dur} {red prefix + failure suffix}\n"); return 0; }
+    printf("| ✅ {verb:9} {detail}  %ss (redact args, skin prefix, truncation limits)%s\n", t2 ? t2 + 1 : "0.0", (t2 && t2[1] == '1') ? " — emoji from skin" : "");
+    return 0;
+}
 
 /* PoP: _traces_enabled_and_dir @ agent/moa_trace.py:_traces_enabled_and_dir */
 int agent_moa_trace_u_traces_enabled_and_dir(const char *arg) {

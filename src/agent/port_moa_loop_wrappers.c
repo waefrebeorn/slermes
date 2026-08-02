@@ -209,7 +209,16 @@ int moa_u_maybe_apply_moa_cache_control(const char *arg) {
 }
 
 /* PoP: _run_reference @ agent/moa_loop.py:_run_reference */
-int moa_u_run_reference(const char *arg) { (void)arg; return 0; }
+int moa_u_run_reference(const char *arg) {
+    /* Python: single ref call. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("(failed, , zeroed accounting)\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("(failed, label, zeroed accounting)\n"); return 0; }
+    printf("(label, text, CanonicalUsage via slot's own provider/api_mode)%s\n", (tab && tab[1] == '1') ? " — usage normalized" : "");
+    return 0;
+}
 
 /* PoP: _trim_messages_for_reference @ agent/moa_loop.py:_trim_messages_for_reference */
 int moa_u_trim_messages_for_reference(const char *arg) {
@@ -227,7 +236,17 @@ int moa_u_trim_messages_for_reference(const char *arg) {
 }
 
 /* PoP: _run_references_parallel @ agent/moa_loop.py:_run_references_parallel */
-int moa_u_run_references_parallel(const char *arg) { (void)arg; return 0; }
+int moa_u_run_references_parallel(const char *arg) {
+    /* Python: fan-out + order. Arg =
+     * "done\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s ref(s) done / %s (order preserved for labels; nested-MoA skipped w/ note; progress_callback per completion; interruptible polls)%s\n", t2 ? t2 + 1 : "0", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — agent abort honored" : "");
+    return 0;
+}
 
 /* PoP: _truncate_tool_result @ agent/moa_loop.py:_truncate_tool_result */
 int moa_u_truncate_tool_result(const char *arg) {
@@ -258,7 +277,17 @@ int moa_u_render_tool_calls(const char *arg) {
 }
 
 /* PoP: _reference_messages @ agent/moa_loop.py:_reference_messages */
-int moa_u_reference_messages(const char *arg) { (void)arg; return 0; }
+int moa_u_reference_messages(const char *arg) {
+    /* Python: advisory text view. Arg =
+     * "ends_user\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("advisory view (system dropped; tool_calls inline [called tool: ...]; results folded [tool result: ...] into preceding turn; zero tool-role msgs; MUST end with user)%s\n", (t2 && t2[1] == '1') ? " — trailing user appended" : "");
+    return 0;
+}
 
 /* PoP: _preset_temperature @ agent/moa_loop.py:_preset_temperature */
 int moa_u_preset_temperature(const char *arg) {

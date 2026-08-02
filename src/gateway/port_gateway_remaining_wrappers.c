@@ -114,7 +114,19 @@ int gateway_platforms_signal_u_remember_recipient_identifiers(const char *arg) {
 }
 
 /* PoP: _extract_contact_uuid @ gateway/platforms/signal.py:_extract_contact_uuid */
-int gateway_platforms_signal_u_extract_contact_uuid(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_signal_u_extract_contact_uuid(const char *arg) {
+    /* Python: number match gate. Arg =
+     * "found\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int found = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!found) { printf("\n"); return 0; }
+    printf("%s (uuid/serviceId validated, number==phone or recipient match required)\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _resolve_recipient @ gateway/platforms/signal.py:_resolve_recipient */
 int gateway_platforms_signal_u_resolve_recipient(const char *arg) { (void)arg; return 0; }

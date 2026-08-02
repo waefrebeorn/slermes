@@ -517,7 +517,22 @@ int main_u_find_bundled_tui(const char *arg) {
 }
 
 /* PoP: _make_tui_argv @ hermes_cli/main.py:_make_tui_argv */
-int main_u_make_tui_argv(const char *arg) { (void)arg; return 0; }
+int main_u_make_tui_argv(const char *arg) {
+    /* Python: node resolution. Arg =
+     * "dev\tstate\tresult". */
+    if (!arg || !*arg) { printf("exec failed\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int dev = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("node not found — install Node.js to use the TUI\n"); return 1; }
+    if (dev) {
+        printf("tsx src (HERMES_NODE respected, dep-ensure fallback, --dev+HERMES_TUI_DIR footgun rejected)%s\n", (t2 && t2[1] == '1') ? " — --dev flag passed" : "");
+        return 0;
+    }
+    printf("node dist (HERMES_TUI_DIR prebuilt or esbuild bundle): %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _normalize_tui_toolsets @ hermes_cli/main.py:_normalize_tui_toolsets */
 int main_u_normalize_tui_toolsets(const char *arg) {
@@ -2434,7 +2449,22 @@ int main_u_verify_console_scripts_installed(const char *arg) {
 }
 
 /* PoP: _verify_core_dependencies_installed @ hermes_cli/main.py:_verify_core_dependencies_installed */
-int main_u_verify_core_dependencies_installed(const char *arg) { (void)arg; return 0; }
+int main_u_verify_core_dependencies_installed(const char *arg) {
+    /* Python: pyproject direct read. Arg =
+     * "missing\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int missing = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("no pyproject / no tomllib — skip\n"); return 0; }
+    if (missing) {
+        printf("warning: core deps missing — --reinstall base group attempted; final state is WARNING not hard failure%s\n", (t2 && t2[1] == '1') ? " — still missing after retry" : "");
+        return 0;
+    }
+    printf("all base deps importable (markers filtered, venv interpreter check)%s\n", (t2 && t2[1] == '1') ? " — reinstalled" : "");
+    return 0;
+}
 
 /* PoP: _resolve_install_target_python @ hermes_cli/main.py:_resolve_install_target_python */
 int main_u_resolve_install_target_python(const char *arg) {

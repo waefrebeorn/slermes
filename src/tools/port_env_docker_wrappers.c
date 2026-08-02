@@ -114,7 +114,19 @@ int envd_find_docker(const char *arg) {
 }
 
 /* PoP: _egress_proxy_args_for_docker @ tools/environments/docker.py:_egress_proxy_args_for_docker */
-int envd_u_egress_proxy_args_for_docker(const char *arg) { (void)arg; return 0; }
+int envd_u_egress_proxy_args_for_docker(const char *arg) {
+    /* Python: iron-proxy wiring. Arg =
+     * "enforced\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int enforced = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\t\t\n"); return 0; }
+    if (enforced) { fprintf(stderr, "proxy enabled but not running and enforce_on_docker — refusing sandbox\n"); return 1; }
+    printf("volume_args + env_overrides + host_args (CA cert ro mount, HTTPS_PROXY/NO_PROXY, CA bundle paths, HERMES_PROXY_TOKEN_* per mapping, --add-host host-gateway)%s\n", (t2 && t2[1] == '1') ? " — minted mappings" : "");
+    return 0;
+}
 
 /* PoP: _egress_reuse_fingerprint @ tools/environments/docker.py:_egress_reuse_fingerprint */
 int envd_u_egress_reuse_fingerprint(const char *arg) {

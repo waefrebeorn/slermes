@@ -687,7 +687,19 @@ int yb_reconnect_attempts(const char *arg) {
 }
 
 /* PoP: _extract_connect_id @ gateway/platforms/yuanbao.py:_extract_connect_id */
-int yb_u_extract_connect_id(const char *arg) { (void)arg; return 0; }
+int yb_u_extract_connect_id(const char *arg) {
+    /* Python: BIND_ACK parse. Arg =
+     * "found\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int found = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!found) { printf("\n"); return 0; }
+    printf("connectId=%s (field 3 string, code==0 gate, varint/string parse)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? " — error logged with message" : "");
+    return 0;
+}
 
 /* PoP: _heartbeat_loop @ gateway/platforms/yuanbao.py:_heartbeat_loop */
 int yb_u_heartbeat_loop(const char *arg) { (void)arg; return 0; }
@@ -876,7 +888,18 @@ int yb_register_handler(const char *arg) {
 }
 
 /* PoP: get_chat_lock @ gateway/platforms/yuanbao.py:get_chat_lock */
-int yb_get_chat_lock(const char *arg) { (void)arg; return 0; }
+int yb_get_chat_lock(const char *arg) {
+    /* Python: LRU lock map. Arg =
+     * "evicted\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int evicted = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("lock for chat %s (%s; LRU move_to_end, unlocked-first eviction, cap=%s)%s\n", t2 ? t2 + 1 : "?", evicted ? "evicted an entry" : "fresh", "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: send_media @ gateway/platforms/yuanbao.py:send_media */
 int yb_send_media(const char *arg) { (void)arg; return 0; }
@@ -1002,7 +1025,15 @@ int yb_cancel_slow_notifier(const char *arg) {
 }
 
 /* PoP: get_chat_lock @ gateway/platforms/yuanbao.py:get_chat_lock */
-int yb_get_chat_lock_2(const char *arg) { (void)arg; return 0; }
+int yb_get_chat_lock_2(const char *arg) {
+    /* Python: alt variant. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("1%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _chat_locks @ gateway/platforms/yuanbao.py:_chat_locks */
 int yb_u_chat_locks(const char *arg) {

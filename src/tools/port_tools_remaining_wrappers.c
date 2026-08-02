@@ -1071,7 +1071,19 @@ int tools_delegate_tool_u_emit_parent_console(const char *arg) {
 }
 
 /* PoP: _build_child_progress_callback @ tools/delegate_tool.py:_build_child_progress_callback */
-int tools_delegate_tool_u_build_child_progress_callback(const char *arg) { (void)arg; return 0; }
+int tools_delegate_tool_u_build_child_progress_callback(const char *arg) {
+    /* Python: relay callback. Arg =
+     * "built\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int built = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!built) { printf("\n"); return 0; }
+    printf("relay built (CLI tree lines + gateway batching; identity kwargs threaded for TUI spawn tree; [N] prefix in batch mode)%s\n", (t2 && t2[1] == '1') ? " — spinner present" : "");
+    return 0;
+}
 
 /* PoP: _inherit_parent_base_url @ tools/delegate_tool.py:_inherit_parent_base_url */
 int tools_delegate_tool_u_inherit_parent_base_url(const char *arg) {

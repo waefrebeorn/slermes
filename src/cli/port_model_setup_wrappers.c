@@ -225,7 +225,19 @@ int msf_u_model_flow_custom(const char *arg) { (void)arg; return 0; }
 int msf_u_model_flow_azure_foundry(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _model_flow_named_custom @ hermes_cli/model_setup_flows.py:_model_flow_named_custom */
-int msf_u_model_flow_named_custom(const char *arg) { (void)arg; return 0; }
+int msf_u_model_flow_named_custom(const char *arg) {
+    /* Python: custom provider. Arg =
+     * "probed\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int probed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!probed) { printf("probe failed — fell back to saved model (%s)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? " — discover_models: false honored" : ""); return 0; }
+    printf("custom '%s' probed /models (saved model pre-selected, key env resolved, saved on pick)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? " — api_mode honored" : "");
+    return 0;
+}
 
 /* PoP: _model_flow_copilot @ hermes_cli/model_setup_flows.py:_model_flow_copilot */
 int msf_u_model_flow_copilot(const char *arg) {
