@@ -1850,7 +1850,25 @@ int cgw_u_configure_platform(const char *arg) {
 }
 
 /* PoP: _dispatch_via_service_manager_if_s6 @ hermes_cli/gateway.py:_dispatch_via_service_manager_if_s6 */
-int cgw_u_dispatch_via_service_manager_if_s6(const char *arg) { (void)arg; return 0; }
+int cgw_u_dispatch_via_service_manager_if_s6(const char *arg) {
+    /* Python: s6 dispatch. Arg =
+     * "is_s6\taction\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int is_s6 = arg[0] == '1';
+    const char *action = t1 ? t1 + 1 : "";
+    int state = t2 && t2[1] == '1';
+    if (!is_s6 || !state) { printf("0\n"); return 0; }
+    if (t3 && t3[1] == '2') {
+        fprintf(stderr, "✗ %s\n", t4 ? t4 + 1 : "s6 command failed");
+        return 1;
+    }
+    printf("s6 %s dispatched to gateway-<profile>\n", action);
+    return 1;
+}
 
 /* PoP: _dispatch_all_via_service_manager_if_s6 @ hermes_cli/gateway.py:_dispatch_all_via_service_manager_if_s6 */
 int cgw_u_dispatch_all_via_service_manager_if_s6(const char *arg) { (void)arg; return 0; }

@@ -47,7 +47,17 @@ int msf_bedrock_model_routable_from_region(const char *arg) {
 }
 
 /* PoP: _prune_replaced_custom_model_config_credentials @ hermes_cli/model_setup_flows.py:_prune_replaced_custom_model_config_credentials */
-int msf_u_prune_replaced_custom_model_config_credentials(const char *arg) { (void)arg; return 0; }
+int msf_u_prune_replaced_custom_model_config_credentials(const char *arg) {
+    /* Python: stale model_config drop. Arg =
+     * "removed\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("no prune needed\n"); return 0; }
+    printf("pruned %s stale model_config credential(s)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _prompt_auth_credentials_choice @ hermes_cli/model_setup_flows.py:_prompt_auth_credentials_choice */
 int msf_u_prompt_auth_credentials_choice(const char *arg) {

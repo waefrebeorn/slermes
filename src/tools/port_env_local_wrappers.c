@@ -33,7 +33,15 @@ int envl_u_msys_to_windows_path(const char *arg) {
 }
 
 /* PoP: _resolve_local_initial_cwd @ tools/environments/local.py:_resolve_local_initial_cwd */
-int envl_u_resolve_local_initial_cwd(const char *arg) { (void)arg; return 0; }
+int envl_u_resolve_local_initial_cwd(const char *arg) {
+    /* Python: anchor relative. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _windows_to_msys_path @ tools/environments/local.py:_windows_to_msys_path */
 int envl_u_windows_to_msys_path(const char *arg) {

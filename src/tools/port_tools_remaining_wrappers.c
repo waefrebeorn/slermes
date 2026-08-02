@@ -527,7 +527,23 @@ int tools_homeassistant_tool_u_handle_get_state(const char *arg) {
 }
 
 /* PoP: _handle_call_service @ tools/homeassistant_tool.py:_handle_call_service */
-int tools_homeassistant_tool_u_handle_call_service(const char *arg) { (void)arg; return 0; }
+int tools_homeassistant_tool_u_handle_call_service(const char *arg) {
+    /* Python: HA call_service. Arg =
+     * "domain\tservice\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"error\": \"Missing required parameters\"}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *domain = arg;
+    const char *service = t1 ? t1 + 1 : "";
+    int state = t2 && t2[1] == '1';
+    if (!state) {
+        printf("{\"error\": \"%s\"}\n", t3 ? t3 + 1 : "ha_call_service failed");
+        return 1;
+    }
+    printf("{\"result\": \"called %s.%s\"}\n", domain, service);
+    return 0;
+}
 
 /* PoP: _async_list_services @ tools/homeassistant_tool.py:_async_list_services */
 int tools_homeassistant_tool_u_async_list_services(const char *arg) { (void)arg; return 0; }
@@ -1180,7 +1196,17 @@ int tools_delegation_live_log_add_stream_delta(const char *arg) {
 }
 
 /* PoP: observe @ tools/delegation_live_log.py:observe */
-int tools_delegation_live_log_observe(const char *arg) { (void)arg; return 0; }
+int tools_delegation_live_log_observe(const char *arg) {
+    /* Python: event mapping. Arg = "event_type\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *et = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("ignored event\n"); return 0; }
+    printf("observed: %s\n", et);
+    return 0;
+}
 
 /* PoP: wrap_progress_callback @ tools/delegation_live_log.py:wrap_progress_callback */
 int tools_delegation_live_log_wrap_progress_callback(const char *arg) {

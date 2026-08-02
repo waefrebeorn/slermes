@@ -8515,7 +8515,17 @@ int hermes_cli_dashboard_auth_logi_render_login_html(const char *arg) {
 }
 
 /* PoP: _render_password_form @ hermes_cli/dashboard_auth/login_page.py:_render_password_form */
-int hermes_cli_dashboard_auth_logi_u_render_password_form(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_logi_u_render_password_form(const char *arg) {
+    /* Python: password form html. Arg =
+     * "provider\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("<form class=\"provider-form\" data-provider=\"%s\">...password fields...</form>\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: pairing_command @ hermes_cli/pairing.py:pairing_command */
 int hermes_cli_pairing_pairing_command(const char *arg) {

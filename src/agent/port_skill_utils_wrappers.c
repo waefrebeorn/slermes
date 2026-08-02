@@ -65,7 +65,18 @@ int sku_yaml_load(const char *arg) {
 }
 
 /* PoP: parse_frontmatter @ agent/skill_utils.py:parse_frontmatter */
-int sku_parse_frontmatter(const char *arg) { (void)arg; return 0; }
+int sku_parse_frontmatter(const char *arg) {
+    /* Python: BOM + CSafeLoader. Arg =
+     * "has_fm\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\n}\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_fm = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!has_fm || !state) { printf("{\n}\t\n"); return 0; }
+    printf("%s\t%s\n", t2 ? t2 + 1 : "{}", "body");
+    return 0;
+}
 
 /* PoP: skill_matches_platform_list @ agent/skill_utils.py:skill_matches_platform_list */
 int sku_skill_matches_platform_list(const char *arg) {
@@ -212,7 +223,16 @@ int sku_extract_skill_conditions(const char *arg) {
 }
 
 /* PoP: extract_skill_config_vars @ agent/skill_utils.py:extract_skill_config_vars */
-int sku_extract_skill_config_vars(const char *arg) { (void)arg; return 0; }
+int sku_extract_skill_config_vars(const char *arg) {
+    /* Python: hermes.config parse. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: discover_all_skill_config_vars @ agent/skill_utils.py:discover_all_skill_config_vars */
 int sku_discover_all_skill_config_vars(const char *arg) {

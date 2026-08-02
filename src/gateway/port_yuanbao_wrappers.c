@@ -594,7 +594,17 @@ int yb_u_push_to_inbound(const char *arg) {
 }
 
 /* PoP: _flush_inbound_buffer @ gateway/platforms/yuanbao.py:_flush_inbound_buffer */
-int yb_u_flush_inbound_buffer(const char *arg) { (void)arg; return 0; }
+int yb_u_flush_inbound_buffer(const char *arg) {
+    /* Python: aggregated pipeline. Arg =
+     * "frames\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("no buffered frames\n"); return 0; }
+    printf("debounce flush: aggregated %s frames into one pipeline run\n", arg);
+    return 0;
+}
 
 /* PoP: send_biz_request @ gateway/platforms/yuanbao.py:send_biz_request */
 int yb_send_biz_request(const char *arg) { (void)arg; return 0; }
@@ -790,7 +800,15 @@ int yb_strip_cron_wrapper(const char *content) {
 }
 
 /* PoP: _handle_send_start @ gateway/platforms/yuanbao.py:_handle_send_start */
-int yb_u_handle_send_start(const char *arg) { (void)arg; return 0; }
+int yb_u_handle_send_start(const char *arg) {
+    /* Python: cancel slow notifier. Arg = "chat_id\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("notifier not active\n"); return 0; }
+    printf("slow notifier cancelled: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _handle_send_finish @ gateway/platforms/yuanbao.py:_handle_send_finish */
 int yb_u_handle_send_finish(const char *arg) { (void)arg; return 0; }

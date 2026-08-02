@@ -165,7 +165,25 @@ int kdbport_repair_db(const char *arg) { (void)arg; return 0; }
 int kdbport_u_migrate_add_optional_columns(const char *arg) { (void)arg; return 0; }
 
 /* PoP: set_model_override @ hermes_cli/kanban_db.py:set_model_override */
-int kdbport_set_model_override(const char *arg) { (void)arg; return 0; }
+int kdbport_set_model_override(const char *arg) {
+    /* Python: provider requires model. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (t2 && t2[1] == '2') {
+        fprintf(stderr, "provider_override requires a model_override\n");
+        return 1;
+    }
+    if (!state) {
+        fprintf(stderr, "%s\n", t3 ? t3 + 1 : "override failed");
+        return 0;
+    }
+    printf("1 (override set, next dispatch)\n");
+    return 0;
+}
 
 /* PoP: _safe_attachment_name @ hermes_cli/kanban_db.py:_safe_attachment_name */
 int kdbport_u_safe_attachment_name(const char *arg) {

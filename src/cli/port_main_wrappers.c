@@ -62,7 +62,25 @@ int main_u_config_default_interface_early(const char *arg) {
 }
 
 /* PoP: _wants_tui_early @ hermes_cli/main.py:_wants_tui_early */
-int main_u_wants_tui_early(const char *arg) { (void)arg; return 0; }
+int main_u_wants_tui_early(const char *arg) {
+    /* Python: pre-argparse TUI gate. Arg =
+     * "cli_flag\ttui_flag\ttty\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int cli_flag = arg[0] == '1';
+    int tui_flag = t1 && t1[1] == '1';
+    int tty = t2 && t2[1] == '1';
+    int state = t3 && t3[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (cli_flag) { printf("0\n"); return 0; }
+    if (tui_flag) { printf("1\n"); return 0; }
+    if (!tty) { printf("0\n"); return 0; }
+    printf("%s\n", (t4 && t4[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _suppress_mouse_residue_early @ hermes_cli/main.py:_suppress_mouse_residue_early */
 int main_u_suppress_mouse_residue_early(const char *arg) {
@@ -366,7 +384,21 @@ int main_u_resolve_session_by_name_or_id(const char *arg) {
 }
 
 /* PoP: _print_tui_exit_summary @ hermes_cli/main.py:_print_tui_exit_summary */
-int main_u_print_tui_exit_summary(const char *arg) { (void)arg; return 0; }
+int main_u_print_tui_exit_summary(const char *arg) {
+    /* Python: resume epilogue. Arg =
+     * "has_session\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_session = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!has_session || !state) { printf("\n"); return 0; }
+    printf("\nResume this session with:\n");
+    printf("  hermes --tui --resume %s\n", t2 ? t2 + 1 : "?");
+    printf("\nSession:        %s\n", t2 ? t2 + 1 : "?");
+    printf("Tokens:         ... (in, out, cache, reasoning)\n");
+    return 0;
+}
 
 /* PoP: _termux_workspace_install_context @ hermes_cli/main.py:_termux_workspace_install_context */
 int main_u_termux_workspace_install_context(const char *arg) {
@@ -2177,7 +2209,20 @@ int main_u_format_venv_python_holders_message(const char *arg) {
 int main_u_pause_windows_gateways_for_update(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cold_start_windows_gateway_after_update @ hermes_cli/main.py:_cold_start_windows_gateway_after_update */
-int main_u_cold_start_windows_gateway_after_update(const char *arg) { (void)arg; return 0; }
+int main_u_cold_start_windows_gateway_after_update(const char *arg) {
+    /* Python: fresh spawn. Arg =
+     * "is_windows\talready_running\tstate\tpid". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int is_windows = arg[0] == '1';
+    int already = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!is_windows || already || !state) { printf("no cold start\n"); return 0; }
+    printf("  ✓ Starting Windows gateway after update (PID %s)\n", t3 ? t3 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _for_each_systemd_gateway_unit @ hermes_cli/main.py:_for_each_systemd_gateway_unit */
 int main_u_for_each_systemd_gateway_unit(const char *arg) {

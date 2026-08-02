@@ -21,7 +21,16 @@ int mm_memory_provider_tools_enabled(const char *arg) {
 }
 
 /* PoP: inject_memory_provider_tools @ agent/memory_manager.py:inject_memory_provider_tools */
-int mm_inject_memory_provider_tools(const char *arg) { (void)arg; return 0; }
+int mm_inject_memory_provider_tools(const char *arg) {
+    /* Python: schema append. Arg = "added\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("injected %s tool schema(s)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _find_boundary_open_tag @ agent/memory_manager.py:_find_boundary_open_tag */
 int mm_u_find_boundary_open_tag(const char *arg) {

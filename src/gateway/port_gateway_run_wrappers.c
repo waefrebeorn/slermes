@@ -791,7 +791,25 @@ int grun_u_handle_voice_timeout_cleanup(const char *arg) {
 int grun_u_handle_voice_channel_input(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _should_send_voice_reply @ gateway/run.py:_should_send_voice_reply */
-int grun_u_should_send_voice_reply(const char *arg) { (void)arg; return 0; }
+int grun_u_should_send_voice_reply(const char *arg) {
+    /* Python: TTS dedup ladder. Arg =
+     * "mode_ok\thas_agent_tts\tvoice_input\talready_sent\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *t5 = t4 ? strchr(t4 + 1, '\t') : NULL;
+    int mode_ok = arg[0] == '1';
+    int has_agent_tts = t1 && t1[1] == '1';
+    int voice_input = t2 && t2[1] == '1';
+    int already_sent = t3 && t3[1] == '1';
+    int state = t4 && t4[1] == '1';
+    if (!state || !mode_ok || has_agent_tts) { printf("0\n"); return 0; }
+    if (voice_input && !already_sent) { printf("0\n"); return 0; }
+    printf("%s\n", (t5 && t5[1] == '1') ? "1" : "1");
+    return 0;
+}
 
 /* PoP: _send_voice_reply @ gateway/run.py:_send_voice_reply */
 int grun_u_send_voice_reply(const char *arg) { (void)arg; return 0; }

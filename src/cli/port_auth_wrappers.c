@@ -405,7 +405,15 @@ int auth_u_probe_codex_quota_restored(const char *arg) { (void)arg; return 0; }
 int auth_clear_codex_pool_quota_cooldowns(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _pool_codex_access_token @ hermes_cli/auth.py:_pool_codex_access_token */
-int auth_u_pool_codex_access_token(const char *arg) { (void)arg; return 0; }
+int auth_u_pool_codex_access_token(const char *arg) {
+    /* Python: pool fallback. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _read_xai_oauth_tokens @ hermes_cli/auth.py:_read_xai_oauth_tokens */
 int auth_u_read_xai_oauth_tokens(const char *arg) { (void)arg; return 0; }
@@ -460,7 +468,20 @@ int auth_u_xai_validate_oauth_endpoint(const char *arg) { (void)arg; return 0; }
 int auth_u_xai_validate_inference_base_url(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _xai_oauth_discovery @ hermes_cli/auth.py:_xai_oauth_discovery */
-int auth_u_xai_oauth_discovery(const char *arg) { (void)arg; return 0; }
+int auth_u_xai_oauth_discovery(const char *arg) {
+    /* Python: OIDC fetch. Arg = "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "http_fail") == 0 || strcmp(state, "bad_json") == 0 || strcmp(state, "incomplete") == 0) {
+        fprintf(stderr, "xAI OIDC discovery failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: refresh_xai_oauth_pure @ hermes_cli/auth.py:refresh_xai_oauth_pure */
 int auth_refresh_xai_oauth_pure(const char *arg) { (void)arg; return 0; }

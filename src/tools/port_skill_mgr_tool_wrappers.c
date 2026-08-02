@@ -215,7 +215,20 @@ int smt_u_add_description_prompt_preview(const char *arg) {
 int smt_u_create_skill(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _edit_skill @ tools/skill_manager_tool.py:_edit_skill */
-int smt_u_edit_skill(const char *arg) { (void)arg; return 0; }
+int smt_u_edit_skill(const char *arg) {
+    /* Python: full rewrite + scan rollback. Arg =
+     * "found\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"success\": false}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int found = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{\"success\": false, \"error\": \"%s\"}\n", t3 ? t3 + 1 : "edit failed"); return 1; }
+    if (!found) { printf("{\"success\": false, \"error\": \"skill not found\"}\n"); return 1; }
+    printf("{\"success\": true, \"message\": \"Skill '%s' updated (full rewrite).\"}\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _patch_skill @ tools/skill_manager_tool.py:_patch_skill */
 int smt_u_patch_skill(const char *arg) { (void)arg; return 0; }
