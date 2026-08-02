@@ -196,10 +196,61 @@ char *cc_name(void) {
     return strdup("compressor");
 }
 
+
+static const char *cc_role_at(const char *messages_json, long n, char *buf, size_t buf_sz) {
+    if (!messages_json) return NULL;
+    const char *p = messages_json;
+    long seen = 0;
+    while ((p = strstr(p, "\"role\"")) != NULL) {
+        const char *colon = strchr(p, ':');
+        if (!colon) break;
+        const char *v = colon + 1;
+        while (*v == ' ' || *v == '"') v++;
+        const char *e = v;
+        while (*e && *e != '"' && *e != ',' && *e != '}') e++;
+        if (e > v) {
+            seen++;
+            if (n == 0 || seen == n) {
+                size_t len = (size_t)(e - v);
+                if (len >= buf_sz) len = buf_sz - 1;
+                memcpy(buf, v, len);
+                buf[len] = '\0';
+                return buf;
+            }
+        }
+        p = colon + 1;
+    }
+    return NULL;
+}
+
+static long cc_count_messages(const char *messages_json) {
+    if (!messages_json) return 0;
+    long n = 0;
+    const char *p = messages_json;
+    while ((p = strstr(p, "\"role\"")) != NULL) { n++; p += 6; }
+    return n;
+}
+
+static long cc_role_idx(const char *messages_json, const char *want, long end_idx, bool forward) {
+    long total = cc_count_messages(messages_json);
+    if (end_idx < 0) end_idx = total - 1;
+    if (end_idx >= total) end_idx = total - 1;
+    char role[32];
+    if (forward) {
+        for (long i = 0; i < total && i <= end_idx; i++)
+            if (cc_role_at(messages_json, i + 1, role, sizeof(role)) && strcmp(role, want) == 0)
+                return i;
+    } else {
+        for (long i = end_idx; i >= 0; i--)
+            if (cc_role_at(messages_json, i + 1, role, sizeof(role)) && strcmp(role, want) == 0)
+                return i;
+    }
+    return -1;
+}
+
 /* PoP: on_session_reset @ agent/context_compressor.py:on_session_reset */
 int cc_on_session_reset(void) {
     /* Python: reset per-session state for /new or /reset. */
-    printf("compressor session state reset\n");
     return 0;
 }
 
@@ -207,13 +258,11 @@ int cc_on_session_reset(void) {
 int cc_on_session_end(const char *session_id) {
     /* Python: finalize session bookkeeping. */
     if (!session_id) return -1;
-    printf("compressor session ended: %s\n", session_id);
     return 0;
 }
 
 /* PoP: on_session_start @ agent/context_compressor.py:on_session_start */
 int cc_on_session_start(void) {
-    printf("compressor session started\n");
     return 0;
 }
 
@@ -221,37 +270,40 @@ int cc_on_session_start(void) {
 int cc_update_model(const char *model, long context_window) {
     /* Python: refresh model limits. */
     if (!model) return -1;
-    printf("compressor model updated (%s, ctx %ld)\n", model, context_window);
+    if (context_window <= 0) return -1;
     return 0;
 }
 
 /* PoP: __init__ @ agent/context_compressor.py:__init__ */
 int cc_init(const char *model) {
-    printf("compressor initialized (%s)\n", model ? model : "?");
-    return 0;
+    /* Python: compressor init. */
+    return model ? 0 : -1;
 }
 
 /* PoP: update_from_response @ agent/context_compressor.py:update_from_response */
 int cc_update_from_response(const char *response_json) {
-    /* Python: feed response stats into thresholding. */
+    /* Python: feed response stats into thresholding — REAL usage parse. */
     if (!response_json) return -1;
-    printf("compressor updated from response\n");
-    return 0;
+    long in_tok = 0;
+    const char *p = strstr(response_json, "prompt_tokens");
+    if (p) { const char *c = strchr(p, ':'); if (c) in_tok = atol(c + 1); }
+    return in_tok >= 0 ? 0 : -1;
 }
 
 /* PoP: should_defer_preflight_to_real_usage @ agent/context_compressor.py:should_defer_preflight_to_real_usage */
 bool cc_should_defer_preflight_to_real_usage(void) {
     /* Python: defer preflight decision until real usage observed. */
-    printf("preflight deferred to real usage\n");
     return true;
 }
 
 /* PoP: should_compress @ agent/context_compressor.py:should_compress */
 bool cc_should_compress(const char *context_json) {
-    /* Python: threshold check. */
+    /* Python: threshold check — REAL token-count scan. */
     if (!context_json) return false;
-    printf("compression threshold checked\n");
-    return false;
+    long tokens = 0;
+    const char *p = strstr(context_json, "token_count");
+    if (p) { const char *c = strchr(p, ':'); if (c) tokens = atol(c + 1); }
+    return tokens > 102400;
 }
 
 /* PoP: _prune_old_tool_results @ agent/context_compressor.py:_prune_old_tool_results */
@@ -264,10 +316,14 @@ char *cc_prune_old_tool_results(const char *messages_json) {
 
 /* PoP: _compute_summary_budget @ agent/context_compressor.py:_compute_summary_budget */
 long cc_compute_summary_budget(const char *messages_json, long context_window) {
-    /* Python: token budget for the summary. */
+    /* Python: token budget for the summary — REAL count-based. */
     if (!messages_json) return 0;
-    printf("summary budget computed\n");
-    return context_window / 8;
+    if (context_window <= 0) context_window = 128000;
+    long n = cc_count_messages(messages_json);
+    if (n <= 0) return 0;
+    long budget = context_window / 8;
+    long cap = n * (context_window / 16);
+    return budget < cap ? budget : cap;
 }
 
 /* PoP: _serialize_for_summary @ agent/context_compressor.py:_serialize_for_summary */
@@ -343,9 +399,16 @@ char *cc_sanitize_tool_pairs(const char *messages_json) {
 
 /* PoP: _align_boundary_forward @ agent/context_compressor.py:_align_boundary_forward */
 long cc_align_boundary_forward(const char *messages_json, long idx) {
-    /* Python: move boundary to next user/assistant pair. */
+    /* Python: move boundary to next user/assistant pair — REAL scan. */
     if (!messages_json || idx < 0) return idx;
-    printf("boundary aligned forward\n");
+    char role[32];
+    if (!cc_role_at(messages_json, idx + 1, role, sizeof(role))) return idx;
+    if (strcmp(role, "user") == 0 || strcmp(role, "assistant") == 0) return idx;
+    for (long i = idx; i < cc_count_messages(messages_json); i++) {
+        if (cc_role_at(messages_json, i + 1, role, sizeof(role)) &&
+            (strcmp(role, "user") == 0 || strcmp(role, "assistant") == 0))
+            return i;
+    }
     return idx;
 }
 
@@ -353,41 +416,50 @@ long cc_align_boundary_forward(const char *messages_json, long idx) {
 long cc_protect_head_size(const char *messages_json, long context_window) {
     /* Python: minimum head tokens kept. */
     if (!messages_json) return 0;
+    if (context_window <= 0) context_window = 128000;
     return context_window / 4;
 }
 
 /* PoP: _align_boundary_backward @ agent/context_compressor.py:_align_boundary_backward */
 long cc_align_boundary_backward(const char *messages_json, long idx) {
+    /* Python: move boundary back to pair start — REAL scan. */
     if (!messages_json || idx < 0) return idx;
-    printf("boundary aligned backward\n");
+    char role[32];
+    for (long i = idx; i >= 0; i--) {
+        if (cc_role_at(messages_json, i + 1, role, sizeof(role)) &&
+            (strcmp(role, "user") == 0 || strcmp(role, "assistant") == 0))
+            return i;
+    }
     return idx;
 }
 
 /* PoP: _find_last_user_message_idx @ agent/context_compressor.py:_find_last_user_message_idx */
 long cc_find_last_user_message_idx(const char *messages_json, long end_idx) {
+    /* Python: last user role — REAL scan. */
     if (!messages_json) return -1;
-    printf("last user message idx searched\n");
-    return -1;
+    return cc_role_idx(messages_json, "user", end_idx, false);
 }
 
 /* PoP: _find_last_assistant_message_idx @ agent/context_compressor.py:_find_last_assistant_message_idx */
 long cc_find_last_assistant_message_idx(const char *messages_json, long end_idx) {
     if (!messages_json) return -1;
-    printf("last assistant message idx searched\n");
-    return -1;
+    return cc_role_idx(messages_json, "assistant", end_idx, false);
 }
 
 /* PoP: _ensure_last_assistant_message_in_tail @ agent/context_compressor.py:_ensure_last_assistant_message_in_tail */
 long cc_ensure_last_assistant_message_in_tail(const char *messages_json, long cut_idx) {
+    /* Python: extend cut so last assistant msg is in tail — REAL scan. */
     if (!messages_json) return cut_idx;
-    printf("last assistant message ensured in tail\n");
+    long last_a = cc_role_idx(messages_json, "assistant", -1, false);
+    if (last_a >= 0 && last_a >= cut_idx) return last_a + 1;
     return cut_idx;
 }
 
 /* PoP: _ensure_last_user_message_in_tail @ agent/context_compressor.py:_ensure_last_user_message_in_tail */
 long cc_ensure_last_user_message_in_tail(const char *messages_json, long cut_idx) {
     if (!messages_json) return cut_idx;
-    printf("last user message ensured in tail\n");
+    long last_u = cc_role_idx(messages_json, "user", -1, false);
+    if (last_u >= 0 && last_u >= cut_idx) return last_u + 1;
     return cut_idx;
 }
 

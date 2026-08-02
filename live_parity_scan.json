@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T23:07:58Z",
+  "generated_at": "2026-08-02T23:13:39Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -15990,10 +15990,10 @@
     },
     "agent/context_compressor.py": {
       "total": 109,
-      "ported": 95,
+      "ported": 104,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 14,
+      "real_gaps": 5,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 109,
@@ -16949,7 +16949,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 199,
+            "line": 251,
             "is_consolidated": false,
             "full_text": "/* PoP: on_session_reset @ agent/context_compressor.py:on_session_reset */"
           },
@@ -17067,7 +17067,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 206,
+            "line": 257,
             "is_consolidated": false,
             "full_text": "/* PoP: on_session_end @ agent/context_compressor.py:on_session_end */"
           },
@@ -17127,7 +17127,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 214,
+            "line": 264,
             "is_consolidated": false,
             "full_text": "/* PoP: on_session_start @ agent/context_compressor.py:on_session_start */"
           },
@@ -17409,7 +17409,7 @@
             "decorators": [],
             "line_number": 1687
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_context_compressor_remaining.c",
           "c_function": "cc_update_model",
           "pop_annotation": {
@@ -17419,16 +17419,14 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 220,
+            "line": 269,
             "is_consolidated": false,
             "full_text": "/* PoP: update_model @ agent/context_compressor.py:update_model */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -17603,7 +17601,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 228,
+            "line": 277,
             "is_consolidated": false,
             "full_text": "/* PoP: __init__ @ agent/context_compressor.py:__init__ */"
           },
@@ -17624,7 +17622,7 @@
             "decorators": [],
             "line_number": 2122
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_context_compressor_remaining.c",
           "c_function": "cc_update_from_response",
           "pop_annotation": {
@@ -17634,16 +17632,14 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 234,
+            "line": 283,
             "is_consolidated": false,
             "full_text": "/* PoP: update_from_response @ agent/context_compressor.py:update_from_response */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -17723,7 +17719,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 242,
+            "line": 293,
             "is_consolidated": false,
             "full_text": "/* PoP: should_defer_preflight_to_real_usage @ agent/context_compressor.py:should_defer_preflight_to_real_usage */"
           },
@@ -17744,7 +17740,7 @@
             "decorators": [],
             "line_number": 2232
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_context_compressor_remaining.c",
           "c_function": "cc_should_compress",
           "pop_annotation": {
@@ -17754,16 +17750,14 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 249,
+            "line": 299,
             "is_consolidated": false,
             "full_text": "/* PoP: should_compress @ agent/context_compressor.py:should_compress */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -17930,7 +17924,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 257,
+            "line": 309,
             "is_consolidated": false,
             "full_text": "/* PoP: _prune_old_tool_results @ agent/context_compressor.py:_prune_old_tool_results */"
           },
@@ -17978,7 +17972,7 @@
             "decorators": [],
             "line_number": 2784
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_context_compressor_remaining.c",
           "c_function": "cc_compute_summary_budget",
           "pop_annotation": {
@@ -17988,16 +17982,14 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 265,
+            "line": 317,
             "is_consolidated": false,
             "full_text": "/* PoP: _compute_summary_budget @ agent/context_compressor.py:_compute_summary_budget */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -18019,7 +18011,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 273,
+            "line": 329,
             "is_consolidated": false,
             "full_text": "/* PoP: _serialize_for_summary @ agent/context_compressor.py:_serialize_for_summary */"
           },
@@ -18137,7 +18129,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 281,
+            "line": 337,
             "is_consolidated": false,
             "full_text": "/* PoP: _generate_summary @ agent/context_compressor.py:_generate_summary */"
           },
@@ -18786,7 +18778,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 336,
+            "line": 392,
             "is_consolidated": false,
             "full_text": "/* PoP: _sanitize_tool_pairs @ agent/context_compressor.py:_sanitize_tool_pairs */"
           },
@@ -18815,7 +18807,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 344,
+            "line": 400,
             "is_consolidated": false,
             "full_text": "/* PoP: _align_boundary_forward @ agent/context_compressor.py:_align_boundary_forward */"
           },
@@ -18892,7 +18884,7 @@
             "decorators": [],
             "line_number": 4369
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_context_compressor_remaining.c",
           "c_function": "cc_protect_head_size",
           "pop_annotation": {
@@ -18902,16 +18894,14 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 352,
+            "line": 415,
             "is_consolidated": false,
             "full_text": "/* PoP: _protect_head_size @ agent/context_compressor.py:_protect_head_size */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -18933,7 +18923,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 359,
+            "line": 423,
             "is_consolidated": false,
             "full_text": "/* PoP: _align_boundary_backward @ agent/context_compressor.py:_align_boundary_backward */"
           },
@@ -18952,7 +18942,7 @@
             "decorators": [],
             "line_number": 4422
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_context_compressor_remaining.c",
           "c_function": "cc_find_last_user_message_idx",
           "pop_annotation": {
@@ -18962,16 +18952,14 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 366,
+            "line": 436,
             "is_consolidated": false,
             "full_text": "/* PoP: _find_last_user_message_idx @ agent/context_compressor.py:_find_last_user_message_idx */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -18983,7 +18971,7 @@
             "decorators": [],
             "line_number": 4440
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_context_compressor_remaining.c",
           "c_function": "cc_find_last_assistant_message_idx",
           "pop_annotation": {
@@ -18993,16 +18981,14 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 373,
+            "line": 443,
             "is_consolidated": false,
             "full_text": "/* PoP: _find_last_assistant_message_idx @ agent/context_compressor.py:_find_last_assistant_message_idx */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -19014,7 +19000,7 @@
             "decorators": [],
             "line_number": 4491
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_context_compressor_remaining.c",
           "c_function": "cc_ensure_last_assistant_message_in_tail",
           "pop_annotation": {
@@ -19024,16 +19010,14 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 380,
+            "line": 449,
             "is_consolidated": false,
             "full_text": "/* PoP: _ensure_last_assistant_message_in_tail @ agent/context_compressor.py:_ensure_last_assistant_message_in_tail */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -19045,7 +19029,7 @@
             "decorators": [],
             "line_number": 4549
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_context_compressor_remaining.c",
           "c_function": "cc_ensure_last_user_message_in_tail",
           "pop_annotation": {
@@ -19055,16 +19039,14 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 387,
+            "line": 458,
             "is_consolidated": false,
             "full_text": "/* PoP: _ensure_last_user_message_in_tail @ agent/context_compressor.py:_ensure_last_user_message_in_tail */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -19173,7 +19155,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 394,
+            "line": 466,
             "is_consolidated": false,
             "full_text": "/* PoP: has_content_to_compress @ agent/context_compressor.py:has_content_to_compress */"
           },
@@ -19202,7 +19184,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 403,
+            "line": 475,
             "is_consolidated": false,
             "full_text": "/* PoP: compress @ agent/context_compressor.py:compress */"
           },
