@@ -577,7 +577,14 @@ int main_u_is_fork(const char *arg) { (void)arg; return 0; }
 int main_u_has_upstream_remote(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _add_upstream_remote @ hermes_cli/main.py:_add_upstream_remote */
-int main_u_add_upstream_remote(const char *arg) { (void)arg; return 0; }
+int main_u_add_upstream_remote(const char *arg) {
+    /* Python: git remote add upstream <OFFICIAL_REPO_URL>; True on exit 0. */
+    char cmd[4096];
+    snprintf(cmd, sizeof(cmd),
+             "git -C %s remote add upstream https://github.com/NousResearch/hermes-agent.git >/dev/null 2>&1",
+             (arg && *arg) ? arg : ".");
+    return system(cmd) == 0;
+}
 
 /* PoP: _count_commits_between @ hermes_cli/main.py:_count_commits_between */
 int main_u_count_commits_between(const char *arg) { (void)arg; return 0; }

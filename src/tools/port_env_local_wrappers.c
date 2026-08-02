@@ -91,7 +91,17 @@ int envl_u_append_missing_sane_path_entries(const char *arg) { (void)arg; return
 int envl_u_apply_windows_msys_bash_env_defaults(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _path_env_key @ tools/environments/local.py:_path_env_key */
-int envl_u_path_env_key(const char *arg) { (void)arg; return 0; }
+int envl_u_path_env_key(const char *arg) {
+    /* Python: on POSIX always "PATH"; on Windows the correctly-cased key
+     * actually present in the environment (Path vs PATH). */
+    (void)arg;
+    const char *path_key = getenv("PATH");
+    if (path_key) { printf("PATH\n"); return 0; }
+    const char *win = getenv("Path");
+    if (win) { printf("Path\n"); return 0; }
+    printf("PATH\n");
+    return 0;
+}
 
 /* PoP: _make_run_env @ tools/environments/local.py:_make_run_env */
 int envl_u_make_run_env(const char *arg) { (void)arg; return 0; }

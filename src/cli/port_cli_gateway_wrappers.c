@@ -186,7 +186,25 @@ int cgw_u_system_service_identity(const char *arg) { (void)arg; return 0; }
 int cgw_u_read_systemd_user_from_unit(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _default_system_service_user @ hermes_cli/gateway.py:_default_system_service_user */
-int cgw_u_default_system_service_user(const char *arg) { (void)arg; return 0; }
+int cgw_u_default_system_service_user(const char *arg) {
+    /* Python: first of SUDO_USER/USER/LOGNAME that is non-empty and not
+     * "root"; None otherwise. */
+    (void)arg;
+    static const char *const names[] = {"SUDO_USER", "USER", "LOGNAME", NULL};
+    for (int i = 0; names[i]; i++) {
+        const char *v = getenv(names[i]);
+        if (!v) continue;
+        const char *s = v;
+        while (*s && isspace((unsigned char)*s)) s++;
+        size_t n = strlen(s);
+        while (n > 0 && isspace((unsigned char)s[n - 1])) n--;
+        if (n == 0 || (n == 4 && strncasecmp(s, "root", 4) == 0)) continue;
+        printf("%.*s\n", (int)n, s);
+        return 0;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: prompt_linux_gateway_install_scope @ hermes_cli/gateway.py:prompt_linux_gateway_install_scope */
 int cgw_prompt_linux_gateway_install_scope(const char *arg) { (void)arg; return 0; }

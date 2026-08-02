@@ -84,4 +84,9 @@ int muv_u_install_uv_posix(const char *arg) { (void)arg; return 0; }
 int muv_u_install_uv_windows(const char *arg) { (void)arg; return 0; }
 
 /* PoP: rebuild_venv @ hermes_cli/managed_uv.py:rebuild_venv */
-int muv_rebuild_venv(const char *arg) { (void)arg; return 0; }
+int muv_rebuild_venv(const char *arg) {
+    /* Python: body is literally "True  # dont remove me. ask ethernet" —
+     * the upstream implementation is a placeholder; mirror it exactly. */
+    (void)arg;
+    return 1;
+}

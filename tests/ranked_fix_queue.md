@@ -1,9 +1,9 @@
-# Ranked fix queue — 3209 bootleg functions
+# Ranked fix queue — 3195 bootleg functions
 
 - A  (delegate to real fn): 30
-- Bt (trivial direct-port): 172
+- Bt (trivial direct-port): 157
 - Bx (direct but needs deps): 1055
-- C  (deep subsystem):        1952
+- C  (deep subsystem):        1953
 
 ## Top of queue (automatable first)
 
@@ -63,27 +63,12 @@
 - [Bt] hermes_cli/gateway.py :: has_legacy_hermes_units -> cgw_has_legacy_hermes_units
 - [Bt] hermes_cli/gateway.py :: has_process_service_mismatch -> cgw_has_process_service_mismatch
 - [Bt] hermes_cli/gateway.py :: print_systemd_linger_guidance -> cgw_print_systemd_linger_guidance
-- [Bt] hermes_cli/auth.py :: _is_codex_rate_limit_shaped -> auth_u_is_codex_rate_limit_shaped
-- [Bt] gateway/platforms/qqbot/adapter.py :: _guess_ext_from_data -> qqbot_u_guess_ext_from_data
-- [Bt] gateway/platforms/qqbot/adapter.py :: _merge_quote_into -> qqbot_u_merge_quote_into
-- [Bt] gateway/platforms/qqbot/adapter.py :: set_interaction_callback -> qqbot_set_interaction_callback
-- [Bt] hermes_cli/gateway_windows.py :: _install_choice_from_env -> gw_u_install_choice_from_env
-- [Bt] hermes_cli/gateway_windows.py :: _resolve_task_user -> gw_u_resolve_task_user
-- [Bt] hermes_cli/gateway_windows.py :: is_task_registered -> gw_is_task_registered
 - [Bt] tools/environments/local.py :: _path_env_key -> envl_u_path_env_key
 - [Bt] tools/environments/local.py :: _resolve_hermes_bin_dir -> envl_u_resolve_hermes_bin_dir
-- [Bt] agent/moa_loop.py :: _degraded_notice -> moa_u_degraded_notice
-- [Bt] agent/moa_loop.py :: _failed_reference_labels -> moa_u_failed_reference_labels
-- [Bt] agent/moa_loop.py :: _is_failed_reference -> moa_u_is_failed_reference
-- [Bt] tools/mcp_oauth.py :: _client_info_path -> mcpo_u_client_info_path
-- [Bt] tools/mcp_oauth.py :: _meta_path -> mcpo_u_meta_path
-- [Bt] tools/mcp_oauth.py :: _tokens_path -> mcpo_u_tokens_path
 - [Bt] gateway/platforms/weixin.py :: _get_config -> wx_u_get_config
 - [Bt] gateway/platforms/weixin.py :: _get_upload_url -> wx_u_get_upload_url
 - [Bt] agent/memory_manager.py :: _has_block_opener_suffix -> mm_u_has_block_opener_suffix
 - [Bt] agent/memory_manager.py :: on_memory_write -> mm_on_memory_write
-- [Bt] tools/environments/base.py :: _get_activity_callback -> envb_u_get_activity_callback
-- [Bt] tools/environments/base.py :: _quote_shell_path -> envb_u_quote_shell_path
 - [Bt] tools/environments/base.py :: set_activity_callback -> envb_set_activity_callback
 - [Bt] tools/approval.py :: _read_tool_exec_flag -> appr_u_read_tool_exec_flag
 - [Bt] hermes_cli/windows_ssh_runtime.py :: _log_path -> wssr_u_log_path
@@ -207,3 +192,18 @@
 - [Bt] tools/environments/file_sync.py :: _resolve_host_path -> tools_environments_file_sync_u_resolve_host_path
 - [Bt] tools/mixture_of_agents_tool.py :: _build_auth_header -> tools_mixture_of_agents_tool_u_build_auth_header
 - [Bt] tools/moa_performance.py :: _build_auth_header -> tools_moa_performance_u_build_auth_header
+- [Bt] tools/todo_tool.py :: check_todo_requirements -> todo_tool_check_requirements
+- [Bt] tools/url_safety.py :: _reset_allow_private_cache -> cli_tools_url_safety__reset_allow_private_cache
+- [Bx] hermes_cli/main.py :: _build_web_ui -> main_u_build_web_ui
+- [Bx] hermes_cli/main.py :: _cmd_update_check -> main_u_cmd_update_check
+- [Bx] hermes_cli/main.py :: _compute_desktop_content_hash -> main_u_compute_desktop_content_hash
+- [Bx] hermes_cli/main.py :: _compute_web_ui_content_hash -> main_u_compute_web_ui_content_hash
+- [Bx] hermes_cli/main.py :: _config_default_interface_early -> main_u_config_default_interface_early
+- [Bx] hermes_cli/main.py :: _default_venv_install_target -> main_u_default_venv_install_target
+- [Bx] hermes_cli/main.py :: _desktop_build_needed -> main_u_desktop_build_needed
+- [Bx] hermes_cli/main.py :: _desktop_linux_sandbox_helper_is_regular_file -> main_u_desktop_linux_sandbox_helper_is_regular_file
+- [Bx] hermes_cli/main.py :: _desktop_stamp_path -> main_u_desktop_stamp_path
+- [Bx] hermes_cli/main.py :: _detect_broken_lazy_refresh_imports -> main_u_detect_broken_lazy_refresh_imports
+- [Bx] hermes_cli/main.py :: _detect_concurrent_hermes_instances -> main_u_detect_concurrent_hermes_instances
+- [Bx] hermes_cli/main.py :: _detect_venv_python_processes -> main_u_detect_venv_python_processes
+- [Bx] hermes_cli/main.py :: _do_build_web_ui -> main_u_do_build_web_ui

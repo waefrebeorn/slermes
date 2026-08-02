@@ -24,7 +24,19 @@ int mm_u_find_boundary_open_tag(const char *arg) { (void)arg; return 0; }
 int mm_u_max_pending_open_suffix(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _has_block_opener_suffix @ agent/memory_manager.py:_has_block_opener_suffix */
-int mm_u_has_block_opener_suffix(const char *arg) { (void)arg; return 0; }
+int mm_u_has_block_opener_suffix(const char *arg) {
+    /* Python (buf, idx): after_idx = idx + len("<memory-context>"); False
+     * past the end; else True when the char there is \r or \n. */
+    if (!arg) return 0;
+    const char *tab = strchr(arg, '\t');
+    const char *idx_s = tab ? arg : "0";
+    const char *buf = tab ? tab + 1 : arg;
+    long idx = strtol(idx_s, NULL, 10);
+    size_t blen = strlen(buf);
+    size_t after = (size_t)idx + 15; /* len("<memory-context>") == 15 */
+    if (after >= blen) return 0;
+    return buf[after] == '\r' || buf[after] == '\n';
+}
 
 /* PoP: _append_visible @ agent/memory_manager.py:_append_visible */
 int mm_u_append_visible(const char *arg) { (void)arg; return 0; }

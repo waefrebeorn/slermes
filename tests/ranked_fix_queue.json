@@ -1,10 +1,10 @@
 {
- "total": 3209,
+ "total": 3195,
  "by_cat": {
   "A": 30,
-  "Bt": 172,
+  "Bt": 157,
   "Bx": 1055,
-  "C": 1952
+  "C": 1953
  },
  "by_module": {
   "agent/account_usage.py": 4,
@@ -15,7 +15,7 @@
   "agent/auxiliary_client.py": 6,
   "agent/battery.py": 3,
   "agent/bedrock_adapter.py": 4,
-  "agent/billing_usage.py": 3,
+  "agent/billing_usage.py": 4,
   "agent/billing_view.py": 5,
   "agent/bounded_response.py": 3,
   "agent/chat_completion_helpers.py": 14,
@@ -40,7 +40,7 @@
   "agent/lsp/manager.py": 1,
   "agent/memory_manager.py": 31,
   "agent/memory_provider.py": 8,
-  "agent/moa_loop.py": 34,
+  "agent/moa_loop.py": 31,
   "agent/moa_trace.py": 3,
   "agent/model_metadata.py": 16,
   "agent/moonshot_schema.py": 1,
@@ -101,7 +101,7 @@
   "gateway/platforms/bluebubbles.py": 17,
   "gateway/platforms/helpers.py": 3,
   "gateway/platforms/msgraph_webhook.py": 1,
-  "gateway/platforms/qqbot/adapter.py": 63,
+  "gateway/platforms/qqbot/adapter.py": 60,
   "gateway/platforms/qqbot/chunked_upload.py": 12,
   "gateway/platforms/signal.py": 19,
   "gateway/platforms/signal_rate_limit.py": 1,
@@ -136,7 +136,7 @@
   "hermes_cli/_parser.py": 1,
   "hermes_cli/_subprocess_compat.py": 7,
   "hermes_cli/active_sessions.py": 11,
-  "hermes_cli/auth.py": 86,
+  "hermes_cli/auth.py": 85,
   "hermes_cli/auth_commands.py": 14,
   "hermes_cli/azure_detect.py": 5,
   "hermes_cli/backup.py": 14,
@@ -181,7 +181,7 @@
   "hermes_cli/fallback_config.py": 2,
   "hermes_cli/gateway.py": 143,
   "hermes_cli/gateway_enroll.py": 5,
-  "hermes_cli/gateway_windows.py": 50,
+  "hermes_cli/gateway_windows.py": 47,
   "hermes_cli/goals.py": 5,
   "hermes_cli/gui_uninstall.py": 12,
   "hermes_cli/inventory.py": 11,
@@ -327,7 +327,7 @@
   "tools/desktop_ui.py": 1,
   "tools/discord_tool.py": 1,
   "tools/env_probe.py": 4,
-  "tools/environments/base.py": 31,
+  "tools/environments/base.py": 29,
   "tools/environments/daytona.py": 1,
   "tools/environments/docker.py": 25,
   "tools/environments/file_sync.py": 1,
@@ -349,7 +349,7 @@
   "tools/kanban_tools.py": 8,
   "tools/lazy_deps.py": 15,
   "tools/mcp_dashboard_oauth.py": 10,
-  "tools/mcp_oauth.py": 34,
+  "tools/mcp_oauth.py": 31,
   "tools/mcp_stdio_watchdog.py": 3,
   "tools/mcp_tool.py": 1,
   "tools/microsoft_graph_client.py": 2,
@@ -879,62 +879,6 @@
    "candidates": []
   },
   {
-   "module": "hermes_cli/auth.py",
-   "py": "_is_codex_rate_limit_shaped",
-   "c": "auth_u_is_codex_rate_limit_shaped",
-   "file": "src/cli/port_auth_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "gateway/platforms/qqbot/adapter.py",
-   "py": "_guess_ext_from_data",
-   "c": "qqbot_u_guess_ext_from_data",
-   "file": "src/gateway/port_qqbot_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "gateway/platforms/qqbot/adapter.py",
-   "py": "_merge_quote_into",
-   "c": "qqbot_u_merge_quote_into",
-   "file": "src/gateway/port_qqbot_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "gateway/platforms/qqbot/adapter.py",
-   "py": "set_interaction_callback",
-   "c": "qqbot_set_interaction_callback",
-   "file": "src/gateway/port_qqbot_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/gateway_windows.py",
-   "py": "_install_choice_from_env",
-   "c": "gw_u_install_choice_from_env",
-   "file": "src/cli/port_gateway_windows_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/gateway_windows.py",
-   "py": "_resolve_task_user",
-   "c": "gw_u_resolve_task_user",
-   "file": "src/cli/port_gateway_windows_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/gateway_windows.py",
-   "py": "is_task_registered",
-   "c": "gw_is_task_registered",
-   "file": "src/cli/port_gateway_windows_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
    "module": "tools/environments/local.py",
    "py": "_path_env_key",
    "c": "envl_u_path_env_key",
@@ -947,54 +891,6 @@
    "py": "_resolve_hermes_bin_dir",
    "c": "envl_u_resolve_hermes_bin_dir",
    "file": "src/tools/port_env_local_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_degraded_notice",
-   "c": "moa_u_degraded_notice",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_failed_reference_labels",
-   "c": "moa_u_failed_reference_labels",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_is_failed_reference",
-   "c": "moa_u_is_failed_reference",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "tools/mcp_oauth.py",
-   "py": "_client_info_path",
-   "c": "mcpo_u_client_info_path",
-   "file": "src/tools/port_mcp_oauth_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "tools/mcp_oauth.py",
-   "py": "_meta_path",
-   "c": "mcpo_u_meta_path",
-   "file": "src/tools/port_mcp_oauth_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "tools/mcp_oauth.py",
-   "py": "_tokens_path",
-   "c": "mcpo_u_tokens_path",
-   "file": "src/tools/port_mcp_oauth_wrappers.c",
    "cat": "Bt",
    "candidates": []
   },
@@ -1027,22 +923,6 @@
    "py": "on_memory_write",
    "c": "mm_on_memory_write",
    "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/base.py",
-   "py": "_get_activity_callback",
-   "c": "envb_u_get_activity_callback",
-   "file": "src/tools/port_env_base_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/base.py",
-   "py": "_quote_shell_path",
-   "c": "envb_u_quote_shell_path",
-   "file": "src/tools/port_env_base_wrappers.c",
    "cat": "Bt",
    "candidates": []
   },
@@ -4527,6 +4407,102 @@
    "candidates": []
   },
   {
+   "module": "gateway/platforms/weixin.py",
+   "py": "_is_dm_intake_allowed",
+   "c": "wx_u_is_dm_intake_allowed",
+   "file": "src/gateway/port_weixin_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/platforms/weixin.py",
+   "py": "_make_ssl_connector",
+   "c": "wx_u_make_ssl_connector",
+   "file": "src/gateway/port_weixin_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/platforms/weixin.py",
+   "py": "_outbound_media_builder",
+   "c": "wx_u_outbound_media_builder",
+   "file": "src/gateway/port_weixin_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/platforms/weixin.py",
+   "py": "_reset_rate_limit_circuit",
+   "c": "wx_u_reset_rate_limit_circuit",
+   "file": "src/gateway/port_weixin_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/platforms/weixin.py",
+   "py": "load_weixin_account",
+   "c": "wx_load_weixin_account",
+   "file": "src/gateway/port_weixin_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/platforms/weixin.py",
+   "py": "save_weixin_account",
+   "c": "wx_save_weixin_account",
+   "file": "src/gateway/port_weixin_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "_forget_background_future",
+   "c": "mm_u_forget_background_future",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "_get_sync_executor",
+   "c": "mm_u_get_sync_executor",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "_provider_memory_write_metadata_mode",
+   "c": "mm_u_provider_memory_write_metadata_mode",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "get_all_tool_names",
+   "c": "mm_get_all_tool_names",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "get_all_tool_schemas",
+   "c": "mm_get_all_tool_schemas",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "notify_memory_tool_write",
+   "c": "mm_notify_memory_tool_write",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
    "module": "agent/moa_loop.py",
    "py": "_preset_temperature",
    "c": "moa_u_preset_temperature",
@@ -4711,98 +4687,26 @@
    "candidates": []
   },
   {
-   "module": "gateway/platforms/weixin.py",
-   "py": "_is_dm_intake_allowed",
-   "c": "wx_u_is_dm_intake_allowed",
-   "file": "src/gateway/port_weixin_wrappers.c",
+   "module": "tools/async_delegation.py",
+   "py": "_db_path",
+   "c": "adel_u_db_path",
+   "file": "src/tools/port_async_delegation_wrappers.c",
    "cat": "Bx",
    "candidates": []
   },
   {
-   "module": "gateway/platforms/weixin.py",
-   "py": "_make_ssl_connector",
-   "c": "wx_u_make_ssl_connector",
-   "file": "src/gateway/port_weixin_wrappers.c",
+   "module": "tools/async_delegation.py",
+   "py": "_get_executor",
+   "c": "adel_u_get_executor",
+   "file": "src/tools/port_async_delegation_wrappers.c",
    "cat": "Bx",
    "candidates": []
   },
   {
-   "module": "gateway/platforms/weixin.py",
-   "py": "_outbound_media_builder",
-   "c": "wx_u_outbound_media_builder",
-   "file": "src/gateway/port_weixin_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/platforms/weixin.py",
-   "py": "_reset_rate_limit_circuit",
-   "c": "wx_u_reset_rate_limit_circuit",
-   "file": "src/gateway/port_weixin_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/platforms/weixin.py",
-   "py": "load_weixin_account",
-   "c": "wx_load_weixin_account",
-   "file": "src/gateway/port_weixin_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/platforms/weixin.py",
-   "py": "save_weixin_account",
-   "c": "wx_save_weixin_account",
-   "file": "src/gateway/port_weixin_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "_forget_background_future",
-   "c": "mm_u_forget_background_future",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "_get_sync_executor",
-   "c": "mm_u_get_sync_executor",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "_provider_memory_write_metadata_mode",
-   "c": "mm_u_provider_memory_write_metadata_mode",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "get_all_tool_names",
-   "c": "mm_get_all_tool_names",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "get_all_tool_schemas",
-   "c": "mm_get_all_tool_schemas",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "notify_memory_tool_write",
-   "c": "mm_notify_memory_tool_write",
-   "file": "src/agent/port_memory_manager_wrappers.c",
+   "module": "tools/async_delegation.py",
+   "py": "get_durable_delegation",
+   "c": "adel_get_durable_delegation",
+   "file": "src/tools/port_async_delegation_wrappers.c",
    "cat": "Bx",
    "candidates": []
   },
@@ -4835,30 +4739,6 @@
    "py": "get_temp_dir",
    "c": "envb_get_temp_dir",
    "file": "src/tools/port_env_base_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/async_delegation.py",
-   "py": "_db_path",
-   "c": "adel_u_db_path",
-   "file": "src/tools/port_async_delegation_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/async_delegation.py",
-   "py": "_get_executor",
-   "c": "adel_u_get_executor",
-   "file": "src/tools/port_async_delegation_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/async_delegation.py",
-   "py": "get_durable_delegation",
-   "c": "adel_get_durable_delegation",
-   "file": "src/tools/port_async_delegation_wrappers.c",
    "cat": "Bx",
    "candidates": []
   },
@@ -9391,6 +9271,14 @@
    "candidates": []
   },
   {
+   "module": "agent/billing_usage.py",
+   "py": "build_usage_model",
+   "c": "agent_billing_usage_build_usage_model",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
    "module": "agent/kanban_stop.py",
    "py": "_tool_call_name",
    "c": "agent_kanban_stop_u_tool_call_name",
@@ -9634,14 +9522,6 @@
    "module": "agent/battery.py",
    "py": "_read_battery_uncached",
    "c": "agent_battery_u_read_battery_uncached",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/billing_usage.py",
-   "py": "build_usage_model",
-   "c": "agent_billing_usage_build_usage_model",
    "file": "src/agent/port_agent_remaining_wrappers.c",
    "cat": "Bx",
    "candidates": []
@@ -15255,318 +15135,6 @@
    "candidates": []
   },
   {
-   "module": "agent/moa_loop.py",
-   "py": "_aggregator_reasoning_config",
-   "c": "moa_u_aggregator_reasoning_config",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_attach_reference_guidance",
-   "c": "moa_u_attach_reference_guidance",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_call_prepared_aggregator",
-   "c": "moa_u_call_prepared_aggregator",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_maybe_apply_moa_cache_control",
-   "c": "moa_u_maybe_apply_moa_cache_control",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_merge_slot_extra_body",
-   "c": "moa_u_merge_slot_extra_body",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_moa_privacy_mode",
-   "c": "moa_u_moa_privacy_mode",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_redact_reference_outputs",
-   "c": "moa_u_redact_reference_outputs",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_redact_reference_text",
-   "c": "moa_u_redact_reference_text",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_redact_trace_messages",
-   "c": "moa_u_redact_trace_messages",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_reference_messages",
-   "c": "moa_u_reference_messages",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_run_reference",
-   "c": "moa_u_run_reference",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_run_references_parallel",
-   "c": "moa_u_run_references_parallel",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_slot_reasoning_config",
-   "c": "moa_u_slot_reasoning_config",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_slot_runtime",
-   "c": "moa_u_slot_runtime",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_successful_references",
-   "c": "moa_u_successful_references",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_trim_messages_for_reference",
-   "c": "moa_u_trim_messages_for_reference",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_truncate_tool_result",
-   "c": "moa_u_truncate_tool_result",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "aggregate_moa_context",
-   "c": "moa_aggregate_moa_context",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "consume_and_save_trace",
-   "c": "moa_consume_and_save_trace",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "consume_and_save_trace",
-   "c": "moa_consume_and_save_trace",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "consume_reference_usage",
-   "c": "moa_consume_reference_usage",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "consume_reference_usage",
-   "c": "moa_consume_reference_usage",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "last_aggregator_slot",
-   "c": "moa_last_aggregator_slot",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "prepare",
-   "c": "moa_prepare",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "rebase_prepared_request",
-   "c": "moa_rebase_prepared_request",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/mcp_oauth.py",
-   "py": "_cached_redirect_port",
-   "c": "mcpo_u_cached_redirect_port",
-   "file": "src/tools/port_mcp_oauth_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/mcp_oauth.py",
-   "py": "_cached_redirect_uri",
-   "c": "mcpo_u_cached_redirect_uri",
-   "file": "src/tools/port_mcp_oauth_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/mcp_oauth.py",
-   "py": "_can_open_browser",
-   "c": "mcpo_u_can_open_browser",
-   "file": "src/tools/port_mcp_oauth_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/mcp_oauth.py",
-   "py": "_configure_callback_port",
-   "c": "mcpo_u_configure_callback_port",
-   "file": "src/tools/port_mcp_oauth_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/mcp_oauth.py",
-   "py": "_find_free_port",
-   "c": "mcpo_u_find_free_port",
-   "file": "src/tools/port_mcp_oauth_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/mcp_oauth.py",
-   "py": "_maybe_preregister_client",
-   "c": "mcpo_u_maybe_preregister_client",
-   "file": "src/tools/port_mcp_oauth_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/mcp_oauth.py",
-   "py": "_raise_if_non_interactive",
-   "c": "mcpo_u_raise_if_non_interactive",
-   "file": "src/tools/port_mcp_oauth_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/mcp_oauth.py",
-   "py": "_reserve_callback_port",
-   "c": "mcpo_u_reserve_callback_port",
-   "file": "src/tools/port_mcp_oauth_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/mcp_oauth.py",
-   "py": "_wait_for_callback",
-   "c": "mcpo_u_wait_for_callback",
-   "file": "src/tools/port_mcp_oauth_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/mcp_oauth.py",
-   "py": "force_interactive_oauth",
-   "c": "mcpo_force_interactive_oauth",
-   "file": "src/tools/port_mcp_oauth_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/mcp_oauth.py",
-   "py": "load_oauth_metadata",
-   "c": "mcpo_load_oauth_metadata",
-   "file": "src/tools/port_mcp_oauth_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/mcp_oauth.py",
-   "py": "remove_oauth_tokens",
-   "c": "mcpo_remove_oauth_tokens",
-   "file": "src/tools/port_mcp_oauth_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/mcp_oauth.py",
-   "py": "save_oauth_metadata",
-   "c": "mcpo_save_oauth_metadata",
-   "file": "src/tools/port_mcp_oauth_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/mcp_oauth.py",
-   "py": "suppress_interactive_oauth",
-   "c": "mcpo_suppress_interactive_oauth",
-   "file": "src/tools/port_mcp_oauth_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
    "module": "gateway/platforms/weixin.py",
    "py": "_api_get",
    "c": "wx_u_api_get",
@@ -15943,186 +15511,314 @@
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "__del__",
-   "c": "envb_u__del__",
-   "file": "src/tools/port_env_base_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "_aggregator_reasoning_config",
+   "c": "moa_u_aggregator_reasoning_config",
+   "file": "src/agent/port_moa_loop_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "_cwd_marker",
-   "c": "envb_u_cwd_marker",
-   "file": "src/tools/port_env_base_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "_attach_reference_guidance",
+   "c": "moa_u_attach_reference_guidance",
+   "file": "src/agent/port_moa_loop_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "_embed_stdin_heredoc",
-   "c": "envb_u_embed_stdin_heredoc",
-   "file": "src/tools/port_env_base_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "_call_prepared_aggregator",
+   "c": "moa_u_call_prepared_aggregator",
+   "file": "src/agent/port_moa_loop_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "_file_mtime_key",
-   "c": "envb_u_file_mtime_key",
-   "file": "src/tools/port_env_base_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "_maybe_apply_moa_cache_control",
+   "c": "moa_u_maybe_apply_moa_cache_control",
+   "file": "src/agent/port_moa_loop_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "_load_json_store",
-   "c": "envb_u_load_json_store",
-   "file": "src/tools/port_env_base_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "_merge_slot_extra_body",
+   "c": "moa_u_merge_slot_extra_body",
+   "file": "src/agent/port_moa_loop_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "_pipe_stdin",
-   "c": "envb_u_pipe_stdin",
-   "file": "src/tools/port_env_base_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "_moa_privacy_mode",
+   "c": "moa_u_moa_privacy_mode",
+   "file": "src/agent/port_moa_loop_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "_popen_bash",
-   "c": "envb_u_popen_bash",
-   "file": "src/tools/port_env_base_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "_redact_reference_outputs",
+   "c": "moa_u_redact_reference_outputs",
+   "file": "src/agent/port_moa_loop_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "_prepare_command",
-   "c": "envb_u_prepare_command",
-   "file": "src/tools/port_env_base_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "_redact_reference_text",
+   "c": "moa_u_redact_reference_text",
+   "file": "src/agent/port_moa_loop_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "_save_json_store",
-   "c": "envb_u_save_json_store",
-   "file": "src/tools/port_env_base_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "_redact_trace_messages",
+   "c": "moa_u_redact_trace_messages",
+   "file": "src/agent/port_moa_loop_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "_update_cwd",
-   "c": "envb_u_update_cwd",
-   "file": "src/tools/port_env_base_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "_reference_messages",
+   "c": "moa_u_reference_messages",
+   "file": "src/agent/port_moa_loop_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "_wait_for_process",
-   "c": "envb_u_wait_for_process",
-   "file": "src/tools/port_env_base_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "_run_reference",
+   "c": "moa_u_run_reference",
+   "file": "src/agent/port_moa_loop_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "_wrap_command",
-   "c": "envb_u_wrap_command",
-   "file": "src/tools/port_env_base_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "_run_references_parallel",
+   "c": "moa_u_run_references_parallel",
+   "file": "src/agent/port_moa_loop_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "append",
-   "c": "envb_append",
-   "file": "src/tools/port_env_base_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "_slot_reasoning_config",
+   "c": "moa_u_slot_reasoning_config",
+   "file": "src/agent/port_moa_loop_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "buffered_chars",
-   "c": "envb_buffered_chars",
-   "file": "src/tools/port_env_base_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "_slot_runtime",
+   "c": "moa_u_slot_runtime",
+   "file": "src/agent/port_moa_loop_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "init_session",
-   "c": "envb_init_session",
-   "file": "src/tools/port_env_base_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "_successful_references",
+   "c": "moa_u_successful_references",
+   "file": "src/agent/port_moa_loop_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "poll",
-   "c": "agent_video_gen_provider_u_create_and_poll",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "_trim_messages_for_reference",
+   "c": "moa_u_trim_messages_for_reference",
+   "file": "src/agent/port_moa_loop_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "poll",
-   "c": "agent_video_gen_provider_u_create_and_poll",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "_truncate_tool_result",
+   "c": "moa_u_truncate_tool_result",
+   "file": "src/agent/port_moa_loop_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "returncode",
-   "c": "envb_returncode",
-   "file": "src/tools/port_env_base_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "aggregate_moa_context",
+   "c": "moa_aggregate_moa_context",
+   "file": "src/agent/port_moa_loop_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "returncode",
-   "c": "envb_returncode",
-   "file": "src/tools/port_env_base_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "consume_and_save_trace",
+   "c": "moa_consume_and_save_trace",
+   "file": "src/agent/port_moa_loop_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "stdout",
-   "c": "envb_stdout",
-   "file": "src/tools/port_env_base_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "consume_and_save_trace",
+   "c": "moa_consume_and_save_trace",
+   "file": "src/agent/port_moa_loop_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "stdout",
-   "c": "envb_stdout",
-   "file": "src/tools/port_env_base_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "consume_reference_usage",
+   "c": "moa_consume_reference_usage",
+   "file": "src/agent/port_moa_loop_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "total_chars",
-   "c": "envb_total_chars",
-   "file": "src/tools/port_env_base_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "consume_reference_usage",
+   "c": "moa_consume_reference_usage",
+   "file": "src/agent/port_moa_loop_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "tools/environments/base.py",
-   "py": "touch_activity_if_due",
-   "c": "envb_touch_activity_if_due",
-   "file": "src/tools/port_env_base_wrappers.c",
+   "module": "agent/moa_loop.py",
+   "py": "last_aggregator_slot",
+   "c": "moa_last_aggregator_slot",
+   "file": "src/agent/port_moa_loop_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/moa_loop.py",
+   "py": "prepare",
+   "c": "moa_prepare",
+   "file": "src/agent/port_moa_loop_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/moa_loop.py",
+   "py": "rebase_prepared_request",
+   "c": "moa_rebase_prepared_request",
+   "file": "src/agent/port_moa_loop_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/mcp_oauth.py",
+   "py": "_cached_redirect_port",
+   "c": "mcpo_u_cached_redirect_port",
+   "file": "src/tools/port_mcp_oauth_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/mcp_oauth.py",
+   "py": "_cached_redirect_uri",
+   "c": "mcpo_u_cached_redirect_uri",
+   "file": "src/tools/port_mcp_oauth_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/mcp_oauth.py",
+   "py": "_can_open_browser",
+   "c": "mcpo_u_can_open_browser",
+   "file": "src/tools/port_mcp_oauth_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/mcp_oauth.py",
+   "py": "_configure_callback_port",
+   "c": "mcpo_u_configure_callback_port",
+   "file": "src/tools/port_mcp_oauth_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/mcp_oauth.py",
+   "py": "_find_free_port",
+   "c": "mcpo_u_find_free_port",
+   "file": "src/tools/port_mcp_oauth_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/mcp_oauth.py",
+   "py": "_maybe_preregister_client",
+   "c": "mcpo_u_maybe_preregister_client",
+   "file": "src/tools/port_mcp_oauth_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/mcp_oauth.py",
+   "py": "_raise_if_non_interactive",
+   "c": "mcpo_u_raise_if_non_interactive",
+   "file": "src/tools/port_mcp_oauth_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/mcp_oauth.py",
+   "py": "_reserve_callback_port",
+   "c": "mcpo_u_reserve_callback_port",
+   "file": "src/tools/port_mcp_oauth_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/mcp_oauth.py",
+   "py": "_wait_for_callback",
+   "c": "mcpo_u_wait_for_callback",
+   "file": "src/tools/port_mcp_oauth_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/mcp_oauth.py",
+   "py": "force_interactive_oauth",
+   "c": "mcpo_force_interactive_oauth",
+   "file": "src/tools/port_mcp_oauth_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/mcp_oauth.py",
+   "py": "load_oauth_metadata",
+   "c": "mcpo_load_oauth_metadata",
+   "file": "src/tools/port_mcp_oauth_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/mcp_oauth.py",
+   "py": "remove_oauth_tokens",
+   "c": "mcpo_remove_oauth_tokens",
+   "file": "src/tools/port_mcp_oauth_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/mcp_oauth.py",
+   "py": "save_oauth_metadata",
+   "c": "mcpo_save_oauth_metadata",
+   "file": "src/tools/port_mcp_oauth_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/mcp_oauth.py",
+   "py": "suppress_interactive_oauth",
+   "c": "mcpo_suppress_interactive_oauth",
+   "file": "src/tools/port_mcp_oauth_wrappers.c",
    "cat": "C",
    "candidates": []
   },
@@ -16331,6 +16027,190 @@
    "py": "restore_undelivered_completions",
    "c": "adel_restore_undelivered_completions",
    "file": "src/tools/port_async_delegation_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "__del__",
+   "c": "envb_u__del__",
+   "file": "src/tools/port_env_base_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "_cwd_marker",
+   "c": "envb_u_cwd_marker",
+   "file": "src/tools/port_env_base_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "_embed_stdin_heredoc",
+   "c": "envb_u_embed_stdin_heredoc",
+   "file": "src/tools/port_env_base_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "_file_mtime_key",
+   "c": "envb_u_file_mtime_key",
+   "file": "src/tools/port_env_base_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "_load_json_store",
+   "c": "envb_u_load_json_store",
+   "file": "src/tools/port_env_base_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "_pipe_stdin",
+   "c": "envb_u_pipe_stdin",
+   "file": "src/tools/port_env_base_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "_popen_bash",
+   "c": "envb_u_popen_bash",
+   "file": "src/tools/port_env_base_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "_prepare_command",
+   "c": "envb_u_prepare_command",
+   "file": "src/tools/port_env_base_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "_save_json_store",
+   "c": "envb_u_save_json_store",
+   "file": "src/tools/port_env_base_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "_update_cwd",
+   "c": "envb_u_update_cwd",
+   "file": "src/tools/port_env_base_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "_wait_for_process",
+   "c": "envb_u_wait_for_process",
+   "file": "src/tools/port_env_base_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "_wrap_command",
+   "c": "envb_u_wrap_command",
+   "file": "src/tools/port_env_base_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "append",
+   "c": "envb_append",
+   "file": "src/tools/port_env_base_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "buffered_chars",
+   "c": "envb_buffered_chars",
+   "file": "src/tools/port_env_base_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "init_session",
+   "c": "envb_init_session",
+   "file": "src/tools/port_env_base_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "poll",
+   "c": "agent_video_gen_provider_u_create_and_poll",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "poll",
+   "c": "agent_video_gen_provider_u_create_and_poll",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "returncode",
+   "c": "envb_returncode",
+   "file": "src/tools/port_env_base_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "returncode",
+   "c": "envb_returncode",
+   "file": "src/tools/port_env_base_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "stdout",
+   "c": "envb_stdout",
+   "file": "src/tools/port_env_base_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "stdout",
+   "c": "envb_stdout",
+   "file": "src/tools/port_env_base_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "total_chars",
+   "c": "envb_total_chars",
+   "file": "src/tools/port_env_base_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/base.py",
+   "py": "touch_activity_if_due",
+   "c": "envb_touch_activity_if_due",
+   "file": "src/tools/port_env_base_wrappers.c",
    "cat": "C",
    "candidates": []
   },
@@ -24703,6 +24583,30 @@
    "candidates": []
   },
   {
+   "module": "agent/billing_usage.py",
+   "py": "_dev_fixture_usage_model",
+   "c": "agent_billing_usage_u_dev_fixture_usage_model",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/billing_usage.py",
+   "py": "_fmt_usd",
+   "c": "billing_usage_fmt_usd",
+   "file": "src/agent/port_billing_usage.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/billing_usage.py",
+   "py": "fill_fraction",
+   "c": "usage_bar_fill_fraction",
+   "file": "src/agent/port_billing_usage.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
    "module": "agent/kanban_stop.py",
    "py": "kanban_stop_nudge_enabled",
    "c": "agent_kanban_stop_kanban_stop_nudge_enabled",
@@ -25139,22 +25043,6 @@
    "py": "clear_cache",
    "c": "agent_battery_clear_cache",
    "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/billing_usage.py",
-   "py": "_dev_fixture_usage_model",
-   "c": "agent_billing_usage_u_dev_fixture_usage_model",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/billing_usage.py",
-   "py": "fill_fraction",
-   "c": "usage_bar_fill_fraction",
-   "file": "src/agent/port_billing_usage.c",
    "cat": "C",
    "candidates": []
   },

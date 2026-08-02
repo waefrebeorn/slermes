@@ -39,7 +39,29 @@ int uninst_remove_node_symlinks(const char *arg) { (void)arg; return 0; }
 int uninst_uninstall_gateway_service(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _hermes_path_markers @ hermes_cli/uninstall.py:_hermes_path_markers */
-int uninst_u_hermes_path_markers(const char *arg) { (void)arg; return 0; }
+int uninst_u_hermes_path_markers(const char *arg) {
+    /* Python: HERMES_HOME-rooted markers sweeping hermes-agent/git/node/
+     * venv sub-entries (prefix match on backslash-joined components).
+     * Arg = hermes_home (defaults to ~/.hermes). */
+    const char *root = (arg && *arg) ? arg : NULL;
+    char buf[1024];
+    if (!root) {
+        const char *hh = getenv("HERMES_HOME");
+        if (hh && *hh) root = hh;
+    }
+    if (!root) {
+        const char *home = getenv("HOME");
+        snprintf(buf, sizeof(buf), "%s/.hermes", home ? home : ".");
+        root = buf;
+    }
+    char r[512];
+    snprintf(r, sizeof(r), "%s", root);
+    size_t rl = strlen(r);
+    while (rl > 0 && (r[rl-1] == '\\' || r[rl-1] == '/')) r[--rl] = '\0';
+    static const char *const subs[] = {"hermes-agent", "git", "node", "venv", NULL};
+    for (int i = 0; subs[i]; i++) printf("%s\\%s\n", r, subs[i]);
+    return 0;
+}
 
 /* PoP: remove_path_from_windows_registry @ hermes_cli/uninstall.py:remove_path_from_windows_registry */
 int uninst_remove_path_from_windows_registry(const char *arg) { (void)arg; return 0; }

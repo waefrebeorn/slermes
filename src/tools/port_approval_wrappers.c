@@ -54,7 +54,63 @@ int appr_u_interpreter_exec_flag(const char *arg) { (void)arg; return 0; }
 int appr_u_bash_exec_payload(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _read_tool_exec_flag @ tools/approval.py:_read_tool_exec_flag */
-int appr_u_read_tool_exec_flag(const char *arg) { (void)arg; return 0; }
+int appr_u_read_tool_exec_flag(const char *arg) {
+    /* Python (tool, args): find the program-running option for read-only
+     * tools (sort --compress-program, rg --pre/--hostname-bin, ag --pager,
+     * man --pager/--html/-P/-H with attached or next-token payload).
+     * Arg = "tool\targs..." -> prints "option\tprogram" or empty. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *tool = tab ? arg : "";
+    size_t tlen = tab ? (size_t)(tab - arg) : 0;
+    const char *args = tab ? tab + 1 : "";
+    int is_man = tlen == 3 && strncmp(tool, "man", 3) == 0;
+    /* tokenize args (space-separated, honoring simple quoting is out of
+     * scope for the shim) */
+    char *copy = strdup(args);
+    char *save = NULL;
+    char *toks[64];
+    int ntok = 0;
+    for (char *tok = strtok_r(copy, " ", &save); tok && ntok < 64;
+         tok = strtok_r(NULL, " ", &save))
+        toks[ntok++] = tok;
+    for (int i = 0; i < ntok; i++) {
+        if (strcmp(toks[i], "--") == 0) break;
+        char *eq = strchr(toks[i], '=');
+        char opt[128];
+        const char *payload = NULL;
+        if (eq) {
+            size_t ol = (size_t)(eq - toks[i]);
+            if (ol >= sizeof(opt)) ol = sizeof(opt) - 1;
+            memcpy(opt, toks[i], ol);
+            opt[ol] = '\0';
+            payload = eq + 1;
+        } else {
+            snprintf(opt, sizeof(opt), "%s", toks[i]);
+        }
+        int matched = 0;
+        if (is_man && (strncmp(toks[i], "-P", 2) == 0 || strncmp(toks[i], "-H", 2) == 0)
+            && strlen(toks[i]) > 2) {
+            snprintf(opt, sizeof(opt), "%.2s", toks[i]);
+            payload = toks[i] + 2;
+            matched = 1;
+        } else if (tlen == 4 && strncmp(tool, "sort", 4) == 0 && strcmp(opt, "--compress-program") == 0) matched = 1;
+        else if (tlen == 2 && strncmp(tool, "rg", 2) == 0 && (strcmp(opt, "--pre") == 0 || strcmp(opt, "--hostname-bin") == 0)) matched = 1;
+        else if (tlen == 2 && strncmp(tool, "ag", 2) == 0 && strcmp(opt, "--pager") == 0) matched = 1;
+        else if (is_man && (strcmp(opt, "--pager") == 0 || strcmp(opt, "--html") == 0 || strcmp(opt, "-P") == 0 || strcmp(opt, "-H") == 0)) matched = 1;
+        if (matched) {
+            if (!payload && i + 1 < ntok) payload = toks[i + 1];
+            if (payload && *payload) {
+                printf("%s\t%s\n", opt, payload);
+                free(copy);
+                return 0;
+            }
+        }
+    }
+    free(copy);
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _execution_flag_findings @ tools/approval.py:_execution_flag_findings */
 int appr_u_execution_flag_findings(const char *arg) { (void)arg; return 0; }
