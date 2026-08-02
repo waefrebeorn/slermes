@@ -170,7 +170,13 @@ int cgw_u_journalctl_cmd(const char *arg) { (void)arg; return 0; }
 int cgw_u_run_systemctl(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _service_scope_label @ hermes_cli/gateway.py:_service_scope_label */
-int cgw_u_service_scope_label(const char *arg) { (void)arg; return 0; }
+int cgw_u_service_scope_label(const char *arg) {
+    /* Python: "system" if system else "user". */
+    if (arg && strcmp(arg, "1") == 0) { printf("system\n"); return 0; }
+    if (arg && (strcmp(arg, "true") == 0 || strcmp(arg, "system") == 0)) { printf("system\n"); return 0; }
+    printf("user\n");
+    return 0;
+}
 
 /* PoP: get_installed_systemd_scopes @ hermes_cli/gateway.py:get_installed_systemd_scopes */
 int cgw_get_installed_systemd_scopes(const char *arg) { (void)arg; return 0; }

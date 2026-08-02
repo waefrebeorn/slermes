@@ -518,7 +518,22 @@ int agent_agent_init_u_provider_default_routes(const char *arg) { (void)arg; ret
 int agent_agent_init_u_context_route_mismatch(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _normalize_custom_provider_name @ agent/agent_init.py:_normalize_custom_provider_name */
-int agent_agent_init_u_normalize_custom_provider_name(const char *arg) { (void)arg; return 0; }
+int agent_agent_init_u_normalize_custom_provider_name(const char *arg) {
+    /* Python: str(value or "").strip().lower().replace(" ", "-"). */
+    if (!arg) { printf("\n"); return 0; }
+    const char *s = arg;
+    while (*s == ' ' || *s == '\t') s++;
+    char *out = strdup(s);
+    size_t n = strlen(out);
+    while (n > 0 && (out[n-1] == ' ' || out[n-1] == '\t')) out[--n] = '\0';
+    for (char *p = out; *p; p++) {
+        if (*p >= 'A' && *p <= 'Z') *p = (char)(*p + 32);
+        if (*p == ' ') *p = '-';
+    }
+    printf("%s\n", out);
+    free(out);
+    return 0;
+}
 
 /* PoP: _custom_provider_runtime_ids @ agent/agent_init.py:_custom_provider_runtime_ids */
 int agent_agent_init_u_custom_provider_runtime_ids(const char *arg) { (void)arg; return 0; }

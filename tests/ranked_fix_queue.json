@@ -1,8 +1,8 @@
 {
- "total": 3067,
+ "total": 3064,
  "by_cat": {
   "A": 22,
-  "Bt": 113,
+  "Bt": 110,
   "Bx": 1020,
   "C": 1912
  },
@@ -179,7 +179,7 @@
   "hermes_cli/env_loader.py": 12,
   "hermes_cli/fallback_cmd.py": 6,
   "hermes_cli/fallback_config.py": 2,
-  "hermes_cli/gateway.py": 136,
+  "hermes_cli/gateway.py": 135,
   "hermes_cli/gateway_enroll.py": 5,
   "hermes_cli/gateway_windows.py": 47,
   "hermes_cli/goals.py": 5,
@@ -189,7 +189,7 @@
   "hermes_cli/kanban_db.py": 24,
   "hermes_cli/kanban_diagnostics.py": 13,
   "hermes_cli/kanban_specify.py": 1,
-  "hermes_cli/main.py": 203,
+  "hermes_cli/main.py": 202,
   "hermes_cli/managed_scope.py": 6,
   "hermes_cli/managed_uv.py": 24,
   "hermes_cli/mcp_catalog.py": 15,
@@ -335,7 +335,7 @@
   "tools/file_state.py": 12,
   "tools/file_tools.py": 9,
   "tools/focus_pane_tool.py": 2,
-  "tools/homeassistant_tool.py": 13,
+  "tools/homeassistant_tool.py": 12,
   "tools/hook_output_spill.py": 5,
   "tools/image_generation_tool.py": 2,
   "tools/image_source.py": 8,
@@ -601,14 +601,6 @@
   },
   {
    "module": "hermes_cli/main.py",
-   "py": "_is_windows_npm_path",
-   "c": "main_u_is_windows_npm_path",
-   "file": "src/cli/port_main_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/main.py",
    "py": "_lazy_refresh_marker_path",
    "c": "main_u_lazy_refresh_marker_path",
    "file": "src/cli/port_main_wrappers.c",
@@ -644,14 +636,6 @@
    "py": "_write_lazy_refresh_incomplete_marker",
    "c": "main_u_write_lazy_refresh_incomplete_marker",
    "file": "src/cli/port_main_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/gateway.py",
-   "py": "_refuse_temp_home_service_write",
-   "c": "cgw_u_refuse_temp_home_service_write",
-   "file": "src/cli/port_cli_gateway_wrappers.c",
    "cat": "Bt",
    "candidates": []
   },
@@ -864,22 +848,6 @@
    "candidates": []
   },
   {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_get_config",
-   "c": "tools_homeassistant_tool_u_get_config",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_get_headers",
-   "c": "tools_homeassistant_tool_u_get_headers",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
    "module": "agent/agent_init.py",
    "py": "_normalize_custom_provider_name",
    "c": "agent_agent_init_u_normalize_custom_provider_name",
@@ -940,6 +908,14 @@
    "py": "reset_cache",
    "c": "hermes_cli_model_catalog_reset_cache",
    "file": "src/cli/port_cli_remaining_wrappers.c",
+   "cat": "Bt",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_get_headers",
+   "c": "tools_homeassistant_tool_u_get_headers",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
    "cat": "Bt",
    "candidates": []
   },
@@ -6488,38 +6464,6 @@
    "candidates": []
   },
   {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_async_get_state",
-   "c": "tools_homeassistant_tool_u_async_get_state",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_build_service_payload",
-   "c": "tools_homeassistant_tool_u_build_service_payload",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_handle_get_state",
-   "c": "tools_homeassistant_tool_u_handle_get_state",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_parse_service_response",
-   "c": "tools_homeassistant_tool_u_parse_service_response",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
    "module": "tools/registry.py",
    "py": "_caller_module",
    "c": "tools_registry_u_caller_module",
@@ -7051,6 +6995,38 @@
    "module": "tools/file_state.py",
    "py": "writes_since",
    "c": "tools_file_state_writes_since",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_async_get_state",
+   "c": "tools_homeassistant_tool_u_async_get_state",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_build_service_payload",
+   "c": "tools_homeassistant_tool_u_build_service_payload",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_handle_get_state",
+   "c": "tools_homeassistant_tool_u_handle_get_state",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_parse_service_response",
+   "c": "tools_homeassistant_tool_u_parse_service_response",
    "file": "src/tools/port_tools_remaining_wrappers.c",
    "cat": "Bx",
    "candidates": []
@@ -19832,62 +19808,6 @@
    "candidates": []
   },
   {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_async_call_service",
-   "c": "tools_homeassistant_tool_u_async_call_service",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_async_list_entities",
-   "c": "tools_homeassistant_tool_u_async_list_entities",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_async_list_services",
-   "c": "tools_homeassistant_tool_u_async_list_services",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_filter_and_summarize",
-   "c": "tools_homeassistant_tool_u_filter_and_summarize",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_handle_call_service",
-   "c": "tools_homeassistant_tool_u_handle_call_service",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_handle_list_entities",
-   "c": "tools_homeassistant_tool_u_handle_list_entities",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_handle_list_services",
-   "c": "tools_homeassistant_tool_u_handle_list_services",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
    "module": "agent/agent_init.py",
    "py": "_context_route_mismatch",
    "c": "agent_agent_init_u_context_route_mismatch",
@@ -20331,6 +20251,62 @@
    "module": "tools/file_state.py",
    "py": "_lock_for",
    "c": "tools_file_state_u_lock_for",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_async_call_service",
+   "c": "tools_homeassistant_tool_u_async_call_service",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_async_list_entities",
+   "c": "tools_homeassistant_tool_u_async_list_entities",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_async_list_services",
+   "c": "tools_homeassistant_tool_u_async_list_services",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_filter_and_summarize",
+   "c": "tools_homeassistant_tool_u_filter_and_summarize",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_handle_call_service",
+   "c": "tools_homeassistant_tool_u_handle_call_service",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_handle_list_entities",
+   "c": "tools_homeassistant_tool_u_handle_list_entities",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_handle_list_services",
+   "c": "tools_homeassistant_tool_u_handle_list_services",
    "file": "src/tools/port_tools_remaining_wrappers.c",
    "cat": "C",
    "candidates": []

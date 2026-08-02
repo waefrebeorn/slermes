@@ -1,7 +1,7 @@
-# Ranked fix queue — 3067 bootleg functions
+# Ranked fix queue — 3064 bootleg functions
 
 - A  (delegate to real fn): 22
-- Bt (trivial direct-port): 113
+- Bt (trivial direct-port): 110
 - Bx (direct but needs deps): 1020
 - C  (deep subsystem):        1912
 
@@ -29,13 +29,11 @@
 - [A] gateway/restart_loop_guard.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
 - [A] gateway/stream_dispatch.py :: dispatch -> adel_u_persist_dispatch  (cands: dispatch)
 - [A] tools/slash_confirm.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
-- [Bt] hermes_cli/main.py :: _is_windows_npm_path -> main_u_is_windows_npm_path
 - [Bt] hermes_cli/main.py :: _lazy_refresh_marker_path -> main_u_lazy_refresh_marker_path
 - [Bt] hermes_cli/main.py :: _print_stash_cleanup_guidance -> main_u_print_stash_cleanup_guidance
 - [Bt] hermes_cli/main.py :: _resolve_update_branch -> main_u_resolve_update_branch
 - [Bt] hermes_cli/main.py :: _sync_fork_with_upstream -> main_u_sync_fork_with_upstream
 - [Bt] hermes_cli/main.py :: _write_lazy_refresh_incomplete_marker -> main_u_write_lazy_refresh_incomplete_marker
-- [Bt] hermes_cli/gateway.py :: _refuse_temp_home_service_write -> cgw_u_refuse_temp_home_service_write
 - [Bt] hermes_cli/gateway.py :: _service_scope_label -> cgw_u_service_scope_label
 - [Bt] hermes_cli/gateway.py :: _systemd_service_is_start_limited -> cgw_u_systemd_service_is_start_limited
 - [Bt] hermes_cli/gateway.py :: has_conflicting_systemd_units -> cgw_has_conflicting_systemd_units
@@ -62,8 +60,6 @@
 - [Bt] hermes_cli/telegram_managed_bot.py :: generate_bot_username -> hermes_cli_telegram_managed_bo_generate_bot_username
 - [Bt] hermes_cli/telegram_managed_bot.py :: print_qr_code -> hermes_cli_telegram_managed_bo_print_qr_code
 - [Bt] hermes_cli/skin_engine.py :: get_active_skin_name -> hermes_cli_skin_engine_get_active_skin_name
-- [Bt] tools/homeassistant_tool.py :: _get_config -> tools_homeassistant_tool_u_get_config
-- [Bt] tools/homeassistant_tool.py :: _get_headers -> tools_homeassistant_tool_u_get_headers
 - [Bt] agent/agent_init.py :: _normalize_custom_provider_name -> agent_agent_init_u_normalize_custom_provider_name
 - [Bt] agent/agent_init.py :: _resolve_compression_threshold -> agent_agent_init_u_resolve_compression_threshold
 - [Bt] agent/chat_completion_helpers.py :: _reset_stale_streak -> agent_chat_completion_helpers_u_reset_stale_streak
@@ -72,6 +68,7 @@
 - [Bt] gateway/relay/ws_transport.py :: set_inbound_handler -> ws_transport_set_inbound_handler
 - [Bt] gateway/relay/ws_transport.py :: set_interrupt_inbound_handler -> ws_transport_set_interrupt_inbound_handler
 - [Bt] hermes_cli/model_catalog.py :: reset_cache -> hermes_cli_model_catalog_reset_cache
+- [Bt] tools/homeassistant_tool.py :: _get_headers -> tools_homeassistant_tool_u_get_headers
 - [Bt] hermes_cli/inventory.py :: build_model_options_payload -> hermes_cli_inventory_build_model_options_payload
 - [Bt] hermes_cli/journey.py :: _term_size -> hermes_cli_journey_u_term_size
 - [Bt] tools/file_tools.py :: _is_expected_write_exception -> file_tools_is_expected_write_exception
@@ -207,3 +204,6 @@
 - [Bx] gateway/run.py :: _apply_fallback_chain_to_agent -> grun_u_apply_fallback_chain_to_agent
 - [Bx] gateway/run.py :: _await_thread_exit -> grun_u_await_thread_exit
 - [Bx] gateway/run.py :: _build_process_event_source -> grun_u_build_process_event_source
+- [Bx] gateway/run.py :: _defer_goal_status_notice_after_delivery -> grun_u_defer_goal_status_notice_after_delivery
+- [Bx] gateway/run.py :: _deliver_media_from_response -> grun_u_deliver_media_from_response
+- [Bx] gateway/run.py :: _deliver_platform_notice -> grun_u_deliver_platform_notice

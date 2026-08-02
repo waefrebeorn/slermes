@@ -658,7 +658,16 @@ int main_u_invalidate_update_cache(const char *arg) { (void)arg; return 0; }
 int main_u_load_installable_optional_extras(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _lazy_refresh_marker_path @ hermes_cli/main.py:_lazy_refresh_marker_path */
-int main_u_lazy_refresh_marker_path(const char *arg) { (void)arg; return 0; }
+int main_u_lazy_refresh_marker_path(const char *arg) {
+    /* Python: PROJECT_ROOT / ".lazy-refresh-incomplete". */
+    (void)arg;
+    char cwd[2048];
+    if (getcwd(cwd, sizeof(cwd)))
+        printf("%s/.lazy-refresh-incomplete\n", cwd);
+    else
+        printf(".lazy-refresh-incomplete\n");
+    return 0;
+}
 
 /* PoP: _write_marker_file @ hermes_cli/main.py:_write_marker_file */
 int main_u_write_marker_file(const char *arg) { (void)arg; return 0; }
