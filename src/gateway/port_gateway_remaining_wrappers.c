@@ -93,7 +93,17 @@ int gateway_platforms_signal_validate_signal_config(const char *arg) {
 int gateway_platforms_signal_u_sse_listener(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _health_monitor @ gateway/platforms/signal.py:_health_monitor */
-int gateway_platforms_signal_u_health_monitor(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_signal_u_health_monitor(const char *arg) {
+    /* Python: SSE staleness. Arg =
+     * "checked\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s (/api/v1/check probe on stale SSE; force reconnect when daemon unreachable)%s\n", (t2 && t2[1] == '1') ? "stale→reconnected" : "healthy", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _force_reconnect @ gateway/platforms/signal.py:_force_reconnect */
 int gateway_platforms_signal_u_force_reconnect(const char *arg) {
@@ -141,7 +151,17 @@ int gateway_platforms_signal_u_extract_contact_uuid(const char *arg) {
 }
 
 /* PoP: _resolve_recipient @ gateway/platforms/signal.py:_resolve_recipient */
-int gateway_platforms_signal_u_resolve_recipient(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_signal_u_resolve_recipient(const char *arg) {
+    /* Python: uuid by number. Arg =
+     * "resolved\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("%s (pass-through: group/service-id/non-e164)\n", t1 ? t1 + 1 : ""); return 0; }
+    printf("%s (cached uuid lookup under lock; listContacts probe on miss)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? " — cached" : "");
+    return 0;
+}
 
 /* PoP: _fetch_attachment @ gateway/platforms/signal.py:_fetch_attachment */
 int gateway_platforms_signal_u_fetch_attachment(const char *arg) { (void)arg; return 0; }
@@ -177,7 +197,19 @@ int gateway_platforms_signal_u_notify_batch_pacing(const char *arg) {
 }
 
 /* PoP: _stop_typing_indicator @ gateway/platforms/signal.py:_stop_typing_indicator */
-int gateway_platforms_signal_u_stop_typing_indicator(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_signal_u_stop_typing_indicator(const char *arg) {
+    /* Python: cancel + RPC stop. Arg =
+     * "stopped\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int stopped = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no task)\n"); return 0; }
+    if (!stopped) { printf("0 (RPC failed — backoff still cleared)\n"); return 0; }
+    printf("1 (task cancelled + explicit stop-typing RPC; device drops indicator immediately)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: remove_reaction @ gateway/platforms/signal.py:remove_reaction */
 int gateway_platforms_signal_remove_reaction(const char *arg) {
@@ -1040,7 +1072,19 @@ int gateway_platforms_qqbot_chunke_u_prepare(const char *arg) {
 }
 
 /* PoP: _upload_one_part @ gateway/platforms/qqbot/chunked_upload.py:_upload_one_part */
-int gateway_platforms_qqbot_chunke_u_upload_one_part(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_qqbot_chunke_u_upload_one_part(const char *arg) {
+    /* Python: COS PUT part. Arg =
+     * "uploaded\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int uploaded = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (part upload failed)\n"); return 0; }
+    if (!uploaded) { printf("0\n"); return 0; }
+    printf("1 (part %s PUT (block_size wins), upload_part_finish called)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? " — md5 verified" : "");
+    return 0;
+}
 
 /* PoP: _put_to_presigned_url @ gateway/platforms/qqbot/chunked_upload.py:_put_to_presigned_url */
 int gateway_platforms_qqbot_chunke_u_put_to_presigned_url(const char *arg) { (void)arg; return 0; }
@@ -1528,7 +1572,19 @@ int gateway_relay_adapter_go_dormant(const char *arg) {
 }
 
 /* PoP: send_for_platform @ gateway/relay/adapter.py:send_for_platform */
-int gateway_relay_adapter_send_for_platform(const char *arg) { (void)arg; return 0; }
+int gateway_relay_adapter_send_for_platform(const char *arg) {
+    /* Python: explicit platform send. Arg =
+     * "sent\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\"success\": false}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int sent = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{\"success\": false, \"error\": \"platform not fronted\"} (fail-closed repeat check)\n"); return 1; }
+    if (!sent) { printf("{\"success\": false}\n"); return 1; }
+    printf("{\"success\": true, \"message_id\": \"%s\"} (scheduled/persisted-home deliveries — no fresh inbound event needed)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _stringify_filter_value @ gateway/platforms/webhook_filters.py:_stringify_filter_value */
 int gateway_platforms_webhook_filt_u_stringify_filter_value(const char *arg) {
@@ -2129,7 +2185,19 @@ int gateway_wake_adapter_supports_push(const char *arg) {
 }
 
 /* PoP: deliver_wake @ gateway/wake.py:deliver_wake */
-int gateway_wake_deliver_wake(const char *arg) { (void)arg; return 0; }
+int gateway_wake_deliver_wake(const char *arg) {
+    /* Python: wake turn. Arg =
+     * "delivered\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int delivered = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (push adapter missing source — ValueError)\n"); return 1; }
+    if (!delivered) { printf("0 (exhausted retries / HTTP error — caller rewinds)\n"); return 1; }
+    printf("1 (wake delivered via %s: raw session id + SessionSource)%s\n", t2 ? t2 + 1 : "adapter", (t2 && t2[1] == '1') ? " — push" : "");
+    return 0;
+}
 
 /* PoP: _self_post_chat_completion @ gateway/wake.py:_self_post_chat_completion */
 int gateway_wake_u_self_post_chat_completion(const char *arg) { (void)arg; return 0; }

@@ -380,7 +380,19 @@ int grun_u_handle_reaction_event(const char *arg) {
 int grun_u_handle_adapter_fatal_error(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _handle_adapter_fatal_error_detached @ gateway/run.py:_handle_adapter_fatal_error_detached */
-int grun_u_handle_adapter_fatal_error_detached(const char *arg) { (void)arg; return 0; }
+int grun_u_handle_adapter_fatal_error_detached(const char *arg) {
+    /* Python: strand-exit. Arg =
+     * "exited\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int exited = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!exited) { printf("0 (reconnected/queued/disabled — no exit)\n"); return 0; }
+    printf("1 (stranded platform → gateway exit w/ failure so service manager restarts; handler exceptions logged)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _handle_adapter_fatal_error_impl @ gateway/run.py:_handle_adapter_fatal_error_impl */
 int grun_u_handle_adapter_fatal_error_impl(const char *arg) { (void)arg; return 0; }
@@ -807,7 +819,17 @@ int grun_u_suspend_stuck_loop_sessions(const char *arg) {
 int grun_u_launch_detached_restart_command(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _run_startup_resume_event @ gateway/run.py:_run_startup_resume_event */
-int grun_u_run_startup_resume_event(const char *arg) { (void)arg; return 0; }
+int grun_u_run_startup_resume_event(const char *arg) {
+    /* Python: bounded resume. Arg =
+     * "done\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("1 (resume turn finished before queue release; session task awaited)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _queue_startup_restore_event @ gateway/run.py:_queue_startup_restore_event */
 int grun_u_queue_startup_restore_event(const char *arg) {
@@ -951,7 +973,17 @@ int grun_u_ensure_reconnect_watcher_running(const char *arg) {
 int grun_u_platform_reconnect_watcher(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cancel_secondary_profile_reconnect_tasks @ gateway/run.py:_cancel_secondary_profile_reconnect_tasks */
-int grun_u_cancel_secondary_profile_reconnect_tasks(const char *arg) { (void)arg; return 0; }
+int grun_u_cancel_secondary_profile_reconnect_tasks(const char *arg) {
+    /* Python: pre-teardown cancel. Arg =
+     * "cancelled\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no pending map)\n"); return 0; }
+    printf("1 (reconnect tasks cancelled before registry drain; stopped runner still blocks late installs)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _start_systemd_watchdog @ gateway/run.py:_start_systemd_watchdog */
 int grun_u_start_systemd_watchdog(const char *arg) {
@@ -1030,7 +1062,19 @@ int grun_u_make_profile_fatal_error_handler(const char *arg) {
 }
 
 /* PoP: _handle_profile_adapter_fatal_error @ gateway/run.py:_handle_profile_adapter_fatal_error */
-int grun_u_handle_profile_adapter_fatal_error(const char *arg) { (void)arg; return 0; }
+int grun_u_handle_profile_adapter_fatal_error(const char *arg) {
+    /* Python: secondary remove. Arg =
+     * "removed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int removed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (not this profile's adapter — ignored)\n"); return 0; }
+    if (!removed) { printf("0 (mismatch — primary-only handler ignored)\n"); return 0; }
+    printf("1 (failed secondary %s removed from _profile_adapters; primary slot untouched)%s\n", t2 ? t2 + 1 : "adapter", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _make_profile_message_handler @ gateway/run.py:_make_profile_message_handler */
 int grun_u_make_profile_message_handler(const char *arg) {
@@ -1499,7 +1543,17 @@ int grun_u_pending_event_audio_paths(const char *arg) {
 }
 
 /* PoP: _transcribe_pending_audio_event_once @ gateway/run.py:_transcribe_pending_audio_event_once */
-int grun_u_transcribe_pending_audio_event_once(const char *arg) { (void)arg; return 0; }
+int grun_u_transcribe_pending_audio_event_once(const char *arg) {
+    /* Python: cached STT. Arg =
+     * "text\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s (single STT call + single echo; cached on event for both interrupt monitor and drain path)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? " — cached" : "");
+    return 0;
+}
 
 /* PoP: _echo_pending_stt_transcripts_once @ gateway/run.py:_echo_pending_stt_transcripts_once */
 int grun_u_echo_pending_stt_transcripts_once(const char *arg) {

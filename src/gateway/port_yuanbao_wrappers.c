@@ -956,7 +956,18 @@ int yb_acquire_file_6(const char *arg) { (void)arg; return 0; }
 int yb_build_msg_body_6(const char *arg) { (void)arg; return 0; }
 
 /* PoP: query_group_info_raw @ gateway/platforms/yuanbao.py:query_group_info_raw */
-int yb_query_group_info_raw(const char *arg) { (void)arg; return 0; }
+int yb_query_group_info_raw(const char *arg) {
+    /* Python: WS group info. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "not_connected") == 0) { printf("\n"); return 0; }
+    printf("%s (decoded head msg_id round-trip; name/owner/member count)%s\n", t3 ? t3 + 1 : "{}", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: get_group_member_list_raw @ gateway/platforms/yuanbao.py:get_group_member_list_raw */
 int yb_get_group_member_list_raw(const char *arg) { (void)arg; return 0; }

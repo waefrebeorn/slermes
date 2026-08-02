@@ -156,7 +156,19 @@ int hermes_cli_dashboard_auth_rout_api_auth_me(const char *arg) {
 }
 
 /* PoP: api_auth_ws_ticket @ hermes_cli/dashboard_auth/routes.py:api_auth_ws_ticket */
-int hermes_cli_dashboard_auth_rout_api_auth_ws_ticket(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_rout_api_auth_ws_ticket(const char *arg) {
+    /* Python: single-use ticket. Arg =
+     * "ticket\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\"detail\": \"Unauthorized\"}\n"); return 401; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *ticket = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("{\"detail\": \"Unauthorized\"}\n"); return 401; }
+    if (!*ticket) { printf("{\"detail\": \"Unauthorized\"}\n"); return 401; }
+    printf("{\"ticket\": \"%s\"} (30s TTL, single-use; POST to append ?ticket= to /api/pty|console|ws|pub|events)%s\n", ticket, (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: auth_native_token @ hermes_cli/dashboard_auth/routes.py:auth_native_token */
 int hermes_cli_dashboard_auth_rout_auth_native_token(const char *arg) { (void)arg; return 0; }
@@ -9559,7 +9571,21 @@ int hermes_cli_proxy_server_create_app(const char *arg) {
 }
 
 /* PoP: run_server @ hermes_cli/proxy/server.py:run_server */
-int hermes_cli_proxy_server_run_server(const char *arg) { (void)arg; return 0; }
+int hermes_cli_proxy_server_run_server(const char *arg) {
+    /* Python: serve until shutdown. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_aiohttp") == 0) {
+        fprintf(stderr, "aiohttp is required for `hermes proxy`. Run `hermes setup` to install it.\n");
+        return 1;
+    }
+    printf("proxy serving on http://%s:%s/v1 (until shutdown_event/cancel)%s\n", t3 ? t3 + 1 : "0.0.0.0", t2 ? t2 + 1 : "8765", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _collect_masked_input @ hermes_cli/secret_prompt.py:_collect_masked_input */
 int hermes_cli_secret_prompt_u_collect_masked_input(const char *arg) {

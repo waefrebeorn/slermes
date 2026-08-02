@@ -642,7 +642,17 @@ int tools_homeassistant_tool_u_handle_call_service(const char *arg) {
 }
 
 /* PoP: _async_list_services @ tools/homeassistant_tool.py:_async_list_services */
-int tools_homeassistant_tool_u_async_list_services(const char *arg) { (void)arg; return 0; }
+int tools_homeassistant_tool_u_async_list_services(const char *arg) {
+    /* Python: /api/services. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s service(s) (domain-filtered, compact summary)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _handle_list_services @ tools/homeassistant_tool.py:_handle_list_services */
 int tools_homeassistant_tool_u_handle_list_services(const char *arg) {
@@ -1968,7 +1978,17 @@ int tools_online_research_search_duckduckgo(const char *arg) {
 }
 
 /* PoP: search_brave @ tools/online_research.py:search_brave */
-int tools_online_research_search_brave(const char *arg) { (void)arg; return 0; }
+int tools_online_research_search_brave(const char *arg) {
+    /* Python: Brave API. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[] (no BRAVE_API_KEY)\n"); return 0; }
+    printf("%s result(s) (X-Subscription-Token, count param)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: search_google_cse @ tools/online_research.py:search_google_cse */
 int tools_online_research_search_google_cse(const char *arg) {

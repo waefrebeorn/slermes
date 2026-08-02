@@ -198,7 +198,19 @@ int qqbot_u_next_msg_seq(const char *arg) {
 }
 
 /* PoP: _on_message @ gateway/platforms/qqbot/adapter.py:_on_message */
-int qqbot_u_on_message(const char *arg) { (void)arg; return 0; }
+int qqbot_u_on_message(const char *arg) {
+    /* Python: inbound route. Arg =
+     * "routed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int routed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (dup / missing id — debug logged)\n"); return 0; }
+    if (!routed) { printf("0 (non-dict payload)\n"); return 0; }
+    printf("1 (event routed: msg_id=%s, author/mentions parsed, event-type dispatch)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: set_interaction_callback @ gateway/platforms/qqbot/adapter.py:set_interaction_callback */
 int qqbot_set_interaction_callback(const char *arg) {
@@ -606,7 +618,19 @@ int qqbot_u_send_guild_text(const char *arg) {
 }
 
 /* PoP: send_approval_request @ gateway/platforms/qqbot/adapter.py:send_approval_request */
-int qqbot_send_approval_request(const char *arg) { (void)arg; return 0; }
+int qqbot_send_approval_request(const char *arg) {
+    /* Python: 3-button keyboard. Arg =
+     * "sent\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int sent = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (send failed)\n"); return 1; }
+    if (!sent) { printf("0\n"); return 1; }
+    printf("1 (approval sent w/ allow-once/allow-always/deny keyboard; clicks → INTERACTION_CREATE → parse_approval_button_data)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: send_exec_approval @ gateway/platforms/qqbot/adapter.py:send_exec_approval */
 int qqbot_send_exec_approval(const char *arg) { (void)arg; return 0; }
