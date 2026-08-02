@@ -1765,7 +1765,26 @@ int tools_skill_provenance_is_background_review(const char *arg) {
 }
 
 /* PoP: _web_extract_url @ tools/web_tools.py:_web_extract_url */
-int tools_web_tools_u_web_extract_url(const char *arg) { (void)arg; return 0; }
+int tools_web_tools_u_web_extract_url(const char *arg) {
+    /* Python: dict url/href or str strip; None otherwise. Arg = "json_or_raw". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    const char *v = NULL;
+    if (j && json_is_object(j)) {
+        v = json_get_str(j, "url", "");
+        if (!v[0]) v = json_get_str(j, "href", "");
+    } else if (j && json_is_string(j)) {
+        v = json_string_value(j);
+    } else {
+        v = arg;
+    }
+    if (j) json_free(j);
+    if (!v) { printf("\n"); return 0; }
+    while (*v == ' ') v++;
+    if (!*v) { printf("\n"); return 0; }
+    printf("%s\n", v);
+    return 0;
+}
 
 /* PoP: _registered_web_provider @ tools/web_tools.py:_registered_web_provider */
 int tools_web_tools_u_registered_web_provider(const char *arg) { (void)arg; return 0; }

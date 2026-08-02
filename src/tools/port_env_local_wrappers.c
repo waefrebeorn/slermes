@@ -212,7 +212,25 @@ int envl_u_resolve_hermes_bin_dir(const char *arg) {
 }
 
 /* PoP: _prepend_hermes_bin_dir @ tools/environments/local.py:_prepend_hermes_bin_dir */
-int envl_u_prepend_hermes_bin_dir(const char *arg) { (void)arg; return 0; }
+int envl_u_prepend_hermes_bin_dir(const char *arg) {
+    /* Python: prepend bin dir if missing. Arg = "bin_dir\texisting_path". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *bin_dir = arg;
+    const char *existing = tab ? tab + 1 : "";
+    /* check membership */
+    const char *p = existing;
+    int found = 0;
+    while (*p) {
+        const char *colon = strchr(p, ':');
+        size_t len = colon ? (size_t)(colon - p) : strlen(p);
+        if (len == strlen(bin_dir) && strncmp(p, bin_dir, len) == 0) { found = 1; break; }
+        p = colon ? colon + 1 : p + len;
+    }
+    if (found) { printf("%s\n", existing); return 0; }
+    printf("%s%s%s\n", bin_dir, existing[0] ? ":" : "", existing);
+    return 0;
+}
 
 /* PoP: _append_missing_sane_path_entries @ tools/environments/local.py:_append_missing_sane_path_entries */
 int envl_u_append_missing_sane_path_entries(const char *arg) { (void)arg; return 0; }

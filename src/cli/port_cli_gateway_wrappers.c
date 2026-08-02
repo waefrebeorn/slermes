@@ -48,7 +48,16 @@ int cgw_u_gateway_run_args_for_profile(const char *arg) {
 }
 
 /* PoP: _prepare_profile_gateway_update_restart @ hermes_cli/gateway.py:_prepare_profile_gateway_update_restart */
-int cgw_u_prepare_profile_gateway_update_restart(const char *arg) { (void)arg; return 0; }
+int cgw_u_prepare_profile_gateway_update_restart(const char *arg) {
+    /* Python: external-supervisor / detached / None. Arg =
+     * "has_supervisor\tdetached". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (arg[0] == '1') { printf("external-supervisor\n"); return 0; }
+    if (tab && tab[1] == '1') { printf("detached\n"); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: launch_detached_profile_gateway_restart @ hermes_cli/gateway.py:launch_detached_profile_gateway_restart */
 int cgw_launch_detached_profile_gateway_restart(const char *arg) {
@@ -305,7 +314,15 @@ int cgw_u_wsl_systemd_operational(const char *arg) {
 }
 
 /* PoP: _systemd_operational @ hermes_cli/gateway.py:_systemd_operational */
-int cgw_u_systemd_operational(const char *arg) { (void)arg; return 0; }
+int cgw_u_systemd_operational(const char *arg) {
+    /* Python: status in running/degraded/starting/initializing. Arg = status. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ' || *p == '\n' || *p == '\r') p++;
+    if (strcmp(p, "running") == 0 || strcmp(p, "degraded") == 0 || strcmp(p, "starting") == 0 || strcmp(p, "initializing") == 0) { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _container_systemd_operational @ hermes_cli/gateway.py:_container_systemd_operational */
 int cgw_u_container_systemd_operational(const char *arg) { (void)arg; return 0; }
@@ -403,7 +420,14 @@ int cgw_u_user_systemd_socket_ready(const char *arg) {
 int cgw_u_ensure_user_systemd_env(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _wait_for_user_dbus_socket @ hermes_cli/gateway.py:_wait_for_user_dbus_socket */
-int cgw_u_wait_for_user_dbus_socket(const char *arg) { (void)arg; return 0; }
+int cgw_u_wait_for_user_dbus_socket(const char *arg) {
+    /* Python: poll sockets until timeout. Arg = "ready_at_start\tready_at_end". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (arg[0] == '1') { printf("1\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _preflight_user_systemd @ hermes_cli/gateway.py:_preflight_user_systemd */
 int cgw_u_preflight_user_systemd(const char *arg) { (void)arg; return 0; }
@@ -548,7 +572,18 @@ int cgw_print_legacy_unit_warning(const char *arg) { (void)arg; return 0; }
 int cgw_remove_legacy_hermes_units(const char *arg) { (void)arg; return 0; }
 
 /* PoP: print_systemd_scope_conflict_warning @ hermes_cli/gateway.py:print_systemd_scope_conflict_warning */
-int cgw_print_systemd_scope_conflict_warning(const char *arg) { (void)arg; return 0; }
+int cgw_print_systemd_scope_conflict_warning(const char *arg) {
+    /* Python: warning when both scopes installed. Arg = "scopes" (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    int count = 1;
+    for (const char *p = arg; *p; p++) if (*p == '\t') count++;
+    if (count < 2) { printf("no conflict\n"); return 0; }
+    printf("Both user and system gateway services are installed (%s).\n", arg);
+    printf("  This is confusing and can make start/stop/status behavior ambiguous.\n");
+    printf("  Default gateway commands target the user service unless you pass --system.\n");
+    printf("  Keep one of these:\n    hermes gateway uninstall\n    sudo hermes gateway uninstall --system\n");
+    return 0;
+}
 
 /* PoP: _require_root_for_system_service @ hermes_cli/gateway.py:_require_root_for_system_service */
 int cgw_u_require_root_for_system_service(const char *arg) {
@@ -798,7 +833,12 @@ int cgw_u_strip_optional_systemd_directives(const char *arg) {
 }
 
 /* PoP: _normalize_launchd_plist_for_comparison @ hermes_cli/gateway.py:_normalize_launchd_plist_for_comparison */
-int cgw_u_normalize_launchd_plist_for_comparison(const char *arg) { (void)arg; return 0; }
+int cgw_u_normalize_launchd_plist_for_comparison(const char *arg) {
+    /* Python: mask PATH payload. Arg = plist text. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: systemd_unit_is_current @ hermes_cli/gateway.py:systemd_unit_is_current */
 int cgw_systemd_unit_is_current(const char *arg) { (void)arg; return 0; }

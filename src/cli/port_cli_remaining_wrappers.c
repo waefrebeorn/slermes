@@ -2197,7 +2197,15 @@ int hermes_cli_env_loader_u_apply_external_secret_sources(const char *arg) { (vo
 int hermes_cli_env_loader_u_remediation_hint(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _load_secrets_config @ hermes_cli/env_loader.py:_load_secrets_config */
-int hermes_cli_env_loader_u_load_secrets_config(const char *arg) { (void)arg; return 0; }
+int hermes_cli_env_loader_u_load_secrets_config(const char *arg) {
+    /* Python: config.yaml secrets section or {}. Arg = "state\tsecrets_json". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "ok") == 0 && tab && tab[1]) { printf("%s\n", tab + 1); return 0; }
+    printf("{}\n");
+    return 0;
+}
 
 /* PoP: log_info @ hermes_cli/gui_uninstall.py:log_info */
 int hermes_cli_gui_uninstall_log_info(const char *arg) {
@@ -3940,7 +3948,29 @@ int hermes_cli_cron_u_active_cron_provider_name(const char *arg) {
 int hermes_cli_cron_u_warn_if_gateway_not_running(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cron_runs @ hermes_cli/cron.py:cron_runs */
-int hermes_cli_cron_cron_runs(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cron_cron_runs(const char *arg) {
+    /* Python: execution history lines. Arg = "records_json" (array). */
+    if (!arg || !*arg) { printf("No cron execution attempts recorded.\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (!j || !json_is_array(j) || json_array_size(j) == 0) {
+        if (j) json_free(j);
+        printf("No cron execution attempts recorded.\n");
+        return 0;
+    }
+    size_t n = json_array_size(j);
+    for (size_t i = 0; i < n; i++) {
+        json_t *r = json_array_get(j, i);
+        if (!r) continue;
+        printf("%s  %-9s  job=%s  source=%s  %s\n",
+               json_get_str(r, "id", "?"), json_get_str(r, "status", "?"),
+               json_get_str(r, "job_id", "?"), json_get_str(r, "source", "?"),
+               json_get_str(r, "claimed_at", "?"));
+        const char *err = json_get_str(r, "error", "");
+        if (err[0]) printf("    %s\n", err);
+    }
+    json_free(j);
+    return 0;
+}
 
 /* PoP: _print_active_jobs_summary @ hermes_cli/cron.py:_print_active_jobs_summary */
 int hermes_cli_cron_u_print_active_jobs_summary(const char *arg) {

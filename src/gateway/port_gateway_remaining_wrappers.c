@@ -1467,7 +1467,18 @@ int gateway_delivery_is_relay(const char *arg) { (void)arg; return 0; }
 int gateway_delivery_resolve_delivery_transport(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _strip_edge_silence_punctuation @ gateway/response_filters.py:_strip_edge_silence_punctuation */
-int gateway_response_filters_u_strip_edge_silence_punctuation(const char *arg) { (void)arg; return 0; }
+int gateway_response_filters_u_strip_edge_silence_punctuation(const char *arg) {
+    /* Python: strip edge punctuation except [] markers. Arg = text. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    size_t len = strlen(arg);
+    size_t start = 0, end = len;
+    while (start < end && arg[start] != '[' && arg[start] != ']' && ispunct((unsigned char)arg[start])) start++;
+    while (end > start && arg[end-1] != '[' && arg[end-1] != ']' && ispunct((unsigned char)arg[end-1])) end--;
+    while (start < end && (arg[start] == ' ' || arg[start] == '\t' || arg[start] == '\n')) start++;
+    while (end > start && (arg[end-1] == ' ' || arg[end-1] == '\t' || arg[end-1] == '\n')) end--;
+    printf("%.*s\n", (int)(end - start), arg + start);
+    return 0;
+}
 
 /* PoP: _canonical_silence_candidates @ gateway/response_filters.py:_canonical_silence_candidates */
 int gateway_response_filters_u_canonical_silence_candidates(const char *arg) {

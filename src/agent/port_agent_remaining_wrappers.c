@@ -1620,7 +1620,57 @@ int agent_kanban_stop_u_tool_call_name(const char *arg) {
 }
 
 /* PoP: session_called_kanban_terminal @ agent/kanban_stop.py:session_called_kanban_terminal */
-int agent_kanban_stop_session_called_kanban_terminal(const char *arg) { (void)arg; return 0; }
+int agent_kanban_stop_session_called_kanban_terminal(const char *arg) {
+    /* Python: scan messages for terminal kanban tool calls. Arg =
+     * "messages_json\tterminal_tools". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    json_t *msgs = json_parse(arg, NULL);
+    if (!msgs || !json_is_array(msgs)) {
+        if (msgs) json_free(msgs);
+        printf("0\n");
+        return 0;
+    }
+    const char *tools = t1 ? t1 + 1 : "";
+    size_t n = json_array_size(msgs);
+    for (size_t i = 0; i < n; i++) {
+        json_t *m = json_array_get(msgs, i);
+        if (!m || !json_is_object(m)) continue;
+        const char *role = json_get_str(m, "role", "");
+        if (strcmp(role, "assistant") == 0) {
+            json_t *tcs = json_obj_get(m, "tool_calls");
+            if (tcs && json_is_array(tcs)) {
+                size_t tn = json_array_size(tcs);
+                for (size_t j = 0; j < tn; j++) {
+                    json_t *tc = json_array_get(tcs, j);
+                    if (!tc) continue;
+                    json_t *fn = json_obj_get(tc, "function");
+                    const char *name = fn ? json_get_str(fn, "name", "") : "";
+                    if (!name[0]) name = json_get_str(tc, "name", "");
+                    const char *tp = tools;
+                    while (*tp) {
+                        const char *tt = strchr(tp, '\t');
+                        size_t tl = tt ? (size_t)(tt - tp) : strlen(tp);
+                        if (tl == strlen(name) && strncmp(tp, name, tl) == 0) { printf("1\n"); json_free(msgs); return 0; }
+                        tp = tt ? tt + 1 : tp + tl;
+                    }
+                }
+            }
+        } else if (strcmp(role, "tool") == 0) {
+            const char *name = json_get_str(m, "name", "");
+            const char *tp = tools;
+            while (*tp) {
+                const char *tt = strchr(tp, '\t');
+                size_t tl = tt ? (size_t)(tt - tp) : strlen(tp);
+                if (tl == strlen(name) && strncmp(tp, name, tl) == 0) { printf("1\n"); json_free(msgs); return 0; }
+                tp = tt ? tt + 1 : tp + tl;
+            }
+        }
+    }
+    json_free(msgs);
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: build_kanban_stop_nudge @ agent/kanban_stop.py:build_kanban_stop_nudge */
 int agent_kanban_stop_build_kanban_stop_nudge(const char *arg) { (void)arg; return 0; }

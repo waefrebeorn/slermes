@@ -161,7 +161,17 @@ int gw_get_task_script_path(const char *arg) {
 }
 
 /* PoP: _startup_dir @ hermes_cli/gateway_windows.py:_startup_dir */
-int gw_u_startup_dir(const char *arg) { (void)arg; return 0; }
+int gw_u_startup_dir(const char *arg) {
+    /* Python: APPDATA or USERPROFILE Startup path. Arg = "appdata\tuserprofile". */
+    if (!arg || !*arg) {
+        fprintf(stderr, "neither APPDATA nor USERPROFILE is set — cannot resolve Startup folder\n");
+        return 1;
+    }
+    const char *tab = strchr(arg, '\t');
+    if (arg[0]) printf("%s/Microsoft/Windows/Start Menu/Programs/Startup\n", arg);
+    else printf("%s/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: get_startup_entry_path @ hermes_cli/gateway_windows.py:get_startup_entry_path */
 int gw_get_startup_entry_path(const char *arg) {

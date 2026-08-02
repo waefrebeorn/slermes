@@ -241,7 +241,19 @@ int yb_u_format_link_understanding(const char *arg) {
 }
 
 /* PoP: _parse_resource_id @ gateway/platforms/yuanbao.py:_parse_resource_id */
-int yb_u_parse_resource_id(const char *arg) { (void)arg; return 0; }
+int yb_u_parse_resource_id(const char *arg) {
+    /* Python: query resourceId/resourceid. Arg = url. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *q = strstr(arg, "resourceId=");
+    if (!q) q = strstr(arg, "resourceid=");
+    if (!q) { printf("\n"); return 0; }
+    q = strchr(q, '=') + 1;
+    const char *end = strchr(q, '&');
+    size_t len = end ? (size_t)(end - q) : strlen(q);
+    while (len > 0 && (q[len-1] == ' ')) len--;
+    printf("%.*s\n", (int)len, q);
+    return 0;
+}
 
 /* PoP: _rewrite_slash_command @ gateway/platforms/yuanbao.py:_rewrite_slash_command */
 int yb_u_rewrite_slash_command(const char *text) {

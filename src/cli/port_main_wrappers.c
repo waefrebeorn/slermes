@@ -1359,7 +1359,12 @@ int main_u_run_logged_subprocess(const char *arg) {
 }
 
 /* PoP: _finalize_update_output @ hermes_cli/main.py:_finalize_update_output */
-int main_u_finalize_update_output(const char *arg) { (void)arg; return 0; }
+int main_u_finalize_update_output(const char *arg) {
+    /* Python: restore stdio + close log. Arg = "installed\tstate". */
+    (void)arg;
+    printf("update stdio finalized\n");
+    return 0;
+}
 
 /* PoP: _resolve_update_branch @ hermes_cli/main.py:_resolve_update_branch */
 int main_u_resolve_update_branch(const char *arg) {

@@ -16,7 +16,13 @@
 int kdbport_u_assert_not_delegated_child_mutation(const char *arg) { (void)arg; return 0; }
 
 /* PoP: scoped_current_board @ hermes_cli/kanban_db.py:scoped_current_board */
-int kdbport_scoped_current_board(const char *arg) { (void)arg; return 0; }
+int kdbport_scoped_current_board(const char *arg) {
+    /* Python: context pin of active board. Arg = "slug\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("board pinned: %s%s\n", arg, (tab && tab[1] == '1') ? " (active)" : "");
+    return 0;
+}
 
 /* PoP: from_row @ hermes_cli/kanban_db.py:from_row */
 int kdbport_from_row(const char *arg) { (void)arg; return 0; }

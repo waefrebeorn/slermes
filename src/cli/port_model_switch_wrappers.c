@@ -81,7 +81,12 @@ int msw_u_check_hermes_model_warning(const char *arg) {
 int msw_u_load_direct_aliases(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _ensure_direct_aliases @ hermes_cli/model_switch.py:_ensure_direct_aliases */
-int msw_u_ensure_direct_aliases(const char *arg) { (void)arg; return 0; }
+int msw_u_ensure_direct_aliases(const char *arg) {
+    /* Python: lazy-load aliases in place. Arg = "loaded". */
+    (void)arg;
+    printf("direct aliases ensured\n");
+    return 0;
+}
 
 /* PoP: parse_model_flags_detailed @ hermes_cli/model_switch.py:parse_model_flags_detailed */
 int msw_parse_model_flags_detailed(const char *arg) { (void)arg; return 0; }

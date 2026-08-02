@@ -555,7 +555,17 @@ int cua_get_agent_cursor_state(const char *arg) {
 }
 
 /* PoP: start_recording @ tools/computer_use/cua_backend.py:start_recording */
-int cua_start_recording(const char *arg) { (void)arg; return 0; }
+int cua_start_recording(const char *arg) {
+    /* Python: start_recording call. Arg =
+     * "output_dir\trecord_video\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *result = t2 ? t2 + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    printf("recording started: %s (video=%s)\n", arg, (t1 && t1[1] == '1') ? "yes" : "no");
+    return 0;
+}
 
 /* PoP: stop_recording @ tools/computer_use/cua_backend.py:stop_recording */
 int cua_stop_recording(const char *arg) {

@@ -60,7 +60,14 @@ int nsub_video_gen(const char *arg) {
 int nsub_u_toolset_enabled(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _has_agent_browser @ hermes_cli/nous_subscription.py:_has_agent_browser */
-int nsub_u_has_agent_browser(const char *arg) { (void)arg; return 0; }
+int nsub_u_has_agent_browser(const char *arg) {
+    /* Python: which + runnable, else local node_modules. Arg = "which_ok\tlocal_ok". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (arg[0] == '1') { printf("1\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _local_browser_runnable @ hermes_cli/nous_subscription.py:_local_browser_runnable */
 int nsub_u_local_browser_runnable(const char *arg) { (void)arg; return 0; }

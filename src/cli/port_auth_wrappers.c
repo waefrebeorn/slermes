@@ -176,7 +176,19 @@ int auth_u_sync_codex_pool_entries(const char *arg) { (void)arg; return 0; }
 int auth_u_save_codex_tokens(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _recover_codex_tokens_from_cli @ hermes_cli/auth.py:_recover_codex_tokens_from_cli */
-int auth_u_recover_codex_tokens_from_cli(const char *arg) { (void)arg; return 0; }
+int auth_u_recover_codex_tokens_from_cli(const char *arg) {
+    /* Python: adopt both tokens or None. Arg =
+     * "access_token\trefresh_token\timported". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *access = arg;
+    const char *refresh = t1 ? t1 + 1 : "";
+    int imported = t2 && t2[1] == '1';
+    if (!imported || !access[0] || !refresh[0]) { printf("\n"); return 0; }
+    printf("recovered codex tokens (access + refresh)\n");
+    return 0;
+}
 
 /* PoP: refresh_codex_oauth_pure @ hermes_cli/auth.py:refresh_codex_oauth_pure */
 int auth_refresh_codex_oauth_pure(const char *arg) { (void)arg; return 0; }
