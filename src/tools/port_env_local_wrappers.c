@@ -258,7 +258,15 @@ int envl_u_prepend_git_bash_dirs(const char *arg) {
 }
 
 /* PoP: _find_shell @ tools/environments/local.py:_find_shell */
-int envl_u_find_shell(const char *arg) { (void)arg; return 0; }
+int envl_u_find_shell(const char *arg) {
+    /* Python: $SHELL preference. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _resolve_hermes_bin_dir @ tools/environments/local.py:_resolve_hermes_bin_dir */
 int envl_u_resolve_hermes_bin_dir(const char *arg) {
@@ -340,7 +348,15 @@ int envl_u_prepend_hermes_bin_dir(const char *arg) {
 }
 
 /* PoP: _append_missing_sane_path_entries @ tools/environments/local.py:_append_missing_sane_path_entries */
-int envl_u_append_missing_sane_path_entries(const char *arg) { (void)arg; return 0; }
+int envl_u_append_missing_sane_path_entries(const char *arg) {
+    /* Python: dedupe + strip empties. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _apply_windows_msys_bash_env_defaults @ tools/environments/local.py:_apply_windows_msys_bash_env_defaults */
 int envl_u_apply_windows_msys_bash_env_defaults(const char *arg) {

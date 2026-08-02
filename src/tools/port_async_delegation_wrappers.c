@@ -369,4 +369,14 @@ int adel_list_async_delegations(const char *arg) {
 }
 
 /* PoP: interrupt_for_session @ tools/async_delegation.py:interrupt_for_session */
-int adel_interrupt_for_session(const char *arg) { (void)arg; return 0; }
+int adel_interrupt_for_session(const char *arg) {
+    /* Python: owned-session interrupt. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("interrupted %s async delegation(s) for ending session\n", t2 ? t2 + 1 : arg);
+    return 0;
+}

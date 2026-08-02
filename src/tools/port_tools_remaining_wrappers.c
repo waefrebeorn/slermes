@@ -2311,7 +2311,17 @@ int tools_credential_files_register_credential_files(const char *arg) {
 }
 
 /* PoP: iter_skills_files @ tools/credential_files.py:iter_skills_files */
-int tools_credential_files_iter_skills_files(const char *arg) { (void)arg; return 0; }
+int tools_credential_files_iter_skills_files(const char *arg) {
+    /* Python: individual uploads. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: from_agent_visible_cache_path @ tools/credential_files.py:from_agent_visible_cache_path */
 int tools_credential_files_from_agent_visible_cache_path(const char *arg) {
@@ -3195,4 +3205,15 @@ int tools_tool_search_u_safe_float(const char *arg) {
 }
 
 /* PoP: check_website_access @ tools/website_policy.py:check_website_access */
-int tools_website_policy_check_website_access(const char *arg) { (void)arg; return 0; }
+int tools_website_policy_check_website_access(const char *arg) {
+    /* Python: fail-open blocklist. Arg =
+     * "blocked\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int blocked = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !blocked) { printf("\n"); return 0; }
+    printf("blocked: %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}

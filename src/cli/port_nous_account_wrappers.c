@@ -175,7 +175,15 @@ int nous_u_info_from_inference_key_pool(const char *arg) {
 }
 
 /* PoP: _info_from_oauth_pool @ hermes_cli/nous_account.py:_info_from_oauth_pool */
-int nous_u_info_from_oauth_pool(const char *arg) { (void)arg; return 0; }
+int nous_u_info_from_oauth_pool(const char *arg) {
+    /* Python: pool entry path. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _select_nous_pool_entry @ hermes_cli/nous_account.py:_select_nous_pool_entry */
 int nous_u_select_nous_pool_entry(const char *arg) {

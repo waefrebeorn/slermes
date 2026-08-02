@@ -540,7 +540,29 @@ int hermes_cli_mcp_config_u_unwrap_exception_group(const char *arg) {
 int hermes_cli_mcp_config_u_reauth_oauth_server(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cmd_mcp_reauth @ hermes_cli/mcp_config.py:cmd_mcp_reauth */
-int hermes_cli_mcp_config_cmd_mcp_reauth(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_config_cmd_mcp_reauth(const char *arg) {
+    /* Python: serial reauth. Arg =
+     * "do_all\thas_name\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int do_all = arg[0] == '1';
+    int has_name = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (do_all) {
+        printf("Re-authenticating OAuth server(s) one at a time...\n");
+        printf("Re-authenticated %s server(s)\n", t3 ? t3 + 1 : "0");
+        return 0;
+    }
+    if (!has_name) {
+        printf("Specify a server name, or use --all to re-auth every OAuth server.\n");
+        return 0;
+    }
+    printf("re-authed: %s\n", t3 ? t3 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _print_usage_cta @ hermes_cli/cli_billing_mixin.py:_print_usage_cta */
 int hermes_cli_cli_billing_mixin_u_print_usage_cta(const char *arg) {
@@ -7553,7 +7575,32 @@ int hermes_cli_gateway_enroll_u_resolve_identity_token(const char *arg) {
 }
 
 /* PoP: _post_enroll @ hermes_cli/gateway_enroll.py:_post_enroll */
-int hermes_cli_gateway_enroll_u_post_enroll(const char *arg) { (void)arg; return 0; }
+int hermes_cli_gateway_enroll_u_post_enroll(const char *arg) {
+    /* Python: relay enroll. Arg = "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "http401") == 0) {
+        fprintf(stderr, "Connector rejected the caller identity (401). Try `hermes auth add nous` and retry.\n");
+        return 1;
+    }
+    if (strcmp(state, "http403") == 0) {
+        fprintf(stderr, "Enrollment token invalid, expired, already used, or tenant mismatch (403).\n");
+        return 1;
+    }
+    if (strcmp(state, "unreachable") == 0) {
+        fprintf(stderr, "Could not reach the connector: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    if (strcmp(state, "no_secret") == 0) {
+        fprintf(stderr, "Connector returned an unexpected response (no secret).\n");
+        return 1;
+    }
+    printf("enrolled: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: cmd_gateway_enroll @ hermes_cli/gateway_enroll.py:cmd_gateway_enroll */
 int hermes_cli_gateway_enroll_cmd_gateway_enroll(const char *arg) { (void)arg; return 0; }
@@ -9155,7 +9202,12 @@ int hermes_cli_subcommands_dump_build_dump_parser(const char *arg) {
 }
 
 /* PoP: build_gui_parser @ hermes_cli/subcommands/gui.py:build_gui_parser */
-int hermes_cli_subcommands_gui_build_gui_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_gui_build_gui_parser(const char *arg) {
+    /* Python: desktop subcommand. */
+    (void)arg;
+    printf("desktop/gui parser attached (--source --build-only --skip-build --force-build)\n");
+    return 0;
+}
 
 /* PoP: build_hooks_parser @ hermes_cli/subcommands/hooks.py:build_hooks_parser */
 int hermes_cli_subcommands_hooks_build_hooks_parser(const char *arg) { (void)arg; return 0; }

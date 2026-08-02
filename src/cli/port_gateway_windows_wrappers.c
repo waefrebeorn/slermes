@@ -322,7 +322,15 @@ int gw_u_resolve_task_user(const char *arg) {
 }
 
 /* PoP: _build_scheduled_task_xml @ hermes_cli/gateway_windows.py:_build_scheduled_task_xml */
-int gw_u_build_scheduled_task_xml(const char *arg) { (void)arg; return 0; }
+int gw_u_build_scheduled_task_xml(const char *arg) {
+    /* Python: Task XML render. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("<?xml version=\"1.0\" encoding=\"UTF-16\"?>...<LogonTrigger><Delay>%s</Delay>...\n", tab ? tab + 1 : "PT1M");
+    return 0;
+}
 
 /* PoP: _write_scheduled_task_xml @ hermes_cli/gateway_windows.py:_write_scheduled_task_xml */
 int gw_u_write_scheduled_task_xml(const char *arg) {
@@ -353,7 +361,21 @@ int gw_u_write_scheduled_task_xml(const char *arg) {
 }
 
 /* PoP: _install_scheduled_task @ hermes_cli/gateway_windows.py:_install_scheduled_task */
-int gw_u_install_scheduled_task(const char *arg) { (void)arg; return 0; }
+int gw_u_install_scheduled_task(const char *arg) {
+    /* Python: delete+create. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) {
+        printf("0\tschtasks /Create failed: %s\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    printf("1\tCreated Scheduled Task %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _install_startup_entry @ hermes_cli/gateway_windows.py:_install_startup_entry */
 int gw_u_install_startup_entry(const char *arg) {

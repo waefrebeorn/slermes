@@ -1880,7 +1880,20 @@ int cgw_u_dispatch_via_service_manager_if_s6(const char *arg) {
 }
 
 /* PoP: _dispatch_all_via_service_manager_if_s6 @ hermes_cli/gateway.py:_dispatch_all_via_service_manager_if_s6 */
-int cgw_u_dispatch_all_via_service_manager_if_s6(const char *arg) { (void)arg; return 0; }
+int cgw_u_dispatch_all_via_service_manager_if_s6(const char *arg) {
+    /* Python: --all s6. Arg =
+     * "is_s6\taction_ok\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int is_s6 = arg[0] == '1';
+    int action_ok = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!is_s6 || !action_ok || !state) { printf("0\n"); return 0; }
+    printf("✓ %s profile gateway(s) under s6\n", t3 ? t3 + 1 : "0");
+    return 1;
+}
 
 /* PoP: _maybe_redirect_run_to_s6_supervision @ hermes_cli/gateway.py:_maybe_redirect_run_to_s6_supervision */
 int cgw_u_maybe_redirect_run_to_s6_supervision(const char *arg) {

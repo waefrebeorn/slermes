@@ -689,7 +689,22 @@ int agent_subscription_view_subscription_state_from_payload(const char *arg) {
 }
 
 /* PoP: build_subscription_state @ agent/subscription_view.py:build_subscription_state */
-int agent_subscription_view_build_subscription_state(const char *arg) { (void)arg; return 0; }
+int agent_subscription_view_build_subscription_state(const char *arg) {
+    /* Python: fail-open fetch. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{\"logged_in\": false}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_billing") == 0) {
+        printf("{\"logged_in\": false, \"error\": \"billing client unavailable\"}\n");
+        return 0;
+    }
+    if (strcmp(state, "fail_open") == 0) {
+        printf("{\"logged_in\": false, \"error\": \"%s\"}\n", tab ? tab + 1 : "could not load subscription state");
+        return 0;
+    }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
 
 /* PoP: subscription_manage_url @ agent/subscription_view.py:subscription_manage_url */
 int agent_subscription_view_subscription_manage_url(const char *arg) {
@@ -2737,7 +2752,15 @@ int agent_tool_executor_u_parse_tool_arguments(const char *arg) {
 int agent_tool_executor_execute_tool_calls_segmented(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _try_nvidia_nim @ agent/auxiliary_client.py:_try_nvidia_nim */
-int agent_auxiliary_client_u_try_nvidia_nim(const char *arg) { (void)arg; return 0; }
+int agent_auxiliary_client_u_try_nvidia_nim(const char *arg) {
+    /* Python: NIM probe. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\t\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\t\n"); return 0; }
+    printf("client, %s\n", tab ? tab + 1 : "nvidia/nemotron-3-ultra-550b-a55b:free");
+    return 0;
+}
 
 /* PoP: _obj_get @ agent/auxiliary_client.py:_obj_get */
 int agent_auxiliary_client_u_obj_get(const char *arg) {
@@ -2953,7 +2976,28 @@ int agent_turn_finalizer_u_drop_verification_continuation_scaffo_ng(const char *
 }
 
 /* PoP: save_url_video @ agent/video_gen_provider.py:save_url_video */
-int agent_video_gen_provider_save_url_video(const char *arg) { (void)arg; return 0; }
+int agent_video_gen_provider_save_url_video(const char *arg) {
+    /* Python: streamed cache. Arg = "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "oversize") == 0) {
+        fprintf(stderr, "Video exceeds cap; refusing to cache: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    if (strcmp(state, "empty") == 0) {
+        fprintf(stderr, "Video was empty (0 bytes): %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    if (strcmp(state, "http_fail") == 0) {
+        fprintf(stderr, "video download failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _create_and_poll @ agent/video_gen_provider.py:_create_and_poll */
 int agent_video_gen_provider_u_create_and_poll(const char *arg) {

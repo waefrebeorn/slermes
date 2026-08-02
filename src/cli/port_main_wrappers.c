@@ -1043,7 +1043,19 @@ int main_u_nixos_build_env(const char *arg) { (void)arg; return 0; }
 int main_u_run_npm_install_deterministic(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _build_web_ui @ hermes_cli/main.py:_build_web_ui */
-int main_u_build_web_ui(const char *arg) { (void)arg; return 0; }
+int main_u_build_web_ui(const char *arg) {
+    /* Python: flock serialized build. Arg =
+     * "has_pkg\tstate\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_pkg = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!has_pkg) { printf("1\n"); return 0; }
+    if (!state) { printf("0 (build failed)\n"); return 1; }
+    printf("%s\n", (t2 && t2[1] == '1') ? "1 (built under lock)" : "1 (served existing dist)");
+    return 0;
+}
 
 /* PoP: _do_build_web_ui @ hermes_cli/main.py:_do_build_web_ui */
 int main_u_do_build_web_ui(const char *arg) { (void)arg; return 0; }
@@ -1186,7 +1198,25 @@ int main_u_rollback_desktop_from_backup(const char *arg) {
 }
 
 /* PoP: _ensure_desktop_exe_launchable @ hermes_cli/main.py:_ensure_desktop_exe_launchable */
-int main_u_ensure_desktop_exe_launchable(const char *arg) { (void)arg; return 0; }
+int main_u_ensure_desktop_exe_launchable(const char *arg) {
+    /* Python: integrity gate. Arg =
+     * "ok\trestored\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int ok = arg[0] == '1';
+    int restored = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("%s\t0\n", t3 ? t3 + 1 : "?"); return 0; }
+    if (ok) { printf("%s\t0\n", t3 ? t3 + 1 : "?"); return 0; }
+    if (restored) {
+        printf("  ↩ Update aborted — restored the previous working Hermes.exe from backup.\n");
+        return 0;
+    }
+    printf("  ✗ No usable backup was found to restore.\n");
+    return 0;
+}
 
 /* PoP: _purge_electron_build_cache @ hermes_cli/main.py:_purge_electron_build_cache */
 int main_u_purge_electron_build_cache(const char *arg) { (void)arg; return 0; }
@@ -1412,7 +1442,22 @@ int main_u_stash_apply_failed_only_on_existing_untracked(const char *arg) {
 int main_u_restore_stashed_changes(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _discard_stashed_changes @ hermes_cli/main.py:_discard_stashed_changes */
-int main_u_discard_stashed_changes(const char *arg) { (void)arg; return 0; }
+int main_u_discard_stashed_changes(const char *arg) {
+    /* Python: stash drop. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_stash") == 0) {
+        printf("⚠ Configured to discard local changes on non-interactive update, but Hermes couldn't find the stash entry to drop.\n");
+        return 0;
+    }
+    if (strcmp(state, "drop_fail") == 0) {
+        printf("⚠ Configured to discard local changes, but Hermes couldn't drop the saved stash entry.\n");
+        return 0;
+    }
+    printf("→ Discarded local source changes (updates.non_interactive_local_changes=discard).\n");
+    return 1;
+}
 
 
 /* PoP: _is_fork @ hermes_cli/main.py:_is_fork */
