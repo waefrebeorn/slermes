@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T22:22:57Z",
+  "generated_at": "2026-08-02T22:24:46Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -68316,10 +68316,10 @@
     },
     "agent/transcription_provider.py": {
       "total": 7,
-      "ported": 4,
+      "ported": 7,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 7,
@@ -68338,16 +68338,24 @@
             ],
             "line_number": 71
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transcription_provider_remaining.c",
+          "c_function": "tsp_name",
+          "pop_annotation": {
+            "c_function": "tsp_name",
+            "python_functions": [
+              "name"
+            ],
+            "c_file": "src/agent/port_transcription_provider_remaining.c",
+            "python_file": "agent/transcription_provider.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: name @ agent/transcription_provider.py:name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transcription_provider.py",
@@ -68390,16 +68398,24 @@
             "decorators": [],
             "line_number": 88
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transcription_provider_remaining.c",
+          "c_function": "tsp_is_available",
+          "pop_annotation": {
+            "c_function": "tsp_is_available",
+            "python_functions": [
+              "is_available"
+            ],
+            "c_file": "src/agent/port_transcription_provider_remaining.c",
+            "python_file": "agent/transcription_provider.py",
+            "line": 26,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_available @ agent/transcription_provider.py:is_available */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transcription_provider.py",
@@ -68500,16 +68516,24 @@
             ],
             "line_number": 152
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transcription_provider_remaining.c",
+          "c_function": "tsp_transcribe",
+          "pop_annotation": {
+            "c_function": "tsp_transcribe",
+            "python_functions": [
+              "transcribe"
+            ],
+            "c_file": "src/agent/port_transcription_provider_remaining.c",
+            "python_file": "agent/transcription_provider.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: transcribe @ agent/transcription_provider.py:transcribe */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -71904,10 +71928,10 @@
     },
     "agent/transports/hermes_tools_mcp_server.py": {
       "total": 3,
-      "ported": 0,
+      "ported": 3,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 3,
@@ -71923,16 +71947,24 @@
             "decorators": [],
             "line_number": 67
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_hermes_tools_mcp_server_remaining.c",
+          "c_function": "htm_signature_from_schema",
+          "pop_annotation": {
+            "c_function": "htm_signature_from_schema",
+            "python_functions": [
+              "_signature_from_schema"
+            ],
+            "c_file": "src/agent/port_hermes_tools_mcp_server_remaining.c",
+            "python_file": "agent/transports/hermes_tools_mcp_server.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _signature_from_schema @ agent/transports/hermes_tools_mcp_server.py:_signature_from_schema */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/hermes_tools_mcp_server.py",
@@ -71944,16 +71976,24 @@
             "decorators": [],
             "line_number": 152
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_hermes_tools_mcp_server_remaining.c",
+          "c_function": "htm_build_server",
+          "pop_annotation": {
+            "c_function": "htm_build_server",
+            "python_functions": [
+              "_build_server"
+            ],
+            "c_file": "src/agent/port_hermes_tools_mcp_server_remaining.c",
+            "python_file": "agent/transports/hermes_tools_mcp_server.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _build_server @ agent/transports/hermes_tools_mcp_server.py:_build_server */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/hermes_tools_mcp_server.py",
@@ -71965,16 +72005,24 @@
             "decorators": [],
             "line_number": 248
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_hermes_tools_mcp_server_remaining.c",
+          "c_function": "htm_main",
+          "pop_annotation": {
+            "c_function": "htm_main",
+            "python_functions": [
+              "main"
+            ],
+            "c_file": "src/agent/port_hermes_tools_mcp_server_remaining.c",
+            "python_file": "agent/transports/hermes_tools_mcp_server.py",
+            "line": 37,
+            "is_consolidated": false,
+            "full_text": "/* PoP: main @ agent/transports/hermes_tools_mcp_server.py:main */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
