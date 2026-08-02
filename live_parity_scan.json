@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T22:27:05Z",
+  "generated_at": "2026-08-02T22:28:54Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -113398,10 +113398,10 @@
     },
     "gateway/platforms/signal.py": {
       "total": 50,
-      "ported": 45,
+      "ported": 48,
       "partial": 2,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 50,
@@ -113736,17 +113736,24 @@
             "decorators": [],
             "line_number": 264
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_remaining2.c",
+          "c_function": "sgl_init",
+          "pop_annotation": {
+            "c_function": "sgl_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_signal_remaining2.c",
+            "python_file": "gateway/platforms/signal.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/signal.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal.py",
@@ -113758,17 +113765,24 @@
             "decorators": [],
             "line_number": 349
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_remaining2.c",
+          "c_function": "sgl_connect",
+          "pop_annotation": {
+            "c_function": "sgl_connect",
+            "python_functions": [
+              "connect"
+            ],
+            "c_file": "src/gateway/port_signal_remaining2.c",
+            "python_file": "gateway/platforms/signal.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: connect @ gateway/platforms/signal.py:connect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal.py",
@@ -113780,17 +113794,24 @@
             "decorators": [],
             "line_number": 393
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_remaining2.c",
+          "c_function": "sgl_disconnect",
+          "pop_annotation": {
+            "c_function": "sgl_disconnect",
+            "python_functions": [
+              "disconnect"
+            ],
+            "c_file": "src/gateway/port_signal_remaining2.c",
+            "python_file": "gateway/platforms/signal.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: disconnect @ gateway/platforms/signal.py:disconnect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal.py",
@@ -154213,10 +154234,10 @@
     },
     "gateway/stream_dispatch.py": {
       "total": 3,
-      "ported": 0,
+      "ported": 3,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 3,
@@ -154232,16 +154253,24 @@
             "decorators": [],
             "line_number": 67
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_stream_dispatch_remaining.c",
+          "c_function": "std_init",
+          "pop_annotation": {
+            "c_function": "std_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_stream_dispatch_remaining.c",
+            "python_file": "gateway/stream_dispatch.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/stream_dispatch.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/stream_dispatch.py",
@@ -154253,16 +154282,24 @@
             "decorators": [],
             "line_number": 88
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_stream_dispatch_remaining.c",
+          "c_function": "std_dispatch",
+          "pop_annotation": {
+            "c_function": "std_dispatch",
+            "python_functions": [
+              "dispatch"
+            ],
+            "c_file": "src/gateway/port_stream_dispatch_remaining.c",
+            "python_file": "gateway/stream_dispatch.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: dispatch @ gateway/stream_dispatch.py:dispatch */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/stream_dispatch.py",
@@ -154274,16 +154311,24 @@
             "decorators": [],
             "line_number": 95
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_stream_dispatch_remaining.c",
+          "c_function": "std_dispatch_inner",
+          "pop_annotation": {
+            "c_function": "std_dispatch_inner",
+            "python_functions": [
+              "_dispatch"
+            ],
+            "c_file": "src/gateway/port_stream_dispatch_remaining.c",
+            "python_file": "gateway/stream_dispatch.py",
+            "line": 37,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _dispatch @ gateway/stream_dispatch.py:_dispatch */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
