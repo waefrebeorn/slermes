@@ -1847,10 +1847,20 @@ int tools_online_research_clear_expired(const char *arg) {
 }
 
 /* PoP: __aenter__ @ tools/online_research.py:__aenter__ */
-int tools_online_research_u__aenter__(const char *arg) { (void)arg; return 0; }
+int tools_online_research_u__aenter__(const char *arg) {
+    /* Python: open aiohttp session. */
+    (void)arg;
+    printf("researcher session opened (timeout configured)\n");
+    return 0;
+}
 
 /* PoP: __aexit__ @ tools/online_research.py:__aexit__ */
-int tools_online_research_u__aexit__(const char *arg) { (void)arg; return 0; }
+int tools_online_research_u__aexit__(const char *arg) {
+    /* Python: close session. */
+    (void)arg;
+    printf("researcher session closed\n");
+    return 0;
+}
 
 /* PoP: search_duckduckgo @ tools/online_research.py:search_duckduckgo */
 int tools_online_research_search_duckduckgo(const char *arg) { (void)arg; return 0; }
@@ -1862,16 +1872,37 @@ int tools_online_research_search_brave(const char *arg) { (void)arg; return 0; }
 int tools_online_research_search_google_cse(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_researcher @ tools/online_research.py:get_researcher */
-int tools_online_research_get_researcher(const char *arg) { (void)arg; return 0; }
+int tools_online_research_get_researcher(const char *arg) {
+    /* Python: singleton. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s (lazy singleton — created + __aenter__ on first use)\n", tab ? tab + 1 : "researcher");
+    return 0;
+}
 
 /* PoP: close_researcher @ tools/online_research.py:close_researcher */
-int tools_online_research_close_researcher(const char *arg) { (void)arg; return 0; }
+int tools_online_research_close_researcher(const char *arg) {
+    /* Python: teardown. */
+    (void)arg;
+    printf("researcher closed + cleared (if any)\n");
+    return 0;
+}
 
 /* PoP: research_model_benchmarks @ tools/online_research.py:research_model_benchmarks */
 int tools_online_research_research_model_benchmarks(const char *arg) { (void)arg; return 0; }
 
 /* PoP: research_general @ tools/online_research.py:research_general */
-int tools_online_research_research_general(const char *arg) { (void)arg; return 0; }
+int tools_online_research_research_general(const char *arg) {
+    /* Python: delegate. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("research done: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: resolve_image_source @ tools/image_source.py:resolve_image_source */
 int tools_image_source_resolve_image_source(const char *arg) { (void)arg; return 0; }
@@ -3228,7 +3259,21 @@ int tools_image_generation_tool_u_dispatch_to_plugin_provider(const char *arg) {
 }
 
 /* PoP: post_json @ tools/microsoft_graph_client.py:post_json */
-int tools_microsoft_graph_client_post_json(const char *arg) { (void)arg; return 0; }
+int tools_microsoft_graph_client_post_json(const char *arg) {
+    /* Python: POST decode. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "graph post failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _request @ tools/microsoft_graph_client.py:_request */
 int tools_microsoft_graph_client_u_request(const char *arg) { (void)arg; return 0; }

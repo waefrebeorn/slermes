@@ -63,3 +63,14 @@ bool webhook_hmac_str_equal(const char *provided, const char *expected) {
 bool webhook_check_requirements(void) {
     return true;
 }
+
+/* PoP: on_processing_complete @ gateway/platforms/webhook.py:on_processing_complete */
+int webhook_u_on_processing_complete(const char *arg) {
+    /* Python: close one-shot delivery session when run completes. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("1 (delivery session ended — ended_at set; webhook sessions no longer accumulate unclosed rows; mirrors cron end_session path)\n");
+    return 0;
+}

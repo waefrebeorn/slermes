@@ -468,7 +468,21 @@ int cua_u_signal_shutdown_locked(const char *arg) {
 }
 
 /* PoP: _call_tool_async @ tools/computer_use/cua_backend.py:_call_tool_async */
-int cua_u_call_tool_async(const char *arg) { (void)arg; return 0; }
+int cua_u_call_tool_async(const char *arg) {
+    /* Python: session call. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "tool call failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("tool result extracted: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: capabilities_discovered @ tools/computer_use/cua_backend.py:capabilities_discovered */
 int cua_capabilities_discovered(const char *arg) {

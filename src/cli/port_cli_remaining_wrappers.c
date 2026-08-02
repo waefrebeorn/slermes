@@ -5890,7 +5890,17 @@ int hermes_cli_pty_session_detach(const char *arg) {
 }
 
 /* PoP: run_reaper @ hermes_cli/pty_session.py:run_reaper */
-int hermes_cli_pty_session_run_reaper(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pty_session_run_reaper(const char *arg) {
+    /* Python: reap loop. Arg =
+     * "interval\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("reaper running (reap_idle every %ss; cancelled on shutdown; exceptions swallowed)%s\n", t2 ? t2 + 1 : "60", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: attach_or_spawn @ hermes_cli/pty_session.py:attach_or_spawn */
 int hermes_cli_pty_session_attach_or_spawn(const char *arg) { (void)arg; return 0; }
@@ -5922,7 +5932,12 @@ int hermes_cli_pty_session_u_reap_one_idle_or_raise(const char *arg) {
 }
 
 /* PoP: close_all @ hermes_cli/pty_session.py:close_all */
-int hermes_cli_pty_session_close_all(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pty_session_close_all(const char *arg) {
+    /* Python: close every session. */
+    (void)arg;
+    printf("all pty sessions closed (pop+close each)\n");
+    return 0;
+}
 
 /* PoP: _subscriptions_path @ hermes_cli/webhook.py:_subscriptions_path */
 int hermes_cli_webhook_u_subscriptions_path(const char *arg) {

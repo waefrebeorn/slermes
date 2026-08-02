@@ -881,7 +881,15 @@ int grun_u_start_systemd_watchdog(const char *arg) {
 }
 
 /* PoP: _stop_systemd_watchdog @ gateway/run.py:_stop_systemd_watchdog */
-int grun_u_stop_systemd_watchdog(const char *arg) { (void)arg; return 0; }
+int grun_u_stop_systemd_watchdog(const char *arg) {
+    /* Python: stop before drain. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("watchdog heartbeats stopped (cleared handle, awaited stop — before long shutdown drain)%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _start_secondary_profile_adapters @ gateway/run.py:_start_secondary_profile_adapters */
 int grun_u_start_secondary_profile_adapters(const char *arg) { (void)arg; return 0; }

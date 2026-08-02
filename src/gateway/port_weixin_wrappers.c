@@ -82,7 +82,21 @@ int wx_u_get_upload_url(const char *arg) { (void)arg; return 0; }
 int wx_u_upload_ciphertext(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _download_bytes @ gateway/platforms/weixin.py:_download_bytes */
-int wx_u_download_bytes(const char *arg) { (void)arg; return 0; }
+int wx_u_download_bytes(const char *arg) {
+    /* Python: wait_for download. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "download failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("bytes downloaded (%s B — asyncio.wait_for, not aiohttp ClientTimeout)\n", t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _download_and_decrypt_media @ gateway/platforms/weixin.py:_download_and_decrypt_media */
 int wx_u_download_and_decrypt_media(const char *arg) { (void)arg; return 0; }

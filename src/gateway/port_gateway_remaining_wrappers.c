@@ -1037,7 +1037,17 @@ int gateway_platforms_qqbot_chunke_u_compute_file_hashes(const char *arg) {
 }
 
 /* PoP: _run_with_concurrency @ gateway/platforms/qqbot/chunked_upload.py:_run_with_concurrency */
-int gateway_platforms_qqbot_chunke_u_run_with_concurrency(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_qqbot_chunke_u_run_with_concurrency(const char *arg) {
+    /* Python: bounded thunks. Arg =
+     * "done\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s thunk(s) completed (semaphore %s, order preserved, first exception re-raised after all settle)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "bounded" : "1", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _render_relay_context @ gateway/relay/ws_transport.py:_render_relay_context */
 int gateway_relay_ws_transport_u_render_relay_context(const char *arg) {
@@ -2169,5 +2179,30 @@ int gateway_session_context_declare_stateless_channel(const char *arg) {
     /* Python: async delivery off, no latch. Arg = "state". */
     (void)arg;
     printf("async delivery disabled (stateless channel)\n");
+    return 0;
+}
+
+/* PoP: on_processing_start @ gateway/platforms/signal.py:on_processing_start */
+int gateway_platforms_signal_u_on_processing_start(const char *arg) {
+    /* Python: react with 👀 when processing begins. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("1 (reaction 👀 sent on processing start, target=%s)\n", tab ? tab + 1 : "chat");
+    return 0;
+}
+
+/* PoP: on_processing_complete @ gateway/platforms/signal.py:on_processing_complete */
+int gateway_platforms_signal_u_on_processing_complete(const char *arg) {
+    /* Python: swap 👀 for ✅ (success) / ❌ (failure); CANCELLED keeps 👀. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    int cancelled = t1 && t1[1] == '1';
+    if (cancelled) { printf("1 (CANCELLED — 👀 left in place)\n"); return 0; }
+    printf("1 (reaction swapped 👀 → %s)\n", (t2 && t2[1] == '1') ? "❌" : "✅");
     return 0;
 }

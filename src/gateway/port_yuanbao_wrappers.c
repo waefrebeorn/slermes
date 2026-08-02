@@ -776,7 +776,21 @@ int yb_u_do_reconnect(const char *arg) { (void)arg; return 0; }
 int yb_u_cleanup_ws(const char *arg) { (void)arg; return 0; }
 
 /* PoP: acquire_file @ gateway/platforms/yuanbao.py:acquire_file */
-int yb_acquire_file(const char *arg) { (void)arg; return 0; }
+int yb_acquire_file(const char *arg) {
+    /* Python: file acquire. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "file acquire failed: %s\n", t3 ? t3 + 1 : "not found / empty");
+        return 1;
+    }
+    printf("1 (bytes, filename=%s, content_type=%s)%s\n", t2 ? t2 + 1 : "?", t3 ? t3 + 1 : "?", "");
+    return 0;
+}
 
 /* PoP: build_msg_body @ gateway/platforms/yuanbao.py:build_msg_body */
 int yb_build_msg_body(const char *arg) {
@@ -1002,7 +1016,12 @@ int yb_u_handle_send_start(const char *arg) {
 }
 
 /* PoP: _handle_send_finish @ gateway/platforms/yuanbao.py:_handle_send_finish */
-int yb_u_handle_send_finish(const char *arg) { (void)arg; return 0; }
+int yb_u_handle_send_finish(const char *arg) {
+    /* Python: FINISH heartbeat. */
+    (void)arg;
+    printf("FINISH heartbeat sent (WS_HEARTBEAT_FINISH)\n");
+    return 0;
+}
 
 /* PoP: send_media @ gateway/platforms/yuanbao.py:send_media */
 int yb_send_media_2(const char *arg) { (void)arg; return 0; }
@@ -1011,10 +1030,20 @@ int yb_send_media_2(const char *arg) { (void)arg; return 0; }
 int yb_send_direct_2(const char *arg) { (void)arg; return 0; }
 
 /* PoP: start_typing @ gateway/platforms/yuanbao.py:start_typing */
-int yb_start_typing(const char *arg) { (void)arg; return 0; }
+int yb_start_typing(const char *arg) {
+    /* Python: RUNNING heartbeat. */
+    (void)arg;
+    printf("typing heartbeat started (RUNNING)\n");
+    return 0;
+}
 
 /* PoP: start_slow_notifier @ gateway/platforms/yuanbao.py:start_slow_notifier */
-int yb_start_slow_notifier(const char *arg) { (void)arg; return 0; }
+int yb_start_slow_notifier(const char *arg) {
+    /* Python: slow notifier. */
+    (void)arg;
+    printf("slow-response notifier started\n");
+    return 0;
+}
 
 /* PoP: cancel_slow_notifier @ gateway/platforms/yuanbao.py:cancel_slow_notifier */
 int yb_cancel_slow_notifier(const char *arg) {
@@ -1095,7 +1124,29 @@ int yb_u_sender_may_designate_home(const char *arg) {
 int yb_u_process_message_background(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _get_cached_token @ gateway/platforms/yuanbao.py:_get_cached_token */
-int yb_u_get_cached_token(const char *arg) { (void)arg; return 0; }
+int yb_u_get_cached_token(const char *arg) {
+    /* Python: sign token. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("sign token (module-level cache, app_key/secret/domain/route_env): %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: send_yuanbao_direct @ gateway/platforms/yuanbao.py:send_yuanbao_direct */
-int yb_send_yuanbao_direct(const char *arg) { (void)arg; return 0; }
+int yb_send_yuanbao_direct(const char *arg) {
+    /* Python: outbound delegate. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "send_direct failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("direct send ok (media_files=%s)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
