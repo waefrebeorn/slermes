@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:45:55Z",
+  "generated_at": "2026-08-02T19:47:53Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -71065,10 +71065,10 @@
     },
     "agent/video_gen_provider.py": {
       "total": 19,
-      "ported": 5,
+      "ported": 19,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 14,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 19,
@@ -71087,16 +71087,24 @@
             ],
             "line_number": 84
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_video_gen_provider_remaining.c",
+          "c_function": "vgp_name",
+          "pop_annotation": {
+            "c_function": "vgp_name",
+            "python_functions": [
+              "name"
+            ],
+            "c_file": "src/agent/port_video_gen_provider_remaining.c",
+            "python_file": "agent/video_gen_provider.py",
+            "line": 33,
+            "is_consolidated": false,
+            "full_text": "/* PoP: name @ agent/video_gen_provider.py:name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/video_gen_provider.py",
@@ -71110,16 +71118,24 @@
             ],
             "line_number": 91
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_video_gen_provider_remaining.c",
+          "c_function": "vgp_display_name",
+          "pop_annotation": {
+            "c_function": "vgp_display_name",
+            "python_functions": [
+              "display_name"
+            ],
+            "c_file": "src/agent/port_video_gen_provider_remaining.c",
+            "python_file": "agent/video_gen_provider.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: display_name @ agent/video_gen_provider.py:display_name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/video_gen_provider.py",
@@ -71131,16 +71147,24 @@
             "decorators": [],
             "line_number": 95
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_video_gen_provider_remaining.c",
+          "c_function": "vgp_is_available",
+          "pop_annotation": {
+            "c_function": "vgp_is_available",
+            "python_functions": [
+              "is_available"
+            ],
+            "c_file": "src/agent/port_video_gen_provider_remaining.c",
+            "python_file": "agent/video_gen_provider.py",
+            "line": 45,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_available @ agent/video_gen_provider.py:is_available */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/video_gen_provider.py",
@@ -71152,16 +71176,24 @@
             "decorators": [],
             "line_number": 103
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_video_gen_provider_remaining.c",
+          "c_function": "vgp_list_models",
+          "pop_annotation": {
+            "c_function": "vgp_list_models",
+            "python_functions": [
+              "list_models"
+            ],
+            "c_file": "src/agent/port_video_gen_provider_remaining.c",
+            "python_file": "agent/video_gen_provider.py",
+            "line": 52,
+            "is_consolidated": false,
+            "full_text": "/* PoP: list_models @ agent/video_gen_provider.py:list_models */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/video_gen_provider.py",
@@ -71173,16 +71205,24 @@
             "decorators": [],
             "line_number": 122
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_video_gen_provider_remaining.c",
+          "c_function": "vgp_get_setup_schema",
+          "pop_annotation": {
+            "c_function": "vgp_get_setup_schema",
+            "python_functions": [
+              "get_setup_schema"
+            ],
+            "c_file": "src/agent/port_video_gen_provider_remaining.c",
+            "python_file": "agent/video_gen_provider.py",
+            "line": 59,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_setup_schema @ agent/video_gen_provider.py:get_setup_schema */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/video_gen_provider.py",
@@ -71194,16 +71234,24 @@
             "decorators": [],
             "line_number": 131
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_video_gen_provider_remaining.c",
+          "c_function": "vgp_default_model",
+          "pop_annotation": {
+            "c_function": "vgp_default_model",
+            "python_functions": [
+              "default_model"
+            ],
+            "c_file": "src/agent/port_video_gen_provider_remaining.c",
+            "python_file": "agent/video_gen_provider.py",
+            "line": 65,
+            "is_consolidated": false,
+            "full_text": "/* PoP: default_model @ agent/video_gen_provider.py:default_model */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/video_gen_provider.py",
@@ -71215,16 +71263,24 @@
             "decorators": [],
             "line_number": 138
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_video_gen_provider_remaining.c",
+          "c_function": "vgp_capabilities",
+          "pop_annotation": {
+            "c_function": "vgp_capabilities",
+            "python_functions": [
+              "capabilities"
+            ],
+            "c_file": "src/agent/port_video_gen_provider_remaining.c",
+            "python_file": "agent/video_gen_provider.py",
+            "line": 72,
+            "is_consolidated": false,
+            "full_text": "/* PoP: capabilities @ agent/video_gen_provider.py:capabilities */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/video_gen_provider.py",
@@ -71238,16 +71294,24 @@
             ],
             "line_number": 169
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_video_gen_provider_remaining.c",
+          "c_function": "vgp_generate",
+          "pop_annotation": {
+            "c_function": "vgp_generate",
+            "python_functions": [
+              "generate"
+            ],
+            "c_file": "src/agent/port_video_gen_provider_remaining.c",
+            "python_file": "agent/video_gen_provider.py",
+            "line": 78,
+            "is_consolidated": false,
+            "full_text": "/* PoP: generate @ agent/video_gen_provider.py:generate */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/video_gen_provider.py",
@@ -71288,16 +71352,24 @@
             "decorators": [],
             "line_number": 213
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_video_gen_provider_remaining.c",
+          "c_function": "vgp_save_b64_video",
+          "pop_annotation": {
+            "c_function": "vgp_save_b64_video",
+            "python_functions": [
+              "save_b64_video"
+            ],
+            "c_file": "src/agent/port_video_gen_provider_remaining.c",
+            "python_file": "agent/video_gen_provider.py",
+            "line": 86,
+            "is_consolidated": false,
+            "full_text": "/* PoP: save_b64_video @ agent/video_gen_provider.py:save_b64_video */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/video_gen_provider.py",
@@ -71309,16 +71381,24 @@
             "decorators": [],
             "line_number": 233
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_video_gen_provider_remaining.c",
+          "c_function": "vgp_save_bytes_video",
+          "pop_annotation": {
+            "c_function": "vgp_save_bytes_video",
+            "python_functions": [
+              "save_bytes_video"
+            ],
+            "c_file": "src/agent/port_video_gen_provider_remaining.c",
+            "python_file": "agent/video_gen_provider.py",
+            "line": 122,
+            "is_consolidated": false,
+            "full_text": "/* PoP: save_bytes_video @ agent/video_gen_provider.py:save_bytes_video */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/video_gen_provider.py",
@@ -71359,16 +71439,24 @@
             "decorators": [],
             "line_number": 319
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_video_gen_provider_remaining.c",
+          "c_function": "vgp_success_response",
+          "pop_annotation": {
+            "c_function": "vgp_success_response",
+            "python_functions": [
+              "success_response"
+            ],
+            "c_file": "src/agent/port_video_gen_provider_remaining.c",
+            "python_file": "agent/video_gen_provider.py",
+            "line": 134,
+            "is_consolidated": false,
+            "full_text": "/* PoP: success_response @ agent/video_gen_provider.py:success_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/video_gen_provider.py",
@@ -71380,16 +71468,24 @@
             "decorators": [],
             "line_number": 352
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_video_gen_provider_remaining.c",
+          "c_function": "vgp_error_response",
+          "pop_annotation": {
+            "c_function": "vgp_error_response",
+            "python_functions": [
+              "error_response"
+            ],
+            "c_file": "src/agent/port_video_gen_provider_remaining.c",
+            "python_file": "agent/video_gen_provider.py",
+            "line": 143,
+            "is_consolidated": false,
+            "full_text": "/* PoP: error_response @ agent/video_gen_provider.py:error_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/video_gen_provider.py",
@@ -71430,16 +71526,24 @@
             "decorators": [],
             "line_number": 416
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_video_gen_provider_remaining.c",
+          "c_function": "vgp_is_available",
+          "pop_annotation": {
+            "c_function": "vgp_is_available",
+            "python_functions": [
+              "is_available"
+            ],
+            "c_file": "src/agent/port_video_gen_provider_remaining.c",
+            "python_file": "agent/video_gen_provider.py",
+            "line": 45,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_available @ agent/video_gen_provider.py:is_available */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/video_gen_provider.py",
@@ -71509,16 +71613,24 @@
             "decorators": [],
             "line_number": 449
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_video_gen_provider_remaining.c",
+          "c_function": "vgp_generate",
+          "pop_annotation": {
+            "c_function": "vgp_generate",
+            "python_functions": [
+              "generate"
+            ],
+            "c_file": "src/agent/port_video_gen_provider_remaining.c",
+            "python_file": "agent/video_gen_provider.py",
+            "line": 78,
+            "is_consolidated": false,
+            "full_text": "/* PoP: generate @ agent/video_gen_provider.py:generate */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -297654,10 +297766,10 @@
     },
     "tools/environments/base.py": {
       "total": 44,
-      "ported": 30,
+      "ported": 44,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 14,
+      "real_gaps": 0,
       "thin": true,
       "pop_mismatch": false,
       "py_func_count": 44,
@@ -297673,17 +297785,24 @@
             "decorators": [],
             "line_number": 56
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_base_remaining.c",
+          "c_function": "envb_handle_init",
+          "pop_annotation": {
+            "c_function": "envb_handle_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_environments_base_remaining.c",
+            "python_file": "tools/environments/base.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/environments/base.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/base.py",
@@ -297786,17 +297905,24 @@
             "decorators": [],
             "line_number": 114
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_base_remaining.c",
+          "c_function": "envb_handle_render",
+          "pop_annotation": {
+            "c_function": "envb_handle_render",
+            "python_functions": [
+              "render"
+            ],
+            "c_file": "src/tools/port_environments_base_remaining.c",
+            "python_file": "tools/environments/base.py",
+            "line": 33,
+            "is_consolidated": false,
+            "full_text": "/* PoP: render @ tools/environments/base.py:render */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/base.py",
@@ -298069,17 +298195,24 @@
             "decorators": [],
             "line_number": 296
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_base_remaining.c",
+          "c_function": "envb_handle_poll",
+          "pop_annotation": {
+            "c_function": "envb_handle_poll",
+            "python_functions": [
+              "poll"
+            ],
+            "c_file": "src/tools/port_environments_base_remaining.c",
+            "python_file": "tools/environments/base.py",
+            "line": 54,
+            "is_consolidated": false,
+            "full_text": "/* PoP: poll @ tools/environments/base.py:poll */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/base.py",
@@ -298091,17 +298224,24 @@
             "decorators": [],
             "line_number": 297
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_base_remaining.c",
+          "c_function": "envb_handle_kill",
+          "pop_annotation": {
+            "c_function": "envb_handle_kill",
+            "python_functions": [
+              "kill"
+            ],
+            "c_file": "src/tools/port_environments_base_remaining.c",
+            "python_file": "tools/environments/base.py",
+            "line": 60,
+            "is_consolidated": false,
+            "full_text": "/* PoP: kill @ tools/environments/base.py:kill */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/base.py",
@@ -298113,17 +298253,24 @@
             "decorators": [],
             "line_number": 298
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_base_remaining.c",
+          "c_function": "envb_handle_wait",
+          "pop_annotation": {
+            "c_function": "envb_handle_wait",
+            "python_functions": [
+              "wait"
+            ],
+            "c_file": "src/tools/port_environments_base_remaining.c",
+            "python_file": "tools/environments/base.py",
+            "line": 67,
+            "is_consolidated": false,
+            "full_text": "/* PoP: wait @ tools/environments/base.py:wait */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/base.py",
@@ -298197,17 +298344,24 @@
             "decorators": [],
             "line_number": 316
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_base_remaining.c",
+          "c_function": "envb_handle_init",
+          "pop_annotation": {
+            "c_function": "envb_handle_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_environments_base_remaining.c",
+            "python_file": "tools/environments/base.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/environments/base.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/base.py",
@@ -298281,17 +298435,24 @@
             "decorators": [],
             "line_number": 361
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_base_remaining.c",
+          "c_function": "envb_handle_poll",
+          "pop_annotation": {
+            "c_function": "envb_handle_poll",
+            "python_functions": [
+              "poll"
+            ],
+            "c_file": "src/tools/port_environments_base_remaining.c",
+            "python_file": "tools/environments/base.py",
+            "line": 54,
+            "is_consolidated": false,
+            "full_text": "/* PoP: poll @ tools/environments/base.py:poll */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/base.py",
@@ -298303,17 +298464,24 @@
             "decorators": [],
             "line_number": 364
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_base_remaining.c",
+          "c_function": "envb_handle_kill",
+          "pop_annotation": {
+            "c_function": "envb_handle_kill",
+            "python_functions": [
+              "kill"
+            ],
+            "c_file": "src/tools/port_environments_base_remaining.c",
+            "python_file": "tools/environments/base.py",
+            "line": 60,
+            "is_consolidated": false,
+            "full_text": "/* PoP: kill @ tools/environments/base.py:kill */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/base.py",
@@ -298325,17 +298493,24 @@
             "decorators": [],
             "line_number": 371
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_base_remaining.c",
+          "c_function": "envb_handle_wait",
+          "pop_annotation": {
+            "c_function": "envb_handle_wait",
+            "python_functions": [
+              "wait"
+            ],
+            "c_file": "src/tools/port_environments_base_remaining.c",
+            "python_file": "tools/environments/base.py",
+            "line": 67,
+            "is_consolidated": false,
+            "full_text": "/* PoP: wait @ tools/environments/base.py:wait */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/base.py",
@@ -298405,17 +298580,24 @@
             "decorators": [],
             "line_number": 413
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_base_remaining.c",
+          "c_function": "envb_handle_init",
+          "pop_annotation": {
+            "c_function": "envb_handle_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_environments_base_remaining.c",
+            "python_file": "tools/environments/base.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/environments/base.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/base.py",
@@ -298427,17 +298609,24 @@
             "decorators": [],
             "line_number": 433
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_base_remaining.c",
+          "c_function": "envb_run_bash",
+          "pop_annotation": {
+            "c_function": "envb_run_bash",
+            "python_functions": [
+              "_run_bash"
+            ],
+            "c_file": "src/tools/port_environments_base_remaining.c",
+            "python_file": "tools/environments/base.py",
+            "line": 74,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _run_bash @ tools/environments/base.py:_run_bash */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/base.py",
@@ -298745,17 +298934,24 @@
             "decorators": [],
             "line_number": 1031
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_base_remaining.c",
+          "c_function": "envb_before_execute",
+          "pop_annotation": {
+            "c_function": "envb_before_execute",
+            "python_functions": [
+              "_before_execute"
+            ],
+            "c_file": "src/tools/port_environments_base_remaining.c",
+            "python_file": "tools/environments/base.py",
+            "line": 82,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _before_execute @ tools/environments/base.py:_before_execute */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/base.py",
@@ -298767,17 +298963,24 @@
             "decorators": [],
             "line_number": 1045
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_base_remaining.c",
+          "c_function": "envb_execute",
+          "pop_annotation": {
+            "c_function": "envb_execute",
+            "python_functions": [
+              "execute"
+            ],
+            "c_file": "src/tools/port_environments_base_remaining.c",
+            "python_file": "tools/environments/base.py",
+            "line": 90,
+            "is_consolidated": false,
+            "full_text": "/* PoP: execute @ tools/environments/base.py:execute */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/base.py",
@@ -298789,17 +298992,24 @@
             "decorators": [],
             "line_number": 1111
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_base_remaining.c",
+          "c_function": "envb_stop",
+          "pop_annotation": {
+            "c_function": "envb_stop",
+            "python_functions": [
+              "stop"
+            ],
+            "c_file": "src/tools/port_environments_base_remaining.c",
+            "python_file": "tools/environments/base.py",
+            "line": 98,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stop @ tools/environments/base.py:stop */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/base.py",
