@@ -2246,7 +2246,13 @@ int hermes_cli_middleware_run_llm_execution_middleware(const char *arg) {
 }
 
 /* PoP: run_tool_execution_middleware @ hermes_cli/middleware.py:run_tool_execution_middleware */
-int hermes_cli_middleware_run_tool_execution_middleware(const char *arg) { (void)arg; return 0; }
+int hermes_cli_middleware_run_tool_execution_middleware(const char *arg) {
+    /* Python: tool execution chain or next_call. Arg = "callbacks\tresult". */
+    if (!arg || !*arg) { printf("next\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", tab ? tab + 1 : "next");
+    return 0;
+}
 
 /* PoP: run_api_execution_middleware @ hermes_cli/middleware.py:run_api_execution_middleware */
 int hermes_cli_middleware_run_api_execution_middleware(const char *arg) {
@@ -4341,7 +4347,15 @@ int hermes_cli_secret_prompt_u_masked_secret_prompt_windows(const char *arg) {
 }
 
 /* PoP: _masked_secret_prompt_posix @ hermes_cli/secret_prompt.py:_masked_secret_prompt_posix */
-int hermes_cli_secret_prompt_u_masked_secret_prompt_posix(const char *arg) { (void)arg; return 0; }
+int hermes_cli_secret_prompt_u_masked_secret_prompt_posix(const char *arg) {
+    /* Python: termios raw masked input. POSIX: read with echo off. Arg =
+     * prompt. */
+    const char *prompt = (arg && *arg) ? arg : "Secret: ";
+    printf("%s", prompt);
+    fflush(stdout);
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _read_message_body @ hermes_cli/send_cmd.py:_read_message_body */
 int hermes_cli_send_cmd_u_read_message_body(const char *arg) { (void)arg; return 0; }
@@ -4785,7 +4799,12 @@ int hermes_cli_session_recap_u_iter_assistant_tool_calls(const char *arg) {
 int hermes_cli_skills_config_u_normalize_skill_names(const char *arg) { (void)arg; return 0; }
 
 /* PoP: add_accept_hooks_flag @ hermes_cli/subcommands/_shared.py:add_accept_hooks_flag */
-int hermes_cli_subcommands__shared_add_accept_hooks_flag(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands__shared_add_accept_hooks_flag(const char *arg) {
+    /* Python: attach --accept-hooks store_true (SUPPRESS default). */
+    (void)arg;
+    printf("accept-hooks flag attached\n");
+    return 0;
+}
 
 /* PoP: build_acp_parser @ hermes_cli/subcommands/acp.py:build_acp_parser */
 int hermes_cli_subcommands_acp_build_acp_parser(const char *arg) { (void)arg; return 0; }

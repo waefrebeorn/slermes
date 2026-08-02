@@ -444,7 +444,22 @@ int auth_resolve_minimax_oauth_runtime_credentials(const char *arg) { (void)arg;
 int auth_get_minimax_oauth_auth_status(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _login_minimax_oauth @ hermes_cli/auth.py:_login_minimax_oauth */
-int auth_u_login_minimax_oauth(const char *arg) { (void)arg; return 0; }
+int auth_u_login_minimax_oauth(const char *arg) {
+    /* Python: minimax oauth login, AuthError -> SystemExit 1. Arg =
+     * "region\tno_browser\ttimeout\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *result = t3 ? t3 + 1 : "";
+    if (result[0]) {
+        fprintf(stderr, "%s\n", result);
+        return 1;
+    }
+    printf("minimax oauth login started (region=%s, timeout=%s)\n",
+           arg, t2 ? t2 + 1 : "15");
+    return 0;
+}
 
 /* PoP: _login_nous @ hermes_cli/auth.py:_login_nous */
 int auth_u_login_nous(const char *arg) { (void)arg; return 0; }

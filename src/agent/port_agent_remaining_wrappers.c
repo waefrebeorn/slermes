@@ -1133,7 +1133,13 @@ int agent_memory_provider_queue_prefetch(const char *arg) {
 }
 
 /* PoP: sync_turn @ agent/memory_provider.py:sync_turn */
-int agent_memory_provider_sync_turn(const char *arg) { (void)arg; return 0; }
+int agent_memory_provider_sync_turn(const char *arg) {
+    /* Python: persist completed turn (abstract, providers implement). Arg =
+     * "turn_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("turn synced: %s\n", arg);
+    return 0;
+}
 
 /* PoP: on_turn_start @ agent/memory_provider.py:on_turn_start */
 int agent_memory_provider_on_turn_start(const char *arg) {

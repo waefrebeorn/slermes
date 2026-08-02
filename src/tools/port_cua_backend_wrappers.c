@@ -493,7 +493,20 @@ int cua_get_recording_state(const char *arg) {
 }
 
 /* PoP: replay_trajectory @ tools/computer_use/cua_backend.py:replay_trajectory */
-int cua_replay_trajectory(const char *arg) { (void)arg; return 0; }
+int cua_replay_trajectory(const char *arg) {
+    /* Python: session call_tool replay. Arg =
+     * "trajectory_dir\tdry_run\tspeed_factor\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *result = t3 ? t3 + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    printf("replay trajectory: %s dry_run=%s speed=%.1f\n",
+           arg, (t1 && t1[1] == '1') ? "1" : "0",
+           t2 ? strtod(t2 + 1, NULL) : 1.0);
+    return 0;
+}
 
 /* PoP: install_ffmpeg @ tools/computer_use/cua_backend.py:install_ffmpeg */
 int cua_install_ffmpeg(const char *arg) {

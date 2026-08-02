@@ -229,7 +229,46 @@ int sexmd_u_body_for_digest(const char *arg) {
 int sexmd_render_session_markdown(const char *arg) { (void)arg; return 0; }
 
 /* PoP: safe_session_filename @ hermes_cli/session_export_md.py:safe_session_filename */
-int sexmd_safe_session_filename(const char *arg) { (void)arg; return 0; }
+int sexmd_safe_session_filename(const char *arg) {
+    /* Python: <session_id>-<slug>.<fmt>; slug sanitized. Arg =
+     * "fmt\tsession_id\ttitle". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    size_t flen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    if (!((flen == 2 && strncmp(arg, "md", 2) == 0) || (flen == 3 && strncmp(arg, "qmd", 3) == 0))) {
+        fprintf(stderr, "fmt must be 'md' or 'qmd'\n");
+        return 1;
+    }
+    const char *sid = t1 ? t1 + 1 : "";
+    const char *title = t2 ? t2 + 1 : "session";
+    /* slug: [^A-Za-z0-9._-]+ -> -, strip .-_ , lower, cap 60 */
+    char slug[128];
+    size_t w = 0;
+    int prev_dash = 0;
+    const char *p = title;
+    while (*p && w < 119) {
+        char c = *p;
+        int keep = (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '.' || c == '_' || c == '-';
+        if (keep) {
+            if (c >= 'A' && c <= 'Z') c = (char)(c + 32);
+            slug[w++] = c;
+            prev_dash = 0;
+        } else if (!prev_dash) {
+            slug[w++] = '-';
+            prev_dash = 1;
+        }
+        p++;
+    }
+    while (w > 0 && (slug[w-1] == '.' || slug[w-1] == '-' || slug[w-1] == '_')) w--;
+    size_t start = 0;
+    while (start < w && (slug[start] == '.' || slug[start] == '-' || slug[start] == '_')) start++;
+    size_t len = w - start;
+    if (len > 60) len = 60;
+    if (!len) { printf("%s-session.%s\n", sid, arg); return 0; }
+    printf("%s-%.*s.%s\n", sid, (int)len, slug + start, arg);
+    return 0;
+}
 
 /* PoP: file_sha256 @ hermes_cli/session_export_md.py:file_sha256 */
 int sexmd_file_sha256(const char *arg) {

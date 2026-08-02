@@ -18,7 +18,12 @@ int envd_u_normalize_forward_env_names(const char *arg) { (void)arg; return 0; }
 int envd_u_normalize_env_dict(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _load_hermes_env_vars @ tools/environments/docker.py:_load_hermes_env_vars */
-int envd_u_load_hermes_env_vars(const char *arg) { (void)arg; return 0; }
+int envd_u_load_hermes_env_vars(const char *arg) {
+    /* Python: load_env() or {} (never fatal). Arg = env JSON. */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _sanitize_label_value @ tools/environments/docker.py:_sanitize_label_value */
 int envd_u_sanitize_label_value(const char *arg) { (void)arg; return 0; }

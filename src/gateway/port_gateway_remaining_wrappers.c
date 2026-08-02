@@ -1106,7 +1106,19 @@ int gateway_authz_mixin_u_pairing_store_for(const char *arg) { (void)arg; return
 int gateway_readiness_u_probe_state_db(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _probe_config @ gateway/readiness.py:_probe_config */
-int gateway_readiness_u_probe_config(const char *arg) { (void)arg; return 0; }
+int gateway_readiness_u_probe_config(const char *arg) {
+    /* Python: ok using defaults / degraded top-level / ok / degraded error.
+     * Arg = "exists\tstate" (state: none/mapping/error). */
+    if (!arg || !*arg) { printf("ok (using defaults)\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int exists = arg[0] == '1';
+    if (!exists) { printf("ok (using defaults)\n"); return 0; }
+    const char *state = tab ? tab + 1 : "";
+    if (strcmp(state, "mapping") == 0) { printf("degraded (top level is not a mapping)\n"); return 0; }
+    if (strcmp(state, "error") == 0) { printf("degraded (invalid config)\n"); return 0; }
+    printf("ok\n");
+    return 0;
+}
 
 /* PoP: _probe_disk @ gateway/readiness.py:_probe_disk */
 int gateway_readiness_u_probe_disk(const char *arg) {

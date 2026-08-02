@@ -198,7 +198,13 @@ int tools_lazy_deps_u_format(const char *arg) {
 }
 
 /* PoP: _python_abi_tag @ tools/lazy_deps.py:_python_abi_tag */
-int tools_lazy_deps_u_python_abi_tag(const char *arg) { (void)arg; return 0; }
+int tools_lazy_deps_u_python_abi_tag(const char *arg) {
+    /* Python: "X.Y:EXT_SUFFIX". Arg = "ver\text_suffix". */
+    if (!arg || !*arg) { printf(":\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s:%s\n", arg, tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _lazy_install_target @ tools/lazy_deps.py:_lazy_install_target */
 int tools_lazy_deps_u_lazy_install_target(const char *arg) {
@@ -1851,7 +1857,15 @@ int tools_moa_performance_u_build_auth_header(const char *arg) { (void)arg; retu
 int tools_skills_guard_scan_file(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _record_tirith_crash @ tools/tirith_security.py:_record_tirith_crash */
-int tools_tirith_security_u_record_tirith_crash(const char *arg) { (void)arg; return 0; }
+int tools_tirith_security_u_record_tirith_crash(const char *arg) {
+    /* Python: ++crash, open breaker at limit. Arg = "count\tlimit". */
+    if (!arg || !*arg) { printf("crash recorded\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long count = strtol(arg, NULL, 10) + 1;
+    long limit = tab ? strtol(tab + 1, NULL, 10) : 3;
+    printf("crash count %ld%s\n", count, count >= limit ? " (circuit breaker opened)" : "");
+    return 0;
+}
 
 /* PoP: _safe_float @ tools/tool_search.py:_safe_float */
 int tools_tool_search_u_safe_float(const char *arg) {

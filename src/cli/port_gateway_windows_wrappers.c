@@ -114,7 +114,12 @@ int gw_u_launch_elevated_uninstall(const char *arg) {
 }
 
 /* PoP: get_task_name @ hermes_cli/gateway_windows.py:get_task_name */
-int gw_get_task_name(const char *arg) { (void)arg; return 0; }
+int gw_get_task_name(const char *arg) {
+    /* Python: Hermes_Gateway[_suffix]. Arg = suffix (empty = default). */
+    if (!arg || !*arg) { printf("Hermes_Gateway\n"); return 0; }
+    printf("Hermes_Gateway_%s\n", arg);
+    return 0;
+}
 
 /* PoP: _sanitize_filename @ hermes_cli/gateway_windows.py:_sanitize_filename */
 int gw_u_sanitize_filename(const char *arg) {
@@ -378,7 +383,15 @@ int gw_u_print_deep_probes(const char *arg) { (void)arg; return 0; }
 int gw_u_drain_gateway_pid(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _windows_stop_drain_timeout @ hermes_cli/gateway_windows.py:_windows_stop_drain_timeout */
-int gw_u_windows_stop_drain_timeout(const char *arg) { (void)arg; return 0; }
+int gw_u_windows_stop_drain_timeout(const char *arg) {
+    /* Python: clamp configured drain to [1, 30]. Arg = "configured". */
+    if (!arg || !*arg) { printf("30.00\n"); return 0; }
+    double v = strtod(arg, NULL);
+    if (v < 1.0) v = 1.0;
+    if (v > 30.0) v = 30.0;
+    printf("%.2f\n", v);
+    return 0;
+}
 
 /* PoP: _force_terminate_known_gateway_pids @ hermes_cli/gateway_windows.py:_force_terminate_known_gateway_pids */
 int gw_u_force_terminate_known_gateway_pids(const char *arg) { (void)arg; return 0; }

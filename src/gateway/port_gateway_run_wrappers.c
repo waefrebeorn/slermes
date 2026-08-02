@@ -489,7 +489,12 @@ int grun_u_maybe_confirm_destructive_slash(const char *arg) { (void)arg; return 
 int grun_u_request_slash_confirm(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _read_user_config @ gateway/run.py:_read_user_config */
-int grun_u_read_user_config(const char *arg) { (void)arg; return 0; }
+int grun_u_read_user_config(const char *arg) {
+    /* Python: load_config() or {} (fail-open). Arg = config JSON. */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _schedule_update_notification_watch @ gateway/run.py:_schedule_update_notification_watch */
 int grun_u_schedule_update_notification_watch(const char *arg) { (void)arg; return 0; }

@@ -615,7 +615,38 @@ int cgw_u_detect_venv_dir(const char *arg) { (void)arg; return 0; }
 int cgw_get_python_path(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _build_user_local_paths @ hermes_cli/gateway.py:_build_user_local_paths */
-int cgw_u_build_user_local_paths(const char *arg) { (void)arg; return 0; }
+int cgw_u_build_user_local_paths(const char *arg) {
+    /* Python: existing .local/bin, .cargo/bin, go/bin, .npm-global/bin not
+     * in path_entries. Arg = "home\tpath_entries". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *home = arg;
+    const char *entries = tab ? tab + 1 : "";
+    static const char *subs[] = {".local/bin", ".cargo/bin", "go/bin", ".npm-global/bin"};
+    int first = 1;
+    for (size_t i = 0; i < sizeof(subs)/sizeof(subs[0]); i++) {
+        char path[1200];
+        snprintf(path, sizeof(path), "%s/%s", home, subs[i]);
+        /* skip if in entries */
+        int seen = 0;
+        const char *p = entries;
+        while (*p) {
+            const char *t = strchr(p, '\t');
+            size_t len = t ? (size_t)(t - p) : strlen(p);
+            if (len == strlen(path) && strncmp(p, path, len) == 0) { seen = 1; break; }
+            p = t ? t + 1 : p + len;
+        }
+        if (seen) continue;
+        struct stat st;
+        if (stat(path, &st) == 0) {
+            if (!first) printf("\n");
+            printf("%s", path);
+            first = 0;
+        }
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _build_wsl_interop_paths @ hermes_cli/gateway.py:_build_wsl_interop_paths */
 int cgw_u_build_wsl_interop_paths(const char *arg) { (void)arg; return 0; }
@@ -915,7 +946,23 @@ int cgw_u_launchd_reload_log_path(const char *arg) {
 }
 
 /* PoP: _append_launchd_reload_log @ hermes_cli/gateway.py:_append_launchd_reload_log */
-int cgw_u_append_launchd_reload_log(const char *arg) { (void)arg; return 0; }
+int cgw_u_append_launchd_reload_log(const char *arg) {
+    /* Python: append "[stamp] message" to reload log. Arg = "path\tmessage". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    char path[1024];
+    size_t plen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (plen >= sizeof(path)) plen = sizeof(path) - 1;
+    memcpy(path, arg, plen); path[plen] = '\0';
+    if (!plen) { printf("\n"); return 0; }
+    /* mkdir -p dirname */
+    char cmd[1400];
+    snprintf(cmd, sizeof(cmd), "mkdir -p '%s' 2>/dev/null; echo '[%s] %s' >> '%s'",
+             path, "launchd", tab ? tab + 1 : "", path);
+    system(cmd);
+    printf("reload log appended\n");
+    return 0;
+}
 
 /* PoP: _launchctl_label_registered @ hermes_cli/gateway.py:_launchctl_label_registered */
 int cgw_u_launchctl_label_registered(const char *arg) {

@@ -135,7 +135,26 @@ int smt_u_skill_not_found_error(const char *arg) { (void)arg; return 0; }
 int smt_u_atomic_write_text(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _add_description_prompt_preview @ tools/skill_manager_tool.py:_add_description_prompt_preview */
-int smt_u_add_description_prompt_preview(const char *arg) { (void)arg; return 0; }
+int smt_u_add_description_prompt_preview(const char *arg) {
+    /* Python: append system_prompt_preview when truncated. Arg =
+     * "description\ttruncated\tresult_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *desc = arg;
+    int truncated = t1 && t1[1] == '1';
+    const char *result = t2 ? t2 + 1 : "{}";
+    if (truncated) {
+        char preview[1500];
+        snprintf(preview, sizeof(preview),
+                 "System prompt will show: \"%s\" — keep the trigger self-contained in the first %d chars.",
+                 desc, 197);
+        printf("{\"system_prompt_preview\": \"%s\"}\n", preview);
+        return 0;
+    }
+    printf("%s\n", result);
+    return 0;
+}
 
 /* PoP: _create_skill @ tools/skill_manager_tool.py:_create_skill */
 int smt_u_create_skill(const char *arg) { (void)arg; return 0; }

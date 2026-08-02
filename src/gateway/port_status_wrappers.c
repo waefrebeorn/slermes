@@ -137,7 +137,22 @@ int gstat_u_validated_scoped_lock_gateway_owner(const char *arg) { (void)arg; re
 int gstat_u_scoped_lock_owner_state(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _wait_for_scoped_lock_owner_exit @ gateway/status.py:_wait_for_scoped_lock_owner_exit */
-int gstat_u_wait_for_scoped_lock_owner_exit(const char *arg) { (void)arg; return 0; }
+int gstat_u_wait_for_scoped_lock_owner_exit(const char *arg) {
+    /* Python: (exited, safe_to_force) after bounded waits. Arg =
+     * "attempts\tstates" (states = state letters e/u/s per attempt). */
+    if (!arg || !*arg) { printf("0\t0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long attempts = strtol(arg, NULL, 10);
+    const char *states = tab ? tab + 1 : "";
+    for (long i = 0; i < attempts; i++) {
+        char st = states[i];
+        if (st == 'e') { printf("1\t0\n"); return 0; }
+        if (st == 'u') { printf("0\t0\n"); return 0; }
+    }
+    char last = states[attempts > 0 ? attempts - 1 : 0];
+    printf("0\t%d\n", last == 's' ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _snapshot_gateway_children @ gateway/status.py:_snapshot_gateway_children */
 int gstat_u_snapshot_gateway_children(const char *arg) { (void)arg; return 0; }

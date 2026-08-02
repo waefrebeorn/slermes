@@ -151,7 +151,16 @@ int main_u_is_termux_startup_environment(const char *arg) {
 }
 
 /* PoP: _termux_bundled_skills_fingerprint @ hermes_cli/main.py:_termux_bundled_skills_fingerprint */
-int main_u_termux_bundled_skills_fingerprint(const char *arg) { (void)arg; return 0; }
+int main_u_termux_bundled_skills_fingerprint(const char *arg) {
+    /* Python: git fp or skills:ver:date:mtime_ns:size[:missing]. Arg =
+     * "git_fp\tskills_stat". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *git_fp = arg;
+    if (git_fp[0]) { printf("%s\n", git_fp); return 0; }
+    printf("%s\n", tab ? tab + 1 : "skills:missing");
+    return 0;
+}
 
 /* PoP: _termux_bundled_skills_stamp_path @ hermes_cli/main.py:_termux_bundled_skills_stamp_path */
 int main_u_termux_bundled_skills_stamp_path(const char *arg) {

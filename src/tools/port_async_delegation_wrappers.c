@@ -121,7 +121,14 @@ int adel_recover_abandoned_delegations(const char *arg) { (void)arg; return 0; }
 int adel_restore_undelivered_completions(const char *arg) { (void)arg; return 0; }
 
 /* PoP: mark_completion_delivered @ tools/async_delegation.py:mark_completion_delivered */
-int adel_mark_completion_delivered(const char *arg) { (void)arg; return 0; }
+int adel_mark_completion_delivered(const char *arg) {
+    /* Python: UPDATE ... WHERE delivery_state!='delivered', rowcount==1.
+     * Arg = "delegation_id\tupdated". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: claim_completion_delivery @ tools/async_delegation.py:claim_completion_delivery */
 int adel_claim_completion_delivery(const char *arg) { (void)arg; return 0; }
