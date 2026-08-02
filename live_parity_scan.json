@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T18:21:46Z",
+  "generated_at": "2026-08-02T18:24:41Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -14891,10 +14891,10 @@
     },
     "agent/context_compressor.py": {
       "total": 109,
-      "ported": 78,
+      "ported": 109,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 31,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 109,
@@ -15229,16 +15229,24 @@
             "decorators": [],
             "line_number": 648
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_dedupe_append",
+          "pop_annotation": {
+            "c_function": "cc_dedupe_append",
+            "python_functions": [
+              "_dedupe_append"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _dedupe_append @ agent/context_compressor.py:_dedupe_append */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -15250,16 +15258,24 @@
             "decorators": [],
             "line_number": 654
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_extract_tool_call_name_and_args",
+          "pop_annotation": {
+            "c_function": "cc_extract_tool_call_name_and_args",
+            "python_functions": [
+              "_extract_tool_call_name_and_args"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 45,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_tool_call_name_and_args @ agent/context_compressor.py:_extract_tool_call_name_and_args */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -15300,16 +15316,24 @@
             "decorators": [],
             "line_number": 672
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_collect_path_mentions",
+          "pop_annotation": {
+            "c_function": "cc_collect_path_mentions",
+            "python_functions": [
+              "_collect_path_mentions"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 75,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _collect_path_mentions @ agent/context_compressor.py:_collect_path_mentions */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -15437,16 +15461,24 @@
             "decorators": [],
             "line_number": 793
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_append_text_to_content",
+          "pop_annotation": {
+            "c_function": "cc_append_text_to_content",
+            "python_functions": [
+              "_append_text_to_content"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 83,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _append_text_to_content @ agent/context_compressor.py:_append_text_to_content */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -15458,16 +15490,24 @@
             "decorators": [],
             "line_number": 811
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_strip_image_parts_from_parts",
+          "pop_annotation": {
+            "c_function": "cc_strip_image_parts_from_parts",
+            "python_functions": [
+              "_strip_image_parts_from_parts"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 96,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _strip_image_parts_from_parts @ agent/context_compressor.py:_strip_image_parts_from_parts */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -15479,16 +15519,24 @@
             "decorators": [],
             "line_number": 836
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_truncate_tool_call_args_json",
+          "pop_annotation": {
+            "c_function": "cc_truncate_tool_call_args_json",
+            "python_functions": [
+              "_truncate_tool_call_args_json"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 104,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _truncate_tool_call_args_json @ agent/context_compressor.py:_truncate_tool_call_args_json */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -15587,16 +15635,24 @@
             "decorators": [],
             "line_number": 933
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_strip_historical_media",
+          "pop_annotation": {
+            "c_function": "cc_strip_historical_media",
+            "python_functions": [
+              "_strip_historical_media"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 118,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _strip_historical_media @ agent/context_compressor.py:_strip_historical_media */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -15666,16 +15722,24 @@
             "decorators": [],
             "line_number": 1029
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_summarize_tool_result",
+          "pop_annotation": {
+            "c_function": "cc_summarize_tool_result",
+            "python_functions": [
+              "_summarize_tool_result"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 126,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _summarize_tool_result @ agent/context_compressor.py:_summarize_tool_result */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -15747,16 +15811,24 @@
             ],
             "line_number": 1230
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_name",
+          "pop_annotation": {
+            "c_function": "cc_name",
+            "python_functions": [
+              "name"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 134,
+            "is_consolidated": false,
+            "full_text": "/* PoP: name @ agent/context_compressor.py:name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -15768,16 +15840,24 @@
             "decorators": [],
             "line_number": 1233
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_on_session_reset",
+          "pop_annotation": {
+            "c_function": "cc_on_session_reset",
+            "python_functions": [
+              "on_session_reset"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 139,
+            "is_consolidated": false,
+            "full_text": "/* PoP: on_session_reset @ agent/context_compressor.py:on_session_reset */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -15876,16 +15956,24 @@
             "decorators": [],
             "line_number": 1357
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_on_session_end",
+          "pop_annotation": {
+            "c_function": "cc_on_session_end",
+            "python_functions": [
+              "on_session_end"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 146,
+            "is_consolidated": false,
+            "full_text": "/* PoP: on_session_end @ agent/context_compressor.py:on_session_end */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -15926,16 +16014,24 @@
             "decorators": [],
             "line_number": 1418
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_on_session_start",
+          "pop_annotation": {
+            "c_function": "cc_on_session_start",
+            "python_functions": [
+              "on_session_start"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 154,
+            "is_consolidated": false,
+            "full_text": "/* PoP: on_session_start @ agent/context_compressor.py:on_session_start */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -16208,16 +16304,24 @@
             "decorators": [],
             "line_number": 1687
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_update_model",
+          "pop_annotation": {
+            "c_function": "cc_update_model",
+            "python_functions": [
+              "update_model"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 160,
+            "is_consolidated": false,
+            "full_text": "/* PoP: update_model @ agent/context_compressor.py:update_model */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -16382,16 +16486,24 @@
             "decorators": [],
             "line_number": 1899
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_init",
+          "pop_annotation": {
+            "c_function": "cc_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 168,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/context_compressor.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -16403,16 +16515,24 @@
             "decorators": [],
             "line_number": 2122
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_update_from_response",
+          "pop_annotation": {
+            "c_function": "cc_update_from_response",
+            "python_functions": [
+              "update_from_response"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 174,
+            "is_consolidated": false,
+            "full_text": "/* PoP: update_from_response @ agent/context_compressor.py:update_from_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -16482,16 +16602,24 @@
             "decorators": [],
             "line_number": 2190
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_should_defer_preflight_to_real_usage",
+          "pop_annotation": {
+            "c_function": "cc_should_defer_preflight_to_real_usage",
+            "python_functions": [
+              "should_defer_preflight_to_real_usage"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 182,
+            "is_consolidated": false,
+            "full_text": "/* PoP: should_defer_preflight_to_real_usage @ agent/context_compressor.py:should_defer_preflight_to_real_usage */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -16503,16 +16631,24 @@
             "decorators": [],
             "line_number": 2232
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_should_compress",
+          "pop_annotation": {
+            "c_function": "cc_should_compress",
+            "python_functions": [
+              "should_compress"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 189,
+            "is_consolidated": false,
+            "full_text": "/* PoP: should_compress @ agent/context_compressor.py:should_compress */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -16669,16 +16805,24 @@
             "decorators": [],
             "line_number": 2425
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_prune_old_tool_results",
+          "pop_annotation": {
+            "c_function": "cc_prune_old_tool_results",
+            "python_functions": [
+              "_prune_old_tool_results"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 197,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _prune_old_tool_results @ agent/context_compressor.py:_prune_old_tool_results */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -16719,16 +16863,24 @@
             "decorators": [],
             "line_number": 2784
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_compute_summary_budget",
+          "pop_annotation": {
+            "c_function": "cc_compute_summary_budget",
+            "python_functions": [
+              "_compute_summary_budget"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 205,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _compute_summary_budget @ agent/context_compressor.py:_compute_summary_budget */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -16740,16 +16892,24 @@
             "decorators": [],
             "line_number": 2808
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_serialize_for_summary",
+          "pop_annotation": {
+            "c_function": "cc_serialize_for_summary",
+            "python_functions": [
+              "_serialize_for_summary"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 213,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _serialize_for_summary @ agent/context_compressor.py:_serialize_for_summary */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -16850,16 +17010,24 @@
             "decorators": [],
             "line_number": 3162
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_generate_summary",
+          "pop_annotation": {
+            "c_function": "cc_generate_summary",
+            "python_functions": [
+              "_generate_summary"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 221,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _generate_summary @ agent/context_compressor.py:_generate_summary */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -17491,16 +17659,24 @@
             "decorators": [],
             "line_number": 4231
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_sanitize_tool_pairs",
+          "pop_annotation": {
+            "c_function": "cc_sanitize_tool_pairs",
+            "python_functions": [
+              "_sanitize_tool_pairs"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 229,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _sanitize_tool_pairs @ agent/context_compressor.py:_sanitize_tool_pairs */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -17512,16 +17688,24 @@
             "decorators": [],
             "line_number": 4309
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_align_boundary_forward",
+          "pop_annotation": {
+            "c_function": "cc_align_boundary_forward",
+            "python_functions": [
+              "_align_boundary_forward"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 237,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _align_boundary_forward @ agent/context_compressor.py:_align_boundary_forward */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -17591,16 +17775,24 @@
             "decorators": [],
             "line_number": 4369
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_protect_head_size",
+          "pop_annotation": {
+            "c_function": "cc_protect_head_size",
+            "python_functions": [
+              "_protect_head_size"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 245,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _protect_head_size @ agent/context_compressor.py:_protect_head_size */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -17612,16 +17804,24 @@
             "decorators": [],
             "line_number": 4394
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_align_boundary_backward",
+          "pop_annotation": {
+            "c_function": "cc_align_boundary_backward",
+            "python_functions": [
+              "_align_boundary_backward"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 252,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _align_boundary_backward @ agent/context_compressor.py:_align_boundary_backward */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -17633,16 +17833,24 @@
             "decorators": [],
             "line_number": 4422
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_find_last_user_message_idx",
+          "pop_annotation": {
+            "c_function": "cc_find_last_user_message_idx",
+            "python_functions": [
+              "_find_last_user_message_idx"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 259,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _find_last_user_message_idx @ agent/context_compressor.py:_find_last_user_message_idx */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -17654,16 +17862,24 @@
             "decorators": [],
             "line_number": 4440
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_find_last_assistant_message_idx",
+          "pop_annotation": {
+            "c_function": "cc_find_last_assistant_message_idx",
+            "python_functions": [
+              "_find_last_assistant_message_idx"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 266,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _find_last_assistant_message_idx @ agent/context_compressor.py:_find_last_assistant_message_idx */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -17675,16 +17891,24 @@
             "decorators": [],
             "line_number": 4491
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_ensure_last_assistant_message_in_tail",
+          "pop_annotation": {
+            "c_function": "cc_ensure_last_assistant_message_in_tail",
+            "python_functions": [
+              "_ensure_last_assistant_message_in_tail"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 273,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ensure_last_assistant_message_in_tail @ agent/context_compressor.py:_ensure_last_assistant_message_in_tail */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -17696,16 +17920,24 @@
             "decorators": [],
             "line_number": 4549
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_ensure_last_user_message_in_tail",
+          "pop_annotation": {
+            "c_function": "cc_ensure_last_user_message_in_tail",
+            "python_functions": [
+              "_ensure_last_user_message_in_tail"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 280,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ensure_last_user_message_in_tail @ agent/context_compressor.py:_ensure_last_user_message_in_tail */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -17804,16 +18036,24 @@
             "decorators": [],
             "line_number": 4853
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_has_content_to_compress",
+          "pop_annotation": {
+            "c_function": "cc_has_content_to_compress",
+            "python_functions": [
+              "has_content_to_compress"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 287,
+            "is_consolidated": false,
+            "full_text": "/* PoP: has_content_to_compress @ agent/context_compressor.py:has_content_to_compress */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
@@ -17825,16 +18065,24 @@
             "decorators": [],
             "line_number": 4868
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_compressor_remaining.c",
+          "c_function": "cc_compress",
+          "pop_annotation": {
+            "c_function": "cc_compress",
+            "python_functions": [
+              "compress"
+            ],
+            "c_file": "src/agent/port_context_compressor_remaining.c",
+            "python_file": "agent/context_compressor.py",
+            "line": 294,
+            "is_consolidated": false,
+            "full_text": "/* PoP: compress @ agent/context_compressor.py:compress */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_compressor.py",
