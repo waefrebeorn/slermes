@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:29:05Z",
+  "generated_at": "2026-08-02T19:31:39Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -19012,10 +19012,10 @@
     },
     "agent/context_references.py": {
       "total": 24,
-      "ported": 7,
+      "ported": 24,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 17,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 24,
@@ -19060,16 +19060,24 @@
             "decorators": [],
             "line_number": 79
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_references_remaining.c",
+          "c_function": "crf_parse_context_references",
+          "pop_annotation": {
+            "c_function": "crf_parse_context_references",
+            "python_functions": [
+              "parse_context_references"
+            ],
+            "c_file": "src/agent/port_context_references_remaining.c",
+            "python_file": "agent/context_references.py",
+            "line": 28,
+            "is_consolidated": false,
+            "full_text": "/* PoP: parse_context_references @ agent/context_references.py:parse_context_references */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_references.py",
@@ -19081,16 +19089,24 @@
             "decorators": [],
             "line_number": 122
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_references_remaining.c",
+          "c_function": "crf_preprocess_context_references",
+          "pop_annotation": {
+            "c_function": "crf_preprocess_context_references",
+            "python_functions": [
+              "preprocess_context_references"
+            ],
+            "c_file": "src/agent/port_context_references_remaining.c",
+            "python_file": "agent/context_references.py",
+            "line": 62,
+            "is_consolidated": false,
+            "full_text": "/* PoP: preprocess_context_references @ agent/context_references.py:preprocess_context_references */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_references.py",
@@ -19160,16 +19176,24 @@
             "decorators": [],
             "line_number": 264
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_references_remaining.c",
+          "c_function": "crf_expand_file_reference",
+          "pop_annotation": {
+            "c_function": "crf_expand_file_reference",
+            "python_functions": [
+              "_expand_file_reference"
+            ],
+            "c_file": "src/agent/port_context_references_remaining.c",
+            "python_file": "agent/context_references.py",
+            "line": 87,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _expand_file_reference @ agent/context_references.py:_expand_file_reference */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_references.py",
@@ -19181,16 +19205,24 @@
             "decorators": [],
             "line_number": 298
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_references_remaining.c",
+          "c_function": "crf_expand_folder_reference",
+          "pop_annotation": {
+            "c_function": "crf_expand_folder_reference",
+            "python_functions": [
+              "_expand_folder_reference"
+            ],
+            "c_file": "src/agent/port_context_references_remaining.c",
+            "python_file": "agent/context_references.py",
+            "line": 112,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _expand_folder_reference @ agent/context_references.py:_expand_folder_reference */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_references.py",
@@ -19202,16 +19234,24 @@
             "decorators": [],
             "line_number": 315
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_references_remaining.c",
+          "c_function": "crf_expand_git_reference",
+          "pop_annotation": {
+            "c_function": "crf_expand_git_reference",
+            "python_functions": [
+              "_expand_git_reference"
+            ],
+            "c_file": "src/agent/port_context_references_remaining.c",
+            "python_file": "agent/context_references.py",
+            "line": 142,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _expand_git_reference @ agent/context_references.py:_expand_git_reference */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_references.py",
@@ -19281,16 +19321,24 @@
             "decorators": [],
             "line_number": 367
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_references_remaining.c",
+          "c_function": "crf_resolve_path",
+          "pop_annotation": {
+            "c_function": "crf_resolve_path",
+            "python_functions": [
+              "_resolve_path"
+            ],
+            "c_file": "src/agent/port_context_references_remaining.c",
+            "python_file": "agent/context_references.py",
+            "line": 70,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_path @ agent/context_references.py:_resolve_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_references.py",
@@ -19302,16 +19350,24 @@
             "decorators": [],
             "line_number": 380
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_references_remaining.c",
+          "c_function": "crf_ensure_reference_path_allowed",
+          "pop_annotation": {
+            "c_function": "crf_ensure_reference_path_allowed",
+            "python_functions": [
+              "_ensure_reference_path_allowed"
+            ],
+            "c_file": "src/agent/port_context_references_remaining.c",
+            "python_file": "agent/context_references.py",
+            "line": 159,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ensure_reference_path_allowed @ agent/context_references.py:_ensure_reference_path_allowed */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_references.py",
@@ -19323,16 +19379,24 @@
             "decorators": [],
             "line_number": 432
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_references_remaining.c",
+          "c_function": "crf_strip_trailing_punctuation",
+          "pop_annotation": {
+            "c_function": "crf_strip_trailing_punctuation",
+            "python_functions": [
+              "_strip_trailing_punctuation"
+            ],
+            "c_file": "src/agent/port_context_references_remaining.c",
+            "python_file": "agent/context_references.py",
+            "line": 169,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _strip_trailing_punctuation @ agent/context_references.py:_strip_trailing_punctuation */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_references.py",
@@ -19344,16 +19408,24 @@
             "decorators": [],
             "line_number": 444
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_references_remaining.c",
+          "c_function": "crf_strip_reference_wrappers",
+          "pop_annotation": {
+            "c_function": "crf_strip_reference_wrappers",
+            "python_functions": [
+              "_strip_reference_wrappers"
+            ],
+            "c_file": "src/agent/port_context_references_remaining.c",
+            "python_file": "agent/context_references.py",
+            "line": 187,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _strip_reference_wrappers @ agent/context_references.py:_strip_reference_wrappers */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_references.py",
@@ -19365,16 +19437,24 @@
             "decorators": [],
             "line_number": 450
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_references_remaining.c",
+          "c_function": "crf_parse_file_reference_value",
+          "pop_annotation": {
+            "c_function": "crf_parse_file_reference_value",
+            "python_functions": [
+              "_parse_file_reference_value"
+            ],
+            "c_file": "src/agent/port_context_references_remaining.c",
+            "python_file": "agent/context_references.py",
+            "line": 197,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _parse_file_reference_value @ agent/context_references.py:_parse_file_reference_value */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_references.py",
@@ -19386,16 +19466,24 @@
             "decorators": [],
             "line_number": 476
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_references_remaining.c",
+          "c_function": "crf_remove_reference_tokens",
+          "pop_annotation": {
+            "c_function": "crf_remove_reference_tokens",
+            "python_functions": [
+              "_remove_reference_tokens"
+            ],
+            "c_file": "src/agent/port_context_references_remaining.c",
+            "python_file": "agent/context_references.py",
+            "line": 226,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _remove_reference_tokens @ agent/context_references.py:_remove_reference_tokens */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_references.py",
@@ -19407,16 +19495,24 @@
             "decorators": [],
             "line_number": 489
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_references_remaining.c",
+          "c_function": "crf_is_binary_file",
+          "pop_annotation": {
+            "c_function": "crf_is_binary_file",
+            "python_functions": [
+              "_is_binary_file"
+            ],
+            "c_file": "src/agent/port_context_references_remaining.c",
+            "python_file": "agent/context_references.py",
+            "line": 245,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_binary_file @ agent/context_references.py:_is_binary_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_references.py",
@@ -19428,16 +19524,24 @@
             "decorators": [],
             "line_number": 499
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_references_remaining.c",
+          "c_function": "crf_build_folder_listing",
+          "pop_annotation": {
+            "c_function": "crf_build_folder_listing",
+            "python_functions": [
+              "_build_folder_listing"
+            ],
+            "c_file": "src/agent/port_context_references_remaining.c",
+            "python_file": "agent/context_references.py",
+            "line": 260,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _build_folder_listing @ agent/context_references.py:_build_folder_listing */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_references.py",
@@ -19449,16 +19553,24 @@
             "decorators": [],
             "line_number": 515
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_references_remaining.c",
+          "c_function": "crf_iter_visible_entries",
+          "pop_annotation": {
+            "c_function": "crf_iter_visible_entries",
+            "python_functions": [
+              "_iter_visible_entries"
+            ],
+            "c_file": "src/agent/port_context_references_remaining.c",
+            "python_file": "agent/context_references.py",
+            "line": 275,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _iter_visible_entries @ agent/context_references.py:_iter_visible_entries */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_references.py",
@@ -19470,16 +19582,24 @@
             "decorators": [],
             "line_number": 546
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_references_remaining.c",
+          "c_function": "crf_rg_files",
+          "pop_annotation": {
+            "c_function": "crf_rg_files",
+            "python_functions": [
+              "_rg_files"
+            ],
+            "c_file": "src/agent/port_context_references_remaining.c",
+            "python_file": "agent/context_references.py",
+            "line": 310,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _rg_files @ agent/context_references.py:_rg_files */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_references.py",
@@ -19549,16 +19669,24 @@
             "decorators": [],
             "line_number": 590
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_references_remaining.c",
+          "c_function": "crf_file_metadata",
+          "pop_annotation": {
+            "c_function": "crf_file_metadata",
+            "python_functions": [
+              "_file_metadata"
+            ],
+            "c_file": "src/agent/port_context_references_remaining.c",
+            "python_file": "agent/context_references.py",
+            "line": 340,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _file_metadata @ agent/context_references.py:_file_metadata */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_references.py",
@@ -19570,16 +19698,24 @@
             "decorators": [],
             "line_number": 600
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_references_remaining.c",
+          "c_function": "crf_code_fence_language",
+          "pop_annotation": {
+            "c_function": "crf_code_fence_language",
+            "python_functions": [
+              "_code_fence_language"
+            ],
+            "c_file": "src/agent/port_context_references_remaining.c",
+            "python_file": "agent/context_references.py",
+            "line": 367,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _code_fence_language @ agent/context_references.py:_code_fence_language */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -25635,10 +25771,10 @@
     },
     "agent/curator_backup.py": {
       "total": 19,
-      "ported": 2,
+      "ported": 19,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 17,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 19,
@@ -25654,16 +25790,24 @@
             "decorators": [],
             "line_number": 70
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_backup_remaining.c",
+          "c_function": "cub_backups_dir",
+          "pop_annotation": {
+            "c_function": "cub_backups_dir",
+            "python_functions": [
+              "_backups_dir"
+            ],
+            "c_file": "src/agent/port_curator_backup_remaining.c",
+            "python_file": "agent/curator_backup.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _backups_dir @ agent/curator_backup.py:_backups_dir */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator_backup.py",
@@ -25675,16 +25819,24 @@
             "decorators": [],
             "line_number": 74
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_backup_remaining.c",
+          "c_function": "cub_skills_dir",
+          "pop_annotation": {
+            "c_function": "cub_skills_dir",
+            "python_functions": [
+              "_skills_dir"
+            ],
+            "c_file": "src/agent/port_curator_backup_remaining.c",
+            "python_file": "agent/curator_backup.py",
+            "line": 43,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _skills_dir @ agent/curator_backup.py:_skills_dir */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator_backup.py",
@@ -25696,16 +25848,24 @@
             "decorators": [],
             "line_number": 78
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_backup_remaining.c",
+          "c_function": "cub_cron_jobs_file",
+          "pop_annotation": {
+            "c_function": "cub_cron_jobs_file",
+            "python_functions": [
+              "_cron_jobs_file"
+            ],
+            "c_file": "src/agent/port_curator_backup_remaining.c",
+            "python_file": "agent/curator_backup.py",
+            "line": 50,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cron_jobs_file @ agent/curator_backup.py:_cron_jobs_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator_backup.py",
@@ -25717,16 +25877,24 @@
             "decorators": [],
             "line_number": 86
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_backup_remaining.c",
+          "c_function": "cub_backup_cron_jobs_into",
+          "pop_annotation": {
+            "c_function": "cub_backup_cron_jobs_into",
+            "python_functions": [
+              "_backup_cron_jobs_into"
+            ],
+            "c_file": "src/agent/port_curator_backup_remaining.c",
+            "python_file": "agent/curator_backup.py",
+            "line": 57,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _backup_cron_jobs_into @ agent/curator_backup.py:_backup_cron_jobs_into */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator_backup.py",
@@ -25738,16 +25906,24 @@
             "decorators": [],
             "line_number": 137
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_backup_remaining.c",
+          "c_function": "cub_utc_id",
+          "pop_annotation": {
+            "c_function": "cub_utc_id",
+            "python_functions": [
+              "_utc_id"
+            ],
+            "c_file": "src/agent/port_curator_backup_remaining.c",
+            "python_file": "agent/curator_backup.py",
+            "line": 88,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _utc_id @ agent/curator_backup.py:_utc_id */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator_backup.py",
@@ -25759,16 +25935,24 @@
             "decorators": [],
             "line_number": 148
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_backup_remaining.c",
+          "c_function": "cub_load_config",
+          "pop_annotation": {
+            "c_function": "cub_load_config",
+            "python_functions": [
+              "_load_config"
+            ],
+            "c_file": "src/agent/port_curator_backup_remaining.c",
+            "python_file": "agent/curator_backup.py",
+            "line": 108,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _load_config @ agent/curator_backup.py:_load_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator_backup.py",
@@ -25780,16 +25964,24 @@
             "decorators": [],
             "line_number": 164
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_backup_remaining.c",
+          "c_function": "cub_is_enabled",
+          "pop_annotation": {
+            "c_function": "cub_is_enabled",
+            "python_functions": [
+              "is_enabled"
+            ],
+            "c_file": "src/agent/port_curator_backup_remaining.c",
+            "python_file": "agent/curator_backup.py",
+            "line": 125,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_enabled @ agent/curator_backup.py:is_enabled */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator_backup.py",
@@ -25830,16 +26022,24 @@
             "decorators": [],
             "line_number": 182
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_backup_remaining.c",
+          "c_function": "cub_count_skill_files",
+          "pop_annotation": {
+            "c_function": "cub_count_skill_files",
+            "python_functions": [
+              "_count_skill_files"
+            ],
+            "c_file": "src/agent/port_curator_backup_remaining.c",
+            "python_file": "agent/curator_backup.py",
+            "line": 141,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _count_skill_files @ agent/curator_backup.py:_count_skill_files */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator_backup.py",
@@ -25851,16 +26051,24 @@
             "decorators": [],
             "line_number": 191
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_backup_remaining.c",
+          "c_function": "cub_write_manifest",
+          "pop_annotation": {
+            "c_function": "cub_write_manifest",
+            "python_functions": [
+              "_write_manifest"
+            ],
+            "c_file": "src/agent/port_curator_backup_remaining.c",
+            "python_file": "agent/curator_backup.py",
+            "line": 166,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _write_manifest @ agent/curator_backup.py:_write_manifest */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator_backup.py",
@@ -25901,16 +26109,24 @@
             "decorators": [],
             "line_number": 293
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_backup_remaining.c",
+          "c_function": "cub_prune_old",
+          "pop_annotation": {
+            "c_function": "cub_prune_old",
+            "python_functions": [
+              "_prune_old"
+            ],
+            "c_file": "src/agent/port_curator_backup_remaining.c",
+            "python_file": "agent/curator_backup.py",
+            "line": 186,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _prune_old @ agent/curator_backup.py:_prune_old */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator_backup.py",
@@ -25922,16 +26138,24 @@
             "decorators": [],
             "line_number": 340
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_backup_remaining.c",
+          "c_function": "cub_read_manifest",
+          "pop_annotation": {
+            "c_function": "cub_read_manifest",
+            "python_functions": [
+              "_read_manifest"
+            ],
+            "c_file": "src/agent/port_curator_backup_remaining.c",
+            "python_file": "agent/curator_backup.py",
+            "line": 246,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _read_manifest @ agent/curator_backup.py:_read_manifest */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator_backup.py",
@@ -25943,16 +26167,24 @@
             "decorators": [],
             "line_number": 350
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_backup_remaining.c",
+          "c_function": "cub_list_backups",
+          "pop_annotation": {
+            "c_function": "cub_list_backups",
+            "python_functions": [
+              "list_backups"
+            ],
+            "c_file": "src/agent/port_curator_backup_remaining.c",
+            "python_file": "agent/curator_backup.py",
+            "line": 269,
+            "is_consolidated": false,
+            "full_text": "/* PoP: list_backups @ agent/curator_backup.py:list_backups */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator_backup.py",
@@ -25964,16 +26196,24 @@
             "decorators": [],
             "line_number": 379
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_backup_remaining.c",
+          "c_function": "cub_resolve_backup",
+          "pop_annotation": {
+            "c_function": "cub_resolve_backup",
+            "python_functions": [
+              "_resolve_backup"
+            ],
+            "c_file": "src/agent/port_curator_backup_remaining.c",
+            "python_file": "agent/curator_backup.py",
+            "line": 326,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_backup @ agent/curator_backup.py:_resolve_backup */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator_backup.py",
@@ -25985,16 +26225,24 @@
             "decorators": [],
             "line_number": 401
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_backup_remaining.c",
+          "c_function": "cub_restore_cron_skill_links",
+          "pop_annotation": {
+            "c_function": "cub_restore_cron_skill_links",
+            "python_functions": [
+              "_restore_cron_skill_links"
+            ],
+            "c_file": "src/agent/port_curator_backup_remaining.c",
+            "python_file": "agent/curator_backup.py",
+            "line": 351,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _restore_cron_skill_links @ agent/curator_backup.py:_restore_cron_skill_links */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator_backup.py",
@@ -26006,16 +26254,24 @@
             "decorators": [],
             "line_number": 544
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_backup_remaining.c",
+          "c_function": "cub_rollback",
+          "pop_annotation": {
+            "c_function": "cub_rollback",
+            "python_functions": [
+              "rollback"
+            ],
+            "c_file": "src/agent/port_curator_backup_remaining.c",
+            "python_file": "agent/curator_backup.py",
+            "line": 368,
+            "is_consolidated": false,
+            "full_text": "/* PoP: rollback @ agent/curator_backup.py:rollback */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator_backup.py",
@@ -26027,16 +26283,24 @@
             "decorators": [],
             "line_number": 695
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_backup_remaining.c",
+          "c_function": "cub_format_size",
+          "pop_annotation": {
+            "c_function": "cub_format_size",
+            "python_functions": [
+              "format_size"
+            ],
+            "c_file": "src/agent/port_curator_backup_remaining.c",
+            "python_file": "agent/curator_backup.py",
+            "line": 387,
+            "is_consolidated": false,
+            "full_text": "/* PoP: format_size @ agent/curator_backup.py:format_size */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator_backup.py",
@@ -26048,16 +26312,24 @@
             "decorators": [],
             "line_number": 703
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_backup_remaining.c",
+          "c_function": "cub_summarize_backups",
+          "pop_annotation": {
+            "c_function": "cub_summarize_backups",
+            "python_functions": [
+              "summarize_backups"
+            ],
+            "c_file": "src/agent/port_curator_backup_remaining.c",
+            "python_file": "agent/curator_backup.py",
+            "line": 398,
+            "is_consolidated": false,
+            "full_text": "/* PoP: summarize_backups @ agent/curator_backup.py:summarize_backups */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
