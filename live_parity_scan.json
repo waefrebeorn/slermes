@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:52:35Z",
+  "generated_at": "2026-08-02T20:54:41Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -62865,10 +62865,10 @@
     },
     "agent/ssl_guard.py": {
       "total": 6,
-      "ported": 0,
+      "ported": 6,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 6,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 6,
@@ -62884,16 +62884,24 @@
             "decorators": [],
             "line_number": 28
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_ssl_guard_remaining.c",
+          "c_function": "sslg_skip_ssl_guard_enabled",
+          "pop_annotation": {
+            "c_function": "sslg_skip_ssl_guard_enabled",
+            "python_functions": [
+              "_skip_ssl_guard_enabled"
+            ],
+            "c_file": "src/agent/port_ssl_guard_remaining.c",
+            "python_file": "agent/ssl_guard.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _skip_ssl_guard_enabled @ agent/ssl_guard.py:_skip_ssl_guard_enabled */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/ssl_guard.py",
@@ -62905,16 +62913,24 @@
             "decorators": [],
             "line_number": 32
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_ssl_guard_remaining.c",
+          "c_function": "sslg_repair_hint",
+          "pop_annotation": {
+            "c_function": "sslg_repair_hint",
+            "python_functions": [
+              "_repair_hint"
+            ],
+            "c_file": "src/agent/port_ssl_guard_remaining.c",
+            "python_file": "agent/ssl_guard.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _repair_hint @ agent/ssl_guard.py:_repair_hint */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/ssl_guard.py",
@@ -62926,16 +62942,24 @@
             "decorators": [],
             "line_number": 41
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_ssl_guard_remaining.c",
+          "c_function": "sslg_ssl_err",
+          "pop_annotation": {
+            "c_function": "sslg_ssl_err",
+            "python_functions": [
+              "_ssl_err"
+            ],
+            "c_file": "src/agent/port_ssl_guard_remaining.c",
+            "python_file": "agent/ssl_guard.py",
+            "line": 41,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ssl_err @ agent/ssl_guard.py:_ssl_err */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/ssl_guard.py",
@@ -62947,16 +62971,24 @@
             "decorators": [],
             "line_number": 46
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_ssl_guard_remaining.c",
+          "c_function": "sslg_validate_bundle_path",
+          "pop_annotation": {
+            "c_function": "sslg_validate_bundle_path",
+            "python_functions": [
+              "_validate_bundle_path"
+            ],
+            "c_file": "src/agent/port_ssl_guard_remaining.c",
+            "python_file": "agent/ssl_guard.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _validate_bundle_path @ agent/ssl_guard.py:_validate_bundle_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/ssl_guard.py",
@@ -62968,16 +63000,24 @@
             "decorators": [],
             "line_number": 62
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_ssl_guard_remaining.c",
+          "c_function": "sslg_verify_ca_bundle",
+          "pop_annotation": {
+            "c_function": "sslg_verify_ca_bundle",
+            "python_functions": [
+              "verify_ca_bundle"
+            ],
+            "c_file": "src/agent/port_ssl_guard_remaining.c",
+            "python_file": "agent/ssl_guard.py",
+            "line": 65,
+            "is_consolidated": false,
+            "full_text": "/* PoP: verify_ca_bundle @ agent/ssl_guard.py:verify_ca_bundle */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/ssl_guard.py",
@@ -62989,16 +63029,24 @@
             "decorators": [],
             "line_number": 88
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_ssl_guard_remaining.c",
+          "c_function": "sslg_verify_ca_bundle_with_fallback",
+          "pop_annotation": {
+            "c_function": "sslg_verify_ca_bundle_with_fallback",
+            "python_functions": [
+              "verify_ca_bundle_with_fallback"
+            ],
+            "c_file": "src/agent/port_ssl_guard_remaining.c",
+            "python_file": "agent/ssl_guard.py",
+            "line": 81,
+            "is_consolidated": false,
+            "full_text": "/* PoP: verify_ca_bundle_with_fallback @ agent/ssl_guard.py:verify_ca_bundle_with_fallback */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -74972,10 +75020,10 @@
     },
     "agent/web_search_registry.py": {
       "total": 9,
-      "ported": 3,
+      "ported": 9,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 6,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 9,
@@ -74991,16 +75039,24 @@
             "decorators": [],
             "line_number": 48
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_web_search_registry_remaining.c",
+          "c_function": "wsr_register_provider",
+          "pop_annotation": {
+            "c_function": "wsr_register_provider",
+            "python_functions": [
+              "register_provider"
+            ],
+            "c_file": "src/agent/port_web_search_registry_remaining.c",
+            "python_file": "agent/web_search_registry.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: register_provider @ agent/web_search_registry.py:register_provider */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/web_search_registry.py",
@@ -75012,16 +75068,24 @@
             "decorators": [],
             "line_number": 78
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_web_search_registry_remaining.c",
+          "c_function": "wsr_list_providers",
+          "pop_annotation": {
+            "c_function": "wsr_list_providers",
+            "python_functions": [
+              "list_providers"
+            ],
+            "c_file": "src/agent/port_web_search_registry_remaining.c",
+            "python_file": "agent/web_search_registry.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: list_providers @ agent/web_search_registry.py:list_providers */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/web_search_registry.py",
@@ -75033,16 +75097,24 @@
             "decorators": [],
             "line_number": 85
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_web_search_registry_remaining.c",
+          "c_function": "wsr_get_provider",
+          "pop_annotation": {
+            "c_function": "wsr_get_provider",
+            "python_functions": [
+              "get_provider"
+            ],
+            "c_file": "src/agent/port_web_search_registry_remaining.c",
+            "python_file": "agent/web_search_registry.py",
+            "line": 37,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_provider @ agent/web_search_registry.py:get_provider */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/web_search_registry.py",
@@ -75054,16 +75126,24 @@
             "decorators": [],
             "line_number": 98
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_web_search_registry_remaining.c",
+          "c_function": "wsr_read_config_key",
+          "pop_annotation": {
+            "c_function": "wsr_read_config_key",
+            "python_functions": [
+              "_read_config_key"
+            ],
+            "c_file": "src/agent/port_web_search_registry_remaining.c",
+            "python_file": "agent/web_search_registry.py",
+            "line": 45,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _read_config_key @ agent/web_search_registry.py:_read_config_key */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/web_search_registry.py",
@@ -75075,16 +75155,24 @@
             "decorators": [],
             "line_number": 133
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_web_search_registry_remaining.c",
+          "c_function": "wsr_resolve",
+          "pop_annotation": {
+            "c_function": "wsr_resolve",
+            "python_functions": [
+              "_resolve"
+            ],
+            "c_file": "src/agent/port_web_search_registry_remaining.c",
+            "python_file": "agent/web_search_registry.py",
+            "line": 61,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve @ agent/web_search_registry.py:_resolve */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/web_search_registry.py",
@@ -75183,16 +75271,24 @@
             "decorators": [],
             "line_number": 301
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_web_search_registry_remaining.c",
+          "c_function": "wsr_reset_for_tests",
+          "pop_annotation": {
+            "c_function": "wsr_reset_for_tests",
+            "python_functions": [
+              "_reset_for_tests"
+            ],
+            "c_file": "src/agent/port_web_search_registry_remaining.c",
+            "python_file": "agent/web_search_registry.py",
+            "line": 77,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _reset_for_tests @ agent/web_search_registry.py:_reset_for_tests */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
