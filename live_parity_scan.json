@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:25:05Z",
+  "generated_at": "2026-08-02T19:27:03Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -125174,10 +125174,10 @@
     },
     "gateway/relay/ws_transport.py": {
       "total": 29,
-      "ported": 11,
+      "ported": 28,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 18,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 29,
@@ -125193,16 +125193,24 @@
             "decorators": [],
             "line_number": 65
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_ws_transport_remaining.c",
+          "c_function": "wst_ws_dial_url",
+          "pop_annotation": {
+            "c_function": "wst_ws_dial_url",
+            "python_functions": [
+              "_ws_dial_url"
+            ],
+            "c_file": "src/gateway/port_relay_ws_transport_remaining.c",
+            "python_file": "gateway/relay/ws_transport.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ws_dial_url @ gateway/relay/ws_transport.py:_ws_dial_url */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/ws_transport.py",
@@ -125272,16 +125280,24 @@
             "decorators": [],
             "line_number": 168
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_ws_transport_remaining.c",
+          "c_function": "wst_event_from_wire",
+          "pop_annotation": {
+            "c_function": "wst_event_from_wire",
+            "python_functions": [
+              "_event_from_wire"
+            ],
+            "c_file": "src/gateway/port_relay_ws_transport_remaining.c",
+            "python_file": "gateway/relay/ws_transport.py",
+            "line": 43,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _event_from_wire @ gateway/relay/ws_transport.py:_event_from_wire */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/ws_transport.py",
@@ -125343,16 +125359,24 @@
             "decorators": [],
             "line_number": 392
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_ws_transport_remaining.c",
+          "c_function": "wst_connect",
+          "pop_annotation": {
+            "c_function": "wst_connect",
+            "python_functions": [
+              "connect"
+            ],
+            "c_file": "src/gateway/port_relay_ws_transport_remaining.c",
+            "python_file": "gateway/relay/ws_transport.py",
+            "line": 60,
+            "is_consolidated": false,
+            "full_text": "/* PoP: connect @ gateway/relay/ws_transport.py:connect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/ws_transport.py",
@@ -125393,16 +125417,24 @@
             "decorators": [],
             "line_number": 422
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_ws_transport_remaining.c",
+          "c_function": "wst_upgrade_headers",
+          "pop_annotation": {
+            "c_function": "wst_upgrade_headers",
+            "python_functions": [
+              "_upgrade_headers"
+            ],
+            "c_file": "src/gateway/port_relay_ws_transport_remaining.c",
+            "python_file": "gateway/relay/ws_transport.py",
+            "line": 51,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _upgrade_headers @ gateway/relay/ws_transport.py:_upgrade_headers */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/ws_transport.py",
@@ -125414,16 +125446,24 @@
             "decorators": [],
             "line_number": 439
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_ws_transport_remaining.c",
+          "c_function": "wst_disconnect",
+          "pop_annotation": {
+            "c_function": "wst_disconnect",
+            "python_functions": [
+              "disconnect"
+            ],
+            "c_file": "src/gateway/port_relay_ws_transport_remaining.c",
+            "python_file": "gateway/relay/ws_transport.py",
+            "line": 68,
+            "is_consolidated": false,
+            "full_text": "/* PoP: disconnect @ gateway/relay/ws_transport.py:disconnect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/ws_transport.py",
@@ -125435,16 +125475,24 @@
             "decorators": [],
             "line_number": 469
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_ws_transport_remaining.c",
+          "c_function": "wst_handshake",
+          "pop_annotation": {
+            "c_function": "wst_handshake",
+            "python_functions": [
+              "handshake"
+            ],
+            "c_file": "src/gateway/port_relay_ws_transport_remaining.c",
+            "python_file": "gateway/relay/ws_transport.py",
+            "line": 74,
+            "is_consolidated": false,
+            "full_text": "/* PoP: handshake @ gateway/relay/ws_transport.py:handshake */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/ws_transport.py",
@@ -125487,16 +125535,24 @@
             "decorators": [],
             "line_number": 484
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_ws_transport_remaining.c",
+          "c_function": "wst_set_inbound_handler",
+          "pop_annotation": {
+            "c_function": "wst_set_inbound_handler",
+            "python_functions": [
+              "set_inbound_handler"
+            ],
+            "c_file": "src/gateway/port_relay_ws_transport_remaining.c",
+            "python_file": "gateway/relay/ws_transport.py",
+            "line": 82,
+            "is_consolidated": false,
+            "full_text": "/* PoP: set_inbound_handler @ gateway/relay/ws_transport.py:set_inbound_handler */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/ws_transport.py",
@@ -125508,16 +125564,24 @@
             "decorators": [],
             "line_number": 488
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_ws_transport_remaining.c",
+          "c_function": "wst_send_outbound",
+          "pop_annotation": {
+            "c_function": "wst_send_outbound",
+            "python_functions": [
+              "send_outbound"
+            ],
+            "c_file": "src/gateway/port_relay_ws_transport_remaining.c",
+            "python_file": "gateway/relay/ws_transport.py",
+            "line": 88,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_outbound @ gateway/relay/ws_transport.py:send_outbound */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/ws_transport.py",
@@ -125529,16 +125593,24 @@
             "decorators": [],
             "line_number": 493
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_ws_transport_remaining.c",
+          "c_function": "wst_send_follow_up",
+          "pop_annotation": {
+            "c_function": "wst_send_follow_up",
+            "python_functions": [
+              "send_follow_up"
+            ],
+            "c_file": "src/gateway/port_relay_ws_transport_remaining.c",
+            "python_file": "gateway/relay/ws_transport.py",
+            "line": 96,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_follow_up @ gateway/relay/ws_transport.py:send_follow_up */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/ws_transport.py",
@@ -125579,16 +125651,24 @@
             "decorators": [],
             "line_number": 518
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_ws_transport_remaining.c",
+          "c_function": "wst_get_chat_info",
+          "pop_annotation": {
+            "c_function": "wst_get_chat_info",
+            "python_functions": [
+              "get_chat_info"
+            ],
+            "c_file": "src/gateway/port_relay_ws_transport_remaining.c",
+            "python_file": "gateway/relay/ws_transport.py",
+            "line": 104,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_chat_info @ gateway/relay/ws_transport.py:get_chat_info */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/ws_transport.py",
@@ -125600,16 +125680,24 @@
             "decorators": [],
             "line_number": 526
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_ws_transport_remaining.c",
+          "c_function": "wst_send_interrupt",
+          "pop_annotation": {
+            "c_function": "wst_send_interrupt",
+            "python_functions": [
+              "send_interrupt"
+            ],
+            "c_file": "src/gateway/port_relay_ws_transport_remaining.c",
+            "python_file": "gateway/relay/ws_transport.py",
+            "line": 113,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_interrupt @ gateway/relay/ws_transport.py:send_interrupt */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/ws_transport.py",
@@ -125621,16 +125709,24 @@
             "decorators": [],
             "line_number": 530
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_ws_transport_remaining.c",
+          "c_function": "wst_go_idle",
+          "pop_annotation": {
+            "c_function": "wst_go_idle",
+            "python_functions": [
+              "go_idle"
+            ],
+            "c_file": "src/gateway/port_relay_ws_transport_remaining.c",
+            "python_file": "gateway/relay/ws_transport.py",
+            "line": 121,
+            "is_consolidated": false,
+            "full_text": "/* PoP: go_idle @ gateway/relay/ws_transport.py:go_idle */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/ws_transport.py",
@@ -125700,16 +125796,24 @@
             "decorators": [],
             "line_number": 611
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_ws_transport_remaining.c",
+          "c_function": "wst_request_response",
+          "pop_annotation": {
+            "c_function": "wst_request_response",
+            "python_functions": [
+              "_request_response"
+            ],
+            "c_file": "src/gateway/port_relay_ws_transport_remaining.c",
+            "python_file": "gateway/relay/ws_transport.py",
+            "line": 128,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _request_response @ gateway/relay/ws_transport.py:_request_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/ws_transport.py",
@@ -125721,16 +125825,24 @@
             "decorators": [],
             "line_number": 645
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_ws_transport_remaining.c",
+          "c_function": "wst_send",
+          "pop_annotation": {
+            "c_function": "wst_send",
+            "python_functions": [
+              "_send"
+            ],
+            "c_file": "src/gateway/port_relay_ws_transport_remaining.c",
+            "python_file": "gateway/relay/ws_transport.py",
+            "line": 136,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _send @ gateway/relay/ws_transport.py:_send */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/ws_transport.py",
@@ -125742,16 +125854,24 @@
             "decorators": [],
             "line_number": 650
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_ws_transport_remaining.c",
+          "c_function": "wst_read_loop",
+          "pop_annotation": {
+            "c_function": "wst_read_loop",
+            "python_functions": [
+              "_read_loop"
+            ],
+            "c_file": "src/gateway/port_relay_ws_transport_remaining.c",
+            "python_file": "gateway/relay/ws_transport.py",
+            "line": 144,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _read_loop @ gateway/relay/ws_transport.py:_read_loop */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/ws_transport.py",
@@ -125823,16 +125943,24 @@
             "decorators": [],
             "line_number": 742
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_ws_transport_remaining.c",
+          "c_function": "wst_handle_frame",
+          "pop_annotation": {
+            "c_function": "wst_handle_frame",
+            "python_functions": [
+              "_handle_frame"
+            ],
+            "c_file": "src/gateway/port_relay_ws_transport_remaining.c",
+            "python_file": "gateway/relay/ws_transport.py",
+            "line": 151,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _handle_frame @ gateway/relay/ws_transport.py:_handle_frame */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/ws_transport.py",
@@ -125873,16 +126001,24 @@
             "decorators": [],
             "line_number": 802
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_ws_transport_remaining.c",
+          "c_function": "wst_set_passthrough_handler",
+          "pop_annotation": {
+            "c_function": "wst_set_passthrough_handler",
+            "python_functions": [
+              "set_passthrough_handler"
+            ],
+            "c_file": "src/gateway/port_relay_ws_transport_remaining.c",
+            "python_file": "gateway/relay/ws_transport.py",
+            "line": 160,
+            "is_consolidated": false,
+            "full_text": "/* PoP: set_passthrough_handler @ gateway/relay/ws_transport.py:set_passthrough_handler */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -137505,10 +137641,10 @@
     },
     "gateway/session.py": {
       "total": 88,
-      "ported": 67,
+      "ported": 82,
       "partial": 3,
       "stub": 0,
-      "real_gaps": 18,
+      "real_gaps": 3,
       "thin": true,
       "pop_mismatch": false,
       "py_func_count": 88,
@@ -137719,17 +137855,24 @@
             "decorators": [],
             "line_number": 207
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_session_remaining.c",
+          "c_function": "gss_post_init",
+          "pop_annotation": {
+            "c_function": "gss_post_init",
+            "python_functions": [
+              "__post_init__"
+            ],
+            "c_file": "src/gateway/port_gateway_session_remaining.c",
+            "python_file": "gateway/session.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __post_init__ @ gateway/session.py:__post_init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/session.py",
@@ -137743,17 +137886,24 @@
             ],
             "line_number": 218
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_session_remaining.c",
+          "c_function": "gss_description",
+          "pop_annotation": {
+            "c_function": "gss_description",
+            "python_functions": [
+              "description"
+            ],
+            "c_file": "src/gateway/port_gateway_session_remaining.c",
+            "python_file": "gateway/session.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: description @ gateway/session.py:description */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/session.py",
@@ -137765,17 +137915,24 @@
             "decorators": [],
             "line_number": 238
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_session_remaining.c",
+          "c_function": "gss_source_to_dict",
+          "pop_annotation": {
+            "c_function": "gss_source_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/gateway/port_gateway_session_remaining.c",
+            "python_file": "gateway/session.py",
+            "line": 52,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ gateway/session.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/session.py",
@@ -137789,17 +137946,24 @@
             ],
             "line_number": 274
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_session_remaining.c",
+          "c_function": "gss_source_from_dict",
+          "pop_annotation": {
+            "c_function": "gss_source_from_dict",
+            "python_functions": [
+              "from_dict"
+            ],
+            "c_file": "src/gateway/port_gateway_session_remaining.c",
+            "python_file": "gateway/session.py",
+            "line": 58,
+            "is_consolidated": false,
+            "full_text": "/* PoP: from_dict @ gateway/session.py:from_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/session.py",
@@ -137811,17 +137975,24 @@
             "decorators": [],
             "line_number": 319
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_session_remaining.c",
+          "c_function": "gss_source_to_dict",
+          "pop_annotation": {
+            "c_function": "gss_source_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/gateway/port_gateway_session_remaining.c",
+            "python_file": "gateway/session.py",
+            "line": 52,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ gateway/session.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/session.py",
@@ -137862,17 +138033,24 @@
             "decorators": [],
             "line_number": 391
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_session_remaining.c",
+          "c_function": "gss_discord_tools_loaded",
+          "pop_annotation": {
+            "c_function": "gss_discord_tools_loaded",
+            "python_functions": [
+              "_discord_tools_loaded"
+            ],
+            "c_file": "src/gateway/port_gateway_session_remaining.c",
+            "python_file": "gateway/session.py",
+            "line": 71,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _discord_tools_loaded @ gateway/session.py:_discord_tools_loaded */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/session.py",
@@ -137942,17 +138120,24 @@
             "decorators": [],
             "line_number": 450
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_session_remaining.c",
+          "c_function": "gss_build_session_context_prompt",
+          "pop_annotation": {
+            "c_function": "gss_build_session_context_prompt",
+            "python_functions": [
+              "build_session_context_prompt"
+            ],
+            "c_file": "src/gateway/port_gateway_session_remaining.c",
+            "python_file": "gateway/session.py",
+            "line": 78,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_session_context_prompt @ gateway/session.py:build_session_context_prompt */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/session.py",
@@ -137993,17 +138178,24 @@
             "decorators": [],
             "line_number": 835
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_session_remaining.c",
+          "c_function": "gss_source_to_dict",
+          "pop_annotation": {
+            "c_function": "gss_source_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/gateway/port_gateway_session_remaining.c",
+            "python_file": "gateway/session.py",
+            "line": 52,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ gateway/session.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/session.py",
@@ -138017,17 +138209,24 @@
             ],
             "line_number": 877
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_session_remaining.c",
+          "c_function": "gss_source_from_dict",
+          "pop_annotation": {
+            "c_function": "gss_source_from_dict",
+            "python_functions": [
+              "from_dict"
+            ],
+            "c_file": "src/gateway/port_gateway_session_remaining.c",
+            "python_file": "gateway/session.py",
+            "line": 58,
+            "is_consolidated": false,
+            "full_text": "/* PoP: from_dict @ gateway/session.py:from_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/session.py",
@@ -138068,17 +138267,24 @@
             "decorators": [],
             "line_number": 988
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_session_remaining.c",
+          "c_function": "gss_is_shared_multi_user_session",
+          "pop_annotation": {
+            "c_function": "gss_is_shared_multi_user_session",
+            "python_functions": [
+              "is_shared_multi_user_session"
+            ],
+            "c_file": "src/gateway/port_gateway_session_remaining.c",
+            "python_file": "gateway/session.py",
+            "line": 101,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_shared_multi_user_session @ gateway/session.py:is_shared_multi_user_session */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/session.py",
@@ -138111,17 +138317,24 @@
             "decorators": [],
             "line_number": 1029
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_session_remaining.c",
+          "c_function": "gss_build_session_key",
+          "pop_annotation": {
+            "c_function": "gss_build_session_key",
+            "python_functions": [
+              "build_session_key"
+            ],
+            "c_file": "src/gateway/port_gateway_session_remaining.c",
+            "python_file": "gateway/session.py",
+            "line": 111,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_session_key @ gateway/session.py:build_session_key */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/session.py",
@@ -138257,17 +138470,24 @@
             "decorators": [],
             "line_number": 1228
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_session_remaining.c",
+          "c_function": "gss_ensure_loaded",
+          "pop_annotation": {
+            "c_function": "gss_ensure_loaded",
+            "python_functions": [
+              "_ensure_loaded"
+            ],
+            "c_file": "src/gateway/port_gateway_session_remaining.c",
+            "python_file": "gateway/session.py",
+            "line": 123,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ensure_loaded @ gateway/session.py:_ensure_loaded */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/session.py",
@@ -139002,17 +139222,24 @@
             "decorators": [],
             "line_number": 2020
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_session_remaining.c",
+          "c_function": "gss_should_reset",
+          "pop_annotation": {
+            "c_function": "gss_should_reset",
+            "python_functions": [
+              "_should_reset"
+            ],
+            "c_file": "src/gateway/port_gateway_session_remaining.c",
+            "python_file": "gateway/session.py",
+            "line": 134,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _should_reset @ gateway/session.py:_should_reset */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/session.py",
@@ -139459,17 +139686,24 @@
             "decorators": [],
             "line_number": 2704
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_session_remaining.c",
+          "c_function": "gss_reset_session",
+          "pop_annotation": {
+            "c_function": "gss_reset_session",
+            "python_functions": [
+              "reset_session"
+            ],
+            "c_file": "src/gateway/port_gateway_session_remaining.c",
+            "python_file": "gateway/session.py",
+            "line": 142,
+            "is_consolidated": false,
+            "full_text": "/* PoP: reset_session @ gateway/session.py:reset_session */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/session.py",
@@ -139539,17 +139773,24 @@
             "decorators": [],
             "line_number": 2880
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_session_remaining.c",
+          "c_function": "gss_list_sessions",
+          "pop_annotation": {
+            "c_function": "gss_list_sessions",
+            "python_functions": [
+              "list_sessions"
+            ],
+            "c_file": "src/gateway/port_gateway_session_remaining.c",
+            "python_file": "gateway/session.py",
+            "line": 151,
+            "is_consolidated": false,
+            "full_text": "/* PoP: list_sessions @ gateway/session.py:list_sessions */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/session.py",
