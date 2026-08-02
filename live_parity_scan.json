@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T23:57:09Z",
+  "generated_at": "2026-08-02T23:58:59Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -289130,7 +289130,7 @@
             ],
             "c_file": "src/tools/port_browser_supervisor_remaining.c",
             "python_file": "tools/browser_supervisor.py",
-            "line": 92,
+            "line": 91,
             "is_consolidated": false,
             "full_text": "/* PoP: _cdp @ tools/browser_supervisor.py:_cdp */"
           },
@@ -289159,7 +289159,7 @@
             ],
             "c_file": "src/tools/port_browser_supervisor_remaining.c",
             "python_file": "tools/browser_supervisor.py",
-            "line": 100,
+            "line": 99,
             "is_consolidated": false,
             "full_text": "/* PoP: _read_loop @ tools/browser_supervisor.py:_read_loop */"
           },

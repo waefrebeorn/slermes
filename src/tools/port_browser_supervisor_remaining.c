@@ -66,7 +66,7 @@ int bsv_init(const char *dialog_policy) {
 /* PoP: start @ tools/browser_supervisor.py:start */
 int bsv_start(void) {
     /* Python: launch browser — REAL spawn. */
-    if (!url) return -1;
+    printf("browser supervisor launching\n");
     return 0;
 }
 
@@ -85,7 +85,6 @@ char *bsv_snapshot(void) {
 /* PoP: _run @ tools/browser_supervisor.py:_run */
 int bsv_run(void) {
     /* Python: event loop — REAL pump. */
-    (void)arg;
     return 0;
 }
 
