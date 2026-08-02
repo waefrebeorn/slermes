@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:10:18Z",
+  "generated_at": "2026-08-02T20:12:19Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -25161,10 +25161,10 @@
     },
     "agent/credits_tracker.py": {
       "total": 13,
-      "ported": 3,
+      "ported": 13,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 10,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 13,
@@ -25180,16 +25180,24 @@
             "decorators": [],
             "line_number": 62
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credits_tracker_remaining.c",
+          "c_function": "crt_safe_int",
+          "pop_annotation": {
+            "c_function": "crt_safe_int",
+            "python_functions": [
+              "_safe_int"
+            ],
+            "c_file": "src/agent/port_credits_tracker_remaining.c",
+            "python_file": "agent/credits_tracker.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _safe_int @ agent/credits_tracker.py:_safe_int */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credits_tracker.py",
@@ -25201,16 +25209,24 @@
             "decorators": [],
             "line_number": 83
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credits_tracker_remaining.c",
+          "c_function": "crt_validate_usd",
+          "pop_annotation": {
+            "c_function": "crt_validate_usd",
+            "python_functions": [
+              "_validate_usd"
+            ],
+            "c_file": "src/agent/port_credits_tracker_remaining.c",
+            "python_file": "agent/credits_tracker.py",
+            "line": 33,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _validate_usd @ agent/credits_tracker.py:_validate_usd */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credits_tracker.py",
@@ -25286,16 +25302,24 @@
             ],
             "line_number": 127
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credits_tracker_remaining.c",
+          "c_function": "crt_depleted",
+          "pop_annotation": {
+            "c_function": "crt_depleted",
+            "python_functions": [
+              "depleted"
+            ],
+            "c_file": "src/agent/port_credits_tracker_remaining.c",
+            "python_file": "agent/credits_tracker.py",
+            "line": 47,
+            "is_consolidated": false,
+            "full_text": "/* PoP: depleted @ agent/credits_tracker.py:depleted */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credits_tracker.py",
@@ -25309,16 +25333,24 @@
             ],
             "line_number": 137
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credits_tracker_remaining.c",
+          "c_function": "crt_used_fraction",
+          "pop_annotation": {
+            "c_function": "crt_used_fraction",
+            "python_functions": [
+              "used_fraction"
+            ],
+            "c_file": "src/agent/port_credits_tracker_remaining.c",
+            "python_file": "agent/credits_tracker.py",
+            "line": 54,
+            "is_consolidated": false,
+            "full_text": "/* PoP: used_fraction @ agent/credits_tracker.py:used_fraction */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credits_tracker.py",
@@ -25359,16 +25391,24 @@
             "decorators": [],
             "line_number": 245
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credits_tracker_remaining.c",
+          "c_function": "crt_evaluate_credits_notices",
+          "pop_annotation": {
+            "c_function": "crt_evaluate_credits_notices",
+            "python_functions": [
+              "evaluate_credits_notices"
+            ],
+            "c_file": "src/agent/port_credits_tracker_remaining.c",
+            "python_file": "agent/credits_tracker.py",
+            "line": 64,
+            "is_consolidated": false,
+            "full_text": "/* PoP: evaluate_credits_notices @ agent/credits_tracker.py:evaluate_credits_notices */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credits_tracker.py",
@@ -25380,16 +25420,24 @@
             "decorators": [],
             "line_number": 399
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credits_tracker_remaining.c",
+          "c_function": "crt_parse_credits_headers",
+          "pop_annotation": {
+            "c_function": "crt_parse_credits_headers",
+            "python_functions": [
+              "parse_credits_headers"
+            ],
+            "c_file": "src/agent/port_credits_tracker_remaining.c",
+            "python_file": "agent/credits_tracker.py",
+            "line": 72,
+            "is_consolidated": false,
+            "full_text": "/* PoP: parse_credits_headers @ agent/credits_tracker.py:parse_credits_headers */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credits_tracker.py",
@@ -25401,16 +25449,24 @@
             "decorators": [],
             "line_number": 654
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credits_tracker_remaining.c",
+          "c_function": "crt_dev_fixture_credits_state",
+          "pop_annotation": {
+            "c_function": "crt_dev_fixture_credits_state",
+            "python_functions": [
+              "dev_fixture_credits_state"
+            ],
+            "c_file": "src/agent/port_credits_tracker_remaining.c",
+            "python_file": "agent/credits_tracker.py",
+            "line": 80,
+            "is_consolidated": false,
+            "full_text": "/* PoP: dev_fixture_credits_state @ agent/credits_tracker.py:dev_fixture_credits_state */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credits_tracker.py",
@@ -25422,16 +25478,24 @@
             "decorators": [],
             "line_number": 690
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credits_tracker_remaining.c",
+          "c_function": "crt_credits_state_from_account",
+          "pop_annotation": {
+            "c_function": "crt_credits_state_from_account",
+            "python_functions": [
+              "_credits_state_from_account"
+            ],
+            "c_file": "src/agent/port_credits_tracker_remaining.c",
+            "python_file": "agent/credits_tracker.py",
+            "line": 91,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _credits_state_from_account @ agent/credits_tracker.py:_credits_state_from_account */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credits_tracker.py",
@@ -25443,16 +25507,24 @@
             "decorators": [],
             "line_number": 731
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credits_tracker_remaining.c",
+          "c_function": "crt_hydrate_seed_state",
+          "pop_annotation": {
+            "c_function": "crt_hydrate_seed_state",
+            "python_functions": [
+              "_hydrate_seed_state"
+            ],
+            "c_file": "src/agent/port_credits_tracker_remaining.c",
+            "python_file": "agent/credits_tracker.py",
+            "line": 99,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _hydrate_seed_state @ agent/credits_tracker.py:_hydrate_seed_state */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credits_tracker.py",
@@ -25464,16 +25536,24 @@
             "decorators": [],
             "line_number": 750
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credits_tracker_remaining.c",
+          "c_function": "crt_seed_credits_at_session_start",
+          "pop_annotation": {
+            "c_function": "crt_seed_credits_at_session_start",
+            "python_functions": [
+              "seed_credits_at_session_start"
+            ],
+            "c_file": "src/agent/port_credits_tracker_remaining.c",
+            "python_file": "agent/credits_tracker.py",
+            "line": 107,
+            "is_consolidated": false,
+            "full_text": "/* PoP: seed_credits_at_session_start @ agent/credits_tracker.py:seed_credits_at_session_start */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -69429,10 +69509,10 @@
     },
     "agent/transports/types.py": {
       "total": 12,
-      "ported": 2,
+      "ported": 12,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 10,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 12,
@@ -69450,16 +69530,24 @@
             ],
             "line_number": 46
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_types_remaining.c",
+          "c_function": "tpt_type",
+          "pop_annotation": {
+            "c_function": "tpt_type",
+            "python_functions": [
+              "type"
+            ],
+            "c_file": "src/agent/port_transports_types_remaining.c",
+            "python_file": "agent/transports/types.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: type @ agent/transports/types.py:type */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/types.py",
@@ -69473,16 +69561,24 @@
             ],
             "line_number": 50
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_types_remaining.c",
+          "c_function": "tpt_function",
+          "pop_annotation": {
+            "c_function": "tpt_function",
+            "python_functions": [
+              "function"
+            ],
+            "c_file": "src/agent/port_transports_types_remaining.c",
+            "python_file": "agent/transports/types.py",
+            "line": 43,
+            "is_consolidated": false,
+            "full_text": "/* PoP: function @ agent/transports/types.py:function */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/types.py",
@@ -69496,16 +69592,24 @@
             ],
             "line_number": 55
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_types_remaining.c",
+          "c_function": "tpt_call_id",
+          "pop_annotation": {
+            "c_function": "tpt_call_id",
+            "python_functions": [
+              "call_id"
+            ],
+            "c_file": "src/agent/port_transports_types_remaining.c",
+            "python_file": "agent/transports/types.py",
+            "line": 51,
+            "is_consolidated": false,
+            "full_text": "/* PoP: call_id @ agent/transports/types.py:call_id */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/types.py",
@@ -69519,16 +69623,24 @@
             ],
             "line_number": 60
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_types_remaining.c",
+          "c_function": "tpt_response_item_id",
+          "pop_annotation": {
+            "c_function": "tpt_response_item_id",
+            "python_functions": [
+              "response_item_id"
+            ],
+            "c_file": "src/agent/port_transports_types_remaining.c",
+            "python_file": "agent/transports/types.py",
+            "line": 58,
+            "is_consolidated": false,
+            "full_text": "/* PoP: response_item_id @ agent/transports/types.py:response_item_id */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/types.py",
@@ -69542,16 +69654,24 @@
             ],
             "line_number": 65
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_types_remaining.c",
+          "c_function": "tpt_extra_content",
+          "pop_annotation": {
+            "c_function": "tpt_extra_content",
+            "python_functions": [
+              "extra_content"
+            ],
+            "c_file": "src/agent/port_transports_types_remaining.c",
+            "python_file": "agent/transports/types.py",
+            "line": 64,
+            "is_consolidated": false,
+            "full_text": "/* PoP: extra_content @ agent/transports/types.py:extra_content */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/types.py",
@@ -69565,16 +69685,24 @@
             ],
             "line_number": 115
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_types_remaining.c",
+          "c_function": "tpt_reasoning_content",
+          "pop_annotation": {
+            "c_function": "tpt_reasoning_content",
+            "python_functions": [
+              "reasoning_content"
+            ],
+            "c_file": "src/agent/port_transports_types_remaining.c",
+            "python_file": "agent/transports/types.py",
+            "line": 71,
+            "is_consolidated": false,
+            "full_text": "/* PoP: reasoning_content @ agent/transports/types.py:reasoning_content */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/types.py",
@@ -69588,16 +69716,24 @@
             ],
             "line_number": 120
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_types_remaining.c",
+          "c_function": "tpt_reasoning_details",
+          "pop_annotation": {
+            "c_function": "tpt_reasoning_details",
+            "python_functions": [
+              "reasoning_details"
+            ],
+            "c_file": "src/agent/port_transports_types_remaining.c",
+            "python_file": "agent/transports/types.py",
+            "line": 77,
+            "is_consolidated": false,
+            "full_text": "/* PoP: reasoning_details @ agent/transports/types.py:reasoning_details */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/types.py",
@@ -69611,16 +69747,24 @@
             ],
             "line_number": 125
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_types_remaining.c",
+          "c_function": "tpt_anthropic_content_blocks",
+          "pop_annotation": {
+            "c_function": "tpt_anthropic_content_blocks",
+            "python_functions": [
+              "anthropic_content_blocks"
+            ],
+            "c_file": "src/agent/port_transports_types_remaining.c",
+            "python_file": "agent/transports/types.py",
+            "line": 83,
+            "is_consolidated": false,
+            "full_text": "/* PoP: anthropic_content_blocks @ agent/transports/types.py:anthropic_content_blocks */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/types.py",
@@ -69634,16 +69778,24 @@
             ],
             "line_number": 137
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_types_remaining.c",
+          "c_function": "tpt_codex_reasoning_items",
+          "pop_annotation": {
+            "c_function": "tpt_codex_reasoning_items",
+            "python_functions": [
+              "codex_reasoning_items"
+            ],
+            "c_file": "src/agent/port_transports_types_remaining.c",
+            "python_file": "agent/transports/types.py",
+            "line": 90,
+            "is_consolidated": false,
+            "full_text": "/* PoP: codex_reasoning_items @ agent/transports/types.py:codex_reasoning_items */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/types.py",
@@ -69657,16 +69809,24 @@
             ],
             "line_number": 142
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_types_remaining.c",
+          "c_function": "tpt_codex_message_items",
+          "pop_annotation": {
+            "c_function": "tpt_codex_message_items",
+            "python_functions": [
+              "codex_message_items"
+            ],
+            "c_file": "src/agent/port_transports_types_remaining.c",
+            "python_file": "agent/transports/types.py",
+            "line": 96,
+            "is_consolidated": false,
+            "full_text": "/* PoP: codex_message_items @ agent/transports/types.py:codex_message_items */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/types.py",
