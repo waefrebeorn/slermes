@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T22:39:15Z",
+  "generated_at": "2026-08-02T22:41:07Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -204066,10 +204066,10 @@
     },
     "hermes_cli/kanban_diagnostics.py": {
       "total": 24,
-      "ported": 21,
+      "ported": 24,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 24,
@@ -204114,16 +204114,24 @@
             "decorators": [],
             "line_number": 79
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_kanban_diagnostics_remaining.c",
+          "c_function": "kdi_to_dict",
+          "pop_annotation": {
+            "c_function": "kdi_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/cli/port_kanban_diagnostics_remaining.c",
+            "python_file": "hermes_cli/kanban_diagnostics.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ hermes_cli/kanban_diagnostics.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_diagnostics.py",
@@ -204135,16 +204143,24 @@
             "decorators": [],
             "line_number": 105
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_kanban_diagnostics_remaining.c",
+          "c_function": "kdi_to_dict",
+          "pop_annotation": {
+            "c_function": "kdi_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/cli/port_kanban_diagnostics_remaining.c",
+            "python_file": "hermes_cli/kanban_diagnostics.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ hermes_cli/kanban_diagnostics.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_diagnostics.py",
@@ -204417,16 +204433,24 @@
             "decorators": [],
             "line_number": 317
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_kanban_diagnostics_remaining.c",
+          "c_function": "kdi_positive_int",
+          "pop_annotation": {
+            "c_function": "kdi_positive_int",
+            "python_functions": [
+              "_positive_int"
+            ],
+            "c_file": "src/cli/port_kanban_diagnostics_remaining.c",
+            "python_file": "hermes_cli/kanban_diagnostics.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _positive_int @ hermes_cli/kanban_diagnostics.py:_positive_int */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_diagnostics.py",
@@ -224387,10 +224411,10 @@
     },
     "hermes_cli/nous_account.py": {
       "total": 30,
-      "ported": 27,
+      "ported": 30,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 30,
@@ -225195,16 +225219,24 @@
             "decorators": [],
             "line_number": 766
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_nous_account_remaining.c",
+          "c_function": "nac_coerce_bool",
+          "pop_annotation": {
+            "c_function": "nac_coerce_bool",
+            "python_functions": [
+              "_coerce_bool"
+            ],
+            "c_file": "src/cli/port_nous_account_remaining.c",
+            "python_file": "hermes_cli/nous_account.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _coerce_bool @ hermes_cli/nous_account.py:_coerce_bool */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/nous_account.py",
@@ -225216,16 +225248,24 @@
             "decorators": [],
             "line_number": 770
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_nous_account_remaining.c",
+          "c_function": "nac_coerce_int",
+          "pop_annotation": {
+            "c_function": "nac_coerce_int",
+            "python_functions": [
+              "_coerce_int"
+            ],
+            "c_file": "src/cli/port_nous_account_remaining.c",
+            "python_file": "hermes_cli/nous_account.py",
+            "line": 28,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _coerce_int @ hermes_cli/nous_account.py:_coerce_int */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/nous_account.py",
@@ -225237,16 +225277,24 @@
             "decorators": [],
             "line_number": 781
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_nous_account_remaining.c",
+          "c_function": "nac_coerce_float",
+          "pop_annotation": {
+            "c_function": "nac_coerce_float",
+            "python_functions": [
+              "_coerce_float"
+            ],
+            "c_file": "src/cli/port_nous_account_remaining.c",
+            "python_file": "hermes_cli/nous_account.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _coerce_float @ hermes_cli/nous_account.py:_coerce_float */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
