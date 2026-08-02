@@ -31,7 +31,14 @@ int muv_repaired(const char *arg) {
 int muv_u_report_runtime_repair_failure(const char *arg) { (void)arg; return 0; }
 
 /* PoP: __new__ @ hermes_cli/managed_uv.py:__new__ */
-int muv_u__new__(const char *arg) { (void)arg; return 0; }
+int muv_u__new__(const char *arg) {
+    /* Python: __new__ with the path + fresh_bootstrap flag. Arg = "path\tfresh". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab) printf("%.*s (fresh=%s)\n", (int)(tab - arg), arg, tab + 1);
+    else printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: __iter__ @ hermes_cli/managed_uv.py:__iter__ */
 int muv_u__iter__(const char *arg) { (void)arg; return 0; }

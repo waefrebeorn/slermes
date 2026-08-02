@@ -39,7 +39,11 @@ int mm_u_has_block_opener_suffix(const char *arg) {
 }
 
 /* PoP: _append_visible @ agent/memory_manager.py:_append_visible */
-int mm_u_append_visible(const char *arg) { (void)arg; return 0; }
+int mm_u_append_visible(const char *arg) {
+    /* Python: append visible text + update the block boundary. */
+    if (arg && *arg) printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _update_block_boundary @ agent/memory_manager.py:_update_block_boundary */
 int mm_u_update_block_boundary(const char *arg) { (void)arg; return 0; }

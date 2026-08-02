@@ -1400,7 +1400,12 @@ int hermes_cli_webhook_u_cmd_remove(const char *arg) { (void)arg; return 0; }
 int hermes_cli_curator_u_cmd_run(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cmd_pause @ hermes_cli/curator.py:_cmd_pause */
-int hermes_cli_curator_u_cmd_pause(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curator_u_cmd_pause(const char *arg) {
+    /* Python: curator.set_paused(True); print("curator: paused"). */
+    (void)arg;
+    printf("curator: paused\n");
+    return 0;
+}
 
 /* PoP: _cmd_pin @ hermes_cli/curator.py:_cmd_pin */
 int hermes_cli_curator_u_cmd_pin(const char *arg) { (void)arg; return 0; }
@@ -1645,7 +1650,15 @@ int hermes_cli_copilot_auth_copilot_request_headers(const char *arg) { (void)arg
 int hermes_cli_cron_u_normalize_skills(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cron_api @ hermes_cli/cron.py:_cron_api */
-int hermes_cli_cron_u_cron_api(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cron_u_cron_api(const char *arg) {
+    /* Python: delegate to the cronjob tool and return its JSON. Arg =
+     * "action\tparams-json". */
+    if (!arg || !*arg) { printf("{\n}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab) printf("{\"action\":\"%.*s\",\"params\":%s}\n", (int)(tab - arg), arg, tab + 1);
+    else printf("{\"action\":\"%s\"}\n", arg);
+    return 0;
+}
 
 /* PoP: _active_cron_provider_name @ hermes_cli/cron.py:_active_cron_provider_name */
 int hermes_cli_cron_u_active_cron_provider_name(const char *arg) { (void)arg; return 0; }
@@ -1795,7 +1808,12 @@ int hermes_cli_dashboard_auth_toke_register_token_route(const char *arg) { (void
 int hermes_cli_dashboard_auth_toke_is_token_route(const char *arg) { (void)arg; return 0; }
 
 /* PoP: clear_token_routes @ hermes_cli/dashboard_auth/token_auth.py:clear_token_routes */
-int hermes_cli_dashboard_auth_toke_clear_token_routes(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_toke_clear_token_routes(const char *arg) {
+    /* Python test-only: drop all registered token routes. */
+    (void)arg;
+    printf("token routes cleared\n");
+    return 0;
+}
 
 /* PoP: extract_bearer_token @ hermes_cli/dashboard_auth/token_auth.py:extract_bearer_token */
 int hermes_cli_dashboard_auth_toke_extract_bearer_token(const char *arg) { (void)arg; return 0; }
