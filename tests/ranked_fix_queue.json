@@ -1,10 +1,10 @@
 {
- "total": 3195,
+ "total": 3178,
  "by_cat": {
   "A": 30,
-  "Bt": 157,
-  "Bx": 1055,
-  "C": 1953
+  "Bt": 149,
+  "Bx": 1052,
+  "C": 1947
  },
  "by_module": {
   "agent/account_usage.py": 4,
@@ -38,7 +38,7 @@
   "agent/kanban_stop.py": 4,
   "agent/lsp/client.py": 2,
   "agent/lsp/manager.py": 1,
-  "agent/memory_manager.py": 31,
+  "agent/memory_manager.py": 30,
   "agent/memory_provider.py": 8,
   "agent/moa_loop.py": 31,
   "agent/moa_trace.py": 3,
@@ -179,7 +179,7 @@
   "hermes_cli/env_loader.py": 12,
   "hermes_cli/fallback_cmd.py": 6,
   "hermes_cli/fallback_config.py": 2,
-  "hermes_cli/gateway.py": 143,
+  "hermes_cli/gateway.py": 142,
   "hermes_cli/gateway_enroll.py": 5,
   "hermes_cli/gateway_windows.py": 47,
   "hermes_cli/goals.py": 5,
@@ -189,9 +189,9 @@
   "hermes_cli/kanban_db.py": 25,
   "hermes_cli/kanban_diagnostics.py": 13,
   "hermes_cli/kanban_specify.py": 1,
-  "hermes_cli/main.py": 209,
+  "hermes_cli/main.py": 208,
   "hermes_cli/managed_scope.py": 6,
-  "hermes_cli/managed_uv.py": 25,
+  "hermes_cli/managed_uv.py": 24,
   "hermes_cli/mcp_catalog.py": 15,
   "hermes_cli/mcp_config.py": 17,
   "hermes_cli/mcp_picker.py": 8,
@@ -238,7 +238,7 @@
   "hermes_cli/security_audit_startup.py": 9,
   "hermes_cli/send_cmd.py": 4,
   "hermes_cli/service_manager.py": 16,
-  "hermes_cli/session_export.py": 21,
+  "hermes_cli/session_export.py": 11,
   "hermes_cli/session_export_html.py": 4,
   "hermes_cli/session_export_md.py": 19,
   "hermes_cli/session_filters.py": 5,
@@ -293,7 +293,7 @@
   "hermes_cli/subcommands/whatsapp.py": 1,
   "hermes_cli/suggestions_cmd.py": 3,
   "hermes_cli/telegram_managed_bot.py": 14,
-  "hermes_cli/uninstall.py": 20,
+  "hermes_cli/uninstall.py": 19,
   "hermes_cli/urllib_security.py": 5,
   "hermes_cli/web_git.py": 1,
   "hermes_cli/web_server.py": 2,
@@ -302,7 +302,7 @@
   "hermes_cli/windows_ssh_runtime.py": 26,
   "hermes_state.py": 1,
   "tools/ansi_strip.py": 1,
-  "tools/approval.py": 28,
+  "tools/approval.py": 27,
   "tools/async_delegation.py": 29,
   "tools/binary_extensions.py": 1,
   "tools/browser_camofox_state.py": 1,
@@ -331,7 +331,7 @@
   "tools/environments/daytona.py": 1,
   "tools/environments/docker.py": 25,
   "tools/environments/file_sync.py": 1,
-  "tools/environments/local.py": 35,
+  "tools/environments/local.py": 34,
   "tools/environments/managed_modal.py": 2,
   "tools/environments/modal.py": 14,
   "tools/environments/singularity.py": 1,
@@ -672,14 +672,6 @@
   },
   {
    "module": "hermes_cli/main.py",
-   "py": "_add_upstream_remote",
-   "c": "main_u_add_upstream_remote",
-   "file": "src/cli/port_main_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/main.py",
    "py": "_command_has_dedicated_mcp_startup",
    "c": "main_u_command_has_dedicated_mcp_startup",
    "file": "src/cli/port_main_wrappers.c",
@@ -763,14 +755,6 @@
    "py": "_write_lazy_refresh_incomplete_marker",
    "c": "main_u_write_lazy_refresh_incomplete_marker",
    "file": "src/cli/port_main_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/gateway.py",
-   "py": "_default_system_service_user",
-   "c": "cgw_u_default_system_service_user",
-   "file": "src/cli/port_cli_gateway_wrappers.c",
    "cat": "Bt",
    "candidates": []
   },
@@ -880,14 +864,6 @@
   },
   {
    "module": "tools/environments/local.py",
-   "py": "_path_env_key",
-   "c": "envl_u_path_env_key",
-   "file": "src/tools/port_env_local_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/local.py",
    "py": "_resolve_hermes_bin_dir",
    "c": "envl_u_resolve_hermes_bin_dir",
    "file": "src/tools/port_env_local_wrappers.c",
@@ -912,14 +888,6 @@
   },
   {
    "module": "agent/memory_manager.py",
-   "py": "_has_block_opener_suffix",
-   "c": "mm_u_has_block_opener_suffix",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
    "py": "on_memory_write",
    "c": "mm_on_memory_write",
    "file": "src/agent/port_memory_manager_wrappers.c",
@@ -935,14 +903,6 @@
    "candidates": []
   },
   {
-   "module": "tools/approval.py",
-   "py": "_read_tool_exec_flag",
-   "c": "appr_u_read_tool_exec_flag",
-   "file": "src/tools/port_approval_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
    "module": "hermes_cli/windows_ssh_runtime.py",
    "py": "_log_path",
    "c": "wssr_u_log_path",
@@ -951,34 +911,10 @@
    "candidates": []
   },
   {
-   "module": "hermes_cli/managed_uv.py",
-   "py": "rebuild_venv",
-   "c": "muv_rebuild_venv",
-   "file": "src/cli/port_managed_uv_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
    "module": "tools/skill_manager_tool.py",
    "py": "_background_review_read_before_write_guard",
    "c": "smt_u_background_review_read_before_write_guard",
    "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export.py",
-   "py": "_render_markdown",
-   "c": "sexp_u_render_markdown",
-   "file": "src/cli/port_session_export_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/uninstall.py",
-   "py": "_hermes_path_markers",
-   "c": "uninst_u_hermes_path_markers",
-   "file": "src/cli/port_uninstall_wrappers.c",
    "cat": "Bt",
    "candidates": []
   },
@@ -4455,54 +4391,6 @@
    "candidates": []
   },
   {
-   "module": "agent/memory_manager.py",
-   "py": "_forget_background_future",
-   "c": "mm_u_forget_background_future",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "_get_sync_executor",
-   "c": "mm_u_get_sync_executor",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "_provider_memory_write_metadata_mode",
-   "c": "mm_u_provider_memory_write_metadata_mode",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "get_all_tool_names",
-   "c": "mm_get_all_tool_names",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "get_all_tool_schemas",
-   "c": "mm_get_all_tool_schemas",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "notify_memory_tool_write",
-   "c": "mm_notify_memory_tool_write",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
    "module": "agent/moa_loop.py",
    "py": "_preset_temperature",
    "c": "moa_u_preset_temperature",
@@ -4683,6 +4571,54 @@
    "py": "set_tokens",
    "c": "mcpo_set_tokens",
    "file": "src/tools/port_mcp_oauth_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "_forget_background_future",
+   "c": "mm_u_forget_background_future",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "_get_sync_executor",
+   "c": "mm_u_get_sync_executor",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "_provider_memory_write_metadata_mode",
+   "c": "mm_u_provider_memory_write_metadata_mode",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "get_all_tool_names",
+   "c": "mm_get_all_tool_names",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "get_all_tool_schemas",
+   "c": "mm_get_all_tool_schemas",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "notify_memory_tool_write",
+   "c": "mm_notify_memory_tool_write",
+   "file": "src/agent/port_memory_manager_wrappers.c",
    "cat": "Bx",
    "candidates": []
   },
@@ -4943,38 +4879,6 @@
    "candidates": []
   },
   {
-   "module": "hermes_cli/managed_uv.py",
-   "py": "_ensure_uv_path",
-   "c": "muv_u_ensure_uv_path",
-   "file": "src/cli/port_managed_uv_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/managed_uv.py",
-   "py": "_make_world_traversable",
-   "c": "muv_u_make_world_traversable",
-   "file": "src/cli/port_managed_uv_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/managed_uv.py",
-   "py": "_rename_with_retry",
-   "c": "muv_u_rename_with_retry",
-   "file": "src/cli/port_managed_uv_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/managed_uv.py",
-   "py": "managed_uv_path",
-   "c": "muv_managed_uv_path",
-   "file": "src/cli/port_managed_uv_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
    "module": "tools/environments/docker.py",
    "py": "_build_init_env_args",
    "c": "envd_u_build_init_env_args",
@@ -5035,6 +4939,38 @@
    "py": "_sanitize_label_value",
    "c": "envd_u_sanitize_label_value",
    "file": "src/tools/port_env_docker_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/managed_uv.py",
+   "py": "_ensure_uv_path",
+   "c": "muv_u_ensure_uv_path",
+   "file": "src/cli/port_managed_uv_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/managed_uv.py",
+   "py": "_make_world_traversable",
+   "c": "muv_u_make_world_traversable",
+   "file": "src/cli/port_managed_uv_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/managed_uv.py",
+   "py": "_rename_with_retry",
+   "c": "muv_u_rename_with_retry",
+   "file": "src/cli/port_managed_uv_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/managed_uv.py",
+   "py": "managed_uv_path",
+   "c": "muv_managed_uv_path",
+   "file": "src/cli/port_managed_uv_wrappers.c",
    "cat": "Bx",
    "candidates": []
   },
@@ -5423,102 +5359,6 @@
    "candidates": []
   },
   {
-   "module": "hermes_cli/session_export.py",
-   "py": "_render_full_markdown",
-   "c": "sexp_u_render_full_markdown",
-   "file": "src/cli/port_session_export_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export.py",
-   "py": "_render_jsonl",
-   "c": "sexp_u_render_jsonl",
-   "file": "src/cli/port_session_export_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export.py",
-   "py": "_render_user_prompts_markdown",
-   "c": "sexp_u_render_user_prompts_markdown",
-   "file": "src/cli/port_session_export_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export.py",
-   "py": "_session_title_or_id",
-   "c": "sexp_u_session_title_or_id",
-   "file": "src/cli/port_session_export_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export.py",
-   "py": "export_record_count",
-   "c": "sexp_export_record_count",
-   "file": "src/cli/port_session_export_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export.py",
-   "py": "normalize_export_format",
-   "c": "sexp_normalize_export_format",
-   "file": "src/cli/port_session_export_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export.py",
-   "py": "render_sessions_export",
-   "c": "sexp_render_sessions_export",
-   "file": "src/cli/port_session_export_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/uninstall.py",
-   "py": "_discover_named_profiles",
-   "c": "uninst_u_discover_named_profiles",
-   "file": "src/cli/port_uninstall_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/uninstall.py",
-   "py": "_is_default_hermes_home",
-   "c": "uninst_u_is_default_hermes_home",
-   "file": "src/cli/port_uninstall_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/uninstall.py",
-   "py": "_print_uninstall_dry_run",
-   "c": "uninst_u_print_uninstall_dry_run",
-   "file": "src/cli/port_uninstall_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/uninstall.py",
-   "py": "remove_path_from_shell_configs",
-   "c": "uninst_remove_path_from_shell_configs",
-   "file": "src/cli/port_uninstall_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/uninstall.py",
-   "py": "remove_path_from_windows_registry",
-   "c": "uninst_remove_path_from_windows_registry",
-   "file": "src/cli/port_uninstall_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
    "module": "tools/computer_use/tool.py",
    "py": "_element_to_dict",
    "c": "tools_computer_use_tool_u_element_to_dict",
@@ -5859,6 +5699,46 @@
    "py": "write_session_markdown",
    "c": "sexmd_write_session_markdown",
    "file": "src/cli/port_session_export_md_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "_discover_named_profiles",
+   "c": "uninst_u_discover_named_profiles",
+   "file": "src/cli/port_uninstall_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "_is_default_hermes_home",
+   "c": "uninst_u_is_default_hermes_home",
+   "file": "src/cli/port_uninstall_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "_print_uninstall_dry_run",
+   "c": "uninst_u_print_uninstall_dry_run",
+   "file": "src/cli/port_uninstall_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "remove_path_from_shell_configs",
+   "c": "uninst_remove_path_from_shell_configs",
+   "file": "src/cli/port_uninstall_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "remove_path_from_windows_registry",
+   "c": "uninst_remove_path_from_windows_registry",
+   "file": "src/cli/port_uninstall_wrappers.c",
    "cat": "Bx",
    "candidates": []
   },
@@ -7915,6 +7795,38 @@
    "py": "_get_middleware_callbacks",
    "c": "hermes_cli_middleware_u_get_middleware_callbacks",
    "file": "src/cli/port_cli_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/session_export.py",
+   "py": "_render_jsonl",
+   "c": "sexp_u_render_jsonl",
+   "file": "src/cli/port_session_export_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/session_export.py",
+   "py": "export_record_count",
+   "c": "sexp_export_record_count",
+   "file": "src/cli/port_session_export_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/session_export.py",
+   "py": "normalize_export_format",
+   "c": "sexp_normalize_export_format",
+   "file": "src/cli/port_session_export_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/session_export.py",
+   "py": "render_sessions_export",
+   "c": "sexp_render_sessions_export",
+   "file": "src/cli/port_session_export_wrappers.c",
    "cat": "Bx",
    "candidates": []
   },
@@ -15327,190 +15239,6 @@
    "candidates": []
   },
   {
-   "module": "agent/memory_manager.py",
-   "py": "_append_visible",
-   "c": "mm_u_append_visible",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "_drain_sync_executor",
-   "c": "mm_u_drain_sync_executor",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "_find_boundary_open_tag",
-   "c": "mm_u_find_boundary_open_tag",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "_max_pending_open_suffix",
-   "c": "mm_u_max_pending_open_suffix",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "_memory_tool_result_succeeded",
-   "c": "mm_u_memory_tool_result_succeeded",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "_prefetch_provider",
-   "c": "mm_u_prefetch_provider",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "_provider_sync_accepts_messages",
-   "c": "mm_u_provider_sync_accepts_messages",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "_submit_background",
-   "c": "mm_u_submit_background",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "_update_block_boundary",
-   "c": "mm_u_update_block_boundary",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "add_provider",
-   "c": "mm_add_provider",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "commit_session_boundary_async",
-   "c": "mm_commit_session_boundary_async",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "flush_pending",
-   "c": "mm_flush_pending",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "initialize_all",
-   "c": "mm_initialize_all",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "inject_memory_provider_tools",
-   "c": "mm_inject_memory_provider_tools",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "memory_provider_tools_enabled",
-   "c": "mm_memory_provider_tools_enabled",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "on_pre_compress",
-   "c": "mm_on_pre_compress",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "on_session_switch",
-   "c": "mm_on_session_switch",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "on_turn_start",
-   "c": "mm_on_turn_start",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "prefetch_all",
-   "c": "mm_prefetch_all",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "providers",
-   "c": "agent_pet_generate_imagegen_list_sprite_providers",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "queue_prefetch_all",
-   "c": "mm_queue_prefetch_all",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "shutdown_drain_state",
-   "c": "mm_shutdown_drain_state",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/memory_manager.py",
-   "py": "sync_all",
-   "c": "mm_sync_all",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
    "module": "agent/moa_loop.py",
    "py": "_aggregator_reasoning_config",
    "c": "moa_u_aggregator_reasoning_config",
@@ -15819,6 +15547,190 @@
    "py": "suppress_interactive_oauth",
    "c": "mcpo_suppress_interactive_oauth",
    "file": "src/tools/port_mcp_oauth_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "_append_visible",
+   "c": "mm_u_append_visible",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "_drain_sync_executor",
+   "c": "mm_u_drain_sync_executor",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "_find_boundary_open_tag",
+   "c": "mm_u_find_boundary_open_tag",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "_max_pending_open_suffix",
+   "c": "mm_u_max_pending_open_suffix",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "_memory_tool_result_succeeded",
+   "c": "mm_u_memory_tool_result_succeeded",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "_prefetch_provider",
+   "c": "mm_u_prefetch_provider",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "_provider_sync_accepts_messages",
+   "c": "mm_u_provider_sync_accepts_messages",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "_submit_background",
+   "c": "mm_u_submit_background",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "_update_block_boundary",
+   "c": "mm_u_update_block_boundary",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "add_provider",
+   "c": "mm_add_provider",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "commit_session_boundary_async",
+   "c": "mm_commit_session_boundary_async",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "flush_pending",
+   "c": "mm_flush_pending",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "initialize_all",
+   "c": "mm_initialize_all",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "inject_memory_provider_tools",
+   "c": "mm_inject_memory_provider_tools",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "memory_provider_tools_enabled",
+   "c": "mm_memory_provider_tools_enabled",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "on_pre_compress",
+   "c": "mm_on_pre_compress",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "on_session_switch",
+   "c": "mm_on_session_switch",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "on_turn_start",
+   "c": "mm_on_turn_start",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "prefetch_all",
+   "c": "mm_prefetch_all",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "providers",
+   "c": "agent_pet_generate_imagegen_list_sprite_providers",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "queue_prefetch_all",
+   "c": "mm_queue_prefetch_all",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "shutdown_drain_state",
+   "c": "mm_shutdown_drain_state",
+   "file": "src/agent/port_memory_manager_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/memory_manager.py",
+   "py": "sync_all",
+   "c": "mm_sync_all",
+   "file": "src/agent/port_memory_manager_wrappers.c",
    "cat": "C",
    "candidates": []
   },
@@ -16615,6 +16527,134 @@
    "candidates": []
   },
   {
+   "module": "tools/environments/docker.py",
+   "py": "_cgroup_limits_available",
+   "c": "envd_u_cgroup_limits_available",
+   "file": "src/tools/port_env_docker_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/docker.py",
+   "py": "_container_finished_at",
+   "c": "envd_u_container_finished_at",
+   "file": "src/tools/port_env_docker_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/docker.py",
+   "py": "_container_network_mode",
+   "c": "envd_u_container_network_mode",
+   "file": "src/tools/port_env_docker_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/docker.py",
+   "py": "_egress_enforce_on_docker",
+   "c": "envd_u_egress_enforce_on_docker",
+   "file": "src/tools/port_env_docker_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/docker.py",
+   "py": "_egress_proxy_args_for_docker",
+   "c": "envd_u_egress_proxy_args_for_docker",
+   "file": "src/tools/port_env_docker_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/docker.py",
+   "py": "_ensure_docker_available",
+   "c": "envd_u_ensure_docker_available",
+   "file": "src/tools/port_env_docker_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/docker.py",
+   "py": "_extra_args_egress_collisions",
+   "c": "envd_u_extra_args_egress_collisions",
+   "file": "src/tools/port_env_docker_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/docker.py",
+   "py": "_find_reusable_container",
+   "c": "envd_u_find_reusable_container",
+   "file": "src/tools/port_env_docker_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/docker.py",
+   "py": "_image_uses_init_entrypoint",
+   "c": "envd_u_image_uses_init_entrypoint",
+   "file": "src/tools/port_env_docker_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/docker.py",
+   "py": "_load_hermes_env_vars",
+   "c": "envd_u_load_hermes_env_vars",
+   "file": "src/tools/port_env_docker_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/docker.py",
+   "py": "_normalize_env_dict",
+   "c": "envd_u_normalize_env_dict",
+   "file": "src/tools/port_env_docker_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/docker.py",
+   "py": "_recreate_container",
+   "c": "envd_u_recreate_container",
+   "file": "src/tools/port_env_docker_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/docker.py",
+   "py": "_storage_opt_supported",
+   "c": "envd_u_storage_opt_supported",
+   "file": "src/tools/port_env_docker_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/docker.py",
+   "py": "find_docker",
+   "c": "envd_find_docker",
+   "file": "src/tools/port_env_docker_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/docker.py",
+   "py": "reap_orphan_containers",
+   "c": "envd_reap_orphan_containers",
+   "file": "src/tools/port_env_docker_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/docker.py",
+   "py": "wait_for_cleanup",
+   "c": "envd_wait_for_cleanup",
+   "file": "src/tools/port_env_docker_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
    "module": "hermes_cli/managed_uv.py",
    "py": "__iter__",
    "c": "muv_u__iter__",
@@ -16771,134 +16811,6 @@
    "py": "repaired",
    "c": "muv_repaired",
    "file": "src/cli/port_managed_uv_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/docker.py",
-   "py": "_cgroup_limits_available",
-   "c": "envd_u_cgroup_limits_available",
-   "file": "src/tools/port_env_docker_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/docker.py",
-   "py": "_container_finished_at",
-   "c": "envd_u_container_finished_at",
-   "file": "src/tools/port_env_docker_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/docker.py",
-   "py": "_container_network_mode",
-   "c": "envd_u_container_network_mode",
-   "file": "src/tools/port_env_docker_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/docker.py",
-   "py": "_egress_enforce_on_docker",
-   "c": "envd_u_egress_enforce_on_docker",
-   "file": "src/tools/port_env_docker_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/docker.py",
-   "py": "_egress_proxy_args_for_docker",
-   "c": "envd_u_egress_proxy_args_for_docker",
-   "file": "src/tools/port_env_docker_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/docker.py",
-   "py": "_ensure_docker_available",
-   "c": "envd_u_ensure_docker_available",
-   "file": "src/tools/port_env_docker_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/docker.py",
-   "py": "_extra_args_egress_collisions",
-   "c": "envd_u_extra_args_egress_collisions",
-   "file": "src/tools/port_env_docker_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/docker.py",
-   "py": "_find_reusable_container",
-   "c": "envd_u_find_reusable_container",
-   "file": "src/tools/port_env_docker_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/docker.py",
-   "py": "_image_uses_init_entrypoint",
-   "c": "envd_u_image_uses_init_entrypoint",
-   "file": "src/tools/port_env_docker_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/docker.py",
-   "py": "_load_hermes_env_vars",
-   "c": "envd_u_load_hermes_env_vars",
-   "file": "src/tools/port_env_docker_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/docker.py",
-   "py": "_normalize_env_dict",
-   "c": "envd_u_normalize_env_dict",
-   "file": "src/tools/port_env_docker_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/docker.py",
-   "py": "_recreate_container",
-   "c": "envd_u_recreate_container",
-   "file": "src/tools/port_env_docker_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/docker.py",
-   "py": "_storage_opt_supported",
-   "c": "envd_u_storage_opt_supported",
-   "file": "src/tools/port_env_docker_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/docker.py",
-   "py": "find_docker",
-   "c": "envd_find_docker",
-   "file": "src/tools/port_env_docker_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/docker.py",
-   "py": "reap_orphan_containers",
-   "c": "envd_reap_orphan_containers",
-   "file": "src/tools/port_env_docker_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/docker.py",
-   "py": "wait_for_cleanup",
-   "c": "envd_wait_for_cleanup",
-   "file": "src/tools/port_env_docker_wrappers.c",
    "cat": "C",
    "candidates": []
   },
@@ -17599,222 +17511,6 @@
    "candidates": []
   },
   {
-   "module": "hermes_cli/session_export.py",
-   "py": "_append_prompt_records",
-   "c": "sexp_u_append_prompt_records",
-   "file": "src/cli/port_session_export_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export.py",
-   "py": "_append_session_messages",
-   "c": "sexp_u_append_session_messages",
-   "file": "src/cli/port_session_export_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export.py",
-   "py": "_content_part_text",
-   "c": "sexp_u_content_part_text",
-   "file": "src/cli/port_session_export_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export.py",
-   "py": "_fenced_text",
-   "c": "sexp_u_fenced_text",
-   "file": "src/cli/port_session_export_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export.py",
-   "py": "_finish_markdown",
-   "c": "sexp_u_finish_markdown",
-   "file": "src/cli/port_session_export_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export.py",
-   "py": "_heading_text",
-   "c": "sexp_u_heading_text",
-   "file": "src/cli/port_session_export_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export.py",
-   "py": "_inline_text",
-   "c": "sexp_u_inline_text",
-   "file": "src/cli/port_session_export_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export.py",
-   "py": "_message_text",
-   "c": "sexp_u_message_text",
-   "file": "src/cli/port_session_export_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export.py",
-   "py": "_messages",
-   "c": "sexp_u_messages",
-   "file": "src/cli/port_session_export_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export.py",
-   "py": "_session_id",
-   "c": "sexp_u_session_id",
-   "file": "src/cli/port_session_export_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export.py",
-   "py": "_session_metadata_lines",
-   "c": "sexp_u_session_metadata_lines",
-   "file": "src/cli/port_session_export_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export.py",
-   "py": "iter_user_prompt_records",
-   "c": "sexp_iter_user_prompt_records",
-   "file": "src/cli/port_session_export_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export.py",
-   "py": "normalize_export_only",
-   "c": "sexp_normalize_export_only",
-   "file": "src/cli/port_session_export_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/uninstall.py",
-   "py": "_node_symlink_candidate_dirs",
-   "c": "uninst_u_node_symlink_candidate_dirs",
-   "file": "src/cli/port_uninstall_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/uninstall.py",
-   "py": "_perform_uninstall",
-   "c": "uninst_u_perform_uninstall",
-   "file": "src/cli/port_uninstall_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/uninstall.py",
-   "py": "_uninstall_profile",
-   "c": "uninst_u_uninstall_profile",
-   "file": "src/cli/port_uninstall_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/uninstall.py",
-   "py": "find_shell_configs",
-   "c": "uninst_find_shell_configs",
-   "file": "src/cli/port_uninstall_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/uninstall.py",
-   "py": "log_info",
-   "c": "uninst_log_info",
-   "file": "src/cli/port_uninstall_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/uninstall.py",
-   "py": "log_success",
-   "c": "uninst_log_success",
-   "file": "src/cli/port_uninstall_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/uninstall.py",
-   "py": "log_warn",
-   "c": "uninst_log_warn",
-   "file": "src/cli/port_uninstall_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/uninstall.py",
-   "py": "remove_hermes_env_vars_windows",
-   "c": "uninst_remove_hermes_env_vars_windows",
-   "file": "src/cli/port_uninstall_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/uninstall.py",
-   "py": "remove_node_symlinks",
-   "c": "uninst_remove_node_symlinks",
-   "file": "src/cli/port_uninstall_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/uninstall.py",
-   "py": "remove_portable_tooling_windows",
-   "c": "uninst_remove_portable_tooling_windows",
-   "file": "src/cli/port_uninstall_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/uninstall.py",
-   "py": "remove_wrapper_script",
-   "c": "uninst_remove_wrapper_script",
-   "file": "src/cli/port_uninstall_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/uninstall.py",
-   "py": "run_gui_uninstall",
-   "c": "uninst_run_gui_uninstall",
-   "file": "src/cli/port_uninstall_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/uninstall.py",
-   "py": "run_uninstall",
-   "c": "uninst_run_uninstall",
-   "file": "src/cli/port_uninstall_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/uninstall.py",
-   "py": "uninstall_gateway_service",
-   "c": "uninst_uninstall_gateway_service",
-   "file": "src/cli/port_uninstall_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
    "module": "tools/computer_use/tool.py",
    "py": "_canon_key_combo",
    "c": "tools_computer_use_tool_u_canon_key_combo",
@@ -18355,6 +18051,118 @@
    "py": "verify_export_file",
    "c": "sexmd_verify_export_file",
    "file": "src/cli/port_session_export_md_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "_node_symlink_candidate_dirs",
+   "c": "uninst_u_node_symlink_candidate_dirs",
+   "file": "src/cli/port_uninstall_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "_perform_uninstall",
+   "c": "uninst_u_perform_uninstall",
+   "file": "src/cli/port_uninstall_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "_uninstall_profile",
+   "c": "uninst_u_uninstall_profile",
+   "file": "src/cli/port_uninstall_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "find_shell_configs",
+   "c": "uninst_find_shell_configs",
+   "file": "src/cli/port_uninstall_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "log_info",
+   "c": "uninst_log_info",
+   "file": "src/cli/port_uninstall_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "log_success",
+   "c": "uninst_log_success",
+   "file": "src/cli/port_uninstall_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "log_warn",
+   "c": "uninst_log_warn",
+   "file": "src/cli/port_uninstall_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "remove_hermes_env_vars_windows",
+   "c": "uninst_remove_hermes_env_vars_windows",
+   "file": "src/cli/port_uninstall_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "remove_node_symlinks",
+   "c": "uninst_remove_node_symlinks",
+   "file": "src/cli/port_uninstall_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "remove_portable_tooling_windows",
+   "c": "uninst_remove_portable_tooling_windows",
+   "file": "src/cli/port_uninstall_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "remove_wrapper_script",
+   "c": "uninst_remove_wrapper_script",
+   "file": "src/cli/port_uninstall_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "run_gui_uninstall",
+   "c": "uninst_run_gui_uninstall",
+   "file": "src/cli/port_uninstall_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "run_uninstall",
+   "c": "uninst_run_uninstall",
+   "file": "src/cli/port_uninstall_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "uninstall_gateway_service",
+   "c": "uninst_uninstall_gateway_service",
+   "file": "src/cli/port_uninstall_wrappers.c",
    "cat": "C",
    "candidates": []
   },
@@ -21731,6 +21539,62 @@
    "py": "run_tool_execution_middleware",
    "c": "hermes_cli_middleware_run_tool_execution_middleware",
    "file": "src/cli/port_cli_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/session_export.py",
+   "py": "_append_prompt_records",
+   "c": "sexp_u_append_prompt_records",
+   "file": "src/cli/port_session_export_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/session_export.py",
+   "py": "_content_part_text",
+   "c": "sexp_u_content_part_text",
+   "file": "src/cli/port_session_export_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/session_export.py",
+   "py": "_finish_markdown",
+   "c": "sexp_u_finish_markdown",
+   "file": "src/cli/port_session_export_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/session_export.py",
+   "py": "_message_text",
+   "c": "sexp_u_message_text",
+   "file": "src/cli/port_session_export_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/session_export.py",
+   "py": "_messages",
+   "c": "sexp_u_messages",
+   "file": "src/cli/port_session_export_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/session_export.py",
+   "py": "iter_user_prompt_records",
+   "c": "sexp_iter_user_prompt_records",
+   "file": "src/cli/port_session_export_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/session_export.py",
+   "py": "normalize_export_only",
+   "c": "sexp_normalize_export_only",
+   "file": "src/cli/port_session_export_wrappers.c",
    "cat": "C",
    "candidates": []
   },

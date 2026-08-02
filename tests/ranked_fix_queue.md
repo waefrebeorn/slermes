@@ -1,9 +1,9 @@
-# Ranked fix queue — 3195 bootleg functions
+# Ranked fix queue — 3178 bootleg functions
 
 - A  (delegate to real fn): 30
-- Bt (trivial direct-port): 157
-- Bx (direct but needs deps): 1055
-- C  (deep subsystem):        1953
+- Bt (trivial direct-port): 149
+- Bx (direct but needs deps): 1052
+- C  (deep subsystem):        1947
 
 ## Top of queue (automatable first)
 
@@ -37,7 +37,6 @@
 - [A] tools/environments/singularity.py :: cleanup -> tt_u_atexit_cleanup
 - [A] tools/environments/ssh.py :: cleanup -> tt_u_atexit_cleanup
 - [A] tools/slash_confirm.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
-- [Bt] hermes_cli/main.py :: _add_upstream_remote -> main_u_add_upstream_remote
 - [Bt] hermes_cli/main.py :: _command_has_dedicated_mcp_startup -> main_u_command_has_dedicated_mcp_startup
 - [Bt] hermes_cli/main.py :: _count_commits_between -> main_u_count_commits_between
 - [Bt] hermes_cli/main.py :: _has_upstream_remote -> main_u_has_upstream_remote
@@ -49,7 +48,6 @@
 - [Bt] hermes_cli/main.py :: _resolve_update_branch -> main_u_resolve_update_branch
 - [Bt] hermes_cli/main.py :: _sync_fork_with_upstream -> main_u_sync_fork_with_upstream
 - [Bt] hermes_cli/main.py :: _write_lazy_refresh_incomplete_marker -> main_u_write_lazy_refresh_incomplete_marker
-- [Bt] hermes_cli/gateway.py :: _default_system_service_user -> cgw_u_default_system_service_user
 - [Bt] hermes_cli/gateway.py :: _launchctl_bootstrap -> cgw_u_launchctl_bootstrap
 - [Bt] hermes_cli/gateway.py :: _launchctl_label_registered -> cgw_u_launchctl_label_registered
 - [Bt] hermes_cli/gateway.py :: _maybe_redirect_run_to_s6_supervision -> cgw_u_maybe_redirect_run_to_s6_supervision
@@ -63,19 +61,13 @@
 - [Bt] hermes_cli/gateway.py :: has_legacy_hermes_units -> cgw_has_legacy_hermes_units
 - [Bt] hermes_cli/gateway.py :: has_process_service_mismatch -> cgw_has_process_service_mismatch
 - [Bt] hermes_cli/gateway.py :: print_systemd_linger_guidance -> cgw_print_systemd_linger_guidance
-- [Bt] tools/environments/local.py :: _path_env_key -> envl_u_path_env_key
 - [Bt] tools/environments/local.py :: _resolve_hermes_bin_dir -> envl_u_resolve_hermes_bin_dir
 - [Bt] gateway/platforms/weixin.py :: _get_config -> wx_u_get_config
 - [Bt] gateway/platforms/weixin.py :: _get_upload_url -> wx_u_get_upload_url
-- [Bt] agent/memory_manager.py :: _has_block_opener_suffix -> mm_u_has_block_opener_suffix
 - [Bt] agent/memory_manager.py :: on_memory_write -> mm_on_memory_write
 - [Bt] tools/environments/base.py :: set_activity_callback -> envb_set_activity_callback
-- [Bt] tools/approval.py :: _read_tool_exec_flag -> appr_u_read_tool_exec_flag
 - [Bt] hermes_cli/windows_ssh_runtime.py :: _log_path -> wssr_u_log_path
-- [Bt] hermes_cli/managed_uv.py :: rebuild_venv -> muv_rebuild_venv
 - [Bt] tools/skill_manager_tool.py :: _background_review_read_before_write_guard -> smt_u_background_review_read_before_write_guard
-- [Bt] hermes_cli/session_export.py :: _render_markdown -> sexp_u_render_markdown
-- [Bt] hermes_cli/uninstall.py :: _hermes_path_markers -> uninst_u_hermes_path_markers
 - [Bt] hermes_cli/model_switch.py :: _check_hermes_model_warning -> msw_u_check_hermes_model_warning
 - [Bt] hermes_cli/model_switch.py :: format_model_for_display -> msw_format_model_for_display
 - [Bt] hermes_cli/session_export_md.py :: _render_content -> sexmd_u_render_content
@@ -207,3 +199,11 @@
 - [Bx] hermes_cli/main.py :: _detect_concurrent_hermes_instances -> main_u_detect_concurrent_hermes_instances
 - [Bx] hermes_cli/main.py :: _detect_venv_python_processes -> main_u_detect_venv_python_processes
 - [Bx] hermes_cli/main.py :: _do_build_web_ui -> main_u_do_build_web_ui
+- [Bx] hermes_cli/main.py :: _ensure_fhs_path_guard -> main_u_ensure_fhs_path_guard
+- [Bx] hermes_cli/main.py :: _format_aux_current -> main_u_format_aux_current
+- [Bx] hermes_cli/main.py :: _format_concurrent_instances_message -> main_u_format_concurrent_instances_message
+- [Bx] hermes_cli/main.py :: _format_venv_python_holders_message -> main_u_format_venv_python_holders_message
+- [Bx] hermes_cli/main.py :: _invalidate_update_cache -> main_u_invalidate_update_cache
+- [Bx] hermes_cli/main.py :: _is_profile_api_key_provider -> main_u_is_profile_api_key_provider
+- [Bx] hermes_cli/main.py :: _iter_tui_build_inputs -> main_u_iter_tui_build_inputs
+- [Bx] hermes_cli/main.py :: _load_console_script_names -> main_u_load_console_script_names
