@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T18:26:41Z",
+  "generated_at": "2026-08-02T18:29:12Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -309540,10 +309540,10 @@
     },
     "tools/mcp_tool.py": {
       "total": 132,
-      "ported": 104,
+      "ported": 131,
       "partial": 1,
       "stub": 0,
-      "real_gaps": 27,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 132,
@@ -310342,17 +310342,24 @@
             "decorators": [],
             "line_number": 1270
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_server_task_init",
+          "pop_annotation": {
+            "c_function": "mct_server_task_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 25,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/mcp_tool.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -310364,17 +310371,24 @@
             "decorators": [],
             "line_number": 1293
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_check_rate_limit",
+          "pop_annotation": {
+            "c_function": "mct_check_rate_limit",
+            "python_functions": [
+              "_check_rate_limit"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _check_rate_limit @ tools/mcp_tool.py:_check_rate_limit */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -310386,17 +310400,24 @@
             "decorators": [],
             "line_number": 1305
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_resolve_model",
+          "pop_annotation": {
+            "c_function": "mct_resolve_model",
+            "python_functions": [
+              "_resolve_model"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 42,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_model @ tools/mcp_tool.py:_resolve_model */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -310636,17 +310657,24 @@
             "decorators": [],
             "line_number": 1677
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_server_task_init",
+          "pop_annotation": {
+            "c_function": "mct_server_task_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 25,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/mcp_tool.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -310716,17 +310744,24 @@
             "decorators": [],
             "line_number": 1837
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_server_task_init",
+          "pop_annotation": {
+            "c_function": "mct_server_task_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 25,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/mcp_tool.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -310999,17 +311034,24 @@
             "decorators": [],
             "line_number": 1990
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_schedule_tools_refresh",
+          "pop_annotation": {
+            "c_function": "mct_schedule_tools_refresh",
+            "python_functions": [
+              "_schedule_tools_refresh"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 50,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _schedule_tools_refresh @ tools/mcp_tool.py:_schedule_tools_refresh */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -311166,17 +311208,24 @@
             "decorators": [],
             "line_number": 2203
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_wait_for_lifecycle_event",
+          "pop_annotation": {
+            "c_function": "mct_wait_for_lifecycle_event",
+            "python_functions": [
+              "_wait_for_lifecycle_event"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 57,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _wait_for_lifecycle_event @ tools/mcp_tool.py:_wait_for_lifecycle_event */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -311188,17 +311237,24 @@
             "decorators": [],
             "line_number": 2308
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_wait_for_reconnect_or_shutdown",
+          "pop_annotation": {
+            "c_function": "mct_wait_for_reconnect_or_shutdown",
+            "python_functions": [
+              "_wait_for_reconnect_or_shutdown"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 64,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _wait_for_reconnect_or_shutdown @ tools/mcp_tool.py:_wait_for_reconnect_or_shutdown */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -311210,17 +311266,24 @@
             "decorators": [],
             "line_number": 2351
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_run_stdio",
+          "pop_annotation": {
+            "c_function": "mct_run_stdio",
+            "python_functions": [
+              "_run_stdio"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 70,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _run_stdio @ tools/mcp_tool.py:_run_stdio */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -311290,17 +311353,24 @@
             "decorators": [],
             "line_number": 2726
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_run_http",
+          "pop_annotation": {
+            "c_function": "mct_run_http",
+            "python_functions": [
+              "_run_http"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 78,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _run_http @ tools/mcp_tool.py:_run_http */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -311370,17 +311440,24 @@
             "decorators": [],
             "line_number": 3017
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_run",
+          "pop_annotation": {
+            "c_function": "mct_run",
+            "python_functions": [
+              "run"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 85,
+            "is_consolidated": false,
+            "full_text": "/* PoP: run @ tools/mcp_tool.py:run */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -311392,17 +311469,24 @@
             "decorators": [],
             "line_number": 3409
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_start",
+          "pop_annotation": {
+            "c_function": "mct_start",
+            "python_functions": [
+              "start"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 93,
+            "is_consolidated": false,
+            "full_text": "/* PoP: start @ tools/mcp_tool.py:start */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -311414,17 +311498,24 @@
             "decorators": [],
             "line_number": 3428
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_shutdown",
+          "pop_annotation": {
+            "c_function": "mct_shutdown",
+            "python_functions": [
+              "shutdown"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 100,
+            "is_consolidated": false,
+            "full_text": "/* PoP: shutdown @ tools/mcp_tool.py:shutdown */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -311755,17 +311846,24 @@
             "decorators": [],
             "line_number": 3728
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_get_auth_error_types",
+          "pop_annotation": {
+            "c_function": "mct_get_auth_error_types",
+            "python_functions": [
+              "_get_auth_error_types"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 107,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_auth_error_types @ tools/mcp_tool.py:_get_auth_error_types */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -311777,17 +311875,24 @@
             "decorators": [],
             "line_number": 3770
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_is_auth_error",
+          "pop_annotation": {
+            "c_function": "mct_is_auth_error",
+            "python_functions": [
+              "_is_auth_error"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 113,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_auth_error @ tools/mcp_tool.py:_is_auth_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -311857,17 +311962,24 @@
             "decorators": [],
             "line_number": 3997
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_handle_session_expired_and_retry",
+          "pop_annotation": {
+            "c_function": "mct_handle_session_expired_and_retry",
+            "python_functions": [
+              "_handle_session_expired_and_retry"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 125,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _handle_session_expired_and_retry @ tools/mcp_tool.py:_handle_session_expired_and_retry */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -311879,17 +311991,24 @@
             "decorators": [],
             "line_number": 4126
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_snapshot_child_pids",
+          "pop_annotation": {
+            "c_function": "mct_snapshot_child_pids",
+            "python_functions": [
+              "_snapshot_child_pids"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 133,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _snapshot_child_pids @ tools/mcp_tool.py:_snapshot_child_pids */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -311959,17 +312078,24 @@
             "decorators": [],
             "line_number": 4217
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_ensure_mcp_loop",
+          "pop_annotation": {
+            "c_function": "mct_ensure_mcp_loop",
+            "python_functions": [
+              "_ensure_mcp_loop"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 140,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ensure_mcp_loop @ tools/mcp_tool.py:_ensure_mcp_loop */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -312039,17 +312165,24 @@
             "decorators": [],
             "line_number": 4285
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_run_on_mcp_loop",
+          "pop_annotation": {
+            "c_function": "mct_run_on_mcp_loop",
+            "python_functions": [
+              "_run_on_mcp_loop"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 147,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _run_on_mcp_loop @ tools/mcp_tool.py:_run_on_mcp_loop */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -312438,17 +312571,24 @@
             "decorators": [],
             "line_number": 5028
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_make_check_fn",
+          "pop_annotation": {
+            "c_function": "mct_make_check_fn",
+            "python_functions": [
+              "_make_check_fn"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 155,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _make_check_fn @ tools/mcp_tool.py:_make_check_fn */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -312576,17 +312716,24 @@
             "decorators": [],
             "line_number": 5237
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_build_utility_schemas",
+          "pop_annotation": {
+            "c_function": "mct_build_utility_schemas",
+            "python_functions": [
+              "_build_utility_schemas"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 163,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _build_utility_schemas @ tools/mcp_tool.py:_build_utility_schemas */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -312772,17 +312919,24 @@
             "decorators": [],
             "line_number": 5453
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_existing_tool_names",
+          "pop_annotation": {
+            "c_function": "mct_existing_tool_names",
+            "python_functions": [
+              "_existing_tool_names"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 170,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _existing_tool_names @ tools/mcp_tool.py:_existing_tool_names */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -312997,17 +313151,24 @@
             "decorators": [],
             "line_number": 5962
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_has_registered_mcp_tools",
+          "pop_annotation": {
+            "c_function": "mct_has_registered_mcp_tools",
+            "python_functions": [
+              "has_registered_mcp_tools"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 177,
+            "is_consolidated": false,
+            "full_text": "/* PoP: has_registered_mcp_tools @ tools/mcp_tool.py:has_registered_mcp_tools */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -313077,17 +313238,24 @@
             "decorators": [],
             "line_number": 6113
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_reinject_post_build_tools",
+          "pop_annotation": {
+            "c_function": "mct_reinject_post_build_tools",
+            "python_functions": [
+              "_reinject_post_build_tools"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 184,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _reinject_post_build_tools @ tools/mcp_tool.py:_reinject_post_build_tools */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -313128,17 +313296,24 @@
             "decorators": [],
             "line_number": 6249
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_kill_orphaned_mcp_children",
+          "pop_annotation": {
+            "c_function": "mct_kill_orphaned_mcp_children",
+            "python_functions": [
+              "_kill_orphaned_mcp_children"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 192,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _kill_orphaned_mcp_children @ tools/mcp_tool.py:_kill_orphaned_mcp_children */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -313150,17 +313325,24 @@
             "decorators": [],
             "line_number": 6377
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_stop_mcp_loop_if_idle",
+          "pop_annotation": {
+            "c_function": "mct_stop_mcp_loop_if_idle",
+            "python_functions": [
+              "_stop_mcp_loop_if_idle"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 199,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _stop_mcp_loop_if_idle @ tools/mcp_tool.py:_stop_mcp_loop_if_idle */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -313172,17 +313354,24 @@
             "decorators": [],
             "line_number": 6389
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_tool_remaining.c",
+          "c_function": "mct_stop_mcp_loop",
+          "pop_annotation": {
+            "c_function": "mct_stop_mcp_loop",
+            "python_functions": [
+              "_stop_mcp_loop"
+            ],
+            "c_file": "src/tools/port_mcp_tool_remaining.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 206,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _stop_mcp_loop @ tools/mcp_tool.py:_stop_mcp_loop */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },

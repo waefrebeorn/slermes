@@ -187,7 +187,7 @@ PORT_OBJ = \
         src/cli/port_hermes_cli_toolset_validation.o \
         src/tools/port_memory_tool.o \
         src/tools/port_skills_hub.o src/tools/port_skills_hub_remaining.o \
-        src/tools/port_mcp_tool.o \
+        src/tools/port_mcp_tool.o src/tools/port_mcp_tool_remaining.o \
         src/tools/port_send_message_tool.o \
         src/tools/port_tts_tool.o src/tools/port_tts_tool_remaining.o \
         src/tools/port_file_operations.o \
