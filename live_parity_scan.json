@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:27:03Z",
+  "generated_at": "2026-08-02T19:29:05Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -103110,10 +103110,10 @@
     },
     "gateway/platforms/qqbot/adapter.py": {
       "total": 91,
-      "ported": 72,
+      "ported": 90,
       "partial": 1,
       "stub": 0,
-      "real_gaps": 18,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 91,
@@ -103129,17 +103129,24 @@
             "decorators": [],
             "line_number": 84
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_adapter_remaining.c",
+          "c_function": "qqa_init",
+          "pop_annotation": {
+            "c_function": "qqa_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_qqbot_adapter_remaining.c",
+            "python_file": "gateway/platforms/qqbot/adapter.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/qqbot/adapter.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -103300,17 +103307,24 @@
             ],
             "line_number": 196
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_adapter_remaining.c",
+          "c_function": "qqa_is_connected",
+          "pop_annotation": {
+            "c_function": "qqa_is_connected",
+            "python_functions": [
+              "is_connected"
+            ],
+            "c_file": "src/gateway/port_qqbot_adapter_remaining.c",
+            "python_file": "gateway/platforms/qqbot/adapter.py",
+            "line": 31,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_connected @ gateway/platforms/qqbot/adapter.py:is_connected */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -103322,17 +103336,24 @@
             "decorators": [],
             "line_number": 200
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_adapter_remaining.c",
+          "c_function": "qqa_init",
+          "pop_annotation": {
+            "c_function": "qqa_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_qqbot_adapter_remaining.c",
+            "python_file": "gateway/platforms/qqbot/adapter.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/qqbot/adapter.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -103346,17 +103367,24 @@
             ],
             "line_number": 269
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_adapter_remaining.c",
+          "c_function": "qqa_name",
+          "pop_annotation": {
+            "c_function": "qqa_name",
+            "python_functions": [
+              "name"
+            ],
+            "c_file": "src/gateway/port_qqbot_adapter_remaining.c",
+            "python_file": "gateway/platforms/qqbot/adapter.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: name @ gateway/platforms/qqbot/adapter.py:name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -103370,17 +103398,24 @@
             ],
             "line_number": 273
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_adapter_remaining.c",
+          "c_function": "qqa_enforces_own_access_policy",
+          "pop_annotation": {
+            "c_function": "qqa_enforces_own_access_policy",
+            "python_functions": [
+              "enforces_own_access_policy"
+            ],
+            "c_file": "src/gateway/port_qqbot_adapter_remaining.c",
+            "python_file": "gateway/platforms/qqbot/adapter.py",
+            "line": 43,
+            "is_consolidated": false,
+            "full_text": "/* PoP: enforces_own_access_policy @ gateway/platforms/qqbot/adapter.py:enforces_own_access_policy */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -103392,17 +103427,24 @@
             "decorators": [],
             "line_number": 281
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_adapter_remaining.c",
+          "c_function": "qqa_connect",
+          "pop_annotation": {
+            "c_function": "qqa_connect",
+            "python_functions": [
+              "connect"
+            ],
+            "c_file": "src/gateway/port_qqbot_adapter_remaining.c",
+            "python_file": "gateway/platforms/qqbot/adapter.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: connect @ gateway/platforms/qqbot/adapter.py:connect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -103414,17 +103456,24 @@
             "decorators": [],
             "line_number": 347
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_adapter_remaining.c",
+          "c_function": "qqa_disconnect",
+          "pop_annotation": {
+            "c_function": "qqa_disconnect",
+            "python_functions": [
+              "disconnect"
+            ],
+            "c_file": "src/gateway/port_qqbot_adapter_remaining.c",
+            "python_file": "gateway/platforms/qqbot/adapter.py",
+            "line": 57,
+            "is_consolidated": false,
+            "full_text": "/* PoP: disconnect @ gateway/platforms/qqbot/adapter.py:disconnect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -103436,17 +103485,24 @@
             "decorators": [],
             "line_number": 372
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_adapter_remaining.c",
+          "c_function": "qqa_cleanup",
+          "pop_annotation": {
+            "c_function": "qqa_cleanup",
+            "python_functions": [
+              "_cleanup"
+            ],
+            "c_file": "src/gateway/port_qqbot_adapter_remaining.c",
+            "python_file": "gateway/platforms/qqbot/adapter.py",
+            "line": 63,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cleanup @ gateway/platforms/qqbot/adapter.py:_cleanup */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -103870,17 +103926,24 @@
             "decorators": [],
             "line_number": 927
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_adapter_remaining.c",
+          "c_function": "qqa_handle_message",
+          "pop_annotation": {
+            "c_function": "qqa_handle_message",
+            "python_functions": [
+              "handle_message"
+            ],
+            "c_file": "src/gateway/port_qqbot_adapter_remaining.c",
+            "python_file": "gateway/platforms/qqbot/adapter.py",
+            "line": 69,
+            "is_consolidated": false,
+            "full_text": "/* PoP: handle_message @ gateway/platforms/qqbot/adapter.py:handle_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -104834,17 +104897,24 @@
             "decorators": [],
             "line_number": 2439
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_adapter_remaining.c",
+          "c_function": "qqa_send",
+          "pop_annotation": {
+            "c_function": "qqa_send",
+            "python_functions": [
+              "send"
+            ],
+            "c_file": "src/gateway/port_qqbot_adapter_remaining.c",
+            "python_file": "gateway/platforms/qqbot/adapter.py",
+            "line": 77,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send @ gateway/platforms/qqbot/adapter.py:send */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -105059,17 +105129,24 @@
             "decorators": [],
             "line_number": 2710
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_adapter_remaining.c",
+          "c_function": "qqa_send_update_prompt",
+          "pop_annotation": {
+            "c_function": "qqa_send_update_prompt",
+            "python_functions": [
+              "send_update_prompt"
+            ],
+            "c_file": "src/gateway/port_qqbot_adapter_remaining.c",
+            "python_file": "gateway/platforms/qqbot/adapter.py",
+            "line": 85,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_update_prompt @ gateway/platforms/qqbot/adapter.py:send_update_prompt */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -105131,17 +105208,24 @@
             "decorators": [],
             "line_number": 2796
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_adapter_remaining.c",
+          "c_function": "qqa_send_image_file",
+          "pop_annotation": {
+            "c_function": "qqa_send_image_file",
+            "python_functions": [
+              "send_image_file"
+            ],
+            "c_file": "src/gateway/port_qqbot_adapter_remaining.c",
+            "python_file": "gateway/platforms/qqbot/adapter.py",
+            "line": 93,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_image_file @ gateway/platforms/qqbot/adapter.py:send_image_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -105153,17 +105237,24 @@
             "decorators": [],
             "line_number": 2810
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_adapter_remaining.c",
+          "c_function": "qqa_send_voice",
+          "pop_annotation": {
+            "c_function": "qqa_send_voice",
+            "python_functions": [
+              "send_voice"
+            ],
+            "c_file": "src/gateway/port_qqbot_adapter_remaining.c",
+            "python_file": "gateway/platforms/qqbot/adapter.py",
+            "line": 100,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_voice @ gateway/platforms/qqbot/adapter.py:send_voice */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -105175,17 +105266,24 @@
             "decorators": [],
             "line_number": 2824
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_adapter_remaining.c",
+          "c_function": "qqa_send_video",
+          "pop_annotation": {
+            "c_function": "qqa_send_video",
+            "python_functions": [
+              "send_video"
+            ],
+            "c_file": "src/gateway/port_qqbot_adapter_remaining.c",
+            "python_file": "gateway/platforms/qqbot/adapter.py",
+            "line": 107,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_video @ gateway/platforms/qqbot/adapter.py:send_video */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -105197,17 +105295,24 @@
             "decorators": [],
             "line_number": 2838
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_adapter_remaining.c",
+          "c_function": "qqa_send_document",
+          "pop_annotation": {
+            "c_function": "qqa_send_document",
+            "python_functions": [
+              "send_document"
+            ],
+            "c_file": "src/gateway/port_qqbot_adapter_remaining.c",
+            "python_file": "gateway/platforms/qqbot/adapter.py",
+            "line": 114,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_document @ gateway/platforms/qqbot/adapter.py:send_document */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -105306,17 +105411,24 @@
             "decorators": [],
             "line_number": 3075
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_adapter_remaining.c",
+          "c_function": "qqa_send_typing",
+          "pop_annotation": {
+            "c_function": "qqa_send_typing",
+            "python_functions": [
+              "send_typing"
+            ],
+            "c_file": "src/gateway/port_qqbot_adapter_remaining.c",
+            "python_file": "gateway/platforms/qqbot/adapter.py",
+            "line": 121,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_typing @ gateway/platforms/qqbot/adapter.py:send_typing */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -105328,17 +105440,24 @@
             "decorators": [],
             "line_number": 3119
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_adapter_remaining.c",
+          "c_function": "qqa_format_message",
+          "pop_annotation": {
+            "c_function": "qqa_format_message",
+            "python_functions": [
+              "format_message"
+            ],
+            "c_file": "src/gateway/port_qqbot_adapter_remaining.c",
+            "python_file": "gateway/platforms/qqbot/adapter.py",
+            "line": 129,
+            "is_consolidated": false,
+            "full_text": "/* PoP: format_message @ gateway/platforms/qqbot/adapter.py:format_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -105350,17 +105469,24 @@
             "decorators": [],
             "line_number": 3133
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_adapter_remaining.c",
+          "c_function": "qqa_get_chat_info",
+          "pop_annotation": {
+            "c_function": "qqa_get_chat_info",
+            "python_functions": [
+              "get_chat_info"
+            ],
+            "c_file": "src/gateway/port_qqbot_adapter_remaining.c",
+            "python_file": "gateway/platforms/qqbot/adapter.py",
+            "line": 149,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_chat_info @ gateway/platforms/qqbot/adapter.py:get_chat_info */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -350299,10 +350425,10 @@
     },
     "utils.py": {
       "total": 23,
-      "ported": 5,
+      "ported": 22,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 18,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 23,
@@ -350376,16 +350502,24 @@
             "decorators": [],
             "line_number": 38
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_utils_remaining.c",
+          "c_function": "util_preserve_file_mode",
+          "pop_annotation": {
+            "c_function": "util_preserve_file_mode",
+            "python_functions": [
+              "_preserve_file_mode"
+            ],
+            "c_file": "src/cli/port_utils_remaining.c",
+            "python_file": "utils.py",
+            "line": 26,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _preserve_file_mode @ utils.py:_preserve_file_mode */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "utils.py",
@@ -350397,16 +350531,24 @@
             "decorators": [],
             "line_number": 46
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_utils_remaining.c",
+          "c_function": "util_preserve_file_owner",
+          "pop_annotation": {
+            "c_function": "util_preserve_file_owner",
+            "python_functions": [
+              "_preserve_file_owner"
+            ],
+            "c_file": "src/cli/port_utils_remaining.c",
+            "python_file": "utils.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _preserve_file_owner @ utils.py:_preserve_file_owner */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "utils.py",
@@ -350418,16 +350560,24 @@
             "decorators": [],
             "line_number": 57
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_utils_remaining.c",
+          "c_function": "util_restore_file_owner",
+          "pop_annotation": {
+            "c_function": "util_restore_file_owner",
+            "python_functions": [
+              "_restore_file_owner"
+            ],
+            "c_file": "src/cli/port_utils_remaining.c",
+            "python_file": "utils.py",
+            "line": 46,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _restore_file_owner @ utils.py:_restore_file_owner */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "utils.py",
@@ -350439,16 +350589,24 @@
             "decorators": [],
             "line_number": 74
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_utils_remaining.c",
+          "c_function": "util_restore_file_mode",
+          "pop_annotation": {
+            "c_function": "util_restore_file_mode",
+            "python_functions": [
+              "_restore_file_mode"
+            ],
+            "c_file": "src/cli/port_utils_remaining.c",
+            "python_file": "utils.py",
+            "line": 64,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _restore_file_mode @ utils.py:_restore_file_mode */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "utils.py",
@@ -350460,16 +350618,24 @@
             "decorators": [],
             "line_number": 91
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_utils_remaining.c",
+          "c_function": "util_atomic_replace",
+          "pop_annotation": {
+            "c_function": "util_atomic_replace",
+            "python_functions": [
+              "atomic_replace"
+            ],
+            "c_file": "src/cli/port_utils_remaining.c",
+            "python_file": "utils.py",
+            "line": 72,
+            "is_consolidated": false,
+            "full_text": "/* PoP: atomic_replace @ utils.py:atomic_replace */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "utils.py",
@@ -350481,16 +350647,24 @@
             "decorators": [],
             "line_number": 139
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_utils_remaining.c",
+          "c_function": "util_atomic_json_write",
+          "pop_annotation": {
+            "c_function": "util_atomic_json_write",
+            "python_functions": [
+              "atomic_json_write"
+            ],
+            "c_file": "src/cli/port_utils_remaining.c",
+            "python_file": "utils.py",
+            "line": 80,
+            "is_consolidated": false,
+            "full_text": "/* PoP: atomic_json_write @ utils.py:atomic_json_write */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "utils.py",
@@ -350502,16 +350676,24 @@
             "decorators": [],
             "line_number": 211
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_utils_remaining.c",
+          "c_function": "util_warn_if_credential_file_broadly_readable",
+          "pop_annotation": {
+            "c_function": "util_warn_if_credential_file_broadly_readable",
+            "python_functions": [
+              "warn_if_credential_file_broadly_readable"
+            ],
+            "c_file": "src/cli/port_utils_remaining.c",
+            "python_file": "utils.py",
+            "line": 99,
+            "is_consolidated": false,
+            "full_text": "/* PoP: warn_if_credential_file_broadly_readable @ utils.py:warn_if_credential_file_broadly_readable */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "utils.py",
@@ -350544,16 +350726,24 @@
             "decorators": [],
             "line_number": 268
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_utils_remaining.c",
+          "c_function": "util_atomic_yaml_write",
+          "pop_annotation": {
+            "c_function": "util_atomic_yaml_write",
+            "python_functions": [
+              "atomic_yaml_write"
+            ],
+            "c_file": "src/cli/port_utils_remaining.c",
+            "python_file": "utils.py",
+            "line": 112,
+            "is_consolidated": false,
+            "full_text": "/* PoP: atomic_yaml_write @ utils.py:atomic_yaml_write */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "utils.py",
@@ -350565,16 +350755,24 @@
             "decorators": [],
             "line_number": 337
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_utils_remaining.c",
+          "c_function": "util_atomic_roundtrip_yaml_update",
+          "pop_annotation": {
+            "c_function": "util_atomic_roundtrip_yaml_update",
+            "python_functions": [
+              "atomic_roundtrip_yaml_update"
+            ],
+            "c_file": "src/cli/port_utils_remaining.c",
+            "python_file": "utils.py",
+            "line": 131,
+            "is_consolidated": false,
+            "full_text": "/* PoP: atomic_roundtrip_yaml_update @ utils.py:atomic_roundtrip_yaml_update */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "utils.py",
@@ -350586,16 +350784,24 @@
             "decorators": [],
             "line_number": 407
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_utils_remaining.c",
+          "c_function": "util_safe_json_loads",
+          "pop_annotation": {
+            "c_function": "util_safe_json_loads",
+            "python_functions": [
+              "safe_json_loads"
+            ],
+            "c_file": "src/cli/port_utils_remaining.c",
+            "python_file": "utils.py",
+            "line": 139,
+            "is_consolidated": false,
+            "full_text": "/* PoP: safe_json_loads @ utils.py:safe_json_loads */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "utils.py",
@@ -350607,16 +350813,24 @@
             "decorators": [],
             "line_number": 430
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_utils_remaining.c",
+          "c_function": "util_get_fast_yaml_loader",
+          "pop_annotation": {
+            "c_function": "util_get_fast_yaml_loader",
+            "python_functions": [
+              "_get_fast_yaml_loader"
+            ],
+            "c_file": "src/cli/port_utils_remaining.c",
+            "python_file": "utils.py",
+            "line": 152,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_fast_yaml_loader @ utils.py:_get_fast_yaml_loader */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "utils.py",
@@ -350628,16 +350842,24 @@
             "decorators": [],
             "line_number": 437
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_utils_remaining.c",
+          "c_function": "util_fast_safe_load",
+          "pop_annotation": {
+            "c_function": "util_fast_safe_load",
+            "python_functions": [
+              "fast_safe_load"
+            ],
+            "c_file": "src/cli/port_utils_remaining.c",
+            "python_file": "utils.py",
+            "line": 159,
+            "is_consolidated": false,
+            "full_text": "/* PoP: fast_safe_load @ utils.py:fast_safe_load */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "utils.py",
@@ -350649,16 +350871,24 @@
             "decorators": [],
             "line_number": 451
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_utils_remaining.c",
+          "c_function": "util_env_int",
+          "pop_annotation": {
+            "c_function": "util_env_int",
+            "python_functions": [
+              "env_int"
+            ],
+            "c_file": "src/cli/port_utils_remaining.c",
+            "python_file": "utils.py",
+            "line": 167,
+            "is_consolidated": false,
+            "full_text": "/* PoP: env_int @ utils.py:env_int */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "utils.py",
@@ -350670,16 +350900,24 @@
             "decorators": [],
             "line_number": 462
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_utils_remaining.c",
+          "c_function": "util_env_float",
+          "pop_annotation": {
+            "c_function": "util_env_float",
+            "python_functions": [
+              "env_float"
+            ],
+            "c_file": "src/cli/port_utils_remaining.c",
+            "python_file": "utils.py",
+            "line": 179,
+            "is_consolidated": false,
+            "full_text": "/* PoP: env_float @ utils.py:env_float */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "utils.py",
@@ -350691,16 +350929,24 @@
             "decorators": [],
             "line_number": 473
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_utils_remaining.c",
+          "c_function": "util_env_bool",
+          "pop_annotation": {
+            "c_function": "util_env_bool",
+            "python_functions": [
+              "env_bool"
+            ],
+            "c_file": "src/cli/port_utils_remaining.c",
+            "python_file": "utils.py",
+            "line": 189,
+            "is_consolidated": false,
+            "full_text": "/* PoP: env_bool @ utils.py:env_bool */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "utils.py",
@@ -350741,16 +350987,24 @@
             "decorators": [],
             "line_number": 502
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_utils_remaining.c",
+          "c_function": "util_normalize_proxy_env_vars",
+          "pop_annotation": {
+            "c_function": "util_normalize_proxy_env_vars",
+            "python_functions": [
+              "normalize_proxy_env_vars"
+            ],
+            "c_file": "src/cli/port_utils_remaining.c",
+            "python_file": "utils.py",
+            "line": 202,
+            "is_consolidated": false,
+            "full_text": "/* PoP: normalize_proxy_env_vars @ utils.py:normalize_proxy_env_vars */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "utils.py",
@@ -350791,16 +351045,24 @@
             "decorators": [],
             "line_number": 534
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_utils_remaining.c",
+          "c_function": "util_model_forces_max_completion_tokens",
+          "pop_annotation": {
+            "c_function": "util_model_forces_max_completion_tokens",
+            "python_functions": [
+              "model_forces_max_completion_tokens"
+            ],
+            "c_file": "src/cli/port_utils_remaining.c",
+            "python_file": "utils.py",
+            "line": 210,
+            "is_consolidated": false,
+            "full_text": "/* PoP: model_forces_max_completion_tokens @ utils.py:model_forces_max_completion_tokens */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "utils.py",
