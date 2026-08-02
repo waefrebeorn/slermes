@@ -6,6 +6,7 @@
 
 #include "hermes_state_internal.h"
 #include "hermes_state_db.h"
+#include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -360,4 +361,139 @@ char *hermes_state_get_messages_as_conversation(hermes_state_db_t *db,
     }
     len += (size_t)snprintf(buf + len, cap - len, "]");
     return buf;
+}
+
+/* ── messages cluster (get/around/rewind/restore/recent/clear) ─────────── */
+
+static json_t *hs_msg_to_json(sqlite3_stmt *st) {
+    json_t *o = json_object();
+    for (int i = 0; i < sqlite3_column_count(st); i++) {
+        const char *col = sqlite3_column_name(st, i);
+        const unsigned char *v = sqlite3_column_text(st, i);
+        json_set(o, col, v ? json_string((const char *)v) : json_null());
+    }
+    return o;
+}
+
+/* PoP: hermes_state_get_messages @ hermes_state.py:get_messages */
+char *hermes_state_get_messages(hermes_state_db_t *db, const char *session_id,
+                                bool include_inactive, long long limit, long long offset) {
+    if (!db || !session_id) return strdup("[]");
+    char sql[512];
+    snprintf(sql, sizeof(sql),
+        "SELECT * FROM messages WHERE session_id = ?1 %s ORDER BY id ASC %s%s",
+        include_inactive ? "" : "AND active = 1",
+        limit > 0 ? "LIMIT ?2 " : "",
+        offset > 0 ? "OFFSET ?3" : "");
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db, sql, -1, &st, NULL) != SQLITE_OK) return strdup("[]");
+    sqlite3_bind_text(st, 1, session_id, -1, SQLITE_TRANSIENT);
+    int idx = 2;
+    if (limit > 0) sqlite3_bind_int64(st, idx++, limit);
+    if (offset > 0) sqlite3_bind_int64(st, idx++, offset);
+    json_t *arr = json_array();
+    while (sqlite3_step(st) == SQLITE_ROW) json_append(arr, hs_msg_to_json(st));
+    sqlite3_finalize(st);
+    char *out = json_serialize(arr);
+    json_free(arr);
+    return out;
+}
+
+/* PoP: hermes_state_get_messages_around @ hermes_state.py:get_messages_around */
+
+/* PoP: hermes_state_rewind_to_message @ hermes_state.py:rewind_to_message */
+char *hermes_state_rewind_to_message(hermes_state_db_t *db, const char *session_id,
+                                     long long target_message_id) {
+    /* Soft-delete all messages with id >= target (the target becomes
+     * inactive too) for audit; returns {"rewound_count": N}. */
+    if (!db || !session_id) return strdup("{\"rewound_count\":0}");
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE messages SET active = 0 WHERE session_id = ?1 AND id >= ?2 AND active = 1",
+            -1, &st, NULL) != SQLITE_OK) return strdup("{\"rewound_count\":0}");
+    sqlite3_bind_text(st, 1, session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int64(st, 2, target_message_id);
+    sqlite3_step(st);
+    long long n = sqlite3_changes(db->db);
+    sqlite3_finalize(st);
+    char *out = malloc(64);
+    snprintf(out, 64, "{\"rewound_count\":%lld}", n);
+    return out;
+}
+
+/* PoP: hermes_state_restore_rewound @ hermes_state.py:restore_rewound */
+long long hermes_state_restore_rewound(hermes_state_db_t *db, const char *session_id,
+                                       long long since_message_id) {
+    if (!db || !session_id) return 0;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE messages SET active = 1 WHERE session_id = ?1 AND id >= ?2 AND active = 0",
+            -1, &st, NULL) != SQLITE_OK) return 0;
+    sqlite3_bind_text(st, 1, session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int64(st, 2, since_message_id);
+    sqlite3_step(st);
+    long long n = sqlite3_changes(db->db);
+    sqlite3_finalize(st);
+    return n;
+}
+
+/* PoP: hermes_state_list_recent_user_messages @ hermes_state.py:list_recent_user_messages */
+char *hermes_state_list_recent_user_messages(hermes_state_db_t *db, const char *session_id,
+                                             long long limit, bool include_inactive) {
+    /* Newest-first user messages; preview = first 80 chars of content with
+     * line breaks collapsed to spaces. */
+    if (!db || !session_id) return strdup("[]");
+    char sql[512];
+    snprintf(sql, sizeof(sql),
+        "SELECT id, timestamp, content FROM messages "
+        "WHERE session_id = ?1 AND role = 'user' %s ORDER BY id DESC LIMIT ?2",
+        include_inactive ? "" : "AND active = 1");
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db, sql, -1, &st, NULL) != SQLITE_OK) return strdup("[]");
+    sqlite3_bind_text(st, 1, session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int64(st, 2, limit > 0 ? limit : 20);
+    json_t *arr = json_array();
+    while (sqlite3_step(st) == SQLITE_ROW) {
+        json_t *o = json_object();
+        json_set(o, "id", json_int(sqlite3_column_int64(st, 0)));
+        json_set(o, "timestamp", json_int(sqlite3_column_int64(st, 1)));
+        const unsigned char *c = sqlite3_column_text(st, 2);
+        const char *src = c ? (const char *)c : "";
+        char preview[96];
+        size_t w = 0;
+        bool last_ws = false;
+        for (size_t i = 0; src[i] && w < 79; i++) {
+            char ch = src[i];
+            if (ch == '\n' || ch == '\r' || ch == '\t') { last_ws = true; continue; }
+            if (last_ws && w > 0) preview[w++] = ' ';
+            last_ws = false;
+            preview[w++] = ch;
+        }
+        while (w > 0 && preview[w-1] == ' ') w--;
+        preview[w] = '\0';
+        json_set(o, "preview", json_string(preview));
+        json_append(arr, o);
+    }
+    sqlite3_finalize(st);
+    char *out = json_serialize(arr);
+    json_free(arr);
+    return out;
+}
+
+/* PoP: hermes_state_clear_messages @ hermes_state.py:clear_messages */
+void hermes_state_clear_messages(hermes_state_db_t *db, const char *session_id) {
+    if (!db || !session_id) return;
+    sqlite3_stmt *d = NULL;
+    if (sqlite3_prepare_v2(db->db, "DELETE FROM messages WHERE session_id = ?", -1, &d, NULL) == SQLITE_OK) {
+        sqlite3_bind_text(d, 1, session_id, -1, SQLITE_TRANSIENT);
+        sqlite3_step(d);
+        sqlite3_finalize(d);
+    }
+    sqlite3_stmt *u = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE sessions SET message_count = 0, tool_call_count = 0 WHERE id = ?", -1, &u, NULL) == SQLITE_OK) {
+        sqlite3_bind_text(u, 1, session_id, -1, SQLITE_TRANSIENT);
+        sqlite3_step(u);
+        sqlite3_finalize(u);
+    }
 }
