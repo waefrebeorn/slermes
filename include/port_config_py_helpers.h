@@ -90,6 +90,11 @@ json_t *config_py_get_nested(const json_t *config, const char *dotted_key);
 /* _set_nested — set a dotted key path, creating dicts on demand. Returns 0 ok, <0 error. */
 /* PoP: _set_nested @ hermes_cli/config.py:_set_nested */
 int config_py_set_nested(json_t *config, const char *dotted_key, json_t *value);
+/* save_config_value — faithful port of hermes_cli/config.py:save_config_value.
+ * Loads merged config as JSON, sets a dotted key, persists atomically. */
+int config_py_save_value(const char *dotted_key, json_t *value);
+/* Public config.yaml path accessor (mirrors get_config_path()). */
+void config_py_get_config_path(char *buf, size_t sz);
 
 /* _unset_nested — remove a dotted key. Returns 1 if removed, 0 if absent. */
 /* PoP: _unset_nested @ hermes_cli/config.py:_unset_nested */

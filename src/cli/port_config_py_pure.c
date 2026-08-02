@@ -8,6 +8,7 @@
  */
 
 #include "port_config_py_helpers.h"
+#include "hermes_core_types.h"
 
 #include <ctype.h>
 #include <stdio.h>
@@ -881,4 +882,24 @@ void config_py_secure_file(const char *path) {
     struct stat st;
     if (stat(path, &st) == 0)
         chmod(path, 0600);
+}
+
+/* ============================================================
+ * save_config_value — faithful port of hermes_cli/config.py:save_config_value
+ * Loads the merged config as JSON, sets a dotted key, and persists atomically.
+ * Returns 0 on success, -1 on failure.
+ * ============================================================ */
+int config_py_save_value(const char *dotted_key, json_t *value) {
+    if (!dotted_key || !*dotted_key || !value) return -1;
+    json_t *cfg = config_py_load_config_readonly();
+    if (!cfg) return -1;
+    if (config_py_set_nested(cfg, dotted_key, value) != 0) {
+        json_free(cfg);
+        return -1;
+    }
+    char path[HERMES_PATH_MAX];
+    config_py_get_config_path(path, sizeof(path));
+    int rc = config_py_atomic_config_write(path, cfg);
+    json_free(cfg);
+    return rc;
 }

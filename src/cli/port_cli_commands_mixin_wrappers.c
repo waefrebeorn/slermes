@@ -8,10 +8,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 #include "hermes_json.h"
 #include "profile_store.h"
 #include "slermes_home.h"
 #include "tools/process_registry.h"
+#include "port_config_py_helpers.h"
 
 /* PoP: _handle_rollback_command @ hermes_cli/cli_commands_mixin.py:_handle_rollback_command */
 int ccm_handle_rollback_command(const char *args) {
@@ -198,11 +200,89 @@ int ccm_handle_prompt_compose_command(const char *args) {
 }
 /* PoP: _handle_footer_command @ hermes_cli/cli_commands_mixin.py:_handle_footer_command */
 int ccm_handle_footer_command(const char *args) {
-    (void)args; return 0;
+    char arg[64]; arg[0] = '\0';
+    if (args) {
+        const char *p = args;
+        while (*p && isspace((unsigned char)*p)) p++;
+        const char *sp = strchr(p, ' ');
+        size_t l = sp ? (size_t)(sp - p) : strlen(p);
+        if (l >= sizeof(arg)) l = sizeof(arg) - 1;
+        memcpy(arg, p, l); arg[l] = '\0';
+        char *q = arg + l; while (q > arg && isspace((unsigned char)*(q-1))) *--q = '\0';
+    }
+    int current = 0;
+    json_t *cfg = config_py_load_config_readonly();
+    if (cfg) {
+        json_t *d = config_py_get_nested(cfg, "display.runtime_footer");
+        if (d && d->type == JSON_OBJECT)
+            current = json_bool_value(json_object_get(d, "enabled"));
+        json_free(cfg);
+    }
+    if (strcmp(arg, "status") == 0 || strcmp(arg, "?") == 0) {
+        printf("  Runtime footer: %s\n", current ? "ON" : "OFF");
+        return 0;
+    }
+    int new_state;
+    if (strcmp(arg, "on") == 0 || strcmp(arg, "enable") == 0 || strcmp(arg, "true") == 0 || strcmp(arg, "1") == 0)
+        new_state = 1;
+    else if (strcmp(arg, "off") == 0 || strcmp(arg, "disable") == 0 || strcmp(arg, "false") == 0 || strcmp(arg, "0") == 0)
+        new_state = 0;
+    else if (arg[0] == '\0')
+        new_state = !current;
+    else {
+        printf("  Usage: /footer [on|off|status]\n");
+        return 0;
+    }
+    json_t *val = json_new_bool(new_state);
+    int rc = config_py_save_value("display.runtime_footer.enabled", val);
+    json_free(val);
+    if (rc == 0)
+        printf("  Runtime footer: %s\n", new_state ? "ON" : "OFF");
+    else
+        printf("  Failed to save runtime_footer setting to config.yaml\n");
+    return 0;
 }
 /* PoP: _handle_timestamps_command @ hermes_cli/cli_commands_mixin.py:_handle_timestamps_command */
 int ccm_handle_timestamps_command(const char *args) {
-    (void)args; return 0;
+    char arg[64]; arg[0] = '\0';
+    if (args) {
+        const char *p = args;
+        while (*p && isspace((unsigned char)*p)) p++;
+        const char *sp = strchr(p, ' ');
+        size_t l = sp ? (size_t)(sp - p) : strlen(p);
+        if (l >= sizeof(arg)) l = sizeof(arg) - 1;
+        memcpy(arg, p, l); arg[l] = '\0';
+        char *q = arg + l; while (q > arg && isspace((unsigned char)*(q-1))) *--q = '\0';
+    }
+    int current = 0;
+    json_t *cfg = config_py_load_config_readonly();
+    if (cfg) {
+        current = json_bool_value(config_py_get_nested(cfg, "display.timestamps"));
+        json_free(cfg);
+    }
+    if (strcmp(arg, "status") == 0 || strcmp(arg, "?") == 0) {
+        printf("  Message timestamps: %s\n", current ? "ON" : "OFF");
+        return 0;
+    }
+    int new_state;
+    if (strcmp(arg, "on") == 0 || strcmp(arg, "enable") == 0 || strcmp(arg, "true") == 0 || strcmp(arg, "1") == 0)
+        new_state = 1;
+    else if (strcmp(arg, "off") == 0 || strcmp(arg, "disable") == 0 || strcmp(arg, "false") == 0 || strcmp(arg, "0") == 0)
+        new_state = 0;
+    else if (arg[0] == '\0')
+        new_state = !current;
+    else {
+        printf("  Usage: /timestamps [on|off|status]\n");
+        return 0;
+    }
+    json_t *val = json_new_bool(new_state);
+    int rc = config_py_save_value("display.timestamps", val);
+    json_free(val);
+    if (rc == 0)
+        printf("  Message timestamps: %s\n", new_state ? "ON" : "OFF");
+    else
+        printf("  Failed to save timestamps setting to config.yaml\n");
+    return 0;
 }
 /* PoP: _handle_reasoning_command @ hermes_cli/cli_commands_mixin.py:_handle_reasoning_command */
 int ccm_handle_reasoning_command(const char *args) {
