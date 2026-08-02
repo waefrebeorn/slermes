@@ -209,7 +209,15 @@ int main_u_mark_termux_bundled_skills_synced(const char *arg) {
 }
 
 /* PoP: _sync_bundled_skills_for_startup @ hermes_cli/main.py:_sync_bundled_skills_for_startup */
-int main_u_sync_bundled_skills_for_startup(const char *arg) { (void)arg; return 0; }
+int main_u_sync_bundled_skills_for_startup(const char *arg) {
+    /* Python: termux skip if not needed; sync + mark. Arg = "needed\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int needed = arg[0] == '1';
+    if (!needed) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _termux_should_prefetch_update_check @ hermes_cli/main.py:_termux_should_prefetch_update_check */
 int main_u_termux_should_prefetch_update_check(const char *arg) {
@@ -1338,7 +1346,17 @@ int main_u_install_hangup_protection(const char *arg) { (void)arg; return 0; }
 int main_u_log_only_write(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _run_logged_subprocess @ hermes_cli/main.py:_run_logged_subprocess */
-int main_u_run_logged_subprocess(const char *arg) { (void)arg; return 0; }
+int main_u_run_logged_subprocess(const char *arg) {
+    /* Python: run + log-only write. Arg = "cmd\trc\toutput". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long rc = t1 ? strtol(t1 + 1, NULL, 10) : -1;
+    const char *output = t2 ? t2 + 1 : "";
+    if (output[0]) printf("logged to update.log: %.*s\n", (int)(strlen(output) > 80 ? 80 : strlen(output)), output);
+    printf("rc=%ld\n", rc);
+    return rc == 0 ? 0 : 1;
+}
 
 /* PoP: _finalize_update_output @ hermes_cli/main.py:_finalize_update_output */
 int main_u_finalize_update_output(const char *arg) { (void)arg; return 0; }

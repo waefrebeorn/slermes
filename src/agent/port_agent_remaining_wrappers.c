@@ -847,7 +847,17 @@ int agent_agent_init_u_codex_gpt55_autoraise_notice_seen(const char *arg) {
 }
 
 /* PoP: _record_codex_gpt55_autoraise_notice @ agent/agent_init.py:_record_codex_gpt55_autoraise_notice */
-int agent_agent_init_u_record_codex_gpt55_autoraise_notice(const char *arg) { (void)arg; return 0; }
+int agent_agent_init_u_record_codex_gpt55_autoraise_notice(const char *arg) {
+    /* Python: write marker (best-effort). Arg = "path\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    FILE *fp = fopen(arg, "w");
+    if (!fp) { printf("\n"); return 0; }
+    fprintf(fp, "%s\n", tab ? tab + 1 : "");
+    fclose(fp);
+    printf("notice marker recorded: %s\n", arg);
+    return 0;
+}
 
 /* PoP: usage_pct @ agent/rate_limit_tracker.py:usage_pct */
 int agent_rate_limit_tracker_usage_pct(const char *arg) {

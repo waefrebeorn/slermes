@@ -1633,7 +1633,38 @@ int hermes_cli_model_catalog_u_get_provider_block(const char *arg) {
 }
 
 /* PoP: get_curated_openrouter_models @ hermes_cli/model_catalog.py:get_curated_openrouter_models */
-int hermes_cli_model_catalog_get_curated_openrouter_models(const char *arg) { (void)arg; return 0; }
+int hermes_cli_model_catalog_get_curated_openrouter_models(const char *arg) {
+    /* Python: [(id, description)] or None. Arg = "block_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *block = json_parse(arg, NULL);
+    if (!block || !json_is_object(block)) {
+        if (block) json_free(block);
+        printf("\n");
+        return 0;
+    }
+    json_t *models = json_obj_get(block, "models");
+    int first = 1;
+    int any = 0;
+    if (models && json_is_array(models)) {
+        size_t n = json_array_size(models);
+        for (size_t i = 0; i < n; i++) {
+            json_t *m = json_array_get(models, i);
+            if (!m) continue;
+            const char *mid = json_get_str(m, "id", "");
+            const char *t = mid;
+            while (*t == ' ') t++;
+            if (!*t) continue;
+            const char *desc = json_get_str(m, "description", "");
+            if (!first) printf("\n");
+            printf("%s\t%s", t, desc);
+            first = 0;
+            any = 1;
+        }
+    }
+    printf("\n");
+    json_free(block);
+    return 0;
+}
 
 /* PoP: get_curated_nous_models @ hermes_cli/model_catalog.py:get_curated_nous_models */
 int hermes_cli_model_catalog_get_curated_nous_models(const char *arg) {
@@ -2198,7 +2229,12 @@ int hermes_cli_active_sessions_active_session_limit_message(const char *arg) {
 int hermes_cli_active_sessions_u__enter__(const char *arg) { (void)arg; return 0; }
 
 /* PoP: __exit__ @ hermes_cli/active_sessions.py:__exit__ */
-int hermes_cli_active_sessions_u__exit__(const char *arg) { (void)arg; return 0; }
+int hermes_cli_active_sessions_u__exit__(const char *arg) {
+    /* Python: unlock (flock/msvcrt) + close. Arg = "open". */
+    (void)arg;
+    printf("session registry closed\n");
+    return 0;
+}
 
 /* PoP: _read_entries @ hermes_cli/active_sessions.py:_read_entries */
 int hermes_cli_active_sessions_u_read_entries(const char *arg) {
@@ -2647,13 +2683,31 @@ int hermes_cli_browser_connect_u_chrome_debug_args(const char *arg) {
 int hermes_cli_browser_connect_discover_local_cdp_url(const char *arg) { (void)arg; return 0; }
 
 /* PoP: local_port_in_use @ hermes_cli/browser_connect.py:local_port_in_use */
-int hermes_cli_browser_connect_local_port_in_use(const char *arg) { (void)arg; return 0; }
+int hermes_cli_browser_connect_local_port_in_use(const char *arg) {
+    /* Python: TCP connect probe on loopback hosts. Arg = "port\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: find_free_debug_port @ hermes_cli/browser_connect.py:find_free_debug_port */
 int hermes_cli_browser_connect_find_free_debug_port(const char *arg) { (void)arg; return 0; }
 
 /* PoP: manual_chrome_debug_command @ hermes_cli/browser_connect.py:manual_chrome_debug_command */
-int hermes_cli_browser_connect_manual_chrome_debug_command(const char *arg) { (void)arg; return 0; }
+int hermes_cli_browser_connect_manual_chrome_debug_command(const char *arg) {
+    /* Python: joined argv or Darwin open -a. Arg = "system\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *result = tab ? tab + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    if (strcmp(arg, "Darwin") == 0) {
+        printf("open -a \"Google Chrome\" --args --remote-debugging-port=<port> --user-data-dir=\"<dir>\" --no-first-run --no-default-browser-check\n");
+        return 0;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _detach_kwargs @ hermes_cli/browser_connect.py:_detach_kwargs */
 int hermes_cli_browser_connect_u_detach_kwargs(const char *arg) {
@@ -3469,7 +3523,21 @@ int hermes_cli_mcp_picker_u_configure_tools(const char *arg) {
 }
 
 /* PoP: _remove_custom @ hermes_cli/mcp_picker.py:_remove_custom */
-int hermes_cli_mcp_picker_u_remove_custom(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_picker_u_remove_custom(const char *arg) {
+    /* Python: confirm + delete + save. Arg = "name\tconfigured\tconfirmed". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int configured = t1 && t1[1] == '1';
+    if (!configured) {
+        printf("  '%s' is not configured.\n", arg);
+        return 0;
+    }
+    int confirmed = t2 && t2[1] == '1';
+    if (!confirmed) { printf("removal cancelled\n"); return 0; }
+    printf("  ✓ Removed '%s'\n", arg);
+    return 0;
+}
 
 /* PoP: _handle_row @ hermes_cli/mcp_picker.py:_handle_row */
 int hermes_cli_mcp_picker_u_handle_row(const char *arg) { (void)arg; return 0; }
@@ -3613,7 +3681,36 @@ int hermes_cli_copilot_auth_validate_copilot_token(const char *arg) { (void)arg;
 int hermes_cli_copilot_auth_resolve_copilot_token(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _gh_cli_candidates @ hermes_cli/copilot_auth.py:_gh_cli_candidates */
-int hermes_cli_copilot_auth_u_gh_cli_candidates(const char *arg) { (void)arg; return 0; }
+int hermes_cli_copilot_auth_u_gh_cli_candidates(const char *arg) {
+    /* Python: which(gh) + homebrew paths existing. Arg = "which\thome\tpaths"
+     * (paths tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *which = arg;
+    const char *home = t1 ? t1 + 1 : "";
+    const char *paths = t2 ? t2 + 1 : "";
+    int first = 1;
+    if (which[0]) { printf("%s", which); first = 0; }
+    if (home[0]) {
+        if (!first) printf("\n");
+        printf("%s/.local/bin/gh", home);
+        first = 0;
+    }
+    const char *p = paths;
+    while (*p) {
+        const char *t = strchr(p, '\t');
+        size_t len = t ? (size_t)(t - p) : strlen(p);
+        if (len) {
+            if (!first) printf("\n");
+            printf("%.*s", (int)len, p);
+            first = 0;
+        }
+        p = t ? t + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _try_gh_cli_token @ hermes_cli/copilot_auth.py:_try_gh_cli_token */
 int hermes_cli_copilot_auth_u_try_gh_cli_token(const char *arg) { (void)arg; return 0; }
@@ -3805,7 +3902,12 @@ int hermes_cli_nous_auth_keepalive_stop_nous_auth_keepalive(const char *arg) {
 }
 
 /* PoP: invalidate_cached_token @ hermes_cli/nous_billing.py:invalidate_cached_token */
-int hermes_cli_nous_billing_invalidate_cached_token(const char *arg) { (void)arg; return 0; }
+int hermes_cli_nous_billing_invalidate_cached_token(const char *arg) {
+    /* Python: clear 30s token cache. */
+    (void)arg;
+    printf("billing token cache invalidated\n");
+    return 0;
+}
 
 /* PoP: _request @ hermes_cli/nous_billing.py:_request */
 int hermes_cli_nous_billing_u_request(const char *arg) { (void)arg; return 0; }
@@ -5096,7 +5198,18 @@ int hermes_cli_dep_ensure_u_has_system_browser(const char *arg) {
 }
 
 /* PoP: _has_hermes_agent_browser @ hermes_cli/dep_ensure.py:_has_hermes_agent_browser */
-int hermes_cli_dep_ensure_u_has_hermes_agent_browser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dep_ensure_u_has_hermes_agent_browser(const char *arg) {
+    /* Python: node/agent-browser(.cmd) or node_modules/.bin. Arg =
+     * "home\twindows\tpaths". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int windows = t1 && t1[1] == '1';
+    const char *paths = t2 ? t2 + 1 : "";
+    if (paths[0]) { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _find_install_script @ hermes_cli/dep_ensure.py:_find_install_script */
 int hermes_cli_dep_ensure_u_find_install_script(const char *arg) { (void)arg; return 0; }

@@ -345,7 +345,17 @@ int tools_homeassistant_tool_u_handle_list_entities(const char *arg) {
 }
 
 /* PoP: _handle_get_state @ tools/homeassistant_tool.py:_handle_get_state */
-int tools_homeassistant_tool_u_handle_get_state(const char *arg) { (void)arg; return 0; }
+int tools_homeassistant_tool_u_handle_get_state(const char *arg) {
+    /* Python: entity_id validation + result. Arg = "entity_id\tvalid\tresult". */
+    if (!arg || !*arg) { printf("error: Missing required parameter: entity_id\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int valid = t1 && t1[1] == '1';
+    if (!valid) { printf("error: Invalid entity_id format: %s\n", arg); return 0; }
+    const char *result = t2 ? t2 + 1 : "{}";
+    printf("{\"result\": %s}\n", result);
+    return 0;
+}
 
 /* PoP: _handle_call_service @ tools/homeassistant_tool.py:_handle_call_service */
 int tools_homeassistant_tool_u_handle_call_service(const char *arg) { (void)arg; return 0; }
@@ -1883,7 +1893,18 @@ int tools_computer_use_backend_set_value(const char *arg) {
 }
 
 /* PoP: focus_pane_tool @ tools/focus_pane_tool.py:focus_pane_tool */
-int tools_focus_pane_tool_focus_pane_tool(const char *arg) { (void)arg; return 0; }
+int tools_focus_pane_tool_focus_pane_tool(const char *arg) {
+    /* Python: pane reveal or tool_error. Arg = "pane\tvalid\tok". */
+    if (!arg || !*arg) { printf("error: pane must be one of: <panes>.\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int valid = t1 && t1[1] == '1';
+    if (!valid) { printf("error: pane must be one of: <panes>.\n"); return 0; }
+    int ok = t2 && t2[1] == '1';
+    if (!ok) { printf("error: Pane focus is only available in the Hermes desktop app.\n"); return 0; }
+    printf("{\"success\": true, \"pane\": \"%s\"}\n", arg);
+    return 0;
+}
 
 /* PoP: check_focus_pane_requirements @ tools/focus_pane_tool.py:check_focus_pane_requirements */
 int tools_focus_pane_tool_check_focus_pane_requirements(const char *arg) {

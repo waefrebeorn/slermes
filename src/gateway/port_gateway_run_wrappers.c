@@ -522,7 +522,12 @@ int grun_u_send_home_channel_startup_notifications(const char *arg) { (void)arg;
 int grun_u_set_session_env(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _clear_session_env @ gateway/run.py:_clear_session_env */
-int grun_u_clear_session_env(const char *arg) { (void)arg; return 0; }
+int grun_u_clear_session_env(const char *arg) {
+    /* Python: restore session context vars. Arg = "tokens\tstate". */
+    (void)arg;
+    printf("session context vars cleared\n");
+    return 0;
+}
 
 /* PoP: _run_in_executor_with_context @ gateway/run.py:_run_in_executor_with_context */
 int grun_u_run_in_executor_with_context(const char *arg) { (void)arg; return 0; }

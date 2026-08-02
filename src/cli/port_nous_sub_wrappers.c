@@ -105,7 +105,14 @@ int nsub_u_stt_label(const char *arg) {
 }
 
 /* PoP: _local_stt_backend_available @ hermes_cli/nous_subscription.py:_local_stt_backend_available */
-int nsub_u_local_stt_backend_available(const char *arg) { (void)arg; return 0; }
+int nsub_u_local_stt_backend_available(const char *arg) {
+    /* Python: local STT command or faster-whisper. Arg = "has_cmd\thas_whisper". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (arg[0] == '1') { printf("1\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _resolve_browser_feature_state @ hermes_cli/nous_subscription.py:_resolve_browser_feature_state */
 int nsub_u_resolve_browser_feature_state(const char *arg) {

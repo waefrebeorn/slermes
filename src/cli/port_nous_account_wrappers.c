@@ -162,7 +162,23 @@ int nous_u_info_from_account_payload(const char *arg) { (void)arg; return 0; }
 int nous_u_tool_access_from_value(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _subscription_from_payload @ hermes_cli/nous_account.py:_subscription_from_payload */
-int nous_u_subscription_from_payload(const char *arg) { (void)arg; return 0; }
+int nous_u_subscription_from_payload(const char *arg) {
+    /* Python: coerce payload fields. Arg = "payload_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (!j || !json_is_object(j)) {
+        if (j) json_free(j);
+        printf("\n");
+        return 0;
+    }
+    printf("plan=%s tier=%s monthly_charge=%s credits_remaining=%s\n",
+           json_get_str(j, "plan", ""),
+           json_get_str(j, "tier", ""),
+           json_get_str(j, "monthly_charge", ""),
+           json_get_str(j, "credits_remaining", ""));
+    json_free(j);
+    return 0;
+}
 
 /* PoP: _paid_service_access_from_payload @ hermes_cli/nous_account.py:_paid_service_access_from_payload */
 int nous_u_paid_service_access_from_payload(const char *arg) { (void)arg; return 0; }

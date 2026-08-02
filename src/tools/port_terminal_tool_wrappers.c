@@ -221,7 +221,22 @@ int tt_u_resolve_container_task_id(const char *arg) { (void)arg; return 0; }
 int tt_resolve_task_overrides(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _parse_env_var @ tools/terminal_tool.py:_parse_env_var */
-int tt_u_parse_env_var(const char *arg) { (void)arg; return 0; }
+int tt_u_parse_env_var(const char *arg) {
+    /* Python: converter over env value; ValueError with guidance. Arg =
+     * "name\traw\tvalid\tvalue". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int valid = t2 && t2[1] == '1';
+    if (!valid) {
+        fprintf(stderr, "Invalid value for %s: %s (expected valid value). Check ~/.hermes/.env or environment variables.\n",
+                arg, t1 ? t1 + 1 : "");
+        return 1;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _safe_getcwd @ tools/terminal_tool.py:_safe_getcwd */
 int tt_u_safe_getcwd(const char *arg) { (void)arg; return 0; }

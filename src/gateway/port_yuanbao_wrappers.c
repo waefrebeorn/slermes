@@ -229,7 +229,16 @@ int yb_group_policy(const char *arg) {
 int yb_u_format_shared_link(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _format_link_understanding @ gateway/platforms/yuanbao.py:_format_link_understanding */
-int yb_u_format_link_understanding(const char *arg) { (void)arg; return 0; }
+int yb_u_format_link_understanding(const char *arg) {
+    /* Python: "[link: X | visit link for full content]". Arg = "content_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    const char *link = j ? json_get_str(j, "link", "") : "";
+    if (j) json_free(j);
+    if (!link[0]) { printf("\n"); return 0; }
+    printf("[link: %s | visit link for full content]\n", link);
+    return 0;
+}
 
 /* PoP: _parse_resource_id @ gateway/platforms/yuanbao.py:_parse_resource_id */
 int yb_u_parse_resource_id(const char *arg) { (void)arg; return 0; }

@@ -32,7 +32,25 @@ int gw_u_assert_windows(const char *arg) {
 int gw_u_preserve_hermes_home_path(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _quote_cmd_script_arg @ hermes_cli/gateway_windows.py:_quote_cmd_script_arg */
-int gw_u_quote_cmd_script_arg(const char *arg) { (void)arg; return 0; }
+int gw_u_quote_cmd_script_arg(const char *arg) {
+    /* Python: cmd.exe quoting; refuse newlines; bare if clean. Arg = value. */
+    if (!arg || !*arg) { printf("\"\"\n"); return 0; }
+    if (strchr(arg, '\n') || strchr(arg, '\r')) {
+        fprintf(stderr, "refusing to quote value containing newline\n");
+        return 1;
+    }
+    int need = strchr(arg, ' ') || strchr(arg, '\t') || strchr(arg, '"');
+    if (!need) { printf("%s\n", arg); return 0; }
+    printf("\"");
+    const char *p = arg;
+    while (*p) {
+        putchar(*p);
+        if (*p == '"') putchar('"');
+        p++;
+    }
+    printf("\"\n");
+    return 0;
+}
 
 /* PoP: _quote_schtasks_arg @ hermes_cli/gateway_windows.py:_quote_schtasks_arg */
 int gw_u_quote_schtasks_arg(const char *arg) {

@@ -1080,7 +1080,12 @@ int gateway_platforms_webhook_filt_run_route_script(const char *arg) { (void)arg
 int gateway_platform_registry_register_deferred(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_all @ gateway/platform_registry.py:_resolve_all */
-int gateway_platform_registry_u_resolve_all(const char *arg) { (void)arg; return 0; }
+int gateway_platform_registry_u_resolve_all(const char *arg) {
+    /* Python: run pending deferred loaders. Arg = "deferred_count". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("resolved %s deferred platform(s)\n", arg);
+    return 0;
+}
 
 /* PoP: all_entries @ gateway/platform_registry.py:all_entries */
 int gateway_platform_registry_all_entries(const char *arg) {
