@@ -41,6 +41,7 @@ static void send_sse_keepalive(int fd) {
 /* Port of Python gateway/platforms/api_server.py:_handle_responses(). */
 /* ── Responses API Handlers ───────────────────────────────────────── */
 
+/* PoP: api_server_handle_responses @ gateway/platforms/api_server.py:_handle_responses */
 void api_server_handle_responses(api_server_adapter_t *adapter, int client_fd, const char *body, const char *headers) {
     (void)headers;
 
@@ -398,6 +399,7 @@ void api_server_handle_responses(api_server_adapter_t *adapter, int client_fd, c
 }
 
 /* Port of Python gateway/platforms/api_server.py:_handle_get_response(). */
+/* PoP: api_server_handle_get_response @ gateway/platforms/api_server.py:_handle_get_response */
 void api_server_handle_get_response(api_server_adapter_t *adapter, int client_fd, const char *response_id) {
     char *auth_err = api_server_check_auth(adapter, NULL);
     if (auth_err) { send_json_response(client_fd, 401, auth_err); free(auth_err); return; }
@@ -423,6 +425,7 @@ void api_server_handle_get_response(api_server_adapter_t *adapter, int client_fd
 }
 
 /* Port of Python gateway/platforms/api_server.py:_handle_delete_response(). */
+/* PoP: api_server_handle_delete_response @ gateway/platforms/api_server.py:_handle_delete_response */
 void api_server_handle_delete_response(api_server_adapter_t *adapter, int client_fd, const char *response_id) {
     char *auth_err = api_server_check_auth(adapter, NULL);
     if (auth_err) { send_json_response(client_fd, 401, auth_err); free(auth_err); return; }

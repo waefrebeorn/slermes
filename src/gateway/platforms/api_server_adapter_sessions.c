@@ -126,6 +126,7 @@ static int parse_nonnegative_int(const char *value, int default_val, int maximum
 
 /* ── Session Endpoints ────────────────────────────────────────────── */
 
+/* PoP: api_server_handle_list_sessions @ gateway/platforms/api_server.py:_handle_list_sessions */
 void api_server_handle_list_sessions(api_server_adapter_t *adapter, int client_fd, const char *query)
 {
     char *auth_err = api_server_check_auth(adapter, NULL);
@@ -175,6 +176,7 @@ void api_server_handle_list_sessions(api_server_adapter_t *adapter, int client_f
     json_free(root);
 }
 
+/* PoP: api_server_handle_create_session @ gateway/platforms/api_server.py:_handle_create_session */
 void api_server_handle_create_session(api_server_adapter_t *adapter, int client_fd, const char *body)
 {
     char *auth_err = api_server_check_auth(adapter, NULL);
@@ -262,6 +264,7 @@ void api_server_handle_create_session(api_server_adapter_t *adapter, int client_
     json_free(root);
 }
 
+/* PoP: api_server_handle_get_session @ gateway/platforms/api_server.py:_handle_get_session */
 void api_server_handle_get_session(api_server_adapter_t *adapter, int client_fd, const char *session_id)
 {
     char *auth_err = api_server_check_auth(adapter, NULL);
@@ -282,6 +285,7 @@ void api_server_handle_get_session(api_server_adapter_t *adapter, int client_fd,
     json_free(root);
 }
 
+/* PoP: api_server_handle_patch_session @ gateway/platforms/api_server.py:_handle_patch_session */
 void api_server_handle_patch_session(api_server_adapter_t *adapter, int client_fd, const char *session_id, const char *body)
 {
     char *auth_err = api_server_check_auth(adapter, NULL);
@@ -342,6 +346,7 @@ void api_server_handle_patch_session(api_server_adapter_t *adapter, int client_f
     json_free(root);
 }
 
+/* PoP: api_server_handle_delete_session @ gateway/platforms/api_server.py:_handle_delete_session */
 void api_server_handle_delete_session(api_server_adapter_t *adapter, int client_fd, const char *session_id)
 {
     char *auth_err = api_server_check_auth(adapter, NULL);
@@ -364,6 +369,7 @@ void api_server_handle_delete_session(api_server_adapter_t *adapter, int client_
     json_free(root);
 }
 
+/* PoP: api_server_handle_session_messages @ gateway/platforms/api_server.py:_handle_session_messages */
 void api_server_handle_session_messages(api_server_adapter_t *adapter, int client_fd, const char *session_id)
 {
     char *auth_err = api_server_check_auth(adapter, NULL);
@@ -411,6 +417,7 @@ void api_server_handle_session_messages(api_server_adapter_t *adapter, int clien
     json_free(root);
 }
 
+/* PoP: api_server_handle_fork_session @ gateway/platforms/api_server.py:_handle_fork_session */
 void api_server_handle_fork_session(api_server_adapter_t *adapter, int client_fd, const char *session_id, const char *body)
 {
     char *auth_err = api_server_check_auth(adapter, NULL);

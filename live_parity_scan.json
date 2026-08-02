@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T18:03:56Z",
+  "generated_at": "2026-08-02T18:08:08Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -88553,10 +88553,10 @@
     },
     "gateway/platforms/api_server.py": {
       "total": 147,
-      "ported": 81,
+      "ported": 123,
       "partial": 21,
       "stub": 0,
-      "real_gaps": 45,
+      "real_gaps": 3,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 147,
@@ -88601,17 +88601,24 @@
             "decorators": [],
             "line_number": 98
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_handlers.c",
+          "c_function": "get_hermes_version",
+          "pop_annotation": {
+            "c_function": "get_hermes_version",
+            "python_functions": [
+              "_hermes_version"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_handlers.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 67,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_hermes_version @ gateway/platforms/api_server.py:_hermes_version */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -88947,16 +88954,24 @@
             "decorators": [],
             "line_number": 475
           },
-          "classification": "REAL_GAP",
-          "c_location": "src/gateway/platforms/api_server_adapter.c",
-          "c_function": "_normalize_multimodal_content",
-          "pop_annotation": null,
-          "stub_reason": "C function appears to be stub/trivial (forwarding wrapper or trivial pass-through)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-1:stub-in-impl"
-          ]
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_api_server_remaining.c",
+          "c_function": "aps_normalize_multimodal_content",
+          "pop_annotation": {
+            "c_function": "aps_normalize_multimodal_content",
+            "python_functions": [
+              "_normalize_multimodal_content"
+            ],
+            "c_file": "src/gateway/port_api_server_remaining.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalize_multimodal_content @ gateway/platforms/api_server.py:_normalize_multimodal_content */"
+          },
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -89665,17 +89680,24 @@
             "decorators": [],
             "line_number": 1129
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_api_server_remaining.c",
+          "c_function": "aps_notify_cron_provider_jobs_changed",
+          "pop_annotation": {
+            "c_function": "aps_notify_cron_provider_jobs_changed",
+            "python_functions": [
+              "_notify_cron_provider_jobs_changed"
+            ],
+            "c_file": "src/gateway/port_api_server_remaining.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _notify_cron_provider_jobs_changed @ gateway/platforms/api_server.py:_notify_cron_provider_jobs_changed */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -89889,17 +89911,24 @@
             ],
             "line_number": 1382
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_api_server_remaining.c",
+          "c_function": "aps_resolve_max_concurrent_runs",
+          "pop_annotation": {
+            "c_function": "aps_resolve_max_concurrent_runs",
+            "python_functions": [
+              "_resolve_max_concurrent_runs"
+            ],
+            "c_file": "src/gateway/port_api_server_remaining.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 37,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_max_concurrent_runs @ gateway/platforms/api_server.py:_resolve_max_concurrent_runs */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -89971,17 +90000,24 @@
             "decorators": [],
             "line_number": 1445
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_api_server_remaining.c",
+          "c_function": "aps_origin_allowed",
+          "pop_annotation": {
+            "c_function": "aps_origin_allowed",
+            "python_functions": [
+              "_origin_allowed"
+            ],
+            "c_file": "src/gateway/port_api_server_remaining.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _origin_allowed @ gateway/platforms/api_server.py:_origin_allowed */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -90221,17 +90257,24 @@
             "decorators": [],
             "line_number": 1672
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_api_server_remaining.c",
+          "c_function": "aps_resolve_request_profile",
+          "pop_annotation": {
+            "c_function": "aps_resolve_request_profile",
+            "python_functions": [
+              "_resolve_request_profile"
+            ],
+            "c_file": "src/gateway/port_api_server_remaining.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 58,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_request_profile @ gateway/platforms/api_server.py:_resolve_request_profile */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -90910,17 +90953,24 @@
             "decorators": [],
             "line_number": 2628
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_handlers.c",
+          "c_function": "api_server_handle_health",
+          "pop_annotation": {
+            "c_function": "api_server_handle_health",
+            "python_functions": [
+              "_handle_health"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_handlers.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 123,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_health @ gateway/platforms/api_server.py:_handle_health */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -90932,17 +90982,24 @@
             "decorators": [],
             "line_number": 2634
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_api_server_remaining.c",
+          "c_function": "aps_handle_health_detailed",
+          "pop_annotation": {
+            "c_function": "aps_handle_health_detailed",
+            "python_functions": [
+              "_handle_health_detailed"
+            ],
+            "c_file": "src/gateway/port_api_server_remaining.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 70,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _handle_health_detailed @ gateway/platforms/api_server.py:_handle_health_detailed */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -90954,17 +91011,24 @@
             "decorators": [],
             "line_number": 2693
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_handlers.c",
+          "c_function": "api_server_handle_models",
+          "pop_annotation": {
+            "c_function": "api_server_handle_models",
+            "python_functions": [
+              "_handle_models"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_handlers.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 168,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_models @ gateway/platforms/api_server.py:_handle_models */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91005,17 +91069,24 @@
             "decorators": [],
             "line_number": 2778
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_handlers.c",
+          "c_function": "api_server_handle_capabilities",
+          "pop_annotation": {
+            "c_function": "api_server_handle_capabilities",
+            "python_functions": [
+              "_handle_capabilities"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_handlers.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 142,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_capabilities @ gateway/platforms/api_server.py:_handle_capabilities */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91027,17 +91098,24 @@
             "decorators": [],
             "line_number": 2862
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_handlers.c",
+          "c_function": "api_server_handle_skills",
+          "pop_annotation": {
+            "c_function": "api_server_handle_skills",
+            "python_functions": [
+              "_handle_skills"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_handlers.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 192,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_skills @ gateway/platforms/api_server.py:_handle_skills */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91049,17 +91127,24 @@
             "decorators": [],
             "line_number": 2893
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_handlers.c",
+          "c_function": "api_server_handle_toolsets",
+          "pop_annotation": {
+            "c_function": "api_server_handle_toolsets",
+            "python_functions": [
+              "_handle_toolsets"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_handlers.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 214,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_toolsets @ gateway/platforms/api_server.py:_handle_toolsets */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91073,17 +91158,24 @@
             ],
             "line_number": 2954
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_api_server_remaining.c",
+          "c_function": "aps_parse_nonnegative_int",
+          "pop_annotation": {
+            "c_function": "aps_parse_nonnegative_int",
+            "python_functions": [
+              "_parse_nonnegative_int"
+            ],
+            "c_file": "src/gateway/port_api_server_remaining.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 77,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _parse_nonnegative_int @ gateway/platforms/api_server.py:_parse_nonnegative_int */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91244,17 +91336,24 @@
             "decorators": [],
             "line_number": 3022
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_sessions.c",
+          "c_function": "api_server_handle_list_sessions",
+          "pop_annotation": {
+            "c_function": "api_server_handle_list_sessions",
+            "python_functions": [
+              "_handle_list_sessions"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_sessions.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 129,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_list_sessions @ gateway/platforms/api_server.py:_handle_list_sessions */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91266,17 +91365,24 @@
             "decorators": [],
             "line_number": 3051
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_sessions.c",
+          "c_function": "api_server_handle_create_session",
+          "pop_annotation": {
+            "c_function": "api_server_handle_create_session",
+            "python_functions": [
+              "_handle_create_session"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_sessions.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 179,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_create_session @ gateway/platforms/api_server.py:_handle_create_session */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91288,17 +91394,24 @@
             "decorators": [],
             "line_number": 3162
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_sessions.c",
+          "c_function": "api_server_handle_get_session",
+          "pop_annotation": {
+            "c_function": "api_server_handle_get_session",
+            "python_functions": [
+              "_handle_get_session"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_sessions.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 267,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_get_session @ gateway/platforms/api_server.py:_handle_get_session */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91310,17 +91423,24 @@
             "decorators": [],
             "line_number": 3172
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_sessions.c",
+          "c_function": "api_server_handle_patch_session",
+          "pop_annotation": {
+            "c_function": "api_server_handle_patch_session",
+            "python_functions": [
+              "_handle_patch_session"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_sessions.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 288,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_patch_session @ gateway/platforms/api_server.py:_handle_patch_session */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91332,17 +91452,24 @@
             "decorators": [],
             "line_number": 3200
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_sessions.c",
+          "c_function": "api_server_handle_delete_session",
+          "pop_annotation": {
+            "c_function": "api_server_handle_delete_session",
+            "python_functions": [
+              "_handle_delete_session"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_sessions.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 349,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_delete_session @ gateway/platforms/api_server.py:_handle_delete_session */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91354,17 +91481,24 @@
             "decorators": [],
             "line_number": 3213
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_sessions.c",
+          "c_function": "api_server_handle_session_messages",
+          "pop_annotation": {
+            "c_function": "api_server_handle_session_messages",
+            "python_functions": [
+              "_handle_session_messages"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_sessions.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 372,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_session_messages @ gateway/platforms/api_server.py:_handle_session_messages */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91376,17 +91510,24 @@
             "decorators": [],
             "line_number": 3231
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_sessions.c",
+          "c_function": "api_server_handle_fork_session",
+          "pop_annotation": {
+            "c_function": "api_server_handle_fork_session",
+            "python_functions": [
+              "_handle_fork_session"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_sessions.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 420,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_fork_session @ gateway/platforms/api_server.py:_handle_fork_session */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91400,17 +91541,24 @@
             ],
             "line_number": 3279
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_chat.c",
+          "c_function": "api_server_handle_session_chat",
+          "pop_annotation": {
+            "c_function": "api_server_handle_session_chat",
+            "python_functions": [
+              "_handle_session_chat"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_chat.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 334,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_session_chat @ gateway/platforms/api_server.py:_handle_session_chat */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91424,17 +91572,24 @@
             ],
             "line_number": 3396
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_chat.c",
+          "c_function": "api_server_handle_session_chat_stream",
+          "pop_annotation": {
+            "c_function": "api_server_handle_session_chat_stream",
+            "python_functions": [
+              "_handle_session_chat_stream"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_chat.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 367,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_session_chat_stream @ gateway/platforms/api_server.py:_handle_session_chat_stream */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91477,17 +91632,24 @@
             ],
             "line_number": 3654
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_chat.c",
+          "c_function": "api_server_handle_chat_completions",
+          "pop_annotation": {
+            "c_function": "api_server_handle_chat_completions",
+            "python_functions": [
+              "_handle_chat_completions"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_chat.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 102,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_chat_completions @ gateway/platforms/api_server.py:_handle_chat_completions */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91559,17 +91721,24 @@
             ],
             "line_number": 4813
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_responses.c",
+          "c_function": "api_server_handle_responses",
+          "pop_annotation": {
+            "c_function": "api_server_handle_responses",
+            "python_functions": [
+              "_handle_responses"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_responses.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 44,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_responses @ gateway/platforms/api_server.py:_handle_responses */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91581,17 +91750,24 @@
             "decorators": [],
             "line_number": 5136
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_responses.c",
+          "c_function": "api_server_handle_get_response",
+          "pop_annotation": {
+            "c_function": "api_server_handle_get_response",
+            "python_functions": [
+              "_handle_get_response"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_responses.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 402,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_get_response @ gateway/platforms/api_server.py:_handle_get_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91603,17 +91779,24 @@
             "decorators": [],
             "line_number": 5149
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_responses.c",
+          "c_function": "api_server_handle_delete_response",
+          "pop_annotation": {
+            "c_function": "api_server_handle_delete_response",
+            "python_functions": [
+              "_handle_delete_response"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_responses.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 428,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_delete_response @ gateway/platforms/api_server.py:_handle_delete_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91685,17 +91868,24 @@
             "decorators": [],
             "line_number": 5199
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_cron.c",
+          "c_function": "api_server_handle_list_jobs",
+          "pop_annotation": {
+            "c_function": "api_server_handle_list_jobs",
+            "python_functions": [
+              "_handle_list_jobs"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_cron.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 167,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_list_jobs @ gateway/platforms/api_server.py:_handle_list_jobs */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91707,17 +91897,24 @@
             "decorators": [],
             "line_number": 5214
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_cron.c",
+          "c_function": "api_server_handle_create_job",
+          "pop_annotation": {
+            "c_function": "api_server_handle_create_job",
+            "python_functions": [
+              "_handle_create_job"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_cron.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 194,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_create_job @ gateway/platforms/api_server.py:_handle_create_job */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91729,17 +91926,24 @@
             "decorators": [],
             "line_number": 5268
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_cron.c",
+          "c_function": "api_server_handle_get_job",
+          "pop_annotation": {
+            "c_function": "api_server_handle_get_job",
+            "python_functions": [
+              "_handle_get_job"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_cron.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 260,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_get_job @ gateway/platforms/api_server.py:_handle_get_job */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91751,17 +91955,24 @@
             "decorators": [],
             "line_number": 5287
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_cron.c",
+          "c_function": "api_server_handle_update_job",
+          "pop_annotation": {
+            "c_function": "api_server_handle_update_job",
+            "python_functions": [
+              "_handle_update_job"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_cron.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 291,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_update_job @ gateway/platforms/api_server.py:_handle_update_job */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91773,17 +91984,24 @@
             "decorators": [],
             "line_number": 5325
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_cron.c",
+          "c_function": "api_server_handle_delete_job",
+          "pop_annotation": {
+            "c_function": "api_server_handle_delete_job",
+            "python_functions": [
+              "_handle_delete_job"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_cron.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 371,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_delete_job @ gateway/platforms/api_server.py:_handle_delete_job */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91795,17 +92013,24 @@
             "decorators": [],
             "line_number": 5345
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_cron.c",
+          "c_function": "api_server_handle_pause_job",
+          "pop_annotation": {
+            "c_function": "api_server_handle_pause_job",
+            "python_functions": [
+              "_handle_pause_job"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_cron.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 401,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_pause_job @ gateway/platforms/api_server.py:_handle_pause_job */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91817,17 +92042,24 @@
             "decorators": [],
             "line_number": 5365
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_cron.c",
+          "c_function": "api_server_handle_resume_job",
+          "pop_annotation": {
+            "c_function": "api_server_handle_resume_job",
+            "python_functions": [
+              "_handle_resume_job"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_cron.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 432,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_resume_job @ gateway/platforms/api_server.py:_handle_resume_job */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91839,17 +92071,24 @@
             "decorators": [],
             "line_number": 5385
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_cron.c",
+          "c_function": "api_server_handle_run_job",
+          "pop_annotation": {
+            "c_function": "api_server_handle_run_job",
+            "python_functions": [
+              "_handle_run_job"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_cron.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 463,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_run_job @ gateway/platforms/api_server.py:_handle_run_job */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -91861,17 +92100,24 @@
             "decorators": [],
             "line_number": 5407
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_api_server_remaining.c",
+          "c_function": "aps_handle_cron_fire",
+          "pop_annotation": {
+            "c_function": "aps_handle_cron_fire",
+            "python_functions": [
+              "_handle_cron_fire"
+            ],
+            "c_file": "src/gateway/port_api_server_remaining.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 88,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _handle_cron_fire @ gateway/platforms/api_server.py:_handle_cron_fire */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -92007,17 +92253,24 @@
             "decorators": [],
             "line_number": 5639
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_api_server_remaining.c",
+          "c_function": "aps_concurrency_limited_response",
+          "pop_annotation": {
+            "c_function": "aps_concurrency_limited_response",
+            "python_functions": [
+              "_concurrency_limited_response"
+            ],
+            "c_file": "src/gateway/port_api_server_remaining.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 96,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _concurrency_limited_response @ gateway/platforms/api_server.py:_concurrency_limited_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -92031,17 +92284,24 @@
             ],
             "line_number": 5672
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_api_server_remaining.c",
+          "c_function": "aps_bind_api_server_session",
+          "pop_annotation": {
+            "c_function": "aps_bind_api_server_session",
+            "python_functions": [
+              "_bind_api_server_session"
+            ],
+            "c_file": "src/gateway/port_api_server_remaining.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 107,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _bind_api_server_session @ gateway/platforms/api_server.py:_bind_api_server_session */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -92134,17 +92394,24 @@
             ],
             "line_number": 5983
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_runs.c",
+          "c_function": "api_server_handle_runs",
+          "pop_annotation": {
+            "c_function": "api_server_handle_runs",
+            "python_functions": [
+              "_handle_runs"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_runs.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 125,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_runs @ gateway/platforms/api_server.py:_handle_runs */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -92156,17 +92423,24 @@
             "decorators": [],
             "line_number": 6379
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_runs.c",
+          "c_function": "api_server_handle_get_run",
+          "pop_annotation": {
+            "c_function": "api_server_handle_get_run",
+            "python_functions": [
+              "_handle_get_run"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_runs.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 226,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_get_run @ gateway/platforms/api_server.py:_handle_get_run */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -92178,17 +92452,24 @@
             "decorators": [],
             "line_number": 6394
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_runs.c",
+          "c_function": "api_server_handle_run_events",
+          "pop_annotation": {
+            "c_function": "api_server_handle_run_events",
+            "python_functions": [
+              "_handle_run_events"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_runs.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 254,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_run_events @ gateway/platforms/api_server.py:_handle_run_events */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -92200,17 +92481,24 @@
             "decorators": [],
             "line_number": 6446
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_runs.c",
+          "c_function": "api_server_handle_run_approval",
+          "pop_annotation": {
+            "c_function": "api_server_handle_run_approval",
+            "python_functions": [
+              "_handle_run_approval"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_runs.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 287,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_run_approval @ gateway/platforms/api_server.py:_handle_run_approval */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -92222,17 +92510,24 @@
             "decorators": [],
             "line_number": 6534
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/platforms/api_server_adapter_runs.c",
+          "c_function": "api_server_handle_stop_run",
+          "pop_annotation": {
+            "c_function": "api_server_handle_stop_run",
+            "python_functions": [
+              "_handle_stop_run"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter_runs.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 358,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_server_handle_stop_run @ gateway/platforms/api_server.py:_handle_stop_run */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",

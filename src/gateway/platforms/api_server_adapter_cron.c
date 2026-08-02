@@ -164,6 +164,7 @@ static char *build_cron_origin(const char *remote, const char *peer_ip,
 /* Port of Python gateway/platforms/api_server.py:_handle_list_jobs(). */
 /* ── Cron Handlers ───────────────────────────────────────────────── */
 
+/* PoP: api_server_handle_list_jobs @ gateway/platforms/api_server.py:_handle_list_jobs */
 void api_server_handle_list_jobs(api_server_adapter_t *adapter, int client_fd, const char *query) {
     char *auth_err = api_server_check_auth(adapter, NULL);
     if (auth_err) { send_json_response(client_fd, 401, auth_err); free(auth_err); return; }
@@ -190,6 +191,7 @@ void api_server_handle_list_jobs(api_server_adapter_t *adapter, int client_fd, c
 }
 
 /* Port of Python gateway/platforms/api_server.py:_handle_create_job(). */
+/* PoP: api_server_handle_create_job @ gateway/platforms/api_server.py:_handle_create_job */
 void api_server_handle_create_job(api_server_adapter_t *adapter, int client_fd, const char *body, const char *request_info) {
     (void)request_info;
 
@@ -255,6 +257,7 @@ void api_server_handle_create_job(api_server_adapter_t *adapter, int client_fd, 
 }
 
 /* Port of Python gateway/platforms/api_server.py:_handle_get_job(). */
+/* PoP: api_server_handle_get_job @ gateway/platforms/api_server.py:_handle_get_job */
 void api_server_handle_get_job(api_server_adapter_t *adapter, int client_fd, const char *job_id) {
     char *auth_err = api_server_check_auth(adapter, NULL);
     if (auth_err) { send_json_response(client_fd, 401, auth_err); free(auth_err); return; }
@@ -285,6 +288,7 @@ void api_server_handle_get_job(api_server_adapter_t *adapter, int client_fd, con
 }
 
 /* Port of Python gateway/platforms/api_server.py:_handle_update_job(). */
+/* PoP: api_server_handle_update_job @ gateway/platforms/api_server.py:_handle_update_job */
 void api_server_handle_update_job(api_server_adapter_t *adapter, int client_fd, const char *job_id, const char *body) {
     char *auth_err = api_server_check_auth(adapter, NULL);
     if (auth_err) { send_json_response(client_fd, 401, auth_err); free(auth_err); return; }
@@ -364,6 +368,7 @@ void api_server_handle_update_job(api_server_adapter_t *adapter, int client_fd, 
 }
 
 /* Port of Python gateway/platforms/api_server.py:_handle_delete_job(). */
+/* PoP: api_server_handle_delete_job @ gateway/platforms/api_server.py:_handle_delete_job */
 void api_server_handle_delete_job(api_server_adapter_t *adapter, int client_fd, const char *job_id) {
     char *auth_err = api_server_check_auth(adapter, NULL);
     if (auth_err) { send_json_response(client_fd, 401, auth_err); free(auth_err); return; }
@@ -393,6 +398,7 @@ void api_server_handle_delete_job(api_server_adapter_t *adapter, int client_fd, 
 }
 
 /* Port of Python gateway/platforms/api_server.py:_handle_pause_job(). */
+/* PoP: api_server_handle_pause_job @ gateway/platforms/api_server.py:_handle_pause_job */
 void api_server_handle_pause_job(api_server_adapter_t *adapter, int client_fd, const char *job_id) {
     char *auth_err = api_server_check_auth(adapter, NULL);
     if (auth_err) { send_json_response(client_fd, 401, auth_err); free(auth_err); return; }
@@ -423,6 +429,7 @@ void api_server_handle_pause_job(api_server_adapter_t *adapter, int client_fd, c
 }
 
 /* Port of Python gateway/platforms/api_server.py:_handle_resume_job(). */
+/* PoP: api_server_handle_resume_job @ gateway/platforms/api_server.py:_handle_resume_job */
 void api_server_handle_resume_job(api_server_adapter_t *adapter, int client_fd, const char *job_id) {
     char *auth_err = api_server_check_auth(adapter, NULL);
     if (auth_err) { send_json_response(client_fd, 401, auth_err); free(auth_err); return; }
@@ -453,6 +460,7 @@ void api_server_handle_resume_job(api_server_adapter_t *adapter, int client_fd, 
 }
 
 /* Port of Python gateway/platforms/api_server.py:_handle_run_job(). */
+/* PoP: api_server_handle_run_job @ gateway/platforms/api_server.py:_handle_run_job */
 void api_server_handle_run_job(api_server_adapter_t *adapter, int client_fd, const char *job_id) {
     char *auth_err = api_server_check_auth(adapter, NULL);
     if (auth_err) { send_json_response(client_fd, 401, auth_err); free(auth_err); return; }

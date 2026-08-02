@@ -122,6 +122,7 @@ static void send_sse_keepalive(int fd) {
 /* Port of Python gateway/platforms/api_server.py:_handle_runs(). */
 /* ── Runs Handlers ───────────────────────────────────────────────── */
 
+/* PoP: api_server_handle_runs @ gateway/platforms/api_server.py:_handle_runs */
 void api_server_handle_runs(api_server_adapter_t *adapter, int client_fd, const char *body, const char *headers) {
     (void)headers;
 
@@ -222,6 +223,7 @@ void api_server_handle_runs(api_server_adapter_t *adapter, int client_fd, const 
 }
 
 /* Port of Python gateway/platforms/api_server.py:_handle_get_run(). */
+/* PoP: api_server_handle_get_run @ gateway/platforms/api_server.py:_handle_get_run */
 void api_server_handle_get_run(api_server_adapter_t *adapter, int client_fd, const char *run_id) {
     char *auth_err = api_server_check_auth(adapter, NULL);
     if (auth_err) { send_json_response(client_fd, 401, auth_err); free(auth_err); return; }
@@ -249,6 +251,7 @@ void api_server_handle_get_run(api_server_adapter_t *adapter, int client_fd, con
 }
 
 /* Port of Python gateway/platforms/api_server.py:_handle_run_events(). */
+/* PoP: api_server_handle_run_events @ gateway/platforms/api_server.py:_handle_run_events */
 void api_server_handle_run_events(api_server_adapter_t *adapter, int client_fd, const char *run_id) {
     char *auth_err = api_server_check_auth(adapter, NULL);
     if (auth_err) { send_json_response(client_fd, 401, auth_err); free(auth_err); return; }
@@ -281,6 +284,7 @@ void api_server_handle_run_events(api_server_adapter_t *adapter, int client_fd, 
 }
 
 /* Port of Python gateway/platforms/api_server.py:_handle_run_approval(). */
+/* PoP: api_server_handle_run_approval @ gateway/platforms/api_server.py:_handle_run_approval */
 void api_server_handle_run_approval(api_server_adapter_t *adapter, int client_fd, const char *run_id, const char *body) {
     char *auth_err = api_server_check_auth(adapter, NULL);
     if (auth_err) { send_json_response(client_fd, 401, auth_err); free(auth_err); return; }
@@ -351,6 +355,7 @@ void api_server_handle_run_approval(api_server_adapter_t *adapter, int client_fd
 }
 
 /* Port of Python gateway/platforms/api_server.py:_handle_stop_run(). */
+/* PoP: api_server_handle_stop_run @ gateway/platforms/api_server.py:_handle_stop_run */
 void api_server_handle_stop_run(api_server_adapter_t *adapter, int client_fd, const char *run_id) {
     char *auth_err = api_server_check_auth(adapter, NULL);
     if (auth_err) { send_json_response(client_fd, 401, auth_err); free(auth_err); return; }

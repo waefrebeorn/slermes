@@ -99,6 +99,7 @@ static void send_sse_keepalive(int fd) {
 /* Port of Python gateway/platforms/api_server.py:_handle_chat_completions(). */
 /* ── Chat Completions Handlers ───────────────────────────────────── */
 
+/* PoP: api_server_handle_chat_completions @ gateway/platforms/api_server.py:_handle_chat_completions */
 void api_server_handle_chat_completions(api_server_adapter_t *adapter, int client_fd, const char *body, const char *query, const char *headers) {
     (void)query; (void)headers;
 
@@ -330,6 +331,7 @@ void api_server_handle_chat_completions(api_server_adapter_t *adapter, int clien
 
 /* Port of Python gateway/platforms/api_server.py:_handle_session_chat().
  * Session chat (non-streaming) */
+/* PoP: api_server_handle_session_chat @ gateway/platforms/api_server.py:_handle_session_chat */
 void api_server_handle_session_chat(api_server_adapter_t *adapter, int client_fd, const char *session_id, const char *body) {
     char *auth_err = api_server_check_auth(adapter, NULL);
     if (auth_err) { send_json_response(client_fd, 401, auth_err); free(auth_err); return; }
@@ -362,6 +364,7 @@ void api_server_handle_session_chat(api_server_adapter_t *adapter, int client_fd
 
 /* Port of Python gateway/platforms/api_server.py:_handle_session_chat_stream().
  * Session chat streaming */
+/* PoP: api_server_handle_session_chat_stream @ gateway/platforms/api_server.py:_handle_session_chat_stream */
 void api_server_handle_session_chat_stream(api_server_adapter_t *adapter, int client_fd, const char *session_id, const char *body) {
     char *auth_err = api_server_check_auth(adapter, NULL);
     if (auth_err) { send_json_response(client_fd, 401, auth_err); free(auth_err); return; }
