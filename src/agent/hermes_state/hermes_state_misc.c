@@ -1633,3 +1633,278 @@ char *hermes_state_find_session_by_origin(hermes_state_db_t *db, const char *sou
 }
 
 
+
+/* ── content encoding / lineage / display helpers ──────────────────────── */
+
+/* PoP: hermes_state_encode_content @ hermes_state.py:_encode_content */
+char *hermes_state_encode_content(const char *content_json) {
+    /* Structured (list/dict) content serialized for sqlite; strings pass
+     * through unchanged. Arg = raw content string or JSON array/object. */
+    if (!content_json) return NULL;
+    json_t *v = json_parse(content_json, NULL);
+    if (!v) return strdup(content_json); /* plain string, not JSON */
+    if (v->type == JSON_STRING) {
+        char *out = strdup(json_string_value(v));
+        json_free(v);
+        return out;
+    }
+    if (v->type == JSON_ARRAY || v->type == JSON_OBJECT) {
+        char *out = json_serialize(v);
+        json_free(v);
+        return out;
+    }
+    json_free(v);
+    return strdup(content_json);
+}
+
+/* PoP: hermes_state_encode_display_metadata @ hermes_state.py:_encode_display_metadata */
+char *hermes_state_encode_display_metadata(const char *meta_json) {
+    /* Already-serialized JSON strings pass through (no double-encode);
+     * dicts serialize. */
+    if (!meta_json) return NULL;
+    json_t *v = json_parse(meta_json, NULL);
+    if (!v) return strdup(meta_json);
+    if (v->type == JSON_OBJECT) {
+        char *out = json_serialize(v);
+        json_free(v);
+        return out;
+    }
+    if (v->type == JSON_STRING) {
+        char *out = strdup(json_string_value(v));
+        json_free(v);
+        return out;
+    }
+    json_free(v);
+    return strdup(meta_json);
+}
+
+/* PoP: hermes_state_decode_display_metadata @ hermes_state.py:_decode_display_metadata */
+char *hermes_state_decode_display_metadata(const char *raw) {
+    /* Decode the column into the dict every reader expects; legacy raw text
+     * that is not JSON passes through. */
+    if (!raw) return NULL;
+    json_t *v = json_parse(raw, NULL);
+    if (v && v->type == JSON_OBJECT) {
+        char *out = json_serialize(v);
+        json_free(v);
+        return out;
+    }
+    json_free(v);
+    return strdup(raw);
+}
+
+/* PoP: hermes_state_session_lineage_root_to_tip @ hermes_state.py:_session_lineage_root_to_tip */
+char *hermes_state_session_lineage_root_to_tip(hermes_state_db_t *db, const char *session_id) {
+    /* Walk parent links (max 100) from the tip to the root; returns the
+     * chain root->tip as a JSON array. */
+    if (!db || !session_id || !*session_id) return strdup("[]");
+    char *chain[101];
+    int n = 0;
+    char cur[512];
+    snprintf(cur, sizeof(cur), "%s", session_id);
+    for (int i = 0; i < 100 && *cur; i++) {
+        bool dup = false;
+        for (int k = 0; k < n; k++)
+            if (strcmp(chain[k], cur) == 0) { dup = true; break; }
+        if (dup) break;
+        chain[n++] = strdup(cur);
+        sqlite3_stmt *st = NULL;
+        if (sqlite3_prepare_v2(db->db, "SELECT parent_session_id FROM sessions WHERE id = ?", -1, &st, NULL) != SQLITE_OK) break;
+        sqlite3_bind_text(st, 1, cur, -1, SQLITE_TRANSIENT);
+        if (sqlite3_step(st) == SQLITE_ROW) {
+            const unsigned char *p = sqlite3_column_text(st, 0);
+            if (p && *p) snprintf(cur, sizeof(cur), "%s", (const char *)p);
+            else cur[0] = '\0';
+        } else {
+            cur[0] = '\0';
+        }
+        sqlite3_finalize(st);
+    }
+    /* chain is tip->root; emit root->tip */
+    json_t *arr = json_array();
+    for (int i = n - 1; i >= 0; i--) json_append(arr, json_string(chain[i]));
+    for (int i = 0; i < n; i++) free(chain[i]);
+    char *out = json_serialize(arr);
+    json_free(arr);
+    return out;
+}
+
+/* PoP: hermes_state_set_latest_matching_message_display_kind @ hermes_state.py:set_latest_matching_message_display_kind */
+bool hermes_state_set_latest_matching_message_display_kind(hermes_state_db_t *db,
+                                                           const char *session_id,
+                                                           const char *role,
+                                                           const char *display_kind,
+                                                           const char *display_metadata) {
+    /* Stamp presentation metadata on this turn's freshly persisted row. */
+    if (!db || !session_id) return false;
+    sqlite3_stmt *sel = NULL;
+    long long row_id = 0;
+    if (sqlite3_prepare_v2(db->db,
+            "SELECT id FROM messages WHERE session_id = ?1 AND role = ?2 "
+            "ORDER BY id DESC LIMIT 1", -1, &sel, NULL) != SQLITE_OK) return false;
+    sqlite3_bind_text(sel, 1, session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(sel, 2, role ? role : "", -1, SQLITE_TRANSIENT);
+    if (sqlite3_step(sel) == SQLITE_ROW) row_id = sqlite3_column_int64(sel, 0);
+    sqlite3_finalize(sel);
+    if (!row_id) return false;
+    char *meta = hermes_state_encode_display_metadata(display_metadata);
+    sqlite3_stmt *up = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE messages SET display_kind = ?1, display_metadata = ?2 WHERE id = ?3",
+            -1, &up, NULL) != SQLITE_OK) { free(meta); return false; }
+    sqlite3_bind_text(up, 1, display_kind ? display_kind : "", -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(up, 2, meta ? meta : "", -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int64(up, 3, row_id);
+    bool ok = sqlite3_step(up) == SQLITE_DONE;
+    sqlite3_finalize(up);
+    free(meta);
+    return ok;
+}
+
+/* PoP: hermes_state_set_latest_user_api_content @ hermes_state.py:set_latest_user_api_content */
+bool hermes_state_set_latest_user_api_content(hermes_state_db_t *db, const char *session_id,
+                                              const char *api_content) {
+    /* Backfill the api_content sidecar onto the newest ACTIVE user row. */
+    if (!db || !session_id) return false;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE messages SET api_content = ?1 WHERE id = ("
+            "SELECT id FROM messages WHERE session_id = ?2 AND role = 'user' AND active = 1 "
+            "ORDER BY id DESC LIMIT 1)", -1, &st, NULL) != SQLITE_OK) return false;
+    sqlite3_bind_text(st, 1, api_content ? api_content : "", -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(st, 2, session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_step(st);
+    bool ok = sqlite3_changes(db->db) > 0;
+    sqlite3_finalize(st);
+    return ok;
+}
+
+/* PoP: hermes_state_ensure_session @ hermes_state.py:ensure_session */
+void hermes_state_ensure_session(hermes_state_db_t *db, const char *session_id,
+                                 const char *source, const char *model) {
+    if (!db || !session_id) return;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "INSERT OR IGNORE INTO sessions (id, source, model, started_at) VALUES (?1, ?2, ?3, ?4)",
+            -1, &st, NULL) != SQLITE_OK) return;
+    sqlite3_bind_text(st, 1, session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(st, 2, source ? source : "unknown", -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(st, 3, model, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_double(st, 4, hermes_state_now_epoch());
+    sqlite3_step(st);
+    sqlite3_finalize(st);
+}
+
+/* PoP: hermes_state_has_archived_messages @ hermes_state.py:has_archived_messages */
+bool hermes_state_has_archived_messages(hermes_state_db_t *db, const char *session_id) {
+    if (!db || !session_id) return false;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "SELECT 1 FROM messages WHERE session_id = ? AND active = 0 LIMIT 1", -1, &st, NULL) != SQLITE_OK)
+        return false;
+    sqlite3_bind_text(st, 1, session_id, -1, SQLITE_TRANSIENT);
+    bool found = sqlite3_step(st) == SQLITE_ROW;
+    sqlite3_finalize(st);
+    return found;
+}
+
+/* PoP: hermes_state_is_duplicate_replayed_user_message @ hermes_state.py:_is_duplicate_replayed_user_message */
+bool hermes_state_is_duplicate_replayed_user_message(const char *msg_json, const char *messages_json) {
+    /* A user message duplicates a previous one unless an assistant turn with
+     * content/tool_calls intervened. */
+    if (!msg_json || !messages_json) return false;
+    json_t *msg = json_parse(msg_json, NULL);
+    if (!msg || msg->type != JSON_OBJECT) { if (msg) json_free(msg); return false; }
+    const char *role = json_get_str(msg, "role", "");
+    if (strcmp(role, "user") != 0) { json_free(msg); return false; }
+    json_t *content_v = json_obj_get(msg, "content");
+    if (!content_v || !json_is_string(content_v) || !*json_string_value(content_v)) {
+        json_free(msg); return false;
+    }
+    const char *content = json_string_value(content_v);
+    json_t *msgs = json_parse(messages_json, NULL);
+    bool dup = false;
+    if (msgs && msgs->type == JSON_ARRAY) {
+        for (size_t i = json_len(msgs); i > 0; i--) {
+            json_t *prev = json_get(msgs, i - 1);
+            if (!prev || prev->type != JSON_OBJECT) continue;
+            const char *pr = json_get_str(prev, "role", "");
+            if (strcmp(pr, "user") == 0) {
+                json_t *pc = json_obj_get(prev, "content");
+                if (pc && json_is_string(pc) && strcmp(json_string_value(pc), content) == 0) {
+                    dup = true;
+                    break;
+                }
+            } else if (strcmp(pr, "assistant") == 0) {
+                json_t *pc = json_obj_get(prev, "content");
+                json_t *tc = json_obj_get(prev, "tool_calls");
+                if ((pc && json_is_string(pc) && *json_string_value(pc)) || (tc && !json_is_null(tc))) {
+                    break; /* an assistant turn intervened: not a duplicate */
+                }
+            }
+        }
+    }
+    json_free(msgs);
+    json_free(msg);
+    return dup;
+}
+
+/* PoP: hermes_state_prune_filter_where @ hermes_state.py:_prune_filter_where */
+char *hermes_state_prune_filter_where(const char *arg) {
+    /* Shared WHERE clause for bulk prune/archive selection. Arg =
+     * "last_active_before\tlast_active_after\tstarted_before\tstarted_after"
+     * with "-" for unset, then optional "\tsource\ttitle_like\tarchived(-1/0/1)".
+     * Prints the clause. */
+    double lab = -1, laa = -1, sb = -1, sa = -1;
+    char src[128], title[128];
+    int archived = -1;
+    src[0] = title[0] = '\0';
+    int n = sscanf(arg, "%lf\t%lf\t%lf\t%lf\t%127[^\t]\t%127[^\t]\t%d",
+                   &lab, &laa, &sb, &sa, src, title, &archived);
+    char out[2048];
+    size_t o = 0;
+    o += (size_t)snprintf(out + o, sizeof(out) - o, "s.ended_at IS NOT NULL");
+    int param = 1;
+    if (lab >= 0) {
+        o += (size_t)snprintf(out + o, sizeof(out) - o,
+            " AND COALESCE((SELECT MAX(m.timestamp) FROM messages m WHERE m.session_id = s.id), s.started_at) < ?%d", param++);
+    }
+    if (laa >= 0) {
+        o += (size_t)snprintf(out + o, sizeof(out) - o,
+            " AND COALESCE((SELECT MAX(m.timestamp) FROM messages m WHERE m.session_id = s.id), s.started_at) >= ?%d", param++);
+    }
+    if (sb >= 0) o += (size_t)snprintf(out + o, sizeof(out) - o, " AND s.started_at < ?%d", param++);
+    if (sa >= 0) o += (size_t)snprintf(out + o, sizeof(out) - o, " AND s.started_at >= ?%d", param++);
+    if (src[0]) o += (size_t)snprintf(out + o, sizeof(out) - o, " AND s.source = ?%d", param++);
+    if (title[0]) o += (size_t)snprintf(out + o, sizeof(out) - o, " AND LOWER(COALESCE(s.title, '')) LIKE ?%d", param++);
+    if (archived >= 0) o += (size_t)snprintf(out + o, sizeof(out) - o, " AND s.archived = ?%d", param++);
+    printf("%s\n", out);
+    return NULL;
+}
+
+/* PoP: hermes_state_maybe_auto_archive @ hermes_state.py:maybe_auto_archive */
+bool hermes_state_maybe_auto_archive(hermes_state_db_t *db, long long idle_days) {
+    /* Idempotent auto-archive: soft-hide sessions idle for idle_days,
+     * recorded via the state_meta last-run stamp. */
+    if (!db || idle_days <= 0) return false;
+    char *last = hermes_state_get_meta(db, "last_auto_archive_at");
+    double now = hermes_state_now_epoch();
+    if (last && *last) {
+        double last_ts = strtod(last, NULL);
+        if (now - last_ts < 86400) { free(last); return false; } /* ran within a day */
+    }
+    free(last);
+    double cutoff = now - (double)idle_days * 86400;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE sessions SET archived = 1 WHERE archived = 0 AND ended_at IS NOT NULL "
+            "AND COALESCE((SELECT MAX(m.timestamp) FROM messages m WHERE m.session_id = sessions.id), sessions.started_at) < ?1",
+            -1, &st, NULL) != SQLITE_OK) return false;
+    sqlite3_bind_double(st, 1, cutoff);
+    sqlite3_step(st);
+    sqlite3_finalize(st);
+    char stamp[64];
+    snprintf(stamp, sizeof(stamp), "%.0f", now);
+    hermes_state_set_meta(db, "last_auto_archive_at", stamp);
+    return true;
+}
