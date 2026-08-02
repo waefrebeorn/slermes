@@ -118,7 +118,13 @@ int gw_get_task_script_path(const char *arg) { (void)arg; return 0; }
 int gw_u_startup_dir(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_startup_entry_path @ hermes_cli/gateway_windows.py:get_startup_entry_path */
-int gw_get_startup_entry_path(const char *arg) { (void)arg; return 0; }
+int gw_get_startup_entry_path(const char *arg) {
+    /* Python: _startup_dir() / "<task>.vbs" (Windows-only; the C shim
+     * reports the Windows startup dir layout). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s.vbs\n", arg);
+    return 0;
+}
 
 /* PoP: _legacy_startup_entry_path @ hermes_cli/gateway_windows.py:_legacy_startup_entry_path */
 int gw_u_legacy_startup_entry_path(const char *arg) { (void)arg; return 0; }

@@ -605,7 +605,21 @@ int agent_rate_limit_tracker_has_data(const char *arg) {
 int agent_rate_limit_tracker_age_seconds(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _safe_float @ agent/rate_limit_tracker.py:_safe_float */
-int agent_rate_limit_tracker_u_safe_float(const char *arg) { (void)arg; return 0; }
+int agent_rate_limit_tracker_u_safe_float(const char *arg) {
+    /* Python: float(value) or default. Arg = "value\tdefault". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    char val[128];
+    size_t vlen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (vlen >= sizeof(val)) vlen = sizeof(val) - 1;
+    memcpy(val, arg, vlen); val[vlen] = '\0';
+    const char *def = tab ? tab + 1 : "0";
+    char *end = NULL;
+    double d = strtod(val, &end);
+    if (end == val || (*end != '\0' && *end != ' ')) { printf("%s\n", def); return 0; }
+    printf("%g\n", d);
+    return 0;
+}
 
 /* PoP: parse_rate_limit_headers @ agent/rate_limit_tracker.py:parse_rate_limit_headers */
 int agent_rate_limit_tracker_parse_rate_limit_headers(const char *arg) { (void)arg; return 0; }

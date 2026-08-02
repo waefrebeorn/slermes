@@ -343,7 +343,11 @@ int tools_delegation_live_log_new_live_delegation_id(const char *arg) { (void)ar
 int tools_delegation_live_log_u_one_line(const char *arg) { (void)arg; return 0; }
 
 /* PoP: assistant_text @ tools/delegation_live_log.py:assistant_text */
-int tools_delegation_live_log_assistant_text(const char *arg) { (void)arg; return 0; }
+int tools_delegation_live_log_assistant_text(const char *arg) {
+    /* Python: one-line assistant event (truncated to the max width). */
+    if (arg && *arg) printf("assistant %s\n", arg);
+    return 0;
+}
 
 /* PoP: tool_start @ tools/delegation_live_log.py:tool_start */
 int tools_delegation_live_log_tool_start(const char *arg) { (void)arg; return 0; }
@@ -652,7 +656,17 @@ int tools_xai_video_tools_u_check_xai_video_requirements(const char *arg) {
 }
 
 /* PoP: _clean_string @ tools/xai_video_tools.py:_clean_string */
-int tools_xai_video_tools_u_clean_string(const char *arg) { (void)arg; return 0; }
+int tools_xai_video_tools_u_clean_string(const char *arg) {
+    /* Python: stripped value if a non-empty string, else None. */
+    if (!arg || !*arg) { printf("null\n"); return 0; }
+    const char *s = arg;
+    while (*s == ' ' || *s == '\t') s++;
+    size_t n = strlen(s);
+    while (n > 0 && (s[n-1] == ' ' || s[n-1] == '\t')) n--;
+    if (n == 0) { printf("null\n"); return 0; }
+    printf("%.*s\n", (int)n, s);
+    return 0;
+}
 
 /* PoP: _provider_not_configured_error @ tools/xai_video_tools.py:_provider_not_configured_error */
 int tools_xai_video_tools_u_provider_not_configured_error(const char *arg) { (void)arg; return 0; }

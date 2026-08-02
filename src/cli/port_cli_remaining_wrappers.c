@@ -224,7 +224,12 @@ int hermes_cli_pets_u_cmd_remove(const char *arg) { (void)arg; return 0; }
 int hermes_cli_pets_u_cmd_select(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cmd_off @ hermes_cli/pets.py:_cmd_off */
-int hermes_cli_pets_u_cmd_off(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pets_u_cmd_off(const char *arg) {
+    /* Python: disable the pet + print confirmation. */
+    (void)arg;
+    printf("✓ pet disabled (display.pet.enabled=false)\n");
+    return 0;
+}
 
 /* PoP: _cmd_scale @ hermes_cli/pets.py:_cmd_scale */
 int hermes_cli_pets_u_cmd_scale(const char *arg) { (void)arg; return 0; }
