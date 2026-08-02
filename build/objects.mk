@@ -189,7 +189,7 @@ PORT_OBJ = \
         src/tools/port_skills_hub.o src/tools/port_skills_hub_remaining.o \
         src/tools/port_mcp_tool.o \
         src/tools/port_send_message_tool.o \
-        src/tools/port_tts_tool.o \
+        src/tools/port_tts_tool.o src/tools/port_tts_tool_remaining.o \
         src/tools/port_file_operations.o \
         src/tools/port_image_generation_tool.o \
         src/tools/environments.o \
