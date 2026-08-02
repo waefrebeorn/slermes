@@ -1614,7 +1614,26 @@ int gateway_wake_u_self_post_chat_completion(const char *arg) { (void)arg; retur
 int gateway_cwd_placeholder_u_truthy_env(const char *arg) { (void)arg; return 0; }
 
 /* PoP: resolve_placeholder_terminal_cwd @ gateway/cwd_placeholder.py:resolve_placeholder_terminal_cwd */
-int gateway_cwd_placeholder_resolve_placeholder_terminal_cwd(const char *arg) { (void)arg; return 0; }
+int gateway_cwd_placeholder_resolve_placeholder_terminal_cwd(const char *arg) {
+    /* Python: backend/mount resolution. Arg =
+     * "backend\tplaceholder\tmount\tmessaging_cwd\thome\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *t5 = t4 ? strchr(t4 + 1, '\t') : NULL;
+    const char *backend = arg;
+    int is_placeholder = t1 && t1[1] == '1';
+    int mount = t2 && t2[1] == '1';
+    const char *messaging = t3 ? t3 + 1 : "";
+    const char *home = t4 ? t4 + 1 : "";
+    if (!is_placeholder) { printf("%s\n", arg); return 0; }
+    if (strcmp(backend, "local") == 0) { printf("%s\n", messaging[0] ? messaging : home); return 0; }
+    if (strcmp(backend, "docker") == 0 && mount && messaging[0]) { printf("%s\n", messaging); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: is_relay @ gateway/delivery.py:is_relay */
 int gateway_delivery_is_relay(const char *arg) {

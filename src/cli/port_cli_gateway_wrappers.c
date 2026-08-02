@@ -284,7 +284,15 @@ int cgw_u_print_systemd_start_limit_wait(const char *arg) {
 int cgw_u_recover_pending_systemd_restart(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _parse_launchd_pid_from_list_output @ hermes_cli/gateway.py:_parse_launchd_pid_from_list_output */
-int cgw_u_parse_launchd_pid_from_list_output(const char *arg) { (void)arg; return 0; }
+int cgw_u_parse_launchd_pid_from_list_output(const char *arg) {
+    /* Python: PID line parse. Arg = "state\tpid". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "ok") == 0) { printf("%s\n", tab ? tab + 1 : ""); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _probe_launchd_service_running @ hermes_cli/gateway.py:_probe_launchd_service_running */
 int cgw_u_probe_launchd_service_running(const char *arg) {
@@ -1146,7 +1154,20 @@ int cgw_systemd_start(const char *arg) {
 }
 
 /* PoP: systemd_stop @ hermes_cli/gateway.py:systemd_stop */
-int cgw_systemd_stop(const char *arg) { (void)arg; return 0; }
+int cgw_systemd_stop(const char *arg) {
+    /* Python: planned marker + stop. Arg = "state\ttimed_out\tlabel". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "not_installed") == 0) { fprintf(stderr, "service not installed\n"); return 1; }
+    if (strcmp(state, "timeout") == 0) {
+        printf("Gateway %s service is still stopping after 90s; check `hermes gateway status` or logs for final shutdown state.\n", t1 ? t1 + 1 : "");
+        return 0;
+    }
+    printf("✓ %s service stopped\n", t2 ? t2 + 1 : "User");
+    return 0;
+}
 
 /* PoP: systemd_restart @ hermes_cli/gateway.py:systemd_restart */
 int cgw_systemd_restart(const char *arg) { (void)arg; return 0; }
@@ -1415,7 +1436,23 @@ int cgw_u_guard_supervised_gateway_conflict(const char *arg) { (void)arg; return
 int cgw_u_guard_existing_gateway_process_conflict(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _guard_official_docker_root_gateway @ hermes_cli/gateway.py:_guard_official_docker_root_gateway */
-int cgw_u_guard_official_docker_root_gateway(const char *arg) { (void)arg; return 0; }
+int cgw_u_guard_official_docker_root_gateway(const char *arg) {
+    /* Python: refuse root gateway in official image. Arg =
+     * "is_root\tallowed\tofficial\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int is_root = arg[0] == '1';
+    int allowed = t1 && t1[1] == '1';
+    int official = t2 && t2[1] == '1';
+    if (!is_root || allowed || !official) { printf("root guard passed\n"); return 0; }
+    printf("Refusing to run the Hermes gateway as root inside the official Docker image.\n");
+    printf("  The image entrypoint normally drops privileges to the 'hermes' user. If you override entrypoint in Docker Compose, include /opt/hermes/docker/entrypoint.sh before the Hermes command.\n");
+    printf("  Running the gateway as root can leave root-owned files in $HERMES_HOME and break later non-root dashboard/gateway runs.\n");
+    printf("  Set HERMES_ALLOW_ROOT_GATEWAY=1 only if you intentionally accept this risk.\n");
+    return 1;
+}
 
 /* PoP: _all_platforms @ hermes_cli/gateway.py:_all_platforms */
 int cgw_u_all_platforms(const char *arg) { (void)arg; return 0; }

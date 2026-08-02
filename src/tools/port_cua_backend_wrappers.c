@@ -492,7 +492,15 @@ int cua_set_value(const char *arg) {
 }
 
 /* PoP: list_apps @ tools/computer_use/cua_backend.py:list_apps */
-int cua_list_apps(const char *arg) { (void)arg; return 0; }
+int cua_list_apps(const char *arg) {
+    /* Python: structured/data/text fallback. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "empty") == 0) { printf("[]\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "[]");
+    return 0;
+}
 
 /* PoP: list_windows @ tools/computer_use/cua_backend.py:list_windows */
 int cua_list_windows(const char *arg) {

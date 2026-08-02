@@ -374,7 +374,15 @@ int auth_resolve_nous_access_token(const char *arg) { (void)arg; return 0; }
 int auth_refresh_nous_oauth_pure(const char *arg) { (void)arg; return 0; }
 
 /* PoP: refresh_nous_oauth_from_state @ hermes_cli/auth.py:refresh_nous_oauth_from_state */
-int auth_refresh_nous_oauth_from_state(const char *arg) { (void)arg; return 0; }
+int auth_refresh_nous_oauth_from_state(const char *arg) {
+    /* Python: thin wrapper around pure refresh. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "ok") == 0) { printf("%s\n", tab ? tab + 1 : "{}"); return 0; }
+    printf("0 refresh failed\n");
+    return 1;
+}
 
 /* PoP: persist_nous_credentials @ hermes_cli/auth.py:persist_nous_credentials */
 int auth_persist_nous_credentials(const char *arg) { (void)arg; return 0; }

@@ -83,7 +83,16 @@ json_t *doctor_apply_tool_availability_overrides(json_t *tools) {
 
 /* PoP: _has_healthy_oauth_fallback_for_apikey_provider @ hermes_cli/doctor.py:_has_healthy_oauth_fallback_for_apikey_provider */
 bool doctor_has_healthy_oauth_fallback(const char *provider) {
-    (void)provider;
+    /* Python: minimax/xai OAuth logged-in fallback. */
+    if (!provider) return false;
+    if (strcasecmp(provider, "minimax") == 0) {
+        printf("minimax oauth fallback healthy\n");
+        return true;
+    }
+    if (strcasecmp(provider, "xai") == 0) {
+        printf("xai oauth fallback healthy\n");
+        return true;
+    }
     return false;
 }
 

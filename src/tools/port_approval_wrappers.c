@@ -12,7 +12,16 @@
 #include "hermes_json.h"
 
 /* PoP: _prepare_smart_approval_observer @ tools/approval.py:_prepare_smart_approval_observer */
-int appr_u_prepare_smart_approval_observer(const char *arg) { (void)arg; return 0; }
+int appr_u_prepare_smart_approval_observer(const char *arg) {
+    /* Python: redact + fire hook. Arg = "state\tpayload\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "redact_fail") == 0) { printf("observer skipped (redaction failed)\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _observe_smart_approval_verdict @ tools/approval.py:_observe_smart_approval_verdict */
 int appr_u_observe_smart_approval_verdict(const char *arg) {

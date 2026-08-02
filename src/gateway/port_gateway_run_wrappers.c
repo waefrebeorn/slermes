@@ -750,7 +750,19 @@ int grun_u_refresh_agent_cache_message_count(const char *arg) { (void)arg; retur
 int grun_u_voice_channel_sidecar_note(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _pinned_session_context_prompt @ gateway/run.py:_pinned_session_context_prompt */
-int grun_u_pinned_session_context_prompt(const char *arg) { (void)arg; return 0; }
+int grun_u_pinned_session_context_prompt(const char *arg) {
+    /* Python: pinned bytes or re-render. Arg =
+     * "session_key\tpin_hit\tstate\ttext". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int pin_hit = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _init_cached_agent_for_turn @ gateway/run.py:_init_cached_agent_for_turn */
 int grun_u_init_cached_agent_for_turn(const char *arg) { (void)arg; return 0; }

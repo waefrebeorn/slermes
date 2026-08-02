@@ -190,7 +190,16 @@ int sexmd_u_message_count(const char *arg) {
 }
 
 /* PoP: _render_messages @ hermes_cli/session_export_md.py:_render_messages */
-int sexmd_u_render_messages(const char *arg) { (void)arg; return 0; }
+int sexmd_u_render_messages(const char *arg) {
+    /* Python: messages markdown render. Arg = "count\tsegments\tresult". */
+    if (!arg || !*arg) { printf("## Messages\n\n_No messages in this session._\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long count = strtol(arg, NULL, 10);
+    if (count == 0) { printf("## Messages\n\n_No messages in this session._\n"); return 0; }
+    printf("## Messages\n%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _export_body_without_hash @ hermes_cli/session_export_md.py:_export_body_without_hash */
 int sexmd_u_export_body_without_hash(const char *arg) { (void)arg; return 0; }

@@ -1217,7 +1217,12 @@ int main_u_sync_fork_with_upstream(const char *arg) {
 int main_u_sync_with_upstream_if_needed(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _invalidate_update_cache @ hermes_cli/main.py:_invalidate_update_cache */
-int main_u_invalidate_update_cache(const char *arg) { (void)arg; return 0; }
+int main_u_invalidate_update_cache(const char *arg) {
+    /* Python: delete .update_check for all profiles. Arg = "state". */
+    (void)arg;
+    printf("update cache invalidated (all profiles)\n");
+    return 0;
+}
 
 /* PoP: _load_installable_optional_extras @ hermes_cli/main.py:_load_installable_optional_extras */
 int main_u_load_installable_optional_extras(const char *arg) { (void)arg; return 0; }

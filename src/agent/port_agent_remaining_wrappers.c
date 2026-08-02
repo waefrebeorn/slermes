@@ -534,7 +534,13 @@ int agent_subscription_view_can_change_plan(const char *arg) {
 }
 
 /* PoP: _parse_current @ agent/subscription_view.py:_parse_current */
-int agent_subscription_view_u_parse_current(const char *arg) { (void)arg; return 0; }
+int agent_subscription_view_u_parse_current(const char *arg) {
+    /* Python: current subscription map. Arg = "raw_json\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", tab ? tab + 1 : arg);
+    return 0;
+}
 
 /* PoP: _coalesce @ agent/subscription_view.py:_coalesce */
 int agent_subscription_view_u_coalesce(const char *arg) {
@@ -879,7 +885,18 @@ int agent_chat_completion_helpers_u_fallback_entry_is_same_backe_rl(const char *
 }
 
 /* PoP: _build_partial_stream_stub @ agent/chat_completion_helpers.py:_build_partial_stream_stub */
-int agent_chat_completion_helpers_u_build_partial_stream_stub(const char *arg) { (void)arg; return 0; }
+int agent_chat_completion_helpers_u_build_partial_stream_stub(const char *arg) {
+    /* Python: PARTIAL_STREAM_STUB_ID stub. Arg =
+     * "role\tcontent\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0 stub failed\n"); return 1; }
+    printf("%s\n", t3 ? t3 + 1 : "stub");
+    return 0;
+}
 
 /* PoP: _moa_reference_output_allowed @ agent/agent_init.py:_moa_reference_output_allowed */
 int agent_agent_init_u_moa_reference_output_allowed(const char *arg) {

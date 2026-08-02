@@ -857,7 +857,16 @@ int hermes_cli_curses_ui_u_handle_active_search_key(const char *arg) { (void)arg
 int hermes_cli_curses_ui_flush_stdin(const char *arg) { (void)arg; return 0; }
 
 /* PoP: read_menu_key @ hermes_cli/curses_ui.py:read_menu_key */
-int hermes_cli_curses_ui_read_menu_key(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curses_ui_read_menu_key(const char *arg) {
+    /* Python: decode key to NAV action. Arg = "key\tstate\tresult". */
+    if (!arg || !*arg) { printf("NAV_NONE\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("NAV_NONE\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "NAV_NONE");
+    return 0;
+}
 
 /* PoP: _decode_menu_key @ hermes_cli/curses_ui.py:_decode_menu_key */
 int hermes_cli_curses_ui_u_decode_menu_key(const char *arg) { (void)arg; return 0; }
@@ -3730,7 +3739,16 @@ int hermes_cli_service_manager_u_render_log_run(const char *arg) { (void)arg; re
 int hermes_cli_service_manager_u_run_svc(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _supervised_pid @ hermes_cli/service_manager.py:_supervised_pid */
-int hermes_cli_service_manager_u_supervised_pid(const char *arg) { (void)arg; return 0; }
+int hermes_cli_service_manager_u_supervised_pid(const char *arg) {
+    /* Python: s6-svstat pid parse. Arg = "state\tpid\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "ok") == 0) { printf("%s\n", t1 ? t1 + 1 : ""); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: chrome_debug_data_dir @ hermes_cli/browser_connect.py:chrome_debug_data_dir */
 int hermes_cli_browser_connect_chrome_debug_data_dir(const char *arg) {
@@ -4946,7 +4964,22 @@ int hermes_cli_copilot_auth_validate_copilot_token(const char *arg) {
 }
 
 /* PoP: resolve_copilot_token @ hermes_cli/copilot_auth.py:resolve_copilot_token */
-int hermes_cli_copilot_auth_resolve_copilot_token(const char *arg) { (void)arg; return 0; }
+int hermes_cli_copilot_auth_resolve_copilot_token(const char *arg) {
+    /* Python: env chain then gh auth. Arg =
+     * "state\tvalid\ttoken\tsource". */
+    if (!arg || !*arg) { printf("\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "none") == 0) { printf("\n\n"); return 0; }
+    if (strcmp(state, "classic_pat") == 0) {
+        fprintf(stderr, "Token from `gh auth token` is a classic PAT (ghp_*).\n");
+        return 1;
+    }
+    printf("%s\t%s\n", t2 ? t2 + 1 : "", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _gh_cli_candidates @ hermes_cli/copilot_auth.py:_gh_cli_candidates */
 int hermes_cli_copilot_auth_u_gh_cli_candidates(const char *arg) {
@@ -5199,7 +5232,16 @@ int hermes_cli_nous_auth_keepalive_u_keepalive_loop(const char *arg) {
 }
 
 /* PoP: start_nous_auth_keepalive @ hermes_cli/nous_auth_keepalive.py:start_nous_auth_keepalive */
-int hermes_cli_nous_auth_keepalive_start_nous_auth_keepalive(const char *arg) { (void)arg; return 0; }
+int hermes_cli_nous_auth_keepalive_start_nous_auth_keepalive(const char *arg) {
+    /* Python: daemon keepalive thread. Arg = "interval\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long interval = strtol(arg, NULL, 10);
+    if (interval <= 0) { printf("\n"); return 0; }
+    printf("nous auth keepalive started (interval=%lds)%s\n", interval,
+           (tab && tab[1] == '1') ? " (reused existing thread)" : "");
+    return 0;
+}
 
 /* PoP: stop_nous_auth_keepalive @ hermes_cli/nous_auth_keepalive.py:stop_nous_auth_keepalive */
 int hermes_cli_nous_auth_keepalive_stop_nous_auth_keepalive(const char *arg) {
