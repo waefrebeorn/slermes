@@ -89,7 +89,13 @@ int wssr_u_log_path(const char *arg) {
 }
 
 /* PoP: _current_sid @ hermes_cli/windows_ssh_runtime.py:_current_sid */
-int wssr_u_current_sid(const char *arg) { (void)arg; return 0; }
+int wssr_u_current_sid(const char *arg) {
+    /* Python: win32security.OpenProcessToken + GetTokenInformation(TokenUser)
+     * — Windows-only; POSIX port returns empty. */
+    (void)arg;
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _system_sid @ hermes_cli/windows_ssh_runtime.py:_system_sid */
 int wssr_u_system_sid(const char *arg) {

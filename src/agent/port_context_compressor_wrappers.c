@@ -48,7 +48,21 @@ int ctxc_snapshot_preflight_display_tokens(const char *arg) {
 }
 
 /* PoP: rollback_interrupted_preflight_display_tokens @ agent/context_compressor.py:rollback_interrupted_preflight_display_tokens */
-int ctxc_rollback_interrupted_preflight_display_tokens(const char *arg) { (void)arg; return 0; }
+int ctxc_rollback_interrupted_preflight_display_tokens(const char *arg) {
+    /* Python: keep snapshot unless awaiting_real_usage_after_compression &&
+     * last_prompt_tokens == -1. Arg = "snapshot\tawaiting\tlast" (0/1,
+     * -1 sentinel). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    long snap = strtol(arg, NULL, 10);
+    const char *t1 = strchr(arg, '\t');
+    if (!t1) { printf("%ld\n", snap); return 0; }
+    long awaiting = strtol(t1 + 1, NULL, 10);
+    const char *t2 = strchr(t1 + 1, '\t');
+    long last = t2 ? strtol(t2 + 1, NULL, 10) : 0;
+    if (awaiting && last == -1) { printf("0\n"); return 0; }
+    printf("%ld\n", snap);
+    return 0;
+}
 
 /* PoP: should_compress_info @ agent/context_compressor.py:should_compress_info */
 int ctxc_should_compress_info(const char *arg) { (void)arg; return 0; }

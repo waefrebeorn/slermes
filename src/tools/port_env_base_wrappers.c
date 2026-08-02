@@ -65,7 +65,23 @@ int envb_u_pipe_stdin(const char *arg) { (void)arg; return 0; }
 int envb_u_popen_bash(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _load_json_store @ tools/environments/base.py:_load_json_store */
-int envb_u_load_json_store(const char *arg) { (void)arg; return 0; }
+int envb_u_load_json_store(const char *arg) {
+    /* Python: json.loads(path text) or {} on any error. Arg = file path. */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    FILE *fp = fopen(arg, "r");
+    if (!fp) { printf("{}\n"); return 0; }
+    char buf[8192];
+    size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+    fclose(fp);
+    buf[n] = '\0';
+    json_t *doc = json_parse(buf, NULL);
+    if (!doc) { printf("{}\n"); return 0; }
+    char *s = json_dumps(doc, 0);
+    printf("%s\n", s ? s : "{}");
+    free(s);
+    json_free(doc);
+    return 0;
+}
 
 /* PoP: _save_json_store @ tools/environments/base.py:_save_json_store */
 int envb_u_save_json_store(const char *arg) {

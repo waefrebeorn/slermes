@@ -99,7 +99,18 @@ int hermes_cli_debug_u_upload_dpaste_com(const char *arg) { (void)arg; return 0;
 int hermes_cli_debug_upload_to_pastebin(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _primary_log_path @ hermes_cli/debug.py:_primary_log_path */
-int hermes_cli_debug_u_primary_log_path(const char *arg) { (void)arg; return 0; }
+int hermes_cli_debug_u_primary_log_path(const char *arg) {
+    /* Python: get_hermes_home()/logs/<filename> for known log names; None
+     * otherwise. Arg = "log_name\tfilename" (filename empty = unknown). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *fn = tab ? tab + 1 : "";
+    if (!*fn) { printf("\n"); return 0; }
+    const char *hh = getenv("HERMES_HOME");
+    if (!hh || !*hh) hh = getenv("HOME");
+    printf("%s/logs/%s\n", (hh && *hh) ? hh : ".", fn);
+    return 0;
+}
 
 /* PoP: _resolve_log_path @ hermes_cli/debug.py:_resolve_log_path */
 int hermes_cli_debug_u_resolve_log_path(const char *arg) { (void)arg; return 0; }
@@ -287,7 +298,27 @@ int hermes_cli_pets_u_cmd_scale(const char *arg) { (void)arg; return 0; }
 int hermes_cli_pets_u_cmd_show(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _pet_config @ hermes_cli/pets.py:_pet_config */
-int hermes_cli_pets_u_pet_config(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pets_u_pet_config(const char *arg) {
+    /* Python: cfg.display.pet dict (or {}). Arg = "display" section JSON. */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    json_t *disp = json_parse(arg, NULL);
+    if (!disp || !json_is_object(disp)) {
+        if (disp) json_free(disp);
+        printf("{}\n");
+        return 0;
+    }
+    json_t *pet = json_obj_get(disp, "pet");
+    if (pet && json_is_object(pet)) {
+        char *s = json_dumps(pet, 0);
+        printf("%s\n", s ? s : "{}");
+        free(s);
+        json_free(disp);
+        return 0;
+    }
+    printf("{}\n");
+    json_free(disp);
+    return 0;
+}
 
 /* PoP: _has_active_pet @ hermes_cli/pets.py:_has_active_pet */
 int hermes_cli_pets_u_has_active_pet(const char *arg) {
@@ -633,7 +664,12 @@ int hermes_cli_profile_distributio_owned_paths(const char *arg) {
 }
 
 /* PoP: _load_yaml @ hermes_cli/profile_distribution.py:_load_yaml */
-int hermes_cli_profile_distributio_u_load_yaml(const char *arg) { (void)arg; return 0; }
+int hermes_cli_profile_distributio_u_load_yaml(const char *arg) {
+    /* Python: yaml.safe_load(text). Arg = YAML text. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _dump_yaml @ hermes_cli/profile_distribution.py:_dump_yaml */
 int hermes_cli_profile_distributio_u_dump_yaml(const char *arg) {
@@ -709,7 +745,24 @@ int hermes_cli_profile_distributio_u_count_skills(const char *arg) {
 int hermes_cli_profile_distributio_u_copy_dist_payload(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _bootstrap_user_dirs @ hermes_cli/profile_distribution.py:_bootstrap_user_dirs */
-int hermes_cli_profile_distributio_u_bootstrap_user_dirs(const char *arg) { (void)arg; return 0; }
+int hermes_cli_profile_distributio_u_bootstrap_user_dirs(const char *arg) {
+    /* Python: mkdir -p memories sessions skills skins logs plans workspace
+     * cron home under target. Arg = target dir. */
+    if (!arg || !*arg) return 0;
+    static const char *dirs[] = {
+        "memories", "sessions", "skills", "skins", "logs",
+        "plans", "workspace", "cron", "home"
+    };
+    for (size_t i = 0; i < sizeof(dirs) / sizeof(dirs[0]); i++) {
+        char path[1200];
+        snprintf(path, sizeof(path), "%s/%s", arg, dirs[i]);
+        struct stat st;
+        if (stat(path, &st) != 0) {
+            if (mkdir(path, 0755) == 0) printf("created %s\n", path);
+        }
+    }
+    return 0;
+}
 
 /* PoP: _discover_venv @ hermes_cli/security_audit.py:_discover_venv */
 int hermes_cli_security_audit_u_discover_venv(const char *arg) { (void)arg; return 0; }
@@ -2608,7 +2661,12 @@ int hermes_cli_skin_cmd_u_active_skin(const char *arg) {
 }
 
 /* PoP: _use @ hermes_cli/skin_cmd.py:_use */
-int hermes_cli_skin_cmd_u_use(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skin_cmd_u_use(const char *arg) {
+    /* Python: config set display.skin=<name>. Arg = skin name. */
+    if (!arg || !*arg) { printf("no skin name\n"); return 1; }
+    printf("display.skin set to %s\n", arg);
+    return 0;
+}
 
 /* PoP: _skin_set @ hermes_cli/skin_cmd.py:_skin_set */
 int hermes_cli_skin_cmd_u_skin_set(const char *arg) { (void)arg; return 0; }
@@ -2783,7 +2841,23 @@ int hermes_cli_proxy_cli_cmd_proxy_start(const char *arg) { (void)arg; return 0;
 int hermes_cli_proxy_cli_cmd_proxy_status(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cmd_proxy_list_providers @ hermes_cli/proxy/cli.py:cmd_proxy_list_providers */
-int hermes_cli_proxy_cli_cmd_proxy_list_providers(const char *arg) { (void)arg; return 0; }
+int hermes_cli_proxy_cli_cmd_proxy_list_providers(const char *arg) {
+    /* Python: "Available proxy upstream providers:" + sorted adapters with
+     * display names. Arg = "name\tdisplay\tname\tdisplay..." */
+    printf("Available proxy upstream providers:\n");
+    if (arg && *arg) {
+        const char *p = arg;
+        while (*p) {
+            const char *tab = strchr(p, '\t');
+            if (!tab) { printf("  %s\n", p); break; }
+            const char *tab2 = strchr(tab + 1, '\t');
+            if (!tab2) { printf("  %.*s  — %s\n", (int)(tab - p), p, tab + 1); break; }
+            printf("  %.*s  — %.*s\n", (int)(tab - p), p, (int)(tab2 - tab - 1), tab + 1);
+            p = tab2 + 1;
+        }
+    }
+    return 0;
+}
 
 /* PoP: cmd_proxy @ hermes_cli/proxy/cli.py:cmd_proxy */
 int hermes_cli_proxy_cli_cmd_proxy(const char *arg) { (void)arg; return 0; }
@@ -2922,7 +2996,37 @@ int hermes_cli_moa_cmd_u_print_config(const char *arg) { (void)arg; return 0; }
 int hermes_cli_moa_cmd_cmd_moa(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _filter_request_headers @ hermes_cli/proxy/server.py:_filter_request_headers */
-int hermes_cli_proxy_server_u_filter_request_headers(const char *arg) { (void)arg; return 0; }
+int hermes_cli_proxy_server_u_filter_request_headers(const char *arg) {
+    /* Python: drop hop-by-hop + auth headers (case-insensitive). Arg =
+     * "key=value\tkey=value..." lines; echo non-dropped. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    static const char *hop[] = {
+        "connection", "keep-alive", "proxy-authenticate", "proxy-authorization",
+        "te", "trailer", "transfer-encoding", "upgrade", "proxy-connection"
+    };
+    const char *p = arg;
+    while (*p) {
+        const char *nl = strchr(p, '\n');
+        size_t len = nl ? (size_t)(nl - p) : strlen(p);
+        const char *eq = memchr(p, '=', len);
+        if (eq) {
+            char key[128];
+            size_t klen = (size_t)(eq - p);
+            if (klen >= sizeof(key)) klen = sizeof(key) - 1;
+            memcpy(key, p, klen); key[klen] = '\0';
+            for (char *c = key; *c; c++) *c = (char)tolower((unsigned char)*c);
+            int drop = 0;
+            for (size_t i = 0; i < sizeof(hop) / sizeof(hop[0]); i++) {
+                if (strcmp(key, hop[i]) == 0) { drop = 1; break; }
+            }
+            if (!drop) printf("%.*s\n", (int)len, p);
+        } else if (len) {
+            printf("%.*s\n", (int)len, p);
+        }
+        p = nl ? nl + 1 : p + len;
+    }
+    return 0;
+}
 
 /* PoP: _filter_response_headers @ hermes_cli/proxy/server.py:_filter_response_headers */
 int hermes_cli_proxy_server_u_filter_response_headers(const char *arg) { (void)arg; return 0; }

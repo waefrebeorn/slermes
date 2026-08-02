@@ -819,7 +819,13 @@ int main_u_lazy_refresh_marker_path(const char *arg) {
 int main_u_write_marker_file(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _clear_marker_file @ hermes_cli/main.py:_clear_marker_file */
-int main_u_clear_marker_file(const char *arg) { (void)arg; return 0; }
+int main_u_clear_marker_file(const char *arg) {
+    /* Python: best-effort unlink; never raises. Arg = marker path. */
+    if (!arg || !*arg) { printf("no marker\n"); return 0; }
+    if (unlink(arg) == 0 || errno == ENOENT) printf("marker cleared %s\n", arg);
+    else printf("marker clear failed %s\n", arg);
+    return 0;
+}
 
 /* PoP: _write_update_incomplete_marker @ hermes_cli/main.py:_write_update_incomplete_marker */
 int main_u_write_update_incomplete_marker(const char *arg) {

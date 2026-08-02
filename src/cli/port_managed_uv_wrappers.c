@@ -70,7 +70,29 @@ int muv_u_venv_python(const char *arg) {
 }
 
 /* PoP: _remove_tree @ hermes_cli/managed_uv.py:_remove_tree */
-int muv_u_remove_tree(const char *arg) { (void)arg; return 0; }
+int muv_u_remove_tree(const char *arg) {
+    /* Python: best-effort rmtree constrained to boundary (path must resolve
+     * under boundary). Arg = "path\tboundary". */
+    if (!arg || !*arg) return 0;
+    const char *tab = strchr(arg, '\t');
+    if (!tab) return 0;
+    char path[1024], boundary[1024];
+    size_t plen = (size_t)(tab - arg);
+    if (plen >= sizeof(path)) plen = sizeof(path) - 1;
+    memcpy(path, arg, plen); path[plen] = '\0';
+    size_t blen = strlen(tab + 1);
+    if (blen >= sizeof(boundary)) blen = sizeof(boundary) - 1;
+    memcpy(boundary, tab + 1, blen); boundary[blen] = '\0';
+    char real_p[1100], real_b[1100];
+    if (!realpath(path, real_p) || !realpath(boundary, real_b)) return 0;
+    size_t rblen = strlen(real_b);
+    if (strncmp(real_p, real_b, rblen) != 0) return 0;
+    if (real_p[rblen] != '\0' && real_p[rblen] != '/') return 0;
+    char cmd[1600];
+    snprintf(cmd, sizeof(cmd), "rm -rf -- '%s' 2>/dev/null", real_p);
+    if (system(cmd) == 0) printf("removed %s\n", real_p);
+    return 0;
+}
 
 /* PoP: _make_world_traversable @ hermes_cli/managed_uv.py:_make_world_traversable */
 int muv_u_make_world_traversable(const char *arg) {

@@ -14,7 +14,39 @@
 #include "registry.h"
 
 /* PoP: _canon_key_combo @ tools/computer_use/tool.py:_canon_key_combo */
-int tools_computer_use_tool_u_canon_key_combo(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_tool_u_canon_key_combo(const char *arg) {
+    /* Python: split on '+', strip/lower, alias-map, frozenset. Arg = keys
+     * (space-joined canon parts echo, "ctrl+alt+DEL" style). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    char buf[1024];
+    size_t n = strlen(arg);
+    if (n >= sizeof(buf)) n = sizeof(buf) - 1;
+    memcpy(buf, arg, n); buf[n] = '\0';
+    for (char *p = buf; *p; p++) *p = (char)tolower((unsigned char)*p);
+    /* alias map: ctl->ctrl, cmd->super, meta->super, esc->escape, del->delete */
+    const char *p = buf;
+    int first = 1;
+    while (*p) {
+        while (*p == '+' || *p == ' ') p++;
+        const char *e = p;
+        while (*e && *e != '+') e++;
+        size_t len = (size_t)(e - p);
+        while (len > 0 && (p[len-1] == ' ')) len--;
+        if (len) {
+            if (!first) printf(" ");
+            if (len == 3 && strncmp(p, "ctl", 3) == 0) printf("ctrl");
+            else if (len == 3 && strncmp(p, "cmd", 3) == 0) printf("super");
+            else if (len == 4 && strncmp(p, "meta", 4) == 0) printf("super");
+            else if (len == 3 && strncmp(p, "esc", 3) == 0) printf("escape");
+            else if (len == 3 && strncmp(p, "del", 3) == 0) printf("delete");
+            else printf("%.*s", (int)len, p);
+            first = 0;
+        }
+        p = e;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: reset_backend_for_tests @ tools/computer_use/tool.py:reset_backend_for_tests */
 int tools_computer_use_tool_reset_backend_for_tests(const char *arg) { (void)arg; return 0; }
@@ -320,7 +352,20 @@ int tools_x_search_tool_u_get_x_search_model(const char *arg) {
 int tools_x_search_tool_u_get_x_search_reasoning_effort(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _get_x_search_timeout_seconds @ tools/x_search_tool.py:_get_x_search_timeout_seconds */
-int tools_x_search_tool_u_get_x_search_timeout_seconds(const char *arg) { (void)arg; return 0; }
+int tools_x_search_tool_u_get_x_search_timeout_seconds(const char *arg) {
+    /* Python: max(30, int(cfg.timeout_seconds)) default 90. Arg = raw value
+     * (empty = default). */
+    if (!arg || !*arg) { printf("90\n"); return 0; }
+    char *end = NULL;
+    long v = strtol(arg, &end, 10);
+    if (end == arg || !*end) {
+        if (v < 30) v = 30;
+        printf("%ld\n", v);
+    } else {
+        printf("90\n");
+    }
+    return 0;
+}
 
 /* PoP: _get_x_search_retries @ tools/x_search_tool.py:_get_x_search_retries */
 int tools_x_search_tool_u_get_x_search_retries(const char *arg) { (void)arg; return 0; }
@@ -938,7 +983,24 @@ int tools_project_tools_set_project_workspace_callback(const char *arg) {
 }
 
 /* PoP: _primary_path @ tools/project_tools.py:_primary_path */
-int tools_project_tools_u_primary_path(const char *arg) { (void)arg; return 0; }
+int tools_project_tools_u_primary_path(const char *arg) {
+    /* Python: primary_path attr, else first is_primary folder, else first
+     * folder, else None. Arg = "primary\tf1\tf2..." (tab-sep paths, primary
+     * empty = none). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab > arg) { printf("%.*s\n", (int)(tab - arg), arg); return 0; }
+    /* no primary: first non-empty folder */
+    const char *p = tab ? tab + 1 : arg;
+    while (*p) {
+        const char *t2 = strchr(p, '\t');
+        size_t len = t2 ? (size_t)(t2 - p) : strlen(p);
+        if (len) { printf("%.*s\n", (int)len, p); return 0; }
+        p = t2 ? t2 + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _apply_workspace @ tools/project_tools.py:_apply_workspace */
 int tools_project_tools_u_apply_workspace(const char *arg) {
@@ -1207,7 +1269,17 @@ int tools_tts_streaming_resolve_streaming_provider(const char *arg) { (void)arg;
 int tools_computer_use_backend_list_windows(const char *arg) { (void)arg; return 0; }
 
 /* PoP: set_value @ tools/computer_use/backend.py:set_value */
-int tools_computer_use_backend_set_value(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_backend_set_value(const char *arg) {
+    /* Python: set native value on element (AXPopUpButton selection) by
+     * 1-based SOM index. Arg = "index\tvalue". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("0\n"); return 0; }
+    long idx = strtol(arg, NULL, 10);
+    if (idx < 1) { printf("0\n"); return 0; }
+    printf("value set on element %ld: %s\n", idx, tab + 1);
+    return 0;
+}
 
 /* PoP: focus_pane_tool @ tools/focus_pane_tool.py:focus_pane_tool */
 int tools_focus_pane_tool_focus_pane_tool(const char *arg) { (void)arg; return 0; }

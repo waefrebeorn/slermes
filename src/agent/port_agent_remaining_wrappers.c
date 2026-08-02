@@ -658,7 +658,13 @@ int agent_agent_init_u_normalize_custom_provider_name(const char *arg) {
 }
 
 /* PoP: _custom_provider_runtime_ids @ agent/agent_init.py:_custom_provider_runtime_ids */
-int agent_agent_init_u_custom_provider_runtime_ids(const char *arg) { (void)arg; return 0; }
+int agent_agent_init_u_custom_provider_runtime_ids(const char *arg) {
+    /* Python: {normalized, f"custom:{normalized}"} or empty set. Arg =
+     * provider name (empty = none). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\ncustom:%s\n", arg, arg);
+    return 0;
+}
 
 /* PoP: _build_codex_gpt5_autoraise_notice @ agent/agent_init.py:_build_codex_gpt5_autoraise_notice */
 int agent_agent_init_u_build_codex_gpt5_autoraise_notice(const char *arg) { (void)arg; return 0; }

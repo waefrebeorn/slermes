@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <time.h>
 #include "hermes_json.h"
 #include "sqlite3.h"
 
@@ -75,7 +76,38 @@ int adel_u_prune_durable_records(const char *arg) { (void)arg; return 0; }
 int adel_u_persist_completion(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _note_delivery_attempt @ tools/async_delegation.py:_note_delivery_attempt */
-int adel_u_note_delivery_attempt(const char *arg) { (void)arg; return 0; }
+int adel_u_note_delivery_attempt(const char *arg) {
+    /* Python: UPDATE async_delegations SET delivery_attempts=+1,
+     * updated_at=? WHERE delegation_id=?. Arg = "delegation_id\tdb_path". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("0\n"); return 0; }
+    char did[128];
+    size_t dlen = (size_t)(tab - arg);
+    if (dlen >= sizeof(did)) dlen = sizeof(did) - 1;
+    memcpy(did, arg, dlen); did[dlen] = '\0';
+    const char *db = tab + 1;
+    sqlite3 *conn = NULL;
+    if (sqlite3_open_v2(db, &conn, SQLITE_OPEN_READWRITE, NULL) != SQLITE_OK) {
+        if (conn) sqlite3_close(conn);
+        printf("0\n");
+        return 0;
+    }
+    sqlite3_stmt *stmt = NULL;
+    double now = (double)time(NULL);
+    int rc = sqlite3_prepare_v2(conn,
+        "UPDATE async_delegations SET delivery_attempts=delivery_attempts+1, updated_at=? WHERE delegation_id=?",
+        -1, &stmt, NULL);
+    if (rc != SQLITE_OK) { sqlite3_close(conn); printf("0\n"); return 0; }
+    sqlite3_bind_double(stmt, 1, now);
+    sqlite3_bind_text(stmt, 2, did, -1, SQLITE_TRANSIENT);
+    int ok = (sqlite3_step(stmt) == SQLITE_DONE);
+    int changed = sqlite3_changes(conn);
+    sqlite3_finalize(stmt);
+    sqlite3_close(conn);
+    printf("%d\n", ok ? changed : 0);
+    return 0;
+}
 
 /* PoP: recover_abandoned_delegations @ tools/async_delegation.py:recover_abandoned_delegations */
 int adel_recover_abandoned_delegations(const char *arg) { (void)arg; return 0; }

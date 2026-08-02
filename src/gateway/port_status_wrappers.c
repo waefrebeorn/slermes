@@ -14,7 +14,16 @@
 #include "hermes_json.h"
 
 /* PoP: _get_starts_log_path @ gateway/status.py:_get_starts_log_path */
-int gstat_u_get_starts_log_path(const char *arg) { (void)arg; return 0; }
+int gstat_u_get_starts_log_path(const char *arg) {
+    /* Python: get_hermes_home() / "gateway-starts.log" (respawn-storm
+     * ledger, distinct from restart_loop.json). Arg = optional hermes home. */
+    if (arg && *arg) { printf("%s/gateway-starts.log\n", arg); return 0; }
+    const char *hh = getenv("HERMES_HOME");
+    if (hh && *hh) printf("%s/gateway-starts.log\n", hh);
+    else printf("%s/.hermes/gateway-starts.log\n",
+                getenv("HOME") ? getenv("HOME") : ".");
+    return 0;
+}
 
 /* PoP: record_start_and_check_storm @ gateway/status.py:record_start_and_check_storm */
 int gstat_record_start_and_check_storm(const char *arg) { (void)arg; return 0; }

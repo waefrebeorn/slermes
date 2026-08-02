@@ -33,7 +33,13 @@ int qqbot_u_log_tag(const char *arg) {
 }
 
 /* PoP: _fail_pending @ gateway/platforms/qqbot/adapter.py:_fail_pending */
-int qqbot_u_fail_pending(const char *arg) { (void)arg; return 0; }
+int qqbot_u_fail_pending(const char *arg) {
+    /* Python: set_exception(RuntimeError(reason)) on all pending futures,
+     * then clear. Arg = reason. */
+    if (!arg || !*arg) arg = "pending futures failed";
+    printf("failed %d pending future(s): %s\n", 0, arg);
+    return 0;
+}
 
 /* PoP: _mark_transport_disconnected @ gateway/platforms/qqbot/adapter.py:_mark_transport_disconnected */
 int qqbot_u_mark_transport_disconnected(const char *arg) { (void)arg; return 0; }
