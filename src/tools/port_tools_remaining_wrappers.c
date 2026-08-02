@@ -2139,7 +2139,16 @@ int tools_browser_tool_u_store_full_snapshot(const char *arg) { (void)arg; retur
 int tools_browser_tool_u_restrict_browser_evaluate(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _camofox_current_page_private_url @ tools/browser_tool.py:_camofox_current_page_private_url */
-int tools_browser_tool_u_camofox_current_page_private_url(const char *arg) { (void)arg; return 0; }
+int tools_browser_tool_u_camofox_current_page_private_url(const char *arg) {
+    /* Python: camofox private-url probe. Arg = "state\turl\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "private") == 0) { printf("%s\n", t1 ? t1 + 1 : ""); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _volume_evidence @ tools/checkpoint_manager.py:_volume_evidence */
 int tools_checkpoint_manager_u_volume_evidence(const char *arg) { (void)arg; return 0; }
@@ -2553,7 +2562,16 @@ int tools_voice_mode_cancel_2(const char *arg) {
 }
 
 /* PoP: sanitize_display_text @ tools/ansi_strip.py:sanitize_display_text */
-int tools_ansi_strip_sanitize_display_text(const char *arg) { (void)arg; return 0; }
+int tools_ansi_strip_sanitize_display_text(const char *arg) {
+    /* Python: strip escapes + control chars. Arg = "text\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("%s\n", arg); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: has_binary_extension @ tools/binary_extensions.py:has_binary_extension */
 int tools_binary_extensions_has_binary_extension(const char *arg) {

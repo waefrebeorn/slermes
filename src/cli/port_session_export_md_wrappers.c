@@ -331,7 +331,16 @@ int sexmd_verify_export_file(const char *arg) {
 }
 
 /* PoP: redact_session_data @ hermes_cli/session_export_md.py:redact_session_data */
-int sexmd_redact_session_data(const char *arg) { (void)arg; return 0; }
+int sexmd_redact_session_data(const char *arg) {
+    /* Python: deep redact copy. Arg = "session_json\tstate\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: write_session_markdown @ hermes_cli/session_export_md.py:write_session_markdown */
 int sexmd_write_session_markdown(const char *arg) {

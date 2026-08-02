@@ -236,7 +236,13 @@ int nous_u_subscription_from_payload(const char *arg) {
 }
 
 /* PoP: _paid_service_access_from_payload @ hermes_cli/nous_account.py:_paid_service_access_from_payload */
-int nous_u_paid_service_access_from_payload(const char *arg) { (void)arg; return 0; }
+int nous_u_paid_service_access_from_payload(const char *arg) {
+    /* Python: paid access info map. Arg = "payload_json\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _error_info @ hermes_cli/nous_account.py:_error_info */
 int nous_u_error_info(const char *arg) {

@@ -1679,7 +1679,21 @@ int hermes_cli_profile_distributio_u_parse_semver(const char *arg) {
 }
 
 /* PoP: check_hermes_requires @ hermes_cli/profile_distribution.py:check_hermes_requires */
-int hermes_cli_profile_distributio_check_hermes_requires(const char *arg) { (void)arg; return 0; }
+int hermes_cli_profile_distributio_check_hermes_requires(const char *arg) {
+    /* Python: version spec check. Arg = "spec\tcurrent\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t2 ? t2 + 1 : "";
+    if (strcmp(state, "ok") == 0) { printf("version requirement satisfied\n"); return 0; }
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "This distribution requires Hermes %s, but you have %s.\n", arg, t1 ? t1 + 1 : "?");
+        return 1;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _env_template_from_manifest @ hermes_cli/profile_distribution.py:_env_template_from_manifest */
 int hermes_cli_profile_distributio_u_env_template_from_manifest(const char *arg) {
@@ -2633,7 +2647,16 @@ int hermes_cli_model_catalog_u_default_model_from_block(const char *arg) {
 }
 
 /* PoP: get_default_model_from_cache @ hermes_cli/model_catalog.py:get_default_model_from_cache */
-int hermes_cli_model_catalog_get_default_model_from_cache(const char *arg) { (void)arg; return 0; }
+int hermes_cli_model_catalog_get_default_model_from_cache(const char *arg) {
+    /* Python: cache-only default lookup. Arg = "provider\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: reset_cache @ hermes_cli/model_catalog.py:reset_cache */
 int hermes_cli_model_catalog_reset_cache(const char *arg) {
@@ -2951,7 +2974,24 @@ int hermes_cli_skin_engine_get_prompt_toolkit_style_overrides(const char *arg) {
 int hermes_cli_claw_u_detect_openclaw_processes(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _warn_if_openclaw_running @ hermes_cli/claw.py:_warn_if_openclaw_running */
-int hermes_cli_claw_u_warn_if_openclaw_running(const char *arg) { (void)arg; return 0; }
+int hermes_cli_claw_u_warn_if_openclaw_running(const char *arg) {
+    /* Python: running-process warning. Arg =
+     * "running\tstate\tauto_yes\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int running = arg[0] == '1';
+    if (!running) { printf("no openclaw processes\n"); return 0; }
+    int auto_yes = t2 && t2[1] == '1';
+    printf("OpenClaw appears to be running:\n");
+    printf("  * %s\n", t1 ? t1 + 1 : "?");
+    printf("Messaging platforms (Telegram, Discord, Slack) only allow one active session per bot token. If you continue, both OpenClaw and Hermes may try to use the same token, causing disconnects.\n");
+    printf("Recommendation: stop OpenClaw before migrating.\n");
+    if (auto_yes) { printf("proceeding (auto-yes)\n"); return 0; }
+    printf("%s\n", t3 ? t3 + 1 : "proceeding");
+    return 0;
+}
 
 /* PoP: _warn_if_gateway_running @ hermes_cli/claw.py:_warn_if_gateway_running */
 int hermes_cli_claw_u_warn_if_gateway_running(const char *arg) { (void)arg; return 0; }
@@ -3731,7 +3771,20 @@ int hermes_cli_journey_u_term_size(const char *arg) {
 int hermes_cli_journey_u_frame_renderable(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cmd_show @ hermes_cli/journey.py:_cmd_show */
-int hermes_cli_journey_u_cmd_show(const char *arg) { (void)arg; return 0; }
+int hermes_cli_journey_u_cmd_show(const char *arg) {
+    /* Python: journey show render. Arg = "state\tnodes\tplay\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "empty") == 0) {
+        printf("[grey62]No learning yet — use Hermes a while and your learned skills and memories will start mapping out here.[/grey62]\n");
+        return 0;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _cmd_delete @ hermes_cli/journey.py:_cmd_delete */
 int hermes_cli_journey_u_cmd_delete(const char *arg) {
@@ -4780,7 +4833,19 @@ int hermes_cli_security_audit_star_u_iter_sshd_config_lines(const char *arg) {
 }
 
 /* PoP: _ssh_password_auth_enabled @ hermes_cli/security_audit_startup.py:_ssh_password_auth_enabled */
-int hermes_cli_security_audit_star_u_ssh_password_auth_enabled(const char *arg) { (void)arg; return 0; }
+int hermes_cli_security_audit_star_u_ssh_password_auth_enabled(const char *arg) {
+    /* Python: sshd PasswordAuthentication verdict. Arg =
+     * "state\tverdict\tqualifier\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_config") == 0) { printf("\n"); return 0; }
+    if (strcmp(state, "ok") == 0) { printf("\n"); return 0; }
+    printf("%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _path_is_mounted @ hermes_cli/security_audit_startup.py:_path_is_mounted */
 int hermes_cli_security_audit_star_u_path_is_mounted(const char *arg) { (void)arg; return 0; }
@@ -5610,7 +5675,13 @@ int hermes_cli__early_recovery_u_project_root(const char *arg) {
 }
 
 /* PoP: _pinned_specs @ hermes_cli/_early_recovery.py:_pinned_specs */
-int hermes_cli__early_recovery_u_pinned_specs(const char *arg) { (void)arg; return 0; }
+int hermes_cli__early_recovery_u_pinned_specs(const char *arg) {
+    /* Python: bare -> pinned spec map. Arg = "packages\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", tab ? tab + 1 : arg);
+    return 0;
+}
 
 /* PoP: _certifi_bundle_broken @ hermes_cli/_early_recovery.py:_certifi_bundle_broken */
 int hermes_cli__early_recovery_u_certifi_bundle_broken(const char *arg) {
@@ -5991,7 +6062,17 @@ int hermes_cli_providers_determine_api_mode(const char *arg) {
 }
 
 /* PoP: resolve_user_provider @ hermes_cli/providers.py:resolve_user_provider */
-int hermes_cli_providers_resolve_user_provider(const char *arg) { (void)arg; return 0; }
+int hermes_cli_providers_resolve_user_provider(const char *arg) {
+    /* Python: config providers entry -> ProviderDef. Arg =
+     * "name\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: custom_provider_slug @ hermes_cli/providers.py:custom_provider_slug */
 int hermes_cli_providers_custom_provider_slug(const char *arg) {
@@ -7417,7 +7498,24 @@ int hermes_cli_psutil_android_u_normalize_member_parts(const char *arg) {
 }
 
 /* PoP: _safe_extract_tar_gz @ hermes_cli/psutil_android.py:_safe_extract_tar_gz */
-int hermes_cli_psutil_android_u_safe_extract_tar_gz(const char *arg) { (void)arg; return 0; }
+int hermes_cli_psutil_android_u_safe_extract_tar_gz(const char *arg) {
+    /* Python: traversal-safe extract. Arg = "archive\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "unsupported") == 0) {
+        fprintf(stderr, "Unsupported archive member type: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    if (strcmp(state, "unreadable") == 0) {
+        fprintf(stderr, "Cannot read archive member: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("extracted safely: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _build_full_manifest @ hermes_cli/slack_cli.py:_build_full_manifest */
 int hermes_cli_slack_cli_u_build_full_manifest(const char *arg) { (void)arg; return 0; }

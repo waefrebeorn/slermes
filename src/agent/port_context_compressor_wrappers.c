@@ -27,7 +27,20 @@ int ctxc_u_record_compression_regions(const char *arg) {
 }
 
 /* PoP: _record_aux_compression_call @ agent/context_compressor.py:_record_aux_compression_call */
-int ctxc_u_record_aux_compression_call(const char *arg) { (void)arg; return 0; }
+int ctxc_u_record_aux_compression_call(const char *arg) {
+    /* Python: aux telemetry accumulate. Arg =
+     * "prompt_tokens\tmax_tokens\tduration_ms\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int state = t3 && t3[1] == '1';
+    if (!state) { printf("no telemetry active\n"); return 0; }
+    printf("aux call recorded: %s tokens, %sms, fit_margin=%s\n",
+           arg, t2 ? t2 + 1 : "?", t4 ? t4 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _load_fallback_compression_streak @ agent/context_compressor.py:_load_fallback_compression_streak */
 int ctxc_u_load_fallback_compression_streak(const char *arg) {

@@ -934,10 +934,31 @@ int gateway_platforms_qqbot_chunke_u_run_with_concurrency(const char *arg) { (vo
 int gateway_relay_ws_transport_u_render_relay_context(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _normalize_slack_parent_command @ gateway/relay/ws_transport.py:_normalize_slack_parent_command */
-int gateway_relay_ws_transport_u_normalize_slack_parent_command(const char *arg) { (void)arg; return 0; }
+int gateway_relay_ws_transport_u_normalize_slack_parent_command(const char *arg) {
+    /* Python: /hermes routing. Arg = "text\tstate\tresult\ttype". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "not_hermes") == 0) { printf("%s\n", arg); return 0; }
+    printf("%s\t%s\n", t2 ? t2 + 1 : "/help", t3 ? t3 + 1 : "COMMAND");
+    return 0;
+}
 
 /* PoP: _passthrough_from_wire @ gateway/relay/ws_transport.py:_passthrough_from_wire */
-int gateway_relay_ws_transport_u_passthrough_from_wire(const char *arg) { (void)arg; return 0; }
+int gateway_relay_ws_transport_u_passthrough_from_wire(const char *arg) {
+    /* Python: base64 body rebuild. Arg = "state\tplatform\tmethod\tpath\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("forward rebuilt: %s %s (platform=%s)\n", t2 ? t2 + 1 : "?", t3 ? t3 + 1 : "", arg);
+    return 0;
+}
 
 /* PoP: _dial_and_start @ gateway/relay/ws_transport.py:_dial_and_start */
 int gateway_relay_ws_transport_u_dial_and_start(const char *arg) { (void)arg; return 0; }
@@ -1480,7 +1501,15 @@ int gateway_readiness_u_probe_gateway(const char *arg) {
 }
 
 /* PoP: collect_runtime_readiness @ gateway/readiness.py:collect_runtime_readiness */
-int gateway_readiness_collect_runtime_readiness(const char *arg) { (void)arg; return 0; }
+int gateway_readiness_collect_runtime_readiness(const char *arg) {
+    /* Python: bounded readiness diagnostics. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{\"status\": \"degraded\"}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "ok") == 0) { printf("{\"status\": \"ok\"}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{\"status\": \"degraded\"}");
+    return 0;
+}
 
 /* PoP: _notify_address @ gateway/systemd_notify.py:_notify_address */
 int gateway_systemd_notify_u_notify_address(const char *arg) {

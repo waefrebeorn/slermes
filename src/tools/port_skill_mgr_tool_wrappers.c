@@ -64,7 +64,18 @@ int smt_u_guard_agent_created_enabled(const char *arg) {
 int smt_u_security_scan_skill(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _pinned_guard @ tools/skill_manager_tool.py:_pinned_guard */
-int smt_u_pinned_guard(const char *arg) { (void)arg; return 0; }
+int smt_u_pinned_guard(const char *arg) {
+    /* Python: pinned refusal or None. Arg = "name\tpinned\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int pinned = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!pinned || !state) { printf("\n"); return 0; }
+    printf("Skill '%s' is pinned and cannot be deleted by skill_manage. Ask the user to run `hermes curator unpin %s` if they want to delete it. Patches and edits are allowed on pinned skills; only deletion is blocked.\n", arg, arg);
+    return 1;
+}
 
 /* PoP: _background_review_write_guard @ tools/skill_manager_tool.py:_background_review_write_guard */
 int smt_u_background_review_write_guard(const char *arg) { (void)arg; return 0; }

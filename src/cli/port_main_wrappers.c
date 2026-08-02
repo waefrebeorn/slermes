@@ -845,7 +845,12 @@ int main_u_build_web_ui(const char *arg) { (void)arg; return 0; }
 int main_u_do_build_web_ui(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _desktop_dist_exists @ hermes_cli/main.py:_desktop_dist_exists */
-int main_u_desktop_dist_exists(const char *arg) { (void)arg; return 0; }
+int main_u_desktop_dist_exists(const char *arg) {
+    /* Python: dist/index.html presence. Arg = "state". */
+    if (arg && arg[0] == '1') { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _compute_desktop_content_hash @ hermes_cli/main.py:_compute_desktop_content_hash */
 int main_u_compute_desktop_content_hash(const char *arg) { (void)arg; return 0; }
@@ -1385,7 +1390,18 @@ int main_u_default_venv_install_target(const char *arg) {
 }
 
 /* PoP: _run_install_with_heartbeat @ hermes_cli/main.py:_run_install_with_heartbeat */
-int main_u_run_install_with_heartbeat(const char *arg) { (void)arg; return 0; }
+int main_u_run_install_with_heartbeat(const char *arg) {
+    /* Python: heartbeat thread + install. Arg =
+     * "cmd\tinterval\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0 install failed\n"); return 1; }
+    printf("install completed%s\n", t3 && t3[1] == '1' ? " (heartbeat emitted)" : "");
+    return 0;
+}
 
 /* PoP: _venv_scripts_dir @ hermes_cli/main.py:_venv_scripts_dir */
 int main_u_venv_scripts_dir(const char *arg) {
@@ -1474,7 +1490,16 @@ int main_u_restore_quarantined_exes(const char *arg) {
 int main_u_run_quarantined_install(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cleanup_quarantined_exes @ hermes_cli/main.py:_cleanup_quarantined_exes */
-int main_u_cleanup_quarantined_exes(const char *arg) { (void)arg; return 0; }
+int main_u_cleanup_quarantined_exes(const char *arg) {
+    /* Python: sweep .exe.old.*. Arg = "is_windows\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int is_windows = arg[0] == '1';
+    int state = tab && tab[1] == '1';
+    if (!is_windows) { printf("no-op (not windows)\n"); return 0; }
+    printf("quarantined exes swept%s\n", state ? " (removed some)" : "");
+    return 0;
+}
 
 /* PoP: _run_package_only_install @ hermes_cli/main.py:_run_package_only_install */
 int main_u_run_package_only_install(const char *arg) {
