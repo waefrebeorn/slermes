@@ -151,7 +151,26 @@ int agent_pet_generate_atlas_mirror_frames(const char *arg) { (void)arg; return 
 int agent_pet_generate_atlas_compose_atlas(const char *arg) { (void)arg; return 0; }
 
 /* PoP: atlas_to_webp_bytes @ agent/pet/generate/atlas.py:atlas_to_webp_bytes */
-int agent_pet_generate_atlas_atlas_to_webp_bytes(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_atlas_atlas_to_webp_bytes(const char *arg) {
+    /* Python: encode atlas to lossless WebP bytes (the on-disk pet format).
+     * Arg = path to PNG/atlas image; C port shells to cwebp if available. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    char cmd[1600];
+    snprintf(cmd, sizeof(cmd),
+             "cwebp -quiet -lossless -q 100 -exact '%s' -o - 2>/dev/null || "
+             "python3 -c \"from PIL import Image; import sys,io;"
+             "b=io.BytesIO();Image.open(sys.argv[1]).save(b,format='WEBP',"
+             "lossless=True,quality=100,method=6,exact=True);sys.stdout.buffer.write(b.getvalue())\" '%s' 2>/dev/null",
+             arg, arg);
+    FILE *fp = popen(cmd, "r");
+    if (!fp) { printf("\n"); return 0; }
+    char buf[1024];
+    size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+    pclose(fp);
+    buf[n] = '\0';
+    printf("%zu bytes\n", n);
+    return 0;
+}
 
 /* PoP: validate_atlas @ agent/pet/generate/atlas.py:validate_atlas */
 int agent_pet_generate_atlas_validate_atlas(const char *arg) { (void)arg; return 0; }
@@ -705,7 +724,24 @@ int agent_rate_limit_tracker_u_fmt_count(const char *arg) { (void)arg; return 0;
 int agent_rate_limit_tracker_u_fmt_seconds(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _bar @ agent/rate_limit_tracker.py:_bar */
-int agent_rate_limit_tracker_u_bar(const char *arg) { (void)arg; return 0; }
+int agent_rate_limit_tracker_u_bar(const char *arg) {
+    /* Python: [███░░░] — filled = clamp(pct/100*width), empty = rest.
+     * Arg = "pct\twidth". */
+    if (!arg || !*arg) { printf("[%s]\n", ""); return 0; }
+    double pct = atof(arg);
+    const char *tab = strchr(arg, '\t');
+    int width = tab ? atoi(tab + 1) : 20;
+    if (width < 1) width = 1;
+    if (width > 200) width = 200;
+    int filled = (int)(pct / 100.0 * width);
+    if (filled < 0) filled = 0;
+    if (filled > width) filled = width;
+    printf("[");
+    for (int i = 0; i < filled; i++) fputs("\xE2\x96\x88", stdout);
+    for (int i = filled; i < width; i++) fputs("\xE2\x96\x91", stdout);
+    printf("]\n");
+    return 0;
+}
 
 /* PoP: _bucket_line @ agent/rate_limit_tracker.py:_bucket_line */
 int agent_rate_limit_tracker_u_bucket_line(const char *arg) { (void)arg; return 0; }

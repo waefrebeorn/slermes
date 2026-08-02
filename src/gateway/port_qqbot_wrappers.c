@@ -25,7 +25,12 @@ int qqbot_check_qq_requirements(const char *arg) {
 int qqbot_u_coerce_list(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _log_tag @ gateway/platforms/qqbot/adapter.py:_log_tag */
-int qqbot_u_log_tag(const char *arg) { (void)arg; return 0; }
+int qqbot_u_log_tag(const char *arg) {
+    /* Python: f"QQBot:{app_id}" if app_id else "QQBot". Arg = app_id. */
+    if (!arg || !*arg) { printf("QQBot\n"); return 0; }
+    printf("QQBot:%s\n", arg);
+    return 0;
+}
 
 /* PoP: _fail_pending @ gateway/platforms/qqbot/adapter.py:_fail_pending */
 int qqbot_u_fail_pending(const char *arg) { (void)arg; return 0; }
@@ -261,7 +266,15 @@ int qqbot_u_is_url(const char *arg) {
 }
 
 /* PoP: _guess_chat_type @ gateway/platforms/qqbot/adapter.py:_guess_chat_type */
-int qqbot_u_guess_chat_type(const char *arg) { (void)arg; return 0; }
+int qqbot_u_guess_chat_type(const char *arg) {
+    /* Python: chat_type_map[chat_id] if known else "c2c". Arg =
+     * "chat_id\tmapped_type" (mapped_type optional; no tab = unknown). */
+    if (!arg || !*arg) { printf("c2c\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab || !tab[1]) { printf("c2c\n"); return 0; }
+    printf("%s\n", tab + 1);
+    return 0;
+}
 
 /* PoP: _strip_at_mention @ gateway/platforms/qqbot/adapter.py:_strip_at_mention */
 int qqbot_u_strip_at_mention(const char *arg) {

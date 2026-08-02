@@ -94,7 +94,26 @@ int tt_u_docker_has_host_access(const char *arg) { (void)arg; return 0; }
 int tt_u_check_all_guards(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _sudo_wrong_password_failure @ tools/terminal_tool.py:_sudo_wrong_password_failure */
-int tt_u_sudo_wrong_password_failure(const char *arg) { (void)arg; return 0; }
+int tt_u_sudo_wrong_password_failure(const char *arg) {
+    /* Python: any(marker in output.lower() for marker in
+     * _SUDO_WRONG_PASSWORD_MARKERS). Arg = command output. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    char buf[2048];
+    size_t n = strlen(arg);
+    if (n >= sizeof(buf)) n = sizeof(buf) - 1;
+    memcpy(buf, arg, n); buf[n] = '\0';
+    for (char *p = buf; *p; p++) *p = (char)tolower((unsigned char)*p);
+    static const char *markers[] = {
+        "incorrect password", "wrong password", "authentication failure",
+        "password incorrect", "sorry, try again", "sudo: 3 incorrect"
+    };
+    int hit = 0;
+    for (size_t i = 0; i < sizeof(markers) / sizeof(markers[0]); i++) {
+        if (strstr(buf, markers[i])) { hit = 1; break; }
+    }
+    printf("%d\n", hit);
+    return 0;
+}
 
 /* PoP: _invalidate_cached_sudo_on_auth_failure @ tools/terminal_tool.py:_invalidate_cached_sudo_on_auth_failure */
 int tt_u_invalidate_cached_sudo_on_auth_failure(const char *arg) {

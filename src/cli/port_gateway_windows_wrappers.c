@@ -82,10 +82,22 @@ int gw_u_is_access_denied(const char *arg) {
 }
 
 /* PoP: _is_running_as_admin @ hermes_cli/gateway_windows.py:_is_running_as_admin */
-int gw_u_is_running_as_admin(const char *arg) { (void)arg; return 0; }
+int gw_u_is_running_as_admin(const char *arg) {
+    /* Python: ctypes.windll.shell32.IsUserAnAdmin() on Windows; False on
+     * any exception. On POSIX the C port reports 0 (no elevation query). */
+    (void)arg;
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _current_profile_cli_args @ hermes_cli/gateway_windows.py:_current_profile_cli_args */
-int gw_u_current_profile_cli_args(const char *arg) { (void)arg; return 0; }
+int gw_u_current_profile_cli_args(const char *arg) {
+    /* Python: shlex.split(_profile_arg()) if set, else []. Arg = profile
+     * name (empty = default, no args). */
+    if (!arg || !*arg || strcmp(arg, "default") == 0) { printf("\n"); return 0; }
+    printf("--profile %s\n", arg);
+    return 0;
+}
 
 /* PoP: _launch_elevated_gateway_command @ hermes_cli/gateway_windows.py:_launch_elevated_gateway_command */
 int gw_u_launch_elevated_gateway_command(const char *arg) { (void)arg; return 0; }

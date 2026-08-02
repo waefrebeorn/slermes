@@ -27,7 +27,27 @@ int moa_u_redact_trace_messages(const char *arg) { (void)arg; return 0; }
 int moa_u_redact_trace_accounting(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _slot_label @ agent/moa_loop.py:_slot_label */
-int moa_u_slot_label(const char *arg) { (void)arg; return 0; }
+int moa_u_slot_label(const char *arg) {
+    /* Python: f"{provider.strip()}:{model.strip()}" + [reasoning=effort]
+     * when effort. Arg = JSON slot. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *slot = json_parse(arg, NULL);
+    if (!slot || !json_is_object(slot)) {
+        if (slot) json_free(slot);
+        printf("%s\n", arg);
+        return 0;
+    }
+    const char *provider = json_get_str(slot, "provider", "");
+    const char *model = json_get_str(slot, "model", "");
+    const char *effort = json_get_str(slot, "reasoning_effort", "");
+    while (*provider == ' ' || *provider == '\t') provider++;
+    while (*model == ' ' || *model == '\t') model++;
+    while (*effort == ' ' || *effort == '\t') effort++;
+    if (*effort) printf("%s:%s[reasoning=%s]\n", provider, model, effort);
+    else printf("%s:%s\n", provider, model);
+    json_free(slot);
+    return 0;
+}
 
 /* PoP: _slot_reasoning_config @ agent/moa_loop.py:_slot_reasoning_config */
 int moa_u_slot_reasoning_config(const char *arg) { (void)arg; return 0; }

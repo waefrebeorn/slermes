@@ -359,7 +359,10 @@ class CIndexer:
 
     def _find_annotation_target(self, content, pos):
         after = content[pos:pos+2000]
-        match = re.search(r'^(?:static\s+)?(?:const\s+)?(?:\w+\s+)+\*?\s*(\w+)\s*\(', after, re.MULTILINE)
+        # Allow pointer-to-pointer return types (char **, json_t **, ...):
+        # a single `\*?` silently failed on double-star signatures and the
+        # annotation got attributed to the NEXT function (DA-2 mis-map).
+        match = re.search(r'^(?:static\s+)?(?:const\s+)?(?:\w+\s+)+\**\s*(\w+)\s*\(', after, re.MULTILINE)
         return match.group(1) if match else ""
 
     def _get_cached_content(self, rel_path: str) -> Tuple[str, str]:

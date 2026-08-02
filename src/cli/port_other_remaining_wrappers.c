@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <errno.h>
 #include <sys/stat.h>
 #include "hermes_json.h"
 #include "hermes_util_str.h"
@@ -152,7 +153,16 @@ int cron_jobs_u_preserve_file_ownership(const char *arg) { (void)arg; return 0; 
 int cron_jobs_record_ticker_error(const char *arg) { (void)arg; return 0; }
 
 /* PoP: clear_ticker_error @ cron/jobs.py:clear_ticker_error */
-int cron_jobs_clear_ticker_error(const char *arg) { (void)arg; return 0; }
+int cron_jobs_clear_ticker_error(const char *arg) {
+    /* Python: best-effort unlink of cron_dir / "ticker_last_error";
+     * OSError ignored. Arg = cron dir path. */
+    if (!arg || !*arg) { printf("no ticker error\n"); return 0; }
+    char path[1200];
+    snprintf(path, sizeof(path), "%s/ticker_last_error", arg);
+    if (unlink(path) == 0 || errno == ENOENT) printf("ticker error cleared\n");
+    else printf("clear failed %s\n", path);
+    return 0;
+}
 
 /* PoP: get_ticker_last_error @ cron/jobs.py:get_ticker_last_error */
 int cron_jobs_get_ticker_last_error(const char *arg) { (void)arg; return 0; }

@@ -1115,10 +1115,38 @@ void gw_base__schedule_ephemeral_delete(const char *chat_id, const char *message
 
 /* PoP: gw_base__no_proxy_entries @ gateway/platforms/base.py:_no_proxy_entries */
 char **gw_base__no_proxy_entries(void) {
-    gw_base_init();
-    pthread_mutex_lock(&g_gw.lock);
-    char **out = calloc(1, sizeof(char *));  /* empty list */
-    pthread_mutex_unlock(&g_gw.lock);
+    /* Python: for key in ("NO_PROXY", "no_proxy"): split raw on ",",
+     * strip each part, keep non-empty. Returns NULL-terminated list. */
+    const char *raw = getenv("NO_PROXY");
+    if (!raw || !*raw) raw = getenv("no_proxy");
+    if (!raw || !*raw) {
+        char **out = calloc(1, sizeof(char *));
+        return out;
+    }
+    /* Count entries first. */
+    size_t cap = 8, n = 0;
+    char **out = calloc(cap, sizeof(char *));
+    if (!out) return NULL;
+    const char *p = raw;
+    while (*p) {
+        while (*p == ',' || *p == ' ' || *p == '\t') p++;
+        const char *e = p;
+        while (*e && *e != ',') e++;
+        size_t len = (size_t)(e - p);
+        while (len > 0 && (p[len-1] == ' ' || p[len-1] == '\t')) len--;
+        if (len > 0) {
+            if (n + 1 >= cap) {
+                cap *= 2;
+                char **grown = realloc(out, cap * sizeof(char *));
+                if (!grown) { for (size_t i = 0; i < n; i++) free(out[i]); free(out); return NULL; }
+                out = grown;
+            }
+            out[n] = strndup(p, len);
+            if (out[n]) n++;
+        }
+        p = e;
+    }
+    out[n] = NULL;
     return out;
 }
 

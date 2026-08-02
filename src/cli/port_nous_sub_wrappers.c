@@ -12,7 +12,31 @@
 #include "hermes_json.h"
 
 /* PoP: _uses_gateway @ hermes_cli/nous_subscription.py:_uses_gateway */
-int nsub_u_uses_gateway(const char *arg) { (void)arg; return 0; }
+int nsub_u_uses_gateway(const char *arg) {
+    /* Python: bool(section dict) and is_truthy_value(section.use_gateway,
+     * default False). Arg = JSON section. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    json_t *sec = json_parse(arg, NULL);
+    if (!sec || !json_is_object(sec)) {
+        if (sec) json_free(sec);
+        printf("0\n");
+        return 0;
+    }
+    json_t *ug = json_obj_get(sec, "use_gateway");
+    int truthy = 0;
+    if (ug && ug->type == JSON_BOOL) truthy = ug->bool_val;
+    else if (ug && ug->type == JSON_STRING) {
+        const char *s = ug->str_val;
+        if (s) {
+            while (*s == ' ' || *s == '\t') s++;
+            truthy = (*s && strcmp(s, "0") != 0 &&
+                     strcasecmp(s, "false") != 0 && strcasecmp(s, "no") != 0);
+        }
+    } else if (ug && ug->type == JSON_NUMBER) truthy = (ug->num_val != 0);
+    printf("%d\n", truthy);
+    json_free(sec);
+    return 0;
+}
 
 /* PoP: image_gen @ hermes_cli/nous_subscription.py:image_gen */
 int nsub_image_gen(const char *arg) {

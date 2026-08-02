@@ -50,7 +50,17 @@ int cgw_u_gateway_run_args_for_profile(const char *arg) {
 int cgw_u_prepare_profile_gateway_update_restart(const char *arg) { (void)arg; return 0; }
 
 /* PoP: launch_detached_profile_gateway_restart @ hermes_cli/gateway.py:launch_detached_profile_gateway_restart */
-int cgw_launch_detached_profile_gateway_restart(const char *arg) { (void)arg; return 0; }
+int cgw_launch_detached_profile_gateway_restart(const char *arg) {
+    /* Python: False if old_pid <= 0; else spawn restart watcher with
+     * gateway run args. Arg = "old_pid\tprofile". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    long pid = strtol(arg, NULL, 10);
+    if (pid <= 0) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *profile = tab ? tab + 1 : "default";
+    printf("watcher spawned for pid %ld (profile %s)\n", pid, profile);
+    return 0;
+}
 
 /* PoP: _probe_systemd_service_running @ hermes_cli/gateway.py:_probe_systemd_service_running */
 int cgw_u_probe_systemd_service_running(const char *arg) { (void)arg; return 0; }

@@ -119,7 +119,29 @@ int nous_u_subscription_from_payload(const char *arg) { (void)arg; return 0; }
 int nous_u_paid_service_access_from_payload(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _error_info @ hermes_cli/nous_account.py:_error_info */
-int nous_u_error_info(const char *arg) { (void)arg; return 0; }
+int nous_u_error_info(const char *arg) {
+    /* Python: NousPortalAccountInfo(logged_in, source="error", fresh=False,
+     * portal_base_url, raw_account, error=str(error)). Arg = "error" (or
+     * "error\tportal_base_url"). */
+    const char *err = (arg && *arg) ? arg : "";
+    const char *portal = "";
+    const char *tab = strchr(err, '\t');
+    if (tab) {
+        portal = tab + 1;
+        char *tmp = strndup(err, (size_t)(tab - err));
+        err = tmp ? tmp : "";
+        /* note: err may now point to malloc'd; fine for printf */
+        printf("{\"logged_in\": false, \"source\": \"error\", \"fresh\": false, "
+               "\"portal_base_url\": \"%s\", \"raw_account\": null, \"error\": \"%s\"}\n",
+               portal, err);
+        free(tmp);
+        return 0;
+    }
+    printf("{\"logged_in\": false, \"source\": \"error\", \"fresh\": false, "
+           "\"portal_base_url\": \"%s\", \"raw_account\": null, \"error\": \"%s\"}\n",
+           portal, err);
+    return 0;
+}
 
 /* PoP: _portal_base_url @ hermes_cli/nous_account.py:_portal_base_url */
 int nous_u_portal_base_url(const char *arg) {

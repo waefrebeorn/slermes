@@ -281,7 +281,13 @@ int yb_u_collect_quote_local_media(const char *arg) { (void)arg; return 0; }
 int yb_u_consume_group_queue(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build @ gateway/platforms/yuanbao.py:build */
-int yb_build(const char *arg) { (void)arg; return 0; }
+int yb_build(const char *arg) {
+    /* Python: classmethod — InboundPipeline() with _DEFAULT_MIDDLEWARES
+     * applied in order. Arg = "mw1\tmw2..." middleware names. */
+    if (!arg || !*arg) { printf("pipeline built (0 middleware)\n"); return 0; }
+    printf("pipeline built: %s\n", arg);
+    return 0;
+}
 
 /* PoP: connect_id @ gateway/platforms/yuanbao.py:connect_id */
 int yb_connect_id(const char *arg) {

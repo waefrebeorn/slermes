@@ -46,7 +46,23 @@ int gstat_u_canonical_hermes_home(const char *arg) {
 }
 
 /* PoP: _same_hermes_home @ gateway/status.py:_same_hermes_home */
-int gstat_u_same_hermes_home(const char *arg) { (void)arg; return 0; }
+int gstat_u_same_hermes_home(const char *arg) {
+    /* Python: normcase(canonical(left)) == normcase(canonical(right)).
+     * Arg = "left\tright" hermes homes. */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("1\n"); return 0; }
+    size_t llen = (size_t)(tab - arg);
+    const char *right = tab + 1;
+    /* normalize: strip trailing slashes both sides, compare case-insensitively
+     * only on Windows-style paths (POSIX: exact). */
+    size_t rlen = strlen(right);
+    while (llen > 1 && (arg[llen-1] == '/')) llen--;
+    while (rlen > 1 && right[rlen-1] == '/') rlen--;
+    int same = (llen == rlen && strncmp(arg, right, llen) == 0);
+    printf("%d\n", same);
+    return 0;
+}
 
 /* PoP: normalize_updated_at @ gateway/status.py:normalize_updated_at */
 int gstat_normalize_updated_at(const char *arg) { (void)arg; return 0; }

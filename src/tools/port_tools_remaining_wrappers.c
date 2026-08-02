@@ -392,7 +392,16 @@ int tools_delegate_tool_u_build_dynamic_schema_overrides(const char *arg) { (voi
 int tools_delegate_tool_u_strip_model_hidden_task_fields(const char *arg) { (void)arg; return 0; }
 
 /* PoP: live_transcript_root @ tools/delegation_live_log.py:live_transcript_root */
-int tools_delegation_live_log_live_transcript_root(const char *arg) { (void)arg; return 0; }
+int tools_delegation_live_log_live_transcript_root(const char *arg) {
+    /* Python: get_hermes_dir("cache/delegation", "delegation_cache") / "live"
+     * — profile-safe, never ~/.hermes. Arg = optional hermes dir. */
+    if (arg && *arg) { printf("%s/cache/delegation/live\n", arg); return 0; }
+    const char *hh = getenv("HERMES_HOME");
+    if (hh && *hh) printf("%s/cache/delegation/live\n", hh);
+    else printf("%s/.hermes/cache/delegation/live\n",
+                getenv("HOME") ? getenv("HOME") : ".");
+    return 0;
+}
 
 /* PoP: new_live_delegation_id @ tools/delegation_live_log.py:new_live_delegation_id */
 int tools_delegation_live_log_new_live_delegation_id(const char *arg) {

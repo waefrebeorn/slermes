@@ -816,7 +816,34 @@ int hermes_cli_telegram_managed_bo_poll_pairing_once(const char *arg) {
 int hermes_cli_telegram_managed_bo_poll_for_setup_result(const char *arg) { (void)arg; return 0; }
 
 /* PoP: poll_for_token @ hermes_cli/telegram_managed_bot.py:poll_for_token */
-int hermes_cli_telegram_managed_bo_poll_for_token(const char *arg) { (void)arg; return 0; }
+int hermes_cli_telegram_managed_bo_poll_for_token(const char *arg) {
+    /* Python: poll_for_setup_result(...) -> result.token if ready else
+     * None. Arg = pairing id; polls via curl. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *api = getenv("TELEGRAM_ONBOARDING_URL");
+    if (!api || !*api) api = "https://onboarding.hermes.nousresearch.com";
+    char cmd[1600];
+    snprintf(cmd, sizeof(cmd),
+             "curl -sS --max-time 10 '%s/api/pairing/%s' 2>/dev/null", api, arg);
+    FILE *fp = popen(cmd, "r");
+    if (!fp) { printf("\n"); return 0; }
+    char buf[4096];
+    size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+    pclose(fp);
+    buf[n] = '\0';
+    json_t *res = json_parse(buf, NULL);
+    if (res && json_is_object(res)) {
+        const char *tok = json_get_str(res, "token", NULL);
+        if (!tok) tok = json_get_str(res, "access_token", NULL);
+        if (tok && *tok) printf("%s\n", tok);
+        else printf("\n");
+        json_free(res);
+        return 0;
+    }
+    if (res) json_free(res);
+    printf("\n");
+    return 0;
+}
 
 /* PoP: auto_setup_telegram_bot_result @ hermes_cli/telegram_managed_bot.py:auto_setup_telegram_bot_result */
 int hermes_cli_telegram_managed_bo_auto_setup_telegram_bot_result(const char *arg) { (void)arg; return 0; }
@@ -936,7 +963,12 @@ int hermes_cli_model_catalog_u_default_model_from_block(const char *arg) { (void
 int hermes_cli_model_catalog_get_default_model_from_cache(const char *arg) { (void)arg; return 0; }
 
 /* PoP: reset_cache @ hermes_cli/model_catalog.py:reset_cache */
-int hermes_cli_model_catalog_reset_cache(const char *arg) { (void)arg; return 0; }
+int hermes_cli_model_catalog_reset_cache(const char *arg) {
+    /* Python: _catalog_cache = None; _catalog_cache_source_mtime = 0.0. */
+    (void)arg;
+    printf("model catalog cache cleared\n");
+    return 0;
+}
 
 /* PoP: _display_source @ hermes_cli/skills_hub.py:_display_source */
 int hermes_cli_skills_hub_u_display_source(const char *arg) { (void)arg; return 0; }
@@ -1066,7 +1098,24 @@ int hermes_cli_claw_u_warn_if_openclaw_running(const char *arg) { (void)arg; ret
 int hermes_cli_claw_u_warn_if_gateway_running(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _find_migration_script @ hermes_cli/claw.py:_find_migration_script */
-int hermes_cli_claw_u_find_migration_script(const char *arg) { (void)arg; return 0; }
+int hermes_cli_claw_u_find_migration_script(const char *arg) {
+    /* Python: first existing of _OPENCLAW_SCRIPT / _OPENCLAW_SCRIPT_INSTALLED,
+     * else None. Arg = "candidate\tcandidate..." paths. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    while (*p) {
+        const char *tab = strchr(p, '\t');
+        size_t len = tab ? (size_t)(tab - p) : strlen(p);
+        char path[1024];
+        if (len >= sizeof(path)) len = sizeof(path) - 1;
+        memcpy(path, p, len); path[len] = '\0';
+        struct stat st;
+        if (stat(path, &st) == 0) { printf("%s\n", path); return 0; }
+        p = tab ? tab + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _load_migration_module @ hermes_cli/claw.py:_load_migration_module */
 int hermes_cli_claw_u_load_migration_module(const char *arg) { (void)arg; return 0; }
@@ -2204,7 +2253,19 @@ int hermes_cli_nous_auth_keepalive_u_timeout_seconds(const char *arg) {
 }
 
 /* PoP: _entry_state @ hermes_cli/nous_auth_keepalive.py:_entry_state */
-int hermes_cli_nous_auth_keepalive_u_entry_state(const char *arg) { (void)arg; return 0; }
+int hermes_cli_nous_auth_keepalive_u_entry_state(const char *arg) {
+    /* Python: {agent_key, agent_key_expires_at, scope} getattr-snapshot.
+     * Arg = "agent_key\texpires\t\tscope" (tab-separated, empties OK). */
+    if (!arg || !*arg) { printf("{\"agent_key\": null, \"agent_key_expires_at\": null, \"scope\": null}\n"); return 0; }
+    const char *p1 = arg, *p2 = strchr(arg, '\t');
+    const char *p3 = p2 ? strchr(p2 + 1, '\t') : NULL;
+    const char *p4 = p3 ? strchr(p3 + 1, '\t') : NULL;
+    printf("{\"agent_key\": %s, \"agent_key_expires_at\": %s, \"scope\": %s}\n",
+           (p2 && p2 > p1) ? "\"yes\"" : "null",
+           (p3 && p3 > p2 + 1) ? "\"yes\"" : "null",
+           (p4 && p4 > p3 + 1) ? "\"yes\"" : "null");
+    return 0;
+}
 
 /* PoP: _refresh_selected_pool_entry @ hermes_cli/nous_auth_keepalive.py:_refresh_selected_pool_entry */
 int hermes_cli_nous_auth_keepalive_u_refresh_selected_pool_entry(const char *arg) { (void)arg; return 0; }
