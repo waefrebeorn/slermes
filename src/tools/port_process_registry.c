@@ -432,6 +432,7 @@ static bool process_registry_global_watch_admit(double now)
 /* PoP: _is_host_pid_alive @ tools/process_registry.py:_is_host_pid_alive */
 /* Port of Python tools/process_registry.py:_is_host_pid_alive().
  * Best-effort liveness check for host-visible PIDs. */
+/* PoP: process_registry_is_host_pid_alive @ agent/proxy_sources/iron_proxy.py:_pid_alive */
 bool process_registry_is_host_pid_alive(pid_t pid)
 {
     if (!pid) return false;

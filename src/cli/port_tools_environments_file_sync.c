@@ -115,6 +115,7 @@ json_node_t* cli_tools_environments_file_sync_unique_parent_dirs(json_node_t *fi
 }
 
 /* PoP: cli_tools_environments_file_sync__sha256_file @ agent/secret_sources/bitwarden.py:_sha256_file */
+/* PoP: cli_tools_environments_file_sync__sha256_file @ agent/proxy_sources/iron_proxy.py:_sha256_file */
 /* PoP: cli_tools_environments_file_sync__sha256_file @ tools/environments/file_sync.py:_sha256_file */
 char *cli_tools_environments_file_sync__sha256_file(const char *path, char *buf, size_t bufsz) {
     /*

@@ -110,6 +110,8 @@ void _clear_install_failed(void) {
     unlink(path);
 }
 
+/* PoP: _hermes_bin_dir @ agent/proxy_sources/iron_proxy.py:_hermes_bin_dir */
+/* PoP: _hermes_bin_dir @ agent/secret_sources/bitwarden.py:_hermes_bin_dir */
 /* PoP: _hermes_bin_dir @ tools/tirith_security.py:_hermes_bin_dir */
 static const char* _hermes_bin_dir(char *out, size_t out_len) {
     snprintf(out, out_len, "%s/bin", _get_hermes_home());
