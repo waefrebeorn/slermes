@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:43:55Z",
+  "generated_at": "2026-08-02T19:45:55Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -24433,10 +24433,10 @@
     },
     "agent/credential_sources.py": {
       "total": 15,
-      "ported": 1,
+      "ported": 15,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 14,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 15,
@@ -24452,16 +24452,24 @@
             "decorators": [],
             "line_number": 104
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_sources_remaining.c",
+          "c_function": "crs_matches",
+          "pop_annotation": {
+            "c_function": "crs_matches",
+            "python_functions": [
+              "matches"
+            ],
+            "c_file": "src/agent/port_credential_sources_remaining.c",
+            "python_file": "agent/credential_sources.py",
+            "line": 28,
+            "is_consolidated": false,
+            "full_text": "/* PoP: matches @ agent/credential_sources.py:matches */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_sources.py",
@@ -24473,16 +24481,24 @@
             "decorators": [],
             "line_number": 115
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_sources_remaining.c",
+          "c_function": "crs_register",
+          "pop_annotation": {
+            "c_function": "crs_register",
+            "python_functions": [
+              "register"
+            ],
+            "c_file": "src/agent/port_credential_sources_remaining.c",
+            "python_file": "agent/credential_sources.py",
+            "line": 37,
+            "is_consolidated": false,
+            "full_text": "/* PoP: register @ agent/credential_sources.py:register */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_sources.py",
@@ -24494,16 +24510,24 @@
             "decorators": [],
             "line_number": 120
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_sources_remaining.c",
+          "c_function": "crs_find_removal_step",
+          "pop_annotation": {
+            "c_function": "crs_find_removal_step",
+            "python_functions": [
+              "find_removal_step"
+            ],
+            "c_file": "src/agent/port_credential_sources_remaining.c",
+            "python_file": "agent/credential_sources.py",
+            "line": 45,
+            "is_consolidated": false,
+            "full_text": "/* PoP: find_removal_step @ agent/credential_sources.py:find_removal_step */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_sources.py",
@@ -24515,16 +24539,24 @@
             "decorators": [],
             "line_number": 143
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_sources_remaining.c",
+          "c_function": "crs_remove_env_source",
+          "pop_annotation": {
+            "c_function": "crs_remove_env_source",
+            "python_functions": [
+              "_remove_env_source"
+            ],
+            "c_file": "src/agent/port_credential_sources_remaining.c",
+            "python_file": "agent/credential_sources.py",
+            "line": 53,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _remove_env_source @ agent/credential_sources.py:_remove_env_source */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_sources.py",
@@ -24536,16 +24568,24 @@
             "decorators": [],
             "line_number": 194
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_sources_remaining.c",
+          "c_function": "crs_remove_claude_code",
+          "pop_annotation": {
+            "c_function": "crs_remove_claude_code",
+            "python_functions": [
+              "_remove_claude_code"
+            ],
+            "c_file": "src/agent/port_credential_sources_remaining.c",
+            "python_file": "agent/credential_sources.py",
+            "line": 62,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _remove_claude_code @ agent/credential_sources.py:_remove_claude_code */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_sources.py",
@@ -24557,16 +24597,24 @@
             "decorators": [],
             "line_number": 207
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_sources_remaining.c",
+          "c_function": "crs_remove_hermes_pkce",
+          "pop_annotation": {
+            "c_function": "crs_remove_hermes_pkce",
+            "python_functions": [
+              "_remove_hermes_pkce"
+            ],
+            "c_file": "src/agent/port_credential_sources_remaining.c",
+            "python_file": "agent/credential_sources.py",
+            "line": 69,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _remove_hermes_pkce @ agent/credential_sources.py:_remove_hermes_pkce */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_sources.py",
@@ -24578,16 +24626,24 @@
             "decorators": [],
             "line_number": 222
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_sources_remaining.c",
+          "c_function": "crs_clear_auth_store_provider",
+          "pop_annotation": {
+            "c_function": "crs_clear_auth_store_provider",
+            "python_functions": [
+              "_clear_auth_store_provider"
+            ],
+            "c_file": "src/agent/port_credential_sources_remaining.c",
+            "python_file": "agent/credential_sources.py",
+            "line": 83,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _clear_auth_store_provider @ agent/credential_sources.py:_clear_auth_store_provider */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_sources.py",
@@ -24599,16 +24655,24 @@
             "decorators": [],
             "line_number": 240
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_sources_remaining.c",
+          "c_function": "crs_remove_nous_device_code",
+          "pop_annotation": {
+            "c_function": "crs_remove_nous_device_code",
+            "python_functions": [
+              "_remove_nous_device_code"
+            ],
+            "c_file": "src/agent/port_credential_sources_remaining.c",
+            "python_file": "agent/credential_sources.py",
+            "line": 91,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _remove_nous_device_code @ agent/credential_sources.py:_remove_nous_device_code */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_sources.py",
@@ -24620,16 +24684,24 @@
             "decorators": [],
             "line_number": 255
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_sources_remaining.c",
+          "c_function": "crs_remove_minimax_oauth",
+          "pop_annotation": {
+            "c_function": "crs_remove_minimax_oauth",
+            "python_functions": [
+              "_remove_minimax_oauth"
+            ],
+            "c_file": "src/agent/port_credential_sources_remaining.c",
+            "python_file": "agent/credential_sources.py",
+            "line": 98,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _remove_minimax_oauth @ agent/credential_sources.py:_remove_minimax_oauth */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_sources.py",
@@ -24670,16 +24742,24 @@
             "decorators": [],
             "line_number": 288
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_sources_remaining.c",
+          "c_function": "crs_remove_codex_device_code",
+          "pop_annotation": {
+            "c_function": "crs_remove_codex_device_code",
+            "python_functions": [
+              "_remove_codex_device_code"
+            ],
+            "c_file": "src/agent/port_credential_sources_remaining.c",
+            "python_file": "agent/credential_sources.py",
+            "line": 104,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _remove_codex_device_code @ agent/credential_sources.py:_remove_codex_device_code */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_sources.py",
@@ -24691,16 +24771,24 @@
             "decorators": [],
             "line_number": 322
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_sources_remaining.c",
+          "c_function": "crs_remove_qwen_cli",
+          "pop_annotation": {
+            "c_function": "crs_remove_qwen_cli",
+            "python_functions": [
+              "_remove_qwen_cli"
+            ],
+            "c_file": "src/agent/port_credential_sources_remaining.c",
+            "python_file": "agent/credential_sources.py",
+            "line": 116,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _remove_qwen_cli @ agent/credential_sources.py:_remove_qwen_cli */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_sources.py",
@@ -24712,16 +24800,24 @@
             "decorators": [],
             "line_number": 335
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_sources_remaining.c",
+          "c_function": "crs_remove_copilot_gh",
+          "pop_annotation": {
+            "c_function": "crs_remove_copilot_gh",
+            "python_functions": [
+              "_remove_copilot_gh"
+            ],
+            "c_file": "src/agent/port_credential_sources_remaining.c",
+            "python_file": "agent/credential_sources.py",
+            "line": 123,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _remove_copilot_gh @ agent/credential_sources.py:_remove_copilot_gh */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_sources.py",
@@ -24733,16 +24829,24 @@
             "decorators": [],
             "line_number": 364
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_sources_remaining.c",
+          "c_function": "crs_remove_custom_config",
+          "pop_annotation": {
+            "c_function": "crs_remove_custom_config",
+            "python_functions": [
+              "_remove_custom_config"
+            ],
+            "c_file": "src/agent/port_credential_sources_remaining.c",
+            "python_file": "agent/credential_sources.py",
+            "line": 133,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _remove_custom_config @ agent/credential_sources.py:_remove_custom_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_sources.py",
@@ -24754,16 +24858,24 @@
             "decorators": [],
             "line_number": 378
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_sources_remaining.c",
+          "c_function": "crs_register_all_sources",
+          "pop_annotation": {
+            "c_function": "crs_register_all_sources",
+            "python_functions": [
+              "_register_all_sources"
+            ],
+            "c_file": "src/agent/port_credential_sources_remaining.c",
+            "python_file": "agent/credential_sources.py",
+            "line": 140,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _register_all_sources @ agent/credential_sources.py:_register_all_sources */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -39911,10 +40023,10 @@
     },
     "agent/memory_manager.py": {
       "total": 49,
-      "ported": 35,
+      "ported": 49,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 14,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 49,
@@ -40046,16 +40158,24 @@
             "decorators": [],
             "line_number": 211
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_memory_manager_remaining.c",
+          "c_function": "mgr_scrubber_init",
+          "pop_annotation": {
+            "c_function": "mgr_scrubber_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_memory_manager_remaining.c",
+            "python_file": "agent/memory_manager.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/memory_manager.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/memory_manager.py",
@@ -40067,16 +40187,24 @@
             "decorators": [],
             "line_number": 216
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_memory_manager_remaining.c",
+          "c_function": "mgr_scrubber_reset",
+          "pop_annotation": {
+            "c_function": "mgr_scrubber_reset",
+            "python_functions": [
+              "reset"
+            ],
+            "c_file": "src/agent/port_memory_manager_remaining.c",
+            "python_file": "agent/memory_manager.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: reset @ agent/memory_manager.py:reset */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/memory_manager.py",
@@ -40088,16 +40216,24 @@
             "decorators": [],
             "line_number": 221
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_memory_manager_remaining.c",
+          "c_function": "mgr_scrubber_feed",
+          "pop_annotation": {
+            "c_function": "mgr_scrubber_feed",
+            "python_functions": [
+              "feed"
+            ],
+            "c_file": "src/agent/port_memory_manager_remaining.c",
+            "python_file": "agent/memory_manager.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: feed @ agent/memory_manager.py:feed */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/memory_manager.py",
@@ -40109,16 +40245,24 @@
             "decorators": [],
             "line_number": 267
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_memory_manager_remaining.c",
+          "c_function": "mgr_scrubber_flush",
+          "pop_annotation": {
+            "c_function": "mgr_scrubber_flush",
+            "python_functions": [
+              "flush"
+            ],
+            "c_file": "src/agent/port_memory_manager_remaining.c",
+            "python_file": "agent/memory_manager.py",
+            "line": 55,
+            "is_consolidated": false,
+            "full_text": "/* PoP: flush @ agent/memory_manager.py:flush */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/memory_manager.py",
@@ -40132,16 +40276,24 @@
             ],
             "line_number": 284
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_memory_manager_remaining.c",
+          "c_function": "mgr_max_partial_suffix",
+          "pop_annotation": {
+            "c_function": "mgr_max_partial_suffix",
+            "python_functions": [
+              "_max_partial_suffix"
+            ],
+            "c_file": "src/agent/port_memory_manager_remaining.c",
+            "python_file": "agent/memory_manager.py",
+            "line": 62,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _max_partial_suffix @ agent/memory_manager.py:_max_partial_suffix */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/memory_manager.py",
@@ -40240,16 +40392,24 @@
             "decorators": [],
             "line_number": 324
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_memory_manager_remaining.c",
+          "c_function": "mgr_is_block_boundary",
+          "pop_annotation": {
+            "c_function": "mgr_is_block_boundary",
+            "python_functions": [
+              "_is_block_boundary"
+            ],
+            "c_file": "src/agent/port_memory_manager_remaining.c",
+            "python_file": "agent/memory_manager.py",
+            "line": 80,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_block_boundary @ agent/memory_manager.py:_is_block_boundary */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/memory_manager.py",
@@ -40348,16 +40508,24 @@
             "decorators": [],
             "line_number": 371
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_memory_manager_remaining.c",
+          "c_function": "mgr_scrubber_init",
+          "pop_annotation": {
+            "c_function": "mgr_scrubber_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_memory_manager_remaining.c",
+            "python_file": "agent/memory_manager.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/memory_manager.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/memory_manager.py",
@@ -40400,16 +40568,24 @@
             ],
             "line_number": 473
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_memory_manager_remaining.c",
+          "c_function": "mgr_providers",
+          "pop_annotation": {
+            "c_function": "mgr_providers",
+            "python_functions": [
+              "providers"
+            ],
+            "c_file": "src/agent/port_memory_manager_remaining.c",
+            "python_file": "agent/memory_manager.py",
+            "line": 91,
+            "is_consolidated": false,
+            "full_text": "/* PoP: providers @ agent/memory_manager.py:providers */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/memory_manager.py",
@@ -40421,16 +40597,24 @@
             "decorators": [],
             "line_number": 477
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_memory_manager_remaining.c",
+          "c_function": "mgr_get_provider",
+          "pop_annotation": {
+            "c_function": "mgr_get_provider",
+            "python_functions": [
+              "get_provider"
+            ],
+            "c_file": "src/agent/port_memory_manager_remaining.c",
+            "python_file": "agent/memory_manager.py",
+            "line": 98,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_provider @ agent/memory_manager.py:get_provider */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/memory_manager.py",
@@ -40442,16 +40626,24 @@
             "decorators": [],
             "line_number": 486
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_memory_manager_remaining.c",
+          "c_function": "mgr_build_system_prompt",
+          "pop_annotation": {
+            "c_function": "mgr_build_system_prompt",
+            "python_functions": [
+              "build_system_prompt"
+            ],
+            "c_file": "src/agent/port_memory_manager_remaining.c",
+            "python_file": "agent/memory_manager.py",
+            "line": 106,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_system_prompt @ agent/memory_manager.py:build_system_prompt */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/memory_manager.py",
@@ -40465,16 +40657,24 @@
             ],
             "line_number": 508
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_memory_manager_remaining.c",
+          "c_function": "mgr_strip_skill_scaffolding",
+          "pop_annotation": {
+            "c_function": "mgr_strip_skill_scaffolding",
+            "python_functions": [
+              "_strip_skill_scaffolding"
+            ],
+            "c_file": "src/agent/port_memory_manager_remaining.c",
+            "python_file": "agent/memory_manager.py",
+            "line": 113,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _strip_skill_scaffolding @ agent/memory_manager.py:_strip_skill_scaffolding */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/memory_manager.py",
@@ -40807,16 +41007,24 @@
             "decorators": [],
             "line_number": 825
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_memory_manager_remaining.c",
+          "c_function": "mgr_has_tool",
+          "pop_annotation": {
+            "c_function": "mgr_has_tool",
+            "python_functions": [
+              "has_tool"
+            ],
+            "c_file": "src/agent/port_memory_manager_remaining.c",
+            "python_file": "agent/memory_manager.py",
+            "line": 122,
+            "is_consolidated": false,
+            "full_text": "/* PoP: has_tool @ agent/memory_manager.py:has_tool */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/memory_manager.py",
@@ -40828,16 +41036,24 @@
             "decorators": [],
             "line_number": 829
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_memory_manager_remaining.c",
+          "c_function": "mgr_handle_tool_call",
+          "pop_annotation": {
+            "c_function": "mgr_handle_tool_call",
+            "python_functions": [
+              "handle_tool_call"
+            ],
+            "c_file": "src/agent/port_memory_manager_remaining.c",
+            "python_file": "agent/memory_manager.py",
+            "line": 130,
+            "is_consolidated": false,
+            "full_text": "/* PoP: handle_tool_call @ agent/memory_manager.py:handle_tool_call */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/memory_manager.py",
@@ -40878,16 +41094,24 @@
             "decorators": [],
             "line_number": 865
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_memory_manager_remaining.c",
+          "c_function": "mgr_on_session_end",
+          "pop_annotation": {
+            "c_function": "mgr_on_session_end",
+            "python_functions": [
+              "on_session_end"
+            ],
+            "c_file": "src/agent/port_memory_manager_remaining.c",
+            "python_file": "agent/memory_manager.py",
+            "line": 138,
+            "is_consolidated": false,
+            "full_text": "/* PoP: on_session_end @ agent/memory_manager.py:on_session_end */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/memory_manager.py",
