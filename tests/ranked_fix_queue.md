@@ -1,8 +1,8 @@
-# Ranked fix queue — 3070 bootleg functions
+# Ranked fix queue — 3066 bootleg functions
 
 - A  (delegate to real fn): 22
-- Bt (trivial direct-port): 122
-- Bx (direct but needs deps): 1019
+- Bt (trivial direct-port): 117
+- Bx (direct but needs deps): 1020
 - C  (deep subsystem):        1907
 
 ## Top of queue (automatable first)
@@ -29,7 +29,6 @@
 - [A] gateway/restart_loop_guard.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
 - [A] gateway/stream_dispatch.py :: dispatch -> adel_u_persist_dispatch  (cands: dispatch)
 - [A] tools/slash_confirm.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
-- [Bt] hermes_cli/main.py :: _is_electron_packaged_web_dist -> main_u_is_electron_packaged_web_dist
 - [Bt] hermes_cli/main.py :: _is_fork -> main_u_is_fork
 - [Bt] hermes_cli/main.py :: _is_windows_npm_path -> main_u_is_windows_npm_path
 - [Bt] hermes_cli/main.py :: _lazy_refresh_marker_path -> main_u_lazy_refresh_marker_path
@@ -37,7 +36,6 @@
 - [Bt] hermes_cli/main.py :: _resolve_update_branch -> main_u_resolve_update_branch
 - [Bt] hermes_cli/main.py :: _sync_fork_with_upstream -> main_u_sync_fork_with_upstream
 - [Bt] hermes_cli/main.py :: _write_lazy_refresh_incomplete_marker -> main_u_write_lazy_refresh_incomplete_marker
-- [Bt] hermes_cli/gateway.py :: _print_gateway_process_mismatch -> cgw_u_print_gateway_process_mismatch
 - [Bt] hermes_cli/gateway.py :: _print_linger_enable_warning -> cgw_u_print_linger_enable_warning
 - [Bt] hermes_cli/gateway.py :: _refuse_temp_home_service_write -> cgw_u_refuse_temp_home_service_write
 - [Bt] hermes_cli/gateway.py :: _service_scope_label -> cgw_u_service_scope_label
@@ -57,10 +55,6 @@
 - [Bt] gateway/platforms/base.py :: set_reaction_handler -> gw_base__set_reaction_handler
 - [Bt] gateway/platforms/base.py :: set_session_store -> gw_base__set_session_store
 - [Bt] hermes_cli/projects_cmd.py :: _print_project -> hermes_cli_projects_cmd_u_print_project
-- [Bt] agent/chat_completion_helpers.py :: _bump_stale_streak -> agent_chat_completion_helpers_u_bump_stale_streak
-- [Bt] agent/chat_completion_helpers.py :: _fallback_entry_is_same_backend_by_base_url -> agent_chat_completion_helpers_u_fallback_entry_is_same_backe_rl
-- [Bt] agent/chat_completion_helpers.py :: _reset_stale_streak -> agent_chat_completion_helpers_u_reset_stale_streak
-- [Bt] agent/chat_completion_helpers.py :: _stale_streak -> agent_chat_completion_helpers_u_stale_streak
 - [Bt] hermes_cli/auth_commands.py :: _api_key_default_label -> hermes_cli_auth_commands_u_api_key_default_label
 - [Bt] hermes_cli/auth_commands.py :: _oauth_default_label -> hermes_cli_auth_commands_u_oauth_default_label
 - [Bt] hermes_cli/profile_distribution.py :: _looks_like_git_url -> hermes_cli_profile_distributio_u_looks_like_git_url
@@ -69,11 +63,12 @@
 - [Bt] hermes_cli/telegram_managed_bot.py :: auto_setup_telegram_bot_result -> hermes_cli_telegram_managed_bo_auto_setup_telegram_bot_result
 - [Bt] hermes_cli/telegram_managed_bot.py :: generate_bot_username -> hermes_cli_telegram_managed_bo_generate_bot_username
 - [Bt] hermes_cli/telegram_managed_bot.py :: print_qr_code -> hermes_cli_telegram_managed_bo_print_qr_code
-- [Bt] tools/homeassistant_tool.py :: _check_ha_available -> tools_homeassistant_tool_u_check_ha_available
+- [Bt] tools/registry.py :: register_plugin_override_policy -> tools_registry_register_plugin_override_policy
+- [Bt] agent/chat_completion_helpers.py :: _fallback_entry_is_same_backend_by_base_url -> agent_chat_completion_helpers_u_fallback_entry_is_same_backe_rl
+- [Bt] agent/chat_completion_helpers.py :: _reset_stale_streak -> agent_chat_completion_helpers_u_reset_stale_streak
+- [Bt] hermes_cli/skin_engine.py :: get_active_skin_name -> hermes_cli_skin_engine_get_active_skin_name
 - [Bt] tools/homeassistant_tool.py :: _get_config -> tools_homeassistant_tool_u_get_config
 - [Bt] tools/homeassistant_tool.py :: _get_headers -> tools_homeassistant_tool_u_get_headers
-- [Bt] tools/registry.py :: register_plugin_override_policy -> tools_registry_register_plugin_override_policy
-- [Bt] hermes_cli/skin_engine.py :: get_active_skin_name -> hermes_cli_skin_engine_get_active_skin_name
 - [Bt] agent/agent_init.py :: _normalize_custom_provider_name -> agent_agent_init_u_normalize_custom_provider_name
 - [Bt] agent/agent_init.py :: _resolve_compression_threshold -> agent_agent_init_u_resolve_compression_threshold
 - [Bt] agent/rate_limit_tracker.py :: _fmt_count -> agent_rate_limit_tracker_u_fmt_count
@@ -207,3 +202,8 @@
 - [Bx] hermes_cli/main.py :: _validate_critical_files_syntax -> main_u_validate_critical_files_syntax
 - [Bx] hermes_cli/main.py :: _web_ui_build_needed -> main_u_web_ui_build_needed
 - [Bx] hermes_cli/main.py :: _web_ui_stamp_path -> main_u_web_ui_stamp_path
+- [Bx] hermes_cli/main.py :: _write_desktop_build_stamp -> main_u_write_desktop_build_stamp
+- [Bx] hermes_cli/main.py :: _write_marker_file -> main_u_write_marker_file
+- [Bx] hermes_cli/main.py :: _write_update_incomplete_marker -> main_u_write_update_incomplete_marker
+- [Bx] hermes_cli/main.py :: _write_update_planned_stop_marker -> main_u_write_update_planned_stop_marker
+- [Bx] hermes_cli/main.py :: _write_web_ui_build_stamp -> main_u_write_web_ui_build_stamp

@@ -1,9 +1,9 @@
 {
- "total": 3070,
+ "total": 3066,
  "by_cat": {
   "A": 22,
-  "Bt": 122,
-  "Bx": 1019,
+  "Bt": 117,
+  "Bx": 1020,
   "C": 1907
  },
  "by_module": {
@@ -18,7 +18,7 @@
   "agent/billing_usage.py": 4,
   "agent/billing_view.py": 5,
   "agent/bounded_response.py": 3,
-  "agent/chat_completion_helpers.py": 14,
+  "agent/chat_completion_helpers.py": 13,
   "agent/codex_runtime.py": 6,
   "agent/context_compressor.py": 23,
   "agent/context_engine.py": 8,
@@ -177,7 +177,7 @@
   "hermes_cli/env_loader.py": 12,
   "hermes_cli/fallback_cmd.py": 6,
   "hermes_cli/fallback_config.py": 2,
-  "hermes_cli/gateway.py": 138,
+  "hermes_cli/gateway.py": 137,
   "hermes_cli/gateway_enroll.py": 5,
   "hermes_cli/gateway_windows.py": 47,
   "hermes_cli/goals.py": 5,
@@ -187,7 +187,7 @@
   "hermes_cli/kanban_db.py": 24,
   "hermes_cli/kanban_diagnostics.py": 13,
   "hermes_cli/kanban_specify.py": 1,
-  "hermes_cli/main.py": 205,
+  "hermes_cli/main.py": 204,
   "hermes_cli/managed_scope.py": 6,
   "hermes_cli/managed_uv.py": 24,
   "hermes_cli/mcp_catalog.py": 15,
@@ -333,7 +333,7 @@
   "tools/file_state.py": 12,
   "tools/file_tools.py": 9,
   "tools/focus_pane_tool.py": 2,
-  "tools/homeassistant_tool.py": 14,
+  "tools/homeassistant_tool.py": 13,
   "tools/hook_output_spill.py": 5,
   "tools/image_generation_tool.py": 2,
   "tools/image_source.py": 8,
@@ -599,14 +599,6 @@
   },
   {
    "module": "hermes_cli/main.py",
-   "py": "_is_electron_packaged_web_dist",
-   "c": "main_u_is_electron_packaged_web_dist",
-   "file": "src/cli/port_main_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/main.py",
    "py": "_is_fork",
    "c": "main_u_is_fork",
    "file": "src/cli/port_main_wrappers.c",
@@ -658,14 +650,6 @@
    "py": "_write_lazy_refresh_incomplete_marker",
    "c": "main_u_write_lazy_refresh_incomplete_marker",
    "file": "src/cli/port_main_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/gateway.py",
-   "py": "_print_gateway_process_mismatch",
-   "c": "cgw_u_print_gateway_process_mismatch",
-   "file": "src/cli/port_cli_gateway_wrappers.c",
    "cat": "Bt",
    "candidates": []
   },
@@ -822,38 +806,6 @@
    "candidates": []
   },
   {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "_bump_stale_streak",
-   "c": "agent_chat_completion_helpers_u_bump_stale_streak",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "_fallback_entry_is_same_backend_by_base_url",
-   "c": "agent_chat_completion_helpers_u_fallback_entry_is_same_backe_rl",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "_reset_stale_streak",
-   "c": "agent_chat_completion_helpers_u_reset_stale_streak",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "_stale_streak",
-   "c": "agent_chat_completion_helpers_u_stale_streak",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
    "module": "hermes_cli/auth_commands.py",
    "py": "_api_key_default_label",
    "c": "hermes_cli_auth_commands_u_api_key_default_label",
@@ -918,10 +870,34 @@
    "candidates": []
   },
   {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_check_ha_available",
-   "c": "tools_homeassistant_tool_u_check_ha_available",
+   "module": "tools/registry.py",
+   "py": "register_plugin_override_policy",
+   "c": "tools_registry_register_plugin_override_policy",
    "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bt",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "_fallback_entry_is_same_backend_by_base_url",
+   "c": "agent_chat_completion_helpers_u_fallback_entry_is_same_backe_rl",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bt",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "_reset_stale_streak",
+   "c": "agent_chat_completion_helpers_u_reset_stale_streak",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bt",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/skin_engine.py",
+   "py": "get_active_skin_name",
+   "c": "hermes_cli_skin_engine_get_active_skin_name",
+   "file": "src/cli/port_cli_remaining_wrappers.c",
    "cat": "Bt",
    "candidates": []
   },
@@ -938,22 +914,6 @@
    "py": "_get_headers",
    "c": "tools_homeassistant_tool_u_get_headers",
    "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "register_plugin_override_policy",
-   "c": "tools_registry_register_plugin_override_policy",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/skin_engine.py",
-   "py": "get_active_skin_name",
-   "c": "hermes_cli_skin_engine_get_active_skin_name",
-   "file": "src/cli/port_cli_remaining_wrappers.c",
    "cat": "Bt",
    "candidates": []
   },
@@ -5918,46 +5878,6 @@
    "candidates": []
   },
   {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "_build_partial_stream_stub",
-   "c": "agent_chat_completion_helpers_u_build_partial_stream_stub",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "_check_stale_giveup",
-   "c": "agent_chat_completion_helpers_u_check_stale_giveup",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "_codex_wait_notice_recovery",
-   "c": "agent_chat_completion_helpers_u_codex_wait_notice_recovery",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "_derive_stream_stale_timeout",
-   "c": "agent_chat_completion_helpers_u_derive_stream_stale_timeout",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "_dispatch_nonstreaming_api_request",
-   "c": "agent_chat_completion_helpers_u_dispatch_nonstreaming_api_re_st",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
    "module": "agent/subscription_view.py",
    "py": "_format_dollars_grouped",
    "c": "agent_subscription_view_u_format_dollars_grouped",
@@ -6238,38 +6158,6 @@
    "candidates": []
   },
   {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_async_get_state",
-   "c": "tools_homeassistant_tool_u_async_get_state",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_build_service_payload",
-   "c": "tools_homeassistant_tool_u_build_service_payload",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_handle_get_state",
-   "c": "tools_homeassistant_tool_u_handle_get_state",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_parse_service_response",
-   "c": "tools_homeassistant_tool_u_parse_service_response",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
    "module": "tools/registry.py",
    "py": "_caller_module",
    "c": "tools_registry_u_caller_module",
@@ -6426,6 +6314,54 @@
    "py": "check_x_search_requirements",
    "c": "tools_x_search_tool_check_x_search_requirements",
    "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "_build_partial_stream_stub",
+   "c": "agent_chat_completion_helpers_u_build_partial_stream_stub",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "_bump_stale_streak",
+   "c": "agent_chat_completion_helpers_u_bump_stale_streak",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "_check_stale_giveup",
+   "c": "agent_chat_completion_helpers_u_check_stale_giveup",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "_codex_wait_notice_recovery",
+   "c": "agent_chat_completion_helpers_u_codex_wait_notice_recovery",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "_derive_stream_stale_timeout",
+   "c": "agent_chat_completion_helpers_u_derive_stream_stale_timeout",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "_dispatch_nonstreaming_api_request",
+   "c": "agent_chat_completion_helpers_u_dispatch_nonstreaming_api_re_st",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
    "cat": "Bx",
    "candidates": []
   },
@@ -6721,6 +6657,38 @@
    "module": "tools/environments/modal.py",
    "py": "_resolve_modal_image",
    "c": "tools_environments_modal_u_resolve_modal_image",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_async_get_state",
+   "c": "tools_homeassistant_tool_u_async_get_state",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_build_service_payload",
+   "c": "tools_homeassistant_tool_u_build_service_payload",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_handle_get_state",
+   "c": "tools_homeassistant_tool_u_handle_get_state",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_parse_service_response",
+   "c": "tools_homeassistant_tool_u_parse_service_response",
    "file": "src/tools/port_tools_remaining_wrappers.c",
    "cat": "Bx",
    "candidates": []
@@ -18886,46 +18854,6 @@
    "candidates": []
   },
   {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "_bedrock_reasoning_stale_floor",
-   "c": "agent_chat_completion_helpers_u_bedrock_reasoning_stale_floor",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "_provider_preferences_for_agent",
-   "c": "agent_chat_completion_helpers_u_provider_preferences_for_agent",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "direct_api_call",
-   "c": "agent_chat_completion_helpers_direct_api_call",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "openai_codex_stale_timeout_floor",
-   "c": "agent_chat_completion_helpers_openai_codex_stale_timeout_floor",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "should_use_direct_api_call",
-   "c": "agent_chat_completion_helpers_should_use_direct_api_call",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
    "module": "agent/subscription_view.py",
    "py": "_coalesce",
    "c": "agent_subscription_view_u_coalesce",
@@ -19254,62 +19182,6 @@
    "candidates": []
   },
   {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_async_call_service",
-   "c": "tools_homeassistant_tool_u_async_call_service",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_async_list_entities",
-   "c": "tools_homeassistant_tool_u_async_list_entities",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_async_list_services",
-   "c": "tools_homeassistant_tool_u_async_list_services",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_filter_and_summarize",
-   "c": "tools_homeassistant_tool_u_filter_and_summarize",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_handle_call_service",
-   "c": "tools_homeassistant_tool_u_handle_call_service",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_handle_list_entities",
-   "c": "tools_homeassistant_tool_u_handle_list_entities",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/homeassistant_tool.py",
-   "py": "_handle_list_services",
-   "c": "tools_homeassistant_tool_u_handle_list_services",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
    "module": "tools/x_search_tool.py",
    "py": "_extract_inline_citations",
    "c": "tools_x_search_tool_u_extract_inline_citations",
@@ -19354,6 +19226,46 @@
    "py": "x_search_tool",
    "c": "tools_x_search_tool_x_search_tool",
    "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "_bedrock_reasoning_stale_floor",
+   "c": "agent_chat_completion_helpers_u_bedrock_reasoning_stale_floor",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "_provider_preferences_for_agent",
+   "c": "agent_chat_completion_helpers_u_provider_preferences_for_agent",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "direct_api_call",
+   "c": "agent_chat_completion_helpers_direct_api_call",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "openai_codex_stale_timeout_floor",
+   "c": "agent_chat_completion_helpers_openai_codex_stale_timeout_floor",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "should_use_direct_api_call",
+   "c": "agent_chat_completion_helpers_should_use_direct_api_call",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
    "cat": "C",
    "candidates": []
   },
@@ -19986,6 +19898,62 @@
    "py": "start",
    "c": "agent_memory_provider_on_turn_start",
    "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_async_call_service",
+   "c": "tools_homeassistant_tool_u_async_call_service",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_async_list_entities",
+   "c": "tools_homeassistant_tool_u_async_list_entities",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_async_list_services",
+   "c": "tools_homeassistant_tool_u_async_list_services",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_filter_and_summarize",
+   "c": "tools_homeassistant_tool_u_filter_and_summarize",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_handle_call_service",
+   "c": "tools_homeassistant_tool_u_handle_call_service",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_handle_list_entities",
+   "c": "tools_homeassistant_tool_u_handle_list_entities",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/homeassistant_tool.py",
+   "py": "_handle_list_services",
+   "c": "tools_homeassistant_tool_u_handle_list_services",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
    "cat": "C",
    "candidates": []
   },
