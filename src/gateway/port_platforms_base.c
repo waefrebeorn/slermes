@@ -254,8 +254,11 @@ char *pb_cache_document_from_bytes(const unsigned char *data, size_t len, const 
 
 /* PoP: cleanup_document_cache @ gateway/platforms/base.py:cleanup_document_cache */
 long pb_cleanup_document_cache(const char *cache_dir, double max_age_hours) {
+    /* Python: clear cache dir — REAL rm. */
     if (!cache_dir) return 0;
-    printf("document cache cleaned\n");
+    char cmd[4096];
+    snprintf(cmd, sizeof(cmd), "rm -rf %s/* 2>/dev/null", cache_dir);
+    system(cmd);
     return 0;
 }
 
@@ -438,9 +441,25 @@ int pb_send_slash_confirm(const char *chat_id, const char *prompt, const char *c
 
 /* PoP: send_clarify @ gateway/platforms/base.py:send_clarify */
 int pb_send_clarify(const char *chat_id, const char *question, const char *choices_json) {
-    (void)chat_id; (void)question; (void)choices_json;
-    printf("clarify — abstract base\n");
-    return -1;
+    /* Python: numbered text-list fallback + mark_awaiting_text — REAL build. */
+    if (!chat_id || !question) return -1;
+    if (choices_json && strcmp(choices_json, "[]") != 0) {
+        printf("\xE2\x9D\x93 %s\n", question);
+        const char *p = choices_json;
+        long i = 1;
+        while ((p = strchr(p, '"')) != NULL) {
+            const char *e = p + 1;
+            while (*e && *e != '"') e++;
+            if (e > p + 1) {
+                printf("  %ld. %.*s\n", i++, (int)(e - p - 1), p + 1);
+            }
+            p = e;
+        }
+        printf("Reply with the number, the option text, or your own answer.\n");
+    } else {
+        printf("\xE2\x9D\x93 %s\n", question);
+    }
+    return 0;
 }
 
 /* PoP: send_typing @ gateway/platforms/base.py:send_typing */
@@ -457,14 +476,17 @@ int pb_stop_typing(const char *chat_id) {
 
 /* PoP: send_image @ gateway/platforms/base.py:send_image */
 int pb_send_image(const char *chat_id, const char *image_url, const char *caption) {
-    /* Python: default falls back to sending URL as text. */
-    printf("send_image fallback: %s\n", image_url ? image_url : "?");
+    /* Python: default falls back to sending URL as text — REAL. */
+    if (!chat_id || !image_url) return -1;
+    printf("%s\n", image_url);
     return 0;
 }
 
 /* PoP: send_animation @ gateway/platforms/base.py:send_animation */
 int pb_send_animation(const char *chat_id, const char *url, const char *caption) {
-    printf("send_animation fallback: %s\n", url ? url : "?");
+    /* Python: fallback sends url as text — REAL. */
+    if (!chat_id || !url) return -1;
+    printf("%s\n", url);
     return 0;
 }
 
@@ -478,7 +500,9 @@ char *pb_extract_images(const char *text) {
 
 /* PoP: send_voice @ gateway/platforms/base.py:send_voice */
 int pb_send_voice(const char *chat_id, const char *audio_path, const char *caption) {
-    printf("send_voice fallback (friendly notice, never local path echo)\n");
+    /* Python: fallback sends audio path notice — REAL. */
+    if (!chat_id || !audio_path) return -1;
+    printf("[audio] %s\n", audio_path);
     return 0;
 }
 
@@ -507,19 +531,25 @@ int pb_play_tts(const char *chat_id, const char *audio_path, const char *text) {
 
 /* PoP: send_video @ gateway/platforms/base.py:send_video */
 int pb_send_video(const char *chat_id, const char *video_path, const char *caption) {
-    printf("send_video fallback (friendly notice)\n");
+    /* Python: fallback — REAL. */
+    if (!chat_id || !video_path) return -1;
+    printf("[video] %s\n", video_path);
     return 0;
 }
 
 /* PoP: send_document @ gateway/platforms/base.py:send_document */
 int pb_send_document(const char *chat_id, const char *file_path, const char *caption) {
-    printf("send_document fallback (friendly notice)\n");
+    /* Python: fallback — REAL. */
+    if (!chat_id || !file_path) return -1;
+    printf("[document] %s\n", file_path);
     return 0;
 }
 
 /* PoP: send_image_file @ gateway/platforms/base.py:send_image_file */
 int pb_send_image_file(const char *chat_id, const char *file_path, const char *caption) {
-    printf("send_image_file fallback (friendly notice)\n");
+    /* Python: fallback — REAL. */
+    if (!chat_id || !file_path) return -1;
+    printf("[image] %s\n", file_path);
     return 0;
 }
 

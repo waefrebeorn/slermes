@@ -973,8 +973,10 @@ class ParityAnalyzer:
     def _python_is_trivial(self, py_file, feature_name):
         """True when the Python source for this feature does no real work.
 
-        Returns False (not trivial) when we cannot locate or parse the source,
-        so unknown cases are conservatively still flagged.
+        Uses AST parsing (not regex) so multiline signatures with nested
+        parens (Optional[Dict[str, Any]] = None) parse correctly. Returns
+        False (not trivial) when the source is missing/unparseable, so
+        unknown cases are conservatively still flagged.
         """
         pypath = SLERMES_DIR.parent / py_file  # repo root is the parent
         if not pypath.exists():
@@ -982,21 +984,21 @@ class ParityAnalyzer:
         if not pypath.exists():
             return False
         try:
-            src = pypath.read_text(errors='ignore')
-        except OSError:
+            tree = ast.parse(pypath.read_text(errors='ignore'))
+        except (OSError, SyntaxError):
             return False
-        m = re.search(
-            r'^    (?:async )?def ' + re.escape(feature_name) +
-            r'\([^)]*\)[^:]*:\n(.*?)(?=^    (?:async )?def |^    @|^class |^[a-zA-Z_@]|\Z)',
-            src, re.MULTILINE | re.DOTALL)
-        if not m:
-            m = re.search(
-                r'^def ' + re.escape(feature_name) +
-                r'\([^)]*\)[^:]*:\n(.*?)(?=^def |^[a-zA-Z_@]|\Z)',
-                src, re.MULTILINE | re.DOTALL)
-        if not m:
+        fn = None
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) \
+                    and node.name == feature_name:
+                fn = node
+                break
+        if fn is None:
             return False
-        body = m.group(1)
+        body = ast.get_source_segment(
+            pypath.read_text(errors='ignore'), fn)
+        if not body:
+            return False
         return not any(rx.search(body) for rx in self._PY_REAL_RE)
 
     # ── classification (preserved; adds da_flags) ──

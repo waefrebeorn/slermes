@@ -26,7 +26,7 @@ already-wired live handlers / libraries). This cleanly separates
 Usage:
   python3 tests/recursive_false_gap_hunter.py [--json] [--porthint]
 """
-import re, sys, os, json, subprocess, pathlib
+import re, sys, os, json, subprocess, pathlib, ast
 from pathlib import Path
 
 SLERMES = Path(__file__).resolve().parent.parent
@@ -471,7 +471,10 @@ def _build_pop_index():
     _POP_INDEX = idx
 
 def python_is_trivial_for(c_name):
-    """True when the PoP-annotated Python source for c_name does no real work."""
+    """True when the PoP-annotated Python source for c_name does no real work.
+
+    AST-based so multiline signatures with nested parens parse correctly.
+    """
     global _POP_INDEX
     if _POP_INDEX is None:
         _build_pop_index()
@@ -484,20 +487,20 @@ def python_is_trivial_for(c_name):
             continue
         try:
             src = pypath.read_text(errors='ignore')
-        except OSError:
+            tree = ast.parse(src)
+        except (OSError, SyntaxError):
             continue
-        m = re.search(
-            r'^    (?:async )?def ' + re.escape(py_name) +
-            r'\([^)]*\)[^:]*:\n(.*?)(?=^    (?:async )?def |^    @|^class |^[a-zA-Z_@]|\Z)',
-            src, re.MULTILINE | re.DOTALL)
-        if not m:
-            m = re.search(
-                r'^def ' + re.escape(py_name) +
-                r'\([^)]*\)[^:]*:\n(.*?)(?=^def |^[a-zA-Z_@]|\Z)',
-                src, re.MULTILINE | re.DOTALL)
-        if not m:
+        fn = None
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) \
+                    and node.name == py_name:
+                fn = node
+                break
+        if fn is None:
             continue
-        body = m.group(1)
+        body = ast.get_source_segment(src, fn)
+        if not body:
+            continue
         if not any(rx.search(body) for rx in PY_REAL_RE):
             return True
     return False
