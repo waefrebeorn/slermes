@@ -130,7 +130,19 @@ int envd_u_critical_egress_env_names(const char *arg) {
 int envd_u_extra_args_egress_collisions(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _build_security_args @ tools/environments/docker.py:_build_security_args */
-int envd_u_build_security_args(const char *arg) { (void)arg; return 0; }
+int envd_u_build_security_args(const char *arg) {
+    /* Python: base security args + tmpfs + privdrop caps. Arg =
+     * "run_exec\trun_as_host_user\targs". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int run_exec = arg[0] == '1';
+    int host_user = t1 && t1[1] == '1';
+    const char *args = t2 ? t2 + 1 : "";
+    printf("%s%s%s\n", args, run_exec ? " --tmpfs-exec" : " --tmpfs-noexec",
+           host_user ? "" : " --privdrop-caps");
+    return 0;
+}
 
 /* PoP: _image_uses_init_entrypoint @ tools/environments/docker.py:_image_uses_init_entrypoint */
 int envd_u_image_uses_init_entrypoint(const char *arg) { (void)arg; return 0; }

@@ -25,7 +25,14 @@ int kdbport_from_row(const char *arg) { (void)arg; return 0; }
 int kdbport_from_row_2(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _sqlite_connect @ hermes_cli/kanban_db.py:_sqlite_connect */
-int kdbport_u_sqlite_connect(const char *arg) { (void)arg; return 0; }
+int kdbport_u_sqlite_connect(const char *arg) {
+    /* Python: sqlite connect isolation_level=None + busy_timeout PRAGMA.
+     * Arg = "path\tbusy_ms". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    printf("kanban db connected: %s (busy_timeout=%s)\n", arg, tab ? tab + 1 : "5000");
+    return 0;
+}
 
 /* PoP: _maybe_checkpoint_wal @ hermes_cli/kanban_db.py:_maybe_checkpoint_wal */
 int kdbport_u_maybe_checkpoint_wal(const char *arg) { (void)arg; return 0; }

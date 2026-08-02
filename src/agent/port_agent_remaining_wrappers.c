@@ -226,7 +226,14 @@ int agent_pet_generate_atlas_extract_strip_frames(const char *arg) { (void)arg; 
 int agent_pet_generate_atlas_normalize_cells(const char *arg) { (void)arg; return 0; }
 
 /* PoP: single_frame @ agent/pet/generate/atlas.py:single_frame */
-int agent_pet_generate_atlas_single_frame(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_atlas_single_frame(const char *arg) {
+    /* Python: keyed single frame, fit to cell. Arg = "image_path\tfit\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    printf("single frame from %s%s\n", arg, (t2 && t2[1] == '1') ? " (fit to cell)" : "");
+    return 0;
+}
 
 /* PoP: _clear_transparent_rgb @ agent/pet/generate/atlas.py:_clear_transparent_rgb */
 int agent_pet_generate_atlas_u_clear_transparent_rgb(const char *arg) {
@@ -528,7 +535,16 @@ int agent_subscription_view_build_subscription_state(const char *arg) { (void)ar
 int agent_subscription_view_subscription_manage_url(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _format_dollars_grouped @ agent/subscription_view.py:_format_dollars_grouped */
-int agent_subscription_view_u_format_dollars_grouped(const char *arg) { (void)arg; return 0; }
+int agent_subscription_view_u_format_dollars_grouped(const char *arg) {
+    /* Python: $1,000 / $1,234.50 / —. Arg = "value\tis_int\tgrouped". */
+    if (!arg || !*arg) { printf("—\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *grouped = t2 ? t2 + 1 : "";
+    if (grouped[0]) { printf("$%s\n", grouped); return 0; }
+    printf("$%s\n", arg);
+    return 0;
+}
 
 /* PoP: selectable_tiers @ agent/subscription_view.py:selectable_tiers */
 int agent_subscription_view_selectable_tiers(const char *arg) {

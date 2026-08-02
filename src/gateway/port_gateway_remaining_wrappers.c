@@ -1050,7 +1050,16 @@ int gateway_platforms_webhook_filt_u_resolve_profile_path(const char *arg) { (vo
 int gateway_platforms_webhook_filt_u_resolve_script_path(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _load_filter_file_values @ gateway/platforms/webhook_filters.py:_load_filter_file_values */
-int gateway_platforms_webhook_filt_u_load_filter_file_values(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_webhook_filt_u_load_filter_file_values(const char *arg) {
+    /* Python: JSON list/dict-keys/lines. Arg = "path\tstate\tvalues". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "missing") == 0 || strcmp(state, "read_error") == 0) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: resolve_filter_field @ gateway/platforms/webhook_filters.py:resolve_filter_field */
 int gateway_platforms_webhook_filt_resolve_filter_field(const char *arg) { (void)arg; return 0; }
@@ -1175,7 +1184,50 @@ int gateway_authz_mixin_u_auth_env(const char *arg) {
 }
 
 /* PoP: _coerce_allow_set @ gateway/authz_mixin.py:_coerce_allow_set */
-int gateway_authz_mixin_u_coerce_allow_set(const char *arg) { (void)arg; return 0; }
+int gateway_authz_mixin_u_coerce_allow_set(const char *arg) {
+    /* Python: list -> stripped set; scalar -> comma split. Arg = "raw_json
+     * or scalar". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (j && json_is_array(j)) {
+        size_t n = json_array_size(j);
+        int first = 1;
+        for (size_t i = 0; i < n; i++) {
+            json_t *it = json_array_get(j, i);
+            const char *s = it && json_is_string(it) ? json_string_value(it) : "";
+            while (*s == ' ') s++;
+            size_t len = strlen(s);
+            while (len > 0 && s[len-1] == ' ') len--;
+            if (len) {
+                if (!first) printf("\n");
+                printf("%.*s", (int)len, s);
+                first = 0;
+            }
+        }
+        printf("\n");
+        json_free(j);
+        return 0;
+    }
+    if (j) json_free(j);
+    /* comma split */
+    const char *p = arg;
+    int first = 1;
+    while (*p) {
+        const char *comma = strchr(p, ',');
+        size_t len = comma ? (size_t)(comma - p) : strlen(p);
+        const char *t = p;
+        while (len > 0 && (*t == ' ')) { t++; len--; }
+        while (len > 0 && t[len-1] == ' ') len--;
+        if (len) {
+            if (!first) printf("\n");
+            printf("%.*s", (int)len, t);
+            first = 0;
+        }
+        p = comma ? comma + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _registered_transport_adapter @ gateway/authz_mixin.py:_registered_transport_adapter */
 int gateway_authz_mixin_u_registered_transport_adapter(const char *arg) { (void)arg; return 0; }

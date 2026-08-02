@@ -106,7 +106,27 @@ int cua_u_parse_xprop_net_active_window(const char *arg) {
 }
 
 /* PoP: _linux_x11_active_window_id @ tools/computer_use/cua_backend.py:_linux_x11_active_window_id */
-int cua_u_linux_x11_active_window_id(const char *arg) { (void)arg; return 0; }
+int cua_u_linux_x11_active_window_id(const char *arg) {
+    /* Python: xprop probe or None. Arg = "has_display\tstdout". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int display = arg[0] == '1';
+    if (!display) { printf("\n"); return 0; }
+    const char *stdout_text = tab ? tab + 1 : "";
+    if (!stdout_text[0]) { printf("\n"); return 0; }
+    const char *p = strstr(stdout_text, "window id # ");
+    if (!p) p = strstr(stdout_text, "0x");
+    if (!p) { printf("\n"); return 0; }
+    const char *h = p;
+    if (strncmp(p, "window id # ", 12) == 0) h = p + 12;
+    char buf[32];
+    size_t w = 0;
+    while (*h && w < sizeof(buf)-1 && (isxdigit((unsigned char)*h) || *h == 'x')) buf[w++] = *h++;
+    buf[w] = '\0';
+    if (w < 3) { printf("\n"); return 0; }
+    printf("%lu\n", strtoul(buf, NULL, 16));
+    return 0;
+}
 
 /* PoP: _is_real_app_window @ tools/computer_use/cua_backend.py:_is_real_app_window */
 int cua_u_is_real_app_window(const char *arg) {
@@ -392,7 +412,22 @@ int cua_u_failed_capture(const char *arg) {
 }
 
 /* PoP: _call_capture_tool @ tools/computer_use/cua_backend.py:_call_capture_tool */
-int cua_u_call_capture_tool(const char *arg) { (void)arg; return 0; }
+int cua_u_call_capture_tool(const char *arg) {
+    /* Python: call capture tool, disarm + raise on error. Arg =
+     * "name\tis_error\tmessage". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_error = t1 && t1[1] == '1';
+    if (is_error) {
+        fprintf(stderr, "cua-driver %.*s failed: %s\n",
+                (int)(t1 ? (size_t)(t1 - arg) : 0), arg,
+                t2 ? t2 + 1 : "");
+        return 1;
+    }
+    printf("capture %.*s ok\n", (int)(t1 ? (size_t)(t1 - arg) : strlen(arg)), arg);
+    return 0;
+}
 
 /* PoP: _load_windows @ tools/computer_use/cua_backend.py:_load_windows */
 int cua_u_load_windows(const char *arg) { (void)arg; return 0; }

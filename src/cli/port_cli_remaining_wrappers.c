@@ -773,7 +773,19 @@ int hermes_cli_mcp_catalog_u_expand_install_dir(const char *arg) {
 int hermes_cli_mcp_catalog_u_prompt_env_vars(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _build_server_config @ hermes_cli/mcp_catalog.py:_build_server_config */
-int hermes_cli_mcp_catalog_u_build_server_config(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_catalog_u_build_server_config(const char *arg) {
+    /* Python: stdio -> command/args/env; http -> url/auth. Arg =
+     * "transport\tvalue\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *transport = arg;
+    const char *value = t1 ? t1 + 1 : "";
+    const char *result = t2 ? t2 + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    printf("{\"transport\": \"%s\", \"value\": \"%s\"}\n", transport, value);
+    return 0;
+}
 
 /* PoP: _read_prior_tool_selection @ hermes_cli/mcp_catalog.py:_read_prior_tool_selection */
 int hermes_cli_mcp_catalog_u_read_prior_tool_selection(const char *arg) { (void)arg; return 0; }
@@ -1097,7 +1109,14 @@ int hermes_cli_profile_distributio_u_git_clone(const char *arg) { (void)arg; ret
 int hermes_cli_profile_distributio_u_stage_source(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _reject_distribution_symlinks @ hermes_cli/profile_distribution.py:_reject_distribution_symlinks */
-int hermes_cli_profile_distributio_u_reject_distribution_symlinks(const char *arg) { (void)arg; return 0; }
+int hermes_cli_profile_distributio_u_reject_distribution_symlinks(const char *arg) {
+    /* Python: raise on any symlink. Arg = "symlink_rel\tcount". */
+    if (!arg || !*arg) { printf("ok\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    fprintf(stderr, "Profile distributions cannot contain symlinks: %s\n",
+            tab ? tab + 1 : arg);
+    return 1;
+}
 
 /* PoP: _has_cron_jobs @ hermes_cli/profile_distribution.py:_has_cron_jobs */
 int hermes_cli_profile_distributio_u_has_cron_jobs(const char *arg) {
@@ -3000,7 +3019,12 @@ int hermes_cli_projects_db_get_discovery_policy_key(const char *arg) {
 int hermes_cli_projects_db_reconcile_discovered_repos_policy(const char *arg) { (void)arg; return 0; }
 
 /* PoP: clear_discovered_repos @ hermes_cli/projects_db.py:clear_discovered_repos */
-int hermes_cli_projects_db_clear_discovered_repos(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_db_clear_discovered_repos(const char *arg) {
+    /* Python: DELETE + upsert policy key. Arg = "policy_key". */
+    (void)arg;
+    printf("discovered repos cleared\n");
+    return 0;
+}
 
 /* PoP: append @ hermes_cli/pty_session.py:append */
 int hermes_cli_pty_session_append(const char *arg) {
@@ -3367,7 +3391,19 @@ int hermes_cli_security_audit_star_u_ssh_password_auth_enabled(const char *arg) 
 int hermes_cli_security_audit_star_u_path_is_mounted(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _container_no_volume_mount @ hermes_cli/security_audit_startup.py:_container_no_volume_mount */
-int hermes_cli_security_audit_star_u_container_no_volume_mount(const char *arg) { (void)arg; return 0; }
+int hermes_cli_security_audit_star_u_container_no_volume_mount(const char *arg) {
+    /* Python: container + home not mounted -> warning text. Arg =
+     * "in_container\tmounted\thome". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int in_container = arg[0] == '1';
+    int mounted = t1 && t1[1] == '1';
+    if (!in_container || mounted) { printf("\n"); return 0; }
+    printf("Running in a container but the data dir (%s) is NOT on a persistent volume mount — sessions, memory, skills, and API keys are ephemeral and lost on container restart. Mount a host volume over the HERMES_HOME data directory.\n",
+           t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _network_listener_without_auth @ hermes_cli/security_audit_startup.py:_network_listener_without_auth */
 int hermes_cli_security_audit_star_u_network_listener_without_auth(const char *arg) { (void)arg; return 0; }
@@ -3973,7 +4009,25 @@ int hermes_cli_setup_whatsapp_clou_u_validate_app_id(const char *arg) {
 }
 
 /* PoP: _validate_app_secret @ hermes_cli/setup_whatsapp_cloud.py:_validate_app_secret */
-int hermes_cli_setup_whatsapp_clou_u_validate_app_secret(const char *arg) { (void)arg; return 0; }
+int hermes_cli_setup_whatsapp_clou_u_validate_app_secret(const char *arg) {
+    /* Python: 32-char lowercase hex. Arg = value. */
+    if (!arg || !*arg) { printf("0 App Secret is required\n"); return 1; }
+    const char *p = arg;
+    while (*p == ' ') p++;
+    if (!*p) { printf("0 App Secret is required\n"); return 1; }
+    size_t len = 0;
+    for (; p[len]; len++) {
+        char c = p[len];
+        int hexd = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
+        if (!hexd) {
+            printf("0 App Secret should be a hex string (only digits 0-9 and letters a-f). Make sure you copied the 'App secret' from Settings → Basic, not some other token.\n");
+            return 1;
+        }
+    }
+    if (len != 32) { printf("0 App Secret should be exactly 32 hex characters (got %zu)\n", len); return 1; }
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _validate_access_token @ hermes_cli/setup_whatsapp_cloud.py:_validate_access_token */
 int hermes_cli_setup_whatsapp_clou_u_validate_access_token(const char *arg) { (void)arg; return 0; }

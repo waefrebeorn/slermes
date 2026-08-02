@@ -73,7 +73,28 @@ int appr_u_grep_safe_detection_variant(const char *arg) {
 }
 
 /* PoP: _interpreter_family @ tools/approval.py:_interpreter_family */
-int appr_u_interpreter_family(const char *arg) { (void)arg; return 0; }
+int appr_u_interpreter_family(const char *arg) {
+    /* Python: basename regex -> python/node/perl/ruby/php/powershell. Arg =
+     * executable basename. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *name = arg;
+    const char *slash = strrchr(name, '/');
+    if (slash) name = slash + 1;
+    /* strip .exe */
+    char base[128];
+    snprintf(base, sizeof(base), "%s", name);
+    size_t blen = strlen(base);
+    if (blen >= 4 && strcasecmp(base + blen - 4, ".exe") == 0) base[blen - 4] = '\0';
+    if (strcmp(base, "py") == 0 || strcmp(base, "python") == 0 || strcmp(base, "python2") == 0 || strcmp(base, "python3") == 0 ||
+        strncmp(base, "python", 6) == 0 || strncmp(base, "py", 2) == 0) { printf("python\n"); return 0; }
+    if (strcmp(base, "node") == 0 || strcmp(base, "nodejs") == 0) { printf("node\n"); return 0; }
+    if (strcmp(base, "perl") == 0 || strncmp(base, "perl", 4) == 0) { printf("perl\n"); return 0; }
+    if (strcmp(base, "ruby") == 0 || strncmp(base, "ruby", 4) == 0) { printf("ruby\n"); return 0; }
+    if (strcmp(base, "php") == 0) { printf("php\n"); return 0; }
+    if (strcmp(base, "powershell") == 0 || strcmp(base, "pwsh") == 0) { printf("powershell\n"); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _shell_segment_tokens @ tools/approval.py:_shell_segment_tokens */
 int appr_u_shell_segment_tokens(const char *arg) {

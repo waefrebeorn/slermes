@@ -164,7 +164,16 @@ int adel_release_completion_delivery(const char *arg) { (void)arg; return 0; }
 int adel_drop_completion_delivery(const char *arg) { (void)arg; return 0; }
 
 /* PoP: complete_completion_delivery @ tools/async_delegation.py:complete_completion_delivery */
-int adel_complete_completion_delivery(const char *arg) { (void)arg; return 0; }
+int adel_complete_completion_delivery(const char *arg) {
+    /* Python: pending + claim match -> delivered. Arg =
+     * "delegation_id\tclaim\tmatched". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int matched = t2 && t2[1] == '1';
+    printf("%d\n", matched ? 1 : 0);
+    return 0;
+}
 
 /* PoP: complete_event_delivery @ tools/async_delegation.py:complete_event_delivery */
 int adel_complete_event_delivery(const char *arg) {

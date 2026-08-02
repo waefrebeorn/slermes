@@ -74,8 +74,42 @@ char *code_exec_get_or_create_env(const char *env_id) {
 
 /* PoP: _ship_file_to_remote @ tools/code_execution_tool.py:_ship_file_to_remote */
 bool code_exec_ship_file_to_remote(const char *local_path, const char *remote_path) {
-    (void)local_path; (void)remote_path;
-    return false;
+    /* Python: base64 encode content, echo | base64 -d > remote. */
+    if (!local_path || !remote_path || !*local_path || !*remote_path) return false;
+    FILE *fp = fopen(local_path, "rb");
+    if (!fp) return false;
+    /* read file */
+    if (fseek(fp, 0, SEEK_END) != 0) { fclose(fp); return false; }
+    long sz = ftell(fp);
+    if (sz < 0) { fclose(fp); return false; }
+    rewind(fp);
+    char *buf = malloc((size_t)sz + 1);
+    if (!buf) { fclose(fp); return false; }
+    size_t rd = fread(buf, 1, (size_t)sz, fp);
+    fclose(fp);
+    buf[rd] = '\0';
+    /* base64 encode */
+    static const char *b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    size_t outlen = 4 * ((rd + 2) / 3) + 1;
+    char *enc = malloc(outlen);
+    if (!enc) { free(buf); return false; }
+    size_t w = 0;
+    for (size_t i = 0; i < rd; i += 3) {
+        unsigned v = (unsigned char)buf[i] << 16;
+        if (i + 1 < rd) v |= (unsigned char)buf[i+1] << 8;
+        if (i + 2 < rd) v |= (unsigned char)buf[i+2];
+        enc[w++] = b64[(v >> 18) & 63];
+        enc[w++] = b64[(v >> 12) & 63];
+        enc[w++] = (i + 1 < rd) ? b64[(v >> 6) & 63] : '=';
+        enc[w++] = (i + 2 < rd) ? b64[v & 63] : '=';
+    }
+    enc[w] = '\0';
+    char cmd[4096];
+    snprintf(cmd, sizeof(cmd), "echo '%s' | base64 -d > '%s' 2>/dev/null", enc, remote_path);
+    int rc = system(cmd);
+    free(enc);
+    free(buf);
+    return rc == 0;
 }
 
 /* PoP: _rpc_poll_loop @ tools/code_execution_tool.py:_rpc_poll_loop */

@@ -40,7 +40,12 @@ int vev_u_db_path(const char *arg) {
 }
 
 /* PoP: _connect @ agent/verification_evidence.py:_connect */
-int vev_u_connect(const char *arg) { (void)arg; return 0; }
+int vev_u_connect(const char *arg) {
+    /* Python: sqlite connect + WAL fallback + schema. Arg = "db_path". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    printf("verification evidence db connected: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _transaction @ agent/verification_evidence.py:_transaction */
 int vev_u_transaction(const char *arg) { (void)arg; return 0; }

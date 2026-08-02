@@ -629,7 +629,14 @@ int tools_x_search_tool_u_handle_x_search(const char *arg) {
 int tools_delegate_tool_u_blocked_toolsets_for_role(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _emit_parent_console @ tools/delegate_tool.py:_emit_parent_console */
-int tools_delegate_tool_u_emit_parent_console(const char *arg) { (void)arg; return 0; }
+int tools_delegate_tool_u_emit_parent_console(const char *arg) {
+    /* Python: safe_print via parent or print. Arg = "line\trouted". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab[1] == '1') printf("[parent console] %s\n", arg);
+    else printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _build_child_progress_callback @ tools/delegate_tool.py:_build_child_progress_callback */
 int tools_delegate_tool_u_build_child_progress_callback(const char *arg) { (void)arg; return 0; }

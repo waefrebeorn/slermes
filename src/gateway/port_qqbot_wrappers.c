@@ -196,7 +196,22 @@ int qqbot_u_process_attachments(const char *arg) { (void)arg; return 0; }
 int qqbot_u_download_and_cache(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_voice_content_type @ gateway/platforms/qqbot/adapter.py:_is_voice_content_type */
-int qqbot_u_is_voice_content_type(const char *arg) { (void)arg; return 0; }
+int qqbot_u_is_voice_content_type(const char *arg) {
+    /* Python: voice/audio ct or voice extension. Arg = "content_type\tfilename". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *ct = arg;
+    const char *fn = tab ? tab + 1 : "";
+    if (strcasecmp(ct, "voice") == 0 || strncasecmp(ct, "audio/", 6) == 0) { printf("1\n"); return 0; }
+    static const char *exts[] = {".silk", ".amr", ".mp3", ".wav", ".ogg", ".m4a", ".aac", ".speex", ".flac"};
+    for (size_t i = 0; i < sizeof(exts)/sizeof(exts[0]); i++) {
+        size_t elen = strlen(exts[i]);
+        size_t flen = strlen(fn);
+        if (flen >= elen && strcasecmp(fn + flen - elen, exts[i]) == 0) { printf("1\n"); return 0; }
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _qq_media_headers @ gateway/platforms/qqbot/adapter.py:_qq_media_headers */
 int qqbot_u_qq_media_headers(const char *arg) { (void)arg; return 0; }

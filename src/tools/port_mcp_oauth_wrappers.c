@@ -93,7 +93,15 @@ int mcpo_u_is_interactive(const char *arg) {
 }
 
 /* PoP: _raise_if_non_interactive @ tools/mcp_oauth.py:_raise_if_non_interactive */
-int mcpo_u_raise_if_non_interactive(const char *arg) { (void)arg; return 0; }
+int mcpo_u_raise_if_non_interactive(const char *arg) {
+    /* Python: raise unless interactive. Arg = "interactive\tlead". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (arg[0] == '1') { printf("interactive\n"); return 0; }
+    fprintf(stderr, "%s Run `hermes mcp login <server>` interactively to (re)authorize, then restart or reload the gateway.\n",
+            tab ? tab + 1 : "");
+    return 1;
+}
 
 /* PoP: force_interactive_oauth @ tools/mcp_oauth.py:force_interactive_oauth */
 int mcpo_force_interactive_oauth(const char *arg) {
