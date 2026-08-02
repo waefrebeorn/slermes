@@ -16,11 +16,11 @@ Nothing is hand-copied. The prestige ritual calls `make parity-walkway` instead
 of a manual barnacle hunt.
 
 Count source: tests/slermes_parity_battleground.py --json (same scanner the
-project uses). For BANNER.md (box-art) a regex replaces the Ported line.
+project uses). BANNER.md is a workflow doc with no counts (legacy box-art was
+retired); the sentinel blocks in the walkway files are the only count surface.
 """
 import json
 import os
-import re
 import subprocess
 import sys
 
@@ -35,6 +35,8 @@ SENT_CLOSE = "<!-- /PARITY:AUTO -->"
 # Walkway files that carry a canonical count block (project-level + user-level).
 WALKWAY_FILES = [
     os.path.join(REPO, ".hermes", "state.md"),
+    os.path.join(REPO, ".hermes", "battleship.md"),
+    os.path.join(REPO, ".hermes", "roadmap.md"),
     os.path.join(REPO, ".hermes", "mind-palace", "state.md"),
     os.path.join(REPO, ".hermes", "mind-palace", "prestige.md"),
     os.path.join(REPO, ".hermes", "mind-palace", "plan.md"),
@@ -45,8 +47,13 @@ WALKWAY_FILES = [
     os.path.expanduser("~/.hermes/mind-palace/overnight.md"),
     os.path.expanduser("~/.hermes/mind-palace/INDEX.md"),
     os.path.expanduser("~/.hermes/mind-palace/battleship.md"),
-]
-BANNER = os.path.join(REPO, "BANNER.md")
+    # Next-session prompts under ~/.hermes/walkway/ (the files agents actually
+    # read). Globbed so new versions are covered without editing this list.
+] + sorted(
+    os.path.expanduser(os.path.join("~/.hermes/walkway", f))
+    for f in os.listdir(os.path.expanduser("~/.hermes/walkway"))
+    if f.startswith("v") and f.endswith(".md")
+)
 
 
 def compute():
@@ -62,17 +69,24 @@ def compute():
     tot = doc["totals"]
     return dict(ported=tot["ported"], real=tot["real_gaps"],
                 partial=tot["partial"], total=tot["total"],
-                pct=tot["coverage_pct"])
+                pct=tot["coverage_pct"],
+                stamp=doc.get("_generated_at", "unknown-time"))
 
 
 def block(d):
+    partial_pct = 100.0 * d['partial'] / d['total'] if d['total'] else 0.0
     return (
         f"| PORTED  | {d['ported']:,} / {d['total']:,} ({d['pct']:.1f}%) |\n"
         f"| REAL_GAP| {d['real']:,} ({100.0 * d['real'] / d['total']:.1f}%) — no N/A |\n"
-        f"| PARTIAL | {d['partial']:,} (0.8%) |\n"
-        f"| STUB    | 0 |\n"
+        f"| PARTIAL | {d['partial']:,} ({partial_pct:.1f}%) |\n"
         f"\n"
-        f"_Generated from live scanner `{os.path.relpath(SCANNER, REPO)}` — "
+        f"**Phase (v667):** PARITY project — the C11 binary is the deliverable: "
+        f"faithful, oracle-verified, usable standalone across operating systems. "
+        f"Closing REAL_GAPs is the path; the AGI-OS integration consumes the "
+        f"binary, not the Python tree.\n"
+        f"\n"
+        f"_Generated {d['stamp']} from live scanner "
+        f"`{os.path.relpath(SCANNER, REPO)}` — "
         f"do not edit by hand; run `make parity-walkway`._"
     )
 
@@ -94,27 +108,12 @@ def inject(path, inner):
     return True
 
 
-def fix_banner(d):
-    if not os.path.exists(BANNER):
-        return
-    txt = open(BANNER, encoding="utf-8").read()
-    line = (
-        f"# ║  Ported: {d['ported']:,}/{d['total']:,} ({d['pct']:.1f}%)  "
-        f"REAL_GAP: {d['real']:,} ({100.0 * d['real'] / d['total']:.1f}%)  "
-        f"PARTIAL: {d['partial']:,}  ║"
-    )
-    new = re.sub(r"# ║  Ported:.*?PARTIAL:.*?║", line, txt, flags=re.S)
-    if new != txt:
-        open(BANNER, "w", encoding="utf-8").write(new)
-
-
 def main():
     d = compute()
     inner = block(d)
     for f in WALKWAY_FILES:
         ok = inject(f, inner)
         print(f"{'OK  ' if ok else 'MISS'} {f}")
-    fix_banner(d)
     print(
         f"Live: PORTED {d['ported']:,} REAL_GAP {d['real']:,} "
         f"PARTIAL {d['partial']:,} (total {d['total']:,})"

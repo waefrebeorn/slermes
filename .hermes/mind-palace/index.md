@@ -270,7 +270,7 @@ Already 100% ported (8,688 functions) **in the v398-era structural map** — the
 | File | Purpose |
 |------|---------|
 | `battleship-v40.md` | Authoritative gap map (function-level) |
-| `battleship-v464.md` | Latest gap map (8,688 PORTED, 0 GAP) |
+| `battleship-v464.md` | HISTORICAL artifact (v464-era claim of 8,688 PORTED; superseded — see live `<!-- PARITY:AUTO -->` block in state.md) |
 | `state.md` | Session state, build status, last actions |
 | `prestige.md` | Prestige ritual log |
 | `plan.md` | Roadmap and next actions |

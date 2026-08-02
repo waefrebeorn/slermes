@@ -1,12 +1,13 @@
-# State — Slermes C Translation (v667 in progress)
+# State — Slermes C Translation (v667, PARITY phase)
 
 - Build: `make slermes` = 0 errors, binary links clean (~48.9 MB)
-- **Scanner (real, live 2026-08-02):** 6,698 PORTED (54.6%), 5,322 REAL_GAP (43.4%), 240 PARTIAL, 12,260 total features.
+- **Scanner (real, live 2026-08-02):** 6,798 PORTED (55.4%), 5,222 REAL_GAP (42.6%), 240 PARTIAL — counts owned by `make parity-walkway` sentinel blocks
+- **Phase philosophy (v667):** PARITY project — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. The AGI-OS integration consumes the compiled binary, not the Python tree. Every REAL_GAP closed is a real feature ported — no stubs, no N/A.
 - Tests: `bash tests/run_mission8_tests.sh` → 77 passed, 0 failed, 0 skipped; hunter `--verify` → 0 missed / 7,514 exported symbols
-- **Census truth (v666):** ~2,360 phantom PoP credits purged from the scanner — prior "8,806 PORTED" figures were inflated; the honest baseline is 6,446 PORTED / 5,574 REAL_GAP, now drained to 6,698 / 5,322.
+- **Census truth (v666):** ~2,360 phantom PoP credits purged from the scanner — prior "8,806 PORTED" figures were inflated; the honest baseline is 6,446 PORTED / 5,574 REAL_GAP, now drained to 6,798 / 5,222 (v667).
 - Desktop parity: 111 features mapped, ~99 missing (4% complete) — separate workstream
 
-## This Session (v667) — Stub Sweep + Classifier Honesty (109 gaps closed so far)
+## This Session (v667) — Stub Sweep + Classifier Honesty (210 gaps closed so far)
 
 - **Setter rule (classifier):** assignment to a symbol NOT defined in the port
   file is a legitimate setter, not a bootleg (mirrors getter rule) — 11 flips.
@@ -129,10 +130,11 @@ Scanner: 4,884 → 4,901 PORTED (+17); 4,774 → 4,757 REAL_GAP (−17). All 17 
 Fixed `tests/run_one_oracle.sh` (added `-I src`) so port headers resolve.
 
 <!-- PARITY:AUTO -->
-| PORTED  | 6,698 / 12,260 (54.6%) |
-| REAL_GAP| 5,322 (43.4%) — no N/A |
-| PARTIAL | 240 (0.8%) |
-| STUB    | 0 |
+| PORTED  | 6,798 / 12,260 (55.4%) |
+| REAL_GAP| 5,222 (42.6%) — no N/A |
+| PARTIAL | 240 (2.0%) |
 
-_Generated from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+**Phase (v667):** PARITY project — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
+
+_Generated 2026-08-02T10:21:52Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
 <!-- /PARITY:AUTO -->

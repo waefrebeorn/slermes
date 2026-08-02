@@ -1,20 +1,23 @@
-# Roadmap — Slermes C Translation (v399)
+# Roadmap — Slermes C Translation (v667)
 
 ## Current State
 
-| Classification | Count | % |
-|----------------|-------|---|
-| ✅ PORTED       | 2,609 | 28.9% |
-| 🔴 REAL_GAP     | 6,426 | 71.1% |
-| ⚠️ PARTIAL      | 0 | 0.0% |
-| ⚪ N/A          | 0 | 0.0% |
-| 🔴 STUB         | 0 | 0.0% |
+> Live counts are owned by `make parity-walkway` — the table below is the
+> authoritative sentinel (do not hand-edit).
 
-**Total: 9,035 functions across 377 modules**
+<!-- PARITY:AUTO -->
+| PORTED  | 6,798 / 12,260 (55.4%) |
+| REAL_GAP| 5,222 (42.6%) — no N/A |
+| PARTIAL | 240 (2.0%) |
+
+**Phase (v667):** PARITY project — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
+
+_Generated 2026-08-02T10:21:52Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+<!-- /PARITY:AUTO -->
 
 **Rewriting from scratch in C is the point.** Stubs that just log+return NULL are REAL_GAP.
 
-## The 6,426 REAL_GAPs — Implementation Roadmap
+## The REAL_GAPs — Implementation Roadmap
 
 ### M1: CLI Core (2,632 gaps, 161 modules) — HIGHEST PRIORITY
 User-facing CLI commands. Start here.

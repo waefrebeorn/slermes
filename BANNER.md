@@ -8,6 +8,12 @@ forking model means slermes diverges from upstream Python — it does NOT
 share git history with the upstream repo. The divergent count is the
 snapshot timer of the last sync point.
 
+**v667 phase — PARITY project:** the C11 binary is the deliverable —
+faithful, oracle-verified, usable standalone across operating systems.
+The AGI-OS integration consumes the compiled binary, not the Python tree.
+Live parity counts live in `<!-- PARITY:AUTO -->` sentinel blocks owned by
+`make parity-walkway`; never hand-edit a count.
+
 ## Stash → Pull → Fix → Pop Workflow
 
 This is the **exact workflow** used every time upstream gets new updates:

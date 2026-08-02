@@ -5,10 +5,11 @@ there is NO N/A and no "out of scope". Agentic work takes minutes.
 
 > **Live parity counts are regenerated at the bottom of this file (the
 > `<!-- PARITY:AUTO -->
-| PORTED  | 6,698 / 12,260 (54.6%) |
-| REAL_GAP| 5,322 (43.4%) — no N/A |
-| PARTIAL | 240 (0.8%) |
-| STUB    | 0 |
+| PORTED  | 6,798 / 12,260 (55.4%) |
+| REAL_GAP| 5,222 (42.6%) — no N/A |
+| PARTIAL | 240 (2.0%) |
 
-_Generated from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+**Phase (v667):** PARITY project — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
+
+_Generated 2026-08-02T10:21:52Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
 <!-- /PARITY:AUTO -->

@@ -1,10 +1,17 @@
 # 🗺️ Slermes Roadmap — What's Next
 
-**Version:** 0.15.1-slermes (v506)  
-**Last updated:** July 2, 2026
+**Version:** 0.15.1-slermes (v667, PARITY phase)  
+**Last updated:** 2026-08-02
 
 > "Mission 1-8 complete" doesn't mean done — it means the foundation is laid.  
 > The real work of making Slermes *the* C11 AI agent starts here.
+>
+> **v667 phase (PARITY project):** the C11 binary is the deliverable — faithful,
+> oracle-verified, and usable standalone on any operating system. The parity
+> scanner is the honest census; every REAL_GAP closed is a real feature ported.
+> Forward integration target: the AGI operating system consumes the compiled
+> binary, not the Python tree. All generated docs carry live counts from
+> `make parity-walkway` (sentinel `<!-- PARITY:AUTO -->` blocks).
 
 ---
 
