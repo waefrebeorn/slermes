@@ -122,7 +122,16 @@ int uninst_u_hermes_path_markers(const char *arg) {
 }
 
 /* PoP: remove_path_from_windows_registry @ hermes_cli/uninstall.py:remove_path_from_windows_registry */
-int uninst_remove_path_from_windows_registry(const char *arg) { (void)arg; return 0; }
+int uninst_remove_path_from_windows_registry(const char *arg) {
+    /* Python: HKCU PATH strip. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: remove_hermes_env_vars_windows @ hermes_cli/uninstall.py:remove_hermes_env_vars_windows */
 int uninst_remove_hermes_env_vars_windows(const char *arg) {

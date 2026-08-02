@@ -2433,7 +2433,16 @@ int hermes_cli_telegram_managed_bo_poll_for_token(const char *arg) {
 int hermes_cli_telegram_managed_bo_auto_setup_telegram_bot_result(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _collect_memory_provider_external_paths @ hermes_cli/backup.py:_collect_memory_provider_external_paths */
-int hermes_cli_backup_u_collect_memory_provider_external_paths(const char *arg) { (void)arg; return 0; }
+int hermes_cli_backup_u_collect_memory_provider_external_paths(const char *arg) {
+    /* Python: external provider paths. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _iter_external_files @ hermes_cli/backup.py:_iter_external_files */
 int hermes_cli_backup_u_iter_external_files(const char *arg) {
@@ -4526,7 +4535,22 @@ int hermes_cli_dashboard_auth_midd_u_extract_bearer(const char *arg) {
 }
 
 /* PoP: _verify_bearer @ hermes_cli/dashboard_auth/middleware.py:_verify_bearer */
-int hermes_cli_dashboard_auth_midd_u_verify_bearer(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_midd_u_verify_bearer(const char *arg) {
+    /* Python: bearer verify loop. Arg =
+     * "state\tresult\tunreachable". */
+    if (!arg || !*arg) { printf("\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n\n"); return 0; }
+    if (t3 && t3[1] == '1') {
+        printf("\nunreachable:%s\n", t2 ? t2 + 1 : "");
+        return 0;
+    }
+    printf("%s\n\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: gated_auth_middleware @ hermes_cli/dashboard_auth/middleware.py:gated_auth_middleware */
 int hermes_cli_dashboard_auth_midd_gated_auth_middleware(const char *arg) { (void)arg; return 0; }
@@ -5794,7 +5818,15 @@ int hermes_cli_copilot_auth_u_gh_cli_candidates(const char *arg) {
 }
 
 /* PoP: _try_gh_cli_token @ hermes_cli/copilot_auth.py:_try_gh_cli_token */
-int hermes_cli_copilot_auth_u_try_gh_cli_token(const char *arg) { (void)arg; return 0; }
+int hermes_cli_copilot_auth_u_try_gh_cli_token(const char *arg) {
+    /* Python: gh auth token. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: exchange_copilot_token @ hermes_cli/copilot_auth.py:exchange_copilot_token */
 int hermes_cli_copilot_auth_exchange_copilot_token(const char *arg) { (void)arg; return 0; }
@@ -6465,7 +6497,21 @@ int hermes_cli_dashboard_auth_toke_extract_bearer_token(const char *arg) {
 }
 
 /* PoP: authenticate_token @ hermes_cli/dashboard_auth/token_auth.py:authenticate_token */
-int hermes_cli_dashboard_auth_toke_authenticate_token(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_toke_authenticate_token(const char *arg) {
+    /* Python: token provider loop. Arg =
+     * "has_token\tstate\tresult\tunreachable". */
+    if (!arg || !*arg) { printf("\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int has_token = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!has_token || !state) { printf("\n\n"); return 0; }
+    if (t4 && t4[1] == '1') { printf("\nunreachable:%s\n", t3 ? t3 + 1 : ""); return 0; }
+    printf("%s\n\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: token_auth_middleware @ hermes_cli/dashboard_auth/token_auth.py:token_auth_middleware */
 int hermes_cli_dashboard_auth_toke_token_auth_middleware(const char *arg) { (void)arg; return 0; }
@@ -7096,7 +7142,24 @@ int hermes_cli_dingtalk_auth_u_api_post(const char *arg) {
 }
 
 /* PoP: wait_for_registration_success @ hermes_cli/dingtalk_auth.py:wait_for_registration_success */
-int hermes_cli_dingtalk_auth_wait_for_registration_success(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dingtalk_auth_wait_for_registration_success(const char *arg) {
+    /* Python: poll loop. Arg = "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "missing_creds") == 0 || strcmp(state, "failed") == 0) {
+        fprintf(stderr, "dingtalk registration error: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    if (strcmp(state, "timeout") == 0) {
+        fprintf(stderr, "authorization timed out, please retry\n");
+        return 1;
+    }
+    printf("client_id=%s client_secret=%s\n", t2 ? t2 + 1 : "", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _ensure_qrcode_installed @ hermes_cli/dingtalk_auth.py:_ensure_qrcode_installed */
 int hermes_cli_dingtalk_auth_u_ensure_qrcode_installed(const char *arg) {

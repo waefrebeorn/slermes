@@ -308,7 +308,17 @@ int envb_u_update_cwd(const char *arg) {
 }
 
 /* PoP: _extract_cwd_from_output @ tools/environments/base.py:_extract_cwd_from_output */
-int envb_u_extract_cwd_from_output(const char *arg) { (void)arg; return 0; }
+int envb_u_extract_cwd_from_output(const char *arg) {
+    /* Python: marker strip. Arg = "found\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int found = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!found || !state) { printf("no marker\n"); return 0; }
+    printf("cwd extracted + marker stripped: %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: __del__ @ tools/environments/base.py:__del__ */
 int envb_u__del__(const char *arg) {

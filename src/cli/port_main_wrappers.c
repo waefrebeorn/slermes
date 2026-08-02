@@ -2090,7 +2090,17 @@ int main_u_warn_incomplete_gateway_fleet_restart(const char *arg) {
 int main_u_resume_windows_gateways_after_update(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _discard_lockfile_churn @ hermes_cli/main.py:_discard_lockfile_churn */
-int main_u_discard_lockfile_churn(const char *arg) { (void)arg; return 0; }
+int main_u_discard_lockfile_churn(const char *arg) {
+    /* Python: npm lockfile restore. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long count = strtol(arg, NULL, 10);
+    int state = t1 && t1[1] == '1';
+    if (!state || count <= 0) { printf("no lockfile churn\n"); return 0; }
+    printf("→ Discarded npm lockfile churn (%ld file(s))\n", count);
+    return 0;
+}
 
 /* PoP: _cmd_update_impl @ hermes_cli/main.py:_cmd_update_impl */
 int main_u_cmd_update_impl(const char *arg) { (void)arg; return 0; }

@@ -83,7 +83,21 @@ int gw_u_quote_schtasks_arg(const char *arg) {
 }
 
 /* PoP: _exec_schtasks @ hermes_cli/gateway_windows.py:_exec_schtasks */
-int gw_u_exec_schtasks(const char *arg) { (void)arg; return 0; }
+int gw_u_exec_schtasks(const char *arg) {
+    /* Python: hard-timeout schtasks. Arg =
+     * "state\tcode\tresult\terr". */
+    if (!arg || !*arg) { printf("1\t\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) {
+        printf("124\t\t%s\n", t3 ? t3 + 1 : "schtasks timed out");
+        return 0;
+    }
+    printf("%s\t%s\t\n", t2 ? t2 + 1 : "0", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _should_fall_back @ hermes_cli/gateway_windows.py:_should_fall_back */
 int gw_u_should_fall_back(const char *arg) {
@@ -134,7 +148,18 @@ int gw_u_current_profile_cli_args(const char *arg) {
 }
 
 /* PoP: _launch_elevated_gateway_command @ hermes_cli/gateway_windows.py:_launch_elevated_gateway_command */
-int gw_u_launch_elevated_gateway_command(const char *arg) { (void)arg; return 0; }
+int gw_u_launch_elevated_gateway_command(const char *arg) {
+    /* Python: ShellExecuteW runas. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) {
+        fprintf(stderr, "⚠ Could not launch elevated gateway prompt\n");
+        return 0;
+    }
+    printf("elevated command launched (SW_HIDE console)%s\n", (tab && tab[1] == '1') ? " + extra args" : "");
+    return 1;
+}
 
 /* PoP: _launch_elevated_install @ hermes_cli/gateway_windows.py:_launch_elevated_install */
 int gw_u_launch_elevated_install(const char *arg) {

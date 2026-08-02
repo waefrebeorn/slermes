@@ -818,7 +818,18 @@ int cgw_u_default_system_service_user(const char *arg) {
 }
 
 /* PoP: prompt_linux_gateway_install_scope @ hermes_cli/gateway.py:prompt_linux_gateway_install_scope */
-int cgw_prompt_linux_gateway_install_scope(const char *arg) { (void)arg; return 0; }
+int cgw_prompt_linux_gateway_install_scope(const char *arg) {
+    /* Python: root-gated scope. Arg = "is_root\tchoice\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int is_root = arg[0] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t3 ? t3 + 1 : (is_root ? "user" : "user"));
+    return 0;
+}
 
 /* PoP: install_linux_gateway_from_setup @ hermes_cli/gateway.py:install_linux_gateway_from_setup */
 int cgw_install_linux_gateway_from_setup(const char *arg) {

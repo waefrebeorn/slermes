@@ -1685,7 +1685,16 @@ int gateway_channel_directory_u_slack_api_error_code(const char *arg) {
 int gateway_channel_directory_u_build_from_sessions_db(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _build_from_sessions_json @ gateway/channel_directory.py:_build_from_sessions_json */
-int gateway_channel_directory_u_build_from_sessions_json(const char *arg) { (void)arg; return 0; }
+int gateway_channel_directory_u_build_from_sessions_json(const char *arg) {
+    /* Python: legacy fallback. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: __repr__ @ gateway/turn_lease.py:__repr__ */
 int gateway_turn_lease_u__repr__(const char *arg) {

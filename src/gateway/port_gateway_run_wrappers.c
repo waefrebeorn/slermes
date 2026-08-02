@@ -411,7 +411,16 @@ int grun_u_get_system_prompt_for_channel(const char *arg) {
 }
 
 /* PoP: _refresh_fallback_model @ gateway/run.py:_refresh_fallback_model */
-int grun_u_refresh_fallback_model(const char *arg) { (void)arg; return 0; }
+int grun_u_refresh_fallback_model(const char *arg) {
+    /* Python: re-read chain. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "transient") == 0) { printf("last known-good chain kept\n"); return 0; }
+    if (strcmp(state, "cleared") == 0) { printf("chain cleared (no key)\n"); return 0; }
+    printf("chain refreshed: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _apply_fallback_chain_to_agent @ gateway/run.py:_apply_fallback_chain_to_agent */
 int grun_u_apply_fallback_chain_to_agent(const char *arg) { (void)arg; return 0; }

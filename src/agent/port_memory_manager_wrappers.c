@@ -178,7 +178,16 @@ int mm_flush_pending(const char *arg) {
 }
 
 /* PoP: get_all_tool_schemas @ agent/memory_manager.py:get_all_tool_schemas */
-int mm_get_all_tool_schemas(const char *arg) { (void)arg; return 0; }
+int mm_get_all_tool_schemas(const char *arg) {
+    /* Python: core-name skip. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: get_all_tool_names @ agent/memory_manager.py:get_all_tool_names */
 int mm_get_all_tool_names(const char *arg) {

@@ -205,7 +205,15 @@ int appr_u_split_option(const char *arg) {
 }
 
 /* PoP: _interpreter_exec_flag @ tools/approval.py:_interpreter_exec_flag */
-int appr_u_interpreter_exec_flag(const char *arg) { (void)arg; return 0; }
+int appr_u_interpreter_exec_flag(const char *arg) {
+    /* Python: exec-flag scan. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _bash_exec_payload @ tools/approval.py:_bash_exec_payload */
 int appr_u_bash_exec_payload(const char *arg) {

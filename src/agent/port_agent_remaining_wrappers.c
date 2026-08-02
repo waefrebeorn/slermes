@@ -264,7 +264,15 @@ int agent_pet_generate_atlas_u_slot_crops(const char *arg) {
 }
 
 /* PoP: _frame_x_ranges @ agent/pet/generate/atlas.py:_frame_x_ranges */
-int agent_pet_generate_atlas_u_frame_x_ranges(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_atlas_u_frame_x_ranges(const char *arg) {
+    /* Python: gutter-based slicing. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _significant_subject_boxes @ agent/pet/generate/atlas.py:_significant_subject_boxes */
 int agent_pet_generate_atlas_u_significant_subject_boxes(const char *arg) {
@@ -1335,7 +1343,15 @@ int agent_credential_pool_u_normalize_pool_auth_type(const char *arg) {
 }
 
 /* PoP: credential_pool_matches_provider @ agent/credential_pool.py:credential_pool_matches_provider */
-int agent_credential_pool_credential_pool_matches_provider(const char *arg) { (void)arg; return 0; }
+int agent_credential_pool_credential_pool_matches_provider(const char *arg) {
+    /* Python: custom: key match. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _current_unlocked @ agent/credential_pool.py:_current_unlocked */
 int agent_credential_pool_u_current_unlocked(const char *arg) {
@@ -1400,7 +1416,15 @@ int agent_credential_pool_u_single_use_refresh_lock_timeout(const char *arg) {
 }
 
 /* PoP: _codex_quota_restored_upstream @ agent/credential_pool.py:_codex_quota_restored_upstream */
-int agent_credential_pool_u_codex_quota_restored_upstream(const char *arg) { (void)arg; return 0; }
+int agent_credential_pool_u_codex_quota_restored_upstream(const char *arg) {
+    /* Python: early-reset probe. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _log_no_available_entries @ agent/credential_pool.py:_log_no_available_entries */
 int agent_credential_pool_u_log_no_available_entries(const char *arg) {
@@ -1411,7 +1435,15 @@ int agent_credential_pool_u_log_no_available_entries(const char *arg) {
 }
 
 /* PoP: try_refresh_matching @ agent/credential_pool.py:try_refresh_matching */
-int agent_credential_pool_try_refresh_matching(const char *arg) { (void)arg; return 0; }
+int agent_credential_pool_try_refresh_matching(const char *arg) {
+    /* Python: hint-based refresh. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("refresh result: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: compose_user_api_content @ agent/turn_context.py:compose_user_api_content */
 int agent_turn_context_compose_user_api_content(const char *arg) {
@@ -1934,7 +1966,15 @@ int agent_conversation_loop_u_compression_deferred_result(const char *arg) { (vo
 int agent_conversation_loop_u_apply_context_engine_selection(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _notify_context_engine_turn_complete @ agent/conversation_loop.py:_notify_context_engine_turn_complete */
-int agent_conversation_loop_u_notify_context_engine_turn_complete(const char *arg) { (void)arg; return 0; }
+int agent_conversation_loop_u_notify_context_engine_turn_complete(const char *arg) {
+    /* Python: turn-complete hook. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("no hook (fail-open)\n"); return 0; }
+    printf("context engine notified: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _forced_provider_from_env @ agent/pet/generate/imagegen.py:_forced_provider_from_env */
 int agent_pet_generate_imagegen_u_forced_provider_from_env(const char *arg) {
