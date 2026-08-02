@@ -26,7 +26,11 @@ int uninst_log_success(const char *arg) {
 }
 
 /* PoP: log_warn @ hermes_cli/uninstall.py:log_warn */
-int uninst_log_warn(const char *arg) { (void)arg; return 0; }
+int uninst_log_warn(const char *arg) {
+    /* Python: print(f"{color('⚠', Colors.YELLOW)} {msg}"). */
+    printf("\x1b[33m⚠\x1b[0m %s\n", arg ? arg : "");
+    return 0;
+}
 
 /* PoP: find_shell_configs @ hermes_cli/uninstall.py:find_shell_configs */
 int uninst_find_shell_configs(const char *arg) { (void)arg; return 0; }

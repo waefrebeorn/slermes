@@ -1277,7 +1277,16 @@ int hermes_cli_pty_session_u_reap_one_idle_or_raise(const char *arg) { (void)arg
 int hermes_cli_pty_session_close_all(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _subscriptions_path @ hermes_cli/webhook.py:_subscriptions_path */
-int hermes_cli_webhook_u_subscriptions_path(const char *arg) { (void)arg; return 0; }
+int hermes_cli_webhook_u_subscriptions_path(const char *arg) {
+    /* Python: _hermes_home() / "webhook_subscriptions.json". */
+    (void)arg;
+    const char *hh = getenv("HERMES_HOME");
+    char base[1024];
+    if (hh && *hh) snprintf(base, sizeof(base), "%s", hh);
+    else snprintf(base, sizeof(base), "%s/.hermes", getenv("HOME") ? getenv("HOME") : ".");
+    printf("%s/webhook_subscriptions.json\n", base);
+    return 0;
+}
 
 /* PoP: _load_subscriptions @ hermes_cli/webhook.py:_load_subscriptions */
 int hermes_cli_webhook_u_load_subscriptions(const char *arg) { (void)arg; return 0; }
@@ -1289,7 +1298,11 @@ int hermes_cli_webhook_u_save_subscriptions(const char *arg) { (void)arg; return
 int hermes_cli_webhook_u_get_webhook_config(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_webhook_enabled @ hermes_cli/webhook.py:_is_webhook_enabled */
-int hermes_cli_webhook_u_is_webhook_enabled(const char *arg) { (void)arg; return 0; }
+int hermes_cli_webhook_u_is_webhook_enabled(const char *arg) {
+    /* Python: bool(_get_webhook_config().get("enabled")). Arg = "1"/"0". */
+    if (!arg || !*arg) return 0;
+    return atoi(arg) != 0;
+}
 
 /* PoP: _get_webhook_base_url @ hermes_cli/webhook.py:_get_webhook_base_url */
 int hermes_cli_webhook_u_get_webhook_base_url(const char *arg) { (void)arg; return 0; }
@@ -1849,7 +1862,12 @@ int hermes_cli_dashboard_auth_cook_read_session_cookies(const char *arg) { (void
 int hermes_cli_dashboard_auth_cook_read_session_provider(const char *arg) { (void)arg; return 0; }
 
 /* PoP: read_pkce_cookie @ hermes_cli/dashboard_auth/cookies.py:read_pkce_cookie */
-int hermes_cli_dashboard_auth_cook_read_pkce_cookie(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_cook_read_pkce_cookie(const char *arg) {
+    /* Python: _read_with_fallback(request, PKCE_COOKIE). Arg = cookie
+     * value (empty = missing). */
+    printf("%s\n", arg ? arg : "");
+    return 0;
+}
 
 /* PoP: read_sso_attempt_cookie @ hermes_cli/dashboard_auth/cookies.py:read_sso_attempt_cookie */
 int hermes_cli_dashboard_auth_cook_read_sso_attempt_cookie(const char *arg) { (void)arg; return 0; }

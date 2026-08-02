@@ -593,7 +593,11 @@ int agent_rate_limit_tracker_usage_pct(const char *arg) { (void)arg; return 0; }
 int agent_rate_limit_tracker_remaining_seconds_now(const char *arg) { (void)arg; return 0; }
 
 /* PoP: has_data @ agent/rate_limit_tracker.py:has_data */
-int agent_rate_limit_tracker_has_data(const char *arg) { (void)arg; return 0; }
+int agent_rate_limit_tracker_has_data(const char *arg) {
+    /* Python: self.captured_at > 0. */
+    if (!arg || !*arg) return 0;
+    return strtod(arg, NULL) > 0;
+}
 
 /* PoP: age_seconds @ agent/rate_limit_tracker.py:age_seconds */
 int agent_rate_limit_tracker_age_seconds(const char *arg) { (void)arg; return 0; }

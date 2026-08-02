@@ -373,7 +373,11 @@ int tools_delegation_live_log_update_manifest_statuses(const char *arg) { (void)
 int tools_delegation_live_log_prune_stale_live_dirs(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _direct_snapshot_key @ tools/environments/modal.py:_direct_snapshot_key */
-int tools_environments_modal_u_direct_snapshot_key(const char *arg) { (void)arg; return 0; }
+int tools_environments_modal_u_direct_snapshot_key(const char *arg) {
+    /* Python: f"direct:{task_id}". */
+    printf("direct:%s\n", arg ? arg : "");
+    return 0;
+}
 
 /* PoP: _get_snapshot_restore_candidate @ tools/environments/modal.py:_get_snapshot_restore_candidate */
 int tools_environments_modal_u_get_snapshot_restore_candidate(const char *arg) { (void)arg; return 0; }
