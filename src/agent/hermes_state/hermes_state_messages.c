@@ -7,6 +7,11 @@
 #include "hermes_state_internal.h"
 #include "hermes_state_db.h"
 #include "hermes_json.h"
+
+/* cross-unit helpers (hermes_state_misc.c) */
+char *hermes_state_rows_to_conversation(const char *rows_json);
+char *hermes_state_encode_content(const char *content_json);
+char *hermes_state_encode_display_metadata(const char *meta_json);
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -496,4 +501,114 @@ void hermes_state_clear_messages(hermes_state_db_t *db, const char *session_id) 
         sqlite3_step(u);
         sqlite3_finalize(u);
     }
+}
+
+/* ── conversation load / message replacement ───────────────────────────── */
+
+
+/* PoP: hermes_state_insert_message_rows @ hermes_state.py:_insert_message_rows */
+char *hermes_state_insert_message_rows(hermes_state_db_t *db, const char *session_id,
+                                       const char *messages_json) {
+    /* Insert fresh active rows (21 columns mirroring Python); returns
+     * {"inserted": N, "tool_call_count": M}. */
+    if (!db || !session_id) return strdup("{\"inserted\":0,\"tool_call_count\":0}");
+    json_t *msgs = json_parse(messages_json ? messages_json : "[]", NULL);
+    if (!msgs || msgs->type != JSON_ARRAY) { if (msgs) json_free(msgs); return strdup("{\"inserted\":0,\"tool_call_count\":0}"); }
+    long long inserted = 0, tc = 0;
+    for (size_t i = 0; i < json_len(msgs); i++) {
+        json_t *msg = json_get(msgs, i);
+        if (!msg || msg->type != JSON_OBJECT) continue;
+        const char *role = json_get_str(msg, "role", "unknown");
+        const char *content = json_get_str(msg, "content", NULL);
+        char *enc = hermes_state_encode_content(content ? content : "");
+        const char *tool_call_id = json_get_str(msg, "tool_call_id", NULL);
+        const char *tool_calls = json_get_str(msg, "tool_calls", NULL);
+        const char *tool_name = json_get_str(msg, "tool_name", NULL);
+        const char *effect = json_get_str(msg, "effect_disposition", NULL);
+        json_t *ts_v = json_obj_get(msg, "timestamp");
+        double ts = (ts_v && json_is_number(ts_v)) ? json_number_value(ts_v) : hermes_state_now_epoch();
+        const char *api_content = json_get_str(msg, "api_content", NULL);
+        const char *display_kind = json_get_str(msg, "display_kind", NULL);
+        const char *display_meta = json_get_str(msg, "display_metadata", NULL);
+        char *enc_meta = hermes_state_encode_display_metadata(display_meta);
+        if (tool_calls) tc++;
+        sqlite3_stmt *st = NULL;
+        if (sqlite3_prepare_v2(db->db,
+                "INSERT INTO messages (session_id, role, content, tool_call_id, tool_calls, "
+                "tool_name, effect_disposition, timestamp, active, api_content, display_kind, "
+                "display_metadata) VALUES (?1,?2,?3,?4,?5,?6,?7,?8,1,?9,?10,?11)",
+                -1, &st, NULL) == SQLITE_OK) {
+            sqlite3_bind_text(st, 1, session_id, -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(st, 2, role, -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(st, 3, enc ? enc : "", -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(st, 4, tool_call_id, -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(st, 5, tool_calls, -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(st, 6, tool_name, -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(st, 7, effect, -1, SQLITE_TRANSIENT);
+            sqlite3_bind_double(st, 8, ts);
+            sqlite3_bind_text(st, 9, api_content, -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(st, 10, display_kind, -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(st, 11, enc_meta, -1, SQLITE_TRANSIENT);
+            if (sqlite3_step(st) == SQLITE_DONE) inserted++;
+            sqlite3_finalize(st);
+        }
+        free(enc);
+        free(enc_meta);
+    }
+    json_free(msgs);
+    char *out = malloc(96);
+    snprintf(out, 96, "{\"inserted\":%lld,\"tool_call_count\":%lld}", inserted, tc);
+    return out;
+}
+
+/* PoP: hermes_state_replace_messages @ hermes_state.py:replace_messages */
+bool hermes_state_replace_messages(hermes_state_db_t *db, const char *session_id,
+                                   const char *messages_json) {
+    /* Atomically delete + reinsert in one transaction. */
+    if (!db || !session_id) return false;
+    sqlite3_exec(db->db, "BEGIN IMMEDIATE", NULL, NULL, NULL);
+    sqlite3_stmt *del = NULL;
+    if (sqlite3_prepare_v2(db->db, "DELETE FROM messages WHERE session_id = ?", -1, &del, NULL) == SQLITE_OK) {
+        sqlite3_bind_text(del, 1, session_id, -1, SQLITE_TRANSIENT);
+        sqlite3_step(del);
+        sqlite3_finalize(del);
+    }
+    char *res = hermes_state_insert_message_rows(db, session_id, messages_json);
+    free(res);
+    sqlite3_exec(db->db, "COMMIT", NULL, NULL, NULL);
+    return true;
+}
+
+/* PoP: hermes_state_archive_and_compact @ hermes_state.py:archive_and_compact */
+bool hermes_state_archive_and_compact(hermes_state_db_t *db, const char *session_id,
+                                      const char *compacted_messages_json) {
+    /* Non-destructive: soft-archive every active row, insert the compacted
+     * rows as fresh active rows, one transaction. */
+    if (!db || !session_id) return false;
+    sqlite3_exec(db->db, "BEGIN IMMEDIATE", NULL, NULL, NULL);
+    sqlite3_stmt *up = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE messages SET active = 0 WHERE session_id = ? AND active = 1", -1, &up, NULL) == SQLITE_OK) {
+        sqlite3_bind_text(up, 1, session_id, -1, SQLITE_TRANSIENT);
+        sqlite3_step(up);
+        sqlite3_finalize(up);
+    }
+    char *res = hermes_state_insert_message_rows(db, session_id, compacted_messages_json);
+    free(res);
+    sqlite3_exec(db->db, "COMMIT", NULL, NULL, NULL);
+    return true;
+}
+
+/* PoP: hermes_state_describe_search_path @ hermes_state.py:_describe_search_path */
+char *hermes_state_describe_search_path(const char *query, bool fts_cjk_available) {
+    /* Best-effort routing-path name for the search query (log-only):
+     * empty / fts5 / cjk / unindexed. */
+    if (!query || !*query) return strdup("empty");
+    bool cjk = false;
+    for (const unsigned char *p = (const unsigned char *)query; *p; p++) {
+        if (*p >= 0xE4 && *p <= 0xE9) { cjk = true; break; } /* CJK lead bytes */
+    }
+    if (!cjk) return strdup("fts5");
+    if (fts_cjk_available) return strdup("cjk");
+    return strdup("unindexed");
 }
