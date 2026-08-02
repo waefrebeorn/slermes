@@ -769,7 +769,7 @@ void approval_set_current_session_key(const char *key) {
 
 /* PoP: approval_reset_current_session_key @ tools/approval.py:reset_current_session_key */
 void approval_reset_current_session_key(void) {
-    g_current_session_key[0] = '\0';
+    memset(g_current_session_key, 0, sizeof(g_current_session_key));
 }
 
 /* PoP: approval_get_current_session_key @ tools/approval.py:get_current_session_key */

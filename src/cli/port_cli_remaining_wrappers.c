@@ -1135,7 +1135,16 @@ int hermes_cli_service_manager_u_write_gateway_desired_state(const char *arg) { 
 int hermes_cli_service_manager_u_seed_supervise_skeleton(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _service_dir @ hermes_cli/service_manager.py:_service_dir */
-int hermes_cli_service_manager_u_service_dir(const char *arg) { (void)arg; return 0; }
+int hermes_cli_service_manager_u_service_dir(const char *arg) {
+    /* Python: scandir / f"gateway-{profile}". Arg = "scandir\tprofile". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *sd = arg;
+    size_t slen = tab ? (size_t)(tab - arg) : strlen(arg);
+    const char *prof = tab ? tab + 1 : "";
+    printf("%.*s/gateway-%s\n", (int)slen, sd, prof);
+    return 0;
+}
 
 /* PoP: _service_name @ hermes_cli/service_manager.py:_service_name */
 int hermes_cli_service_manager_u_service_name(const char *arg) {
@@ -2304,7 +2313,26 @@ int hermes_cli_portal_cli_u_cmd_login(const char *arg) { (void)arg; return 0; }
 int hermes_cli_provider_catalog_provider_catalog(const char *arg) { (void)arg; return 0; }
 
 /* PoP: provider_catalog_by_slug @ hermes_cli/provider_catalog.py:provider_catalog_by_slug */
-int hermes_cli_provider_catalog_provider_catalog_by_slug(const char *arg) { (void)arg; return 0; }
+int hermes_cli_provider_catalog_provider_catalog_by_slug(const char *arg) {
+    /* Python: {d.slug: d for d in provider_catalog()}. Arg = JSON array of
+     * provider entries with "slug" fields. */
+    if (!arg || !*arg) { printf("{\n}\n"); return 0; }
+    json_t *arr = json_parse(arg, NULL);
+    json_t *out = json_object();
+    if (arr && arr->type == JSON_ARRAY) {
+        for (size_t i = 0; i < json_len(arr); i++) {
+            json_t *d = json_get(arr, i);
+            const char *slug = d ? json_get_str(d, "slug", NULL) : NULL;
+            if (slug) json_set(out, slug, json_copy(d));
+        }
+    }
+    char *ser = json_serialize(out);
+    printf("%s\n", ser);
+    free(ser);
+    json_free(out);
+    json_free(arr);
+    return 0;
+}
 
 /* PoP: _normalize_member_parts @ hermes_cli/psutil_android.py:_normalize_member_parts */
 int hermes_cli_psutil_android_u_normalize_member_parts(const char *arg) { (void)arg; return 0; }

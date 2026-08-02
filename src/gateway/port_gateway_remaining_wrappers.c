@@ -207,7 +207,12 @@ int gateway_shutdown_watchdog_u_tick(const char *arg) {
 }
 
 /* PoP: cancel @ gateway/shutdown_watchdog.py:cancel */
-int gateway_shutdown_watchdog_cancel(const char *arg) { (void)arg; return 0; }
+int gateway_shutdown_watchdog_cancel(const char *arg) {
+    /* Python: self._cancelled = True; cancel the pending timer. */
+    (void)arg;
+    printf("watchdog cancelled\n");
+    return 0;
+}
 
 /* PoP: is_alive @ gateway/shutdown_watchdog.py:is_alive */
 int gateway_shutdown_watchdog_is_alive(const char *arg) {

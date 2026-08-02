@@ -991,7 +991,21 @@ int tools_skills_guard_scan_file(const char *arg) { (void)arg; return 0; }
 int tools_tirith_security_u_record_tirith_crash(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _safe_float @ tools/tool_search.py:_safe_float */
-int tools_tool_search_u_safe_float(const char *arg) { (void)arg; return 0; }
+int tools_tool_search_u_safe_float(const char *arg) {
+    /* Python: float(value) or fallback. Arg = "value\tfallback". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    char val[128];
+    size_t vlen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (vlen >= sizeof(val)) vlen = sizeof(val) - 1;
+    memcpy(val, arg, vlen); val[vlen] = '\0';
+    const char *fb = tab ? tab + 1 : "0";
+    char *end = NULL;
+    double d = strtod(val, &end);
+    if (end == val || (*end != '\0' && *end != ' ')) { printf("%s\n", fb); return 0; }
+    printf("%g\n", d);
+    return 0;
+}
 
 /* PoP: check_website_access @ tools/website_policy.py:check_website_access */
 int tools_website_policy_check_website_access(const char *arg) { (void)arg; return 0; }
