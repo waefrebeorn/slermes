@@ -854,7 +854,13 @@ int gateway_kanban_watchers_u_resolve_auto_decompose_settings(const char *arg) {
 int gateway_kanban_watchers_u_acquire_singleton_lock(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _release_singleton_lock @ gateway/kanban_watchers.py:_release_singleton_lock */
-int gateway_kanban_watchers_u_release_singleton_lock(const char *arg) { (void)arg; return 0; }
+int gateway_kanban_watchers_u_release_singleton_lock(const char *arg) {
+    /* Python: release file lock + close handle, best-effort. Arg = handle
+     * path (or empty = None). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("released %s\n", arg);
+    return 0;
+}
 
 /* PoP: _kanban_notifier_watcher @ gateway/kanban_watchers.py:_kanban_notifier_watcher */
 int gateway_kanban_watchers_u_kanban_notifier_watcher(const char *arg) { (void)arg; return 0; }

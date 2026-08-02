@@ -375,7 +375,12 @@ int grun_u_prepare_inbound_message_text(const char *arg) { (void)arg; return 0; 
 int grun_u_prepare_profile_scoped_inbound_message_text(const char *arg) { (void)arg; return 0; }
 
 /* PoP: async_session_store @ gateway/run.py:async_session_store */
-int grun_async_session_store(const char *arg) { (void)arg; return 0; }
+int grun_async_session_store(const char *arg) {
+    /* Python: return cached async facade for session_store. Arg = store id. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("async facade for %s\n", arg);
+    return 0;
+}
 
 /* PoP: _handle_message_with_agent @ gateway/run.py:_handle_message_with_agent */
 int grun_u_handle_message_with_agent(const char *arg) { (void)arg; return 0; }

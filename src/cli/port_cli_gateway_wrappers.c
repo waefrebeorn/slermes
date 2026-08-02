@@ -414,7 +414,14 @@ int cgw_has_conflicting_systemd_units(const char *arg) {
 }
 
 /* PoP: _legacy_unit_search_paths @ hermes_cli/gateway.py:_legacy_unit_search_paths */
-int cgw_u_legacy_unit_search_paths(const char *arg) { (void)arg; return 0; }
+int cgw_u_legacy_unit_search_paths(const char *arg) {
+    /* Python: [(False, ~/.config/systemd/user), (True, /etc/systemd/system)].
+     * Arg = HOME (or empty). */
+    const char *home = (arg && *arg) ? arg : getenv("HOME");
+    if (!home || !*home) home = ".";
+    printf("0 %s/.config/systemd/user\n1 /etc/systemd/system\n", home);
+    return 0;
+}
 
 /* PoP: _find_legacy_hermes_units @ hermes_cli/gateway.py:_find_legacy_hermes_units */
 int cgw_u_find_legacy_hermes_units(const char *arg) { (void)arg; return 0; }

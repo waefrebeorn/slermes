@@ -654,7 +654,23 @@ int hermes_cli_projects_cmd_u_cmd_rename(const char *arg) {
 }
 
 /* PoP: _cmd_set_primary @ hermes_cli/projects_cmd.py:_cmd_set_primary */
-int hermes_cli_projects_cmd_u_cmd_set_primary(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_cmd_u_cmd_set_primary(const char *arg) {
+    /* Python: "Set primary of <slug> -> <path>" or stderr + 1. Arg =
+     * "slug\tpath\tok" (ok 0 = not a folder). */
+    if (!arg || !*arg) { printf("project: set failed\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int ok = t2 ? (t2[1] == '1') : 1;
+    if (!ok) {
+        fprintf(stderr, "project: '%.*s' is not a folder of %.*s; add it first with `hermes project add-folder`.\n",
+                (int)(t2 ? (size_t)(t2 - t1 - 1) : 0), t1 ? t1 + 1 : "",
+                (int)(t1 ? (size_t)(t1 - arg) : 0), arg);
+        return 1;
+    }
+    printf("Set primary of %.*s -> %s\n",
+           (int)(t1 ? (size_t)(t1 - arg) : 0), arg, t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: _cmd_use @ hermes_cli/projects_cmd.py:_cmd_use */
 int hermes_cli_projects_cmd_u_cmd_use(const char *arg) { (void)arg; return 0; }
@@ -1279,10 +1295,41 @@ int hermes_cli_skills_hub_u_format_extra_metadata_lines(const char *arg) { (void
 int hermes_cli_skills_hub_u_resolve_source_meta_and_bundle(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _derive_category_from_install_path @ hermes_cli/skills_hub.py:_derive_category_from_install_path */
-int hermes_cli_skills_hub_u_derive_category_from_install_path(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skills_hub_u_derive_category_from_install_path(const char *arg) {
+    /* Python: parent path, "" when ".". Arg = install path. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *slash = strrchr(arg, '/');
+    if (!slash || slash == arg) { printf("\n"); return 0; }
+    size_t plen = (size_t)(slash - arg);
+    if (plen == 1 && arg[0] == '.') { printf("\n"); return 0; }
+    printf("%.*s\n", (int)plen, arg);
+    return 0;
+}
 
 /* PoP: _is_valid_installed_skill_name @ hermes_cli/skills_hub.py:_is_valid_installed_skill_name */
-int hermes_cli_skills_hub_u_is_valid_installed_skill_name(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skills_hub_u_is_valid_installed_skill_name(const char *arg) {
+    /* Python: identifier-shaped, not empty/sentinel. Arg = name. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ' || *p == '\t') p++;
+    size_t n = strlen(p);
+    while (n > 0 && (p[n-1] == ' ' || p[n-1] == '\t')) n--;
+    if (!n) { printf("0\n"); return 0; }
+    char low[256];
+    if (n >= sizeof(low)) { printf("0\n"); return 0; }
+    for (size_t i = 0; i < n; i++) low[i] = (char)tolower((unsigned char)p[i]);
+    low[n] = '\0';
+    static const char *sent[] = {"skill", "readme", "index", "unnamed-skill"};
+    for (size_t i = 0; i < sizeof(sent) / sizeof(sent[0]); i++) {
+        if (strcmp(low, sent[i]) == 0) { printf("0\n"); return 0; }
+    }
+    for (size_t i = 0; i < n; i++) {
+        char c = low[i];
+        if (!(isalnum((unsigned char)c) || c == '-' || c == '_')) { printf("0\n"); return 0; }
+    }
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _existing_categories @ hermes_cli/skills_hub.py:_existing_categories */
 int hermes_cli_skills_hub_u_existing_categories(const char *arg) { (void)arg; return 0; }
@@ -2944,7 +2991,21 @@ int hermes_cli_setup_whatsapp_clou_u_validate_phone_number_id(const char *arg) {
 int hermes_cli_setup_whatsapp_clou_u_validate_waba_id(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _validate_app_id @ hermes_cli/setup_whatsapp_cloud.py:_validate_app_id */
-int hermes_cli_setup_whatsapp_clou_u_validate_app_id(const char *arg) { (void)arg; return 0; }
+int hermes_cli_setup_whatsapp_clou_u_validate_app_id(const char *arg) {
+    /* Python: numeric 13-20 digits. Arg = value. */
+    if (!arg || !*arg) { printf("0 App ID is required\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ' || *p == '\t') p++;
+    size_t n = strlen(p);
+    while (n > 0 && (p[n-1] == ' ' || p[n-1] == '\t')) n--;
+    if (!n) { printf("0 App ID is required\n"); return 0; }
+    for (size_t i = 0; i < n; i++) {
+        if (!isdigit((unsigned char)p[i])) { printf("0 App ID must be numeric\n"); return 0; }
+    }
+    if (n < 13 || n > 20) { printf("0 App ID looks wrong (expected 15-16 digits)\n"); return 0; }
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _validate_app_secret @ hermes_cli/setup_whatsapp_cloud.py:_validate_app_secret */
 int hermes_cli_setup_whatsapp_clou_u_validate_app_secret(const char *arg) { (void)arg; return 0; }
@@ -3357,7 +3418,29 @@ int hermes_cli_codex_models_u_read_default_model(const char *arg) { (void)arg; r
 int hermes_cli_codex_models_u_read_cache_models(const char *arg) { (void)arg; return 0; }
 
 /* PoP: set_session_provider_cookie @ hermes_cli/dashboard_auth/cookies.py:set_session_provider_cookie */
-int hermes_cli_dashboard_auth_cook_set_session_provider_cookie(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_cook_set_session_provider_cookie(const char *arg) {
+    /* Python: set_cookie(provider routing hint); no-op when empty. Arg =
+     * "provider\tname\tuse_https\tprefix". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    if (!t1 || !t1[1]) { printf("0\n"); return 0; }
+    char cookie[128];
+    size_t nlen = (size_t)(t1 - arg);
+    if (nlen >= sizeof(cookie)) nlen = sizeof(cookie) - 1;
+    memcpy(cookie, arg, nlen); cookie[nlen] = '\0';
+    const char *name = t1 + 1;
+    size_t nlen2 = t2 ? (size_t)(t2 - t1 - 1) : strlen(name);
+    char cn[128];
+    if (nlen2 >= sizeof(cn)) nlen2 = sizeof(cn) - 1;
+    memcpy(cn, name, nlen2); cn[nlen2] = '\0';
+    int https = t2 ? (t2[1] == '1') : 0;
+    const char *prefix = t3 ? t3 + 1 : "";
+    printf("set-cookie %s%s=%s%s\n", prefix, cn, cookie,
+           https ? " (secure)" : "");
+    return 0;
+}
 
 /* PoP: read_session_cookies @ hermes_cli/dashboard_auth/cookies.py:read_session_cookies */
 int hermes_cli_dashboard_auth_cook_read_session_cookies(const char *arg) {
@@ -3545,7 +3628,33 @@ int hermes_cli_urllib_security_url_origin(const char *arg) { (void)arg; return 0
 int hermes_cli_urllib_security_redirect_request(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _sanitize @ hermes_cli/urllib_security.py:_sanitize */
-int hermes_cli_urllib_security_u_sanitize(const char *arg) { (void)arg; return 0; }
+int hermes_cli_urllib_security_u_sanitize(const char *arg) {
+    /* Python: strip cross-origin headers unless safe. Arg = "origin\turl\theaders". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    size_t olen = t1 ? (size_t)(t1 - arg) : 0;
+    const char *url = t1 ? t1 + 1 : "";
+    size_t urllen = t2 ? (size_t)(t2 - t1 - 1) : strlen(url);
+    char origin[512], ur[1024];
+    if (olen >= sizeof(origin)) olen = sizeof(origin) - 1;
+    memcpy(origin, arg, olen); origin[olen] = '\0';
+    if (urllen >= sizeof(ur)) urllen = sizeof(ur) - 1;
+    memcpy(ur, url, urllen); ur[urllen] = '\0';
+    /* compare origins: scheme://host[:port] */
+    const char *o_host = strstr(origin, "://");
+    const char *u_host = strstr(ur, "://");
+    int same = 0;
+    if (o_host && u_host) {
+        const char *o1 = o_host + 3, *u1 = u_host + 3;
+        const char *o2 = strchr(o1, '/'), *u2 = strchr(u1, '/');
+        size_t ol = o2 ? (size_t)(o2 - o1) : strlen(o1);
+        size_t ul = u2 ? (size_t)(u2 - u1) : strlen(u1);
+        if (ol == ul && strncmp(o1, u1, ol) == 0) same = 1;
+    }
+    printf("%d\n", same ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _secure_opener_from_installed_policy @ hermes_cli/urllib_security.py:_secure_opener_from_installed_policy */
 int hermes_cli_urllib_security_u_secure_opener_from_installed_po_cy(const char *arg) { (void)arg; return 0; }

@@ -73,7 +73,23 @@ int mcpo_suppress_interactive_oauth(const char *arg) { (void)arg; return 0; }
 int mcpo_u_can_open_browser(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _read_json @ tools/mcp_oauth.py:_read_json */
-int mcpo_u_read_json(const char *arg) { (void)arg; return 0; }
+int mcpo_u_read_json(const char *arg) {
+    /* Python: read JSON file or None on missing/invalid. Arg = path. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    FILE *fp = fopen(arg, "r");
+    if (!fp) { printf("\n"); return 0; }
+    char buf[16384];
+    size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+    fclose(fp);
+    buf[n] = '\0';
+    json_t *doc = json_parse(buf, NULL);
+    if (!doc) { printf("\n"); return 0; }
+    char *s = json_dumps(doc, 0);
+    printf("%s\n", s ? s : "");
+    free(s);
+    json_free(doc);
+    return 0;
+}
 
 /* PoP: _write_json @ tools/mcp_oauth.py:_write_json */
 int mcpo_u_write_json(const char *arg) { (void)arg; return 0; }

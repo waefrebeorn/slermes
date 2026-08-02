@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <time.h>
 #include "hermes_json.h"
 
 extern double skill_usage_latest_activity_at(const void *record);
@@ -131,7 +132,29 @@ const char *su_archive_dir(const char *hermes_home, char *out, size_t sz) {
 }
 /* PoP: _parse_iso_timestamp @ tools/skill_usage.py:_parse_iso_timestamp */
 double su_parse_iso_timestamp(const char *iso) {
-    (void)iso; return 0.0;
+    /* Python: fromisoformat defensively; naive -> UTC; None on bad. Arg =
+     * ISO string; returns epoch seconds or 0.0 for None. */
+    if (!iso || !*iso) return 0.0;
+    if (strlen(iso) < 19) return 0.0;
+    struct tm tm;
+    memset(&tm, 0, sizeof(tm));
+    const char *p = iso;
+    char *end = NULL;
+    tm.tm_year = (int)strtol(p, &end, 10) - 1900;
+    if (*end != '-') return 0.0;
+    tm.tm_mon = (int)strtol(end + 1, &end, 10) - 1;
+    if (*end != '-') return 0.0;
+    tm.tm_mday = (int)strtol(end + 1, &end, 10);
+    if (*end != 'T' && *end != ' ') return 0.0;
+    tm.tm_hour = (int)strtol(end + 1, &end, 10);
+    if (*end != ':') return 0.0;
+    tm.tm_min = (int)strtol(end + 1, &end, 10);
+    if (*end != ':') return 0.0;
+    tm.tm_sec = (int)strtol(end + 1, &end, 10);
+    if (tm.tm_year < 0 || tm.tm_mon < 0 || tm.tm_mon > 11 || tm.tm_mday < 1 || tm.tm_mday > 31) {
+        return 0.0;
+    }
+    return (double)timegm(&tm);
 }
 /* PoP: activity_count @ tools/skill_usage.py:activity_count */
 int su_activity_count(const void *record) {

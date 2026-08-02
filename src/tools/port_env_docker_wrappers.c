@@ -46,7 +46,17 @@ int envd_u_egress_proxy_args_for_docker(const char *arg) { (void)arg; return 0; 
 int envd_u_egress_reuse_fingerprint(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _egress_enforce_on_docker @ tools/environments/docker.py:_egress_enforce_on_docker */
-int envd_u_egress_enforce_on_docker(const char *arg) { (void)arg; return 0; }
+int envd_u_egress_enforce_on_docker(const char *arg) {
+    /* Python: bool(cfg.proxy.enforce_on_docker, default) fail-safe. Arg =
+     * "enforce\tdefault" (enforce empty = unset). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int dflt = tab ? (tab[1] == '1') : 0;
+    if (tab && tab > arg && arg[0] == '1') { printf("1\n"); return 0; }
+    if (tab && tab > arg && arg[0] == '0') { printf("0\n"); return 0; }
+    printf("%d\n", dflt);
+    return 0;
+}
 
 /* PoP: _critical_egress_env_names @ tools/environments/docker.py:_critical_egress_env_names */
 int envd_u_critical_egress_env_names(const char *arg) { (void)arg; return 0; }

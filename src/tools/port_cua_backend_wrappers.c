@@ -414,7 +414,13 @@ int cua_get_cursor_position(const char *arg) {
 }
 
 /* PoP: get_screen_size @ tools/computer_use/cua_backend.py:get_screen_size */
-int cua_get_screen_size(const char *arg) { (void)arg; return 0; }
+int cua_get_screen_size(const char *arg) {
+    /* Python: call_tool get_screen_size -> structuredContent or {}. Arg =
+     * JSON or empty. */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: zoom @ tools/computer_use/cua_backend.py:zoom */
 int cua_zoom(const char *arg) { (void)arg; return 0; }

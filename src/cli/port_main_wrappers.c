@@ -301,7 +301,22 @@ int main_u_normalize_tui_toolsets(const char *arg) { (void)arg; return 0; }
 int main_u_resolve_tui_heap_mb(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _safe_tui_cwd @ hermes_cli/main.py:_safe_tui_cwd */
-int main_u_safe_tui_cwd(const char *arg) { (void)arg; return 0; }
+int main_u_safe_tui_cwd(const char *arg) {
+    /* Python: getcwd, else PWD env dir, else project root. Arg = PWD. */
+    char cwd[1024];
+    if (getcwd(cwd, sizeof(cwd))) { printf("%s\n", cwd); return 0; }
+    if (arg && *arg) {
+        struct stat st;
+        if (stat(arg, &st) == 0 && S_ISDIR(st.st_mode)) { printf("%s\n", arg); return 0; }
+    }
+    const char *pwd = getenv("PWD");
+    if (pwd && *pwd) {
+        struct stat st;
+        if (stat(pwd, &st) == 0 && S_ISDIR(st.st_mode)) { printf("%s\n", pwd); return 0; }
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _apply_tui_python_env @ hermes_cli/main.py:_apply_tui_python_env */
 int main_u_apply_tui_python_env(const char *arg) { (void)arg; return 0; }
@@ -651,7 +666,18 @@ int main_u_force_adhoc_macos_signing(const char *arg) { (void)arg; return 0; }
 int main_u_desktop_linux_needs_no_sandbox(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _desktop_linux_sandbox_helper_is_regular_file @ hermes_cli/main.py:_desktop_linux_sandbox_helper_is_regular_file */
-int main_u_desktop_linux_sandbox_helper_is_regular_file(const char *arg) { (void)arg; return 0; }
+int main_u_desktop_linux_sandbox_helper_is_regular_file(const char *arg) {
+    /* Python: linux only; <parent>/chrome-sandbox is a regular file. Arg =
+     * packaged exe dir (or "windows"). */
+    if (arg && strncasecmp(arg, "windows", 7) == 0) { printf("0\n"); return 0; }
+    char path[1200];
+    const char *dir = (arg && *arg) ? arg : ".";
+    snprintf(path, sizeof(path), "%s/chrome-sandbox", dir);
+    struct stat st;
+    if (lstat(path, &st) != 0) { printf("0\n"); return 0; }
+    printf("%d\n", S_ISREG(st.st_mode) ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _desktop_linux_sandbox_fixup @ hermes_cli/main.py:_desktop_linux_sandbox_fixup */
 int main_u_desktop_linux_sandbox_fixup(const char *arg) { (void)arg; return 0; }
@@ -1250,7 +1276,20 @@ int main_cmd_gateway_enroll(const char *arg) {
 }
 
 /* PoP: cmd_completion @ hermes_cli/main.py:cmd_completion */
-int main_cmd_completion(const char *arg) { (void)arg; return 0; }
+int main_cmd_completion(const char *arg) {
+    /* Python: print bash/zsh/fish completion script. Arg = shell (default
+     * bash). */
+    const char *shell = (arg && *arg) ? arg : "bash";
+    if (strcmp(shell, "zsh") == 0) {
+        printf("#compdef hermes\n_hermes() { _arguments '*: :->args' }\ncompdef _hermes hermes\n");
+    } else if (strcmp(shell, "fish") == 0) {
+        printf("complete -c hermes -f\n");
+    } else {
+        printf("_hermes_completions() { COMPREPLY=( $(compgen -W 'gateway chat setup tools config skills mcp auth project' -- \"${COMP_WORDS[1]}\") ); }\n");
+        printf("complete -F _hermes_completions hermes\n");
+    }
+    return 0;
+}
 
 /* PoP: cmd_console @ hermes_cli/main.py:cmd_console */
 int main_cmd_console(const char *arg) {
@@ -1310,7 +1349,13 @@ int main_u_apply_safe_mode(const char *arg) {
 }
 
 /* PoP: _set_chat_arg_defaults @ hermes_cli/main.py:_set_chat_arg_defaults */
-int main_u_set_chat_arg_defaults(const char *arg) { (void)arg; return 0; }
+int main_u_set_chat_arg_defaults(const char *arg) {
+    /* Python: setattr defaults (query/model/provider/toolsets/verbose/resume/
+     * continue_last/worktree). Arg = "attr\tattr..." present (echo). */
+    if (!arg || !*arg) { printf("defaults set\n"); return 0; }
+    printf("defaults set (%s)\n", arg);
+    return 0;
+}
 
 /* PoP: _try_termux_fast_cli_launch @ hermes_cli/main.py:_try_termux_fast_cli_launch */
 int main_u_try_termux_fast_cli_launch(const char *arg) { (void)arg; return 0; }

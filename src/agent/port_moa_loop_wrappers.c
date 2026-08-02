@@ -220,7 +220,13 @@ int moa_u_call_prepared_aggregator(const char *arg) { (void)arg; return 0; }
 int moa_consume_reference_usage_2(const char *arg) { (void)arg; return 0; }
 
 /* PoP: last_aggregator_slot @ agent/moa_loop.py:last_aggregator_slot */
-int moa_last_aggregator_slot(const char *arg) { (void)arg; return 0; }
+int moa_last_aggregator_slot(const char *arg) {
+    /* Python: chat.completions.last_aggregator_slot or None. Arg = slot JSON
+     * or empty. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: consume_and_save_trace @ agent/moa_loop.py:consume_and_save_trace */
 int moa_consume_and_save_trace_2(const char *arg) { (void)arg; return 0; }

@@ -49,7 +49,40 @@ int vev_u_transaction(const char *arg) { (void)arg; return 0; }
 int vev_u_ensure_schema(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _split_segment_tokens @ agent/verification_evidence.py:_split_segment_tokens */
-int vev_u_split_segment_tokens(const char *arg) { (void)arg; return 0; }
+int vev_u_split_segment_tokens(const char *arg) {
+    /* Python: shlex.split per shell-split segment. Arg = command. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    int first_seg = 1;
+    while (*p) {
+        while (*p == ' ' || *p == '\t') p++;
+        if (!*p) break;
+        char tok[512];
+        size_t w = 0;
+        char quote = 0;
+        while (*p && (quote || (*p != ' ' && *p != '\t'))) {
+            char c = *p++;
+            if (quote) {
+                if (c == quote) quote = 0;
+                else if (w < sizeof(tok) - 1) tok[w++] = c;
+            } else if (c == '\'' || c == '\"') {
+                quote = c;
+            } else if (c == '\\' && *p) {
+                if (w < sizeof(tok) - 1) tok[w++] = *p++;
+            } else {
+                if (w < sizeof(tok) - 1) tok[w++] = c;
+            }
+        }
+        tok[w] = '\0';
+        if (w) {
+            if (!first_seg) printf("\n");
+            printf("%s", tok);
+            first_seg = 0;
+        }
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _clean_token @ agent/verification_evidence.py:_clean_token */
 int vev_u_clean_token(const char *arg) { (void)arg; return 0; }

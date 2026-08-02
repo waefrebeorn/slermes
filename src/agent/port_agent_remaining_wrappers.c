@@ -449,7 +449,23 @@ int agent_subscription_view_can_change_plan(const char *arg) { (void)arg; return
 int agent_subscription_view_u_parse_current(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _coalesce @ agent/subscription_view.py:_coalesce */
-int agent_subscription_view_u_coalesce(const char *arg) { (void)arg; return 0; }
+int agent_subscription_view_u_coalesce(const char *arg) {
+    /* Python: first non-None value (preserves 0). Arg = "v1\tv2\t..."
+     * (empty = None). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    while (*p) {
+        const char *tab = strchr(p, '\t');
+        size_t len = tab ? (size_t)(tab - p) : strlen(p);
+        if (len) {
+            printf("%.*s\n", (int)len, p);
+            return 0;
+        }
+        p = tab ? tab + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _parse_tier @ agent/subscription_view.py:_parse_tier */
 int agent_subscription_view_u_parse_tier(const char *arg) { (void)arg; return 0; }
