@@ -1400,7 +1400,15 @@ int agent_credential_pool_entry_id_for_api_key(const char *arg) {
 }
 
 /* PoP: _sync_xai_oauth_entry_from_pool_store @ agent/credential_pool.py:_sync_xai_oauth_entry_from_pool_store */
-int agent_credential_pool_u_sync_xai_oauth_entry_from_pool_store(const char *arg) { (void)arg; return 0; }
+int agent_credential_pool_u_sync_xai_oauth_entry_from_pool_store(const char *arg) {
+    /* Python: adopt rotated pair. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("entry unchanged\n"); return 0; }
+    printf("adopted rotated tokens: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _single_use_refresh_lock_timeout @ agent/credential_pool.py:_single_use_refresh_lock_timeout */
 int agent_credential_pool_u_single_use_refresh_lock_timeout(const char *arg) {

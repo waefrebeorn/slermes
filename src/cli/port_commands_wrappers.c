@@ -175,7 +175,33 @@ json_t *cmd_get_project_files(const char *dir, int max_count) {
 /* PoP: _score_path @ hermes_cli/commands.py:_score_path */
 /* PoP: cmd_score_path @ hermes_cli/commands.py:_score_path */
 double cmd_score_path(const char *path, const char *query) {
-    (void)path; (void)query; return 0.0;
+    /* Python: fuzzy score ladder. */
+    if (!path || !*path) return 0.0;
+    if (!query || !*query) return 1.0;
+    size_t ql = strlen(query);
+    const char *base = strrchr(path, '/');
+    base = base ? base + 1 : path;
+    char lower[1024];
+    size_t w = 0;
+    for (const char *p = base; *p && w < sizeof(lower) - 1; p++) {
+        char c = *p;
+        lower[w++] = (c >= 'A' && c <= 'Z') ? (char)(c - 'A' + 'a') : c;
+    }
+    lower[w] = '\0';
+    char lq[128];
+    w = 0;
+    for (const char *p = query; *p && w < sizeof(lq) - 1; p++) {
+        char c = *p;
+        lq[w++] = (c >= 'A' && c <= 'Z') ? (char)(c - 'A' + 'a') : c;
+    }
+    lq[w] = '\0';
+    if (strcmp(lower, lq) == 0) return 100;
+    if (strncmp(lower, lq, ql) == 0) return 80;
+    if (strstr(lower, lq)) return 60;
+    /* subsequence match */
+    size_t qi = 0;
+    for (const char *c = lower; *c && qi < ql; c++) if (*c == lq[qi]) qi++;
+    return (qi == ql) ? 25 : 0;
 }
 /* PoP: _fuzzy_file_completions @ hermes_cli/commands.py:_fuzzy_file_completions */
 json_t *cmd_fuzzy_file_completions(const char *query, int max_results) {

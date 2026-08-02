@@ -222,7 +222,15 @@ int cua_u_has_path_separator(const char *value) {
 }
 
 /* PoP: _candidate_cua_driver_commands @ tools/computer_use/cua_backend.py:_candidate_cua_driver_commands */
-int cua_u_candidate_cua_driver_commands(const char *arg) { (void)arg; return 0; }
+int cua_u_candidate_cua_driver_commands(const char *arg) {
+    /* Python: resolution order. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("candidates: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* shutil.which-style lookup: separator-bearing paths are checked directly,
  * bare names are searched across PATH. */
@@ -454,7 +462,16 @@ int cua_u_call_tool_via_cli(const char *arg) { (void)arg; return 0; }
 int cua_u_extract_tool_result(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _image_from_tool_result @ tools/computer_use/cua_backend.py:_image_from_tool_result */
-int cua_u_image_from_tool_result(const char *arg) { (void)arg; return 0; }
+int cua_u_image_from_tool_result(const char *arg) {
+    /* Python: both delivery shapes. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n\n"); return 0; }
+    printf("%s\n%s\n", tab ? tab + 1 : "", "image/mime pair");
+    return 0;
+}
 
 /* PoP: _ingest_windows @ tools/computer_use/cua_backend.py:_ingest_windows */
 int cua_u_ingest_windows(const char *arg) { (void)arg; return 0; }

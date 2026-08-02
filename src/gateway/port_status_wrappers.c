@@ -210,10 +210,27 @@ int gstat_u_snapshot_gateway_children(const char *arg) {
 int gstat_reap_gateway_children(const char *arg) { (void)arg; return 0; }
 
 /* PoP: take_over_scoped_lock_holder @ gateway/status.py:take_over_scoped_lock_holder */
-int gstat_take_over_scoped_lock_holder(const char *arg) { (void)arg; return 0; }
+int gstat_take_over_scoped_lock_holder(const char *arg) {
+    /* Python: verified replace. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("replaced owner: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _terminate_scoped_lock_owner_once @ gateway/status.py:_terminate_scoped_lock_owner_once */
-int gstat_u_terminate_scoped_lock_owner_once(const char *arg) { (void)arg; return 0; }
+int gstat_u_terminate_scoped_lock_owner_once(const char *arg) {
+    /* Python: marker + identity-aware kill. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("owner terminated: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: get_running_pid_cached @ gateway/status.py:get_running_pid_cached */
 int gstat_get_running_pid_cached(const char *arg) { (void)arg; return 0; }

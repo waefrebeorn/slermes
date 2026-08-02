@@ -1137,7 +1137,26 @@ int main_u_desktop_linux_sandbox_helper_is_regular_file(const char *arg) {
 }
 
 /* PoP: _desktop_linux_sandbox_fixup @ hermes_cli/main.py:_desktop_linux_sandbox_fixup */
-int main_u_desktop_linux_sandbox_fixup(const char *arg) { (void)arg; return 0; }
+int main_u_desktop_linux_sandbox_fixup(const char *arg) {
+    /* Python: SUID helper. Arg =
+     * "is_linux\tmissing\tstate\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int is_linux = arg[0] == '1';
+    int missing = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!is_linux) { printf("1\n"); return 0; }
+    if (missing) {
+        fprintf(stderr, "✗ Hermes Desktop is missing Electron's Linux sandbox helper\n");
+        return 0;
+    }
+    if (t3 && t3[1] == '1') { printf("1\n"); return 0; }
+    printf("→ Configuring Electron Linux sandbox helper (sudo required)...\n");
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _desktop_launch_options @ hermes_cli/main.py:_desktop_launch_options */
 int main_u_desktop_launch_options(const char *arg) {
@@ -1751,7 +1770,21 @@ int main_u_repair_broken_lazy_refresh_imports(const char *arg) {
 }
 
 /* PoP: _repair_venv_via_import_probes @ hermes_cli/main.py:_repair_venv_via_import_probes */
-int main_u_repair_venv_via_import_probes(const char *arg) { (void)arg; return 0; }
+int main_u_repair_venv_via_import_probes(const char *arg) {
+    /* Python: import-based repair. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("indeterminate\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "healthy") == 0) { printf("healthy\n"); return 0; }
+    if (strcmp(state, "repaired") == 0) { printf("repaired\n"); return 0; }
+    if (strcmp(state, "failed") == 0) {
+        printf("failed\n");
+        printf("  ⚠ Venv repair incomplete. Run manually, then `hermes update`\n");
+        return 0;
+    }
+    printf("indeterminate\n");
+    return 0;
+}
 
 /* PoP: _refresh_active_lazy_features @ hermes_cli/main.py:_refresh_active_lazy_features */
 int main_u_refresh_active_lazy_features(const char *arg) { (void)arg; return 0; }

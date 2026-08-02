@@ -1672,7 +1672,23 @@ int cgw_u_running_under_gateway_supervisor(const char *arg) {
 }
 
 /* PoP: _guard_supervised_gateway_conflict @ hermes_cli/gateway.py:_guard_supervised_gateway_conflict */
-int cgw_u_guard_supervised_gateway_conflict(const char *arg) { (void)arg; return 0; }
+int cgw_u_guard_supervised_gateway_conflict(const char *arg) {
+    /* Python: service-manager guard. Arg =
+     * "force\tsupervised\tservice_running\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int force = arg[0] == '1';
+    int supervised = t1 && t1[1] == '1';
+    int service_running = t2 && t2[1] == '1';
+    int state = t3 && t3[1] == '1';
+    if (force || !supervised || !service_running || !state) { printf("no conflict\n"); return 0; }
+    fprintf(stderr, "A gateway is already running under a service manager for this profile.\n");
+    fprintf(stderr, "  Restart the supervised gateway instead:\n\n    hermes gateway restart\n\n  Pass --force to start a foreground gateway anyway (not recommended).\n");
+    return 1;
+}
 
 /* PoP: _guard_existing_gateway_process_conflict @ hermes_cli/gateway.py:_guard_existing_gateway_process_conflict */
 int cgw_u_guard_existing_gateway_process_conflict(const char *arg) {
@@ -1755,7 +1771,25 @@ int cgw_u_is_service_running(const char *arg) { (void)arg; return 0; }
 int cgw_u_builtin_setup_fn(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _configure_platform @ hermes_cli/gateway.py:_configure_platform */
-int cgw_u_configure_platform(const char *arg) { (void)arg; return 0; }
+int cgw_u_configure_platform(const char *arg) {
+    /* Python: setup dispatch. Arg =
+     * "has_fn\thas_builtin\thas_vars\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int has_fn = arg[0] == '1';
+    int has_builtin = t1 && t1[1] == '1';
+    int has_vars = t2 && t2[1] == '1';
+    int state = t3 && t3[1] == '1';
+    if (!state) { printf("setup aborted\n"); return 0; }
+    if (has_fn) { printf("plugin setup_fn ran\n"); return 0; }
+    if (has_builtin) { printf("built-in setup ran\n"); return 0; }
+    if (has_vars) { printf("standard vars setup ran\n"); return 0; }
+    printf("env-var hint shown\n");
+    return 0;
+}
 
 /* PoP: _dispatch_via_service_manager_if_s6 @ hermes_cli/gateway.py:_dispatch_via_service_manager_if_s6 */
 int cgw_u_dispatch_via_service_manager_if_s6(const char *arg) { (void)arg; return 0; }

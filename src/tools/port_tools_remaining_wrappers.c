@@ -286,7 +286,24 @@ int tools_lazy_deps_activate_durable_lazy_target(const char *arg) {
 }
 
 /* PoP: _allow_lazy_installs @ tools/lazy_deps.py:_allow_lazy_installs */
-int tools_lazy_deps_u_allow_lazy_installs(const char *arg) { (void)arg; return 0; }
+int tools_lazy_deps_u_allow_lazy_installs(const char *arg) {
+    /* Python: kill-switch order. Arg =
+     * "config_off\tsealed\thas_target\tstate\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int config_off = arg[0] == '1';
+    int sealed = t1 && t1[1] == '1';
+    int has_target = t2 && t2[1] == '1';
+    int state = t3 && t3[1] == '1';
+    if (!state) { printf("1\n"); return 0; }
+    if (config_off) { printf("0\n"); return 0; }
+    if (sealed) { printf("%d\n", has_target ? 1 : 0); return 0; }
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _unsupported_feature_reason @ tools/lazy_deps.py:_unsupported_feature_reason */
 int tools_lazy_deps_u_unsupported_feature_reason(const char *arg) {

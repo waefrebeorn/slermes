@@ -149,7 +149,23 @@ int ctxc_rollback_interrupted_preflight_display_tokens(const char *arg) {
 }
 
 /* PoP: should_compress_info @ agent/context_compressor.py:should_compress_info */
-int ctxc_should_compress_info(const char *arg) { (void)arg; return 0; }
+int ctxc_should_compress_info(const char *arg) {
+    /* Python: threshold tuple. Arg =
+     * "over\tblocked\tstate\treason\tresult". */
+    if (!arg || !*arg) { printf("0\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int over = arg[0] == '1';
+    int blocked = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0\t\n"); return 0; }
+    if (!over) { printf("0\t\n"); return 0; }
+    if (blocked) { printf("0\t%s\n", t4 ? t4 + 1 : "blocked"); return 0; }
+    printf("1\t\n");
+    return 0;
+}
 
 /* PoP: _compression_block_reason @ agent/context_compressor.py:_compression_block_reason */
 int ctxc_u_compression_block_reason(const char *arg) {

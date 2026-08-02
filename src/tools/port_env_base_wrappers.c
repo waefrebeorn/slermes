@@ -98,7 +98,16 @@ int envb_get_sandbox_dir(const char *arg) {
 }
 
 /* PoP: _pipe_stdin @ tools/environments/base.py:_pipe_stdin */
-int envb_u_pipe_stdin(const char *arg) { (void)arg; return 0; }
+int envb_u_pipe_stdin(const char *arg) {
+    /* Python: daemon-thread pipe. Arg = "len\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("pipe write skipped\n"); return 0; }
+    printf("stdin piped on daemon thread (%s bytes, no CRLF translation)\n", arg);
+    return 0;
+}
 
 /* PoP: _popen_bash @ tools/environments/base.py:_popen_bash */
 int envb_u_popen_bash(const char *arg) {

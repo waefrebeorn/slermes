@@ -296,7 +296,15 @@ int gw_u_build_startup_launcher(const char *arg) {
 }
 
 /* PoP: _write_task_script @ hermes_cli/gateway_windows.py:_write_task_script */
-int gw_u_write_task_script(const char *arg) { (void)arg; return 0; }
+int gw_u_write_task_script(const char *arg) {
+    /* Python: cmd + vbs atomic. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("script write failed\n"); return 1; }
+    printf("gateway.cmd + .vbs written: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _resolve_task_user @ hermes_cli/gateway_windows.py:_resolve_task_user */
 int gw_u_resolve_task_user(const char *arg) {

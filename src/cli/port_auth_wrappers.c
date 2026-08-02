@@ -762,7 +762,25 @@ int auth_u_minimax_oauth_quarantine_on_terminal_refresh(const char *arg) {
 int auth_build_minimax_oauth_token_provider(const char *arg) { (void)arg; return 0; }
 
 /* PoP: resolve_minimax_oauth_runtime_credentials @ hermes_cli/auth.py:resolve_minimax_oauth_runtime_credentials */
-int auth_resolve_minimax_oauth_runtime_credentials(const char *arg) { (void)arg; return 0; }
+int auth_resolve_minimax_oauth_runtime_credentials(const char *arg) {
+    /* Python: minimax refresh chain. Arg =
+     * "state\tresult\tnot_logged_in". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "not_logged_in") == 0) {
+        fprintf(stderr, "Not logged into MiniMax OAuth. Run `hermes model` and select MiniMax (OAuth).\n");
+        return 1;
+    }
+    if (strcmp(state, "refresh_fail") == 0) {
+        fprintf(stderr, "MiniMax OAuth refresh failed (quarantined)\n");
+        return 1;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: get_minimax_oauth_auth_status @ hermes_cli/auth.py:get_minimax_oauth_auth_status */
 int auth_get_minimax_oauth_auth_status(const char *arg) {

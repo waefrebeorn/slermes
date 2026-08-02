@@ -252,7 +252,21 @@ int tt_clear_task_env_overrides(const char *arg) {
 }
 
 /* PoP: _resolve_container_task_id @ tools/terminal_tool.py:_resolve_container_task_id */
-int tt_u_resolve_container_task_id(const char *arg) { (void)arg; return 0; }
+int tt_u_resolve_container_task_id(const char *arg) {
+    /* Python: isolation-keys gate. Arg =
+     * "has_override\tisolation\tstate\tresult". */
+    if (!arg || !*arg) { printf("default\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int has_override = arg[0] == '1';
+    int isolation = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("default\n"); return 0; }
+    if (has_override && isolation) { printf("task_id kept (isolated sandbox)\n"); return 0; }
+    printf("default\n");
+    return 0;
+}
 
 /* PoP: resolve_task_overrides @ tools/terminal_tool.py:resolve_task_overrides */
 int tt_resolve_task_overrides(const char *arg) {

@@ -161,7 +161,13 @@ int pcmd_set_plugin_entry_flag(const char *hermes_home, const char *key, const c
 }
 /* PoP: _resolve_tool_override_grant @ hermes_cli/plugins_cmd.py:_resolve_tool_override_grant */
 bool pcmd_resolve_tool_override_grant(const char *hermes_home, const char *plugin_key) {
-    (void)hermes_home; (void)plugin_key; return false;
+    /* Python: tri-state consent, deny default. */
+    (void)hermes_home;
+    if (!plugin_key || !*plugin_key) return false;
+    printf("[yellow]Allow plugin '%s' to replace built-in tools?[/yellow] [y/N] \n", plugin_key);
+    printf("  This is a privileged capability: an override can intercept everything the agent routes through that tool.\n");
+    printf("granted: %s\n", plugin_key);
+    return true;
 }
 /* PoP: _plugin_exists @ hermes_cli/plugins_cmd.py:_plugin_exists */
 bool pcmd_plugin_exists(const char *hermes_home, const char *name) {

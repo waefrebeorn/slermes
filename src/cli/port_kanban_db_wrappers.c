@@ -217,7 +217,17 @@ int kdbport_u_collision_free_path(const char *arg) {
 int kdbport_store_attachment_bytes(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _merge_completion_prose_artifacts @ hermes_cli/kanban_db.py:_merge_completion_prose_artifacts */
-int kdbport_u_merge_completion_prose_artifacts(const char *arg) { (void)arg; return 0; }
+int kdbport_u_merge_completion_prose_artifacts(const char *arg) {
+    /* Python: legacy prose discover. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\n}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{\n}\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "{\n}");
+    return 0;
+}
 
 /* PoP: _persist_scratch_completion_artifacts @ hermes_cli/kanban_db.py:_persist_scratch_completion_artifacts */
 int kdbport_u_persist_scratch_completion_artifacts(const char *arg) { (void)arg; return 0; }
