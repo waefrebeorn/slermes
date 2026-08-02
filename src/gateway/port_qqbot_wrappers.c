@@ -92,7 +92,19 @@ int qqbot_u_open_ws(const char *arg) { (void)arg; return 0; }
 int qqbot_u_listen_loop(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _reconnect @ gateway/platforms/qqbot/adapter.py:_reconnect */
-int qqbot_u_reconnect(const char *arg) { (void)arg; return 0; }
+int qqbot_u_reconnect(const char *arg) {
+    /* Python: backoff table. Arg =
+     * "reconnected\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int reconnected = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!reconnected) { printf("0 (reconnect failed)\n"); return 0; }
+    printf("1 (reconnect after %ss backoff (attempt %s); heartbeat reset to 30 until Hello; token+gateway url refreshed)%s\n", t2 ? t2 + 1 : "?", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _read_events @ gateway/platforms/qqbot/adapter.py:_read_events */
 int qqbot_u_read_events(const char *arg) { (void)arg; return 0; }

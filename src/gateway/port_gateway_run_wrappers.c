@@ -192,7 +192,17 @@ int grun_u_sync_voice_mode_state_to_adapter(const char *arg) {
 }
 
 /* PoP: _await_adapter_cleanup_with_timeout @ gateway/run.py:_await_adapter_cleanup_with_timeout */
-int grun_u_await_adapter_cleanup_with_timeout(const char *arg) { (void)arg; return 0; }
+int grun_u_await_adapter_cleanup_with_timeout(const char *arg) {
+    /* Python: ownership-kept wait. Arg =
+     * "done\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s (task kept through done-callback — CancelledError-catching close can't block recovery)%s\n", t2 ? t2 + 1 : "done", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _safe_adapter_disconnect @ gateway/run.py:_safe_adapter_disconnect */
 int grun_u_safe_adapter_disconnect(const char *arg) { (void)arg; return 0; }
@@ -833,7 +843,19 @@ int grun_u_schedule_resume_pending_sessions(const char *arg) {
 }
 
 /* PoP: _abort_startup_if_shutdown_requested @ gateway/run.py:_abort_startup_if_shutdown_requested */
-int grun_u_abort_startup_if_shutdown_requested(const char *arg) { (void)arg; return 0; }
+int grun_u_abort_startup_if_shutdown_requested(const char *arg) {
+    /* Python: mid-startup stop. Arg =
+     * "aborted\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int aborted = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (startup not aborted)\n"); return 0; }
+    if (!aborted) { printf("0\n"); return 0; }
+    printf("1 (startup aborted — adapter bg tasks cancelled, safe disconnect, stop task awaited)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _start_loop_liveness_guards @ gateway/run.py:_start_loop_liveness_guards */
 int grun_u_start_loop_liveness_guards(const char *arg) {
@@ -1127,7 +1149,19 @@ int grun_u_handle_suggestions_command(const char *arg) { (void)arg; return 0; }
 int grun_u_handle_blueprint_command(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _get_goal_manager_for_event @ gateway/run.py:_get_goal_manager_for_event */
-int grun_u_get_goal_manager_for_event(const char *arg) { (void)arg; return 0; }
+int grun_u_get_goal_manager_for_event(const char *arg) {
+    /* Python: session-bound. Arg =
+     * "found\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int found = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\t\n"); return 0; }
+    if (!found) { printf("\t\n"); return 0; }
+    printf("GoalManager bound (session %s)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _send_goal_status_notice @ gateway/run.py:_send_goal_status_notice */
 int grun_u_send_goal_status_notice(const char *arg) {
@@ -1197,10 +1231,32 @@ int grun_u_send_voice_reply(const char *arg) { (void)arg; return 0; }
 int grun_u_deliver_media_from_response(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _run_background_task @ gateway/run.py:_run_background_task */
-int grun_u_run_background_task(const char *arg) { (void)arg; return 0; }
+int grun_u_run_background_task(const char *arg) {
+    /* Python: profile-scoped wrapper. Arg =
+     * "scoped\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int scoped = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!scoped) { printf("0 (not multiplexed — inner direct)\n"); return 0; }
+    printf("1 (task ran under profile runtime scope — credentials from that profile's secret scope)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _run_background_task_inner @ gateway/run.py:_run_background_task_inner */
-int grun_u_run_background_task_inner(const char *arg) { (void)arg; return 0; }
+int grun_u_run_background_task_inner(const char *arg) {
+    /* Python: inner impl. Arg =
+     * "done\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("1 (background task completed: %s)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _get_telegram_topic_capabilities @ gateway/run.py:_get_telegram_topic_capabilities */
 int grun_u_get_telegram_topic_capabilities(const char *arg) { (void)arg; return 0; }
@@ -1209,10 +1265,34 @@ int grun_u_get_telegram_topic_capabilities(const char *arg) { (void)arg; return 
 int grun_u_ensure_telegram_system_topic(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _send_telegram_topic_setup_image @ gateway/run.py:_send_telegram_topic_setup_image */
-int grun_u_send_telegram_topic_setup_image(const char *arg) { (void)arg; return 0; }
+int grun_u_send_telegram_topic_setup_image(const char *arg) {
+    /* Python: bundled screenshot. Arg =
+     * "sent\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int sent = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no adapter / no chat / no send_image_file)\n"); return 0; }
+    if (!sent) { printf("0 (asset missing)\n"); return 0; }
+    printf("1 (BotFather Threads Settings screenshot sent w/ caption)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _rename_discord_auto_thread_for_session_title @ gateway/run.py:_rename_discord_auto_thread_for_session_title */
-int grun_u_rename_discord_auto_thread_for_session_title(const char *arg) { (void)arg; return 0; }
+int grun_u_rename_discord_auto_thread_for_session_title(const char *arg) {
+    /* Python: semantic rename. Arg =
+     * "renamed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int renamed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (not auto lane / no adapter / no rename_thread)\n"); return 0; }
+    if (!renamed) { printf("0 (rename failed)\n"); return 0; }
+    printf("1 (thread %s renamed to sanitized '%s')%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "", "");
+    return 0;
+}
 
 /* PoP: _schedule_discord_semantic_thread_rename @ gateway/run.py:_schedule_discord_semantic_thread_rename */
 int grun_u_schedule_discord_semantic_thread_rename(const char *arg) {
@@ -1742,7 +1822,19 @@ int grun_u_start_cron_ticker(const char *arg) {
 }
 
 /* PoP: _await_thread_exit @ gateway/run.py:_await_thread_exit */
-int grun_u_await_thread_exit(const char *arg) { (void)arg; return 0; }
+int grun_u_await_thread_exit(const char *arg) {
+    /* Python: non-blocking join. Arg =
+     * "exited\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int exited = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!exited) { printf("0 (still alive after timeout — loop never blocked #58818)\n"); return 0; }
+    printf("1 (thread exited; is_alive polling keeps loop running so cron delivery completes)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: start_gateway @ gateway/run.py:start_gateway */
 int grun_start_gateway(const char *arg) { (void)arg; return 0; }

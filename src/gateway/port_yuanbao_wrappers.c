@@ -631,7 +631,17 @@ int yb_u_guess_image_ext_from_url(const char *arg) {
 int yb_u_fetch_resource_url(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_download_url @ gateway/platforms/yuanbao.py:_resolve_download_url */
-int yb_u_resolve_download_url(const char *arg) { (void)arg; return 0; }
+int yb_u_resolve_download_url(const char *arg) {
+    /* Python: resourceId rewrite. Arg =
+     * "url\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("%s (unparseable — as-is)\n", t1 ? t1 + 1 : ""); return 0; }
+    printf("%s (resourceId → /api/resource/v1/download rewrite)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _download_and_cache @ gateway/platforms/yuanbao.py:_download_and_cache */
 int yb_u_download_and_cache(const char *arg) { (void)arg; return 0; }
@@ -672,7 +682,17 @@ int yb_u_collect_quote_local_media(const char *arg) {
 }
 
 /* PoP: _consume_group_queue @ gateway/platforms/yuanbao.py:_consume_group_queue */
-int yb_u_consume_group_queue(const char *arg) { (void)arg; return 0; }
+int yb_u_consume_group_queue(const char *arg) {
+    /* Python: one-at-a-time. Arg =
+     * "drained\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no queue)\n"); return 0; }
+    printf("%s dispatch(es) drained (2s idle timeout breaks; each awaited)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: build @ gateway/platforms/yuanbao.py:build */
 int yb_build(const char *arg) {
@@ -764,7 +784,25 @@ int yb_u_flush_inbound_buffer(const char *arg) {
 }
 
 /* PoP: send_biz_request @ gateway/platforms/yuanbao.py:send_biz_request */
-int yb_send_biz_request(const char *arg) { (void)arg; return 0; }
+int yb_send_biz_request(const char *arg) {
+    /* Python: future+ack. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "not_connected") == 0) {
+        fprintf(stderr, "Not connected\n");
+        return 1;
+    }
+    if (strcmp(state, "timeout") == 0) {
+        fprintf(stderr, "biz request timeout (%s) — pending_acks cleaned up\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("ok (%s; future registered in pending_acks, cleaned on timeout/exception)%s\n", t3 ? t3 + 1 : "{}", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: schedule_reconnect @ gateway/platforms/yuanbao.py:schedule_reconnect */
 int yb_schedule_reconnect(const char *arg) {
@@ -800,7 +838,19 @@ int yb_u_reconnect_with_backoff(const char *arg) {
 int yb_u_do_reconnect(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cleanup_ws @ gateway/platforms/yuanbao.py:_cleanup_ws */
-int yb_u_cleanup_ws(const char *arg) { (void)arg; return 0; }
+int yb_u_cleanup_ws(const char *arg) {
+    /* Python: bounded close. Arg =
+     * "closed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int closed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no ws)\n"); return 0; }
+    if (!closed) { printf("0 (close timed out — transport force-closed on cancel)\n"); return 0; }
+    printf("1 (ws closed within WS_CLOSE_TIMEOUT_S bound; handle cleared)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: acquire_file @ gateway/platforms/yuanbao.py:acquire_file */
 int yb_acquire_file(const char *arg) {

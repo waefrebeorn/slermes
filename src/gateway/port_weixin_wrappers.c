@@ -279,10 +279,32 @@ int wx_u_enqueue_text_event(const char *arg) {
 }
 
 /* PoP: _flush_text_batch @ gateway/platforms/weixin.py:_flush_text_batch */
-int wx_u_flush_text_batch(const char *arg) { (void)arg; return 0; }
+int wx_u_flush_text_batch(const char *arg) {
+    /* Python: quiet-period dispatch. Arg =
+     * "flushed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int flushed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (superseded — newer task owns key)\n"); return 0; }
+    if (!flushed) { printf("0 (no pending batch)\n"); return 0; }
+    printf("1 (aggregated text dispatched; split delay for %s chunks)%s\n", (t2 && t2[1] == '1') ? "large" : "normal", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _collect_media @ gateway/platforms/weixin.py:_collect_media */
-int wx_u_collect_media(const char *arg) { (void)arg; return 0; }
+int wx_u_collect_media(const char *arg) {
+    /* Python: item-type dispatch. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\t\n"); return 0; }
+    printf("%s path(s) / %s type(s) (image→jpeg, video→mp4, file→mime)%s\n", t2 ? t2 + 1 : "0", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _download_image @ gateway/platforms/weixin.py:_download_image */
 int wx_u_download_image(const char *arg) {

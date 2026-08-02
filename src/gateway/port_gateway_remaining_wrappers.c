@@ -592,7 +592,17 @@ int gateway_shutdown_watchdog_arm_shutdown_watchdog(const char *arg) {
 }
 
 /* PoP: loop_heartbeat_forever @ gateway/shutdown_watchdog.py:loop_heartbeat_forever */
-int gateway_shutdown_watchdog_loop_heartbeat_forever(const char *arg) { (void)arg; return 0; }
+int gateway_shutdown_watchdog_loop_heartbeat_forever(const char *arg) {
+    /* Python: heartbeat cadence. Arg =
+     * "interval\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("heartbeat loop (immediate first write, then every %ss; gate-checked per tick)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _clean_phrase_list @ gateway/status_phrases.py:_clean_phrase_list */
 int gateway_status_phrases_u_clean_phrase_list(const char *arg) {

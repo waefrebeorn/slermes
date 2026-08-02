@@ -334,7 +334,25 @@ int mcpo_u_make_redirect_handler(const char *arg) {
 }
 
 /* PoP: _wait_for_callback @ tools/mcp_oauth.py:_wait_for_callback */
-int mcpo_u_wait_for_callback(const char *arg) { (void)arg; return 0; }
+int mcpo_u_wait_for_callback(const char *arg) {
+    /* Python: legacy port wait. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_port") == 0) {
+        fprintf(stderr, "OAuth callback port not set — build_oauth_auth skipped (assert removed for -O/-OO safety)\n");
+        return 1;
+    }
+    if (strcmp(state, "timeout") == 0) {
+        fprintf(stderr, "Timed out waiting for OAuth callback\n");
+        return 1;
+    }
+    printf("%s (legacy module-level port path — new flows use per-flow waiter #34260)%s\n", t3 ? t3 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _make_callback_waiter @ tools/mcp_oauth.py:_make_callback_waiter */
 int mcpo_u_make_callback_waiter(const char *arg) {

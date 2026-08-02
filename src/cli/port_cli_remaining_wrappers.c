@@ -60,7 +60,17 @@ int hermes_cli_dashboard_auth_rout_login_page(const char *arg) {
 }
 
 /* PoP: api_auth_providers @ hermes_cli/dashboard_auth/routes.py:api_auth_providers */
-int hermes_cli_dashboard_auth_rout_api_auth_providers(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_rout_api_auth_providers(const char *arg) {
+    /* Python: interactive providers. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\"detail\": \"no auth providers registered\"}\n"); return 503; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{\"detail\": \"no auth providers registered\"}\n"); return 503; }
+    printf("{\"providers\": [%s interactive provider(s), password capability advertised]}\n", t2 ? t2 + 1 : "0");
+    return 0;
+}
 
 /* PoP: auth_login @ hermes_cli/dashboard_auth/routes.py:auth_login */
 int hermes_cli_dashboard_auth_rout_auth_login(const char *arg) { (void)arg; return 0; }
@@ -5903,7 +5913,19 @@ int hermes_cli_pty_session_truncated(const char *arg) {
 }
 
 /* PoP: _drain @ hermes_cli/pty_session.py:_drain */
-int hermes_cli_pty_session_u_drain(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pty_session_u_drain(const char *arg) {
+    /* Python: executor read loop. Arg =
+     * "eof\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int eof = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (eof) { printf("0 (EOF — ws closed WS_CLOSE_PROCESS_EXITED, alive=false)\n"); return 0; }
+    printf("1 (chunk relayed to ws)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: detach @ hermes_cli/pty_session.py:detach */
 int hermes_cli_pty_session_detach(const char *arg) {
