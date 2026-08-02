@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T22:43:05Z",
+  "generated_at": "2026-08-02T22:45:01Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -237960,10 +237960,10 @@
     },
     "hermes_cli/proxy_cli.py": {
       "total": 14,
-      "ported": 11,
+      "ported": 14,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 14,
@@ -238037,16 +238037,24 @@
             "decorators": [],
             "line_number": 153
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_proxy_cli_remaining.c",
+          "c_function": "pxc_cmd_setup",
+          "pop_annotation": {
+            "c_function": "pxc_cmd_setup",
+            "python_functions": [
+              "cmd_setup"
+            ],
+            "c_file": "src/cli/port_proxy_cli_remaining.c",
+            "python_file": "hermes_cli/proxy_cli.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cmd_setup @ hermes_cli/proxy_cli.py:cmd_setup */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/proxy_cli.py",
@@ -238203,16 +238211,24 @@
             "decorators": [],
             "line_number": 769
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_proxy_cli_remaining.c",
+          "c_function": "pxc_cmd_status",
+          "pop_annotation": {
+            "c_function": "pxc_cmd_status",
+            "python_functions": [
+              "cmd_status"
+            ],
+            "c_file": "src/cli/port_proxy_cli_remaining.c",
+            "python_file": "hermes_cli/proxy_cli.py",
+            "line": 28,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cmd_status @ hermes_cli/proxy_cli.py:cmd_status */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/proxy_cli.py",
@@ -238253,16 +238269,24 @@
             "decorators": [],
             "line_number": 847
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_proxy_cli_remaining.c",
+          "c_function": "pxc_cmd_config",
+          "pop_annotation": {
+            "c_function": "pxc_cmd_config",
+            "python_functions": [
+              "cmd_config"
+            ],
+            "c_file": "src/cli/port_proxy_cli_remaining.c",
+            "python_file": "hermes_cli/proxy_cli.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cmd_config @ hermes_cli/proxy_cli.py:cmd_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/proxy_cli.py",
@@ -274765,10 +274789,10 @@
     },
     "hermes_cli/windows_ssh_runtime.py": {
       "total": 29,
-      "ported": 26,
+      "ported": 29,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 29,
@@ -274987,16 +275011,24 @@
             "decorators": [],
             "line_number": 68
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_windows_ssh_runtime_remaining.c",
+          "c_function": "wss_lock_path",
+          "pop_annotation": {
+            "c_function": "wss_lock_path",
+            "python_functions": [
+              "_lock_path"
+            ],
+            "c_file": "src/cli/port_windows_ssh_runtime_remaining.c",
+            "python_file": "hermes_cli/windows_ssh_runtime.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _lock_path @ hermes_cli/windows_ssh_runtime.py:_lock_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/windows_ssh_runtime.py",
@@ -275559,16 +275591,24 @@
             "decorators": [],
             "line_number": 450
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_windows_ssh_runtime_remaining.c",
+          "c_function": "wss_dispatch",
+          "pop_annotation": {
+            "c_function": "wss_dispatch",
+            "python_functions": [
+              "dispatch"
+            ],
+            "c_file": "src/cli/port_windows_ssh_runtime_remaining.c",
+            "python_file": "hermes_cli/windows_ssh_runtime.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: dispatch @ hermes_cli/windows_ssh_runtime.py:dispatch */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/windows_ssh_runtime.py",
@@ -275580,16 +275620,24 @@
             "decorators": [],
             "line_number": 496
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_windows_ssh_runtime_remaining.c",
+          "c_function": "wss_main",
+          "pop_annotation": {
+            "c_function": "wss_main",
+            "python_functions": [
+              "main"
+            ],
+            "c_file": "src/cli/port_windows_ssh_runtime_remaining.c",
+            "python_file": "hermes_cli/windows_ssh_runtime.py",
+            "line": 37,
+            "is_consolidated": false,
+            "full_text": "/* PoP: main @ hermes_cli/windows_ssh_runtime.py:main */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
