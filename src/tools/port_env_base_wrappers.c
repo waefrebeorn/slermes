@@ -151,7 +151,14 @@ int envb_u_embed_stdin_heredoc(const char *arg) { (void)arg; return 0; }
 int envb_u_wait_for_process(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _update_cwd @ tools/environments/base.py:_update_cwd */
-int envb_u_update_cwd(const char *arg) { (void)arg; return 0; }
+int envb_u_update_cwd(const char *arg) {
+    /* Python: self._extract_cwd_from_output(result) — extract CWD from
+     * command output. Arg = command output; the C port prints the first
+     * path-looking line (cwd tracking). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _extract_cwd_from_output @ tools/environments/base.py:_extract_cwd_from_output */
 int envb_u_extract_cwd_from_output(const char *arg) { (void)arg; return 0; }

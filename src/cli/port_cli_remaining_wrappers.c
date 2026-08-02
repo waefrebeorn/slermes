@@ -12,6 +12,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
+#include <signal.h>
 #include "hermes_json.h"
 #include "base64.h"
 
@@ -1018,7 +1019,33 @@ int hermes_cli_active_sessions_u_process_start_time(const char *arg) { (void)arg
 int hermes_cli_active_sessions_u_optional_float(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _prune_dead @ hermes_cli/active_sessions.py:_prune_dead */
-int hermes_cli_active_sessions_u_prune_dead(const char *arg) { (void)arg; return 0; }
+int hermes_cli_active_sessions_u_prune_dead(const char *arg) {
+    /* Python: keep entries whose pid is alive (checked against
+     * process_start_time). Arg = tab-separated "pid\tpid..."; each entry
+     * whose pid is a live process is echoed. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    int first = 1;
+    while (*p) {
+        while (*p == '\t') p++;
+        if (!*p) break;
+        const char *e = p;
+        while (*e && *e != '\t') e++;
+        char pid_s[32];
+        size_t n = (size_t)(e - p);
+        if (n >= sizeof(pid_s)) n = sizeof(pid_s) - 1;
+        memcpy(pid_s, p, n); pid_s[n] = '\0';
+        long pid = strtol(pid_s, NULL, 10);
+        if (pid > 0 && kill((pid_t)pid, 0) == 0) {
+            if (!first) printf("\t");
+            printf("%s", pid_s);
+            first = 0;
+        }
+        p = e;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: transfer_active_session @ hermes_cli/active_sessions.py:transfer_active_session */
 int hermes_cli_active_sessions_transfer_active_session(const char *arg) { (void)arg; return 0; }
@@ -1180,7 +1207,13 @@ int hermes_cli_middleware_run_llm_execution_middleware(const char *arg) { (void)
 int hermes_cli_middleware_run_tool_execution_middleware(const char *arg) { (void)arg; return 0; }
 
 /* PoP: run_api_execution_middleware @ hermes_cli/middleware.py:run_api_execution_middleware */
-int hermes_cli_middleware_run_api_execution_middleware(const char *arg) { (void)arg; return 0; }
+int hermes_cli_middleware_run_api_execution_middleware(const char *arg) {
+    /* Python: compatibility wrapper — run_llm_execution_middleware(request,
+     * next_call, **context). Arg = request JSON (passed through). */
+    if (!arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _invoke_middleware @ hermes_cli/middleware.py:_invoke_middleware */
 int hermes_cli_middleware_u_invoke_middleware(const char *arg) { (void)arg; return 0; }
@@ -1325,7 +1358,22 @@ int hermes_cli_dump_u_get_git_commit(const char *arg) { (void)arg; return 0; }
 int hermes_cli_dump_u_count_skills(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _count_mcp_servers @ hermes_cli/dump.py:_count_mcp_servers */
-int hermes_cli_dump_u_count_mcp_servers(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dump_u_count_mcp_servers(const char *arg) {
+    /* Python: len(config.get("mcp", {}).get("servers", {})). Arg = mcp
+     * section JSON (or empty). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    json_t *mcp = json_parse(arg, NULL);
+    if (!mcp || !json_is_object(mcp)) {
+        if (mcp) json_free(mcp);
+        printf("0\n");
+        return 0;
+    }
+    json_t *servers = json_obj_get(mcp, "servers");
+    size_t n = (servers && json_is_object(servers)) ? json_len(servers) : 0;
+    printf("%zu\n", n);
+    json_free(mcp);
+    return 0;
+}
 
 /* PoP: _cron_summary @ hermes_cli/dump.py:_cron_summary */
 int hermes_cli_dump_u_cron_summary(const char *arg) { (void)arg; return 0; }
@@ -1900,7 +1948,31 @@ int hermes_cli_credential_lifecycl_remove_provider_env_credential(const char *ar
 int hermes_cli_dashboard_auth_toke_register_token_route(const char *arg) { (void)arg; return 0; }
 
 /* PoP: is_token_route @ hermes_cli/dashboard_auth/token_auth.py:is_token_route */
-int hermes_cli_dashboard_auth_toke_is_token_route(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_toke_is_token_route(const char *arg) {
+    /* Python: path in _token_routes (exact match against registered
+     * token-authable routes). Arg = "path\troute1\troute2...". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    char path[512];
+    size_t plen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (plen >= sizeof(path)) plen = sizeof(path) - 1;
+    memcpy(path, arg, plen); path[plen] = '\0';
+    if (!tab) { printf("0\n"); return 0; }
+    const char *routes = tab + 1;
+    while (*routes) {
+        while (*routes == '\t') routes++;
+        if (!*routes) break;
+        const char *e = routes;
+        while (*e && *e != '\t') e++;
+        if ((size_t)(e - routes) == plen && strncmp(routes, path, plen) == 0) {
+            printf("1\n");
+            return 0;
+        }
+        routes = e;
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: clear_token_routes @ hermes_cli/dashboard_auth/token_auth.py:clear_token_routes */
 int hermes_cli_dashboard_auth_toke_clear_token_routes(const char *arg) {

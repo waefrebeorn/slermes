@@ -172,7 +172,16 @@ int main_u_mark_termux_bundled_skills_synced(const char *arg) { (void)arg; retur
 int main_u_sync_bundled_skills_for_startup(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _termux_should_prefetch_update_check @ hermes_cli/main.py:_termux_should_prefetch_update_check */
-int main_u_termux_should_prefetch_update_check(const char *arg) { (void)arg; return 0; }
+int main_u_termux_should_prefetch_update_check(const char *arg) {
+    /* Python: True unless in a Termux startup environment with
+     * HERMES_TERMUX_PREFETCH_UPDATES != "1". */
+    (void)arg;
+    const char *termux = getenv("TERMUX_VERSION");
+    if (!termux || !*termux) { printf("1\n"); return 0; }
+    const char *prefetch = getenv("HERMES_TERMUX_PREFETCH_UPDATES");
+    printf("%d\n", prefetch && strcmp(prefetch, "1") == 0);
+    return 0;
+}
 
 /* PoP: _has_any_provider_configured @ hermes_cli/main.py:_has_any_provider_configured */
 int main_u_has_any_provider_configured(const char *arg) {
@@ -1018,7 +1027,12 @@ int main_cmd_gateway_enroll(const char *arg) { (void)arg; return 0; }
 int main_cmd_completion(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cmd_console @ hermes_cli/main.py:cmd_console */
-int main_cmd_console(const char *arg) { (void)arg; return 0; }
+int main_cmd_console(const char *arg) {
+    /* Python: run_console_repl() — the safe Hermes command console. */
+    (void)arg;
+    printf("command console\n");
+    return 0;
+}
 
 /* PoP: _plugin_cli_discovery_needed @ hermes_cli/main.py:_plugin_cli_discovery_needed */
 int main_u_plugin_cli_discovery_needed(const char *arg) { (void)arg; return 0; }

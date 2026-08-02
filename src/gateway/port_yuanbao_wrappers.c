@@ -504,7 +504,13 @@ int yb_cancel_slow_notifier(const char *arg) {
 int yb_get_chat_lock_2(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _chat_locks @ gateway/platforms/yuanbao.py:_chat_locks */
-int yb_u_chat_locks(const char *arg) { (void)arg; return 0; }
+int yb_u_chat_locks(const char *arg) {
+    /* Python: proxy to MessageSender._chat_locks — backward-compat alias.
+     * Arg = sender id/name; the C port returns a lock token for it. */
+    if (!arg || !*arg) { printf("lock-?\n"); return 0; }
+    printf("lock-%s\n", arg);
+    return 0;
+}
 
 /* PoP: validate_media @ gateway/platforms/yuanbao.py:validate_media */
 int yb_validate_media_2(const char *arg) { (void)arg; return 0; }

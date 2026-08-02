@@ -1018,6 +1018,24 @@ int process_registry_get_session(const char *session_id, ProcessSession **out) {
     return -1;
 }
 
+/* Port of Python tools/process_registry.py:is_completion_consumed() —
+ * consumed-set accessor backing the port_process_registry wrapper. */
+bool process_registry_completion_consumed(const char *session_id) {
+    if (!session_id) return false;
+    registry_init();
+    pthread_mutex_lock(&g_registry.lock);
+    bool found = false;
+    for (int i = 0; i < g_registry.consumed_count; i++) {
+        if (g_registry.completion_consumed[i] &&
+            strcmp(g_registry.completion_consumed[i], session_id) == 0) {
+            found = true;
+            break;
+        }
+    }
+    pthread_mutex_unlock(&g_registry.lock);
+    return found;
+}
+
 void process_registry_append_output(const char *session_id, const char *text) {
     ProcessSession *s = NULL;
     process_registry_get_session(session_id, &s);

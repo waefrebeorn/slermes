@@ -9,6 +9,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <unistd.h>
+#include <sys/stat.h>
 #include "hermes_json.h"
 
 /* PoP: _get_starts_log_path @ gateway/status.py:_get_starts_log_path */
@@ -21,7 +23,27 @@ int gstat_record_start_and_check_storm(const char *arg) { (void)arg; return 0; }
 int gstat_u_get_process_hermes_home(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _canonical_hermes_home @ gateway/status.py:_canonical_hermes_home */
-int gstat_u_canonical_hermes_home(const char *arg) { (void)arg; return 0; }
+int gstat_u_canonical_hermes_home(const char *arg) {
+    /* Python: Path(path).expanduser().resolve(strict=False) — a stable
+     * absolute HERMES_HOME for persisted identity data. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    char *resolved = realpath(arg, NULL);
+    if (resolved) {
+        printf("%s\n", resolved);
+        free(resolved);
+        return 0;
+    }
+    /* resolve(strict=False): fall back to absolute path when missing. */
+    char abs[1024];
+    if (arg[0] == '/') snprintf(abs, sizeof(abs), "%s", arg);
+    else {
+        char cwd[1024];
+        if (getcwd(cwd, sizeof(cwd))) snprintf(abs, sizeof(abs), "%s/%s", cwd, arg);
+        else snprintf(abs, sizeof(abs), "%s", arg);
+    }
+    printf("%s\n", abs);
+    return 0;
+}
 
 /* PoP: _same_hermes_home @ gateway/status.py:_same_hermes_home */
 int gstat_u_same_hermes_home(const char *arg) { (void)arg; return 0; }
@@ -38,7 +60,16 @@ int gstat_u_clear_running_pid_cache(const char *arg) {
 }
 
 /* PoP: _file_cache_signature @ gateway/status.py:_file_cache_signature */
-int gstat_u_file_cache_signature(const char *arg) { (void)arg; return 0; }
+int gstat_u_file_cache_signature(const char *arg) {
+    /* Python: (False, None, None) on OSError; else (True, st_mtime_ns,
+     * st_size). Arg = path. Print "1\tmtime_ns\tsize" or "0". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    struct stat st;
+    if (stat(arg, &st) != 0) { printf("0\n"); return 0; }
+    printf("1\t%lld\t%lld\n", (long long)st.st_mtim.tv_sec * 1000000000LL +
+           (long long)st.st_mtim.tv_nsec, (long long)st.st_size);
+    return 0;
+}
 
 /* PoP: _running_pid_cache_signature @ gateway/status.py:_running_pid_cache_signature */
 int gstat_u_running_pid_cache_signature(const char *arg) { (void)arg; return 0; }

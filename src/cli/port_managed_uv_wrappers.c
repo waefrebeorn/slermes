@@ -47,7 +47,17 @@ int muv_u__iter__(const char *arg) { (void)arg; return 0; }
 int muv_u_ensure_uv_path(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _venv_python @ hermes_cli/managed_uv.py:_venv_python */
-int muv_u_venv_python(const char *arg) { (void)arg; return 0; }
+int muv_u_venv_python(const char *arg) {
+    /* Python: Windows -> venv/Scripts/python.exe; else venv/bin/python.
+     * Arg = venv dir. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+#ifdef _WIN32
+    printf("%s/Scripts/python.exe\n", arg);
+#else
+    printf("%s/bin/python\n", arg);
+#endif
+    return 0;
+}
 
 /* PoP: _remove_tree @ hermes_cli/managed_uv.py:_remove_tree */
 int muv_u_remove_tree(const char *arg) { (void)arg; return 0; }

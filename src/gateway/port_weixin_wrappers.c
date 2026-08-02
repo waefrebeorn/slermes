@@ -12,6 +12,7 @@
 #include <sys/stat.h>
 #include "hermes_json.h"
 #include "port_config_py_helpers.h"
+#include "hermes_gateway_weixin.h"
 
 /* PoP: _make_ssl_connector @ gateway/platforms/weixin.py:_make_ssl_connector */
 int wx_u_make_ssl_connector(const char *arg) { (void)arg; return 0; }
@@ -107,7 +108,21 @@ int wx_u_download_voice(const char *arg) { (void)arg; return 0; }
 int wx_u_maybe_fetch_typing_ticket(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _split_text @ gateway/platforms/weixin.py:_split_text */
-int wx_u_split_text(const char *arg) { (void)arg; return 0; }
+int wx_u_split_text(const char *arg) {
+    /* Python: _split_text_for_weixin_delivery(content, MAX_MESSAGE_LENGTH,
+     * _split_multiline_messages). Arg = content; the C port delegates to
+     * the real weixin splitter and prints the segments. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    int n = 0;
+    char **segs = weixin_split_text_for_weixin_delivery(arg, 4096, true, &n);
+    if (!segs) { printf("\n"); return 0; }
+    for (int i = 0; i < n; i++) {
+        if (segs[i]) printf("%s\n", segs[i]);
+        free(segs[i]);
+    }
+    free(segs);
+    return 0;
+}
 
 /* PoP: _open_rate_limit_circuit @ gateway/platforms/weixin.py:_open_rate_limit_circuit */
 int wx_u_open_rate_limit_circuit(const char *arg) { (void)arg; return 0; }

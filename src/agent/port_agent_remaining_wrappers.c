@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <time.h>
+#include <math.h>
 #include "hermes_json.h"
 #include "libtooldispatch/tool_dispatch_helpers.h"
 
@@ -81,7 +82,27 @@ int agent_model_metadata_u_estimate_tools_tokens_rough(const char *arg) { (void)
 int agent_pet_generate_atlas_u_has_slot_padding(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _slot_bounds @ agent/pet/generate/atlas.py:_slot_bounds */
-int agent_pet_generate_atlas_u_slot_bounds(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_atlas_u_slot_bounds(const char *arg) {
+    /* Python: [(round(i*w/n), round((i+1)*w/n)) for i in range(n)].
+     * Arg = "width\tframe_count". Print "l0\tr0\tl1\tr1...". */
+    if (!arg || !*arg) return 0;
+    const char *tab = strchr(arg, '\t');
+    char w_s[64], n_s[64];
+    size_t wlen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (wlen >= sizeof(w_s)) wlen = sizeof(w_s) - 1;
+    memcpy(w_s, arg, wlen); w_s[wlen] = '\0';
+    const char *ns = tab ? tab + 1 : "1";
+    snprintf(n_s, sizeof(n_s), "%s", ns);
+    double width = strtod(w_s, NULL);
+    long n = strtol(n_s, NULL, 10);
+    if (n <= 0) n = 1;
+    for (long i = 0; i < n; i++) {
+        long lo = (long)round(i * width / (double)n);
+        long hi = (long)round((i + 1) * width / (double)n);
+        printf("%ld\t%ld\n", lo, hi);
+    }
+    return 0;
+}
 
 /* PoP: _component_crops @ agent/pet/generate/atlas.py:_component_crops */
 int agent_pet_generate_atlas_u_component_crops(const char *arg) { (void)arg; return 0; }

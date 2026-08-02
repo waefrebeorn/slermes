@@ -812,7 +812,18 @@ int gateway_readiness_u_probe_gateway(const char *arg) { (void)arg; return 0; }
 int gateway_readiness_collect_runtime_readiness(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _notify_address @ gateway/systemd_notify.py:_notify_address */
-int gateway_systemd_notify_u_notify_address(const char *arg) { (void)arg; return 0; }
+int gateway_systemd_notify_u_notify_address(const char *arg) {
+    /* Python: "\0" + raw[1:] if raw starts with "@" else raw — translate
+     * systemd's @abstract notation to Python's address form. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    if (arg[0] == '@') {
+        putchar('\0');
+        printf("%s\n", arg + 1);
+        return 0;
+    }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: watchdog_interval_seconds @ gateway/systemd_notify.py:watchdog_interval_seconds */
 int gateway_systemd_notify_watchdog_interval_seconds(const char *arg) { (void)arg; return 0; }

@@ -28,4 +28,9 @@ void weixin_send_video(const char *chat_id, const char *video_url,
 void weixin_send_file(const char *chat_id, const char *file_url,
                        const char *filename, const char *context_token);
 
+/* Split content into weixin-delivery segments (Python:
+ * _split_text_for_weixin_delivery). Caller frees each string + the array. */
+char **weixin_split_text_for_weixin_delivery(const char *content, int max_length,
+                                             bool split_per_line, int *out_count);
+
 #endif /* HERMES_GATEWAY_WEIXIN_H */

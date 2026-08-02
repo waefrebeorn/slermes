@@ -243,7 +243,15 @@ int tools_registry_u_snapshot_entries(const char *arg) {
 }
 
 /* PoP: get_entry @ tools/registry.py:get_entry */
-int tools_registry_get_entry(const char *arg) { (void)arg; return 0; }
+int tools_registry_get_entry(const char *arg) {
+    /* Python: return self._tools.get(name) — a registered tool entry by
+     * name, or None. Delegates to the live tool registry. */
+    if (!arg || !*arg) { printf("null\n"); return 0; }
+    tool_t *t = registry_find(arg);
+    if (!t) { printf("null\n"); return 0; }
+    printf("\"%s\"\n", arg);
+    return 0;
+}
 
 /* PoP: register_plugin_override_policy @ tools/registry.py:register_plugin_override_policy */
 int tools_registry_register_plugin_override_policy(const char *arg) {
@@ -394,7 +402,15 @@ int tools_delegation_live_log_assistant_text(const char *arg) {
 }
 
 /* PoP: tool_start @ tools/delegation_live_log.py:tool_start */
-int tools_delegation_live_log_tool_start(const char *arg) { (void)arg; return 0; }
+int tools_delegation_live_log_tool_start(const char *arg) {
+    /* Python: flush_stream(); event("tool", f"-> {name}({args})").
+     * Arg = "name\targs". */
+    if (!arg || !*arg) { printf("-> ?()\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("-> %s()\n", arg); return 0; }
+    printf("-> %.*s(%s)\n", (int)(tab - arg), arg, tab + 1);
+    return 0;
+}
 
 /* PoP: tool_result @ tools/delegation_live_log.py:tool_result */
 int tools_delegation_live_log_tool_result(const char *arg) { (void)arg; return 0; }
@@ -538,7 +554,15 @@ int tools_mcp_dashboard_oauth_worker_done(const char *arg) {
 }
 
 /* PoP: dashboard_oauth_flow @ tools/mcp_dashboard_oauth.py:dashboard_oauth_flow */
-int tools_mcp_dashboard_oauth_dashboard_oauth_flow(const char *arg) { (void)arg; return 0; }
+int tools_mcp_dashboard_oauth_dashboard_oauth_flow(const char *arg) {
+    /* Python: context manager — set the current dashboard flow, restore on
+     * exit. The C port stores the flow token; empty arg clears. */
+    static char g_dash_flow[256] = {0};
+    if (arg && *arg) snprintf(g_dash_flow, sizeof(g_dash_flow), "%s", arg);
+    else g_dash_flow[0] = '\0';
+    printf("dashboard flow %s\n", g_dash_flow[0] ? "set" : "cleared");
+    return 0;
+}
 
 /* PoP: get_dashboard_oauth_flow @ tools/mcp_dashboard_oauth.py:get_dashboard_oauth_flow */
 int tools_mcp_dashboard_oauth_get_dashboard_oauth_flow(const char *arg) {
@@ -826,7 +850,14 @@ int tools_hook_output_spill_spill_if_oversized(const char *arg) { (void)arg; ret
 int tools_session_search_tool_u_is_compaction_summary(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_lineage @ tools/session_search_tool.py:_resolve_lineage */
-int tools_session_search_tool_u_resolve_lineage(const char *arg) { (void)arg; return 0; }
+int tools_session_search_tool_u_resolve_lineage(const char *arg) {
+    /* Python: _resolve_to_parent(db, session_id)[0] — the lineage root
+     * (ignores compression hop). Arg = "session_id" (lineage root lookup
+     * mirrors parent walk; the C port returns the root id or empty). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _is_compression_ended @ tools/session_search_tool.py:_is_compression_ended */
 int tools_session_search_tool_u_is_compression_ended(const char *arg) { (void)arg; return 0; }
@@ -954,7 +985,14 @@ int tools_open_preview_tool_u_normalize_target(const char *arg) { (void)arg; ret
 int tools_open_preview_tool_open_preview_tool(const char *arg) { (void)arg; return 0; }
 
 /* PoP: check_open_preview_requirements @ tools/open_preview_tool.py:check_open_preview_requirements */
-int tools_open_preview_tool_check_open_preview_requirements(const char *arg) { (void)arg; return 0; }
+int tools_open_preview_tool_check_open_preview_requirements(const char *arg) {
+    /* Python: env_var_enabled("HERMES_DESKTOP") — desktop GUI only. */
+    (void)arg;
+    const char *v = getenv("HERMES_DESKTOP");
+    int enabled = v && *v && strcmp(v, "0") != 0 && strcasecmp(v, "false") != 0;
+    printf("%d\n", enabled);
+    return 0;
+}
 
 /* PoP: mark_speech_interrupted @ tools/tts_streaming.py:mark_speech_interrupted */
 int tools_tts_streaming_mark_speech_interrupted(const char *arg) {

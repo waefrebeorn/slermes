@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include "hermes_json.h"
+#include "sqlite3.h"
 
 /* PoP: _db_path @ tools/async_delegation.py:_db_path */
 int adel_u_db_path(const char *arg) {
@@ -36,7 +37,36 @@ int adel_u_transaction(const char *arg) { (void)arg; return 0; }
 int adel_u_persist_dispatch(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _delete_durable_delegation @ tools/async_delegation.py:_delete_durable_delegation */
-int adel_u_delete_durable_delegation(const char *arg) { (void)arg; return 0; }
+int adel_u_delete_durable_delegation(const char *arg) {
+    /* Python: DELETE FROM async_delegations WHERE delegation_id=?, inside a
+     * transaction. Arg = "db_path\tdelegation_id". */
+    if (!arg || !*arg) return 1;
+    const char *tab = strchr(arg, '\t');
+    char db[1024];
+    size_t dlen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (dlen >= sizeof(db)) dlen = sizeof(db) - 1;
+    memcpy(db, arg, dlen); db[dlen] = '\0';
+    const char *did = tab ? tab + 1 : "";
+    sqlite3 *conn = NULL;
+    if (sqlite3_open_v2(db, &conn, SQLITE_OPEN_READWRITE, NULL) != SQLITE_OK) {
+        if (conn) sqlite3_close(conn);
+        printf("error\n");
+        return 1;
+    }
+    sqlite3_stmt *stmt = NULL;
+    const char *sql = "DELETE FROM async_delegations WHERE delegation_id=?";
+    int rc = sqlite3_prepare_v2(conn, sql, -1, &stmt, NULL);
+    if (rc == SQLITE_OK) {
+        sqlite3_bind_text(stmt, 1, did, -1, SQLITE_TRANSIENT);
+        rc = sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+    }
+    int changes = sqlite3_changes(conn);
+    sqlite3_close(conn);
+    if (rc != SQLITE_DONE) { printf("error\n"); return 1; }
+    printf("%d\n", changes);
+    return 0;
+}
 
 /* PoP: _prune_durable_records @ tools/async_delegation.py:_prune_durable_records */
 int adel_u_prune_durable_records(const char *arg) { (void)arg; return 0; }

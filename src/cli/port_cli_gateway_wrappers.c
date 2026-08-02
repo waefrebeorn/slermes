@@ -11,6 +11,7 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <sys/stat.h>
 #include "hermes_json.h"
 
 /* PoP: has_process_service_mismatch @ hermes_cli/gateway.py:has_process_service_mismatch */
@@ -615,7 +616,23 @@ int cgw_u_truthy_env(const char *arg) {
 }
 
 /* PoP: _is_official_docker_checkout @ hermes_cli/gateway.py:_is_official_docker_checkout */
-int cgw_u_is_official_docker_checkout(const char *arg) { (void)arg; return 0; }
+int cgw_u_is_official_docker_checkout(const char *arg) {
+    /* Python: PROJECT_ROOT == "/opt/hermes" AND docker/entrypoint.sh exists. */
+    (void)arg;
+    struct stat st;
+    int is_opt = 0;
+    if (arg && *arg) is_opt = strcmp(arg, "/opt/hermes") == 0;
+    else {
+        char cwd[1024];
+        if (getcwd(cwd, sizeof(cwd))) is_opt = strcmp(cwd, "/opt/hermes") == 0;
+    }
+    if (is_opt && stat("/opt/hermes/docker/entrypoint.sh", &st) == 0 && S_ISREG(st.st_mode)) {
+        printf("1\n");
+        return 0;
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _running_under_gateway_supervisor @ hermes_cli/gateway.py:_running_under_gateway_supervisor */
 int cgw_u_running_under_gateway_supervisor(const char *arg) { (void)arg; return 0; }

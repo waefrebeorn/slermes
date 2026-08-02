@@ -743,9 +743,8 @@ void *process_registry_pty_reader_loop(void *arg)
  * Check if a completion notification was already consumed via wait/log. */
 bool process_registry_is_completion_consumed(const char *session_id)
 {
-    /* In C, we'd track this with a hash set. For now, return false. */
-    (void)session_id;
-    return false;
+    extern bool process_registry_completion_consumed(const char *session_id);
+    return process_registry_completion_consumed(session_id);
 }
 
 /* PoP: is_session_waiting @ tools/process_registry.py:is_session_waiting */

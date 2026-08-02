@@ -109,7 +109,8 @@ void process_registry_set_notify_on_complete(const char *session_id, bool notify
 
 /* Get session by ID */
 int process_registry_get_session(const char *session_id, ProcessSession **out);
-
+/* Check whether a completion notification was already consumed. */
+bool process_registry_completion_consumed(const char *session_id);
 /* Append output to session */
 void process_registry_append_output(const char *session_id, const char *text);
 
