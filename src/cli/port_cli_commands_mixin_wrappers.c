@@ -16,11 +16,15 @@
 #include "port_config_py_helpers.h"
 #include "hermes_core_types.h"
 
-/* Real command handlers (cli_cmd_*.c) — state-safe (ignore agent_state_t). */
+/* Real command handlers (cli_cmd_*.c / commands.c) — state-safe (ignore agent_state_t). */
 extern void cmd_cron(const char *args, agent_state_t *state);
 extern void cmd_kanban(const char *args, agent_state_t *state);
 extern void cmd_skills(const char *args, agent_state_t *state);
 extern void cmd_browser(const char *args, agent_state_t *state);
+extern void cmd_tools(const char *args, agent_state_t *state);
+extern void cmd_update(const char *args, agent_state_t *state);
+extern void cmd_goal(const char *args, agent_state_t *state);
+extern void cmd_subgoal(const char *args, agent_state_t *state);
 
 /* PoP: _handle_rollback_command @ hermes_cli/cli_commands_mixin.py:_handle_rollback_command */
 int ccm_handle_rollback_command(const char *args) {
@@ -94,7 +98,8 @@ int ccm_handle_image_command(const char *args) {
 }
 /* PoP: _handle_tools_command @ hermes_cli/cli_commands_mixin.py:_handle_tools_command */
 int ccm_handle_tools_command(const char *args) {
-    (void)args; return 0;
+    cmd_tools(args ? args : "", NULL);
+    return 0;
 }
 /* PoP: _handle_profile_command @ hermes_cli/cli_commands_mixin.py:_handle_profile_command */
 int ccm_handle_profile_command(const char *args) {
@@ -187,7 +192,8 @@ int ccm_handle_browser_command(const char *args) {
 }
 /* PoP: _handle_goal_command @ hermes_cli/cli_commands_mixin.py:_handle_goal_command */
 int ccm_handle_goal_command(const char *args) {
-    (void)args; return 0;
+    cmd_goal(args ? args : "", NULL);
+    return 0;
 }
 /* PoP: _handle_goal_draft @ hermes_cli/cli_commands_mixin.py:_handle_goal_draft */
 int ccm_handle_goal_draft(const char *args) {
@@ -195,7 +201,8 @@ int ccm_handle_goal_draft(const char *args) {
 }
 /* PoP: _handle_subgoal_command @ hermes_cli/cli_commands_mixin.py:_handle_subgoal_command */
 int ccm_handle_subgoal_command(const char *args) {
-    (void)args; return 0;
+    cmd_subgoal(args ? args : "", NULL);
+    return 0;
 }
 /* PoP: _handle_skin_command @ hermes_cli/cli_commands_mixin.py:_handle_skin_command */
 int ccm_handle_skin_command(const char *args) {
@@ -429,7 +436,8 @@ int ccm_handle_debug_command(const char *args) {
 }
 /* PoP: _handle_update_command @ hermes_cli/cli_commands_mixin.py:_handle_update_command */
 int ccm_handle_update_command(const char *args) {
-    (void)args; return 0;
+    cmd_update(args ? args : "", NULL);
+    return 0;
 }
 /* PoP: _handle_voice_command @ hermes_cli/cli_commands_mixin.py:_handle_voice_command */
 int ccm_handle_voice_command(const char *args) {
