@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T17:47:34Z",
+  "generated_at": "2026-08-02T17:50:28Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -3641,10 +3641,10 @@
     },
     "agent/auxiliary_client.py": {
       "total": 186,
-      "ported": 121,
+      "ported": 175,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 65,
+      "real_gaps": 11,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 186,
@@ -3856,14 +3856,24 @@
             "line_number": 230
           },
           "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
-          "stub_reason": null,
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_aux_interrupt_protected",
+          "pop_annotation": {
+            "c_function": "auxc_aux_interrupt_protected",
+            "python_functions": [
+              "_aux_interrupt_protected"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 28,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _aux_interrupt_protected @ agent/auxiliary_client.py:_aux_interrupt_protected */"
+          },
+          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
           "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
+          "notes": "",
           "da_flags": [
-            "DA-1:no-c-equivalent"
+            "DA-2:bootleg-body"
           ]
         },
         {
@@ -3936,16 +3946,24 @@
             "decorators": [],
             "line_number": 258
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_extract_url_query_params",
+          "pop_annotation": {
+            "c_function": "auxc_extract_url_query_params",
+            "python_functions": [
+              "_extract_url_query_params"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_url_query_params @ agent/auxiliary_client.py:_extract_url_query_params */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -3986,16 +4004,24 @@
             "decorators": [],
             "line_number": 333
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_is_kimi_model",
+          "pop_annotation": {
+            "c_function": "auxc_is_kimi_model",
+            "python_functions": [
+              "_is_kimi_model"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 44,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_kimi_model @ agent/auxiliary_client.py:_is_kimi_model */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -4007,16 +4033,24 @@
             "decorators": [],
             "line_number": 339
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_is_arcee_trinity_thinking",
+          "pop_annotation": {
+            "c_function": "auxc_is_arcee_trinity_thinking",
+            "python_functions": [
+              "_is_arcee_trinity_thinking"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 56,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_arcee_trinity_thinking @ agent/auxiliary_client.py:_is_arcee_trinity_thinking */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -4086,16 +4120,24 @@
             "decorators": [],
             "line_number": 413
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_fixed_temperature_for_model",
+          "pop_annotation": {
+            "c_function": "auxc_fixed_temperature_for_model",
+            "python_functions": [
+              "_fixed_temperature_for_model"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 68,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _fixed_temperature_for_model @ agent/auxiliary_client.py:_fixed_temperature_for_model */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -4107,16 +4149,24 @@
             "decorators": [],
             "line_number": 435
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_compression_threshold_for_model",
+          "pop_annotation": {
+            "c_function": "auxc_compression_threshold_for_model",
+            "python_functions": [
+              "_compression_threshold_for_model"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 86,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _compression_threshold_for_model @ agent/auxiliary_client.py:_compression_threshold_for_model */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -4128,16 +4178,24 @@
             "decorators": [],
             "line_number": 473
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_get_aux_model_for_provider",
+          "pop_annotation": {
+            "c_function": "auxc_get_aux_model_for_provider",
+            "python_functions": [
+              "_get_aux_model_for_provider"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 94,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_aux_model_for_provider @ agent/auxiliary_client.py:_get_aux_model_for_provider */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -4207,16 +4265,24 @@
             "decorators": [],
             "line_number": 620
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_build_or_headers",
+          "pop_annotation": {
+            "c_function": "auxc_build_or_headers",
+            "python_functions": [
+              "build_or_headers"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 111,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_or_headers @ agent/auxiliary_client.py:build_or_headers */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -4228,16 +4294,24 @@
             "decorators": [],
             "line_number": 679
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_build_nvidia_nim_headers",
+          "pop_annotation": {
+            "c_function": "auxc_build_nvidia_nim_headers",
+            "python_functions": [
+              "build_nvidia_nim_headers"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 121,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_nvidia_nim_headers @ agent/auxiliary_client.py:build_nvidia_nim_headers */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -4249,16 +4323,24 @@
             "decorators": [],
             "line_number": 698
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_nous_extra_body",
+          "pop_annotation": {
+            "c_function": "auxc_nous_extra_body",
+            "python_functions": [
+              "_nous_extra_body"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 130,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _nous_extra_body @ agent/auxiliary_client.py:_nous_extra_body */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -4270,16 +4352,24 @@
             "decorators": [],
             "line_number": 734
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_codex_cloudflare_headers",
+          "pop_annotation": {
+            "c_function": "auxc_codex_cloudflare_headers",
+            "python_functions": [
+              "_codex_cloudflare_headers"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 136,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _codex_cloudflare_headers @ agent/auxiliary_client.py:_codex_cloudflare_headers */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -4291,16 +4381,24 @@
             "decorators": [],
             "line_number": 773
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_to_openai_base_url",
+          "pop_annotation": {
+            "c_function": "auxc_to_openai_base_url",
+            "python_functions": [
+              "_to_openai_base_url"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 142,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _to_openai_base_url @ agent/auxiliary_client.py:_to_openai_base_url */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -4457,16 +4555,24 @@
             "decorators": [],
             "line_number": 895
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_nous_min_key_ttl_seconds",
+          "pop_annotation": {
+            "c_function": "auxc_nous_min_key_ttl_seconds",
+            "python_functions": [
+              "_nous_min_key_ttl_seconds"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 154,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _nous_min_key_ttl_seconds @ agent/auxiliary_client.py:_nous_min_key_ttl_seconds */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -5189,16 +5295,24 @@
             "decorators": [],
             "line_number": 1581
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_endpoint_speaks_anthropic_messages",
+          "pop_annotation": {
+            "c_function": "auxc_endpoint_speaks_anthropic_messages",
+            "python_functions": [
+              "_endpoint_speaks_anthropic_messages"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 164,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _endpoint_speaks_anthropic_messages @ agent/auxiliary_client.py:_endpoint_speaks_anthropic_messages */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -5268,16 +5382,24 @@
             "decorators": [],
             "line_number": 1732
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_nous_api_key",
+          "pop_annotation": {
+            "c_function": "auxc_nous_api_key",
+            "python_functions": [
+              "_nous_api_key"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 175,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _nous_api_key @ agent/auxiliary_client.py:_nous_api_key */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -5289,16 +5411,24 @@
             "decorators": [],
             "line_number": 1752
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_nous_base_url",
+          "pop_annotation": {
+            "c_function": "auxc_nous_base_url",
+            "python_functions": [
+              "_nous_base_url"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 193,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _nous_base_url @ agent/auxiliary_client.py:_nous_base_url */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -5310,16 +5440,24 @@
             "decorators": [],
             "line_number": 1757
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_resolve_nous_pool_runtime_api",
+          "pop_annotation": {
+            "c_function": "auxc_resolve_nous_pool_runtime_api",
+            "python_functions": [
+              "_resolve_nous_pool_runtime_api"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 200,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_nous_pool_runtime_api @ agent/auxiliary_client.py:_resolve_nous_pool_runtime_api */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -5476,16 +5614,24 @@
             "decorators": [],
             "line_number": 2076
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_describe_openrouter_unavailable",
+          "pop_annotation": {
+            "c_function": "auxc_describe_openrouter_unavailable",
+            "python_functions": [
+              "_describe_openrouter_unavailable"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 208,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _describe_openrouter_unavailable @ agent/auxiliary_client.py:_describe_openrouter_unavailable */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -5584,16 +5730,24 @@
             "decorators": [],
             "line_number": 2264
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_read_main_model",
+          "pop_annotation": {
+            "c_function": "auxc_read_main_model",
+            "python_functions": [
+              "_read_main_model"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 218,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _read_main_model @ agent/auxiliary_client.py:_read_main_model */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -5605,16 +5759,24 @@
             "decorators": [],
             "line_number": 2294
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_read_main_provider",
+          "pop_annotation": {
+            "c_function": "auxc_read_main_provider",
+            "python_functions": [
+              "_read_main_provider"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 232,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _read_main_provider @ agent/auxiliary_client.py:_read_main_provider */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -5918,16 +6080,24 @@
             "decorators": [],
             "line_number": 2568
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_clear_runtime_main",
+          "pop_annotation": {
+            "c_function": "auxc_clear_runtime_main",
+            "python_functions": [
+              "clear_runtime_main"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 249,
+            "is_consolidated": false,
+            "full_text": "/* PoP: clear_runtime_main @ agent/auxiliary_client.py:clear_runtime_main */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -5939,16 +6109,24 @@
             "decorators": [],
             "line_number": 2584
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_resolve_custom_runtime",
+          "pop_annotation": {
+            "c_function": "auxc_resolve_custom_runtime",
+            "python_functions": [
+              "_resolve_custom_runtime"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 256,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_custom_runtime @ agent/auxiliary_client.py:_resolve_custom_runtime */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -5960,16 +6138,24 @@
             "decorators": [],
             "line_number": 2634
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_current_custom_base_url",
+          "pop_annotation": {
+            "c_function": "auxc_current_custom_base_url",
+            "python_functions": [
+              "_current_custom_base_url"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 273,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _current_custom_base_url @ agent/auxiliary_client.py:_current_custom_base_url */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -6010,16 +6196,24 @@
             "decorators": [],
             "line_number": 2668
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_validate_base_url",
+          "pop_annotation": {
+            "c_function": "auxc_validate_base_url",
+            "python_functions": [
+              "_validate_base_url"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 279,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _validate_base_url @ agent/auxiliary_client.py:_validate_base_url */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -6176,16 +6370,24 @@
             "decorators": [],
             "line_number": 2992
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_normalize_main_runtime",
+          "pop_annotation": {
+            "c_function": "auxc_normalize_main_runtime",
+            "python_functions": [
+              "_normalize_main_runtime"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 288,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalize_main_runtime @ agent/auxiliary_client.py:_normalize_main_runtime */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -6197,16 +6399,24 @@
             "decorators": [],
             "line_number": 3027
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_get_provider_chain",
+          "pop_annotation": {
+            "c_function": "auxc_get_provider_chain",
+            "python_functions": [
+              "_get_provider_chain"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 296,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_provider_chain @ agent/auxiliary_client.py:_get_provider_chain */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -6218,16 +6428,24 @@
             "decorators": [],
             "line_number": 3093
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_normalize_chain_label",
+          "pop_annotation": {
+            "c_function": "auxc_normalize_chain_label",
+            "python_functions": [
+              "_normalize_chain_label"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 302,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalize_chain_label @ agent/auxiliary_client.py:_normalize_chain_label */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -6239,16 +6457,24 @@
             "decorators": [],
             "line_number": 3105
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_mark_provider_unhealthy",
+          "pop_annotation": {
+            "c_function": "auxc_mark_provider_unhealthy",
+            "python_functions": [
+              "_mark_provider_unhealthy"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 317,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _mark_provider_unhealthy @ agent/auxiliary_client.py:_mark_provider_unhealthy */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -6260,16 +6486,24 @@
             "decorators": [],
             "line_number": 3124
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_is_provider_unhealthy",
+          "pop_annotation": {
+            "c_function": "auxc_is_provider_unhealthy",
+            "python_functions": [
+              "_is_provider_unhealthy"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 325,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_provider_unhealthy @ agent/auxiliary_client.py:_is_provider_unhealthy */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -6281,16 +6515,24 @@
             "decorators": [],
             "line_number": 3140
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_log_skip_unhealthy",
+          "pop_annotation": {
+            "c_function": "auxc_log_skip_unhealthy",
+            "python_functions": [
+              "_log_skip_unhealthy"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 332,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _log_skip_unhealthy @ agent/auxiliary_client.py:_log_skip_unhealthy */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -6302,16 +6544,24 @@
             "decorators": [],
             "line_number": 3156
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_reset_aux_unhealthy_cache",
+          "pop_annotation": {
+            "c_function": "auxc_reset_aux_unhealthy_cache",
+            "python_functions": [
+              "_reset_aux_unhealthy_cache"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 343,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _reset_aux_unhealthy_cache @ agent/auxiliary_client.py:_reset_aux_unhealthy_cache */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -6323,16 +6573,24 @@
             "decorators": [],
             "line_number": 3163
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_is_payment_error",
+          "pop_annotation": {
+            "c_function": "auxc_is_payment_error",
+            "python_functions": [
+              "_is_payment_error"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 349,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_payment_error @ agent/auxiliary_client.py:_is_payment_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -6373,16 +6631,24 @@
             "decorators": [],
             "line_number": 3217
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_is_rate_limit_error",
+          "pop_annotation": {
+            "c_function": "auxc_is_rate_limit_error",
+            "python_functions": [
+              "_is_rate_limit_error"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 362,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_rate_limit_error @ agent/auxiliary_client.py:_is_rate_limit_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -6423,16 +6689,24 @@
             "decorators": [],
             "line_number": 3275
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_is_connection_error",
+          "pop_annotation": {
+            "c_function": "auxc_is_connection_error",
+            "python_functions": [
+              "_is_connection_error"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 373,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_connection_error @ agent/auxiliary_client.py:_is_connection_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -6502,16 +6776,24 @@
             "decorators": [],
             "line_number": 3360
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_is_auth_error",
+          "pop_annotation": {
+            "c_function": "auxc_is_auth_error",
+            "python_functions": [
+              "_is_auth_error"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 385,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_auth_error @ agent/auxiliary_client.py:_is_auth_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -6523,16 +6805,24 @@
             "decorators": [],
             "line_number": 3378
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_is_unsupported_parameter_error",
+          "pop_annotation": {
+            "c_function": "auxc_is_unsupported_parameter_error",
+            "python_functions": [
+              "_is_unsupported_parameter_error"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 397,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_unsupported_parameter_error @ agent/auxiliary_client.py:_is_unsupported_parameter_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -6544,16 +6834,24 @@
             "decorators": [],
             "line_number": 3412
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_is_unsupported_temperature_error",
+          "pop_annotation": {
+            "c_function": "auxc_is_unsupported_temperature_error",
+            "python_functions": [
+              "_is_unsupported_temperature_error"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 413,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_unsupported_temperature_error @ agent/auxiliary_client.py:_is_unsupported_temperature_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -6565,16 +6863,24 @@
             "decorators": [],
             "line_number": 3421
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_is_model_not_found_error",
+          "pop_annotation": {
+            "c_function": "auxc_is_model_not_found_error",
+            "python_functions": [
+              "_is_model_not_found_error"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 418,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_model_not_found_error @ agent/auxiliary_client.py:_is_model_not_found_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -7195,16 +7501,24 @@
             "decorators": [],
             "line_number": 4417
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_fallback_entry_api_key",
+          "pop_annotation": {
+            "c_function": "auxc_fallback_entry_api_key",
+            "python_functions": [
+              "_fallback_entry_api_key"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 431,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _fallback_entry_api_key @ agent/auxiliary_client.py:_fallback_entry_api_key */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -7216,16 +7530,24 @@
             "decorators": [],
             "line_number": 4428
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_resolve_fallback_entry",
+          "pop_annotation": {
+            "c_function": "auxc_resolve_fallback_entry",
+            "python_functions": [
+              "_resolve_fallback_entry"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 449,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_fallback_entry @ agent/auxiliary_client.py:_resolve_fallback_entry */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -7237,16 +7559,24 @@
             "decorators": [],
             "line_number": 4446
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_try_main_fallback_chain",
+          "pop_annotation": {
+            "c_function": "auxc_try_main_fallback_chain",
+            "python_functions": [
+              "_try_main_fallback_chain"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 457,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _try_main_fallback_chain @ agent/auxiliary_client.py:_try_main_fallback_chain */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -7345,16 +7675,24 @@
             "decorators": [],
             "line_number": 4814
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_normalize_resolved_model",
+          "pop_annotation": {
+            "c_function": "auxc_normalize_resolved_model",
+            "python_functions": [
+              "_normalize_resolved_model"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 465,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalize_resolved_model @ agent/auxiliary_client.py:_normalize_resolved_model */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -7453,16 +7791,24 @@
             "decorators": [],
             "line_number": 5646
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_main_model_supports_vision",
+          "pop_annotation": {
+            "c_function": "auxc_main_model_supports_vision",
+            "python_functions": [
+              "_main_model_supports_vision"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 474,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _main_model_supports_vision @ agent/auxiliary_client.py:_main_model_supports_vision */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -7474,16 +7820,24 @@
             "decorators": [],
             "line_number": 5677
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_normalize_vision_provider",
+          "pop_annotation": {
+            "c_function": "auxc_normalize_vision_provider",
+            "python_functions": [
+              "_normalize_vision_provider"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 494,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalize_vision_provider @ agent/auxiliary_client.py:_normalize_vision_provider */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -7524,16 +7878,24 @@
             "decorators": [],
             "line_number": 5719
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_strict_vision_backend_available",
+          "pop_annotation": {
+            "c_function": "auxc_strict_vision_backend_available",
+            "python_functions": [
+              "_strict_vision_backend_available"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 500,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _strict_vision_backend_available @ agent/auxiliary_client.py:_strict_vision_backend_available */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -7545,16 +7907,24 @@
             "decorators": [],
             "line_number": 5723
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_get_available_vision_backends",
+          "pop_annotation": {
+            "c_function": "auxc_get_available_vision_backends",
+            "python_functions": [
+              "get_available_vision_backends"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 508,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_available_vision_backends @ agent/auxiliary_client.py:get_available_vision_backends */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -7595,16 +7965,24 @@
             "decorators": [],
             "line_number": 5983
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_get_auxiliary_extra_body",
+          "pop_annotation": {
+            "c_function": "auxc_get_auxiliary_extra_body",
+            "python_functions": [
+              "get_auxiliary_extra_body"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 516,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_auxiliary_extra_body @ agent/auxiliary_client.py:get_auxiliary_extra_body */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -7616,16 +7994,24 @@
             "decorators": [],
             "line_number": 5992
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_auxiliary_max_tokens_param",
+          "pop_annotation": {
+            "c_function": "auxc_auxiliary_max_tokens_param",
+            "python_functions": [
+              "auxiliary_max_tokens_param"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 522,
+            "is_consolidated": false,
+            "full_text": "/* PoP: auxiliary_max_tokens_param @ agent/auxiliary_client.py:auxiliary_max_tokens_param */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -8130,16 +8516,24 @@
             "decorators": [],
             "line_number": 6426
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_resolve_task_provider_model",
+          "pop_annotation": {
+            "c_function": "auxc_resolve_task_provider_model",
+            "python_functions": [
+              "_resolve_task_provider_model"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 537,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_task_provider_model @ agent/auxiliary_client.py:_resolve_task_provider_model */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -8151,16 +8545,24 @@
             "decorators": [],
             "line_number": 6617
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_get_auxiliary_task_config",
+          "pop_annotation": {
+            "c_function": "auxc_get_auxiliary_task_config",
+            "python_functions": [
+              "_get_auxiliary_task_config"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 547,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_auxiliary_task_config @ agent/auxiliary_client.py:_get_auxiliary_task_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -8172,16 +8574,24 @@
             "decorators": [],
             "line_number": 6661
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_get_task_timeout",
+          "pop_annotation": {
+            "c_function": "auxc_get_task_timeout",
+            "python_functions": [
+              "_get_task_timeout"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 556,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_task_timeout @ agent/auxiliary_client.py:_get_task_timeout */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -8222,16 +8632,24 @@
             "decorators": [],
             "line_number": 6692
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_get_task_extra_body",
+          "pop_annotation": {
+            "c_function": "auxc_get_task_extra_body",
+            "python_functions": [
+              "_get_task_extra_body"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 563,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_task_extra_body @ agent/auxiliary_client.py:_get_task_extra_body */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -8243,16 +8661,24 @@
             "decorators": [],
             "line_number": 6747
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_is_anthropic_compat_endpoint",
+          "pop_annotation": {
+            "c_function": "auxc_is_anthropic_compat_endpoint",
+            "python_functions": [
+              "_is_anthropic_compat_endpoint"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 572,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_anthropic_compat_endpoint @ agent/auxiliary_client.py:_is_anthropic_compat_endpoint */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -8264,16 +8690,24 @@
             "decorators": [],
             "line_number": 6759
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_convert_openai_images_to_anthropic",
+          "pop_annotation": {
+            "c_function": "auxc_convert_openai_images_to_anthropic",
+            "python_functions": [
+              "_convert_openai_images_to_anthropic"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 595,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _convert_openai_images_to_anthropic @ agent/auxiliary_client.py:_convert_openai_images_to_anthropic */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
@@ -8488,16 +8922,24 @@
             "decorators": [],
             "line_number": 7797
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_auxiliary_client.c",
+          "c_function": "auxc_extract_content_or_reasoning",
+          "pop_annotation": {
+            "c_function": "auxc_extract_content_or_reasoning",
+            "python_functions": [
+              "extract_content_or_reasoning"
+            ],
+            "c_file": "src/agent/port_auxiliary_client.c",
+            "python_file": "agent/auxiliary_client.py",
+            "line": 603,
+            "is_consolidated": false,
+            "full_text": "/* PoP: extract_content_or_reasoning @ agent/auxiliary_client.py:extract_content_or_reasoning */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/auxiliary_client.py",
