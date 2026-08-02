@@ -12,7 +12,15 @@
 #include "hermes_json.h"
 
 /* PoP: _declared_model_ids @ hermes_cli/model_switch.py:_declared_model_ids */
-int msw_u_declared_model_ids(const char *arg) { (void)arg; return 0; }
+int msw_u_declared_model_ids(const char *arg) {
+    /* Python: config shapes. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _save_discovered_models_to_config @ hermes_cli/model_switch.py:_save_discovered_models_to_config */
 int msw_u_save_discovered_models_to_config(const char *arg) { (void)arg; return 0; }

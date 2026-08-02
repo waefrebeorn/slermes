@@ -631,7 +631,15 @@ int agent_subscription_view_subscription_change_preview_from_pay_ad(const char *
 }
 
 /* PoP: subscription_state_from_payload @ agent/subscription_view.py:subscription_state_from_payload */
-int agent_subscription_view_subscription_state_from_payload(const char *arg) { (void)arg; return 0; }
+int agent_subscription_view_subscription_state_from_payload(const char *arg) {
+    /* Python: payload -> state map. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
 
 /* PoP: build_subscription_state @ agent/subscription_view.py:build_subscription_state */
 int agent_subscription_view_build_subscription_state(const char *arg) { (void)arg; return 0; }
@@ -2338,7 +2346,16 @@ int agent_moa_trace_u_traces_enabled_and_dir(const char *arg) {
 }
 
 /* PoP: _slot_trace @ agent/moa_trace.py:_slot_trace */
-int agent_moa_trace_u_slot_trace(const char *arg) { (void)arg; return 0; }
+int agent_moa_trace_u_slot_trace(const char *arg) {
+    /* Python: full trace dict. Arg = "label\tstate\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("{\"label\": \"%s\", %s}\n", arg, t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: save_moa_turn @ agent/moa_trace.py:save_moa_turn */
 int agent_moa_trace_save_moa_turn(const char *arg) { (void)arg; return 0; }
@@ -2357,7 +2374,18 @@ int agent_oneshot_render_template(const char *arg) {
 }
 
 /* PoP: run_oneshot @ agent/oneshot.py:run_oneshot */
-int agent_oneshot_run_oneshot(const char *arg) { (void)arg; return 0; }
+int agent_oneshot_run_oneshot(const char *arg) {
+    /* Python: stateless LLM call. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "empty") == 0) {
+        fprintf(stderr, "run_oneshot requires a template or instructions/user_input\n");
+        return 1;
+    }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _ensure_file_checkpoint @ agent/tool_executor.py:_ensure_file_checkpoint */
 int agent_tool_executor_u_ensure_file_checkpoint(const char *arg) {

@@ -1565,7 +1565,24 @@ int cgw_u_running_under_gateway_supervisor(const char *arg) {
 int cgw_u_guard_supervised_gateway_conflict(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _guard_existing_gateway_process_conflict @ hermes_cli/gateway.py:_guard_existing_gateway_process_conflict */
-int cgw_u_guard_existing_gateway_process_conflict(const char *arg) { (void)arg; return 0; }
+int cgw_u_guard_existing_gateway_process_conflict(const char *arg) {
+    /* Python: PID-file preflight. Arg =
+     * "replace\tsupervised\tpid\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int replace = arg[0] == '1';
+    int supervised = t1 && t1[1] == '1';
+    int pid = t2 && t2[1] == '1';
+    int state = t3 && t3[1] == '1';
+    if (replace || supervised) { printf("preflight skipped\n"); return 0; }
+    if (!state || !pid) { printf("no conflict\n"); return 0; }
+    fprintf(stderr, "Another gateway instance is already running (PID %s).\n", t4 ? t4 + 1 : "?");
+    fprintf(stderr, "  Use 'hermes gateway restart' to replace it,\n  or 'hermes gateway stop' first.\n  Or use 'hermes gateway run --replace' to auto-replace.\n");
+    return 1;
+}
 
 /* PoP: _guard_official_docker_root_gateway @ hermes_cli/gateway.py:_guard_official_docker_root_gateway */
 int cgw_u_guard_official_docker_root_gateway(const char *arg) {

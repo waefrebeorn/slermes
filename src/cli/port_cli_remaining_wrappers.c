@@ -346,7 +346,20 @@ int hermes_cli_mcp_config_u_remove_mcp_server(const char *arg) {
 }
 
 /* PoP: _replace_mcp_servers @ hermes_cli/mcp_config.py:_replace_mcp_servers */
-int hermes_cli_mcp_config_u_replace_mcp_servers(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_config_u_replace_mcp_servers(const char *arg) {
+    /* Python: whole-map replace. Arg = "count\tstate\tissues\tresult". */
+    if (!arg || !*arg) { printf("1\t[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "issues") == 0) {
+        printf("0\t[%s]\n", t3 ? t3 + 1 : "");
+        return 0;
+    }
+    printf("1\t[]\n");
+    return 0;
+}
 
 /* PoP: _env_key_for_server @ hermes_cli/mcp_config.py:_env_key_for_server */
 int hermes_cli_mcp_config_u_env_key_for_server(const char *arg) {
@@ -546,7 +559,31 @@ int hermes_cli_cli_billing_mixin_u_open_url_in_browser(const char *arg) {
 int hermes_cli_cli_billing_mixin_u_subscription_free_catalog(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _subscription_open_portal @ hermes_cli/cli_billing_mixin.py:_subscription_open_portal */
-int hermes_cli_cli_billing_mixin_u_subscription_open_portal(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cli_billing_mixin_u_subscription_open_portal(const char *arg) {
+    /* Python: portal hand-off. Arg =
+     * "manage_url\tchoice\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *manage_url = arg;
+    const char *choice = t1 ? t1 + 1 : "";
+    int state = t2 && t2[1] == '1';
+    if (!state) {
+        printf("  No manage URL available — is your portal configured?\n");
+        return 0;
+    }
+    if (strcmp(choice, "open") == 0) {
+        printf("  Finish in your browser, then re-run /subscription.\n");
+        return 0;
+    }
+    if (strcmp(choice, "copy") == 0) {
+        printf("  📋 Copied: %s\n", manage_url);
+        return 0;
+    }
+    printf("  🟡 Cancelled.\n");
+    return 0;
+}
 
 /* PoP: _subscription_change_menu @ hermes_cli/cli_billing_mixin.py:_subscription_change_menu */
 int hermes_cli_cli_billing_mixin_u_subscription_change_menu(const char *arg) { (void)arg; return 0; }
@@ -3161,7 +3198,16 @@ int hermes_cli_claw_u_find_openclaw_dirs(const char *arg) {
 }
 
 /* PoP: _scan_workspace_state @ hermes_cli/claw.py:_scan_workspace_state */
-int hermes_cli_claw_u_scan_workspace_state(const char *arg) { (void)arg; return 0; }
+int hermes_cli_claw_u_scan_workspace_state(const char *arg) {
+    /* Python: workspace scan. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("no findings\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _archive_directory @ hermes_cli/claw.py:_archive_directory */
 int hermes_cli_claw_u_archive_directory(const char *arg) {
@@ -5262,7 +5308,28 @@ int hermes_cli_mcp_picker_u_remove_custom(const char *arg) {
 int hermes_cli_mcp_picker_u_handle_row(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _print_rows_text @ hermes_cli/mcp_picker.py:_print_rows_text */
-int hermes_cli_mcp_picker_u_print_rows_text(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_picker_u_print_rows_text(const char *arg) {
+    /* Python: plain catalog dump. Arg = "count\tstate\tfuture_warns\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    long count = strtol(arg, NULL, 10);
+    int state = t1 && t1[1] == '1';
+    if (!state) {
+        printf("\n  No MCPs in the catalog or configured.\n\n");
+        return 0;
+    }
+    printf("\n  MCP Catalog + configured servers:\n\n");
+    printf("  %-18s %-24s Description\n", "Name", "Status");
+    printf("  %-18s %-24s %-11s\n", "------------------", "------------------------", "-----------");
+    printf("  (%ld rows)\n", count);
+    if (t3 && t3[1] == '1') {
+        printf("  ⚠ entry requires a newer Hermes — run `hermes update` to install this entry.\n");
+    }
+    printf("\n  Install: hermes mcp install <name>    Picker: hermes mcp\n\n");
+    return 0;
+}
 
 /* PoP: register_cli @ hermes_cli/proxy_cli.py:register_cli */
 int hermes_cli_proxy_cli_register_cli(const char *arg) { (void)arg; return 0; }
@@ -5784,7 +5851,21 @@ int hermes_cli_nous_billing_post_subscription_preview(const char *arg) {
 }
 
 /* PoP: put_subscription_pending_change @ hermes_cli/nous_billing.py:put_subscription_pending_change */
-int hermes_cli_nous_billing_put_subscription_pending_change(const char *arg) { (void)arg; return 0; }
+int hermes_cli_nous_billing_put_subscription_pending_change(const char *arg) {
+    /* Python: pending disposition. Arg =
+     * "type\tstate\tresult\tmissing_tier". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "missing_tier") == 0) {
+        fprintf(stderr, "A subscription tier is required to schedule a plan change.\n");
+        return 1;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: delete_subscription_pending_change @ hermes_cli/nous_billing.py:delete_subscription_pending_change */
 int hermes_cli_nous_billing_delete_subscription_pending_change(const char *arg) {
@@ -6259,7 +6340,18 @@ int hermes_cli_oneshot_u_validate_explicit_toolsets(const char *arg) { (void)arg
 int hermes_cli_oneshot_u_write_usage_file(const char *arg) { (void)arg; return 0; }
 
 /* PoP: run_oneshot @ hermes_cli/oneshot.py:run_oneshot */
-int hermes_cli_oneshot_run_oneshot(const char *arg) { (void)arg; return 0; }
+int hermes_cli_oneshot_run_oneshot(const char *arg) {
+    /* Python: stateless LLM call. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "empty") == 0) {
+        fprintf(stderr, "run_oneshot requires a template or instructions/user_input\n");
+        return 1;
+    }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _create_session_db_for_oneshot @ hermes_cli/oneshot.py:_create_session_db_for_oneshot */
 int hermes_cli_oneshot_u_create_session_db_for_oneshot(const char *arg) {

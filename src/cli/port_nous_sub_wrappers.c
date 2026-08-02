@@ -183,7 +183,15 @@ int nsub_u_resolve_browser_feature_state(const char *arg) {
 int nsub_apply_nous_managed_defaults(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _get_gateway_direct_credentials @ hermes_cli/nous_subscription.py:_get_gateway_direct_credentials */
-int nsub_u_get_gateway_direct_credentials(const char *arg) { (void)arg; return 0; }
+int nsub_u_get_gateway_direct_credentials(const char *arg) {
+    /* Python: per-tool direct creds. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
 
 /* PoP: get_gateway_eligible_tools @ hermes_cli/nous_subscription.py:get_gateway_eligible_tools */
 int nsub_get_gateway_eligible_tools(const char *arg) { (void)arg; return 0; }

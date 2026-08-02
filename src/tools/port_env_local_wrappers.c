@@ -145,7 +145,16 @@ int envl_u_looks_like_msys_spawn_failure(const char *arg) {
 }
 
 /* PoP: _mandatory_aslr_enabled @ tools/environments/local.py:_mandatory_aslr_enabled */
-int envl_u_mandatory_aslr_enabled(const char *arg) { (void)arg; return 0; }
+int envl_u_mandatory_aslr_enabled(const char *arg) {
+    /* Python: ForceRelocateImages state. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "unknown") == 0) { printf("\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _git_root_from_bash @ tools/environments/local.py:_git_root_from_bash */
 int envl_u_git_root_from_bash(const char *arg) {

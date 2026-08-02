@@ -25,7 +25,12 @@ int main_u_exit_after_oneshot(const char *arg) {
 }
 
 /* PoP: _cleanup_oneshot_runtime @ hermes_cli/main.py:_cleanup_oneshot_runtime */
-int main_u_cleanup_oneshot_runtime(const char *arg) { (void)arg; return 0; }
+int main_u_cleanup_oneshot_runtime(const char *arg) {
+    /* Python: process-global cleanup. Arg = "state". */
+    (void)arg;
+    printf("oneshot runtime cleaned (envs, delegations, browser, mcp, clients)\n");
+    return 0;
+}
 
 /* PoP: _run_and_exit_oneshot @ hermes_cli/main.py:_run_and_exit_oneshot */
 int main_u_run_and_exit_oneshot(const char *arg) { (void)arg; return 0; }
@@ -34,7 +39,15 @@ int main_u_run_and_exit_oneshot(const char *arg) { (void)arg; return 0; }
 int main_u_set_process_title(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _config_default_interface_early @ hermes_cli/main.py:_config_default_interface_early */
-int main_u_config_default_interface_early(const char *arg) { (void)arg; return 0; }
+int main_u_config_default_interface_early(const char *arg) {
+    /* Python: minimal yaml read. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("cli\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("cli\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "cli");
+    return 0;
+}
 
 /* PoP: _wants_tui_early @ hermes_cli/main.py:_wants_tui_early */
 int main_u_wants_tui_early(const char *arg) { (void)arg; return 0; }
@@ -1534,7 +1547,17 @@ int main_u_format_concurrent_instances_message(const char *arg) {
 int main_u_quarantine_running_hermes_exe(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _schedule_replace_on_reboot @ hermes_cli/main.py:_schedule_replace_on_reboot */
-int main_u_schedule_replace_on_reboot(const char *arg) { (void)arg; return 0; }
+int main_u_schedule_replace_on_reboot(const char *arg) {
+    /* Python: MoveFileExW. Arg = "is_windows\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_windows = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!is_windows || !state) { printf("0\n"); return 0; }
+    printf("%d\n", (t2 && t2[1] == '1') ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _restore_quarantined_exes @ hermes_cli/main.py:_restore_quarantined_exes */
 int main_u_restore_quarantined_exes(const char *arg) {

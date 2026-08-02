@@ -1119,7 +1119,17 @@ int gateway_config_u_has_usable_api_server_key(const char *arg) {
 }
 
 /* PoP: _resolve_auto_decompose_settings @ gateway/kanban_watchers.py:_resolve_auto_decompose_settings */
-int gateway_kanban_watchers_u_resolve_auto_decompose_settings(const char *arg) { (void)arg; return 0; }
+int gateway_kanban_watchers_u_resolve_auto_decompose_settings(const char *arg) {
+    /* Python: fresh read, fails safe. Arg =
+     * "state\tenabled\tper_tick\tresult". */
+    if (!arg || !*arg) { printf("1\t3\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "read_error") == 0) { printf("0\t3\n"); return 0; }
+    printf("%s\t%s\n", (t2 && t2[1] == '1') ? "1" : "0", t2 ? t2 + 1 : "3");
+    return 0;
+}
 
 /* PoP: _acquire_singleton_lock @ gateway/kanban_watchers.py:_acquire_singleton_lock */
 int gateway_kanban_watchers_u_acquire_singleton_lock(const char *arg) { (void)arg; return 0; }

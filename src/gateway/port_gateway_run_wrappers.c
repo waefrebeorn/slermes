@@ -683,7 +683,17 @@ int grun_u_schedule_discord_semantic_thread_rename(const char *arg) { (void)arg;
 int grun_u_rename_telegram_topic_for_session_title(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _schedule_telegram_topic_title_rename @ gateway/run.py:_schedule_telegram_topic_title_rename */
-int grun_u_schedule_telegram_topic_title_rename(const char *arg) { (void)arg; return 0; }
+int grun_u_schedule_telegram_topic_title_rename(const char *arg) {
+    /* Python: thread-safe rename schedule. Arg =
+     * "title\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("rename not scheduled\n"); return 0; }
+    printf("topic rename scheduled: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _disable_telegram_topic_mode_for_chat @ gateway/run.py:_disable_telegram_topic_mode_for_chat */
 int grun_u_disable_telegram_topic_mode_for_chat(const char *arg) { (void)arg; return 0; }

@@ -1359,7 +1359,30 @@ int tools_mcp_dashboard_oauth_publish_authorization_url(const char *arg) { (void
 int tools_mcp_dashboard_oauth_wait_for_authorization_url(const char *arg) { (void)arg; return 0; }
 
 /* PoP: deliver_callback @ tools/mcp_dashboard_oauth.py:deliver_callback */
-int tools_mcp_dashboard_oauth_deliver_callback(const char *arg) { (void)arg; return 0; }
+int tools_mcp_dashboard_oauth_deliver_callback(const char *arg) {
+    /* Python: state-match delivery. Arg =
+     * "state\terror\tcode\tresult\tmismatch". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "already") == 0) {
+        fprintf(stderr, "OAuth callback already received\n");
+        return 1;
+    }
+    if (strcmp(state, "mismatch") == 0) {
+        fprintf(stderr, "OAuth callback state mismatch\n");
+        return 1;
+    }
+    if (strcmp(state, "error") == 0) {
+        fprintf(stderr, "OAuth authorization failed: %s\n", t4 ? t4 + 1 : "?");
+        return 1;
+    }
+    printf("callback delivered: %s\n", t4 ? t4 + 1 : "");
+    return 0;
+}
 
 /* PoP: wait_for_callback @ tools/mcp_dashboard_oauth.py:wait_for_callback */
 int tools_mcp_dashboard_oauth_wait_for_callback(const char *arg) { (void)arg; return 0; }
@@ -1542,7 +1565,19 @@ int tools_image_source_u_media_cache_roots(const char *arg) {
 }
 
 /* PoP: _permitted_host_read_target @ tools/image_source.py:_permitted_host_read_target */
-int tools_image_source_u_permitted_host_read_target(const char *arg) { (void)arg; return 0; }
+int tools_image_source_u_permitted_host_read_target(const char *arg) {
+    /* Python: host read gate. Arg =
+     * "local_backend\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int local = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (local) { printf("%s\n", t2 ? t2 + 1 : arg); return 0; }
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _resolve_container_fallback @ tools/image_source.py:_resolve_container_fallback */
 int tools_image_source_u_resolve_container_fallback(const char *arg) { (void)arg; return 0; }

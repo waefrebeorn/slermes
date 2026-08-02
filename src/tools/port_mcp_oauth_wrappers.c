@@ -65,7 +65,16 @@ int mcpo_u_reserve_callback_port(const char *arg) {
 }
 
 /* PoP: _cached_redirect_port @ tools/mcp_oauth.py:_cached_redirect_port */
-int mcpo_u_cached_redirect_port(const char *arg) { (void)arg; return 0; }
+int mcpo_u_cached_redirect_port(const char *arg) {
+    /* Python: loopback port from cache. Arg = "state\tport\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "no_cache") == 0 || strcmp(state, "no_loopback") == 0) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _cached_redirect_uri @ tools/mcp_oauth.py:_cached_redirect_uri */
 int mcpo_u_cached_redirect_uri(const char *arg) {
