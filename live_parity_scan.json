@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T22:33:04Z",
+  "generated_at": "2026-08-02T22:35:10Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -155884,10 +155884,10 @@
     },
     "hermes_cli/active_sessions.py": {
       "total": 20,
-      "ported": 17,
+      "ported": 20,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 20,
@@ -156019,16 +156019,24 @@
             "decorators": [],
             "line_number": 84
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_active_sessions_remaining.c",
+          "c_function": "acs_state_path",
+          "pop_annotation": {
+            "c_function": "acs_state_path",
+            "python_functions": [
+              "_state_path"
+            ],
+            "c_file": "src/cli/port_active_sessions_remaining.c",
+            "python_file": "hermes_cli/active_sessions.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _state_path @ hermes_cli/active_sessions.py:_state_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/active_sessions.py",
@@ -156040,16 +156048,24 @@
             "decorators": [],
             "line_number": 88
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_active_sessions_remaining.c",
+          "c_function": "acs_lock_path",
+          "pop_annotation": {
+            "c_function": "acs_lock_path",
+            "python_functions": [
+              "_lock_path"
+            ],
+            "c_file": "src/cli/port_active_sessions_remaining.c",
+            "python_file": "hermes_cli/active_sessions.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _lock_path @ hermes_cli/active_sessions.py:_lock_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/active_sessions.py",
@@ -156061,16 +156077,24 @@
             "decorators": [],
             "line_number": 93
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_active_sessions_remaining.c",
+          "c_function": "acs_init",
+          "pop_annotation": {
+            "c_function": "acs_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_active_sessions_remaining.c",
+            "python_file": "hermes_cli/active_sessions.py",
+            "line": 47,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/active_sessions.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/active_sessions.py",
@@ -171983,10 +172007,10 @@
     },
     "hermes_cli/completion.py": {
       "total": 5,
-      "ported": 2,
+      "ported": 5,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 5,
@@ -172060,16 +172084,24 @@
             "decorators": [],
             "line_number": 55
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_completion_remaining.c",
+          "c_function": "cpl_generate_bash",
+          "pop_annotation": {
+            "c_function": "cpl_generate_bash",
+            "python_functions": [
+              "generate_bash"
+            ],
+            "c_file": "src/cli/port_completion_remaining.c",
+            "python_file": "hermes_cli/completion.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: generate_bash @ hermes_cli/completion.py:generate_bash */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/completion.py",
@@ -172081,16 +172113,24 @@
             "decorators": [],
             "line_number": 146
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_completion_remaining.c",
+          "c_function": "cpl_generate_zsh",
+          "pop_annotation": {
+            "c_function": "cpl_generate_zsh",
+            "python_functions": [
+              "generate_zsh"
+            ],
+            "c_file": "src/cli/port_completion_remaining.c",
+            "python_file": "hermes_cli/completion.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: generate_zsh @ hermes_cli/completion.py:generate_zsh */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/completion.py",
@@ -172102,16 +172142,24 @@
             "decorators": [],
             "line_number": 251
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_completion_remaining.c",
+          "c_function": "cpl_generate_fish",
+          "pop_annotation": {
+            "c_function": "cpl_generate_fish",
+            "python_functions": [
+              "generate_fish"
+            ],
+            "c_file": "src/cli/port_completion_remaining.c",
+            "python_file": "hermes_cli/completion.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: generate_fish @ hermes_cli/completion.py:generate_fish */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },

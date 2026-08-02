@@ -99,7 +99,7 @@ PORT_OBJ = \
     src/cli/port_goals_manager.o \
     src/cli/port_goals_helpers.o \
     src/cli/port_provider_meta.o \
-    src/cli/port_completion.o \
+    src/cli/port_completion.o src/cli/port_completion_remaining.o \
     src/cli/port_scale_to_zero_helpers.o \
     src/cli/port_cron_jobs_helpers.o \
     src/cli/port_profiles_helpers.o \
@@ -206,7 +206,7 @@ PORT_OBJ = \
         src/cli/port_dump.o \
         src/cli/port_gateway.o \
         src/cli/port_gateway_windows.o \
-        src/cli/port_goals.o src/cli/port_goals_remaining.o src/cli/port_profile_distribution_remaining.o src/cli/port_projects_db_remaining.o src/cli/port_pty_bridge_remaining.o src/cli/port_win_pty_bridge_remaining.o src/cli/port_service_manager_remaining.o \
+        src/cli/port_goals.o src/cli/port_goals_remaining.o src/cli/port_profile_distribution_remaining.o src/cli/port_projects_db_remaining.o src/cli/port_pty_bridge_remaining.o src/cli/port_win_pty_bridge_remaining.o src/cli/port_service_manager_remaining.o src/cli/port_active_sessions_remaining.o \
         src/cli/port_kanban_db.o \
         src/cli/kanban_schema.o \
         src/cli/kanban_model.o \
