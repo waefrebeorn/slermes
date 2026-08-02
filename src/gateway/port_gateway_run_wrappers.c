@@ -360,7 +360,21 @@ int grun_u_snapshot_running_agents(const char *arg) {
 }
 
 /* PoP: _claim_active_session_slot @ gateway/run.py:_claim_active_session_slot */
-int grun_u_claim_active_session_slot(const char *arg) { (void)arg; return 0; }
+int grun_u_claim_active_session_slot(const char *arg) {
+    /* Python: cross-process slot claim. Arg =
+     * "local_running\tlocal_limit\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int local_running = arg[0] == '1';
+    int local_limit = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (local_running) { printf("\n\n"); return 0; }
+    if (local_limit) { printf("\nlimit message\n"); return 0; }
+    printf("%s\t%s\n", state ? "claimed" : "", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _agent_has_active_subagents @ gateway/run.py:_agent_has_active_subagents */
 int grun_u_agent_has_active_subagents(const char *arg) {

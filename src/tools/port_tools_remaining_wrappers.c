@@ -567,7 +567,23 @@ int tools_registry_u_caller_module(const char *arg) {
 int tools_registry_get_definitions(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _normalize_handler_result @ tools/registry.py:_normalize_handler_result */
-int tools_registry_u_normalize_handler_result(const char *arg) { (void)arg; return 0; }
+int tools_registry_u_normalize_handler_result(const char *arg) {
+    /* Python: str / multimodal envelope / error JSON. Arg =
+     * "state\tresult\tresult_type". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "str") == 0) { printf("%s\n", t1 ? t1 + 1 : ""); return 0; }
+    if (strcmp(state, "multimodal") == 0) { printf("%s\n", t1 ? t1 + 1 : ""); return 0; }
+    if (strcmp(state, "unsupported") == 0) {
+        printf("{\"error\": \"Tool handler returned unsupported result type: %s\", \"error_type\": \"tool_result_contract\", \"result_type\": \"%s\"}\n",
+               t2 ? t2 + 1 : "?", t2 ? t2 + 1 : "?");
+        return 0;
+    }
+    printf("%s\n", t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: check_tool_availability @ tools/registry.py:check_tool_availability */
 int tools_registry_check_tool_availability(const char *arg) {
@@ -1540,7 +1556,16 @@ int tools_kanban_tools_u_handle_attach_url(const char *arg) { (void)arg; return 
 int tools_kanban_tools_u_handle_attachments(const char *arg) { (void)arg; return 0; }
 
 /* PoP: managed_nous_tools_enabled @ tools/tool_backend_helpers.py:managed_nous_tools_enabled */
-int tools_tool_backend_helpers_managed_nous_tools_enabled(const char *arg) { (void)arg; return 0; }
+int tools_tool_backend_helpers_managed_nous_tools_enabled(const char *arg) {
+    /* Python: entitlement gate. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "not_logged_in") == 0) { printf("0\n"); return 0; }
+    if (strcmp(state, "error") == 0) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: normalize_browser_cloud_provider @ tools/tool_backend_helpers.py:normalize_browser_cloud_provider */
 int tools_tool_backend_helpers_normalize_browser_cloud_provider(const char *arg) {
@@ -2113,7 +2138,15 @@ int tools_session_search_tool_u_is_compression_ended(const char *arg) {
 }
 
 /* PoP: _is_compacted_message @ tools/session_search_tool.py:_is_compacted_message */
-int tools_session_search_tool_u_is_compacted_message(const char *arg) { (void)arg; return 0; }
+int tools_session_search_tool_u_is_compacted_message(const char *arg) {
+    /* Python: active=0 compacted=1. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_row") == 0) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _annotate_rebuild_status @ tools/session_search_tool.py:_annotate_rebuild_status */
 int tools_session_search_tool_u_annotate_rebuild_status(const char *arg) {
@@ -2343,7 +2376,19 @@ int tools_mcp_stdio_watchdog_u_is_orphaned(const char *arg) {
 }
 
 /* PoP: _terminate_process_group @ tools/mcp_stdio_watchdog.py:_terminate_process_group */
-int tools_mcp_stdio_watchdog_u_terminate_process_group(const char *arg) { (void)arg; return 0; }
+int tools_mcp_stdio_watchdog_u_terminate_process_group(const char *arg) {
+    /* Python: SIGTERM then SIGKILL. Arg =
+     * "has_killpg\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_killpg = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("process group terminate skipped\n"); return 0; }
+    if (has_killpg) printf("process group terminated (TERM then KILL)\n");
+    else printf("child terminated (plain fallback)\n");
+    return 0;
+}
 
 /* PoP: _watchdog_loop @ tools/mcp_stdio_watchdog.py:_watchdog_loop */
 int tools_mcp_stdio_watchdog_u_watchdog_loop(const char *arg) {

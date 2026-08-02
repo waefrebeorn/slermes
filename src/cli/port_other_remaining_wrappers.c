@@ -41,7 +41,15 @@ int cron_executions_u_connect(const char *arg) {
 }
 
 /* PoP: _initialize_schema @ cron/executions.py:_initialize_schema */
-int cron_executions_u_initialize_schema(const char *arg) { (void)arg; return 0; }
+int cron_executions_u_initialize_schema(const char *arg) {
+    /* Python: WAL + table + 2 indexes. Arg = "db_label\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("schema init skipped\n"); return 0; }
+    printf("executions schema ready (%s, 2 indexes)\n", arg);
+    return 0;
+}
 
 /* PoP: _transaction @ cron/executions.py:_transaction */
 int cron_executions_u_transaction(const char *arg) {

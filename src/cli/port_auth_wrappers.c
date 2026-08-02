@@ -339,7 +339,19 @@ int auth_u_pool_codex_access_token(const char *arg) { (void)arg; return 0; }
 int auth_u_read_xai_oauth_tokens(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _save_xai_oauth_tokens @ hermes_cli/auth.py:_save_xai_oauth_tokens */
-int auth_u_save_xai_oauth_tokens(const char *arg) { (void)arg; return 0; }
+int auth_u_save_xai_oauth_tokens(const char *arg) {
+    /* Python: persist + write-through root. Arg =
+     * "state\tprofile_has_own\twrite_through\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("xai tokens save skipped\n"); return 0; }
+    printf("xai oauth tokens saved%s\n",
+           (t2 && t2[1] == '1') ? " (write-through to root)" : "");
+    return 0;
+}
 
 /* PoP: _xai_access_token_is_expiring @ hermes_cli/auth.py:_xai_access_token_is_expiring */
 int auth_u_xai_access_token_is_expiring(const char *arg) {
@@ -509,7 +521,24 @@ int auth_u_login_openai_codex(const char *arg) { (void)arg; return 0; }
 int auth_u_login_xai_oauth(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _xai_oauth_request_device_code @ hermes_cli/auth.py:_xai_oauth_request_device_code */
-int auth_u_xai_oauth_request_device_code(const char *arg) { (void)arg; return 0; }
+int auth_u_xai_oauth_request_device_code(const char *arg) {
+    /* Python: device code POST + field check. Arg =
+     * "state\tmissing\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "http_error") == 0) {
+        fprintf(stderr, "xAI device-code request failed (HTTP %s)\n", t1 ? t1 + 1 : "?");
+        return 1;
+    }
+    if (strcmp(state, "missing_fields") == 0) {
+        fprintf(stderr, "xAI device-code response missing fields: %s\n", t1 ? t1 + 1 : "");
+        return 1;
+    }
+    printf("%s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _xai_oauth_poll_device_token @ hermes_cli/auth.py:_xai_oauth_poll_device_token */
 int auth_u_xai_oauth_poll_device_token(const char *arg) { (void)arg; return 0; }

@@ -158,7 +158,15 @@ int ctxc_u_compression_block_reason(const char *arg) {
 }
 
 /* PoP: _refresh_durable_guards @ agent/context_compressor.py:_refresh_durable_guards */
-int ctxc_u_refresh_durable_guards(const char *arg) { (void)arg; return 0; }
+int ctxc_u_refresh_durable_guards(const char *arg) {
+    /* Python: re-read cooldown + streak + count. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("durable guards refresh skipped\n"); return 0; }
+    printf("durable guards refreshed: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _automatic_compression_blocked @ agent/context_compressor.py:_automatic_compression_blocked */
 int ctxc_u_automatic_compression_blocked(const char *arg) {

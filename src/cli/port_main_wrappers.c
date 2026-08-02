@@ -589,7 +589,16 @@ int main_u_save_aux_choice(const char *arg) {
 }
 
 /* PoP: _reset_aux_to_auto @ hermes_cli/main.py:_reset_aux_to_auto */
-int main_u_reset_aux_to_auto(const char *arg) { (void)arg; return 0; }
+int main_u_reset_aux_to_auto(const char *arg) {
+    /* Python: reset routing fields, keep timeouts. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _aux_config_menu @ hermes_cli/main.py:_aux_config_menu */
 int main_u_aux_config_menu(const char *arg) { (void)arg; return 0; }

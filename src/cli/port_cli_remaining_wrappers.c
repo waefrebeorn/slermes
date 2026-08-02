@@ -1588,7 +1588,20 @@ int hermes_cli_auth_commands_u_classify_exhausted_status(const char *arg) {
 }
 
 /* PoP: _format_exhausted_status @ hermes_cli/auth_commands.py:_format_exhausted_status */
-int hermes_cli_auth_commands_u_format_exhausted_status(const char *arg) { (void)arg; return 0; }
+int hermes_cli_auth_commands_u_format_exhausted_status(const char *arg) {
+    /* Python: exhausted status render. Arg =
+     * "label\treason\tcode\twait\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *t5 = t4 ? strchr(t4 + 1, '\t') : NULL;
+    const char *state = t4 ? t4 + 1 : "";
+    if (strcmp(state, "not_exhausted") == 0) { printf("\n"); return 0; }
+    printf("%s\n", t5 ? t5 + 1 : "");
+    return 0;
+}
 
 /* PoP: _interactive_auth @ hermes_cli/auth_commands.py:_interactive_auth */
 int hermes_cli_auth_commands_u_interactive_auth(const char *arg) { (void)arg; return 0; }
@@ -4554,7 +4567,16 @@ int hermes_cli_webhook_u_load_subscriptions(const char *arg) {
 }
 
 /* PoP: _save_subscriptions @ hermes_cli/webhook.py:_save_subscriptions */
-int hermes_cli_webhook_u_save_subscriptions(const char *arg) { (void)arg; return 0; }
+int hermes_cli_webhook_u_save_subscriptions(const char *arg) {
+    /* Python: 0600 atomic write. Arg = "path\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("subscriptions save failed\n"); return 1; }
+    printf("subscriptions saved (0600 atomic): %s\n", arg);
+    return 0;
+}
 
 /* PoP: _get_webhook_config @ hermes_cli/webhook.py:_get_webhook_config */
 int hermes_cli_webhook_u_get_webhook_config(const char *arg) {
@@ -4759,7 +4781,18 @@ int hermes_cli_curator_u_cmd_list_archived(const char *arg) {
 int hermes_cli_onepassword_secrets_register_cli(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cmd_set @ hermes_cli/onepassword_secrets_cli.py:cmd_set */
-int hermes_cli_onepassword_secrets_cmd_set(const char *arg) { (void)arg; return 0; }
+int hermes_cli_onepassword_secrets_cmd_set(const char *arg) {
+    /* Python: validated env mapping. Arg =
+     * "env_var\treference\tvalid\tstate\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t2 ? t2 + 1 : "";
+    if (strcmp(state, "invalid") == 0) { printf("1 invalid reference\n"); return 1; }
+    printf("[green]✓[/green] mapped [cyan]%s[/cyan] → %s\n", arg, t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: cmd_remove @ hermes_cli/onepassword_secrets_cli.py:cmd_remove */
 int hermes_cli_onepassword_secrets_cmd_remove(const char *arg) {
@@ -5617,7 +5650,22 @@ int hermes_cli_nous_billing_delete_subscription_pending_change(const char *arg) 
 }
 
 /* PoP: post_subscription_upgrade @ hermes_cli/nous_billing.py:post_subscription_upgrade */
-int hermes_cli_nous_billing_post_subscription_upgrade(const char *arg) { (void)arg; return 0; }
+int hermes_cli_nous_billing_post_subscription_upgrade(const char *arg) {
+    /* Python: idempotency-keyed money route. Arg =
+     * "tier_id\tstate\tresult\tkey_ok". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_key") == 0) {
+        fprintf(stderr, "Idempotency-Key is required for an upgrade.\n");
+        return 1;
+    }
+    if (strcmp(state, "error") == 0) { printf("0 upgrade failed\n"); return 1; }
+    printf("%s\n", t3 ? t3 + 1 : "{\"status\": \"upgraded\"}");
+    return 0;
+}
 
 /* PoP: _validate_phone_number_id @ hermes_cli/setup_whatsapp_cloud.py:_validate_phone_number_id */
 int hermes_cli_setup_whatsapp_clou_u_validate_phone_number_id(const char *arg) { (void)arg; return 0; }

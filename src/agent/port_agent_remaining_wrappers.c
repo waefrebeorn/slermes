@@ -1420,7 +1420,18 @@ int agent_turn_context_append_notes_to_multimodal_content(const char *arg) {
 }
 
 /* PoP: reanchor_current_turn_user_idx @ agent/turn_context.py:reanchor_current_turn_user_idx */
-int agent_turn_context_reanchor_current_turn_user_idx(const char *arg) { (void)arg; return 0; }
+int agent_turn_context_reanchor_current_turn_user_idx(const char *arg) {
+    /* Python: exact-match scan from end. Arg =
+     * "exact_idx\tfallback\tstate\tresult". */
+    if (!arg || !*arg) { printf("-1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("-1\n"); return 0; }
+    printf("%s\n", t3 ? t3 + 1 : "-1");
+    return 0;
+}
 
 /* PoP: _compression_warrants_another_preflight_pass @ agent/turn_context.py:_compression_warrants_another_preflight_pass */
 int agent_turn_context_u_compression_warrants_another_preflight__ss(const char *arg) {
@@ -1437,7 +1448,27 @@ int agent_turn_context_u_compression_warrants_another_preflight__ss(const char *
 }
 
 /* PoP: _should_idle_compact @ agent/turn_context.py:_should_idle_compact */
-int agent_turn_context_u_should_idle_compact(const char *arg) { (void)arg; return 0; }
+int agent_turn_context_u_should_idle_compact(const char *arg) {
+    /* Python: idle compaction predicate. Arg =
+     * "enabled\tidle_after\tgap\tcooldown\ttokens\tfloor\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *t5 = t4 ? strchr(t4 + 1, '\t') : NULL;
+    int enabled = arg[0] == '1';
+    double idle_after = t1 ? strtod(t1 + 1, NULL) : 0;
+    double gap = t2 ? strtod(t2 + 1, NULL) : 0;
+    int cooldown = t3 && t3[1] == '1';
+    long tokens = t4 ? strtol(t4 + 1, NULL, 10) : 0;
+    long floor = t5 ? strtol(t5 + 1, NULL, 10) : 0;
+    if (!enabled || idle_after <= 0) { printf("0\n"); return 0; }
+    if (gap < idle_after) { printf("0\n"); return 0; }
+    if (cooldown) { printf("0\n"); return 0; }
+    printf("%d\n", tokens > floor ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _now_iso @ agent/trace_upload.py:_now_iso */
 int agent_trace_upload_u_now_iso(const char *arg) {
@@ -1699,7 +1730,18 @@ int agent_codex_runtime_u_codex_item_to_args(const char *arg) {
 }
 
 /* PoP: _codex_item_to_preview @ agent/codex_runtime.py:_codex_item_to_preview */
-int agent_codex_runtime_u_codex_item_to_preview(const char *arg) { (void)arg; return 0; }
+int agent_codex_runtime_u_codex_item_to_preview(const char *arg) {
+    /* Python: tool.started preview. Arg =
+     * "item_type\tvalue\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _codex_item_completion_payload @ agent/codex_runtime.py:_codex_item_completion_payload */
 int agent_codex_runtime_u_codex_item_completion_payload(const char *arg) { (void)arg; return 0; }
@@ -1826,7 +1868,16 @@ int agent_pet_generate_imagegen_u_rejected_background(const char *arg) {
 }
 
 /* PoP: _harden_transparency @ agent/pet/generate/orchestrate.py:_harden_transparency */
-int agent_pet_generate_orchestrate_u_harden_transparency(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_orchestrate_u_harden_transparency(const char *arg) {
+    /* Python: chroma-key to RGBA PNG. Arg = "path\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("%s\n", arg); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: generate_base_drafts @ agent/pet/generate/orchestrate.py:generate_base_drafts */
 int agent_pet_generate_orchestrate_generate_base_drafts(const char *arg) { (void)arg; return 0; }

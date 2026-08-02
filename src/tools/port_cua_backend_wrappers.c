@@ -41,7 +41,25 @@ int cua_u_computer_use_cfg(const char *arg) {
 }
 
 /* PoP: _cua_no_overlay @ tools/computer_use/cua_backend.py:_cua_no_overlay */
-int cua_u_cua_no_overlay(const char *arg) { (void)arg; return 0; }
+int cua_u_cua_no_overlay(const char *arg) {
+    /* Python: config override then auto-detect. Arg =
+     * "state\tplatform\thas_display\tis_wsl\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "explicit") == 0) { printf("%s\n", (t1 && t1[1] == '1') ? "1" : "0"); return 0; }
+    const char *platform = t1 ? t1 + 1 : "";
+    if (strcmp(platform, "darwin") == 0) { printf("1\n"); return 0; }
+    if (strcmp(platform, "linux") == 0) {
+        int has_display = t2 && t2[1] == '1';
+        int is_wsl = t3 && t3[1] == '1';
+        if (!has_display || is_wsl) { printf("1\n"); return 0; }
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _cua_telemetry_disabled @ tools/computer_use/cua_backend.py:_cua_telemetry_disabled */
 int cua_u_cua_telemetry_disabled(const char *arg) {

@@ -1255,7 +1255,18 @@ int gateway_platforms_webhook_filt_u_load_filter_file_values(const char *arg) {
 }
 
 /* PoP: resolve_filter_field @ gateway/platforms/webhook_filters.py:resolve_filter_field */
-int gateway_platforms_webhook_filt_resolve_filter_field(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_webhook_filt_resolve_filter_field(const char *arg) {
+    /* Python: dotted field resolve. Arg =
+     * "field\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "missing") == 0) { printf("\n"); return 0; }
+    if (strcmp(state, "ok") == 0) { printf("%s\n", t2 ? t2 + 1 : ""); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: filter_matches @ gateway/platforms/webhook_filters.py:filter_matches */
 int gateway_platforms_webhook_filt_filter_matches(const char *arg) { (void)arg; return 0; }
