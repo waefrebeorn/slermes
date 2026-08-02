@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:59:19Z",
+  "generated_at": "2026-08-02T21:01:27Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -602,10 +602,10 @@
     },
     "agent/agent_init.py": {
       "total": 19,
-      "ported": 13,
+      "ported": 18,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 6,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 19,
@@ -621,16 +621,24 @@
             "decorators": [],
             "line_number": 63
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_init_remaining.c",
+          "c_function": "agi_ra",
+          "pop_annotation": {
+            "c_function": "agi_ra",
+            "python_functions": [
+              "_ra"
+            ],
+            "c_file": "src/agent/port_agent_init_remaining.c",
+            "python_file": "agent/agent_init.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ra @ agent/agent_init.py:_ra */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_init.py",
@@ -1019,16 +1027,24 @@
             "decorators": [],
             "line_number": 354
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_init_remaining.c",
+          "c_function": "agi_normalized_custom_base_url",
+          "pop_annotation": {
+            "c_function": "agi_normalized_custom_base_url",
+            "python_functions": [
+              "_normalized_custom_base_url"
+            ],
+            "c_file": "src/agent/port_agent_init_remaining.c",
+            "python_file": "agent/agent_init.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalized_custom_base_url @ agent/agent_init.py:_normalized_custom_base_url */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_init.py",
@@ -1040,16 +1056,24 @@
             "decorators": [],
             "line_number": 360
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_init_remaining.c",
+          "c_function": "agi_custom_provider_model_matches",
+          "pop_annotation": {
+            "c_function": "agi_custom_provider_model_matches",
+            "python_functions": [
+              "_custom_provider_model_matches"
+            ],
+            "c_file": "src/agent/port_agent_init_remaining.c",
+            "python_file": "agent/agent_init.py",
+            "line": 40,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _custom_provider_model_matches @ agent/agent_init.py:_custom_provider_model_matches */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_init.py",
@@ -1061,16 +1085,24 @@
             "decorators": [],
             "line_number": 383
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_init_remaining.c",
+          "c_function": "agi_custom_provider_extra_body_for_agent",
+          "pop_annotation": {
+            "c_function": "agi_custom_provider_extra_body_for_agent",
+            "python_functions": [
+              "_custom_provider_extra_body_for_agent"
+            ],
+            "c_file": "src/agent/port_agent_init_remaining.c",
+            "python_file": "agent/agent_init.py",
+            "line": 51,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _custom_provider_extra_body_for_agent @ agent/agent_init.py:_custom_provider_extra_body_for_agent */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_init.py",
@@ -1082,16 +1114,24 @@
             "decorators": [],
             "line_number": 428
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_init_remaining.c",
+          "c_function": "agi_merge_custom_provider_extra_body",
+          "pop_annotation": {
+            "c_function": "agi_merge_custom_provider_extra_body",
+            "python_functions": [
+              "_merge_custom_provider_extra_body"
+            ],
+            "c_file": "src/agent/port_agent_init_remaining.c",
+            "python_file": "agent/agent_init.py",
+            "line": 64,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _merge_custom_provider_extra_body @ agent/agent_init.py:_merge_custom_provider_extra_body */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_init.py",
@@ -94419,10 +94459,10 @@
     },
     "gateway/message_timestamps.py": {
       "total": 6,
-      "ported": 0,
+      "ported": 6,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 6,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 6,
@@ -94438,16 +94478,24 @@
             "decorators": [],
             "line_number": 29
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_message_timestamps_remaining.c",
+          "c_function": "mts_coerce_message_timestamp",
+          "pop_annotation": {
+            "c_function": "mts_coerce_message_timestamp",
+            "python_functions": [
+              "coerce_message_timestamp"
+            ],
+            "c_file": "src/gateway/port_message_timestamps_remaining.c",
+            "python_file": "gateway/message_timestamps.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: coerce_message_timestamp @ gateway/message_timestamps.py:coerce_message_timestamp */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/message_timestamps.py",
@@ -94459,16 +94507,24 @@
             "decorators": [],
             "line_number": 76
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_message_timestamps_remaining.c",
+          "c_function": "mts_format_message_timestamp",
+          "pop_annotation": {
+            "c_function": "mts_format_message_timestamp",
+            "python_functions": [
+              "format_message_timestamp"
+            ],
+            "c_file": "src/gateway/port_message_timestamps_remaining.c",
+            "python_file": "gateway/message_timestamps.py",
+            "line": 47,
+            "is_consolidated": false,
+            "full_text": "/* PoP: format_message_timestamp @ gateway/message_timestamps.py:format_message_timestamp */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/message_timestamps.py",
@@ -94480,16 +94536,24 @@
             "decorators": [],
             "line_number": 88
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_message_timestamps_remaining.c",
+          "c_function": "mts_strip_leading_message_timestamps",
+          "pop_annotation": {
+            "c_function": "mts_strip_leading_message_timestamps",
+            "python_functions": [
+              "strip_leading_message_timestamps"
+            ],
+            "c_file": "src/gateway/port_message_timestamps_remaining.c",
+            "python_file": "gateway/message_timestamps.py",
+            "line": 60,
+            "is_consolidated": false,
+            "full_text": "/* PoP: strip_leading_message_timestamps @ gateway/message_timestamps.py:strip_leading_message_timestamps */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/message_timestamps.py",
@@ -94501,16 +94565,24 @@
             "decorators": [],
             "line_number": 114
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_message_timestamps_remaining.c",
+          "c_function": "mts_render_user_content_with_timestamp",
+          "pop_annotation": {
+            "c_function": "mts_render_user_content_with_timestamp",
+            "python_functions": [
+              "render_user_content_with_timestamp"
+            ],
+            "c_file": "src/gateway/port_message_timestamps_remaining.c",
+            "python_file": "gateway/message_timestamps.py",
+            "line": 85,
+            "is_consolidated": false,
+            "full_text": "/* PoP: render_user_content_with_timestamp @ gateway/message_timestamps.py:render_user_content_with_timestamp */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/message_timestamps.py",
@@ -94522,16 +94594,24 @@
             "decorators": [],
             "line_number": 132
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_message_timestamps_remaining.c",
+          "c_function": "mts_parse_timestamp_prefix",
+          "pop_annotation": {
+            "c_function": "mts_parse_timestamp_prefix",
+            "python_functions": [
+              "_parse_timestamp_prefix"
+            ],
+            "c_file": "src/gateway/port_message_timestamps_remaining.c",
+            "python_file": "gateway/message_timestamps.py",
+            "line": 96,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _parse_timestamp_prefix @ gateway/message_timestamps.py:_parse_timestamp_prefix */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/message_timestamps.py",
@@ -94543,16 +94623,24 @@
             "decorators": [],
             "line_number": 139
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_message_timestamps_remaining.c",
+          "c_function": "mts_parse_timestamp_match",
+          "pop_annotation": {
+            "c_function": "mts_parse_timestamp_match",
+            "python_functions": [
+              "_parse_timestamp_match"
+            ],
+            "c_file": "src/gateway/port_message_timestamps_remaining.c",
+            "python_file": "gateway/message_timestamps.py",
+            "line": 113,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _parse_timestamp_match @ gateway/message_timestamps.py:_parse_timestamp_match */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
