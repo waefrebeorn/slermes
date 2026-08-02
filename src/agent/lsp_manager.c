@@ -14,8 +14,6 @@
  * (extension -> command) rather than the full servers.py forest; the
  * workspace root is the nearest .git ancestor (matches resolve_workspace).
  *
- * PoP: lsp_manager @ agent/lsp/manager.py:LSPService
- * PoP: lsp_manager @ agent/lsp/manager.py:_mark_broken_for_file
  */
 #include "lsp_common.h"
 #include "hermes_json.h"
@@ -109,6 +107,7 @@ static const char *ext_of(const char *path)
 }
 
 /* ── service lifecycle ────────────────────────────────────────────────── */
+/* PoP: lsp_service_create @ agent/lsp/manager.py:create_from_config */
 lsp_service_t *lsp_service_create(bool enabled, lsp_server_desc_t **servers)
 {
     lsp_service_t *svc = calloc(1, sizeof(*svc));
@@ -119,6 +118,7 @@ lsp_service_t *lsp_service_create(bool enabled, lsp_server_desc_t **servers)
     return svc;
 }
 
+/* PoP: lsp_service_destroy @ agent/lsp/manager.py:shutdown */
 void lsp_service_destroy(lsp_service_t *svc)
 {
     if (!svc) return;
@@ -149,9 +149,11 @@ void lsp_service_destroy(lsp_service_t *svc)
     free(svc);
 }
 
+/* PoP: lsp_service_is_active @ agent/lsp/manager.py:is_active */
 bool lsp_service_is_active(lsp_service_t *svc) { return svc && svc->enabled; }
 
 /* ── resolution ──────────────────────────────────────────────────────── */
+/* PoP: lsp_service_resolve @ agent/lsp/manager.py:enabled_for */
 const char *lsp_service_resolve(lsp_service_t *svc, const char *file_path,
                                  char **out_ws_root)
 {
@@ -180,6 +182,7 @@ found:
 }
 
 /* ── client get-or-spawn ─────────────────────────────────────────────── */
+/* PoP: _get_or_spawn @ agent/lsp/manager.py:_get_or_spawn */
 static lsp_client_t *get_or_spawn(lsp_service_t *svc, const char *server_id,
                                    const char *ws_root, char **err_out)
 {
@@ -222,6 +225,7 @@ static lsp_client_t *get_or_spawn(lsp_service_t *svc, const char *server_id,
 }
 
 /* ── diagnostics bridge ─────────────────────────────────────────────── */
+/* PoP: lsp_service_get_diagnostics @ agent/lsp/manager.py:get_diagnostics_sync */
 char *lsp_service_get_diagnostics(lsp_service_t *svc, const char *file_path,
                                    int timeout_ms)
 {
@@ -243,6 +247,7 @@ char *lsp_service_get_diagnostics(lsp_service_t *svc, const char *file_path,
     return diags;  /* malloc'd JSON array or NULL */
 }
 
+/* PoP: lsp_service_snapshot_baseline @ agent/lsp/manager.py:snapshot_baseline */
 void lsp_service_snapshot_baseline(lsp_service_t *svc, const char *file_path)
 {
     if (!svc || !svc->enabled) return;

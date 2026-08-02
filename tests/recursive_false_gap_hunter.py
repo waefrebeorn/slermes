@@ -40,46 +40,169 @@ def ported_sources():
         out.append(p)
     return out
 
-# ---- function definition extraction ----
-FUNC_DEF = re.compile(
-    r'(?:static\s+|inline\s+)?(?:const\s+|unsigned\s+)?'
-    r'(?:[\w:]+\s+)+?(\*?\w+)\s*\(([^;]*?)\)\s*\{',
-    re.S)
+# ---- function definition extraction (brace-aware, shape-agnostic) ----
+# The old FUNC_DEF regex could not match `char **name(`, multi-line
+# signatures, attributes, etc. — 2,757 exported functions were invisible
+# to the census (proven via `nm` on the built objects). This extractor is
+# a single-pass top-level scanner: it finds `name(` at brace depth 0 where
+# name is a C identifier (not a keyword, not a function-pointer/`->`/`.`/
+# `]` member, not a macro), then brace-matches the body with full
+# string/comment awareness. Shape-agnostic by construction.
+FUNC_KEYWORDS = frozenset({
+    'if','while','for','switch','return','sizeof','catch','do','else',
+    'case','struct','union','enum','typedef','goto','static_assert',
+    'void','int','char','bool','float','double','long','short','unsigned',
+    'signed','const',
+})
+FUNC_PREV_BAD = set('(>.-]')   # function ptr / member / array contexts
+
+def _skip_ws_comments(text, pos):
+    n = len(text)
+    while pos < n:
+        if text[pos].isspace():
+            pos += 1
+        elif text[pos] == '/' and pos + 1 < n and text[pos + 1] == '/':
+            nl = text.find('\n', pos)
+            pos = n if nl < 0 else nl + 1
+        elif text[pos] == '/' and pos + 1 < n and text[pos + 1] == '*':
+            e = text.find('*/', pos + 2)
+            pos = n if e < 0 else e + 2
+        else:
+            break
+    return pos
+
+def _match_group(text, pos, open_ch, close_ch):
+    """text[pos] is open_ch; return index just past the matching close_ch.
+    String/comment aware, handles nesting."""
+    n = len(text)
+    depth = 0
+    i = pos
+    while i < n:
+        ch = text[i]
+        if ch == '"':
+            i += 1
+            while i < n:
+                if text[i] == '\\':
+                    i += 2; continue
+                if text[i] == '"':
+                    i += 1; break
+                i += 1
+            continue
+        if ch == "'":
+            i += 1
+            while i < n:
+                if text[i] == '\\':
+                    i += 2; continue
+                if text[i] == "'":
+                    i += 1; break
+                i += 1
+            continue
+        if ch == '/' and i + 1 < n:
+            if text[i + 1] == '/':
+                nl = text.find('\n', i)
+                i = n if nl < 0 else nl + 1
+                continue
+            if text[i + 1] == '*':
+                e = text.find('*/', i + 2)
+                i = n if e < 0 else e + 2
+                continue
+        if ch == open_ch:
+            depth += 1
+        elif ch == close_ch:
+            depth -= 1
+            if depth == 0:
+                return i + 1
+        i += 1
+    return n
+
 
 def extract_funcs(text):
-    """Return list of (name, body, start, end) for top-level definitions."""
+    """Return list of (name, body, start, end) for top-level definitions.
+
+    body includes the closing brace (same convention as the old regex
+    extractor). Robust against pointer-to-pointer returns, multi-line
+    signatures, comments/strings, and __attribute__ between params and
+    body. Ignores macros (#define), function-pointer typedefs, and calls.
+    """
     funcs = []
-    for m in FUNC_DEF.finditer(text):
-        name = m.group(1)
-        if name in ('if','while','for','switch','return','sizeof','catch'):
+    n = len(text)
+    depth = 0
+    i = 0
+    while i < n:
+        ch = text[i]
+        if ch == '"':
+            i += 1
+            while i < n:
+                if text[i] == '\\':
+                    i += 2; continue
+                if text[i] == '"':
+                    i += 1; break
+                i += 1
             continue
-        body_start = m.end()
-        # brace match
-        depth = 1; pos = body_start; in_s=in_c=in_lc=in_bc=False
-        while pos < len(text) and depth > 0:
-            ch = text[pos]; prev = text[pos-1] if pos>0 else '\0'
-            if in_lc:
-                if ch=='\n': in_lc=False
-                pos+=1; continue
-            if in_bc:
-                if ch=='/' and prev=='*': in_bc=False
-                pos+=1; continue
-            if in_s:
-                if ch=='"' and prev!='\\': in_s=False
-                pos+=1; continue
-            if in_c:
-                if ch=="'" and prev!='\\': in_c=False
-                pos+=1; continue
-            if ch=='/' and pos+1<len(text):
-                if text[pos+1]=='/': in_lc=True; pos+=2; continue
-                if text[pos+1]=='*': in_bc=True; pos+=2; continue
-            if ch=='"': in_s=True
-            elif ch=="'": in_c=True
-            elif ch=='{': depth+=1
-            elif ch=='}': depth-=1
-            pos+=1
-        body = text[body_start:pos]
-        funcs.append((name, body, m.start(), pos))
+        if ch == "'":
+            i += 1
+            while i < n:
+                if text[i] == '\\':
+                    i += 2; continue
+                if text[i] == "'":
+                    i += 1; break
+                i += 1
+            continue
+        if ch == '/' and i + 1 < n:
+            if text[i + 1] == '/':
+                nl = text.find('\n', i)
+                i = n if nl < 0 else nl + 1
+                continue
+            if text[i + 1] == '*':
+                e = text.find('*/', i + 2)
+                i = n if e < 0 else e + 2
+                continue
+        if ch == '{':
+            depth += 1; i += 1; continue
+        if ch == '}':
+            depth -= 1; i += 1; continue
+        if depth != 0:
+            i += 1
+            continue
+        # top level: candidate identifier
+        if ch.isalpha() or ch == '_':
+            j = i
+            while j < n and (text[j].isalnum() or text[j] == '_'):
+                j += 1
+            name = text[i:j]
+            k = _skip_ws_comments(text, j)
+            if k < n and text[k] == '(':
+                prev = text[i - 1] if i > 0 else '\0'
+                line_start = text.rfind('\n', 0, i) + 1
+                if (name not in FUNC_KEYWORDS
+                        and prev not in FUNC_PREV_BAD
+                        and text[line_start:line_start + 1] != '#'):
+                    p = _match_group(text, k, '(', ')')
+                    q = _skip_ws_comments(text, p)
+                    # function-pointer-returning functions:
+                    #   RET (*name(params))(extra) { ... }
+                    # after the params group the (*name(...)) wrapper closes
+                    # with ')', then come extra parameter groups.
+                    while q < n and text[q] in '()':
+                        if text[q] == ')':
+                            q = _skip_ws_comments(text, q + 1)
+                        else:
+                            q = _skip_ws_comments(text, _match_group(text, q, '(', ')'))
+                    # tolerate trailing __attribute__((...)) before the body
+                    while q < n and (text.startswith('__attribute__', q)
+                                     or text.startswith('__asm__', q)):
+                        a = _skip_ws_comments(text, q + len('__attribute__'))
+                        if a < n and text[a] == '(':
+                            q = _skip_ws_comments(text, _match_group(text, a, '(', ')'))
+                        else:
+                            break
+                    if q < n and text[q] == '{':
+                        close = _match_group(text, q, '{', '}')
+                        body = text[q + 1:close]
+                        funcs.append((name, body, i, close + 1))
+                i = j
+                continue
+        i += 1
     return funcs
 
 # ---- callee extraction ----
@@ -104,10 +227,6 @@ REAL_RE = [re.compile(p) for p in REAL_SIGNALS]
 
 def has_real_signal(body):
     return any(rx.search(body) for rx in REAL_RE)
-
-def has_loop_or_branch(body):
-    # crude: any control-flow keyword with a following statement
-    return re.search(r'\b(for|while|do|if|switch)\s*\(', body) is not None
 
 def body_nonblank_lines(body):
     lines = []
@@ -228,6 +347,28 @@ def main():
             if name not in defined:
                 defined[name] = {'body': body, 'file': str(src.relative_to(SLERMES))}
                 order.append(name)
+    if '--verify' in sys.argv:
+        # Self-check the extractor against the built objects: every exported
+        # function symbol must be indexed. Stale .o files (no matching .c)
+        # are skipped so deleted sources cannot ghost symbols.
+        import subprocess
+        c_bases = {str(p.relative_to(SLERMES))[:-2]
+                   for p in (SLERMES / "src").rglob("*.c")}
+        objs = [str(p) for p in (SLERMES / "src").rglob("port_*.o")
+                if str(p.relative_to(SLERMES))[:-2] in c_bases]
+        nm = subprocess.run(["nm", "--defined-only", "--format=posix"] + objs,
+                            capture_output=True, text=True, cwd=str(SLERMES))
+        syms = {ln.split()[0] for ln in nm.stdout.splitlines()
+                if len(ln.split()) >= 2 and ln.split()[1] == 'T'}
+        missed = sorted(syms - set(defined))
+        print(f"VERIFY: objects={len(objs)} nm_exported={len(syms)} "
+              f"indexed={len(defined)} missed={len(missed)}")
+        for m in missed[:20]:
+            print(f"  MISSED {m}")
+        if missed:
+            print("VERIFY FAIL: extractor does not cover every exported symbol")
+            sys.exit(1)
+        print("VERIFY OK: extractor covers 100% of exported symbols")
     # classify
     memo = {}
     results = {}
@@ -235,9 +376,9 @@ def main():
         results[name] = classify_bootleg(name, defined[name], defined, memo)
     # report bootleg
     bootleg = [(n, defined[n]['file']) for n in order if results[n]]
-    # also detect simple trivial patterns directly (covers the external-forwarder blind spot)
     print(f"Ported TUs scanned: {len(sources)}")
     print(f"Functions indexed: {len(order)}")
+    print(f"REAL: {len(order) - len(bootleg)}  BOOTLEG: {len(bootleg)}")
     print(f"BOOTLEG (recursive): {len(bootleg)}")
     print("---")
     for n, f in sorted(bootleg):

@@ -1,9 +1,9 @@
-# Ranked fix queue — 3255 bootleg functions
+# Ranked fix queue — 3223 bootleg functions
 
 - A  (delegate to real fn): 29
-- Bt (trivial direct-port): 214
-- Bx (direct but needs deps): 1052
-- C  (deep subsystem):        1960
+- Bt (trivial direct-port): 195
+- Bx (direct but needs deps): 1049
+- C  (deep subsystem):        1950
 
 ## Top of queue (automatable first)
 
@@ -65,20 +65,7 @@
 - [Bt] hermes_cli/gateway.py :: has_legacy_hermes_units -> cgw_has_legacy_hermes_units
 - [Bt] hermes_cli/gateway.py :: has_process_service_mismatch -> cgw_has_process_service_mismatch
 - [Bt] hermes_cli/gateway.py :: print_systemd_linger_guidance -> cgw_print_systemd_linger_guidance
-- [Bt] gateway/platforms/yuanbao.py :: _is_self_reference -> yb_u_is_self_reference
-- [Bt] gateway/platforms/yuanbao.py :: _rewrite_slash_command -> yb_u_rewrite_slash_command
-- [Bt] gateway/platforms/yuanbao.py :: _rewrite_slash_command -> yb_u_rewrite_slash_command
-- [Bt] gateway/platforms/yuanbao.py :: is_skippable_placeholder -> yb_is_skippable_placeholder
-- [Bt] gateway/platforms/yuanbao.py :: middleware_names -> yb_middleware_names
-- [Bt] gateway/platforms/yuanbao.py :: set_active -> yb_set_active
-- [Bt] gateway/platforms/yuanbao.py :: strip_cron_wrapper -> yb_strip_cron_wrapper
 - [Bt] hermes_cli/auth.py :: _is_codex_rate_limit_shaped -> auth_u_is_codex_rate_limit_shaped
-- [Bt] tools/computer_use/cua_backend.py :: _has_path_separator -> cua_u_has_path_separator
-- [Bt] tools/computer_use/cua_backend.py :: _is_closed_session_error -> cua_u_is_closed_session_error
-- [Bt] tools/computer_use/cua_backend.py :: _is_transient_daemon_error -> cua_u_is_transient_daemon_error
-- [Bt] tools/computer_use/cua_backend.py :: capability_version -> cua_capability_version
-- [Bt] tools/computer_use/cua_backend.py :: cua_driver_install_hint -> cua_cua_driver_install_hint
-- [Bt] tools/computer_use/cua_backend.py :: resolve_cua_driver_cmd -> cua_resolve_cua_driver_cmd
 - [Bt] gateway/platforms/qqbot/adapter.py :: _guess_ext_from_data -> qqbot_u_guess_ext_from_data
 - [Bt] gateway/platforms/qqbot/adapter.py :: _merge_quote_into -> qqbot_u_merge_quote_into
 - [Bt] gateway/platforms/qqbot/adapter.py :: set_interaction_callback -> qqbot_set_interaction_callback
@@ -99,7 +86,6 @@
 - [Bt] tools/mcp_oauth.py :: _tokens_path -> mcpo_u_tokens_path
 - [Bt] agent/memory_manager.py :: _has_block_opener_suffix -> mm_u_has_block_opener_suffix
 - [Bt] agent/memory_manager.py :: on_memory_write -> mm_on_memory_write
-- [Bt] tools/approval.py :: _read_tool_exec_flag -> appr_u_read_tool_exec_flag
 - [Bt] tools/environments/base.py :: _get_activity_callback -> envb_u_get_activity_callback
 - [Bt] tools/environments/base.py :: _quote_shell_path -> envb_u_quote_shell_path
 - [Bt] tools/environments/base.py :: set_activity_callback -> envb_set_activity_callback
@@ -109,6 +95,7 @@
 - [Bt] tools/terminal_tool.py :: _invalidate_cached_sudo_on_auth_failure -> tt_u_invalidate_cached_sudo_on_auth_failure
 - [Bt] tools/terminal_tool.py :: _is_ssh_remote_tilde_cwd -> tt_u_is_ssh_remote_tilde_cwd
 - [Bt] tools/terminal_tool.py :: _stop_cleanup_thread -> tt_u_stop_cleanup_thread
+- [Bt] tools/approval.py :: _read_tool_exec_flag -> appr_u_read_tool_exec_flag
 - [Bt] hermes_cli/windows_ssh_runtime.py :: _log_path -> wssr_u_log_path
 - [Bt] agent/skill_utils.py :: _normalize_string_set -> sku_u_normalize_string_set
 - [Bt] agent/skill_utils.py :: _resolve_dotpath -> sku_u_resolve_dotpath
@@ -122,14 +109,14 @@
 - [Bt] hermes_cli/nous_account.py :: reset_nous_portal_account_info_cache -> nous_reset_nous_portal_account_info_cache
 - [Bt] hermes_cli/nous_account.py :: tool_gateway_entitled -> nous_tool_gateway_entitled
 - [Bt] hermes_cli/session_export.py :: _render_markdown -> sexp_u_render_markdown
-- [Bt] gateway/platforms/base.py :: prefers_fresh_final_streaming -> gw_base__prefers_fresh_final_streaming
-- [Bt] gateway/platforms/base.py :: set_reaction_handler -> gw_base__set_reaction_handler
-- [Bt] gateway/platforms/base.py :: set_session_store -> gw_base__set_session_store
 - [Bt] hermes_cli/uninstall.py :: _hermes_path_markers -> uninst_u_hermes_path_markers
 - [Bt] hermes_cli/model_switch.py :: _check_hermes_model_warning -> msw_u_check_hermes_model_warning
 - [Bt] hermes_cli/model_switch.py :: format_model_for_display -> msw_format_model_for_display
 - [Bt] hermes_cli/session_export_md.py :: _render_content -> sexmd_u_render_content
 - [Bt] hermes_cli/nous_subscription.py :: _resolve_browser_feature_state -> nsub_u_resolve_browser_feature_state
+- [Bt] gateway/platforms/base.py :: prefers_fresh_final_streaming -> gw_base__prefers_fresh_final_streaming
+- [Bt] gateway/platforms/base.py :: set_reaction_handler -> gw_base__set_reaction_handler
+- [Bt] gateway/platforms/base.py :: set_session_store -> gw_base__set_session_store
 - [Bt] hermes_cli/debug.py :: _capture_default_log_snapshots -> hermes_cli_debug_u_capture_default_log_snapshots
 - [Bt] hermes_cli/mcp_config.py :: _strip_bearer_prefix -> hermes_cli_mcp_config_u_strip_bearer_prefix
 - [Bt] agent/model_metadata.py :: _localhost_to_ipv4 -> agent_model_metadata_u_localhost_to_ipv4
@@ -196,14 +183,27 @@
 - [Bt] gateway/platform_registry.py :: register_deferred -> gateway_platform_registry_register_deferred
 - [Bt] hermes_cli/dashboard_auth/token_auth.py :: is_token_route -> hermes_cli_dashboard_auth_toke_is_token_route
 - [Bt] hermes_cli/goals.py :: set -> sku_u_normalize_string_set
-- [Bt] tools/computer_use/permissions.py :: _resolve_driver_cmd -> tools_computer_use_permissions_u_resolve_driver_cmd
 - [Bt] tools/project_tools.py :: _primary_path -> tools_project_tools_u_primary_path
 - [Bt] tools/project_tools.py :: set_project_workspace_callback -> tools_project_tools_set_project_workspace_callback
-- [Bt] tools/web_tools.py :: _web_requires_env -> web_get_extract_char_limit
 - [Bt] agent/billing_view.py :: display -> agent_rate_limit_tracker_format_rate_limit_display
 - [Bt] agent/pet/generate/imagegen.py :: _forced_provider_from_env -> agent_pet_generate_imagegen_u_forced_provider_from_env
 - [Bt] hermes_cli/proxy/cli.py :: _print_aiohttp_missing -> hermes_cli_proxy_cli_u_print_aiohttp_missing
 - [Bt] tools/skill_usage.py :: _parse_iso_timestamp -> su_parse_iso_timestamp
-- [Bt] tools/tool_output_limits.py :: _reset_tool_output_limits_cache -> cli_tools_tool_output_limits__reset_tool_output_limits_cache
-- [Bt] tools/tool_output_limits.py :: get_max_bytes -> cli_tools_tool_output_limits_get_max_bytes
-- [Bt] tools/tool_output_limits.py :: get_max_line_length -> cli_tools_tool_output_limits_get_max_line_length
+- [Bt] agent/account_usage.py :: _codex_backend_urls -> agent_account_usage_u_codex_backend_urls
+- [Bt] agent/account_usage.py :: redeemed -> agent_account_usage_redeemed
+- [Bt] agent/kanban_stop.py :: build_kanban_stop_nudge -> agent_kanban_stop_build_kanban_stop_nudge
+- [Bt] agent/tool_executor.py :: _parse_tool_arguments -> agent_tool_executor_u_parse_tool_arguments
+- [Bt] hermes_cli/sqlite_runtime.py :: is_sqlite_wal_reset_vulnerable -> hermes_cli_sqlite_runtime_is_sqlite_wal_reset_vulnerable
+- [Bt] hermes_cli/sqlite_runtime.py :: wal_reset_vulnerable -> hermes_cli_sqlite_runtime_wal_reset_vulnerable
+- [Bt] hermes_cli/stdio.py :: _default_windows_editor -> hermes_cli_stdio_u_default_windows_editor
+- [Bt] tools/checkpoint_manager.py :: _dir_has_any_entry -> tools_checkpoint_manager_u_dir_has_any_entry
+- [Bt] tools/computer_use/doctor.py :: _sanitized_cua_env -> tools_computer_use_doctor_u_sanitized_cua_env
+- [Bt] tools/skill_provenance.py :: is_background_review -> tools_skill_provenance_is_background_review
+- [Bt] agent/battery.py :: read_battery -> agent_battery_read_battery
+- [Bt] agent/bounded_response.py :: read_error_body_or_default -> agent_bounded_response_read_error_body_or_default
+- [Bt] hermes_cli/dep_ensure.py :: _has_system_browser -> hermes_cli_dep_ensure_u_has_system_browser
+- [Bt] hermes_cli/diagnostics_upload.py :: share_to_nous -> hermes_cli_diagnostics_upload_share_to_nous
+- [Bt] tools/interrupt.py :: set -> sku_u_normalize_string_set
+- [Bt] tools/moa_performance.py :: _build_auth_header -> tools_moa_performance_u_build_auth_header
+- [Bt] tools/moa_performance.py :: set -> sku_u_normalize_string_set
+- [Bt] tools/moa_performance.py :: set -> sku_u_normalize_string_set

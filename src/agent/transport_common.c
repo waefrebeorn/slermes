@@ -28,6 +28,7 @@ static char *xstrdup(const char *s)
 }
 
 /* ── ToolCall ──────────────────────────────────────────────────────────── */
+/* PoP: tool_call_create @ agent/transports/types.py:build_tool_call */
 tool_call_t *tool_call_create(const char *id, const char *name,
                               const char *arguments_json, const char *provider_data_json)
 {
@@ -86,6 +87,7 @@ char *map_finish_reason(const char *raw_reason, const char *const *mapping)
 /* ── transport_map_finish_reason / transport_normalize_role ──────────────── */
 /* Provider-aware finish-reason map (fulfils hermes_transport_common.h, used
  * by provider_google.c etc). Returns static strings. */
+/* PoP: transport_map_finish_reason @ agent/transports/types.py:map_finish_reason */
 const char *transport_map_finish_reason(const char *provider, const char *raw_reason)
 {
     if (!raw_reason || !*raw_reason) return "stop";

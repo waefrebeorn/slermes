@@ -26,6 +26,7 @@
  *
  * Port of Python utils.py:normalize_proxy_url().
  */
+/* PoP: normalize_proxy_url @ utils.py:normalize_proxy_url */
 static char *normalize_proxy_url(const char *proxy_url) {
     if (!proxy_url || !proxy_url[0]) return NULL;
 
@@ -112,6 +113,7 @@ static bool is_no_proxy_host(const char *hostname) {
 /* ---------- public API ---------- */
 
 /* Port of Python agent/process_bootstrap.py:_get_proxy_from_env(). */
+/* PoP: get_proxy_from_env @ agent/process_bootstrap.py:_get_proxy_from_env */
 char *get_proxy_from_env(void) {
     /* Check order: HTTPS_PROXY, HTTP_PROXY, ALL_PROXY (and lowercase variants) */
     static const char *env_keys[] = {
@@ -132,6 +134,7 @@ char *get_proxy_from_env(void) {
 }
 
 /* Port of Python agent/process_bootstrap.py:_get_proxy_for_base_url(). */
+/* PoP: get_proxy_for_base_url @ agent/process_bootstrap.py:_get_proxy_for_base_url */
 char *get_proxy_for_base_url(const char *base_url) {
     if (!base_url) return get_proxy_from_env();
 

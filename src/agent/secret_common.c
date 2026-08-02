@@ -71,12 +71,14 @@ void fetch_result_add_warning(fetch_result_t *r, const char *msg)
     r->warnings[r->warning_count++] = xstrdup(msg);
 }
 
+/* PoP: fetch_result_ok @ agent/secret_sources/base.py:ok */
 bool fetch_result_ok(const fetch_result_t *r)
 {
     return r && r->error == NULL;
 }
 
 /* ── ANSI scrub (port of base.scrub_ansi) ───────────────────────────────── */
+/* PoP: scrub_ansi @ agent/secret_sources/base.py:scrub_ansi */
 char *scrub_ansi(const char *text)
 {
     if (!text) return xstrdup("");
@@ -109,6 +111,7 @@ char *scrub_ansi(const char *text)
     return out;
 }
 
+/* PoP: is_valid_env_name @ agent/secret_sources/base.py:is_valid_env_name */
 bool is_valid_env_name(const char *name)
 {
     if (!name || !*name) return false;
@@ -123,6 +126,7 @@ bool is_valid_env_name(const char *name)
 static volatile sig_atomic_t g_cli_timed_out = 0;
 static void cli_alarm_handler(int sig) { (void)sig; g_cli_timed_out = 1; }
 
+/* PoP: run_secret_cli @ agent/secret_sources/base.py:run_secret_cli */
 int run_secret_cli(char *const argv[], const char *const *allow_env,
                    const char *const *extra_env, double timeout_seconds,
                    char **out_stdout, char **out_stderr, int *out_rc)
@@ -241,6 +245,7 @@ void secret_registry_free(secret_registry_t *reg)
     free(reg);
 }
 
+/* PoP: secret_registry_register @ agent/secret_sources/registry.py:register_source */
 int secret_registry_register(secret_registry_t *reg, secret_source_t *s)
 {
     if (!reg || !s || !s->name || !s->fetch) return -1;
@@ -265,6 +270,7 @@ int secret_registry_register(secret_registry_t *reg, secret_source_t *s)
     return 0;
 }
 
+/* PoP: secret_registry_get @ agent/secret_sources/registry.py:get_source */
 secret_source_t *secret_registry_get(secret_registry_t *reg, const char *name)
 {
     if (!reg || !name) return NULL;
@@ -273,6 +279,7 @@ secret_source_t *secret_registry_get(secret_registry_t *reg, const char *name)
     return NULL;
 }
 
+/* PoP: secret_registry_list @ agent/secret_sources/registry.py:list_sources */
 char **secret_registry_list(secret_registry_t *reg)
 {
     if (!reg) return NULL;
@@ -295,6 +302,7 @@ static const char *env_lookup(char **environ, const char *key)
     return NULL;
 }
 
+/* PoP: secret_apply_all @ agent/secret_sources/registry.py:apply_all */
 apply_report_t *secret_apply_all(secret_registry_t *reg,
                                  const char *secrets_cfg_json,
                                  const char *home_path,
@@ -433,6 +441,7 @@ typedef struct {
     char *command;   /* argv template or shell? We use argv list from cfg.cmd */
 } command_source_t;
 
+/* PoP: command_source_fetch @ agent/secret_sources/command.py:fetch */
 static fetch_result_t *command_source_fetch(secret_source_t *self,
                                              const char *cfg_json, const char *home_path)
 {
@@ -508,6 +517,7 @@ static fetch_result_t *command_source_fetch(secret_source_t *self,
     return r;
 }
 
+/* PoP: command_source_enabled @ agent/secret_sources/base.py:is_enabled */
 static bool command_source_enabled(secret_source_t *self, const char *cfg_json)
 {
     json_t *cfg = json_parse(cfg_json ? cfg_json : "{}", NULL);

@@ -4,11 +4,6 @@
 /*
  * lsp_protocol.c — port of agent/lsp/protocol.py.
  *
- * PoP: lsp_protocol @ agent/lsp/protocol.py:LSPProtocolError
- * PoP: lsp_protocol @ agent/lsp/protocol.py:encode_message
- * PoP: lsp_protocol @ agent/lsp/protocol.py:read_message
- * PoP: lsp_protocol @ agent/lsp/protocol.py:make_request
- * PoP: lsp_protocol @ agent/lsp/protocol.py:classify_message
  */
 #include "lsp_common.h"
 #include "hermes_json.h"
@@ -22,6 +17,7 @@
 #define LSP_BODY_CAP   (64 * 1024 * 1024) /* 64 MiB body cap */
 
 /* ── encode_message ─────────────────────────────────────────────────── */
+/* PoP: lsp_encode_message @ agent/lsp/protocol.py:encode_message */
 char *lsp_encode_message(const char *json_body)
 {
     /* The C API takes an already-serialized, compact JSON string (callers
@@ -51,6 +47,7 @@ static int read_exact(int fd, char *buf, size_t n)
 }
 
 /* ── read_message ───────────────────────────────────────────────────── */
+/* PoP: lsp_read_message @ agent/lsp/protocol.py:read_message */
 char *lsp_read_message(int fd, lsp_protocol_error_t *proto_err)
 {
     if (proto_err) { proto_err->message = NULL; }
@@ -141,6 +138,7 @@ proto_fail:
 }
 
 /* ── envelope builders ──────────────────────────────────────────────── */
+/* PoP: lsp_make_request @ agent/lsp/protocol.py:make_request */
 char *lsp_make_request(int id, const char *method, const char *params_json)
 {
     const char *p = params_json ? params_json : "null";
@@ -154,6 +152,7 @@ char *lsp_make_request(int id, const char *method, const char *params_json)
     return s;
 }
 
+/* PoP: lsp_make_notification @ agent/lsp/protocol.py:make_notification */
 char *lsp_make_notification(const char *method, const char *params_json)
 {
     const char *p = params_json ? params_json : "null";
@@ -166,6 +165,7 @@ char *lsp_make_notification(const char *method, const char *params_json)
     return s;
 }
 
+/* PoP: lsp_make_response @ agent/lsp/protocol.py:make_response */
 char *lsp_make_response(int id, const char *result_json)
 {
     const char *r = result_json ? result_json : "null";
@@ -175,6 +175,7 @@ char *lsp_make_response(int id, const char *result_json)
     return s;
 }
 
+/* PoP: lsp_make_error_response @ agent/lsp/protocol.py:make_error_response */
 char *lsp_make_error_response(int id, int code, const char *message,
                               const char *data_json)
 {
@@ -192,6 +193,7 @@ char *lsp_make_error_response(int id, int code, const char *message,
 }
 
 /* ── classify_message ───────────────────────────────────────────────── */
+/* PoP: lsp_classify_message @ agent/lsp/protocol.py:classify_message */
 lsp_msg_kind_t lsp_classify_message(const char *json, char **out_key, int *out_id)
 {
     if (out_key) *out_key = NULL;

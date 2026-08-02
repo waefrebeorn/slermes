@@ -92,6 +92,11 @@ PYTHON_SOURCE_DIRS = {
     "hermes_cli": HERMES_DIR / "hermes_cli",
 }
 
+# Top-level fork modules beyond cli.py that are runtime surface with C
+# ports (utils.py -> src/agent/proxy_utils.c etc.; hermes_state.py ->
+# src/agent/hermes_state/*.c). Tracked so their parity is visible.
+ROOT_PY_MODULES = ["utils.py", "hermes_state.py"]
+
 SLERMES_SRC_DIRS = [
     SLERMES_DIR / "src",
     SLERMES_DIR / "src" / "agent",
@@ -1066,34 +1071,42 @@ class ParityAnalyzer:
         reports = {}
         all_py = []
         agent = PYTHON_SOURCE_DIRS["agent"]
-        for pf in sorted(agent.glob("*.py")):
-            if pf.name != "__init__.py":
-                all_py.append((pf, "agent/" + pf.name))
-        ap = agent / "pet"
-        if ap.exists():
-            for pf in sorted(ap.rglob("*.py")):
-                if pf.name != "__init__.py":
-                    rel = pf.relative_to(agent)
-                    all_py.append((pf, "agent/" + str(rel)))
+        # NOTE: full rglob (not just top-level glob + pet/) — agent/lsp/,
+        # agent/secret_sources/, agent/transports/, agent/proxy_sources/ and
+        # agent/monitoring/ are real ported subsystems whose Python sides
+        # were previously invisible to the parity census.
+        for pf in sorted(agent.rglob("*.py")):
+            rel = pf.relative_to(agent)
+            if pf.name == "__init__.py" and len(pf.read_text(errors="ignore").strip()) <= 80:
+                continue  # empty package marker
+            all_py.append((pf, "agent/" + str(rel)))
         tools = PYTHON_SOURCE_DIRS["tools"]
         for pf in sorted(tools.rglob("*.py")):
-            if pf.name != "__init__.py":
-                all_py.append((pf, "tools/" + str(pf.relative_to(tools))))
+            if pf.name == "__init__.py" and len(pf.read_text(errors="ignore").strip()) <= 80:
+                continue
+            all_py.append((pf, "tools/" + str(pf.relative_to(tools))))
         gw = PYTHON_SOURCE_DIRS["gateway"]
         for pf in sorted(gw.rglob("*.py")):
-            if pf.name != "__init__.py":
-                all_py.append((pf, "gateway/" + str(pf.relative_to(gw))))
+            if pf.name == "__init__.py" and len(pf.read_text(errors="ignore").strip()) <= 80:
+                continue
+            all_py.append((pf, "gateway/" + str(pf.relative_to(gw))))
         cron = PYTHON_SOURCE_DIRS["cron"]
         for pf in sorted(cron.rglob("*.py")):
-            if pf.name != "__init__.py":
-                all_py.append((pf, "cron/" + str(pf.relative_to(cron))))
+            if pf.name == "__init__.py" and len(pf.read_text(errors="ignore").strip()) <= 80:
+                continue
+            all_py.append((pf, "cron/" + str(pf.relative_to(cron))))
         clipy = PYTHON_SOURCE_DIRS["cli_root"]
         if clipy.exists():
             all_py.append((clipy, "cli.py"))
+        for rp in ROOT_PY_MODULES:
+            rp_path = HERMES_DIR / rp
+            if rp_path.exists():
+                all_py.append((rp_path, rp))
         hc = PYTHON_SOURCE_DIRS["hermes_cli"]
         for pf in sorted(hc.rglob("*.py")):
-            if pf.name != "__init__.py":
-                all_py.append((pf, "hermes_cli/" + str(pf.relative_to(hc))))
+            if pf.name == "__init__.py" and len(pf.read_text(errors="ignore").strip()) <= 80:
+                continue
+            all_py.append((pf, "hermes_cli/" + str(pf.relative_to(hc))))
         all_py.sort(key=lambda x: x[1])
 
         # Apply module substring filter early so --module doesn't scan the

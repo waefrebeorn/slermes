@@ -10,8 +10,6 @@
  * pending table keyed by request id; the push wakeup is a condvar +
  * monotonic counter.
  *
- * PoP: lsp_client @ agent/lsp/client.py:LSPClient
- * PoP: lsp_client @ agent/lsp/client.py:_DocState
  */
 #define _POSIX_C_SOURCE 200809L
 #include "lsp_common.h"
@@ -108,6 +106,7 @@ static char *xstrdup_lsp(const char *s)
     return p;
 }
 
+/* PoP: file_uri @ agent/lsp/client.py:file_uri */
 static char *file_uri(const char *path)
 {
     char abs[4096];
@@ -183,6 +182,7 @@ static int send_raw(lsp_client_t *c, const char *json)
 }
 
 /* ── stderr drain ───────────────────────────────────────────────────── */
+/* PoP: stderr_thread_fn @ agent/lsp/client.py:_drain_stderr */
 static void *stderr_thread_fn(void *arg)
 {
     lsp_client_t *c = arg;
@@ -198,6 +198,7 @@ static void *stderr_thread_fn(void *arg)
 static void dispatch_response(lsp_client_t *c, int id, const char *json);
 static void dispatch_notification(lsp_client_t *c, const char *method, const char *json);
 
+/* PoP: reader_thread_fn @ agent/lsp/client.py:_reader_loop */
 static void *reader_thread_fn(void *arg)
 {
     lsp_client_t *c = arg;
@@ -249,6 +250,7 @@ static void *reader_thread_fn(void *arg)
     return NULL;
 }
 
+/* PoP: dispatch_response @ agent/lsp/client.py:_dispatch_response */
 static void dispatch_response(lsp_client_t *c, int id, const char *json)
 {
     pthread_mutex_lock(&c->pend_lock);
@@ -273,6 +275,7 @@ static void dispatch_response(lsp_client_t *c, int id, const char *json)
     pthread_mutex_unlock(&c->pend_lock);
 }
 
+/* PoP: dispatch_notification @ agent/lsp/client.py:_dispatch_notification */
 static void dispatch_notification(lsp_client_t *c, const char *method, const char *json)
 {
     /* textDocument/publishDiagnostics -> update doc push store */
@@ -336,6 +339,7 @@ static void dispatch_notification(lsp_client_t *c, const char *method, const cha
 }
 
 /* ── request send (blocking with timeout) ───────────────────────────── */
+/* PoP: send_request_blocking @ agent/lsp/client.py:_send_request */
 static char *send_request_blocking(lsp_client_t *c, const char *method,
                                    const char *params_json, int timeout_ms, int *err_code)
 {
@@ -382,6 +386,7 @@ static char *send_request_blocking(lsp_client_t *c, const char *method,
 }
 
 /* ── spawn ──────────────────────────────────────────────────────────── */
+/* PoP: spawn_server @ agent/lsp/client.py:_spawn */
 static int spawn_server(lsp_client_t *c, char **err_out)
 {
     int in_pipe[2], out_pipe[2], err_pipe[2];
@@ -415,6 +420,7 @@ static int spawn_server(lsp_client_t *c, char **err_out)
 }
 
 /* ── create/destroy ─────────────────────────────────────────────────── */
+/* PoP: lsp_client_create @ agent/lsp/client.py:__init__ */
 lsp_client_t *lsp_client_create(const char *server_id, const char *workspace_root,
                                 char **command, char **env, const char *cwd,
                                 const char *init_options_json)
@@ -468,6 +474,7 @@ void lsp_client_destroy(lsp_client_t *c)
 }
 
 /* ── lifecycle ──────────────────────────────────────────────────────── */
+/* PoP: lsp_client_start @ agent/lsp/client.py:start */
 int lsp_client_start(lsp_client_t *c, char **err_out)
 {
     if (strcmp(c->state, "running") == 0 || strcmp(c->state, "starting") == 0) return 0;
@@ -531,6 +538,7 @@ int lsp_client_start(lsp_client_t *c, char **err_out)
     return 0;
 }
 
+/* PoP: lsp_client_shutdown @ agent/lsp/client.py:shutdown */
 int lsp_client_shutdown(lsp_client_t *c)
 {
     if (c->stopping) return 0;
@@ -554,13 +562,16 @@ int lsp_client_shutdown(lsp_client_t *c)
     return 0;
 }
 
+/* PoP: lsp_client_is_running @ agent/lsp/client.py:is_running */
 bool lsp_client_is_running(lsp_client_t *c)
 {
     return strcmp(c->state, "running") == 0 && c->pid > 0;
 }
+/* PoP: lsp_client_state @ agent/lsp/client.py:state */
 const char *lsp_client_state(lsp_client_t *c) { return c->state; }
 
 /* ── document sync ──────────────────────────────────────────────────── */
+/* PoP: lsp_client_open_file @ agent/lsp/client.py:open_file */
 int lsp_client_open_file(lsp_client_t *c, const char *path, const char *text)
 {
     pthread_mutex_lock(&c->doc_lock);
@@ -615,6 +626,7 @@ int lsp_client_change_file(lsp_client_t *c, const char *path, const char *text)
 }
 
 /* ── diagnostics ────────────────────────────────────────────────────── */
+/* PoP: lsp_client_diagnostics_for @ agent/lsp/client.py:diagnostics_for */
 char *lsp_client_diagnostics_for(lsp_client_t *c, const char *path)
 {
     pthread_mutex_lock(&c->doc_lock);
@@ -638,6 +650,7 @@ char *lsp_client_diagnostics_for(lsp_client_t *c, const char *path)
     return out;
 }
 
+/* PoP: lsp_client_wait_for_diagnostics @ agent/lsp/client.py:wait_for_diagnostics */
 int lsp_client_wait_for_diagnostics(lsp_client_t *c, const char *path,
                                     int version, int timeout_ms)
 {
