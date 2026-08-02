@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:53:37Z",
+  "generated_at": "2026-08-02T21:55:22Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -149952,10 +149952,10 @@
     },
     "gateway/status.py": {
       "total": 77,
-      "ported": 41,
+      "ported": 45,
       "partial": 32,
       "stub": 0,
-      "real_gaps": 4,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 77,
@@ -150232,17 +150232,24 @@
             "decorators": [],
             "line_number": 185
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_status_remaining.c",
+          "c_function": "gst_utc_now_iso",
+          "pop_annotation": {
+            "c_function": "gst_utc_now_iso",
+            "python_functions": [
+              "_utc_now_iso"
+            ],
+            "c_file": "src/gateway/port_gateway_status_remaining.c",
+            "python_file": "gateway/status.py",
+            "line": 25,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _utc_now_iso @ gateway/status.py:_utc_now_iso */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -151220,17 +151227,24 @@
             "decorators": [],
             "line_number": 1083
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_status_remaining.c",
+          "c_function": "gst_parse_active_agents",
+          "pop_annotation": {
+            "c_function": "gst_parse_active_agents",
+            "python_functions": [
+              "parse_active_agents"
+            ],
+            "c_file": "src/gateway/port_gateway_status_remaining.c",
+            "python_file": "gateway/status.py",
+            "line": 37,
+            "is_consolidated": false,
+            "full_text": "/* PoP: parse_active_agents @ gateway/status.py:parse_active_agents */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -151263,16 +151277,24 @@
             "decorators": [],
             "line_number": 1129
           },
-          "classification": "REAL_GAP",
-          "c_location": "src/gateway/status.c",
-          "c_function": "derive_gateway_drainable",
-          "pop_annotation": null,
-          "stub_reason": "C function appears to be stub/trivial (forwarding wrapper or trivial pass-through)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-1:stub-in-impl"
-          ]
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_status_remaining.c",
+          "c_function": "gst_derive_gateway_drainable",
+          "pop_annotation": {
+            "c_function": "gst_derive_gateway_drainable",
+            "python_functions": [
+              "derive_gateway_drainable"
+            ],
+            "c_file": "src/gateway/port_gateway_status_remaining.c",
+            "python_file": "gateway/status.py",
+            "line": 45,
+            "is_consolidated": false,
+            "full_text": "/* PoP: derive_gateway_drainable @ gateway/status.py:derive_gateway_drainable */"
+          },
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -151897,16 +151919,24 @@
             "decorators": [],
             "line_number": 2102
           },
-          "classification": "REAL_GAP",
-          "c_location": "src/gateway/status.c",
-          "c_function": "is_gateway_running",
-          "pop_annotation": null,
-          "stub_reason": "C function appears to be stub/trivial (forwarding wrapper or trivial pass-through)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-1:stub-in-impl"
-          ]
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_status_remaining.c",
+          "c_function": "gst_is_gateway_running",
+          "pop_annotation": {
+            "c_function": "gst_is_gateway_running",
+            "python_functions": [
+              "is_gateway_running"
+            ],
+            "c_file": "src/gateway/port_gateway_status_remaining.c",
+            "python_file": "gateway/status.py",
+            "line": 51,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_gateway_running @ gateway/status.py:is_gateway_running */"
+          },
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
