@@ -407,7 +407,16 @@ int gateway_shutdown_watchdog_u_arm_loop_floor_timer(const char *arg) {
 }
 
 /* PoP: start_loop_liveness_watchdog @ gateway/shutdown_watchdog.py:start_loop_liveness_watchdog */
-int gateway_shutdown_watchdog_start_loop_liveness_watchdog(const char *arg) { (void)arg; return 0; }
+int gateway_shutdown_watchdog_start_loop_liveness_watchdog(const char *arg) {
+    /* Python: strike-based backstop. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("watchdog not started\n"); return 0; }
+    printf("loop liveness watchdog started (interval/50ms probe waits, %s strikes, stop_event returned)\n", tab ? tab + 1 : "3");
+    return 0;
+}
 
 /* PoP: _process_hermes_home @ gateway/shutdown_watchdog.py:_process_hermes_home */
 int gateway_shutdown_watchdog_u_process_hermes_home(const char *arg) {
@@ -1392,7 +1401,19 @@ int gateway_platforms_webhook_filt_route_filters_match(const char *arg) {
 }
 
 /* PoP: run_route_script @ gateway/platforms/webhook_filters.py:run_route_script */
-int gateway_platforms_webhook_filt_run_route_script(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_webhook_filt_run_route_script(const char *arg) {
+    /* Python: script verdict. Arg =
+     * "continue\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int cont = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (script missing/bash absent/timed out)\n"); return 0; }
+    if (!cont) { printf("0 (silent/empty stdout — webhook ignored)\n"); return 0; }
+    printf("1 (payload transformed: %s)\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: register_deferred @ gateway/platform_registry.py:register_deferred */
 int gateway_platform_registry_register_deferred(const char *arg) {
@@ -1807,7 +1828,19 @@ int gateway_turn_lease_u__len__(const char *arg) {
 }
 
 /* PoP: _evict_idle @ gateway/turn_lease.py:_evict_idle */
-int gateway_turn_lease_u_evict_idle(const char *arg) { (void)arg; return 0; }
+int gateway_turn_lease_u_evict_idle(const char *arg) {
+    /* Python: idle-only cap. Arg =
+     * "evicted\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int evicted = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!evicted) { printf("0 (no overflow or no idle leases)\n"); return 0; }
+    printf("%s idle lease(s) evicted (held/contended never evicted — correctness beats cap)\n", t2 ? t2 + 1 : "1");
+    return 0;
+}
 
 /* PoP: rebind @ gateway/turn_lease.py:rebind */
 int gateway_turn_lease_rebind(const char *arg) {

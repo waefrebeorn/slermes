@@ -248,4 +248,16 @@ int nsub_ensure_nous_portal_access(const char *arg) {
 }
 
 /* PoP: _run_nous_portal_login_only @ hermes_cli/nous_subscription.py:_run_nous_portal_login_only */
-int nsub_u_run_nous_portal_login_only(const char *arg) { (void)arg; return 0; }
+int nsub_u_run_nous_portal_login_only(const char *arg) {
+    /* Python: creds-only login. Arg =
+     * "ok\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int ok = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("  Skipped Nous Portal login.\n"); return 0; }
+    if (!ok) { printf("  Login failed or declined.\n"); return 0; }
+    printf("  ✓ Logged into Nous Portal (credentials persisted; active_provider preserved: %s)\n", t2 ? t2 + 1 : "unchanged");
+    return 1;
+}

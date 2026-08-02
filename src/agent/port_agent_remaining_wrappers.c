@@ -2790,7 +2790,19 @@ int agent_moa_trace_u_slot_trace(const char *arg) {
 }
 
 /* PoP: save_moa_turn @ agent/moa_trace.py:save_moa_turn */
-int agent_moa_trace_save_moa_turn(const char *arg) { (void)arg; return 0; }
+int agent_moa_trace_save_moa_turn(const char *arg) {
+    /* Python: JSONL append. Arg =
+     * "saved\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int saved = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("trace skipped (disabled)\n"); return 0; }
+    if (!saved) { printf("trace append failed (best-effort, swallowed)\n"); return 0; }
+    printf("turn record appended to %s.jsonl (output_location=%s)\n", t2 ? t2 + 1 : "?", "inline_from_stream");
+    return 0;
+}
 
 /* PoP: _commit_message_template @ agent/oneshot.py:_commit_message_template */
 int agent_oneshot_u_commit_message_template(const char *arg) {

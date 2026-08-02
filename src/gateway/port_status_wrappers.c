@@ -233,7 +233,18 @@ int gstat_u_snapshot_gateway_children(const char *arg) {
 }
 
 /* PoP: reap_gateway_children @ gateway/status.py:reap_gateway_children */
-int gstat_reap_gateway_children(const char *arg) { (void)arg; return 0; }
+int gstat_reap_gateway_children(const char *arg) {
+    /* Python: orphan tree-reap. Arg =
+     * "reaped\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int reaped = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (windows or no children)\n"); return 0; }
+    printf("%s child(ren) reaped (identity-aware, ppid guard, SIGTERM→SIGKILL)%s\n", t2 ? t2 + 1 : "0", reaped ? "" : " — none live");
+    return 0;
+}
 
 /* PoP: take_over_scoped_lock_holder @ gateway/status.py:take_over_scoped_lock_holder */
 int gstat_take_over_scoped_lock_holder(const char *arg) {

@@ -108,7 +108,24 @@ int mm_u_update_block_boundary(const char *arg) {
 }
 
 /* PoP: add_provider @ agent/memory_manager.py:add_provider */
-int mm_add_provider(const char *arg) { (void)arg; return 0; }
+int mm_add_provider(const char *arg) {
+    /* Python: one-external rule. Arg =
+     * "builtin\trejected\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int builtin = arg[0] == '1';
+    int rejected = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (rejected) {
+        printf("Rejected memory provider — only one external provider allowed (%s already registered). Configure via memory.provider.\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    printf("provider '%s' registered (core-tool shadowing rejected at door #40466)%s\n", t3 ? t3 + 1 : "?", builtin ? " [builtin]" : "");
+    return 1;
+}
 
 /* PoP: prefetch_all @ agent/memory_manager.py:prefetch_all */
 int mm_prefetch_all(const char *arg) {

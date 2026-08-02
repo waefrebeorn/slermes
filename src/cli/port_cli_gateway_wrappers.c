@@ -378,7 +378,18 @@ int cgw_u_probe_launchd_service_running(const char *arg) {
 }
 
 /* PoP: get_gateway_runtime_snapshot @ hermes_cli/gateway.py:get_gateway_runtime_snapshot */
-int cgw_get_gateway_runtime_snapshot(const char *arg) { (void)arg; return 0; }
+int cgw_get_gateway_runtime_snapshot(const char *arg) {
+    /* Python: unified liveness. Arg =
+     * "manager\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *manager = t1 ? t1 + 1 : "manual";
+    int state = arg[0] == '1';
+    if (!state) { printf("\n\t\n"); return 0; }
+    printf("%s\tpids + service state\n", manager);
+    return 0;
+}
 
 /* PoP: _format_gateway_pids @ hermes_cli/gateway.py:_format_gateway_pids */
 int cgw_u_format_gateway_pids(const char *arg) {

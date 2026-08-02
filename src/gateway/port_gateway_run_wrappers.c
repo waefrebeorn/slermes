@@ -17,7 +17,27 @@
 int grun_u_send_or_update_status_coro(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_runtime_agent_kwargs @ gateway/run.py:_resolve_runtime_agent_kwargs */
-int grun_u_resolve_runtime_agent_kwargs(const char *arg) { (void)arg; return 0; }
+int grun_u_resolve_runtime_agent_kwargs(const char *arg) {
+    /* Python: config-authoritative. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "rate_limited") == 0) {
+        printf("Primary provider rate-limited (429) — trying fallback\n");
+        return 0;
+    }
+    if (strcmp(state, "auth_fail") == 0) {
+        printf("Primary provider auth failed — trying fallback\n");
+        if (t2 && t2[1] == '1') { printf("fallback resolved\n"); return 0; }
+        fprintf(stderr, "no fallback: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("runtime resolved: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _resolve_runtime_agent_kwargs_for_provider @ gateway/run.py:_resolve_runtime_agent_kwargs_for_provider */
 int grun_u_resolve_runtime_agent_kwargs_for_provider(const char *arg) {
@@ -1107,7 +1127,15 @@ int grun_u_extract_cache_busting_config(const char *arg) {
 }
 
 /* PoP: _agent_config_signature @ gateway/run.py:_agent_config_signature */
-int grun_u_agent_config_signature(const char *arg) { (void)arg; return 0; }
+int grun_u_agent_config_signature(const char *arg) {
+    /* Python: cache-stability key. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("signature=%s (model/runtime/toolsets/cache_keys/user_id/user_id_alt)\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _rehydrate_session_model_override @ gateway/run.py:_rehydrate_session_model_override */
 int grun_u_rehydrate_session_model_override(const char *arg) {

@@ -152,7 +152,18 @@ int yb_u_schedule_content_redact(const char *arg) {
 }
 
 /* PoP: _patch_transcript @ gateway/platforms/yuanbao.py:_patch_transcript */
-int yb_u_patch_transcript(const char *arg) { (void)arg; return 0; }
+int yb_u_patch_transcript(const char *arg) {
+    /* Python: recall patch. Arg =
+     * "branch\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *branch = t1 ? t1 + 1 : "none";
+    int state = arg[0] == '1';
+    if (!state) { printf("recall patch skipped (no store/transcript)\n"); return 0; }
+    printf("recall patched via %s (rewrite_transcript, redact marker)\n", branch);
+    return 0;
+}
 
 /* PoP: _is_self_reference @ gateway/platforms/yuanbao.py:_is_self_reference */
 int yb_u_is_self_reference(const char *from_account, const char *bot_id) {
@@ -483,7 +494,18 @@ int yb_u_observe_group_message(const char *arg) {
 }
 
 /* PoP: _extract_quote_context @ gateway/platforms/yuanbao.py:_extract_quote_context */
-int yb_u_extract_quote_context(const char *arg) { (void)arg; return 0; }
+int yb_u_extract_quote_context(const char *arg) {
+    /* Python: reply_to mapping. Arg =
+     * "found\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int found = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !found) { printf("\t\n"); return 0; }
+    printf("%s\t%s\n", t2 ? t2 + 1 : "", "sender: desc");
+    return 0;
+}
 
 /* PoP: _extract_media_refs_from_transcript @ gateway/platforms/yuanbao.py:_extract_media_refs_from_transcript */
 int yb_u_extract_media_refs_from_transcript(const char *arg) { (void)arg; return 0; }

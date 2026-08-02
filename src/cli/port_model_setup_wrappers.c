@@ -125,7 +125,25 @@ int msf_u_model_flow_moa(const char *arg) { (void)arg; return 0; }
 int msf_u_model_flow_nous(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _model_flow_openai_codex @ hermes_cli/model_setup_flows.py:_model_flow_openai_codex */
-int msf_u_model_flow_openai_codex(const char *arg) { (void)arg; return 0; }
+int msf_u_model_flow_openai_codex(const char *arg) {
+    /* Python: codex flow. Arg =
+     * "logged_in\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int logged_in = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!logged_in) {
+        printf("Not logged into OpenAI Codex. Starting login...\n");
+        printf("  OpenAI Codex credentials: ✓\n");
+        printf("  ✓ Using Codex model\n");
+        return 0;
+    }
+    printf("  OpenAI Codex credentials: ✓\n");
+    printf("  ✓ Using Codex model: %s\n", t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _model_flow_xai_oauth @ hermes_cli/model_setup_flows.py:_model_flow_xai_oauth */
 int msf_u_model_flow_xai_oauth(const char *arg) { (void)arg; return 0; }

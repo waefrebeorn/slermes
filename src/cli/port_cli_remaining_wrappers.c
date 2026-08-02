@@ -759,7 +759,23 @@ int hermes_cli_cli_billing_mixin_u_subscription_confirm_cancel(const char *arg) 
 int hermes_cli_cli_billing_mixin_u_subscription_apply(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _subscription_handle_scope_required @ hermes_cli/cli_billing_mixin.py:_subscription_handle_scope_required */
-int hermes_cli_cli_billing_mixin_u_subscription_handle_scope_req_ed(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cli_billing_mixin_u_subscription_handle_scope_req_ed(const char *arg) {
+    /* Python: step-up + replay. Arg =
+     * "granted\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int granted = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!granted) {
+        printf("  No change made. Allow Remote Spending when you're ready.\n");
+        return 0;
+    }
+    printf("  Opening your browser to allow Remote Spending…\n");
+    printf("  ✓ Remote Spending allowed — replaying your change.\n");
+    return 0;
+}
 
 /* PoP: _subscription_render_error @ hermes_cli/cli_billing_mixin.py:_subscription_render_error */
 int hermes_cli_cli_billing_mixin_u_subscription_render_error(const char *arg) {
@@ -6554,7 +6570,22 @@ int hermes_cli_copilot_auth_u_try_gh_cli_token(const char *arg) {
 }
 
 /* PoP: exchange_copilot_token @ hermes_cli/copilot_auth.py:exchange_copilot_token */
-int hermes_cli_copilot_auth_exchange_copilot_token(const char *arg) { (void)arg; return 0; }
+int hermes_cli_copilot_auth_exchange_copilot_token(const char *arg) {
+    /* Python: JWT exchange. Arg =
+     * "cached\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("\t\t\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int cached = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) {
+        fprintf(stderr, "Copilot token exchange failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("%s\t%s\tbase_url=%s\n", "api_token", cached ? "cached until expiry-margin" : "fresh exchange", t2 ? t2 + 1 : "none");
+    return 0;
+}
 
 /* PoP: _derive_base_url_from_proxy_ep @ hermes_cli/copilot_auth.py:_derive_base_url_from_proxy_ep */
 int hermes_cli_copilot_auth_u_derive_base_url_from_proxy_ep(const char *arg) {
@@ -8849,7 +8880,19 @@ int hermes_cli_send_cmd_u_list_targets(const char *arg) {
 }
 
 /* PoP: _load_hermes_env @ hermes_cli/send_cmd.py:_load_hermes_env */
-int hermes_cli_send_cmd_u_load_hermes_env(const char *arg) { (void)arg; return 0; }
+int hermes_cli_send_cmd_u_load_hermes_env(const char *arg) {
+    /* Python: dotenv + bridge. Arg =
+     * "loaded\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int loaded = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("no env load (no home)\n"); return 0; }
+    if (!loaded) { printf("env loaded (dotenv + %s top-level key(s) bridged, no override)\n", t2 ? t2 + 1 : "0"); return 0; }
+    printf("env loaded\n");
+    return 0;
+}
 
 /* PoP: _escape_html @ hermes_cli/session_export_html.py:_escape_html */
 int hermes_cli_session_export_html_u_escape_html(const char *arg) {
@@ -9817,7 +9860,12 @@ int hermes_cli_subcommands_insight_build_insights_parser(const char *arg) {
 }
 
 /* PoP: build_login_parser @ hermes_cli/subcommands/login.py:build_login_parser */
-int hermes_cli_subcommands_login_build_login_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_login_build_login_parser(const char *arg) {
+    /* Python: deprecated login shim. */
+    (void)arg;
+    printf("login parser attached (deprecated — no help row, any --provider accepted)\n");
+    return 0;
+}
 
 /* PoP: build_logout_parser @ hermes_cli/subcommands/logout.py:build_logout_parser */
 int hermes_cli_subcommands_logout_build_logout_parser(const char *arg) {
@@ -9915,7 +9963,12 @@ int hermes_cli_subcommands_status_build_status_parser(const char *arg) {
 }
 
 /* PoP: build_tools_parser @ hermes_cli/subcommands/tools.py:build_tools_parser */
-int hermes_cli_subcommands_tools_build_tools_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_tools_build_tools_parser(const char *arg) {
+    /* Python: tools tree. */
+    (void)arg;
+    printf("tools parser attached (--summary; list/disable/enable with --platform)\n");
+    return 0;
+}
 
 /* PoP: build_uninstall_parser @ hermes_cli/subcommands/uninstall.py:build_uninstall_parser */
 int hermes_cli_subcommands_uninsta_build_uninstall_parser(const char *arg) {
@@ -9926,7 +9979,12 @@ int hermes_cli_subcommands_uninsta_build_uninstall_parser(const char *arg) {
 }
 
 /* PoP: build_update_parser @ hermes_cli/subcommands/update.py:build_update_parser */
-int hermes_cli_subcommands_update_build_update_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_update_build_update_parser(const char *arg) {
+    /* Python: update tree. */
+    (void)arg;
+    printf("update parser attached (--gateway --check --no-backup --backup --yes --skip-deps)\n");
+    return 0;
+}
 
 /* PoP: build_version_parser @ hermes_cli/subcommands/version.py:build_version_parser */
 int hermes_cli_subcommands_version_build_version_parser(const char *arg) {

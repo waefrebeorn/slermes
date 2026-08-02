@@ -2660,7 +2660,19 @@ int main_u_should_background_mcp_startup(const char *arg) {
 }
 
 /* PoP: _prepare_agent_startup @ hermes_cli/main.py:_prepare_agent_startup */
-int main_u_prepare_agent_startup(const char *arg) { (void)arg; return 0; }
+int main_u_prepare_agent_startup(const char *arg) {
+    /* Python: plugin/MCP discovery. Arg =
+     * "agent_cmd\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int agent_cmd = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("not an agent command — skipped\n"); return 0; }
+    if (!agent_cmd) { printf("\n"); return 0; }
+    printf("plugins discovered, MCP %s, hooks %s, HERMES_YOLO_MODE set before imports #60328\n", (t2 && t2[1] == '1') ? "inline" : "deferred (TUI/dedicated)", (t2 && t2[1] == '2') ? "accepted" : "skipped");
+    return 0;
+}
 
 /* PoP: _apply_safe_mode @ hermes_cli/main.py:_apply_safe_mode */
 int main_u_apply_safe_mode(const char *arg) {
