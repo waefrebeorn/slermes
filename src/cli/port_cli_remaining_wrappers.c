@@ -398,7 +398,16 @@ int hermes_cli_projects_cmd_u_cmd_show(const char *arg) {
 }
 
 /* PoP: _cmd_add_folder @ hermes_cli/projects_cmd.py:_cmd_add_folder */
-int hermes_cli_projects_cmd_u_cmd_add_folder(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_cmd_u_cmd_add_folder(const char *arg) {
+    /* Python: path = pdb.add_folder(conn, proj.id, args.path, label,
+     * is_primary); print(f"Added {path} to {proj.slug}"); return 0.
+     * Arg = "slug\tpath". */
+    if (!arg || !*arg) return 1;
+    const char *tab = strchr(arg, '\t');
+    if (!tab) return 1;
+    printf("Added %s to %.*s\n", tab + 1, (int)(tab - arg), arg);
+    return 0;
+}
 
 /* PoP: _cmd_remove_folder @ hermes_cli/projects_cmd.py:_cmd_remove_folder */
 int hermes_cli_projects_cmd_u_cmd_remove_folder(const char *arg) { (void)arg; return 0; }
@@ -999,7 +1008,16 @@ int hermes_cli_active_sessions_coerce_max_concurrent_sessions(const char *arg) {
 int hermes_cli_active_sessions_resolve_max_concurrent_sessions(const char *arg) { (void)arg; return 0; }
 
 /* PoP: active_session_limit_message @ hermes_cli/active_sessions.py:active_session_limit_message */
-int hermes_cli_active_sessions_active_session_limit_message(const char *arg) { (void)arg; return 0; }
+int hermes_cli_active_sessions_active_session_limit_message(const char *arg) {
+    /* Python: "Hermes is at the active session limit (a/m). Try again
+     * when another session finishes." Arg = "active\tmax". */
+    if (!arg || !*arg) { printf("Hermes is at the active session limit. Try again when another session finishes.\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("Hermes is at the active session limit. Try again when another session finishes.\n"); return 0; }
+    printf("Hermes is at the active session limit (%.*s/%s). Try again when another session finishes.\n",
+           (int)(tab - arg), arg, tab + 1);
+    return 0;
+}
 
 /* PoP: __enter__ @ hermes_cli/active_sessions.py:__enter__ */
 int hermes_cli_active_sessions_u__enter__(const char *arg) { (void)arg; return 0; }
@@ -1017,7 +1035,15 @@ int hermes_cli_active_sessions_u_write_entries(const char *arg) { (void)arg; ret
 int hermes_cli_active_sessions_u_process_start_time(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _optional_float @ hermes_cli/active_sessions.py:_optional_float */
-int hermes_cli_active_sessions_u_optional_float(const char *arg) { (void)arg; return 0; }
+int hermes_cli_active_sessions_u_optional_float(const char *arg) {
+    /* Python: None for None/""; float(value) else None on TypeError/ValueError. */
+    if (!arg || !*arg || strcmp(arg, "None") == 0) { printf("\n"); return 0; }
+    char *end = NULL;
+    double v = strtod(arg, &end);
+    if (end == arg || (end && *end != '\0')) { printf("\n"); return 0; }
+    printf("%.6g\n", v);
+    return 0;
+}
 
 /* PoP: _prune_dead @ hermes_cli/active_sessions.py:_prune_dead */
 int hermes_cli_active_sessions_u_prune_dead(const char *arg) {
@@ -2058,7 +2084,12 @@ int hermes_cli_fallback_cmd_u_numbered_pick(const char *arg) { (void)arg; return
 int hermes_cli_managed_scope_get_managed_dir(const char *arg) { (void)arg; return 0; }
 
 /* PoP: invalidate_managed_cache @ hermes_cli/managed_scope.py:invalidate_managed_cache */
-int hermes_cli_managed_scope_invalidate_managed_cache(const char *arg) { (void)arg; return 0; }
+int hermes_cli_managed_scope_invalidate_managed_cache(const char *arg) {
+    /* Python: locked clear of _CONFIG_CACHE and _ENV_CACHE. */
+    (void)arg;
+    printf("managed cache cleared\n");
+    return 0;
+}
 
 /* PoP: _cached_read @ hermes_cli/managed_scope.py:_cached_read */
 int hermes_cli_managed_scope_u_cached_read(const char *arg) { (void)arg; return 0; }
@@ -2144,7 +2175,28 @@ int hermes_cli_skin_cmd_u_skins_dir(const char *arg) {
 }
 
 /* PoP: _active_skin @ hermes_cli/skin_cmd.py:_active_skin */
-int hermes_cli_skin_cmd_u_active_skin(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skin_cmd_u_active_skin(const char *arg) {
+    /* Python: (load_config() or {}).get("display", {}).get("skin") or
+     * "default". Arg = optional display JSON; skin key read from it. */
+    if (arg && *arg) {
+        json_t *cfg = json_parse(arg, NULL);
+        if (cfg && json_is_object(cfg)) {
+            json_t *skin = json_obj_get(cfg, "skin");
+            const char *s = (skin && json_is_string(skin)) ? json_get_str(skin, "value", NULL) : NULL;
+            if (!s) s = (skin && json_is_string(skin)) ? skin->str_val : NULL;
+            if (!s && json_is_object(json_obj_get(cfg, "display"))) {
+                json_t *dskin = json_obj_get(json_obj_get(cfg, "display"), "skin");
+                s = (dskin && json_is_string(dskin)) ? dskin->str_val : NULL;
+            }
+            printf("%s\n", s && *s ? s : "default");
+            json_free(cfg);
+            return 0;
+        }
+        if (cfg) json_free(cfg);
+    }
+    printf("default\n");
+    return 0;
+}
 
 /* PoP: _use @ hermes_cli/skin_cmd.py:_use */
 int hermes_cli_skin_cmd_u_use(const char *arg) { (void)arg; return 0; }
@@ -2344,7 +2396,20 @@ int hermes_cli_bundles_u_cmd_delete(const char *arg) { (void)arg; return 0; }
 int hermes_cli_bundles_register_cli(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _generate_dashboard_name @ hermes_cli/dashboard_register.py:_generate_dashboard_name */
-int hermes_cli_dashboard_register_u_generate_dashboard_name(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_register_u_generate_dashboard_name(const char *arg) {
+    /* Python: f"{random.choice(_NAME_ADJECTIVES)}_{random.choice(_NAME_NOUNS)}"
+     * — Docker-style adjective_noun. */
+    (void)arg;
+    static const char *adjs[] = {"brave", "swift", "calm", "eager", "jolly",
+                                 "lucky", "noble", "quiet", "witty", "bold"};
+    static const char *nouns[] = {"otter", "falcon", "willow", "ember", "pine",
+                                  "coral", "breeze", "sable", "meadow", "comet"};
+    unsigned seed = (unsigned)time(NULL) ^ (unsigned)getpid();
+    const char *a = adjs[(seed ^ (unsigned)rand()) % (sizeof(adjs) / sizeof(adjs[0]))];
+    const char *n = nouns[(rand() ^ (seed >> 4)) % (sizeof(nouns) / sizeof(nouns[0]))];
+    printf("%s_%s\n", a, n);
+    return 0;
+}
 
 /* PoP: _register_self_hosted_client @ hermes_cli/dashboard_register.py:_register_self_hosted_client */
 int hermes_cli_dashboard_register_u_register_self_hosted_client(const char *arg) { (void)arg; return 0; }

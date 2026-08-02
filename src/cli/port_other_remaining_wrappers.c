@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <unistd.h>
 #include <sys/stat.h>
 #include "hermes_json.h"
 #include "hermes_util_str.h"
@@ -44,7 +45,48 @@ int cron_executions_u_initialize_schema(const char *arg) { (void)arg; return 0; 
 int cron_executions_u_transaction(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _process_start_time @ cron/executions.py:_process_start_time */
-int cron_executions_u_process_start_time(const char *arg) { (void)arg; return 0; }
+int cron_executions_u_process_start_time(const char *arg) {
+    /* Python: get_process_start_time(pid) from gateway.status, else None.
+     * Arg = pid. Read /proc/<pid>/stat field 22 (starttime in clock ticks)
+     * and convert to epoch seconds via CLK_TCK + boot time. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    long pid = strtol(arg, NULL, 10);
+    if (pid <= 0) { printf("\n"); return 0; }
+    char path[64], buf[512];
+    snprintf(path, sizeof(path), "/proc/%ld/stat", pid);
+    FILE *fp = fopen(path, "r");
+    if (!fp) { printf("\n"); return 0; }
+    size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+    fclose(fp);
+    buf[n] = '\0';
+    /* Skip "pid (comm)" then fields 3..21 -> field 22 = starttime. */
+    char *p = strrchr(buf, ')');
+    if (!p) { printf("\n"); return 0; }
+    p += 2;
+    unsigned long long startticks = 0;
+    for (int i = 3; i <= 22 && p; i++) {
+        while (*p == ' ') p++;
+        char *e = p;
+        while (*e && *e != ' ') e++;
+        if (i == 22) { startticks = strtoull(p, NULL, 10); break; }
+        p = e;
+    }
+    if (startticks == 0) { printf("\n"); return 0; }
+    /* boot time + startticks/CLK_TCK */
+    FILE *bt = fopen("/proc/stat", "r");
+    if (!bt) { printf("\n"); return 0; }
+    char line[256];
+    long long btime = -1;
+    while (fgets(line, sizeof(line), bt)) {
+        if (strncmp(line, "btime ", 6) == 0) { btime = strtoll(line + 6, NULL, 10); break; }
+    }
+    fclose(bt);
+    if (btime < 0) { printf("\n"); return 0; }
+    long clk = sysconf(_SC_CLK_TCK);
+    if (clk <= 0) clk = 100;
+    printf("%lld\n", btime + (long long)(startticks / (unsigned long long)clk));
+    return 0;
+}
 
 /* PoP: _owner_is_live @ cron/executions.py:_owner_is_live */
 int cron_executions_u_owner_is_live(const char *arg) { (void)arg; return 0; }

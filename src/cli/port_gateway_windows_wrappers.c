@@ -257,7 +257,14 @@ int gw_is_startup_entry_installed(const char *arg) {
 int gw_query_task_status(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _gateway_pids @ hermes_cli/gateway_windows.py:_gateway_pids */
-int gw_u_gateway_pids(const char *arg) { (void)arg; return 0; }
+int gw_u_gateway_pids(const char *arg) {
+    /* Python: list(find_gateway_pids()) — reuse the cross-platform PID
+     * scanner in gateway.py. Arg = optional "pid\tpid..." from a scan; the
+     * C port echoes them (the scan itself lives in gateway wrappers). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _print_deep_probes @ hermes_cli/gateway_windows.py:_print_deep_probes */
 int gw_u_print_deep_probes(const char *arg) { (void)arg; return 0; }

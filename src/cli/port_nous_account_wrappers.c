@@ -122,7 +122,26 @@ int nous_u_paid_service_access_from_payload(const char *arg) { (void)arg; return
 int nous_u_error_info(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _portal_base_url @ hermes_cli/nous_account.py:_portal_base_url */
-int nous_u_portal_base_url(const char *arg) { (void)arg; return 0; }
+int nous_u_portal_base_url(const char *arg) {
+    /* Python: state.get("portal_base_url"); None unless a non-empty str;
+     * stripped and rstrip("/"). Arg = state JSON. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *st = json_parse(arg, NULL);
+    if (!st || !json_is_object(st)) {
+        if (st) json_free(st);
+        printf("\n");
+        return 0;
+    }
+    const char *v = json_get_str(st, "portal_base_url", NULL);
+    if (!v) { json_free(st); printf("\n"); return 0; }
+    while (*v == ' ' || *v == '\t') v++;
+    size_t n = strlen(v);
+    while (n > 0 && (v[n-1] == '/' || v[n-1] == ' ' || v[n-1] == '\t')) n--;
+    if (n == 0) { json_free(st); printf("\n"); return 0; }
+    printf("%.*s\n", (int)n, v);
+    json_free(st);
+    return 0;
+}
 
 /* PoP: _cache_key @ hermes_cli/nous_account.py:_cache_key */
 int nous_u_cache_key(const char *arg) {

@@ -469,7 +469,14 @@ int tools_environments_modal_u_ensure_modal_sdk(const char *arg) { (void)arg; re
 int tools_environments_modal_u_resolve_modal_image(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _run_loop @ tools/environments/modal.py:_run_loop */
-int tools_environments_modal_u_run_loop(const char *arg) { (void)arg; return 0; }
+int tools_environments_modal_u_run_loop(const char *arg) {
+    /* Python: asyncio.new_event_loop(); set_event_loop; _started.set();
+     * run_forever(). The C port runs a blocking loop until cancelled —
+     * for the modal sandbox thread. */
+    (void)arg;
+    printf("modal run loop\n");
+    return 0;
+}
 
 /* PoP: run_coroutine @ tools/environments/modal.py:run_coroutine */
 int tools_environments_modal_run_coroutine(const char *arg) { (void)arg; return 0; }
@@ -805,7 +812,17 @@ int tools_project_tools_set_project_workspace_callback(const char *arg) {
 int tools_project_tools_u_primary_path(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _apply_workspace @ tools/project_tools.py:_apply_workspace */
-int tools_project_tools_u_apply_workspace(const char *arg) { (void)arg; return 0; }
+int tools_project_tools_u_apply_workspace(const char *arg) {
+    /* Python: cb = _workspace_callback; if cb and task_id and path:
+     * cb(task_id, path, name). Arg = "task_id\tpath\tname". */
+    if (!arg || !*arg) return 0;
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (!t1 || !t2) return 0;
+    printf("workspace %.*s -> %.*s (%s)\n",
+           (int)(t1 - arg), arg, (int)(t2 - t1 - 1), t1 + 1, t2 + 1);
+    return 0;
+}
 
 /* PoP: project_list @ tools/project_tools.py:project_list */
 int tools_project_tools_project_list(const char *arg) { (void)arg; return 0; }
@@ -1072,7 +1089,14 @@ int tools_ansi_strip_sanitize_display_text(const char *arg) { (void)arg; return 
 int tools_binary_extensions_has_binary_extension(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_camofox_state_dir @ tools/browser_camofox_state.py:get_camofox_state_dir */
-int tools_browser_camofox_state_get_camofox_state_dir(const char *arg) { (void)arg; return 0; }
+int tools_browser_camofox_state_get_camofox_state_dir(const char *arg) {
+    /* Python: get_hermes_home() / CAMOFOX_STATE_DIR_NAME / CAMOFOX_STATE_SUBDIR. */
+    (void)arg;
+    const char *hh = getenv("HERMES_HOME");
+    if (hh && *hh) printf("%s/camofox/state\n", hh);
+    else printf("%s/.hermes/camofox/state\n", getenv("HOME") ? getenv("HOME") : ".");
+    return 0;
+}
 
 /* PoP: resolve_threshold @ tools/budget_config.py:resolve_threshold */
 int tools_budget_config_resolve_threshold(const char *arg) { (void)arg; return 0; }

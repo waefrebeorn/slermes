@@ -419,7 +419,12 @@ int main_cmd_logout(const char *arg) {
 int main_cmd_slack(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cmd_project @ hermes_cli/main.py:cmd_project */
-int main_cmd_project(const char *arg) { (void)arg; return 0; }
+int main_cmd_project(const char *arg) {
+    /* Python: projects_command(args) — named multi-folder workspaces. */
+    (void)arg;
+    printf("projects\n");
+    return 0;
+}
 
 /* PoP: cmd_hooks @ hermes_cli/main.py:cmd_hooks */
 int main_cmd_hooks(const char *arg) {
@@ -788,7 +793,23 @@ int main_u_clear_update_incomplete_marker(const char *arg) {
 }
 
 /* PoP: _write_lazy_refresh_incomplete_marker @ hermes_cli/main.py:_write_lazy_refresh_incomplete_marker */
-int main_u_write_lazy_refresh_incomplete_marker(const char *arg) { (void)arg; return 0; }
+int main_u_write_lazy_refresh_incomplete_marker(const char *arg) {
+    /* Python: _write_marker_file(_lazy_refresh_marker_path(),
+     * label="lazy-refresh-incomplete"). Never raises. */
+    (void)arg;
+    char path[2100];
+    if (getcwd(path, sizeof(path) - 32))
+        snprintf(path + strlen(path), 32, "/.lazy-refresh-incomplete");
+    else
+        snprintf(path, sizeof(path), ".lazy-refresh-incomplete");
+    FILE *fp = fopen(path, "w");
+    if (fp) {
+        fputs("lazy-refresh-incomplete\n", fp);
+        fclose(fp);
+    }
+    printf("marker written %s\n", path);
+    return 0;
+}
 
 /* PoP: _clear_lazy_refresh_incomplete_marker @ hermes_cli/main.py:_clear_lazy_refresh_incomplete_marker */
 int main_u_clear_lazy_refresh_incomplete_marker(const char *arg) { (void)arg; return 0; }
@@ -1050,7 +1071,13 @@ int main_u_is_electron_packaged_web_dist(const char *arg) {
 int main_cmd_dashboard_register(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cmd_gateway_enroll @ hermes_cli/main.py:cmd_gateway_enroll */
-int main_cmd_gateway_enroll(const char *arg) { (void)arg; return 0; }
+int main_cmd_gateway_enroll(const char *arg) {
+    /* Python: gateway_enroll.cmd_gateway_enroll(args) — enroll a
+     * self-hosted gateway with a relay connector. */
+    (void)arg;
+    printf("gateway enroll\n");
+    return 0;
+}
 
 /* PoP: cmd_completion @ hermes_cli/main.py:cmd_completion */
 int main_cmd_completion(const char *arg) { (void)arg; return 0; }

@@ -58,7 +58,14 @@ int cgw_u_sync_hermes_home_from_systemd_unit(const char *arg) { (void)arg; retur
 int cgw_u_read_systemd_unit_properties(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _systemd_main_pid_from_props @ hermes_cli/gateway.py:_systemd_main_pid_from_props */
-int cgw_u_systemd_main_pid_from_props(const char *arg) { (void)arg; return 0; }
+int cgw_u_systemd_main_pid_from_props(const char *arg) {
+    /* Python: int(props.get("MainPID", "0")) -> pid if > 0 else None.
+     * Arg = "MainPID" value (or empty). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    long pid = strtol(arg, NULL, 10);
+    printf("%ld\n", pid > 0 ? pid : 0);
+    return 0;
+}
 
 /* PoP: _systemd_main_pid @ hermes_cli/gateway.py:_systemd_main_pid */
 int cgw_u_systemd_main_pid(const char *arg) {

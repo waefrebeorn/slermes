@@ -560,7 +560,22 @@ int gateway_platforms_qqbot_chunke_file_size_human_2(const char *arg) {
 }
 
 /* PoP: limit_human @ gateway/platforms/qqbot/chunked_upload.py:limit_human */
-int gateway_platforms_qqbot_chunke_limit_human(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_qqbot_chunke_limit_human(const char *arg) {
+    /* Python: format_size(limit_bytes) if limit_bytes else "unknown".
+     * Arg = byte count (or empty). */
+    if (!arg || !*arg) { printf("unknown\n"); return 0; }
+    long long bytes = strtoll(arg, NULL, 10);
+    if (bytes <= 0) { printf("unknown\n"); return 0; }
+    if (bytes >= 1024 * 1024 * 1024)
+        printf("%.1f GB\n", bytes / (1024.0 * 1024 * 1024));
+    else if (bytes >= 1024 * 1024)
+        printf("%.1f MB\n", bytes / (1024.0 * 1024));
+    else if (bytes >= 1024)
+        printf("%.1f KB\n", bytes / 1024.0);
+    else
+        printf("%lld B\n", bytes);
+    return 0;
+}
 
 /* PoP: _parse_prepare_response @ gateway/platforms/qqbot/chunked_upload.py:_parse_prepare_response */
 int gateway_platforms_qqbot_chunke_u_parse_prepare_response(const char *arg) { (void)arg; return 0; }
@@ -726,7 +741,13 @@ int gateway_relay_adapter_go_dormant(const char *arg) { (void)arg; return 0; }
 int gateway_relay_adapter_send_for_platform(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _stringify_filter_value @ gateway/platforms/webhook_filters.py:_stringify_filter_value */
-int gateway_platforms_webhook_filt_u_stringify_filter_value(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_webhook_filt_u_stringify_filter_value(const char *arg) {
+    /* Python: "" if _MISSING; json.dumps(value, sort_keys=True) for
+     * dict/list; else str(value). Arg = value or _MISSING. */
+    if (!arg || !*arg || strcmp(arg, "_MISSING") == 0) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _resolve_profile_path @ gateway/platforms/webhook_filters.py:_resolve_profile_path */
 int gateway_platforms_webhook_filt_u_resolve_profile_path(const char *arg) { (void)arg; return 0; }

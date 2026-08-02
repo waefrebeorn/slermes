@@ -63,7 +63,14 @@ int sexmd_u_render_content(const char *arg) {
 }
 
 /* PoP: _render_tool_calls @ hermes_cli/session_export_md.py:_render_tool_calls */
-int sexmd_u_render_tool_calls(const char *arg) { (void)arg; return 0; }
+int sexmd_u_render_tool_calls(const char *arg) {
+    /* Python: "" if not tool_calls; else
+     * "\n\n## Tool calls\n\n```json\n" + json.dumps(tool_calls,
+     * ensure_ascii=False, indent=2) + "\n```". Arg = tool_calls JSON. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("\n\n## Tool calls\n\n```json\n%s\n```\n", arg);
+    return 0;
+}
 
 /* PoP: _session_id @ hermes_cli/session_export_md.py:_session_id */
 int sexmd_u_session_id(const char *arg) {

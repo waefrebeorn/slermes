@@ -73,7 +73,18 @@ int envd_u_ensure_docker_available(const char *arg) { (void)arg; return 0; }
 int envd_u_build_init_env_args(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_container_gone @ tools/environments/docker.py:_is_container_gone */
-int envd_u_is_container_gone(const char *arg) { (void)arg; return 0; }
+int envd_u_is_container_gone(const char *arg) {
+    /* Python: any(p in output for p in _NO_CONTAINER_PATTERNS) — true when
+     * docker output says the container no longer exists. Arg = output. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *patterns[] = {"No such container", "not found", "does not exist"};
+    int gone = 0;
+    for (size_t i = 0; i < sizeof(patterns) / sizeof(patterns[0]); i++) {
+        if (strstr(arg, patterns[i])) { gone = 1; break; }
+    }
+    printf("%d\n", gone);
+    return 0;
+}
 
 /* PoP: _recreate_container @ tools/environments/docker.py:_recreate_container */
 int envd_u_recreate_container(const char *arg) { (void)arg; return 0; }
