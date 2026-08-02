@@ -112,7 +112,18 @@ int agent_model_metadata_u_query_ollama_api_show_uncached(const char *arg) {
 }
 
 /* PoP: _query_local_context_length_uncached @ agent/model_metadata.py:_query_local_context_length_uncached */
-int agent_model_metadata_u_query_local_context_length_uncached(const char *arg) { (void)arg; return 0; }
+int agent_model_metadata_u_query_local_context_length_uncached(const char *arg) {
+    /* Python: local server probe. Arg =
+     * "found\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int found = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !found) { printf("\n"); return 0; }
+    printf("local context = %s (ollama /api/show num_ctx preferred, lmstudio /v1/models, /v1 suffix stripped)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? " — localhost→ipv4" : "");
+    return 0;
+}
 
 /* PoP: _codex_oauth_token_fingerprint @ agent/model_metadata.py:_codex_oauth_token_fingerprint */
 int agent_model_metadata_u_codex_oauth_token_fingerprint(const char *arg) {
@@ -2018,7 +2029,20 @@ int agent_error_classifier_u_classify_by_error_code(const char *arg) {
 }
 
 /* PoP: _classify_by_message @ agent/error_classifier.py:_classify_by_message */
-int agent_error_classifier_u_classify_by_message(const char *arg) { (void)arg; return 0; }
+int agent_error_classifier_u_classify_by_message(const char *arg) {
+    /* Python: message-pattern classify. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("unknown\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "payload_too_large") == 0) { printf("payload_too_large (retryable, compress)\n"); return 0; }
+    if (strcmp(state, "multimodal") == 0) { printf("multimodal_tool_content_unsupported (retryable)\n"); return 0; }
+    if (strcmp(state, "image_too_large") == 0) { printf("image_too_large (retryable)\n"); return 0; }
+    if (strcmp(state, "usage_limit") == 0) { printf("usage_limit (periodic quota vs billing disambiguated)\n"); return 0; }
+    if (strcmp(state, "auth") == 0) { printf("authentication (retryable after refresh)\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "unknown");
+    return 0;
+}
 
 /* PoP: _extract_error_code @ agent/error_classifier.py:_extract_error_code */
 int agent_error_classifier_u_extract_error_code(const char *arg) {

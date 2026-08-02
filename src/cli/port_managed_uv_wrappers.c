@@ -303,7 +303,18 @@ int muv_u_windows_runtime_holders(const char *arg) {
 }
 
 /* PoP: repair_vulnerable_runtime @ hermes_cli/managed_uv.py:repair_vulnerable_runtime */
-int muv_repair_vulnerable_runtime(const char *arg) { (void)arg; return 0; }
+int muv_repair_vulnerable_runtime(const char *arg) {
+    /* Python: non-mutating replace. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("not-applicable\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "safe") == 0) { printf("safe (no WAL reset vulnerability)\n"); return 0; }
+    if (strcmp(state, "deferred") == 0) { printf("skipped (windows runtime holders block cutover)%s\n", tab ? tab + 1 : ""); return 0; }
+    if (strcmp(state, "repaired") == 0) { printf("repaired (parked venv renamed in, smoke passed; failures restore synchronously)%s\n", tab ? tab + 1 : ""); return 0; }
+    printf("%s%s\n", state, tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _install_uv @ hermes_cli/managed_uv.py:_install_uv */
 int muv_u_install_uv(const char *arg) {

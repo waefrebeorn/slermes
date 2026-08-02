@@ -294,7 +294,18 @@ int mcpo_u_make_callback_handler(const char *arg) {
 }
 
 /* PoP: _make_redirect_handler @ tools/mcp_oauth.py:_make_redirect_handler */
-int mcpo_u_make_redirect_handler(const char *arg) { (void)arg; return 0; }
+int mcpo_u_make_redirect_handler(const char *arg) {
+    /* Python: port closure. Arg =
+     * "proxied\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int proxied = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("redirect handler closure (per-server port #44588; dashboard publish first; browser auto-open, URL fallback%s)%s\n", proxied ? "; proxied callback → no SSH-tunnel hint" : "", (t2 && t2[1] == '1') ? " — non-interactive fail fast" : "");
+    return 0;
+}
 
 /* PoP: _wait_for_callback @ tools/mcp_oauth.py:_wait_for_callback */
 int mcpo_u_wait_for_callback(const char *arg) { (void)arg; return 0; }

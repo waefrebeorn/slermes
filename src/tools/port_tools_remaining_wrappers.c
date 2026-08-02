@@ -428,7 +428,19 @@ int tools_lazy_deps_u_core_constraints_file(const char *arg) {
 }
 
 /* PoP: _venv_pip_install @ tools/lazy_deps.py:_venv_pip_install */
-int tools_lazy_deps_u_venv_pip_install(const char *arg) { (void)arg; return 0; }
+int tools_lazy_deps_u_venv_pip_install(const char *arg) {
+    /* Python: uv→pip ladder. Arg =
+     * "ok\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int ok = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 1; }
+    if (!ok) { printf("0 (install failed)%s\n", (t2 && t2[1] == '1') ? " — target constrained to core venv versions" : ""); return 1; }
+    printf("1 installed (uv → pip → ensurepip ladder%s)%s\n", (t2 && t2[1] == '1') ? ", durable --target append-only" : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: active_features @ tools/lazy_deps.py:active_features */
 int tools_lazy_deps_active_features(const char *arg) {

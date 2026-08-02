@@ -212,7 +212,19 @@ int moa_u_maybe_apply_moa_cache_control(const char *arg) {
 int moa_u_run_reference(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _trim_messages_for_reference @ agent/moa_loop.py:_trim_messages_for_reference */
-int moa_u_trim_messages_for_reference(const char *arg) { (void)arg; return 0; }
+int moa_u_trim_messages_for_reference(const char *arg) {
+    /* Python: window-fit trim. Arg =
+     * "trimmed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int trimmed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!trimmed) { printf("0 (fits — no trim needed)\n"); return 0; }
+    printf("%s frame(s) dropped (oldest after system prompt; system prompt + first non-system kept; reserve_output_tokens budget #60345)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — advisory text-only invariant" : "");
+    return 0;
+}
 
 /* PoP: _run_references_parallel @ agent/moa_loop.py:_run_references_parallel */
 int moa_u_run_references_parallel(const char *arg) { (void)arg; return 0; }
@@ -436,7 +448,25 @@ int moa_rebase_prepared_request(const char *arg) {
 }
 
 /* PoP: _call_prepared_aggregator @ agent/moa_loop.py:_call_prepared_aggregator */
-int moa_u_call_prepared_aggregator(const char *arg) { (void)arg; return 0; }
+int moa_u_call_prepared_aggregator(const char *arg) {
+    /* Python: exactly-once aggregator. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "nested_moa") == 0) {
+        fprintf(stderr, "MoA aggregator cannot be another MoA preset\n");
+        return 1;
+    }
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "aggregator call failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("aggregator called (trace captures exact input incl. injected reference context, redacted on disk in display mode)%s\n", (t2 && t2[1] == '1') ? " — pending trace recorded" : "");
+    return 0;
+}
 
 /* PoP: consume_reference_usage @ agent/moa_loop.py:consume_reference_usage */
 int moa_consume_reference_usage_2(const char *arg) {

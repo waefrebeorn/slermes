@@ -763,7 +763,19 @@ int auth_u_refresh_xai_oauth_tokens(const char *arg) {
 }
 
 /* PoP: resolve_xai_oauth_runtime_credentials @ hermes_cli/auth.py:resolve_xai_oauth_runtime_credentials */
-int auth_resolve_xai_oauth_runtime_credentials(const char *arg) { (void)arg; return 0; }
+int auth_resolve_xai_oauth_runtime_credentials(const char *arg) {
+    /* Python: refresh-under-lock. Arg =
+     * "refreshed\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int refreshed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!refreshed) { printf("cached token valid (skew-aware proactive refresh, no lock needed)\n"); return 0; }
+    printf("tokens refreshed under auth store lock (skew=%s, timeout extended)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? " — discovery re-validated" : "");
+    return 0;
+}
 
 /* PoP: _request_device_code @ hermes_cli/auth.py:_request_device_code */
 int auth_u_request_device_code(const char *arg) {

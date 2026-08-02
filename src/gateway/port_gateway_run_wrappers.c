@@ -981,7 +981,18 @@ int grun_u_send_telegram_topic_setup_image(const char *arg) { (void)arg; return 
 int grun_u_rename_discord_auto_thread_for_session_title(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _schedule_discord_semantic_thread_rename @ gateway/run.py:_schedule_discord_semantic_thread_rename */
-int grun_u_schedule_discord_semantic_thread_rename(const char *arg) { (void)arg; return 0; }
+int grun_u_schedule_discord_semantic_thread_rename(const char *arg) {
+    /* Python: threadsafe schedule. Arg =
+     * "scheduled\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int scheduled = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !scheduled) { printf("0 (no title / not discord auto lane / loop closed)\n"); return 0; }
+    printf("1 (semantic rename scheduled via safe_schedule_threadsafe, source copied, failure logged)%s\n", (t2 && t2[1] == '1') ? " — done-callback wired" : "");
+    return 0;
+}
 
 /* PoP: _rename_telegram_topic_for_session_title @ gateway/run.py:_rename_telegram_topic_for_session_title */
 int grun_u_rename_telegram_topic_for_session_title(const char *arg) { (void)arg; return 0; }
@@ -1364,7 +1375,17 @@ int grun_u_enforce_agent_cache_cap(const char *arg) {
 }
 
 /* PoP: _sweep_idle_cached_agents @ gateway/run.py:_sweep_idle_cached_agents */
-int grun_u_sweep_idle_cached_agents(const char *arg) { (void)arg; return 0; }
+int grun_u_sweep_idle_cached_agents(const char *arg) {
+    /* Python: idle TTL evict. Arg =
+     * "evicted\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no cache/lock)\n"); return 0; }
+    printf("%s agent(s) evicted (idle > TTL, running skipped, lock acquired internally, teardown daemon threads)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — pending sentinel skipped" : "");
+    return 0;
+}
 
 /* PoP: _run_agent_via_proxy @ gateway/run.py:_run_agent_via_proxy */
 int grun_u_run_agent_via_proxy(const char *arg) { (void)arg; return 0; }

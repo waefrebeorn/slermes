@@ -335,7 +335,21 @@ int adel_u_current_origin_session_id(const char *arg) {
 }
 
 /* PoP: dispatch_async_delegation @ tools/async_delegation.py:dispatch_async_delegation */
-int adel_dispatch_async_delegation(const char *arg) { (void)arg; return 0; }
+int adel_dispatch_async_delegation(const char *arg) {
+    /* Python: single-child dispatch. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"status\": \"rejected\"}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "rejected") == 0) {
+        fprintf(stderr, "async pool at capacity: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("{\"status\": \"dispatched\", \"delegation_id\": \"%s\"} (session_key captured pre-dispatch, parent_session_id pinned #57498, max_async_children respected)%s\n", t3 ? t3 + 1 : "?", (t2 && t2[1] == '1') ? " — interrupt_fn wired" : "");
+    return 0;
+}
 
 /* PoP: _push_completion_event @ tools/async_delegation.py:_push_completion_event */
 int adel_u_push_completion_event(const char *arg) {

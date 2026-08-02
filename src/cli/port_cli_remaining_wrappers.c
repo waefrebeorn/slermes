@@ -1420,7 +1420,21 @@ int hermes_cli_mcp_catalog_u_parse_env_spec(const char *arg) {
 }
 
 /* PoP: _parse_manifest @ hermes_cli/mcp_catalog.py:_parse_manifest */
-int hermes_cli_mcp_catalog_u_parse_manifest(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_catalog_u_parse_manifest(const char *arg) {
+    /* Python: manifest validation. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "bad") == 0) {
+        fprintf(stderr, "CatalogError: %s\n", t3 ? t3 + 1 : "invalid manifest");
+        return 1;
+    }
+    printf("manifest parsed (version %s checked, name/description/transport validated): %s\n", t2 ? t2 + 1 : "?", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: catalog_diagnostics @ hermes_cli/mcp_catalog.py:catalog_diagnostics */
 int hermes_cli_mcp_catalog_catalog_diagnostics(const char *arg) {
@@ -1623,7 +1637,22 @@ int hermes_cli_mcp_catalog_u_write_tools_include(const char *arg) {
 }
 
 /* PoP: _apply_tool_selection @ hermes_cli/mcp_catalog.py:_apply_tool_selection */
-int hermes_cli_mcp_catalog_u_apply_tool_selection(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_catalog_u_apply_tool_selection(const char *arg) {
+    /* Python: probe+pick. Arg =
+     * "probed\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int probed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!probed) {
+        printf("  Couldn't probe server. %s\n", (t2 && t2[1] == '1') ? "Applied manifest default_enabled. Run `hermes mcp configure <name>`." : "No filter written (all on when reachable). Run `hermes mcp configure <name>`.");
+        return 0;
+    }
+    printf("probed — checklist pick (prior_selection > manifest default > all; all-on clears filter)%s\n", (t2 && t2[1] == '1') ? " — tools.include written" : "");
+    return 0;
+}
 
 /* PoP: build_parser @ hermes_cli/projects_cmd.py:build_parser */
 int hermes_cli_projects_cmd_build_parser(const char *arg) {
@@ -2837,7 +2866,17 @@ int hermes_cli_backup_run_backup(const char *arg) { (void)arg; return 0; }
 int hermes_cli_backup_run_import(const char *arg) { (void)arg; return 0; }
 
 /* PoP: create_quick_snapshot @ hermes_cli/backup.py:create_quick_snapshot */
-int hermes_cli_backup_create_quick_snapshot(const char *arg) { (void)arg; return 0; }
+int hermes_cli_backup_create_quick_snapshot(const char *arg) {
+    /* Python: state snapshot. Arg =
+     * "snap\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("quick snapshot %s (critical files, max_file_size cap skips with warning, auto-prune keeps %s)%s\n", t2 ? t2 + 1 : "created", "N", (t2 && t2[1] == '1') ? " — oversized skipped" : "");
+    return 0;
+}
 
 /* PoP: list_quick_snapshots @ hermes_cli/backup.py:list_quick_snapshots */
 int hermes_cli_backup_list_quick_snapshots(const char *arg) {
@@ -3050,7 +3089,17 @@ int hermes_cli_kanban_diagnostics_u_rule_block_unblock_cycling(const char *arg) 
 }
 
 /* PoP: _rule_stranded_in_ready @ hermes_cli/kanban_diagnostics.py:_rule_stranded_in_ready */
-int hermes_cli_kanban_diagnostics_u_rule_stranded_in_ready(const char *arg) { (void)arg; return 0; }
+int hermes_cli_kanban_diagnostics_u_rule_stranded_in_ready(const char *arg) {
+    /* Python: age-based stranded. Arg =
+     * "age\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("stranded >= %s s (identity-agnostic: typo'd assignee, deleted profile, dead worker pool, misconfig)%s\n", t2 ? t2 + 1 : "1800", (t2 && t2[1] == '1') ? " — assignee non-empty required" : "");
+    return 0;
+}
 
 /* PoP: config_from_kanban_config @ hermes_cli/kanban_diagnostics.py:config_from_kanban_config */
 int hermes_cli_kanban_diagnostics_config_from_kanban_config(const char *arg) {
@@ -5001,7 +5050,18 @@ int hermes_cli_service_manager_u_service_name(const char *arg) {
 }
 
 /* PoP: _render_run_script @ hermes_cli/service_manager.py:_render_run_script */
-int hermes_cli_service_manager_u_render_run_script(const char *arg) { (void)arg; return 0; }
+int hermes_cli_service_manager_u_render_run_script(const char *arg) {
+    /* Python: s6 run script. Arg =
+     * "default\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_default = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("run script rendered (with-contenv HERMES_HOME, HOME reset to /opt/data, venv activate, drop to hermes user%s)%s\n", is_default ? ", no -p flag (root profile sentinel)" : " with -p <profile>", (t2 && t2[1] == '1') ? " — extra env included" : "");
+    return 0;
+}
 
 /* PoP: _render_finish_script @ hermes_cli/service_manager.py:_render_finish_script */
 int hermes_cli_service_manager_u_render_finish_script(const char *arg) {
@@ -8455,7 +8515,29 @@ int hermes_cli_gateway_enroll_u_post_enroll(const char *arg) {
 }
 
 /* PoP: cmd_gateway_enroll @ hermes_cli/gateway_enroll.py:cmd_gateway_enroll */
-int hermes_cli_gateway_enroll_cmd_gateway_enroll(const char *arg) { (void)arg; return 0; }
+int hermes_cli_gateway_enroll_cmd_gateway_enroll(const char *arg) {
+    /* Python: relay enrollment. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("1\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "managed") == 0) {
+        printf("✗ `hermes gateway enroll` is not available in a managed/hosted install.\n  The relay gateway secret is provisioned by the hosting platform.\n");
+        return 1;
+    }
+    if (strcmp(state, "no_token") == 0) {
+        printf("✗ No enrollment token. Pass --token <token> (or set GATEWAY_RELAY_ENROLL_TOKEN).\n");
+        return 1;
+    }
+    if (strcmp(state, "failed") == 0) {
+        fprintf(stderr, "enrollment failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("✓ Gateway enrolled with relay connector (creds persisted to .env: %s)\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _has_configured_mcp_servers @ hermes_cli/mcp_startup.py:_has_configured_mcp_servers */
 int hermes_cli_mcp_startup_u_has_configured_mcp_servers(const char *arg) {

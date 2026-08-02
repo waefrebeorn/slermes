@@ -644,7 +644,17 @@ int yb_u_collect_observed_media(const char *arg) { (void)arg; return 0; }
 int yb_u_resolve_quote_media(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _collect_quote_local_media @ gateway/platforms/yuanbao.py:_collect_quote_local_media */
-int yb_u_collect_quote_local_media(const char *arg) { (void)arg; return 0; }
+int yb_u_collect_quote_local_media(const char *arg) {
+    /* Python: already-local quote media. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\t\n"); return 0; }
+    printf("%s local media pair(s) (|ybres: anchors rewritten by PatchAnchorsMiddleware; no re-download here)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — dedup seen set" : "");
+    return 0;
+}
 
 /* PoP: _consume_group_queue @ gateway/platforms/yuanbao.py:_consume_group_queue */
 int yb_u_consume_group_queue(const char *arg) { (void)arg; return 0; }

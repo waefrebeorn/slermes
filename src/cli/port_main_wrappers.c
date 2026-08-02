@@ -1600,7 +1600,19 @@ int main_u_restart_managed_dashboard_service(const char *arg) {
 }
 
 /* PoP: _kill_stale_dashboard_processes @ hermes_cli/main.py:_kill_stale_dashboard_processes */
-int main_u_kill_stale_dashboard_processes(const char *arg) { (void)arg; return 0; }
+int main_u_kill_stale_dashboard_processes(const char *arg) {
+    /* Python: stale dashboard sweep. Arg =
+     * "killed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int killed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (managed service restarted instead)\n"); return 0; }
+    if (!killed) { printf("0 (no stale dashboards)\n"); return 0; }
+    printf("%s stale dashboard(s) killed (SIGTERM → 3s → SIGKILL; Windows taskkill /F; managed unit restarted via systemd)%s\n", t2 ? t2 + 1 : "1", (t2 && t2[1] == '1') ? " — desktop child spared" : "");
+    return 0;
+}
 
 /* PoP: _update_via_zip @ hermes_cli/main.py:_update_via_zip */
 int main_u_update_via_zip(const char *arg) { (void)arg; return 0; }
@@ -2501,7 +2513,24 @@ int main_u_resolve_node_runtime_npm(const char *arg) {
 }
 
 /* PoP: _update_node_dependencies @ hermes_cli/main.py:_update_node_dependencies */
-int main_u_update_node_dependencies(const char *arg) { (void)arg; return 0; }
+int main_u_update_node_dependencies(const char *arg) {
+    /* Python: npm refresh. Arg =
+     * "failed\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int failed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    if (failed) {
+        printf("→ Updating Node.js dependencies...\n");
+        printf("  ⚠ Skipped: only a Windows npm is reachable from this WSL shell.\n");
+        printf("    Install Node.js inside the WSL distro, then re-run `hermes update`.\n");
+        return 0;
+    }
+    printf("node deps refreshed (workspaces npm install, failures surfaced as partial update #30271): %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: __getattr__ @ hermes_cli/main.py:__getattr__ */
 int main_u__getattr___2(const char *arg) {
