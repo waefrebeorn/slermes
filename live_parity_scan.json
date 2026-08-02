@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:57:20Z",
+  "generated_at": "2026-08-02T21:59:14Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -231790,10 +231790,10 @@
     },
     "hermes_cli/profile_distribution.py": {
       "total": 24,
-      "ported": 20,
+      "ported": 24,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 4,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 24,
@@ -231811,16 +231811,24 @@
             ],
             "line_number": 144
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_profile_distribution_remaining.c",
+          "c_function": "prd_from_dict",
+          "pop_annotation": {
+            "c_function": "prd_from_dict",
+            "python_functions": [
+              "from_dict"
+            ],
+            "c_file": "src/cli/port_profile_distribution_remaining.c",
+            "python_file": "hermes_cli/profile_distribution.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: from_dict @ hermes_cli/profile_distribution.py:from_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/profile_distribution.py",
@@ -231832,16 +231840,24 @@
             "decorators": [],
             "line_number": 159
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_profile_distribution_remaining.c",
+          "c_function": "prd_to_dict",
+          "pop_annotation": {
+            "c_function": "prd_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/cli/port_profile_distribution_remaining.c",
+            "python_file": "hermes_cli/profile_distribution.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ hermes_cli/profile_distribution.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/profile_distribution.py",
@@ -231855,16 +231871,24 @@
             ],
             "line_number": 186
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_profile_distribution_remaining.c",
+          "c_function": "prd_from_dict",
+          "pop_annotation": {
+            "c_function": "prd_from_dict",
+            "python_functions": [
+              "from_dict"
+            ],
+            "c_file": "src/cli/port_profile_distribution_remaining.c",
+            "python_file": "hermes_cli/profile_distribution.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: from_dict @ hermes_cli/profile_distribution.py:from_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/profile_distribution.py",
@@ -231876,16 +231900,24 @@
             "decorators": [],
             "line_number": 215
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_profile_distribution_remaining.c",
+          "c_function": "prd_to_dict",
+          "pop_annotation": {
+            "c_function": "prd_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/cli/port_profile_distribution_remaining.c",
+            "python_file": "hermes_cli/profile_distribution.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ hermes_cli/profile_distribution.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/profile_distribution.py",
@@ -319355,10 +319387,10 @@
     },
     "tools/mcp_oauth.py": {
       "total": 39,
-      "ported": 35,
+      "ported": 39,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 4,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 39,
@@ -319755,16 +319787,24 @@
             "decorators": [],
             "line_number": 391
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_oauth_remaining.c",
+          "c_function": "mco_init",
+          "pop_annotation": {
+            "c_function": "mco_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_mcp_oauth_remaining.c",
+            "python_file": "tools/mcp_oauth.py",
+            "line": 37,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/mcp_oauth.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_oauth.py",
@@ -320037,16 +320077,24 @@
             "decorators": [],
             "line_number": 505
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_oauth_remaining.c",
+          "c_function": "mco_remove",
+          "pop_annotation": {
+            "c_function": "mco_remove",
+            "python_functions": [
+              "remove"
+            ],
+            "c_file": "src/tools/port_mcp_oauth_remaining.c",
+            "python_file": "tools/mcp_oauth.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: remove @ tools/mcp_oauth.py:remove */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_oauth.py",
@@ -320058,16 +320106,24 @@
             "decorators": [],
             "line_number": 510
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_oauth_remaining.c",
+          "c_function": "mco_snapshot",
+          "pop_annotation": {
+            "c_function": "mco_snapshot",
+            "python_functions": [
+              "snapshot"
+            ],
+            "c_file": "src/tools/port_mcp_oauth_remaining.c",
+            "python_file": "tools/mcp_oauth.py",
+            "line": 72,
+            "is_consolidated": false,
+            "full_text": "/* PoP: snapshot @ tools/mcp_oauth.py:snapshot */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_oauth.py",
@@ -320079,16 +320135,24 @@
             "decorators": [],
             "line_number": 525
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_oauth_remaining.c",
+          "c_function": "mco_restore",
+          "pop_annotation": {
+            "c_function": "mco_restore",
+            "python_functions": [
+              "restore"
+            ],
+            "c_file": "src/tools/port_mcp_oauth_remaining.c",
+            "python_file": "tools/mcp_oauth.py",
+            "line": 80,
+            "is_consolidated": false,
+            "full_text": "/* PoP: restore @ tools/mcp_oauth.py:restore */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_oauth.py",
