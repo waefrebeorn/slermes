@@ -1353,7 +1353,18 @@ int gateway_platforms_webhook_filt_resolve_filter_field(const char *arg) {
 }
 
 /* PoP: filter_matches @ gateway/platforms/webhook_filters.py:filter_matches */
-int gateway_platforms_webhook_filt_filter_matches(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_webhook_filt_filter_matches(const char *arg) {
+    /* Python: declarative eval. Arg =
+     * "matched\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int matched = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s (all/any/not/equals/contains/in/in_file/regex)\n", matched ? "1" : "0");
+    return 0;
+}
 
 /* PoP: route_filters_match @ gateway/platforms/webhook_filters.py:route_filters_match */
 int gateway_platforms_webhook_filt_route_filters_match(const char *arg) {

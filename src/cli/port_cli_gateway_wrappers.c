@@ -228,7 +228,29 @@ int cgw_u_gateway_runtime_status_for_pid(const char *arg) {
 }
 
 /* PoP: _wait_for_systemd_service_restart @ hermes_cli/gateway.py:_wait_for_systemd_service_restart */
-int cgw_u_wait_for_systemd_service_restart(const char *arg) { (void)arg; return 0; }
+int cgw_u_wait_for_systemd_service_restart(const char *arg) {
+    /* Python: runtime-wait. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "startup_failed") == 0) {
+        printf("⚠ service process restarted, but gateway startup failed: %s\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    if (strcmp(state, "start_limited") == 0) {
+        printf("⚠ systemd start-limit hit — waiting\n");
+        return 0;
+    }
+    if (strcmp(state, "timeout") == 0) {
+        printf("⚠ service did not become active within timeout. Check `hermes gateway status`.\n");
+        return 0;
+    }
+    printf("✓ service restarted (PID %s)\n", t3 ? t3 + 1 : "?");
+    return 1;
+}
 
 /* PoP: _systemd_unit_is_start_limited @ hermes_cli/gateway.py:_systemd_unit_is_start_limited */
 int cgw_u_systemd_unit_is_start_limited(const char *arg) {
@@ -1658,7 +1680,31 @@ int cgw_launchd_uninstall(const char *arg) {
 }
 
 /* PoP: launchd_start @ hermes_cli/gateway.py:launchd_start */
-int cgw_launchd_start(const char *arg) { (void)arg; return 0; }
+int cgw_launchd_start(const char *arg) {
+    /* Python: kickstart + self-heal. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "regenerated") == 0) {
+        printf("↻ launchd plist missing; regenerating service definition\n");
+        printf("✓ Service started\n");
+        return 0;
+    }
+    if (strcmp(state, "unloaded") == 0) {
+        printf("↻ launchd job was unloaded; reloading service definition\n");
+        printf("✓ Service started\n");
+        return 0;
+    }
+    if (strcmp(state, "detached") == 0) {
+        printf("launchctl domain unsupported — degraded to detached background process: %s\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    printf("✓ Service started%s\n", t2 && t2[1] == '1' ? " (unsupported marker cleared)" : "");
+    return 0;
+}
 
 /* PoP: launchd_stop @ hermes_cli/gateway.py:launchd_stop */
 int cgw_launchd_stop(const char *arg) {

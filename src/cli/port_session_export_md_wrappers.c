@@ -202,7 +202,15 @@ int sexmd_u_render_messages(const char *arg) {
 }
 
 /* PoP: _export_body_without_hash @ hermes_cli/session_export_md.py:_export_body_without_hash */
-int sexmd_u_export_body_without_hash(const char *arg) { (void)arg; return 0; }
+int sexmd_u_export_body_without_hash(const char *arg) {
+    /* Python: frontmatter + body. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _body_for_digest @ hermes_cli/session_export_md.py:_body_for_digest */
 int sexmd_u_body_for_digest(const char *arg) {

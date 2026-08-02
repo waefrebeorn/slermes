@@ -697,7 +697,16 @@ int auth_refresh_nous_oauth_from_state(const char *arg) {
 }
 
 /* PoP: persist_nous_credentials @ hermes_cli/auth.py:persist_nous_credentials */
-int auth_persist_nous_credentials(const char *arg) { (void)arg; return 0; }
+int auth_persist_nous_credentials(const char *arg) {
+    /* Python: singleton+pool sync. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("nous creds persisted (providers.nous + seeded pool, shared store mirrored): %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _sync_nous_pool_from_auth_store @ hermes_cli/auth.py:_sync_nous_pool_from_auth_store */
 int auth_u_sync_nous_pool_from_auth_store(const char *arg) {

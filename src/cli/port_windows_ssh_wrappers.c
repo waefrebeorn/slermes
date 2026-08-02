@@ -295,7 +295,22 @@ int wssr_remove_artifact(const char *arg) {
 }
 
 /* PoP: process_state @ hermes_cli/windows_ssh_runtime.py:process_state */
-int wssr_process_state(const char *arg) { (void)arg; return 0; }
+int wssr_process_state(const char *arg) {
+    /* Python: nonce-anchored. Arg =
+     * "alive\towned\tindeterminate\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\"alive\": false, \"owned\": false}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int alive = arg[0] == '1';
+    int owned = t1 && t1[1] == '1';
+    int indeterminate = t2 && t2[1] == '1';
+    int state = t3 && t3[1] == '1';
+    if (!state) { printf("{\"alive\": false, \"owned\": false, \"indeterminate\": false}\n"); return 0; }
+    printf("{\"alive\": %s, \"owned\": %s, \"indeterminate\": %s, \"reason\": \"%s\"}\n", alive ? "true" : "false", owned ? "true" : "false", indeterminate ? "true" : "false", t4 ? t4 + 1 : "?");
+    return 0;
+}
 
 /* PoP: terminate_owned @ hermes_cli/windows_ssh_runtime.py:terminate_owned */
 int wssr_terminate_owned(const char *arg) {

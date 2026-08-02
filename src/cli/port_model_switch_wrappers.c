@@ -155,7 +155,17 @@ int msw_resolve_display_context_length(const char *arg) {
 }
 
 /* PoP: _configured_provider_matches @ hermes_cli/model_switch.py:_configured_provider_matches */
-int msw_u_configured_provider_matches(const char *arg) { (void)arg; return 0; }
+int msw_u_configured_provider_matches(const char *arg) {
+    /* Python: exact-declared routing. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _resolve_named_custom_model_id @ hermes_cli/model_switch.py:_resolve_named_custom_model_id */
 int msw_u_resolve_named_custom_model_id(const char *arg) {

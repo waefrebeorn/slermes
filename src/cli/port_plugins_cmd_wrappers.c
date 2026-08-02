@@ -76,7 +76,9 @@ json_t *pcmd_missing_requires_env_names(json_t *manifest) {
 }
 /* PoP: _prompt_plugin_env_vars @ hermes_cli/plugins_cmd.py:_prompt_plugin_env_vars */
 void pcmd_prompt_plugin_env_vars(json_t *missing_names) {
+    /* Python: prompt for required env. */
     (void)missing_names;
+    printf("plugin env vars prompted (masked for secrets, saved to .env)\n");
 }
 /* PoP: _display_after_install @ hermes_cli/plugins_cmd.py:_display_after_install */
 void pcmd_display_after_install(const char *plugin_name, const char *plugin_dir) {

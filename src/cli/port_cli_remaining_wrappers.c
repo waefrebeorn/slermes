@@ -3947,7 +3947,17 @@ int hermes_cli_gui_uninstall_u_remove_path(const char *arg) {
 }
 
 /* PoP: uninstall_gui @ hermes_cli/gui_uninstall.py:uninstall_gui */
-int hermes_cli_gui_uninstall_uninstall_gui(const char *arg) { (void)arg; return 0; }
+int hermes_cli_gui_uninstall_uninstall_gui(const char *arg) {
+    /* Python: artifact removal. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: coerce_max_concurrent_sessions @ hermes_cli/active_sessions.py:coerce_max_concurrent_sessions */
 int hermes_cli_active_sessions_coerce_max_concurrent_sessions(const char *arg) {
@@ -6945,7 +6955,17 @@ int hermes_cli_credential_lifecycl_u_prune_env_pool_entries(const char *arg) {
 }
 
 /* PoP: _scrub_config_yaml_mirrors @ hermes_cli/credential_lifecycle.py:_scrub_config_yaml_mirrors */
-int hermes_cli_credential_lifecycl_u_scrub_config_yaml_mirrors(const char *arg) { (void)arg; return 0; }
+int hermes_cli_credential_lifecycl_u_scrub_config_yaml_mirrors(const char *arg) {
+    /* Python: value-matched scrub. Arg =
+     * "touched\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("mirrors scrubbed: %s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: purge_env_credential_references @ hermes_cli/credential_lifecycle.py:purge_env_credential_references */
 int hermes_cli_credential_lifecycl_purge_env_credential_references(const char *arg) {

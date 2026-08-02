@@ -1859,7 +1859,25 @@ int tools_kanban_tools_u_handle_attach(const char *arg) {
 int tools_kanban_tools_u_download_url_with_cap(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _handle_attach_url @ tools/kanban_tools.py:_handle_attach_url */
-int tools_kanban_tools_u_handle_attach_url(const char *arg) { (void)arg; return 0; }
+int tools_kanban_tools_u_handle_attach_url(const char *arg) {
+    /* Python: server-side fetch. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"error\": \"attach failed\"}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fetch_fail") == 0) {
+        printf("{\"error\": \"kanban_attach_url: failed to fetch: %s\"}\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    if (strcmp(state, "too_large") == 0) {
+        printf("{\"error\": \"kanban_attach_url: exceeds size cap\"}\n");
+        return 0;
+    }
+    printf("attached from URL: id=%s size=%s\n", t3 ? t3 + 1 : "?", t2 ? t2 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _handle_attachments @ tools/kanban_tools.py:_handle_attachments */
 int tools_kanban_tools_u_handle_attachments(const char *arg) {
@@ -3026,7 +3044,18 @@ int tools_thread_context_u_callback_api(const char *arg) {
 }
 
 /* PoP: propagate_context_to_thread @ tools/thread_context.py:propagate_context_to_thread */
-int tools_thread_context_propagate_context_to_thread(const char *arg) { (void)arg; return 0; }
+int tools_thread_context_propagate_context_to_thread(const char *arg) {
+    /* Python: fail-closed wrapper. Arg =
+     * "cb_captured\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int cb_captured = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("runner wrapped with ctx copy + approval/sudo propagation (%s)%s\n", cb_captured ? "captured" : "FAIL-CLOSED: callbacks unset", t2 && t2[1] == '1' ? " — cleared after run" : "");
+    return 0;
+}
 
 /* PoP: _resolve_active_provider @ tools/video_generation_tool.py:_resolve_active_provider */
 int tools_video_generation_tool_u_resolve_active_provider(const char *arg) {

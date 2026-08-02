@@ -75,7 +75,15 @@ int yb_convert_json_msg_body(const char *arg) {
 }
 
 /* PoP: parse_json_push @ gateway/platforms/yuanbao.py:parse_json_push */
-int yb_parse_json_push(const char *arg) { (void)arg; return 0; }
+int yb_parse_json_push(const char *arg) {
+    /* Python: Pascal+snake. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "empty") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _decode_single @ gateway/platforms/yuanbao.py:_decode_single */
 int yb_u_decode_single(const char *arg) { (void)arg; return 0; }

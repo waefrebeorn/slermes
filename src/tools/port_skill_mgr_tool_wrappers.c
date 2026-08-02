@@ -169,7 +169,17 @@ int smt_u_resolve_skill_dir(const char *arg) {
 }
 
 /* PoP: _find_skill_in_other_profiles @ tools/skill_manager_tool.py:_find_skill_in_other_profiles */
-int smt_u_find_skill_in_other_profiles(const char *arg) { (void)arg; return 0; }
+int smt_u_find_skill_in_other_profiles(const char *arg) {
+    /* Python: cross-profile hint. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _skill_not_found_error @ tools/skill_manager_tool.py:_skill_not_found_error */
 int smt_u_skill_not_found_error(const char *arg) {

@@ -2162,7 +2162,21 @@ int agent_pet_generate_imagegen_u_forced_provider_from_env(const char *arg) {
 }
 
 /* PoP: resolve_provider @ agent/pet/generate/imagegen.py:resolve_provider */
-int agent_pet_generate_imagegen_resolve_provider(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_imagegen_resolve_provider(const char *arg) {
+    /* Python: reference-capable pick. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "none") == 0) {
+        fprintf(stderr, "Pet generation needs an image backend that supports reference images. Configure Nous Portal, OpenRouter, or OpenAI (gpt-image-2).\n");
+        return 1;
+    }
+    printf("sprite provider: %s (references=%s)\n", t3 ? t3 + 1 : "?", t2 && t2[1] == '1' ? "yes" : "no");
+    return 0;
+}
 
 /* PoP: list_sprite_providers @ agent/pet/generate/imagegen.py:list_sprite_providers */
 int agent_pet_generate_imagegen_list_sprite_providers(const char *arg) {

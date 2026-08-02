@@ -223,7 +223,21 @@ int nsub_apply_gateway_defaults(const char *arg) {
 int nsub_prompt_enable_tool_gateway(const char *arg) { (void)arg; return 0; }
 
 /* PoP: ensure_nous_portal_access @ hermes_cli/nous_subscription.py:ensure_nous_portal_access */
-int nsub_ensure_nous_portal_access(const char *arg) { (void)arg; return 0; }
+int nsub_ensure_nous_portal_access(const char *arg) {
+    /* Python: entitled gate. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "entitled") == 0) { printf("1\n"); return 0; }
+    if (strcmp(state, "not_entitled") == 0) {
+        printf("  %s\n", tab ? tab + 1 : "not entitled for this capability");
+        return 0;
+    }
+    if (strcmp(state, "declined") == 0) { printf("0 (login declined)\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _run_nous_portal_login_only @ hermes_cli/nous_subscription.py:_run_nous_portal_login_only */
 int nsub_u_run_nous_portal_login_only(const char *arg) { (void)arg; return 0; }

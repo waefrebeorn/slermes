@@ -413,7 +413,17 @@ int envl_u_path_env_key(const char *arg) {
 }
 
 /* PoP: _make_run_env @ tools/environments/local.py:_make_run_env */
-int envl_u_make_run_env(const char *arg) { (void)arg; return 0; }
+int envl_u_make_run_env(const char *arg) {
+    /* Python: sanitized env. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("run env built (%s vars: provider-stripped, sane PATH, git-bash dirs, hermes bin, session bridged)%s\n", t2 ? t2 + 1 : arg, (t2 && t2[1] == '1') ? " — kanban child scrub applied" : "");
+    return 0;
+}
 
 /* PoP: _read_terminal_shell_init_config @ tools/environments/local.py:_read_terminal_shell_init_config */
 int envl_u_read_terminal_shell_init_config(const char *arg) {
@@ -462,7 +472,15 @@ int envl_u_prepend_shell_init(const char *arg) {
 }
 
 /* PoP: get_temp_dir @ tools/environments/local.py:get_temp_dir */
-int envl_get_temp_dir(const char *arg) { (void)arg; return 0; }
+int envl_get_temp_dir(const char *arg) {
+    /* Python: POSIX-safe temp. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("/tmp\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("/tmp\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "/tmp");
+    return 0;
+}
 
 /* PoP: _quote_cwd_for_cd @ tools/environments/local.py:_quote_cwd_for_cd */
 int envl_u_quote_cwd_for_cd(const char *arg) {

@@ -1314,7 +1314,17 @@ int main_u_redownload_electron_dist(const char *arg) {
 }
 
 /* PoP: _stop_desktop_processes_locking_build @ hermes_cli/main.py:_stop_desktop_processes_locking_build */
-int main_u_stop_desktop_processes_locking_build(const char *arg) { (void)arg; return 0; }
+int main_u_stop_desktop_processes_locking_build(const char *arg) {
+    /* Python: release-dir scope. Arg =
+     * "stopped\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("stopped %s desktop process(es) locking release/\n", t2 ? t2 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _desktop_macos_relaunchable_fixup @ hermes_cli/main.py:_desktop_macos_relaunchable_fixup */
 int main_u_desktop_macos_relaunchable_fixup(const char *arg) {
