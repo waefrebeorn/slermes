@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:49:52Z",
+  "generated_at": "2026-08-02T19:51:52Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -37016,10 +37016,10 @@
     },
     "agent/lsp/manager.py": {
       "total": 20,
-      "ported": 7,
+      "ported": 20,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 13,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 20,
@@ -37035,16 +37035,24 @@
             "decorators": [],
             "line_number": 71
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_manager_remaining.c",
+          "c_function": "lspm_init",
+          "pop_annotation": {
+            "c_function": "lspm_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_lsp_manager_remaining.c",
+            "python_file": "agent/lsp/manager.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/lsp/manager.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/manager.py",
@@ -37056,16 +37064,24 @@
             "decorators": [],
             "line_number": 76
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_manager_remaining.c",
+          "c_function": "lspm_start",
+          "pop_annotation": {
+            "c_function": "lspm_start",
+            "python_functions": [
+              "start"
+            ],
+            "c_file": "src/agent/port_lsp_manager_remaining.c",
+            "python_file": "agent/lsp/manager.py",
+            "line": 28,
+            "is_consolidated": false,
+            "full_text": "/* PoP: start @ agent/lsp/manager.py:start */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/manager.py",
@@ -37077,16 +37093,24 @@
             "decorators": [],
             "line_number": 87
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_manager_remaining.c",
+          "c_function": "lspm_run_forever",
+          "pop_annotation": {
+            "c_function": "lspm_run_forever",
+            "python_functions": [
+              "_run_forever"
+            ],
+            "c_file": "src/agent/port_lsp_manager_remaining.c",
+            "python_file": "agent/lsp/manager.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _run_forever @ agent/lsp/manager.py:_run_forever */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/manager.py",
@@ -37098,16 +37122,24 @@
             "decorators": [],
             "line_number": 100
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_manager_remaining.c",
+          "c_function": "lspm_run",
+          "pop_annotation": {
+            "c_function": "lspm_run",
+            "python_functions": [
+              "run"
+            ],
+            "c_file": "src/agent/port_lsp_manager_remaining.c",
+            "python_file": "agent/lsp/manager.py",
+            "line": 41,
+            "is_consolidated": false,
+            "full_text": "/* PoP: run @ agent/lsp/manager.py:run */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/manager.py",
@@ -37119,16 +37151,24 @@
             "decorators": [],
             "line_number": 119
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_manager_remaining.c",
+          "c_function": "lspm_stop",
+          "pop_annotation": {
+            "c_function": "lspm_stop",
+            "python_functions": [
+              "stop"
+            ],
+            "c_file": "src/agent/port_lsp_manager_remaining.c",
+            "python_file": "agent/lsp/manager.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stop @ agent/lsp/manager.py:stop */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/manager.py",
@@ -37140,16 +37180,24 @@
             "decorators": [],
             "line_number": 146
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_manager_remaining.c",
+          "c_function": "lspm_init",
+          "pop_annotation": {
+            "c_function": "lspm_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_lsp_manager_remaining.c",
+            "python_file": "agent/lsp/manager.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/lsp/manager.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/manager.py",
@@ -37308,16 +37356,24 @@
             "decorators": [],
             "line_number": 400
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_manager_remaining.c",
+          "c_function": "lspm_mark_broken_for_file",
+          "pop_annotation": {
+            "c_function": "lspm_mark_broken_for_file",
+            "python_functions": [
+              "_mark_broken_for_file"
+            ],
+            "c_file": "src/agent/port_lsp_manager_remaining.c",
+            "python_file": "agent/lsp/manager.py",
+            "line": 55,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _mark_broken_for_file @ agent/lsp/manager.py:_mark_broken_for_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/manager.py",
@@ -37358,16 +37414,24 @@
             "decorators": [],
             "line_number": 463
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_manager_remaining.c",
+          "c_function": "lspm_snapshot_async",
+          "pop_annotation": {
+            "c_function": "lspm_snapshot_async",
+            "python_functions": [
+              "_snapshot_async"
+            ],
+            "c_file": "src/agent/port_lsp_manager_remaining.c",
+            "python_file": "agent/lsp/manager.py",
+            "line": 63,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _snapshot_async @ agent/lsp/manager.py:_snapshot_async */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/manager.py",
@@ -37379,16 +37443,24 @@
             "decorators": [],
             "line_number": 481
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_manager_remaining.c",
+          "c_function": "lspm_open_and_wait_async",
+          "pop_annotation": {
+            "c_function": "lspm_open_and_wait_async",
+            "python_functions": [
+              "_open_and_wait_async"
+            ],
+            "c_file": "src/agent/port_lsp_manager_remaining.c",
+            "python_file": "agent/lsp/manager.py",
+            "line": 71,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _open_and_wait_async @ agent/lsp/manager.py:_open_and_wait_async */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/manager.py",
@@ -37400,16 +37472,24 @@
             "decorators": [],
             "line_number": 507
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_manager_remaining.c",
+          "c_function": "lspm_current_diags_async",
+          "pop_annotation": {
+            "c_function": "lspm_current_diags_async",
+            "python_functions": [
+              "_current_diags_async"
+            ],
+            "c_file": "src/agent/port_lsp_manager_remaining.c",
+            "python_file": "agent/lsp/manager.py",
+            "line": 79,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _current_diags_async @ agent/lsp/manager.py:_current_diags_async */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/manager.py",
@@ -37450,16 +37530,24 @@
             "decorators": [],
             "line_number": 600
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_manager_remaining.c",
+          "c_function": "lspm_shutdown_async",
+          "pop_annotation": {
+            "c_function": "lspm_shutdown_async",
+            "python_functions": [
+              "_shutdown_async"
+            ],
+            "c_file": "src/agent/port_lsp_manager_remaining.c",
+            "python_file": "agent/lsp/manager.py",
+            "line": 87,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _shutdown_async @ agent/lsp/manager.py:_shutdown_async */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/manager.py",
@@ -37471,16 +37559,24 @@
             "decorators": [],
             "line_number": 615
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_manager_remaining.c",
+          "c_function": "lspm_get_status",
+          "pop_annotation": {
+            "c_function": "lspm_get_status",
+            "python_functions": [
+              "get_status"
+            ],
+            "c_file": "src/agent/port_lsp_manager_remaining.c",
+            "python_file": "agent/lsp/manager.py",
+            "line": 94,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_status @ agent/lsp/manager.py:get_status */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/manager.py",
@@ -37492,16 +37588,24 @@
             "decorators": [],
             "line_number": 639
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_manager_remaining.c",
+          "c_function": "lspm_diag_key",
+          "pop_annotation": {
+            "c_function": "lspm_diag_key",
+            "python_functions": [
+              "_diag_key"
+            ],
+            "c_file": "src/agent/port_lsp_manager_remaining.c",
+            "python_file": "agent/lsp/manager.py",
+            "line": 100,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _diag_key @ agent/lsp/manager.py:_diag_key */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -57620,10 +57724,10 @@
     },
     "agent/secret_sources/onepassword.py": {
       "total": 19,
-      "ported": 6,
+      "ported": 19,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 13,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 19,
@@ -57697,16 +57801,24 @@
             "decorators": [],
             "line_number": 147
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onepassword_remaining.c",
+          "c_function": "opw_validate_references",
+          "pop_annotation": {
+            "c_function": "opw_validate_references",
+            "python_functions": [
+              "_validate_references"
+            ],
+            "c_file": "src/agent/port_onepassword_remaining.c",
+            "python_file": "agent/secret_sources/onepassword.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _validate_references @ agent/secret_sources/onepassword.py:_validate_references */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/onepassword.py",
@@ -57776,16 +57888,24 @@
             "decorators": [],
             "line_number": 210
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onepassword_remaining.c",
+          "c_function": "opw_find_op",
+          "pop_annotation": {
+            "c_function": "opw_find_op",
+            "python_functions": [
+              "find_op"
+            ],
+            "c_file": "src/agent/port_onepassword_remaining.c",
+            "python_file": "agent/secret_sources/onepassword.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: find_op @ agent/secret_sources/onepassword.py:find_op */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/onepassword.py",
@@ -57826,16 +57946,24 @@
             "decorators": [],
             "line_number": 237
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onepassword_remaining.c",
+          "c_function": "opw_op_child_env",
+          "pop_annotation": {
+            "c_function": "opw_op_child_env",
+            "python_functions": [
+              "_op_child_env"
+            ],
+            "c_file": "src/agent/port_onepassword_remaining.c",
+            "python_file": "agent/secret_sources/onepassword.py",
+            "line": 61,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _op_child_env @ agent/secret_sources/onepassword.py:_op_child_env */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/onepassword.py",
@@ -57847,16 +57975,24 @@
             "decorators": [],
             "line_number": 256
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onepassword_remaining.c",
+          "c_function": "opw_run_op_read",
+          "pop_annotation": {
+            "c_function": "opw_run_op_read",
+            "python_functions": [
+              "_run_op_read"
+            ],
+            "c_file": "src/agent/port_onepassword_remaining.c",
+            "python_file": "agent/secret_sources/onepassword.py",
+            "line": 68,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _run_op_read @ agent/secret_sources/onepassword.py:_run_op_read */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/onepassword.py",
@@ -57868,16 +58004,24 @@
             "decorators": [],
             "line_number": 316
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onepassword_remaining.c",
+          "c_function": "opw_fetch_onepassword_secrets",
+          "pop_annotation": {
+            "c_function": "opw_fetch_onepassword_secrets",
+            "python_functions": [
+              "fetch_onepassword_secrets"
+            ],
+            "c_file": "src/agent/port_onepassword_remaining.c",
+            "python_file": "agent/secret_sources/onepassword.py",
+            "line": 76,
+            "is_consolidated": false,
+            "full_text": "/* PoP: fetch_onepassword_secrets @ agent/secret_sources/onepassword.py:fetch_onepassword_secrets */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/onepassword.py",
@@ -57889,16 +58033,24 @@
             "decorators": [],
             "line_number": 391
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onepassword_remaining.c",
+          "c_function": "opw_apply_onepassword_secrets",
+          "pop_annotation": {
+            "c_function": "opw_apply_onepassword_secrets",
+            "python_functions": [
+              "apply_onepassword_secrets"
+            ],
+            "c_file": "src/agent/port_onepassword_remaining.c",
+            "python_file": "agent/secret_sources/onepassword.py",
+            "line": 84,
+            "is_consolidated": false,
+            "full_text": "/* PoP: apply_onepassword_secrets @ agent/secret_sources/onepassword.py:apply_onepassword_secrets */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/onepassword.py",
@@ -57910,16 +58062,24 @@
             "decorators": [],
             "line_number": 511
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onepassword_remaining.c",
+          "c_function": "opw_override_existing",
+          "pop_annotation": {
+            "c_function": "opw_override_existing",
+            "python_functions": [
+              "override_existing"
+            ],
+            "c_file": "src/agent/port_onepassword_remaining.c",
+            "python_file": "agent/secret_sources/onepassword.py",
+            "line": 92,
+            "is_consolidated": false,
+            "full_text": "/* PoP: override_existing @ agent/secret_sources/onepassword.py:override_existing */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/onepassword.py",
@@ -57960,16 +58120,24 @@
             "decorators": [],
             "line_number": 524
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onepassword_remaining.c",
+          "c_function": "opw_config_schema",
+          "pop_annotation": {
+            "c_function": "opw_config_schema",
+            "python_functions": [
+              "config_schema"
+            ],
+            "c_file": "src/agent/port_onepassword_remaining.c",
+            "python_file": "agent/secret_sources/onepassword.py",
+            "line": 98,
+            "is_consolidated": false,
+            "full_text": "/* PoP: config_schema @ agent/secret_sources/onepassword.py:config_schema */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/onepassword.py",
@@ -57981,16 +58149,24 @@
             "decorators": [],
             "line_number": 554
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onepassword_remaining.c",
+          "c_function": "opw_fetch",
+          "pop_annotation": {
+            "c_function": "opw_fetch",
+            "python_functions": [
+              "fetch"
+            ],
+            "c_file": "src/agent/port_onepassword_remaining.c",
+            "python_file": "agent/secret_sources/onepassword.py",
+            "line": 103,
+            "is_consolidated": false,
+            "full_text": "/* PoP: fetch @ agent/secret_sources/onepassword.py:fetch */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/onepassword.py",
@@ -58002,16 +58178,24 @@
             "decorators": [],
             "line_number": 616
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onepassword_remaining.c",
+          "c_function": "opw_remediation",
+          "pop_annotation": {
+            "c_function": "opw_remediation",
+            "python_functions": [
+              "remediation"
+            ],
+            "c_file": "src/agent/port_onepassword_remaining.c",
+            "python_file": "agent/secret_sources/onepassword.py",
+            "line": 110,
+            "is_consolidated": false,
+            "full_text": "/* PoP: remediation @ agent/secret_sources/onepassword.py:remediation */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/onepassword.py",
@@ -58023,16 +58207,24 @@
             "decorators": [],
             "line_number": 635
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onepassword_remaining.c",
+          "c_function": "opw_classify_op_error",
+          "pop_annotation": {
+            "c_function": "opw_classify_op_error",
+            "python_functions": [
+              "_classify_op_error"
+            ],
+            "c_file": "src/agent/port_onepassword_remaining.c",
+            "python_file": "agent/secret_sources/onepassword.py",
+            "line": 121,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _classify_op_error @ agent/secret_sources/onepassword.py:_classify_op_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/onepassword.py",
@@ -58044,16 +58236,24 @@
             "decorators": [],
             "line_number": 660
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onepassword_remaining.c",
+          "c_function": "opw_clear_caches",
+          "pop_annotation": {
+            "c_function": "opw_clear_caches",
+            "python_functions": [
+              "clear_caches"
+            ],
+            "c_file": "src/agent/port_onepassword_remaining.c",
+            "python_file": "agent/secret_sources/onepassword.py",
+            "line": 139,
+            "is_consolidated": false,
+            "full_text": "/* PoP: clear_caches @ agent/secret_sources/onepassword.py:clear_caches */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/onepassword.py",
@@ -58065,16 +58265,24 @@
             "decorators": [],
             "line_number": 671
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onepassword_remaining.c",
+          "c_function": "opw_reset_cache_for_tests",
+          "pop_annotation": {
+            "c_function": "opw_reset_cache_for_tests",
+            "python_functions": [
+              "_reset_cache_for_tests"
+            ],
+            "c_file": "src/agent/port_onepassword_remaining.c",
+            "python_file": "agent/secret_sources/onepassword.py",
+            "line": 145,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _reset_cache_for_tests @ agent/secret_sources/onepassword.py:_reset_cache_for_tests */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
