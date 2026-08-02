@@ -732,7 +732,21 @@ int agent_chat_completion_helpers_u_bedrock_reasoning_stale_floor(const char *ar
 int agent_chat_completion_helpers_u_dispatch_nonstreaming_api_re_st(const char *arg) { (void)arg; return 0; }
 
 /* PoP: should_use_direct_api_call @ agent/chat_completion_helpers.py:should_use_direct_api_call */
-int agent_chat_completion_helpers_should_use_direct_api_call(const char *arg) { (void)arg; return 0; }
+int agent_chat_completion_helpers_should_use_direct_api_call(const char *arg) {
+    /* Python: cron + chat_completions + not moa. Arg =
+     * "platform\tapi_mode\tprovider". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    size_t plen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    size_t mlen = t2 ? (size_t)(t2 - t1 - 1) : 0;
+    const char *provider = t2 ? t2 + 1 : "";
+    int cron = (plen == 4 && strncmp(arg, "cron", 4) == 0);
+    int cc = (mlen == 15 && strncmp(t1 + 1, "chat_completions", 15) == 0);
+    int not_moa = strcmp(provider, "moa") != 0;
+    printf("%d\n", (cron && cc && not_moa) ? 1 : 0);
+    return 0;
+}
 
 /* PoP: direct_api_call @ agent/chat_completion_helpers.py:direct_api_call */
 int agent_chat_completion_helpers_direct_api_call(const char *arg) { (void)arg; return 0; }

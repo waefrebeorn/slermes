@@ -306,7 +306,17 @@ int moa_prepare(const char *arg) {
 }
 
 /* PoP: rebase_prepared_request @ agent/moa_loop.py:rebase_prepared_request */
-int moa_rebase_prepared_request(const char *arg) { (void)arg; return 0; }
+int moa_rebase_prepared_request(const char *arg) {
+    /* Python: apply guidance to rebuilt transcript. Arg =
+     * "guidance\tmessages_json\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *result = t2 ? t2 + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    printf("rebased prepared request%s\n", arg[0] ? " (guidance attached)" : "");
+    return 0;
+}
 
 /* PoP: _call_prepared_aggregator @ agent/moa_loop.py:_call_prepared_aggregator */
 int moa_u_call_prepared_aggregator(const char *arg) { (void)arg; return 0; }

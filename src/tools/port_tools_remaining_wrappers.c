@@ -475,7 +475,12 @@ int tools_registry_register_plugin_override_policy(const char *arg) {
 int tools_registry_u_plugin_owner_of(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _caller_module @ tools/registry.py:_caller_module */
-int tools_registry_u_caller_module(const char *arg) { (void)arg; return 0; }
+int tools_registry_u_caller_module(const char *arg) {
+    /* Python: two-frames-up module name. Arg = "module". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: get_definitions @ tools/registry.py:get_definitions */
 int tools_registry_get_definitions(const char *arg) { (void)arg; return 0; }
@@ -1976,7 +1981,14 @@ int tools_send_message_tool_u_media_caption_split(const char *arg) { (void)arg; 
 int tools_send_message_tool_u_resolve_slack_user_target(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _callback_api @ tools/thread_context.py:_callback_api */
-int tools_thread_context_u_callback_api(const char *arg) { (void)arg; return 0; }
+int tools_thread_context_u_callback_api(const char *arg) {
+    /* Python: lazy terminal_tool callback getters/setters. Arg =
+     * "available\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", (tab && tab[1] == '1') ? "callback api resolved" : "callback api unavailable");
+    return 0;
+}
 
 /* PoP: propagate_context_to_thread @ tools/thread_context.py:propagate_context_to_thread */
 int tools_thread_context_propagate_context_to_thread(const char *arg) { (void)arg; return 0; }

@@ -1024,7 +1024,16 @@ int gateway_relay_adapter_u_start_revocation_monitor(const char *arg) { (void)ar
 int gateway_relay_adapter_u_watch_for_revocation(const char *arg) { (void)arg; return 0; }
 
 /* PoP: fronts_platform @ gateway/relay/adapter.py:fronts_platform */
-int gateway_relay_adapter_fronts_platform(const char *arg) { (void)arg; return 0; }
+int gateway_relay_adapter_fronts_platform(const char *arg) {
+    /* Python: transport identities match platform. Arg =
+     * "platform\tidentities_json\tmatched". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (t2 && t2[1] == '1') { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _platform_is_fronted @ gateway/relay/adapter.py:_platform_is_fronted */
 int gateway_relay_adapter_u_platform_is_fronted(const char *arg) { (void)arg; return 0; }

@@ -250,7 +250,20 @@ int auth_u_read_xai_oauth_tokens(const char *arg) { (void)arg; return 0; }
 int auth_u_save_xai_oauth_tokens(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _xai_access_token_is_expiring @ hermes_cli/auth.py:_xai_access_token_is_expiring */
-int auth_u_xai_access_token_is_expiring(const char *arg) { (void)arg; return 0; }
+int auth_u_xai_access_token_is_expiring(const char *arg) {
+    /* Python: JWT exp <= now + skew. Arg = "exp\tskew\tnow\tvalid". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int valid = t3 && t3[1] == '1';
+    if (!valid) { printf("0\n"); return 0; }
+    double exp = strtod(arg, NULL);
+    double skew = t1 ? strtod(t1 + 1, NULL) : 0;
+    double now = t2 ? strtod(t2 + 1, NULL) : 0;
+    printf("%d\n", exp <= (now + skew) ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _xai_proactive_refresh_skew_seconds @ hermes_cli/auth.py:_xai_proactive_refresh_skew_seconds */
 int auth_u_xai_proactive_refresh_skew_seconds(const char *arg) { (void)arg; return 0; }

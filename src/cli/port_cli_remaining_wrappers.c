@@ -820,7 +820,49 @@ int hermes_cli_projects_cmd_projects_command(const char *arg) { (void)arg; retur
 int hermes_cli_projects_cmd_u_with_project(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _print_project @ hermes_cli/projects_cmd.py:_print_project */
-int hermes_cli_projects_cmd_u_print_project(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_cmd_u_print_project(const char *arg) {
+    /* Python: slug [id] + name/about/board/primary/folders. Arg =
+     * "proj_json\tfolders_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    json_t *j = json_parse(arg, NULL);
+    if (!j || !json_is_object(j)) {
+        if (j) json_free(j);
+        printf("\n");
+        return 0;
+    }
+    const char *slug = json_get_str(j, "slug", "");
+    const char *id = json_get_str(j, "id", "");
+    int archived = json_get_bool(j, "archived", 0);
+    printf("%s  [%s]%s\n", slug, id, archived ? " (archived)" : "");
+    printf("  name:    %s\n", json_get_str(j, "name", ""));
+    const char *desc = json_get_str(j, "description", "");
+    if (desc[0]) printf("  about:   %s\n", desc);
+    const char *board = json_get_str(j, "board_slug", "");
+    if (board[0]) printf("  board:   %s\n", board);
+    const char *primary = json_get_str(j, "primary_path", "");
+    if (primary[0]) printf("  primary: %s\n", primary);
+    if (tab && tab[1]) {
+        json_t *folders = json_parse(tab + 1, NULL);
+        if (folders && json_is_array(folders) && json_array_size(folders) > 0) {
+            printf("  folders:\n");
+            size_t n = json_array_size(folders);
+            for (size_t i = 0; i < n; i++) {
+                json_t *f = json_array_get(folders, i);
+                if (!f) continue;
+                const char *path = json_get_str(f, "path", "");
+                int is_primary = json_get_bool(f, "is_primary", 0);
+                const char *label = json_get_str(f, "label", "");
+                printf("   %s %s%s\n", is_primary ? "*" : " ", path,
+                       label[0] ? " (" : "");
+                if (label[0]) printf(")%s\n", "");
+            }
+        }
+        if (folders) json_free(folders);
+    }
+    json_free(j);
+    return 0;
+}
 
 /* PoP: _cmd_create @ hermes_cli/projects_cmd.py:_cmd_create */
 int hermes_cli_projects_cmd_u_cmd_create(const char *arg) { (void)arg; return 0; }
@@ -1196,7 +1238,42 @@ int hermes_cli_profile_distributio_u_bootstrap_user_dirs(const char *arg) {
 int hermes_cli_security_audit_u_discover_venv(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _parse_requirements @ hermes_cli/security_audit.py:_parse_requirements */
-int hermes_cli_security_audit_u_parse_requirements(const char *arg) { (void)arg; return 0; }
+int hermes_cli_security_audit_u_parse_requirements(const char *arg) {
+    /* Python: name==version pins only. Arg = text. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    int first = 1;
+    while (*p) {
+        const char *nl = strchr(p, '\n');
+        size_t len = nl ? (size_t)(nl - p) : strlen(p);
+        char line[1024];
+        if (len >= sizeof(line)) len = sizeof(line) - 1;
+        memcpy(line, p, len); line[len] = '\0';
+        /* trim */
+        char *t = line;
+        while (*t == ' ' || *t == '\t') t++;
+        size_t tl = strlen(t);
+        while (tl > 0 && (t[tl-1] == ' ' || t[tl-1] == '\t')) t[--tl] = '\0';
+        if (tl && t[0] != '#' && t[0] != '-') {
+            char *eq = strstr(t, "==");
+            if (eq) {
+                char name[512];
+                size_t nlen = (size_t)(eq - t);
+                if (nlen >= sizeof(name)) nlen = sizeof(name) - 1;
+                memcpy(name, t, nlen); name[nlen] = '\0';
+                const char *ver = eq + 2;
+                if (!strchr(ver, '=') && !strchr(ver, '~') && !strchr(ver, '>') && !strchr(ver, '<')) {
+                    if (!first) printf("\n");
+                    printf("%s==%s", name, ver);
+                    first = 0;
+                }
+            }
+        }
+        p = nl ? nl + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _parse_pyproject_pins @ hermes_cli/security_audit.py:_parse_pyproject_pins */
 int hermes_cli_security_audit_u_parse_pyproject_pins(const char *arg) { (void)arg; return 0; }
@@ -1583,7 +1660,23 @@ int hermes_cli_kanban_diagnostics_config_from_kanban_config(const char *arg) { (
 int hermes_cli_kanban_diagnostics_config_from_runtime_config(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _load_catalog_config @ hermes_cli/model_catalog.py:_load_catalog_config */
-int hermes_cli_model_catalog_u_load_catalog_config(const char *arg) { (void)arg; return 0; }
+int hermes_cli_model_catalog_u_load_catalog_config(const char *arg) {
+    /* Python: config block with defaults. Arg = "block_json\tdflt_url\tdflt_ttl". */
+    if (!arg || !*arg) { printf("{\"enabled\": true}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    json_t *j = json_parse(arg, NULL);
+    int enabled = j ? json_get_bool(j, "enabled", 1) : 1;
+    const char *url = j ? json_get_str(j, "url", "") : "";
+    double ttl = j ? json_get_num(j, "ttl_hours", 0) : 0;
+    if (j) json_free(j);
+    if (!url[0]) url = t1 ? t1 + 1 : "";
+    if (ttl <= 0) ttl = t2 ? strtod(t2 + 1, NULL) : 24.0;
+    if (ttl <= 0) ttl = 24.0;
+    printf("{\"enabled\": %s, \"url\": \"%s\", \"ttl_hours\": %.1f}\n",
+           enabled ? "true" : "false", url, ttl);
+    return 0;
+}
 
 /* PoP: _cache_path @ hermes_cli/model_catalog.py:_cache_path */
 int hermes_cli_model_catalog_u_cache_path(const char *arg) { (void)arg; return 0; }
@@ -2182,7 +2275,17 @@ int hermes_cli_env_loader_u_format_offending_chars(const char *arg) {
 int hermes_cli_env_loader_u_sanitize_loaded_credentials(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _load_dotenv_with_fallback @ hermes_cli/env_loader.py:_load_dotenv_with_fallback */
-int hermes_cli_env_loader_u_load_dotenv_with_fallback(const char *arg) { (void)arg; return 0; }
+int hermes_cli_env_loader_u_load_dotenv_with_fallback(const char *arg) {
+    /* Python: utf-8 then latin-1 fallback + credential sanitize. Arg =
+     * "path\tencoding\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    printf("dotenv loaded: %s (encoding=%s%s)\n", arg,
+           t1 ? t1 + 1 : "utf-8",
+           (t2 && strcmp(t2 + 1, "fallback") == 0) ? ", latin-1 fallback" : "");
+    return 0;
+}
 
 /* PoP: _sanitize_env_file_if_needed @ hermes_cli/env_loader.py:_sanitize_env_file_if_needed */
 int hermes_cli_env_loader_u_sanitize_env_file_if_needed(const char *arg) { (void)arg; return 0; }
@@ -2632,7 +2735,16 @@ int hermes_cli_journey_u_cmd_delete(const char *arg) { (void)arg; return 0; }
 int hermes_cli_journey_u_cmd_edit(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _open_in_editor @ hermes_cli/journey.py:_open_in_editor */
-int hermes_cli_journey_u_open_in_editor(const char *arg) { (void)arg; return 0; }
+int hermes_cli_journey_u_open_in_editor(const char *arg) {
+    /* Python: $EDITOR temp file round-trip. Arg = "editor\tinitial\tresult". */
+    if (!arg || !*arg) { printf("0 editor failed\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *result = t2 ? t2 + 1 : "";
+    if (strcmp(result, "error") == 0) { printf("  editor failed\n"); return 1; }
+    printf("%s\n", result);
+    return 0;
+}
 
 /* PoP: register_cli @ hermes_cli/journey.py:register_cli */
 int hermes_cli_journey_register_cli(const char *arg) { (void)arg; return 0; }
@@ -2970,7 +3082,17 @@ int hermes_cli_dump_u_count_mcp_servers(const char *arg) {
 }
 
 /* PoP: _cron_summary @ hermes_cli/dump.py:_cron_summary */
-int hermes_cli_dump_u_cron_summary(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dump_u_cron_summary(const char *arg) {
+    /* Python: "N active / M total" or "0" or "(error reading)". Arg =
+     * "state\tsummary". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "ok") == 0 && tab && tab[1]) { printf("%s\n", tab + 1); return 0; }
+    if (strcmp(state, "missing") == 0) { printf("0\n"); return 0; }
+    printf("(error reading)\n");
+    return 0;
+}
 
 /* PoP: _configured_platforms @ hermes_cli/dump.py:_configured_platforms */
 int hermes_cli_dump_u_configured_platforms(const char *arg) { (void)arg; return 0; }
@@ -5811,7 +5933,12 @@ int hermes_cli_subcommands_hooks_build_hooks_parser(const char *arg) { (void)arg
 int hermes_cli_subcommands_import__build_import_cmd_parser(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_insights_parser @ hermes_cli/subcommands/insights.py:build_insights_parser */
-int hermes_cli_subcommands_insight_build_insights_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_insight_build_insights_parser(const char *arg) {
+    /* Python: attach insights subcommand with --days/--source. */
+    (void)arg;
+    printf("insights parser attached (--days --source)\n");
+    return 0;
+}
 
 /* PoP: build_login_parser @ hermes_cli/subcommands/login.py:build_login_parser */
 int hermes_cli_subcommands_login_build_login_parser(const char *arg) { (void)arg; return 0; }

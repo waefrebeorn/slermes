@@ -73,7 +73,16 @@ int cgw_launch_detached_profile_gateway_restart(const char *arg) {
 }
 
 /* PoP: _probe_systemd_service_running @ hermes_cli/gateway.py:_probe_systemd_service_running */
-int cgw_u_probe_systemd_service_running(const char *arg) { (void)arg; return 0; }
+int cgw_u_probe_systemd_service_running(const char *arg) {
+    /* Python: (system, is-active == active). Arg = "system\tunit_exists\tactive". */
+    if (!arg || !*arg) { printf("user\t0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int unit_exists = t1 && t1[1] == '1';
+    if (!unit_exists) { printf("%s\t0\n", arg); return 0; }
+    printf("%s\t%d\n", arg, (t2 && strncmp(t2 + 1, "active", 6) == 0) ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _read_systemd_unit_environment @ hermes_cli/gateway.py:_read_systemd_unit_environment */
 int cgw_u_read_systemd_unit_environment(const char *arg) { (void)arg; return 0; }
@@ -934,7 +943,15 @@ int cgw_u_select_systemd_scope(const char *arg) {
 }
 
 /* PoP: _system_scope_wizard_would_need_root @ hermes_cli/gateway.py:_system_scope_wizard_would_need_root */
-int cgw_u_system_scope_wizard_would_need_root(const char *arg) { (void)arg; return 0; }
+int cgw_u_system_scope_wizard_would_need_root(const char *arg) {
+    /* Python: non-root AND system scope selected. Arg = "is_root\tsystem_scope". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int is_root = arg[0] == '1';
+    int system_scope = tab && tab[1] == '1';
+    printf("%d\n", (!is_root && system_scope) ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _print_system_scope_remediation @ hermes_cli/gateway.py:_print_system_scope_remediation */
 int cgw_u_print_system_scope_remediation(const char *arg) { (void)arg; return 0; }

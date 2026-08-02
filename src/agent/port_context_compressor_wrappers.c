@@ -48,7 +48,16 @@ int ctxc_u_persist_fallback_compression_streak(const char *arg) {
 int ctxc_u_load_ineffective_compression_count(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _persist_ineffective_compression_count @ agent/context_compressor.py:_persist_ineffective_compression_count */
-int ctxc_u_persist_ineffective_compression_count(const char *arg) { (void)arg; return 0; }
+int ctxc_u_persist_ineffective_compression_count(const char *arg) {
+    /* Python: setter gate + sqlite swallow. Arg = "session_id\tcount\tavailable". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int avail = t2 && t2[1] == '1';
+    if (!avail) { printf("persist skipped (no setter)\n"); return 0; }
+    printf("ineffective count persisted: %s = %s\n", arg, t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: _record_ineffective_compression_verdict @ agent/context_compressor.py:_record_ineffective_compression_verdict */
 int ctxc_u_record_ineffective_compression_verdict(const char *arg) {

@@ -19,7 +19,32 @@ int envl_u_msys_to_windows_path(const char *arg) { (void)arg; return 0; }
 int envl_u_resolve_local_initial_cwd(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _windows_to_msys_path @ tools/environments/local.py:_windows_to_msys_path */
-int envl_u_windows_to_msys_path(const char *arg) { (void)arg; return 0; }
+int envl_u_windows_to_msys_path(const char *arg) {
+    /* Python: C:\Users\x -> /c/Users/x. Arg = "is_windows\tpath". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int is_windows = arg[0] == '1';
+    const char *path = tab ? tab + 1 : "";
+    if (!is_windows || !path[0]) { printf("%s\n", path); return 0; }
+    if (!(path[0] >= 'A' && path[0] <= 'Z') && !(path[0] >= 'a' && path[0] <= 'z')) { printf("%s\n", path); return 0; }
+    if (path[1] != ':') { printf("%s\n", path); return 0; }
+    char out[1024];
+    size_t w = 0;
+    out[w++] = '/';
+    out[w++] = (char)(path[0] >= 'A' && path[0] <= 'Z' ? path[0] + 32 : path[0]);
+    out[w++] = '/';
+    const char *p = path + 2;
+    while (*p && w < sizeof(out) - 1) {
+        char c = *p++;
+        if (c == '\\') c = '/';
+        if (c == '/' && w > 0 && out[w-1] == '/') continue;
+        out[w++] = c;
+    }
+    while (w > 1 && out[w-1] == '/') w--;
+    out[w] = '\0';
+    printf("%s\n", out);
+    return 0;
+}
 
 /* PoP: _bash_safe_path @ tools/environments/local.py:_bash_safe_path */
 int envl_u_bash_safe_path(const char *arg) {

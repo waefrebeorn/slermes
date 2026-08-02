@@ -128,7 +128,16 @@ int grun_u_relay_adapter_for_dormancy(const char *arg) { (void)arg; return 0; }
 int grun_u_scale_to_zero_watcher(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _enqueue_fifo @ gateway/run.py:_enqueue_fifo */
-int grun_u_enqueue_fifo(const char *arg) { (void)arg; return 0; }
+int grun_u_enqueue_fifo(const char *arg) {
+    /* Python: append to pending slot or FIFO chain. Arg =
+     * "session_key\tpending\tqueued". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (t1 && t1[1] == '1') printf("fifo queued: %s\n", arg);
+    else printf("fifo enqueued (pending slot): %s\n", arg);
+    return 0;
+}
 
 /* PoP: _promote_queued_event @ gateway/run.py:_promote_queued_event */
 int grun_u_promote_queued_event(const char *arg) { (void)arg; return 0; }

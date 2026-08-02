@@ -65,7 +65,15 @@ int cua_u_computer_use_max_image_dimension(const char *arg) {
 }
 
 /* PoP: cua_driver_child_env @ tools/computer_use/cua_backend.py:cua_driver_child_env */
-int cua_cua_driver_child_env(const char *arg) { (void)arg; return 0; }
+int cua_cua_driver_child_env(const char *arg) {
+    /* Python: base env + telemetry-disable var. Arg = "telemetry_disabled\tenv_json". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int disabled = arg[0] == '1';
+    if (disabled) printf("CUA_DRIVER_RS_TELEMETRY_ENABLED=0\n");
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _z_index_uninformative @ tools/computer_use/cua_backend.py:_z_index_uninformative */
 int cua_u_z_index_uninformative(const char *arg) {

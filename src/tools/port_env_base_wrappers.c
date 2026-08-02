@@ -59,7 +59,17 @@ int envb_u_get_activity_callback(const char *arg) {
 int envb_touch_activity_if_due(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_sandbox_dir @ tools/environments/base.py:get_sandbox_dir */
-int envb_get_sandbox_dir(const char *arg) { (void)arg; return 0; }
+int envb_get_sandbox_dir(const char *arg) {
+    /* Python: TERMINAL_SANDBOX_DIR or HERMES_HOME/sandboxes. Arg =
+     * "custom\thermes_home". */
+    if (!arg || !*arg) {
+        const char *h = getenv("HERMES_HOME");
+        printf("%s/sandboxes\n", (h && *h) ? h : "~/.hermes");
+        return 0;
+    }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _pipe_stdin @ tools/environments/base.py:_pipe_stdin */
 int envb_u_pipe_stdin(const char *arg) { (void)arg; return 0; }
