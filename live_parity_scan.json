@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T18:40:13Z",
+  "generated_at": "2026-08-02T18:42:08Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -62556,10 +62556,10 @@
     },
     "agent/tool_guardrails.py": {
       "total": 22,
-      "ported": 1,
+      "ported": 21,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 21,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 22,
@@ -62577,16 +62577,24 @@
             ],
             "line_number": 84
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_guardrails_remaining.c",
+          "c_function": "tg_from_mapping",
+          "pop_annotation": {
+            "c_function": "tg_from_mapping",
+            "python_functions": [
+              "from_mapping"
+            ],
+            "c_file": "src/agent/port_tool_guardrails_remaining.c",
+            "python_file": "agent/tool_guardrails.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: from_mapping @ agent/tool_guardrails.py:from_mapping */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_guardrails.py",
@@ -62600,16 +62608,24 @@
             ],
             "line_number": 135
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_guardrails_remaining.c",
+          "c_function": "tg_from_call",
+          "pop_annotation": {
+            "c_function": "tg_from_call",
+            "python_functions": [
+              "from_call"
+            ],
+            "c_file": "src/agent/port_tool_guardrails_remaining.c",
+            "python_file": "agent/tool_guardrails.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: from_call @ agent/tool_guardrails.py:from_call */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_guardrails.py",
@@ -62621,16 +62637,24 @@
             "decorators": [],
             "line_number": 139
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_guardrails_remaining.c",
+          "c_function": "tg_to_metadata",
+          "pop_annotation": {
+            "c_function": "tg_to_metadata",
+            "python_functions": [
+              "to_metadata"
+            ],
+            "c_file": "src/agent/port_tool_guardrails_remaining.c",
+            "python_file": "agent/tool_guardrails.py",
+            "line": 40,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_metadata @ agent/tool_guardrails.py:to_metadata */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_guardrails.py",
@@ -62644,16 +62668,24 @@
             ],
             "line_number": 156
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_guardrails_remaining.c",
+          "c_function": "tg_allows_execution",
+          "pop_annotation": {
+            "c_function": "tg_allows_execution",
+            "python_functions": [
+              "allows_execution"
+            ],
+            "c_file": "src/agent/port_tool_guardrails_remaining.c",
+            "python_file": "agent/tool_guardrails.py",
+            "line": 48,
+            "is_consolidated": false,
+            "full_text": "/* PoP: allows_execution @ agent/tool_guardrails.py:allows_execution */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_guardrails.py",
@@ -62667,16 +62699,24 @@
             ],
             "line_number": 160
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_guardrails_remaining.c",
+          "c_function": "tg_should_halt",
+          "pop_annotation": {
+            "c_function": "tg_should_halt",
+            "python_functions": [
+              "should_halt"
+            ],
+            "c_file": "src/agent/port_tool_guardrails_remaining.c",
+            "python_file": "agent/tool_guardrails.py",
+            "line": 55,
+            "is_consolidated": false,
+            "full_text": "/* PoP: should_halt @ agent/tool_guardrails.py:should_halt */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_guardrails.py",
@@ -62688,16 +62728,24 @@
             "decorators": [],
             "line_number": 163
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_guardrails_remaining.c",
+          "c_function": "tg_to_metadata",
+          "pop_annotation": {
+            "c_function": "tg_to_metadata",
+            "python_functions": [
+              "to_metadata"
+            ],
+            "c_file": "src/agent/port_tool_guardrails_remaining.c",
+            "python_file": "agent/tool_guardrails.py",
+            "line": 40,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_metadata @ agent/tool_guardrails.py:to_metadata */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_guardrails.py",
@@ -62709,16 +62757,24 @@
             "decorators": [],
             "line_number": 176
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_guardrails_remaining.c",
+          "c_function": "tg_canonical_tool_args",
+          "pop_annotation": {
+            "c_function": "tg_canonical_tool_args",
+            "python_functions": [
+              "canonical_tool_args"
+            ],
+            "c_file": "src/agent/port_tool_guardrails_remaining.c",
+            "python_file": "agent/tool_guardrails.py",
+            "line": 61,
+            "is_consolidated": false,
+            "full_text": "/* PoP: canonical_tool_args @ agent/tool_guardrails.py:canonical_tool_args */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_guardrails.py",
@@ -62730,16 +62786,24 @@
             "decorators": [],
             "line_number": 189
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_guardrails_remaining.c",
+          "c_function": "tg_classify_tool_failure",
+          "pop_annotation": {
+            "c_function": "tg_classify_tool_failure",
+            "python_functions": [
+              "classify_tool_failure"
+            ],
+            "c_file": "src/agent/port_tool_guardrails_remaining.c",
+            "python_file": "agent/tool_guardrails.py",
+            "line": 69,
+            "is_consolidated": false,
+            "full_text": "/* PoP: classify_tool_failure @ agent/tool_guardrails.py:classify_tool_failure */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_guardrails.py",
@@ -62772,16 +62836,24 @@
             "decorators": [],
             "line_number": 231
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_guardrails_remaining.c",
+          "c_function": "tg_reset_for_turn",
+          "pop_annotation": {
+            "c_function": "tg_reset_for_turn",
+            "python_functions": [
+              "reset_for_turn"
+            ],
+            "c_file": "src/agent/port_tool_guardrails_remaining.c",
+            "python_file": "agent/tool_guardrails.py",
+            "line": 77,
+            "is_consolidated": false,
+            "full_text": "/* PoP: reset_for_turn @ agent/tool_guardrails.py:reset_for_turn */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_guardrails.py",
@@ -62795,16 +62867,24 @@
             ],
             "line_number": 238
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_guardrails_remaining.c",
+          "c_function": "tg_halt_decision",
+          "pop_annotation": {
+            "c_function": "tg_halt_decision",
+            "python_functions": [
+              "halt_decision"
+            ],
+            "c_file": "src/agent/port_tool_guardrails_remaining.c",
+            "python_file": "agent/tool_guardrails.py",
+            "line": 84,
+            "is_consolidated": false,
+            "full_text": "/* PoP: halt_decision @ agent/tool_guardrails.py:halt_decision */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_guardrails.py",
@@ -62816,16 +62896,24 @@
             "decorators": [],
             "line_number": 241
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_guardrails_remaining.c",
+          "c_function": "tg_before_call",
+          "pop_annotation": {
+            "c_function": "tg_before_call",
+            "python_functions": [
+              "before_call"
+            ],
+            "c_file": "src/agent/port_tool_guardrails_remaining.c",
+            "python_file": "agent/tool_guardrails.py",
+            "line": 90,
+            "is_consolidated": false,
+            "full_text": "/* PoP: before_call @ agent/tool_guardrails.py:before_call */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_guardrails.py",
@@ -62837,16 +62925,24 @@
             "decorators": [],
             "line_number": 285
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_guardrails_remaining.c",
+          "c_function": "tg_after_call",
+          "pop_annotation": {
+            "c_function": "tg_after_call",
+            "python_functions": [
+              "after_call"
+            ],
+            "c_file": "src/agent/port_tool_guardrails_remaining.c",
+            "python_file": "agent/tool_guardrails.py",
+            "line": 98,
+            "is_consolidated": false,
+            "full_text": "/* PoP: after_call @ agent/tool_guardrails.py:after_call */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_guardrails.py",
@@ -62858,16 +62954,24 @@
             "decorators": [],
             "line_number": 377
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_guardrails_remaining.c",
+          "c_function": "tg_is_idempotent",
+          "pop_annotation": {
+            "c_function": "tg_is_idempotent",
+            "python_functions": [
+              "_is_idempotent"
+            ],
+            "c_file": "src/agent/port_tool_guardrails_remaining.c",
+            "python_file": "agent/tool_guardrails.py",
+            "line": 106,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_idempotent @ agent/tool_guardrails.py:_is_idempotent */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_guardrails.py",
@@ -62879,16 +62983,24 @@
             "decorators": [],
             "line_number": 383
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_guardrails_remaining.c",
+          "c_function": "tg_toolguard_synthetic_result",
+          "pop_annotation": {
+            "c_function": "tg_toolguard_synthetic_result",
+            "python_functions": [
+              "toolguard_synthetic_result"
+            ],
+            "c_file": "src/agent/port_tool_guardrails_remaining.c",
+            "python_file": "agent/tool_guardrails.py",
+            "line": 115,
+            "is_consolidated": false,
+            "full_text": "/* PoP: toolguard_synthetic_result @ agent/tool_guardrails.py:toolguard_synthetic_result */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_guardrails.py",
@@ -62900,16 +63012,24 @@
             "decorators": [],
             "line_number": 394
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_guardrails_remaining.c",
+          "c_function": "tg_append_toolguard_guidance",
+          "pop_annotation": {
+            "c_function": "tg_append_toolguard_guidance",
+            "python_functions": [
+              "append_toolguard_guidance"
+            ],
+            "c_file": "src/agent/port_tool_guardrails_remaining.c",
+            "python_file": "agent/tool_guardrails.py",
+            "line": 125,
+            "is_consolidated": false,
+            "full_text": "/* PoP: append_toolguard_guidance @ agent/tool_guardrails.py:append_toolguard_guidance */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_guardrails.py",
@@ -62921,16 +63041,24 @@
             "decorators": [],
             "line_number": 406
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_guardrails_remaining.c",
+          "c_function": "tg_tool_failure_recovery_hint",
+          "pop_annotation": {
+            "c_function": "tg_tool_failure_recovery_hint",
+            "python_functions": [
+              "_tool_failure_recovery_hint"
+            ],
+            "c_file": "src/agent/port_tool_guardrails_remaining.c",
+            "python_file": "agent/tool_guardrails.py",
+            "line": 133,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _tool_failure_recovery_hint @ agent/tool_guardrails.py:_tool_failure_recovery_hint */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_guardrails.py",
@@ -62942,16 +63070,24 @@
             "decorators": [],
             "line_number": 426
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_guardrails_remaining.c",
+          "c_function": "tg_coerce_args",
+          "pop_annotation": {
+            "c_function": "tg_coerce_args",
+            "python_functions": [
+              "_coerce_args"
+            ],
+            "c_file": "src/agent/port_tool_guardrails_remaining.c",
+            "python_file": "agent/tool_guardrails.py",
+            "line": 143,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _coerce_args @ agent/tool_guardrails.py:_coerce_args */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_guardrails.py",
@@ -62963,16 +63099,24 @@
             "decorators": [],
             "line_number": 430
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_guardrails_remaining.c",
+          "c_function": "tg_result_hash",
+          "pop_annotation": {
+            "c_function": "tg_result_hash",
+            "python_functions": [
+              "_result_hash"
+            ],
+            "c_file": "src/agent/port_tool_guardrails_remaining.c",
+            "python_file": "agent/tool_guardrails.py",
+            "line": 150,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _result_hash @ agent/tool_guardrails.py:_result_hash */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_guardrails.py",
@@ -62984,16 +63128,24 @@
             "decorators": [],
             "line_number": 448
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_guardrails_remaining.c",
+          "c_function": "tg_as_bool",
+          "pop_annotation": {
+            "c_function": "tg_as_bool",
+            "python_functions": [
+              "_as_bool"
+            ],
+            "c_file": "src/agent/port_tool_guardrails_remaining.c",
+            "python_file": "agent/tool_guardrails.py",
+            "line": 158,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _as_bool @ agent/tool_guardrails.py:_as_bool */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_guardrails.py",
@@ -63005,16 +63157,24 @@
             "decorators": [],
             "line_number": 464
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_guardrails_remaining.c",
+          "c_function": "tg_positive_int",
+          "pop_annotation": {
+            "c_function": "tg_positive_int",
+            "python_functions": [
+              "_positive_int"
+            ],
+            "c_file": "src/agent/port_tool_guardrails_remaining.c",
+            "python_file": "agent/tool_guardrails.py",
+            "line": 174,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _positive_int @ agent/tool_guardrails.py:_positive_int */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_guardrails.py",
