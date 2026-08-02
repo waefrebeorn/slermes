@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T22:49:08Z",
+  "generated_at": "2026-08-02T22:51:12Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -310579,10 +310579,10 @@
     },
     "tools/environments/ssh.py": {
       "total": 13,
-      "ported": 10,
+      "ported": 13,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 13,
@@ -310627,17 +310627,24 @@
             "decorators": [],
             "line_number": 45
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_env_ssh_remaining.c",
+          "c_function": "esh_init",
+          "pop_annotation": {
+            "c_function": "esh_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_env_ssh_remaining.c",
+            "python_file": "tools/environments/ssh.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/environments/ssh.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/ssh.py",
@@ -310881,17 +310888,24 @@
             "decorators": [],
             "line_number": 335
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_env_ssh_remaining.c",
+          "c_function": "esh_before_execute",
+          "pop_annotation": {
+            "c_function": "esh_before_execute",
+            "python_functions": [
+              "_before_execute"
+            ],
+            "c_file": "src/tools/port_env_ssh_remaining.c",
+            "python_file": "tools/environments/ssh.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _before_execute @ tools/environments/ssh.py:_before_execute */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/ssh.py",
@@ -310932,17 +310946,24 @@
             "decorators": [],
             "line_number": 355
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_env_ssh_remaining.c",
+          "c_function": "esh_cleanup",
+          "pop_annotation": {
+            "c_function": "esh_cleanup",
+            "python_functions": [
+              "cleanup"
+            ],
+            "c_file": "src/tools/port_env_ssh_remaining.c",
+            "python_file": "tools/environments/ssh.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cleanup @ tools/environments/ssh.py:cleanup */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -321560,10 +321581,10 @@
     },
     "tools/mcp_oauth_manager.py": {
       "total": 13,
-      "ported": 10,
+      "ported": 13,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 13,
@@ -321637,16 +321658,24 @@
             "decorators": [],
             "line_number": 454
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_oauth_manager_remaining.c",
+          "c_function": "mom_init",
+          "pop_annotation": {
+            "c_function": "mom_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_mcp_oauth_manager_remaining.c",
+            "python_file": "tools/mcp_oauth_manager.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/mcp_oauth_manager.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_oauth_manager.py",
@@ -321689,16 +321718,24 @@
             ],
             "line_number": 503
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_oauth_manager_remaining.c",
+          "c_function": "mom_key",
+          "pop_annotation": {
+            "c_function": "mom_key",
+            "python_functions": [
+              "_key"
+            ],
+            "c_file": "src/tools/port_mcp_oauth_manager_remaining.c",
+            "python_file": "tools/mcp_oauth_manager.py",
+            "line": 27,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _key @ tools/mcp_oauth_manager.py:_key */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_oauth_manager.py",
@@ -321739,16 +321776,24 @@
             "decorators": [],
             "line_number": 585
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_mcp_oauth_manager_remaining.c",
+          "c_function": "mom_remove",
+          "pop_annotation": {
+            "c_function": "mom_remove",
+            "python_functions": [
+              "remove"
+            ],
+            "c_file": "src/tools/port_mcp_oauth_manager_remaining.c",
+            "python_file": "tools/mcp_oauth_manager.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: remove @ tools/mcp_oauth_manager.py:remove */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_oauth_manager.py",
