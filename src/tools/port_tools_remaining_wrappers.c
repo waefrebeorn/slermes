@@ -124,7 +124,15 @@ int tools_computer_use_tool_u_summarize_action(const char *arg) {
 }
 
 /* PoP: _image_dimensions_from_b64 @ tools/computer_use/tool.py:_image_dimensions_from_b64 */
-int tools_computer_use_tool_u_image_dimensions_from_b64(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_tool_u_image_dimensions_from_b64(const char *arg) {
+    /* Python: PNG/JFIF parse. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _coerce_max_elements @ tools/computer_use/tool.py:_coerce_max_elements */
 int tools_computer_use_tool_u_coerce_max_elements(const char *arg) {
@@ -185,7 +193,21 @@ int tools_computer_use_tool_u_capture_after_mode(const char *arg) {
 int tools_computer_use_tool_u_route_capture_through_aux_vision(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _maybe_follow_capture @ tools/computer_use/tool.py:_maybe_follow_capture */
-int tools_computer_use_tool_u_maybe_follow_capture(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_tool_u_maybe_follow_capture(const char *arg) {
+    /* Python: post-action capture. Arg =
+     * "do_capture\tok\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int do_capture = arg[0] == '1';
+    int ok = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!do_capture || !ok) { printf("text response (no follow-up)\n"); return 0; }
+    printf("follow-up capture merged: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _format_elements @ tools/computer_use/tool.py:_format_elements */
 int tools_computer_use_tool_u_format_elements(const char *arg) {

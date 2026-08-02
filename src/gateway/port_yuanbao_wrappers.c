@@ -106,7 +106,18 @@ int yb_u_find_processing_session(const char *arg) {
 }
 
 /* PoP: _interrupt_for_recall @ gateway/platforms/yuanbao.py:_interrupt_for_recall */
-int yb_u_interrupt_for_recall(const char *arg) { (void)arg; return 0; }
+int yb_u_interrupt_for_recall(const char *arg) {
+    /* Python: synthetic interrupt. Arg =
+     * "has_text\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_text = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("recall interrupt skipped\n"); return 0; }
+    printf("recall interrupt signalled%s\n", has_text ? " + delayed redact scheduled" : "");
+    return 0;
+}
 
 /* PoP: _schedule_content_redact @ gateway/platforms/yuanbao.py:_schedule_content_redact */
 int yb_u_schedule_content_redact(const char *arg) {

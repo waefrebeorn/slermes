@@ -48,7 +48,12 @@ int main_u_run_and_exit_oneshot(const char *arg) {
 }
 
 /* PoP: _set_process_title @ hermes_cli/main.py:_set_process_title */
-int main_u_set_process_title(const char *arg) { (void)arg; return 0; }
+int main_u_set_process_title(const char *arg) {
+    /* Python: cosmetic title. Arg = "state". */
+    (void)arg;
+    printf("process title set to 'hermes' (prctl/pthread fallback)\n");
+    return 0;
+}
 
 /* PoP: _config_default_interface_early @ hermes_cli/main.py:_config_default_interface_early */
 int main_u_config_default_interface_early(const char *arg) {

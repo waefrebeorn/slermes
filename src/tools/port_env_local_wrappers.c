@@ -387,7 +387,16 @@ int envl_u_read_terminal_shell_init_config(const char *arg) {
 }
 
 /* PoP: _resolve_shell_init_files @ tools/environments/local.py:_resolve_shell_init_files */
-int envl_u_resolve_shell_init_files(const char *arg) { (void)arg; return 0; }
+int envl_u_resolve_shell_init_files(const char *arg) {
+    /* Python: source list. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _prepend_shell_init @ tools/environments/local.py:_prepend_shell_init */
 int envl_u_prepend_shell_init(const char *arg) {

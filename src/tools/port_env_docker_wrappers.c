@@ -189,7 +189,15 @@ int envd_u_build_security_args(const char *arg) {
 }
 
 /* PoP: _image_uses_init_entrypoint @ tools/environments/docker.py:_image_uses_init_entrypoint */
-int envd_u_image_uses_init_entrypoint(const char *arg) { (void)arg; return 0; }
+int envd_u_image_uses_init_entrypoint(const char *arg) {
+    /* Python: s6 /init detect. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _resolve_host_user_spec @ tools/environments/docker.py:_resolve_host_user_spec */
 int envd_u_resolve_host_user_spec(const char *arg) {

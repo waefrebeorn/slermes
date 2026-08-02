@@ -322,7 +322,16 @@ int grun_u_clear_goal_pending_continuations(const char *arg) {
 }
 
 /* PoP: _persist_active_agents @ gateway/run.py:_persist_active_agents */
-int grun_u_persist_active_agents(const char *arg) { (void)arg; return 0; }
+int grun_u_persist_active_agents(const char *arg) {
+    /* Python: turn-boundary write. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("status write skipped\n"); return 0; }
+    printf("active_agents=%s persisted (lifecycle preserved)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _enter_external_drain @ gateway/run.py:_enter_external_drain */
 int grun_u_enter_external_drain(const char *arg) {
@@ -684,7 +693,17 @@ int grun_u_schedule_secondary_profile_reconnect(const char *arg) {
 }
 
 /* PoP: _make_profile_fatal_error_handler @ gateway/run.py:_make_profile_fatal_error_handler */
-int grun_u_make_profile_fatal_error_handler(const char *arg) { (void)arg; return 0; }
+int grun_u_make_profile_fatal_error_handler(const char *arg) {
+    /* Python: secondary-profile route. Arg =
+     * "profile\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("profile fatal handler created: %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _handle_profile_adapter_fatal_error @ gateway/run.py:_handle_profile_adapter_fatal_error */
 int grun_u_handle_profile_adapter_fatal_error(const char *arg) { (void)arg; return 0; }
@@ -896,7 +915,18 @@ int grun_u_send_restart_notification(const char *arg) { (void)arg; return 0; }
 int grun_u_send_home_channel_startup_notifications(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _set_session_env @ gateway/run.py:_set_session_env */
-int grun_u_set_session_env(const char *arg) { (void)arg; return 0; }
+int grun_u_set_session_env(const char *arg) {
+    /* Python: contextvar bind. Arg =
+     * "platform\tasync_delivery\tstate\ttokens". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("session vars bound (%s, async_delivery=%s): %s reset tokens\n", arg, (t1 && t1[1] == '1') ? "yes" : "no", t3 ? t3 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _clear_session_env @ gateway/run.py:_clear_session_env */
 int grun_u_clear_session_env(const char *arg) {

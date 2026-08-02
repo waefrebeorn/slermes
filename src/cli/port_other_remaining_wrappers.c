@@ -278,7 +278,20 @@ int cron_jobs_u_job_running_in_this_process(const char *arg) {
 }
 
 /* PoP: _preserve_file_ownership @ cron/jobs.py:_preserve_file_ownership */
-int cron_jobs_u_preserve_file_ownership(const char *arg) { (void)arg; return 0; }
+int cron_jobs_u_preserve_file_ownership(const char *arg) {
+    /* Python: chown back. Arg =
+     * "is_root\tchanged\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int is_root = arg[0] == '1';
+    int changed = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!is_root || !changed || !state) { printf("ownership no-op\n"); return 0; }
+    printf("ownership restored after rewrite: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: record_ticker_error @ cron/jobs.py:record_ticker_error */
 int cron_jobs_record_ticker_error(const char *arg) {

@@ -2584,7 +2584,19 @@ int agent_display_u_display_url(const char *arg) {
 }
 
 /* PoP: build_status_phrase @ agent/display.py:build_status_phrase */
-int agent_display_build_status_phrase(const char *arg) { (void)arg; return 0; }
+int agent_display_build_status_phrase(const char *arg) {
+    /* Python: present-tense phrase. Arg =
+     * "tool_name\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *tool = arg;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (strcmp(tool, "_thinking") == 0) { printf("\n"); return 0; }
+    printf("%s…\n", t2 ? t2 + 1 : "is working");
+    return 0;
+}
 
 /* PoP: _get_cute_tool_message @ agent/display.py:_get_cute_tool_message */
 int agent_display_u_get_cute_tool_message(const char *arg) { (void)arg; return 0; }

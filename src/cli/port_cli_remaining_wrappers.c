@@ -599,7 +599,24 @@ int hermes_cli_cli_billing_mixin_u_subscription_open_portal(const char *arg) {
 }
 
 /* PoP: _subscription_change_menu @ hermes_cli/cli_billing_mixin.py:_subscription_change_menu */
-int hermes_cli_cli_billing_mixin_u_subscription_change_menu(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cli_billing_mixin_u_subscription_change_menu(const char *arg) {
+    /* Python: change menu. Arg =
+     * "has_pending\tchoice\tstate\tresult". */
+    if (!arg || !*arg) { printf("  🟡 Closed. No plan change.\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int has_pending = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    const char *choice = t2 ? t2 + 1 : "";
+    if (!state) { printf("  🟡 Closed. No plan change.\n"); return 0; }
+    if (strcmp(choice, "keep") == 0) { printf("keep (undo pending change)\n"); return 0; }
+    if (strcmp(choice, "change") == 0) { printf("change plan flow\n"); return 0; }
+    if (strcmp(choice, "cancel_sub") == 0) { printf("cancel subscription flow\n"); return 0; }
+    if (strcmp(choice, "portal") == 0) { printf("portal hand-off: %s\n", t3 ? t3 + 1 : ""); return 0; }
+    printf("  🟡 Closed. No plan change.\n");
+    return 0;
+}
 
 /* PoP: _subscription_pick_tier @ hermes_cli/cli_billing_mixin.py:_subscription_pick_tier */
 int hermes_cli_cli_billing_mixin_u_subscription_pick_tier(const char *arg) {
@@ -2684,7 +2701,17 @@ int hermes_cli_kanban_diagnostics_u_rule_repeated_failures(const char *arg) { (v
 int hermes_cli_kanban_diagnostics_u_rule_repeated_crashes(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _rule_stuck_in_blocked @ hermes_cli/kanban_diagnostics.py:_rule_stuck_in_blocked */
-int hermes_cli_kanban_diagnostics_u_rule_stuck_in_blocked(const char *arg) { (void)arg; return 0; }
+int hermes_cli_kanban_diagnostics_u_rule_stuck_in_blocked(const char *arg) {
+    /* Python: stale-blocked warning. Arg =
+     * "hours\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _rule_block_unblock_cycling @ hermes_cli/kanban_diagnostics.py:_rule_block_unblock_cycling */
 int hermes_cli_kanban_diagnostics_u_rule_block_unblock_cycling(const char *arg) { (void)arg; return 0; }
@@ -3654,7 +3681,17 @@ int hermes_cli_gui_uninstall_source_built_gui_artifacts(const char *arg) {
 }
 
 /* PoP: packaged_gui_app_paths @ hermes_cli/gui_uninstall.py:packaged_gui_app_paths */
-int hermes_cli_gui_uninstall_packaged_gui_app_paths(const char *arg) { (void)arg; return 0; }
+int hermes_cli_gui_uninstall_packaged_gui_app_paths(const char *arg) {
+    /* Python: well-known locations. Arg =
+     * "platform\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: agent_is_installed @ hermes_cli/gui_uninstall.py:agent_is_installed */
 int hermes_cli_gui_uninstall_agent_is_installed(const char *arg) {
@@ -5519,7 +5556,24 @@ int hermes_cli_dashboard_auth_nati_u_capacity_ok_locked(const char *arg) {
 }
 
 /* PoP: register_pending @ hermes_cli/dashboard_auth/native_flow.py:register_pending */
-int hermes_cli_dashboard_auth_nati_register_pending(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_nati_register_pending(const char *arg) {
+    /* Python: per-IP cap. Arg = "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "full") == 0) {
+        fprintf(stderr, "native-flow authorization store at capacity\n");
+        return 1;
+    }
+    if (strcmp(state, "ip_cap") == 0) {
+        fprintf(stderr, "too many pending native authorizations from this address\n");
+        return 1;
+    }
+    printf("broker_state=%s\n", t3 ? t3 + 1 : "?");
+    return 0;
+}
 
 /* PoP: get_pending @ hermes_cli/dashboard_auth/native_flow.py:get_pending */
 int hermes_cli_dashboard_auth_nati_get_pending(const char *arg) {

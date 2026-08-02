@@ -304,7 +304,24 @@ int auth_u_print_loopback_ssh_hint(const char *arg) {
 }
 
 /* PoP: _read_codex_tokens @ hermes_cli/auth.py:_read_codex_tokens */
-int auth_u_read_codex_tokens(const char *arg) { (void)arg; return 0; }
+int auth_u_read_codex_tokens(const char *arg) {
+    /* Python: store read. Arg = "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_state") == 0) {
+        fprintf(stderr, "No Codex credentials stored. Run `hermes auth` to authenticate.\n");
+        return 1;
+    }
+    if (strcmp(state, "no_tokens") == 0 || strcmp(state, "no_access") == 0 || strcmp(state, "no_refresh") == 0) {
+        fprintf(stderr, "Codex auth missing tokens. Run `hermes auth` to re-authenticate.\n");
+        return 1;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _sync_codex_pool_entries @ hermes_cli/auth.py:_sync_codex_pool_entries */
 int auth_u_sync_codex_pool_entries(const char *arg) { (void)arg; return 0; }
@@ -340,7 +357,22 @@ int auth_u_recover_codex_tokens_from_cli(const char *arg) {
 int auth_refresh_codex_oauth_pure(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _refresh_codex_auth_tokens @ hermes_cli/auth.py:_refresh_codex_auth_tokens */
-int auth_u_refresh_codex_auth_tokens(const char *arg) { (void)arg; return 0; }
+int auth_u_refresh_codex_auth_tokens(const char *arg) {
+    /* Python: refresh + self-heal. Arg =
+     * "state\tresult\timported". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "relogin") == 0) {
+        if (t3 && t3[1] == '1') { printf("recovered from ~/.codex/auth.json\n"); return 0; }
+        fprintf(stderr, "Codex refresh failed — re-auth required\n");
+        return 1;
+    }
+    printf("codex tokens refreshed: %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _import_codex_cli_tokens @ hermes_cli/auth.py:_import_codex_cli_tokens */
 int auth_u_import_codex_cli_tokens(const char *arg) {
