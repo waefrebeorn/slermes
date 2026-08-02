@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:17:19Z",
+  "generated_at": "2026-08-02T19:19:15Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -123195,10 +123195,10 @@
     },
     "gateway/relay/__init__.py": {
       "total": 19,
-      "ported": 0,
+      "ported": 19,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 19,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 19,
@@ -123214,16 +123214,24 @@
             "decorators": [],
             "line_number": 25
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_init_remaining.c",
+          "c_function": "rly_relay_url",
+          "pop_annotation": {
+            "c_function": "rly_relay_url",
+            "python_functions": [
+              "relay_url"
+            ],
+            "c_file": "src/gateway/port_relay_init_remaining.c",
+            "python_file": "gateway/relay/__init__.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: relay_url @ gateway/relay/__init__.py:relay_url */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/__init__.py",
@@ -123235,16 +123243,24 @@
             "decorators": [],
             "line_number": 48
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_init_remaining.c",
+          "c_function": "rly_relay_platform_identities",
+          "pop_annotation": {
+            "c_function": "rly_relay_platform_identities",
+            "python_functions": [
+              "relay_platform_identities"
+            ],
+            "c_file": "src/gateway/port_relay_init_remaining.c",
+            "python_file": "gateway/relay/__init__.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: relay_platform_identities @ gateway/relay/__init__.py:relay_platform_identities */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/__init__.py",
@@ -123256,16 +123272,24 @@
             "decorators": [],
             "line_number": 82
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_init_remaining.c",
+          "c_function": "rly_relay_bot_ids_map",
+          "pop_annotation": {
+            "c_function": "rly_relay_bot_ids_map",
+            "python_functions": [
+              "_relay_bot_ids_map"
+            ],
+            "c_file": "src/gateway/port_relay_init_remaining.c",
+            "python_file": "gateway/relay/__init__.py",
+            "line": 40,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _relay_bot_ids_map @ gateway/relay/__init__.py:_relay_bot_ids_map */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/__init__.py",
@@ -123277,16 +123301,24 @@
             "decorators": [],
             "line_number": 102
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_init_remaining.c",
+          "c_function": "rly_relay_bot_username",
+          "pop_annotation": {
+            "c_function": "rly_relay_bot_username",
+            "python_functions": [
+              "relay_bot_username"
+            ],
+            "c_file": "src/gateway/port_relay_init_remaining.c",
+            "python_file": "gateway/relay/__init__.py",
+            "line": 52,
+            "is_consolidated": false,
+            "full_text": "/* PoP: relay_bot_username @ gateway/relay/__init__.py:relay_bot_username */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/__init__.py",
@@ -123298,16 +123330,24 @@
             "decorators": [],
             "line_number": 115
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_init_remaining.c",
+          "c_function": "rly_relay_platform_identity",
+          "pop_annotation": {
+            "c_function": "rly_relay_platform_identity",
+            "python_functions": [
+              "relay_platform_identity"
+            ],
+            "c_file": "src/gateway/port_relay_init_remaining.c",
+            "python_file": "gateway/relay/__init__.py",
+            "line": 70,
+            "is_consolidated": false,
+            "full_text": "/* PoP: relay_platform_identity @ gateway/relay/__init__.py:relay_platform_identity */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/__init__.py",
@@ -123319,16 +123359,24 @@
             "decorators": [],
             "line_number": 125
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_init_remaining.c",
+          "c_function": "rly_relay_connection_auth",
+          "pop_annotation": {
+            "c_function": "rly_relay_connection_auth",
+            "python_functions": [
+              "relay_connection_auth"
+            ],
+            "c_file": "src/gateway/port_relay_init_remaining.c",
+            "python_file": "gateway/relay/__init__.py",
+            "line": 81,
+            "is_consolidated": false,
+            "full_text": "/* PoP: relay_connection_auth @ gateway/relay/__init__.py:relay_connection_auth */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/__init__.py",
@@ -123340,16 +123388,24 @@
             "decorators": [],
             "line_number": 149
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_init_remaining.c",
+          "c_function": "rly_relay_endpoint",
+          "pop_annotation": {
+            "c_function": "rly_relay_endpoint",
+            "python_functions": [
+              "relay_endpoint"
+            ],
+            "c_file": "src/gateway/port_relay_init_remaining.c",
+            "python_file": "gateway/relay/__init__.py",
+            "line": 92,
+            "is_consolidated": false,
+            "full_text": "/* PoP: relay_endpoint @ gateway/relay/__init__.py:relay_endpoint */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/__init__.py",
@@ -123361,16 +123417,24 @@
             "decorators": [],
             "line_number": 175
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_init_remaining.c",
+          "c_function": "rly_relay_route_keys",
+          "pop_annotation": {
+            "c_function": "rly_relay_route_keys",
+            "python_functions": [
+              "relay_route_keys"
+            ],
+            "c_file": "src/gateway/port_relay_init_remaining.c",
+            "python_file": "gateway/relay/__init__.py",
+            "line": 100,
+            "is_consolidated": false,
+            "full_text": "/* PoP: relay_route_keys @ gateway/relay/__init__.py:relay_route_keys */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/__init__.py",
@@ -123382,16 +123446,24 @@
             "decorators": [],
             "line_number": 201
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_init_remaining.c",
+          "c_function": "rly_relay_instance_id",
+          "pop_annotation": {
+            "c_function": "rly_relay_instance_id",
+            "python_functions": [
+              "relay_instance_id"
+            ],
+            "c_file": "src/gateway/port_relay_init_remaining.c",
+            "python_file": "gateway/relay/__init__.py",
+            "line": 108,
+            "is_consolidated": false,
+            "full_text": "/* PoP: relay_instance_id @ gateway/relay/__init__.py:relay_instance_id */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/__init__.py",
@@ -123403,16 +123475,24 @@
             "decorators": [],
             "line_number": 228
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_init_remaining.c",
+          "c_function": "rly_relay_wake_url",
+          "pop_annotation": {
+            "c_function": "rly_relay_wake_url",
+            "python_functions": [
+              "relay_wake_url"
+            ],
+            "c_file": "src/gateway/port_relay_init_remaining.c",
+            "python_file": "gateway/relay/__init__.py",
+            "line": 120,
+            "is_consolidated": false,
+            "full_text": "/* PoP: relay_wake_url @ gateway/relay/__init__.py:relay_wake_url */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/__init__.py",
@@ -123424,16 +123504,24 @@
             "decorators": [],
             "line_number": 259
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_init_remaining.c",
+          "c_function": "rly_provision_url",
+          "pop_annotation": {
+            "c_function": "rly_provision_url",
+            "python_functions": [
+              "_provision_url"
+            ],
+            "c_file": "src/gateway/port_relay_init_remaining.c",
+            "python_file": "gateway/relay/__init__.py",
+            "line": 133,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _provision_url @ gateway/relay/__init__.py:_provision_url */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/__init__.py",
@@ -123445,16 +123533,24 @@
             "decorators": [],
             "line_number": 271
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_init_remaining.c",
+          "c_function": "rly_policy_url",
+          "pop_annotation": {
+            "c_function": "rly_policy_url",
+            "python_functions": [
+              "_policy_url"
+            ],
+            "c_file": "src/gateway/port_relay_init_remaining.c",
+            "python_file": "gateway/relay/__init__.py",
+            "line": 151,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _policy_url @ gateway/relay/__init__.py:_policy_url */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/__init__.py",
@@ -123466,16 +123562,24 @@
             "decorators": [],
             "line_number": 287
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_init_remaining.c",
+          "c_function": "rly_relay_relevance_policy",
+          "pop_annotation": {
+            "c_function": "rly_relay_relevance_policy",
+            "python_functions": [
+              "relay_relevance_policy"
+            ],
+            "c_file": "src/gateway/port_relay_init_remaining.c",
+            "python_file": "gateway/relay/__init__.py",
+            "line": 166,
+            "is_consolidated": false,
+            "full_text": "/* PoP: relay_relevance_policy @ gateway/relay/__init__.py:relay_relevance_policy */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/__init__.py",
@@ -123487,16 +123591,24 @@
             "decorators": [],
             "line_number": 376
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_init_remaining.c",
+          "c_function": "rly_post_provision",
+          "pop_annotation": {
+            "c_function": "rly_post_provision",
+            "python_functions": [
+              "_post_provision"
+            ],
+            "c_file": "src/gateway/port_relay_init_remaining.c",
+            "python_file": "gateway/relay/__init__.py",
+            "line": 174,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _post_provision @ gateway/relay/__init__.py:_post_provision */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/__init__.py",
@@ -123508,16 +123620,24 @@
             "decorators": [],
             "line_number": 447
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_init_remaining.c",
+          "c_function": "rly_resolve_relay_identity_token",
+          "pop_annotation": {
+            "c_function": "rly_resolve_relay_identity_token",
+            "python_functions": [
+              "_resolve_relay_identity_token"
+            ],
+            "c_file": "src/gateway/port_relay_init_remaining.c",
+            "python_file": "gateway/relay/__init__.py",
+            "line": 191,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_relay_identity_token @ gateway/relay/__init__.py:_resolve_relay_identity_token */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/__init__.py",
@@ -123529,16 +123649,24 @@
             "decorators": [],
             "line_number": 521
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_init_remaining.c",
+          "c_function": "rly_self_provision_relay",
+          "pop_annotation": {
+            "c_function": "rly_self_provision_relay",
+            "python_functions": [
+              "self_provision_relay"
+            ],
+            "c_file": "src/gateway/port_relay_init_remaining.c",
+            "python_file": "gateway/relay/__init__.py",
+            "line": 199,
+            "is_consolidated": false,
+            "full_text": "/* PoP: self_provision_relay @ gateway/relay/__init__.py:self_provision_relay */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/__init__.py",
@@ -123550,16 +123678,24 @@
             "decorators": [],
             "line_number": 658
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_init_remaining.c",
+          "c_function": "rly_post_policy",
+          "pop_annotation": {
+            "c_function": "rly_post_policy",
+            "python_functions": [
+              "_post_policy"
+            ],
+            "c_file": "src/gateway/port_relay_init_remaining.c",
+            "python_file": "gateway/relay/__init__.py",
+            "line": 208,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _post_policy @ gateway/relay/__init__.py:_post_policy */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/__init__.py",
@@ -123571,16 +123707,24 @@
             "decorators": [],
             "line_number": 691
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_init_remaining.c",
+          "c_function": "rly_send_relay_policy",
+          "pop_annotation": {
+            "c_function": "rly_send_relay_policy",
+            "python_functions": [
+              "send_relay_policy"
+            ],
+            "c_file": "src/gateway/port_relay_init_remaining.c",
+            "python_file": "gateway/relay/__init__.py",
+            "line": 224,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_relay_policy @ gateway/relay/__init__.py:send_relay_policy */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/__init__.py",
@@ -123592,16 +123736,24 @@
             "decorators": [],
             "line_number": 771
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_init_remaining.c",
+          "c_function": "rly_register_relay_adapter",
+          "pop_annotation": {
+            "c_function": "rly_register_relay_adapter",
+            "python_functions": [
+              "register_relay_adapter"
+            ],
+            "c_file": "src/gateway/port_relay_init_remaining.c",
+            "python_file": "gateway/relay/__init__.py",
+            "line": 239,
+            "is_consolidated": false,
+            "full_text": "/* PoP: register_relay_adapter @ gateway/relay/__init__.py:register_relay_adapter */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
