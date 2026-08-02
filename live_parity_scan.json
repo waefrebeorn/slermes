@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T22:53:10Z",
+  "generated_at": "2026-08-02T22:55:02Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -92359,10 +92359,10 @@
     },
     "gateway/config.py": {
       "total": 41,
-      "ported": 26,
+      "ported": 29,
       "partial": 12,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 41,
@@ -92620,17 +92620,24 @@
             "decorators": [],
             "line_number": 216
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_config_remaining2.c",
+          "c_function": "gcf_ensure_platform_extra_dict",
+          "pop_annotation": {
+            "c_function": "gcf_ensure_platform_extra_dict",
+            "python_functions": [
+              "_ensure_platform_extra_dict"
+            ],
+            "c_file": "src/gateway/port_gateway_config_remaining2.c",
+            "python_file": "gateway/config.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ensure_platform_extra_dict @ gateway/config.py:_ensure_platform_extra_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/config.py",
@@ -93228,16 +93235,24 @@
             "decorators": [],
             "line_number": 980
           },
-          "classification": "REAL_GAP",
-          "c_location": "src/gateway/config.c",
-          "c_function": "_is_platform_connected",
-          "pop_annotation": null,
-          "stub_reason": "C function appears to be stub/trivial (forwarding wrapper or trivial pass-through)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-1:stub-in-impl"
-          ]
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_config_remaining2.c",
+          "c_function": "gcf_is_platform_connected",
+          "pop_annotation": {
+            "c_function": "gcf_is_platform_connected",
+            "python_functions": [
+              "_is_platform_connected"
+            ],
+            "c_file": "src/gateway/port_gateway_config_remaining2.c",
+            "python_file": "gateway/config.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_platform_connected @ gateway/config.py:_is_platform_connected */"
+          },
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/config.py",
@@ -93422,17 +93437,24 @@
             "decorators": [],
             "line_number": 1751
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_config_remaining2.c",
+          "c_function": "gcf_validate_gateway_config",
+          "pop_annotation": {
+            "c_function": "gcf_validate_gateway_config",
+            "python_functions": [
+              "_validate_gateway_config"
+            ],
+            "c_file": "src/gateway/port_gateway_config_remaining2.c",
+            "python_file": "gateway/config.py",
+            "line": 37,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _validate_gateway_config @ gateway/config.py:_validate_gateway_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/config.py",
@@ -308935,10 +308957,10 @@
     },
     "tools/environments/managed_modal.py": {
       "total": 13,
-      "ported": 10,
+      "ported": 13,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 13,
@@ -308983,17 +309005,24 @@
             "decorators": [],
             "line_number": 46
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_env_managed_modal_remaining.c",
+          "c_function": "emm_init",
+          "pop_annotation": {
+            "c_function": "emm_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_env_managed_modal_remaining.c",
+            "python_file": "tools/environments/managed_modal.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/environments/managed_modal.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/managed_modal.py",
@@ -309121,17 +309150,24 @@
             "decorators": [],
             "line_number": 154
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_env_managed_modal_remaining.c",
+          "c_function": "emm_cleanup",
+          "pop_annotation": {
+            "c_function": "emm_cleanup",
+            "python_functions": [
+              "cleanup"
+            ],
+            "c_file": "src/tools/port_env_managed_modal_remaining.c",
+            "python_file": "tools/environments/managed_modal.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cleanup @ tools/environments/managed_modal.py:cleanup */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/managed_modal.py",
@@ -309261,17 +309297,24 @@
             ],
             "line_number": 259
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_env_managed_modal_remaining.c",
+          "c_function": "emm_coerce_number",
+          "pop_annotation": {
+            "c_function": "emm_coerce_number",
+            "python_functions": [
+              "_coerce_number"
+            ],
+            "c_file": "src/tools/port_env_managed_modal_remaining.c",
+            "python_file": "tools/environments/managed_modal.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _coerce_number @ tools/environments/managed_modal.py:_coerce_number */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/managed_modal.py",
