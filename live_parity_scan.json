@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T18:17:37Z",
+  "generated_at": "2026-08-02T18:19:45Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -23879,10 +23879,10 @@
     },
     "agent/curator.py": {
       "total": 35,
-      "ported": 2,
+      "ported": 35,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 33,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 35,
@@ -23898,16 +23898,24 @@
             "decorators": [],
             "line_number": 40
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_strip_aux_credential",
+          "pop_annotation": {
+            "c_function": "cur_strip_aux_credential",
+            "python_functions": [
+              "_strip_aux_credential"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _strip_aux_credential @ agent/curator.py:_strip_aux_credential */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -23948,16 +23956,24 @@
             "decorators": [],
             "line_number": 85
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_state_file",
+          "pop_annotation": {
+            "c_function": "cur_state_file",
+            "python_functions": [
+              "_state_file"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 40,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _state_file @ agent/curator.py:_state_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -23969,16 +23985,24 @@
             "decorators": [],
             "line_number": 89
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_default_state",
+          "pop_annotation": {
+            "c_function": "cur_default_state",
+            "python_functions": [
+              "_default_state"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 47,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _default_state @ agent/curator.py:_default_state */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -23990,16 +24014,24 @@
             "decorators": [],
             "line_number": 101
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_load_state",
+          "pop_annotation": {
+            "c_function": "cur_load_state",
+            "python_functions": [
+              "load_state"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 53,
+            "is_consolidated": false,
+            "full_text": "/* PoP: load_state @ agent/curator.py:load_state */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24011,16 +24043,24 @@
             "decorators": [],
             "line_number": 116
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_save_state",
+          "pop_annotation": {
+            "c_function": "cur_save_state",
+            "python_functions": [
+              "save_state"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 79,
+            "is_consolidated": false,
+            "full_text": "/* PoP: save_state @ agent/curator.py:save_state */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24032,16 +24072,24 @@
             "decorators": [],
             "line_number": 124
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_set_paused",
+          "pop_annotation": {
+            "c_function": "cur_set_paused",
+            "python_functions": [
+              "set_paused"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 89,
+            "is_consolidated": false,
+            "full_text": "/* PoP: set_paused @ agent/curator.py:set_paused */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24053,16 +24101,24 @@
             "decorators": [],
             "line_number": 130
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_is_paused",
+          "pop_annotation": {
+            "c_function": "cur_is_paused",
+            "python_functions": [
+              "is_paused"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 96,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_paused @ agent/curator.py:is_paused */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24074,16 +24130,24 @@
             "decorators": [],
             "line_number": 138
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_load_config",
+          "pop_annotation": {
+            "c_function": "cur_load_config",
+            "python_functions": [
+              "_load_config"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 106,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _load_config @ agent/curator.py:_load_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24095,16 +24159,24 @@
             "decorators": [],
             "line_number": 154
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_is_enabled",
+          "pop_annotation": {
+            "c_function": "cur_is_enabled",
+            "python_functions": [
+              "is_enabled"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 114,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_enabled @ agent/curator.py:is_enabled */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24116,16 +24188,24 @@
             "decorators": [],
             "line_number": 160
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_get_interval_hours",
+          "pop_annotation": {
+            "c_function": "cur_get_interval_hours",
+            "python_functions": [
+              "get_interval_hours"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 125,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_interval_hours @ agent/curator.py:get_interval_hours */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24137,16 +24217,24 @@
             "decorators": [],
             "line_number": 168
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_get_min_idle_hours",
+          "pop_annotation": {
+            "c_function": "cur_get_min_idle_hours",
+            "python_functions": [
+              "get_min_idle_hours"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 136,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_min_idle_hours @ agent/curator.py:get_min_idle_hours */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24158,16 +24246,24 @@
             "decorators": [],
             "line_number": 176
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_get_stale_after_days",
+          "pop_annotation": {
+            "c_function": "cur_get_stale_after_days",
+            "python_functions": [
+              "get_stale_after_days"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 147,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_stale_after_days @ agent/curator.py:get_stale_after_days */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24179,16 +24275,24 @@
             "decorators": [],
             "line_number": 184
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_get_archive_after_days",
+          "pop_annotation": {
+            "c_function": "cur_get_archive_after_days",
+            "python_functions": [
+              "get_archive_after_days"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 158,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_archive_after_days @ agent/curator.py:get_archive_after_days */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24200,16 +24304,24 @@
             "decorators": [],
             "line_number": 192
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_get_prune_builtins",
+          "pop_annotation": {
+            "c_function": "cur_get_prune_builtins",
+            "python_functions": [
+              "get_prune_builtins"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 169,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_prune_builtins @ agent/curator.py:get_prune_builtins */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24221,16 +24333,24 @@
             "decorators": [],
             "line_number": 204
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_get_consolidate",
+          "pop_annotation": {
+            "c_function": "cur_get_consolidate",
+            "python_functions": [
+              "get_consolidate"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 180,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_consolidate @ agent/curator.py:get_consolidate */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24242,16 +24362,24 @@
             "decorators": [],
             "line_number": 224
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_parse_iso",
+          "pop_annotation": {
+            "c_function": "cur_parse_iso",
+            "python_functions": [
+              "_parse_iso"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 191,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _parse_iso @ agent/curator.py:_parse_iso */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24263,16 +24391,24 @@
             "decorators": [],
             "line_number": 233
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_should_run_now",
+          "pop_annotation": {
+            "c_function": "cur_should_run_now",
+            "python_functions": [
+              "should_run_now"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 204,
+            "is_consolidated": false,
+            "full_text": "/* PoP: should_run_now @ agent/curator.py:should_run_now */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24313,16 +24449,24 @@
             "decorators": [],
             "line_number": 305
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_apply_automatic_transitions",
+          "pop_annotation": {
+            "c_function": "cur_apply_automatic_transitions",
+            "python_functions": [
+              "apply_automatic_transitions"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 225,
+            "is_consolidated": false,
+            "full_text": "/* PoP: apply_automatic_transitions @ agent/curator.py:apply_automatic_transitions */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24334,16 +24478,24 @@
             "decorators": [],
             "line_number": 577
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_reports_root",
+          "pop_annotation": {
+            "c_function": "cur_reports_root",
+            "python_functions": [
+              "_reports_root"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 232,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _reports_root @ agent/curator.py:_reports_root */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24355,16 +24507,24 @@
             "decorators": [],
             "line_number": 599
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_needle_in_path_component",
+          "pop_annotation": {
+            "c_function": "cur_needle_in_path_component",
+            "python_functions": [
+              "_needle_in_path_component"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 239,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _needle_in_path_component @ agent/curator.py:_needle_in_path_component */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24376,16 +24536,24 @@
             "decorators": [],
             "line_number": 617
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_classify_removed_skills",
+          "pop_annotation": {
+            "c_function": "cur_classify_removed_skills",
+            "python_functions": [
+              "_classify_removed_skills"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 254,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _classify_removed_skills @ agent/curator.py:_classify_removed_skills */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24397,16 +24565,24 @@
             "decorators": [],
             "line_number": 739
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_parse_structured_summary",
+          "pop_annotation": {
+            "c_function": "cur_parse_structured_summary",
+            "python_functions": [
+              "_parse_structured_summary"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 262,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _parse_structured_summary @ agent/curator.py:_parse_structured_summary */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24418,16 +24594,24 @@
             "decorators": [],
             "line_number": 820
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_extract_absorbed_into_declarations",
+          "pop_annotation": {
+            "c_function": "cur_extract_absorbed_into_declarations",
+            "python_functions": [
+              "_extract_absorbed_into_declarations"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 270,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_absorbed_into_declarations @ agent/curator.py:_extract_absorbed_into_declarations */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24439,16 +24623,24 @@
             "decorators": [],
             "line_number": 874
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_reconcile_classification",
+          "pop_annotation": {
+            "c_function": "cur_reconcile_classification",
+            "python_functions": [
+              "_reconcile_classification"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 278,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _reconcile_classification @ agent/curator.py:_reconcile_classification */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24460,16 +24652,24 @@
             "decorators": [],
             "line_number": 1005
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_build_rename_summary",
+          "pop_annotation": {
+            "c_function": "cur_build_rename_summary",
+            "python_functions": [
+              "_build_rename_summary"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 286,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _build_rename_summary @ agent/curator.py:_build_rename_summary */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24481,16 +24681,24 @@
             "decorators": [],
             "line_number": 1095
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_write_run_report",
+          "pop_annotation": {
+            "c_function": "cur_write_run_report",
+            "python_functions": [
+              "_write_run_report"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 294,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _write_run_report @ agent/curator.py:_write_run_report */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24502,16 +24710,24 @@
             "decorators": [],
             "line_number": 1287
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_render_report_markdown",
+          "pop_annotation": {
+            "c_function": "cur_render_report_markdown",
+            "python_functions": [
+              "_render_report_markdown"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 302,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _render_report_markdown @ agent/curator.py:_render_report_markdown */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24523,16 +24739,24 @@
             "decorators": [],
             "line_number": 1474
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_render_candidate_list",
+          "pop_annotation": {
+            "c_function": "cur_render_candidate_list",
+            "python_functions": [
+              "_render_candidate_list"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 310,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _render_candidate_list @ agent/curator.py:_render_candidate_list */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24544,16 +24768,24 @@
             "decorators": [],
             "line_number": 1496
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_run_curator_review",
+          "pop_annotation": {
+            "c_function": "cur_run_curator_review",
+            "python_functions": [
+              "run_curator_review"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 317,
+            "is_consolidated": false,
+            "full_text": "/* PoP: run_curator_review @ agent/curator.py:run_curator_review */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24565,16 +24797,24 @@
             "decorators": [],
             "line_number": 1760
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_resolve_review_runtime",
+          "pop_annotation": {
+            "c_function": "cur_resolve_review_runtime",
+            "python_functions": [
+              "_resolve_review_runtime"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 324,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_review_runtime @ agent/curator.py:_resolve_review_runtime */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24586,16 +24826,24 @@
             "decorators": [],
             "line_number": 1808
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_resolve_review_model",
+          "pop_annotation": {
+            "c_function": "cur_resolve_review_model",
+            "python_functions": [
+              "_resolve_review_model"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 332,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_review_model @ agent/curator.py:_resolve_review_model */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24607,16 +24855,24 @@
             "decorators": [],
             "line_number": 1827
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_run_llm_review",
+          "pop_annotation": {
+            "c_function": "cur_run_llm_review",
+            "python_functions": [
+              "_run_llm_review"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 340,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _run_llm_review @ agent/curator.py:_run_llm_review */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/curator.py",
@@ -24628,16 +24884,24 @@
             "decorators": [],
             "line_number": 2000
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_curator_remaining.c",
+          "c_function": "cur_maybe_run_curator",
+          "pop_annotation": {
+            "c_function": "cur_maybe_run_curator",
+            "python_functions": [
+              "maybe_run_curator"
+            ],
+            "c_file": "src/agent/port_curator_remaining.c",
+            "python_file": "agent/curator.py",
+            "line": 348,
+            "is_consolidated": false,
+            "full_text": "/* PoP: maybe_run_curator @ agent/curator.py:maybe_run_curator */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
