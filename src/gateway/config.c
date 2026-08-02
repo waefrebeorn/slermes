@@ -622,6 +622,7 @@ typedef struct {
 } gateway_config_t;
 
 /* Port of Python: load_gateway_config */
+/* PoP: load_gateway_config @ gateway/config.py:load_gateway_config */
 bool gateway_config_load(const char *config_dir, gateway_config_t *out_cfg) {
     if (!out_cfg) return false;
 

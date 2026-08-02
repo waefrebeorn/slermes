@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:21:31Z",
+  "generated_at": "2026-08-02T19:25:05Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -86473,10 +86473,10 @@
     },
     "gateway/config.py": {
       "total": 41,
-      "ported": 11,
+      "ported": 26,
       "partial": 12,
       "stub": 0,
-      "real_gaps": 18,
+      "real_gaps": 3,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 41,
@@ -86756,17 +86756,24 @@
             "decorators": [],
             "line_number": 234
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_config_remaining.c",
+          "c_function": "gwc_getenv",
+          "pop_annotation": {
+            "c_function": "gwc_getenv",
+            "python_functions": [
+              "_getenv"
+            ],
+            "c_file": "src/gateway/port_gateway_config_remaining.c",
+            "python_file": "gateway/config.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _getenv @ gateway/config.py:_getenv */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/config.py",
@@ -86848,7 +86855,7 @@
             ],
             "c_file": "src/gateway/config.c",
             "python_file": "gateway/config.py",
-            "line": 1144,
+            "line": 1145,
             "is_consolidated": false,
             "full_text": "/* PoP: gateway_config_platform_missing @ gateway/config.py:Platform._missing_ */"
           },
@@ -86879,7 +86886,7 @@
             ],
             "c_file": "src/gateway/config.c",
             "python_file": "gateway/config.py",
-            "line": 1162,
+            "line": 1163,
             "is_consolidated": false,
             "full_text": "/* PoP: gateway_config_scan_bundled_plugin_platforms @ gateway/config.py:Platform._scan_bundled_plugin_platforms */"
           },
@@ -86927,17 +86934,24 @@
             "decorators": [],
             "line_number": 440
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_config_remaining.c",
+          "c_function": "gwc_binding_to_dict",
+          "pop_annotation": {
+            "c_function": "gwc_binding_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/gateway/port_gateway_config_remaining.c",
+            "python_file": "gateway/config.py",
+            "line": 40,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ gateway/config.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/config.py",
@@ -86951,17 +86965,24 @@
             ],
             "line_number": 455
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_config_remaining.c",
+          "c_function": "gwc_binding_from_dict",
+          "pop_annotation": {
+            "c_function": "gwc_binding_from_dict",
+            "python_functions": [
+              "from_dict"
+            ],
+            "c_file": "src/gateway/port_gateway_config_remaining.c",
+            "python_file": "gateway/config.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: from_dict @ gateway/config.py:from_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/config.py",
@@ -87002,17 +87023,24 @@
             "decorators": [],
             "line_number": 513
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_config_remaining.c",
+          "c_function": "gwc_binding_to_dict",
+          "pop_annotation": {
+            "c_function": "gwc_binding_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/gateway/port_gateway_config_remaining.c",
+            "python_file": "gateway/config.py",
+            "line": 40,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ gateway/config.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/config.py",
@@ -87026,17 +87054,24 @@
             ],
             "line_number": 524
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_config_remaining.c",
+          "c_function": "gwc_binding_from_dict",
+          "pop_annotation": {
+            "c_function": "gwc_binding_from_dict",
+            "python_functions": [
+              "from_dict"
+            ],
+            "c_file": "src/gateway/port_gateway_config_remaining.c",
+            "python_file": "gateway/config.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: from_dict @ gateway/config.py:from_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/config.py",
@@ -87048,17 +87083,24 @@
             "decorators": [],
             "line_number": 556
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_config_remaining.c",
+          "c_function": "gwc_binding_to_dict",
+          "pop_annotation": {
+            "c_function": "gwc_binding_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/gateway/port_gateway_config_remaining.c",
+            "python_file": "gateway/config.py",
+            "line": 40,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ gateway/config.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/config.py",
@@ -87072,17 +87114,24 @@
             ],
             "line_number": 567
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_config_remaining.c",
+          "c_function": "gwc_binding_from_dict",
+          "pop_annotation": {
+            "c_function": "gwc_binding_from_dict",
+            "python_functions": [
+              "from_dict"
+            ],
+            "c_file": "src/gateway/port_gateway_config_remaining.c",
+            "python_file": "gateway/config.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: from_dict @ gateway/config.py:from_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/config.py",
@@ -87094,17 +87143,24 @@
             "decorators": [],
             "line_number": 638
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_config_remaining.c",
+          "c_function": "gwc_binding_to_dict",
+          "pop_annotation": {
+            "c_function": "gwc_binding_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/gateway/port_gateway_config_remaining.c",
+            "python_file": "gateway/config.py",
+            "line": 40,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ gateway/config.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/config.py",
@@ -87118,17 +87174,24 @@
             ],
             "line_number": 661
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_config_remaining.c",
+          "c_function": "gwc_binding_from_dict",
+          "pop_annotation": {
+            "c_function": "gwc_binding_from_dict",
+            "python_functions": [
+              "from_dict"
+            ],
+            "c_file": "src/gateway/port_gateway_config_remaining.c",
+            "python_file": "gateway/config.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: from_dict @ gateway/config.py:from_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/config.py",
@@ -87140,17 +87203,24 @@
             "decorators": [],
             "line_number": 753
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_config_remaining.c",
+          "c_function": "gwc_binding_to_dict",
+          "pop_annotation": {
+            "c_function": "gwc_binding_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/gateway/port_gateway_config_remaining.c",
+            "python_file": "gateway/config.py",
+            "line": 40,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ gateway/config.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/config.py",
@@ -87164,17 +87234,24 @@
             ],
             "line_number": 764
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_config_remaining.c",
+          "c_function": "gwc_binding_from_dict",
+          "pop_annotation": {
+            "c_function": "gwc_binding_from_dict",
+            "python_functions": [
+              "from_dict"
+            ],
+            "c_file": "src/gateway/port_gateway_config_remaining.c",
+            "python_file": "gateway/config.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: from_dict @ gateway/config.py:from_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/config.py",
@@ -87215,17 +87292,24 @@
             "decorators": [],
             "line_number": 958
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_config_remaining.c",
+          "c_function": "gwc_post_init",
+          "pop_annotation": {
+            "c_function": "gwc_post_init",
+            "python_functions": [
+              "__post_init__"
+            ],
+            "c_file": "src/gateway/port_gateway_config_remaining.c",
+            "python_file": "gateway/config.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __post_init__ @ gateway/config.py:__post_init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/config.py",
@@ -87321,17 +87405,24 @@
             "decorators": [],
             "line_number": 1049
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_config_remaining.c",
+          "c_function": "gwc_binding_to_dict",
+          "pop_annotation": {
+            "c_function": "gwc_binding_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/gateway/port_gateway_config_remaining.c",
+            "python_file": "gateway/config.py",
+            "line": 40,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ gateway/config.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/config.py",
@@ -87345,17 +87436,24 @@
             ],
             "line_number": 1085
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_config_remaining.c",
+          "c_function": "gwc_binding_from_dict",
+          "pop_annotation": {
+            "c_function": "gwc_binding_from_dict",
+            "python_functions": [
+              "from_dict"
+            ],
+            "c_file": "src/gateway/port_gateway_config_remaining.c",
+            "python_file": "gateway/config.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: from_dict @ gateway/config.py:from_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/config.py",
@@ -87409,17 +87507,24 @@
             "decorators": [],
             "line_number": 1249
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/config.c",
+          "c_function": "gateway_config_load",
+          "pop_annotation": {
+            "c_function": "gateway_config_load",
+            "python_functions": [
+              "load_gateway_config"
+            ],
+            "c_file": "src/gateway/config.c",
+            "python_file": "gateway/config.py",
+            "line": 625,
+            "is_consolidated": false,
+            "full_text": "/* PoP: load_gateway_config @ gateway/config.py:load_gateway_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/config.py",
