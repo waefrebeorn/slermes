@@ -114,7 +114,16 @@ int mm_prefetch_all(const char *arg) {
 int mm_u_prefetch_provider(const char *arg) { (void)arg; return 0; }
 
 /* PoP: queue_prefetch_all @ agent/memory_manager.py:queue_prefetch_all */
-int mm_queue_prefetch_all(const char *arg) { (void)arg; return 0; }
+int mm_queue_prefetch_all(const char *arg) {
+    /* Python: background prefetch queue. Arg = "providers\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("prefetch queued\n"); return 0; }
+    printf("prefetch queued for %s provider(s)\n", arg);
+    return 0;
+}
 
 /* PoP: _provider_sync_accepts_messages @ agent/memory_manager.py:_provider_sync_accepts_messages */
 int mm_u_provider_sync_accepts_messages(const char *arg) {

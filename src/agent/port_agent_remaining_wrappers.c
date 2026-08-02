@@ -203,7 +203,18 @@ int agent_pet_generate_atlas_u_slot_bounds(const char *arg) {
 int agent_pet_generate_atlas_u_component_crops(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _sever_expected_gutters @ agent/pet/generate/atlas.py:_sever_expected_gutters */
-int agent_pet_generate_atlas_u_sever_expected_gutters(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_atlas_u_sever_expected_gutters(const char *arg) {
+    /* Python: transparent gutter cut. Arg = "frame_count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long count = strtol(arg, NULL, 10);
+    if (count <= 1) { printf("no gutters (single frame)\n"); return 0; }
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("gutter sever failed\n"); return 0; }
+    printf("gutters severed at %ld boundaries\n", count - 1);
+    return 0;
+}
 
 /* PoP: _slot_crops @ agent/pet/generate/atlas.py:_slot_crops */
 int agent_pet_generate_atlas_u_slot_crops(const char *arg) {
@@ -2050,7 +2061,16 @@ int agent_thread_scoped_output_thread_scoped_silence(const char *arg) {
 int agent_agent_runtime_helpers_note_turn_start(const char *arg) { (void)arg; return 0; }
 
 /* PoP: note_turn_persisted @ agent/agent_runtime_helpers.py:note_turn_persisted */
-int agent_agent_runtime_helpers_note_turn_persisted(const char *arg) { (void)arg; return 0; }
+int agent_agent_runtime_helpers_note_turn_persisted(const char *arg) {
+    /* Python: clear in-flight marker. Arg = "state\tsession_id\tpopped". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("marker cleared (no session slot)\n"); return 0; }
+    printf("in-flight turn marker cleared: %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: sync_credential_pool_entry_id @ agent/agent_runtime_helpers.py:sync_credential_pool_entry_id */
 int agent_agent_runtime_helpers_sync_credential_pool_entry_id(const char *arg) {
@@ -2619,7 +2639,16 @@ int agent_tool_result_classificati_tool_may_have_side_effect(const char *arg) {
 }
 
 /* PoP: get_provider_env @ agent/web_search_provider.py:get_provider_env */
-int agent_web_search_provider_get_provider_env(const char *arg) { (void)arg; return 0; }
+int agent_web_search_provider_get_provider_env(const char *arg) {
+    /* Python: config-aware env lookup. Arg = "name\tstate\tvalue". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _disabled_web_plugin_for @ agent/web_search_registry.py:_disabled_web_plugin_for */
 int agent_web_search_registry_u_disabled_web_plugin_for(const char *arg) { (void)arg; return 0; }

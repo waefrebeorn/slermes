@@ -71,7 +71,28 @@ int nous_nous_portal_billing_url(const char *arg) {
 }
 
 /* PoP: nous_portal_topup_url @ hermes_cli/nous_account.py:nous_portal_topup_url */
-int nous_nous_portal_topup_url(const char *arg) { (void)arg; return 0; }
+int nous_nous_portal_topup_url(const char *arg) {
+    /* Python: org-pinned topup URL. Arg = "base_billing\torg_slug\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *base_billing = arg;
+    const char *slug = t1 ? t1 + 1 : "";
+    size_t blen = strlen(base_billing);
+    const char *base = base_billing;
+    if (blen >= 8 && strcmp(base_billing + blen - 8, "/billing") == 0) {
+        char buf[1024];
+        size_t l = blen - 8;
+        memcpy(buf, base_billing, l);
+        buf[l] = '\0';
+        base = buf;
+        if (slug[0]) { printf("%s/orgs/%s/billing?topup=open\n", base, slug); return 0; }
+        printf("%s/billing?topup=open\n", base);
+        return 0;
+    }
+    printf("%s\n", t2 ? t2 + 1 : base_billing);
+    return 0;
+}
 
 /* PoP: format_nous_portal_entitlement_message @ hermes_cli/nous_account.py:format_nous_portal_entitlement_message */
 int nous_format_nous_portal_entitlement_message(const char *arg) { (void)arg; return 0; }

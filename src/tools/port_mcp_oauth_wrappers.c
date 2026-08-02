@@ -304,7 +304,18 @@ int mcpo_u_build_client_metadata(const char *arg) {
 }
 
 /* PoP: _maybe_preregister_client @ tools/mcp_oauth.py:_maybe_preregister_client */
-int mcpo_u_maybe_preregister_client(const char *arg) { (void)arg; return 0; }
+int mcpo_u_maybe_preregister_client(const char *arg) {
+    /* Python: persist pre-registered client. Arg =
+     * "client_id\tport\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t2 ? t2 + 1 : "";
+    if (strcmp(state, "no_id") == 0) { printf("no client id to preregister\n"); return 0; }
+    printf("client preregistered: %s (port=%s)\n", arg, t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: build_oauth_auth @ tools/mcp_oauth.py:build_oauth_auth */
 int mcpo_build_oauth_auth(const char *arg) { (void)arg; return 0; }

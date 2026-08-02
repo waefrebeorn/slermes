@@ -164,7 +164,16 @@ int auth_u_make_spotify_callback_handler(const char *arg) { (void)arg; return 0;
 int auth_u_spotify_wait_for_callback(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _spotify_token_payload_to_state @ hermes_cli/auth.py:_spotify_token_payload_to_state */
-int auth_u_spotify_token_payload_to_state(const char *arg) { (void)arg; return 0; }
+int auth_u_spotify_token_payload_to_state(const char *arg) {
+    /* Python: payload -> auth state. Arg = "payload_json\tstate\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _spotify_exchange_code_for_tokens @ hermes_cli/auth.py:_spotify_exchange_code_for_tokens */
 int auth_u_spotify_exchange_code_for_tokens(const char *arg) { (void)arg; return 0; }

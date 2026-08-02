@@ -741,7 +741,29 @@ int cgw_u_require_root_for_system_service(const char *arg) {
 }
 
 /* PoP: _system_service_identity @ hermes_cli/gateway.py:_system_service_identity */
-int cgw_u_system_service_identity(const char *arg) { (void)arg; return 0; }
+int cgw_u_system_service_identity(const char *arg) {
+    /* Python: user/group/home resolve. Arg =
+     * "username\tstate\tgroup\thome\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_user") == 0) {
+        fprintf(stderr, "Could not determine which user the gateway service should run as\n");
+        return 1;
+    }
+    if (strcmp(state, "root_no_override") == 0) {
+        fprintf(stderr, "Refusing to install the gateway system service as root; pass --run-as-user root to override (e.g. in LXC containers)\n");
+        return 1;
+    }
+    if (strcmp(state, "unknown_user") == 0) {
+        fprintf(stderr, "Unknown user: %s\n", arg);
+        return 1;
+    }
+    printf("%s\t%s\t%s\n", arg, t2 ? t2 + 1 : "", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _read_systemd_user_from_unit @ hermes_cli/gateway.py:_read_systemd_user_from_unit */
 int cgw_u_read_systemd_user_from_unit(const char *arg) {
@@ -1384,7 +1406,29 @@ int cgw_u_gateway_run_command(const char *arg) {
 int cgw_u_spawn_detached_gateway(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _launchd_fallback_to_detached @ hermes_cli/gateway.py:_launchd_fallback_to_detached */
-int cgw_u_launchd_fallback_to_detached(const char *arg) { (void)arg; return 0; }
+int cgw_u_launchd_fallback_to_detached(const char *arg) {
+    /* Python: detached fallback + guidance. Arg =
+     * "reason\tspawned\texit_on_failure\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *reason = arg;
+    int spawned = t1 && t1[1] == '1';
+    int exit_on_failure = t2 && t2[1] == '1';
+    printf("⚠ launchd cannot manage the gateway on this macOS version (%s).\n", reason);
+    if (spawned) {
+        printf("✓ Started gateway as a background process instead\n");
+        printf("  It will NOT auto-start at login or auto-restart on crash.\n");
+        printf("  Logs: ~/.hermes/logs/gateway.log\n");
+        printf("  Stop it with: hermes gateway stop\n");
+        return 0;
+    }
+    printf("Failed to start the gateway as a background process.\n");
+    printf("  Try manually: nohup hermes gateway run --replace > ~/.hermes/logs/gateway.log 2>&1 &\n");
+    if (exit_on_failure) return 1;
+    return 0;
+}
 
 /* PoP: generate_launchd_plist @ hermes_cli/gateway.py:generate_launchd_plist */
 int cgw_generate_launchd_plist(const char *arg) { (void)arg; return 0; }

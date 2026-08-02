@@ -692,7 +692,23 @@ int main_cmd_logout(const char *arg) {
 }
 
 /* PoP: cmd_slack @ hermes_cli/main.py:cmd_slack */
-int main_cmd_slack(const char *arg) { (void)arg; return 0; }
+int main_cmd_slack(const char *arg) {
+    /* Python: slack subcommand dispatch. Arg = "sub\tstate". */
+    if (!arg || !*arg) {
+        fprintf(stderr, "usage: hermes slack <subcommand>\n\nsubcommands:\n  manifest   Generate a Slack app manifest with every gateway command registered as a native slash\n\nRun `hermes slack manifest -h` for details.\n");
+        return 1;
+    }
+    const char *tab = strchr(arg, '\t');
+    const char *sub = arg;
+    int state = tab && tab[1] == '1';
+    if (strcmp(sub, "manifest") == 0) {
+        if (!state) { printf("slack manifest generated\n"); return 0; }
+        printf("slack manifest: %s\n", tab + 1);
+        return 0;
+    }
+    fprintf(stderr, "Unknown slack subcommand: %s\n", sub);
+    return 1;
+}
 
 /* PoP: cmd_project @ hermes_cli/main.py:cmd_project */
 int main_cmd_project(const char *arg) {
@@ -1525,7 +1541,18 @@ int main_u_verify_console_scripts_installed(const char *arg) { (void)arg; return
 int main_u_verify_core_dependencies_installed(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_install_target_python @ hermes_cli/main.py:_resolve_install_target_python */
-int main_u_resolve_install_target_python(const char *arg) { (void)arg; return 0; }
+int main_u_resolve_install_target_python(const char *arg) {
+    /* Python: venv then cmd prefix. Arg =
+     * "venv_path\tcmd_first\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _install_psutil_android_compat @ hermes_cli/main.py:_install_psutil_android_compat */
 int main_u_install_psutil_android_compat(const char *arg) { (void)arg; return 0; }

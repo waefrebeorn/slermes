@@ -182,7 +182,20 @@ int envl_u_git_root_from_bash(const char *arg) {
 }
 
 /* PoP: _git_bash_aslr_help @ tools/environments/local.py:_git_bash_aslr_help */
-int envl_u_git_bash_aslr_help(const char *arg) { (void)arg; return 0; }
+int envl_u_git_bash_aslr_help(const char *arg) {
+    /* Python: Mandatory-ASLR remediation. Arg = "bash\tgit_root\tdetails". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *git_root = t1 ? t1 + 1 : "";
+    printf("Git Bash at %s cannot launch required MSYS child processes while Windows Mandatory ASLR (ForceRelocateImages) is enabled%s\n",
+           arg, t2 && t2[1] ? " — probe output matched the Git-for-Windows failure class" : "");
+    printf("Reinstalling Git will not change the Windows mitigation policy. Open PowerShell as Administrator and run:\n");
+    printf("$gitRoot = '%s'\n", git_root);
+    printf("Get-Item \"$gitRoot\\bin\\bash.exe\", \"$gitRoot\\usr\\bin\\*.exe\" -ErrorAction SilentlyContinue | ForEach-Object { Set-ProcessMitigation -Name $_.FullName -Disable ForceRelocateImages }\n");
+    printf("Then restart Hermes. If the override is blocked or later re-applied, ask your Windows administrator to allow this per-program exception.\n");
+    return 0;
+}
 
 /* PoP: _bash_starts @ tools/environments/local.py:_bash_starts */
 int envl_u_bash_starts(const char *arg) { (void)arg; return 0; }

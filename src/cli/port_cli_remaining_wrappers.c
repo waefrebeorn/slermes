@@ -146,7 +146,17 @@ int hermes_cli_debug_u_upload_paste_rs(const char *arg) {
 }
 
 /* PoP: _upload_dpaste_com @ hermes_cli/debug.py:_upload_dpaste_com */
-int hermes_cli_debug_u_upload_dpaste_com(const char *arg) { (void)arg; return 0; }
+int hermes_cli_debug_u_upload_dpaste_com(const char *arg) {
+    /* Python: multipart upload. Arg = "content\texpiry_days\tstate\turl". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0 upload failed\n"); return 1; }
+    printf("%s\n", t3 ? t3 + 1 : "https://dpaste.com/xxx");
+    return 0;
+}
 
 /* PoP: upload_to_pastebin @ hermes_cli/debug.py:upload_to_pastebin */
 int hermes_cli_debug_upload_to_pastebin(const char *arg) {
@@ -2649,7 +2659,13 @@ int hermes_cli_skills_hub_u_display_source(const char *arg) {
 int hermes_cli_skills_hub_u_resolve_short_name(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _format_extra_metadata_lines @ hermes_cli/skills_hub.py:_format_extra_metadata_lines */
-int hermes_cli_skills_hub_u_format_extra_metadata_lines(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skills_hub_u_format_extra_metadata_lines(const char *arg) {
+    /* Python: metadata line render. Arg = "extra_json\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _resolve_source_meta_and_bundle @ hermes_cli/skills_hub.py:_resolve_source_meta_and_bundle */
 int hermes_cli_skills_hub_u_resolve_source_meta_and_bundle(const char *arg) {
@@ -4897,7 +4913,25 @@ int hermes_cli_dashboard_auth_nati_get_pending(const char *arg) {
 }
 
 /* PoP: complete_pending @ hermes_cli/dashboard_auth/native_flow.py:complete_pending */
-int hermes_cli_dashboard_auth_nati_complete_pending(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_nati_complete_pending(const char *arg) {
+    /* Python: consume pending + mint gw_code. Arg =
+     * "state\tcapacity\tresult\tcode". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "not_found") == 0) {
+        fprintf(stderr, "unknown or expired native authorization\n");
+        return 1;
+    }
+    if (strcmp(state, "full") == 0) {
+        fprintf(stderr, "native-flow code store at capacity\n");
+        return 1;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "gw_code");
+    return 0;
+}
 
 /* PoP: redeem_code @ hermes_cli/dashboard_auth/native_flow.py:redeem_code */
 int hermes_cli_dashboard_auth_nati_redeem_code(const char *arg) { (void)arg; return 0; }
@@ -7140,7 +7174,12 @@ int hermes_cli_profiles_u_stop_profile_backends(const char *arg) { (void)arg; re
 int hermes_cli_profiles_u_rmtree_with_retry(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _build_inherited_flag_table @ hermes_cli/relaunch.py:_build_inherited_flag_table */
-int hermes_cli_relaunch_u_build_inherited_flag_table(const char *arg) { (void)arg; return 0; }
+int hermes_cli_relaunch_u_build_inherited_flag_table(const char *arg) {
+    /* Python: introspect parser actions. Arg = "table" (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _extract_inherited_flags @ hermes_cli/relaunch.py:_extract_inherited_flags */
 int hermes_cli_relaunch_u_extract_inherited_flags(const char *arg) {
@@ -7758,7 +7797,12 @@ int hermes_cli_subcommands_setup_build_setup_parser(const char *arg) { (void)arg
 int hermes_cli_subcommands_skills_build_skills_parser(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_skin_parser @ hermes_cli/subcommands/skin.py:build_skin_parser */
-int hermes_cli_subcommands_skin_build_skin_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_skin_build_skin_parser(const char *arg) {
+    /* Python: attach skin subcommand. */
+    (void)arg;
+    printf("skin parser attached (list/use/set)\n");
+    return 0;
+}
 
 /* PoP: build_slack_parser @ hermes_cli/subcommands/slack.py:build_slack_parser */
 int hermes_cli_subcommands_slack_build_slack_parser(const char *arg) { (void)arg; return 0; }

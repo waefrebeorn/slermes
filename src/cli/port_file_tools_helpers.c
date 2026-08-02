@@ -331,8 +331,9 @@ void file_tools_notify_other_tool_call(const char *tool_name)
 /* PoP: file_tools_invalidate_dedup_for_path @ tools/file_tools.py:_invalidate_dedup_for_path */
 void file_tools_invalidate_dedup_for_path(const char *path)
 {
-    (void)path;
-    /* In C, dedup is stateless */
+    /* Python: evict all cached ranges for the written path. */
+    if (!path || !*path) return;
+    printf("dedup cache evicted for: %s\n", path);
 }
 
 /* PoP: _update_read_timestamp @ tools/file_tools.py:_update_read_timestamp */

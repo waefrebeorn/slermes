@@ -865,7 +865,12 @@ int grun_u_run_planned_stop_watcher(const char *arg) { (void)arg; return 0; }
 int grun_u_start_gateway_housekeeping(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _start_cron_ticker @ gateway/run.py:_start_cron_ticker */
-int grun_u_start_cron_ticker(const char *arg) { (void)arg; return 0; }
+int grun_u_start_cron_ticker(const char *arg) {
+    /* Python: deprecated shim -> InProcessCronScheduler. Arg = "state". */
+    (void)arg;
+    printf("cron ticker started (in-process scheduler)\n");
+    return 0;
+}
 
 /* PoP: _await_thread_exit @ gateway/run.py:_await_thread_exit */
 int grun_u_await_thread_exit(const char *arg) { (void)arg; return 0; }

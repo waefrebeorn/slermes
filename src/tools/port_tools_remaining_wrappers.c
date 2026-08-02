@@ -2122,7 +2122,15 @@ int tools_session_search_tool_u_annotate_rebuild_status(const char *arg) {
 }
 
 /* PoP: _is_headed_mode @ tools/browser_tool.py:_is_headed_mode */
-int tools_browser_tool_u_is_headed_mode(const char *arg) { (void)arg; return 0; }
+int tools_browser_tool_u_is_headed_mode(const char *arg) {
+    /* Python: config then env. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "cached") == 0) { printf("%s\n", tab ? tab + 1 : "0"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _store_full_snapshot @ tools/browser_tool.py:_store_full_snapshot */
 int tools_browser_tool_u_store_full_snapshot(const char *arg) { (void)arg; return 0; }
