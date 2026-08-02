@@ -166,7 +166,20 @@ int moa_u_trim_messages_for_reference(const char *arg) { (void)arg; return 0; }
 int moa_u_run_references_parallel(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _truncate_tool_result @ agent/moa_loop.py:_truncate_tool_result */
-int moa_u_truncate_tool_result(const char *arg) { (void)arg; return 0; }
+int moa_u_truncate_tool_result(const char *arg) {
+    /* Python: head+tail halves with omitted marker. Arg = "text\tbudget". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *text = arg;
+    long budget = tab ? strtol(tab + 1, NULL, 10) : 2000;
+    long len = (long)strlen(text);
+    if (len <= budget) { printf("%s\n", text); return 0; }
+    long half = budget / 2;
+    long omitted = len - 2 * half;
+    printf("%.*s\n[... %ld chars omitted ...]\n%.*s\n",
+           (int)half, text, omitted, (int)half, text + len - half);
+    return 0;
+}
 
 /* PoP: _render_tool_calls @ agent/moa_loop.py:_render_tool_calls */
 int moa_u_render_tool_calls(const char *arg) { (void)arg; return 0; }

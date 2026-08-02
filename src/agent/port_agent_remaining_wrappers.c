@@ -1243,7 +1243,16 @@ int agent_memory_provider_on_delegation(const char *arg) {
 }
 
 /* PoP: on_memory_write @ agent/memory_provider.py:on_memory_write */
-int agent_memory_provider_on_memory_write(const char *arg) { (void)arg; return 0; }
+int agent_memory_provider_on_memory_write(const char *arg) {
+    /* Python: mirror hook (abstract). Arg = "action\ttarget\tcontent". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    printf("memory write: action=%.*s target=%s\n",
+           (int)(t1 ? (size_t)(t1 - arg) : strlen(arg)), arg,
+           t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: _codex_item_to_tool_name @ agent/codex_runtime.py:_codex_item_to_tool_name */
 int agent_codex_runtime_u_codex_item_to_tool_name(const char *arg) { (void)arg; return 0; }
@@ -1435,7 +1444,31 @@ int agent_bedrock_adapter_u_safe_text(const char *arg) {
 }
 
 /* PoP: _static_bedrock_context_length @ agent/bedrock_adapter.py:_static_bedrock_context_length */
-int agent_bedrock_adapter_u_static_bedrock_context_length(const char *arg) { (void)arg; return 0; }
+int agent_bedrock_adapter_u_static_bedrock_context_length(const char *arg) {
+    /* Python: longest substring key match. Arg = "model\ttable_json". */
+    if (!arg || !*arg) { printf("200000\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *model = arg;
+    json_t *tbl = json_parse(tab ? tab + 1 : "", NULL);
+    char low[512];
+    snprintf(low, sizeof(low), "%s", model);
+    for (char *p = low; *p; p++) *p = (char)tolower((unsigned char)*p);
+    long best_val = 200000;
+    size_t best_len = 0;
+    if (tbl && json_is_object(tbl)) {
+        for (size_t i = 0; i < tbl->c.count; i++) {
+            const char *k = tbl->c.keys[i];
+            size_t klen = strlen(k);
+            if (klen > best_len && strstr(low, k)) {
+                json_t *v = json_obj_get(tbl, k);
+                if (v && json_is_number(v)) { best_len = klen; best_val = (long)v->num_val; }
+            }
+        }
+    }
+    if (tbl) json_free(tbl);
+    printf("%ld\n", best_val);
+    return 0;
+}
 
 /* PoP: probe_bedrock_context_length @ agent/bedrock_adapter.py:probe_bedrock_context_length */
 int agent_bedrock_adapter_probe_bedrock_context_length(const char *arg) { (void)arg; return 0; }

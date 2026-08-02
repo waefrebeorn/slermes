@@ -1233,7 +1233,28 @@ int tools_tool_backend_helpers_prefers_gateway(const char *arg) {
 int tools_skills_hub_u_referenced_support_paths(const char *arg) { (void)arg; return 0; }
 
 /* PoP: source_url_for_bundle @ tools/skills_hub.py:source_url_for_bundle */
-int tools_skills_hub_source_url_for_bundle(const char *arg) { (void)arg; return 0; }
+int tools_skills_hub_source_url_for_bundle(const char *arg) {
+    /* Python: explicit source_url/url; github identifier -> tree URL. Arg =
+     * "source\tidentifier\texplicit". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *source = arg;
+    const char *ident = t1 ? t1 + 1 : "";
+    const char *explicit = t2 ? t2 + 1 : "";
+    if (explicit[0]) { printf("%s\n", explicit); return 0; }
+    if (strcmp(source, "github") == 0 && ident[0]) {
+        char owner[256], repo[256];
+        if (sscanf(ident, "%255[^/]/%255[^/]/%*s", owner, repo) >= 2) {
+            const char *rest = strchr(strchr(ident, '/') + 1, '/');
+            if (rest) printf("https://github.com/%s/%s/tree/main/%s\n", owner, repo, rest + 1);
+            else printf("https://github.com/%s/%s\n", owner, repo);
+            return 0;
+        }
+    }
+    printf("%s\n", ident);
+    return 0;
+}
 
 /* PoP: _ssrf_safe_http_get @ tools/skills_hub.py:_ssrf_safe_http_get */
 int tools_skills_hub_u_ssrf_safe_http_get(const char *arg) {
@@ -1438,7 +1459,25 @@ int tools_project_tools_project_list(const char *arg) { (void)arg; return 0; }
 int tools_project_tools_project_create(const char *arg) { (void)arg; return 0; }
 
 /* PoP: project_switch @ tools/project_tools.py:project_switch */
-int tools_project_tools_project_switch(const char *arg) { (void)arg; return 0; }
+int tools_project_tools_project_switch(const char *arg) {
+    /* Python: resolve + set_active + workspace apply. Arg =
+     * "project\tfound\tid\tslug\tname\tprimary". */
+    if (!arg || !*arg) { printf("{\"success\": false}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *t5 = t4 ? strchr(t4 + 1, '\t') : NULL;
+    int found = t1 && t1[1] == '1';
+    if (!found) {
+        printf("{\"success\": false, \"error\": \"no project matching '%.*s'\"}\n",
+               (int)(t1 ? (size_t)(t1 - arg) : strlen(arg)), arg);
+        return 0;
+    }
+    printf("{\"success\": true, \"id\": \"%s\", \"slug\": \"%s\", \"name\": \"%s\", \"primary_path\": \"%s\"}\n",
+           t2 ? t2 + 1 : "", t3 ? t3 + 1 : "", t4 ? t4 + 1 : "", t5 ? t5 + 1 : "");
+    return 0;
+}
 
 /* PoP: register_credential_file @ tools/credential_files.py:register_credential_file */
 int tools_credential_files_register_credential_file(const char *arg) { (void)arg; return 0; }
@@ -1562,7 +1601,12 @@ int tools_checkpoint_manager_u_dir_has_any_entry(const char *arg) {
 }
 
 /* PoP: _cua_child_env @ tools/computer_use/doctor.py:_cua_child_env */
-int tools_computer_use_doctor_u_cua_child_env(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_doctor_u_cua_child_env(const char *arg) {
+    /* Python: cua_driver_child_env or os.environ fallback. Arg = "env_json". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _sanitized_cua_env @ tools/computer_use/doctor.py:_sanitized_cua_env */
 int tools_computer_use_doctor_u_sanitized_cua_env(const char *arg) { (void)arg; return 0; }

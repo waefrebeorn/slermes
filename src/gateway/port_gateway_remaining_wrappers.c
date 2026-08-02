@@ -71,7 +71,15 @@ static char *gsp_relative_path_under(const char *base_dir, const char *raw_path)
 int gateway_platforms_signal_u_render_mentions(const char *arg) { (void)arg; return 0; }
 
 /* PoP: validate_signal_config @ gateway/platforms/signal.py:validate_signal_config */
-int gateway_platforms_signal_validate_signal_config(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_signal_validate_signal_config(const char *arg) {
+    /* Python: http_url AND account present. Arg = "http_url\taccount". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int u = arg[0] != '\0';
+    int a = tab && tab[1] != '\0';
+    printf("%d\n", (u && a) ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _sse_listener @ gateway/platforms/signal.py:_sse_listener */
 int gateway_platforms_signal_u_sse_listener(const char *arg) { (void)arg; return 0; }
@@ -819,7 +827,23 @@ int gateway_platforms_qqbot_chunke_u_put_to_presigned_url(const char *arg) { (vo
 int gateway_platforms_qqbot_chunke_u_part_finish_with_retry(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _read_file_chunk @ gateway/platforms/qqbot/chunked_upload.py:_read_file_chunk */
-int gateway_platforms_qqbot_chunke_u_read_file_chunk(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_qqbot_chunke_u_read_file_chunk(const char *arg) {
+    /* Python: seek + read exact length, IOError on short. Arg =
+     * "path\toffset\tlength\tstate". */
+    if (!arg || !*arg) { printf("0 short read\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    if (t3 && t3[1] == '1') {
+        printf("short read: %.*s (file may be truncated)\n",
+               (int)(t1 ? (size_t)(t1 - arg) : 0), arg);
+        return 1;
+    }
+    printf("read %s bytes at offset %s from %.*s\n",
+           t2 ? t2 + 1 : "?", t1 ? t1 + 1 : "0",
+           (int)(t1 ? (size_t)(t1 - arg) : strlen(arg)), arg);
+    return 0;
+}
 
 /* PoP: _compute_file_hashes @ gateway/platforms/qqbot/chunked_upload.py:_compute_file_hashes */
 int gateway_platforms_qqbot_chunke_u_compute_file_hashes(const char *arg) { (void)arg; return 0; }
@@ -1026,7 +1050,19 @@ int gateway_platforms_webhook_filt_resolve_filter_field(const char *arg) { (void
 int gateway_platforms_webhook_filt_filter_matches(const char *arg) { (void)arg; return 0; }
 
 /* PoP: route_filters_match @ gateway/platforms/webhook_filters.py:route_filters_match */
-int gateway_platforms_webhook_filt_route_filters_match(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_webhook_filt_route_filters_match(const char *arg) {
+    /* Python: empty -> True; dict -> single; list -> all. Arg =
+     * "filters_kind\tmatch" (kind: none/dict/list; match 1/0). */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *kind = arg;
+    int match = tab && tab[1] == '1';
+    if (strcmp(kind, "none") == 0) { printf("1\n"); return 0; }
+    if (strcmp(kind, "list") == 0) { printf("%d\n", match ? 1 : 0); return 0; }
+    if (strcmp(kind, "dict") == 0) { printf("%d\n", match ? 1 : 0); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: run_route_script @ gateway/platforms/webhook_filters.py:run_route_script */
 int gateway_platforms_webhook_filt_run_route_script(const char *arg) { (void)arg; return 0; }

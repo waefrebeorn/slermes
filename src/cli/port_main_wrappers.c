@@ -1239,7 +1239,19 @@ int main_u_ensure_uv_for_termux(const char *arg) { (void)arg; return 0; }
 int main_u_npm_manifest_paths(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _npm_manifests_digest @ hermes_cli/main.py:_npm_manifests_digest */
-int main_u_npm_manifests_digest(const char *arg) { (void)arg; return 0; }
+int main_u_npm_manifests_digest(const char *arg) {
+    /* Python: sha256 over lockfile + manifests; None without lockfile. Arg =
+     * "lockfile_exists\tmanifests_json\tdigest". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int exists = arg[0] == '1';
+    if (!exists) { printf("\n"); return 0; }
+    const char *digest = t2 ? t2 + 1 : "";
+    if (digest[0]) { printf("%s\n", digest); return 0; }
+    printf("manifest digest computed\n");
+    return 0;
+}
 
 /* PoP: _npm_lockfile_changed @ hermes_cli/main.py:_npm_lockfile_changed */
 int main_u_npm_lockfile_changed(const char *arg) { (void)arg; return 0; }

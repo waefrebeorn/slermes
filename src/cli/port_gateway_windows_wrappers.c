@@ -247,7 +247,14 @@ int gw_u_write_scheduled_task_xml(const char *arg) {
 int gw_u_install_scheduled_task(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _install_startup_entry @ hermes_cli/gateway_windows.py:_install_startup_entry */
-int gw_u_install_startup_entry(const char *arg) { (void)arg; return 0; }
+int gw_u_install_startup_entry(const char *arg) {
+    /* Python: write launcher atomically + remove legacy. Arg = "entry\tlegacy_exists". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab[1] == '1') printf("removed legacy startup entry\n");
+    printf("startup entry written: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _resolve_detached_python @ hermes_cli/gateway_windows.py:_resolve_detached_python */
 int gw_u_resolve_detached_python(const char *arg) { (void)arg; return 0; }
@@ -318,10 +325,30 @@ int gw_u_prompt_install_choices(const char *arg) { (void)arg; return 0; }
 int gw_u_install_startup_fallback(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _wait_for_gateway_ready @ hermes_cli/gateway_windows.py:_wait_for_gateway_ready */
-int gw_u_wait_for_gateway_ready(const char *arg) { (void)arg; return 0; }
+int gw_u_wait_for_gateway_ready(const char *arg) {
+    /* Python: poll find_gateway_pids until deadline. Arg = "pids" (tab-sep,
+     * empty = none found). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _report_gateway_start @ hermes_cli/gateway_windows.py:_report_gateway_start */
-int gw_u_report_gateway_start(const char *arg) { (void)arg; return 0; }
+int gw_u_report_gateway_start(const char *arg) {
+    /* Python: PID success or 6s failure + log hints. Arg = "via\tpids". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *via = arg;
+    const char *pids = tab ? tab + 1 : "";
+    if (pids[0]) printf("✓ Gateway started via %s (PID: %s)\n", via, pids);
+    else {
+        printf("⚠ Launched gateway via %s, but no process detected after 6s.\n", via);
+        printf("  Check the log for startup errors:\n");
+        printf("    type <HERMES_HOME>\\logs\\gateway.log\n");
+        printf("    type <HERMES_HOME>\\logs\\gateway-stdio.log\n");
+    }
+    return 0;
+}
 
 /* PoP: _print_next_steps @ hermes_cli/gateway_windows.py:_print_next_steps */
 int gw_u_print_next_steps(const char *arg) {
