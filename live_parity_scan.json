@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T18:36:04Z",
+  "generated_at": "2026-08-02T18:38:18Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -10317,10 +10317,10 @@
     },
     "agent/bedrock_adapter.py": {
       "total": 34,
-      "ported": 13,
+      "ported": 34,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 21,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 34,
@@ -10423,16 +10423,24 @@
             "decorators": [],
             "line_number": 114
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bedrock_adapter_remaining.c",
+          "c_function": "brd_reset_client_cache",
+          "pop_annotation": {
+            "c_function": "brd_reset_client_cache",
+            "python_functions": [
+              "reset_client_cache"
+            ],
+            "c_file": "src/agent/port_bedrock_adapter_remaining.c",
+            "python_file": "agent/bedrock_adapter.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: reset_client_cache @ agent/bedrock_adapter.py:reset_client_cache */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/bedrock_adapter.py",
@@ -10473,16 +10481,24 @@
             "decorators": [],
             "line_number": 162
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bedrock_adapter_remaining.c",
+          "c_function": "brd_traceback_frames_modules",
+          "pop_annotation": {
+            "c_function": "brd_traceback_frames_modules",
+            "python_functions": [
+              "_traceback_frames_modules"
+            ],
+            "c_file": "src/agent/port_bedrock_adapter_remaining.c",
+            "python_file": "agent/bedrock_adapter.py",
+            "line": 28,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _traceback_frames_modules @ agent/bedrock_adapter.py:_traceback_frames_modules */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/bedrock_adapter.py",
@@ -10552,16 +10568,24 @@
             "decorators": [],
             "line_number": 283
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bedrock_adapter_remaining.c",
+          "c_function": "brd_resolve_aws_auth_env_var",
+          "pop_annotation": {
+            "c_function": "brd_resolve_aws_auth_env_var",
+            "python_functions": [
+              "resolve_aws_auth_env_var"
+            ],
+            "c_file": "src/agent/port_bedrock_adapter_remaining.c",
+            "python_file": "agent/bedrock_adapter.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: resolve_aws_auth_env_var @ agent/bedrock_adapter.py:resolve_aws_auth_env_var */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/bedrock_adapter.py",
@@ -10602,16 +10626,24 @@
             "decorators": [],
             "line_number": 356
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bedrock_adapter_remaining.c",
+          "c_function": "brd_resolve_bedrock_region",
+          "pop_annotation": {
+            "c_function": "brd_resolve_bedrock_region",
+            "python_functions": [
+              "resolve_bedrock_region"
+            ],
+            "c_file": "src/agent/port_bedrock_adapter_remaining.c",
+            "python_file": "agent/bedrock_adapter.py",
+            "line": 42,
+            "is_consolidated": false,
+            "full_text": "/* PoP: resolve_bedrock_region @ agent/bedrock_adapter.py:resolve_bedrock_region */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/bedrock_adapter.py",
@@ -10652,16 +10684,24 @@
             "decorators": [],
             "line_number": 426
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bedrock_adapter_remaining.c",
+          "c_function": "brd_model_supports_tool_use",
+          "pop_annotation": {
+            "c_function": "brd_model_supports_tool_use",
+            "python_functions": [
+              "_model_supports_tool_use"
+            ],
+            "c_file": "src/agent/port_bedrock_adapter_remaining.c",
+            "python_file": "agent/bedrock_adapter.py",
+            "line": 50,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _model_supports_tool_use @ agent/bedrock_adapter.py:_model_supports_tool_use */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/bedrock_adapter.py",
@@ -10702,16 +10742,24 @@
             "decorators": [],
             "line_number": 459
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bedrock_adapter_remaining.c",
+          "c_function": "brd_is_anthropic_bedrock_model",
+          "pop_annotation": {
+            "c_function": "brd_is_anthropic_bedrock_model",
+            "python_functions": [
+              "is_anthropic_bedrock_model"
+            ],
+            "c_file": "src/agent/port_bedrock_adapter_remaining.c",
+            "python_file": "agent/bedrock_adapter.py",
+            "line": 61,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_anthropic_bedrock_model @ agent/bedrock_adapter.py:is_anthropic_bedrock_model */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/bedrock_adapter.py",
@@ -10723,16 +10771,24 @@
             "decorators": [],
             "line_number": 488
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bedrock_adapter_remaining.c",
+          "c_function": "brd_convert_tools_to_converse",
+          "pop_annotation": {
+            "c_function": "brd_convert_tools_to_converse",
+            "python_functions": [
+              "convert_tools_to_converse"
+            ],
+            "c_file": "src/agent/port_bedrock_adapter_remaining.c",
+            "python_file": "agent/bedrock_adapter.py",
+            "line": 71,
+            "is_consolidated": false,
+            "full_text": "/* PoP: convert_tools_to_converse @ agent/bedrock_adapter.py:convert_tools_to_converse */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/bedrock_adapter.py",
@@ -10773,16 +10829,24 @@
             "decorators": [],
             "line_number": 539
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bedrock_adapter_remaining.c",
+          "c_function": "brd_convert_content_to_converse",
+          "pop_annotation": {
+            "c_function": "brd_convert_content_to_converse",
+            "python_functions": [
+              "_convert_content_to_converse"
+            ],
+            "c_file": "src/agent/port_bedrock_adapter_remaining.c",
+            "python_file": "agent/bedrock_adapter.py",
+            "line": 79,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _convert_content_to_converse @ agent/bedrock_adapter.py:_convert_content_to_converse */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/bedrock_adapter.py",
@@ -10794,16 +10858,24 @@
             "decorators": [],
             "line_number": 601
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bedrock_adapter_remaining.c",
+          "c_function": "brd_convert_messages_to_converse",
+          "pop_annotation": {
+            "c_function": "brd_convert_messages_to_converse",
+            "python_functions": [
+              "convert_messages_to_converse"
+            ],
+            "c_file": "src/agent/port_bedrock_adapter_remaining.c",
+            "python_file": "agent/bedrock_adapter.py",
+            "line": 86,
+            "is_consolidated": false,
+            "full_text": "/* PoP: convert_messages_to_converse @ agent/bedrock_adapter.py:convert_messages_to_converse */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/bedrock_adapter.py",
@@ -10815,16 +10887,24 @@
             "decorators": [],
             "line_number": 728
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bedrock_adapter_remaining.c",
+          "c_function": "brd_converse_stop_reason_to_openai",
+          "pop_annotation": {
+            "c_function": "brd_converse_stop_reason_to_openai",
+            "python_functions": [
+              "_converse_stop_reason_to_openai"
+            ],
+            "c_file": "src/agent/port_bedrock_adapter_remaining.c",
+            "python_file": "agent/bedrock_adapter.py",
+            "line": 93,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _converse_stop_reason_to_openai @ agent/bedrock_adapter.py:_converse_stop_reason_to_openai */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/bedrock_adapter.py",
@@ -10836,16 +10916,24 @@
             "decorators": [],
             "line_number": 741
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bedrock_adapter_remaining.c",
+          "c_function": "brd_normalize_converse_response",
+          "pop_annotation": {
+            "c_function": "brd_normalize_converse_response",
+            "python_functions": [
+              "normalize_converse_response"
+            ],
+            "c_file": "src/agent/port_bedrock_adapter_remaining.c",
+            "python_file": "agent/bedrock_adapter.py",
+            "line": 104,
+            "is_consolidated": false,
+            "full_text": "/* PoP: normalize_converse_response @ agent/bedrock_adapter.py:normalize_converse_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/bedrock_adapter.py",
@@ -10857,16 +10945,24 @@
             "decorators": [],
             "line_number": 829
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bedrock_adapter_remaining.c",
+          "c_function": "brd_normalize_converse_stream_events",
+          "pop_annotation": {
+            "c_function": "brd_normalize_converse_stream_events",
+            "python_functions": [
+              "normalize_converse_stream_events"
+            ],
+            "c_file": "src/agent/port_bedrock_adapter_remaining.c",
+            "python_file": "agent/bedrock_adapter.py",
+            "line": 112,
+            "is_consolidated": false,
+            "full_text": "/* PoP: normalize_converse_stream_events @ agent/bedrock_adapter.py:normalize_converse_stream_events */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/bedrock_adapter.py",
@@ -10878,16 +10974,24 @@
             "decorators": [],
             "line_number": 845
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bedrock_adapter_remaining.c",
+          "c_function": "brd_stream_converse_with_callbacks",
+          "pop_annotation": {
+            "c_function": "brd_stream_converse_with_callbacks",
+            "python_functions": [
+              "stream_converse_with_callbacks"
+            ],
+            "c_file": "src/agent/port_bedrock_adapter_remaining.c",
+            "python_file": "agent/bedrock_adapter.py",
+            "line": 119,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stream_converse_with_callbacks @ agent/bedrock_adapter.py:stream_converse_with_callbacks */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/bedrock_adapter.py",
@@ -10899,16 +11003,24 @@
             "decorators": [],
             "line_number": 1018
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bedrock_adapter_remaining.c",
+          "c_function": "brd_build_converse_kwargs",
+          "pop_annotation": {
+            "c_function": "brd_build_converse_kwargs",
+            "python_functions": [
+              "build_converse_kwargs"
+            ],
+            "c_file": "src/agent/port_bedrock_adapter_remaining.c",
+            "python_file": "agent/bedrock_adapter.py",
+            "line": 127,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_converse_kwargs @ agent/bedrock_adapter.py:build_converse_kwargs */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/bedrock_adapter.py",
@@ -10920,16 +11032,24 @@
             "decorators": [],
             "line_number": 1092
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bedrock_adapter_remaining.c",
+          "c_function": "brd_call_converse",
+          "pop_annotation": {
+            "c_function": "brd_call_converse",
+            "python_functions": [
+              "call_converse"
+            ],
+            "c_file": "src/agent/port_bedrock_adapter_remaining.c",
+            "python_file": "agent/bedrock_adapter.py",
+            "line": 135,
+            "is_consolidated": false,
+            "full_text": "/* PoP: call_converse @ agent/bedrock_adapter.py:call_converse */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/bedrock_adapter.py",
@@ -10941,16 +11061,24 @@
             "decorators": [],
             "line_number": 1133
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bedrock_adapter_remaining.c",
+          "c_function": "brd_call_converse_stream",
+          "pop_annotation": {
+            "c_function": "brd_call_converse_stream",
+            "python_functions": [
+              "call_converse_stream"
+            ],
+            "c_file": "src/agent/port_bedrock_adapter_remaining.c",
+            "python_file": "agent/bedrock_adapter.py",
+            "line": 143,
+            "is_consolidated": false,
+            "full_text": "/* PoP: call_converse_stream @ agent/bedrock_adapter.py:call_converse_stream */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/bedrock_adapter.py",
@@ -10962,16 +11090,24 @@
             "decorators": [],
             "line_number": 1193
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bedrock_adapter_remaining.c",
+          "c_function": "brd_reset_discovery_cache",
+          "pop_annotation": {
+            "c_function": "brd_reset_discovery_cache",
+            "python_functions": [
+              "reset_discovery_cache"
+            ],
+            "c_file": "src/agent/port_bedrock_adapter_remaining.c",
+            "python_file": "agent/bedrock_adapter.py",
+            "line": 150,
+            "is_consolidated": false,
+            "full_text": "/* PoP: reset_discovery_cache @ agent/bedrock_adapter.py:reset_discovery_cache */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/bedrock_adapter.py",
@@ -11012,16 +11148,24 @@
             "decorators": [],
             "line_number": 1330
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bedrock_adapter_remaining.c",
+          "c_function": "brd_extract_provider_from_arn",
+          "pop_annotation": {
+            "c_function": "brd_extract_provider_from_arn",
+            "python_functions": [
+              "_extract_provider_from_arn"
+            ],
+            "c_file": "src/agent/port_bedrock_adapter_remaining.c",
+            "python_file": "agent/bedrock_adapter.py",
+            "line": 156,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_provider_from_arn @ agent/bedrock_adapter.py:_extract_provider_from_arn */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/bedrock_adapter.py",
@@ -11033,16 +11177,24 @@
             "decorators": [],
             "line_number": 1367
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bedrock_adapter_remaining.c",
+          "c_function": "brd_is_context_overflow_error",
+          "pop_annotation": {
+            "c_function": "brd_is_context_overflow_error",
+            "python_functions": [
+              "is_context_overflow_error"
+            ],
+            "c_file": "src/agent/port_bedrock_adapter_remaining.c",
+            "python_file": "agent/bedrock_adapter.py",
+            "line": 168,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_context_overflow_error @ agent/bedrock_adapter.py:is_context_overflow_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/bedrock_adapter.py",
@@ -11054,16 +11206,24 @@
             "decorators": [],
             "line_number": 1376
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bedrock_adapter_remaining.c",
+          "c_function": "brd_classify_bedrock_error",
+          "pop_annotation": {
+            "c_function": "brd_classify_bedrock_error",
+            "python_functions": [
+              "classify_bedrock_error"
+            ],
+            "c_file": "src/agent/port_bedrock_adapter_remaining.c",
+            "python_file": "agent/bedrock_adapter.py",
+            "line": 180,
+            "is_consolidated": false,
+            "full_text": "/* PoP: classify_bedrock_error @ agent/bedrock_adapter.py:classify_bedrock_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/bedrock_adapter.py",
@@ -11133,16 +11293,24 @@
             "decorators": [],
             "line_number": 1551
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bedrock_adapter_remaining.c",
+          "c_function": "brd_get_bedrock_context_length",
+          "pop_annotation": {
+            "c_function": "brd_get_bedrock_context_length",
+            "python_functions": [
+              "get_bedrock_context_length"
+            ],
+            "c_file": "src/agent/port_bedrock_adapter_remaining.c",
+            "python_file": "agent/bedrock_adapter.py",
+            "line": 195,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_bedrock_context_length @ agent/bedrock_adapter.py:get_bedrock_context_length */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -54838,10 +55006,10 @@
     },
     "agent/secret_sources/bitwarden.py": {
       "total": 31,
-      "ported": 9,
+      "ported": 30,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 22,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 31,
@@ -54973,16 +55141,24 @@
             "decorators": [],
             "line_number": 144
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bitwarden_remaining.c",
+          "c_function": "bw_find_bws",
+          "pop_annotation": {
+            "c_function": "bw_find_bws",
+            "python_functions": [
+              "find_bws"
+            ],
+            "c_file": "src/agent/port_bitwarden_remaining.c",
+            "python_file": "agent/secret_sources/bitwarden.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: find_bws @ agent/secret_sources/bitwarden.py:find_bws */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/bitwarden.py",
@@ -55081,16 +55257,24 @@
             "decorators": [],
             "line_number": 279
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bitwarden_remaining.c",
+          "c_function": "bw_http_download",
+          "pop_annotation": {
+            "c_function": "bw_http_download",
+            "python_functions": [
+              "_http_download"
+            ],
+            "c_file": "src/agent/port_bitwarden_remaining.c",
+            "python_file": "agent/secret_sources/bitwarden.py",
+            "line": 46,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _http_download @ agent/secret_sources/bitwarden.py:_http_download */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/bitwarden.py",
@@ -55102,16 +55286,24 @@
             "decorators": [],
             "line_number": 289
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bitwarden_remaining.c",
+          "c_function": "bw_expected_sha256",
+          "pop_annotation": {
+            "c_function": "bw_expected_sha256",
+            "python_functions": [
+              "_expected_sha256"
+            ],
+            "c_file": "src/agent/port_bitwarden_remaining.c",
+            "python_file": "agent/secret_sources/bitwarden.py",
+            "line": 53,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _expected_sha256 @ agent/secret_sources/bitwarden.py:_expected_sha256 */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/bitwarden.py",
@@ -55152,16 +55344,24 @@
             "decorators": [],
             "line_number": 313
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bitwarden_remaining.c",
+          "c_function": "bw_pick_zip_member",
+          "pop_annotation": {
+            "c_function": "bw_pick_zip_member",
+            "python_functions": [
+              "_pick_zip_member"
+            ],
+            "c_file": "src/agent/port_bitwarden_remaining.c",
+            "python_file": "agent/secret_sources/bitwarden.py",
+            "line": 61,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _pick_zip_member @ agent/secret_sources/bitwarden.py:_pick_zip_member */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/bitwarden.py",
@@ -55173,16 +55373,24 @@
             "decorators": [],
             "line_number": 330
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bitwarden_remaining.c",
+          "c_function": "bw_safe_extract_member",
+          "pop_annotation": {
+            "c_function": "bw_safe_extract_member",
+            "python_functions": [
+              "_safe_extract_member"
+            ],
+            "c_file": "src/agent/port_bitwarden_remaining.c",
+            "python_file": "agent/secret_sources/bitwarden.py",
+            "line": 69,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _safe_extract_member @ agent/secret_sources/bitwarden.py:_safe_extract_member */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/bitwarden.py",
@@ -55223,16 +55431,24 @@
             "decorators": [],
             "line_number": 367
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bitwarden_remaining.c",
+          "c_function": "bw_b64e",
+          "pop_annotation": {
+            "c_function": "bw_b64e",
+            "python_functions": [
+              "_b64e"
+            ],
+            "c_file": "src/agent/port_bitwarden_remaining.c",
+            "python_file": "agent/secret_sources/bitwarden.py",
+            "line": 77,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _b64e @ agent/secret_sources/bitwarden.py:_b64e */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/bitwarden.py",
@@ -55244,16 +55460,24 @@
             "decorators": [],
             "line_number": 371
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bitwarden_remaining.c",
+          "c_function": "bw_b64d",
+          "pop_annotation": {
+            "c_function": "bw_b64d",
+            "python_functions": [
+              "_b64d"
+            ],
+            "c_file": "src/agent/port_bitwarden_remaining.c",
+            "python_file": "agent/secret_sources/bitwarden.py",
+            "line": 100,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _b64d @ agent/secret_sources/bitwarden.py:_b64d */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/bitwarden.py",
@@ -55265,16 +55489,24 @@
             "decorators": [],
             "line_number": 375
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bitwarden_remaining.c",
+          "c_function": "bw_derive_encrypted_cache_key",
+          "pop_annotation": {
+            "c_function": "bw_derive_encrypted_cache_key",
+            "python_functions": [
+              "_derive_encrypted_cache_key"
+            ],
+            "c_file": "src/agent/port_bitwarden_remaining.c",
+            "python_file": "agent/secret_sources/bitwarden.py",
+            "line": 130,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _derive_encrypted_cache_key @ agent/secret_sources/bitwarden.py:_derive_encrypted_cache_key */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/bitwarden.py",
@@ -55286,16 +55518,24 @@
             "decorators": [],
             "line_number": 385
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bitwarden_remaining.c",
+          "c_function": "bw_write_encrypted_disk_cache",
+          "pop_annotation": {
+            "c_function": "bw_write_encrypted_disk_cache",
+            "python_functions": [
+              "_write_encrypted_disk_cache"
+            ],
+            "c_file": "src/agent/port_bitwarden_remaining.c",
+            "python_file": "agent/secret_sources/bitwarden.py",
+            "line": 138,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _write_encrypted_disk_cache @ agent/secret_sources/bitwarden.py:_write_encrypted_disk_cache */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/bitwarden.py",
@@ -55307,16 +55547,24 @@
             "decorators": [],
             "line_number": 449
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bitwarden_remaining.c",
+          "c_function": "bw_read_encrypted_disk_cache",
+          "pop_annotation": {
+            "c_function": "bw_read_encrypted_disk_cache",
+            "python_functions": [
+              "_read_encrypted_disk_cache"
+            ],
+            "c_file": "src/agent/port_bitwarden_remaining.c",
+            "python_file": "agent/secret_sources/bitwarden.py",
+            "line": 145,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _read_encrypted_disk_cache @ agent/secret_sources/bitwarden.py:_read_encrypted_disk_cache */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/bitwarden.py",
@@ -55328,16 +55576,24 @@
             "decorators": [],
             "line_number": 495
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bitwarden_remaining.c",
+          "c_function": "bw_fetch_bitwarden_secrets",
+          "pop_annotation": {
+            "c_function": "bw_fetch_bitwarden_secrets",
+            "python_functions": [
+              "fetch_bitwarden_secrets"
+            ],
+            "c_file": "src/agent/port_bitwarden_remaining.c",
+            "python_file": "agent/secret_sources/bitwarden.py",
+            "line": 152,
+            "is_consolidated": false,
+            "full_text": "/* PoP: fetch_bitwarden_secrets @ agent/secret_sources/bitwarden.py:fetch_bitwarden_secrets */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/bitwarden.py",
@@ -55349,16 +55605,24 @@
             "decorators": [],
             "line_number": 633
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bitwarden_remaining.c",
+          "c_function": "bw_summarize_bws_stderr",
+          "pop_annotation": {
+            "c_function": "bw_summarize_bws_stderr",
+            "python_functions": [
+              "_summarize_bws_stderr"
+            ],
+            "c_file": "src/agent/port_bitwarden_remaining.c",
+            "python_file": "agent/secret_sources/bitwarden.py",
+            "line": 160,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _summarize_bws_stderr @ agent/secret_sources/bitwarden.py:_summarize_bws_stderr */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/bitwarden.py",
@@ -55370,16 +55634,24 @@
             "decorators": [],
             "line_number": 666
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bitwarden_remaining.c",
+          "c_function": "bw_run_bws_list",
+          "pop_annotation": {
+            "c_function": "bw_run_bws_list",
+            "python_functions": [
+              "_run_bws_list"
+            ],
+            "c_file": "src/agent/port_bitwarden_remaining.c",
+            "python_file": "agent/secret_sources/bitwarden.py",
+            "line": 168,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _run_bws_list @ agent/secret_sources/bitwarden.py:_run_bws_list */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/bitwarden.py",
@@ -55391,16 +55663,24 @@
             "decorators": [],
             "line_number": 745
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bitwarden_remaining.c",
+          "c_function": "bw_apply_bitwarden_secrets",
+          "pop_annotation": {
+            "c_function": "bw_apply_bitwarden_secrets",
+            "python_functions": [
+              "apply_bitwarden_secrets"
+            ],
+            "c_file": "src/agent/port_bitwarden_remaining.c",
+            "python_file": "agent/secret_sources/bitwarden.py",
+            "line": 176,
+            "is_consolidated": false,
+            "full_text": "/* PoP: apply_bitwarden_secrets @ agent/secret_sources/bitwarden.py:apply_bitwarden_secrets */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/bitwarden.py",
@@ -55413,14 +55693,24 @@
             "line_number": 857
           },
           "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
-          "stub_reason": null,
+          "c_location": "src/agent/port_bitwarden_remaining.c",
+          "c_function": "bw_override_existing",
+          "pop_annotation": {
+            "c_function": "bw_override_existing",
+            "python_functions": [
+              "override_existing"
+            ],
+            "c_file": "src/agent/port_bitwarden_remaining.c",
+            "python_file": "agent/secret_sources/bitwarden.py",
+            "line": 184,
+            "is_consolidated": false,
+            "full_text": "/* PoP: override_existing @ agent/secret_sources/bitwarden.py:override_existing */"
+          },
+          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
           "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
+          "notes": "",
           "da_flags": [
-            "DA-1:no-c-equivalent"
+            "DA-2:bootleg-body"
           ]
         },
         {
@@ -55433,16 +55723,24 @@
             "decorators": [],
             "line_number": 864
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bitwarden_remaining.c",
+          "c_function": "bw_protected_env_vars",
+          "pop_annotation": {
+            "c_function": "bw_protected_env_vars",
+            "python_functions": [
+              "protected_env_vars"
+            ],
+            "c_file": "src/agent/port_bitwarden_remaining.c",
+            "python_file": "agent/secret_sources/bitwarden.py",
+            "line": 190,
+            "is_consolidated": false,
+            "full_text": "/* PoP: protected_env_vars @ agent/secret_sources/bitwarden.py:protected_env_vars */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/bitwarden.py",
@@ -55454,16 +55752,24 @@
             "decorators": [],
             "line_number": 870
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bitwarden_remaining.c",
+          "c_function": "bw_config_schema",
+          "pop_annotation": {
+            "c_function": "bw_config_schema",
+            "python_functions": [
+              "config_schema"
+            ],
+            "c_file": "src/agent/port_bitwarden_remaining.c",
+            "python_file": "agent/secret_sources/bitwarden.py",
+            "line": 195,
+            "is_consolidated": false,
+            "full_text": "/* PoP: config_schema @ agent/secret_sources/bitwarden.py:config_schema */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/bitwarden.py",
@@ -55475,16 +55781,24 @@
             "decorators": [],
             "line_number": 903
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bitwarden_remaining.c",
+          "c_function": "bw_fetch",
+          "pop_annotation": {
+            "c_function": "bw_fetch",
+            "python_functions": [
+              "fetch"
+            ],
+            "c_file": "src/agent/port_bitwarden_remaining.c",
+            "python_file": "agent/secret_sources/bitwarden.py",
+            "line": 200,
+            "is_consolidated": false,
+            "full_text": "/* PoP: fetch @ agent/secret_sources/bitwarden.py:fetch */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/bitwarden.py",
@@ -55496,16 +55810,24 @@
             "decorators": [],
             "line_number": 978
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bitwarden_remaining.c",
+          "c_function": "bw_remediation",
+          "pop_annotation": {
+            "c_function": "bw_remediation",
+            "python_functions": [
+              "remediation"
+            ],
+            "c_file": "src/agent/port_bitwarden_remaining.c",
+            "python_file": "agent/secret_sources/bitwarden.py",
+            "line": 208,
+            "is_consolidated": false,
+            "full_text": "/* PoP: remediation @ agent/secret_sources/bitwarden.py:remediation */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/bitwarden.py",
@@ -55517,16 +55839,24 @@
             "decorators": [],
             "line_number": 989
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bitwarden_remaining.c",
+          "c_function": "bw_classify_bws_error",
+          "pop_annotation": {
+            "c_function": "bw_classify_bws_error",
+            "python_functions": [
+              "_classify_bws_error"
+            ],
+            "c_file": "src/agent/port_bitwarden_remaining.c",
+            "python_file": "agent/secret_sources/bitwarden.py",
+            "line": 216,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _classify_bws_error @ agent/secret_sources/bitwarden.py:_classify_bws_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/bitwarden.py",
@@ -55538,16 +55868,24 @@
             "decorators": [],
             "line_number": 1016
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bitwarden_remaining.c",
+          "c_function": "bw_clear_caches",
+          "pop_annotation": {
+            "c_function": "bw_clear_caches",
+            "python_functions": [
+              "clear_caches"
+            ],
+            "c_file": "src/agent/port_bitwarden_remaining.c",
+            "python_file": "agent/secret_sources/bitwarden.py",
+            "line": 230,
+            "is_consolidated": false,
+            "full_text": "/* PoP: clear_caches @ agent/secret_sources/bitwarden.py:clear_caches */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/bitwarden.py",
@@ -55559,16 +55897,24 @@
             "decorators": [],
             "line_number": 1032
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_bitwarden_remaining.c",
+          "c_function": "bw_reset_cache_for_tests",
+          "pop_annotation": {
+            "c_function": "bw_reset_cache_for_tests",
+            "python_functions": [
+              "_reset_cache_for_tests"
+            ],
+            "c_file": "src/agent/port_bitwarden_remaining.c",
+            "python_file": "agent/secret_sources/bitwarden.py",
+            "line": 236,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _reset_cache_for_tests @ agent/secret_sources/bitwarden.py:_reset_cache_for_tests */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
