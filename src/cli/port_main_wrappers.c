@@ -433,7 +433,34 @@ int main_u_clear_stale_openai_base_url(const char *arg) { (void)arg; return 0; }
 int main_u_all_aux_tasks(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _format_aux_current @ hermes_cli/main.py:_format_aux_current */
-int main_u_format_aux_current(const char *arg) { (void)arg; return 0; }
+int main_u_format_aux_current(const char *arg) {
+    /* Python: custom/provider/model render. Arg =
+     * "base_url\tprovider\tmodel". */
+    if (!arg || !*arg) { printf("auto\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *base = arg;
+    const char *provider = t1 ? t1 + 1 : "auto";
+    const char *model = t2 ? t2 + 1 : "";
+    if (base[0]) {
+        const char *short_base = base;
+        if (strncmp(short_base, "https://", 8) == 0) short_base += 8;
+        else if (strncmp(short_base, "http://", 7) == 0) short_base += 7;
+        size_t blen = strlen(short_base);
+        while (blen > 0 && short_base[blen-1] == '/') blen--;
+        printf("custom (%.*s)%s\n", (int)blen, short_base, model[0] ? " · " : "");
+        if (model[0]) printf("%s\n", model);
+        return 0;
+    }
+    if (strcmp(provider, "auto") == 0 || !provider[0]) {
+        printf("auto%s\n", model[0] ? " · " : "");
+        if (model[0]) printf("%s\n", model);
+        return 0;
+    }
+    if (model[0]) printf("%s · %s\n", provider, model);
+    else printf("%s\n", provider);
+    return 0;
+}
 
 /* PoP: _save_aux_choice @ hermes_cli/main.py:_save_aux_choice */
 int main_u_save_aux_choice(const char *arg) { (void)arg; return 0; }
@@ -746,7 +773,20 @@ int main_u_pe_machine_or_none(const char *arg) {
 }
 
 /* PoP: _desktop_exe_integrity_error @ hermes_cli/main.py:_desktop_exe_integrity_error */
-int main_u_desktop_exe_integrity_error(const char *arg) { (void)arg; return 0; }
+int main_u_desktop_exe_integrity_error(const char *arg) {
+    /* Python: PE machine check vs host. Arg = "machine\texpected\thost". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int bad_parse = strcmp(arg, "bad") == 0;
+    if (bad_parse) { printf("invalid PE: %s\n", t1 ? t1 + 1 : "parse failed"); return 0; }
+    if (t1 && strcmp(t1 + 1, "mismatch") == 0) {
+        printf("architecture mismatch: built a %s executable but this is a %s Windows host\n", arg, t2 ? t2 + 1 : "?");
+        return 0;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _desktop_backup_unpacked_dir @ hermes_cli/main.py:_desktop_backup_unpacked_dir */
 int main_u_desktop_backup_unpacked_dir(const char *arg) {

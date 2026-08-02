@@ -29,7 +29,14 @@ int gstat_u_get_starts_log_path(const char *arg) {
 int gstat_record_start_and_check_storm(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _get_process_hermes_home @ gateway/status.py:_get_process_hermes_home */
-int gstat_u_get_process_hermes_home(const char *arg) { (void)arg; return 0; }
+int gstat_u_get_process_hermes_home(const char *arg) {
+    /* Python: env HERMES_HOME or platform default. Arg = "env_home\tdefault". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (arg[0]) { printf("%s\n", arg); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _canonical_hermes_home @ gateway/status.py:_canonical_hermes_home */
 int gstat_u_canonical_hermes_home(const char *arg) {

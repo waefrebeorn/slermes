@@ -233,7 +233,14 @@ int tools_lazy_deps_u_ensure_target_ready(const char *arg) { (void)arg; return 0
 int tools_lazy_deps_u_activate_target_on_syspath(const char *arg) { (void)arg; return 0; }
 
 /* PoP: activate_durable_lazy_target @ tools/lazy_deps.py:activate_durable_lazy_target */
-int tools_lazy_deps_activate_durable_lazy_target(const char *arg) { (void)arg; return 0; }
+int tools_lazy_deps_activate_durable_lazy_target(const char *arg) {
+    /* Python: sys.path activation, never raises. Arg = "target\texists". */
+    if (!arg || !*arg) { printf("no durable target\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab[1] == '1') printf("durable lazy target activated: %s\n", arg);
+    else printf("durable target missing: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _allow_lazy_installs @ tools/lazy_deps.py:_allow_lazy_installs */
 int tools_lazy_deps_u_allow_lazy_installs(const char *arg) { (void)arg; return 0; }
@@ -1950,7 +1957,28 @@ int tools_mcp_stdio_watchdog_u_watchdog_loop(const char *arg) {
 }
 
 /* PoP: _normalize_target @ tools/open_preview_tool.py:_normalize_target */
-int tools_open_preview_tool_u_normalize_target(const char *arg) { (void)arg; return 0; }
+int tools_open_preview_tool_u_normalize_target(const char *arg) {
+    /* Python: bare host -> https; localhost -> http; pass through. Arg =
+     * raw. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ') p++;
+    size_t len = strlen(p);
+    while (len > 0 && p[len-1] == ' ') len--;
+    if (!len) { printf("\n"); return 0; }
+    if (strstr(p, "://") || p[0] == '/' || strncmp(p, "./", 2) == 0 || strncmp(p, "../", 3) == 0 || p[0] == '~' || strncmp(p, "file:", 5) == 0) {
+        printf("%.*s\n", (int)len, p);
+        return 0;
+    }
+    /* localhost:port */
+    int is_local = 0;
+    if (strncasecmp(p, "localhost", 9) == 0 || strncmp(p, "127.0.0.1", 9) == 0 || strncmp(p, "0.0.0.0", 7) == 0 || strncmp(p, "[::1]", 5) == 0) is_local = 1;
+    if (is_local) { printf("http://%.*s\n", (int)len, p); return 0; }
+    /* domain with dot */
+    if (strchr(p, '.')) { printf("https://%.*s\n", (int)len, p); return 0; }
+    printf("%.*s\n", (int)len, p);
+    return 0;
+}
 
 /* PoP: open_preview_tool @ tools/open_preview_tool.py:open_preview_tool */
 int tools_open_preview_tool_open_preview_tool(const char *arg) { (void)arg; return 0; }

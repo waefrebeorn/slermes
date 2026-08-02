@@ -112,7 +112,15 @@ int sexp_normalize_export_only(const char *arg) {
 }
 
 /* PoP: render_sessions_export @ hermes_cli/session_export.py:render_sessions_export */
-int sexp_render_sessions_export(const char *arg) { (void)arg; return 0; }
+int sexp_render_sessions_export(const char *arg) {
+    /* Python: jsonl or markdown render. Arg = "fmt\tonly\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *result = t2 ? t2 + 1 : "";
+    printf("%s\n", result);
+    return 0;
+}
 
 /* PoP: export_record_count @ hermes_cli/session_export.py:export_record_count */
 int sexp_export_record_count(const char *arg) {

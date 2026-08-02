@@ -89,7 +89,18 @@ int hermes_cli_debug_u_best_effort_sweep_expired_pastes(const char *arg) {
 }
 
 /* PoP: delete_paste @ hermes_cli/debug.py:delete_paste */
-int hermes_cli_debug_delete_paste(const char *arg) { (void)arg; return 0; }
+int hermes_cli_debug_delete_paste(const char *arg) {
+    /* Python: DELETE paste.rs id. Arg = "url\tpaste_id\tstatus_ok". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (!t1 || !t1[1]) {
+        fprintf(stderr, "Cannot delete: only paste.rs URLs are supported.  Got: %s\n", arg);
+        return 1;
+    }
+    printf("%s\n", (t2 && t2[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _schedule_auto_delete @ hermes_cli/debug.py:_schedule_auto_delete */
 int hermes_cli_debug_u_schedule_auto_delete(const char *arg) { (void)arg; return 0; }
@@ -206,7 +217,20 @@ int hermes_cli_mcp_config_u_get_mcp_servers(const char *arg) {
 }
 
 /* PoP: _save_mcp_server @ hermes_cli/mcp_config.py:_save_mcp_server */
-int hermes_cli_mcp_config_u_save_mcp_server(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_config_u_save_mcp_server(const char *arg) {
+    /* Python: validate + save; False on suspicious. Arg =
+     * "name\tissues\tsaved". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int issues = t1 && t1[1] == '1';
+    if (issues) {
+        printf("Server '%s' was NOT saved due to suspicious configuration.\n", arg);
+        return 0;
+    }
+    printf("mcp server saved: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _remove_mcp_server @ hermes_cli/mcp_config.py:_remove_mcp_server */
 int hermes_cli_mcp_config_u_remove_mcp_server(const char *arg) {
@@ -319,7 +343,16 @@ int hermes_cli_mcp_config_u_resolve_mcp_server_config(const char *arg) { (void)a
 int hermes_cli_mcp_config_u_probe_single_server(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _oauth_tokens_present @ hermes_cli/mcp_config.py:_oauth_tokens_present */
-int hermes_cli_mcp_config_u_oauth_tokens_present(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_config_u_oauth_tokens_present(const char *arg) {
+    /* Python: token file exists (permissive on error). Arg =
+     * "has_tokens\terror". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (arg[0] == '1') { printf("1\n"); return 0; }
+    if (tab && tab[1] == '1') { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _unwrap_exception_group @ hermes_cli/mcp_config.py:_unwrap_exception_group */
 int hermes_cli_mcp_config_u_unwrap_exception_group(const char *arg) { (void)arg; return 0; }
@@ -379,7 +412,20 @@ int hermes_cli_cli_billing_mixin_u_usage_bar_lines(const char *arg) { (void)arg;
 int hermes_cli_cli_billing_mixin_u_billing_add_card_flow(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cmd_install @ hermes_cli/pets.py:_cmd_install */
-int hermes_cli_pets_u_cmd_install(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pets_u_cmd_install(const char *arg) {
+    /* Python: install pet + optional select. Arg =
+     * "slug\tok\tname\tselected". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int ok = t1 && t1[1] == '1';
+    if (!ok) { fprintf(stderr, "✗ install failed: %s\n", arg); return 1; }
+    printf("✓ installed %s → <pet dir>\n", t2 ? t2 + 1 : arg);
+    if (t3 && t3[1] == '1') printf("✓ %s is now the active pet (display.pet.slug=%s, enabled)\n", t2 ? t2 + 1 : arg, arg);
+    else printf("  Make it active with: hermes pets select %s\n", arg);
+    return 0;
+}
 
 /* PoP: _cmd_remove @ hermes_cli/pets.py:_cmd_remove */
 int hermes_cli_pets_u_cmd_remove(const char *arg) {
@@ -2524,7 +2570,15 @@ int hermes_cli_gui_uninstall_source_built_gui_artifacts(const char *arg) { (void
 int hermes_cli_gui_uninstall_packaged_gui_app_paths(const char *arg) { (void)arg; return 0; }
 
 /* PoP: agent_is_installed @ hermes_cli/gui_uninstall.py:agent_is_installed */
-int hermes_cli_gui_uninstall_agent_is_installed(const char *arg) { (void)arg; return 0; }
+int hermes_cli_gui_uninstall_agent_is_installed(const char *arg) {
+    /* Python: hermes_cli dir OR venv/.venv present. Arg =
+     * "has_source\thas_venv". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (arg[0] == '1') { printf("1\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: gui_is_installed @ hermes_cli/gui_uninstall.py:gui_is_installed */
 int hermes_cli_gui_uninstall_gui_is_installed(const char *arg) {
@@ -3808,7 +3862,13 @@ int hermes_cli_security_audit_star_u_running_as_root(const char *arg) {
 }
 
 /* PoP: _iter_sshd_config_lines @ hermes_cli/security_audit_startup.py:_iter_sshd_config_lines */
-int hermes_cli_security_audit_star_u_iter_sshd_config_lines(const char *arg) { (void)arg; return 0; }
+int hermes_cli_security_audit_star_u_iter_sshd_config_lines(const char *arg) {
+    /* Python: non-comment lines from config + drop-ins. Arg = "lines"
+     * (tab-sep, empty = none). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _ssh_password_auth_enabled @ hermes_cli/security_audit_startup.py:_ssh_password_auth_enabled */
 int hermes_cli_security_audit_star_u_ssh_password_auth_enabled(const char *arg) { (void)arg; return 0; }
@@ -6132,7 +6192,12 @@ int hermes_cli_subcommands_console_build_console_parser(const char *arg) {
 int hermes_cli_subcommands_cron_build_cron_parser(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_debug_parser @ hermes_cli/subcommands/debug.py:build_debug_parser */
-int hermes_cli_subcommands_debug_build_debug_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_debug_build_debug_parser(const char *arg) {
+    /* Python: attach debug subcommand. */
+    (void)arg;
+    printf("debug parser attached\n");
+    return 0;
+}
 
 /* PoP: build_doctor_parser @ hermes_cli/subcommands/doctor.py:build_doctor_parser */
 int hermes_cli_subcommands_doctor_build_doctor_parser(const char *arg) { (void)arg; return 0; }

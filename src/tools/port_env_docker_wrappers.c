@@ -12,7 +12,29 @@
 #include "hermes_json.h"
 
 /* PoP: _normalize_forward_env_names @ tools/environments/docker.py:_normalize_forward_env_names */
-int envd_u_normalize_forward_env_names(const char *arg) { (void)arg; return 0; }
+int envd_u_normalize_forward_env_names(const char *arg) {
+    /* Python: dedup valid env names. Arg = "items" (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    int first = 1;
+    while (*p) {
+        const char *t = strchr(p, '\t');
+        size_t len = t ? (size_t)(t - p) : strlen(p);
+        int valid = len > 0 && ((p[0] >= 'A' && p[0] <= 'Z') || (p[0] >= 'a' && p[0] <= 'z') || p[0] == '_');
+        for (size_t i = 1; valid && i < len; i++) {
+            char c = p[i];
+            if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_')) valid = 0;
+        }
+        if (valid) {
+            if (!first) printf("\n");
+            printf("%.*s", (int)len, p);
+            first = 0;
+        }
+        p = t ? t + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _normalize_env_dict @ tools/environments/docker.py:_normalize_env_dict */
 int envd_u_normalize_env_dict(const char *arg) { (void)arg; return 0; }

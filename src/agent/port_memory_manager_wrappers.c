@@ -12,7 +12,13 @@
 #include "hermes_json.h"
 
 /* PoP: memory_provider_tools_enabled @ agent/memory_manager.py:memory_provider_tools_enabled */
-int mm_memory_provider_tools_enabled(const char *arg) { (void)arg; return 0; }
+int mm_memory_provider_tools_enabled(const char *arg) {
+    /* Python: toolset gate resolution. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: inject_memory_provider_tools @ agent/memory_manager.py:inject_memory_provider_tools */
 int mm_inject_memory_provider_tools(const char *arg) { (void)arg; return 0; }
@@ -209,7 +215,21 @@ int mm_on_memory_write(const char *arg) {
 }
 
 /* PoP: _memory_tool_result_succeeded @ agent/memory_manager.py:_memory_tool_result_succeeded */
-int mm_u_memory_tool_result_succeeded(const char *arg) { (void)arg; return 0; }
+int mm_u_memory_tool_result_succeeded(const char *arg) {
+    /* Python: success true + not staged. Arg = "result_json". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (!j || !json_is_object(j)) {
+        if (j) json_free(j);
+        printf("0\n");
+        return 0;
+    }
+    int success = json_get_bool(j, "success", 0);
+    int staged = json_get_bool(j, "staged", 0);
+    printf("%d\n", (success && !staged) ? 1 : 0);
+    json_free(j);
+    return 0;
+}
 
 /* PoP: notify_memory_tool_write @ agent/memory_manager.py:notify_memory_tool_write */
 int mm_notify_memory_tool_write(const char *arg) { (void)arg; return 0; }

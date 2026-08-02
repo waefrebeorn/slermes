@@ -33,7 +33,27 @@ static char *sku_normalize_desc(const json_t *fm) {
 }
 
 /* PoP: is_excluded_skill_path @ agent/skill_utils.py:is_excluded_skill_path */
-int sku_is_excluded_skill_path(const char *arg) { (void)arg; return 0; }
+int sku_is_excluded_skill_path(const char *arg) {
+    /* Python: any part in excluded dirs or support path. Arg =
+     * "path\texcluded_dirs\tsupport". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *dirs = t1 ? t1 + 1 : "";
+    const char *p = dirs;
+    while (*p) {
+        const char *t = strchr(p, '\t');
+        size_t len = t ? (size_t)(t - p) : strlen(p);
+        /* check /<dir>/ or <dir> at end */
+        char needle[512];
+        snprintf(needle, sizeof(needle), "/%.*s/", (int)len, p);
+        if (strstr(arg, needle)) { printf("1\n"); return 0; }
+        p = t ? t + 1 : p + len;
+    }
+    if (t2 && t2[1] == '1') { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: yaml_load @ agent/skill_utils.py:yaml_load */
 int sku_yaml_load(const char *arg) {

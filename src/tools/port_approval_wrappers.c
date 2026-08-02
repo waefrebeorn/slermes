@@ -211,7 +211,33 @@ int appr_u_read_tool_exec_flag(const char *arg) {
 int appr_u_execution_flag_findings(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_verification_artifact_cleanup @ tools/approval.py:_is_verification_artifact_cleanup */
-int appr_u_is_verification_artifact_cleanup(const char *arg) { (void)arg; return 0; }
+int appr_u_is_verification_artifact_cleanup(const char *arg) {
+    /* Python: rm -f <tmp>/hermes-verify|ad-hoc-<name>. Arg = command. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    /* tokenize: rm -f path */
+    char *cmd = strdup(arg);
+    char *save = NULL;
+    char *tokens[3] = {0};
+    int n = 0;
+    for (char *tok = strtok_r(cmd, " ", &save); tok && n < 3; tok = strtok_r(NULL, " ", &save)) {
+        tokens[n++] = tok;
+    }
+    if (n != 3 || strcmp(tokens[0], "rm") != 0 || strcmp(tokens[1], "-f") != 0) { free(cmd); printf("0\n"); return 0; }
+    const char *operand = tokens[2];
+    /* basename */
+    const char *base = strrchr(operand, '/');
+    base = base ? base + 1 : operand;
+    const char *tmp = getenv("TMPDIR");
+    if (!tmp || !*tmp) tmp = "/tmp";
+    /* path must start with tmp dir */
+    size_t tlen = strlen(tmp);
+    if (strncmp(operand, tmp, tlen) != 0 || (operand[tlen] != '/' && operand[tlen] != '\0')) { free(cmd); printf("0\n"); return 0; }
+    /* name pattern */
+    int match = (strncmp(base, "hermes-verify-", 14) == 0 || strncmp(base, "hermes-ad-hoc-", 14) == 0);
+    free(cmd);
+    printf("%d\n", match ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _run_approval_gate @ tools/approval.py:_run_approval_gate */
 int appr_u_run_approval_gate(const char *arg) { (void)arg; return 0; }

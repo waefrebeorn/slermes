@@ -109,7 +109,16 @@ int agent_model_metadata_u_fetch_codex_oauth_context_lengths_wit_ce(const char *
 int agent_model_metadata_u_resolve_codex_oauth_context_length_wi_ce(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_cjk_token_dense_char @ agent/model_metadata.py:_is_cjk_token_dense_char */
-int agent_model_metadata_u_is_cjk_token_dense_char(const char *arg) { (void)arg; return 0; }
+int agent_model_metadata_u_is_cjk_token_dense_char(const char *arg) {
+    /* Python: codepoint ranges. Arg = "codepoint". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    long code = strtol(arg, NULL, 0);
+    if ((code >= 0x1100 && code <= 0x11FF) || (code >= 0x2E80 && code <= 0x9FFF) ||
+        (code >= 0xA960 && code <= 0xA97F) || (code >= 0xAC00 && code <= 0xD7AF) ||
+        (code >= 0xF900 && code <= 0xFAFF) || (code >= 0xFF00 && code <= 0xFFEF)) { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _estimate_message_tokens_without_images @ agent/model_metadata.py:_estimate_message_tokens_without_images */
 int agent_model_metadata_u_estimate_message_tokens_without_images(const char *arg) { (void)arg; return 0; }
@@ -1338,7 +1347,13 @@ int agent_context_engine_sanitize_memory_context(const char *arg) {
 int agent_context_engine_automatic_compaction_status_message(const char *arg) { (void)arg; return 0; }
 
 /* PoP: should_compress_info @ agent/context_engine.py:should_compress_info */
-int agent_context_engine_should_compress_info(const char *arg) { (void)arg; return 0; }
+int agent_context_engine_should_compress_info(const char *arg) {
+    /* Python: (should_compress, reason). Arg = "should\treason". */
+    if (!arg || !*arg) { printf("0\n\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n%s\n", arg, tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: prune_tool_results_only @ agent/context_engine.py:prune_tool_results_only */
 int agent_context_engine_prune_tool_results_only(const char *arg) { (void)arg; return 0; }
