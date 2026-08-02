@@ -170,4 +170,13 @@ int sku_iter_skill_index_files(const char *arg) { (void)arg; return 0; }
 int sku_parse_qualified_name(const char *arg) { (void)arg; return 0; }
 
 /* PoP: is_valid_namespace @ agent/skill_utils.py:is_valid_namespace */
-int sku_is_valid_namespace(const char *arg) { (void)arg; return 0; }
+int sku_is_valid_namespace(const char *arg) {
+    /* Python: bool(_NAMESPACE_RE.match(candidate)) — [a-zA-Z0-9_-]+. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    int valid = 1;
+    for (const char *p = arg; *p; p++) {
+        if (!(isalnum((unsigned char)*p) || *p == '-' || *p == '_')) { valid = 0; break; }
+    }
+    printf("%d\n", valid);
+    return 0;
+}

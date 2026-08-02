@@ -109,7 +109,14 @@ int mcpo_get_client_info(const char *arg) { (void)arg; return 0; }
 int mcpo_set_client_info(const char *arg) { (void)arg; return 0; }
 
 /* PoP: save_oauth_metadata @ tools/mcp_oauth.py:save_oauth_metadata */
-int mcpo_save_oauth_metadata(const char *arg) { (void)arg; return 0; }
+int mcpo_save_oauth_metadata(const char *arg) {
+    /* Python: _write_json(self._meta_path(), metadata.model_dump(
+     * exclude_none=True, mode="json")). Arg = metadata JSON; the C port
+     * echoes the serialized metadata. */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: load_oauth_metadata @ tools/mcp_oauth.py:load_oauth_metadata */
 int mcpo_load_oauth_metadata(const char *arg) { (void)arg; return 0; }

@@ -86,7 +86,37 @@ int sexmd_u_session_id(const char *arg) {
 }
 
 /* PoP: _segments @ hermes_cli/session_export_md.py:_segments */
-int sexmd_u_segments(const char *arg) { (void)arg; return 0; }
+int sexmd_u_segments(const char *arg) {
+    /* Python: session["segments"] (list of dicts) if present, else
+     * [session]. Arg = session JSON. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *session = json_parse(arg, NULL);
+    if (!session || !json_is_object(session)) {
+        if (session) json_free(session);
+        printf("[%s]\n", arg);
+        return 0;
+    }
+    json_t *segs = json_obj_get(session, "segments");
+    if (segs && json_is_array(segs) && json_len(segs) > 0) {
+        /* keep dict entries only */
+        json_t *out = json_array();
+        for (size_t i = 0; i < json_len(segs); i++) {
+            json_t *s = json_get(segs, i);
+            if (s && json_is_object(s)) json_append(out, json_copy(s));
+        }
+        char *ser = json_serialize(out);
+        printf("%s\n", ser ? ser : "[]");
+        free(ser);
+        json_free(out);
+        json_free(session);
+        return 0;
+    }
+    char *ser = json_serialize(session);
+    printf("[%s]\n", ser ? ser : arg);
+    free(ser);
+    json_free(session);
+    return 0;
+}
 
 /* PoP: _message_count @ hermes_cli/session_export_md.py:_message_count */
 int sexmd_u_message_count(const char *arg) {

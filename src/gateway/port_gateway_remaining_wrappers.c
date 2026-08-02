@@ -794,7 +794,28 @@ int gateway_platform_registry_all_entries(const char *arg) {
 }
 
 /* PoP: plugin_entries @ gateway/platform_registry.py:plugin_entries */
-int gateway_platform_registry_plugin_entries(const char *arg) { (void)arg; return 0; }
+int gateway_platform_registry_plugin_entries(const char *arg) {
+    /* Python: [e for e in self._entries.values() if e.source == "plugin"].
+     * Arg = "name\tsource\t..." pairs; echo names whose source is plugin. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    int first = 1;
+    while (*p) {
+        const char *t = strchr(p, '\t');
+        if (!t) break;
+        const char *src = t + 1;
+        const char *nl = strchr(src, '\n');
+        size_t slen = nl ? (size_t)(nl - src) : strlen(src);
+        if (slen == 6 && strncmp(src, "plugin", 6) == 0) {
+            if (!first) printf("\n");
+            printf("%.*s", (int)(t - p), p);
+            first = 0;
+        }
+        p = nl ? nl + 1 : src + slen;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: is_registered @ gateway/platform_registry.py:is_registered */
 int gateway_platform_registry_is_registered(const char *arg) { (void)arg; return 0; }

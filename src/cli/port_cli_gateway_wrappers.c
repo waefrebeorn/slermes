@@ -100,7 +100,24 @@ int cgw_u_gateway_runtime_status_for_pid(const char *arg) { (void)arg; return 0;
 int cgw_u_wait_for_systemd_service_restart(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _systemd_unit_is_start_limited @ hermes_cli/gateway.py:_systemd_unit_is_start_limited */
-int cgw_u_systemd_unit_is_start_limited(const char *arg) { (void)arg; return 0; }
+int cgw_u_systemd_unit_is_start_limited(const char *arg) {
+    /* Python: props "Result" or "SubState" lowercased == "start-limit-hit".
+     * Arg = JSON props. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    json_t *props = json_parse(arg, NULL);
+    if (!props || !json_is_object(props)) {
+        if (props) json_free(props);
+        printf("0\n");
+        return 0;
+    }
+    const char *result = json_get_str(props, "Result", "");
+    const char *sub = json_get_str(props, "SubState", "");
+    int limited = (strcasecmp(result, "start-limit-hit") == 0 ||
+                   strcasecmp(sub, "start-limit-hit") == 0);
+    printf("%d\n", limited);
+    json_free(props);
+    return 0;
+}
 
 /* PoP: _systemd_error_indicates_start_limit @ hermes_cli/gateway.py:_systemd_error_indicates_start_limit */
 int cgw_u_systemd_error_indicates_start_limit(const char *arg) { (void)arg; return 0; }
@@ -458,7 +475,30 @@ int cgw_u_print_linger_enable_warning(const char *arg) {
 int cgw_u_ensure_linger_enabled(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _select_systemd_scope @ hermes_cli/gateway.py:_select_systemd_scope */
-int cgw_u_select_systemd_scope(const char *arg) { (void)arg; return 0; }
+int cgw_u_select_systemd_scope(const char *arg) {
+    /* Python: True if system arg; else system unit path exists AND user
+     * unit path does not. Arg = "system\tuser" unit paths (tab-separated),
+     * or just "system" to force True. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) {
+        /* single token = explicit system flag */
+        if (strcmp(arg, "1") == 0 || strcmp(arg, "true") == 0 ||
+            strcmp(arg, "system") == 0) { printf("1\n"); return 0; }
+        printf("0\n");
+        return 0;
+    }
+    char sys_path[1024], user_path[1024];
+    size_t slen = (size_t)(tab - arg);
+    if (slen >= sizeof(sys_path)) slen = sizeof(sys_path) - 1;
+    memcpy(sys_path, arg, slen); sys_path[slen] = '\0';
+    snprintf(user_path, sizeof(user_path), "%s", tab + 1);
+    struct stat st;
+    int sys_exists = (stat(sys_path, &st) == 0);
+    int user_exists = (stat(user_path, &st) == 0);
+    printf("%d\n", sys_exists && !user_exists);
+    return 0;
+}
 
 /* PoP: _system_scope_wizard_would_need_root @ hermes_cli/gateway.py:_system_scope_wizard_would_need_root */
 int cgw_u_system_scope_wizard_would_need_root(const char *arg) { (void)arg; return 0; }

@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <sys/stat.h>
 #include "hermes_json.h"
 
 /* PoP: managed_uv_path @ hermes_cli/managed_uv.py:managed_uv_path */
@@ -63,7 +64,16 @@ int muv_u_venv_python(const char *arg) {
 int muv_u_remove_tree(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _make_world_traversable @ hermes_cli/managed_uv.py:_make_world_traversable */
-int muv_u_make_world_traversable(const char *arg) { (void)arg; return 0; }
+int muv_u_make_world_traversable(const char *arg) {
+    /* Python: path.chmod(st_mode | 0o755) — keep root/FHS-managed runtimes
+     * executable by non-root callers; OSError ignored. Arg = path. */
+    if (!arg || !*arg) return 0;
+    struct stat st;
+    if (stat(arg, &st) != 0) return 0;
+    if (chmod(arg, st.st_mode | 0755) == 0) printf("traversable %s\n", arg);
+    else printf("chmod failed %s\n", arg);
+    return 0;
+}
 
 /* PoP: _runtime_request @ hermes_cli/managed_uv.py:_runtime_request */
 int muv_u_runtime_request(const char *arg) { (void)arg; return 0; }

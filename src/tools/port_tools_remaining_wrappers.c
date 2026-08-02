@@ -280,7 +280,24 @@ int tools_registry_u_normalize_handler_result(const char *arg) { (void)arg; retu
 int tools_registry_check_tool_availability(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _load_x_search_config @ tools/x_search_tool.py:_load_x_search_config */
-int tools_x_search_tool_u_load_x_search_config(const char *arg) { (void)arg; return 0; }
+int tools_x_search_tool_u_load_x_search_config(const char *arg) {
+    /* Python: load_config().get("x_search", {}) or {}; {} on any error.
+     * Arg = full config JSON (or empty). */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    json_t *cfg = json_parse(arg, NULL);
+    if (!cfg || !json_is_object(cfg)) {
+        if (cfg) json_free(cfg);
+        printf("{}\n");
+        return 0;
+    }
+    json_t *xs = json_obj_get(cfg, "x_search");
+    if (!xs || !json_is_object(xs)) { json_free(cfg); printf("{}\n"); return 0; }
+    char *out = json_serialize(xs);
+    printf("%s\n", out ? out : "{}");
+    free(out);
+    json_free(cfg);
+    return 0;
+}
 
 /* PoP: _get_x_search_model @ tools/x_search_tool.py:_get_x_search_model */
 int tools_x_search_tool_u_get_x_search_model(const char *arg) {
@@ -457,7 +474,16 @@ int tools_environments_modal_u_direct_snapshot_key(const char *arg) {
 int tools_environments_modal_u_get_snapshot_restore_candidate(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _store_direct_snapshot @ tools/environments/modal.py:_store_direct_snapshot */
-int tools_environments_modal_u_store_direct_snapshot(const char *arg) { (void)arg; return 0; }
+int tools_environments_modal_u_store_direct_snapshot(const char *arg) {
+    /* Python: snapshots[_direct_snapshot_key(task_id)] = snapshot_id;
+     * snapshots.pop(task_id, None); _save_snapshots(snapshots).
+     * Arg = "task_id\tsnapshot_id". */
+    if (!arg || !*arg) return 0;
+    const char *tab = strchr(arg, '\t');
+    if (!tab) return 0;
+    printf("snapshot %.*s -> %s\n", (int)(tab - arg), arg, tab + 1);
+    return 0;
+}
 
 /* PoP: _delete_direct_snapshot @ tools/environments/modal.py:_delete_direct_snapshot */
 int tools_environments_modal_u_delete_direct_snapshot(const char *arg) { (void)arg; return 0; }
@@ -661,7 +687,13 @@ int tools_image_source_u_permitted_host_read_target(const char *arg) { (void)arg
 int tools_image_source_u_resolve_container_fallback(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_delegated_child_context @ tools/kanban_tools.py:_is_delegated_child_context */
-int tools_kanban_tools_u_is_delegated_child_context(const char *arg) { (void)arg; return 0; }
+int tools_kanban_tools_u_is_delegated_child_context(const char *arg) {
+    /* Python: is_delegated_child_context() from agent.delegation_context;
+     * False on any error. Arg = optional "1"/"0" delegation marker. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%d\n", strcmp(arg, "1") == 0 || strcmp(arg, "true") == 0);
+    return 0;
+}
 
 /* PoP: _reject_delegated_child_mutation @ tools/kanban_tools.py:_reject_delegated_child_mutation */
 int tools_kanban_tools_u_reject_delegated_child_mutation(const char *arg) { (void)arg; return 0; }

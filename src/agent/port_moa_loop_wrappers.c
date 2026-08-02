@@ -75,7 +75,38 @@ int moa_u_is_failed_reference(const char *arg) {
 }
 
 /* PoP: _successful_references @ agent/moa_loop.py:_successful_references */
-int moa_u_successful_references(const char *arg) { (void)arg; return 0; }
+int moa_u_successful_references(const char *arg) {
+    /* Python: keep outputs whose result is not a [failed:/[skipped: sentinel
+     * (preserving payload). Arg = tab-separated "payload\tresult" pairs. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    int first = 1;
+    while (*p) {
+        const char *t = strchr(p, '\t');
+        if (!t) break;
+        const char *res = t + 1;
+        const char *nl = strchr(res, '\n');
+        size_t rlen = nl ? (size_t)(nl - res) : strlen(res);
+        int failed = 0;
+        if (rlen > 0) {
+            char *tmp = strndup(res, rlen);
+            if (tmp) {
+                char *q = tmp;
+                while (*q == ' ' || *q == '\t') q++;
+                failed = (strncmp(q, "[failed:", 8) == 0 || strncmp(q, "[skipped:", 9) == 0);
+                free(tmp);
+            }
+        }
+        if (!failed) {
+            if (!first) printf("\n");
+            printf("%.*s", (int)(t - p), p);
+            first = 0;
+        }
+        p = nl ? nl + 1 : res + rlen;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _failed_reference_labels @ agent/moa_loop.py:_failed_reference_labels */
 int moa_u_failed_reference_labels(const char *arg) {

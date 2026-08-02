@@ -181,7 +181,13 @@ int envl_u_prepend_shell_init(const char *arg) { (void)arg; return 0; }
 int envl_get_temp_dir(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _quote_cwd_for_cd @ tools/environments/local.py:_quote_cwd_for_cd */
-int envl_u_quote_cwd_for_cd(const char *arg) { (void)arg; return 0; }
+int envl_u_quote_cwd_for_cd(const char *arg) {
+    /* Python: BaseEnvironment._quote_cwd_for_cd(_windows_to_msys_path(cwd))
+     * — Git Bash-friendly path for cd. Arg = cwd. */
+    if (!arg || !*arg) { printf("''\n"); return 0; }
+    printf("'%s'\n", arg);
+    return 0;
+}
 
 /* PoP: _quote_shell_path @ tools/environments/local.py:_quote_shell_path */
 int envl_u_quote_shell_path(const char *arg) {

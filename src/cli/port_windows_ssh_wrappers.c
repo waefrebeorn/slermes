@@ -103,7 +103,14 @@ int wssr_u_system_sid(const char *arg) {
 int wssr_u_security_attributes(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _allowed_sids @ hermes_cli/windows_ssh_runtime.py:_allowed_sids */
-int wssr_u_allowed_sids(const char *arg) { (void)arg; return 0; }
+int wssr_u_allowed_sids(const char *arg) {
+    /* Python: {ConvertSidToStringSid(_current_sid()),
+     * ConvertSidToStringSid(_system_sid())} — the two Windows SIDs the SSH
+     * bridge accepts. On POSIX the C port reports the empty set. */
+    (void)arg;
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _verify_security @ hermes_cli/windows_ssh_runtime.py:_verify_security */
 int wssr_u_verify_security(const char *arg) { (void)arg; return 0; }

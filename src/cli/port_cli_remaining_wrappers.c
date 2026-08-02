@@ -16,6 +16,7 @@
 #include "hermes_json.h"
 #include "base64.h"
 #include "hash.h"
+#include "sqlite3.h"
 
 /* PoP: _redirect_uri @ hermes_cli/dashboard_auth/routes.py:_redirect_uri */
 int hermes_cli_dashboard_auth_rout_u_redirect_uri(const char *arg) { (void)arg; return 0; }
@@ -286,7 +287,27 @@ int hermes_cli_pets_u_interactive_pick(const char *arg) { (void)arg; return 0; }
 int hermes_cli_pets_register_cli(const char *arg) { (void)arg; return 0; }
 
 /* PoP: radio_item_plain @ hermes_cli/curses_ui.py:radio_item_plain */
-int hermes_cli_curses_ui_radio_item_plain(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curses_ui_radio_item_plain(const char *arg) {
+    /* Python: item if str; else "".join(text for text, _style in item).
+     * Arg = item (string, or "(text,style),(text,style)" tuples). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    if (arg[0] == '(') {
+        /* tuple form: strip "(...)" wrappers, keep text parts */
+        const char *p = arg;
+        while (*p) {
+            if (*p == '(' || *p == ')' || *p == '\'' || *p == '"') { p++; continue; }
+            if (strncmp(p, ", ", 2) == 0 || (*p == ',')) { p++; continue; }
+            const char *e = p;
+            while (*e && *e != ',' && *e != ')') e++;
+            printf("%.*s", (int)(e - p), p);
+            p = e;
+        }
+        printf("\n");
+        return 0;
+    }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _curses_style_attr @ hermes_cli/curses_ui.py:_curses_style_attr */
 int hermes_cli_curses_ui_u_curses_style_attr(const char *arg) { (void)arg; return 0; }
@@ -1462,7 +1483,33 @@ int hermes_cli_projects_db_u_project_from_row(const char *arg) { (void)arg; retu
 int hermes_cli_projects_db_u_attach_folders(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_discovery_policy_key @ hermes_cli/projects_db.py:get_discovery_policy_key */
-int hermes_cli_projects_db_get_discovery_policy_key(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_db_get_discovery_policy_key(const char *arg) {
+    /* Python: SELECT value FROM project_meta WHERE key =
+     * _DISCOVERY_POLICY_META_KEY. Arg = "db_path" (prints stored value). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    sqlite3 *conn = NULL;
+    if (sqlite3_open_v2(arg, &conn, SQLITE_OPEN_READONLY, NULL) != SQLITE_OK) {
+        if (conn) sqlite3_close(conn);
+        printf("\n");
+        return 0;
+    }
+    sqlite3_stmt *stmt = NULL;
+    const char *sql = "SELECT value FROM project_meta WHERE key = 'discovery_policy'";
+    if (sqlite3_prepare_v2(conn, sql, -1, &stmt, NULL) != SQLITE_OK) {
+        sqlite3_close(conn);
+        printf("\n");
+        return 0;
+    }
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        const unsigned char *v = sqlite3_column_text(stmt, 0);
+        printf("%s\n", v ? (const char *)v : "");
+    } else {
+        printf("\n");
+    }
+    sqlite3_finalize(stmt);
+    sqlite3_close(conn);
+    return 0;
+}
 
 /* PoP: reconcile_discovered_repos_policy @ hermes_cli/projects_db.py:reconcile_discovered_repos_policy */
 int hermes_cli_projects_db_reconcile_discovered_repos_policy(const char *arg) { (void)arg; return 0; }
@@ -2360,7 +2407,19 @@ int hermes_cli_session_filters_parse_duration_seconds(const char *arg) { (void)a
 int hermes_cli_session_filters_parse_point_in_time(const char *arg) { (void)arg; return 0; }
 
 /* PoP: format_epoch @ hermes_cli/session_filters.py:format_epoch */
-int hermes_cli_session_filters_format_epoch(const char *arg) { (void)arg; return 0; }
+int hermes_cli_session_filters_format_epoch(const char *arg) {
+    /* Python: "-" if ts is None; else fromtimestamp(ts).strftime(
+     * "%Y-%m-%d %H:%M"). Arg = epoch seconds (or empty). */
+    if (!arg || !*arg || strcmp(arg, "None") == 0) { printf("-\n"); return 0; }
+    long long ts = strtoll(arg, NULL, 10);
+    time_t t = (time_t)ts;
+    struct tm tmv;
+    if (!localtime_r(&t, &tmv)) { printf("-\n"); return 0; }
+    printf("%04d-%02d-%02d %02d:%02d\n",
+           tmv.tm_year + 1900, tmv.tm_mon + 1, tmv.tm_mday,
+           tmv.tm_hour, tmv.tm_min);
+    return 0;
+}
 
 /* PoP: build_prune_filters @ hermes_cli/session_filters.py:build_prune_filters */
 int hermes_cli_session_filters_build_prune_filters(const char *arg) { (void)arg; return 0; }

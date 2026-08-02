@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <signal.h>
 #include "hermes_json.h"
 
 /* PoP: _action_result_from @ tools/computer_use/cua_backend.py:_action_result_from */
@@ -302,7 +303,16 @@ int cua_list_windows(const char *arg) {
 int cua_launch_app(const char *arg) { (void)arg; return 0; }
 
 /* PoP: kill_app @ tools/computer_use/cua_backend.py:kill_app */
-int cua_kill_app(const char *arg) { (void)arg; return 0; }
+int cua_kill_app(const char *arg) {
+    /* Python: self._action("kill_app", {"pid": int(pid)}) — terminate by
+     * pid, kill -9 equivalent. Arg = pid. */
+    if (!arg || !*arg) return 1;
+    long pid = strtol(arg, NULL, 10);
+    if (pid <= 0) return 1;
+    int rc = kill((pid_t)pid, SIGKILL);
+    printf("%d\n", rc == 0 ? 1 : 0);
+    return 0;
+}
 
 /* PoP: bring_to_front @ tools/computer_use/cua_backend.py:bring_to_front */
 int cua_bring_to_front(const char *arg) { (void)arg; return 0; }

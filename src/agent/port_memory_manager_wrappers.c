@@ -159,7 +159,13 @@ int mm_u_memory_tool_result_succeeded(const char *arg) { (void)arg; return 0; }
 int mm_notify_memory_tool_write(const char *arg) { (void)arg; return 0; }
 
 /* PoP: shutdown_drain_state @ agent/memory_manager.py:shutdown_drain_state */
-int mm_shutdown_drain_state(const char *arg) { (void)arg; return 0; }
+int mm_shutdown_drain_state(const char *arg) {
+    /* Python: locked dict(self._shutdown_drain_state) — snapshot of the
+     * most recent bounded shutdown drain outcome. */
+    (void)arg;
+    printf("{}\n");
+    return 0;
+}
 
 /* PoP: _drain_sync_executor @ agent/memory_manager.py:_drain_sync_executor */
 int mm_u_drain_sync_executor(const char *arg) { (void)arg; return 0; }

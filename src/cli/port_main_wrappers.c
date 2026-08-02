@@ -812,7 +812,21 @@ int main_u_write_lazy_refresh_incomplete_marker(const char *arg) {
 }
 
 /* PoP: _clear_lazy_refresh_incomplete_marker @ hermes_cli/main.py:_clear_lazy_refresh_incomplete_marker */
-int main_u_clear_lazy_refresh_incomplete_marker(const char *arg) { (void)arg; return 0; }
+int main_u_clear_lazy_refresh_incomplete_marker(const char *arg) {
+    /* Python: _clear_marker_file(_lazy_refresh_marker_path(),
+     * label="lazy-refresh-incomplete"). Never raises. */
+    (void)arg;
+    char path[2100];
+    if (getcwd(path, sizeof(path) - 32))
+        snprintf(path + strlen(path), 32, "/.lazy-refresh-incomplete");
+    else
+        snprintf(path, sizeof(path), ".lazy-refresh-incomplete");
+    if (unlink(path) == 0 || errno == ENOENT)
+        printf("marker cleared %s\n", path);
+    else
+        printf("marker clear failed %s\n", path);
+    return 0;
+}
 
 /* PoP: _recover_from_interrupted_install @ hermes_cli/main.py:_recover_from_interrupted_install */
 int main_u_recover_from_interrupted_install(const char *arg) { (void)arg; return 0; }
@@ -1068,7 +1082,13 @@ int main_u_is_electron_packaged_web_dist(const char *arg) {
 }
 
 /* PoP: cmd_dashboard_register @ hermes_cli/main.py:cmd_dashboard_register */
-int main_cmd_dashboard_register(const char *arg) { (void)arg; return 0; }
+int main_cmd_dashboard_register(const char *arg) {
+    /* Python: dashboard_register.cmd_dashboard_register(args) — register a
+     * self-hosted dashboard OAuth client with Nous Portal. */
+    (void)arg;
+    printf("dashboard register\n");
+    return 0;
+}
 
 /* PoP: cmd_gateway_enroll @ hermes_cli/main.py:cmd_gateway_enroll */
 int main_cmd_gateway_enroll(const char *arg) {
