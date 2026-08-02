@@ -11,14 +11,46 @@
 #include <ctype.h>
 #include "hermes_json.h"
 
+/* shared background-review read-marks state (ported from skill_manager_tool) */
+#define SMT_MAX_MARKS 64
+static char *g_marks[SMT_MAX_MARKS];
+static int g_nmarks = 0;
+static bool smt_read_marks_has(const char *target) {
+    if (!target) return false;
+    for (int i = 0; i < g_nmarks; i++)
+        if (g_marks[i] && strcmp(g_marks[i], target) == 0) return true;
+    return false;
+}
+static void smt_read_marks_add(const char *target) {
+    if (!target || !*target || smt_read_marks_has(target)) return;
+    if (g_nmarks < SMT_MAX_MARKS) g_marks[g_nmarks++] = strdup(target);
+}
+static void smt_read_marks_reset(void) {
+    for (int i = 0; i < g_nmarks; i++) { free(g_marks[i]); g_marks[i] = NULL; }
+    g_nmarks = 0;
+}
+extern const char *skill_provenance_current_origin(void);
+
 /* PoP: mark_background_review_skill_read @ tools/skill_manager_tool.py:mark_background_review_skill_read */
-int smt_mark_background_review_skill_read(const char *arg) { (void)arg; return 0; }
+int smt_mark_background_review_skill_read(const char *arg) {
+    /* Python: record that the review fork read this target file. */
+    smt_read_marks_add(arg);
+    return 1;
+}
 
 /* PoP: _background_review_has_read @ tools/skill_manager_tool.py:_background_review_has_read */
-int smt_u_background_review_has_read(const char *arg) { (void)arg; return 0; }
+int smt_u_background_review_has_read(const char *arg) {
+    /* Python: has the review fork loaded this exact target file. */
+    return smt_read_marks_has(arg);
+}
 
 /* PoP: _reset_background_review_read_marks @ tools/skill_manager_tool.py:_reset_background_review_read_marks */
-int smt_u_reset_background_review_read_marks(const char *arg) { (void)arg; return 0; }
+int smt_u_reset_background_review_read_marks(const char *arg) {
+    /* Python: clear all read-marks (new review fork). */
+    (void)arg;
+    smt_read_marks_reset();
+    return 0;
+}
 
 /* PoP: _guard_agent_created_enabled @ tools/skill_manager_tool.py:_guard_agent_created_enabled */
 int smt_u_guard_agent_created_enabled(const char *arg) { (void)arg; return 0; }
@@ -33,7 +65,22 @@ int smt_u_pinned_guard(const char *arg) { (void)arg; return 0; }
 int smt_u_background_review_write_guard(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _background_review_read_before_write_guard @ tools/skill_manager_tool.py:_background_review_read_before_write_guard */
-int smt_u_background_review_read_before_write_guard(const char *arg) { (void)arg; return 0; }
+int smt_u_background_review_read_before_write_guard(const char *arg) {
+    /* Python (name, file_label, action, target): refuse a background-curator
+     * mutation of a file the review fork has not loaded first. Arg =
+     * "name\tfile_label\taction\ttarget". Prints the refusal JSON when
+     * blocking, nothing when allowed. */
+    if (!arg || !*arg) return 0;
+    char name[256], flabel[256], action[256], target[512];
+    if (sscanf(arg, "%255[^\t]\t%255[^\t]\t%255[^\t]\t%511s", name, flabel, action, target) < 4)
+        return 0;
+    if (strcmp(skill_provenance_current_origin(), "background_review") != 0)
+        return 0;
+    if (smt_read_marks_has(target)) return 0;
+    printf("{\"success\":false,\"error\":\"Refusing background curator %s for skill '%s': the current %s content has not been read in this review fork. Load the exact target before mutating it.\"}\n",
+           action, name, flabel);
+    return 0;
+}
 
 /* PoP: _background_review_preflight @ tools/skill_manager_tool.py:_background_review_preflight */
 int smt_u_background_review_preflight(const char *arg) { (void)arg; return 0; }

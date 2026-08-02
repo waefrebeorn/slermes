@@ -27,7 +27,19 @@ int wssr_u_root(const char *arg) { (void)arg; return 0; }
 int wssr_u_directory(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _log_path @ hermes_cli/windows_ssh_runtime.py:_log_path */
-int wssr_u_log_path(const char *arg) { (void)arg; return 0; }
+int wssr_u_log_path(const char *arg) {
+    /* Python: _directory(ownership_id) / f"{_nonce(spawn_nonce)}.log" with
+     * _root() = get_hermes_home()/desktop-ssh. Arg = "ownership_id\tnonce". */
+    if (!arg || !*arg) return 0;
+    char owner[256], nonce[64];
+    if (sscanf(arg, "%255[^\t]\t%63s", owner, nonce) < 2) return 0;
+    const char *hh = getenv("HERMES_HOME");
+    char base[1024];
+    if (hh && *hh) snprintf(base, sizeof(base), "%s", hh);
+    else snprintf(base, sizeof(base), "%s/.hermes", getenv("HOME") ? getenv("HOME") : ".");
+    printf("%s/desktop-ssh/%s/%s.log\n", base, owner, nonce);
+    return 0;
+}
 
 /* PoP: _current_sid @ hermes_cli/windows_ssh_runtime.py:_current_sid */
 int wssr_u_current_sid(const char *arg) { (void)arg; return 0; }

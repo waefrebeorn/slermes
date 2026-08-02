@@ -1,23 +1,19 @@
-# Ranked fix queue — 3178 bootleg functions
+# Ranked fix queue — 3100 bootleg functions
 
-- A  (delegate to real fn): 30
-- Bt (trivial direct-port): 149
-- Bx (direct but needs deps): 1052
-- C  (deep subsystem):        1947
+- A  (delegate to real fn): 22
+- Bt (trivial direct-port): 144
+- Bx (direct but needs deps): 1027
+- C  (deep subsystem):        1907
 
 ## Top of queue (automatable first)
 
 - [A] tools/computer_use/cua_backend.py :: key -> agent_model_metadata_u_context_cache_key  (cands: cmd_key)
 - [A] hermes_cli/gateway_windows.py :: status -> agent_error_classifier_u_classify_by_status  (cands: cmd_status)
-- [A] tools/environments/local.py :: cleanup -> tt_u_atexit_cleanup
-- [A] tools/environments/base.py :: cleanup -> tt_u_atexit_cleanup
 - [A] hermes_cli/windows_ssh_runtime.py :: dispatch -> adel_u_persist_dispatch  (cands: dispatch)
 - [A] hermes_cli/kanban_db.py :: set_model_override -> kdbport_set_model_override  (cands: set_model_override)
-- [A] tools/environments/docker.py :: cleanup -> tt_u_atexit_cleanup
 - [A] agent/context_compressor.py :: compress -> agent_memory_provider_on_pre_compress  (cands: cmd_compress)
 - [A] tools/computer_use/tool.py :: key -> agent_model_metadata_u_context_cache_key  (cands: cmd_key)
 - [A] tools/registry.py :: dispatch -> adel_u_persist_dispatch  (cands: dispatch)
-- [A] tools/environments/modal.py :: cleanup -> tt_u_atexit_cleanup
 - [A] tools/file_state.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
 - [A] agent/credential_pool.py :: current -> agent_subscription_view_u_parse_current  (cands: current)
 - [A] agent/credential_pool.py :: entries -> agent_credential_pool_u_log_no_available_entries  (cands: entries)
@@ -27,15 +23,11 @@
 - [A] gateway/platforms/helpers.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
 - [A] gateway/platforms/helpers.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
 - [A] cli.py :: status -> agent_error_classifier_u_classify_by_status  (cands: cmd_status)
-- [A] tools/environments/managed_modal.py :: cleanup -> tt_u_atexit_cleanup
 - [A] tools/interrupt.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
 - [A] agent/secret_sources/_cache.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
 - [A] gateway/dead_targets.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
 - [A] gateway/restart_loop_guard.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
 - [A] gateway/stream_dispatch.py :: dispatch -> adel_u_persist_dispatch  (cands: dispatch)
-- [A] tools/environments/daytona.py :: cleanup -> tt_u_atexit_cleanup
-- [A] tools/environments/singularity.py :: cleanup -> tt_u_atexit_cleanup
-- [A] tools/environments/ssh.py :: cleanup -> tt_u_atexit_cleanup
 - [A] tools/slash_confirm.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
 - [Bt] hermes_cli/main.py :: _command_has_dedicated_mcp_startup -> main_u_command_has_dedicated_mcp_startup
 - [Bt] hermes_cli/main.py :: _count_commits_between -> main_u_count_commits_between
@@ -72,15 +64,15 @@
 - [Bt] hermes_cli/model_switch.py :: format_model_for_display -> msw_format_model_for_display
 - [Bt] hermes_cli/session_export_md.py :: _render_content -> sexmd_u_render_content
 - [Bt] hermes_cli/nous_subscription.py :: _resolve_browser_feature_state -> nsub_u_resolve_browser_feature_state
-- [Bt] gateway/platforms/base.py :: prefers_fresh_final_streaming -> gw_base__prefers_fresh_final_streaming
-- [Bt] gateway/platforms/base.py :: set_reaction_handler -> gw_base__set_reaction_handler
-- [Bt] gateway/platforms/base.py :: set_session_store -> gw_base__set_session_store
 - [Bt] hermes_cli/debug.py :: _capture_default_log_snapshots -> hermes_cli_debug_u_capture_default_log_snapshots
 - [Bt] hermes_cli/mcp_config.py :: _strip_bearer_prefix -> hermes_cli_mcp_config_u_strip_bearer_prefix
 - [Bt] agent/model_metadata.py :: _localhost_to_ipv4 -> agent_model_metadata_u_localhost_to_ipv4
 - [Bt] hermes_cli/service_manager.py :: _render_finish_script -> hermes_cli_service_manager_u_render_finish_script
 - [Bt] hermes_cli/service_manager.py :: _service_name -> hermes_cli_service_manager_u_service_name
 - [Bt] agent/subscription_view.py :: format_tier_row -> agent_subscription_view_format_tier_row
+- [Bt] gateway/platforms/base.py :: prefers_fresh_final_streaming -> gw_base__prefers_fresh_final_streaming
+- [Bt] gateway/platforms/base.py :: set_reaction_handler -> gw_base__set_reaction_handler
+- [Bt] gateway/platforms/base.py :: set_session_store -> gw_base__set_session_store
 - [Bt] hermes_cli/projects_cmd.py :: _print_project -> hermes_cli_projects_cmd_u_print_project
 - [Bt] tools/delegation_live_log.py :: _manifest_path -> tools_delegation_live_log_u_manifest_path
 - [Bt] tools/registry.py :: _is_registry_register_call -> tools_registry_u_is_registry_register_call
@@ -101,7 +93,6 @@
 - [Bt] tools/homeassistant_tool.py :: _check_ha_available -> tools_homeassistant_tool_u_check_ha_available
 - [Bt] tools/homeassistant_tool.py :: _get_config -> tools_homeassistant_tool_u_get_config
 - [Bt] tools/homeassistant_tool.py :: _get_headers -> tools_homeassistant_tool_u_get_headers
-- [Bt] hermes_cli/model_catalog.py :: reset_cache -> hermes_cli_model_catalog_reset_cache
 - [Bt] hermes_cli/skin_engine.py :: get_active_skin_name -> hermes_cli_skin_engine_get_active_skin_name
 - [Bt] agent/agent_init.py :: _normalize_custom_provider_name -> agent_agent_init_u_normalize_custom_provider_name
 - [Bt] agent/agent_init.py :: _resolve_compression_threshold -> agent_agent_init_u_resolve_compression_threshold
@@ -111,15 +102,11 @@
 - [Bt] gateway/relay/ws_transport.py :: set_interrupt_inbound_handler -> ws_transport_set_interrupt_inbound_handler
 - [Bt] gateway/status_phrases.py :: _merge_phrase_paths -> gateway_status_phrases_u_merge_phrase_paths
 - [Bt] gateway/status_phrases.py :: classify_status_context -> gateway_status_phrases_classify_status_context
-- [Bt] hermes_cli/journey.py :: _term_size -> hermes_cli_journey_u_term_size
+- [Bt] hermes_cli/model_catalog.py :: reset_cache -> hermes_cli_model_catalog_reset_cache
 - [Bt] hermes_cli/inventory.py :: build_model_options_payload -> hermes_cli_inventory_build_model_options_payload
-- [Bt] hermes_cli/middleware.py :: _has_middleware -> hermes_cli_middleware_u_has_middleware
-- [Bt] gateway/platforms/yuanbao_proto.py :: _encode_bytes -> yb_decode_varint
-- [Bt] gateway/platforms/yuanbao_proto.py :: _encode_message -> yb_decode_varint
+- [Bt] hermes_cli/journey.py :: _term_size -> hermes_cli_journey_u_term_size
 - [Bt] tools/file_tools.py :: _is_expected_write_exception -> file_tools_is_expected_write_exception
 - [Bt] agent/context_engine.py :: get_automatic_compaction_status_message -> agent_context_engine_get_automatic_compaction_status_message
-- [Bt] agent/display.py :: get_friendly_tool_labels -> cli_agent_display__get_friendly_tool_labels
-- [Bt] agent/display.py :: set_friendly_tool_labels -> cli_agent_display__set_friendly_tool_labels
 - [Bt] agent/memory_provider.py :: on_memory_write -> agent_memory_provider_on_memory_write
 - [Bt] agent/trace_upload.py :: _resolve_hf_token -> agent_trace_upload_u_resolve_hf_token
 - [Bt] gateway/platforms/webhook_filters.py :: _stringify_filter_value -> gateway_platforms_webhook_filt_u_stringify_filter_value
@@ -136,6 +123,8 @@
 - [Bt] hermes_cli/setup_whatsapp_cloud.py :: _validate_access_token -> hermes_cli_setup_whatsapp_clou_u_validate_access_token
 - [Bt] hermes_cli/setup_whatsapp_cloud.py :: _validate_app_secret -> hermes_cli_setup_whatsapp_clou_u_validate_app_secret
 - [Bt] tools/xai_video_tools.py :: _clean_string -> tools_xai_video_tools_u_clean_string
+- [Bt] agent/display.py :: get_friendly_tool_labels -> cli_agent_display__get_friendly_tool_labels
+- [Bt] agent/display.py :: set_friendly_tool_labels -> cli_agent_display__set_friendly_tool_labels
 - [Bt] gateway/platform_registry.py :: is_registered -> gateway_platform_registry_is_registered
 - [Bt] gateway/platform_registry.py :: register_deferred -> gateway_platform_registry_register_deferred
 - [Bt] hermes_cli/dashboard_auth/token_auth.py :: is_token_route -> hermes_cli_dashboard_auth_toke_is_token_route
@@ -154,7 +143,6 @@
 - [Bt] hermes_cli/sqlite_runtime.py :: wal_reset_vulnerable -> hermes_cli_sqlite_runtime_wal_reset_vulnerable
 - [Bt] hermes_cli/stdio.py :: _default_windows_editor -> hermes_cli_stdio_u_default_windows_editor
 - [Bt] tools/checkpoint_manager.py :: _dir_has_any_entry -> tools_checkpoint_manager_u_dir_has_any_entry
-- [Bt] tools/computer_use/doctor.py :: _sanitized_cua_env -> tools_computer_use_doctor_u_sanitized_cua_env
 - [Bt] tools/env_probe.py :: _reset_cache_for_tests -> cli_tools_env_probe__reset_cache_for_tests
 - [Bt] tools/skill_provenance.py :: is_background_review -> tools_skill_provenance_is_background_review
 - [Bt] agent/battery.py :: read_battery -> agent_battery_read_battery
@@ -166,18 +154,17 @@
 - [Bt] tools/tts_streaming.py :: mark_speech_interrupted -> tools_tts_streaming_mark_speech_interrupted
 - [Bt] tools/tts_streaming.py :: take_speech_interrupted -> tools_tts_streaming_take_speech_interrupted
 - [Bt] agent/credits_tracker.py :: has_data -> agent_credits_tracker_has_data
-- [Bt] gateway/cwd_placeholder.py :: resolve_placeholder_terminal_cwd -> gateway_cwd_placeholder_resolve_placeholder_terminal_cwd
 - [Bt] gateway/delivery.py :: is_relay -> gateway_delivery_is_relay
 - [Bt] gateway/platforms/webhook.py :: check_webhook_requirements -> webhook_check_requirements
-- [Bt] hermes_cli/codex_runtime_switch.py :: check_codex_binary_ok -> hermes_cli_codex_runtime_switc_check_codex_binary_ok
 - [Bt] hermes_cli/commands.py :: _score_path -> cmd_score_path
 - [Bt] hermes_cli/plugins.py :: clear_thread_tool_whitelist -> plug_clear_thread_tool_whitelist
 - [Bt] hermes_cli/plugins.py :: set_thread_tool_whitelist -> plug_set_thread_tool_whitelist
-- [Bt] hermes_cli/web_server.py :: _platform_env_prefixes -> web_free_strv
 - [Bt] tools/thread_context.py :: _callback_api -> tools_thread_context_u_callback_api
 - [Bt] agent/secret_scope.py :: is_multiplex_active -> secret_scope_is_multiplex_active
+- [Bt] gateway/cwd_placeholder.py :: resolve_placeholder_terminal_cwd -> gateway_cwd_placeholder_resolve_placeholder_terminal_cwd
 - [Bt] gateway/platforms/msgraph_webhook.py :: check_msgraph_webhook_requirements -> msgraph_webhook_check_requirements
 - [Bt] gateway/relay/transport.py :: set_inbound_handler -> ws_transport_set_inbound_handler
+- [Bt] hermes_cli/codex_runtime_switch.py :: check_codex_binary_ok -> hermes_cli_codex_runtime_switc_check_codex_binary_ok
 - [Bt] tools/binary_extensions.py :: has_binary_extension -> tools_binary_extensions_has_binary_extension
 - [Bt] tools/clarify_tool.py :: check_clarify_requirements -> cli_tools_clarify_tool_check_clarify_requirements
 - [Bt] tools/desktop_ui.py :: set_emitter -> tools_desktop_ui_set_emitter
@@ -207,3 +194,16 @@
 - [Bx] hermes_cli/main.py :: _is_profile_api_key_provider -> main_u_is_profile_api_key_provider
 - [Bx] hermes_cli/main.py :: _iter_tui_build_inputs -> main_u_iter_tui_build_inputs
 - [Bx] hermes_cli/main.py :: _load_console_script_names -> main_u_load_console_script_names
+- [Bx] hermes_cli/main.py :: _log_only_write -> main_u_log_only_write
+- [Bx] hermes_cli/main.py :: _make_tui_argv -> main_u_make_tui_argv
+- [Bx] hermes_cli/main.py :: _mark_skip_upstream_prompt -> main_u_mark_skip_upstream_prompt
+- [Bx] hermes_cli/main.py :: _nixos_build_env -> main_u_nixos_build_env
+- [Bx] hermes_cli/main.py :: _npm_manifest_paths -> main_u_npm_manifest_paths
+- [Bx] hermes_cli/main.py :: _parse_pe_machine -> main_u_parse_pe_machine
+- [Bx] hermes_cli/main.py :: _print_tui_exit_summary -> main_u_print_tui_exit_summary
+- [Bx] hermes_cli/main.py :: _purge_electron_build_cache -> main_u_purge_electron_build_cache
+- [Bx] hermes_cli/main.py :: _read_ssh_session_token_file -> main_u_read_ssh_session_token_file
+- [Bx] hermes_cli/main.py :: _record_npm_lockfile_hash -> main_u_record_npm_lockfile_hash
+- [Bx] hermes_cli/main.py :: _recover_from_interrupted_install -> main_u_recover_from_interrupted_install
+- [Bx] hermes_cli/main.py :: _render_distribution_plan -> main_u_render_distribution_plan
+- [Bx] hermes_cli/main.py :: _report_dashboard_status -> main_u_report_dashboard_status

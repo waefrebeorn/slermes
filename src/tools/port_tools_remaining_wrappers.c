@@ -675,16 +675,40 @@ int tools_computer_use_doctor_u_drive_health_report(const char *arg) { (void)arg
 int tools_computer_use_doctor_u_print_text_report(const char *arg) { (void)arg; return 0; }
 
 /* PoP: set_current_write_origin @ tools/skill_provenance.py:set_current_write_origin */
-int tools_skill_provenance_set_current_write_origin(const char *arg) { (void)arg; return 0; }
+const char *skill_provenance_current_origin(void); /* forward */
+int tools_skill_provenance_set_current_write_origin(const char *arg) {
+    /* Python: set the current write-origin context (e.g. "background_review"). */
+    char *g_o = (char *)skill_provenance_current_origin();
+    if (arg && *arg) {
+        snprintf(g_o, 128, "%s", arg);
+    } else {
+        g_o[0] = '\0';
+    }
+    return 0;
+}
 
 /* PoP: reset_current_write_origin @ tools/skill_provenance.py:reset_current_write_origin */
-int tools_skill_provenance_reset_current_write_origin(const char *arg) { (void)arg; return 0; }
+int tools_skill_provenance_reset_current_write_origin(const char *arg) {
+    /* Python: clear the write-origin context. */
+    (void)arg;
+    return tools_skill_provenance_set_current_write_origin("");
+}
 
 /* PoP: get_current_write_origin @ tools/skill_provenance.py:get_current_write_origin */
-int tools_skill_provenance_get_current_write_origin(const char *arg) { (void)arg; return 0; }
+int tools_skill_provenance_get_current_write_origin(const char *arg) { (void)arg; printf("%s\n", skill_provenance_current_origin()); return 0; }
 
 /* PoP: is_background_review @ tools/skill_provenance.py:is_background_review */
-int tools_skill_provenance_is_background_review(const char *arg) { (void)arg; return 0; }
+const char *skill_provenance_current_origin(void) {
+    /* shared origin state, set by set_current_write_origin */
+    static char g_origin[128];
+    return g_origin;
+}
+
+int tools_skill_provenance_is_background_review(const char *arg) {
+    /* Python: True while the current write origin is background_review. */
+    (void)arg;
+    return strcmp(skill_provenance_current_origin(), "background_review") == 0;
+}
 
 /* PoP: _web_extract_url @ tools/web_tools.py:_web_extract_url */
 int tools_web_tools_u_web_extract_url(const char *arg) { (void)arg; return 0; }

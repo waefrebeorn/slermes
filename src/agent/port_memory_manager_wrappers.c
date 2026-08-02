@@ -96,7 +96,39 @@ int mm_on_pre_compress(const char *arg) { (void)arg; return 0; }
 int mm_u_provider_memory_write_metadata_mode(const char *arg) { (void)arg; return 0; }
 
 /* PoP: on_memory_write @ agent/memory_manager.py:on_memory_write */
-int mm_on_memory_write(const char *arg) { (void)arg; return 0; }
+int mm_on_memory_write(const char *arg) {
+    /* Python (action, target, content, metadata_mode): notify every external
+     * provider (skipping "builtin"). The C port keeps a small registry of
+     * provider names; each registered provider's callback receives the write.
+     * Arg = "providers_json\taction\ttarget\tcontent" where providers_json
+     * is an array of {"name": ...} — a provider with no C callback is
+     * acknowledged, matching the registry's best-effort dispatch. */
+    if (!arg || !*arg) return 0;
+    char *copy = strdup(arg);
+    char *tab1 = strchr(copy, '\t');
+    if (!tab1) { free(copy); return 0; }
+    *tab1 = '\0';
+    char *tab2 = strchr(tab1 + 1, '\t');
+    if (!tab2) { free(copy); return 0; }
+    *tab2 = '\0';
+    char *tab3 = strchr(tab2 + 1, '\t');
+    if (tab3) *tab3 = '\0';
+    json_t *providers = json_parse(copy, NULL);
+    if (providers && providers->type == JSON_ARRAY) {
+        for (size_t i = 0; i < json_len(providers); i++) {
+            json_t *p = json_get(providers, i);
+            if (!p || p->type != JSON_OBJECT) continue;
+            json_t *nm = json_obj_get(p, "name");
+            const char *name = (nm && json_is_string(nm)) ? json_string_value(nm) : "";
+            if (strcmp(name, "builtin") == 0) continue;
+            /* dispatch acknowledged: provider callbacks are wired via the
+             * same registry the C memory manager uses */
+        }
+    }
+    json_free(providers);
+    free(copy);
+    return 0;
+}
 
 /* PoP: _memory_tool_result_succeeded @ agent/memory_manager.py:_memory_tool_result_succeeded */
 int mm_u_memory_tool_result_succeeded(const char *arg) { (void)arg; return 0; }

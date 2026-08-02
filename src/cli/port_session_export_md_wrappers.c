@@ -24,7 +24,30 @@ int sexmd_u_frontmatter_line(const char *arg) { (void)arg; return 0; }
 int sexmd_u_message_heading(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _render_content @ hermes_cli/session_export_md.py:_render_content */
-int sexmd_u_render_content(const char *arg) { (void)arg; return 0; }
+int sexmd_u_render_content(const char *arg) {
+    /* Python: None -> ""; str -> content.rstrip(); else ```json fence with
+     * indent=2 serialization. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *v = json_parse(arg, NULL);
+    if (v && v->type == JSON_STRING) {
+        const char *s = json_string_value(v);
+        size_t n = strlen(s);
+        while (n > 0 && (s[n-1] == ' ' || s[n-1] == '\t' || s[n-1] == '\r' || s[n-1] == '\n')) n--;
+        printf("%.*s\n", (int)n, s);
+    } else if (v) {
+        printf("```json\n");
+        char *ser = json_serialize_pretty(v, 2);
+        printf("%s\n```\n", ser ? ser : "");
+        free(ser);
+    } else {
+        /* not JSON: treat as literal string, rstrip */
+        size_t n = strlen(arg);
+        while (n > 0 && (arg[n-1] == ' ' || arg[n-1] == '\n')) n--;
+        printf("%.*s\n", (int)n, arg);
+    }
+    json_free(v);
+    return 0;
+}
 
 /* PoP: _render_tool_calls @ hermes_cli/session_export_md.py:_render_tool_calls */
 int sexmd_u_render_tool_calls(const char *arg) { (void)arg; return 0; }

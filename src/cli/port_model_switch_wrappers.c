@@ -27,7 +27,28 @@ int msw_format_model_for_display(const char *arg) { (void)arg; return 0; }
 int msw_is_nous_hermes_non_agentic(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _check_hermes_model_warning @ hermes_cli/model_switch.py:_check_hermes_model_warning */
-int msw_u_check_hermes_model_warning(const char *arg) { (void)arg; return 0; }
+int msw_u_check_hermes_model_warning(const char *arg) {
+    /* Python: is_nous_hermes_non_agentic(model_name) -> warning text or "". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *m = arg;
+    for (const char *p = m; *p; p++) {
+        /* match (?:^|[/:])hermes[-_ ]?[34](?:[-_.:]|$) case-insensitively */
+        if ((p == m || p[-1] == '/' || p[-1] == ':')
+            && strncasecmp(p, "hermes", 6) == 0) {
+            const char *q = p + 6;
+            if (*q == '-' || *q == '_' || *q == ' ') q++;
+            if (*q == '3' || *q == '4') {
+                const char *r = q + 1;
+                if (*r == '\0' || *r == '-' || *r == '.' || *r == '_' || *r == ':') {
+                    printf("Nous Research Hermes 3 & 4 models are NOT agentic and are not designed for use with Hermes Agent. They lack the tool-calling capabilities required for agent workflows. Consider using an agentic model instead.\n");
+                    return 0;
+                }
+            }
+        }
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _load_direct_aliases @ hermes_cli/model_switch.py:_load_direct_aliases */
 int msw_u_load_direct_aliases(const char *arg) { (void)arg; return 0; }

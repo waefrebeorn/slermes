@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <unistd.h>
 #include "hermes_json.h"
 
 /* PoP: _msys_to_windows_path @ tools/environments/local.py:_msys_to_windows_path */
@@ -79,7 +80,62 @@ int envl_u_prepend_git_bash_dirs(const char *arg) { (void)arg; return 0; }
 int envl_u_find_shell(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_hermes_bin_dir @ tools/environments/local.py:_resolve_hermes_bin_dir */
-int envl_u_resolve_hermes_bin_dir(const char *arg) { (void)arg; return 0; }
+int envl_u_resolve_hermes_bin_dir(const char *arg) {
+    /* Python: shutil.which("hermes") dir -> argv[0] dir (absolute hermes*
+     * executable) -> sys.executable dir with a hermes shim; None if none
+     * is a real directory. Arg = "argv0\tsys_executable" (or empty). */
+    const char *tab = arg ? strchr(arg, '\t') : NULL;
+    const char *argv0 = tab ? arg : "";
+    size_t a0len = tab ? (size_t)(tab - arg) : 0;
+    const char *exe = tab ? tab + 1 : NULL;
+    char *which = NULL;
+    FILE *fp = popen("command -v hermes 2>/dev/null", "r");
+    if (fp) {
+        char buf[1024];
+        if (fgets(buf, sizeof(buf), fp)) {
+            size_t n = strlen(buf);
+            while (n > 0 && (buf[n-1] == '\n' || buf[n-1] == '\r')) buf[--n] = '\0';
+            if (n) {
+                char *slash = strrchr(buf, '/');
+                if (slash) { *slash = '\0'; which = strdup(buf); }
+            }
+        }
+        pclose(fp);
+    }
+    char *cand = which;
+    if (!cand) {
+        char tmp[1024];
+        if (a0len && a0len < sizeof(tmp)) {
+            memcpy(tmp, argv0, a0len); tmp[a0len] = '\0';
+            const char *base = strrchr(tmp, '/');
+            const char *bn = base ? base + 1 : tmp;
+            if (tmp[0] == '/' && (strcmp(bn, "hermes") == 0 || strncmp(bn, "hermes.", 7) == 0)
+                && access(tmp, F_OK) == 0) {
+                char *slash = strrchr(tmp, '/');
+                if (slash) { *slash = '\0'; cand = strdup(tmp); }
+            }
+        }
+    }
+    if (!cand && exe && *exe) {
+        char tmp[1024];
+        snprintf(tmp, sizeof(tmp), "%s", exe);
+        char *slash = strrchr(tmp, '/');
+        if (slash) {
+            *slash = '\0';
+            char shim[1024];
+            snprintf(shim, sizeof(shim), "%s/hermes", tmp);
+            if (access(shim, F_OK) == 0) cand = strdup(tmp);
+        }
+    }
+    if (cand) {
+        if (access(cand, F_OK) == 0 && strcmp(cand, ".") != 0) {
+            printf("%s\n", cand);
+            free(cand);
+        } else free(cand);
+    }
+    free(which);
+    return 0;
+}
 
 /* PoP: _prepend_hermes_bin_dir @ tools/environments/local.py:_prepend_hermes_bin_dir */
 int envl_u_prepend_hermes_bin_dir(const char *arg) { (void)arg; return 0; }

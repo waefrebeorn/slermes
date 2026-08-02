@@ -330,7 +330,22 @@ int cgw_u_launchd_error_indicates_unloaded(const char *arg) { (void)arg; return 
 int cgw_u_launchctl_domain_unsupported(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _launchctl_bootstrap @ hermes_cli/gateway.py:_launchctl_bootstrap */
-int cgw_u_launchctl_bootstrap(const char *arg) { (void)arg; return 0; }
+int cgw_u_launchctl_bootstrap(const char *arg) {
+    /* Python (domain, plist_path, label, timeout): launchctl bootstrap;
+     * exit 5 (EIO) = stale registration -> bootout the label, retry once. */
+    if (!arg || !*arg) return -1;
+    char domain[256], plist[512], label[256], to[32];
+    if (sscanf(arg, "%255[^\t]\t%511[^\t]\t%255[^\t]\t%31s", domain, plist, label, to) < 3)
+        return -1;
+    char cmd[1400];
+    snprintf(cmd, sizeof(cmd), "launchctl bootstrap %s %s >/dev/null 2>&1", domain, plist);
+    int rc = system(cmd);
+    if (rc != 5) return rc; /* 0 ok; non-5 failure propagates */
+    snprintf(cmd, sizeof(cmd), "launchctl bootout %s/%s >/dev/null 2>&1", domain, label);
+    system(cmd);
+    snprintf(cmd, sizeof(cmd), "launchctl bootstrap %s %s >/dev/null 2>&1", domain, plist);
+    return system(cmd);
+}
 
 /* PoP: _launchd_reload_log_path @ hermes_cli/gateway.py:_launchd_reload_log_path */
 int cgw_u_launchd_reload_log_path(const char *arg) { (void)arg; return 0; }

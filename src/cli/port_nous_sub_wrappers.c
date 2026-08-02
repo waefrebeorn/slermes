@@ -42,7 +42,54 @@ int nsub_u_stt_label(const char *arg) { (void)arg; return 0; }
 int nsub_u_local_stt_backend_available(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_browser_feature_state @ hermes_cli/nous_subscription.py:_resolve_browser_feature_state */
-int nsub_u_resolve_browser_feature_state(const char *arg) { (void)arg; return 0; }
+int nsub_u_resolve_browser_feature_state(const char *arg) {
+    /* Python: (provider, available, active, managed) per runtime precedence.
+     * Arg = 9 tab-separated fields:
+     * enabled, provider, explicit, local_available, local_runnable,
+     * direct_camofox, direct_browserbase, direct_browser_use,
+     * managed_available -> prints "provider\t1/0\t1/0\t1/0". */
+    if (!arg || !*arg) return 0;
+    char prov[64]; int enabled, explicit, local_avail, local_run, camofox, bb, bu, managed;
+    if (sscanf(arg, "%63[^\t]\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d",
+               prov, &enabled, &explicit, &local_avail, &local_run,
+               &camofox, &bb, &bu, &managed) < 9) return 0;
+    char cur[64]; int avail, active, mng = 0;
+    if (camofox) { printf("camofox\t1\t%d\t0\n", enabled); return 0; }
+    snprintf(cur, sizeof(cur), "%s", prov);
+    if (explicit) {
+        if (strcmp(cur, "browserbase") == 0) {
+            avail = local_avail && bb; active = enabled && avail;
+            printf("browserbase\t%d\t%d\t0\n", avail, active); return 0;
+        }
+        if (strcmp(cur, "browser-use") == 0) {
+            int pavail = managed || bu;
+            avail = local_avail && pavail;
+            mng = enabled && local_avail && managed && !bu;
+            active = enabled && avail;
+            printf("browser-use\t%d\t%d\t%d\n", avail, active, mng); return 0;
+        }
+        if (strcmp(cur, "firecrawl") == 0) {
+            avail = local_avail; /* && direct_firecrawl (folded into field 8 slot) */
+            avail = local_avail && bu; /* reuse bu slot as direct_firecrawl */
+            active = enabled && avail;
+            printf("firecrawl\t%d\t%d\t0\n", avail, active); return 0;
+        }
+        if (strcmp(cur, "camofox") == 0) { printf("camofox\t0\t0\t0\n"); return 0; }
+        avail = local_run; active = enabled && avail;
+        printf("local\t%d\t%d\t0\n", avail, active); return 0;
+    }
+    if (managed || bu) {
+        avail = local_avail;
+        mng = enabled && local_avail && managed && !bu;
+        active = enabled && avail;
+        printf("browser-use\t%d\t%d\t%d\n", avail, active, mng); return 0;
+    }
+    if (bb) { avail = local_avail; active = enabled && avail;
+        printf("browserbase\t%d\t%d\t0\n", avail, active); return 0; }
+    avail = local_run; active = enabled && avail;
+    printf("local\t%d\t%d\t0\n", avail, active);
+    return 0;
+}
 
 /* PoP: apply_nous_managed_defaults @ hermes_cli/nous_subscription.py:apply_nous_managed_defaults */
 int nsub_apply_nous_managed_defaults(const char *arg) { (void)arg; return 0; }

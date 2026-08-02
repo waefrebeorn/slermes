@@ -865,7 +865,17 @@ int main_cmd_console(const char *arg) { (void)arg; return 0; }
 int main_u_plugin_cli_discovery_needed(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _command_has_dedicated_mcp_startup @ hermes_cli/main.py:_command_has_dedicated_mcp_startup */
-int main_u_command_has_dedicated_mcp_startup(const char *arg) { (void)arg; return 0; }
+int main_u_command_has_dedicated_mcp_startup(const char *arg) {
+    /* Python (args): acp -> True; gateway run -> True; cron run/tick -> True. */
+    if (!arg || !*arg) return 0;
+    char cmd[128], gw[128], cron[128];
+    cmd[0] = gw[0] = cron[0] = '\0';
+    if (sscanf(arg, "%127[^\t]\t%127[^\t]\t%127s", cmd, gw, cron) < 1) return 0;
+    if (strcmp(cmd, "acp") == 0) return 1;
+    if (strcmp(cmd, "gateway") == 0 && strcmp(gw, "run") == 0) return 1;
+    if (strcmp(cmd, "cron") == 0 && (strcmp(cron, "run") == 0 || strcmp(cron, "tick") == 0)) return 1;
+    return 0;
+}
 
 /* PoP: _should_background_mcp_startup @ hermes_cli/main.py:_should_background_mcp_startup */
 int main_u_should_background_mcp_startup(const char *arg) { (void)arg; return 0; }
