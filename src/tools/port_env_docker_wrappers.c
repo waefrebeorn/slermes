@@ -26,7 +26,22 @@ int envd_u_load_hermes_env_vars(const char *arg) {
 }
 
 /* PoP: _sanitize_label_value @ tools/environments/docker.py:_sanitize_label_value */
-int envd_u_sanitize_label_value(const char *arg) { (void)arg; return 0; }
+int envd_u_sanitize_label_value(const char *arg) {
+    /* Python: alnum + _.- only, cap 63, empty -> unknown. Arg = value. */
+    if (!arg || !*arg) { printf("unknown\n"); return 0; }
+    char out[64];
+    size_t w = 0;
+    const char *p = arg;
+    while (*p && w < 63) {
+        char c = *p++;
+        int ok = (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_' || c == '.' || c == '-';
+        out[w++] = ok ? c : '_';
+    }
+    if (w == 0) { printf("unknown\n"); return 0; }
+    out[w] = '\0';
+    printf("%s\n", out);
+    return 0;
+}
 
 /* PoP: _get_active_profile_name @ tools/environments/docker.py:_get_active_profile_name */
 int envd_u_get_active_profile_name(const char *arg) {

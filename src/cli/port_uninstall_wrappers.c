@@ -139,7 +139,13 @@ int uninst_u_is_default_hermes_home(const char *arg) {
 }
 
 /* PoP: _discover_named_profiles @ hermes_cli/uninstall.py:_discover_named_profiles */
-int uninst_u_discover_named_profiles(const char *arg) { (void)arg; return 0; }
+int uninst_u_discover_named_profiles(const char *arg) {
+    /* Python: non-default profiles or []. Arg = "profiles" (tab-sep, empty =
+     * none). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _uninstall_profile @ hermes_cli/uninstall.py:_uninstall_profile */
 int uninst_u_uninstall_profile(const char *arg) { (void)arg; return 0; }

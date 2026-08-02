@@ -786,7 +786,16 @@ int agent_agent_init_u_codex_gpt55_autoraise_notice_marker(const char *arg) {
 int agent_agent_init_u_codex_gpt55_autoraise_notice_state(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _codex_gpt55_autoraise_notice_seen @ agent/agent_init.py:_codex_gpt55_autoraise_notice_seen */
-int agent_agent_init_u_codex_gpt55_autoraise_notice_seen(const char *arg) { (void)arg; return 0; }
+int agent_agent_init_u_codex_gpt55_autoraise_notice_seen(const char *arg) {
+    /* Python: marker text == current state. Arg = "marker\tcurrent". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("0\n"); return 0; }
+    size_t mlen = (size_t)(tab - arg);
+    size_t clen = strlen(tab + 1);
+    printf("%d\n", (mlen == clen && strncmp(arg, tab + 1, clen) == 0) ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _record_codex_gpt55_autoraise_notice @ agent/agent_init.py:_record_codex_gpt55_autoraise_notice */
 int agent_agent_init_u_record_codex_gpt55_autoraise_notice(const char *arg) { (void)arg; return 0; }
@@ -920,7 +929,31 @@ int agent_rate_limit_tracker_u_bar(const char *arg) {
 }
 
 /* PoP: _bucket_line @ agent/rate_limit_tracker.py:_bucket_line */
-int agent_rate_limit_tracker_u_bucket_line(const char *arg) { (void)arg; return 0; }
+int agent_rate_limit_tracker_u_bucket_line(const char *arg) {
+    /* Python: "  label bar pct% used/limit used (remaining left, resets in X)".
+     * Arg = "label\tlabel_width\tlimit\tused\tremaining\tpct\treset_s". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *t5 = t4 ? strchr(t4 + 1, '\t') : NULL;
+    const char *t6 = t5 ? strchr(t5 + 1, '\t') : NULL;
+    const char *label = arg;
+    long lw = t1 ? strtol(t1 + 1, NULL, 10) : 20;
+    long limit = t2 ? strtol(t2 + 1, NULL, 10) : 0;
+    if (limit <= 0) {
+        printf("  %-*s  (no data)\n", (int)lw, label);
+        return 0;
+    }
+    long used = t3 ? strtol(t3 + 1, NULL, 10) : 0;
+    long remaining = t4 ? strtol(t4 + 1, NULL, 10) : 0;
+    double pct = t5 ? strtod(t5 + 1, NULL) : 0.0;
+    const char *reset = t6 ? t6 + 1 : "0s";
+    printf("  %-*s %5.1f%%  %ld/%ld used  (%ld left, resets in %s)\n",
+           (int)lw, label, pct, used, limit, remaining, reset);
+    return 0;
+}
 
 /* PoP: format_rate_limit_display @ agent/rate_limit_tracker.py:format_rate_limit_display */
 int agent_rate_limit_tracker_format_rate_limit_display(const char *arg) { (void)arg; return 0; }

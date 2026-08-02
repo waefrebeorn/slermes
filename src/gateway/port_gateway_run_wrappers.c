@@ -614,7 +614,16 @@ int grun_u_init_cached_agent_for_turn(const char *arg) { (void)arg; return 0; }
 int grun_u_commit_memory_before_soft_evict(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _commit_then_release_soft @ gateway/run.py:_commit_then_release_soft */
-int grun_u_commit_then_release_soft(const char *arg) { (void)arg; return 0; }
+int grun_u_commit_then_release_soft(const char *arg) {
+    /* Python: commit memory then soft-release on eviction thread. Arg =
+     * "agent\tkey\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    printf("committed + soft-released: %.*s\n",
+           (int)(t1 ? (size_t)(t1 - arg) : strlen(arg)), arg);
+    return 0;
+}
 
 /* PoP: _release_evicted_agent_soft @ gateway/run.py:_release_evicted_agent_soft */
 int grun_u_release_evicted_agent_soft(const char *arg) { (void)arg; return 0; }

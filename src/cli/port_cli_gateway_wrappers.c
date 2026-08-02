@@ -409,7 +409,17 @@ int cgw_u_wait_for_user_dbus_socket(const char *arg) { (void)arg; return 0; }
 int cgw_u_preflight_user_systemd(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _raise_user_systemd_unavailable @ hermes_cli/gateway.py:_raise_user_systemd_unavailable */
-int cgw_u_raise_user_systemd_unavailable(const char *arg) { (void)arg; return 0; }
+int cgw_u_raise_user_systemd_unavailable(const char *arg) {
+    /* Python: composed error message + raise. Arg = "reason\tfix_hint". */
+    const char *tab = arg ? strchr(arg, '\t') : NULL;
+    const char *reason = arg && *arg ? arg : "systemd unavailable";
+    const char *fix = tab ? tab + 1 : "  Re-run from a normal login shell (loginctl enable-linger may help).";
+    fprintf(stderr, "%s\n", reason);
+    fprintf(stderr, "  systemctl --user cannot reach the user D-Bus session in this shell.\n");
+    fprintf(stderr, "\n  To fix:\n%s\n", fix);
+    fprintf(stderr, "\n  Alternative: run the gateway in the foreground (stays up until you exit / close the terminal):\n    hermes gateway run\n");
+    return 1;
+}
 
 /* PoP: _systemctl_cmd @ hermes_cli/gateway.py:_systemctl_cmd */
 int cgw_u_systemctl_cmd(const char *arg) {
@@ -632,7 +642,17 @@ int cgw_get_launchd_plist_path(const char *arg) {
 int cgw_u_detect_venv_dir(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_python_path @ hermes_cli/gateway.py:get_python_path */
-int cgw_get_python_path(const char *arg) { (void)arg; return 0; }
+int cgw_get_python_path(const char *arg) {
+    /* Python: venv python if exists else sys.executable. Arg =
+     * "venv_python\tvenv_exists\tsys_exec". */
+    if (!arg || !*arg) { printf("python3\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int exists = t1 && t1[1] == '1';
+    if (exists && arg[0]) { printf("%s\n", arg); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "python3");
+    return 0;
+}
 
 /* PoP: _build_user_local_paths @ hermes_cli/gateway.py:_build_user_local_paths */
 int cgw_u_build_user_local_paths(const char *arg) {

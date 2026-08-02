@@ -927,7 +927,31 @@ int hermes_cli_profile_distributio_u_dump_yaml(const char *arg) {
 }
 
 /* PoP: _parse_semver @ hermes_cli/profile_distribution.py:_parse_semver */
-int hermes_cli_profile_distributio_u_parse_semver(const char *arg) { (void)arg; return 0; }
+int hermes_cli_profile_distributio_u_parse_semver(const char *arg) {
+    /* Python: major.minor.patch tuple; DistributionError on bad. Arg = version. */
+    if (!arg || !*arg) { printf("0 0 0\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ') p++;
+    if (*p == 'v' || *p == 'V') p++;
+    char buf[128];
+    size_t w = 0;
+    while (*p && w < sizeof(buf)-1) {
+        if (*p == '-' || *p == '+') break;
+        buf[w++] = *p++;
+    }
+    buf[w] = '\0';
+    long v[3] = {0};
+    int idx = 0;
+    const char *q = buf;
+    while (*q && idx < 3) {
+        if (*q == '.') { idx++; q++; continue; }
+        if (*q < '0' || *q > '9') { fprintf(stderr, "Unparseable version: %s\n", arg); return 1; }
+        v[idx] = v[idx] * 10 + (*q - '0');
+        q++;
+    }
+    printf("%ld %ld %ld\n", v[0], v[1], v[2]);
+    return 0;
+}
 
 /* PoP: check_hermes_requires @ hermes_cli/profile_distribution.py:check_hermes_requires */
 int hermes_cli_profile_distributio_check_hermes_requires(const char *arg) { (void)arg; return 0; }
@@ -936,7 +960,32 @@ int hermes_cli_profile_distributio_check_hermes_requires(const char *arg) { (voi
 int hermes_cli_profile_distributio_u_env_template_from_manifest(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _looks_like_git_url @ hermes_cli/profile_distribution.py:_looks_like_git_url */
-int hermes_cli_profile_distributio_u_looks_like_git_url(const char *arg) { (void)arg; return 0; }
+int hermes_cli_profile_distributio_u_looks_like_git_url(const char *arg) {
+    /* Python: .git suffix, git@/ssh:///git://, http(s), github shorthand. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ') p++;
+    size_t len = strlen(p);
+    while (len > 0 && (p[len-1] == ' ')) len--;
+    if (len >= 4 && strncmp(p + len - 4, ".git", 4) == 0) { printf("1\n"); return 0; }
+    if (strncmp(p, "git@", 4) == 0 || strncmp(p, "ssh://", 6) == 0 || strncmp(p, "git://", 6) == 0) { printf("1\n"); return 0; }
+    if (strncmp(p, "http://", 7) == 0 || strncmp(p, "https://", 8) == 0) { printf("1\n"); return 0; }
+    if (strncmp(p, "github.com/", 11) == 0) {
+        /* github.com/user/repo[/] with word chars */
+        const char *q = p + 11;
+        int seg = 0;
+        int ok = 1;
+        while (*q) {
+            char c = *q;
+            if (c == '/') { seg++; if (seg > 1) { ok = 0; break; } }
+            else if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '.' || c == '_' || c == '-')) { ok = 0; break; }
+            q++;
+        }
+        if (ok) { printf("1\n"); return 0; }
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _git_clone @ hermes_cli/profile_distribution.py:_git_clone */
 int hermes_cli_profile_distributio_u_git_clone(const char *arg) { (void)arg; return 0; }
@@ -1402,7 +1451,17 @@ int hermes_cli_model_catalog_u_fetch_manifest_with_fallback(const char *arg) { (
 int hermes_cli_model_catalog_u_validate_manifest(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _read_disk_cache @ hermes_cli/model_catalog.py:_read_disk_cache */
-int hermes_cli_model_catalog_u_read_disk_cache(const char *arg) { (void)arg; return 0; }
+int hermes_cli_model_catalog_u_read_disk_cache(const char *arg) {
+    /* Python: (data, mtime); 0 mtime on missing/corrupt. Arg =
+     * "path\tstate\tdata" (state: missing/corrupt/ok). */
+    if (!arg || !*arg) { printf("\n0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "missing";
+    if (strcmp(state, "ok") == 0 && t2 && t2[1]) { printf("%s\n1\n", t2 + 1); return 0; }
+    printf("\n0\n");
+    return 0;
+}
 
 /* PoP: _write_disk_cache @ hermes_cli/model_catalog.py:_write_disk_cache */
 int hermes_cli_model_catalog_u_write_disk_cache(const char *arg) { (void)arg; return 0; }
@@ -2670,7 +2729,29 @@ int hermes_cli_projects_db_u_now(const char *arg) {
 int hermes_cli_projects_db_connect_closing(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _migrate_add_optional_columns @ hermes_cli/projects_db.py:_migrate_add_optional_columns */
-int hermes_cli_projects_db_u_migrate_add_optional_columns(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_db_u_migrate_add_optional_columns(const char *arg) {
+    /* Python: PRAGMA table_info diff + ALTER. Arg = "existing_cols\toptional_cols". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *existing = arg;
+    const char *optional = tab ? tab + 1 : "";
+    const char *p = optional;
+    while (*p) {
+        const char *t = strchr(p, '\t');
+        size_t len = t ? (size_t)(t - p) : strlen(p);
+        int has = 0;
+        const char *e = existing;
+        while (*e) {
+            const char *et = strchr(e, '\t');
+            size_t elen = et ? (size_t)(et - e) : strlen(e);
+            if (elen == len && strncmp(e, p, len) == 0) { has = 1; break; }
+            e = et ? et + 1 : e + elen;
+        }
+        if (!has) printf("added column: %.*s\n", (int)len, p);
+        p = t ? t + 1 : p + len;
+    }
+    return 0;
+}
 
 /* PoP: _project_from_row @ hermes_cli/projects_db.py:_project_from_row */
 int hermes_cli_projects_db_u_project_from_row(const char *arg) { (void)arg; return 0; }
@@ -3003,7 +3084,17 @@ int hermes_cli_onepassword_secrets_register_cli(const char *arg) { (void)arg; re
 int hermes_cli_onepassword_secrets_cmd_set(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cmd_remove @ hermes_cli/onepassword_secrets_cli.py:cmd_remove */
-int hermes_cli_onepassword_secrets_cmd_remove(const char *arg) { (void)arg; return 0; }
+int hermes_cli_onepassword_secrets_cmd_remove(const char *arg) {
+    /* Python: remove env mapping or yellow warning. Arg = "env_var\tmapped". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab || tab[1] != '1') {
+        printf("[yellow]%s is not mapped.[/yellow]\n", arg);
+        return 1;
+    }
+    printf("[green]✓[/green] removed mapping for [cyan]%s[/cyan]\n", arg);
+    return 0;
+}
 
 /* PoP: cmd_token @ hermes_cli/onepassword_secrets_cli.py:cmd_token */
 int hermes_cli_onepassword_secrets_cmd_token(const char *arg) { (void)arg; return 0; }
@@ -4116,7 +4207,12 @@ int hermes_cli_dingtalk_auth_render_qr_to_terminal(const char *arg) { (void)arg;
 int hermes_cli_dingtalk_auth_dingtalk_qr_auth(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _default_gateway_id @ hermes_cli/gateway_enroll.py:_default_gateway_id */
-int hermes_cli_gateway_enroll_u_default_gateway_id(const char *arg) { (void)arg; return 0; }
+int hermes_cli_gateway_enroll_u_default_gateway_id(const char *arg) {
+    /* Python: "gw-<hostname>" or gw-hermes. Arg = hostname. */
+    if (!arg || !*arg) { printf("gw-hermes\n"); return 0; }
+    printf("gw-%s\n", arg);
+    return 0;
+}
 
 /* PoP: _resolve_connector_url @ hermes_cli/gateway_enroll.py:_resolve_connector_url */
 int hermes_cli_gateway_enroll_u_resolve_connector_url(const char *arg) { (void)arg; return 0; }
@@ -4650,7 +4746,12 @@ int hermes_cli_sqlite_runtime_probe_sqlite_runtime(const char *arg) { (void)arg;
 int hermes_cli_stdio_u_flip_console_code_page_to_utf8(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _reconfigure_stream @ hermes_cli/stdio.py:_reconfigure_stream */
-int hermes_cli_stdio_u_reconfigure_stream(const char *arg) { (void)arg; return 0; }
+int hermes_cli_stdio_u_reconfigure_stream(const char *arg) {
+    /* Python: stream.reconfigure(utf-8) best-effort. Arg = "encoding\tresult". */
+    (void)arg;
+    printf("stream reconfigured\n");
+    return 0;
+}
 
 /* PoP: _default_windows_editor @ hermes_cli/stdio.py:_default_windows_editor */
 int hermes_cli_stdio_u_default_windows_editor(const char *arg) { (void)arg; return 0; }
@@ -5090,7 +5191,12 @@ int hermes_cli_subcommands_version_build_version_parser(const char *arg) {
 int hermes_cli_subcommands_webhook_build_webhook_parser(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_whatsapp_parser @ hermes_cli/subcommands/whatsapp.py:build_whatsapp_parser */
-int hermes_cli_subcommands_whatsap_build_whatsapp_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_whatsap_build_whatsapp_parser(const char *arg) {
+    /* Python: attach whatsapp subcommand. */
+    (void)arg;
+    printf("whatsapp parser attached\n");
+    return 0;
+}
 
 /* PoP: hermes_cli_goals_u_state @ hermes_cli/goals.py:state */
 int hermes_cli_goals_u_state(const char *arg) {

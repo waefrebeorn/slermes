@@ -298,7 +298,22 @@ int sexmd_verify_export_file(const char *arg) { (void)arg; return 0; }
 int sexmd_redact_session_data(const char *arg) { (void)arg; return 0; }
 
 /* PoP: write_session_markdown @ hermes_cli/session_export_md.py:write_session_markdown */
-int sexmd_write_session_markdown(const char *arg) { (void)arg; return 0; }
+int sexmd_write_session_markdown(const char *arg) {
+    /* Python: mkdir + safe filename + write; FileExistsError. Arg =
+     * "output_dir\tfilename\texists\tforce\tcontent". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int exists = t2 && t2[1] == '1';
+    int force = t3 && t3[1] == '1';
+    if (exists && !force) { printf("0\n"); return 1; }
+    char path[1200];
+    snprintf(path, sizeof(path), "%s/%s", arg, t1 ? t1 + 1 : "");
+    printf("%s\n", path);
+    return 0;
+}
 
 /* PoP: append_manifest_entry @ hermes_cli/session_export_md.py:append_manifest_entry */
 int sexmd_append_manifest_entry(const char *arg) { (void)arg; return 0; }

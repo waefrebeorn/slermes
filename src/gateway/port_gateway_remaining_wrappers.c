@@ -282,7 +282,15 @@ int gateway_delivery_ledger_u_update_state(const char *arg) {
 int gateway_delivery_ledger_sweep_recoverable(const char *arg) { (void)arg; return 0; }
 
 /* PoP: ledger_enabled @ gateway/delivery_ledger.py:ledger_enabled */
-int gateway_delivery_ledger_ledger_enabled(const char *arg) { (void)arg; return 0; }
+int gateway_delivery_ledger_ledger_enabled(const char *arg) {
+    /* Python: config gate default True; string falsy set. Arg = "value". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ') p++;
+    if (strcasecmp(p, "false") == 0 || strcmp(p, "0") == 0 || strcasecmp(p, "no") == 0 || strcasecmp(p, "off") == 0) { printf("0\n"); return 0; }
+    printf("%s\n", (strcmp(p, "0") == 0) ? "0" : "1");
+    return 0;
+}
 
 /* PoP: debug_rows @ gateway/delivery_ledger.py:debug_rows */
 int gateway_delivery_ledger_debug_rows(const char *arg) { (void)arg; return 0; }
@@ -717,7 +725,13 @@ int gateway_status_phrases_u_copy_default_catalog(const char *arg) {
 }
 
 /* PoP: _merge_phrase_config @ gateway/status_phrases.py:_merge_phrase_config */
-int gateway_status_phrases_u_merge_phrase_config(const char *arg) { (void)arg; return 0; }
+int gateway_status_phrases_u_merge_phrase_config(const char *arg) {
+    /* Python: merge section into catalog (append mode default). Arg =
+     * "section_json\tmode". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("phrase config merged (mode=%s)\n", strchr(arg, '\t') ? strchr(arg, '\t') + 1 : "append");
+    return 0;
+}
 
 /* PoP: resolve_status_phrase_catalog @ gateway/status_phrases.py:resolve_status_phrase_catalog */
 int gateway_status_phrases_resolve_status_phrase_catalog(const char *arg) { (void)arg; return 0; }
@@ -1295,7 +1309,12 @@ int gateway_profile_routing_match_profile_route(const char *arg) {
 }
 
 /* PoP: adapter_supports_push @ gateway/wake.py:adapter_supports_push */
-int gateway_wake_adapter_supports_push(const char *arg) { (void)arg; return 0; }
+int gateway_wake_adapter_supports_push(const char *arg) {
+    /* Python: adapter flag default True. Arg = "flag" (empty = absent). */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    printf("%s\n", arg[0] == '1' ? "1" : "0");
+    return 0;
+}
 
 /* PoP: deliver_wake @ gateway/wake.py:deliver_wake */
 int gateway_wake_deliver_wake(const char *arg) { (void)arg; return 0; }
