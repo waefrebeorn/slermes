@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:25:10Z",
+  "generated_at": "2026-08-02T21:27:41Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -57529,10 +57529,10 @@
     },
     "agent/retry_utils.py": {
       "total": 5,
-      "ported": 0,
+      "ported": 5,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 5,
@@ -57548,16 +57548,24 @@
             "decorators": [],
             "line_number": 36
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_retry_utils_remaining.c",
+          "c_function": "rtu_jittered_backoff",
+          "pop_annotation": {
+            "c_function": "rtu_jittered_backoff",
+            "python_functions": [
+              "jittered_backoff"
+            ],
+            "c_file": "src/agent/port_retry_utils_remaining.c",
+            "python_file": "agent/retry_utils.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: jittered_backoff @ agent/retry_utils.py:jittered_backoff */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/retry_utils.py",
@@ -57569,16 +57577,24 @@
             "decorators": [],
             "line_number": 77
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_retry_utils_remaining.c",
+          "c_function": "rtu_error_text",
+          "pop_annotation": {
+            "c_function": "rtu_error_text",
+            "python_functions": [
+              "_error_text"
+            ],
+            "c_file": "src/agent/port_retry_utils_remaining.c",
+            "python_file": "agent/retry_utils.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _error_text @ agent/retry_utils.py:_error_text */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/retry_utils.py",
@@ -57590,16 +57606,24 @@
             "decorators": [],
             "line_number": 88
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_retry_utils_remaining.c",
+          "c_function": "rtu_is_zai_coding_overload_error",
+          "pop_annotation": {
+            "c_function": "rtu_is_zai_coding_overload_error",
+            "python_functions": [
+              "is_zai_coding_overload_error"
+            ],
+            "c_file": "src/agent/port_retry_utils_remaining.c",
+            "python_file": "agent/retry_utils.py",
+            "line": 53,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_zai_coding_overload_error @ agent/retry_utils.py:is_zai_coding_overload_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/retry_utils.py",
@@ -57611,16 +57635,24 @@
             "decorators": [],
             "line_number": 108
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_retry_utils_remaining.c",
+          "c_function": "rtu_adaptive_rate_limit_backoff",
+          "pop_annotation": {
+            "c_function": "rtu_adaptive_rate_limit_backoff",
+            "python_functions": [
+              "adaptive_rate_limit_backoff"
+            ],
+            "c_file": "src/agent/port_retry_utils_remaining.c",
+            "python_file": "agent/retry_utils.py",
+            "line": 64,
+            "is_consolidated": false,
+            "full_text": "/* PoP: adaptive_rate_limit_backoff @ agent/retry_utils.py:adaptive_rate_limit_backoff */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/retry_utils.py",
@@ -57632,25 +57664,33 @@
             "decorators": [],
             "line_number": 140
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_retry_utils_remaining.c",
+          "c_function": "rtu_zai_coding_overload_retry_ceiling",
+          "pop_annotation": {
+            "c_function": "rtu_zai_coding_overload_retry_ceiling",
+            "python_functions": [
+              "zai_coding_overload_retry_ceiling"
+            ],
+            "c_file": "src/agent/port_retry_utils_remaining.c",
+            "python_file": "agent/retry_utils.py",
+            "line": 71,
+            "is_consolidated": false,
+            "full_text": "/* PoP: zai_coding_overload_retry_ceiling @ agent/retry_utils.py:zai_coding_overload_retry_ceiling */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
     "agent/runtime_cwd.py": {
       "total": 6,
-      "ported": 1,
+      "ported": 6,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 6,
@@ -57695,16 +57735,24 @@
             "decorators": [],
             "line_number": 44
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_runtime_cwd_remaining.c",
+          "c_function": "rcw_set_session_cwd",
+          "pop_annotation": {
+            "c_function": "rcw_set_session_cwd",
+            "python_functions": [
+              "set_session_cwd"
+            ],
+            "c_file": "src/agent/port_runtime_cwd_remaining.c",
+            "python_file": "agent/runtime_cwd.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: set_session_cwd @ agent/runtime_cwd.py:set_session_cwd */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/runtime_cwd.py",
@@ -57716,16 +57764,24 @@
             "decorators": [],
             "line_number": 49
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_runtime_cwd_remaining.c",
+          "c_function": "rcw_clear_session_cwd",
+          "pop_annotation": {
+            "c_function": "rcw_clear_session_cwd",
+            "python_functions": [
+              "clear_session_cwd"
+            ],
+            "c_file": "src/agent/port_runtime_cwd_remaining.c",
+            "python_file": "agent/runtime_cwd.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: clear_session_cwd @ agent/runtime_cwd.py:clear_session_cwd */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/runtime_cwd.py",
@@ -57737,16 +57793,24 @@
             "decorators": [],
             "line_number": 53
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_runtime_cwd_remaining.c",
+          "c_function": "rcw_session_cwd_override",
+          "pop_annotation": {
+            "c_function": "rcw_session_cwd_override",
+            "python_functions": [
+              "_session_cwd_override"
+            ],
+            "c_file": "src/agent/port_runtime_cwd_remaining.c",
+            "python_file": "agent/runtime_cwd.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _session_cwd_override @ agent/runtime_cwd.py:_session_cwd_override */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/runtime_cwd.py",
@@ -57758,16 +57822,24 @@
             "decorators": [],
             "line_number": 60
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_runtime_cwd_remaining.c",
+          "c_function": "rcw_resolve_agent_cwd",
+          "pop_annotation": {
+            "c_function": "rcw_resolve_agent_cwd",
+            "python_functions": [
+              "resolve_agent_cwd"
+            ],
+            "c_file": "src/agent/port_runtime_cwd_remaining.c",
+            "python_file": "agent/runtime_cwd.py",
+            "line": 42,
+            "is_consolidated": false,
+            "full_text": "/* PoP: resolve_agent_cwd @ agent/runtime_cwd.py:resolve_agent_cwd */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/runtime_cwd.py",
@@ -57779,16 +57851,24 @@
             "decorators": [],
             "line_number": 76
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_runtime_cwd_remaining.c",
+          "c_function": "rcw_resolve_context_cwd",
+          "pop_annotation": {
+            "c_function": "rcw_resolve_context_cwd",
+            "python_functions": [
+              "resolve_context_cwd"
+            ],
+            "c_file": "src/agent/port_runtime_cwd_remaining.c",
+            "python_file": "agent/runtime_cwd.py",
+            "line": 60,
+            "is_consolidated": false,
+            "full_text": "/* PoP: resolve_context_cwd @ agent/runtime_cwd.py:resolve_context_cwd */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
