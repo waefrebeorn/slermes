@@ -24,7 +24,7 @@ PORT_OBJ = \
     src/cli/port_agent_context_references.o \
     src/cli/port_agent_copilot_acp_client.o \
     src/cli/port_agent_credits_tracker.o \
-    src/cli/port_agent_display.o \
+    src/cli/port_agent_display.o src/agent/port_display_remaining.o \
     src/cli/port_display_tool_preview.o \
     src/cli/port_agent_error_classifier.o \
     src/cli/port_agent_oneshot.o \

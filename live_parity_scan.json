@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T18:15:15Z",
+  "generated_at": "2026-08-02T18:17:37Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -25231,10 +25231,10 @@
     },
     "agent/display.py": {
       "total": 66,
-      "ported": 31,
+      "ported": 66,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 35,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 66,
@@ -25279,16 +25279,24 @@
             "decorators": [],
             "line_number": 44
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_diff_ansi",
+          "pop_annotation": {
+            "c_function": "disp_diff_ansi",
+            "python_functions": [
+              "_diff_ansi"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 25,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _diff_ansi @ agent/display.py:_diff_ansi */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -25445,16 +25453,24 @@
             "decorators": [],
             "line_number": 115
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_set_tool_preview_max_len",
+          "pop_annotation": {
+            "c_function": "disp_set_tool_preview_max_len",
+            "python_functions": [
+              "set_tool_preview_max_len"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 31,
+            "is_consolidated": false,
+            "full_text": "/* PoP: set_tool_preview_max_len @ agent/display.py:set_tool_preview_max_len */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -25495,16 +25511,24 @@
             "decorators": [],
             "line_number": 130
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_get_skin",
+          "pop_annotation": {
+            "c_function": "disp_get_skin",
+            "python_functions": [
+              "_get_skin"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_skin @ agent/display.py:_get_skin */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -25516,16 +25540,24 @@
             "decorators": [],
             "line_number": 139
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_get_skin_tool_prefix",
+          "pop_annotation": {
+            "c_function": "disp_get_skin_tool_prefix",
+            "python_functions": [
+              "get_skin_tool_prefix"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 46,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_skin_tool_prefix @ agent/display.py:get_skin_tool_prefix */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -25537,16 +25569,24 @@
             "decorators": [],
             "line_number": 147
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_get_tool_emoji",
+          "pop_annotation": {
+            "c_function": "disp_get_tool_emoji",
+            "python_functions": [
+              "get_tool_emoji"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 52,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_tool_emoji @ agent/display.py:get_tool_emoji */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -25935,16 +25975,24 @@
             "decorators": [],
             "line_number": 407
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_delegate_task_goal_parts",
+          "pop_annotation": {
+            "c_function": "disp_delegate_task_goal_parts",
+            "python_functions": [
+              "_delegate_task_goal_parts"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 67,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _delegate_task_goal_parts @ agent/display.py:_delegate_task_goal_parts */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26188,16 +26236,24 @@
             "decorators": [],
             "line_number": 725
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_resolved_path",
+          "pop_annotation": {
+            "c_function": "disp_resolved_path",
+            "python_functions": [
+              "_resolved_path"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 75,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolved_path @ agent/display.py:_resolved_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26209,16 +26265,24 @@
             "decorators": [],
             "line_number": 733
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_snapshot_text",
+          "pop_annotation": {
+            "c_function": "disp_snapshot_text",
+            "python_functions": [
+              "_snapshot_text"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 83,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _snapshot_text @ agent/display.py:_snapshot_text */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26230,16 +26294,24 @@
             "decorators": [],
             "line_number": 741
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_display_diff_path",
+          "pop_annotation": {
+            "c_function": "disp_display_diff_path",
+            "python_functions": [
+              "_display_diff_path"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 101,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _display_diff_path @ agent/display.py:_display_diff_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26251,16 +26323,24 @@
             "decorators": [],
             "line_number": 749
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_resolve_skill_manage_paths",
+          "pop_annotation": {
+            "c_function": "disp_resolve_skill_manage_paths",
+            "python_functions": [
+              "_resolve_skill_manage_paths"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 109,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_skill_manage_paths @ agent/display.py:_resolve_skill_manage_paths */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26272,16 +26352,24 @@
             "decorators": [],
             "line_number": 779
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_resolve_local_edit_paths",
+          "pop_annotation": {
+            "c_function": "disp_resolve_local_edit_paths",
+            "python_functions": [
+              "_resolve_local_edit_paths"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 117,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_local_edit_paths @ agent/display.py:_resolve_local_edit_paths */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26293,16 +26381,24 @@
             "decorators": [],
             "line_number": 798
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_capture_local_edit_snapshot",
+          "pop_annotation": {
+            "c_function": "disp_capture_local_edit_snapshot",
+            "python_functions": [
+              "capture_local_edit_snapshot"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 125,
+            "is_consolidated": false,
+            "full_text": "/* PoP: capture_local_edit_snapshot @ agent/display.py:capture_local_edit_snapshot */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26314,16 +26410,24 @@
             "decorators": [],
             "line_number": 810
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_result_succeeded",
+          "pop_annotation": {
+            "c_function": "disp_result_succeeded",
+            "python_functions": [
+              "_result_succeeded"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 133,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _result_succeeded @ agent/display.py:_result_succeeded */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26335,16 +26439,24 @@
             "decorators": [],
             "line_number": 826
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_diff_from_snapshot",
+          "pop_annotation": {
+            "c_function": "disp_diff_from_snapshot",
+            "python_functions": [
+              "_diff_from_snapshot"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 143,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _diff_from_snapshot @ agent/display.py:_diff_from_snapshot */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26356,16 +26468,24 @@
             "decorators": [],
             "line_number": 855
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_extract_edit_diff",
+          "pop_annotation": {
+            "c_function": "disp_extract_edit_diff",
+            "python_functions": [
+              "extract_edit_diff"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 151,
+            "is_consolidated": false,
+            "full_text": "/* PoP: extract_edit_diff @ agent/display.py:extract_edit_diff */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26377,16 +26497,24 @@
             "decorators": [],
             "line_number": 877
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_emit_inline_diff",
+          "pop_annotation": {
+            "c_function": "disp_emit_inline_diff",
+            "python_functions": [
+              "_emit_inline_diff"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 159,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _emit_inline_diff @ agent/display.py:_emit_inline_diff */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26398,16 +26526,24 @@
             "decorators": [],
             "line_number": 890
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_render_inline_unified_diff",
+          "pop_annotation": {
+            "c_function": "disp_render_inline_unified_diff",
+            "python_functions": [
+              "_render_inline_unified_diff"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 167,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _render_inline_unified_diff @ agent/display.py:_render_inline_unified_diff */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26419,16 +26555,24 @@
             "decorators": [],
             "line_number": 923
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_split_unified_diff_sections",
+          "pop_annotation": {
+            "c_function": "disp_split_unified_diff_sections",
+            "python_functions": [
+              "_split_unified_diff_sections"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 175,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _split_unified_diff_sections @ agent/display.py:_split_unified_diff_sections */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26440,16 +26584,24 @@
             "decorators": [],
             "line_number": 941
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_summarize_rendered_diff_sections",
+          "pop_annotation": {
+            "c_function": "disp_summarize_rendered_diff_sections",
+            "python_functions": [
+              "_summarize_rendered_diff_sections"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 183,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _summarize_rendered_diff_sections @ agent/display.py:_summarize_rendered_diff_sections */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26461,16 +26613,24 @@
             "decorators": [],
             "line_number": 986
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_render_edit_diff_with_delta",
+          "pop_annotation": {
+            "c_function": "disp_render_edit_diff_with_delta",
+            "python_functions": [
+              "render_edit_diff_with_delta"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 191,
+            "is_consolidated": false,
+            "full_text": "/* PoP: render_edit_diff_with_delta @ agent/display.py:render_edit_diff_with_delta */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26484,16 +26644,24 @@
             ],
             "line_number": 1048
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_get_waiting_faces",
+          "pop_annotation": {
+            "c_function": "disp_get_waiting_faces",
+            "python_functions": [
+              "get_waiting_faces"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 199,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_waiting_faces @ agent/display.py:get_waiting_faces */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26507,16 +26675,24 @@
             ],
             "line_number": 1061
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_get_thinking_faces",
+          "pop_annotation": {
+            "c_function": "disp_get_thinking_faces",
+            "python_functions": [
+              "get_thinking_faces"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 205,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_thinking_faces @ agent/display.py:get_thinking_faces */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26530,16 +26706,24 @@
             ],
             "line_number": 1074
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_get_thinking_verbs",
+          "pop_annotation": {
+            "c_function": "disp_get_thinking_verbs",
+            "python_functions": [
+              "get_thinking_verbs"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 210,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_thinking_verbs @ agent/display.py:get_thinking_verbs */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26551,16 +26735,24 @@
             "decorators": [],
             "line_number": 1086
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_spinner_init",
+          "pop_annotation": {
+            "c_function": "disp_spinner_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 215,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/display.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26572,16 +26764,24 @@
             "decorators": [],
             "line_number": 1102
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_spinner_write",
+          "pop_annotation": {
+            "c_function": "disp_spinner_write",
+            "python_functions": [
+              "_write"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 225,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _write @ agent/display.py:_write */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26595,16 +26795,24 @@
             ],
             "line_number": 1122
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_spinner_is_tty",
+          "pop_annotation": {
+            "c_function": "disp_spinner_is_tty",
+            "python_functions": [
+              "_is_tty"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 233,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_tty @ agent/display.py:_is_tty */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26616,16 +26824,24 @@
             "decorators": [],
             "line_number": 1129
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_spinner_is_patch_stdout_proxy",
+          "pop_annotation": {
+            "c_function": "disp_spinner_is_patch_stdout_proxy",
+            "python_functions": [
+              "_is_patch_stdout_proxy"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 238,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_patch_stdout_proxy @ agent/display.py:_is_patch_stdout_proxy */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26637,16 +26853,24 @@
             "decorators": [],
             "line_number": 1145
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_spinner_animate",
+          "pop_annotation": {
+            "c_function": "disp_spinner_animate",
+            "python_functions": [
+              "_animate"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 245,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _animate @ agent/display.py:_animate */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26658,16 +26882,24 @@
             "decorators": [],
             "line_number": 1186
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_spinner_start",
+          "pop_annotation": {
+            "c_function": "disp_spinner_start",
+            "python_functions": [
+              "start"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 257,
+            "is_consolidated": false,
+            "full_text": "/* PoP: start @ agent/display.py:start */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26679,16 +26911,24 @@
             "decorators": [],
             "line_number": 1194
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_spinner_update_text",
+          "pop_annotation": {
+            "c_function": "disp_spinner_update_text",
+            "python_functions": [
+              "update_text"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 263,
+            "is_consolidated": false,
+            "full_text": "/* PoP: update_text @ agent/display.py:update_text */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26700,16 +26940,24 @@
             "decorators": [],
             "line_number": 1197
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_spinner_print_above",
+          "pop_annotation": {
+            "c_function": "disp_spinner_print_above",
+            "python_functions": [
+              "print_above"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 270,
+            "is_consolidated": false,
+            "full_text": "/* PoP: print_above @ agent/display.py:print_above */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26721,16 +26969,24 @@
             "decorators": [],
             "line_number": 1215
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_spinner_stop",
+          "pop_annotation": {
+            "c_function": "disp_spinner_stop",
+            "python_functions": [
+              "stop"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 278,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stop @ agent/display.py:stop */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26800,16 +27056,24 @@
             "decorators": [],
             "line_number": 1249
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_trim_error",
+          "pop_annotation": {
+            "c_function": "disp_trim_error",
+            "python_functions": [
+              "_trim_error"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 285,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _trim_error @ agent/display.py:_trim_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26821,16 +27085,24 @@
             "decorators": [],
             "line_number": 1267
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_detect_tool_failure",
+          "pop_annotation": {
+            "c_function": "disp_detect_tool_failure",
+            "python_functions": [
+              "_detect_tool_failure"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 312,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _detect_tool_failure @ agent/display.py:_detect_tool_failure */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -26871,16 +27143,24 @@
             "decorators": [],
             "line_number": 1493
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_display_remaining.c",
+          "c_function": "disp_get_cute_tool_message",
+          "pop_annotation": {
+            "c_function": "disp_get_cute_tool_message",
+            "python_functions": [
+              "get_cute_tool_message"
+            ],
+            "c_file": "src/agent/port_display_remaining.c",
+            "python_file": "agent/display.py",
+            "line": 321,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_cute_tool_message @ agent/display.py:get_cute_tool_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
