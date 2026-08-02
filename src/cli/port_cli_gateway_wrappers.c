@@ -10,10 +10,18 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <dirent.h>
 #include "hermes_json.h"
 
 /* PoP: has_process_service_mismatch @ hermes_cli/gateway.py:has_process_service_mismatch */
-int cgw_has_process_service_mismatch(const char *arg) { (void)arg; return 0; }
+int cgw_has_process_service_mismatch(const char *arg) {
+    /* Python: service_installed and running and not service_running.
+     * Arg = "installed\trunning\tservice_running". */
+    if (!arg || !*arg) return 0;
+    int inst = 0, run = 0, srv = 0;
+    sscanf(arg, "%d\t%d\t%d", &inst, &run, &srv);
+    return inst && run && !srv;
+}
 
 /* PoP: _scan_gateway_pids @ hermes_cli/gateway.py:_scan_gateway_pids */
 int cgw_u_scan_gateway_pids(const char *arg) { (void)arg; return 0; }
@@ -52,7 +60,27 @@ int cgw_u_read_systemd_unit_properties(const char *arg) { (void)arg; return 0; }
 int cgw_u_systemd_main_pid_from_props(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _systemd_main_pid @ hermes_cli/gateway.py:_systemd_main_pid */
-int cgw_u_systemd_main_pid(const char *arg) { (void)arg; return 0; }
+int cgw_u_systemd_main_pid(const char *arg) {
+    /* Python: MainPID from the unit properties. Arg = "system\tunit". */
+    if (!arg || !*arg) return 0;
+    char system[8], unit[256];
+    if (sscanf(arg, "%7[^\t]\t%255s", system, unit) < 2) return 0;
+    char cmd[1024];
+    snprintf(cmd, sizeof(cmd), "systemctl %s show -p MainPID %s 2>/dev/null",
+             strcmp(system, "1") == 0 ? "" : "--user", unit);
+    FILE *fp = popen(cmd, "r");
+    if (!fp) return 0;
+    char buf[256];
+    long pid = 0;
+    while (fgets(buf, sizeof(buf), fp)) {
+        if (strncmp(buf, "MainPID=", 8) == 0) {
+            pid = strtol(buf + 8, NULL, 10);
+            break;
+        }
+    }
+    pclose(fp);
+    return (int)pid;
+}
 
 /* PoP: _read_gateway_runtime_status @ hermes_cli/gateway.py:_read_gateway_runtime_status */
 int cgw_u_read_gateway_runtime_status(const char *arg) { (void)arg; return 0; }
@@ -70,7 +98,30 @@ int cgw_u_systemd_unit_is_start_limited(const char *arg) { (void)arg; return 0; 
 int cgw_u_systemd_error_indicates_start_limit(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _systemd_service_is_start_limited @ hermes_cli/gateway.py:_systemd_service_is_start_limited */
-int cgw_u_systemd_service_is_start_limited(const char *arg) { (void)arg; return 0; }
+int cgw_u_systemd_service_is_start_limited(const char *arg) {
+    /* Python: the unit is start-limited (start-limit-hit / high restarts).
+     * Arg = "system\tunit". */
+    if (!arg || !*arg) return 0;
+    char system[8], unit[256];
+    if (sscanf(arg, "%7[^\t]\t%255s", system, unit) < 2) return 0;
+    char cmd[1024];
+    snprintf(cmd, sizeof(cmd), "systemctl %s show -p NRestarts -p StartLimitHits %s 2>/dev/null",
+             strcmp(system, "1") == 0 ? "" : "--user", unit);
+    FILE *fp = popen(cmd, "r");
+    if (!fp) return 0;
+    char buf[256];
+    int limited = 0;
+    while (fgets(buf, sizeof(buf), fp)) {
+        if (strncmp(buf, "StartLimitHits=", 15) == 0) {
+            if (strtol(buf + 15, NULL, 10) > 0) limited = 1;
+        }
+        if (strncmp(buf, "NRestarts=", 10) == 0) {
+            if (strtol(buf + 10, NULL, 10) >= 5) limited = 1;
+        }
+    }
+    pclose(fp);
+    return limited;
+}
 
 /* PoP: _print_systemd_start_limit_wait @ hermes_cli/gateway.py:_print_systemd_start_limit_wait */
 int cgw_u_print_systemd_start_limit_wait(const char *arg) { (void)arg; return 0; }
@@ -164,7 +215,14 @@ int cgw_u_raise_user_systemd_unavailable(const char *arg) { (void)arg; return 0;
 int cgw_u_systemctl_cmd(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _journalctl_cmd @ hermes_cli/gateway.py:_journalctl_cmd */
-int cgw_u_journalctl_cmd(const char *arg) { (void)arg; return 0; }
+int cgw_u_journalctl_cmd(const char *arg) {
+    /* Python: ["journalctl"] or ["journalctl", "--user"]. */
+    if (arg && (strcmp(arg, "1") == 0 || strcmp(arg, "system") == 0))
+        printf("journalctl\n");
+    else
+        printf("journalctl --user\n");
+    return 0;
+}
 
 /* PoP: _run_systemctl @ hermes_cli/gateway.py:_run_systemctl */
 int cgw_u_run_systemctl(const char *arg) { (void)arg; return 0; }
@@ -191,7 +249,26 @@ int cgw_u_legacy_unit_search_paths(const char *arg) { (void)arg; return 0; }
 int cgw_u_find_legacy_hermes_units(const char *arg) { (void)arg; return 0; }
 
 /* PoP: has_legacy_hermes_units @ hermes_cli/gateway.py:has_legacy_hermes_units */
-int cgw_has_legacy_hermes_units(const char *arg) { (void)arg; return 0; }
+int cgw_has_legacy_hermes_units(const char *arg) {
+    /* Python: any legacy Hermes gateway unit files exist under the user
+     * systemd dir. */
+    (void)arg;
+    const char *home = getenv("HOME");
+    char dir[1024];
+    if (home && *home) snprintf(dir, sizeof(dir), "%s/.config/systemd/user", home);
+    else return 0;
+    DIR *d = opendir(dir);
+    if (!d) return 0;
+    struct dirent *de;
+    int found = 0;
+    while ((de = readdir(d)) != NULL) {
+        const char *nm = de->d_name;
+        if ((strncmp(nm, "hermes", 6) == 0 || strncmp(nm, "hermes-agent", 12) == 0)
+            && strstr(nm, ".service")) { found = 1; break; }
+    }
+    closedir(d);
+    return found;
+}
 
 /* PoP: print_legacy_unit_warning @ hermes_cli/gateway.py:print_legacy_unit_warning */
 int cgw_print_legacy_unit_warning(const char *arg) { (void)arg; return 0; }
@@ -441,7 +518,16 @@ int cgw_u_launchctl_label_registered(const char *arg) {
 int cgw_u_retry_launchctl_bootstrap_until_registered(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _launchd_unsupported_marker_path @ hermes_cli/gateway.py:_launchd_unsupported_marker_path */
-int cgw_u_launchd_unsupported_marker_path(const char *arg) { (void)arg; return 0; }
+int cgw_u_launchd_unsupported_marker_path(const char *arg) {
+    /* Python: get_hermes_home() / ".gateway-launchd-unsupported". */
+    (void)arg;
+    const char *hh = getenv("HERMES_HOME");
+    char base[1024];
+    if (hh && *hh) snprintf(base, sizeof(base), "%s", hh);
+    else snprintf(base, sizeof(base), "%s/.hermes", getenv("HOME") ? getenv("HOME") : ".");
+    printf("%s/.gateway-launchd-unsupported\n", base);
+    return 0;
+}
 
 /* PoP: _write_launchd_unsupported_marker @ hermes_cli/gateway.py:_write_launchd_unsupported_marker */
 int cgw_u_write_launchd_unsupported_marker(const char *arg) { (void)arg; return 0; }
@@ -450,7 +536,16 @@ int cgw_u_write_launchd_unsupported_marker(const char *arg) { (void)arg; return 
 int cgw_u_clear_launchd_unsupported_marker(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _launchd_unsupported_marker_exists @ hermes_cli/gateway.py:_launchd_unsupported_marker_exists */
-int cgw_u_launchd_unsupported_marker_exists(const char *arg) { (void)arg; return 0; }
+int cgw_u_launchd_unsupported_marker_exists(const char *arg) {
+    /* Python: the unsupported-marker path exists. */
+    char base[1024];
+    const char *hh = getenv("HERMES_HOME");
+    if (hh && *hh) snprintf(base, sizeof(base), "%s", hh);
+    else snprintf(base, sizeof(base), "%s/.hermes", getenv("HOME") ? getenv("HOME") : ".");
+    char path[1200];
+    snprintf(path, sizeof(path), "%s/.gateway-launchd-unsupported", base);
+    return access(path, F_OK) == 0;
+}
 
 /* PoP: _gateway_run_command @ hermes_cli/gateway.py:_gateway_run_command */
 int cgw_u_gateway_run_command(const char *arg) { (void)arg; return 0; }
@@ -492,7 +587,19 @@ int cgw_launchd_restart(const char *arg) { (void)arg; return 0; }
 int cgw_launchd_status(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _truthy_env @ hermes_cli/gateway.py:_truthy_env */
-int cgw_u_truthy_env(const char *arg) { (void)arg; return 0; }
+int cgw_u_truthy_env(const char *arg) {
+    /* Python: str(value or "").strip().lower() in {1,true,yes,on}. */
+    if (!arg) return 0;
+    const char *s = arg;
+    while (*s == ' ' || *s == '\t') s++;
+    char low[16];
+    size_t n = strlen(s);
+    if (n >= sizeof(low)) n = sizeof(low) - 1;
+    for (size_t i = 0; i < n; i++) low[i] = (char)tolower((unsigned char)s[i]);
+    low[n] = '\0';
+    return strcmp(low, "1") == 0 || strcmp(low, "true") == 0 ||
+           strcmp(low, "yes") == 0 || strcmp(low, "on") == 0;
+}
 
 /* PoP: _is_official_docker_checkout @ hermes_cli/gateway.py:_is_official_docker_checkout */
 int cgw_u_is_official_docker_checkout(const char *arg) { (void)arg; return 0; }
