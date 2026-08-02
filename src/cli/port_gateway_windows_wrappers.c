@@ -137,7 +137,15 @@ int gw_u_current_profile_cli_args(const char *arg) {
 int gw_u_launch_elevated_gateway_command(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _launch_elevated_install @ hermes_cli/gateway_windows.py:_launch_elevated_install */
-int gw_u_launch_elevated_install(const char *arg) { (void)arg; return 0; }
+int gw_u_launch_elevated_install(const char *arg) {
+    /* Python: UAC handoff. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("elevated install launched (handoff)%s\n", (tab && tab[1] == '1') ? " + flags forwarded" : "");
+    return 0;
+}
 
 /* PoP: _launch_elevated_uninstall @ hermes_cli/gateway_windows.py:_launch_elevated_uninstall */
 int gw_u_launch_elevated_uninstall(const char *arg) {

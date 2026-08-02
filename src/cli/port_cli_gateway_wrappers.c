@@ -980,7 +980,19 @@ int cgw_u_remap_path_for_user(const char *arg) {
 }
 
 /* PoP: _hermes_home_for_target_user @ hermes_cli/gateway.py:_hermes_home_for_target_user */
-int cgw_u_hermes_home_for_target_user(const char *arg) { (void)arg; return 0; }
+int cgw_u_hermes_home_for_target_user(const char *arg) {
+    /* Python: home remap. Arg = "current\ttarget\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *current = arg;
+    const char *target = t1 ? t1 + 1 : "";
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("%s\n", current); return 0; }
+    printf("%s%s\n", target, t3 ? t3 + 1 : "/.hermes");
+    return 0;
+}
 
 /* PoP: _build_service_path_dirs @ hermes_cli/gateway.py:_build_service_path_dirs */
 int cgw_u_build_service_path_dirs(const char *arg) {

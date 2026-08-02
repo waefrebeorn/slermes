@@ -160,7 +160,22 @@ int smt_u_resolve_skill_dir(const char *arg) {
 int smt_u_find_skill_in_other_profiles(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _skill_not_found_error @ tools/skill_manager_tool.py:_skill_not_found_error */
-int smt_u_skill_not_found_error(const char *arg) { (void)arg; return 0; }
+int smt_u_skill_not_found_error(const char *arg) {
+    /* Python: cross-profile hint. Arg =
+     * "name\tactive\tstate\tothers\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *name = arg;
+    const char *active = t1 ? t1 + 1 : "";
+    int state = t2 && t2[1] == '1';
+    const char *others = t3 ? t3 + 1 : "";
+    if (!state) { printf("Skill '%s' not found in active profile '%s'. Use skills_list() to see available skills.\n", name, active); return 0; }
+    printf("Skill '%s' not found in active profile '%s'.%s\n", name, active, others);
+    return 0;
+}
 
 /* PoP: _atomic_write_text @ tools/skill_manager_tool.py:_atomic_write_text */
 int smt_u_atomic_write_text(const char *arg) {

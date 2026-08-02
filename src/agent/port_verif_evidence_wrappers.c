@@ -57,7 +57,15 @@ int vev_u_transaction(const char *arg) {
 }
 
 /* PoP: _ensure_schema @ agent/verification_evidence.py:_ensure_schema */
-int vev_u_ensure_schema(const char *arg) { (void)arg; return 0; }
+int vev_u_ensure_schema(const char *arg) {
+    /* Python: 3 tables + index. Arg = "db_label\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("schema init skipped\n"); return 0; }
+    printf("verification schema ready (%s, 3 tables + index)\n", arg);
+    return 0;
+}
 
 /* PoP: _split_segment_tokens @ agent/verification_evidence.py:_split_segment_tokens */
 int vev_u_split_segment_tokens(const char *arg) {

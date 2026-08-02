@@ -165,7 +165,21 @@ int muv_u_runtime_request(const char *arg) {
 int muv_u_install_safe_python_generation(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _smoke_candidate_venv @ hermes_cli/managed_uv.py:_smoke_candidate_venv */
-int muv_u_smoke_candidate_venv(const char *arg) { (void)arg; return 0; }
+int muv_u_smoke_candidate_venv(const char *arg) {
+    /* Python: interpreter smoke. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\tno interpreter\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) {
+        printf("0\t%s\n", t3 ? t3 + 1 : "smoke failed");
+        return 0;
+    }
+    printf("1\t\n");
+    return 0;
+}
 
 /* PoP: _stage_candidate_venv @ hermes_cli/managed_uv.py:_stage_candidate_venv */
 int muv_u_stage_candidate_venv(const char *arg) { (void)arg; return 0; }

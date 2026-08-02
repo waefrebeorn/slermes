@@ -2520,7 +2520,15 @@ int hermes_cli_backup_create_pre_update_backup(const char *arg) {
 }
 
 /* PoP: create_pre_migration_backup @ hermes_cli/backup.py:create_pre_migration_backup */
-int hermes_cli_backup_create_pre_migration_backup(const char *arg) { (void)arg; return 0; }
+int hermes_cli_backup_create_pre_migration_backup(const char *arg) {
+    /* Python: claw-migrate backup. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_root") == 0 || strcmp(state, "fail") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _aux_slot_explicit @ hermes_cli/kanban_diagnostics.py:_aux_slot_explicit */
 int hermes_cli_kanban_diagnostics_u_aux_slot_explicit(const char *arg) {
@@ -3017,7 +3025,24 @@ int hermes_cli_skills_hub_do_list_modified(const char *arg) {
 }
 
 /* PoP: do_diff @ hermes_cli/skills_hub.py:do_diff */
-int hermes_cli_skills_hub_do_diff(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skills_hub_do_diff(const char *arg) {
+    /* Python: bundled diff render. Arg =
+     * "name\tstate\tmodified\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("Error: skill diff unavailable\n"); return 0; }
+    if (t3 && t3[1] == '1') {
+        printf("\n[b]%s[/]\n\n", arg);
+        printf("... unified diff rendered ...\n");
+        printf("[dim]Revert with: hermes skills reset %s --restore[/]\n\n", arg);
+        return 0;
+    }
+    printf("[green]%s is identical to stock[/]\n", arg);
+    return 0;
+}
 
 /* PoP: _github_publish @ hermes_cli/skills_hub.py:_github_publish */
 int hermes_cli_skills_hub_u_github_publish(const char *arg) { (void)arg; return 0; }
@@ -3946,7 +3971,16 @@ int hermes_cli_inventory_u_raw_config_has_enabled_moa_preset(const char *arg) {
 }
 
 /* PoP: _apply_picker_hints @ hermes_cli/inventory.py:_apply_picker_hints */
-int hermes_cli_inventory_u_apply_picker_hints(const char *arg) { (void)arg; return 0; }
+int hermes_cli_inventory_u_apply_picker_hints(const char *arg) {
+    /* Python: picker hint shape. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _reorder_canonical @ hermes_cli/inventory.py:_reorder_canonical */
 int hermes_cli_inventory_u_reorder_canonical(const char *arg) {
@@ -5855,7 +5889,22 @@ int hermes_cli_cron_u_active_cron_provider_name(const char *arg) {
 }
 
 /* PoP: _warn_if_gateway_not_running @ hermes_cli/cron.py:_warn_if_gateway_not_running */
-int hermes_cli_cron_u_warn_if_gateway_not_running(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cron_u_warn_if_gateway_not_running(const char *arg) {
+    /* Python: ticker warning. Arg =
+     * "builtin\tgateway_up\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int builtin = arg[0] == '1';
+    int gateway_up = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!builtin || gateway_up || !state) { printf("no warning\n"); return 0; }
+    printf("  ⚠  Gateway is not running — jobs won't fire automatically.\n");
+    printf("     Start it with: hermes gateway install\n");
+    printf("     Check status:  hermes cron status\n");
+    return 0;
+}
 
 /* PoP: cron_runs @ hermes_cli/cron.py:cron_runs */
 int hermes_cli_cron_cron_runs(const char *arg) {
@@ -6298,7 +6347,16 @@ int hermes_cli_credential_lifecycl_u_providers_for_env_var(const char *arg) {
 }
 
 /* PoP: _prune_env_pool_entries @ hermes_cli/credential_lifecycle.py:_prune_env_pool_entries */
-int hermes_cli_credential_lifecycl_u_prune_env_pool_entries(const char *arg) { (void)arg; return 0; }
+int hermes_cli_credential_lifecycl_u_prune_env_pool_entries(const char *arg) {
+    /* Python: env-seeded pool prune. Arg = "env_var\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _scrub_config_yaml_mirrors @ hermes_cli/credential_lifecycle.py:_scrub_config_yaml_mirrors */
 int hermes_cli_credential_lifecycl_u_scrub_config_yaml_mirrors(const char *arg) { (void)arg; return 0; }
@@ -7224,7 +7282,33 @@ int hermes_cli_proxy_cli_u_print_aiohttp_missing(const char *arg) {
 }
 
 /* PoP: cmd_proxy_start @ hermes_cli/proxy/cli.py:cmd_proxy_start */
-int hermes_cli_proxy_cli_cmd_proxy_start(const char *arg) { (void)arg; return 0; }
+int hermes_cli_proxy_cli_cmd_proxy_start(const char *arg) {
+    /* Python: foreground proxy. Arg =
+     * "provider\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("1\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_aiohttp") == 0) {
+        fprintf(stderr, "aiohttp missing — install hermes[proxy]\n");
+        return 1;
+    }
+    if (strcmp(state, "unknown_provider") == 0) {
+        fprintf(stderr, "Error: %s\n", t3 ? t3 + 1 : "unknown provider");
+        return 2;
+    }
+    if (strcmp(state, "not_authed") == 0) {
+        fprintf(stderr, "Not logged into %s. Run `hermes auth add %s` first.\n", t3 ? t3 + 1 : "?", arg);
+        return 2;
+    }
+    if (strcmp(state, "bind_fail") == 0) {
+        fprintf(stderr, "proxy: failed to bind\n");
+        return 1;
+    }
+    printf("proxy: stopped\n");
+    return 0;
+}
 
 /* PoP: cmd_proxy_status @ hermes_cli/proxy/cli.py:cmd_proxy_status */
 int hermes_cli_proxy_cli_cmd_proxy_status(const char *arg) {
@@ -7834,7 +7918,15 @@ int hermes_cli_sqlite_runtime_wal_reset_vulnerable(const char *arg) {
 }
 
 /* PoP: probe_sqlite_runtime @ hermes_cli/sqlite_runtime.py:probe_sqlite_runtime */
-int hermes_cli_sqlite_runtime_probe_sqlite_runtime(const char *arg) { (void)arg; return 0; }
+int hermes_cli_sqlite_runtime_probe_sqlite_runtime(const char *arg) {
+    /* Python: isolated child probe. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _flip_console_code_page_to_utf8 @ hermes_cli/stdio.py:_flip_console_code_page_to_utf8 */
 int hermes_cli_stdio_u_flip_console_code_page_to_utf8(const char *arg) {

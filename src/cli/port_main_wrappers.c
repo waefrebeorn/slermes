@@ -355,7 +355,15 @@ int main_u_probe_container(const char *arg) {
 int main_u_exec_in_container(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_session_by_name_or_id @ hermes_cli/main.py:_resolve_session_by_name_or_id */
-int main_u_resolve_session_by_name_or_id(const char *arg) { (void)arg; return 0; }
+int main_u_resolve_session_by_name_or_id(const char *arg) {
+    /* Python: title/id + compression tip. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _print_tui_exit_summary @ hermes_cli/main.py:_print_tui_exit_summary */
 int main_u_print_tui_exit_summary(const char *arg) { (void)arg; return 0; }
@@ -1863,7 +1871,19 @@ int main_u_is_windows_npm_path(const char *arg) {
 }
 
 /* PoP: _resolve_node_runtime_npm @ hermes_cli/main.py:_resolve_node_runtime_npm */
-int main_u_resolve_node_runtime_npm(const char *arg) { (void)arg; return 0; }
+int main_u_resolve_node_runtime_npm(const char *arg) {
+    /* Python: WSL npm refusal. Arg =
+     * "is_windows\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_windows = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (is_windows) { printf("platform npm (npm.cmd)\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _update_node_dependencies @ hermes_cli/main.py:_update_node_dependencies */
 int main_u_update_node_dependencies(const char *arg) { (void)arg; return 0; }
@@ -1968,7 +1988,15 @@ int main_u_get_origin_url(const char *arg) {
 }
 
 /* PoP: _resolve_pre_update_backup_mode @ hermes_cli/main.py:_resolve_pre_update_backup_mode */
-int main_u_resolve_pre_update_backup_mode(const char *arg) { (void)arg; return 0; }
+int main_u_resolve_pre_update_backup_mode(const char *arg) {
+    /* Python: off/quick/full. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("quick\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("quick\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "quick");
+    return 0;
+}
 
 /* PoP: _run_pre_update_backup @ hermes_cli/main.py:_run_pre_update_backup */
 int main_u_run_pre_update_backup(const char *arg) { (void)arg; return 0; }

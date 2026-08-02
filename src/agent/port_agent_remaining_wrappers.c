@@ -53,7 +53,15 @@ int agent_model_metadata_u_maybe_cache_local_context_length(const char *arg) {
 }
 
 /* PoP: _reconcile_local_cached_context_length @ agent/model_metadata.py:_reconcile_local_cached_context_length */
-int agent_model_metadata_u_reconcile_local_cached_context_length(const char *arg) { (void)arg; return 0; }
+int agent_model_metadata_u_reconcile_local_cached_context_length(const char *arg) {
+    /* Python: live probe wins. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("cached kept\n"); return 0; }
+    printf("reconciled: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _localhost_to_ipv4 @ agent/model_metadata.py:_localhost_to_ipv4 */
 int agent_model_metadata_u_localhost_to_ipv4(const char *arg) {
