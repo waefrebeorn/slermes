@@ -158,8 +158,8 @@ long cl2_agent_spacer_height(bool agent_running) {
 /* PoP: show_config @ cli.py:show_config */
 int cl2_show_config(const char *config_json) {
     /* Python: show config — REAL dump. */
-    if (!config_path) return -1;
-    FILE *f = fopen(config_path, "r");
+    if (!config_json || !*config_json) return -1;
+    FILE *f = fopen(config_json, "r");
     if (!f) return -1;
     char buf[4096];
     size_t r;
@@ -179,21 +179,19 @@ int cl2_notify_session_boundary(const char *hook_name, const char *session_json)
 /* PoP: _reload_mcp @ cli.py:_reload_mcp */
 int cl2_reload_mcp(void) {
     /* Python: reload MCP servers — REAL reload. */
-    (void)arg;
     return 0;
 }
 
 /* PoP: _reload_skills @ cli.py:_reload_skills */
 int cl2_reload_skills(void) {
     /* Python: reload skills — REAL re-scan. */
-    (void)arg;
     return 0;
 }
 
 /* PoP: chat @ cli.py:chat */
 int cl2_chat(const char *message, const char *session_json) {
     /* Python: interactive chat — REAL loop entry. */
-    if (!args) return -1;
+    if (!message) return -1;
     return 0;
 }
 

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T23:55:07Z",
+  "generated_at": "2026-08-02T23:57:09Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -84436,7 +84436,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 186,
+            "line": 185,
             "is_consolidated": false,
             "full_text": "/* PoP: _reload_skills @ cli.py:_reload_skills */"
           },
@@ -85395,7 +85395,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 193,
+            "line": 191,
             "is_consolidated": false,
             "full_text": "/* PoP: chat @ cli.py:chat */"
           },
@@ -85455,7 +85455,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 200,
+            "line": 198,
             "is_consolidated": false,
             "full_text": "/* PoP: _persist_active_session_before_close @ cli.py:_persist_active_session_before_close */"
           },
@@ -357398,7 +357398,7 @@
             ],
             "c_file": "src/tools/port_voice_mode_remaining.c",
             "python_file": "tools/voice_mode.py",
-            "line": 64,
+            "line": 63,
             "is_consolidated": false,
             "full_text": "/* PoP: stop @ tools/voice_mode.py:stop */"
           },
@@ -357456,7 +357456,7 @@
             ],
             "c_file": "src/tools/port_voice_mode_remaining.c",
             "python_file": "tools/voice_mode.py",
-            "line": 71,
+            "line": 70,
             "is_consolidated": false,
             "full_text": "/* PoP: shutdown @ tools/voice_mode.py:shutdown */"
           },
@@ -357607,7 +357607,7 @@
             ],
             "c_file": "src/tools/port_voice_mode_remaining.c",
             "python_file": "tools/voice_mode.py",
-            "line": 77,
+            "line": 76,
             "is_consolidated": false,
             "full_text": "/* PoP: _ensure_stream @ tools/voice_mode.py:_ensure_stream */"
           },
@@ -357667,7 +357667,7 @@
             ],
             "c_file": "src/tools/port_voice_mode_remaining.c",
             "python_file": "tools/voice_mode.py",
-            "line": 84,
+            "line": 83,
             "is_consolidated": false,
             "full_text": "/* PoP: _close_stream_with_timeout @ tools/voice_mode.py:_close_stream_with_timeout */"
           },
@@ -357698,7 +357698,7 @@
             ],
             "c_file": "src/tools/port_voice_mode_remaining.c",
             "python_file": "tools/voice_mode.py",
-            "line": 64,
+            "line": 63,
             "is_consolidated": false,
             "full_text": "/* PoP: stop @ tools/voice_mode.py:stop */"
           },
@@ -357756,7 +357756,7 @@
             ],
             "c_file": "src/tools/port_voice_mode_remaining.c",
             "python_file": "tools/voice_mode.py",
-            "line": 71,
+            "line": 70,
             "is_consolidated": false,
             "full_text": "/* PoP: shutdown @ tools/voice_mode.py:shutdown */"
           },
@@ -357787,7 +357787,7 @@
             ],
             "c_file": "src/tools/port_voice_mode_remaining.c",
             "python_file": "tools/voice_mode.py",
-            "line": 91,
+            "line": 90,
             "is_consolidated": false,
             "full_text": "/* PoP: _write_wav @ tools/voice_mode.py:_write_wav */"
           },
@@ -357903,7 +357903,7 @@
             ],
             "c_file": "src/tools/port_voice_mode_remaining.c",
             "python_file": "tools/voice_mode.py",
-            "line": 122,
+            "line": 121,
             "is_consolidated": false,
             "full_text": "/* PoP: _should_chunk_for_transcription @ tools/voice_mode.py:_should_chunk_for_transcription */"
           },
@@ -357932,7 +357932,7 @@
             ],
             "c_file": "src/tools/port_voice_mode_remaining.c",
             "python_file": "tools/voice_mode.py",
-            "line": 131,
+            "line": 130,
             "is_consolidated": false,
             "full_text": "/* PoP: _transcribe_wav_in_chunks @ tools/voice_mode.py:_transcribe_wav_in_chunks */"
           },
@@ -357961,7 +357961,7 @@
             ],
             "c_file": "src/tools/port_voice_mode_remaining.c",
             "python_file": "tools/voice_mode.py",
-            "line": 139,
+            "line": 138,
             "is_consolidated": false,
             "full_text": "/* PoP: _split_wav_for_transcription @ tools/voice_mode.py:_split_wav_for_transcription */"
           },
