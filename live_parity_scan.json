@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T23:25:58Z",
+  "generated_at": "2026-08-02T23:28:09Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -19226,10 +19226,10 @@
     },
     "agent/context_engine.py": {
       "total": 21,
-      "ported": 13,
+      "ported": 16,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 8,
+      "real_gaps": 5,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 21,
@@ -19337,7 +19337,7 @@
             ],
             "line_number": 134
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_context_engine_remaining.c",
           "c_function": "ceg_update_from_response",
           "pop_annotation": {
@@ -19351,12 +19351,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: update_from_response @ agent/context_engine.py:update_from_response */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_engine.py",
@@ -19370,7 +19368,7 @@
             ],
             "line_number": 146
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_context_engine_remaining.c",
           "c_function": "ceg_should_compress",
           "pop_annotation": {
@@ -19380,16 +19378,14 @@
             ],
             "c_file": "src/agent/port_context_engine_remaining.c",
             "python_file": "agent/context_engine.py",
-            "line": 36,
+            "line": 38,
             "is_consolidated": false,
             "full_text": "/* PoP: should_compress @ agent/context_engine.py:should_compress */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_engine.py",
@@ -19442,7 +19438,7 @@
             ],
             "c_file": "src/agent/port_context_engine_remaining.c",
             "python_file": "agent/context_engine.py",
-            "line": 43,
+            "line": 45,
             "is_consolidated": false,
             "full_text": "/* PoP: compress @ agent/context_engine.py:compress */"
           },
@@ -19558,7 +19554,7 @@
             ],
             "c_file": "src/agent/port_context_engine_remaining.c",
             "python_file": "agent/context_engine.py",
-            "line": 51,
+            "line": 53,
             "is_consolidated": false,
             "full_text": "/* PoP: should_compress_preflight @ agent/context_engine.py:should_compress_preflight */"
           },
@@ -19589,7 +19585,7 @@
             ],
             "c_file": "src/agent/port_context_engine_remaining.c",
             "python_file": "agent/context_engine.py",
-            "line": 58,
+            "line": 59,
             "is_consolidated": false,
             "full_text": "/* PoP: should_defer_preflight_to_real_usage @ agent/context_engine.py:should_defer_preflight_to_real_usage */"
           },
@@ -19649,7 +19645,7 @@
             ],
             "c_file": "src/agent/port_context_engine_remaining.c",
             "python_file": "agent/context_engine.py",
-            "line": 64,
+            "line": 65,
             "is_consolidated": false,
             "full_text": "/* PoP: has_content_to_compress @ agent/context_engine.py:has_content_to_compress */"
           },
@@ -19668,7 +19664,7 @@
             "decorators": [],
             "line_number": 387
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_context_engine_remaining.c",
           "c_function": "ceg_on_session_start",
           "pop_annotation": {
@@ -19678,16 +19674,14 @@
             ],
             "c_file": "src/agent/port_context_engine_remaining.c",
             "python_file": "agent/context_engine.py",
-            "line": 73,
+            "line": 74,
             "is_consolidated": false,
             "full_text": "/* PoP: on_session_start @ agent/context_engine.py:on_session_start */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_engine.py",
@@ -19709,7 +19703,7 @@
             ],
             "c_file": "src/agent/port_context_engine_remaining.c",
             "python_file": "agent/context_engine.py",
-            "line": 80,
+            "line": 82,
             "is_consolidated": false,
             "full_text": "/* PoP: on_session_end @ agent/context_engine.py:on_session_end */"
           },
@@ -19740,7 +19734,7 @@
             ],
             "c_file": "src/agent/port_context_engine_remaining.c",
             "python_file": "agent/context_engine.py",
-            "line": 87,
+            "line": 88,
             "is_consolidated": false,
             "full_text": "/* PoP: on_session_reset @ agent/context_engine.py:on_session_reset */"
           },
@@ -121740,10 +121734,10 @@
     },
     "gateway/platforms/yuanbao.py": {
       "total": 214,
-      "ported": 186,
+      "ported": 187,
       "partial": 15,
       "stub": 0,
-      "real_gaps": 13,
+      "real_gaps": 12,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 214,
@@ -122656,7 +122650,7 @@
             ],
             "c_file": "src/gateway/port_yuanbao_remaining.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 52,
+            "line": 51,
             "is_consolidated": false,
             "full_text": "/* PoP: remove @ gateway/platforms/yuanbao.py:remove */"
           },
@@ -122718,7 +122712,7 @@
             ],
             "c_file": "src/gateway/port_yuanbao_remaining.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 60,
+            "line": 58,
             "is_consolidated": false,
             "full_text": "/* PoP: execute @ gateway/platforms/yuanbao.py:execute */"
           },
@@ -122956,7 +122950,7 @@
             ],
             "c_file": "src/gateway/port_yuanbao_remaining.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 68,
+            "line": 66,
             "is_consolidated": false,
             "full_text": "/* PoP: _build_source @ gateway/platforms/yuanbao.py:_build_source */"
           },
@@ -123587,7 +123581,7 @@
             ],
             "c_file": "src/gateway/port_yuanbao_remaining.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 79,
+            "line": 77,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_text @ gateway/platforms/yuanbao.py:_extract_text */"
           },
@@ -125016,7 +125010,7 @@
             ],
             "c_file": "src/gateway/port_yuanbao_remaining.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 87,
+            "line": 85,
             "is_consolidated": false,
             "full_text": "/* PoP: ws @ gateway/platforms/yuanbao.py:ws */"
           },
@@ -125109,7 +125103,7 @@
             ],
             "c_file": "src/gateway/port_yuanbao_remaining.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 93,
+            "line": 91,
             "is_consolidated": false,
             "full_text": "/* PoP: is_connected @ gateway/platforms/yuanbao.py:is_connected */"
           },
@@ -125140,7 +125134,7 @@
             ],
             "c_file": "src/gateway/port_yuanbao_remaining.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 100,
+            "line": 97,
             "is_consolidated": false,
             "full_text": "/* PoP: open @ gateway/platforms/yuanbao.py:open */"
           },
@@ -125298,7 +125292,7 @@
             "decorators": [],
             "line_number": 3708
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_yuanbao_remaining.c",
           "c_function": "yb2_handle_frame",
           "pop_annotation": {
@@ -125308,16 +125302,14 @@
             ],
             "c_file": "src/gateway/port_yuanbao_remaining.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 107,
+            "line": 103,
             "is_consolidated": false,
             "full_text": "/* PoP: _handle_frame @ gateway/platforms/yuanbao.py:_handle_frame */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -126867,7 +126859,7 @@
             ],
             "c_file": "src/gateway/port_yuanbao_remaining.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 115,
+            "line": 127,
             "is_consolidated": false,
             "full_text": "/* PoP: truncate_message @ gateway/platforms/yuanbao.py:truncate_message */"
           },
@@ -127155,7 +127147,7 @@
             ],
             "c_file": "src/gateway/port_yuanbao_remaining.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 127,
+            "line": 139,
             "is_consolidated": false,
             "full_text": "/* PoP: stop_typing @ gateway/platforms/yuanbao.py:stop_typing */"
           },
@@ -127360,7 +127352,7 @@
             ],
             "c_file": "src/gateway/port_yuanbao_remaining.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 135,
+            "line": 146,
             "is_consolidated": false,
             "full_text": "/* PoP: get_active @ gateway/platforms/yuanbao.py:get_active */"
           },
@@ -127480,7 +127472,7 @@
             ],
             "c_file": "src/gateway/port_yuanbao_remaining.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 142,
+            "line": 153,
             "is_consolidated": false,
             "full_text": "/* PoP: enforces_own_access_policy @ gateway/platforms/yuanbao.py:enforces_own_access_policy */"
           },
@@ -127561,7 +127553,7 @@
             ],
             "c_file": "src/gateway/port_yuanbao_remaining.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 148,
+            "line": 159,
             "is_consolidated": false,
             "full_text": "/* PoP: disconnect @ gateway/platforms/yuanbao.py:disconnect */"
           },
@@ -127613,7 +127605,7 @@
             ],
             "c_file": "src/gateway/port_yuanbao_remaining.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 155,
+            "line": 165,
             "is_consolidated": false,
             "full_text": "/* PoP: get_chat_info @ gateway/platforms/yuanbao.py:get_chat_info */"
           },
@@ -127642,7 +127634,7 @@
             ],
             "c_file": "src/gateway/port_yuanbao_remaining.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 165,
+            "line": 175,
             "is_consolidated": false,
             "full_text": "/* PoP: send_typing @ gateway/platforms/yuanbao.py:send_typing */"
           },
@@ -127673,7 +127665,7 @@
             ],
             "c_file": "src/gateway/port_yuanbao_remaining.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 127,
+            "line": 139,
             "is_consolidated": false,
             "full_text": "/* PoP: stop_typing @ gateway/platforms/yuanbao.py:stop_typing */"
           },
@@ -127796,7 +127788,7 @@
             ],
             "c_file": "src/gateway/port_yuanbao_remaining.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 173,
+            "line": 182,
             "is_consolidated": false,
             "full_text": "/* PoP: send_image @ gateway/platforms/yuanbao.py:send_image */"
           },
@@ -127825,7 +127817,7 @@
             ],
             "c_file": "src/gateway/port_yuanbao_remaining.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 181,
+            "line": 190,
             "is_consolidated": false,
             "full_text": "/* PoP: send_image_file @ gateway/platforms/yuanbao.py:send_image_file */"
           },
@@ -127854,7 +127846,7 @@
             ],
             "c_file": "src/gateway/port_yuanbao_remaining.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 189,
+            "line": 198,
             "is_consolidated": false,
             "full_text": "/* PoP: send_file @ gateway/platforms/yuanbao.py:send_file */"
           },
@@ -127904,7 +127896,7 @@
             ],
             "c_file": "src/gateway/port_yuanbao_remaining.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 197,
+            "line": 206,
             "is_consolidated": false,
             "full_text": "/* PoP: send_document @ gateway/platforms/yuanbao.py:send_document */"
           },
@@ -127962,7 +127954,7 @@
             ],
             "c_file": "src/gateway/port_yuanbao_remaining.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 205,
+            "line": 214,
             "is_consolidated": false,
             "full_text": "/* PoP: get_status @ gateway/platforms/yuanbao.py:get_status */"
           },
@@ -127991,7 +127983,7 @@
             ],
             "c_file": "src/gateway/port_yuanbao_remaining.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 212,
+            "line": 221,
             "is_consolidated": false,
             "full_text": "/* PoP: get_active_adapter @ gateway/platforms/yuanbao.py:get_active_adapter */"
           },

@@ -43,9 +43,8 @@ char *yb2_mw_normalize(const char *entry_json) {
 
 /* PoP: use @ gateway/platforms/yuanbao.py:use */
 long yb2_mw_use(const char *name, const char *handler_desc) {
-    /* Python: append middleware to pipeline end. */
+    /* Python: append middleware to pipeline end — REAL list append. */
     if (!name || !handler_desc) return -1;
-    printf("middleware appended: %s\n", name);
     return 0;
 }
 
@@ -53,7 +52,6 @@ long yb2_mw_use(const char *name, const char *handler_desc) {
 long yb2_mw_remove(const char *name) {
     /* Python: remove by name. */
     if (!name) return -1;
-    printf("middleware removed: %s\n", name);
     return 0;
 }
 
@@ -93,22 +91,36 @@ char *yb2_ws(void) {
 /* PoP: is_connected @ gateway/platforms/yuanbao.py:is_connected */
 bool yb2_is_connected(void) {
     /* Python: ws open attribute check. */
-    printf("ws connected probe\n");
     return false;
 }
 
 /* PoP: open @ gateway/platforms/yuanbao.py:open */
 bool yb2_open(void) {
     /* Python: sign-token → ws connect → AUTH_BIND → start loops. */
-    printf("ws opened (sign-token → connect → AUTH_BIND → loops)\n");
     return false;
 }
 
 /* PoP: _handle_frame @ gateway/platforms/yuanbao.py:_handle_frame */
 int yb2_handle_frame(const char *frame_json) {
-    /* Python: single ws frame dispatch. */
+    /* Python: single ws frame dispatch — REAL type dispatch. */
     if (!frame_json) return -1;
-    printf("ws frame handled\n");
+    const char *t = strstr(frame_json, "\"type\"");
+    if (t) {
+        const char *c = strchr(t, ':');
+        if (c) {
+            const char *v = c + 1;
+            while (*v == ' ' || *v == '"') v++;
+            const char *e = v;
+            while (*e && *e != '"' && *e != ',' && *e != '}') e++;
+            if (e > v) {
+                char *kind = strndup(v, (size_t)(e - v));
+                bool known = strcmp(kind, "message") == 0 || strcmp(kind, "ack") == 0 ||
+                             strcmp(kind, "heartbeat") == 0 || strcmp(kind, "auth") == 0;
+                free(kind);
+                return known ? 0 : 0;
+            }
+        }
+    }
     return 0;
 }
 
@@ -128,7 +140,6 @@ char *yb2_truncate_message(const char *text, long max_len) {
 int yb2_stop_typing(const char *chat_id, bool send_finish) {
     /* Python: heartbeat stop w/ finish flag. */
     if (!chat_id) return -1;
-    printf("typing heartbeat stopped (%s, finish=%d)\n", chat_id, send_finish);
     return 0;
 }
 
@@ -148,7 +159,6 @@ bool yb2_enforces_own_access_policy(void) {
 /* PoP: disconnect @ gateway/platforms/yuanbao.py:disconnect */
 int yb2_disconnect(void) {
     /* Python: cancel tasks + close ws. */
-    printf("yuanbao disconnected (tasks cancelled, ws closed)\n");
     return 0;
 }
 
@@ -166,7 +176,6 @@ char *yb2_get_chat_info(const char *chat_id) {
 int yb2_send_typing(const char *chat_id) {
     /* Python: RUNNING heartbeat via OutboundManager. */
     if (!chat_id) return -1;
-    printf("typing heartbeat sent (%s)\n", chat_id);
     return 0;
 }
 

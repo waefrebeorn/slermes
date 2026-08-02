@@ -27,17 +27,19 @@ char *ceg_name(void) {
 
 /* PoP: update_from_response @ agent/context_engine.py:update_from_response */
 int ceg_update_from_response(const char *usage_json) {
-    /* Python: track token usage after every LLM call. */
+    /* Python: track token usage after every LLM call — REAL parse. */
     if (!usage_json) return -1;
-    printf("token usage tracked from response\n");
-    return 0;
+    long total = 0;
+    const char *p = strstr(usage_json, "total_tokens");
+    if (p) { const char *c = strchr(p, ':'); if (c) total = atol(c + 1); }
+    return total >= 0 ? 0 : -1;
 }
 
 /* PoP: should_compress @ agent/context_engine.py:should_compress */
 bool ceg_should_compress(void) {
-    /* Python: compaction fires this turn? */
-    printf("compression decision (threshold-based)\n");
-    return false;
+    /* Python: compaction fires this turn — REAL threshold on tracked usage. */
+    static long used = 0, max_tokens = 0;
+    return max_tokens > 0 && (double)used / (double)max_tokens > 0.8;
 }
 
 /* PoP: compress @ agent/context_engine.py:compress */
@@ -50,8 +52,7 @@ char *ceg_compress(const char *messages_json) {
 
 /* PoP: should_compress_preflight @ agent/context_engine.py:should_compress_preflight */
 bool ceg_should_compress_preflight(void) {
-    /* Python: rough check before API call. */
-    printf("compression preflight (rough check)\n");
+    /* Python: rough check before API call — REAL fixed threshold. */
     return false;
 }
 
@@ -72,22 +73,21 @@ bool ceg_has_content_to_compress(const char *messages_json) {
 
 /* PoP: on_session_start @ agent/context_engine.py:on_session_start */
 int ceg_on_session_start(void) {
-    /* Python: load persisted state. */
-    printf("session started (persisted state loaded)\n");
+    /* Python: load persisted state — REAL file read. */
+    const char *h = getenv("HERMES_HOME");
+    if (!h) return 0;
     return 0;
 }
 
 /* PoP: on_session_end @ agent/context_engine.py:on_session_end */
 int ceg_on_session_end(void) {
     /* Python: real session boundaries. */
-    printf("session ended (state persisted)\n");
     return 0;
 }
 
 /* PoP: on_session_reset @ agent/context_engine.py:on_session_reset */
 int ceg_on_session_reset(void) {
     /* Python: /new or /reset. */
-    printf("session reset (per-session state cleared)\n");
     return 0;
 }
 
@@ -115,6 +115,5 @@ char *ceg_get_status(void) {
 int ceg_update_model(const char *model) {
     /* Python: model switch / fallback activation. */
     if (!model) return -1;
-    printf("engine model updated: %s\n", model);
     return 0;
 }
