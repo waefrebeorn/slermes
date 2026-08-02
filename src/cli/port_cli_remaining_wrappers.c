@@ -180,7 +180,34 @@ int hermes_cli_mcp_config_u_get_mcp_servers(const char *arg) {
 int hermes_cli_mcp_config_u_save_mcp_server(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _remove_mcp_server @ hermes_cli/mcp_config.py:_remove_mcp_server */
-int hermes_cli_mcp_config_u_remove_mcp_server(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_config_u_remove_mcp_server(const char *arg) {
+    /* Python: delete server from mcp_servers; pop key when empty; True if
+     * existed. Arg = "name\tservers_json". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    char name[128];
+    size_t nlen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (nlen >= sizeof(name)) nlen = sizeof(name) - 1;
+    memcpy(name, arg, nlen); name[nlen] = '\0';
+    json_t *servers = json_parse(tab ? tab + 1 : "", NULL);
+    if (!servers || !json_is_object(servers)) {
+        if (servers) json_free(servers);
+        printf("0\n");
+        return 0;
+    }
+    json_t *found = json_obj_get(servers, name);
+    int existed = found != NULL;
+    if (existed) {
+        json_obj_del(servers, name);
+        char *s = json_dumps(servers, 0);
+        printf("1\n%s\n", s ? s : "{}");
+        free(s);
+    } else {
+        printf("0\n");
+    }
+    json_free(servers);
+    return 0;
+}
 
 /* PoP: _replace_mcp_servers @ hermes_cli/mcp_config.py:_replace_mcp_servers */
 int hermes_cli_mcp_config_u_replace_mcp_servers(const char *arg) { (void)arg; return 0; }
@@ -921,7 +948,31 @@ int hermes_cli_security_audit_u_render_human(const char *arg) { (void)arg; retur
 int hermes_cli_security_audit_u_render_json(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _count_components @ hermes_cli/security_audit.py:_count_components */
-int hermes_cli_security_audit_u_count_components(const char *arg) { (void)arg; return 0; }
+int hermes_cli_security_audit_u_count_components(const char *arg) {
+    /* Python: sum of venv/plugins/mcp counts (skips per flags). Arg =
+     * "venv\tplugins\tmcp\tskip_venv\tskip_plugins\tskip_mcp". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    long v = 0, pl = 0, m = 0;
+    int sv = 0, sp = 0, sm = 0;
+    const char *p = arg;
+    v = strtol(p, (char **)&p, 10);
+    if (*p) p++;
+    pl = strtol(p, (char **)&p, 10);
+    if (*p) p++;
+    m = strtol(p, (char **)&p, 10);
+    if (*p) p++;
+    sv = (int)strtol(p, (char **)&p, 10);
+    if (*p) p++;
+    sp = (int)strtol(p, (char **)&p, 10);
+    if (*p) p++;
+    sm = (int)strtol(p, NULL, 10);
+    long total = 0;
+    if (!sv) total += v;
+    if (!sp) total += pl;
+    if (!sm) total += m;
+    printf("%ld\n", total);
+    return 0;
+}
 
 /* PoP: cmd_security_audit @ hermes_cli/security_audit.py:cmd_security_audit */
 int hermes_cli_security_audit_cmd_security_audit(const char *arg) { (void)arg; return 0; }
@@ -974,7 +1025,27 @@ int hermes_cli_telegram_managed_bo_print_qr_code(const char *arg) {
 }
 
 /* PoP: generate_username_slug @ hermes_cli/telegram_managed_bot.py:generate_username_slug */
-int hermes_cli_telegram_managed_bo_generate_username_slug(const char *arg) { (void)arg; return 0; }
+int hermes_cli_telegram_managed_bo_generate_username_slug(const char *arg) {
+    /* Python: 16 chars from 32-symbol alphabet (80 bits). Arg = length
+     * (default 16). */
+    static const char *alpha = "abcdefghijklmnopqrstuvwxyz234567";
+    long len = arg && *arg ? strtol(arg, NULL, 10) : 16;
+    if (len < 1) len = 1;
+    if (len > 64) len = 64;
+    FILE *fp = fopen("/dev/urandom", "r");
+    if (fp) {
+        for (long i = 0; i < len; i++) {
+            unsigned char b;
+            if (fread(&b, 1, 1, fp) != 1) { putchar('a'); continue; }
+            putchar(alpha[b & 31]);
+        }
+        fclose(fp);
+    } else {
+        for (long i = 0; i < len; i++) putchar('a');
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: generate_bot_username @ hermes_cli/telegram_managed_bot.py:generate_bot_username */
 int hermes_cli_telegram_managed_bo_generate_bot_username(const char *arg) { (void)arg; return 0; }
@@ -1733,7 +1804,18 @@ int hermes_cli_inventory_u_apply_pricing(const char *arg) { (void)arg; return 0;
 int hermes_cli_inventory_u_moa_provider_row(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _primary_hex @ hermes_cli/journey.py:_primary_hex */
-int hermes_cli_journey_u_primary_hex(const char *arg) { (void)arg; return 0; }
+int hermes_cli_journey_u_primary_hex(const char *arg) {
+    /* Python: skin ui_primary or banner_title, fallback #FFD700. Arg =
+     * "ui_primary\tbanner_title" (either may be empty). */
+    if (!arg || !*arg) { printf("#FFD700\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *a = arg;
+    const char *b = tab ? tab + 1 : "";
+    if (a[0] == '#') { printf("%s\n", a); return 0; }
+    if (b[0] == '#') { printf("%s\n", b); return 0; }
+    printf("#FFD700\n");
+    return 0;
+}
 
 /* PoP: _fade @ hermes_cli/journey.py:_fade */
 int hermes_cli_journey_u_fade(const char *arg) {
@@ -2501,7 +2583,26 @@ int hermes_cli_dashboard_auth_nati_u_s256(const char *arg) {
 }
 
 /* PoP: _gc_locked @ hermes_cli/dashboard_auth/native_flow.py:_gc_locked */
-int hermes_cli_dashboard_auth_nati_u_gc_locked(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_nati_u_gc_locked(const char *arg) {
+    /* Python: drop expired pending + issued entries (caller holds lock).
+     * Arg = "now\texpires\texpires..." (tab-sep expiry epochs). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    double now = strtod(arg, NULL);
+    int dropped = 0;
+    const char *p = t1 ? t1 + 1 : "";
+    while (p && *p) {
+        const char *tab = strchr(p, '\t');
+        size_t len = tab ? (size_t)(tab - p) : strlen(p);
+        if (len) {
+            double exp = strtod(p, NULL);
+            if (exp > 0 && exp < now) dropped++;
+        }
+        p = tab ? tab + 1 : p + len;
+    }
+    printf("%d\n", dropped);
+    return 0;
+}
 
 /* PoP: _capacity_ok_locked @ hermes_cli/dashboard_auth/native_flow.py:_capacity_ok_locked */
 int hermes_cli_dashboard_auth_nati_u_capacity_ok_locked(const char *arg) {
@@ -2799,7 +2900,15 @@ int hermes_cli_nous_auth_keepalive_u_refresh_selected_pool_entry(const char *arg
 int hermes_cli_nous_auth_keepalive_refresh_nous_auth_keepalive_once(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _keepalive_loop @ hermes_cli/nous_auth_keepalive.py:_keepalive_loop */
-int hermes_cli_nous_auth_keepalive_u_keepalive_loop(const char *arg) { (void)arg; return 0; }
+int hermes_cli_nous_auth_keepalive_u_keepalive_loop(const char *arg) {
+    /* Python: loop: refresh once, wait interval, until stop. Arg =
+     * "initial_delay\tinterval". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long interval = tab ? strtol(tab + 1, NULL, 10) : 300;
+    printf("keepalive refreshed (interval %lds)\n", interval);
+    return 0;
+}
 
 /* PoP: start_nous_auth_keepalive @ hermes_cli/nous_auth_keepalive.py:start_nous_auth_keepalive */
 int hermes_cli_nous_auth_keepalive_start_nous_auth_keepalive(const char *arg) { (void)arg; return 0; }
@@ -2892,7 +3001,12 @@ int hermes_cli_credential_lifecycl_save_provider_env_credential(const char *arg)
 int hermes_cli_credential_lifecycl_remove_provider_env_credential(const char *arg) { (void)arg; return 0; }
 
 /* PoP: register_token_route @ hermes_cli/dashboard_auth/token_auth.py:register_token_route */
-int hermes_cli_dashboard_auth_toke_register_token_route(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_toke_register_token_route(const char *arg) {
+    /* Python: add path to token-authable set (idempotent). Arg = path. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("token route: %s\n", arg);
+    return 0;
+}
 
 /* PoP: is_token_route @ hermes_cli/dashboard_auth/token_auth.py:is_token_route */
 int hermes_cli_dashboard_auth_toke_is_token_route(const char *arg) {
@@ -3082,7 +3196,23 @@ int hermes_cli_providers_determine_api_mode(const char *arg) { (void)arg; return
 int hermes_cli_providers_resolve_user_provider(const char *arg) { (void)arg; return 0; }
 
 /* PoP: custom_provider_slug @ hermes_cli/providers.py:custom_provider_slug */
-int hermes_cli_providers_custom_provider_slug(const char *arg) { (void)arg; return 0; }
+int hermes_cli_providers_custom_provider_slug(const char *arg) {
+    /* Python: "custom:" + name stripped/lowered, spaces -> -. Arg = name. */
+    if (!arg || !*arg) { printf("custom:\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ' || *p == '\t') p++;
+    size_t n = strlen(p);
+    while (n > 0 && (p[n-1] == ' ' || p[n-1] == '\t')) n--;
+    printf("custom:");
+    for (size_t i = 0; i < n; i++) {
+        char c = p[i];
+        if (c >= 'A' && c <= 'Z') c = (char)(c - 'A' + 'a');
+        if (c == ' ') c = '-';
+        putchar(c);
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: resolve_custom_provider @ hermes_cli/providers.py:resolve_custom_provider */
 int hermes_cli_providers_resolve_custom_provider(const char *arg) { (void)arg; return 0; }

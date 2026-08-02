@@ -33,7 +33,12 @@ int auth_u_format_nous_entitlement_auth_error(const char *arg) {
 }
 
 /* PoP: _auth_lock_holder_for @ hermes_cli/auth.py:_auth_lock_holder_for */
-int auth_u_auth_lock_holder_for(const char *arg) { (void)arg; return 0; }
+int auth_u_auth_lock_holder_for(const char *arg) {
+    /* Python: reentrancy tracker keyed to canonical path. Arg = path. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _get_config_hint_for_unknown_provider @ hermes_cli/auth.py:_get_config_hint_for_unknown_provider */
 /* PoP: _get_config_hint_for_unknown_provider @ hermes_cli/auth.py:_get_config_hint_for_unknown_provider */

@@ -424,7 +424,37 @@ int tools_x_search_tool_u_resolve_xai_bearer(const char *arg) { (void)arg; retur
 int tools_x_search_tool_check_x_search_requirements(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _normalize_handles @ tools/x_search_tool.py:_normalize_handles */
-int tools_x_search_tool_u_normalize_handles(const char *arg) { (void)arg; return 0; }
+int tools_x_search_tool_u_normalize_handles(const char *arg) {
+    /* Python: strip + lstrip @; drop empties; max 5. Arg =
+     * "field\tmax\thandle\thandle...". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long max = t2 ? strtol(t2 + 1, NULL, 10) : 5;
+    const char *p = t2 ? t2 + 1 : arg;
+    long count = 0;
+    int first = 1;
+    int overflow = 0;
+    while (p && *p) {
+        const char *tab = strchr(p, '\t');
+        size_t len = tab ? (size_t)(tab - p) : strlen(p);
+        const char *h = p;
+        while (len > 0 && (*h == ' ' || *h == '\t')) { h++; len--; }
+        while (len > 0 && *h == '@') { h++; len--; }
+        while (len > 0 && (h[len-1] == ' ' || h[len-1] == '\t')) len--;
+        if (len) {
+            if (count >= max) { overflow = 1; break; }
+            if (!first) printf("\n");
+            printf("%.*s", (int)len, h);
+            first = 0;
+            count++;
+        }
+        p = tab ? tab + 1 : p + len;
+    }
+    if (overflow) { printf("\n! %s supports at most %ld handles\n", t1 ? "" : "field", max); return 1; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _parse_iso_date @ tools/x_search_tool.py:_parse_iso_date */
 int tools_x_search_tool_u_parse_iso_date(const char *arg) { (void)arg; return 0; }
@@ -1061,7 +1091,12 @@ int tools_xai_video_tools_u_clean_string(const char *arg) {
 }
 
 /* PoP: _provider_not_configured_error @ tools/xai_video_tools.py:_provider_not_configured_error */
-int tools_xai_video_tools_u_provider_not_configured_error(const char *arg) { (void)arg; return 0; }
+int tools_xai_video_tools_u_provider_not_configured_error(const char *arg) {
+    /* Python: JSON error payload for unconfigured xai video provider. */
+    (void)arg;
+    printf("{\"success\": false, \"error\": \"xAI video edit/extend tools require `video_gen.provider` to be configured as `xai` via `hermes tools` -> Video Generation.\", \"error_type\": \"provider_not_configured\", \"provider\": \"xai\"}\n");
+    return 0;
+}
 
 /* PoP: _normalize_public_video_url @ tools/xai_video_tools.py:_normalize_public_video_url */
 int tools_xai_video_tools_u_normalize_public_video_url(const char *arg) {

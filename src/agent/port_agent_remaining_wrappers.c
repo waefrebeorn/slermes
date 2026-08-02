@@ -931,7 +931,20 @@ int agent_turn_context_substitute_api_content(const char *arg) { (void)arg; retu
 int agent_turn_context_drop_stale_api_content(const char *arg) { (void)arg; return 0; }
 
 /* PoP: extract_api_content_sidecar @ agent/turn_context.py:extract_api_content_sidecar */
-int agent_turn_context_extract_api_content_sidecar(const char *arg) { (void)arg; return 0; }
+int agent_turn_context_extract_api_content_sidecar(const char *arg) {
+    /* Python: msg["api_content"] when str, else None. Arg = msg JSON. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *msg = json_parse(arg, NULL);
+    if (!msg || !json_is_object(msg)) {
+        if (msg) json_free(msg);
+        printf("\n");
+        return 0;
+    }
+    const char *v = json_get_str(msg, "api_content", "");
+    printf("%s\n", v);
+    json_free(msg);
+    return 0;
+}
 
 /* PoP: consume_gateway_turn_context_notes @ agent/turn_context.py:consume_gateway_turn_context_notes */
 int agent_turn_context_consume_gateway_turn_context_notes(const char *arg) { (void)arg; return 0; }

@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <time.h>
 #include <sys/stat.h>
 #include "hermes_json.h"
 
@@ -128,7 +129,28 @@ int muv_u_smoke_candidate_venv(const char *arg) { (void)arg; return 0; }
 int muv_u_stage_candidate_venv(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _rename_with_retry @ hermes_cli/managed_uv.py:_rename_with_retry */
-int muv_u_rename_with_retry(const char *arg) { (void)arg; return 0; }
+int muv_u_rename_with_retry(const char *arg) {
+    /* Python: rename with retry delays (0, .1, .25, .5, 1s). Arg =
+     * "source\tdestination". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("0\n"); return 1; }
+    char src[1024], dst[1024];
+    size_t slen = (size_t)(tab - arg);
+    if (slen >= sizeof(src)) slen = sizeof(src) - 1;
+    memcpy(src, arg, slen); src[slen] = '\0';
+    snprintf(dst, sizeof(dst), "%s", tab + 1);
+    static const double delays[] = {0.0, 0.1, 0.25, 0.5, 1.0};
+    for (size_t i = 0; i < sizeof(delays) / sizeof(delays[0]); i++) {
+        if (delays[i] > 0) {
+            struct timespec ts = {0, (long)(delays[i] * 1e9)};
+            nanosleep(&ts, NULL);
+        }
+        if (rename(src, dst) == 0) { printf("1\n"); return 0; }
+    }
+    printf("0\n");
+    return 1;
+}
 
 /* PoP: _cut_over_candidate @ hermes_cli/managed_uv.py:_cut_over_candidate */
 int muv_u_cut_over_candidate(const char *arg) { (void)arg; return 0; }

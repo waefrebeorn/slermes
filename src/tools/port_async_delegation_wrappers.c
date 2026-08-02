@@ -197,7 +197,36 @@ int adel_dispatch_async_delegation_batch(const char *arg) { (void)arg; return 0;
 int adel_u_finalize_batch(const char *arg) { (void)arg; return 0; }
 
 /* PoP: list_async_delegations @ tools/async_delegation.py:list_async_delegations */
-int adel_list_async_delegations(const char *arg) { (void)arg; return 0; }
+int adel_list_async_delegations(const char *arg) {
+    /* Python: snapshot of records minus interrupt_fn (thread-safe). Arg =
+     * records JSON array (or empty). */
+    if (!arg || !*arg) { printf("[\n]\n"); return 0; }
+    json_t *arr = json_parse(arg, NULL);
+    if (!arr || !json_is_array(arr)) {
+        if (arr) json_free(arr);
+        printf("[\n]\n");
+        return 0;
+    }
+    size_t n = json_array_size(arr);
+    json_t *out = json_array();
+    for (size_t i = 0; i < n; i++) {
+        json_t *r = json_array_get(arr, i);
+        if (!r || !json_is_object(r)) continue;
+        json_t *c = json_object();
+        for (size_t k = 0; k < r->c.count; k++) {
+            const char *key = r->c.keys ? r->c.keys[k] : NULL;
+            if (!key || strcmp(key, "interrupt_fn") == 0) continue;
+            json_set(c, key, r->c.items[k]);
+        }
+        json_array_append(out, c);
+    }
+    char *s = json_dumps(out, 0);
+    printf("%s\n", s ? s : "[]");
+    free(s);
+    json_free(out);
+    json_free(arr);
+    return 0;
+}
 
 /* PoP: interrupt_for_session @ tools/async_delegation.py:interrupt_for_session */
 int adel_interrupt_for_session(const char *arg) { (void)arg; return 0; }

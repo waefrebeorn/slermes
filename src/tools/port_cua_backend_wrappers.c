@@ -391,7 +391,27 @@ int cua_kill_app(const char *arg) {
 int cua_bring_to_front(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_cursor_position @ tools/computer_use/cua_backend.py:get_cursor_position */
-int cua_get_cursor_position(const char *arg) { (void)arg; return 0; }
+int cua_get_cursor_position(const char *arg) {
+    /* Python: call_tool get_cursor_position -> (x, y) ints. Arg =
+     * "x\ty" (or JSON structuredContent). */
+    if (!arg || !*arg) { printf("0\t0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab) {
+        printf("%s\t%s\n", arg, tab + 1);
+        return 0;
+    }
+    json_t *sc = json_parse(arg, NULL);
+    if (sc && json_is_object(sc)) {
+        long x = strtol(json_get_str(sc, "x", "0"), NULL, 10);
+        long y = strtol(json_get_str(sc, "y", "0"), NULL, 10);
+        printf("%ld\t%ld\n", x, y);
+        json_free(sc);
+        return 0;
+    }
+    if (sc) json_free(sc);
+    printf("0\t0\n");
+    return 0;
+}
 
 /* PoP: get_screen_size @ tools/computer_use/cua_backend.py:get_screen_size */
 int cua_get_screen_size(const char *arg) { (void)arg; return 0; }

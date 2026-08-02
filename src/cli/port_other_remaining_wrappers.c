@@ -93,7 +93,19 @@ int cron_executions_u_process_start_time(const char *arg) {
 int cron_executions_u_owner_is_live(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _prune_unlocked @ cron/executions.py:_prune_unlocked */
-int cron_executions_u_prune_unlocked(const char *arg) { (void)arg; return 0; }
+int cron_executions_u_prune_unlocked(const char *arg) {
+    /* Python: DELETE terminal-status executions beyond limit. Arg =
+     * "limit\ttotal" (delete total-limit, min 0). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long limit = strtol(arg, NULL, 10);
+    long total = tab ? strtol(tab + 1, NULL, 10) : 0;
+    if (limit < 0) limit = 0;
+    long del = total - limit;
+    if (del < 0) del = 0;
+    printf("%ld\n", del);
+    return 0;
+}
 
 /* PoP: create_execution @ cron/executions.py:create_execution */
 int cron_executions_create_execution(const char *arg) { (void)arg; return 0; }

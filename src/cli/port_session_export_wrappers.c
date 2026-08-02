@@ -390,7 +390,29 @@ int sexp_u_messages(const char *arg) {
 int sexp_u_message_text(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _content_part_text @ hermes_cli/session_export.py:_content_part_text */
-int sexp_u_content_part_text(const char *arg) { (void)arg; return 0; }
+int sexp_u_content_part_text(const char *arg) {
+    /* Python: str part; dict text/content string; else json dump; else str.
+     * Arg = part JSON. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *part = json_parse(arg, NULL);
+    if (!part) { printf("%s\n", arg); return 0; }
+    if (json_is_string(part)) {
+        printf("%s\n", json_string_value(part));
+        json_free(part);
+        return 0;
+    }
+    if (json_is_object(part)) {
+        const char *v = json_get_str(part, "text", "");
+        if (*v) { printf("%s\n", v); json_free(part); return 0; }
+        v = json_get_str(part, "content", "");
+        if (*v) { printf("%s\n", v); json_free(part); return 0; }
+    }
+    char *s = json_dumps(part, 0);
+    printf("%s\n", s ? s : "");
+    free(s);
+    json_free(part);
+    return 0;
+}
 
 /* PoP: _session_metadata_lines @ hermes_cli/session_export.py:_session_metadata_lines */
 int sexp_u_session_metadata_lines(const char *arg) {

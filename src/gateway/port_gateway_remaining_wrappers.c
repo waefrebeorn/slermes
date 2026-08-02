@@ -85,7 +85,16 @@ int gateway_platforms_signal_u_force_reconnect(const char *arg) { (void)arg; ret
 int gateway_platforms_signal_u_handle_envelope(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _remember_recipient_identifiers @ gateway/platforms/signal.py:_remember_recipient_identifiers */
-int gateway_platforms_signal_u_remember_recipient_identifiers(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_signal_u_remember_recipient_identifiers(const char *arg) {
+    /* Python: cache number<->uuid when uuid is a valid Signal service id.
+     * Arg = "number\tuuid". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab || !tab[1]) { printf("0\n"); return 0; }
+    if (strstr(tab + 1, "signal:") == NULL) { printf("0\n"); return 0; }
+    printf("cached %.*s -> %s\n", (int)(tab - arg), arg, tab + 1);
+    return 0;
+}
 
 /* PoP: _extract_contact_uuid @ gateway/platforms/signal.py:_extract_contact_uuid */
 int gateway_platforms_signal_u_extract_contact_uuid(const char *arg) { (void)arg; return 0; }
@@ -810,7 +819,24 @@ int gateway_config_u_getenv_str(const char *arg) {
 }
 
 /* PoP: _getenv_int @ gateway/config.py:_getenv_int */
-int gateway_config_u_getenv_int(const char *arg) { (void)arg; return 0; }
+int gateway_config_u_getenv_int(const char *arg) {
+    /* Python: int(env var) or default. Arg = "name\tdefault". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    char name[128];
+    size_t nlen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (nlen >= sizeof(name)) nlen = sizeof(name) - 1;
+    memcpy(name, arg, nlen); name[nlen] = '\0';
+    long dflt = tab ? strtol(tab + 1, NULL, 10) : 0;
+    const char *raw = getenv(name);
+    if (!raw) { printf("%ld\n", dflt); return 0; }
+    while (*raw == ' ' || *raw == '\t') raw++;
+    char *end = NULL;
+    long v = strtol(raw, &end, 10);
+    if (end == raw) { printf("%ld\n", dflt); return 0; }
+    printf("%ld\n", v);
+    return 0;
+}
 
 /* PoP: platform_binds_port @ gateway/config.py:platform_binds_port */
 int gateway_config_platform_binds_port(const char *arg) { (void)arg; return 0; }

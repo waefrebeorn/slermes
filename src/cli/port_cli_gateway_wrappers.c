@@ -736,7 +736,13 @@ int cgw_systemd_restart(const char *arg) { (void)arg; return 0; }
 int cgw_systemd_status(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_launchd_label @ hermes_cli/gateway.py:get_launchd_label */
-int cgw_get_launchd_label(const char *arg) { (void)arg; return 0; }
+int cgw_get_launchd_label(const char *arg) {
+    /* Python: "ai.hermes.gateway-<suffix>" or base. Arg = suffix (may be
+     * empty). */
+    if (arg && *arg) printf("ai.hermes.gateway-%s\n", arg);
+    else printf("ai.hermes.gateway\n");
+    return 0;
+}
 
 /* PoP: _launchd_domain @ hermes_cli/gateway.py:_launchd_domain */
 int cgw_u_launchd_domain(const char *arg) { (void)arg; return 0; }
