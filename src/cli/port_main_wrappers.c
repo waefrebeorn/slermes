@@ -9,7 +9,9 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <unistd.h>
 #include "hermes_json.h"
+#include "port_config_py_helpers.h"
 
 /* PoP: _exit_after_oneshot @ hermes_cli/main.py:_exit_after_oneshot */
 int main_u_exit_after_oneshot(const char *arg) { (void)arg; return 0; }
@@ -33,28 +35,117 @@ int main_u_wants_tui_early(const char *arg) { (void)arg; return 0; }
 int main_u_suppress_mouse_residue_early(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_termux_startup_environment_fast @ hermes_cli/main.py:_is_termux_startup_environment_fast */
-int main_u_is_termux_startup_environment_fast(const char *arg) { (void)arg; return 0; }
+int main_u_is_termux_startup_environment_fast(const char *arg) {
+    (void)arg;
+    const char *prefix = getenv("PREFIX") ? getenv("PREFIX") : "";
+    const char *termux = getenv("TERMUX_VERSION");
+    if (termux && *termux) return 1;
+    if (strstr(prefix, "com.termux/files/usr")) return 1;
+    if (strncmp(prefix, "/data/data/com.termux/", 20) == 0) return 1;
+    return 0;
+}
 
 /* PoP: _is_termux_fast_version_argv @ hermes_cli/main.py:_is_termux_fast_version_argv */
-int main_u_is_termux_fast_version_argv(const char *arg) { (void)arg; return 0; }
+int main_u_is_termux_fast_version_argv(const char *arg) {
+    if (!arg) return 0;
+    return (strcmp(arg, "--version") == 0 || strcmp(arg, "-V") == 0
+            || strcmp(arg, "version") == 0) ? 1 : 0;
+}
 
 /* PoP: _read_openai_version_fast @ hermes_cli/main.py:_read_openai_version_fast */
-int main_u_read_openai_version_fast(const char *arg) { (void)arg; return 0; }
+/* PoP: _read_openai_version_fast @ hermes_cli/main.py:_read_openai_version_fast */
+char *main_u_read_openai_version_fast(const char *arg) {
+    (void)arg;
+    /* Search common Python import roots for openai/_version.py and extract
+     * __version__. Mirrors the Python sys.path walk. */
+    const char *bases[] = {
+        ".", getenv("PWD") ? getenv("PWD") : "",
+        "/usr/lib/python3/dist-packages", "/usr/local/lib/python3/dist-packages",
+        "/usr/lib/python3.11/site-packages", "/usr/lib/python3.12/site-packages",
+        NULL
+    };
+    for (int i = 0; bases[i]; i++) {
+        if (!*bases[i]) continue;
+        char path[1024];
+        snprintf(path, sizeof(path), "%s/openai/_version.py", bases[i]);
+        FILE *f = fopen(path, "r");
+        if (!f) continue;
+        char line[512];
+        char *ver = NULL;
+        while (fgets(line, sizeof(line), f)) {
+            char *p = strstr(line, "__version__");
+            if (!p) continue;
+            char *eq = strchr(p, '=');
+            if (!eq) continue;
+            eq++;
+            while (*eq == ' ' || *eq == '\t') eq++;
+            char *end = eq + strcspn(eq, "#\r\n");
+            while (end > eq && (end[-1] == ' ' || end[-1] == '\t' || end[-1] == '"' || end[-1] == '\'')) end--;
+            size_t L = end - eq;
+            if (L == 0) continue;
+            ver = malloc(L + 1);
+            memcpy(ver, eq, L);
+            ver[L] = '\0';
+            break;
+        }
+        fclose(f);
+        if (ver) return ver;
+    }
+    return NULL;
+}
 
 /* PoP: _print_fast_version_info @ hermes_cli/main.py:_print_fast_version_info */
-int main_u_print_fast_version_info(const char *arg) { (void)arg; return 0; }
+int main_u_print_fast_version_info(const char *arg) {
+    (void)arg;
+#ifndef HERMES_RELEASE_DATE
+#define HERMES_RELEASE_DATE "unknown"
+#endif
+    printf("Hermes Agent v%s (%s)\n", HERMES_VERSION, HERMES_RELEASE_DATE);
+    printf("Install directory: %s\n", "/usr/share/slermes");
+    char *ov = main_u_read_openai_version_fast(NULL);
+    if (ov) {
+        printf("OpenAI SDK: %s\n", ov);
+        free(ov);
+    } else {
+        printf("OpenAI SDK: Not installed\n");
+    }
+    return 0;
+}
 
 /* PoP: _try_termux_ultrafast_version @ hermes_cli/main.py:_try_termux_ultrafast_version */
-int main_u_try_termux_ultrafast_version(const char *arg) { (void)arg; return 0; }
+int main_u_try_termux_ultrafast_version(const char *arg) {
+    (void)arg;
+    if (getenv("HERMES_TERMUX_DISABLE_FAST_CLI")
+        && strcmp(getenv("HERMES_TERMUX_DISABLE_FAST_CLI"), "1") == 0)
+        return 0;
+    if (!main_u_is_termux_startup_environment_fast(NULL)) return 0;
+    /* argv[1:] — for the C entry we approximate with the single arg token */
+    if (!main_u_is_termux_fast_version_argv(arg)) return 0;
+    main_u_print_fast_version_info(NULL);
+    return 1;
+}
 
 /* PoP: _require_tty @ hermes_cli/main.py:_require_tty */
-int main_u_require_tty(const char *arg) { (void)arg; return 0; }
+int main_u_require_tty(const char *arg) {
+    const char *cmd = arg ? arg : "";
+    if (!isatty(STDIN_FILENO)) {
+        fprintf(stderr,
+            "Error: 'hermes %s' requires an interactive terminal.\n"
+            "It cannot be run through a pipe or non-interactive subprocess.\n"
+            "Run it directly in your terminal instead.\n", cmd);
+        exit(1);
+    }
+    return 0;
+}
 
 /* PoP: _apply_profile_override @ hermes_cli/main.py:_apply_profile_override */
 int main_u_apply_profile_override(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_termux_startup_environment @ hermes_cli/main.py:_is_termux_startup_environment */
-int main_u_is_termux_startup_environment(const char *arg) { (void)arg; return 0; }
+int main_u_is_termux_startup_environment(const char *arg) {
+    (void)arg;
+    return main_u_is_termux_startup_environment_fast(arg);
+}
 
 /* PoP: _termux_bundled_skills_fingerprint @ hermes_cli/main.py:_termux_bundled_skills_fingerprint */
 int main_u_termux_bundled_skills_fingerprint(const char *arg) { (void)arg; return 0; }
@@ -75,7 +166,47 @@ int main_u_sync_bundled_skills_for_startup(const char *arg) { (void)arg; return 
 int main_u_termux_should_prefetch_update_check(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _has_any_provider_configured @ hermes_cli/main.py:_has_any_provider_configured */
-int main_u_has_any_provider_configured(const char *arg) { (void)arg; return 0; }
+int main_u_has_any_provider_configured(const char *arg) {
+    (void)arg;
+    /* 1) A model explicitly configured in config.yaml (non-empty). */
+    json_t *cfg = config_py_load_config_readonly();
+    if (cfg) {
+        json_t *model = config_py_get_nested(cfg, "model");
+        const char *model_name = NULL;
+        if (model && model->type == JSON_OBJECT)
+            model_name = json_get_str(model, "default", NULL);
+        else if (model && model->type == JSON_STRING)
+            model_name = json_string(model);
+        if (model_name && *model_name) { json_free(cfg); return 1; }
+        json_free(cfg);
+    }
+    /* 2) Any provider API-key / base-url env var present. */
+    const char *env_vars[] = {
+        "OPENROUTER_API_KEY", "OPENAI_API_KEY", "ANTHROPIC_API_KEY",
+        "ANTHROPIC_TOKEN", "OPENAI_BASE_URL", "NOUS_API_KEY", NULL
+    };
+    for (int i = 0; env_vars[i]; i++)
+        if (getenv(env_vars[i]) && *getenv(env_vars[i])) return 1;
+    /* 3) A .env file containing a key (best-effort grep). */
+    const char *home = getenv("HERMES_HOME");
+    if (!home) home = getenv("HOME");
+    if (home) {
+        char dotenv[1024];
+        snprintf(dotenv, sizeof(dotenv), "%s/.env", home);
+        FILE *f = fopen(dotenv, "r");
+        if (f) {
+            char line[512];
+            int found = 0;
+            while (fgets(line, sizeof(line), f)) {
+                if (strstr(line, "API_KEY=") || strstr(line, "TOKEN=")
+                    || strstr(line, "BASE_URL=")) { found = 1; break; }
+            }
+            fclose(f);
+            if (found) return 1;
+        }
+    }
+    return 0;
+}
 
 /* PoP: _session_browse_picker @ hermes_cli/main.py:_session_browse_picker */
 int main_u_session_browse_picker(const char *arg) { (void)arg; return 0; }
