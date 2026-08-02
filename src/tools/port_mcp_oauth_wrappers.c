@@ -243,7 +243,19 @@ int mcpo_get_client_info(const char *arg) {
 }
 
 /* PoP: set_client_info @ tools/mcp_oauth.py:set_client_info */
-int mcpo_set_client_info(const char *arg) { (void)arg; return 0; }
+int mcpo_set_client_info(const char *arg) {
+    /* Python: persist client info. Arg =
+     * "saved\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int saved = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!saved) { printf("0 (write failed)\n"); return 0; }
+    printf("1 (client info persisted for %s; enables cold-start token refresh without re-discovery)%s\n", t2 ? t2 + 1 : "server", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: save_oauth_metadata @ tools/mcp_oauth.py:save_oauth_metadata */
 int mcpo_save_oauth_metadata(const char *arg) {

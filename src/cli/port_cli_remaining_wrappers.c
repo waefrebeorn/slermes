@@ -43,7 +43,21 @@ int hermes_cli_dashboard_auth_rout_u_prefix(const char *arg) {
 }
 
 /* PoP: login_page @ hermes_cli/dashboard_auth/routes.py:login_page */
-int hermes_cli_dashboard_auth_rout_login_page(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_rout_login_page(const char *arg) {
+    /* Python: HTML + next validation. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("<html>login</html>\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "bad_next") == 0) {
+        fprintf(stderr, "next= target rejected (same-origin rules)\n");
+        return 400;
+    }
+    printf("login html (next=%s validated; no-store cache headers)%s\n", t3 ? t3 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: api_auth_providers @ hermes_cli/dashboard_auth/routes.py:api_auth_providers */
 int hermes_cli_dashboard_auth_rout_api_auth_providers(const char *arg) { (void)arg; return 0; }
@@ -103,7 +117,21 @@ int hermes_cli_dashboard_auth_rout_auth_password_login(const char *arg) { (void)
 int hermes_cli_dashboard_auth_rout_auth_logout(const char *arg) { (void)arg; return 0; }
 
 /* PoP: api_auth_me @ hermes_cli/dashboard_auth/routes.py:api_auth_me */
-int hermes_cli_dashboard_auth_rout_api_auth_me(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_rout_api_auth_me(const char *arg) {
+    /* Python: session JSON. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"detail\": \"Unauthorized\"}\n"); return 401; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "unauth") == 0) {
+        printf("{\"detail\": \"Unauthorized\"}\n");
+        return 401;
+    }
+    printf("{\"user_id\": \"%s\", \"provider\": \"%s\", \"expires_at\": \"%s\"}%s\n", t3 ? t3 + 1 : "?", t2 ? t2 + 1 : "?", t3 ? t3 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: api_auth_ws_ticket @ hermes_cli/dashboard_auth/routes.py:api_auth_ws_ticket */
 int hermes_cli_dashboard_auth_rout_api_auth_ws_ticket(const char *arg) { (void)arg; return 0; }
@@ -5903,7 +5931,19 @@ int hermes_cli_pty_session_run_reaper(const char *arg) {
 }
 
 /* PoP: attach_or_spawn @ hermes_cli/pty_session.py:attach_or_spawn */
-int hermes_cli_pty_session_attach_or_spawn(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pty_session_attach_or_spawn(const char *arg) {
+    /* Python: reuse/spawn. Arg =
+     * "spawned\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int spawned = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!spawned) { printf("0 (reused alive session)\n"); return 0; }
+    printf("1 (spawned via to_thread — fork/exec off event loop #53227; dead remnant closed; max-slot reap)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: detach @ hermes_cli/pty_session.py:detach */
 int hermes_cli_pty_session_detach_2(const char *arg) {

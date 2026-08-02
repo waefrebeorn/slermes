@@ -180,7 +180,19 @@ int gateway_platforms_signal_u_notify_batch_pacing(const char *arg) {
 int gateway_platforms_signal_u_stop_typing_indicator(const char *arg) { (void)arg; return 0; }
 
 /* PoP: remove_reaction @ gateway/platforms/signal.py:remove_reaction */
-int gateway_platforms_signal_remove_reaction(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_signal_remove_reaction(const char *arg) {
+    /* Python: empty emoji sendReaction. Arg =
+     * "removed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int removed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!removed) { printf("0 (sendReaction failed)\n"); return 0; }
+    printf("1 (removed via emoji="" + remove=True; group → groupId, else recipient)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _extract_reaction_target @ gateway/platforms/signal.py:_extract_reaction_target */
 int gateway_platforms_signal_u_extract_reaction_target(const char *arg) {

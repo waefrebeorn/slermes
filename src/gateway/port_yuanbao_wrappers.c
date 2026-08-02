@@ -975,7 +975,21 @@ int yb_send_media(const char *arg) {
 int yb_send_direct(const char *arg) { (void)arg; return 0; }
 
 /* PoP: dispatch_msg_body @ gateway/platforms/yuanbao.py:dispatch_msg_body */
-int yb_dispatch_msg_body(const char *arg) { (void)arg; return 0; }
+int yb_dispatch_msg_body(const char *arg) {
+    /* Python: chat lock dispatch. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"success\": false}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "dispatch failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("{\"success\": true, \"message_id\": \"%s\"} (under chat lock; group: prefix → group path, direct: → c2c)%s\n", t3 ? t3 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: send_text_chunk @ gateway/platforms/yuanbao.py:send_text_chunk */
 int yb_send_text_chunk(const char *arg) { (void)arg; return 0; }

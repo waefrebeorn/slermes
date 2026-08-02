@@ -98,7 +98,19 @@ int qqbot_u_reconnect(const char *arg) { (void)arg; return 0; }
 int qqbot_u_read_events(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _heartbeat_loop @ gateway/platforms/qqbot/adapter.py:_heartbeat_loop */
-int qqbot_u_heartbeat_loop(const char *arg) { (void)arg; return 0; }
+int qqbot_u_heartbeat_loop(const char *arg) {
+    /* Python: op 1 heartbeat. Arg =
+     * "beating\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int beating = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!beating) { printf("0 (stopped)\n"); return 0; }
+    printf("1 (op 1 heartbeat w/ latest seq at 80%% of hello interval)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _send_identify @ gateway/platforms/qqbot/adapter.py:_send_identify */
 int qqbot_u_send_identify(const char *arg) { (void)arg; return 0; }

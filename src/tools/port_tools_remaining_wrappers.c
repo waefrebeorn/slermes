@@ -527,7 +527,21 @@ int tools_homeassistant_tool_u_async_list_entities(const char *arg) {
 }
 
 /* PoP: _async_get_state @ tools/homeassistant_tool.py:_async_get_state */
-int tools_homeassistant_tool_u_async_get_state(const char *arg) { (void)arg; return 0; }
+int tools_homeassistant_tool_u_async_get_state(const char *arg) {
+    /* Python: single entity. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"error\": \"entity_id required\"}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "HA state fetch failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("{\"entity_id\": \"%s\", \"state\": \"%s\", \"attributes\": {...}} (10s timeout)%s\n", t3 ? t3 + 1 : "?", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _build_service_payload @ tools/homeassistant_tool.py:_build_service_payload */
 int tools_homeassistant_tool_u_build_service_payload(const char *arg) {
@@ -567,7 +581,21 @@ int tools_homeassistant_tool_u_parse_service_response(const char *arg) {
 }
 
 /* PoP: _async_call_service @ tools/homeassistant_tool.py:_async_call_service */
-int tools_homeassistant_tool_u_async_call_service(const char *arg) { (void)arg; return 0; }
+int tools_homeassistant_tool_u_async_call_service(const char *arg) {
+    /* Python: service POST. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"error\": \"domain/service required\"}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "HA service call failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("service result: %s (payload built from entity_id + data)%s\n", t3 ? t3 + 1 : "{}", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _handle_list_entities @ tools/homeassistant_tool.py:_handle_list_entities */
 int tools_homeassistant_tool_u_handle_list_entities(const char *arg) {

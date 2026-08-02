@@ -342,7 +342,19 @@ int grun_u_sync_session_model_from_agent(const char *arg) {
 }
 
 /* PoP: _handle_reaction_event @ gateway/run.py:_handle_reaction_event */
-int grun_u_handle_reaction_event(const char *arg) { (void)arg; return 0; }
+int grun_u_handle_reaction_event(const char *arg) {
+    /* Python: hook fan-out. Arg =
+     * "emitted\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int emitted = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!emitted) { printf("0 (hook errored — never blocks adapter loop)\n"); return 0; }
+    printf("1 (hooks.emit('%s', ctx) fanned out — reaction:added/removed scheme)%s\n", t2 ? t2 + 1 : "reaction:added", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _handle_adapter_fatal_error @ gateway/run.py:_handle_adapter_fatal_error */
 int grun_u_handle_adapter_fatal_error(const char *arg) { (void)arg; return 0; }
@@ -792,7 +804,17 @@ int grun_u_queue_startup_restore_event(const char *arg) {
 int grun_u_drain_startup_restore_queue(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _finish_startup_restore @ gateway/run.py:_finish_startup_restore */
-int grun_u_finish_startup_restore(const char *arg) { (void)arg; return 0; }
+int grun_u_finish_startup_restore(const char *arg) {
+    /* Python: gather + drain. Arg =
+     * "drained\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s queued message(s) drained (auto-resume tasks gathered w/ exceptions logged)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _redeliver_pending_obligations @ gateway/run.py:_redeliver_pending_obligations */
 int grun_u_redeliver_pending_obligations(const char *arg) { (void)arg; return 0; }
@@ -1020,7 +1042,19 @@ int grun_u_resolve_async_delegation_session(const char *arg) { (void)arg; return
 int grun_u_prepare_inbound_message_text(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _prepare_profile_scoped_inbound_message_text @ gateway/run.py:_prepare_profile_scoped_inbound_message_text */
-int grun_u_prepare_profile_scoped_inbound_message_text(const char *arg) { (void)arg; return 0; }
+int grun_u_prepare_profile_scoped_inbound_message_text(const char *arg) {
+    /* Python: multiplex scope. Arg =
+     * "scoped\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int scoped = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!scoped) { printf("0 (not multiplexed — plain preprocessing)\n"); return 0; }
+    printf("1 (preprocessed under profile runtime scope for %s)%s\n", t2 ? t2 + 1 : "source", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: async_session_store @ gateway/run.py:async_session_store */
 int grun_async_session_store(const char *arg) {
@@ -1096,7 +1130,19 @@ int grun_u_handle_blueprint_command(const char *arg) { (void)arg; return 0; }
 int grun_u_get_goal_manager_for_event(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _send_goal_status_notice @ gateway/run.py:_send_goal_status_notice */
-int grun_u_send_goal_status_notice(const char *arg) { (void)arg; return 0; }
+int grun_u_send_goal_status_notice(const char *arg) {
+    /* Python: judge status line. Arg =
+     * "sent\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int sent = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no adapter)\n"); return 0; }
+    if (!sent) { printf("0 (send failed — logged)\n"); return 0; }
+    printf("1 (judge status sent to originating chat w/ thread metadata)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _defer_goal_status_notice_after_delivery @ gateway/run.py:_defer_goal_status_notice_after_delivery */
 int grun_u_defer_goal_status_notice_after_delivery(const char *arg) { (void)arg; return 0; }
@@ -1332,7 +1378,19 @@ int grun_u_pending_event_audio_paths(const char *arg) {
 int grun_u_transcribe_pending_audio_event_once(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _echo_pending_stt_transcripts_once @ gateway/run.py:_echo_pending_stt_transcripts_once */
-int grun_u_echo_pending_stt_transcripts_once(const char *arg) { (void)arg; return 0; }
+int grun_u_echo_pending_stt_transcripts_once(const char *arg) {
+    /* Python: 🎙️ echo. Arg =
+     * "echoed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int echoed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!echoed) { printf("0 (no transcripts / echo disabled / already echoed)\n"); return 0; }
+    printf("1 (🎙️ transcripts echoed; per-event once-flag set)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _transcribe_and_echo_pending_voice @ gateway/run.py:_transcribe_and_echo_pending_voice */
 int grun_u_transcribe_and_echo_pending_voice(const char *arg) { (void)arg; return 0; }

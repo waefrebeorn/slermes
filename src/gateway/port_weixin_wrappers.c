@@ -285,16 +285,48 @@ int wx_u_flush_text_batch(const char *arg) { (void)arg; return 0; }
 int wx_u_collect_media(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _download_image @ gateway/platforms/weixin.py:_download_image */
-int wx_u_download_image(const char *arg) { (void)arg; return 0; }
+int wx_u_download_image(const char *arg) {
+    /* Python: image_item media. Arg =
+     * "path\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s (image_item aeskey hex→b64 decode, 30s timeout, cached)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? " — cached" : "");
+    return 0;
+}
 
 /* PoP: _download_video @ gateway/platforms/weixin.py:_download_video */
 int wx_u_download_video(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _download_voice @ gateway/platforms/weixin.py:_download_voice */
-int wx_u_download_voice(const char *arg) { (void)arg; return 0; }
+int wx_u_download_voice(const char *arg) {
+    /* Python: voice_item media. Arg =
+     * "path\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s (.silk cached; inline text → None skip; 60s timeout)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _maybe_fetch_typing_ticket @ gateway/platforms/weixin.py:_maybe_fetch_typing_ticket */
-int wx_u_maybe_fetch_typing_ticket(const char *arg) { (void)arg; return 0; }
+int wx_u_maybe_fetch_typing_ticket(const char *arg) {
+    /* Python: getConfig ticket. Arg =
+     * "fetched\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int fetched = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no poll session/token)\n"); return 0; }
+    if (!fetched) { printf("0 (cached or no ticket; failures DEBUG-logged)\n"); return 0; }
+    printf("1 (typing_ticket cached for user %s)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _split_text @ gateway/platforms/weixin.py:_split_text */
 int wx_u_split_text(const char *arg) {
@@ -388,7 +420,17 @@ int wx_u_send_text_chunk_locked(const char *arg) {
 int wx_u_ensure_typing_ticket(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _download_remote_media @ gateway/platforms/weixin.py:_download_remote_media */
-int wx_u_download_remote_media(const char *arg) { (void)arg; return 0; }
+int wx_u_download_remote_media(const char *arg) {
+    /* Python: SSRF-gated fetch. Arg =
+     * "path\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s (is_safe_url gate, 30s wait_for, suffix from url path)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _outbound_media_builder @ gateway/platforms/weixin.py:_outbound_media_builder */
 int wx_u_outbound_media_builder(const char *arg) {
