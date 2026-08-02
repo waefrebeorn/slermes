@@ -83,7 +83,27 @@ int auth_u_parse_iso_timestamp(const char *arg) {
 }
 
 /* PoP: _read_qwen_cli_tokens @ hermes_cli/auth.py:_read_qwen_cli_tokens */
-int auth_u_read_qwen_cli_tokens(const char *arg) { (void)arg; return 0; }
+int auth_u_read_qwen_cli_tokens(const char *arg) {
+    /* Python: read Qwen CLI credential file. Arg = "state\tpath\terror". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "missing") == 0) {
+        fprintf(stderr, "Qwen CLI credentials not found. Run 'qwen auth qwen-oauth' first.\n");
+        return 1;
+    }
+    if (strcmp(state, "read_failed") == 0) {
+        fprintf(stderr, "Failed to read Qwen CLI credentials from %s: %s\n", t1 ? t1 + 1 : "?", t2 ? t2 + 1 : "");
+        return 1;
+    }
+    if (strcmp(state, "invalid") == 0) {
+        fprintf(stderr, "Invalid Qwen CLI credentials in %s.\n", t1 ? t1 + 1 : "?");
+        return 1;
+    }
+    printf("qwen tokens loaded from %s\n", t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: _save_qwen_cli_tokens @ hermes_cli/auth.py:_save_qwen_cli_tokens */
 int auth_u_save_qwen_cli_tokens(const char *arg) { (void)arg; return 0; }

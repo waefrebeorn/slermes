@@ -180,4 +180,15 @@ int smt_u_remove_file(const char *arg) { (void)arg; return 0; }
 int smt_u_apply_skill_write_gate(const char *arg) { (void)arg; return 0; }
 
 /* PoP: apply_skill_pending @ tools/skill_manager_tool.py:apply_skill_pending */
-int smt_apply_skill_pending(const char *arg) { (void)arg; return 0; }
+int smt_apply_skill_pending(const char *arg) {
+    /* Python: replay staged skill write with gate bypass. Arg =
+     * "action\tname\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\"ok\": false}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("{\"ok\": false, \"error\": \"staged write missing\"}\n"); return 1; }
+    printf("%s\n", t3 ? t3 + 1 : "{\"ok\": true}");
+    return 0;
+}

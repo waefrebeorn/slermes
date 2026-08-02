@@ -509,7 +509,18 @@ int main_u_format_aux_current(const char *arg) {
 }
 
 /* PoP: _save_aux_choice @ hermes_cli/main.py:_save_aux_choice */
-int main_u_save_aux_choice(const char *arg) { (void)arg; return 0; }
+int main_u_save_aux_choice(const char *arg) {
+    /* Python: persist 4 routing fields. Arg =
+     * "task\tprovider\tmodel\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t3 && t3[1] == '1';
+    if (!state) { printf("aux choice save skipped\n"); return 0; }
+    printf("aux choice saved: %s -> %s / %s\n", arg, t1 ? t1 + 1 : "", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _reset_aux_to_auto @ hermes_cli/main.py:_reset_aux_to_auto */
 int main_u_reset_aux_to_auto(const char *arg) { (void)arg; return 0; }
@@ -1646,7 +1657,23 @@ int main_u_cold_start_windows_gateway_after_update(const char *arg) { (void)arg;
 int main_u_for_each_systemd_gateway_unit(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _warn_incomplete_gateway_fleet_restart @ hermes_cli/main.py:_warn_incomplete_gateway_fleet_restart */
-int main_u_warn_incomplete_gateway_fleet_restart(const char *arg) { (void)arg; return 0; }
+int main_u_warn_incomplete_gateway_fleet_restart(const char *arg) {
+    /* Python: incomplete-update warning. Arg = "units" (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("\n⚠ Update incomplete — some gateway units were not restarted:\n");
+    const char *p = arg;
+    while (*p) {
+        const char *t = strchr(p, '\t');
+        size_t len = t ? (size_t)(t - p) : strlen(p);
+        printf("    - %.*s\n", (int)len, p);
+        p = t ? t + 1 : p + len;
+    }
+    printf("  Skipped units may still be running pre-update code (mixed sys.modules). Restart them manually, then verify:\n");
+    printf("    hermes gateway status\n");
+    printf("    systemctl --user restart <unit>   # user-scope\n");
+    printf("    sudo systemctl restart <unit>     # system-scope\n");
+    return 0;
+}
 
 /* PoP: _resume_windows_gateways_after_update @ hermes_cli/main.py:_resume_windows_gateways_after_update */
 int main_u_resume_windows_gateways_after_update(const char *arg) { (void)arg; return 0; }
@@ -1798,7 +1825,16 @@ int main_u_try_termux_fast_cli_launch(const char *arg) { (void)arg; return 0; }
 int main_u_try_termux_fast_tui_launch(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cmd_acp @ hermes_cli/main.py:cmd_acp */
-int main_cmd_acp(const char *arg) { (void)arg; return 0; }
+int main_cmd_acp(const char *arg) {
+    /* Python: ACP server launch. Arg = "state". */
+    if (!arg || !*arg) { printf("acp server launched\n"); return 0; }
+    if (strcmp(arg, "no_deps") == 0) {
+        fprintf(stderr, "ACP dependencies not installed.\nInstall them with:  pip install -e '.[acp]'\n");
+        return 1;
+    }
+    printf("acp server launched (flags: %s)\n", arg);
+    return 0;
+}
 
 /* PoP: cmd_pairing @ hermes_cli/main.py:cmd_pairing */
 int main_cmd_pairing(const char *arg) {

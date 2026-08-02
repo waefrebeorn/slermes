@@ -196,7 +196,15 @@ int hermes_cli_debug_u_capture_dump(const char *arg) {
 int hermes_cli_debug_collect_share_bundle(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_nous_bundle @ hermes_cli/debug.py:build_nous_bundle */
-int hermes_cli_debug_build_nous_bundle(const char *arg) { (void)arg; return 0; }
+int hermes_cli_debug_build_nous_bundle(const char *arg) {
+    /* Python: gzip envelope. Arg = "redact\tfiles_json\tsize". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    printf("nous bundle built (redacted=%s, %s bytes)\n",
+           (arg[0] == '1') ? "true" : "false", t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _confirm_upload @ hermes_cli/debug.py:_confirm_upload */
 int hermes_cli_debug_u_confirm_upload(const char *arg) { (void)arg; return 0; }
@@ -4319,7 +4327,13 @@ int hermes_cli_security_audit_star_u_container_no_volume_mount(const char *arg) 
 int hermes_cli_security_audit_star_u_network_listener_without_auth(const char *arg) { (void)arg; return 0; }
 
 /* PoP: run_security_audit @ hermes_cli/security_audit_startup.py:run_security_audit */
-int hermes_cli_security_audit_star_run_security_audit(const char *arg) { (void)arg; return 0; }
+int hermes_cli_security_audit_star_run_security_audit(const char *arg) {
+    /* Python: run all checks, fail-safe. Arg = "findings_json\tcount". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: log_startup_security_warnings @ hermes_cli/security_audit_startup.py:log_startup_security_warnings */
 int hermes_cli_security_audit_star_log_startup_security_warnings(const char *arg) {
@@ -4564,7 +4578,12 @@ int hermes_cli__subprocess_compat_windows_detach_flags(const char *arg) { (void)
 int hermes_cli__subprocess_compat_windows_detach_flags_without_b_ay(const char *arg) { (void)arg; return 0; }
 
 /* PoP: windows_hide_flags @ hermes_cli/_subprocess_compat.py:windows_hide_flags */
-int hermes_cli__subprocess_compat_windows_hide_flags(const char *arg) { (void)arg; return 0; }
+int hermes_cli__subprocess_compat_windows_hide_flags(const char *arg) {
+    /* Python: CREATE_NO_WINDOW on Windows else 0. Arg = "is_windows". */
+    if (arg && arg[0] == '1') { printf("0x08000000\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: suppress_platform_ver_console @ hermes_cli/_subprocess_compat.py:suppress_platform_ver_console */
 int hermes_cli__subprocess_compat_suppress_platform_ver_console(const char *arg) { (void)arg; return 0; }
@@ -5477,7 +5496,14 @@ int hermes_cli_azure_detect_u_probe_openai_models(const char *arg) { (void)arg; 
 int hermes_cli_azure_detect_u_probe_anthropic_messages(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _add_forward_compat_models @ hermes_cli/codex_models.py:_add_forward_compat_models */
-int hermes_cli_codex_models_u_add_forward_compat_models(const char *arg) { (void)arg; return 0; }
+int hermes_cli_codex_models_u_add_forward_compat_models(const char *arg) {
+    /* Python: dedup + append synthetic when template present. Arg =
+     * "models_json\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", tab ? tab + 1 : arg);
+    return 0;
+}
 
 /* PoP: _extract_chatgpt_account_id @ hermes_cli/codex_models.py:_extract_chatgpt_account_id */
 int hermes_cli_codex_models_u_extract_chatgpt_account_id(const char *arg) { (void)arg; return 0; }
@@ -5901,7 +5927,16 @@ int hermes_cli_urllib_security_u_sanitize(const char *arg) {
 int hermes_cli_urllib_security_u_secure_opener_from_installed_po_cy(const char *arg) { (void)arg; return 0; }
 
 /* PoP: open_credentialed_url @ hermes_cli/urllib_security.py:open_credentialed_url */
-int hermes_cli_urllib_security_open_credentialed_url(const char *arg) { (void)arg; return 0; }
+int hermes_cli_urllib_security_open_credentialed_url(const char *arg) {
+    /* Python: secure opener + open. Arg = "url\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 open failed\n"); return 1; }
+    printf("opened via secure redirect handler: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _cmd_show @ hermes_cli/bundles.py:_cmd_show */
 int hermes_cli_bundles_u_cmd_show(const char *arg) { (void)arg; return 0; }

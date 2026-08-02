@@ -717,7 +717,26 @@ int tools_x_search_tool_u_extract_inline_citations(const char *arg) {
 }
 
 /* PoP: _http_error_message @ tools/x_search_tool.py:_http_error_message */
-int tools_x_search_tool_u_http_error_message(const char *arg) { (void)arg; return 0; }
+int tools_x_search_tool_u_http_error_message(const char *arg) {
+    /* Python: response payload -> message. Arg = "state\tcode\terror\tmsg". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = arg;
+    const char *code = t1 ? t1 + 1 : "";
+    const char *error = t2 ? t2 + 1 : "";
+    const char *msg = t3 ? t3 + 1 : "";
+    if (strcmp(state, "no_response") == 0) { printf("%s\n", msg); return 0; }
+    if (strcmp(state, "json") == 0) {
+        if (code[0] && strstr(error, code) == NULL) printf("%s: %s\n", code, error);
+        else printf("%s\n", error);
+        return 0;
+    }
+    if (strcmp(state, "text") == 0) { printf("%s\n", msg); return 0; }
+    printf("%s\n", msg);
+    return 0;
+}
 
 /* PoP: x_search_tool @ tools/x_search_tool.py:x_search_tool */
 int tools_x_search_tool_x_search_tool(const char *arg) { (void)arg; return 0; }
@@ -734,7 +753,32 @@ int tools_x_search_tool_u_handle_x_search(const char *arg) {
 }
 
 /* PoP: _blocked_toolsets_for_role @ tools/delegate_tool.py:_blocked_toolsets_for_role */
-int tools_delegate_tool_u_blocked_toolsets_for_role(const char *arg) { (void)arg; return 0; }
+int tools_delegate_tool_u_blocked_toolsets_for_role(const char *arg) {
+    /* Python: fully-blocked toolsets; orchestrator keeps delegate_task.
+     * Arg = "role\ttoolsets" (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *role = arg;
+    const char *toolsets = tab ? tab + 1 : "";
+    const char *p = toolsets;
+    int first = 1;
+    while (*p) {
+        const char *t = strchr(p, '\t');
+        size_t len = t ? (size_t)(t - p) : strlen(p);
+        if (len) {
+            int skip = 0;
+            if (strcmp(role, "orchestrator") == 0 && len == 13 && strncmp(p, "delegate_task", 13) == 0) skip = 1;
+            if (!skip) {
+                if (!first) printf("\n");
+                printf("%.*s", (int)len, p);
+                first = 0;
+            }
+        }
+        p = t ? t + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _emit_parent_console @ tools/delegate_tool.py:_emit_parent_console */
 int tools_delegate_tool_u_emit_parent_console(const char *arg) {
@@ -1071,7 +1115,16 @@ int tools_environments_modal_u_modal_upload(const char *arg) { (void)arg; return
 int tools_environments_modal_u_modal_bulk_upload(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _modal_bulk_download @ tools/environments/modal.py:_modal_bulk_download */
-int tools_environments_modal_u_modal_bulk_download(const char *arg) { (void)arg; return 0; }
+int tools_environments_modal_u_modal_bulk_download(const char *arg) {
+    /* Python: tar cf - /root/.hermes. Arg = "dest\tstate\tsize". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 modal bulk download failed\n"); return 1; }
+    printf("modal bulk download ok: %s (%s bytes)\n", arg, t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _modal_delete @ tools/environments/modal.py:_modal_delete */
 int tools_environments_modal_u_modal_delete(const char *arg) {
@@ -1846,7 +1899,20 @@ int tools_credential_files_register_credential_files(const char *arg) {
 int tools_credential_files_iter_skills_files(const char *arg) { (void)arg; return 0; }
 
 /* PoP: from_agent_visible_cache_path @ tools/credential_files.py:from_agent_visible_cache_path */
-int tools_credential_files_from_agent_visible_cache_path(const char *arg) { (void)arg; return 0; }
+int tools_credential_files_from_agent_visible_cache_path(const char *arg) {
+    /* Python: docker mount inverse. Arg =
+     * "path\tbackend_docker\tmapped\thost_path". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int docker = t1 && t1[1] == '1';
+    if (!docker) { printf("%s\n", arg); return 0; }
+    int mapped = t2 && t2[1] == '1';
+    if (mapped) { printf("%s\n", t3 ? t3 + 1 : arg); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: iter_cache_files @ tools/credential_files.py:iter_cache_files */
 int tools_credential_files_iter_cache_files(const char *arg) { (void)arg; return 0; }
@@ -1945,7 +2011,19 @@ int tools_session_search_tool_u_is_compression_ended(const char *arg) {
 int tools_session_search_tool_u_is_compacted_message(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _annotate_rebuild_status @ tools/session_search_tool.py:_annotate_rebuild_status */
-int tools_session_search_tool_u_annotate_rebuild_status(const char *arg) { (void)arg; return 0; }
+int tools_session_search_tool_u_annotate_rebuild_status(const char *arg) {
+    /* Python: add index_rebuild note or no-op. Arg =
+     * "rebuilding\tpercent\tindexed\ttotal". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int rebuilding = arg[0] == '1';
+    if (!rebuilding) { printf("no rebuild pending\n"); return 0; }
+    printf("index_rebuild: %s%% done (%s of %s messages)\n",
+           t1 ? t1 + 1 : "?", t2 ? t2 + 1 : "?", t3 ? t3 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _is_headed_mode @ tools/browser_tool.py:_is_headed_mode */
 int tools_browser_tool_u_is_headed_mode(const char *arg) { (void)arg; return 0; }

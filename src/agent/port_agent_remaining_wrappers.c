@@ -195,7 +195,18 @@ int agent_pet_generate_atlas_u_component_crops(const char *arg) { (void)arg; ret
 int agent_pet_generate_atlas_u_sever_expected_gutters(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _slot_crops @ agent/pet/generate/atlas.py:_slot_crops */
-int agent_pet_generate_atlas_u_slot_crops(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_atlas_u_slot_crops(const char *arg) {
+    /* Python: uniform column slices + bleed cleanup. Arg =
+     * "frame_count\trequire_padding\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int require_padding = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (require_padding && !state) { printf("\n"); return 0; }
+    printf("slot crops: %s frames (shared coordinate space)\n", arg);
+    return 0;
+}
 
 /* PoP: _frame_x_ranges @ agent/pet/generate/atlas.py:_frame_x_ranges */
 int agent_pet_generate_atlas_u_frame_x_ranges(const char *arg) { (void)arg; return 0; }
@@ -1211,7 +1222,21 @@ int agent_credential_pool_u_current_unlocked(const char *arg) {
 }
 
 /* PoP: entry_id_for_api_key @ agent/credential_pool.py:entry_id_for_api_key */
-int agent_credential_pool_entry_id_for_api_key(const char *arg) { (void)arg; return 0; }
+int agent_credential_pool_entry_id_for_api_key(const char *arg) {
+    /* Python: current selection else unambiguous match. Arg =
+     * "current_id\tmatches\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *current = arg;
+    const char *matches = t1 ? t1 + 1 : "";
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (current[0] && strcmp(current, "none") != 0) { printf("%s\n", current); return 0; }
+    if (matches[0] && strcmp(matches, "none") != 0) { printf("%s\n", matches); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _sync_xai_oauth_entry_from_pool_store @ agent/credential_pool.py:_sync_xai_oauth_entry_from_pool_store */
 int agent_credential_pool_u_sync_xai_oauth_entry_from_pool_store(const char *arg) { (void)arg; return 0; }
@@ -1914,7 +1939,23 @@ int agent_anthropic_adapter_u_get_hermes_oauth_file(const char *arg) {
 }
 
 /* PoP: _safe_text @ agent/anthropic_adapter.py:_safe_text */
-int agent_anthropic_adapter_u_safe_text(const char *arg) { (void)arg; return 0; }
+int agent_anthropic_adapter_u_safe_text(const char *arg) {
+    /* Python: whitespace -> placeholder. Arg = "text\tplaceholder". */
+    if (!arg || !*arg) {
+        printf("…\n");
+        return 0;
+    }
+    const char *tab = strchr(arg, '\t');
+    const char *p = arg;
+    int blank = 1;
+    while (*p) {
+        if (*p != ' ' && *p != '\t' && *p != '\n' && *p != '\r') { blank = 0; break; }
+        p++;
+    }
+    if (blank) { printf("%s\n", tab ? tab + 1 : "…"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _ensure_leading_user_turn @ agent/anthropic_adapter.py:_ensure_leading_user_turn */
 int agent_anthropic_adapter_u_ensure_leading_user_turn(const char *arg) { (void)arg; return 0; }

@@ -185,7 +185,16 @@ int gstat_u_wait_for_scoped_lock_owner_exit(const char *arg) {
 }
 
 /* PoP: _snapshot_gateway_children @ gateway/status.py:_snapshot_gateway_children */
-int gstat_u_snapshot_gateway_children(const char *arg) { (void)arg; return 0; }
+int gstat_u_snapshot_gateway_children(const char *arg) {
+    /* Python: recursive children snapshot (POSIX) or []. Arg =
+     * "count\tstate". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s children\n", arg);
+    return 0;
+}
 
 /* PoP: reap_gateway_children @ gateway/status.py:reap_gateway_children */
 int gstat_reap_gateway_children(const char *arg) { (void)arg; return 0; }

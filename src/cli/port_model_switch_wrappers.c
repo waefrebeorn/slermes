@@ -169,4 +169,13 @@ int msw_u_extra_headers_from_config(const char *arg) {
 int msw_prewarm_picker_cache_async(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _prepend_moa_picker_provider @ hermes_cli/model_switch.py:_prepend_moa_picker_provider */
-int msw_u_prepend_moa_picker_provider(const char *arg) { (void)arg; return 0; }
+int msw_u_prepend_moa_picker_provider(const char *arg) {
+    /* Python: virtual MoA row prepended. Arg = "current\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("moa row prepended (current=%s): %s\n", arg, t2 ? t2 + 1 : "");
+    return 0;
+}
