@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:56:47Z",
+  "generated_at": "2026-08-02T20:59:19Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -14666,10 +14666,10 @@
     },
     "agent/coding_context.py": {
       "total": 31,
-      "ported": 13,
+      "ported": 19,
       "partial": 12,
       "stub": 0,
-      "real_gaps": 6,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 31,
@@ -14777,17 +14777,24 @@
             "decorators": [],
             "line_number": 336
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_coding_context_remaining.c",
+          "c_function": "cct2_coding_mode",
+          "pop_annotation": {
+            "c_function": "cct2_coding_mode",
+            "python_functions": [
+              "_coding_mode"
+            ],
+            "c_file": "src/agent/port_coding_context_remaining.c",
+            "python_file": "agent/coding_context.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _coding_mode @ agent/coding_context.py:_coding_mode */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/coding_context.py",
@@ -14935,16 +14942,24 @@
             ],
             "line_number": 498
           },
-          "classification": "REAL_GAP",
-          "c_location": "src/agent/coding_context.c",
-          "c_function": "kind",
-          "pop_annotation": null,
-          "stub_reason": "C function appears to be stub/trivial (forwarding wrapper or trivial pass-through)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-1:stub-in-impl"
-          ]
+          "classification": "PORTED",
+          "c_location": "src/agent/port_coding_context_remaining.c",
+          "c_function": "cct2_kind",
+          "pop_annotation": {
+            "c_function": "cct2_kind",
+            "python_functions": [
+              "kind"
+            ],
+            "c_file": "src/agent/port_coding_context_remaining.c",
+            "python_file": "agent/coding_context.py",
+            "line": 43,
+            "is_consolidated": false,
+            "full_text": "/* PoP: kind @ agent/coding_context.py:kind */"
+          },
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/coding_context.py",
@@ -14958,16 +14973,24 @@
             ],
             "line_number": 502
           },
-          "classification": "REAL_GAP",
-          "c_location": "src/agent/coding_context.c",
-          "c_function": "is_coding",
-          "pop_annotation": null,
-          "stub_reason": "C function appears to be stub/trivial (forwarding wrapper or trivial pass-through)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-1:stub-in-impl"
-          ]
+          "classification": "PORTED",
+          "c_location": "src/agent/port_coding_context_remaining.c",
+          "c_function": "cct2_is_coding",
+          "pop_annotation": {
+            "c_function": "cct2_is_coding",
+            "python_functions": [
+              "is_coding"
+            ],
+            "c_file": "src/agent/port_coding_context_remaining.c",
+            "python_file": "agent/coding_context.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_coding @ agent/coding_context.py:is_coding */"
+          },
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/coding_context.py",
@@ -15071,16 +15094,24 @@
             "decorators": [],
             "line_number": 587
           },
-          "classification": "REAL_GAP",
-          "c_location": "src/agent/coding_context.c",
-          "c_function": "resolve_runtime_mode",
-          "pop_annotation": null,
-          "stub_reason": "C function appears to be stub/trivial (forwarding wrapper or trivial pass-through)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-1:stub-in-impl"
-          ]
+          "classification": "PORTED",
+          "c_location": "src/agent/port_coding_context_remaining.c",
+          "c_function": "cct2_resolve_runtime_mode",
+          "pop_annotation": {
+            "c_function": "cct2_resolve_runtime_mode",
+            "python_functions": [
+              "resolve_runtime_mode"
+            ],
+            "c_file": "src/agent/port_coding_context_remaining.c",
+            "python_file": "agent/coding_context.py",
+            "line": 56,
+            "is_consolidated": false,
+            "full_text": "/* PoP: resolve_runtime_mode @ agent/coding_context.py:resolve_runtime_mode */"
+          },
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/coding_context.py",
@@ -15092,17 +15123,24 @@
             "decorators": [],
             "line_number": 621
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_coding_context_remaining.c",
+          "c_function": "cct2_is_coding_context",
+          "pop_annotation": {
+            "c_function": "cct2_is_coding_context",
+            "python_functions": [
+              "is_coding_context"
+            ],
+            "c_file": "src/agent/port_coding_context_remaining.c",
+            "python_file": "agent/coding_context.py",
+            "line": 68,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_coding_context @ agent/coding_context.py:is_coding_context */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/coding_context.py",
@@ -15396,17 +15434,24 @@
             "decorators": [],
             "line_number": 843
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_coding_context_remaining.c",
+          "c_function": "cct2_project_facts_for",
+          "pop_annotation": {
+            "c_function": "cct2_project_facts_for",
+            "python_functions": [
+              "project_facts_for"
+            ],
+            "c_file": "src/agent/port_coding_context_remaining.c",
+            "python_file": "agent/coding_context.py",
+            "line": 76,
+            "is_consolidated": false,
+            "full_text": "/* PoP: project_facts_for @ agent/coding_context.py:project_facts_for */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/coding_context.py",
@@ -153027,10 +153072,10 @@
     },
     "gateway/turn_lease.py": {
       "total": 11,
-      "ported": 5,
+      "ported": 11,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 6,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 11,
@@ -153046,16 +153091,24 @@
             "decorators": [],
             "line_number": 79
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_turn_lease_remaining.c",
+          "c_function": "tls_init",
+          "pop_annotation": {
+            "c_function": "tls_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_turn_lease_remaining.c",
+            "python_file": "gateway/turn_lease.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/turn_lease.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/turn_lease.py",
@@ -153096,16 +153149,24 @@
             "decorators": [],
             "line_number": 103
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_turn_lease_remaining.c",
+          "c_function": "tls_init",
+          "pop_annotation": {
+            "c_function": "tls_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_turn_lease_remaining.c",
+            "python_file": "gateway/turn_lease.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/turn_lease.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/turn_lease.py",
@@ -153119,16 +153180,24 @@
             ],
             "line_number": 110
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_turn_lease_remaining.c",
+          "c_function": "tls_idle",
+          "pop_annotation": {
+            "c_function": "tls_idle",
+            "python_functions": [
+              "idle"
+            ],
+            "c_file": "src/gateway/port_turn_lease_remaining.c",
+            "python_file": "gateway/turn_lease.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: idle @ gateway/turn_lease.py:idle */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/turn_lease.py",
@@ -153140,16 +153209,24 @@
             "decorators": [],
             "line_number": 123
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_turn_lease_remaining.c",
+          "c_function": "tls_init",
+          "pop_annotation": {
+            "c_function": "tls_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_turn_lease_remaining.c",
+            "python_file": "gateway/turn_lease.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/turn_lease.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/turn_lease.py",
@@ -153248,16 +153325,24 @@
             "decorators": [],
             "line_number": 154
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_turn_lease_remaining.c",
+          "c_function": "tls_acquire",
+          "pop_annotation": {
+            "c_function": "tls_acquire",
+            "python_functions": [
+              "acquire"
+            ],
+            "c_file": "src/gateway/port_turn_lease_remaining.c",
+            "python_file": "gateway/turn_lease.py",
+            "line": 37,
+            "is_consolidated": false,
+            "full_text": "/* PoP: acquire @ gateway/turn_lease.py:acquire */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/turn_lease.py",
@@ -153298,16 +153383,24 @@
             "decorators": [],
             "line_number": 274
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_turn_lease_remaining.c",
+          "c_function": "tls_release",
+          "pop_annotation": {
+            "c_function": "tls_release",
+            "python_functions": [
+              "release"
+            ],
+            "c_file": "src/gateway/port_turn_lease_remaining.c",
+            "python_file": "gateway/turn_lease.py",
+            "line": 48,
+            "is_consolidated": false,
+            "full_text": "/* PoP: release @ gateway/turn_lease.py:release */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
