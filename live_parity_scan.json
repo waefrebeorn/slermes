@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:47:05Z",
+  "generated_at": "2026-08-02T20:48:53Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -106210,10 +106210,10 @@
     },
     "gateway/platforms/helpers.py": {
       "total": 23,
-      "ported": 11,
+      "ported": 18,
       "partial": 5,
       "stub": 0,
-      "real_gaps": 7,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 23,
@@ -106229,17 +106229,24 @@
             "decorators": [],
             "line_number": 43
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_helpers_remaining.c",
+          "c_function": "phl_init",
+          "pop_annotation": {
+            "c_function": "phl_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_platforms_helpers_remaining.c",
+            "python_file": "gateway/platforms/helpers.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/helpers.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/helpers.py",
@@ -106280,17 +106287,24 @@
             "decorators": [],
             "line_number": 73
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_helpers_remaining.c",
+          "c_function": "phl_contains",
+          "pop_annotation": {
+            "c_function": "phl_contains",
+            "python_functions": [
+              "contains"
+            ],
+            "c_file": "src/gateway/port_platforms_helpers_remaining.c",
+            "python_file": "gateway/platforms/helpers.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: contains @ gateway/platforms/helpers.py:contains */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/helpers.py",
@@ -106352,17 +106366,24 @@
             "decorators": [],
             "line_number": 117
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_helpers_remaining.c",
+          "c_function": "phl_init",
+          "pop_annotation": {
+            "c_function": "phl_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_platforms_helpers_remaining.c",
+            "python_file": "gateway/platforms/helpers.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/helpers.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/helpers.py",
@@ -106374,17 +106395,24 @@
             "decorators": [],
             "line_number": 132
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_helpers_remaining.c",
+          "c_function": "phl_is_enabled",
+          "pop_annotation": {
+            "c_function": "phl_is_enabled",
+            "python_functions": [
+              "is_enabled"
+            ],
+            "c_file": "src/gateway/port_platforms_helpers_remaining.c",
+            "python_file": "gateway/platforms/helpers.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_enabled @ gateway/platforms/helpers.py:is_enabled */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/helpers.py",
@@ -106425,17 +106453,24 @@
             "decorators": [],
             "line_number": 153
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_helpers_remaining.c",
+          "c_function": "phl_flush",
+          "pop_annotation": {
+            "c_function": "phl_flush",
+            "python_functions": [
+              "_flush"
+            ],
+            "c_file": "src/gateway/port_platforms_helpers_remaining.c",
+            "python_file": "gateway/platforms/helpers.py",
+            "line": 45,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _flush @ gateway/platforms/helpers.py:_flush */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/helpers.py",
@@ -106497,17 +106532,24 @@
             "decorators": [],
             "line_number": 238
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_helpers_remaining.c",
+          "c_function": "phl_init",
+          "pop_annotation": {
+            "c_function": "phl_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_platforms_helpers_remaining.c",
+            "python_file": "gateway/platforms/helpers.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/helpers.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/helpers.py",
@@ -106519,17 +106561,24 @@
             "decorators": [],
             "line_number": 245
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_helpers_remaining.c",
+          "c_function": "phl_state_path",
+          "pop_annotation": {
+            "c_function": "phl_state_path",
+            "python_functions": [
+              "_state_path"
+            ],
+            "c_file": "src/gateway/port_platforms_helpers_remaining.c",
+            "python_file": "gateway/platforms/helpers.py",
+            "line": 53,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _state_path @ gateway/platforms/helpers.py:_state_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/helpers.py",
@@ -236168,10 +236217,10 @@
     },
     "hermes_cli/pty_session.py": {
       "total": 17,
-      "ported": 10,
+      "ported": 17,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 7,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 17,
@@ -236187,16 +236236,24 @@
             "decorators": [],
             "line_number": 22
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_pty_session_remaining.c",
+          "c_function": "pty_init",
+          "pop_annotation": {
+            "c_function": "pty_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_pty_session_remaining.c",
+            "python_file": "hermes_cli/pty_session.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/pty_session.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/pty_session.py",
@@ -236237,16 +236294,24 @@
             "decorators": [],
             "line_number": 34
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_pty_session_remaining.c",
+          "c_function": "pty_snapshot",
+          "pop_annotation": {
+            "c_function": "pty_snapshot",
+            "python_functions": [
+              "snapshot"
+            ],
+            "c_file": "src/cli/port_pty_session_remaining.c",
+            "python_file": "hermes_cli/pty_session.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: snapshot @ hermes_cli/pty_session.py:snapshot */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/pty_session.py",
@@ -236289,16 +236354,24 @@
             "decorators": [],
             "line_number": 43
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_pty_session_remaining.c",
+          "c_function": "pty_init",
+          "pop_annotation": {
+            "c_function": "pty_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_pty_session_remaining.c",
+            "python_file": "hermes_cli/pty_session.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/pty_session.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/pty_session.py",
@@ -236310,16 +236383,24 @@
             "decorators": [],
             "line_number": 54
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_pty_session_remaining.c",
+          "c_function": "pty_start",
+          "pop_annotation": {
+            "c_function": "pty_start",
+            "python_functions": [
+              "start"
+            ],
+            "c_file": "src/cli/port_pty_session_remaining.c",
+            "python_file": "hermes_cli/pty_session.py",
+            "line": 37,
+            "is_consolidated": false,
+            "full_text": "/* PoP: start @ hermes_cli/pty_session.py:start */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/pty_session.py",
@@ -236360,16 +236441,24 @@
             "decorators": [],
             "line_number": 81
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_pty_session_remaining.c",
+          "c_function": "pty_attach",
+          "pop_annotation": {
+            "c_function": "pty_attach",
+            "python_functions": [
+              "attach"
+            ],
+            "c_file": "src/cli/port_pty_session_remaining.c",
+            "python_file": "hermes_cli/pty_session.py",
+            "line": 44,
+            "is_consolidated": false,
+            "full_text": "/* PoP: attach @ hermes_cli/pty_session.py:attach */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/pty_session.py",
@@ -236410,16 +236499,24 @@
             "decorators": [],
             "line_number": 107
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_pty_session_remaining.c",
+          "c_function": "pty_close",
+          "pop_annotation": {
+            "c_function": "pty_close",
+            "python_functions": [
+              "close"
+            ],
+            "c_file": "src/cli/port_pty_session_remaining.c",
+            "python_file": "hermes_cli/pty_session.py",
+            "line": 52,
+            "is_consolidated": false,
+            "full_text": "/* PoP: close @ hermes_cli/pty_session.py:close */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/pty_session.py",
@@ -236460,16 +236557,24 @@
             "decorators": [],
             "line_number": 140
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_pty_session_remaining.c",
+          "c_function": "pty_init",
+          "pop_annotation": {
+            "c_function": "pty_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_pty_session_remaining.c",
+            "python_file": "hermes_cli/pty_session.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/pty_session.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/pty_session.py",
