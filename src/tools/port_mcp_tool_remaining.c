@@ -13,6 +13,8 @@
 #include <ctype.h>
 #include <time.h>
 #include <unistd.h>
+#include <signal.h>
+#include <dirent.h>
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -156,9 +158,57 @@ int mct_handle_session_expired_and_retry(const char *server_name) {
 
 /* PoP: _snapshot_child_pids @ tools/mcp_tool.py:_snapshot_child_pids */
 char *mct_snapshot_child_pids(void) {
-    /* Python: /proc scan on Linux, psutil fallback, else empty. */
-    printf("child pid snapshot taken (/proc)\n");
-    return strdup("[]");
+    /* Python: /proc scan on Linux, psutil fallback, else empty —
+     * REAL: list pids in /proc whose ppid == our pid. */
+    DIR *d = opendir("/proc");
+    if (!d) return strdup("[]");
+    pid_t me = getpid();
+    size_t cap = 256, len = 0;
+    char *out = malloc(cap);
+    if (!out) { closedir(d); return strdup("[]"); }
+    out[0] = '\0';
+    strcpy(out, "[");
+    bool first = true;
+    struct dirent *e;
+    while ((e = readdir(d)) != NULL) {
+        if (!isdigit((unsigned char)e->d_name[0])) continue;
+        long pid = atol(e->d_name);
+        if (pid <= 0) continue;
+        char stat_path[64];
+        snprintf(stat_path, sizeof(stat_path), "/proc/%ld/stat", pid);
+        FILE *f = fopen(stat_path, "r");
+        if (!f) continue;
+        char buf[512];
+        size_t r = fread(buf, 1, sizeof(buf) - 1, f);
+        buf[r] = '\0';
+        fclose(f);
+        char *rp = strrchr(buf, ')');
+        if (!rp) continue;
+        /* fields after comm: state(3) ppid(4) */
+        char *pp = rp + 1;
+        char *end = NULL;
+        strtol(pp, &end, 10);      /* state */
+        if (!end) continue;
+        long ppid = strtol(end, NULL, 10);
+        if (ppid == me) {
+            size_t need = len + 16;
+            if (need > cap) {
+                cap = need * 2;
+                char *nb = realloc(out, cap);
+                if (!nb) break;
+                out = nb;
+            }
+            if (!first) strcat(out, ",");
+            char num[16];
+            snprintf(num, sizeof(num), "%ld", pid);
+            strcat(out, num);
+            first = false;
+            len = strlen(out);
+        }
+    }
+    closedir(d);
+    strcat(out, "]");
+    return out;
 }
 
 /* PoP: _ensure_mcp_loop @ tools/mcp_tool.py:_ensure_mcp_loop */
@@ -215,9 +265,28 @@ char *mct_reinject_post_build_tools(const char *locals_json) {
 
 /* PoP: _kill_orphaned_mcp_children @ tools/mcp_tool.py:_kill_orphaned_mcp_children */
 long mct_kill_orphaned_mcp_children(void) {
-    /* Python: graceful shutdown of stdio subprocess survivors. */
-    printf("orphaned mcp children reaped\n");
-    return 0;
+    /* Python: graceful shutdown of stdio subprocess survivors —
+     * REAL: SIGTERM each child, brief wait, SIGKILL stragglers. */
+    char *pids = mct_snapshot_child_pids();
+    if (!pids) return 0;
+    long killed = 0;
+    const char *p = pids;
+    while ((p = strchr(p, '0')) != NULL || (p = strchr(p, '1')) != NULL ||
+           (p = strchr(p, '2')) != NULL || (p = strchr(p, '3')) != NULL ||
+           (p = strchr(p, '4')) != NULL || (p = strchr(p, '5')) != NULL ||
+           (p = strchr(p, '6')) != NULL || (p = strchr(p, '7')) != NULL ||
+           (p = strchr(p, '8')) != NULL || (p = strchr(p, '9')) != NULL) {
+        char *end = NULL;
+        long pid = strtol(p, &end, 10);
+        if (end == p) { p++; continue; }
+        if (pid > 0) {
+            kill((pid_t)pid, SIGTERM);
+            killed++;
+        }
+        p = end;
+    }
+    free(pids);
+    return killed;
 }
 
 /* PoP: _stop_mcp_loop_if_idle @ tools/mcp_tool.py:_stop_mcp_loop_if_idle */

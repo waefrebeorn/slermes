@@ -154,9 +154,24 @@ int stp_print_setup_summary(const char *state_json) {
 
 /* PoP: _check_espeak_ng @ hermes_cli/setup.py:_check_espeak_ng */
 bool stp_check_espeak_ng(void) {
-    /* Python: espeak-ng or espeak on PATH. */
-    printf("espeak-ng probe\n");
-    return false;
+    /* Python: espeak-ng or espeak on PATH — REAL PATH walk. */
+    const char *path = getenv("PATH");
+    if (!path) return false;
+    char *copy = strdup(path);
+    bool found = false;
+    char *tok = strtok(copy, ":");
+    while (tok) {
+        char *cand = NULL;
+        asprintf(&cand, "%s/espeak-ng", tok);
+        if (cand && access(cand, X_OK) == 0) { found = true; free(cand); break; }
+        free(cand);
+        asprintf(&cand, "%s/espeak", tok);
+        if (cand && access(cand, X_OK) == 0) { found = true; free(cand); break; }
+        free(cand);
+        tok = strtok(NULL, ":");
+    }
+    free(copy);
+    return found;
 }
 
 /* PoP: _xai_oauth_logged_in_for_setup @ hermes_cli/setup.py:_xai_oauth_logged_in_for_setup */

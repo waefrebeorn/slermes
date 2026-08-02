@@ -13,6 +13,8 @@
 #include <time.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
+#include <signal.h>
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -87,10 +89,35 @@ char *shk_parse_single_entry(const char *raw_json, const char *name) {
 
 /* PoP: _spawn @ agent/shell_hooks.py:_spawn */
 char *shk_spawn(const char *command, const char *stdin_json) {
-    /* Python: subprocess run w/ stdin; diagnostic dict out. */
+    /* Python: subprocess run w/ stdin; diagnostic dict out —
+     * REAL: fork + exec /bin/sh -c with stdin piped. */
     if (!command) return NULL;
-    printf("hook spawned: %s (stdin json fed)\n", command);
-    return strdup("{}");
+    int in_pipe[2];
+    if (pipe(in_pipe) != 0) return NULL;
+    pid_t pid = fork();
+    if (pid < 0) { close(in_pipe[0]); close(in_pipe[1]); return NULL; }
+    if (pid == 0) {
+        /* child */
+        close(in_pipe[1]);
+        dup2(in_pipe[0], STDIN_FILENO);
+        close(in_pipe[0]);
+        execl("/bin/sh", "sh", "-c", command, (char *)NULL);
+        _exit(127);
+    }
+    /* parent */
+    close(in_pipe[0]);
+    if (stdin_json && *stdin_json) {
+        write(in_pipe[1], stdin_json, strlen(stdin_json));
+    }
+    close(in_pipe[1]);
+    int status = 0;
+    waitpid(pid, &status, 0);
+    char *out = NULL;
+    if (WIFEXITED(status))
+        asprintf(&out, "{\"exit_code\": %d}", WEXITSTATUS(status));
+    else
+        asprintf(&out, "{\"exit_code\": -1, \"signaled\": true}");
+    return out;
 }
 
 /* PoP: _make_callback @ agent/shell_hooks.py:_make_callback */

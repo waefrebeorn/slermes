@@ -346,10 +346,48 @@ char *cpl_select(const char *entries_json) {
 
 /* PoP: _available_entries @ agent/credential_pool.py:_available_entries */
 char *cpl_available_entries(const char *entries_json, bool clear_expired, bool refresh) {
-    /* Python: cooldown-filtered; expired → STATUS_OK + persist. */
+    /* Python: cooldown-filtered; expired → STATUS_OK + persist —
+     * REAL: drop entries whose last_status is exhausted/dead. */
     if (!entries_json) return strdup("[]");
-    printf("available entries filtered (clear_expired=%d, refresh=%d)\n", clear_expired, refresh);
-    return strdup(entries_json);
+    (void)clear_expired; (void)refresh;
+    if (strstr(entries_json, "exhausted") == NULL && strstr(entries_json, "dead") == NULL)
+        return strdup(entries_json);  /* nothing filtered */
+    /* filter out objects containing "last_status": "exhausted" or "dead" */
+    size_t cap = strlen(entries_json) + 16;
+    char *out = malloc(cap);
+    if (!out) return strdup("[]");
+    strcpy(out, "[");
+    bool first = true;
+    const char *p = entries_json;
+    while ((p = strchr(p, '{')) != NULL) {
+        const char *e = p;
+        int depth = 0;
+        while (*e) {
+            if (*e == '{') depth++;
+            else if (*e == '}') { depth--; if (depth == 0) { e++; break; } }
+            e++;
+        }
+        size_t seg_len = (size_t)(e - p);
+        char *seg = strndup(p, seg_len);
+        bool bad = seg && (strstr(seg, "\"last_status\": \"exhausted\"") ||
+                           strstr(seg, "\"last_status\": \"dead\""));
+        if (seg && !bad) {
+            size_t need = strlen(out) + seg_len + 8;
+            if (need > cap) {
+                cap = need * 2;
+                char *nb = realloc(out, cap);
+                if (!nb) { free(seg); break; }
+                out = nb;
+            }
+            if (!first) strcat(out, ",");
+            strncat(out, seg, seg_len);
+            first = false;
+        }
+        free(seg);
+        p = e;
+    }
+    strcat(out, "]");
+    return out;
 }
 
 /* PoP: _select_unlocked @ agent/credential_pool.py:_select_unlocked */

@@ -287,9 +287,19 @@ int cfg_apply_terminal_config_to_env(const char *config_json) {
 
 /* PoP: save_config @ hermes_cli/config.py:save_config */
 int cfg_save_config(const char *path, const char *config_json) {
-    /* Python: defaults not written unless user set them. */
-    if (!path) return -1;
-    printf("config saved to %s (explicit values only)\n", path);
+    /* Python: defaults not written unless user set them — REAL atomic
+     * write of the yaml text. */
+    if (!path || !config_json) return -1;
+    char *tmp = NULL;
+    asprintf(&tmp, "%s.tmp.%ld", path, (long)getpid());
+    FILE *w = fopen(tmp, "w");
+    if (!w) { free(tmp); return -1; }
+    fwrite(config_json, 1, strlen(config_json), w);
+    fputc('\n', w);
+    if (fflush(w) != 0) { fclose(w); unlink(tmp); free(tmp); return -1; }
+    fclose(w);
+    if (rename(tmp, path) != 0) { unlink(tmp); free(tmp); return -1; }
+    free(tmp);
     return 0;
 }
 
@@ -334,7 +344,8 @@ long cfg_sanitize_env_file(const char *path) {
         size_t ll = nl ? (size_t)(nl - line) : strlen(line);
         char *copy = strndup(line, ll);
         if (!copy) { break; }
-        /* strip trailing  */
+        /* strip trailing 
+ */
         size_t cl = strlen(copy);
         if (cl && copy[cl-1] == '\r') { copy[--cl] = '\0'; changed++; }
         /* strip surrounding spaces around key = value on non-comment lines */
