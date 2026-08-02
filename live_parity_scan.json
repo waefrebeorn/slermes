@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:47:53Z",
+  "generated_at": "2026-08-02T19:49:52Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -9606,10 +9606,10 @@
     },
     "agent/azure_identity_adapter.py": {
       "total": 14,
-      "ported": 1,
+      "ported": 14,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 13,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 14,
@@ -9625,16 +9625,24 @@
             "decorators": [],
             "line_number": 60
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_azure_identity_adapter_remaining.c",
+          "c_function": "azu_has_azure_identity_installed",
+          "pop_annotation": {
+            "c_function": "azu_has_azure_identity_installed",
+            "python_functions": [
+              "has_azure_identity_installed"
+            ],
+            "c_file": "src/agent/port_azure_identity_adapter_remaining.c",
+            "python_file": "agent/azure_identity_adapter.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: has_azure_identity_installed @ agent/azure_identity_adapter.py:has_azure_identity_installed */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/azure_identity_adapter.py",
@@ -9646,16 +9654,24 @@
             "decorators": [],
             "line_number": 72
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_azure_identity_adapter_remaining.c",
+          "c_function": "azu_require_azure_identity",
+          "pop_annotation": {
+            "c_function": "azu_require_azure_identity",
+            "python_functions": [
+              "_require_azure_identity"
+            ],
+            "c_file": "src/agent/port_azure_identity_adapter_remaining.c",
+            "python_file": "agent/azure_identity_adapter.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _require_azure_identity @ agent/azure_identity_adapter.py:_require_azure_identity */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/azure_identity_adapter.py",
@@ -9667,16 +9683,24 @@
             "decorators": [],
             "line_number": 104
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_azure_identity_adapter_remaining.c",
+          "c_function": "azu_reset_credential_cache",
+          "pop_annotation": {
+            "c_function": "azu_reset_credential_cache",
+            "python_functions": [
+              "reset_credential_cache"
+            ],
+            "c_file": "src/agent/port_azure_identity_adapter_remaining.c",
+            "python_file": "agent/azure_identity_adapter.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: reset_credential_cache @ agent/azure_identity_adapter.py:reset_credential_cache */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/azure_identity_adapter.py",
@@ -9717,16 +9741,24 @@
             "decorators": [],
             "line_number": 156
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_azure_identity_adapter_remaining.c",
+          "c_function": "azu_to_dict",
+          "pop_annotation": {
+            "c_function": "azu_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/agent/port_azure_identity_adapter_remaining.c",
+            "python_file": "agent/azure_identity_adapter.py",
+            "line": 42,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ agent/azure_identity_adapter.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/azure_identity_adapter.py",
@@ -9740,16 +9772,24 @@
             ],
             "line_number": 163
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_azure_identity_adapter_remaining.c",
+          "c_function": "azu_from_dict",
+          "pop_annotation": {
+            "c_function": "azu_from_dict",
+            "python_functions": [
+              "from_dict"
+            ],
+            "c_file": "src/agent/port_azure_identity_adapter_remaining.c",
+            "python_file": "agent/azure_identity_adapter.py",
+            "line": 52,
+            "is_consolidated": false,
+            "full_text": "/* PoP: from_dict @ agent/azure_identity_adapter.py:from_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/azure_identity_adapter.py",
@@ -9761,16 +9801,24 @@
             "decorators": [],
             "line_number": 174
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_azure_identity_adapter_remaining.c",
+          "c_function": "azu_build_default_credential",
+          "pop_annotation": {
+            "c_function": "azu_build_default_credential",
+            "python_functions": [
+              "_build_default_credential"
+            ],
+            "c_file": "src/agent/port_azure_identity_adapter_remaining.c",
+            "python_file": "agent/azure_identity_adapter.py",
+            "line": 64,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _build_default_credential @ agent/azure_identity_adapter.py:_build_default_credential */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/azure_identity_adapter.py",
@@ -9782,16 +9830,24 @@
             "decorators": [],
             "line_number": 194
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_azure_identity_adapter_remaining.c",
+          "c_function": "azu_build_credential",
+          "pop_annotation": {
+            "c_function": "azu_build_credential",
+            "python_functions": [
+              "build_credential"
+            ],
+            "c_file": "src/agent/port_azure_identity_adapter_remaining.c",
+            "python_file": "agent/azure_identity_adapter.py",
+            "line": 72,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_credential @ agent/azure_identity_adapter.py:build_credential */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/azure_identity_adapter.py",
@@ -9803,16 +9859,24 @@
             "decorators": [],
             "line_number": 215
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_azure_identity_adapter_remaining.c",
+          "c_function": "azu_build_token_provider",
+          "pop_annotation": {
+            "c_function": "azu_build_token_provider",
+            "python_functions": [
+              "build_token_provider"
+            ],
+            "c_file": "src/agent/port_azure_identity_adapter_remaining.c",
+            "python_file": "agent/azure_identity_adapter.py",
+            "line": 80,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_token_provider @ agent/azure_identity_adapter.py:build_token_provider */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/azure_identity_adapter.py",
@@ -9824,16 +9888,24 @@
             "decorators": [],
             "line_number": 261
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_azure_identity_adapter_remaining.c",
+          "c_function": "azu_has_azure_identity_credentials",
+          "pop_annotation": {
+            "c_function": "azu_has_azure_identity_credentials",
+            "python_functions": [
+              "has_azure_identity_credentials"
+            ],
+            "c_file": "src/agent/port_azure_identity_adapter_remaining.c",
+            "python_file": "agent/azure_identity_adapter.py",
+            "line": 88,
+            "is_consolidated": false,
+            "full_text": "/* PoP: has_azure_identity_credentials @ agent/azure_identity_adapter.py:has_azure_identity_credentials */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/azure_identity_adapter.py",
@@ -9845,16 +9917,24 @@
             "decorators": [],
             "line_number": 315
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_azure_identity_adapter_remaining.c",
+          "c_function": "azu_describe_active_credential",
+          "pop_annotation": {
+            "c_function": "azu_describe_active_credential",
+            "python_functions": [
+              "describe_active_credential"
+            ],
+            "c_file": "src/agent/port_azure_identity_adapter_remaining.c",
+            "python_file": "agent/azure_identity_adapter.py",
+            "line": 95,
+            "is_consolidated": false,
+            "full_text": "/* PoP: describe_active_credential @ agent/azure_identity_adapter.py:describe_active_credential */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/azure_identity_adapter.py",
@@ -9866,16 +9946,24 @@
             "decorators": [],
             "line_number": 424
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_azure_identity_adapter_remaining.c",
+          "c_function": "azu_is_token_provider",
+          "pop_annotation": {
+            "c_function": "azu_is_token_provider",
+            "python_functions": [
+              "is_token_provider"
+            ],
+            "c_file": "src/agent/port_azure_identity_adapter_remaining.c",
+            "python_file": "agent/azure_identity_adapter.py",
+            "line": 102,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_token_provider @ agent/azure_identity_adapter.py:is_token_provider */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/azure_identity_adapter.py",
@@ -9887,16 +9975,24 @@
             "decorators": [],
             "line_number": 433
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_azure_identity_adapter_remaining.c",
+          "c_function": "azu_materialize_bearer_for_http",
+          "pop_annotation": {
+            "c_function": "azu_materialize_bearer_for_http",
+            "python_functions": [
+              "materialize_bearer_for_http"
+            ],
+            "c_file": "src/agent/port_azure_identity_adapter_remaining.c",
+            "python_file": "agent/azure_identity_adapter.py",
+            "line": 109,
+            "is_consolidated": false,
+            "full_text": "/* PoP: materialize_bearer_for_http @ agent/azure_identity_adapter.py:materialize_bearer_for_http */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/azure_identity_adapter.py",
@@ -9908,16 +10004,24 @@
             "decorators": [],
             "line_number": 462
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_azure_identity_adapter_remaining.c",
+          "c_function": "azu_build_bearer_http_client",
+          "pop_annotation": {
+            "c_function": "azu_build_bearer_http_client",
+            "python_functions": [
+              "build_bearer_http_client"
+            ],
+            "c_file": "src/agent/port_azure_identity_adapter_remaining.c",
+            "python_file": "agent/azure_identity_adapter.py",
+            "line": 116,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_bearer_http_client @ agent/azure_identity_adapter.py:build_bearer_http_client */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -67060,10 +67164,10 @@
     },
     "agent/transports/codex_app_server_session.py": {
       "total": 25,
-      "ported": 11,
+      "ported": 25,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 14,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 25,
@@ -67079,16 +67183,24 @@
             "decorators": [],
             "line_number": 95
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_session_remaining.c",
+          "c_function": "cas2_notification_scope_ids",
+          "pop_annotation": {
+            "c_function": "cas2_notification_scope_ids",
+            "python_functions": [
+              "_notification_scope_ids"
+            ],
+            "c_file": "src/agent/port_codex_app_server_session_remaining.c",
+            "python_file": "agent/transports/codex_app_server_session.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _notification_scope_ids @ agent/transports/codex_app_server_session.py:_notification_scope_ids */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server_session.py",
@@ -67129,16 +67241,24 @@
             "decorators": [],
             "line_number": 168
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_session_remaining.c",
+          "c_function": "cas2_coerce_turn_input_text",
+          "pop_annotation": {
+            "c_function": "cas2_coerce_turn_input_text",
+            "python_functions": [
+              "_coerce_turn_input_text"
+            ],
+            "c_file": "src/agent/port_codex_app_server_session_remaining.c",
+            "python_file": "agent/transports/codex_app_server_session.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _coerce_turn_input_text @ agent/transports/codex_app_server_session.py:_coerce_turn_input_text */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server_session.py",
@@ -67179,16 +67299,24 @@
             "decorators": [],
             "line_number": 274
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_session_remaining.c",
+          "c_function": "cas2_init",
+          "pop_annotation": {
+            "c_function": "cas2_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_codex_app_server_session_remaining.c",
+            "python_file": "agent/transports/codex_app_server_session.py",
+            "line": 70,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/transports/codex_app_server_session.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server_session.py",
@@ -67229,16 +67357,24 @@
             "decorators": [],
             "line_number": 375
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_session_remaining.c",
+          "c_function": "cas2_close",
+          "pop_annotation": {
+            "c_function": "cas2_close",
+            "python_functions": [
+              "close"
+            ],
+            "c_file": "src/agent/port_codex_app_server_session_remaining.c",
+            "python_file": "agent/transports/codex_app_server_session.py",
+            "line": 79,
+            "is_consolidated": false,
+            "full_text": "/* PoP: close @ agent/transports/codex_app_server_session.py:close */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server_session.py",
@@ -67250,16 +67386,24 @@
             "decorators": [],
             "line_number": 389
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_session_remaining.c",
+          "c_function": "cas2_enter",
+          "pop_annotation": {
+            "c_function": "cas2_enter",
+            "python_functions": [
+              "__enter__"
+            ],
+            "c_file": "src/agent/port_codex_app_server_session_remaining.c",
+            "python_file": "agent/transports/codex_app_server_session.py",
+            "line": 85,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __enter__ @ agent/transports/codex_app_server_session.py:__enter__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server_session.py",
@@ -67271,16 +67415,24 @@
             "decorators": [],
             "line_number": 392
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_session_remaining.c",
+          "c_function": "cas2_exit",
+          "pop_annotation": {
+            "c_function": "cas2_exit",
+            "python_functions": [
+              "__exit__"
+            ],
+            "c_file": "src/agent/port_codex_app_server_session_remaining.c",
+            "python_file": "agent/transports/codex_app_server_session.py",
+            "line": 90,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __exit__ @ agent/transports/codex_app_server_session.py:__exit__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server_session.py",
@@ -67321,16 +67473,24 @@
             "decorators": [],
             "line_number": 402
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_session_remaining.c",
+          "c_function": "cas2_request_steer",
+          "pop_annotation": {
+            "c_function": "cas2_request_steer",
+            "python_functions": [
+              "request_steer"
+            ],
+            "c_file": "src/agent/port_codex_app_server_session_remaining.c",
+            "python_file": "agent/transports/codex_app_server_session.py",
+            "line": 95,
+            "is_consolidated": false,
+            "full_text": "/* PoP: request_steer @ agent/transports/codex_app_server_session.py:request_steer */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server_session.py",
@@ -67487,16 +67647,24 @@
             "decorators": [],
             "line_number": 1056
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_session_remaining.c",
+          "c_function": "cas2_decide_exec_approval",
+          "pop_annotation": {
+            "c_function": "cas2_decide_exec_approval",
+            "python_functions": [
+              "_decide_exec_approval"
+            ],
+            "c_file": "src/agent/port_codex_app_server_session_remaining.c",
+            "python_file": "agent/transports/codex_app_server_session.py",
+            "line": 103,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _decide_exec_approval @ agent/transports/codex_app_server_session.py:_decide_exec_approval */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server_session.py",
@@ -67508,16 +67676,24 @@
             "decorators": [],
             "line_number": 1079
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_session_remaining.c",
+          "c_function": "cas2_decide_apply_patch_approval",
+          "pop_annotation": {
+            "c_function": "cas2_decide_apply_patch_approval",
+            "python_functions": [
+              "_decide_apply_patch_approval"
+            ],
+            "c_file": "src/agent/port_codex_app_server_session_remaining.c",
+            "python_file": "agent/transports/codex_app_server_session.py",
+            "line": 112,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _decide_apply_patch_approval @ agent/transports/codex_app_server_session.py:_decide_apply_patch_approval */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server_session.py",
@@ -67558,16 +67734,24 @@
             "decorators": [],
             "line_number": 1157
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_session_remaining.c",
+          "c_function": "cas2_lookup_pending_file_change",
+          "pop_annotation": {
+            "c_function": "cas2_lookup_pending_file_change",
+            "python_functions": [
+              "_lookup_pending_file_change"
+            ],
+            "c_file": "src/agent/port_codex_app_server_session_remaining.c",
+            "python_file": "agent/transports/codex_app_server_session.py",
+            "line": 118,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _lookup_pending_file_change @ agent/transports/codex_app_server_session.py:_lookup_pending_file_change */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server_session.py",
@@ -67579,16 +67763,24 @@
             "decorators": [],
             "line_number": 1170
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_session_remaining.c",
+          "c_function": "cas2_apply_token_usage_notification",
+          "pop_annotation": {
+            "c_function": "cas2_apply_token_usage_notification",
+            "python_functions": [
+              "_apply_token_usage_notification"
+            ],
+            "c_file": "src/agent/port_codex_app_server_session_remaining.c",
+            "python_file": "agent/transports/codex_app_server_session.py",
+            "line": 129,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _apply_token_usage_notification @ agent/transports/codex_app_server_session.py:_apply_token_usage_notification */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server_session.py",
@@ -67600,16 +67792,24 @@
             "decorators": [],
             "line_number": 1194
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_session_remaining.c",
+          "c_function": "cas2_apply_compaction_notification",
+          "pop_annotation": {
+            "c_function": "cas2_apply_compaction_notification",
+            "python_functions": [
+              "_apply_compaction_notification"
+            ],
+            "c_file": "src/agent/port_codex_app_server_session_remaining.c",
+            "python_file": "agent/transports/codex_app_server_session.py",
+            "line": 137,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _apply_compaction_notification @ agent/transports/codex_app_server_session.py:_apply_compaction_notification */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server_session.py",
@@ -67650,16 +67850,24 @@
             "decorators": [],
             "line_number": 1242
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_session_remaining.c",
+          "c_function": "cas2_has_turn_aborted_marker",
+          "pop_annotation": {
+            "c_function": "cas2_has_turn_aborted_marker",
+            "python_functions": [
+              "_has_turn_aborted_marker"
+            ],
+            "c_file": "src/agent/port_codex_app_server_session_remaining.c",
+            "python_file": "agent/transports/codex_app_server_session.py",
+            "line": 145,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _has_turn_aborted_marker @ agent/transports/codex_app_server_session.py:_has_turn_aborted_marker */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server_session.py",
@@ -67671,16 +67879,24 @@
             "decorators": [],
             "line_number": 1260
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_session_remaining.c",
+          "c_function": "cas2_get_hermes_version",
+          "pop_annotation": {
+            "c_function": "cas2_get_hermes_version",
+            "python_functions": [
+              "_get_hermes_version"
+            ],
+            "c_file": "src/agent/port_codex_app_server_session_remaining.c",
+            "python_file": "agent/transports/codex_app_server_session.py",
+            "line": 152,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_hermes_version @ agent/transports/codex_app_server_session.py:_get_hermes_version */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
