@@ -15,7 +15,25 @@
 int moa_u_redact_reference_text(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _moa_privacy_mode @ agent/moa_loop.py:_moa_privacy_mode */
-int moa_u_moa_privacy_mode(const char *arg) { (void)arg; return 0; }
+int moa_u_moa_privacy_mode(const char *arg) {
+    /* Python: coerce_privacy_filter(raw.get("privacy_filter")). Arg =
+     * JSON moa config (or empty). */
+    if (!arg || !*arg) { printf("none\n"); return 0; }
+    json_t *cfg = json_parse(arg, NULL);
+    if (!cfg || !json_is_object(cfg)) {
+        if (cfg) json_free(cfg);
+        printf("none\n");
+        return 0;
+    }
+    const char *pf = json_get_str(cfg, "privacy_filter", "");
+    json_free(cfg);
+    if (!*pf || strcmp(pf, "none") == 0 || strcmp(pf, "off") == 0) {
+        printf("none\n");
+        return 0;
+    }
+    printf("%s\n", pf);
+    return 0;
+}
 
 /* PoP: _redact_reference_outputs @ agent/moa_loop.py:_redact_reference_outputs */
 int moa_u_redact_reference_outputs(const char *arg) { (void)arg; return 0; }

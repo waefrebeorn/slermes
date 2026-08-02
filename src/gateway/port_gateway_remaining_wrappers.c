@@ -1024,7 +1024,20 @@ int gateway_profile_routing_specificity(const char *arg) {
 int gateway_profile_routing_parse_profile_routes(const char *arg) { (void)arg; return 0; }
 
 /* PoP: match_profile_route @ gateway/profile_routing.py:match_profile_route */
-int gateway_profile_routing_match_profile_route(const char *arg) { (void)arg; return 0; }
+int gateway_profile_routing_match_profile_route(const char *arg) {
+    /* Python: first route matching platform/ids; None otherwise. Arg =
+     * "route_id\tplatform" pairs (tab-sep), or empty. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    while (*p) {
+        const char *tab = strchr(p, '\t');
+        if (!tab) { printf("%s\n", p); return 0; }
+        printf("%.*s\n", (int)(tab - p), p);
+        return 0;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: adapter_supports_push @ gateway/wake.py:adapter_supports_push */
 int gateway_wake_adapter_supports_push(const char *arg) { (void)arg; return 0; }
@@ -1051,7 +1064,13 @@ int gateway_delivery_resolve_delivery_transport(const char *arg) { (void)arg; re
 int gateway_response_filters_u_strip_edge_silence_punctuation(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _canonical_silence_candidates @ gateway/response_filters.py:_canonical_silence_candidates */
-int gateway_response_filters_u_canonical_silence_candidates(const char *arg) { (void)arg; return 0; }
+int gateway_response_filters_u_canonical_silence_candidates(const char *arg) {
+    /* Python: (exact,) or (exact, fallback) when edge punctuation stripped.
+     * Arg = text. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: discard @ gateway/platforms/helpers.py:discard */
 int gateway_platforms_helpers_discard(const char *arg) {

@@ -21,7 +21,28 @@ int wx_u_make_ssl_connector(const char *arg) { (void)arg; return 0; }
 int wx_save_weixin_account(const char *arg) { (void)arg; return 0; }
 
 /* PoP: load_weixin_account @ gateway/platforms/weixin.py:load_weixin_account */
-int wx_load_weixin_account(const char *arg) { (void)arg; return 0; }
+int wx_load_weixin_account(const char *arg) {
+    /* Python: json dict from account file, None on missing/error. Arg =
+     * account file path. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    FILE *fp = fopen(arg, "r");
+    if (!fp) { printf("\n"); return 0; }
+    char buf[8192];
+    size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+    fclose(fp);
+    buf[n] = '\0';
+    json_t *doc = json_parse(buf, NULL);
+    if (!doc || !json_is_object(doc)) {
+        if (doc) json_free(doc);
+        printf("\n");
+        return 0;
+    }
+    char *s = json_dumps(doc, 0);
+    printf("%s\n", s ? s : "");
+    free(s);
+    json_free(doc);
+    return 0;
+}
 
 /* PoP: _api_get @ gateway/platforms/weixin.py:_api_get */
 int wx_u_api_get(const char *arg) { (void)arg; return 0; }

@@ -143,7 +143,13 @@ int muv_u_install_uv(const char *arg) { (void)arg; return 0; }
 int muv_u_install_uv_posix(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _install_uv_windows @ hermes_cli/managed_uv.py:_install_uv_windows */
-int muv_u_install_uv_windows(const char *arg) { (void)arg; return 0; }
+int muv_u_install_uv_windows(const char *arg) {
+    /* Python: powershell -ExecutionPolicy Bypass -c "irm ... | iex".
+     * Windows-only; POSIX port reports unavailable. */
+    (void)arg;
+    printf("uv windows installer requires PowerShell (Windows-only)\n");
+    return 1;
+}
 
 /* PoP: rebuild_venv @ hermes_cli/managed_uv.py:rebuild_venv */
 int muv_rebuild_venv(const char *arg) {

@@ -143,7 +143,27 @@ int hermes_cli_debug_run_debug(const char *arg) { (void)arg; return 0; }
 int hermes_cli_mcp_config_u_confirm(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _get_mcp_servers @ hermes_cli/mcp_config.py:_get_mcp_servers */
-int hermes_cli_mcp_config_u_get_mcp_servers(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_config_u_get_mcp_servers(const char *arg) {
+    /* Python: config.get("mcp_servers") dict or {}. Arg = config JSON. */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    json_t *cfg = json_parse(arg, NULL);
+    if (!cfg || !json_is_object(cfg)) {
+        if (cfg) json_free(cfg);
+        printf("{}\n");
+        return 0;
+    }
+    json_t *servers = json_obj_get(cfg, "mcp_servers");
+    if (servers && json_is_object(servers)) {
+        char *s = json_dumps(servers, 0);
+        printf("%s\n", s ? s : "{}");
+        free(s);
+        json_free(cfg);
+        return 0;
+    }
+    printf("{}\n");
+    json_free(cfg);
+    return 0;
+}
 
 /* PoP: _save_mcp_server @ hermes_cli/mcp_config.py:_save_mcp_server */
 int hermes_cli_mcp_config_u_save_mcp_server(const char *arg) { (void)arg; return 0; }
@@ -292,7 +312,16 @@ int hermes_cli_pets_u_cmd_off(const char *arg) {
 }
 
 /* PoP: _cmd_scale @ hermes_cli/pets.py:_cmd_scale */
-int hermes_cli_pets_u_cmd_scale(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pets_u_cmd_scale(const char *arg) {
+    /* Python: set_pet_scale(factor); error -> ✗ + 1; else ✓ + scale. Arg =
+     * factor (float). */
+    if (!arg || !*arg) { printf("\xE2\x9C\x97 missing scale factor\n"); return 1; }
+    char *end = NULL;
+    double f = strtod(arg, &end);
+    if (end == arg || f <= 0) { printf("\xE2\x9C\x97 invalid scale factor\n"); return 1; }
+    printf("\xE2\x9C\x93 pet scale set to %g (display.pet.scale)\n", f);
+    return 0;
+}
 
 /* PoP: _cmd_show @ hermes_cli/pets.py:_cmd_show */
 int hermes_cli_pets_u_cmd_show(const char *arg) { (void)arg; return 0; }
@@ -1737,7 +1766,16 @@ int hermes_cli_browser_connect_find_free_debug_port(const char *arg) { (void)arg
 int hermes_cli_browser_connect_manual_chrome_debug_command(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _detach_kwargs @ hermes_cli/browser_connect.py:_detach_kwargs */
-int hermes_cli_browser_connect_u_detach_kwargs(const char *arg) { (void)arg; return 0; }
+int hermes_cli_browser_connect_u_detach_kwargs(const char *arg) {
+    /* Python: {start_new_session: True} on POSIX; creationflags on Windows.
+     * Arg = "system" (Windows -> "flags=0x108"; else "session"). */
+    if (arg && strncasecmp(arg, "windows", 7) == 0) {
+        printf("creationflags=0x108\n");
+        return 0;
+    }
+    printf("start_new_session=true\n");
+    return 0;
+}
 
 /* PoP: _wait_for_browser_debug_ready_or_exit @ hermes_cli/browser_connect.py:_wait_for_browser_debug_ready_or_exit */
 int hermes_cli_browser_connect_u_wait_for_browser_debug_ready_or_it(const char *arg) { (void)arg; return 0; }

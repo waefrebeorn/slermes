@@ -305,7 +305,25 @@ int qqbot_u_is_dm_intake_allowed(const char *arg) { (void)arg; return 0; }
 int qqbot_u_is_group_allowed(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _entry_matches @ gateway/platforms/qqbot/adapter.py:_entry_matches */
-int qqbot_u_entry_matches(const char *arg) { (void)arg; return 0; }
+int qqbot_u_entry_matches(const char *arg) {
+    /* Python: any(entry.strip().lower() == "*" or == target). Arg =
+     * "target\tentry\tentry..." (tab-sep). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("0\n"); return 0; }
+    size_t tlen = (size_t)(tab - arg);
+    const char *p = tab + 1;
+    while (*p) {
+        const char *t2 = strchr(p, '\t');
+        size_t elen = t2 ? (size_t)(t2 - p) : strlen(p);
+        while (elen > 0 && (p[elen-1] == ' ' || p[elen-1] == '\t')) elen--;
+        if (elen == 1 && *p == '*') { printf("1\n"); return 0; }
+        if (elen == tlen && strncasecmp(p, arg, tlen) == 0) { printf("1\n"); return 0; }
+        p = t2 ? t2 + 1 : p + elen;
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _parse_qq_timestamp @ gateway/platforms/qqbot/adapter.py:_parse_qq_timestamp */
 int qqbot_u_parse_qq_timestamp(const char *arg) {

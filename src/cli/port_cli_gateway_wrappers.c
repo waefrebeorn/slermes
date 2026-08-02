@@ -397,7 +397,27 @@ int cgw_u_require_root_for_system_service(const char *arg) {
 int cgw_u_system_service_identity(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _read_systemd_user_from_unit @ hermes_cli/gateway.py:_read_systemd_user_from_unit */
-int cgw_u_read_systemd_user_from_unit(const char *arg) { (void)arg; return 0; }
+int cgw_u_read_systemd_user_from_unit(const char *arg) {
+    /* Python: first User= line value (stripped) or None. Arg = unit path. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    FILE *fp = fopen(arg, "r");
+    if (!fp) { printf("\n"); return 0; }
+    char line[512];
+    while (fgets(line, sizeof(line), fp)) {
+        if (strncmp(line, "User=", 5) == 0) {
+            size_t n = strlen(line);
+            while (n > 0 && (line[n-1] == '\n' || line[n-1] == '\r' || line[n-1] == ' ')) line[--n] = '\0';
+            const char *v = line + 5;
+            if (*v) printf("%s\n", v);
+            else printf("\n");
+            fclose(fp);
+            return 0;
+        }
+    }
+    fclose(fp);
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _default_system_service_user @ hermes_cli/gateway.py:_default_system_service_user */
 int cgw_u_default_system_service_user(const char *arg) {

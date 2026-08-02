@@ -46,7 +46,26 @@ int mm_u_append_visible(const char *arg) {
 }
 
 /* PoP: _update_block_boundary @ agent/memory_manager.py:_update_block_boundary */
-int mm_u_update_block_boundary(const char *arg) { (void)arg; return 0; }
+int mm_u_update_block_boundary(const char *arg) {
+    /* Python: if last \n exists: boundary = rest-after-newline is blank;
+     * else boundary &= text is blank. Arg = text. */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *nl = strrchr(arg, '\n');
+    if (nl) {
+        int blank = 1;
+        for (const char *p = nl + 1; *p; p++) {
+            if (*p != ' ' && *p != '\t' && *p != '\r') { blank = 0; break; }
+        }
+        printf("%d\n", blank);
+    } else {
+        int blank = 1;
+        for (const char *p = arg; *p; p++) {
+            if (*p != ' ' && *p != '\t' && *p != '\r' && *p != '\n') { blank = 0; break; }
+        }
+        printf("%d\n", blank);
+    }
+    return 0;
+}
 
 /* PoP: add_provider @ agent/memory_manager.py:add_provider */
 int mm_add_provider(const char *arg) { (void)arg; return 0; }

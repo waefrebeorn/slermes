@@ -857,7 +857,13 @@ class ParityAnalyzer:
         def stmt_bootleg(s):
             if s.startswith('(void)'):
                 return True
-            if re.match(r'^return\s+(0|NULL|null|false|FALSE|""|\'\0\')\s*;?$', s):
+            # Any conditional / loop control flow means the function actually
+            # branches on input — real code, not a no-op stub. (A bootleg stub
+            # has no control flow; e.g. `if (errnum==EACCES) return 1;` is a
+            # genuine guard that previously mis-classified as bootleg.)
+            if s.startswith(('if ', 'else', 'for ', 'while ', 'switch ')):
+                return False
+            if re.match(r'^return\s+(0|NULL|null|false|FALSE|""|\'\\0\')\s*;?$', s):
                 return True
             # assignment to a symbol NOT defined in this port file (module
             # global / static / struct member) is a legitimate setter, not a

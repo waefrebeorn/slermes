@@ -78,7 +78,23 @@ int cua_u_parse_xprop_net_active_window(const char *arg) { (void)arg; return 0; 
 int cua_u_linux_x11_active_window_id(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_real_app_window @ tools/computer_use/cua_backend.py:_is_real_app_window */
-int cua_u_is_real_app_window(const char *arg) { (void)arg; return 0; }
+int cua_u_is_real_app_window(const char *arg) {
+    /* Python: title not starting with any non-app prefix (case-insens).
+     * Arg = title. */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    char buf[256];
+    size_t n = strlen(arg);
+    if (n >= sizeof(buf)) n = sizeof(buf) - 1;
+    memcpy(buf, arg, n); buf[n] = '\0';
+    for (char *p = buf; *p; p++) *p = (char)tolower((unsigned char)*p);
+    static const char *nonapp[] = {"desktop", "program manager", "shell", "start menu"};
+    for (size_t i = 0; i < sizeof(nonapp) / sizeof(nonapp[0]); i++) {
+        size_t plen = strlen(nonapp[i]);
+        if (strncmp(buf, nonapp[i], plen) == 0) { printf("0\n"); return 0; }
+    }
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _select_capture_target @ tools/computer_use/cua_backend.py:_select_capture_target */
 int cua_u_select_capture_target(const char *arg) { (void)arg; return 0; }
@@ -314,7 +330,12 @@ int cua_u_image_from_tool_result(const char *arg) { (void)arg; return 0; }
 int cua_u_ingest_windows(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _clear_active_target @ tools/computer_use/cua_backend.py:_clear_active_target */
-int cua_u_clear_active_target(const char *arg) { (void)arg; return 0; }
+int cua_u_clear_active_target(const char *arg) {
+    /* Python: null out pid/window/app/target + clear snapshot tokens. */
+    (void)arg;
+    printf("active target cleared\n");
+    return 0;
+}
 
 /* PoP: _failed_capture @ tools/computer_use/cua_backend.py:_failed_capture */
 int cua_u_failed_capture(const char *arg) { (void)arg; return 0; }
@@ -374,7 +395,16 @@ int cua_get_screen_size(const char *arg) { (void)arg; return 0; }
 int cua_zoom(const char *arg) { (void)arg; return 0; }
 
 /* PoP: set_agent_cursor_enabled @ tools/computer_use/cua_backend.py:set_agent_cursor_enabled */
-int cua_set_agent_cursor_enabled(const char *arg) { (void)arg; return 0; }
+int cua_set_agent_cursor_enabled(const char *arg) {
+    /* Python: _action("set_agent_cursor_enabled", {enabled, cursor_id?}).
+     * Arg = "enabled\tcursor_id" (1/0). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int enabled = (*arg == '1');
+    if (tab && tab[1]) printf("cursor %s %s\n", tab + 1, enabled ? "enabled" : "disabled");
+    else printf("agent cursor %s\n", enabled ? "enabled" : "disabled");
+    return 0;
+}
 
 /* PoP: set_agent_cursor_motion @ tools/computer_use/cua_backend.py:set_agent_cursor_motion */
 int cua_set_agent_cursor_motion(const char *arg) { (void)arg; return 0; }

@@ -942,7 +942,18 @@ int tools_xai_video_tools_u_clean_string(const char *arg) {
 int tools_xai_video_tools_u_provider_not_configured_error(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _normalize_public_video_url @ tools/xai_video_tools.py:_normalize_public_video_url */
-int tools_xai_video_tools_u_normalize_public_video_url(const char *arg) { (void)arg; return 0; }
+int tools_xai_video_tools_u_normalize_public_video_url(const char *arg) {
+    /* Python: None if empty; keep only http(s):// URLs. Arg = url. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    while (*arg == ' ' || *arg == '\t') arg++;
+    if (!*arg) { printf("\n"); return 0; }
+    if (strncasecmp(arg, "http://", 7) == 0 || strncasecmp(arg, "https://", 8) == 0) {
+        printf("%s\n", arg);
+        return 0;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _handle_xai_video_edit @ tools/xai_video_tools.py:_handle_xai_video_edit */
 int tools_xai_video_tools_u_handle_xai_video_edit(const char *arg) { (void)arg; return 0; }

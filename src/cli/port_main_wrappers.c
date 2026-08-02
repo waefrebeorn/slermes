@@ -363,7 +363,20 @@ int main_u_prompt_custom_api_mode_selection(const char *arg) { (void)arg; return
 int main_u_custom_provider_api_key_config_value(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _custom_provider_base_url_config_value @ hermes_cli/main.py:_custom_provider_base_url_config_value */
-int main_u_custom_provider_base_url_config_value(const char *arg) { (void)arg; return 0; }
+int main_u_custom_provider_base_url_config_value(const char *arg) {
+    /* Python: base_url_ref if set else resolved_base_url, stripped. Arg =
+     * "base_url_ref\tresolved". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab > arg) {
+        size_t len = (size_t)(tab - arg);
+        printf("%.*s\n", (int)len, arg);
+        return 0;
+    }
+    if (tab && tab[1]) printf("%s\n", tab + 1);
+    else printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _save_custom_provider @ hermes_cli/main.py:_save_custom_provider */
 int main_u_save_custom_provider(const char *arg) { (void)arg; return 0; }

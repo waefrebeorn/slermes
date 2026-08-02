@@ -359,7 +359,40 @@ int auth_u_minimax_request_user_code(const char *arg) { (void)arg; return 0; }
 int auth_u_minimax_poll_token(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _minimax_save_auth_state @ hermes_cli/auth.py:_minimax_save_auth_state */
-int auth_u_minimax_save_auth_state(const char *arg) { (void)arg; return 0; }
+int auth_u_minimax_save_auth_state(const char *arg) {
+    /* Python: save provider state under "minimax-oauth" in auth store
+     * (~/.hermes/auth.json). Arg = JSON auth state. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    json_t *state = json_parse(arg, NULL);
+    if (!state) { printf("0\n"); return 0; }
+    const char *hh = getenv("HERMES_HOME");
+    if (!hh || !*hh) hh = getenv("HOME");
+    char path[1200];
+    snprintf(path, sizeof(path), "%s/.hermes/auth.json",
+             (hh && *hh) ? hh : ".");
+    json_t *store = NULL;
+    FILE *fp = fopen(path, "r");
+    if (fp) {
+        char buf[16384];
+        size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+        fclose(fp);
+        buf[n] = '\0';
+        store = json_parse(buf, NULL);
+    }
+    if (!store || !json_is_object(store)) {
+        if (store) json_free(store);
+        store = json_object();
+    }
+    json_set(store, "minimax-oauth", state);
+    fp = fopen(path, "w");
+    if (!fp) { json_free(store); printf("0\n"); return 0; }
+    char *s = json_dumps(store, 0);
+    if (s) { fputs(s, fp); free(s); }
+    fclose(fp);
+    json_free(store);
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _minimax_oauth_login @ hermes_cli/auth.py:_minimax_oauth_login */
 int auth_u_minimax_oauth_login(const char *arg) { (void)arg; return 0; }

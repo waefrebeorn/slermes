@@ -83,7 +83,22 @@ int smt_u_background_review_read_before_write_guard(const char *arg) {
 }
 
 /* PoP: _background_review_preflight @ tools/skill_manager_tool.py:_background_review_preflight */
-int smt_u_background_review_preflight(const char *arg) { (void)arg; return 0; }
+int smt_u_background_review_preflight(const char *arg) {
+    /* Python: None unless action in guard set AND skill exists; else
+     * write-guard result. Arg = "action\tname" (1 if guard applies). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("\n"); return 0; }
+    size_t alen = (size_t)(tab - arg);
+    static const char *guarded[] = {"edit", "patch", "delete", "write_file", "remove_file"};
+    int in_set = 0;
+    for (size_t i = 0; i < sizeof(guarded) / sizeof(guarded[0]); i++) {
+        if (alen == strlen(guarded[i]) && strncmp(arg, guarded[i], alen) == 0) { in_set = 1; break; }
+    }
+    if (!in_set) { printf("\n"); return 0; }
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _curator_consolidation_delete_guard @ tools/skill_manager_tool.py:_curator_consolidation_delete_guard */
 int smt_u_curator_consolidation_delete_guard(const char *arg) { (void)arg; return 0; }

@@ -183,7 +183,15 @@ int sku_is_skill_description_truncated_for_prompt(const char *arg) {
 int sku_iter_skill_index_files(const char *arg) { (void)arg; return 0; }
 
 /* PoP: parse_qualified_name @ agent/skill_utils.py:parse_qualified_name */
-int sku_parse_qualified_name(const char *arg) { (void)arg; return 0; }
+int sku_parse_qualified_name(const char *arg) {
+    /* Python: (None, name) without ':'; else (ns, bare) split on first.
+     * Arg = name. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *colon = strchr(arg, ':');
+    if (!colon) { printf("\n%s\n", arg); return 0; }
+    printf("%.*s\n%s\n", (int)(colon - arg), arg, colon + 1);
+    return 0;
+}
 
 /* PoP: is_valid_namespace @ agent/skill_utils.py:is_valid_namespace */
 int sku_is_valid_namespace(const char *arg) {
