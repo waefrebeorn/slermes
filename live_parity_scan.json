@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:38:43Z",
+  "generated_at": "2026-08-02T20:40:40Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -99678,10 +99678,10 @@
     },
     "gateway/platforms/base.py": {
       "total": 178,
-      "ported": 165,
+      "ported": 167,
       "partial": 5,
       "stub": 0,
-      "real_gaps": 8,
+      "real_gaps": 6,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 178,
@@ -101705,17 +101705,24 @@
             "decorators": [],
             "line_number": 2454
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base_remaining2.c",
+          "c_function": "pbs_init",
+          "pop_annotation": {
+            "c_function": "pbs_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_platforms_base_remaining2.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/base.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -102381,17 +102388,24 @@
             ],
             "line_number": 2952
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base_remaining2.c",
+          "c_function": "pbs_name",
+          "pop_annotation": {
+            "c_function": "pbs_name",
+            "python_functions": [
+              "name"
+            ],
+            "c_file": "src/gateway/port_platforms_base_remaining2.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 31,
+            "is_consolidated": false,
+            "full_text": "/* PoP: name @ gateway/platforms/base.py:name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -222801,10 +222815,10 @@
     },
     "hermes_cli/nous_billing.py": {
       "total": 18,
-      "ported": 10,
+      "ported": 18,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 8,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 18,
@@ -222820,16 +222834,24 @@
             "decorators": [],
             "line_number": 61
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_nous_billing_remaining.c",
+          "c_function": "nb2_error_init",
+          "pop_annotation": {
+            "c_function": "nb2_error_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_nous_billing_remaining.c",
+            "python_file": "hermes_cli/nous_billing.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/nous_billing.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/nous_billing.py",
@@ -222841,16 +222863,24 @@
             "decorators": [],
             "line_number": 173
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_nous_billing_remaining.c",
+          "c_function": "nb2_resolve_portal_base_url",
+          "pop_annotation": {
+            "c_function": "nb2_resolve_portal_base_url",
+            "python_functions": [
+              "resolve_portal_base_url"
+            ],
+            "c_file": "src/cli/port_nous_billing_remaining.c",
+            "python_file": "hermes_cli/nous_billing.py",
+            "line": 31,
+            "is_consolidated": false,
+            "full_text": "/* PoP: resolve_portal_base_url @ hermes_cli/nous_billing.py:resolve_portal_base_url */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/nous_billing.py",
@@ -222862,16 +222892,24 @@
             "decorators": [],
             "line_number": 189
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_nous_billing_remaining.c",
+          "c_function": "nb2_absolutize_portal_url",
+          "pop_annotation": {
+            "c_function": "nb2_absolutize_portal_url",
+            "python_functions": [
+              "_absolutize_portal_url"
+            ],
+            "c_file": "src/cli/port_nous_billing_remaining.c",
+            "python_file": "hermes_cli/nous_billing.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _absolutize_portal_url @ hermes_cli/nous_billing.py:_absolutize_portal_url */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/nous_billing.py",
@@ -222970,16 +223008,24 @@
             "decorators": [],
             "line_number": 298
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_nous_billing_remaining.c",
+          "c_function": "nb2_retry_after_seconds",
+          "pop_annotation": {
+            "c_function": "nb2_retry_after_seconds",
+            "python_functions": [
+              "_retry_after_seconds"
+            ],
+            "c_file": "src/cli/port_nous_billing_remaining.c",
+            "python_file": "hermes_cli/nous_billing.py",
+            "line": 52,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _retry_after_seconds @ hermes_cli/nous_billing.py:_retry_after_seconds */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/nous_billing.py",
@@ -223049,16 +223095,24 @@
             "decorators": [],
             "line_number": 479
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_nous_billing_remaining.c",
+          "c_function": "nb2_get_billing_state",
+          "pop_annotation": {
+            "c_function": "nb2_get_billing_state",
+            "python_functions": [
+              "get_billing_state"
+            ],
+            "c_file": "src/cli/port_nous_billing_remaining.c",
+            "python_file": "hermes_cli/nous_billing.py",
+            "line": 62,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_billing_state @ hermes_cli/nous_billing.py:get_billing_state */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/nous_billing.py",
@@ -223070,16 +223124,24 @@
             "decorators": [],
             "line_number": 484
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_nous_billing_remaining.c",
+          "c_function": "nb2_patch_auto_top_up",
+          "pop_annotation": {
+            "c_function": "nb2_patch_auto_top_up",
+            "python_functions": [
+              "patch_auto_top_up"
+            ],
+            "c_file": "src/cli/port_nous_billing_remaining.c",
+            "python_file": "hermes_cli/nous_billing.py",
+            "line": 82,
+            "is_consolidated": false,
+            "full_text": "/* PoP: patch_auto_top_up @ hermes_cli/nous_billing.py:patch_auto_top_up */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/nous_billing.py",
@@ -223091,16 +223153,24 @@
             "decorators": [],
             "line_number": 508
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_nous_billing_remaining.c",
+          "c_function": "nb2_post_charge",
+          "pop_annotation": {
+            "c_function": "nb2_post_charge",
+            "python_functions": [
+              "post_charge"
+            ],
+            "c_file": "src/cli/port_nous_billing_remaining.c",
+            "python_file": "hermes_cli/nous_billing.py",
+            "line": 103,
+            "is_consolidated": false,
+            "full_text": "/* PoP: post_charge @ hermes_cli/nous_billing.py:post_charge */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/nous_billing.py",
@@ -223112,16 +223182,24 @@
             "decorators": [],
             "line_number": 535
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_nous_billing_remaining.c",
+          "c_function": "nb2_get_charge_status",
+          "pop_annotation": {
+            "c_function": "nb2_get_charge_status",
+            "python_functions": [
+              "get_charge_status"
+            ],
+            "c_file": "src/cli/port_nous_billing_remaining.c",
+            "python_file": "hermes_cli/nous_billing.py",
+            "line": 126,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_charge_status @ hermes_cli/nous_billing.py:get_charge_status */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/nous_billing.py",
