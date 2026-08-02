@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:33:03Z",
+  "generated_at": "2026-08-02T21:35:08Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -76213,10 +76213,10 @@
     },
     "cli.py": {
       "total": 313,
-      "ported": 306,
+      "ported": 311,
       "partial": 2,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 0,
       "thin": true,
       "pop_mismatch": false,
       "py_func_count": 313,
@@ -78001,17 +78001,24 @@
             "decorators": [],
             "line_number": 2555
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining3.c",
+          "c_function": "cli3_init",
+          "pop_annotation": {
+            "c_function": "cli3_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_cli_remaining3.c",
+            "python_file": "cli.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ cli.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -79177,17 +79184,24 @@
             "decorators": [],
             "line_number": 3624
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining3.c",
+          "c_function": "cli3_init",
+          "pop_annotation": {
+            "c_function": "cli3_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_cli_remaining3.c",
+            "python_file": "cli.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ cli.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -79199,17 +79213,24 @@
             "decorators": [],
             "line_number": 3634
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining3.c",
+          "c_function": "cli3_print",
+          "pop_annotation": {
+            "c_function": "cli3_print",
+            "python_functions": [
+              "print"
+            ],
+            "c_file": "src/cli/port_cli_remaining3.c",
+            "python_file": "cli.py",
+            "line": 31,
+            "is_consolidated": false,
+            "full_text": "/* PoP: print @ cli.py:print */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -79223,17 +79244,24 @@
             ],
             "line_number": 3649
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining3.c",
+          "c_function": "cli3_status",
+          "pop_annotation": {
+            "c_function": "cli3_status",
+            "python_functions": [
+              "status"
+            ],
+            "c_file": "src/cli/port_cli_remaining3.c",
+            "python_file": "cli.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: status @ cli.py:status */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -79593,17 +79621,24 @@
             "decorators": [],
             "line_number": 3918
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining3.c",
+          "c_function": "cli3_init",
+          "pop_annotation": {
+            "c_function": "cli3_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_cli_remaining3.c",
+            "python_file": "cli.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ cli.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -87977,10 +88012,10 @@
     },
     "cron/scheduler.py": {
       "total": 59,
-      "ported": 54,
+      "ported": 59,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 59,
@@ -88025,17 +88060,24 @@
             "decorators": [],
             "line_number": 90
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cron/port_cron_scheduler_remaining.c",
+          "c_function": "crs_summarize_cron_failure_for_delivery",
+          "pop_annotation": {
+            "c_function": "crs_summarize_cron_failure_for_delivery",
+            "python_functions": [
+              "_summarize_cron_failure_for_delivery"
+            ],
+            "c_file": "src/cron/port_cron_scheduler_remaining.c",
+            "python_file": "cron/scheduler.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _summarize_cron_failure_for_delivery @ cron/scheduler.py:_summarize_cron_failure_for_delivery */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cron/scheduler.py",
@@ -89207,17 +89249,24 @@
             "decorators": [],
             "line_number": 1385
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cron/port_cron_scheduler_remaining.c",
+          "c_function": "crs_confirm_adapter_delivery",
+          "pop_annotation": {
+            "c_function": "crs_confirm_adapter_delivery",
+            "python_functions": [
+              "_confirm_adapter_delivery"
+            ],
+            "c_file": "src/cron/port_cron_scheduler_remaining.c",
+            "python_file": "cron/scheduler.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _confirm_adapter_delivery @ cron/scheduler.py:_confirm_adapter_delivery */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cron/scheduler.py",
@@ -89606,17 +89655,24 @@
             "decorators": [],
             "line_number": 3856
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cron/port_cron_scheduler_remaining.c",
+          "c_function": "crs_run_one_job",
+          "pop_annotation": {
+            "c_function": "crs_run_one_job",
+            "python_functions": [
+              "run_one_job"
+            ],
+            "c_file": "src/cron/port_cron_scheduler_remaining.c",
+            "python_file": "cron/scheduler.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: run_one_job @ cron/scheduler.py:run_one_job */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cron/scheduler.py",
@@ -89628,17 +89684,24 @@
             "decorators": [],
             "line_number": 4015
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cron/port_cron_scheduler_remaining.c",
+          "c_function": "crs_notify_provider_jobs_changed",
+          "pop_annotation": {
+            "c_function": "crs_notify_provider_jobs_changed",
+            "python_functions": [
+              "_notify_provider_jobs_changed"
+            ],
+            "c_file": "src/cron/port_cron_scheduler_remaining.c",
+            "python_file": "cron/scheduler.py",
+            "line": 47,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _notify_provider_jobs_changed @ cron/scheduler.py:_notify_provider_jobs_changed */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cron/scheduler.py",
@@ -89650,17 +89713,24 @@
             "decorators": [],
             "line_number": 4033
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cron/port_cron_scheduler_remaining.c",
+          "c_function": "crs_tick",
+          "pop_annotation": {
+            "c_function": "crs_tick",
+            "python_functions": [
+              "tick"
+            ],
+            "c_file": "src/cron/port_cron_scheduler_remaining.c",
+            "python_file": "cron/scheduler.py",
+            "line": 54,
+            "is_consolidated": false,
+            "full_text": "/* PoP: tick @ cron/scheduler.py:tick */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
