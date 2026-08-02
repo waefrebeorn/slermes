@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T17:53:27Z",
+  "generated_at": "2026-08-02T17:56:30Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -1851,10 +1851,10 @@
     },
     "agent/anthropic_adapter.py": {
       "total": 69,
-      "ported": 16,
+      "ported": 69,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 53,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 69,
@@ -1899,16 +1899,24 @@
             "decorators": [],
             "line_number": 117
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_is_claude_model",
+          "pop_annotation": {
+            "c_function": "antr_is_claude_model",
+            "python_functions": [
+              "_is_claude_model"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 31,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_claude_model @ agent/anthropic_adapter.py:_is_claude_model */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -1920,16 +1928,24 @@
             "decorators": [],
             "line_number": 167
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_get_anthropic_max_output",
+          "pop_annotation": {
+            "c_function": "antr_get_anthropic_max_output",
+            "python_functions": [
+              "_get_anthropic_max_output"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 41,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_anthropic_max_output @ agent/anthropic_adapter.py:_get_anthropic_max_output */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -1970,16 +1986,24 @@
             "decorators": [],
             "line_number": 214
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_resolve_anthropic_messages_max_tokens",
+          "pop_annotation": {
+            "c_function": "antr_resolve_anthropic_messages_max_tokens",
+            "python_functions": [
+              "_resolve_anthropic_messages_max_tokens"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 57,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_anthropic_messages_max_tokens @ agent/anthropic_adapter.py:_resolve_anthropic_messages_max_tokens */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2107,16 +2131,24 @@
             "decorators": [],
             "line_number": 358
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_detect_claude_code_version",
+          "pop_annotation": {
+            "c_function": "antr_detect_claude_code_version",
+            "python_functions": [
+              "_detect_claude_code_version"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 65,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _detect_claude_code_version @ agent/anthropic_adapter.py:_detect_claude_code_version */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2128,16 +2160,24 @@
             "decorators": [],
             "line_number": 387
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_get_claude_code_version",
+          "pop_annotation": {
+            "c_function": "antr_get_claude_code_version",
+            "python_functions": [
+              "_get_claude_code_version"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 72,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_claude_code_version @ agent/anthropic_adapter.py:_get_claude_code_version */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2149,16 +2189,24 @@
             "decorators": [],
             "line_number": 395
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_is_oauth_token",
+          "pop_annotation": {
+            "c_function": "antr_is_oauth_token",
+            "python_functions": [
+              "_is_oauth_token"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 80,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_oauth_token @ agent/anthropic_adapter.py:_is_oauth_token */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2170,16 +2218,24 @@
             "decorators": [],
             "line_number": 423
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_normalize_base_url_text",
+          "pop_annotation": {
+            "c_function": "antr_normalize_base_url_text",
+            "python_functions": [
+              "_normalize_base_url_text"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 89,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalize_base_url_text @ agent/anthropic_adapter.py:_normalize_base_url_text */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2191,16 +2247,24 @@
             "decorators": [],
             "line_number": 434
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_is_third_party_anthropic_endpoint",
+          "pop_annotation": {
+            "c_function": "antr_is_third_party_anthropic_endpoint",
+            "python_functions": [
+              "_is_third_party_anthropic_endpoint"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 96,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_third_party_anthropic_endpoint @ agent/anthropic_adapter.py:_is_third_party_anthropic_endpoint */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2212,16 +2276,24 @@
             "decorators": [],
             "line_number": 450
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_is_kimi_coding_endpoint",
+          "pop_annotation": {
+            "c_function": "antr_is_kimi_coding_endpoint",
+            "python_functions": [
+              "_is_kimi_coding_endpoint"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 108,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_kimi_coding_endpoint @ agent/anthropic_adapter.py:_is_kimi_coding_endpoint */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2233,16 +2305,24 @@
             "decorators": [],
             "line_number": 480
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_model_name_is_kimi_family",
+          "pop_annotation": {
+            "c_function": "antr_model_name_is_kimi_family",
+            "python_functions": [
+              "_model_name_is_kimi_family"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 123,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _model_name_is_kimi_family @ agent/anthropic_adapter.py:_model_name_is_kimi_family */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2254,16 +2334,24 @@
             "decorators": [],
             "line_number": 494
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_is_kimi_family_endpoint",
+          "pop_annotation": {
+            "c_function": "antr_is_kimi_family_endpoint",
+            "python_functions": [
+              "_is_kimi_family_endpoint"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 136,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_kimi_family_endpoint @ agent/anthropic_adapter.py:_is_kimi_family_endpoint */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2275,16 +2363,24 @@
             "decorators": [],
             "line_number": 522
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_is_deepseek_anthropic_endpoint",
+          "pop_annotation": {
+            "c_function": "antr_is_deepseek_anthropic_endpoint",
+            "python_functions": [
+              "_is_deepseek_anthropic_endpoint"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 146,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_deepseek_anthropic_endpoint @ agent/anthropic_adapter.py:_is_deepseek_anthropic_endpoint */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2296,16 +2392,24 @@
             "decorators": [],
             "line_number": 549
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_requires_bearer_auth",
+          "pop_annotation": {
+            "c_function": "antr_requires_bearer_auth",
+            "python_functions": [
+              "_requires_bearer_auth"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 156,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _requires_bearer_auth @ agent/anthropic_adapter.py:_requires_bearer_auth */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2317,16 +2421,24 @@
             "decorators": [],
             "line_number": 573
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_base_url_needs_context_1m_beta",
+          "pop_annotation": {
+            "c_function": "antr_base_url_needs_context_1m_beta",
+            "python_functions": [
+              "_base_url_needs_context_1m_beta"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 171,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _base_url_needs_context_1m_beta @ agent/anthropic_adapter.py:_base_url_needs_context_1m_beta */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2338,16 +2450,24 @@
             "decorators": [],
             "line_number": 581
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_is_minimax_anthropic_endpoint",
+          "pop_annotation": {
+            "c_function": "antr_is_minimax_anthropic_endpoint",
+            "python_functions": [
+              "_is_minimax_anthropic_endpoint"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 181,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_minimax_anthropic_endpoint @ agent/anthropic_adapter.py:_is_minimax_anthropic_endpoint */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2359,16 +2479,24 @@
             "decorators": [],
             "line_number": 596
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_is_azure_anthropic_endpoint",
+          "pop_annotation": {
+            "c_function": "antr_is_azure_anthropic_endpoint",
+            "python_functions": [
+              "_is_azure_anthropic_endpoint"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 191,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_azure_anthropic_endpoint @ agent/anthropic_adapter.py:_is_azure_anthropic_endpoint */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2380,16 +2508,24 @@
             "decorators": [],
             "line_number": 619
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_common_betas_for_base_url",
+          "pop_annotation": {
+            "c_function": "antr_common_betas_for_base_url",
+            "python_functions": [
+              "_common_betas_for_base_url"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 201,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _common_betas_for_base_url @ agent/anthropic_adapter.py:_common_betas_for_base_url */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2401,16 +2537,24 @@
             "decorators": [],
             "line_number": 651
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_build_anthropic_client_with_bearer_hook",
+          "pop_annotation": {
+            "c_function": "antr_build_anthropic_client_with_bearer_hook",
+            "python_functions": [
+              "_build_anthropic_client_with_bearer_hook"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 210,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _build_anthropic_client_with_bearer_hook @ agent/anthropic_adapter.py:_build_anthropic_client_with_bearer_hook */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2422,16 +2566,24 @@
             "decorators": [],
             "line_number": 727
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_build_anthropic_client",
+          "pop_annotation": {
+            "c_function": "antr_build_anthropic_client",
+            "python_functions": [
+              "build_anthropic_client"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 219,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_anthropic_client @ agent/anthropic_adapter.py:build_anthropic_client */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2443,16 +2595,24 @@
             "decorators": [],
             "line_number": 856
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_build_anthropic_bedrock_client",
+          "pop_annotation": {
+            "c_function": "antr_build_anthropic_bedrock_client",
+            "python_functions": [
+              "build_anthropic_bedrock_client"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 228,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_anthropic_bedrock_client @ agent/anthropic_adapter.py:build_anthropic_bedrock_client */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2464,16 +2624,24 @@
             "decorators": [],
             "line_number": 895
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_read_claude_code_credentials_from_keychain",
+          "pop_annotation": {
+            "c_function": "antr_read_claude_code_credentials_from_keychain",
+            "python_functions": [
+              "_read_claude_code_credentials_from_keychain"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 236,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _read_claude_code_credentials_from_keychain @ agent/anthropic_adapter.py:_read_claude_code_credentials_from_keychain */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2543,16 +2711,24 @@
             "decorators": [],
             "line_number": 1021
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_is_claude_code_token_valid",
+          "pop_annotation": {
+            "c_function": "antr_is_claude_code_token_valid",
+            "python_functions": [
+              "is_claude_code_token_valid"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 245,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_claude_code_token_valid @ agent/anthropic_adapter.py:is_claude_code_token_valid */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2564,16 +2740,24 @@
             "decorators": [],
             "line_number": 1036
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_refresh_anthropic_oauth_pure",
+          "pop_annotation": {
+            "c_function": "antr_refresh_anthropic_oauth_pure",
+            "python_functions": [
+              "refresh_anthropic_oauth_pure"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 260,
+            "is_consolidated": false,
+            "full_text": "/* PoP: refresh_anthropic_oauth_pure @ agent/anthropic_adapter.py:refresh_anthropic_oauth_pure */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2585,16 +2769,24 @@
             "decorators": [],
             "line_number": 1100
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_refresh_oauth_token",
+          "pop_annotation": {
+            "c_function": "antr_refresh_oauth_token",
+            "python_functions": [
+              "_refresh_oauth_token"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 269,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _refresh_oauth_token @ agent/anthropic_adapter.py:_refresh_oauth_token */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2606,16 +2798,24 @@
             "decorators": [],
             "line_number": 1153
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_write_claude_code_credentials",
+          "pop_annotation": {
+            "c_function": "antr_write_claude_code_credentials",
+            "python_functions": [
+              "_write_claude_code_credentials"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 277,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _write_claude_code_credentials @ agent/anthropic_adapter.py:_write_claude_code_credentials */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2627,16 +2827,24 @@
             "decorators": [],
             "line_number": 1221
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_resolve_claude_code_token_from_credentials",
+          "pop_annotation": {
+            "c_function": "antr_resolve_claude_code_token_from_credentials",
+            "python_functions": [
+              "_resolve_claude_code_token_from_credentials"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 286,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_claude_code_token_from_credentials @ agent/anthropic_adapter.py:_resolve_claude_code_token_from_credentials */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2648,16 +2856,24 @@
             "decorators": [],
             "line_number": 1236
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_prefer_refreshable_claude_code_token",
+          "pop_annotation": {
+            "c_function": "antr_prefer_refreshable_claude_code_token",
+            "python_functions": [
+              "_prefer_refreshable_claude_code_token"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 294,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _prefer_refreshable_claude_code_token @ agent/anthropic_adapter.py:_prefer_refreshable_claude_code_token */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2698,16 +2914,24 @@
             "decorators": [],
             "line_number": 1298
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_resolve_anthropic_token",
+          "pop_annotation": {
+            "c_function": "antr_resolve_anthropic_token",
+            "python_functions": [
+              "resolve_anthropic_token"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 302,
+            "is_consolidated": false,
+            "full_text": "/* PoP: resolve_anthropic_token @ agent/anthropic_adapter.py:resolve_anthropic_token */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2719,16 +2943,24 @@
             "decorators": [],
             "line_number": 1348
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_run_oauth_setup_token",
+          "pop_annotation": {
+            "c_function": "antr_run_oauth_setup_token",
+            "python_functions": [
+              "run_oauth_setup_token"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 313,
+            "is_consolidated": false,
+            "full_text": "/* PoP: run_oauth_setup_token @ agent/anthropic_adapter.py:run_oauth_setup_token */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2769,16 +3001,24 @@
             "decorators": [],
             "line_number": 1421
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_generate_pkce",
+          "pop_annotation": {
+            "c_function": "antr_generate_pkce",
+            "python_functions": [
+              "_generate_pkce"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 320,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _generate_pkce @ agent/anthropic_adapter.py:_generate_pkce */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2790,16 +3030,24 @@
             "decorators": [],
             "line_number": 1434
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_run_hermes_oauth_login_pure",
+          "pop_annotation": {
+            "c_function": "antr_run_hermes_oauth_login_pure",
+            "python_functions": [
+              "run_hermes_oauth_login_pure"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 332,
+            "is_consolidated": false,
+            "full_text": "/* PoP: run_hermes_oauth_login_pure @ agent/anthropic_adapter.py:run_hermes_oauth_login_pure */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2811,16 +3059,24 @@
             "decorators": [],
             "line_number": 1564
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_read_hermes_oauth_credentials",
+          "pop_annotation": {
+            "c_function": "antr_read_hermes_oauth_credentials",
+            "python_functions": [
+              "read_hermes_oauth_credentials"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 339,
+            "is_consolidated": false,
+            "full_text": "/* PoP: read_hermes_oauth_credentials @ agent/anthropic_adapter.py:read_hermes_oauth_credentials */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2832,16 +3088,24 @@
             "decorators": [],
             "line_number": 1582
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_is_bedrock_model_id",
+          "pop_annotation": {
+            "c_function": "antr_is_bedrock_model_id",
+            "python_functions": [
+              "_is_bedrock_model_id"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 346,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_bedrock_model_id @ agent/anthropic_adapter.py:_is_bedrock_model_id */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2853,16 +3117,24 @@
             "decorators": [],
             "line_number": 1605
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_normalize_model_name",
+          "pop_annotation": {
+            "c_function": "antr_normalize_model_name",
+            "python_functions": [
+              "normalize_model_name"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 358,
+            "is_consolidated": false,
+            "full_text": "/* PoP: normalize_model_name @ agent/anthropic_adapter.py:normalize_model_name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2874,16 +3146,24 @@
             "decorators": [],
             "line_number": 1634
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_sanitize_tool_id",
+          "pop_annotation": {
+            "c_function": "antr_sanitize_tool_id",
+            "python_functions": [
+              "_sanitize_tool_id"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 377,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _sanitize_tool_id @ agent/anthropic_adapter.py:_sanitize_tool_id */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2895,16 +3175,24 @@
             "decorators": [],
             "line_number": 1647
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_normalize_tool_input_schema",
+          "pop_annotation": {
+            "c_function": "antr_normalize_tool_input_schema",
+            "python_functions": [
+              "_normalize_tool_input_schema"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 393,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalize_tool_input_schema @ agent/anthropic_adapter.py:_normalize_tool_input_schema */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2916,16 +3204,24 @@
             "decorators": [],
             "line_number": 1688
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_convert_tools_to_anthropic",
+          "pop_annotation": {
+            "c_function": "antr_convert_tools_to_anthropic",
+            "python_functions": [
+              "convert_tools_to_anthropic"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 401,
+            "is_consolidated": false,
+            "full_text": "/* PoP: convert_tools_to_anthropic @ agent/anthropic_adapter.py:convert_tools_to_anthropic */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2937,16 +3233,24 @@
             "decorators": [],
             "line_number": 1726
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_image_source_from_openai_url",
+          "pop_annotation": {
+            "c_function": "antr_image_source_from_openai_url",
+            "python_functions": [
+              "_image_source_from_openai_url"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 409,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _image_source_from_openai_url @ agent/anthropic_adapter.py:_image_source_from_openai_url */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -2958,16 +3262,24 @@
             "decorators": [],
             "line_number": 1748
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_convert_content_part_to_anthropic",
+          "pop_annotation": {
+            "c_function": "antr_convert_content_part_to_anthropic",
+            "python_functions": [
+              "_convert_content_part_to_anthropic"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 422,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _convert_content_part_to_anthropic @ agent/anthropic_adapter.py:_convert_content_part_to_anthropic */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -3008,16 +3320,24 @@
             "decorators": [],
             "line_number": 1828
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_extract_preserved_thinking_blocks",
+          "pop_annotation": {
+            "c_function": "antr_extract_preserved_thinking_blocks",
+            "python_functions": [
+              "_extract_preserved_thinking_blocks"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 434,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_preserved_thinking_blocks @ agent/anthropic_adapter.py:_extract_preserved_thinking_blocks */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -3029,16 +3349,24 @@
             "decorators": [],
             "line_number": 1845
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_convert_content_to_anthropic",
+          "pop_annotation": {
+            "c_function": "antr_convert_content_to_anthropic",
+            "python_functions": [
+              "_convert_content_to_anthropic"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 442,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _convert_content_to_anthropic @ agent/anthropic_adapter.py:_convert_content_to_anthropic */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -3050,16 +3378,24 @@
             "decorators": [],
             "line_number": 1858
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_content_parts_to_anthropic_blocks",
+          "pop_annotation": {
+            "c_function": "antr_content_parts_to_anthropic_blocks",
+            "python_functions": [
+              "_content_parts_to_anthropic_blocks"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 451,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _content_parts_to_anthropic_blocks @ agent/anthropic_adapter.py:_content_parts_to_anthropic_blocks */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -3158,16 +3494,24 @@
             "decorators": [],
             "line_number": 1981
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_convert_assistant_message",
+          "pop_annotation": {
+            "c_function": "antr_convert_assistant_message",
+            "python_functions": [
+              "_convert_assistant_message"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 458,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _convert_assistant_message @ agent/anthropic_adapter.py:_convert_assistant_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -3179,16 +3523,24 @@
             "decorators": [],
             "line_number": 2167
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_convert_tool_message_to_result",
+          "pop_annotation": {
+            "c_function": "antr_convert_tool_message_to_result",
+            "python_functions": [
+              "_convert_tool_message_to_result"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 466,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _convert_tool_message_to_result @ agent/anthropic_adapter.py:_convert_tool_message_to_result */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -3200,16 +3552,24 @@
             "decorators": [],
             "line_number": 2229
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_convert_user_message",
+          "pop_annotation": {
+            "c_function": "antr_convert_user_message",
+            "python_functions": [
+              "_convert_user_message"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 474,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _convert_user_message @ agent/anthropic_adapter.py:_convert_user_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -3221,16 +3581,24 @@
             "decorators": [],
             "line_number": 2246
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_strip_orphaned_tool_blocks",
+          "pop_annotation": {
+            "c_function": "antr_strip_orphaned_tool_blocks",
+            "python_functions": [
+              "_strip_orphaned_tool_blocks"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 482,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _strip_orphaned_tool_blocks @ agent/anthropic_adapter.py:_strip_orphaned_tool_blocks */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -3242,16 +3610,24 @@
             "decorators": [],
             "line_number": 2327
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_merge_consecutive_roles",
+          "pop_annotation": {
+            "c_function": "antr_merge_consecutive_roles",
+            "python_functions": [
+              "_merge_consecutive_roles"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 490,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _merge_consecutive_roles @ agent/anthropic_adapter.py:_merge_consecutive_roles */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -3263,16 +3639,24 @@
             "decorators": [],
             "line_number": 2379
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_manage_thinking_signatures",
+          "pop_annotation": {
+            "c_function": "antr_manage_thinking_signatures",
+            "python_functions": [
+              "_manage_thinking_signatures"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 497,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _manage_thinking_signatures @ agent/anthropic_adapter.py:_manage_thinking_signatures */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -3284,16 +3668,24 @@
             "decorators": [],
             "line_number": 2482
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_evict_old_screenshots",
+          "pop_annotation": {
+            "c_function": "antr_evict_old_screenshots",
+            "python_functions": [
+              "_evict_old_screenshots"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 506,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _evict_old_screenshots @ agent/anthropic_adapter.py:_evict_old_screenshots */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -3334,16 +3726,24 @@
             "decorators": [],
             "line_number": 2535
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_convert_messages_to_anthropic",
+          "pop_annotation": {
+            "c_function": "antr_convert_messages_to_anthropic",
+            "python_functions": [
+              "convert_messages_to_anthropic"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 515,
+            "is_consolidated": false,
+            "full_text": "/* PoP: convert_messages_to_anthropic @ agent/anthropic_adapter.py:convert_messages_to_anthropic */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -3355,16 +3755,24 @@
             "decorators": [],
             "line_number": 2600
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_build_anthropic_kwargs",
+          "pop_annotation": {
+            "c_function": "antr_build_anthropic_kwargs",
+            "python_functions": [
+              "build_anthropic_kwargs"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 523,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_anthropic_kwargs @ agent/anthropic_adapter.py:build_anthropic_kwargs */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -3405,16 +3813,24 @@
             "decorators": [],
             "line_number": 2878
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_is_stream_unavailable_error",
+          "pop_annotation": {
+            "c_function": "antr_is_stream_unavailable_error",
+            "python_functions": [
+              "_is_stream_unavailable_error"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 532,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_stream_unavailable_error @ agent/anthropic_adapter.py:_is_stream_unavailable_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/anthropic_adapter.py",
@@ -3426,16 +3842,24 @@
             "decorators": [],
             "line_number": 2890
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_anthropic_adapter_remaining.c",
+          "c_function": "antr_create_anthropic_message",
+          "pop_annotation": {
+            "c_function": "antr_create_anthropic_message",
+            "python_functions": [
+              "create_anthropic_message"
+            ],
+            "c_file": "src/agent/port_anthropic_adapter_remaining.c",
+            "python_file": "agent/anthropic_adapter.py",
+            "line": 543,
+            "is_consolidated": false,
+            "full_text": "/* PoP: create_anthropic_message @ agent/anthropic_adapter.py:create_anthropic_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },

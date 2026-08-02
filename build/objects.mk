@@ -254,7 +254,7 @@ PORT_OBJ = \
         src/tools/browser_camofox.o src/tools/browser_camofox_state.o \
         src/tools/port_browser_supervisor.o \
         src/tools/port_environments/base.o \
-        src/agent/anthropic_adapter.o \
+        src/agent/anthropic_adapter.o src/agent/port_anthropic_adapter_remaining.o \
         src/cli/port_plugin_manifest.o \
         src/cli/port_tools_config_helpers.o \
         src/cli/port_cli_command_registry.o
