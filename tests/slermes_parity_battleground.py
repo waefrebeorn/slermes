@@ -728,6 +728,7 @@ class ParityAnalyzer:
         r'\bsystem\s*\(', r'\bexecl', r'\bfork\s*\(', r'\bpopen\s*\(',
         r'\bcurl', r'\bhttp_', r'\bsocket\s*\(',
         r'\bmalloc\s*\(', r'\bcalloc\s*\(', r'\brealloc\s*\(',
+        r'\bfree\s*\(', r'\bmemset\s*\(', r'\bstrdup\s*\(',
         r'\bstrcpy', r'\bstrcat', r'\bsnprintf\s*\(', r'\bsprintf\s*\(',
         r'\bfgets\s*\(', r'\bfread\s*\(', r'\bsqlite',
         r'\byaml_', r'\bjson_parse', r'\bjson_new',
