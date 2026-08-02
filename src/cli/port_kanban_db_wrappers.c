@@ -118,7 +118,36 @@ int kdbport_u_migrate_add_optional_columns(const char *arg) { (void)arg; return 
 int kdbport_set_model_override(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _safe_attachment_name @ hermes_cli/kanban_db.py:_safe_attachment_name */
-int kdbport_u_safe_attachment_name(const char *arg) { (void)arg; return 0; }
+int kdbport_u_safe_attachment_name(const char *arg) {
+    /* Python: sanitized basename or ValueError. Arg = "raw". */
+    if (!arg || !*arg) {
+        fprintf(stderr, "invalid attachment filename\n");
+        return 1;
+    }
+    /* take leaf after both separators */
+    const char *p = arg;
+    const char *last = p;
+    while (*p) {
+        if (*p == '/' || *p == '\\') last = p + 1;
+        p++;
+    }
+    char out[201];
+    size_t w = 0;
+    for (const char *c = last; *c && w < 200; c++) {
+        unsigned char ch = (unsigned char)*c;
+        if (ch == 0 || ch < 0x20 || ch == 0x7f) continue;
+        out[w++] = (char)ch;
+    }
+    /* lstrip dots + spaces */
+    size_t start = 0;
+    while (start < w && (out[start] == '.' || out[start] == ' ')) start++;
+    if (start >= w) {
+        fprintf(stderr, "invalid attachment filename\n");
+        return 1;
+    }
+    printf("%.*s\n", (int)(w - start), out + start);
+    return 0;
+}
 
 /* PoP: _collision_free_path @ hermes_cli/kanban_db.py:_collision_free_path */
 int kdbport_u_collision_free_path(const char *arg) {

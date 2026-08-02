@@ -146,7 +146,17 @@ int gstat_runtime_status_is_stale(const char *arg) {
 }
 
 /* PoP: runtime_status_pid_is_live @ gateway/status.py:runtime_status_pid_is_live */
-int gstat_runtime_status_pid_is_live(const char *arg) { (void)arg; return 0; }
+int gstat_runtime_status_pid_is_live(const char *arg) {
+    /* Python: pid exists + start_time guard. Arg =
+     * "pid\tstart_match\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%d\n", (t1 && t1[1] == '1') ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _validated_scoped_lock_gateway_owner @ gateway/status.py:_validated_scoped_lock_gateway_owner */
 int gstat_u_validated_scoped_lock_gateway_owner(const char *arg) { (void)arg; return 0; }

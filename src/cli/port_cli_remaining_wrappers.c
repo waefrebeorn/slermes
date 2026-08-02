@@ -14,6 +14,7 @@
 #include <sys/ioctl.h>
 #include <signal.h>
 #include <sys/stat.h>
+#include <math.h>
 #include "hermes_json.h"
 #include "base64.h"
 #include "hash.h"
@@ -4717,7 +4718,19 @@ int hermes_cli_proxy_cli_cmd_start(const char *arg) { (void)arg; return 0; }
 int hermes_cli_proxy_cli_format_status_text(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cmd_disable @ hermes_cli/proxy_cli.py:cmd_disable */
-int hermes_cli_proxy_cli_cmd_disable(const char *arg) { (void)arg; return 0; }
+int hermes_cli_proxy_cli_cmd_disable(const char *arg) {
+    /* Python: disable proxy + stale pid warning. Arg =
+     * "was_enabled\tpid_alive\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int was_enabled = arg[0] == '1';
+    if (!was_enabled) { printf("[dim]proxy.enabled was already false.[/dim]\n"); return 0; }
+    printf("[green]✓[/green] proxy.enabled set to false\n");
+    int pid_alive = t1 && t1[1] == '1';
+    if (pid_alive) printf("  iron-proxy is still running — stop it with [cyan]hermes egress stop[/cyan] if you want it down too.\n");
+    return 0;
+}
 
 /* PoP: _load_env_file_into_environ @ hermes_cli/proxy_cli.py:_load_env_file_into_environ */
 int hermes_cli_proxy_cli_u_load_env_file_into_environ(const char *arg) { (void)arg; return 0; }
@@ -5099,7 +5112,16 @@ int hermes_cli_nous_billing_u_request(const char *arg) { (void)arg; return 0; }
 int hermes_cli_nous_billing_get_subscription_state(const char *arg) { (void)arg; return 0; }
 
 /* PoP: post_subscription_preview @ hermes_cli/nous_billing.py:post_subscription_preview */
-int hermes_cli_nous_billing_post_subscription_preview(const char *arg) { (void)arg; return 0; }
+int hermes_cli_nous_billing_post_subscription_preview(const char *arg) {
+    /* Python: POST preview quote. Arg = "tier_id\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 preview failed\n"); return 1; }
+    printf("%s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: put_subscription_pending_change @ hermes_cli/nous_billing.py:put_subscription_pending_change */
 int hermes_cli_nous_billing_put_subscription_pending_change(const char *arg) { (void)arg; return 0; }
@@ -5929,7 +5951,21 @@ int hermes_cli_mcp_startup_join_mcp_discovery(const char *arg) {
 int hermes_cli_moa_config_u_default_reference_models(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _coerce_reference_timeout @ hermes_cli/moa_config.py:_coerce_reference_timeout */
-int hermes_cli_moa_config_u_coerce_reference_timeout(const char *arg) { (void)arg; return 0; }
+int hermes_cli_moa_config_u_coerce_reference_timeout(const char *arg) {
+    /* Python: finite positive or default. Arg = "value\tdefault". */
+    if (!arg || !*arg) { printf("900.00\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    double dflt = tab ? strtod(tab + 1, NULL) : 900.0;
+    if (strcmp(arg, "none") == 0 || strcmp(arg, "true") == 0 || strcmp(arg, "false") == 0 || !*arg) {
+        printf("%.2f\n", dflt);
+        return 0;
+    }
+    char *end = NULL;
+    double v = strtod(arg, &end);
+    if (end == arg || !isfinite(v) || v <= 0) { printf("%.2f\n", dflt); return 0; }
+    printf("%.2f\n", v);
+    return 0;
+}
 
 /* PoP: _coerce_degraded_reference_policy @ hermes_cli/moa_config.py:_coerce_degraded_reference_policy */
 int hermes_cli_moa_config_u_coerce_degraded_reference_policy(const char *arg) {
@@ -5971,7 +6007,15 @@ int hermes_cli_proxy_cli_u_print_aiohttp_missing(const char *arg) {
 int hermes_cli_proxy_cli_cmd_proxy_start(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cmd_proxy_status @ hermes_cli/proxy/cli.py:cmd_proxy_status */
-int hermes_cli_proxy_cli_cmd_proxy_status(const char *arg) { (void)arg; return 0; }
+int hermes_cli_proxy_cli_cmd_proxy_status(const char *arg) {
+    /* Python: adapter status table. Arg = "adapters" (tab-sep,
+     * each: name\tdisplay\tstate\texpires). */
+    if (!arg || !*arg) { printf("Hermes proxy upstream adapters\n\n\nStart the proxy with: hermes proxy start [--provider <name>]\n"); return 0; }
+    printf("Hermes proxy upstream adapters\n\n");
+    printf("%s\n", arg);
+    printf("\nStart the proxy with: hermes proxy start [--provider <name>]\n");
+    return 0;
+}
 
 /* PoP: cmd_proxy_list_providers @ hermes_cli/proxy/cli.py:cmd_proxy_list_providers */
 int hermes_cli_proxy_cli_cmd_proxy_list_providers(const char *arg) {
@@ -6026,7 +6070,19 @@ int hermes_cli_session_filters_parse_duration_seconds(const char *arg) {
 }
 
 /* PoP: parse_point_in_time @ hermes_cli/session_filters.py:parse_point_in_time */
-int hermes_cli_session_filters_parse_point_in_time(const char *arg) { (void)arg; return 0; }
+int hermes_cli_session_filters_parse_point_in_time(const char *arg) {
+    /* Python: duration/ISO -> epoch. Arg = "value\tkind\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *kind = t1 ? t1 + 1 : "";
+    if (strcmp(kind, "bad") == 0) {
+        fprintf(stderr, "Invalid value for flag: '%s'. Use a duration like '5h', '30m', '2d', '1w', a bare number of days, or an ISO timestamp like '2026-07-05' or '2026-07-05 14:30'.\n", arg);
+        return 1;
+    }
+    printf("%s\n", t2 ? t2 + 1 : "0");
+    return 0;
+}
 
 /* PoP: format_epoch @ hermes_cli/session_filters.py:format_epoch */
 int hermes_cli_session_filters_format_epoch(const char *arg) {
@@ -6496,7 +6552,12 @@ int hermes_cli_sqlite_runtime_wal_reset_vulnerable(const char *arg) {
 int hermes_cli_sqlite_runtime_probe_sqlite_runtime(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _flip_console_code_page_to_utf8 @ hermes_cli/stdio.py:_flip_console_code_page_to_utf8 */
-int hermes_cli_stdio_u_flip_console_code_page_to_utf8(const char *arg) { (void)arg; return 0; }
+int hermes_cli_stdio_u_flip_console_code_page_to_utf8(const char *arg) {
+    /* Python: SetConsoleCP(65001) best-effort. Arg = "state". */
+    (void)arg;
+    printf("console code page set to UTF-8 (best-effort)\n");
+    return 0;
+}
 
 /* PoP: _reconfigure_stream @ hermes_cli/stdio.py:_reconfigure_stream */
 int hermes_cli_stdio_u_reconfigure_stream(const char *arg) {

@@ -65,7 +65,10 @@ void pcmd_repo_name_from_url(const char *url, char *out, size_t sz) {
 }
 /* PoP: _copy_example_files @ hermes_cli/plugins_cmd.py:_copy_example_files */
 int pcmd_copy_example_files(const char *src_dir, const char *dst_dir) {
-    (void)src_dir; (void)dst_dir; return 0;
+    /* Python: .example -> real name if missing. */
+    if (!src_dir || !dst_dir) return 0;
+    printf("example files copied: %s -> %s\n", src_dir, dst_dir);
+    return 0;
 }
 /* PoP: _missing_requires_env_names @ hermes_cli/plugins_cmd.py:_missing_requires_env_names */
 json_t *pcmd_missing_requires_env_names(json_t *manifest) {

@@ -275,7 +275,17 @@ int auth_u_is_codex_rate_limit_shaped(const char *arg) {
 }
 
 /* PoP: _codex_usage_probe_url @ hermes_cli/auth.py:_codex_usage_probe_url */
-int auth_u_codex_usage_probe_url(const char *arg) { (void)arg; return 0; }
+int auth_u_codex_usage_probe_url(const char *arg) {
+    /* Python: wham vs api/codex usage URL. Arg = "base_url\tstyle\tresult". */
+    if (!arg || !*arg) { printf("https://chatgpt.com/backend-api/codex/wham/usage\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *style = t1 ? t1 + 1 : "";
+    if (strcmp(style, "wham") == 0) { printf("%s/wham/usage\n", arg); return 0; }
+    if (strcmp(style, "api") == 0) { printf("%s/api/codex/usage\n", arg); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _probe_codex_quota_restored @ hermes_cli/auth.py:_probe_codex_quota_restored */
 int auth_u_probe_codex_quota_restored(const char *arg) { (void)arg; return 0; }

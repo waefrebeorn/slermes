@@ -473,7 +473,19 @@ int tools_registry_u_is_registry_register_call(const char *arg) {
 }
 
 /* PoP: _module_registers_tools @ tools/registry.py:_module_registers_tools */
-int tools_registry_u_module_registers_tools(const char *arg) { (void)arg; return 0; }
+int tools_registry_u_module_registers_tools(const char *arg) {
+    /* Python: top-level registry.register() check. Arg =
+     * "has_keywords\thas_call\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (arg[0] != '1') { printf("0\n"); return 0; }
+    int has_call = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%d\n", has_call ? 1 : 0);
+    return 0;
+}
 
 /* PoP: discover_builtin_tools @ tools/registry.py:discover_builtin_tools */
 int tools_registry_discover_builtin_tools(const char *arg) {
@@ -2491,7 +2503,18 @@ int tools_budget_config_resolve_threshold(const char *arg) { (void)arg; return 0
 int tools_clarify_gateway_resolve_clarify_timeout(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _adjust_thread_count @ tools/daemon_pool.py:_adjust_thread_count */
-int tools_daemon_pool_u_adjust_thread_count(const char *arg) { (void)arg; return 0; }
+int tools_daemon_pool_u_adjust_thread_count(const char *arg) {
+    /* Python: spawn daemon worker when under max. Arg =
+     * "num_threads\tmax_workers\tspawned". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long num = strtol(arg, NULL, 10);
+    long max = t1 ? strtol(t1 + 1, NULL, 10) : 0;
+    if (num < max) { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: log_call @ tools/debug_helpers.py:log_call */
 int tools_debug_helpers_log_call(const char *arg) {

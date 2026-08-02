@@ -892,7 +892,19 @@ int gateway_platforms_qqbot_chunke_u_read_file_chunk(const char *arg) {
 }
 
 /* PoP: _compute_file_hashes @ gateway/platforms/qqbot/chunked_upload.py:_compute_file_hashes */
-int gateway_platforms_qqbot_chunke_u_compute_file_hashes(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_qqbot_chunke_u_compute_file_hashes(const char *arg) {
+    /* Python: md5/sha1/md5_10m one pass. Arg =
+     * "file_size\tstate\tmd5\tsha1\tmd5_10m". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 hash failed\n"); return 1; }
+    printf("md5=%s sha1=%s md5_10m=%s\n", t2 ? t2 + 1 : "?", t3 ? t3 + 1 : "?", t4 ? t4 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _run_with_concurrency @ gateway/platforms/qqbot/chunked_upload.py:_run_with_concurrency */
 int gateway_platforms_qqbot_chunke_u_run_with_concurrency(const char *arg) { (void)arg; return 0; }

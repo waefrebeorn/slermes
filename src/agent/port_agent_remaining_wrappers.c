@@ -697,7 +697,17 @@ int agent_subscription_view_format_tier_row(const char *arg) {
 }
 
 /* PoP: is_upgrade @ agent/subscription_view.py:is_upgrade */
-int agent_subscription_view_is_upgrade(const char *arg) { (void)arg; return 0; }
+int agent_subscription_view_is_upgrade(const char *arg) {
+    /* Python: tier_order rank comparison. Arg =
+     * "tier_order\tcurrent_order\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long tier_order = strtol(arg, NULL, 10);
+    long cur_order = t1 ? strtol(t1 + 1, NULL, 10) : 0;
+    printf("%d\n", tier_order > cur_order ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _dev_current @ agent/subscription_view.py:_dev_current */
 int agent_subscription_view_u_dev_current(const char *arg) {
@@ -1990,7 +2000,16 @@ int agent_anthropic_adapter_u_ensure_leading_user_turn(const char *arg) {
 }
 
 /* PoP: _read_battery_uncached @ agent/battery.py:_read_battery_uncached */
-int agent_battery_u_read_battery_uncached(const char *arg) { (void)arg; return 0; }
+int agent_battery_u_read_battery_uncached(const char *arg) {
+    /* Python: psutil sensors_battery. Arg = "state\tpercent\tplugged". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "unavailable") == 0) { printf("0\n"); return 0; }
+    printf("1\t%s\t%s\n", t1 ? t1 + 1 : "?", t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: read_battery @ agent/battery.py:read_battery */
 int agent_battery_read_battery(const char *arg) {

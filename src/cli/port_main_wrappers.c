@@ -331,7 +331,21 @@ int main_u_resolve_session_by_name_or_id(const char *arg) { (void)arg; return 0;
 int main_u_print_tui_exit_summary(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _termux_workspace_install_context @ hermes_cli/main.py:_termux_workspace_install_context */
-int main_u_termux_workspace_install_context(const char *arg) { (void)arg; return 0; }
+int main_u_termux_workspace_install_context(const char *arg) {
+    /* Python: workspace args for Termux-only installs. Arg =
+     * "dir\tws_root\tworkspace\tresult". */
+    if (!arg || !*arg) { printf("\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *dir = arg;
+    const char *ws_root = t1 ? t1 + 1 : dir;
+    const char *workspace = t2 ? t2 + 1 : "";
+    if (strcmp(dir, ws_root) == 0) { printf("%s\n\n", dir); return 0; }
+    if (!workspace[0]) { printf("%s\n\n", ws_root); return 0; }
+    printf("%s\n--workspace %s --include-workspace-root=false\n", ws_root, workspace);
+    return 0;
+}
 
 /* PoP: _tui_need_npm_install @ hermes_cli/main.py:_tui_need_npm_install */
 int main_u_tui_need_npm_install(const char *arg) { (void)arg; return 0; }
@@ -419,7 +433,15 @@ int main_u_apply_tui_python_env(const char *arg) { (void)arg; return 0; }
 int main_u_launch_tui(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _pin_kanban_board_env @ hermes_cli/main.py:_pin_kanban_board_env */
-int main_u_pin_kanban_board_env(const char *arg) { (void)arg; return 0; }
+int main_u_pin_kanban_board_env(const char *arg) {
+    /* Python: pin HERMES_KANBAN_BOARD if unset. Arg = "board\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("board pin skipped (already set / error)\n"); return 0; }
+    printf("HERMES_KANBAN_BOARD pinned: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _sync_bundled_skills_quietly @ hermes_cli/main.py:_sync_bundled_skills_quietly */
 int main_u_sync_bundled_skills_quietly(const char *arg) {

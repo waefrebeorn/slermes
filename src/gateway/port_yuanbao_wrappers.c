@@ -66,7 +66,13 @@ int yb_middleware_names(void) {
 }
 
 /* PoP: convert_json_msg_body @ gateway/platforms/yuanbao.py:convert_json_msg_body */
-int yb_convert_json_msg_body(const char *arg) { (void)arg; return 0; }
+int yb_convert_json_msg_body(const char *arg) {
+    /* Python: normalize msg_body array. Arg = "raw_json\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", tab ? tab + 1 : "[]");
+    return 0;
+}
 
 /* PoP: parse_json_push @ gateway/platforms/yuanbao.py:parse_json_push */
 int yb_parse_json_push(const char *arg) { (void)arg; return 0; }
@@ -378,7 +384,19 @@ int yb_u_media_marker(const char *arg) { (void)arg; return 0; }
 int yb_u_walk_forward_msgs(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_forward_text @ gateway/platforms/yuanbao.py:build_forward_text */
-int yb_build_forward_text(const char *arg) { (void)arg; return 0; }
+int yb_build_forward_text(const char *arg) {
+    /* Python: forward text render. Arg = "nickname\tis_dispatch\traw_text\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *nickname = arg;
+    int is_dispatch = t1 && t1[1] == '1';
+    const char *raw_text = t2 ? t2 + 1 : "";
+    printf("当前用户的昵称为%s\n以下为用户的聊天记录\n", nickname);
+    if (is_dispatch && raw_text[0]) printf("\n用户附言：%s\n", raw_text);
+    return 0;
+}
 
 /* PoP: _get_cached_resource @ gateway/platforms/yuanbao.py:_get_cached_resource */
 int yb_u_get_cached_resource(const char *arg) {

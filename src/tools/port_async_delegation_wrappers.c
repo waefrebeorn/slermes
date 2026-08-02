@@ -146,7 +146,17 @@ int adel_mark_completion_delivered(const char *arg) {
 }
 
 /* PoP: claim_completion_delivery @ tools/async_delegation.py:claim_completion_delivery */
-int adel_claim_completion_delivery(const char *arg) { (void)arg; return 0; }
+int adel_claim_completion_delivery(const char *arg) {
+    /* Python: claim one pending delivery. Arg = "state\trowcount\tclaimed". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "no_row") == 0) { printf("1\n"); return 0; }
+    long rowcount = t1 ? strtol(t1 + 1, NULL, 10) : 0;
+    printf("%d\n", rowcount == 1 ? 1 : 0);
+    return 0;
+}
 
 /* PoP: claim_event_delivery @ tools/async_delegation.py:claim_event_delivery */
 int adel_claim_event_delivery(const char *arg) {
