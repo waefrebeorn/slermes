@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T18:08:08Z",
+  "generated_at": "2026-08-02T18:10:29Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -160768,10 +160768,10 @@
     },
     "hermes_cli/config.py": {
       "total": 113,
-      "ported": 71,
+      "ported": 111,
       "partial": 2,
       "stub": 0,
-      "real_gaps": 40,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 113,
@@ -160874,17 +160874,24 @@
             "decorators": [],
             "line_number": 345
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_get_managed_system",
+          "pop_annotation": {
+            "c_function": "cfg_get_managed_system",
+            "python_functions": [
+              "get_managed_system"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_managed_system @ hermes_cli/config.py:get_managed_system */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -160896,17 +160903,24 @@
             "decorators": [],
             "line_number": 362
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_is_managed",
+          "pop_annotation": {
+            "c_function": "cfg_is_managed",
+            "python_functions": [
+              "is_managed"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_managed @ hermes_cli/config.py:is_managed */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -160918,17 +160932,24 @@
             "decorators": [],
             "line_number": 378
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_get_managed_update_command",
+          "pop_annotation": {
+            "c_function": "cfg_get_managed_update_command",
+            "python_functions": [
+              "get_managed_update_command"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 43,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_managed_update_command @ hermes_cli/config.py:get_managed_update_command */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -160940,17 +160961,24 @@
             "decorators": [],
             "line_number": 386
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_install_method_project_root",
+          "pop_annotation": {
+            "c_function": "cfg_install_method_project_root",
+            "python_functions": [
+              "_install_method_project_root"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 54,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _install_method_project_root @ hermes_cli/config.py:_install_method_project_root */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -160991,17 +161019,24 @@
             "decorators": [],
             "line_number": 502
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_running_in_container",
+          "pop_annotation": {
+            "c_function": "cfg_running_in_container",
+            "python_functions": [
+              "_running_in_container"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 63,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _running_in_container @ hermes_cli/config.py:_running_in_container */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -161013,17 +161048,24 @@
             "decorators": [],
             "line_number": 512
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_stamp_install_method",
+          "pop_annotation": {
+            "c_function": "cfg_stamp_install_method",
+            "python_functions": [
+              "stamp_install_method"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 70,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stamp_install_method @ hermes_cli/config.py:stamp_install_method */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -161064,17 +161106,24 @@
             "decorators": [],
             "line_number": 542
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_recommended_update_command",
+          "pop_annotation": {
+            "c_function": "cfg_recommended_update_command",
+            "python_functions": [
+              "recommended_update_command"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 78,
+            "is_consolidated": false,
+            "full_text": "/* PoP: recommended_update_command @ hermes_cli/config.py:recommended_update_command */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -161086,17 +161135,24 @@
             "decorators": [],
             "line_number": 593
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_format_docker_update_message",
+          "pop_annotation": {
+            "c_function": "cfg_format_docker_update_message",
+            "python_functions": [
+              "format_docker_update_message"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 86,
+            "is_consolidated": false,
+            "full_text": "/* PoP: format_docker_update_message @ hermes_cli/config.py:format_docker_update_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -161108,17 +161164,24 @@
             "decorators": [],
             "line_number": 603
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_format_managed_message",
+          "pop_annotation": {
+            "c_function": "cfg_format_managed_message",
+            "python_functions": [
+              "format_managed_message"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 92,
+            "is_consolidated": false,
+            "full_text": "/* PoP: format_managed_message @ hermes_cli/config.py:format_managed_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -161130,17 +161193,24 @@
             "decorators": [],
             "line_number": 622
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_managed_error",
+          "pop_annotation": {
+            "c_function": "cfg_managed_error",
+            "python_functions": [
+              "managed_error"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 102,
+            "is_consolidated": false,
+            "full_text": "/* PoP: managed_error @ hermes_cli/config.py:managed_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -161152,17 +161222,24 @@
             "decorators": [],
             "line_number": 631
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_get_container_exec_info",
+          "pop_annotation": {
+            "c_function": "cfg_get_container_exec_info",
+            "python_functions": [
+              "get_container_exec_info"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 109,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_container_exec_info @ hermes_cli/config.py:get_container_exec_info */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -161203,17 +161280,24 @@
             "decorators": [],
             "line_number": 688
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_get_env_path",
+          "pop_annotation": {
+            "c_function": "cfg_get_env_path",
+            "python_functions": [
+              "get_env_path"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 122,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_env_path @ hermes_cli/config.py:get_env_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -161225,17 +161309,24 @@
             "decorators": [],
             "line_number": 692
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_get_project_root",
+          "pop_annotation": {
+            "c_function": "cfg_get_project_root",
+            "python_functions": [
+              "get_project_root"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 129,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_project_root @ hermes_cli/config.py:get_project_root */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -161421,17 +161512,24 @@
             "decorators": [],
             "line_number": 857
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_ensure_hermes_home",
+          "pop_annotation": {
+            "c_function": "cfg_ensure_hermes_home",
+            "python_functions": [
+              "ensure_hermes_home"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 136,
+            "is_consolidated": false,
+            "full_text": "/* PoP: ensure_hermes_home @ hermes_cli/config.py:ensure_hermes_home */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -161472,17 +161570,24 @@
             "decorators": [],
             "line_number": 4879
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_get_missing_env_vars",
+          "pop_annotation": {
+            "c_function": "cfg_get_missing_env_vars",
+            "python_functions": [
+              "get_missing_env_vars"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 144,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_missing_env_vars @ hermes_cli/config.py:get_missing_env_vars */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -161523,17 +161628,24 @@
             "decorators": [],
             "line_number": 4952
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_clear_model_endpoint_credentials",
+          "pop_annotation": {
+            "c_function": "cfg_clear_model_endpoint_credentials",
+            "python_functions": [
+              "clear_model_endpoint_credentials"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 152,
+            "is_consolidated": false,
+            "full_text": "/* PoP: clear_model_endpoint_credentials @ hermes_cli/config.py:clear_model_endpoint_credentials */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -161661,17 +161773,24 @@
             "decorators": [],
             "line_number": 5098
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_get_missing_config_fields",
+          "pop_annotation": {
+            "c_function": "cfg_get_missing_config_fields",
+            "python_functions": [
+              "get_missing_config_fields"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 160,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_missing_config_fields @ hermes_cli/config.py:get_missing_config_fields */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -161683,17 +161802,24 @@
             "decorators": [],
             "line_number": 5126
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_get_missing_skill_config_vars",
+          "pop_annotation": {
+            "c_function": "cfg_get_missing_skill_config_vars",
+            "python_functions": [
+              "get_missing_skill_config_vars"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 168,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_missing_skill_config_vars @ hermes_cli/config.py:get_missing_skill_config_vars */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -161792,17 +161918,24 @@
             "decorators": [],
             "line_number": 5413
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_providers_dict_to_custom_providers",
+          "pop_annotation": {
+            "c_function": "cfg_providers_dict_to_custom_providers",
+            "python_functions": [
+              "providers_dict_to_custom_providers"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 175,
+            "is_consolidated": false,
+            "full_text": "/* PoP: providers_dict_to_custom_providers @ hermes_cli/config.py:providers_dict_to_custom_providers */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -162017,17 +162150,24 @@
             "decorators": [],
             "line_number": 5613
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_get_custom_provider_context_length",
+          "pop_annotation": {
+            "c_function": "cfg_get_custom_provider_context_length",
+            "python_functions": [
+              "get_custom_provider_context_length"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 183,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_custom_provider_context_length @ hermes_cli/config.py:get_custom_provider_context_length */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -162068,17 +162208,24 @@
             "decorators": [],
             "line_number": 5689
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_check_config_version",
+          "pop_annotation": {
+            "c_function": "cfg_check_config_version",
+            "python_functions": [
+              "check_config_version"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 191,
+            "is_consolidated": false,
+            "full_text": "/* PoP: check_config_version @ hermes_cli/config.py:check_config_version */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -162090,17 +162237,24 @@
             "decorators": [],
             "line_number": 5781
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_validate_config_structure",
+          "pop_annotation": {
+            "c_function": "cfg_validate_config_structure",
+            "python_functions": [
+              "validate_config_structure"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 199,
+            "is_consolidated": false,
+            "full_text": "/* PoP: validate_config_structure @ hermes_cli/config.py:validate_config_structure */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -162112,17 +162266,24 @@
             "decorators": [],
             "line_number": 5930
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_print_config_warnings",
+          "pop_annotation": {
+            "c_function": "cfg_print_config_warnings",
+            "python_functions": [
+              "print_config_warnings"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 207,
+            "is_consolidated": false,
+            "full_text": "/* PoP: print_config_warnings @ hermes_cli/config.py:print_config_warnings */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -162134,17 +162295,24 @@
             "decorators": [],
             "line_number": 5952
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_warn_deprecated_cwd_env_vars",
+          "pop_annotation": {
+            "c_function": "cfg_warn_deprecated_cwd_env_vars",
+            "python_functions": [
+              "warn_deprecated_cwd_env_vars"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 215,
+            "is_consolidated": false,
+            "full_text": "/* PoP: warn_deprecated_cwd_env_vars @ hermes_cli/config.py:warn_deprecated_cwd_env_vars */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -162272,17 +162440,24 @@
             "decorators": [],
             "line_number": 6840
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_strip_dotted_keys",
+          "pop_annotation": {
+            "c_function": "cfg_strip_dotted_keys",
+            "python_functions": [
+              "_strip_dotted_keys"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 224,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _strip_dotted_keys @ hermes_cli/config.py:_strip_dotted_keys */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -162605,17 +162780,24 @@
             "decorators": [],
             "line_number": 7263
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_cfg_get",
+          "pop_annotation": {
+            "c_function": "cfg_cfg_get",
+            "python_functions": [
+              "cfg_get"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 232,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cfg_get @ hermes_cli/config.py:cfg_get */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -162714,17 +162896,24 @@
             "decorators": [],
             "line_number": 7398
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_load_config",
+          "pop_annotation": {
+            "c_function": "cfg_load_config",
+            "python_functions": [
+              "load_config"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 240,
+            "is_consolidated": false,
+            "full_text": "/* PoP: load_config @ hermes_cli/config.py:load_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -162852,17 +163041,24 @@
             "decorators": [],
             "line_number": 7512
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_apply_terminal_config_to_env",
+          "pop_annotation": {
+            "c_function": "cfg_apply_terminal_config_to_env",
+            "python_functions": [
+              "apply_terminal_config_to_env"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 248,
+            "is_consolidated": false,
+            "full_text": "/* PoP: apply_terminal_config_to_env @ hermes_cli/config.py:apply_terminal_config_to_env */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -162903,17 +163099,24 @@
             "decorators": [],
             "line_number": 7777
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_save_config",
+          "pop_annotation": {
+            "c_function": "cfg_save_config",
+            "python_functions": [
+              "save_config"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 256,
+            "is_consolidated": false,
+            "full_text": "/* PoP: save_config @ hermes_cli/config.py:save_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -162975,17 +163178,24 @@
             "decorators": [],
             "line_number": 7983
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_invalidate_env_cache",
+          "pop_annotation": {
+            "c_function": "cfg_invalidate_env_cache",
+            "python_functions": [
+              "invalidate_env_cache"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 264,
+            "is_consolidated": false,
+            "full_text": "/* PoP: invalidate_env_cache @ hermes_cli/config.py:invalidate_env_cache */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -163026,17 +163236,24 @@
             "decorators": [],
             "line_number": 8017
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_sanitize_env_file",
+          "pop_annotation": {
+            "c_function": "cfg_sanitize_env_file",
+            "python_functions": [
+              "sanitize_env_file"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 270,
+            "is_consolidated": false,
+            "full_text": "/* PoP: sanitize_env_file @ hermes_cli/config.py:sanitize_env_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -163135,17 +163352,24 @@
             "decorators": [],
             "line_number": 8137
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_save_env_value",
+          "pop_annotation": {
+            "c_function": "cfg_save_env_value",
+            "python_functions": [
+              "save_env_value"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 278,
+            "is_consolidated": false,
+            "full_text": "/* PoP: save_env_value @ hermes_cli/config.py:save_env_value */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -163186,17 +163410,24 @@
             "decorators": [],
             "line_number": 8250
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_remove_env_value",
+          "pop_annotation": {
+            "c_function": "cfg_remove_env_value",
+            "python_functions": [
+              "remove_env_value"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 286,
+            "is_consolidated": false,
+            "full_text": "/* PoP: remove_env_value @ hermes_cli/config.py:remove_env_value */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -163208,17 +163439,24 @@
             "decorators": [],
             "line_number": 8323
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_save_anthropic_oauth_token",
+          "pop_annotation": {
+            "c_function": "cfg_save_anthropic_oauth_token",
+            "python_functions": [
+              "save_anthropic_oauth_token"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 294,
+            "is_consolidated": false,
+            "full_text": "/* PoP: save_anthropic_oauth_token @ hermes_cli/config.py:save_anthropic_oauth_token */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -163230,17 +163468,24 @@
             "decorators": [],
             "line_number": 8330
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_use_anthropic_claude_code_credentials",
+          "pop_annotation": {
+            "c_function": "cfg_use_anthropic_claude_code_credentials",
+            "python_functions": [
+              "use_anthropic_claude_code_credentials"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 302,
+            "is_consolidated": false,
+            "full_text": "/* PoP: use_anthropic_claude_code_credentials @ hermes_cli/config.py:use_anthropic_claude_code_credentials */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -163252,17 +163497,24 @@
             "decorators": [],
             "line_number": 8337
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_save_anthropic_api_key",
+          "pop_annotation": {
+            "c_function": "cfg_save_anthropic_api_key",
+            "python_functions": [
+              "save_anthropic_api_key"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 309,
+            "is_consolidated": false,
+            "full_text": "/* PoP: save_anthropic_api_key @ hermes_cli/config.py:save_anthropic_api_key */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -163274,17 +163526,24 @@
             "decorators": [],
             "line_number": 8344
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_save_env_value_secure",
+          "pop_annotation": {
+            "c_function": "cfg_save_env_value_secure",
+            "python_functions": [
+              "save_env_value_secure"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 316,
+            "is_consolidated": false,
+            "full_text": "/* PoP: save_env_value_secure @ hermes_cli/config.py:save_env_value_secure */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -163296,17 +163555,24 @@
             "decorators": [],
             "line_number": 8359
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_reload_env",
+          "pop_annotation": {
+            "c_function": "cfg_reload_env",
+            "python_functions": [
+              "reload_env"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 324,
+            "is_consolidated": false,
+            "full_text": "/* PoP: reload_env @ hermes_cli/config.py:reload_env */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -163318,17 +163584,24 @@
             "decorators": [],
             "line_number": 8381
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_get_env_value",
+          "pop_annotation": {
+            "c_function": "cfg_get_env_value",
+            "python_functions": [
+              "get_env_value"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 332,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_env_value @ hermes_cli/config.py:get_env_value */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -163398,17 +163671,24 @@
             "decorators": [],
             "line_number": 8465
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_config_remaining.c",
+          "c_function": "cfg_redact_config_value",
+          "pop_annotation": {
+            "c_function": "cfg_redact_config_value",
+            "python_functions": [
+              "redact_config_value"
+            ],
+            "c_file": "src/cli/port_config_remaining.c",
+            "python_file": "hermes_cli/config.py",
+            "line": 352,
+            "is_consolidated": false,
+            "full_text": "/* PoP: redact_config_value @ hermes_cli/config.py:redact_config_value */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
