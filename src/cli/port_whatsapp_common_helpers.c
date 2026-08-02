@@ -54,7 +54,31 @@ bool whatsapp_common_require_mention(const char *chat_type) {
 
 /* PoP: _whatsapp_free_response_chats @ gateway/platforms/whatsapp_common.py:_whatsapp_free_response_chats */
 bool whatsapp_common_free_response_chats(const char *chat_id) {
-    (void)chat_id;
+    /* Python: set of chat ids from config.extra.free_response_chats or
+     * WHATSAPP_FREE_RESPONSE_CHATS env (comma-split). C: membership check. */
+    static char cached[2048];
+    static int loaded = 0;
+    if (!loaded) {
+        const char *env = getenv("WHATSAPP_FREE_RESPONSE_CHATS");
+        if (!env) { cached[0] = '\0'; }
+        else {
+            size_t n = strlen(env);
+            if (n >= sizeof(cached)) n = sizeof(cached) - 1;
+            memcpy(cached, env, n); cached[n] = '\0';
+        }
+        loaded = 1;
+    }
+    if (!chat_id || !*chat_id) return false;
+    const char *p = cached;
+    while (*p) {
+        const char *comma = strchr(p, ',');
+        size_t len = comma ? (size_t)(comma - p) : strlen(p);
+        const char *t = p;
+        while (len > 0 && (*t == ' ')) { t++; len--; }
+        while (len > 0 && t[len-1] == ' ') len--;
+        if (len == strlen(chat_id) && strncmp(t, chat_id, len) == 0) return true;
+        p = comma ? comma + 1 : p + len;
+    }
     return false;
 }
 

@@ -166,7 +166,26 @@ int main_u_termux_bundled_skills_stamp_path(const char *arg) {
 }
 
 /* PoP: _termux_bundled_skills_sync_needed @ hermes_cli/main.py:_termux_bundled_skills_sync_needed */
-int main_u_termux_bundled_skills_sync_needed(const char *arg) { (void)arg; return 0; }
+int main_u_termux_bundled_skills_sync_needed(const char *arg) {
+    /* Python: not termux env OR force flag OR stamp != fingerprint. Arg =
+     * "env\tforce\tstamp\tfingerprint". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    size_t elen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    int is_termux = (elen == 6 && strncmp(arg, "termux", 6) == 0);
+    if (!is_termux) { printf("1\n"); return 0; }
+    int force = t1 && t1[1] == '1';
+    if (force) { printf("1\n"); return 0; }
+    const char *stamp = t2 ? t2 + 1 : "";
+    const char *fp = t3 ? t3 + 1 : "";
+    size_t slen = t3 ? (size_t)(t3 - t2 - 1) : strlen(stamp);
+    size_t flen = strlen(fp);
+    if (slen != flen || strncmp(stamp, fp, flen) != 0) { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _mark_termux_bundled_skills_synced @ hermes_cli/main.py:_mark_termux_bundled_skills_synced */
 int main_u_mark_termux_bundled_skills_synced(const char *arg) {
@@ -1050,7 +1069,18 @@ int main_u_run_quarantined_install(const char *arg) { (void)arg; return 0; }
 int main_u_cleanup_quarantined_exes(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _run_package_only_install @ hermes_cli/main.py:_run_package_only_install */
-int main_u_run_package_only_install(const char *arg) { (void)arg; return 0; }
+int main_u_run_package_only_install(const char *arg) {
+    /* Python: pip/uv install WITHOUT shim quarantine. Arg = "cmd\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    char cmd[1600];
+    size_t clen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (clen >= sizeof(cmd)) clen = sizeof(cmd) - 1;
+    memcpy(cmd, arg, clen); cmd[clen] = '\0';
+    int rc = system(cmd);
+    printf("package-only install rc=%d\n", rc);
+    return rc == 0 ? 0 : 1;
+}
 
 /* PoP: _lazy_refresh_repair_specs @ hermes_cli/main.py:_lazy_refresh_repair_specs */
 int main_u_lazy_refresh_repair_specs(const char *arg) { (void)arg; return 0; }

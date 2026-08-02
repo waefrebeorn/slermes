@@ -424,7 +424,31 @@ int cgw_u_service_scope_label(const char *arg) {
 }
 
 /* PoP: get_installed_systemd_scopes @ hermes_cli/gateway.py:get_installed_systemd_scopes */
-int cgw_get_installed_systemd_scopes(const char *arg) { (void)arg; return 0; }
+int cgw_get_installed_systemd_scopes(const char *arg) {
+    /* Python: ["user"] + ["system"] for existing unit paths (dedup). Arg =
+     * "user_path\tsystem_path" (empty = missing). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int first = 1;
+    char up[1024];
+    size_t ulen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (ulen >= sizeof(up)) ulen = sizeof(up) - 1;
+    memcpy(up, arg, ulen); up[ulen] = '\0';
+    struct stat st;
+    if (ulen && stat(up, &st) == 0) { printf("user"); first = 0; }
+    if (tab && tab[1]) {
+        char sp[1024];
+        snprintf(sp, sizeof(sp), "%s", tab + 1);
+        struct stat st2;
+        if (stat(sp, &st2) == 0) {
+            if (!first) printf("\n");
+            printf("system");
+            first = 0;
+        }
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: has_conflicting_systemd_units @ hermes_cli/gateway.py:has_conflicting_systemd_units */
 int cgw_has_conflicting_systemd_units(const char *arg) {

@@ -283,7 +283,15 @@ int gateway_shutdown_watchdog_is_alive(const char *arg) {
 }
 
 /* PoP: _arm_loop_floor_timer @ gateway/shutdown_watchdog.py:_arm_loop_floor_timer */
-int gateway_shutdown_watchdog_u_arm_loop_floor_timer(const char *arg) { (void)arg; return 0; }
+int gateway_shutdown_watchdog_u_arm_loop_floor_timer(const char *arg) {
+    /* Python: timer handle with resolved interval (>0 or default). Arg =
+     * interval (may be empty). */
+    if (!arg || !*arg) { printf("floor timer 0.25s\n"); return 0; }
+    double v = strtod(arg, NULL);
+    if (v <= 0) { printf("floor timer 0.25s\n"); return 0; }
+    printf("floor timer %.2fs\n", v);
+    return 0;
+}
 
 /* PoP: start_loop_liveness_watchdog @ gateway/shutdown_watchdog.py:start_loop_liveness_watchdog */
 int gateway_shutdown_watchdog_start_loop_liveness_watchdog(const char *arg) { (void)arg; return 0; }
@@ -758,7 +766,12 @@ int gateway_relay_ws_transport_u_passthrough_from_wire(const char *arg) { (void)
 int gateway_relay_ws_transport_u_dial_and_start(const char *arg) { (void)arg; return 0; }
 
 /* PoP: auth_revoked @ gateway/relay/ws_transport.py:auth_revoked */
-int gateway_relay_ws_transport_auth_revoked(const char *arg) { (void)arg; return 0; }
+int gateway_relay_ws_transport_auth_revoked(const char *arg) {
+    /* Python: bool flag (4401 after prior handshake). Arg = "0"/"1". */
+    if (arg && arg[0] == '1') { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _bot_id_for @ gateway/relay/ws_transport.py:_bot_id_for */
 int gateway_relay_ws_transport_u_bot_id_for(const char *arg) { (void)arg; return 0; }

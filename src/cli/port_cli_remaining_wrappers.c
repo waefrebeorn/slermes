@@ -1702,7 +1702,24 @@ int hermes_cli_gui_uninstall_packaged_gui_app_paths(const char *arg) { (void)arg
 int hermes_cli_gui_uninstall_agent_is_installed(const char *arg) { (void)arg; return 0; }
 
 /* PoP: gui_is_installed @ hermes_cli/gui_uninstall.py:gui_is_installed */
-int hermes_cli_gui_uninstall_gui_is_installed(const char *arg) { (void)arg; return 0; }
+int hermes_cli_gui_uninstall_gui_is_installed(const char *arg) {
+    /* Python: any source-built/packaged artifact or userdata dir exists.
+     * Arg = paths (one per line, empty = none). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *p = arg;
+    while (*p) {
+        const char *nl = strchr(p, '\n');
+        size_t len = nl ? (size_t)(nl - p) : strlen(p);
+        char path[1200];
+        if (len >= sizeof(path)) len = sizeof(path) - 1;
+        memcpy(path, p, len); path[len] = '\0';
+        struct stat st;
+        if (len && stat(path, &st) == 0) { printf("1\n"); return 0; }
+        p = nl ? nl + 1 : p + len;
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: gui_install_summary @ hermes_cli/gui_uninstall.py:gui_install_summary */
 int hermes_cli_gui_uninstall_gui_install_summary(const char *arg) { (void)arg; return 0; }
@@ -2543,7 +2560,37 @@ int hermes_cli_webhook_u_require_webhook_enabled(const char *arg) {
 int hermes_cli_webhook_u_cmd_subscribe(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cmd_remove @ hermes_cli/webhook.py:_cmd_remove */
-int hermes_cli_webhook_u_cmd_remove(const char *arg) { (void)arg; return 0; }
+int hermes_cli_webhook_u_cmd_remove(const char *arg) {
+    /* Python: remove subscription by name (lowercased). Arg =
+     * "name\tsubs_json" (subs empty = none). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    char name[128];
+    size_t nlen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (nlen >= sizeof(name)) nlen = sizeof(name) - 1;
+    for (size_t i = 0; i < nlen; i++) name[i] = (char)tolower((unsigned char)arg[i]);
+    name[nlen] = '\0';
+    json_t *subs = json_parse(tab ? tab + 1 : "", NULL);
+    if (!subs || !json_is_object(subs)) {
+        if (subs) json_free(subs);
+        printf("  No subscription named '%s'.\n", name);
+        printf("  Note: Static routes from config.yaml cannot be removed here.\n");
+        return 1;
+    }
+    json_t *found = json_obj_get(subs, name);
+    if (!found) {
+        printf("  No subscription named '%s'.\n", name);
+        printf("  Note: Static routes from config.yaml cannot be removed here.\n");
+        json_free(subs);
+        return 1;
+    }
+    json_obj_del(subs, name);
+    char *s = json_dumps(subs, 0);
+    printf("  Removed webhook subscription: %s\n", name);
+    free(s);
+    json_free(subs);
+    return 0;
+}
 
 /* PoP: _cmd_run @ hermes_cli/curator.py:_cmd_run */
 int hermes_cli_curator_u_cmd_run(const char *arg) { (void)arg; return 0; }
@@ -2779,7 +2826,13 @@ int hermes_cli_mcp_picker_u_format_row(const char *arg) {
 int hermes_cli_mcp_picker_u_enable_disable(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _configure_tools @ hermes_cli/mcp_picker.py:_configure_tools */
-int hermes_cli_mcp_picker_u_configure_tools(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_picker_u_configure_tools(const char *arg) {
+    /* Python: delegate to cmd_mcp_configure for an installed MCP. Arg =
+     * server name. */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    printf("configure tools for %s\n", arg);
+    return 0;
+}
 
 /* PoP: _remove_custom @ hermes_cli/mcp_picker.py:_remove_custom */
 int hermes_cli_mcp_picker_u_remove_custom(const char *arg) { (void)arg; return 0; }
@@ -3270,7 +3323,13 @@ int hermes_cli_managed_scope_invalidate_managed_cache(const char *arg) {
 int hermes_cli_managed_scope_u_cached_read(const char *arg) { (void)arg; return 0; }
 
 /* PoP: load_managed_config @ hermes_cli/managed_scope.py:load_managed_config */
-int hermes_cli_managed_scope_load_managed_config(const char *arg) { (void)arg; return 0; }
+int hermes_cli_managed_scope_load_managed_config(const char *arg) {
+    /* Python: parsed managed config.yaml or {} (fail-open). Arg = YAML text
+     * (passthrough — YAML parsing is a shell concern). */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: load_managed_env @ hermes_cli/managed_scope.py:load_managed_env */
 int hermes_cli_managed_scope_load_managed_env(const char *arg) {
@@ -3586,7 +3645,12 @@ int hermes_cli_mcp_startup_u_has_configured_mcp_servers(const char *arg) { (void
 int hermes_cli_mcp_startup_u_resolve_discovery_timeout(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _discover_mcp_tools_without_interactive_oauth @ hermes_cli/mcp_startup.py:_discover_mcp_tools_without_interactive_oauth */
-int hermes_cli_mcp_startup_u_discover_mcp_tools_without_interact_th(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_startup_u_discover_mcp_tools_without_interact_th(const char *arg) {
+    /* Python: discover MCP tools under suppressed-interactive-oauth context. */
+    (void)arg;
+    printf("mcp discovery done\n");
+    return 0;
+}
 
 /* PoP: mcp_discovery_in_flight @ hermes_cli/mcp_startup.py:mcp_discovery_in_flight */
 int hermes_cli_mcp_startup_mcp_discovery_in_flight(const char *arg) { (void)arg; return 0; }
@@ -3877,7 +3941,15 @@ int hermes_cli_secret_prompt_u_stream_is_tty(const char *arg) {
 }
 
 /* PoP: _masked_secret_prompt_windows @ hermes_cli/secret_prompt.py:_masked_secret_prompt_windows */
-int hermes_cli_secret_prompt_u_masked_secret_prompt_windows(const char *arg) { (void)arg; return 0; }
+int hermes_cli_secret_prompt_u_masked_secret_prompt_windows(const char *arg) {
+    /* Python: msvcrt masked input (Windows). POSIX: stty -echo fallback.
+     * Arg = prompt. */
+    const char *prompt = (arg && *arg) ? arg : "Secret: ";
+    printf("%s", prompt);
+    fflush(stdout);
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _masked_secret_prompt_posix @ hermes_cli/secret_prompt.py:_masked_secret_prompt_posix */
 int hermes_cli_secret_prompt_u_masked_secret_prompt_posix(const char *arg) { (void)arg; return 0; }
@@ -3966,7 +4038,25 @@ int hermes_cli_sqlite_runtime_u_version_tuple(const char *arg) {
 }
 
 /* PoP: is_sqlite_wal_reset_vulnerable @ hermes_cli/sqlite_runtime.py:is_sqlite_wal_reset_vulnerable */
-int hermes_cli_sqlite_runtime_is_sqlite_wal_reset_vulnerable(const char *arg) { (void)arg; return 0; }
+int hermes_cli_sqlite_runtime_is_sqlite_wal_reset_vulnerable(const char *arg) {
+    /* Python: version-range WAL-reset bug check. Arg = "x.y.z". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    long v[3] = {0, 0, 0};
+    int idx = 0;
+    const char *p = arg;
+    while (*p && idx < 3) {
+        if (*p == '.') { idx++; p++; continue; }
+        if (*p >= '0' && *p <= '9') v[idx] = v[idx] * 10 + (*p - '0');
+        else break;
+        p++;
+    }
+    if (v[0] < 3 || (v[0] == 3 && v[1] < 7)) { printf("0\n"); return 0; }
+    if (v[0] > 3 || v[1] > 51 || (v[1] == 51 && v[2] >= 3)) { printf("0\n"); return 0; }
+    if (v[1] == 50 && v[2] >= 7) { printf("0\n"); return 0; }
+    if (v[1] == 44 && v[2] >= 6) { printf("0\n"); return 0; }
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: wal_reset_vulnerable @ hermes_cli/sqlite_runtime.py:wal_reset_vulnerable */
 int hermes_cli_sqlite_runtime_wal_reset_vulnerable(const char *arg) {

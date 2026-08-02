@@ -599,7 +599,24 @@ int tools_delegation_live_log_tool_start(const char *arg) {
 }
 
 /* PoP: tool_result @ tools/delegation_live_log.py:tool_result */
-int tools_delegation_live_log_tool_result(const char *arg) { (void)arg; return 0; }
+int tools_delegation_live_log_tool_result(const char *arg) {
+    /* Python: event result "<name> ok|ERROR [dur]: <one_line>". Arg =
+     * "name\tis_error\tduration\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *name = arg;
+    const char *status = (t1 && t1[1] == '1') ? "ERROR" : "ok";
+    char dur[32] = "";
+    if (t2 && t2[1]) {
+        double d = strtod(t2 + 1, NULL);
+        snprintf(dur, sizeof(dur), " %.1fs", d);
+    }
+    const char *result = t3 ? t3 + 1 : "";
+    printf("result %s %s%s: %s\n", name ? name : "?", status, dur, result);
+    return 0;
+}
 
 /* PoP: add_stream_delta @ tools/delegation_live_log.py:add_stream_delta */
 int tools_delegation_live_log_add_stream_delta(const char *arg) {
@@ -994,7 +1011,15 @@ int tools_tool_backend_helpers_normalize_modal_mode(const char *arg) {
 }
 
 /* PoP: has_direct_modal_credentials @ tools/tool_backend_helpers.py:has_direct_modal_credentials */
-int tools_tool_backend_helpers_has_direct_modal_credentials(const char *arg) { (void)arg; return 0; }
+int tools_tool_backend_helpers_has_direct_modal_credentials(const char *arg) {
+    /* Python: MODAL_TOKEN_ID+SECRET or ~/.modal.toml. Arg = "env_set\tmodal_file". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int env_set = (arg[0] == '1');
+    int file_exists = tab ? (tab[1] == '1') : 0;
+    printf("%d\n", (env_set || file_exists) ? 1 : 0);
+    return 0;
+}
 
 /* PoP: resolve_modal_backend_state @ tools/tool_backend_helpers.py:resolve_modal_backend_state */
 int tools_tool_backend_helpers_resolve_modal_backend_state(const char *arg) { (void)arg; return 0; }
@@ -1387,7 +1412,12 @@ int tools_web_tools_u_registered_web_provider(const char *arg) { (void)arg; retu
 int tools_web_tools_u_registered_web_provider_available(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _list_registered_web_providers @ tools/web_tools.py:_list_registered_web_providers */
-int tools_web_tools_u_list_registered_web_providers(const char *arg) { (void)arg; return 0; }
+int tools_web_tools_u_list_registered_web_providers(const char *arg) {
+    /* Python: registry list_providers or []. Arg = names (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _probe_worker @ tools/env_probe.py:_probe_worker */
 int tools_env_probe_u_probe_worker(const char *arg) { (void)arg; return 0; }

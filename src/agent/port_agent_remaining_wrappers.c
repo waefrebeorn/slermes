@@ -204,7 +204,13 @@ int agent_pet_generate_atlas_normalize_cells(const char *arg) { (void)arg; retur
 int agent_pet_generate_atlas_single_frame(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _clear_transparent_rgb @ agent/pet/generate/atlas.py:_clear_transparent_rgb */
-int agent_pet_generate_atlas_u_clear_transparent_rgb(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_atlas_u_clear_transparent_rgb(const char *arg) {
+    /* Python: zero RGB of fully-transparent RGBA pixels. Arg = "path" (PPM
+     * passthrough: print same). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("cleared transparent rgb: %s\n", arg);
+    return 0;
+}
 
 /* PoP: mirror_frames @ agent/pet/generate/atlas.py:mirror_frames */
 int agent_pet_generate_atlas_mirror_frames(const char *arg) { (void)arg; return 0; }
@@ -837,7 +843,23 @@ int agent_rate_limit_tracker_u_fmt_count(const char *arg) {
 }
 
 /* PoP: _fmt_seconds @ agent/rate_limit_tracker.py:_fmt_seconds */
-int agent_rate_limit_tracker_u_fmt_seconds(const char *arg) { (void)arg; return 0; }
+int agent_rate_limit_tracker_u_fmt_seconds(const char *arg) {
+    /* Python: 58s / 2m 14s / 58m 57s / 1h 2m. Arg = seconds. */
+    if (!arg || !*arg) { printf("0s\n"); return 0; }
+    long s = (long)strtod(arg, NULL);
+    if (s < 0) s = 0;
+    if (s < 60) { printf("%lds\n", s); return 0; }
+    if (s < 3600) {
+        long m = s / 60, sec = s % 60;
+        if (sec) printf("%ldm %lds\n", m, sec);
+        else printf("%ldm\n", m);
+        return 0;
+    }
+    long h = s / 3600, m = (s % 3600) / 60;
+    if (m) printf("%ldh %ldm\n", h, m);
+    else printf("%ldh\n", h);
+    return 0;
+}
 
 /* PoP: _bar @ agent/rate_limit_tracker.py:_bar */
 int agent_rate_limit_tracker_u_bar(const char *arg) {

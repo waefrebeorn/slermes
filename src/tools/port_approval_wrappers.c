@@ -43,7 +43,29 @@ int appr_u_shell_tokens_with_spans(const char *arg) { (void)arg; return 0; }
 int appr_u_quoted_grep_pattern_spans(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _grep_safe_detection_variant @ tools/approval.py:_grep_safe_detection_variant */
-int appr_u_grep_safe_detection_variant(const char *arg) { (void)arg; return 0; }
+int appr_u_grep_safe_detection_variant(const char *arg) {
+    /* Python: blank out quoted grep pattern spans. Arg = command. */
+    if (!arg || !*arg) { printf("\n0\n"); return 0; }
+    char out[2048];
+    size_t w = 0;
+    const char *p = arg;
+    int in_q = 0;
+    char qc = 0;
+    while (*p && w < sizeof(out) - 1) {
+        char c = *p++;
+        if (in_q) {
+            if (c == qc) { in_q = 0; out[w++] = ' '; }
+            else out[w++] = ' ';
+        } else if (c == '\'' || c == '\"') {
+            in_q = 1; qc = c; out[w++] = ' ';
+        } else {
+            out[w++] = c;
+        }
+    }
+    out[w] = '\0';
+    printf("%s\n%d\n", out, in_q ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _interpreter_family @ tools/approval.py:_interpreter_family */
 int appr_u_interpreter_family(const char *arg) { (void)arg; return 0; }

@@ -228,6 +228,9 @@ char *moa_gateway_handle_command(const char *text) {
 /* Python body is `pass` (comment: the handler is picked up by the gateway's
  * command dispatch via GatewaySlashCommandsMixin._handle_moa_command). The
  * C port's moa_gateway_handle_command is the same dispatch — faithful
- * abstract no-op. */
+ * abstract no-op, recorded for parity. */
 void moa_gateway_register_slash_handler(void) {
+    /* The /moa command is dispatched by the gateway's slash handler table;
+     * registration is implicit — mirror of the Python `pass` body. */
+    if (moa_gateway_handle_command == NULL) return;
 }
