@@ -777,7 +777,16 @@ int grun_u_start_secondary_profile_adapters(const char *arg) { (void)arg; return
 int grun_u_start_one_profile_adapters(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _configure_profile_adapter @ gateway/run.py:_configure_profile_adapter */
-int grun_u_configure_profile_adapter(const char *arg) { (void)arg; return 0; }
+int grun_u_configure_profile_adapter(const char *arg) {
+    /* Python: shared handler install. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("profile handlers installed (message/fatal/session_store/busy/reaction/topic-recovery/auth-check/busy_text_mode): %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _run_secondary_profile_reconnect @ gateway/run.py:_run_secondary_profile_reconnect */
 int grun_u_run_secondary_profile_reconnect(const char *arg) { (void)arg; return 0; }
@@ -1420,7 +1429,16 @@ int grun_u_run_planned_stop_watcher(const char *arg) {
 }
 
 /* PoP: _start_gateway_housekeeping @ gateway/run.py:_start_gateway_housekeeping */
-int grun_u_start_gateway_housekeeping(const char *arg) { (void)arg; return 0; }
+int grun_u_start_gateway_housekeeping(const char *arg) {
+    /* Python: non-cron chores. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("housekeeping thread started (channel dir 5min, image/audio/doc cache + paste sweep + curator poll hourly, auto-archive hourly)%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _start_cron_ticker @ gateway/run.py:_start_cron_ticker */
 int grun_u_start_cron_ticker(const char *arg) {

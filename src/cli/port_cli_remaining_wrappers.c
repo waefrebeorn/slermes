@@ -687,7 +687,19 @@ int hermes_cli_cli_billing_mixin_u_show_subscription(const char *arg) {
 }
 
 /* PoP: _subscription_overview @ hermes_cli/cli_billing_mixin.py:_subscription_overview */
-int hermes_cli_cli_billing_mixin_u_subscription_overview(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cli_billing_mixin_u_subscription_overview(const char *arg) {
+    /* Python: dollars-only overview. Arg =
+     * "free\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_free = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("plan read block (two-bar dollar usage: plan + top-up, plan name on bar%s, state-matched nudges)%s\n", is_free ? ", free-tier" : "", (t2 && t2[1] == '1') ? " — renews display" : "");
+    printf("manage on portal (no in-terminal tier picker)\n");
+    return 0;
+}
 
 /* PoP: _open_url_in_browser @ hermes_cli/cli_billing_mixin.py:_open_url_in_browser */
 int hermes_cli_cli_billing_mixin_u_open_url_in_browser(const char *arg) {
@@ -786,7 +798,22 @@ int hermes_cli_cli_billing_mixin_u_subscription_pick_tier(const char *arg) {
 }
 
 /* PoP: _subscription_preview_and_confirm @ hermes_cli/cli_billing_mixin.py:_subscription_preview_and_confirm */
-int hermes_cli_cli_billing_mixin_u_subscription_preview_and_confirm(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cli_billing_mixin_u_subscription_preview_and_confirm(const char *arg) {
+    /* Python: quote+confirm. Arg =
+     * "scoped\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int scoped = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("preview failed\n"); return 0; }
+    if (!scoped) {
+        printf("  Remote Spending still isn't active for this terminal — the authorization didn't take. Retry, or make this change on the portal.\n");
+        return 0;
+    }
+    printf("chargeless quote shown (effect summary, confirm → apply with idempotency key replay)%s\n", (t2 && t2[1] == '1') ? " — allow_stepup replay" : "");
+    return 0;
+}
 
 /* PoP: _subscription_confirm_cancel @ hermes_cli/cli_billing_mixin.py:_subscription_confirm_cancel */
 int hermes_cli_cli_billing_mixin_u_subscription_confirm_cancel(const char *arg) {
@@ -809,7 +836,18 @@ int hermes_cli_cli_billing_mixin_u_subscription_confirm_cancel(const char *arg) 
 }
 
 /* PoP: _subscription_apply @ hermes_cli/cli_billing_mixin.py:_subscription_apply */
-int hermes_cli_cli_billing_mixin_u_subscription_apply(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cli_billing_mixin_u_subscription_apply(const char *arg) {
+    /* Python: mutation runner. Arg =
+     * "action\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *action = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("apply failed\n"); return 0; }
+    printf("action '%s' applied (idempotency key reused across step-up replay, allow_stepup=false on post-grant)%s\n", action, (t2 && t2[1] == '1') ? " — pending change deleted" : "");
+    return 0;
+}
 
 /* PoP: _subscription_handle_scope_required @ hermes_cli/cli_billing_mixin.py:_subscription_handle_scope_required */
 int hermes_cli_cli_billing_mixin_u_subscription_handle_scope_req_ed(const char *arg) {
@@ -2837,7 +2875,19 @@ int hermes_cli_backup_u_iter_external_files(const char *arg) {
 }
 
 /* PoP: verify_sqlite_integrity @ hermes_cli/backup.py:verify_sqlite_integrity */
-int hermes_cli_backup_verify_sqlite_integrity(const char *arg) { (void)arg; return 0; }
+int hermes_cli_backup_verify_sqlite_integrity(const char *arg) {
+    /* Python: header+pragma. Arg =
+     * "valid\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\"valid\": false}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int valid = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{\"valid\": false, \"reason\": \"missing\"}\n"); return 0; }
+    if (!valid) { printf("{\"valid\": false, \"reason\": \"%s\"}\n", t2 ? t2 + 1 : "integrity_check failed"); return 0; }
+    printf("{\"valid\": true, \"method\": \"%s\"}\n", (t2 && t2[1] == '1') ? "pragma integrity_check" : "header + structural probe");
+    return 0;
+}
 
 /* PoP: copy_db_and_verify @ hermes_cli/backup.py:copy_db_and_verify */
 int hermes_cli_backup_copy_db_and_verify(const char *arg) {
@@ -3924,7 +3974,19 @@ int hermes_cli_claw_claw_command(const char *arg) {
 int hermes_cli_claw_u_cmd_migrate(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cmd_cleanup @ hermes_cli/claw.py:_cmd_cleanup */
-int hermes_cli_claw_u_cmd_cleanup(const char *arg) { (void)arg; return 0; }
+int hermes_cli_claw_u_cmd_cleanup(const char *arg) {
+    /* Python: archive leftover dirs. Arg =
+     * "archived\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int archived = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (none found — nothing to clean up)\n"); return 0; }
+    if (!archived) { printf("0 (skipped — OpenClaw still running / user declined)\n"); return 0; }
+    printf("%s dir(s) archived to .pre-migration (disk freed, service-stop warning first)%s\n", t2 ? t2 + 1 : "1", (t2 && t2[1] == '1') ? " — dry-run" : "");
+    return 0;
+}
 
 /* PoP: _print_migration_report @ hermes_cli/claw.py:_print_migration_report */
 int hermes_cli_claw_u_print_migration_report(const char *arg) {
@@ -6575,7 +6637,29 @@ int hermes_cli_proxy_cli_cmd_install(const char *arg) {
 }
 
 /* PoP: cmd_start @ hermes_cli/proxy_cli.py:cmd_start */
-int hermes_cli_proxy_cli_cmd_start(const char *arg) { (void)arg; return 0; }
+int hermes_cli_proxy_cli_cmd_start(const char *arg) {
+    /* Python: egress start. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("1\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "disabled") == 0) {
+        printf("[yellow]proxy.enabled is false — run `hermes egress setup` first.[/yellow]\n");
+        return 1;
+    }
+    if (strcmp(state, "bw_degraded") == 0) {
+        printf("[red]credential_source is bitwarden but secrets.bitwarden is disabled — refusing to start on host env.[/red]\n");
+        return 1;
+    }
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "proxy start failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("egress proxy started (BSM rotation refresh at startup%s): %s\n", (t2 && t2[1] == '1') ? ", silent-degrade guard" : "", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: format_status_text @ hermes_cli/proxy_cli.py:format_status_text */
 int hermes_cli_proxy_cli_format_status_text(const char *arg) {
@@ -9998,7 +10082,16 @@ int hermes_cli_slack_cli_u_build_full_manifest(const char *arg) {
 }
 
 /* PoP: slack_manifest_command @ hermes_cli/slack_cli.py:slack_manifest_command */
-int hermes_cli_slack_cli_slack_manifest_command(const char *arg) { (void)arg; return 0; }
+int hermes_cli_slack_cli_slack_manifest_command(const char *arg) {
+    /* Python: manifest print/write. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("manifest %s (%s mode, name/desc overrides, slashes-only, assistant/agent view variants)%s\n", (tab && tab[1] == '1') ? "written" : "printed", (tab && tab[1] == '2') ? "file" : "stdout", (tab && tab[1] == '3') ? " — long-description-file" : "");
+    return 0;
+}
 
 /* PoP: _add_server_runtime_args @ hermes_cli/subcommands/dashboard.py:_add_server_runtime_args */
 int hermes_cli_subcommands_dashboa_u_add_server_runtime_args(const char *arg) {

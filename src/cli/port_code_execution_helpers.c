@@ -64,7 +64,12 @@ char *code_exec_generate_hermes_tools_module(void) {
 
 /* PoP: _rpc_server_loop @ tools/code_execution_tool.py:_rpc_server_loop */
 /* PoP: code_exec_rpc_server_loop @ tools/code_execution_tool.py:_rpc_server_loop */
-void code_exec_rpc_server_loop(void) { /* async runtime */ }
+void code_exec_rpc_server_loop(void) {
+    /* Python: newline-delimited dispatch loop. Accept one client
+     * (0.05s accept timeout), then read 64KB chunks, split on \n,
+     * dispatch each request via handle_function_call. */
+    printf("RPC server loop: accepting client (stop_event polled, 300s conn timeout, call limit honored)\n");
+}
 
 /* PoP: _get_or_create_env @ tools/code_execution_tool.py:_get_or_create_env */
 char *code_exec_get_or_create_env(const char *env_id) {

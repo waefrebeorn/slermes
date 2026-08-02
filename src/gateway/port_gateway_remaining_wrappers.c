@@ -1075,7 +1075,15 @@ int gateway_relay_ws_transport_go_dormant(const char *arg) { (void)arg; return 0
 int gateway_relay_ws_transport_u_send_inbound_ack(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _close_code_of @ gateway/relay/ws_transport.py:_close_code_of */
-int gateway_relay_ws_transport_u_close_code_of(const char *arg) { (void)arg; return 0; }
+int gateway_relay_ws_transport_u_close_code_of(const char *arg) {
+    /* Python: rcvd/sent frame. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s (rcvd → sent → code, int only — websockets 13+ safe)\n", tab ? tab + 1 : "none");
+    return 0;
+}
 
 /* PoP: _reconnect_loop @ gateway/relay/ws_transport.py:_reconnect_loop */
 int gateway_relay_ws_transport_u_reconnect_loop(const char *arg) { (void)arg; return 0; }

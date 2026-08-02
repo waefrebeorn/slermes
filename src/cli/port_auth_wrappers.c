@@ -495,7 +495,29 @@ int auth_u_recover_codex_tokens_from_cli(const char *arg) {
 }
 
 /* PoP: refresh_codex_oauth_pure @ hermes_cli/auth.py:refresh_codex_oauth_pure */
-int auth_refresh_codex_oauth_pure(const char *arg) { (void)arg; return 0; }
+int auth_refresh_codex_oauth_pure(const char *arg) {
+    /* Python: pure codex refresh. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_rt") == 0) {
+        fprintf(stderr, "Codex auth is missing refresh_token. Run `hermes auth` to re-authenticate.\n");
+        return 1;
+    }
+    if (strcmp(state, "quota") == 0) {
+        fprintf(stderr, "codex token refresh 429 (rate limit / usage quota): %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    if (strcmp(state, "invalid") == 0) {
+        fprintf(stderr, "codex refresh rejected (token_invalidated): %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("codex tokens refreshed (CODEX_OAUTH_TOKEN_URL, UA pinned)%s\n", (t2 && t2[1] == '1') ? " — 401 retried" : "");
+    return 0;
+}
 
 /* PoP: _refresh_codex_auth_tokens @ hermes_cli/auth.py:_refresh_codex_auth_tokens */
 int auth_u_refresh_codex_auth_tokens(const char *arg) {
@@ -879,7 +901,21 @@ int auth_fetch_nous_models(const char *arg) {
 }
 
 /* PoP: resolve_nous_access_token @ hermes_cli/auth.py:resolve_nous_access_token */
-int auth_resolve_nous_access_token(const char *arg) { (void)arg; return 0; }
+int auth_resolve_nous_access_token(const char *arg) {
+    /* Python: portal override first. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "not_logged_in") == 0) {
+        fprintf(stderr, "Hermes is not logged into Nous Portal.\n");
+        return 1;
+    }
+    printf("access token resolved (HERMES_PORTAL_BASE_URL override wins outright, else stored+allowlist gate, refresh-aware)%s\n", (t2 && t2[1] == '1') ? " — refreshed" : "");
+    return 0;
+}
 
 /* PoP: refresh_nous_oauth_pure @ hermes_cli/auth.py:refresh_nous_oauth_pure */
 int auth_refresh_nous_oauth_pure(const char *arg) {

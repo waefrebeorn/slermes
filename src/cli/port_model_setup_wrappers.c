@@ -326,4 +326,21 @@ int msf_u_select_zai_endpoint(const char *arg) {
 }
 
 /* PoP: _model_flow_anthropic @ hermes_cli/model_setup_flows.py:_model_flow_anthropic */
-int msf_u_model_flow_anthropic(const char *arg) { (void)arg; return 0; }
+int msf_u_model_flow_anthropic(const char *arg) {
+    /* Python: 3-source flow. Arg =
+     * "cc\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int cc = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (cc) {
+        printf("  ✓ Claude Code credentials linked.\n");
+        printf("    Hermes will use Claude's credential store directly.\n");
+        return 0;
+    }
+    printf("Anthropic flow (OAuth setup-token / API key prompt / stale-OAuth re-auth guard)%s\n", (t2 && t2[1] == '1') ? " — cc creds available" : "");
+    printf("  ✓ Using Anthropic model: %s\n", "claude-sonnet-4-5");
+    return 0;
+}

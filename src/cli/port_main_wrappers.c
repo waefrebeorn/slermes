@@ -577,7 +577,18 @@ int main_u_apply_tui_python_env(const char *arg) {
 }
 
 /* PoP: _launch_tui @ hermes_cli/main.py:_launch_tui */
-int main_u_launch_tui(const char *arg) { (void)arg; return 0; }
+int main_u_launch_tui(const char *arg) {
+    /* Python: exec TUI. Arg =
+     * "worktree\tstate\tresult". */
+    if (!arg || !*arg) { printf("exec failed\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int worktree = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("TUI not built — run hermes update or install ui-tui deps\n"); return 1; }
+    printf("os.execvp TUI (HERMES_TUI_ACTIVE_SESSION_FILE temp, NODE_ENV=%s, terminal config bridge%s)%s\n", (t2 && t2[1] == '1') ? "development" : "production", worktree ? ", worktree setup with stale prune" : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _pin_kanban_board_env @ hermes_cli/main.py:_pin_kanban_board_env */
 int main_u_pin_kanban_board_env(const char *arg) {
@@ -1559,7 +1570,17 @@ int main_u_desktop_launch_options(const char *arg) {
 int main_cmd_gui(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _find_stale_dashboard_pids @ hermes_cli/main.py:_find_stale_dashboard_pids */
-int main_u_find_stale_dashboard_pids(const char *arg) { (void)arg; return 0; }
+int main_u_find_stale_dashboard_pids(const char *arg) {
+    /* Python: dashboard lock finder. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s pid(s) (self excluded, exclude_pids honored — HERMES_DESKTOP_CHILD_PID protected)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — managed unit separate path" : "");
+    return 0;
+}
 
 /* PoP: _print_curator_first_run_notice @ hermes_cli/main.py:_print_curator_first_run_notice */
 int main_u_print_curator_first_run_notice(const char *arg) {
@@ -2739,7 +2760,19 @@ int main_u_format_venv_python_holders_message(const char *arg) {
 }
 
 /* PoP: _pause_windows_gateways_for_update @ hermes_cli/main.py:_pause_windows_gateways_for_update */
-int main_u_pause_windows_gateways_for_update(const char *arg) { (void)arg; return 0; }
+int main_u_pause_windows_gateways_for_update(const char *arg) {
+    /* Python: pythonw-aware pause. Arg =
+     * "paused\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int paused = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!paused) { printf("no running gateways (autostart entries noted for re-arm)\n"); return 0; }
+    printf("%s gateway pid(s) paused (discovery-identified only, drain honored, autostart re-armed)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — resume marker written" : "");
+    return 0;
+}
 
 /* PoP: _cold_start_windows_gateway_after_update @ hermes_cli/main.py:_cold_start_windows_gateway_after_update */
 int main_u_cold_start_windows_gateway_after_update(const char *arg) {

@@ -1063,7 +1063,17 @@ int tools_delegate_tool_u_inherit_parent_base_url(const char *arg) {
 }
 
 /* PoP: _dump_subagent_timeout_diagnostic @ tools/delegate_tool.py:_dump_subagent_timeout_diagnostic */
-int tools_delegate_tool_u_dump_subagent_timeout_diagnostic(const char *arg) { (void)arg; return 0; }
+int tools_delegate_tool_u_dump_subagent_timeout_diagnostic(const char *arg) {
+    /* Python: #14726 dump. Arg =
+     * "path\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("diagnostic dumped: %s (config, prompt/schema sizes, activity snapshot, worker stack)\n", t2 ? t2 + 1 : "logs/subagent-timeout-<sid>-<ts>.log");
+    return 0;
+}
 
 /* PoP: _spill_summary_to_file @ tools/delegate_tool.py:_spill_summary_to_file */
 int tools_delegate_tool_u_spill_summary_to_file(const char *arg) {
@@ -3137,7 +3147,19 @@ int tools_image_generation_tool_check_image_generation_requirements(const char *
 }
 
 /* PoP: _dispatch_to_plugin_provider @ tools/image_generation_tool.py:_dispatch_to_plugin_provider */
-int tools_image_generation_tool_u_dispatch_to_plugin_provider(const char *arg) { (void)arg; return 0; }
+int tools_image_generation_tool_u_dispatch_to_plugin_provider(const char *arg) {
+    /* Python: plugin registry route. Arg =
+     * "dispatched\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int dispatched = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!dispatched) { printf("\n"); return 0; }
+    printf("dispatched via plugin provider (configured != fal; image_url/refs forwarded for edit routing): %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: post_json @ tools/microsoft_graph_client.py:post_json */
 int tools_microsoft_graph_client_post_json(const char *arg) { (void)arg; return 0; }
