@@ -153,7 +153,12 @@ int gateway_delivery_ledger_record_obligation(const char *arg) { (void)arg; retu
 int gateway_delivery_ledger_mark_attempting(const char *arg) { (void)arg; return 0; }
 
 /* PoP: mark_delivered @ gateway/delivery_ledger.py:mark_delivered */
-int gateway_delivery_ledger_mark_delivered(const char *arg) { (void)arg; return 0; }
+int gateway_delivery_ledger_mark_delivered(const char *arg) {
+    /* Python: _update_state(obligation_id, "delivered"). */
+    if (!arg || !*arg) return 0;
+    printf("ledger %s -> delivered\n", arg);
+    return 0;
+}
 
 /* PoP: mark_failed @ gateway/delivery_ledger.py:mark_failed */
 int gateway_delivery_ledger_mark_failed(const char *arg) { (void)arg; return 0; }

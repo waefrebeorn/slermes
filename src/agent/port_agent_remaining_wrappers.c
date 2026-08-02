@@ -971,7 +971,11 @@ int agent_billing_usage_build_usage_model(const char *arg) { (void)arg; return 0
 int agent_billing_usage_u_dev_fixture_usage_model(const char *arg) { (void)arg; return 0; }
 
 /* PoP: has_data @ agent/credits_tracker.py:has_data */
-int agent_credits_tracker_has_data(const char *arg) { (void)arg; return 0; }
+int agent_credits_tracker_has_data(const char *arg) {
+    /* Python: self.captured_at > 0. */
+    if (!arg || !*arg) return 0;
+    return strtod(arg, NULL) > 0;
+}
 
 /* PoP: age_seconds @ agent/credits_tracker.py:age_seconds */
 int agent_credits_tracker_age_seconds(const char *arg) { (void)arg; return 0; }
@@ -1034,7 +1038,18 @@ int agent_runtime_cwd_u_is_install_tree(const char *arg) { (void)arg; return 0; 
 int agent_system_prompt_u_tui_embedded_pane_clarifier(const char *arg) { (void)arg; return 0; }
 
 /* PoP: tool_may_have_side_effect @ agent/tool_result_classification.py:tool_may_have_side_effect */
-int agent_tool_result_classificati_tool_may_have_side_effect(const char *arg) { (void)arg; return 0; }
+int agent_tool_result_classificati_tool_may_have_side_effect(const char *arg) {
+    /* Python: tool_name not in NO_EFFECT_TOOL_NAMES. */
+    if (!arg || !*arg) return 1;
+    static const char *NO_EFFECT[] = {
+        "read_file", "search_files", "session_search", "skill_view", "skills_list",
+        "web_extract", "web_search", "vision_analyze", "browser_snapshot",
+        "browser_get_images", "browser_console", "read_terminal", NULL
+    };
+    for (int i = 0; NO_EFFECT[i]; i++)
+        if (strcmp(NO_EFFECT[i], arg) == 0) return 0;
+    return 1;
+}
 
 /* PoP: get_provider_env @ agent/web_search_provider.py:get_provider_env */
 int agent_web_search_provider_get_provider_env(const char *arg) { (void)arg; return 0; }

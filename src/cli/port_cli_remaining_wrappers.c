@@ -849,7 +849,11 @@ int hermes_cli_env_loader_u_remediation_hint(const char *arg) { (void)arg; retur
 int hermes_cli_env_loader_u_load_secrets_config(const char *arg) { (void)arg; return 0; }
 
 /* PoP: log_info @ hermes_cli/gui_uninstall.py:log_info */
-int hermes_cli_gui_uninstall_log_info(const char *arg) { (void)arg; return 0; }
+int hermes_cli_gui_uninstall_log_info(const char *arg) {
+    /* Python: print(f"{color('→', Colors.CYAN)} {msg}"). */
+    printf("\x1b[36m→\x1b[0m %s\n", arg ? arg : "");
+    return 0;
+}
 
 /* PoP: log_success @ hermes_cli/gui_uninstall.py:log_success */
 int hermes_cli_gui_uninstall_log_success(const char *arg) { (void)arg; return 0; }

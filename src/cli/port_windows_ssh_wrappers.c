@@ -33,7 +33,22 @@ int wssr_u_root(const char *arg) {
 }
 
 /* PoP: _directory @ hermes_cli/windows_ssh_runtime.py:_directory */
-int wssr_u_directory(const char *arg) { (void)arg; return 0; }
+int wssr_u_directory(const char *arg) {
+    /* Python: _root() / _ownership(ownership_id) — desktop-ssh/<id> with
+     * a 32-hex ownership-id validation. */
+    if (!arg || !*arg) return 0;
+    const char *hh = getenv("HERMES_HOME");
+    char base[1024];
+    if (hh && *hh) snprintf(base, sizeof(base), "%s", hh);
+    else snprintf(base, sizeof(base), "%s/.hermes", getenv("HOME") ? getenv("HOME") : ".");
+    /* validate 32 hex chars */
+    int valid = (int)strlen(arg) == 32;
+    for (const char *p = arg; *p && valid; p++)
+        if (!isxdigit((unsigned char)*p)) valid = 0;
+    if (!valid) return 0;
+    printf("%s/desktop-ssh/%s\n", base, arg);
+    return 0;
+}
 
 /* PoP: _log_path @ hermes_cli/windows_ssh_runtime.py:_log_path */
 int wssr_u_log_path(const char *arg) {
