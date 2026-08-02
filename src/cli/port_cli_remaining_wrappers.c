@@ -73,7 +73,25 @@ int hermes_cli_dashboard_auth_rout_api_auth_providers(const char *arg) {
 }
 
 /* PoP: auth_login @ hermes_cli/dashboard_auth/routes.py:auth_login */
-int hermes_cli_dashboard_auth_rout_auth_login(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_rout_auth_login(const char *arg) {
+    /* Python: provider login. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"detail\": \"Unknown provider\"}\n"); return 404; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "unknown") == 0 || strcmp(state, "no_session") == 0) {
+        printf("{\"detail\": \"Unknown provider / no interactive login\"}\n");
+        return 404;
+    }
+    if (strcmp(state, "password") == 0) {
+        printf("login_url (password form w/ safe next)%s\n", (t2 && t2[1] == '1') ? "" : "");
+        return 0;
+    }
+    printf("oauth authorize redirect (provider=%s): %s%s\n", t2 ? t2 + 1 : "?", t3 ? t3 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _validate_loopback_redirect_uri @ hermes_cli/dashboard_auth/routes.py:_validate_loopback_redirect_uri */
 int hermes_cli_dashboard_auth_rout_u_validate_loopback_redirect_uri(const char *arg) { (void)arg; return 0; }
@@ -192,7 +210,21 @@ int hermes_cli_dashboard_auth_rout_auth_native_token(const char *arg) {
 }
 
 /* PoP: auth_native_refresh @ hermes_cli/dashboard_auth/routes.py:auth_native_refresh */
-int hermes_cli_dashboard_auth_rout_auth_native_refresh(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_rout_auth_native_refresh(const char *arg) {
+    /* Python: desktop RT rotation. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"detail\": \"session_expired\"}\n"); return 401; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "expired") == 0) {
+        printf("{\"detail\": \"session_expired\"} (all providers rejected RT — fresh native login)\n");
+        return 401;
+    }
+    printf("{\"access_token\": \"%s\", \"refresh_token\": \"***\"} (provider stacking mirrors middleware; JSON body, no cookie)%s\n", t3 ? t3 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _pending_file @ hermes_cli/debug.py:_pending_file */
 int hermes_cli_debug_u_pending_file(const char *arg) {

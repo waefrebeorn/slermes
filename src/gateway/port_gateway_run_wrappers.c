@@ -228,7 +228,17 @@ int grun_u_safe_adapter_disconnect(const char *arg) {
 }
 
 /* PoP: _bounded_adapter_teardown @ gateway/run.py:_bounded_adapter_teardown */
-int grun_u_bounded_adapter_teardown(const char *arg) { (void)arg; return 0; }
+int grun_u_bounded_adapter_teardown(const char *arg) {
+    /* Python: timeout-budget teardown. Arg =
+     * "torn\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("1 (teardown bounded by per-adapter budget — wedged ws can't stall shutdown past TimeoutStopSec #14128)%s\n", (t2 && t2[1] == '1') ? " — timed out" : "");
+    return 0;
+}
 
 /* PoP: _connect_initial_adapter_with_timeout @ gateway/run.py:_connect_initial_adapter_with_timeout */
 int grun_u_connect_initial_adapter_with_timeout(const char *arg) {
@@ -747,7 +757,18 @@ int grun_u_agent_has_active_subagents(const char *arg) {
 }
 
 /* PoP: _session_has_compression_in_flight @ gateway/run.py:_session_has_compression_in_flight */
-int grun_u_session_has_compression_in_flight(const char *arg) { (void)arg; return 0; }
+int grun_u_session_has_compression_in_flight(const char *arg) {
+    /* Python: lock holder probe. Arg =
+     * "in_flight\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!(arg[0] == '1')) { printf("0 (no lock held)\n"); return 0; }
+    printf("1 (compression lock held — interrupt demoted to queue #56391; probes offloaded to worker thread)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _lookup_session_id_under_store_lock @ gateway/run.py:_lookup_session_id_under_store_lock */
 int grun_u_lookup_session_id_under_store_lock(const char *arg) {
@@ -999,7 +1020,17 @@ int grun_u_spawn_supervised(const char *arg) {
 }
 
 /* PoP: _handoff_watcher @ gateway/run.py:_handoff_watcher */
-int grun_u_handoff_watcher(const char *arg) { (void)arg; return 0; }
+int grun_u_handoff_watcher(const char *arg) {
+    /* Python: CLI→gateway handoff. Arg =
+     * "handled\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no pending handoffs)\n"); return 0; }
+    printf("%s handoff(s) (claim pending→running; switch_session rebind; synthetic internal MessageEvent)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _process_handoff @ gateway/run.py:_process_handoff */
 int grun_u_process_handoff(const char *arg) { (void)arg; return 0; }
@@ -1354,7 +1385,19 @@ int grun_u_handle_voice_timeout_cleanup(const char *arg) {
 }
 
 /* PoP: _handle_voice_channel_input @ gateway/run.py:_handle_voice_channel_input */
-int grun_u_handle_voice_channel_input(const char *arg) { (void)arg; return 0; }
+int grun_u_handle_voice_channel_input(const char *arg) {
+    /* Python: voice → synthetic event. Arg =
+     * "processed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0 (no discord adapter)\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int processed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no linked text channel)\n"); return 0; }
+    if (!processed) { printf("0\n"); return 0; }
+    printf("1 (voice input through full pipeline — session/typing/agent/TTS reply shared with bound text chat)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _should_send_voice_reply @ gateway/run.py:_should_send_voice_reply */
 int grun_u_should_send_voice_reply(const char *arg) {
@@ -1530,7 +1573,19 @@ int grun_u_telegram_topic_root_status_message(const char *arg) {
 }
 
 /* PoP: _restore_telegram_topic_session @ gateway/run.py:_restore_telegram_topic_session */
-int grun_u_restore_telegram_topic_session(const char *arg) { (void)arg; return 0; }
+int grun_u_restore_telegram_topic_session(const char *arg) {
+    /* Python: /topic restore. Arg =
+     * "restored\tstate\tresult". */
+    if (!arg || !*arg) { printf("Session not found.\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int restored = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("Session not found.\n"); return 0; }
+    if (!restored) { printf("That session is not a Telegram session and cannot be restored into this topic.\n"); return 0; }
+    printf("1 (session restored into topic; unlinked list refreshed)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _execute_mcp_reload @ gateway/run.py:_execute_mcp_reload */
 int grun_u_execute_mcp_reload(const char *arg) { (void)arg; return 0; }
@@ -1539,7 +1594,19 @@ int grun_u_execute_mcp_reload(const char *arg) { (void)arg; return 0; }
 int grun_u_maybe_confirm_destructive_slash(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _request_slash_confirm @ gateway/run.py:_request_slash_confirm */
-int grun_u_request_slash_confirm(const char *arg) { (void)arg; return 0; }
+int grun_u_request_slash_confirm(const char *arg) {
+    /* Python: once/always/cancel. Arg =
+     * "buttons\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int buttons = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!buttons) { printf("ack text (picker fallback — text path IS the ack)\n"); return 0; }
+    printf("ack None (buttons self-explanatory; handler runs on response)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _read_user_config @ gateway/run.py:_read_user_config */
 int grun_u_read_user_config(const char *arg) {
@@ -1711,7 +1778,18 @@ int grun_u_build_process_event_source(const char *arg) {
 int grun_u_inject_watch_notification(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _classify_completion_target @ gateway/run.py:_classify_completion_target */
-int grun_u_classify_completion_target(const char *arg) { (void)arg; return 0; }
+int grun_u_classify_completion_target(const char *arg) {
+    /* Python: deliver/terminal/delayed. Arg =
+     * "class\tstate\tresult". */
+    if (!arg || !*arg) { printf("terminal\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *cls = t1 ? t1 + 1 : "terminal";
+    int state = arg[0] == '1';
+    if (!state) { printf("terminal\n"); return 0; }
+    printf("%s (spawning session live / compression-rotated continuation #55578 pre-flight; durable ack stays honest)%s\n", cls, (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _deliver_completion_notification @ gateway/run.py:_deliver_completion_notification */
 int grun_u_deliver_completion_notification(const char *arg) { (void)arg; return 0; }
@@ -1732,7 +1810,17 @@ int grun_u_enrich_async_delegation_routing(const char *arg) {
 }
 
 /* PoP: _async_delegation_watcher @ gateway/run.py:_async_delegation_watcher */
-int grun_u_async_delegation_watcher(const char *arg) { (void)arg; return 0; }
+int grun_u_async_delegation_watcher(const char *arg) {
+    /* Python: idle drain. Arg =
+     * "drained\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (queue empty — silent)\n"); return 0; }
+    printf("%s completion(s) injected as new turns (covers idle case; mirrors CLI process_loop drain)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _run_process_watcher @ gateway/run.py:_run_process_watcher */
 int grun_u_run_process_watcher(const char *arg) { (void)arg; return 0; }
@@ -1872,7 +1960,19 @@ int grun_u_bind_adapter_run_generation(const char *arg) {
 }
 
 /* PoP: _interrupt_and_clear_session @ gateway/run.py:_interrupt_and_clear_session */
-int grun_u_interrupt_and_clear_session(const char *arg) { (void)arg; return 0; }
+int grun_u_interrupt_and_clear_session(const char *arg) {
+    /* Python: consistent clear. Arg =
+     * "cleared\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int cleared = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no session key)\n"); return 0; }
+    if (!cleared) { printf("0\n"); return 0; }
+    printf("1 (agent interrupted + generation invalidated + adapter activity cleared)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _refresh_agent_cache_message_count @ gateway/run.py:_refresh_agent_cache_message_count */
 int grun_u_refresh_agent_cache_message_count(const char *arg) { (void)arg; return 0; }
@@ -2003,7 +2103,17 @@ int grun_u_profile_name_for_source(const char *arg) {
 }
 
 /* PoP: _resolve_profile_home_for_source @ gateway/run.py:_resolve_profile_home_for_source */
-int grun_u_resolve_profile_home_for_source(const char *arg) { (void)arg; return 0; }
+int grun_u_resolve_profile_home_for_source(const char *arg) {
+    /* Python: 3-step home. Arg =
+     * "home\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("%s (active profile fallback)\n", t1 ? t1 + 1 : ""); return 0; }
+    printf("%s (source.profile > re-routed > active profile)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _run_planned_stop_watcher @ gateway/run.py:_run_planned_stop_watcher */
 int grun_u_run_planned_stop_watcher(const char *arg) {

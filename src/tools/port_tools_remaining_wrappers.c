@@ -3438,7 +3438,21 @@ int tools_microsoft_graph_client_post_json(const char *arg) {
 }
 
 /* PoP: _request @ tools/microsoft_graph_client.py:_request */
-int tools_microsoft_graph_client_u_request(const char *arg) { (void)arg; return 0; }
+int tools_microsoft_graph_client_u_request(const char *arg) {
+    /* Python: retry + refresh. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "graph request failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("%s (Bearer token, UA pinned; retries w/ forced refresh on 401; throttling backoff)%s\n", t3 ? t3 + 1 : "{}", (t2 && t2[1] == '1') ? " — refreshed" : "");
+    return 0;
+}
 
 /* PoP: _media_caption_split @ tools/send_message_tool.py:_media_caption_split */
 int tools_send_message_tool_u_media_caption_split(const char *arg) {

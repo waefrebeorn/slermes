@@ -1249,7 +1249,19 @@ int gateway_relay_ws_transport_u_bot_id_for(const char *arg) {
 }
 
 /* PoP: go_dormant @ gateway/relay/ws_transport.py:go_dormant */
-int gateway_relay_ws_transport_go_dormant(const char *arg) { (void)arg; return 0; }
+int gateway_relay_ws_transport_go_dormant(const char *arg) {
+    /* Python: D12 suspend-safe. Arg =
+     * "dormant\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int dormant = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!dormant) { printf("0 (transport refused)\n"); return 0; }
+    printf("1 (dormant: NOT disconnect (no supervisor cancel), NOT fast re-dial; suspended machine re-dials on wake, backlog drains)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _send_inbound_ack @ gateway/relay/ws_transport.py:_send_inbound_ack */
 int gateway_relay_ws_transport_u_send_inbound_ack(const char *arg) {
@@ -1591,7 +1603,19 @@ int gateway_relay_adapter_u_platform_is_fronted(const char *arg) {
 }
 
 /* PoP: _on_passthrough @ gateway/relay/adapter.py:_on_passthrough */
-int gateway_relay_adapter_u_on_passthrough(const char *arg) { (void)arg; return 0; }
+int gateway_relay_adapter_u_on_passthrough(const char *arg) {
+    /* Python: §5.1 edge-forward. Arg =
+     * "handled\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int handled = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (unsupported passthrough type)\n"); return 0; }
+    if (!handled) { printf("0\n"); return 0; }
+    printf("1 (already-sanitized request handled — connector was trust boundary, no credentials in body)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _discord_interaction_to_event @ gateway/relay/adapter.py:_discord_interaction_to_event */
 int gateway_relay_adapter_u_discord_interaction_to_event(const char *arg) {

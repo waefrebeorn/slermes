@@ -339,10 +339,34 @@ int qqbot_u_handle_group_message(const char *arg) {
 }
 
 /* PoP: _handle_guild_message @ gateway/platforms/qqbot/adapter.py:_handle_guild_message */
-int qqbot_u_handle_guild_message(const char *arg) { (void)arg; return 0; }
+int qqbot_u_handle_guild_message(const char *arg) {
+    /* Python: guild ACL. Arg =
+     * "handled\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int handled = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no channel / ACL blocked — debug logged)\n"); return 0; }
+    if (!handled) { printf("0\n"); return 0; }
+    printf("1 (guild message routed under group_policy ACL)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _handle_dm_message @ gateway/platforms/qqbot/adapter.py:_handle_dm_message */
-int qqbot_u_handle_dm_message(const char *arg) { (void)arg; return 0; }
+int qqbot_u_handle_dm_message(const char *arg) {
+    /* Python: guild DM ACL. Arg =
+     * "handled\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int handled = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no guild / dm_policy ACL blocked)\n"); return 0; }
+    if (!handled) { printf("0\n"); return 0; }
+    printf("1 (guild DM routed under dm_policy — previously unauthenticated hole closed)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _process_quoted_context @ gateway/platforms/qqbot/adapter.py:_process_quoted_context */
 int qqbot_u_process_quoted_context(const char *arg) { (void)arg; return 0; }

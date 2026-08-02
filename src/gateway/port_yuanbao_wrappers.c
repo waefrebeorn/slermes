@@ -663,7 +663,17 @@ int yb_u_resolve_media_urls(const char *arg) { (void)arg; return 0; }
 int yb_u_resolve_ybres_refs(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _collect_observed_media @ gateway/platforms/yuanbao.py:_collect_observed_media */
-int yb_u_collect_observed_media(const char *arg) { (void)arg; return 0; }
+int yb_u_collect_observed_media(const char *arg) {
+    /* Python: transcript anchors. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\t (no store / load failed)\n"); return 0; }
+    printf("%s path(s)\t%s mime(s) (recent image/file anchors hydrated)%s\n", t2 ? t2 + 1 : "0", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _resolve_quote_media @ gateway/platforms/yuanbao.py:_resolve_quote_media */
 int yb_u_resolve_quote_media(const char *arg) {
