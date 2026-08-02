@@ -150,7 +150,12 @@ int gateway_delivery_ledger_compute_obligation_id(const char *arg) { (void)arg; 
 int gateway_delivery_ledger_record_obligation(const char *arg) { (void)arg; return 0; }
 
 /* PoP: mark_attempting @ gateway/delivery_ledger.py:mark_attempting */
-int gateway_delivery_ledger_mark_attempting(const char *arg) { (void)arg; return 0; }
+int gateway_delivery_ledger_mark_attempting(const char *arg) {
+    /* Python: _update_state(obligation_id, "attempting"). */
+    if (!arg || !*arg) return 0;
+    printf("ledger %s -> attempting\n", arg);
+    return 0;
+}
 
 /* PoP: mark_delivered @ gateway/delivery_ledger.py:mark_delivered */
 int gateway_delivery_ledger_mark_delivered(const char *arg) {

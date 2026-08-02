@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <time.h>
+#include <unistd.h>
 #include "hermes_json.h"
 
 /* PoP: _redirect_uri @ hermes_cli/dashboard_auth/routes.py:_redirect_uri */
@@ -1091,7 +1092,16 @@ int hermes_cli_service_manager_u_run_svc(const char *arg) { (void)arg; return 0;
 int hermes_cli_service_manager_u_supervised_pid(const char *arg) { (void)arg; return 0; }
 
 /* PoP: chrome_debug_data_dir @ hermes_cli/browser_connect.py:chrome_debug_data_dir */
-int hermes_cli_browser_connect_chrome_debug_data_dir(const char *arg) { (void)arg; return 0; }
+int hermes_cli_browser_connect_chrome_debug_data_dir(const char *arg) {
+    /* Python: str(get_hermes_home() / "chrome-debug"). */
+    (void)arg;
+    const char *hh = getenv("HERMES_HOME");
+    char base[1024];
+    if (hh && *hh) snprintf(base, sizeof(base), "%s", hh);
+    else snprintf(base, sizeof(base), "%s/.hermes", getenv("HOME") ? getenv("HOME") : ".");
+    printf("%s/chrome-debug\n", base);
+    return 0;
+}
 
 /* PoP: _chrome_debug_args @ hermes_cli/browser_connect.py:_chrome_debug_args */
 int hermes_cli_browser_connect_u_chrome_debug_args(const char *arg) { (void)arg; return 0; }
@@ -1623,7 +1633,13 @@ int hermes_cli_setup_whatsapp_clou_u_prompt_validated(const char *arg) { (void)a
 int hermes_cli_setup_whatsapp_clou_run_whatsapp_cloud_setup(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _project_root @ hermes_cli/_early_recovery.py:_project_root */
-int hermes_cli__early_recovery_u_project_root(const char *arg) { (void)arg; return 0; }
+int hermes_cli__early_recovery_u_project_root(const char *arg) {
+    /* Python: Path(__file__).resolve().parent.parent — the repo root. */
+    (void)arg;
+    char cwd[2048];
+    if (getcwd(cwd, sizeof(cwd))) printf("%s\n", cwd);
+    return 0;
+}
 
 /* PoP: _pinned_specs @ hermes_cli/_early_recovery.py:_pinned_specs */
 int hermes_cli__early_recovery_u_pinned_specs(const char *arg) { (void)arg; return 0; }

@@ -18,7 +18,19 @@ int sexmd_u_iso_timestamp(const char *arg) { (void)arg; return 0; }
 int sexmd_u_frontmatter_value(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _frontmatter_line @ hermes_cli/session_export_md.py:_frontmatter_line */
-int sexmd_u_frontmatter_line(const char *arg) { (void)arg; return 0; }
+int sexmd_u_frontmatter_line(const char *arg) {
+    /* Python: f"{key}: {_frontmatter_value(value)}". Arg = "key\tvalue";
+     * multi-line values get continuation indentation. */
+    if (!arg || !*arg) return 0;
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("%s\n", arg); return 0; }
+    const char *key = arg;
+    const char *val = tab + 1;
+    printf("%s:", key);
+    if (*val) printf(" %s", val);
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _message_heading @ hermes_cli/session_export_md.py:_message_heading */
 int sexmd_u_message_heading(const char *arg) { (void)arg; return 0; }
