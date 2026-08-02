@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:15:19Z",
+  "generated_at": "2026-08-02T19:17:19Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -44521,10 +44521,10 @@
     },
     "agent/models_dev.py": {
       "total": 23,
-      "ported": 4,
+      "ported": 23,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 19,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 23,
@@ -44540,16 +44540,24 @@
             "decorators": [],
             "line_number": 84
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_models_dev_remaining.c",
+          "c_function": "mdv_has_cost_data",
+          "pop_annotation": {
+            "c_function": "mdv_has_cost_data",
+            "python_functions": [
+              "has_cost_data"
+            ],
+            "c_file": "src/agent/port_models_dev_remaining.c",
+            "python_file": "agent/models_dev.py",
+            "line": 26,
+            "is_consolidated": false,
+            "full_text": "/* PoP: has_cost_data @ agent/models_dev.py:has_cost_data */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/models_dev.py",
@@ -44590,16 +44598,24 @@
             "decorators": [],
             "line_number": 90
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_models_dev_remaining.c",
+          "c_function": "mdv_supports_pdf",
+          "pop_annotation": {
+            "c_function": "mdv_supports_pdf",
+            "python_functions": [
+              "supports_pdf"
+            ],
+            "c_file": "src/agent/port_models_dev_remaining.c",
+            "python_file": "agent/models_dev.py",
+            "line": 43,
+            "is_consolidated": false,
+            "full_text": "/* PoP: supports_pdf @ agent/models_dev.py:supports_pdf */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/models_dev.py",
@@ -44640,16 +44656,24 @@
             "decorators": [],
             "line_number": 96
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_models_dev_remaining.c",
+          "c_function": "mdv_format_cost",
+          "pop_annotation": {
+            "c_function": "mdv_format_cost",
+            "python_functions": [
+              "format_cost"
+            ],
+            "c_file": "src/agent/port_models_dev_remaining.c",
+            "python_file": "agent/models_dev.py",
+            "line": 50,
+            "is_consolidated": false,
+            "full_text": "/* PoP: format_cost @ agent/models_dev.py:format_cost */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/models_dev.py",
@@ -44661,16 +44685,24 @@
             "decorators": [],
             "line_number": 105
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_models_dev_remaining.c",
+          "c_function": "mdv_format_capabilities",
+          "pop_annotation": {
+            "c_function": "mdv_format_capabilities",
+            "python_functions": [
+              "format_capabilities"
+            ],
+            "c_file": "src/agent/port_models_dev_remaining.c",
+            "python_file": "agent/models_dev.py",
+            "line": 64,
+            "is_consolidated": false,
+            "full_text": "/* PoP: format_capabilities @ agent/models_dev.py:format_capabilities */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/models_dev.py",
@@ -44711,16 +44743,24 @@
             "decorators": [],
             "line_number": 193
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_models_dev_remaining.c",
+          "c_function": "mdv_load_disk_cache",
+          "pop_annotation": {
+            "c_function": "mdv_load_disk_cache",
+            "python_functions": [
+              "_load_disk_cache"
+            ],
+            "c_file": "src/agent/port_models_dev_remaining.c",
+            "python_file": "agent/models_dev.py",
+            "line": 84,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _load_disk_cache @ agent/models_dev.py:_load_disk_cache */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/models_dev.py",
@@ -44732,16 +44772,24 @@
             "decorators": [],
             "line_number": 205
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_models_dev_remaining.c",
+          "c_function": "mdv_disk_cache_age_seconds",
+          "pop_annotation": {
+            "c_function": "mdv_disk_cache_age_seconds",
+            "python_functions": [
+              "_disk_cache_age_seconds"
+            ],
+            "c_file": "src/agent/port_models_dev_remaining.c",
+            "python_file": "agent/models_dev.py",
+            "line": 103,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _disk_cache_age_seconds @ agent/models_dev.py:_disk_cache_age_seconds */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/models_dev.py",
@@ -44753,16 +44801,24 @@
             "decorators": [],
             "line_number": 231
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_models_dev_remaining.c",
+          "c_function": "mdv_save_disk_cache",
+          "pop_annotation": {
+            "c_function": "mdv_save_disk_cache",
+            "python_functions": [
+              "_save_disk_cache"
+            ],
+            "c_file": "src/agent/port_models_dev_remaining.c",
+            "python_file": "agent/models_dev.py",
+            "line": 112,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _save_disk_cache @ agent/models_dev.py:_save_disk_cache */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/models_dev.py",
@@ -44774,16 +44830,24 @@
             "decorators": [],
             "line_number": 240
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_models_dev_remaining.c",
+          "c_function": "mdv_fetch_models_dev",
+          "pop_annotation": {
+            "c_function": "mdv_fetch_models_dev",
+            "python_functions": [
+              "fetch_models_dev"
+            ],
+            "c_file": "src/agent/port_models_dev_remaining.c",
+            "python_file": "agent/models_dev.py",
+            "line": 129,
+            "is_consolidated": false,
+            "full_text": "/* PoP: fetch_models_dev @ agent/models_dev.py:fetch_models_dev */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/models_dev.py",
@@ -44795,16 +44859,24 @@
             "decorators": [],
             "line_number": 321
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_models_dev_remaining.c",
+          "c_function": "mdv_lookup_models_dev_context",
+          "pop_annotation": {
+            "c_function": "mdv_lookup_models_dev_context",
+            "python_functions": [
+              "lookup_models_dev_context"
+            ],
+            "c_file": "src/agent/port_models_dev_remaining.c",
+            "python_file": "agent/models_dev.py",
+            "line": 158,
+            "is_consolidated": false,
+            "full_text": "/* PoP: lookup_models_dev_context @ agent/models_dev.py:lookup_models_dev_context */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/models_dev.py",
@@ -44845,16 +44917,24 @@
             "decorators": [],
             "line_number": 413
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_models_dev_remaining.c",
+          "c_function": "mdv_get_provider_models",
+          "pop_annotation": {
+            "c_function": "mdv_get_provider_models",
+            "python_functions": [
+              "_get_provider_models"
+            ],
+            "c_file": "src/agent/port_models_dev_remaining.c",
+            "python_file": "agent/models_dev.py",
+            "line": 172,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_provider_models @ agent/models_dev.py:_get_provider_models */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/models_dev.py",
@@ -44866,16 +44946,24 @@
             "decorators": [],
             "line_number": 434
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_models_dev_remaining.c",
+          "c_function": "mdv_find_model_entry",
+          "pop_annotation": {
+            "c_function": "mdv_find_model_entry",
+            "python_functions": [
+              "_find_model_entry"
+            ],
+            "c_file": "src/agent/port_models_dev_remaining.c",
+            "python_file": "agent/models_dev.py",
+            "line": 198,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _find_model_entry @ agent/models_dev.py:_find_model_entry */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/models_dev.py",
@@ -44887,16 +44975,24 @@
             "decorators": [],
             "line_number": 450
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_models_dev_remaining.c",
+          "c_function": "mdv_get_model_capabilities",
+          "pop_annotation": {
+            "c_function": "mdv_get_model_capabilities",
+            "python_functions": [
+              "get_model_capabilities"
+            ],
+            "c_file": "src/agent/port_models_dev_remaining.c",
+            "python_file": "agent/models_dev.py",
+            "line": 231,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_model_capabilities @ agent/models_dev.py:get_model_capabilities */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/models_dev.py",
@@ -44908,16 +45004,24 @@
             "decorators": [],
             "line_number": 511
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_models_dev_remaining.c",
+          "c_function": "mdv_list_provider_models",
+          "pop_annotation": {
+            "c_function": "mdv_list_provider_models",
+            "python_functions": [
+              "list_provider_models"
+            ],
+            "c_file": "src/agent/port_models_dev_remaining.c",
+            "python_file": "agent/models_dev.py",
+            "line": 241,
+            "is_consolidated": false,
+            "full_text": "/* PoP: list_provider_models @ agent/models_dev.py:list_provider_models */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/models_dev.py",
@@ -44929,16 +45033,24 @@
             "decorators": [],
             "line_number": 567
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_models_dev_remaining.c",
+          "c_function": "mdv_should_hide_from_provider_catalog",
+          "pop_annotation": {
+            "c_function": "mdv_should_hide_from_provider_catalog",
+            "python_functions": [
+              "_should_hide_from_provider_catalog"
+            ],
+            "c_file": "src/agent/port_models_dev_remaining.c",
+            "python_file": "agent/models_dev.py",
+            "line": 284,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _should_hide_from_provider_catalog @ agent/models_dev.py:_should_hide_from_provider_catalog */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/models_dev.py",
@@ -44950,16 +45062,24 @@
             "decorators": [],
             "line_number": 575
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_models_dev_remaining.c",
+          "c_function": "mdv_list_agentic_models",
+          "pop_annotation": {
+            "c_function": "mdv_list_agentic_models",
+            "python_functions": [
+              "list_agentic_models"
+            ],
+            "c_file": "src/agent/port_models_dev_remaining.c",
+            "python_file": "agent/models_dev.py",
+            "line": 300,
+            "is_consolidated": false,
+            "full_text": "/* PoP: list_agentic_models @ agent/models_dev.py:list_agentic_models */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/models_dev.py",
@@ -44971,16 +45091,24 @@
             "decorators": [],
             "line_number": 605
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_models_dev_remaining.c",
+          "c_function": "mdv_parse_model_info",
+          "pop_annotation": {
+            "c_function": "mdv_parse_model_info",
+            "python_functions": [
+              "_parse_model_info"
+            ],
+            "c_file": "src/agent/port_models_dev_remaining.c",
+            "python_file": "agent/models_dev.py",
+            "line": 344,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _parse_model_info @ agent/models_dev.py:_parse_model_info */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/models_dev.py",
@@ -44992,16 +45120,24 @@
             "decorators": [],
             "line_number": 656
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_models_dev_remaining.c",
+          "c_function": "mdv_parse_provider_info",
+          "pop_annotation": {
+            "c_function": "mdv_parse_provider_info",
+            "python_functions": [
+              "_parse_provider_info"
+            ],
+            "c_file": "src/agent/port_models_dev_remaining.c",
+            "python_file": "agent/models_dev.py",
+            "line": 351,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _parse_provider_info @ agent/models_dev.py:_parse_provider_info */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/models_dev.py",
@@ -45013,16 +45149,24 @@
             "decorators": [],
             "line_number": 674
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_models_dev_remaining.c",
+          "c_function": "mdv_get_provider_info",
+          "pop_annotation": {
+            "c_function": "mdv_get_provider_info",
+            "python_functions": [
+              "get_provider_info"
+            ],
+            "c_file": "src/agent/port_models_dev_remaining.c",
+            "python_file": "agent/models_dev.py",
+            "line": 357,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_provider_info @ agent/models_dev.py:get_provider_info */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/models_dev.py",
@@ -45034,16 +45178,24 @@
             "decorators": [],
             "line_number": 695
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_models_dev_remaining.c",
+          "c_function": "mdv_get_model_info",
+          "pop_annotation": {
+            "c_function": "mdv_get_model_info",
+            "python_functions": [
+              "get_model_info"
+            ],
+            "c_file": "src/agent/port_models_dev_remaining.c",
+            "python_file": "agent/models_dev.py",
+            "line": 379,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_model_info @ agent/models_dev.py:get_model_info */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
