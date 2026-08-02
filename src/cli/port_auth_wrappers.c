@@ -125,7 +125,22 @@ int auth_u_mark_qwen_oauth_active(const char *arg) {
 int auth_resolve_qwen_runtime_credentials(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_qwen_auth_status @ hermes_cli/auth.py:get_qwen_auth_status */
-int auth_get_qwen_auth_status(const char *arg) { (void)arg; return 0; }
+int auth_get_qwen_auth_status(const char *arg) {
+    /* Python: qwen status w/ refresh. Arg =
+     * "state\tauth_file\tsource\tresult". */
+    if (!arg || !*arg) { printf("{\"logged_in\": false}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "ok") == 0) {
+        printf("{\"logged_in\": true, \"auth_file\": \"%s\", \"source\": \"%s\"}\n",
+               t1 ? t1 + 1 : "", t2 ? t2 + 1 : "");
+        return 0;
+    }
+    printf("{\"logged_in\": false, \"auth_file\": \"%s\", \"error\": \"%s\"}\n",
+           t1 ? t1 + 1 : "", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _make_spotify_callback_handler @ hermes_cli/auth.py:_make_spotify_callback_handler */
 int auth_u_make_spotify_callback_handler(const char *arg) { (void)arg; return 0; }

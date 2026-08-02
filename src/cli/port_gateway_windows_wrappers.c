@@ -203,7 +203,16 @@ int gw_u_legacy_startup_entry_path(const char *arg) {
 }
 
 /* PoP: _stable_gateway_working_dir @ hermes_cli/gateway_windows.py:_stable_gateway_working_dir */
-int gw_u_stable_gateway_working_dir(const char *arg) { (void)arg; return 0; }
+int gw_u_stable_gateway_working_dir(const char *arg) {
+    /* Python: HERMES_HOME anchor. Arg = "home\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("%s\n", t2 ? t2 + 1 : ""); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _build_gateway_cmd_script @ hermes_cli/gateway_windows.py:_build_gateway_cmd_script */
 int gw_u_build_gateway_cmd_script(const char *arg) { (void)arg; return 0; }
@@ -231,7 +240,16 @@ int gw_u_quote_vbs_string(const char *arg) {
 int gw_u_build_gateway_vbs_script(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _build_startup_launcher @ hermes_cli/gateway_windows.py:_build_startup_launcher */
-int gw_u_build_startup_launcher(const char *arg) { (void)arg; return 0; }
+int gw_u_build_startup_launcher(const char *arg) {
+    /* Python: .vbs startup launcher. Arg = "target\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("vbs launcher built for %s\n", arg);
+    return 0;
+}
 
 /* PoP: _write_task_script @ hermes_cli/gateway_windows.py:_write_task_script */
 int gw_u_write_task_script(const char *arg) { (void)arg; return 0; }

@@ -128,7 +128,21 @@ int ctxc_rollback_interrupted_preflight_display_tokens(const char *arg) {
 int ctxc_should_compress_info(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _compression_block_reason @ agent/context_compressor.py:_compression_block_reason */
-int ctxc_u_compression_block_reason(const char *arg) { (void)arg; return 0; }
+int ctxc_u_compression_block_reason(const char *arg) {
+    /* Python: cooldown/ineffective/None. Arg =
+     * "cooldown_remaining\tineffective_count\tfallback_streak\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    double cooldown = strtod(arg, NULL);
+    long ineff = t1 ? strtol(t1 + 1, NULL, 10) : 0;
+    long streak = t2 ? strtol(t2 + 1, NULL, 10) : 0;
+    if (cooldown > 0) { printf("cooldown:%.0f\n", cooldown); return 0; }
+    if (ineff >= 2 || streak >= 2) { printf("ineffective\n"); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _refresh_durable_guards @ agent/context_compressor.py:_refresh_durable_guards */
 int ctxc_u_refresh_durable_guards(const char *arg) { (void)arg; return 0; }

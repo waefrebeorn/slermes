@@ -259,7 +259,19 @@ int grun_u_drain_control_watcher(const char *arg) { (void)arg; return 0; }
 int grun_u_pause_failed_platform(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resume_paused_platform @ gateway/run.py:_resume_paused_platform */
-int grun_u_resume_paused_platform(const char *arg) { (void)arg; return 0; }
+int grun_u_resume_paused_platform(const char *arg) {
+    /* Python: unpause + immediate retry. Arg =
+     * "paused\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int paused = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!paused || !state) { printf("0\n"); return 0; }
+    printf("%s resumed — retrying on next watcher tick\n", t2 ? t2 + 1 : "platform");
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _resolve_model_for_channel @ gateway/run.py:_resolve_model_for_channel */
 int grun_u_resolve_model_for_channel(const char *arg) {

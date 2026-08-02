@@ -1542,7 +1542,18 @@ int agent_error_classifier_classify_api_error(const char *arg) { (void)arg; retu
 int agent_error_classifier_u_classify_by_status(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _classify_402 @ agent/error_classifier.py:_classify_402 */
-int agent_error_classifier_u_classify_402(const char *arg) { (void)arg; return 0; }
+int agent_error_classifier_u_classify_402(const char *arg) {
+    /* Python: transient usage-limit vs billing. Arg =
+     * "has_usage_limit\ttransient\tresult". */
+    if (!arg || !*arg) { printf("billing\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_usage_limit = arg[0] == '1';
+    int transient = t1 && t1[1] == '1';
+    if (has_usage_limit && transient) { printf("rate_limit (retryable)\n"); return 0; }
+    printf("billing (not retryable)\n");
+    return 0;
+}
 
 /* PoP: _classify_400 @ agent/error_classifier.py:_classify_400 */
 int agent_error_classifier_u_classify_400(const char *arg) { (void)arg; return 0; }
@@ -1793,7 +1804,16 @@ int agent_pet_generate_orchestrate_u_drafts_failed_reason(const char *arg) {
 }
 
 /* PoP: _humanize_image_error @ agent/pet/generate/orchestrate.py:_humanize_image_error */
-int agent_pet_generate_orchestrate_u_humanize_image_error(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_orchestrate_u_humanize_image_error(const char *arg) {
+    /* Python: friendly provider error. Arg = "error\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("%s\n", arg); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: hatch_pet @ agent/pet/generate/orchestrate.py:hatch_pet */
 int agent_pet_generate_orchestrate_hatch_pet(const char *arg) { (void)arg; return 0; }
@@ -2334,7 +2354,17 @@ int agent_redact_u_canonical_url_param_name(const char *arg) {
 }
 
 /* PoP: _redact_strict_url_credentials @ agent/redact.py:_redact_strict_url_credentials */
-int agent_redact_u_redact_strict_url_credentials(const char *arg) { (void)arg; return 0; }
+int agent_redact_u_redact_strict_url_credentials(const char *arg) {
+    /* Python: strict param + userinfo redaction. Arg =
+     * "text\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("%s\n", arg); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: split_stacked_skill_commands @ agent/skill_commands.py:split_stacked_skill_commands */
 int agent_skill_commands_split_stacked_skill_commands(const char *arg) { (void)arg; return 0; }
@@ -2531,7 +2561,17 @@ int agent_runtime_cwd_u_is_install_tree(const char *arg) {
 }
 
 /* PoP: _tui_embedded_pane_clarifier @ agent/system_prompt.py:_tui_embedded_pane_clarifier */
-int agent_system_prompt_u_tui_embedded_pane_clarifier(const char *arg) { (void)arg; return 0; }
+int agent_system_prompt_u_tui_embedded_pane_clarifier(const char *arg) {
+    /* Python: desktop terminal clarifier append. Arg =
+     * "hint\tdesktop_terminal\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int desktop = t1 && t1[1] == '1';
+    if (!desktop) { printf("%s\n", arg); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: tool_may_have_side_effect @ agent/tool_result_classification.py:tool_may_have_side_effect */
 int agent_tool_result_classificati_tool_may_have_side_effect(const char *arg) {

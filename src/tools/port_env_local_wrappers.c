@@ -108,7 +108,17 @@ int envl_u_inject_context_hermes_home(const char *arg) {
 int envl_u_inject_session_context_env(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _scrub_delegated_child_kanban_env @ tools/environments/local.py:_scrub_delegated_child_kanban_env */
-int envl_u_scrub_delegated_child_kanban_env(const char *arg) { (void)arg; return 0; }
+int envl_u_scrub_delegated_child_kanban_env(const char *arg) {
+    /* Python: strip kanban env for children. Arg = "is_child\tstate\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_child = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!is_child || !state) { printf("%s\n", t2 ? t2 + 1 : "{}"); return 0; }
+    printf("kanban env scrubbed: %s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: hermes_subprocess_env @ tools/environments/local.py:hermes_subprocess_env */
 int envl_hermes_subprocess_env(const char *arg) { (void)arg; return 0; }

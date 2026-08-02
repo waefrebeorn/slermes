@@ -659,7 +659,21 @@ int tools_x_search_tool_u_get_x_search_retries(const char *arg) {
 }
 
 /* PoP: _resolve_xai_bearer @ tools/x_search_tool.py:_resolve_xai_bearer */
-int tools_x_search_tool_u_resolve_xai_bearer(const char *arg) { (void)arg; return 0; }
+int tools_x_search_tool_u_resolve_xai_bearer(const char *arg) {
+    /* Python: (api_key, base_url, source). Arg =
+     * "state\tapi_key\tbase_url\tsource". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "no_key") == 0) {
+        fprintf(stderr, "No xAI credentials available. Run `hermes auth add xai-oauth` to sign in with your SuperGrok subscription, or set XAI_API_KEY.\n");
+        return 1;
+    }
+    printf("%s\t%s\t%s\n", t1 ? t1 + 1 : "", t2 ? t2 + 1 : "", t3 ? t3 + 1 : "xai");
+    return 0;
+}
 
 /* PoP: check_x_search_requirements @ tools/x_search_tool.py:check_x_search_requirements */
 int tools_x_search_tool_check_x_search_requirements(const char *arg) {

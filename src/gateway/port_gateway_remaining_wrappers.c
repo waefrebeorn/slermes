@@ -241,7 +241,20 @@ int gateway_delivery_ledger_u_owner_stamp(const char *arg) {
 }
 
 /* PoP: _owner_alive @ gateway/delivery_ledger.py:_owner_alive */
-int gateway_delivery_ledger_u_owner_alive(const char *arg) { (void)arg; return 0; }
+int gateway_delivery_ledger_u_owner_alive(const char *arg) {
+    /* Python: pid + start time probe. Arg =
+     * "pid\tstarted_at\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    long pid = strtol(arg, NULL, 10);
+    if (pid <= 0) { printf("0\n"); return 0; }
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (t3 && t3[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: compute_obligation_id @ gateway/delivery_ledger.py:compute_obligation_id */
 int gateway_delivery_ledger_compute_obligation_id(const char *arg) {

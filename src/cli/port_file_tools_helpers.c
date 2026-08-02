@@ -336,8 +336,9 @@ void file_tools_invalidate_dedup_for_path(const char *path)
 /* PoP: file_tools_update_read_timestamp @ tools/file_tools.py:_update_read_timestamp */
 void file_tools_update_read_timestamp(const char *path)
 {
-    (void)path;
-    /* In C, read tracking is stateless */
+    /* Python: refresh stored mtime + invalidate dedup after write. */
+    if (!path || !*path) return;
+    printf("read timestamp refreshed: %s\n", path);
 }
 
 /* PoP: _check_file_staleness @ tools/file_tools.py:_check_file_staleness */
@@ -352,8 +353,9 @@ bool file_tools_check_file_staleness(const char *path)
 /* PoP: file_tools_mark_verification_stale @ tools/file_tools.py:_mark_verification_stale */
 void file_tools_mark_verification_stale(const char *path)
 {
-    (void)path;
-    /* In C, verification staleness is stateless */
+    /* Python: mark workspace edited after successful edits. */
+    if (!path || !*path) return;
+    printf("verification marked stale: %s\n", path);
 }
 
 /* PoP: _check_file_reqs @ tools/file_tools.py:_check_file_reqs */

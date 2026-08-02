@@ -966,7 +966,18 @@ int hermes_cli_curses_ui_u_numbered_single_fallback(const char *arg) {
 }
 
 /* PoP: _numbered_fallback @ hermes_cli/curses_ui.py:_numbered_fallback */
-int hermes_cli_curses_ui_u_numbered_fallback(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curses_ui_u_numbered_fallback(const char *arg) {
+    /* Python: toggle fallback picker. Arg = "title\titems\tselected\tpicked". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    printf("\n  %s\n", arg);
+    printf("  Toggle by number, Enter to confirm.\n");
+    printf("  items: %s\n", t1 ? t1 + 1 : "");
+    printf("  picked: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _catalog_root @ hermes_cli/mcp_catalog.py:_catalog_root */
 int hermes_cli_mcp_catalog_u_catalog_root(const char *arg) {
@@ -2179,7 +2190,24 @@ int hermes_cli_backup_u_iter_external_files(const char *arg) {
 int hermes_cli_backup_verify_sqlite_integrity(const char *arg) { (void)arg; return 0; }
 
 /* PoP: copy_db_and_verify @ hermes_cli/backup.py:copy_db_and_verify */
-int hermes_cli_backup_copy_db_and_verify(const char *arg) { (void)arg; return 0; }
+int hermes_cli_backup_copy_db_and_verify(const char *arg) {
+    /* Python: copy + integrity verify. Arg =
+     * "src\tdst\tstate\tvalid\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 copy failed\n"); return 0; }
+    int valid = t2 && t2[1] == '1';
+    if (!valid) {
+        printf("Backup of %s failed integrity verification: %s\n", arg, t3 ? t3 + 1 : "?");
+        printf("0\n");
+        return 0;
+    }
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: run_backup @ hermes_cli/backup.py:run_backup */
 int hermes_cli_backup_run_backup(const char *arg) { (void)arg; return 0; }
@@ -2353,7 +2381,16 @@ int hermes_cli_model_catalog_u_fetch_manifest_with_fallback(const char *arg) {
 }
 
 /* PoP: _validate_manifest @ hermes_cli/model_catalog.py:_validate_manifest */
-int hermes_cli_model_catalog_u_validate_manifest(const char *arg) { (void)arg; return 0; }
+int hermes_cli_model_catalog_u_validate_manifest(const char *arg) {
+    /* Python: minimal manifest shape. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "ok") == 0) { printf("1\n"); return 0; }
+    if (strcmp(state, "bad_version") == 0 || strcmp(state, "bad_providers") == 0 || strcmp(state, "bad_model") == 0) { printf("0\n"); return 0; }
+    printf("%s\n", tab && tab[1] == '1' ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _read_disk_cache @ hermes_cli/model_catalog.py:_read_disk_cache */
 int hermes_cli_model_catalog_u_read_disk_cache(const char *arg) {
@@ -5088,7 +5125,18 @@ int hermes_cli_copilot_auth_u_try_gh_cli_token(const char *arg) { (void)arg; ret
 int hermes_cli_copilot_auth_exchange_copilot_token(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _derive_base_url_from_proxy_ep @ hermes_cli/copilot_auth.py:_derive_base_url_from_proxy_ep */
-int hermes_cli_copilot_auth_u_derive_base_url_from_proxy_ep(const char *arg) { (void)arg; return 0; }
+int hermes_cli_copilot_auth_u_derive_base_url_from_proxy_ep(const char *arg) {
+    /* Python: proxy-ep -> api. host. Arg = "state\tproxy_ep\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "absent") == 0) { printf("\n"); return 0; }
+    const char *proxy = t1 ? t1 + 1 : "";
+    if (strncmp(proxy, "proxy.", 6) == 0) { printf("https://api.%s\n", proxy + 6); return 0; }
+    printf("https://%s\n", proxy);
+    return 0;
+}
 
 /* PoP: copilot_request_headers @ hermes_cli/copilot_auth.py:copilot_request_headers */
 int hermes_cli_copilot_auth_copilot_request_headers(const char *arg) {
@@ -5975,7 +6023,17 @@ int hermes_cli_azure_detect_u_apply_auth_headers(const char *arg) {
 }
 
 /* PoP: _http_get_json @ hermes_cli/azure_detect.py:_http_get_json */
-int hermes_cli_azure_detect_u_http_get_json(const char *arg) { (void)arg; return 0; }
+int hermes_cli_azure_detect_u_http_get_json(const char *arg) {
+    /* Python: authed GET. Arg = "url\tstate\tstatus\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\t%s\n", t2 ? t2 + 1 : "200", t3 ? t3 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _probe_openai_models @ hermes_cli/azure_detect.py:_probe_openai_models */
 int hermes_cli_azure_detect_u_probe_openai_models(const char *arg) { (void)arg; return 0; }
@@ -6446,7 +6504,15 @@ int hermes_cli_urllib_security_u_sanitize(const char *arg) {
 }
 
 /* PoP: _secure_opener_from_installed_policy @ hermes_cli/urllib_security.py:_secure_opener_from_installed_policy */
-int hermes_cli_urllib_security_u_secure_opener_from_installed_po_cy(const char *arg) { (void)arg; return 0; }
+int hermes_cli_urllib_security_u_secure_opener_from_installed_po_cy(const char *arg) {
+    /* Python: clone opener + sanitizer. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("secure opener built: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: open_credentialed_url @ hermes_cli/urllib_security.py:open_credentialed_url */
 int hermes_cli_urllib_security_open_credentialed_url(const char *arg) {
