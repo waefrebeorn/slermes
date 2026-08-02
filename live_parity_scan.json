@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:08:21Z",
+  "generated_at": "2026-08-02T20:10:18Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -37140,10 +37140,10 @@
     },
     "agent/lsp/install.py": {
       "total": 11,
-      "ported": 0,
+      "ported": 10,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 11,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 11,
@@ -37160,14 +37160,24 @@
             "line_number": 121
           },
           "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
-          "stub_reason": null,
+          "c_location": "src/agent/port_lsp_install_remaining.c",
+          "c_function": "lspi_is_windows",
+          "pop_annotation": {
+            "c_function": "lspi_is_windows",
+            "python_functions": [
+              "_is_windows"
+            ],
+            "c_file": "src/agent/port_lsp_install_remaining.c",
+            "python_file": "agent/lsp/install.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_windows @ agent/lsp/install.py:_is_windows */"
+          },
+          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
           "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
+          "notes": "",
           "da_flags": [
-            "DA-1:no-c-equivalent"
+            "DA-2:bootleg-body"
           ]
         },
         {
@@ -37180,16 +37190,24 @@
             "decorators": [],
             "line_number": 125
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_install_remaining.c",
+          "c_function": "lspi_hermes_lsp_bin_dir",
+          "pop_annotation": {
+            "c_function": "lspi_hermes_lsp_bin_dir",
+            "python_functions": [
+              "hermes_lsp_bin_dir"
+            ],
+            "c_file": "src/agent/port_lsp_install_remaining.c",
+            "python_file": "agent/lsp/install.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: hermes_lsp_bin_dir @ agent/lsp/install.py:hermes_lsp_bin_dir */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/install.py",
@@ -37201,16 +37219,24 @@
             "decorators": [],
             "line_number": 135
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_install_remaining.c",
+          "c_function": "lspi_native_binary_candidates",
+          "pop_annotation": {
+            "c_function": "lspi_native_binary_candidates",
+            "python_functions": [
+              "_native_binary_candidates"
+            ],
+            "c_file": "src/agent/port_lsp_install_remaining.c",
+            "python_file": "agent/lsp/install.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _native_binary_candidates @ agent/lsp/install.py:_native_binary_candidates */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/install.py",
@@ -37222,16 +37248,24 @@
             "decorators": [],
             "line_number": 149
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_install_remaining.c",
+          "c_function": "lspi_existing_binary",
+          "pop_annotation": {
+            "c_function": "lspi_existing_binary",
+            "python_functions": [
+              "_existing_binary"
+            ],
+            "c_file": "src/agent/port_lsp_install_remaining.c",
+            "python_file": "agent/lsp/install.py",
+            "line": 48,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _existing_binary @ agent/lsp/install.py:_existing_binary */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/install.py",
@@ -37243,16 +37277,24 @@
             "decorators": [],
             "line_number": 165
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_install_remaining.c",
+          "c_function": "lspi_get_lock",
+          "pop_annotation": {
+            "c_function": "lspi_get_lock",
+            "python_functions": [
+              "_get_lock"
+            ],
+            "c_file": "src/agent/port_lsp_install_remaining.c",
+            "python_file": "agent/lsp/install.py",
+            "line": 74,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_lock @ agent/lsp/install.py:_get_lock */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/install.py",
@@ -37264,16 +37306,24 @@
             "decorators": [],
             "line_number": 174
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_install_remaining.c",
+          "c_function": "lspi_try_install",
+          "pop_annotation": {
+            "c_function": "lspi_try_install",
+            "python_functions": [
+              "try_install"
+            ],
+            "c_file": "src/agent/port_lsp_install_remaining.c",
+            "python_file": "agent/lsp/install.py",
+            "line": 82,
+            "is_consolidated": false,
+            "full_text": "/* PoP: try_install @ agent/lsp/install.py:try_install */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/install.py",
@@ -37285,16 +37335,24 @@
             "decorators": [],
             "line_number": 205
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_install_remaining.c",
+          "c_function": "lspi_do_install",
+          "pop_annotation": {
+            "c_function": "lspi_do_install",
+            "python_functions": [
+              "_do_install"
+            ],
+            "c_file": "src/agent/port_lsp_install_remaining.c",
+            "python_file": "agent/lsp/install.py",
+            "line": 90,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _do_install @ agent/lsp/install.py:_do_install */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/install.py",
@@ -37306,16 +37364,24 @@
             "decorators": [],
             "line_number": 238
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_install_remaining.c",
+          "c_function": "lspi_install_npm",
+          "pop_annotation": {
+            "c_function": "lspi_install_npm",
+            "python_functions": [
+              "_install_npm"
+            ],
+            "c_file": "src/agent/port_lsp_install_remaining.c",
+            "python_file": "agent/lsp/install.py",
+            "line": 98,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _install_npm @ agent/lsp/install.py:_install_npm */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/install.py",
@@ -37327,16 +37393,24 @@
             "decorators": [],
             "line_number": 304
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_install_remaining.c",
+          "c_function": "lspi_install_go",
+          "pop_annotation": {
+            "c_function": "lspi_install_go",
+            "python_functions": [
+              "_install_go"
+            ],
+            "c_file": "src/agent/port_lsp_install_remaining.c",
+            "python_file": "agent/lsp/install.py",
+            "line": 109,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _install_go @ agent/lsp/install.py:_install_go */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/install.py",
@@ -37348,16 +37422,24 @@
             "decorators": [],
             "line_number": 342
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_install_remaining.c",
+          "c_function": "lspi_install_pip",
+          "pop_annotation": {
+            "c_function": "lspi_install_pip",
+            "python_functions": [
+              "_install_pip"
+            ],
+            "c_file": "src/agent/port_lsp_install_remaining.c",
+            "python_file": "agent/lsp/install.py",
+            "line": 122,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _install_pip @ agent/lsp/install.py:_install_pip */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/install.py",
@@ -37369,16 +37451,24 @@
             "decorators": [],
             "line_number": 390
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_install_remaining.c",
+          "c_function": "lspi_detect_status",
+          "pop_annotation": {
+            "c_function": "lspi_detect_status",
+            "python_functions": [
+              "detect_status"
+            ],
+            "c_file": "src/agent/port_lsp_install_remaining.c",
+            "python_file": "agent/lsp/install.py",
+            "line": 133,
+            "is_consolidated": false,
+            "full_text": "/* PoP: detect_status @ agent/lsp/install.py:detect_status */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -345879,10 +345969,10 @@
     },
     "tools/tts_streaming.py": {
       "total": 14,
-      "ported": 3,
+      "ported": 14,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 11,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 14,
@@ -345956,16 +346046,24 @@
             "decorators": [],
             "line_number": 77
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tts_streaming_remaining.c",
+          "c_function": "tstr_buf_init",
+          "pop_annotation": {
+            "c_function": "tstr_buf_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_tts_streaming_remaining.c",
+            "python_file": "tools/tts_streaming.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/tts_streaming.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tts_streaming.py",
@@ -345977,16 +346075,24 @@
             "decorators": [],
             "line_number": 81
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tts_streaming_remaining.c",
+          "c_function": "tstr_buf_feed",
+          "pop_annotation": {
+            "c_function": "tstr_buf_feed",
+            "python_functions": [
+              "feed"
+            ],
+            "c_file": "src/tools/port_tts_streaming_remaining.c",
+            "python_file": "tools/tts_streaming.py",
+            "line": 31,
+            "is_consolidated": false,
+            "full_text": "/* PoP: feed @ tools/tts_streaming.py:feed */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tts_streaming.py",
@@ -345998,16 +346104,24 @@
             "decorators": [],
             "line_number": 98
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tts_streaming_remaining.c",
+          "c_function": "tstr_buf_flush",
+          "pop_annotation": {
+            "c_function": "tstr_buf_flush",
+            "python_functions": [
+              "flush"
+            ],
+            "c_file": "src/tools/port_tts_streaming_remaining.c",
+            "python_file": "tools/tts_streaming.py",
+            "line": 65,
+            "is_consolidated": false,
+            "full_text": "/* PoP: flush @ tools/tts_streaming.py:flush */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tts_streaming.py",
@@ -346019,16 +346133,24 @@
             "decorators": [],
             "line_number": 116
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tts_streaming_remaining.c",
+          "c_function": "tstr_buf_init",
+          "pop_annotation": {
+            "c_function": "tstr_buf_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_tts_streaming_remaining.c",
+            "python_file": "tools/tts_streaming.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/tts_streaming.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tts_streaming.py",
@@ -346043,16 +346165,24 @@
             ],
             "line_number": 122
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tts_streaming_remaining.c",
+          "c_function": "tstr_provider_available",
+          "pop_annotation": {
+            "c_function": "tstr_provider_available",
+            "python_functions": [
+              "available"
+            ],
+            "c_file": "src/tools/port_tts_streaming_remaining.c",
+            "python_file": "tools/tts_streaming.py",
+            "line": 81,
+            "is_consolidated": false,
+            "full_text": "/* PoP: available @ tools/tts_streaming.py:available */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tts_streaming.py",
@@ -346066,16 +346196,24 @@
             ],
             "line_number": 126
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tts_streaming_remaining.c",
+          "c_function": "tstr_provider_stream",
+          "pop_annotation": {
+            "c_function": "tstr_provider_stream",
+            "python_functions": [
+              "stream"
+            ],
+            "c_file": "src/tools/port_tts_streaming_remaining.c",
+            "python_file": "tools/tts_streaming.py",
+            "line": 88,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stream @ tools/tts_streaming.py:stream */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tts_streaming.py",
@@ -346087,16 +346225,24 @@
             "decorators": [],
             "line_number": 133
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tts_streaming_remaining.c",
+          "c_function": "tstr_register",
+          "pop_annotation": {
+            "c_function": "tstr_register",
+            "python_functions": [
+              "register"
+            ],
+            "c_file": "src/tools/port_tts_streaming_remaining.c",
+            "python_file": "tools/tts_streaming.py",
+            "line": 96,
+            "is_consolidated": false,
+            "full_text": "/* PoP: register @ tools/tts_streaming.py:register */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tts_streaming.py",
@@ -346139,16 +346285,24 @@
             ],
             "line_number": 173
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tts_streaming_remaining.c",
+          "c_function": "tstr_provider_available",
+          "pop_annotation": {
+            "c_function": "tstr_provider_available",
+            "python_functions": [
+              "available"
+            ],
+            "c_file": "src/tools/port_tts_streaming_remaining.c",
+            "python_file": "tools/tts_streaming.py",
+            "line": 81,
+            "is_consolidated": false,
+            "full_text": "/* PoP: available @ tools/tts_streaming.py:available */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tts_streaming.py",
@@ -346160,16 +346314,24 @@
             "decorators": [],
             "line_number": 176
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tts_streaming_remaining.c",
+          "c_function": "tstr_provider_stream",
+          "pop_annotation": {
+            "c_function": "tstr_provider_stream",
+            "python_functions": [
+              "stream"
+            ],
+            "c_file": "src/tools/port_tts_streaming_remaining.c",
+            "python_file": "tools/tts_streaming.py",
+            "line": 88,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stream @ tools/tts_streaming.py:stream */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tts_streaming.py",
@@ -346183,16 +346345,24 @@
             ],
             "line_number": 204
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tts_streaming_remaining.c",
+          "c_function": "tstr_provider_available",
+          "pop_annotation": {
+            "c_function": "tstr_provider_available",
+            "python_functions": [
+              "available"
+            ],
+            "c_file": "src/tools/port_tts_streaming_remaining.c",
+            "python_file": "tools/tts_streaming.py",
+            "line": 81,
+            "is_consolidated": false,
+            "full_text": "/* PoP: available @ tools/tts_streaming.py:available */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tts_streaming.py",
@@ -346204,16 +346374,24 @@
             "decorators": [],
             "line_number": 207
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tts_streaming_remaining.c",
+          "c_function": "tstr_provider_stream",
+          "pop_annotation": {
+            "c_function": "tstr_provider_stream",
+            "python_functions": [
+              "stream"
+            ],
+            "c_file": "src/tools/port_tts_streaming_remaining.c",
+            "python_file": "tools/tts_streaming.py",
+            "line": 88,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stream @ tools/tts_streaming.py:stream */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
