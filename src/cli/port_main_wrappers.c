@@ -1140,7 +1140,18 @@ int main_u_npm_manifests_digest(const char *arg) { (void)arg; return 0; }
 int main_u_npm_lockfile_changed(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _record_npm_lockfile_hash @ hermes_cli/main.py:_record_npm_lockfile_hash */
-int main_u_record_npm_lockfile_hash(const char *arg) { (void)arg; return 0; }
+int main_u_record_npm_lockfile_hash(const char *arg) {
+    /* Python: write digest to cache file. Arg = "root\tdigest". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("\n"); return 0; }
+    char path[1200];
+    snprintf(path, sizeof(path), "%s/.npm_lock_hash", arg);
+    FILE *fp = fopen(path, "w");
+    if (fp) { fprintf(fp, "%s", tab + 1); fclose(fp); }
+    printf("npm lock hash recorded\n");
+    return 0;
+}
 
 /* PoP: _is_windows_npm_path @ hermes_cli/main.py:_is_windows_npm_path */
 int main_u_is_windows_npm_path(const char *arg) {

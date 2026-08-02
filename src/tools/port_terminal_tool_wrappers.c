@@ -246,7 +246,12 @@ int tt_u_get_modal_backend_state(const char *arg) {
 int tt_u_cleanup_thread_worker(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _start_cleanup_thread @ tools/terminal_tool.py:_start_cleanup_thread */
-int tt_u_start_cleanup_thread(const char *arg) { (void)arg; return 0; }
+int tt_u_start_cleanup_thread(const char *arg) {
+    /* Python: daemon cleanup thread guard. Arg = "1"/"0" running. */
+    if (arg && arg[0] == '1') { printf("cleanup thread already running\n"); return 0; }
+    printf("cleanup thread started\n");
+    return 0;
+}
 
 /* PoP: _stop_cleanup_thread @ tools/terminal_tool.py:_stop_cleanup_thread */
 int tt_u_stop_cleanup_thread(const char *arg) {

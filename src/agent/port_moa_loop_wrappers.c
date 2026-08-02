@@ -86,7 +86,66 @@ int moa_u_aggregator_reasoning_config(const char *arg) { (void)arg; return 0; }
 int moa_u_slot_runtime(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _merge_slot_extra_body @ agent/moa_loop.py:_merge_slot_extra_body */
-int moa_u_merge_slot_extra_body(const char *arg) { (void)arg; return 0; }
+int moa_u_merge_slot_extra_body(const char *arg) {
+    /* Python: {**slot, **caller} when both dicts; caller wins. Arg =
+     * "slot_json\tcaller_json" (empty = none). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *slot = arg;
+    const char *caller = tab ? tab + 1 : "";
+    json_t *sj = json_parse(slot, NULL);
+    json_t *cj = json_parse(caller, NULL);
+    if (sj && json_is_object(sj) && json_object_size(sj) > 0) {
+        if (cj && json_is_object(cj)) {
+            /* merge: slot then caller */
+            json_t *out = json_object();
+            for (size_t i = 0; i < sj->c.count; i++) {
+                json_t *v = json_obj_get(sj, sj->c.keys[i]);
+                if (!v) continue;
+                char *vs = json_dumps(v, 0);
+                json_set(out, sj->c.keys[i], vs ? json_parse(vs, NULL) : NULL);
+                free(vs);
+            }
+            for (size_t i = 0; i < cj->c.count; i++) {
+                json_t *v = json_obj_get(cj, cj->c.keys[i]);
+                if (!v) continue;
+                char *vs = json_dumps(v, 0);
+                json_set(out, cj->c.keys[i], vs ? json_parse(vs, NULL) : NULL);
+                free(vs);
+            }
+            char *s = json_dumps(out, 0);
+            printf("%s\n", s ? s : "{}");
+            free(s);
+            json_free(out);
+            json_free(sj); json_free(cj);
+            return 0;
+        }
+        if (caller[0]) {
+            char *s = json_dumps(cj, 0);
+            printf("%s\n", s ? s : "");
+            free(s);
+            json_free(sj); if (cj) json_free(cj);
+            return 0;
+        }
+        char *s = json_dumps(sj, 0);
+        printf("%s\n", s ? s : "{}");
+        free(s);
+        json_free(sj); if (cj) json_free(cj);
+        return 0;
+    }
+    if (cj && json_is_object(cj)) {
+        char *s = json_dumps(cj, 0);
+        printf("%s\n", s ? s : "{}");
+        free(s);
+        json_free(cj);
+        if (sj) json_free(sj);
+        return 0;
+    }
+    if (sj) json_free(sj);
+    if (cj) json_free(cj);
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _maybe_apply_moa_cache_control @ agent/moa_loop.py:_maybe_apply_moa_cache_control */
 int moa_u_maybe_apply_moa_cache_control(const char *arg) { (void)arg; return 0; }

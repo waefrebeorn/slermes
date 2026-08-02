@@ -121,7 +121,24 @@ int agent_model_metadata_u_tool_name_for_cache(const char *arg) {
 int agent_model_metadata_u_estimate_tools_tokens_rough(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _has_slot_padding @ agent/pet/generate/atlas.py:_has_slot_padding */
-int agent_pet_generate_atlas_u_has_slot_padding(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_atlas_u_has_slot_padding(const char *arg) {
+    /* Python: bbox padding check. Arg = "left\ttop\tright\tbottom\tw\th". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    long v[6] = {0};
+    const char *p = arg;
+    for (int i = 0; i < 6 && *p; i++) {
+        v[i] = strtol(p, NULL, 10);
+        const char *tab = strchr(p, '\t');
+        if (!tab) break;
+        p = tab + 1;
+    }
+    long left = v[0], top = v[1], right = v[2], bottom = v[3], w = v[4], h = v[5];
+    long min_x = w * 25 / 1000; if (min_x < 4) min_x = 4; if (min_x > 12) min_x = 12;
+    long min_y = h * 20 / 1000; if (min_y < 4) min_y = 4; if (min_y > 16) min_y = 16;
+    if (left >= min_x && top >= min_y && w - right >= min_x && h - bottom >= min_y) { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _slot_bounds @ agent/pet/generate/atlas.py:_slot_bounds */
 int agent_pet_generate_atlas_u_slot_bounds(const char *arg) {
@@ -1456,7 +1473,14 @@ int agent_moa_trace_save_moa_turn(const char *arg) { (void)arg; return 0; }
 int agent_oneshot_u_commit_message_template(const char *arg) { (void)arg; return 0; }
 
 /* PoP: render_template @ agent/oneshot.py:render_template */
-int agent_oneshot_render_template(const char *arg) { (void)arg; return 0; }
+int agent_oneshot_render_template(const char *arg) {
+    /* Python: template lookup, KeyError on unknown. Arg = "name\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("0\n"); return 1; }
+    printf("%s\n", tab + 1);
+    return 0;
+}
 
 /* PoP: run_oneshot @ agent/oneshot.py:run_oneshot */
 int agent_oneshot_run_oneshot(const char *arg) { (void)arg; return 0; }
@@ -1591,7 +1615,24 @@ int agent_jiter_preload_preload_jiter_native_extension(const char *arg) { (void)
 int agent_moonshot_schema_u_ensure_required_array(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_install_tree @ agent/runtime_cwd.py:_is_install_tree */
-int agent_runtime_cwd_u_is_install_tree(const char *arg) { (void)arg; return 0; }
+int agent_runtime_cwd_u_is_install_tree(const char *arg) {
+    /* Python: p == root or under root. Arg = "path\troot". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("0\n"); return 0; }
+    char p[1024], r[1024];
+    size_t plen = (size_t)(tab - arg);
+    if (plen >= sizeof(p)) plen = sizeof(p) - 1;
+    memcpy(p, arg, plen); p[plen] = '\0';
+    snprintf(r, sizeof(r), "%s", tab + 1);
+    char rp[1100], rr[1100];
+    if (!realpath(p, rp) || !realpath(r, rr)) { printf("0\n"); return 0; }
+    if (strcmp(rp, rr) == 0) { printf("1\n"); return 0; }
+    size_t rlen = strlen(rr);
+    if (strncmp(rp, rr, rlen) == 0 && rp[rlen] == '/') { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _tui_embedded_pane_clarifier @ agent/system_prompt.py:_tui_embedded_pane_clarifier */
 int agent_system_prompt_u_tui_embedded_pane_clarifier(const char *arg) { (void)arg; return 0; }

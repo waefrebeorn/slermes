@@ -37,7 +37,21 @@ int msw_format_model_for_display(const char *arg) {
 }
 
 /* PoP: is_nous_hermes_non_agentic @ hermes_cli/model_switch.py:is_nous_hermes_non_agentic */
-int msw_is_nous_hermes_non_agentic(const char *arg) { (void)arg; return 0; }
+int msw_is_nous_hermes_non_agentic(const char *arg) {
+    /* Python: regex on model name (Hermes 3/4 chat). Arg = model name. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *p = arg;
+    while (*p) {
+        if (strncasecmp(p, "hermes-3", 8) == 0 || strncasecmp(p, "hermes-4", 8) == 0 ||
+            strncasecmp(p, "hermes3", 7) == 0 || strncasecmp(p, "hermes4", 7) == 0) {
+            printf("1\n");
+            return 0;
+        }
+        p++;
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _check_hermes_model_warning @ hermes_cli/model_switch.py:_check_hermes_model_warning */
 int msw_u_check_hermes_model_warning(const char *arg) {

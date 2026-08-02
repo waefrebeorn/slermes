@@ -118,10 +118,57 @@ int tools_computer_use_tool_u_route_capture_through_aux_vision(const char *arg) 
 int tools_computer_use_tool_u_maybe_follow_capture(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _format_elements @ tools/computer_use/tool.py:_format_elements */
-int tools_computer_use_tool_u_format_elements(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_tool_u_format_elements(const char *arg) {
+    /* Python: "  #idx role label @ bounds [app]" lines. Arg =
+     * "max_lines\tidx\trole\tlabel\tbounds\tapp" per line? Input: JSON
+     * array of element dicts + max. We accept pre-formatted: tab-separated
+     * rows. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    long max_lines = t1 ? strtol(arg, NULL, 10) : 3;
+    const char *p = t1 ? t1 + 1 : "";
+    long count = 0;
+    int first = 1;
+    while (*p && count < max_lines) {
+        const char *nl = strchr(p, '\n');
+        size_t len = nl ? (size_t)(nl - p) : strlen(p);
+        if (len) {
+            if (!first) printf("\n");
+            printf("%.*s", (int)len, p);
+            first = 0;
+            count++;
+        }
+        p = nl ? nl + 1 : p + len;
+    }
+    if (p[0] && first == 0 && max_lines > 0) {
+        /* more elements exist after cut */
+        long extra = 1;
+        const char *q = p;
+        while (*q) { if (*q == '\n') extra++; q++; }
+        printf("\n  ... +%ld more (call capture with app= to narrow)", extra);
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _element_to_dict @ tools/computer_use/tool.py:_element_to_dict */
-int tools_computer_use_tool_u_element_to_dict(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_tool_u_element_to_dict(const char *arg) {
+    /* Python: {index, role, label, bounds, app}. Arg =
+     * "index\trole\tlabel\tbounds\tapp". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *idx = arg;
+    const char *role = t1 ? t1 + 1 : "";
+    const char *label = t2 ? t2 + 1 : "";
+    const char *bounds = t3 ? t3 + 1 : "";
+    const char *app = t4 ? t4 + 1 : "";
+    printf("{\"index\": %s, \"role\": \"%s\", \"label\": \"%s\", \"bounds\": [%s], \"app\": \"%s\"}\n",
+           idx, role, label, bounds, app);
+    return 0;
+}
 
 /* PoP: check_computer_use_requirements @ tools/computer_use/tool.py:check_computer_use_requirements */
 int tools_computer_use_tool_check_computer_use_requirements(const char *arg) { (void)arg; return 0; }
@@ -686,7 +733,17 @@ int tools_environments_modal_u_store_direct_snapshot(const char *arg) {
 }
 
 /* PoP: _delete_direct_snapshot @ tools/environments/modal.py:_delete_direct_snapshot */
-int tools_environments_modal_u_delete_direct_snapshot(const char *arg) { (void)arg; return 0; }
+int tools_environments_modal_u_delete_direct_snapshot(const char *arg) {
+    /* Python: pop snapshot under task_id keys when id matches. Arg =
+     * "task_id\tsnapshot_id\tfound". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    printf("deleted modal snapshot: %.*s (id=%s)\n",
+           (int)(t1 ? (size_t)(t1 - arg) : strlen(arg)), arg,
+           t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: _ensure_modal_sdk @ tools/environments/modal.py:_ensure_modal_sdk */
 int tools_environments_modal_u_ensure_modal_sdk(const char *arg) {

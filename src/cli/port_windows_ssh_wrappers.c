@@ -13,7 +13,12 @@
 #include "hermes_json.h"
 
 /* PoP: _win32 @ hermes_cli/windows_ssh_runtime.py:_win32 */
-int wssr_u_win32(const char *arg) { (void)arg; return 0; }
+int wssr_u_win32(const char *arg) {
+    /* Python: Windows-only import bundle; POSIX raises RuntimeError. */
+    (void)arg;
+    printf("Windows SSH runtime is only available on Windows\n");
+    return 1;
+}
 
 /* PoP: _ownership @ hermes_cli/windows_ssh_runtime.py:_ownership */
 int wssr_u_ownership(const char *arg) {

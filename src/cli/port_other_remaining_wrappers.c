@@ -11,6 +11,7 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <errno.h>
+#include <signal.h>
 #include <sys/stat.h>
 #include "hermes_json.h"
 #include "hermes_util_str.h"
@@ -90,7 +91,18 @@ int cron_executions_u_process_start_time(const char *arg) {
 }
 
 /* PoP: _owner_is_live @ cron/executions.py:_owner_is_live */
-int cron_executions_u_owner_is_live(const char *arg) { (void)arg; return 0; }
+int cron_executions_u_owner_is_live(const char *arg) {
+    /* Python: pid exists + start-time match (fail safe True). Arg =
+     * "pid\tstarted_at". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long pid = strtol(arg, NULL, 10);
+    if (pid <= 0) { printf("1\n"); return 0; }
+    if (kill((pid_t)pid, 0) != 0 && errno == ESRCH) { printf("0\n"); return 0; }
+    if (!tab || !tab[1]) { printf("1\n"); return 0; }
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _prune_unlocked @ cron/executions.py:_prune_unlocked */
 int cron_executions_u_prune_unlocked(const char *arg) {

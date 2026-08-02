@@ -505,7 +505,29 @@ int gateway_status_phrases_u_merge_phrase_file(const char *arg) {
 }
 
 /* PoP: _relative_path_under @ gateway/status_phrases.py:_relative_path_under */
-int gateway_status_phrases_u_relative_path_under(const char *arg) { (void)arg; return 0; }
+int gateway_status_phrases_u_relative_path_under(const char *arg) {
+    /* Python: resolve relative path under base, None on escape/absolute.
+     * Arg = "raw\tbase". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("\n"); return 0; }
+    const char *raw = arg;
+    while (*raw == ' ') raw++;
+    size_t rawlen = (size_t)(tab - arg);
+    if (!rawlen) { printf("\n"); return 0; }
+    if (raw[0] == '/') { printf("\n"); return 0; }
+    if (strstr(raw, "..")) { printf("\n"); return 0; }
+    char joined[1200];
+    snprintf(joined, sizeof(joined), "%s/%s", tab + 1, raw);
+    char rj[1200];
+    if (!realpath(joined, rj)) { printf("\n"); return 0; }
+    char rb[1100];
+    if (!realpath(tab + 1, rb)) { printf("\n"); return 0; }
+    size_t blen = strlen(rb);
+    if (strncmp(rj, rb, blen) == 0 && rj[blen] == '/') { printf("%s\n", rj); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _iter_phrase_files @ gateway/status_phrases.py:_iter_phrase_files */
 int gateway_status_phrases_u_iter_phrase_files(const char *arg) {
@@ -1053,7 +1075,16 @@ int gateway_readiness_u_probe_state_db(const char *arg) { (void)arg; return 0; }
 int gateway_readiness_u_probe_config(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _probe_disk @ gateway/readiness.py:_probe_disk */
-int gateway_readiness_u_probe_disk(const char *arg) { (void)arg; return 0; }
+int gateway_readiness_u_probe_disk(const char *arg) {
+    /* Python: disk usage -> ok/degraded. Arg = "home\tused_pct\tfree". */
+    if (!arg || !*arg) { printf("degraded\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    double used = t1 ? strtod(t1 + 1, NULL) : 0.0;
+    printf("%s used=%.1f%% free=%s\n", used >= 90.0 ? "degraded" : "ok", used,
+           t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _probe_gateway @ gateway/readiness.py:_probe_gateway */
 int gateway_readiness_u_probe_gateway(const char *arg) { (void)arg; return 0; }

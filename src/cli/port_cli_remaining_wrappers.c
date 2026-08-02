@@ -127,7 +127,12 @@ int hermes_cli_debug_u_capture_log_snapshot(const char *arg) { (void)arg; return
 int hermes_cli_debug_u_capture_default_log_snapshots(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _capture_dump @ hermes_cli/debug.py:_capture_dump */
-int hermes_cli_debug_u_capture_dump(const char *arg) { (void)arg; return 0; }
+int hermes_cli_debug_u_capture_dump(const char *arg) {
+    /* Python: run hermes dump capturing stdout. Arg = dump output. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: collect_share_bundle @ hermes_cli/debug.py:collect_share_bundle */
 int hermes_cli_debug_collect_share_bundle(const char *arg) { (void)arg; return 0; }
@@ -1137,7 +1142,12 @@ int hermes_cli_telegram_managed_bo_generate_username_slug(const char *arg) {
 }
 
 /* PoP: generate_bot_username @ hermes_cli/telegram_managed_bot.py:generate_bot_username */
-int hermes_cli_telegram_managed_bo_generate_bot_username(const char *arg) { (void)arg; return 0; }
+int hermes_cli_telegram_managed_bo_generate_bot_username(const char *arg) {
+    /* Python: "hermes_<slug>_bot". Arg = slug (profile ignored). */
+    if (!arg || !*arg) { printf("hermes__bot\n"); return 0; }
+    printf("hermes_%s_bot\n", arg);
+    return 0;
+}
 
 /* PoP: generate_deep_link @ hermes_cli/telegram_managed_bot.py:generate_deep_link */
 int hermes_cli_telegram_managed_bo_generate_deep_link(const char *arg) { (void)arg; return 0; }
@@ -1790,7 +1800,22 @@ int hermes_cli_gui_uninstall_gui_is_installed(const char *arg) {
 int hermes_cli_gui_uninstall_gui_install_summary(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _remove_path @ hermes_cli/gui_uninstall.py:_remove_path */
-int hermes_cli_gui_uninstall_u_remove_path(const char *arg) { (void)arg; return 0; }
+int hermes_cli_gui_uninstall_u_remove_path(const char *arg) {
+    /* Python: unlink file/symlink, rmtree dir; warn on failure. Arg = path. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    struct stat st;
+    if (lstat(arg, &st) != 0) { printf("0\n"); return 0; }
+    if (S_ISDIR(st.st_mode)) {
+        char cmd[1200];
+        snprintf(cmd, sizeof(cmd), "rm -rf -- '%s' 2>/dev/null", arg);
+        int rc = system(cmd);
+        printf("%d\n", rc == 0 ? 1 : 0);
+        return 0;
+    }
+    if (unlink(arg) == 0) { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: uninstall_gui @ hermes_cli/gui_uninstall.py:uninstall_gui */
 int hermes_cli_gui_uninstall_uninstall_gui(const char *arg) { (void)arg; return 0; }
@@ -2745,7 +2770,15 @@ int hermes_cli_security_audit_star_u_is_root(const char *arg) {
 }
 
 /* PoP: _running_as_root @ hermes_cli/security_audit_startup.py:_running_as_root */
-int hermes_cli_security_audit_star_u_running_as_root(const char *arg) { (void)arg; return 0; }
+int hermes_cli_security_audit_star_u_running_as_root(const char *arg) {
+    /* Python: None or root warning text. Arg = "1"/"0" is_root. */
+    if (arg && arg[0] == '1') {
+        printf("Running as ROOT. The agent's terminal/file tools execute with full root privileges — a single prompt-injection or exposed endpoint is a full host compromise. Run Hermes as an unprivileged user (or in a sandboxed terminal backend / container with a non-root user).\n");
+        return 0;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _iter_sshd_config_lines @ hermes_cli/security_audit_startup.py:_iter_sshd_config_lines */
 int hermes_cli_security_audit_star_u_iter_sshd_config_lines(const char *arg) { (void)arg; return 0; }
@@ -4330,7 +4363,14 @@ int hermes_cli_partial_compress_extract_compress_flags(const char *arg) { (void)
 int hermes_cli_partial_compress_summarize_compress_preview(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cmd_open @ hermes_cli/portal_cli.py:_cmd_open */
-int hermes_cli_portal_cli_u_cmd_open(const char *arg) { (void)arg; return 0; }
+int hermes_cli_portal_cli_u_cmd_open(const char *arg) {
+    /* Python: open subscription URL in browser. Arg = "url\topened". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    printf("Opening %s\n", tab ? tab + 1 : arg);
+    printf("Could not launch a browser. Visit the URL above manually.\n");
+    return 1;
+}
 
 /* PoP: _cmd_login @ hermes_cli/portal_cli.py:_cmd_login */
 int hermes_cli_portal_cli_u_cmd_login(const char *arg) { (void)arg; return 0; }

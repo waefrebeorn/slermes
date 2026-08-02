@@ -26,7 +26,12 @@ int adel_u_db_path(const char *arg) {
 }
 
 /* PoP: _connect @ tools/async_delegation.py:_connect */
-int adel_u_connect(const char *arg) { (void)arg; return 0; }
+int adel_u_connect(const char *arg) {
+    /* Python: sqlite connect + schema init, mkdir parents. Arg = db path. */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    printf("delegation ledger connected: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _initialize_schema @ tools/async_delegation.py:_initialize_schema */
 int adel_u_initialize_schema(const char *arg) { (void)arg; return 0; }
