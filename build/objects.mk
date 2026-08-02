@@ -203,7 +203,7 @@ PORT_OBJ = \
         src/cli/port_config.o \
         src/cli/port_container_boot.o \
         src/cli/port_context_switch_guard.o \
-        src/cli/port_dump.o \
+        src/cli/port_dump.o src/cli/port_dump_remaining.o src/cli/port_journey_remaining.o \
         src/cli/port_gateway.o \
         src/cli/port_gateway_windows.o \
         src/cli/port_goals.o src/cli/port_goals_remaining.o src/cli/port_profile_distribution_remaining.o src/cli/port_projects_db_remaining.o src/cli/port_pty_bridge_remaining.o src/cli/port_win_pty_bridge_remaining.o src/cli/port_service_manager_remaining.o src/cli/port_active_sessions_remaining.o \
