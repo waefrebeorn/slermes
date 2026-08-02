@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T15:06:12Z",
+  "generated_at": "2026-08-02T15:09:02Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -90957,10 +90957,10 @@
     },
     "gateway/platforms/base.py": {
       "total": 178,
-      "ported": 115,
+      "ported": 116,
       "partial": 5,
       "stub": 0,
-      "real_gaps": 58,
+      "real_gaps": 57,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 178,
@@ -94759,11 +94759,11 @@
             "decorators": [],
             "line_number": 4229
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_platforms_base_helpers.c",
-          "c_function": "gw_base__on_processing_start",
+          "c_function": "gw_base__pop_post_delivery_callback",
           "pop_annotation": {
-            "c_function": "gw_base__on_processing_start",
+            "c_function": "gw_base__pop_post_delivery_callback",
             "python_functions": [
               "pop_post_delivery_callback"
             ],
@@ -94773,12 +94773,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: gw_base__pop_post_delivery_callback @ gateway/platforms/base.py:pop_post_delivery_callback */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",

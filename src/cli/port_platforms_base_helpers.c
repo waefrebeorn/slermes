@@ -816,8 +816,8 @@ void gw_base__register_post_delivery_callback(const char *session_key, void (*cb
     if (g_pdc_n < 64) { g_pdc_key[g_pdc_n] = session_key; g_pdc_cb[g_pdc_n] = cb; g_pdc_gen[g_pdc_n] = generation; g_pdc_n++; }
 }
 /* PoP: gw_base__pop_post_delivery_callback @ gateway/platforms/base.py:pop_post_delivery_callback */
-void (*gw_base__pop_post_delivery_callback(const char *session_key, int generation))(void) {
-    /* Python: generation-owned pop. */
+void *gw_base__pop_post_delivery_callback(const char *session_key, int generation) {
+    /* Python: generation-owned pop. Returns the callback or NULL. */
     if (!session_key) return NULL;
     if (g_pdc_n == 0) return NULL;
     /* Entry is (generation, callback) pairs; only pop when generation
@@ -833,7 +833,7 @@ void (*gw_base__pop_post_delivery_callback(const char *session_key, int generati
             g_pdc_cb[j] = g_pdc_cb[j + 1];
         }
         g_pdc_n--;
-        return cb;
+        return (void *)cb;
     }
     return NULL;
 }
