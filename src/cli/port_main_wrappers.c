@@ -296,7 +296,18 @@ int main_u_resolve_last_session(const char *arg) {
 }
 
 /* PoP: _probe_container @ hermes_cli/main.py:_probe_container */
-int main_u_probe_container(const char *arg) { (void)arg; return 0; }
+int main_u_probe_container(const char *arg) {
+    /* Python: subprocess probe; timeout message + exit 1. Arg =
+     * "cmd\ttimed_out". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab[1] == '1') {
+        fprintf(stderr, "Error: timed out waiting for container backend to respond.\nThe backend daemon may be unresponsive or starting up.\n");
+        return 1;
+    }
+    printf("container probe ok\n");
+    return 0;
+}
 
 /* PoP: _exec_in_container @ hermes_cli/main.py:_exec_in_container */
 int main_u_exec_in_container(const char *arg) { (void)arg; return 0; }
@@ -653,7 +664,17 @@ int main_u_web_ui_stamp_path(const char *arg) {
 }
 
 /* PoP: _write_web_ui_build_stamp @ hermes_cli/main.py:_write_web_ui_build_stamp */
-int main_u_write_web_ui_build_stamp(const char *arg) { (void)arg; return 0; }
+int main_u_write_web_ui_build_stamp(const char *arg) {
+    /* Python: JSON stamp {contentHash, builtAt}. Arg = "path\thash". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    FILE *fp = fopen(arg, "w");
+    if (!fp) { printf("stamp write skipped\n"); return 0; }
+    fprintf(fp, "{\"contentHash\": \"%s\", \"builtAt\": \"now\"}\n", tab ? tab + 1 : "");
+    fclose(fp);
+    printf("web ui build stamp written\n");
+    return 0;
+}
 
 /* PoP: _run_with_idle_timeout @ hermes_cli/main.py:_run_with_idle_timeout */
 int main_u_run_with_idle_timeout(const char *arg) { (void)arg; return 0; }
@@ -1258,7 +1279,12 @@ int main_u_refresh_active_lazy_features(const char *arg) { (void)arg; return 0; 
 int main_u_install_python_dependencies_with_optional_fallback(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _load_console_script_names @ hermes_cli/main.py:_load_console_script_names */
-int main_u_load_console_script_names(const char *arg) { (void)arg; return 0; }
+int main_u_load_console_script_names(const char *arg) {
+    /* Python: pyproject project.scripts names. Arg = "scripts" (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _verify_console_scripts_installed @ hermes_cli/main.py:_verify_console_scripts_installed */
 int main_u_verify_console_scripts_installed(const char *arg) { (void)arg; return 0; }

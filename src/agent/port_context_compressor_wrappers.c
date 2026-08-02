@@ -72,7 +72,22 @@ int ctxc_u_record_ineffective_compression_verdict(const char *arg) {
 }
 
 /* PoP: record_completed_compaction @ agent/context_compressor.py:record_completed_compaction */
-int ctxc_record_completed_compaction(const char *arg) { (void)arg; return 0; }
+int ctxc_record_completed_compaction(const char *arg) {
+    /* Python: boundary + fallback streak bookkeeping. Arg =
+     * "used_fallback\tstreak\tnew_streak". */
+    if (!arg || !*arg) { printf("compaction recorded\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int used_fallback = arg[0] == '1';
+    long streak = t1 ? strtol(t1 + 1, NULL, 10) : 0;
+    long new_streak = t2 ? strtol(t2 + 1, NULL, 10) : 0;
+    if (used_fallback) {
+        printf("compaction completed (fallback summary, streak %ld->%ld)\n", streak, new_streak);
+        return 0;
+    }
+    printf("compaction completed (streak reset %ld->0)\n", streak);
+    return 0;
+}
 
 /* PoP: snapshot_preflight_display_tokens @ agent/context_compressor.py:snapshot_preflight_display_tokens */
 int ctxc_snapshot_preflight_display_tokens(const char *arg) {

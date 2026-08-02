@@ -180,7 +180,16 @@ int tools_computer_use_tool_u_element_to_dict(const char *arg) {
 }
 
 /* PoP: check_computer_use_requirements @ tools/computer_use/tool.py:check_computer_use_requirements */
-int tools_computer_use_tool_check_computer_use_requirements(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_tool_check_computer_use_requirements(const char *arg) {
+    /* Python: platform in set AND driver available. Arg =
+     * "platform_ok\tdriver_ok". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int platform_ok = arg[0] == '1';
+    int driver_ok = tab && tab[1] == '1';
+    printf("%d\n", (platform_ok && driver_ok) ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _format @ tools/lazy_deps.py:_format */
 int tools_lazy_deps_u_format(const char *arg) {
@@ -588,7 +597,12 @@ int tools_x_search_tool_u_get_x_search_retries(const char *arg) {
 int tools_x_search_tool_u_resolve_xai_bearer(const char *arg) { (void)arg; return 0; }
 
 /* PoP: check_x_search_requirements @ tools/x_search_tool.py:check_x_search_requirements */
-int tools_x_search_tool_check_x_search_requirements(const char *arg) { (void)arg; return 0; }
+int tools_x_search_tool_check_x_search_requirements(const char *arg) {
+    /* Python: api_key present (auto-refresh counts). Arg = "has_key". */
+    if (arg && arg[0] == '1') { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _normalize_handles @ tools/x_search_tool.py:_normalize_handles */
 int tools_x_search_tool_u_normalize_handles(const char *arg) {
@@ -1230,7 +1244,12 @@ int tools_kanban_tools_u_is_delegated_child_context(const char *arg) {
 int tools_kanban_tools_u_reject_delegated_child_mutation(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _connect @ tools/kanban_tools.py:_connect */
-int tools_kanban_tools_u_connect(const char *arg) { (void)arg; return 0; }
+int tools_kanban_tools_u_connect(const char *arg) {
+    /* Python: lazy kb import + connect. Arg = "board\tstate". */
+    if (!arg || !*arg) { printf("kanban db connected (default)\n"); return 0; }
+    printf("kanban db connected: %s\n", arg);
+    return 0;
+}
 
 /* PoP: heartbeat_current_worker_from_env @ tools/kanban_tools.py:heartbeat_current_worker_from_env */
 int tools_kanban_tools_heartbeat_current_worker_from_env(const char *arg) { (void)arg; return 0; }
@@ -1503,7 +1522,12 @@ int tools_computer_use_permissions_u_resolve_driver_cmd(const char *arg) {
 }
 
 /* PoP: _child_env @ tools/computer_use/permissions.py:_child_env */
-int tools_computer_use_permissions_u_child_env(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_permissions_u_child_env(const char *arg) {
+    /* Python: telemetry env + sanitized. Arg = "env_json". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _json_out @ tools/computer_use/permissions.py:_json_out */
 int tools_computer_use_permissions_u_json_out(const char *arg) {
@@ -1520,7 +1544,14 @@ int tools_computer_use_permissions_u_json_out(const char *arg) {
 }
 
 /* PoP: _mac_permissions @ tools/computer_use/permissions.py:_mac_permissions */
-int tools_computer_use_permissions_u_mac_permissions(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_permissions_u_mac_permissions(const char *arg) {
+    /* Python: fold permission booleans into out. Arg = "data_json\terror". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab[1]) { printf("error: %s\n", tab + 1); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: computer_use_status @ tools/computer_use/permissions.py:computer_use_status */
 int tools_computer_use_permissions_computer_use_status(const char *arg) { (void)arg; return 0; }
@@ -1831,7 +1862,16 @@ int tools_web_tools_u_web_extract_url(const char *arg) {
 int tools_web_tools_u_registered_web_provider(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _registered_web_provider_available @ tools/web_tools.py:_registered_web_provider_available */
-int tools_web_tools_u_registered_web_provider_available(const char *arg) { (void)arg; return 0; }
+int tools_web_tools_u_registered_web_provider_available(const char *arg) {
+    /* Python: None unregistered / True/False availability. Arg =
+     * "registered\tavailable". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int registered = arg[0] == '1';
+    if (!registered) { printf("\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _list_registered_web_providers @ tools/web_tools.py:_list_registered_web_providers */
 int tools_web_tools_u_list_registered_web_providers(const char *arg) {

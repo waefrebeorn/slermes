@@ -466,7 +466,20 @@ int auth_build_minimax_oauth_token_provider(const char *arg) { (void)arg; return
 int auth_resolve_minimax_oauth_runtime_credentials(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_minimax_oauth_auth_status @ hermes_cli/auth.py:get_minimax_oauth_auth_status */
-int auth_get_minimax_oauth_auth_status(const char *arg) { (void)arg; return 0; }
+int auth_get_minimax_oauth_auth_status(const char *arg) {
+    /* Python: {logged_in, provider, region, expires_at}. Arg =
+     * "has_token\tvalid\tregion\texpires_at". */
+    if (!arg || !*arg) { printf("{\"logged_in\": false, \"provider\": \"minimax-oauth\"}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int has_token = arg[0] == '1';
+    if (!has_token) { printf("{\"logged_in\": false, \"provider\": \"minimax-oauth\"}\n"); return 0; }
+    int valid = t1 && t1[1] == '1';
+    printf("{\"logged_in\": %s, \"provider\": \"minimax-oauth\", \"region\": \"%s\", \"expires_at\": \"%s\"}\n",
+           valid ? "true" : "false", t2 ? t2 + 1 : "global", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _login_minimax_oauth @ hermes_cli/auth.py:_login_minimax_oauth */
 int auth_u_login_minimax_oauth(const char *arg) {

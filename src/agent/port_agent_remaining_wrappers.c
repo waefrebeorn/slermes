@@ -528,7 +528,25 @@ int agent_subscription_view_u_coalesce(const char *arg) {
 }
 
 /* PoP: _parse_tier @ agent/subscription_view.py:_parse_tier */
-int agent_subscription_view_u_parse_tier(const char *arg) { (void)arg; return 0; }
+int agent_subscription_view_u_parse_tier(const char *arg) {
+    /* Python: NAS tier dict -> SubscriptionTier. Arg = "raw_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (!j || !json_is_object(j)) {
+        if (j) json_free(j);
+        printf("\n");
+        return 0;
+    }
+    const char *tid = json_get_str(j, "tierId", "");
+    if (!tid[0]) tid = json_get_str(j, "id", "");
+    if (!tid[0]) { json_free(j); printf("\n"); return 0; }
+    long order = (long)json_get_num(j, "tierOrder", 0);
+    int current = json_get_bool(j, "isCurrent", 0);
+    int enabled = json_get_bool(j, "isEnabled", 1);
+    printf("%s\t%s\t%ld\t%d\t%d\n", tid, json_get_str(j, "name", ""), order, current, enabled);
+    json_free(j);
+    return 0;
+}
 
 /* PoP: subscription_change_preview_from_payload @ agent/subscription_view.py:subscription_change_preview_from_payload */
 int agent_subscription_view_subscription_change_preview_from_pay_ad(const char *arg) { (void)arg; return 0; }
@@ -672,7 +690,22 @@ int agent_subscription_view_u_dev_current(const char *arg) {
 }
 
 /* PoP: _dev_tiers @ agent/subscription_view.py:_dev_tiers */
-int agent_subscription_view_u_dev_tiers(const char *arg) { (void)arg; return 0; }
+int agent_subscription_view_u_dev_tiers(const char *arg) {
+    /* Python: sample catalog with current mark. Arg = "current_id". */
+    if (!arg || !*arg) { printf("free\n"); return 0; }
+    static const char *tiers[][4] = {
+        {"free", "Free", "0", "0"}, {"plus", "Plus", "20", "1000"},
+        {"super", "Super", "40", "3000"}, {"ultra", "Ultra", "80", "7000"}};
+    int first = 1;
+    for (int i = 0; i < 4; i++) {
+        if (!first) printf("\n");
+        printf("%s\t%s\t%s\t%s\t%d", tiers[i][0], tiers[i][1], tiers[i][2], tiers[i][3],
+               strcmp(tiers[i][0], arg) == 0 ? 1 : 0);
+        first = 0;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: dev_fixture_subscription_state @ agent/subscription_view.py:dev_fixture_subscription_state */
 int agent_subscription_view_dev_fixture_subscription_state(const char *arg) { (void)arg; return 0; }

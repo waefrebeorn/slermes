@@ -867,7 +867,21 @@ int hermes_cli_projects_cmd_build_parser(const char *arg) { (void)arg; return 0;
 int hermes_cli_projects_cmd_projects_command(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _with_project @ hermes_cli/projects_cmd.py:_with_project */
-int hermes_cli_projects_cmd_u_with_project(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_cmd_u_with_project(const char *arg) {
+    /* Python: resolve + fn wrapper (1 = not found, 2 = ValueError). Arg =
+     * "resolved\tresult\texc". */
+    if (!arg || !*arg) { printf("1\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int resolved = arg[0] == '1';
+    if (!resolved) { printf("1\n"); return 1; }
+    if (t2 && strcmp(t2 + 1, "value_error") == 0) {
+        fprintf(stderr, "project: invalid argument\n");
+        return 2;
+    }
+    printf("%s\n", t1 ? t1 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _print_project @ hermes_cli/projects_cmd.py:_print_project */
 int hermes_cli_projects_cmd_u_print_project(const char *arg) {
@@ -1265,7 +1279,25 @@ int hermes_cli_profile_distributio_u_looks_like_git_url(const char *arg) {
 }
 
 /* PoP: _git_clone @ hermes_cli/profile_distribution.py:_git_clone */
-int hermes_cli_profile_distributio_u_git_clone(const char *arg) { (void)arg; return 0; }
+int hermes_cli_profile_distributio_u_git_clone(const char *arg) {
+    /* Python: git clone --depth 1; errors wrapped. Arg =
+     * "url\tdest\tstate\tstderr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t2 ? t2 + 1 : "ok";
+    if (strcmp(state, "no_git") == 0) {
+        fprintf(stderr, "git is required for git-URL installs\n");
+        return 1;
+    }
+    if (strcmp(state, "failed") == 0) {
+        fprintf(stderr, "git clone failed: %s\n", t3 ? t3 + 1 : "");
+        return 1;
+    }
+    printf("cloned %s -> %s\n", arg, t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: _stage_source @ hermes_cli/profile_distribution.py:_stage_source */
 int hermes_cli_profile_distributio_u_stage_source(const char *arg) { (void)arg; return 0; }
@@ -2202,7 +2234,14 @@ int hermes_cli_skin_engine_get_active_skin_name(const char *arg) {
 }
 
 /* PoP: init_skin_from_config @ hermes_cli/skin_engine.py:init_skin_from_config */
-int hermes_cli_skin_engine_init_skin_from_config(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skin_engine_init_skin_from_config(const char *arg) {
+    /* Python: display.skin or default. Arg = "skin_name". */
+    if (!arg || !*arg) { printf("default skin active\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ') p++;
+    printf("skin active: %s\n", p[0] ? p : "default");
+    return 0;
+}
 
 /* PoP: get_active_prompt_symbol @ hermes_cli/skin_engine.py:get_active_prompt_symbol */
 int hermes_cli_skin_engine_get_active_prompt_symbol(const char *arg) {
@@ -3672,7 +3711,17 @@ int hermes_cli_curator_u_cmd_restore(const char *arg) {
 int hermes_cli_curator_u_cmd_archive(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _idle_days @ hermes_cli/curator.py:_idle_days */
-int hermes_cli_curator_u_idle_days(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curator_u_idle_days(const char *arg) {
+    /* Python: days since last_activity/created; None on bad. Arg =
+     * "timestamp\tnow\tdays". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *days = t2 ? t2 + 1 : "";
+    if (days[0]) { printf("%s\n", days); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _cmd_prune @ hermes_cli/curator.py:_cmd_prune */
 int hermes_cli_curator_u_cmd_prune(const char *arg) { (void)arg; return 0; }

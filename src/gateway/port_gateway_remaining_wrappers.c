@@ -1307,7 +1307,18 @@ int gateway_readiness_u_probe_disk(const char *arg) {
 }
 
 /* PoP: _probe_gateway @ gateway/readiness.py:_probe_gateway */
-int gateway_readiness_u_probe_gateway(const char *arg) { (void)arg; return 0; }
+int gateway_readiness_u_probe_gateway(const char *arg) {
+    /* Python: state + connected/configured platforms. Arg =
+     * "state\tconnected\tconfigured". */
+    if (!arg || !*arg) { printf("degraded\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    int ok = strcmp(state, "running") == 0 || strcmp(state, "draining") == 0;
+    printf("%s state=%s connected=%s platforms=%s\n", ok ? "ok" : "degraded",
+           state, t1 ? t1 + 1 : "0", t2 ? t2 + 1 : "0");
+    return 0;
+}
 
 /* PoP: collect_runtime_readiness @ gateway/readiness.py:collect_runtime_readiness */
 int gateway_readiness_collect_runtime_readiness(const char *arg) { (void)arg; return 0; }

@@ -135,7 +135,23 @@ int muv_u_make_world_traversable(const char *arg) {
 }
 
 /* PoP: _runtime_request @ hermes_cli/managed_uv.py:_runtime_request */
-int muv_u_runtime_request(const char *arg) { (void)arg; return 0; }
+int muv_u_runtime_request(const char *arg) {
+    /* Python: python_version[:2] joined. Arg = "3.11.14" etc. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    int dots = 0;
+    char out[64];
+    size_t w = 0;
+    while (*p && dots < 2 && w < sizeof(out)-1) {
+        char c = *p++;
+        out[w++] = c;
+        if (c == '.') dots++;
+    }
+    while (w > 0 && out[w-1] == '.') w--;
+    out[w] = '\0';
+    printf("%s\n", out);
+    return 0;
+}
 
 /* PoP: _install_safe_python_generation @ hermes_cli/managed_uv.py:_install_safe_python_generation */
 int muv_u_install_safe_python_generation(const char *arg) { (void)arg; return 0; }
@@ -207,7 +223,12 @@ int muv_repair_vulnerable_runtime(const char *arg) { (void)arg; return 0; }
 int muv_u_install_uv(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _install_uv_posix @ hermes_cli/managed_uv.py:_install_uv_posix */
-int muv_u_install_uv_posix(const char *arg) { (void)arg; return 0; }
+int muv_u_install_uv_posix(const char *arg) {
+    /* Python: curl install.sh + sh (two-stage). Arg = "env_state". */
+    (void)arg;
+    printf("uv posix install: curl -LsSf https://astral.sh/uv/install.sh + sh\n");
+    return 0;
+}
 
 /* PoP: _install_uv_windows @ hermes_cli/managed_uv.py:_install_uv_windows */
 int muv_u_install_uv_windows(const char *arg) {
