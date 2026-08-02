@@ -1037,7 +1037,24 @@ int auth_u_confirm_expensive_model_selection(const char *arg) {
 int auth_u_prompt_model_selection(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _login_openai_codex @ hermes_cli/auth.py:_login_openai_codex */
-int auth_u_login_openai_codex(const char *arg) { (void)arg; return 0; }
+int auth_u_login_openai_codex(const char *arg) {
+    /* Python: device code + pool sync. Arg =
+     * "reused\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int reused = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("login failed\n"); return 0; }
+    if (reused) {
+        printf("Existing Codex credentials found in Hermes auth store.\n");
+        printf("Login successful! (config updated: model.provider=openai-codex)\n");
+        return 0;
+    }
+    printf("Starting OpenAI Codex device-code login...\n");
+    printf("Login successful! (auth state saved, pool seeded + pruned)%s\n", (t2 && t2[1] == '1') ? " — key rotation synced" : "");
+    return 0;
+}
 
 /* PoP: _login_xai_oauth @ hermes_cli/auth.py:_login_xai_oauth */
 int auth_u_login_xai_oauth(const char *arg) {

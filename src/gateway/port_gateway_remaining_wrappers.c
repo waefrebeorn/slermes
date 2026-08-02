@@ -1316,7 +1316,18 @@ int gateway_relay_adapter_fronts_platform(const char *arg) {
 }
 
 /* PoP: _platform_is_fronted @ gateway/relay/adapter.py:_platform_is_fronted */
-int gateway_relay_adapter_u_platform_is_fronted(const char *arg) { (void)arg; return 0; }
+int gateway_relay_adapter_u_platform_is_fronted(const char *arg) {
+    /* Python: fronts_platform alias. Arg =
+     * "fronted\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int fronted = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s (connector-fronted platform: %s)\n", fronted ? "1" : "0", t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _on_passthrough @ gateway/relay/adapter.py:_on_passthrough */
 int gateway_relay_adapter_u_on_passthrough(const char *arg) { (void)arg; return 0; }

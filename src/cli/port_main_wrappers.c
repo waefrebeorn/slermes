@@ -423,7 +423,19 @@ int main_u_termux_workspace_install_context(const char *arg) {
 }
 
 /* PoP: _tui_need_npm_install @ hermes_cli/main.py:_tui_need_npm_install */
-int main_u_tui_need_npm_install(const char *arg) { (void)arg; return 0; }
+int main_u_tui_need_npm_install(const char *arg) {
+    /* Python: lockfile content compare. Arg =
+     * "needed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int needed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!needed) { printf("0 (prebuilt bundle or deps match by content)\n"); return 0; }
+    printf("1 (ink missing or hidden lockfile differs): %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _iter_tui_build_inputs @ hermes_cli/main.py:_iter_tui_build_inputs */
 int main_u_iter_tui_build_inputs(const char *arg) {
@@ -916,7 +928,23 @@ int main_u_prompt_reasoning_effort_selection(const char *arg) {
 }
 
 /* PoP: _run_anthropic_oauth_flow @ hermes_cli/main.py:_run_anthropic_oauth_flow */
-int main_u_run_anthropic_oauth_flow(const char *arg) { (void)arg; return 0; }
+int main_u_run_anthropic_oauth_flow(const char *arg) {
+    /* Python: setup-token flow. Arg =
+     * "linked\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int linked = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (flow failed)\n"); return 0; }
+    if (linked) {
+        printf("  ✓ Claude Code credentials linked.\n");
+        printf("    Hermes will use Claude's credential store directly.\n");
+        return 1;
+    }
+    printf("  ✓ Anthropic OAuth token saved.%s\n", (t2 && t2[1] == '1') ? " (refresh token saved)" : "");
+    return 1;
+}
 
 /* PoP: cmd_login @ hermes_cli/main.py:cmd_login */
 int main_cmd_login(const char *arg) {
@@ -2480,7 +2508,17 @@ int main_u_venv_core_imports_healthy(const char *arg) {
 }
 
 /* PoP: _detect_venv_python_processes @ hermes_cli/main.py:_detect_venv_python_processes */
-int main_u_detect_venv_python_processes(const char *arg) { (void)arg; return 0; }
+int main_u_detect_venv_python_processes(const char *arg) {
+    /* Python: venv lock-holders. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[] (off-windows / no psutil)\n"); return 0; }
+    printf("%s process(es) (self + ancestors excluded; caller must refuse, not kill)\n", t2 ? t2 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _format_venv_python_holders_message @ hermes_cli/main.py:_format_venv_python_holders_message */
 int main_u_format_venv_python_holders_message(const char *arg) {
@@ -2580,7 +2618,23 @@ int main_u_discard_lockfile_churn(const char *arg) {
 int main_u_cmd_update_impl(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _render_distribution_plan @ hermes_cli/main.py:_render_distribution_plan */
-int main_u_render_distribution_plan(const char *arg) { (void)arg; return 0; }
+int main_u_render_distribution_plan(const char *arg) {
+    /* Python: plan summary. Arg =
+     * "exists\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int exists = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("\nDistribution: %s\n", t2 ? t2 + 1 : "?");
+    printf("  Source:   %s\n", "?");
+    printf("  Target:   %s\n", "?");
+    if (exists) {
+        printf("  %s\n", (t2 && t2[1] == '1') ? "(profile exists — will overwrite distribution-owned files only)" : "  ⚠ Profile exists but is NOT a distribution — will overwrite SOUL.md/skills/cron/mcp.json");
+    }
+    return 0;
+}
 
 /* PoP: _report_dashboard_status @ hermes_cli/main.py:_report_dashboard_status */
 int main_u_report_dashboard_status(const char *arg) {

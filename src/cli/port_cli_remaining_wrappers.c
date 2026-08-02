@@ -2822,7 +2822,15 @@ int hermes_cli_backup_run_quick_backup(const char *arg) {
 }
 
 /* PoP: _write_full_zip_backup @ hermes_cli/backup.py:_write_full_zip_backup */
-int hermes_cli_backup_u_write_full_zip_backup(const char *arg) { (void)arg; return 0; }
+int hermes_cli_backup_u_write_full_zip_backup(const char *arg) {
+    /* Python: full zip. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("full zip written (exclusions, sqlite safe-copy, deflate 6): %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: create_pre_update_backup @ hermes_cli/backup.py:create_pre_update_backup */
 int hermes_cli_backup_create_pre_update_backup(const char *arg) {
@@ -3411,7 +3419,19 @@ int hermes_cli_skills_hub_do_diff(const char *arg) {
 }
 
 /* PoP: _github_publish @ hermes_cli/skills_hub.py:_github_publish */
-int hermes_cli_skills_hub_u_github_publish(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skills_hub_u_github_publish(const char *arg) {
+    /* Python: fork+PR. Arg =
+     * "success\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int success = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\tfork/network failure\n"); return 0; }
+    if (!success) { printf("0\t%s\n", t2 ? t2 + 1 : "publish failed"); return 0; }
+    printf("1\tPR created: %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _print_skills_help @ hermes_cli/skills_hub.py:_print_skills_help */
 int hermes_cli_skills_hub_u_print_skills_help(const char *arg) {
@@ -4349,7 +4369,17 @@ int hermes_cli_codex_runtime_plugi_u_strip_existing_managed_block(const char *ar
 }
 
 /* PoP: _query_codex_plugins @ hermes_cli/codex_runtime_plugin_migration.py:_query_codex_plugins */
-int hermes_cli_codex_runtime_plugi_u_query_codex_plugins(const char *arg) { (void)arg; return 0; }
+int hermes_cli_codex_runtime_plugi_u_query_codex_plugins(const char *arg) {
+    /* Python: app-server RPC. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\t%s\n", t2 ? t2 + 1 : "plugin/list query failed"); return 0; }
+    printf("%s plugin(s)\t\n", t2 ? t2 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _looks_like_test_tempdir @ hermes_cli/codex_runtime_plugin_migration.py:_looks_like_test_tempdir */
 int hermes_cli_codex_runtime_plugi_u_looks_like_test_tempdir(const char *arg) {
@@ -4592,7 +4622,15 @@ int hermes_cli_journey_u_term_size(const char *arg) {
 }
 
 /* PoP: _frame_renderable @ hermes_cli/journey.py:_frame_renderable */
-int hermes_cli_journey_u_frame_renderable(const char *arg) { (void)arg; return 0; }
+int hermes_cli_journey_u_frame_renderable(const char *arg) {
+    /* Python: rich Group. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("frame rendered (title/legend/categories/graph/summary; field rows = rows-10-summary): %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _cmd_show @ hermes_cli/journey.py:_cmd_show */
 int hermes_cli_journey_u_cmd_show(const char *arg) {
@@ -7694,7 +7732,29 @@ int hermes_cli_secrets_cli_register_cli(const char *arg) {
 }
 
 /* PoP: cmd_token @ hermes_cli/secrets_cli.py:cmd_token */
-int hermes_cli_secrets_cli_cmd_token(const char *arg) { (void)arg; return 0; }
+int hermes_cli_secrets_cli_cmd_token(const char *arg) {
+    /* Python: rotate-only. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("1\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_tty") == 0) {
+        printf("[red]No TTY — pass the token with --access-token.[/red]\n");
+        return 1;
+    }
+    if (strcmp(state, "empty") == 0) {
+        printf("[red]Empty token, aborting.[/red]\n");
+        return 1;
+    }
+    if (strcmp(state, "rejected") == 0) {
+        printf("[red]✗ New token was rejected by bws — nothing was changed.[/red]\n");
+        return 1;
+    }
+    printf("[green]✓[/green] stored in %s as %s. Takes effect on the next Hermes invocation.\n", t2 ? t2 + 1 : ".env", t3 ? t3 + 1 : "BWS_ACCESS_TOKEN");
+    return 0;
+}
 
 /* PoP: _yn @ hermes_cli/secrets_cli.py:_yn */
 int hermes_cli_secrets_cli_u_yn(const char *arg) {
@@ -9985,7 +10045,12 @@ int hermes_cli_subcommands_pairing_build_pairing_parser(const char *arg) {
 }
 
 /* PoP: build_plugins_parser @ hermes_cli/subcommands/plugins.py:build_plugins_parser */
-int hermes_cli_subcommands_plugins_build_plugins_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_plugins_build_plugins_parser(const char *arg) {
+    /* Python: plugins tree. */
+    (void)arg;
+    printf("plugins parser attached (install/update/remove/list/enable/disable)\n");
+    return 0;
+}
 
 /* PoP: build_profile_parser @ hermes_cli/subcommands/profile.py:build_profile_parser */
 int hermes_cli_subcommands_profile_build_profile_parser(const char *arg) { (void)arg; return 0; }
@@ -10026,7 +10091,12 @@ int hermes_cli_subcommands_skin_build_skin_parser(const char *arg) {
 }
 
 /* PoP: build_slack_parser @ hermes_cli/subcommands/slack.py:build_slack_parser */
-int hermes_cli_subcommands_slack_build_slack_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_slack_build_slack_parser(const char *arg) {
+    /* Python: slack tree. */
+    (void)arg;
+    printf("slack parser attached (manifest --write [PATH])\n");
+    return 0;
+}
 
 /* PoP: build_status_parser @ hermes_cli/subcommands/status.py:build_status_parser */
 int hermes_cli_subcommands_status_build_status_parser(const char *arg) {

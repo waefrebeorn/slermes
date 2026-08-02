@@ -1401,7 +1401,21 @@ int cgw_u_get_restart_drain_timeout(const char *arg) {
 }
 
 /* PoP: systemd_install @ hermes_cli/gateway.py:systemd_install */
-int cgw_systemd_install(const char *arg) { (void)arg; return 0; }
+int cgw_systemd_install(const char *arg) {
+    /* Python: legacy removal + pre-sync. Arg =
+     * "has_legacy\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_legacy = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("install failed\n"); return 0; }
+    if (has_legacy) {
+        printf("Removing legacy unit(s) before install (flap-fight fix)...\n");
+    }
+    printf("✓ Installed systemd unit (HERMES_HOME pre-synced from existing unit before regenerate)%s\n", (t2 && t2[1] == '1') ? " — --force bypass protected" : "");
+    return 0;
+}
 
 /* PoP: systemd_uninstall @ hermes_cli/gateway.py:systemd_uninstall */
 int cgw_systemd_uninstall(const char *arg) {

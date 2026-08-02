@@ -1084,7 +1084,19 @@ int tools_delegate_tool_u_apply_summary_budget(const char *arg) {
 int tools_delegate_tool_u_run_single_child(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_child_credential_pool @ tools/delegate_tool.py:_resolve_child_credential_pool */
-int tools_delegate_tool_u_resolve_child_credential_pool(const char *arg) { (void)arg; return 0; }
+int tools_delegate_tool_u_resolve_child_credential_pool(const char *arg) {
+    /* Python: endpoint-identity custom. Arg =
+     * "shared\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int shared = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (shared) { printf("parent pool shared (same provider / same custom endpoint #7833)\n"); return 0; }
+    printf("child pool resolved: %s\n", t2 ? t2 + 1 : "none");
+    return 0;
+}
 
 /* PoP: _resolve_delegation_credentials @ tools/delegate_tool.py:_resolve_delegation_credentials */
 int tools_delegate_tool_u_resolve_delegation_credentials(const char *arg) { (void)arg; return 0; }

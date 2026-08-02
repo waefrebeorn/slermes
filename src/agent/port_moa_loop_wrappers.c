@@ -471,4 +471,12 @@ int moa_consume_and_save_trace_2(const char *arg) {
 }
 
 /* PoP: build_moa_facade @ agent/moa_loop.py:build_moa_facade */
-int moa_build_moa_facade(const char *arg) { (void)arg; return 0; }
+int moa_build_moa_facade(const char *arg) {
+    /* Python: reference relay. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("MoA facade built (reference relay reads tool_progress_callback at emit time #53802): %s\n", tab ? tab + 1 : "");
+    return 0;
+}

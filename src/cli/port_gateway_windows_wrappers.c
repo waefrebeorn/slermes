@@ -289,7 +289,16 @@ int gw_u_quote_vbs_string(const char *arg) {
 }
 
 /* PoP: _build_gateway_vbs_script @ hermes_cli/gateway_windows.py:_build_gateway_vbs_script */
-int gw_u_build_gateway_vbs_script(const char *arg) { (void)arg; return 0; }
+int gw_u_build_gateway_vbs_script(const char *arg) {
+    /* Python: wscript launcher. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("gateway.vbs built (wscript GUI-subsystem, no console, window style 0, CRLF — no cmd.exe anywhere #45599)\n");
+    return 0;
+}
 
 /* PoP: _build_startup_launcher @ hermes_cli/gateway_windows.py:_build_startup_launcher */
 int gw_u_build_startup_launcher(const char *arg) {

@@ -119,7 +119,22 @@ int msf_u_print_moa_preset(const char *arg) {
 }
 
 /* PoP: _model_flow_moa @ hermes_cli/model_setup_flows.py:_model_flow_moa */
-int msf_u_model_flow_moa(const char *arg) { (void)arg; return 0; }
+int msf_u_model_flow_moa(const char *arg) {
+    /* Python: preset picker. Arg =
+     * "has_presets\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_presets = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!has_presets) {
+        printf("No MoA presets configured. Run `hermes moa configure <name>` first.\n");
+        return 0;
+    }
+    printf("MoA preset selected (aggregator label rows, full breakdown on pick): %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _model_flow_nous @ hermes_cli/model_setup_flows.py:_model_flow_nous */
 int msf_u_model_flow_nous(const char *arg) { (void)arg; return 0; }
@@ -237,7 +252,19 @@ int msf_u_model_flow_kimi(const char *arg) {
 int msf_u_model_flow_stepfun(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _model_flow_bedrock_api_key @ hermes_cli/model_setup_flows.py:_model_flow_bedrock_api_key */
-int msf_u_model_flow_bedrock_api_key(const char *arg) { (void)arg; return 0; }
+int msf_u_model_flow_bedrock_api_key(const char *arg) {
+    /* Python: mantle endpoint. Arg =
+     * "region\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *region = t1 ? t1 + 1 : "us-east-1";
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("  Endpoint: https://bedrock-mantle.%s.api.aws/v1\n", region);
+    printf("  ✓ Using Bedrock (API Key) model: %s\n", t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _model_flow_bedrock @ hermes_cli/model_setup_flows.py:_model_flow_bedrock */
 int msf_u_model_flow_bedrock(const char *arg) { (void)arg; return 0; }

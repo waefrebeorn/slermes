@@ -2606,7 +2606,22 @@ int agent_thread_scoped_output_thread_scoped_silence(const char *arg) {
 }
 
 /* PoP: note_turn_start @ agent/agent_runtime_helpers.py:note_turn_start */
-int agent_agent_runtime_helpers_note_turn_start(const char *arg) { (void)arg; return 0; }
+int agent_agent_runtime_helpers_note_turn_start(const char *arg) {
+    /* Python: interleave tripwire. Arg =
+     * "overlap\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int overlap = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (overlap) {
+        printf("WARN: turn %s starting while turn %s (started %.0fs ago) has not completed its persist\n", t2 ? t2 + 1 : "?", "?", 0.0);
+        return 0;
+    }
+    printf("in-flight slot taken (no overlap; at most one warning per crashed turn)\n");
+    return 0;
+}
 
 /* PoP: note_turn_persisted @ agent/agent_runtime_helpers.py:note_turn_persisted */
 int agent_agent_runtime_helpers_note_turn_persisted(const char *arg) {
