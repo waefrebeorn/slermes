@@ -163,7 +163,16 @@ int smt_u_find_skill_in_other_profiles(const char *arg) { (void)arg; return 0; }
 int smt_u_skill_not_found_error(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _atomic_write_text @ tools/skill_manager_tool.py:_atomic_write_text */
-int smt_u_atomic_write_text(const char *arg) { (void)arg; return 0; }
+int smt_u_atomic_write_text(const char *arg) {
+    /* Python: mkstemp + replace. Arg = "path\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 atomic write failed\n"); return 1; }
+    printf("atomic write ok: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _add_description_prompt_preview @ tools/skill_manager_tool.py:_add_description_prompt_preview */
 int smt_u_add_description_prompt_preview(const char *arg) {

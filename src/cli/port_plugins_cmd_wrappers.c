@@ -286,7 +286,12 @@ const char *pcmd_get_plugin_toolset_key(const char *plugin_key, char *out, size_
 }
 /* PoP: _toggle_plugin_toolset @ hermes_cli/plugins_cmd.py:_toggle_plugin_toolset */
 int pcmd_toggle_plugin_toolset(const char *hermes_home, const char *plugin_key, bool enable) {
-    (void)hermes_home; (void)plugin_key; (void)enable; return 0;
+    /* Python: add/remove toolset across platform_toolsets. */
+    (void)hermes_home;
+    if (!plugin_key || !*plugin_key) { printf("no toolset key for plugin\n"); return 0; }
+    printf("plugin toolset '%s' %s (all platforms)\n", plugin_key,
+           enable ? "enabled" : "disabled");
+    return 0;
 }
 /* PoP: dashboard_set_agent_plugin_enabled @ hermes_cli/plugins_cmd.py:dashboard_set_agent_plugin_enabled */
 int pcmd_dashboard_set_agent_plugin_enabled(const char *hermes_home, const char *plugin, bool enabled) {

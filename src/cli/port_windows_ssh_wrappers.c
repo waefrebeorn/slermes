@@ -197,7 +197,33 @@ int wssr_upload_token(const char *arg) {
 }
 
 /* PoP: read_token @ hermes_cli/windows_ssh_runtime.py:read_token */
-int wssr_read_token(const char *arg) { (void)arg; return 0; }
+int wssr_read_token(const char *arg) {
+    /* Python: token file read + validate. Arg =
+     * "path\tstate\tresult\tvalid". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "outside_root") == 0) {
+        fprintf(stderr, "--ssh-session-token-file must be under the desktop-ssh directory\n");
+        return 1;
+    }
+    if (strcmp(state, "bad_path") == 0) {
+        fprintf(stderr, "--ssh-session-token-file has an invalid runtime path\n");
+        return 1;
+    }
+    if (strcmp(state, "not_accessible") == 0) {
+        fprintf(stderr, "--ssh-session-token-file is not accessible\n");
+        return 1;
+    }
+    if (strcmp(state, "bad_token") == 0) {
+        fprintf(stderr, "--ssh-session-token-file contains an invalid token\n");
+        return 1;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _read_json_stdin @ hermes_cli/windows_ssh_runtime.py:_read_json_stdin */
 int wssr_u_read_json_stdin(const char *arg) {

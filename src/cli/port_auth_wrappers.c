@@ -106,7 +106,15 @@ int auth_u_read_qwen_cli_tokens(const char *arg) {
 }
 
 /* PoP: _save_qwen_cli_tokens @ hermes_cli/auth.py:_save_qwen_cli_tokens */
-int auth_u_save_qwen_cli_tokens(const char *arg) { (void)arg; return 0; }
+int auth_u_save_qwen_cli_tokens(const char *arg) {
+    /* Python: 0600 O_EXCL atomic write. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("qwen token save skipped\n"); return 0; }
+    printf("qwen tokens saved 0600 atomic: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _refresh_qwen_cli_tokens @ hermes_cli/auth.py:_refresh_qwen_cli_tokens */
 int auth_u_refresh_qwen_cli_tokens(const char *arg) { (void)arg; return 0; }

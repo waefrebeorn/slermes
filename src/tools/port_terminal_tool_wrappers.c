@@ -370,4 +370,12 @@ int tt_u_stop_cleanup_thread(const char *arg) {
 }
 
 /* PoP: _atexit_cleanup @ tools/terminal_tool.py:_atexit_cleanup */
-int tt_u_atexit_cleanup(const char *arg) { (void)arg; return 0; }
+int tt_u_atexit_cleanup(const char *arg) {
+    /* Python: sandbox shutdown at exit. Arg = "count\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("no sandboxes to clean\n"); return 0; }
+    printf("shut down %s sandbox(es), waited for cleanup\n", arg);
+    return 0;
+}

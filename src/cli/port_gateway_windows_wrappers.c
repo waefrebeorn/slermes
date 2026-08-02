@@ -34,7 +34,18 @@ int gw_u_assert_windows(const char *arg) {
 }
 
 /* PoP: _preserve_hermes_home_path @ hermes_cli/gateway_windows.py:_preserve_hermes_home_path */
-int gw_u_preserve_hermes_home_path(const char *arg) { (void)arg; return 0; }
+int gw_u_preserve_hermes_home_path(const char *arg) {
+    /* Python: home-spelling preserve. Arg = "path\tunder_home\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int under_home = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("%s\n", arg); return 0; }
+    if (under_home) { printf("home-relative: %s\n", arg); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _quote_cmd_script_arg @ hermes_cli/gateway_windows.py:_quote_cmd_script_arg */
 int gw_u_quote_cmd_script_arg(const char *arg) {

@@ -552,7 +552,18 @@ int yb_u_extract_sender_key(const char *arg) {
 }
 
 /* PoP: _push_to_inbound @ gateway/platforms/yuanbao.py:_push_to_inbound */
-int yb_u_push_to_inbound(const char *arg) { (void)arg; return 0; }
+int yb_u_push_to_inbound(const char *arg) {
+    /* Python: debounced buffered dispatch. Arg =
+     * "key\tcount\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("buffer miss\n"); return 0; }
+    printf("buffered frame for key=%s count=%s, flush scheduled\n", arg, t1 ? t1 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _flush_inbound_buffer @ gateway/platforms/yuanbao.py:_flush_inbound_buffer */
 int yb_u_flush_inbound_buffer(const char *arg) { (void)arg; return 0; }

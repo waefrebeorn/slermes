@@ -1050,7 +1050,19 @@ int main_u_desktop_macos_relaunchable_fixup(const char *arg) { (void)arg; return
 int main_u_force_adhoc_macos_signing(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _desktop_linux_needs_no_sandbox @ hermes_cli/main.py:_desktop_linux_needs_no_sandbox */
-int main_u_desktop_linux_needs_no_sandbox(const char *arg) { (void)arg; return 0; }
+int main_u_desktop_linux_needs_no_sandbox(const char *arg) {
+    /* Python: apparmor userns check. Arg =
+     * "is_linux\tis_root\trestricted\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_linux = arg[0] == '1';
+    int is_root = t1 && t1[1] == '1';
+    int restricted = t2 && t2[1] == '1';
+    if (!is_linux || is_root) { printf("0\n"); return 0; }
+    printf("%d\n", restricted ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _desktop_linux_sandbox_helper_is_regular_file @ hermes_cli/main.py:_desktop_linux_sandbox_helper_is_regular_file */
 int main_u_desktop_linux_sandbox_helper_is_regular_file(const char *arg) {

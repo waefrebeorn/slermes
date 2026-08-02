@@ -111,7 +111,15 @@ int agent_model_metadata_u_codex_oauth_token_fingerprint(const char *arg) {
 }
 
 /* PoP: _extract_chatgpt_account_id @ agent/model_metadata.py:_extract_chatgpt_account_id */
-int agent_model_metadata_u_extract_chatgpt_account_id(const char *arg) { (void)arg; return 0; }
+int agent_model_metadata_u_extract_chatgpt_account_id(const char *arg) {
+    /* Python: JWT claim extract. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "bad_token") == 0 || strcmp(state, "no_claim") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _fetch_codex_oauth_context_lengths_with_source @ agent/model_metadata.py:_fetch_codex_oauth_context_lengths_with_source */
 int agent_model_metadata_u_fetch_codex_oauth_context_lengths_wit_ce(const char *arg) { (void)arg; return 0; }

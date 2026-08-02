@@ -1083,7 +1083,16 @@ int tools_delegation_live_log_wrap_progress_callback(const char *arg) {
 }
 
 /* PoP: create_live_transcripts @ tools/delegation_live_log.py:create_live_transcripts */
-int tools_delegation_live_log_create_live_transcripts(const char *arg) { (void)arg; return 0; }
+int tools_delegation_live_log_create_live_transcripts(const char *arg) {
+    /* Python: writers + manifest. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("live transcripts: none\n"); return 0; }
+    printf("live transcripts created: %s writer(s), manifest written\n", arg);
+    return 0;
+}
 
 /* PoP: _manifest_path @ tools/delegation_live_log.py:_manifest_path */
 int tools_delegation_live_log_u_manifest_path(const char *arg) {

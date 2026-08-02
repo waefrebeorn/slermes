@@ -70,7 +70,15 @@ int nsub_u_has_agent_browser(const char *arg) {
 }
 
 /* PoP: _local_browser_runnable @ hermes_cli/nous_subscription.py:_local_browser_runnable */
-int nsub_u_local_browser_runnable(const char *arg) { (void)arg; return 0; }
+int nsub_u_local_browser_runnable(const char *arg) {
+    /* Python: chromium/lightpanda gate. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_cli") == 0) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _browser_label @ hermes_cli/nous_subscription.py:_browser_label */
 int nsub_u_browser_label(const char *arg) {

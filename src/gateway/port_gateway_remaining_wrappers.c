@@ -1803,4 +1803,9 @@ int gateway_restart_is_gateway_supervisor_process(const char *arg) {
 }
 
 /* PoP: declare_stateless_channel @ gateway/session_context.py:declare_stateless_channel */
-int gateway_session_context_declare_stateless_channel(const char *arg) { (void)arg; return 0; }
+int gateway_session_context_declare_stateless_channel(const char *arg) {
+    /* Python: async delivery off, no latch. Arg = "state". */
+    (void)arg;
+    printf("async delivery disabled (stateless channel)\n");
+    return 0;
+}

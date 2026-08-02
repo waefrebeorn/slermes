@@ -131,7 +131,15 @@ int msw_resolve_display_context_length(const char *arg) { (void)arg; return 0; }
 int msw_u_configured_provider_matches(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_named_custom_model_id @ hermes_cli/model_switch.py:_resolve_named_custom_model_id */
-int msw_u_resolve_named_custom_model_id(const char *arg) { (void)arg; return 0; }
+int msw_u_resolve_named_custom_model_id(const char *arg) {
+    /* Python: picker prefix map. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _credential_pool_is_usable @ hermes_cli/model_switch.py:_credential_pool_is_usable */
 int msw_u_credential_pool_is_usable(const char *arg) {

@@ -609,7 +609,15 @@ int hermes_cli_cli_billing_mixin_u_subscription_render_upgrade_a_us(const char *
 }
 
 /* PoP: _usage_bar_lines @ hermes_cli/cli_billing_mixin.py:_usage_bar_lines */
-int hermes_cli_cli_billing_mixin_u_usage_bar_lines(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cli_billing_mixin_u_usage_bar_lines(const char *arg) {
+    /* Python: plan + topup bars. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _billing_add_card_flow @ hermes_cli/cli_billing_mixin.py:_billing_add_card_flow */
 int hermes_cli_cli_billing_mixin_u_billing_add_card_flow(const char *arg) { (void)arg; return 0; }
@@ -3661,7 +3669,15 @@ int hermes_cli_codex_runtime_plugi_u_quote_key(const char *arg) {
 int hermes_cli_codex_runtime_plugi_render_codex_toml_section(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _insert_managed_block_at_top_level @ hermes_cli/codex_runtime_plugin_migration.py:_insert_managed_block_at_top_level */
-int hermes_cli_codex_runtime_plugi_u_insert_managed_block_at_top_el(const char *arg) { (void)arg; return 0; }
+int hermes_cli_codex_runtime_plugi_u_insert_managed_block_at_top_el(const char *arg) {
+    /* Python: root-scope insert. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _strip_unmanaged_plugin_tables @ hermes_cli/codex_runtime_plugin_migration.py:_strip_unmanaged_plugin_tables */
 int hermes_cli_codex_runtime_plugi_u_strip_unmanaged_plugin_tables(const char *arg) { (void)arg; return 0; }
@@ -3964,7 +3980,18 @@ int hermes_cli_middleware_apply_llm_request_middleware(const char *arg) {
 }
 
 /* PoP: apply_tool_request_middleware @ hermes_cli/middleware.py:apply_tool_request_middleware */
-int hermes_cli_middleware_apply_tool_request_middleware(const char *arg) { (void)arg; return 0; }
+int hermes_cli_middleware_apply_tool_request_middleware(const char *arg) {
+    /* Python: tool args middleware chain. Arg =
+     * "count\tstate\tchanged\tresult". */
+    if (!arg || !*arg) { printf("{\"changed\": false}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("{\"changed\": false}\n"); return 0; }
+    printf("{\"changed\": %s, \"trace_len\": %s}\n", (t3 && t3[1] == '1') ? "true" : "false", t1 ? t1 + 1 : "0");
+    return 0;
+}
 
 /* PoP: apply_api_request_middleware @ hermes_cli/middleware.py:apply_api_request_middleware */
 int hermes_cli_middleware_apply_api_request_middleware(const char *arg) {
@@ -5949,7 +5976,18 @@ int hermes_cli_credential_lifecycl_purge_env_credential_references(const char *a
 int hermes_cli_credential_lifecycl_save_provider_env_credential(const char *arg) { (void)arg; return 0; }
 
 /* PoP: remove_provider_env_credential @ hermes_cli/credential_lifecycle.py:remove_provider_env_credential */
-int hermes_cli_credential_lifecycl_remove_provider_env_credential(const char *arg) { (void)arg; return 0; }
+int hermes_cli_credential_lifecycl_remove_provider_env_credential(const char *arg) {
+    /* Python: every-store removal. Arg =
+     * "env_var\tstate\tfound\tresult". */
+    if (!arg || !*arg) { printf("{\"ok\": true, \"found\": false}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("{\"ok\": true, \"found\": false}\n"); return 0; }
+    printf("{\"ok\": true, \"key\": \"%s\", \"found\": %s}\n", arg, (t3 && t3[1] == '1') ? "true" : "false");
+    return 0;
+}
 
 /* PoP: register_token_route @ hermes_cli/dashboard_auth/token_auth.py:register_token_route */
 int hermes_cli_dashboard_auth_toke_register_token_route(const char *arg) {
@@ -7467,7 +7505,16 @@ int hermes_cli_profiles_u_profile_bound_backend_pids(const char *arg) { (void)ar
 int hermes_cli_profiles_u_stop_profile_backends(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _rmtree_with_retry @ hermes_cli/profiles.py:_rmtree_with_retry */
-int hermes_cli_profiles_u_rmtree_with_retry(const char *arg) { (void)arg; return 0; }
+int hermes_cli_profiles_u_rmtree_with_retry(const char *arg) {
+    /* Python: 3-attempt rmtree. Arg = "state\tresult\tattempts". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { fprintf(stderr, "profile removal failed: %s\n", t2 ? t2 + 1 : "?"); return 1; }
+    printf("profile dir removed (attempts=%s)\n", t2 ? t2 + 1 : "1");
+    return 0;
+}
 
 /* PoP: _build_inherited_flag_table @ hermes_cli/relaunch.py:_build_inherited_flag_table */
 int hermes_cli_relaunch_u_build_inherited_flag_table(const char *arg) {

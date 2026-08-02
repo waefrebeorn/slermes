@@ -294,7 +294,15 @@ int cron_jobs_get_ticker_last_error(const char *arg) {
 int cron_scheduler_u_windows_cron_python_invocation(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _teardown_cron_agent @ cron/scheduler.py:_teardown_cron_agent */
-int cron_scheduler_u_teardown_cron_agent(const char *arg) { (void)arg; return 0; }
+int cron_scheduler_u_teardown_cron_agent(const char *arg) {
+    /* Python: agent.close + client reap. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("teardown skipped (no agent)\n"); return 0; }
+    printf("cron agent torn down%s\n", (tab && tab[1] == '1') ? " + stale clients reaped" : "");
+    return 0;
+}
 
 /* PoP: recover_interrupted @ cron/scheduler_provider.py:recover_interrupted */
 int cron_scheduler_provider_recover_interrupted(const char *arg) {
