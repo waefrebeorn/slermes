@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:42:43Z",
+  "generated_at": "2026-08-02T20:44:43Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -57547,10 +57547,10 @@
     },
     "agent/secret_sources/_cache.py": {
       "total": 7,
-      "ported": 0,
+      "ported": 7,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 7,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 7,
@@ -57566,16 +57566,24 @@
             "decorators": [],
             "line_number": 64
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_cache_remaining.c",
+          "c_function": "scc_is_fresh",
+          "pop_annotation": {
+            "c_function": "scc_is_fresh",
+            "python_functions": [
+              "is_fresh"
+            ],
+            "c_file": "src/agent/port_secret_sources_cache_remaining.c",
+            "python_file": "agent/secret_sources/_cache.py",
+            "line": 25,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_fresh @ agent/secret_sources/_cache.py:is_fresh */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/_cache.py",
@@ -57587,16 +57595,24 @@
             "decorators": [],
             "line_number": 77
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_cache_remaining.c",
+          "c_function": "scc_resolve_cache_home",
+          "pop_annotation": {
+            "c_function": "scc_resolve_cache_home",
+            "python_functions": [
+              "resolve_cache_home"
+            ],
+            "c_file": "src/agent/port_secret_sources_cache_remaining.c",
+            "python_file": "agent/secret_sources/_cache.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: resolve_cache_home @ agent/secret_sources/_cache.py:resolve_cache_home */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/_cache.py",
@@ -57608,16 +57624,24 @@
             "decorators": [],
             "line_number": 112
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_cache_remaining.c",
+          "c_function": "scc_init",
+          "pop_annotation": {
+            "c_function": "scc_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_secret_sources_cache_remaining.c",
+            "python_file": "agent/secret_sources/_cache.py",
+            "line": 43,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/secret_sources/_cache.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/_cache.py",
@@ -57629,16 +57653,24 @@
             "decorators": [],
             "line_number": 120
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_cache_remaining.c",
+          "c_function": "scc_path",
+          "pop_annotation": {
+            "c_function": "scc_path",
+            "python_functions": [
+              "path"
+            ],
+            "c_file": "src/agent/port_secret_sources_cache_remaining.c",
+            "python_file": "agent/secret_sources/_cache.py",
+            "line": 52,
+            "is_consolidated": false,
+            "full_text": "/* PoP: path @ agent/secret_sources/_cache.py:path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/_cache.py",
@@ -57650,16 +57682,24 @@
             "decorators": [],
             "line_number": 123
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_cache_remaining.c",
+          "c_function": "scc_read",
+          "pop_annotation": {
+            "c_function": "scc_read",
+            "python_functions": [
+              "read"
+            ],
+            "c_file": "src/agent/port_secret_sources_cache_remaining.c",
+            "python_file": "agent/secret_sources/_cache.py",
+            "line": 62,
+            "is_consolidated": false,
+            "full_text": "/* PoP: read @ agent/secret_sources/_cache.py:read */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/_cache.py",
@@ -57671,16 +57711,24 @@
             "decorators": [],
             "line_number": 160
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_cache_remaining.c",
+          "c_function": "scc_write",
+          "pop_annotation": {
+            "c_function": "scc_write",
+            "python_functions": [
+              "write"
+            ],
+            "c_file": "src/agent/port_secret_sources_cache_remaining.c",
+            "python_file": "agent/secret_sources/_cache.py",
+            "line": 80,
+            "is_consolidated": false,
+            "full_text": "/* PoP: write @ agent/secret_sources/_cache.py:write */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/_cache.py",
@@ -57692,16 +57740,24 @@
             "decorators": [],
             "line_number": 208
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_cache_remaining.c",
+          "c_function": "scc_clear",
+          "pop_annotation": {
+            "c_function": "scc_clear",
+            "python_functions": [
+              "clear"
+            ],
+            "c_file": "src/agent/port_secret_sources_cache_remaining.c",
+            "python_file": "agent/secret_sources/_cache.py",
+            "line": 99,
+            "is_consolidated": false,
+            "full_text": "/* PoP: clear @ agent/secret_sources/_cache.py:clear */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -67848,10 +67904,10 @@
     },
     "agent/transports/bedrock.py": {
       "total": 7,
-      "ported": 0,
+      "ported": 7,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 7,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 7,
@@ -67869,16 +67925,24 @@
             ],
             "line_number": 19
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_bedrock_remaining.c",
+          "c_function": "brt_api_mode",
+          "pop_annotation": {
+            "c_function": "brt_api_mode",
+            "python_functions": [
+              "api_mode"
+            ],
+            "c_file": "src/agent/port_transports_bedrock_remaining.c",
+            "python_file": "agent/transports/bedrock.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_mode @ agent/transports/bedrock.py:api_mode */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/bedrock.py",
@@ -67890,16 +67954,24 @@
             "decorators": [],
             "line_number": 22
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_bedrock_remaining.c",
+          "c_function": "brt_convert_messages",
+          "pop_annotation": {
+            "c_function": "brt_convert_messages",
+            "python_functions": [
+              "convert_messages"
+            ],
+            "c_file": "src/agent/port_transports_bedrock_remaining.c",
+            "python_file": "agent/transports/bedrock.py",
+            "line": 27,
+            "is_consolidated": false,
+            "full_text": "/* PoP: convert_messages @ agent/transports/bedrock.py:convert_messages */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/bedrock.py",
@@ -67911,16 +67983,24 @@
             "decorators": [],
             "line_number": 27
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_bedrock_remaining.c",
+          "c_function": "brt_convert_tools",
+          "pop_annotation": {
+            "c_function": "brt_convert_tools",
+            "python_functions": [
+              "convert_tools"
+            ],
+            "c_file": "src/agent/port_transports_bedrock_remaining.c",
+            "python_file": "agent/transports/bedrock.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: convert_tools @ agent/transports/bedrock.py:convert_tools */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/bedrock.py",
@@ -67932,16 +68012,24 @@
             "decorators": [],
             "line_number": 32
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_bedrock_remaining.c",
+          "c_function": "brt_build_kwargs",
+          "pop_annotation": {
+            "c_function": "brt_build_kwargs",
+            "python_functions": [
+              "build_kwargs"
+            ],
+            "c_file": "src/agent/port_transports_bedrock_remaining.c",
+            "python_file": "agent/transports/bedrock.py",
+            "line": 43,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_kwargs @ agent/transports/bedrock.py:build_kwargs */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/bedrock.py",
@@ -67953,16 +68041,24 @@
             "decorators": [],
             "line_number": 67
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_bedrock_remaining.c",
+          "c_function": "brt_normalize_response",
+          "pop_annotation": {
+            "c_function": "brt_normalize_response",
+            "python_functions": [
+              "normalize_response"
+            ],
+            "c_file": "src/agent/port_transports_bedrock_remaining.c",
+            "python_file": "agent/transports/bedrock.py",
+            "line": 51,
+            "is_consolidated": false,
+            "full_text": "/* PoP: normalize_response @ agent/transports/bedrock.py:normalize_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/bedrock.py",
@@ -67974,16 +68070,24 @@
             "decorators": [],
             "line_number": 118
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_bedrock_remaining.c",
+          "c_function": "brt_validate_response",
+          "pop_annotation": {
+            "c_function": "brt_validate_response",
+            "python_functions": [
+              "validate_response"
+            ],
+            "c_file": "src/agent/port_transports_bedrock_remaining.c",
+            "python_file": "agent/transports/bedrock.py",
+            "line": 59,
+            "is_consolidated": false,
+            "full_text": "/* PoP: validate_response @ agent/transports/bedrock.py:validate_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/bedrock.py",
@@ -67995,16 +68099,24 @@
             "decorators": [],
             "line_number": 134
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_bedrock_remaining.c",
+          "c_function": "brt_map_finish_reason",
+          "pop_annotation": {
+            "c_function": "brt_map_finish_reason",
+            "python_functions": [
+              "map_finish_reason"
+            ],
+            "c_file": "src/agent/port_transports_bedrock_remaining.c",
+            "python_file": "agent/transports/bedrock.py",
+            "line": 66,
+            "is_consolidated": false,
+            "full_text": "/* PoP: map_finish_reason @ agent/transports/bedrock.py:map_finish_reason */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
