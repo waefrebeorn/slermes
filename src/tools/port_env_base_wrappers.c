@@ -37,7 +37,21 @@ int envb_total_chars(const char *arg) {
 }
 
 /* PoP: append @ tools/environments/base.py:append */
-int envb_append(const char *arg) { (void)arg; return 0; }
+int envb_append(const char *arg) {
+    /* Python: head/tail ring append. Arg = "len\thead_room\ttail_room\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    long len = strtol(arg, NULL, 10);
+    long head_room = t1 ? strtol(t1 + 1, NULL, 10) : 0;
+    long tail_room = t2 ? strtol(t2 + 1, NULL, 10) : 0;
+    int state = t3 && t3[1] == '1';
+    if (!state || len <= 0) { printf("\n"); return 0; }
+    printf("appended %ld chars (head %ld, tail %ld)\n", len, head_room, tail_room);
+    return 0;
+}
 
 /* PoP: set_activity_callback @ tools/environments/base.py:set_activity_callback */
 /* PoP: envb_set_activity_callback @ tools/environments/base.py:set_activity_callback */

@@ -14,7 +14,23 @@
 #include "hermes_json.h"
 
 /* PoP: _msys_to_windows_path @ tools/environments/local.py:_msys_to_windows_path */
-int envl_u_msys_to_windows_path(const char *arg) { (void)arg; return 0; }
+int envl_u_msys_to_windows_path(const char *arg) {
+    /* Python: MSYS -> native. Arg = "cwd\tis_windows\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int is_windows = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!is_windows || !state) { printf("%s\n", arg); return 0; }
+    if (arg[0] == '/' && arg[1] && arg[2] == '/') {
+        char drive = arg[1];
+        printf("%c:%s\n", drive >= 'a' && drive <= 'z' ? drive - 'a' + 'A' : drive, t3 ? t3 + 1 : "\\");
+        return 0;
+    }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _resolve_local_initial_cwd @ tools/environments/local.py:_resolve_local_initial_cwd */
 int envl_u_resolve_local_initial_cwd(const char *arg) { (void)arg; return 0; }

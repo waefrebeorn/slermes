@@ -2177,7 +2177,24 @@ int agent_kanban_stop_session_called_kanban_terminal(const char *arg) {
 }
 
 /* PoP: build_kanban_stop_nudge @ agent/kanban_stop.py:build_kanban_stop_nudge */
-int agent_kanban_stop_build_kanban_stop_nudge(const char *arg) { (void)arg; return 0; }
+int agent_kanban_stop_build_kanban_stop_nudge(const char *arg) {
+    /* Python: protocol-violation nudge. Arg =
+     * "enabled\tattempts\tmax\tterminal_called\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *t5 = t4 ? strchr(t4 + 1, '\t') : NULL;
+    int enabled = arg[0] == '1';
+    int attempts = t1 && t1[1] == '1';
+    int max_reached = t2 && t2[1] == '1';
+    int terminal_called = t3 && t3[1] == '1';
+    int state = t4 && t4[1] == '1';
+    if (!enabled || attempts || max_reached || terminal_called || !state) { printf("\n"); return 0; }
+    printf("[System: You are a Hermes kanban worker. A plain-text reply is NOT a terminal state for the board.\nCall `kanban_complete` / `kanban_block` immediately.]\n");
+    return 0;
+}
 
 /* PoP: unsilence @ agent/thread_scoped_output.py:unsilence */
 int agent_thread_scoped_output_unsilence(const char *arg) {

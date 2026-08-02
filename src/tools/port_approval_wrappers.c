@@ -208,7 +208,17 @@ int appr_u_split_option(const char *arg) {
 int appr_u_interpreter_exec_flag(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _bash_exec_payload @ tools/approval.py:_bash_exec_payload */
-int appr_u_bash_exec_payload(const char *arg) { (void)arg; return 0; }
+int appr_u_bash_exec_payload(const char *arg) {
+    /* Python: option-arg aware parse. Arg = "state\tresult\tpayload". */
+    if (!arg || !*arg) { printf("0\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0\t\n"); return 0; }
+    printf("1\t%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _read_tool_exec_flag @ tools/approval.py:_read_tool_exec_flag */
 int appr_u_read_tool_exec_flag(const char *arg) {

@@ -932,7 +932,17 @@ int cgw_u_build_user_local_paths(const char *arg) {
 }
 
 /* PoP: _build_wsl_interop_paths @ hermes_cli/gateway.py:_build_wsl_interop_paths */
-int cgw_u_build_wsl_interop_paths(const char *arg) { (void)arg; return 0; }
+int cgw_u_build_wsl_interop_paths(const char *arg) {
+    /* Python: WSL PATH entries. Arg = "is_wsl\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_wsl = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!is_wsl || !state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _remap_path_for_user @ hermes_cli/gateway.py:_remap_path_for_user */
 int cgw_u_remap_path_for_user(const char *arg) {

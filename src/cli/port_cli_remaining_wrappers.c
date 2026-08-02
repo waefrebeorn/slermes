@@ -1727,7 +1727,21 @@ int hermes_cli_auth_commands_u_pick_provider(const char *arg) {
 }
 
 /* PoP: _interactive_add @ hermes_cli/auth_commands.py:_interactive_add */
-int hermes_cli_auth_commands_u_interactive_add(const char *arg) { (void)arg; return 0; }
+int hermes_cli_auth_commands_u_interactive_add(const char *arg) {
+    /* Python: interactive credential add. Arg =
+     * "provider\tstate\ttype_choice\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *provider = arg;
+    int state = t1 && t1[1] == '1';
+    const char *type_choice = t2 ? t2 + 1 : "";
+    if (!state) { printf("interactive add aborted\n"); return 0; }
+    if (t3 && t3[1] == '1') { printf("oauth flow selected for %s\n", provider); return 0; }
+    printf("api key flow for %s (type=%s)\n", provider, type_choice[0] ? type_choice : "1");
+    return 0;
+}
 
 /* PoP: _interactive_remove @ hermes_cli/auth_commands.py:_interactive_remove */
 int hermes_cli_auth_commands_u_interactive_remove(const char *arg) {
@@ -3838,7 +3852,15 @@ int hermes_cli_inventory_u_append_unconfigured_rows(const char *arg) { (void)arg
 int hermes_cli_inventory_u_filter_explicit_provider_rows(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _raw_config_has_enabled_moa_preset @ hermes_cli/inventory.py:_raw_config_has_enabled_moa_preset */
-int hermes_cli_inventory_u_raw_config_has_enabled_moa_preset(const char *arg) { (void)arg; return 0; }
+int hermes_cli_inventory_u_raw_config_has_enabled_moa_preset(const char *arg) {
+    /* Python: explicit-only MoA. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _apply_picker_hints @ hermes_cli/inventory.py:_apply_picker_hints */
 int hermes_cli_inventory_u_apply_picker_hints(const char *arg) { (void)arg; return 0; }
@@ -4408,7 +4430,15 @@ int hermes_cli_dashboard_auth_midd_u_expires_in_seconds(const char *arg) {
 int hermes_cli_dashboard_auth_midd_u_attempt_refresh(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _dotenv_key_names @ hermes_cli/dump.py:_dotenv_key_names */
-int hermes_cli_dump_u_dotenv_key_names(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dump_u_dotenv_key_names(const char *arg) {
+    /* Python: non-empty env names. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _get_git_commit @ hermes_cli/dump.py:_get_git_commit */
 int hermes_cli_dump_u_get_git_commit(const char *arg) {
@@ -6005,7 +6035,21 @@ int hermes_cli_nous_billing_post_subscription_upgrade(const char *arg) {
 }
 
 /* PoP: _validate_phone_number_id @ hermes_cli/setup_whatsapp_cloud.py:_validate_phone_number_id */
-int hermes_cli_setup_whatsapp_clou_u_validate_phone_number_id(const char *arg) { (void)arg; return 0; }
+int hermes_cli_setup_whatsapp_clou_u_validate_phone_number_id(const char *arg) {
+    /* Python: 15-17 digit ID check. Arg = "value\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\tPhone Number ID is required\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\t%s\n", t2 ? t2 + 1 : "invalid"); return 0; }
+    size_t len = strlen(arg);
+    if (len >= 10 && len <= 12) {
+        printf("0\tThat looks like a phone number — but this field needs the Phone Number ID (Meta's internal ID, 15-17 digits)\n");
+        return 0;
+    }
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _validate_waba_id @ hermes_cli/setup_whatsapp_cloud.py:_validate_waba_id */
 int hermes_cli_setup_whatsapp_clou_u_validate_waba_id(const char *arg) {

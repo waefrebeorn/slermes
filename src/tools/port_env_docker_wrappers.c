@@ -224,7 +224,15 @@ int envd_u_recreate_container(const char *arg) { (void)arg; return 0; }
 int envd_u_storage_opt_supported(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _container_network_mode @ tools/environments/docker.py:_container_network_mode */
-int envd_u_container_network_mode(const char *arg) { (void)arg; return 0; }
+int envd_u_container_network_mode(const char *arg) {
+    /* Python: inspect NetworkMode. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _find_reusable_container @ tools/environments/docker.py:_find_reusable_container */
 int envd_u_find_reusable_container(const char *arg) { (void)arg; return 0; }

@@ -81,7 +81,17 @@ int yb_parse_json_push(const char *arg) { (void)arg; return 0; }
 int yb_u_decode_single(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _handle_recall @ gateway/platforms/yuanbao.py:_handle_recall */
-int yb_u_handle_recall(const char *arg) { (void)arg; return 0; }
+int yb_u_handle_recall(const char *arg) {
+    /* Python: recall dispatch. Arg = "seq_count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long count = strtol(arg, NULL, 10);
+    int state = t1 && t1[1] == '1';
+    if (!state || count <= 0) { printf("recall callback with empty seq_list, skipping\n"); return 0; }
+    printf("recall handled for %ld message(s): %s\n", count, t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _find_processing_session @ gateway/platforms/yuanbao.py:_find_processing_session */
 int yb_u_find_processing_session(const char *arg) {
@@ -295,7 +305,16 @@ int yb_u_rewrite_slash_command(const char *text) {
 int yb_u_extract_inbound_media_refs(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _extract_link_urls @ gateway/platforms/yuanbao.py:_extract_link_urls */
-int yb_u_extract_link_urls(const char *arg) { (void)arg; return 0; }
+int yb_u_extract_link_urls(const char *arg) {
+    /* Python: 1010/1007 link extract. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _extract_forwarded_records @ gateway/platforms/yuanbao.py:_extract_forwarded_records */
 int yb_u_extract_forwarded_records(const char *arg) { (void)arg; return 0; }

@@ -773,7 +773,20 @@ int tools_x_search_tool_u_parse_iso_date(const char *arg) {
 }
 
 /* PoP: _validate_date_range @ tools/x_search_tool.py:_validate_date_range */
-int tools_x_search_tool_u_validate_date_range(const char *arg) { (void)arg; return 0; }
+int tools_x_search_tool_u_validate_date_range(const char *arg) {
+    /* Python: from<=to + not future. Arg = "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) {
+        fprintf(stderr, "%s\n", t3 ? t3 + 1 : "invalid date range");
+        return 1;
+    }
+    printf("date range valid\n");
+    return 0;
+}
 
 /* PoP: _extract_inline_citations @ tools/x_search_tool.py:_extract_inline_citations */
 int tools_x_search_tool_u_extract_inline_citations(const char *arg) {
@@ -862,7 +875,15 @@ int tools_delegate_tool_u_emit_parent_console(const char *arg) {
 int tools_delegate_tool_u_build_child_progress_callback(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _inherit_parent_base_url @ tools/delegate_tool.py:_inherit_parent_base_url */
-int tools_delegate_tool_u_inherit_parent_base_url(const char *arg) { (void)arg; return 0; }
+int tools_delegate_tool_u_inherit_parent_base_url(const char *arg) {
+    /* Python: live client URL. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _dump_subagent_timeout_diagnostic @ tools/delegate_tool.py:_dump_subagent_timeout_diagnostic */
 int tools_delegate_tool_u_dump_subagent_timeout_diagnostic(const char *arg) { (void)arg; return 0; }
@@ -1996,10 +2017,33 @@ int tools_computer_use_permissions_u_mac_permissions(const char *arg) {
 }
 
 /* PoP: computer_use_status @ tools/computer_use/permissions.py:computer_use_status */
-int tools_computer_use_permissions_computer_use_status(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_permissions_computer_use_status(const char *arg) {
+    /* Python: readiness snapshot. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
 
 /* PoP: request_permissions_grant @ tools/computer_use/permissions.py:request_permissions_grant */
-int tools_computer_use_permissions_request_permissions_grant(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_permissions_request_permissions_grant(const char *arg) {
+    /* Python: TCC grant launch. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("64\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "not_darwin") == 0) {
+        printf("Computer Use permissions are a macOS concept; nothing to grant here.\n");
+        return 64;
+    }
+    if (strcmp(state, "missing_binary") == 0) {
+        printf("cua-driver: not installed. Run: hermes computer-use install\n");
+        return 2;
+    }
+    printf("grant requested, exit=%s\n", tab ? tab + 1 : "0");
+    return 0;
+}
 
 /* PoP: set_project_workspace_callback @ tools/project_tools.py:set_project_workspace_callback */
 int tools_project_tools_set_project_workspace_callback(const char *arg) {

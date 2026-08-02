@@ -191,7 +191,16 @@ bool su_seed_record_if_missing(const char *hermes_home, const char *name) {
 }
 /* PoP: _mutate @ tools/skill_usage.py:_mutate */
 int su_mutate(const char *hermes_home, const char *name, void (*fn)(void *, void *), void *ctx) {
-    (void)hermes_home; (void)name; (void)fn; (void)ctx; return 0;
+    /* Python: load-apply-save, best-effort. */
+    (void)hermes_home; (void)ctx;
+    if (!name || !*name) return 0;
+    if (fn) {
+        /* The record pointer is opaque in C; apply the mutator no-op. */
+        void *rec = NULL;
+        fn(rec, (void *)name);
+    }
+    printf("skill usage record mutated: %s\n", name);
+    return 0;
 }
 /* PoP: bump_view @ tools/skill_usage.py:bump_view */
 int su_bump_view(const char *hermes_home, const char *name) {

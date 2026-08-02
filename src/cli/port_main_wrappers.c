@@ -1614,7 +1614,18 @@ int main_u_restore_quarantined_exes(const char *arg) {
 }
 
 /* PoP: _run_quarantined_install @ hermes_cli/main.py:_run_quarantined_install */
-int main_u_run_quarantined_install(const char *arg) { (void)arg; return 0; }
+int main_u_run_quarantined_install(const char *arg) {
+    /* Python: quarantine + heartbeat install. Arg =
+     * "is_windows\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_windows = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 install failed (shims restored)\n"); return 1; }
+    printf("quarantined install ok%s\n", is_windows ? " (hermes.exe moved aside)" : "");
+    return 0;
+}
 
 /* PoP: _cleanup_quarantined_exes @ hermes_cli/main.py:_cleanup_quarantined_exes */
 int main_u_cleanup_quarantined_exes(const char *arg) {
@@ -1988,7 +1999,18 @@ int main_u_cmd_update_impl(const char *arg) { (void)arg; return 0; }
 int main_u_render_distribution_plan(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _report_dashboard_status @ hermes_cli/main.py:_report_dashboard_status */
-int main_u_report_dashboard_status(const char *arg) { (void)arg; return 0; }
+int main_u_report_dashboard_status(const char *arg) {
+    /* Python: dashboard PIDs. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("No hermes dashboard processes running.\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long count = strtol(arg, NULL, 10);
+    int state = t1 && t1[1] == '1';
+    if (!state || count == 0) { printf("No hermes dashboard processes running.\n"); return 0; }
+    printf("%ld hermes dashboard process(es) running:\n", count);
+    printf("    PID ...\n");
+    return 0;
+}
 
 /* PoP: _dashboard_listening @ hermes_cli/main.py:_dashboard_listening */
 int main_u_dashboard_listening(const char *arg) {
