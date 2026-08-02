@@ -15,6 +15,11 @@
 #include <unistd.h>
 #include "hermes_state_internal.h"
 
+/* Forward decls — log helpers defined below in this unit. */
+int hermes_state_log_wal_reset_bug_once(const char *db_label, bool kept_wal);
+int hermes_state_log_wal_fallback_once(const char *db_label, const char *action);
+bool hermes_state_has_fts_trash(hermes_state_db_t *db);
+
 /* PoP: _delegate_from_json @ hermes_state.py:_delegate_from_json */
 char *hermes_state_delegate_from_json(const char *col) {
     /* Python: "SELECT json_extract(<col>, '$.mode') ..." — delegate rows
@@ -108,18 +113,37 @@ int hermes_state_enforce_macos_synchronous_full(void) {
 }
 
 /* PoP: apply_wal_with_fallback @ hermes_state.py:apply_wal_with_fallback */
-char *hermes_state_apply_wal_with_fallback(void) {
+char *hermes_state_apply_wal_with_fallback(hermes_state_db_t *db) {
     /* Python: PRAGMA journal_mode=WAL; on failure fall back to DELETE
      * and log once. Returns resulting mode string. */
-    printf("PRAGMA journal_mode=WAL (fallback: DELETE, logged once)\n");
+    if (!db || !db->db) return strdup("delete");
+    char *err = NULL;
+    int rc = sqlite3_exec(db->db, "PRAGMA journal_mode=WAL;", NULL, NULL, &err);
+    if (rc != SQLITE_OK) {
+        hermes_state_log_wal_fallback_once("state.db", err ? err : "wal unavailable");
+        sqlite3_free(err);
+        err = NULL;
+        rc = sqlite3_exec(db->db, "PRAGMA journal_mode=DELETE;", NULL, NULL, &err);
+        sqlite3_free(err);
+        if (rc != SQLITE_OK) return strdup("delete");
+        return strdup("delete");
+    }
     return strdup("wal");
 }
 
 /* PoP: _apply_delete_for_wal_reset_bug @ hermes_state.py:_apply_delete_for_wal_reset_bug */
-char *hermes_state_apply_delete_for_wal_reset_bug(const char *db_label) {
+char *hermes_state_apply_delete_for_wal_reset_bug(hermes_state_db_t *db, const char *db_label) {
     /* Python: WAL-reset-bug workaround — force DELETE journal mode. */
-    (void)db_label;
-    printf("PRAGMA journal_mode=DELETE (wal reset bug workaround)\n");
+    if (!db || !db->db) return strdup("delete");
+    char *err = NULL;
+    int rc = sqlite3_exec(db->db, "PRAGMA journal_mode=DELETE;", NULL, NULL, &err);
+    if (rc != SQLITE_OK) {
+        hermes_state_log_wal_reset_bug_once(db_label, false);
+        sqlite3_free(err);
+        return strdup("delete");
+    }
+    sqlite3_free(err);
+    hermes_state_log_wal_reset_bug_once(db_label, false);
     return strdup("delete");
 }
 
@@ -310,8 +334,14 @@ int hermes_state_warn_fts5_unavailable(const char *label) {
 /* PoP: _sqlite_supports_fts5 @ hermes_state.py:_sqlite_supports_fts5 */
 bool hermes_state_sqlite_supports_fts5(void) {
     /* Python: CREATE VIRTUAL TABLE temp probe. */
-    printf("fts5 probe: temp virtual table created + dropped\n");
-    return true;
+    sqlite3 *probe = NULL;
+    if (sqlite3_open(":memory:", &probe) != SQLITE_OK) return false;
+    char *err = NULL;
+    int rc = sqlite3_exec(probe,
+        "CREATE VIRTUAL TABLE t USING fts5(x); DROP TABLE t;", NULL, NULL, &err);
+    sqlite3_free(err);
+    sqlite3_close(probe);
+    return rc == SQLITE_OK;
 }
 
 /* PoP: _ensure_fts_cjk_schema @ hermes_state.py:_ensure_fts_cjk_schema */
@@ -325,24 +355,46 @@ int hermes_state_ensure_fts_cjk_schema(hermes_state_db_t *db) {
 /* PoP: _drop_fts_triggers @ hermes_state.py:_drop_fts_triggers */
 int hermes_state_drop_fts_triggers(hermes_state_db_t *db) {
     /* Python: DROP TRIGGER IF EXISTS for each _FTS_TRIGGERS name. */
-    if (!db) return -1;
-    printf("fts triggers dropped (best-effort per trigger)\n");
+    if (!db || !db->db) return -1;
+    static const char *triggers[] = {
+        "messages_fts_ai", "messages_fts_ad", "messages_fts_au", "messages_fts_di",
+        "messages_fts_insert", "messages_fts_delete", "messages_fts_update", NULL
+    };
+    for (int i = 0; triggers[i]; i++) {
+        char sql[512];
+        snprintf(sql, sizeof(sql), "DROP TRIGGER IF EXISTS %s;", triggers[i]);
+        char *err = NULL;
+        sqlite3_exec(db->db, sql, NULL, NULL, &err);
+        sqlite3_free(err);
+    }
     return 0;
 }
 
 /* PoP: _fts_trigger_count @ hermes_state.py:_fts_trigger_count */
 long long hermes_state_fts_trigger_count(hermes_state_db_t *db) {
     /* Python: SELECT COUNT(*) FROM sqlite_master WHERE type='trigger' AND name IN (...). */
-    if (!db) return 0;
-    return 0;
+    if (!db || !db->db) return 0;
+    sqlite3_stmt *st = NULL;
+    int rc = sqlite3_prepare_v2(db->db,
+        "SELECT COUNT(*) FROM sqlite_master WHERE type='trigger' "
+        "AND (name LIKE 'messages_fts_%' OR name LIKE '%_fts_trig%');",
+        -1, &st, NULL);
+    if (rc != SQLITE_OK) return 0;
+    long long n = 0;
+    if (sqlite3_step(st) == SQLITE_ROW) n = sqlite3_column_int64(st, 0);
+    sqlite3_finalize(st);
+    return n;
 }
 
 /* PoP: _rebuild_fts_indexes @ hermes_state.py:_rebuild_fts_indexes */
 int hermes_state_rebuild_fts_indexes(hermes_state_db_t *db) {
     /* Python: FTS 'rebuild' command on both external-content indexes. */
-    if (!db) return -1;
-    printf("fts indexes rebuilt (external-content 'rebuild')\n");
-    return 0;
+    if (!db || !db->db) return -1;
+    char *err = NULL;
+    int rc = sqlite3_exec(db->db, "INSERT INTO messages_fts(messages_fts) VALUES('rebuild');",
+                          NULL, NULL, &err);
+    sqlite3_free(err);
+    return rc == SQLITE_OK ? 0 : -1;
 }
 
 /* PoP: _rebuild_legacy_fts_indexes @ hermes_state.py:_rebuild_legacy_fts_indexes */
@@ -357,8 +409,15 @@ int hermes_state_rebuild_legacy_fts_indexes(hermes_state_db_t *db) {
 int hermes_state_fts_table_probe(hermes_state_db_t *db, const char *table_name) {
     /* Python: SELECT * FROM <table> LIMIT 0 → 1 ok, 0 missing,
      * -1 unavailable-error. */
-    if (!db || !table_name) return 0;
-    return 1;
+    if (!db || !db->db || !table_name) return 0;
+    char sql[512];
+    snprintf(sql, sizeof(sql), "SELECT * FROM %s LIMIT 0;", table_name);
+    char *err = NULL;
+    int rc = sqlite3_exec(db->db, sql, NULL, NULL, &err);
+    if (rc == SQLITE_OK) { return 1; }
+    bool unavailable = err && hermes_state_is_fts5_unavailable_error(err);
+    sqlite3_free(err);
+    return unavailable ? -1 : 0;
 }
 
 /* PoP: _ensure_fts_schema @ hermes_state.py:_ensure_fts_schema */
@@ -400,9 +459,11 @@ bool hermes_state_try_runtime_fts_rebuild(hermes_state_db_t *db) {
 /* PoP: _try_wal_checkpoint @ hermes_state.py:_try_wal_checkpoint */
 int hermes_state_try_wal_checkpoint(hermes_state_db_t *db) {
     /* Python: PRAGMA wal_checkpoint(PASSIVE) — never raises. */
-    if (!db) return -1;
-    printf("wal checkpoint PASSIVE\n");
-    return 0;
+    if (!db || !db->db) return -1;
+    char *err = NULL;
+    int rc = sqlite3_exec(db->db, "PRAGMA wal_checkpoint(PASSIVE);", NULL, NULL, &err);
+    sqlite3_free(err);
+    return rc == SQLITE_OK ? 0 : -1;
 }
 
 /* PoP: _try_optimize_fts @ hermes_state.py:_try_optimize_fts */
@@ -417,7 +478,13 @@ int hermes_state_try_optimize_fts(hermes_state_db_t *db) {
 int hermes_state_close(hermes_state_db_t *db) {
     /* Python: TRUNCATE wal checkpoint, then close conn under lock. */
     if (!db) return -1;
-    printf("db closed (TRUNCATE wal checkpoint first)\n");
+    if (db->db) {
+        char *err = NULL;
+        sqlite3_exec(db->db, "PRAGMA wal_checkpoint(TRUNCATE);", NULL, NULL, &err);
+        sqlite3_free(err);
+        sqlite3_close(db->db);
+        db->db = NULL;
+    }
     return 0;
 }
 
@@ -484,14 +551,30 @@ int hermes_state_fts_cjk_reset_if_stale(hermes_state_db_t *db) {
 /* PoP: fts_optimize_available @ hermes_state.py:fts_optimize_available */
 bool hermes_state_fts_optimize_available(hermes_state_db_t *db) {
     /* Python: legacy inline install OR interrupted optimize run. */
-    if (!db) return false;
-    return false;
+    if (!db || !db->db) return false;
+    sqlite3_stmt *st = NULL;
+    int rc = sqlite3_prepare_v2(db->db,
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='messages_fts' LIMIT 1",
+        -1, &st, NULL);
+    if (rc != SQLITE_OK) return false;
+    bool has = sqlite3_step(st) == SQLITE_ROW;
+    sqlite3_finalize(st);
+    if (has) return true;
+    return hermes_state_has_fts_trash(db);
 }
 
 /* PoP: _has_fts_trash @ hermes_state.py:_has_fts_trash */
 bool hermes_state_has_fts_trash(hermes_state_db_t *db) {
-    if (!db) return false;
-    return false;
+    if (!db || !db->db) return false;
+    sqlite3_stmt *st = NULL;
+    int rc = sqlite3_prepare_v2(db->db,
+        "SELECT 1 FROM sqlite_master WHERE type IN ('table','view') "
+        "AND (name LIKE 'messages_fts_trash%' OR name LIKE '%_fts_trash%') LIMIT 1",
+        -1, &st, NULL);
+    if (rc != SQLITE_OK) return false;
+    bool has = sqlite3_step(st) == SQLITE_ROW;
+    sqlite3_finalize(st);
+    return has;
 }
 
 /* PoP: _demote_legacy_fts_to_trash @ hermes_state.py:_demote_legacy_fts_to_trash */
@@ -536,10 +619,18 @@ int hermes_state_init_schema(hermes_state_db_t *db) {
 int hermes_state_record_gateway_session_peer(hermes_state_db_t *db, const char *session_id,
                                              const char *display_name, const char *origin_json) {
     /* Python: UPDATE sessions SET display_name=?, origin_json=? WHERE id=? (#9006). */
-    if (!db || !session_id) return -1;
-    (void)display_name; (void)origin_json;
-    printf("gateway peer recorded for %s (display_name + origin_json)\n", session_id);
-    return 0;
+    if (!db || !db->db || !session_id) return -1;
+    sqlite3_stmt *st = NULL;
+    int rc = sqlite3_prepare_v2(db->db,
+        "UPDATE sessions SET display_name = ?1, origin_json = ?2 WHERE id = ?3",
+        -1, &st, NULL);
+    if (rc != SQLITE_OK) return -1;
+    sqlite3_bind_text(st, 1, display_name ? display_name : "", -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(st, 2, origin_json ? origin_json : NULL, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(st, 3, session_id, -1, SQLITE_TRANSIENT);
+    rc = sqlite3_step(st) == SQLITE_DONE ? SQLITE_OK : -1;
+    sqlite3_finalize(st);
+    return rc;
 }
 
 /* PoP: _backfill_gateway_metadata_from_sessions_json @ hermes_state.py:_backfill_gateway_metadata_from_sessions_json */
@@ -566,9 +657,19 @@ int hermes_state_backfill_repo_roots(hermes_state_db_t *db) {
 /* PoP: get_session_by_title @ hermes_state.py:get_session_by_title */
 char *hermes_state_get_session_by_title(hermes_state_db_t *db, const char *title) {
     /* Python: SELECT * FROM sessions WHERE title = ? */
-    if (!db || !title) return NULL;
-    printf("session by title %s (exact match)\n", title);
-    return NULL;
+    if (!db || !db->db || !title) return NULL;
+    sqlite3_stmt *st = NULL;
+    int rc = sqlite3_prepare_v2(db->db, "SELECT id FROM sessions WHERE title = ?1 LIMIT 1",
+                                -1, &st, NULL);
+    if (rc != SQLITE_OK) return NULL;
+    sqlite3_bind_text(st, 1, title, -1, SQLITE_TRANSIENT);
+    char *id = NULL;
+    if (sqlite3_step(st) == SQLITE_ROW) {
+        const unsigned char *v = sqlite3_column_text(st, 0);
+        if (v) id = strdup((const char *)v);
+    }
+    sqlite3_finalize(st);
+    return id;
 }
 
 /* PoP: resolve_session_by_title @ hermes_state.py:resolve_session_by_title */
@@ -820,16 +921,22 @@ char *hermes_state_list_unlinked_telegram_sessions_for_user(hermes_state_db_t *d
 
 /* PoP: optimize_fts @ hermes_state.py:optimize_fts */
 int hermes_state_optimize_fts(hermes_state_db_t *db) {
-    if (!db) return -1;
-    printf("fts5 'optimize' merged (segments collapsed per index)\n");
-    return 0;
+    if (!db || !db->db) return -1;
+    char *err = NULL;
+    int rc = sqlite3_exec(db->db, "INSERT INTO messages_fts(messages_fts) VALUES('optimize');",
+                          NULL, NULL, &err);
+    sqlite3_free(err);
+    return rc == SQLITE_OK ? 0 : -1;
 }
 
 /* PoP: rebuild_fts @ hermes_state.py:rebuild_fts */
 int hermes_state_rebuild_fts(hermes_state_db_t *db) {
-    if (!db) return -1;
-    printf("fts5 'rebuild' from canonical messages table\n");
-    return 0;
+    if (!db || !db->db) return -1;
+    char *err = NULL;
+    int rc = sqlite3_exec(db->db, "INSERT INTO messages_fts(messages_fts) VALUES('rebuild');",
+                          NULL, NULL, &err);
+    sqlite3_free(err);
+    return rc == SQLITE_OK ? 0 : -1;
 }
 
 /* PoP: maybe_auto_prune_and_vacuum @ hermes_state.py:maybe_auto_prune_and_vacuum */

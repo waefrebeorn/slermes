@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T18:45:59Z",
+  "generated_at": "2026-08-02T18:49:05Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -266673,7 +266673,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 18,
+            "line": 23,
             "is_consolidated": false,
             "full_text": "/* PoP: _delegate_from_json @ hermes_state.py:_delegate_from_json */"
           },
@@ -266760,7 +266760,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 28,
+            "line": 33,
             "is_consolidated": false,
             "full_text": "/* PoP: _shape_preview @ hermes_state.py:_shape_preview */"
           },
@@ -266789,7 +266789,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 41,
+            "line": 46,
             "is_consolidated": false,
             "full_text": "/* PoP: _ephemeral_child_sql @ hermes_state.py:_ephemeral_child_sql */"
           },
@@ -266818,7 +266818,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 50,
+            "line": 55,
             "is_consolidated": false,
             "full_text": "/* PoP: _collect_delegate_child_ids @ hermes_state.py:_collect_delegate_child_ids */"
           },
@@ -266847,7 +266847,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 57,
+            "line": 62,
             "is_consolidated": false,
             "full_text": "/* PoP: _delete_delegate_children @ hermes_state.py:_delete_delegate_children */"
           },
@@ -266934,7 +266934,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 64,
+            "line": 69,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_background_review_harness_message @ hermes_state.py:_is_background_review_harness_message */"
           },
@@ -266963,7 +266963,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 81,
+            "line": 86,
             "is_consolidated": false,
             "full_text": "/* PoP: _strip_background_review_harness @ hermes_state.py:_strip_background_review_harness */"
           },
@@ -267050,7 +267050,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 92,
+            "line": 97,
             "is_consolidated": false,
             "full_text": "/* PoP: _apply_macos_checkpoint_barrier @ hermes_state.py:_apply_macos_checkpoint_barrier */"
           },
@@ -267079,7 +267079,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 101,
+            "line": 106,
             "is_consolidated": false,
             "full_text": "/* PoP: _enforce_macos_synchronous_full @ hermes_state.py:_enforce_macos_synchronous_full */"
           },
@@ -267166,7 +267166,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 110,
+            "line": 115,
             "is_consolidated": false,
             "full_text": "/* PoP: apply_wal_with_fallback @ hermes_state.py:apply_wal_with_fallback */"
           },
@@ -267195,7 +267195,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 118,
+            "line": 134,
             "is_consolidated": false,
             "full_text": "/* PoP: _apply_delete_for_wal_reset_bug @ hermes_state.py:_apply_delete_for_wal_reset_bug */"
           },
@@ -267224,7 +267224,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 126,
+            "line": 150,
             "is_consolidated": false,
             "full_text": "/* PoP: _log_wal_reset_bug_once @ hermes_state.py:_log_wal_reset_bug_once */"
           },
@@ -267253,7 +267253,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 138,
+            "line": 162,
             "is_consolidated": false,
             "full_text": "/* PoP: _log_wal_fallback_once @ hermes_state.py:_log_wal_fallback_once */"
           },
@@ -267340,7 +267340,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 151,
+            "line": 175,
             "is_consolidated": false,
             "full_text": "/* PoP: _backup_db_file @ hermes_state.py:_backup_db_file */"
           },
@@ -267369,7 +267369,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 169,
+            "line": 193,
             "is_consolidated": false,
             "full_text": "/* PoP: preflight_db_writability @ hermes_state.py:preflight_db_writability */"
           },
@@ -267427,7 +267427,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 183,
+            "line": 207,
             "is_consolidated": false,
             "full_text": "/* PoP: repair_state_db_schema @ hermes_state.py:repair_state_db_schema */"
           },
@@ -267456,7 +267456,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 194,
+            "line": 218,
             "is_consolidated": false,
             "full_text": "/* PoP: fts5_cjk_so_path @ hermes_state.py:fts5_cjk_so_path */"
           },
@@ -267485,7 +267485,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 202,
+            "line": 226,
             "is_consolidated": false,
             "full_text": "/* PoP: _cjk_fts_config_enabled @ hermes_state.py:_cjk_fts_config_enabled */"
           },
@@ -267514,7 +267514,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 215,
+            "line": 239,
             "is_consolidated": false,
             "full_text": "/* PoP: load_fts5_cjk_extension @ hermes_state.py:load_fts5_cjk_extension */"
           },
@@ -267564,7 +267564,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 223,
+            "line": 247,
             "is_consolidated": false,
             "full_text": "/* PoP: _connect_tracked_db @ hermes_state.py:_connect_tracked_db */"
           },
@@ -267593,7 +267593,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 231,
+            "line": 255,
             "is_consolidated": false,
             "full_text": "/* PoP: is_zeroed_state_db @ hermes_state.py:is_zeroed_state_db */"
           },
@@ -267622,7 +267622,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 246,
+            "line": 270,
             "is_consolidated": false,
             "full_text": "/* PoP: quarantine_zeroed_state_db @ hermes_state.py:quarantine_zeroed_state_db */"
           },
@@ -267674,7 +267674,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 257,
+            "line": 281,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_fts5_unavailable_error @ hermes_state.py:_is_fts5_unavailable_error */"
           },
@@ -267705,7 +267705,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 269,
+            "line": 293,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_trigram_unavailable_error @ hermes_state.py:_is_trigram_unavailable_error */"
           },
@@ -267736,7 +267736,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 281,
+            "line": 305,
             "is_consolidated": false,
             "full_text": "/* PoP: _db_has_legacy_inline_fts @ hermes_state.py:_db_has_legacy_inline_fts */"
           },
@@ -267765,7 +267765,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 289,
+            "line": 313,
             "is_consolidated": false,
             "full_text": "/* PoP: _warn_trigram_unavailable @ hermes_state.py:_warn_trigram_unavailable */"
           },
@@ -267794,7 +267794,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 299,
+            "line": 323,
             "is_consolidated": false,
             "full_text": "/* PoP: _warn_fts5_unavailable @ hermes_state.py:_warn_fts5_unavailable */"
           },
@@ -267823,7 +267823,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 310,
+            "line": 334,
             "is_consolidated": false,
             "full_text": "/* PoP: _sqlite_supports_fts5 @ hermes_state.py:_sqlite_supports_fts5 */"
           },
@@ -267852,7 +267852,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 317,
+            "line": 347,
             "is_consolidated": false,
             "full_text": "/* PoP: _ensure_fts_cjk_schema @ hermes_state.py:_ensure_fts_cjk_schema */"
           },
@@ -267883,7 +267883,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 325,
+            "line": 355,
             "is_consolidated": false,
             "full_text": "/* PoP: _drop_fts_triggers @ hermes_state.py:_drop_fts_triggers */"
           },
@@ -267914,7 +267914,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 333,
+            "line": 373,
             "is_consolidated": false,
             "full_text": "/* PoP: _fts_trigger_count @ hermes_state.py:_fts_trigger_count */"
           },
@@ -267945,7 +267945,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 340,
+            "line": 389,
             "is_consolidated": false,
             "full_text": "/* PoP: _rebuild_fts_indexes @ hermes_state.py:_rebuild_fts_indexes */"
           },
@@ -267976,7 +267976,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 348,
+            "line": 400,
             "is_consolidated": false,
             "full_text": "/* PoP: _rebuild_legacy_fts_indexes @ hermes_state.py:_rebuild_legacy_fts_indexes */"
           },
@@ -268005,7 +268005,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 356,
+            "line": 408,
             "is_consolidated": false,
             "full_text": "/* PoP: _fts_table_probe @ hermes_state.py:_fts_table_probe */"
           },
@@ -268034,7 +268034,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 364,
+            "line": 423,
             "is_consolidated": false,
             "full_text": "/* PoP: _ensure_fts_schema @ hermes_state.py:_ensure_fts_schema */"
           },
@@ -268063,7 +268063,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 371,
+            "line": 430,
             "is_consolidated": false,
             "full_text": "/* PoP: _execute_write @ hermes_state.py:_execute_write */"
           },
@@ -268094,7 +268094,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 380,
+            "line": 439,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_fts_write_corruption_error @ hermes_state.py:_is_fts_write_corruption_error */"
           },
@@ -268123,7 +268123,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 392,
+            "line": 451,
             "is_consolidated": false,
             "full_text": "/* PoP: _try_runtime_fts_rebuild @ hermes_state.py:_try_runtime_fts_rebuild */"
           },
@@ -268152,7 +268152,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 400,
+            "line": 459,
             "is_consolidated": false,
             "full_text": "/* PoP: _try_wal_checkpoint @ hermes_state.py:_try_wal_checkpoint */"
           },
@@ -268181,7 +268181,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 408,
+            "line": 469,
             "is_consolidated": false,
             "full_text": "/* PoP: _try_optimize_fts @ hermes_state.py:_try_optimize_fts */"
           },
@@ -268210,7 +268210,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 416,
+            "line": 477,
             "is_consolidated": false,
             "full_text": "/* PoP: close @ hermes_state.py:close */"
           },
@@ -268239,7 +268239,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 424,
+            "line": 491,
             "is_consolidated": false,
             "full_text": "/* PoP: fts_rebuild_status @ hermes_state.py:fts_rebuild_status */"
           },
@@ -268268,7 +268268,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 431,
+            "line": 498,
             "is_consolidated": false,
             "full_text": "/* PoP: _fts_rebuild_finish @ hermes_state.py:_fts_rebuild_finish */"
           },
@@ -268297,7 +268297,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 439,
+            "line": 506,
             "is_consolidated": false,
             "full_text": "/* PoP: _fts_teardown_trash_step @ hermes_state.py:_fts_teardown_trash_step */"
           },
@@ -268326,7 +268326,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 448,
+            "line": 515,
             "is_consolidated": false,
             "full_text": "/* PoP: fts_rebuild_step @ hermes_state.py:fts_rebuild_step */"
           },
@@ -268355,7 +268355,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 456,
+            "line": 523,
             "is_consolidated": false,
             "full_text": "/* PoP: fts_cjk_rebuild_status @ hermes_state.py:fts_cjk_rebuild_status */"
           },
@@ -268384,7 +268384,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 462,
+            "line": 529,
             "is_consolidated": false,
             "full_text": "/* PoP: fts_cjk_rebuild_step @ hermes_state.py:fts_cjk_rebuild_step */"
           },
@@ -268413,7 +268413,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 469,
+            "line": 536,
             "is_consolidated": false,
             "full_text": "/* PoP: _fts_cjk_rebuild_finish @ hermes_state.py:_fts_cjk_rebuild_finish */"
           },
@@ -268442,7 +268442,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 476,
+            "line": 543,
             "is_consolidated": false,
             "full_text": "/* PoP: _fts_cjk_reset_if_stale @ hermes_state.py:_fts_cjk_reset_if_stale */"
           },
@@ -268471,7 +268471,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 484,
+            "line": 551,
             "is_consolidated": false,
             "full_text": "/* PoP: fts_optimize_available @ hermes_state.py:fts_optimize_available */"
           },
@@ -268500,7 +268500,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 491,
+            "line": 566,
             "is_consolidated": false,
             "full_text": "/* PoP: _has_fts_trash @ hermes_state.py:_has_fts_trash */"
           },
@@ -268529,7 +268529,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 497,
+            "line": 580,
             "is_consolidated": false,
             "full_text": "/* PoP: _demote_legacy_fts_to_trash @ hermes_state.py:_demote_legacy_fts_to_trash */"
           },
@@ -268558,7 +268558,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 505,
+            "line": 588,
             "is_consolidated": false,
             "full_text": "/* PoP: optimize_fts_storage @ hermes_state.py:optimize_fts_storage */"
           },
@@ -268589,7 +268589,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 513,
+            "line": 596,
             "is_consolidated": false,
             "full_text": "/* PoP: _parse_schema_columns @ hermes_state.py:_parse_schema_columns */"
           },
@@ -268618,7 +268618,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 520,
+            "line": 603,
             "is_consolidated": false,
             "full_text": "/* PoP: _reconcile_columns @ hermes_state.py:_reconcile_columns */"
           },
@@ -268647,7 +268647,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 528,
+            "line": 611,
             "is_consolidated": false,
             "full_text": "/* PoP: _init_schema @ hermes_state.py:_init_schema */"
           },
@@ -268734,7 +268734,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 535,
+            "line": 618,
             "is_consolidated": false,
             "full_text": "/* PoP: record_gateway_session_peer @ hermes_state.py:record_gateway_session_peer */"
           },
@@ -268966,7 +268966,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 545,
+            "line": 636,
             "is_consolidated": false,
             "full_text": "/* PoP: _backfill_gateway_metadata_from_sessions_json @ hermes_state.py:_backfill_gateway_metadata_from_sessions_json */"
           },
@@ -268995,7 +268995,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 552,
+            "line": 643,
             "is_consolidated": false,
             "full_text": "/* PoP: find_latest_gateway_session_for_peer @ hermes_state.py:find_latest_gateway_session_for_peer */"
           },
@@ -269198,7 +269198,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 559,
+            "line": 650,
             "is_consolidated": false,
             "full_text": "/* PoP: backfill_repo_roots @ hermes_state.py:backfill_repo_roots */"
           },
@@ -270157,7 +270157,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 566,
+            "line": 657,
             "is_consolidated": false,
             "full_text": "/* PoP: get_session_by_title @ hermes_state.py:get_session_by_title */"
           },
@@ -270186,7 +270186,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 574,
+            "line": 675,
             "is_consolidated": false,
             "full_text": "/* PoP: resolve_session_by_title @ hermes_state.py:resolve_session_by_title */"
           },
@@ -270275,7 +270275,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 582,
+            "line": 683,
             "is_consolidated": false,
             "full_text": "/* PoP: _compact_session_cols @ hermes_state.py:_compact_session_cols */"
           },
@@ -270304,7 +270304,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 588,
+            "line": 689,
             "is_consolidated": false,
             "full_text": "/* PoP: distinct_session_cwds @ hermes_state.py:distinct_session_cwds */"
           },
@@ -270362,7 +270362,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 595,
+            "line": 696,
             "is_consolidated": false,
             "full_text": "/* PoP: list_cron_job_runs @ hermes_state.py:list_cron_job_runs */"
           },
@@ -270391,7 +270391,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 603,
+            "line": 704,
             "is_consolidated": false,
             "full_text": "/* PoP: _get_session_rich_row @ hermes_state.py:_get_session_rich_row */"
           },
@@ -270420,7 +270420,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 611,
+            "line": 712,
             "is_consolidated": false,
             "full_text": "/* PoP: list_skill_scaffolded_sessions @ hermes_state.py:list_skill_scaffolded_sessions */"
           },
@@ -270449,7 +270449,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 618,
+            "line": 719,
             "is_consolidated": false,
             "full_text": "/* PoP: get_first_assistant_text @ hermes_state.py:get_first_assistant_text */"
           },
@@ -270979,7 +270979,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 625,
+            "line": 726,
             "is_consolidated": false,
             "full_text": "/* PoP: get_resume_conversations @ hermes_state.py:get_resume_conversations */"
           },
@@ -271008,7 +271008,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 633,
+            "line": 734,
             "is_consolidated": false,
             "full_text": "/* PoP: get_ancestor_display_prefix @ hermes_state.py:get_ancestor_display_prefix */"
           },
@@ -271215,7 +271215,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 640,
+            "line": 741,
             "is_consolidated": false,
             "full_text": "/* PoP: _sanitize_fts5_query @ hermes_state.py:_sanitize_fts5_query */"
           },
@@ -271246,7 +271246,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 657,
+            "line": 758,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_cjk_codepoint @ hermes_state.py:_is_cjk_codepoint */"
           },
@@ -271277,7 +271277,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 663,
+            "line": 764,
             "is_consolidated": false,
             "full_text": "/* PoP: _contains_cjk @ hermes_state.py:_contains_cjk */"
           },
@@ -271308,7 +271308,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 678,
+            "line": 779,
             "is_consolidated": false,
             "full_text": "/* PoP: _count_cjk @ hermes_state.py:_count_cjk */"
           },
@@ -271339,7 +271339,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 694,
+            "line": 795,
             "is_consolidated": false,
             "full_text": "/* PoP: _has_lone_cjk_run @ hermes_state.py:_has_lone_cjk_run */"
           },
@@ -271370,7 +271370,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 716,
+            "line": 817,
             "is_consolidated": false,
             "full_text": "/* PoP: _trigram_eligible_tokens @ hermes_state.py:_trigram_eligible_tokens */"
           },
@@ -271399,7 +271399,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 733,
+            "line": 834,
             "is_consolidated": false,
             "full_text": "/* PoP: _run_trigram_search @ hermes_state.py:_run_trigram_search */"
           },
@@ -271428,7 +271428,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 740,
+            "line": 841,
             "is_consolidated": false,
             "full_text": "/* PoP: search_messages @ hermes_state.py:search_messages */"
           },
@@ -271486,7 +271486,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 748,
+            "line": 849,
             "is_consolidated": false,
             "full_text": "/* PoP: _search_messages_impl @ hermes_state.py:_search_messages_impl */"
           },
@@ -271515,7 +271515,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 755,
+            "line": 856,
             "is_consolidated": false,
             "full_text": "/* PoP: _search_unindexed_gap @ hermes_state.py:_search_unindexed_gap */"
           },
@@ -271544,7 +271544,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 763,
+            "line": 864,
             "is_consolidated": false,
             "full_text": "/* PoP: search_sessions_by_id @ hermes_state.py:search_sessions_by_id */"
           },
@@ -271573,7 +271573,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 770,
+            "line": 871,
             "is_consolidated": false,
             "full_text": "/* PoP: search_sessions @ hermes_state.py:search_sessions */"
           },
@@ -271805,7 +271805,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 778,
+            "line": 879,
             "is_consolidated": false,
             "full_text": "/* PoP: export_session_lineage @ hermes_state.py:export_session_lineage */"
           },
@@ -271834,7 +271834,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 785,
+            "line": 886,
             "is_consolidated": false,
             "full_text": "/* PoP: export_all @ hermes_state.py:export_all */"
           },
@@ -271927,7 +271927,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 792,
+            "line": 893,
             "is_consolidated": false,
             "full_text": "/* PoP: _float_or_none @ hermes_state.py:_float_or_none */"
           },
@@ -272080,7 +272080,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 803,
+            "line": 904,
             "is_consolidated": false,
             "full_text": "/* PoP: import_sessions @ hermes_state.py:import_sessions */"
           },
@@ -272838,7 +272838,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 812,
+            "line": 913,
             "is_consolidated": false,
             "full_text": "/* PoP: list_unlinked_telegram_sessions_for_user @ hermes_state.py:list_unlinked_telegram_sessions_for_user */"
           },
@@ -272896,7 +272896,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 821,
+            "line": 922,
             "is_consolidated": false,
             "full_text": "/* PoP: optimize_fts @ hermes_state.py:optimize_fts */"
           },
@@ -272925,7 +272925,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 828,
+            "line": 932,
             "is_consolidated": false,
             "full_text": "/* PoP: rebuild_fts @ hermes_state.py:rebuild_fts */"
           },
@@ -273012,7 +273012,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 835,
+            "line": 942,
             "is_consolidated": false,
             "full_text": "/* PoP: maybe_auto_prune_and_vacuum @ hermes_state.py:maybe_auto_prune_and_vacuum */"
           },
@@ -273265,7 +273265,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 843,
+            "line": 950,
             "is_consolidated": false,
             "full_text": "/* PoP: __getattr__ @ hermes_state.py:__getattr__ */"
           },
