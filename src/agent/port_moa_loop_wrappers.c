@@ -65,7 +65,16 @@ int moa_u_redact_trace_messages(const char *arg) {
 }
 
 /* PoP: _redact_trace_accounting @ agent/moa_loop.py:_redact_trace_accounting */
-int moa_u_redact_trace_accounting(const char *arg) { (void)arg; return 0; }
+int moa_u_redact_trace_accounting(const char *arg) {
+    /* Python: accounting copy w/ redacted text. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("pass-through (not accounting)\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _slot_label @ agent/moa_loop.py:_slot_label */
 int moa_u_slot_label(const char *arg) {

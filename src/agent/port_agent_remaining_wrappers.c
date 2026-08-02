@@ -1487,7 +1487,15 @@ int agent_trace_upload_u_now_iso(const char *arg) {
 }
 
 /* PoP: _content_to_blocks @ agent/trace_upload.py:_content_to_blocks */
-int agent_trace_upload_u_content_to_blocks(const char *arg) { (void)arg; return 0; }
+int agent_trace_upload_u_content_to_blocks(const char *arg) {
+    /* Python: content -> blocks. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _tool_calls_to_blocks @ agent/trace_upload.py:_tool_calls_to_blocks */
 int agent_trace_upload_u_tool_calls_to_blocks(const char *arg) { (void)arg; return 0; }
@@ -2415,7 +2423,20 @@ int agent_credits_tracker_age_seconds(const char *arg) {
 }
 
 /* PoP: _can_carry_marker @ agent/prompt_caching.py:_can_carry_marker */
-int agent_prompt_caching_u_can_carry_marker(const char *arg) { (void)arg; return 0; }
+int agent_prompt_caching_u_can_carry_marker(const char *arg) {
+    /* Python: carrier predicate. Arg =
+     * "native\tcontent_type\tstate\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int native = arg[0] == '1';
+    if (native) { printf("1\n"); return 0; }
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (t3 && t3[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _apply_system_cache_markers @ agent/prompt_caching.py:_apply_system_cache_markers */
 int agent_prompt_caching_u_apply_system_cache_markers(const char *arg) {

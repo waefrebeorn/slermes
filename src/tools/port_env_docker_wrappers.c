@@ -155,7 +155,15 @@ int envd_u_critical_egress_env_names(const char *arg) {
 }
 
 /* PoP: _extra_args_egress_collisions @ tools/environments/docker.py:_extra_args_egress_collisions */
-int envd_u_extra_args_egress_collisions(const char *arg) { (void)arg; return 0; }
+int envd_u_extra_args_egress_collisions(const char *arg) {
+    /* Python: egress override scan. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _build_security_args @ tools/environments/docker.py:_build_security_args */
 int envd_u_build_security_args(const char *arg) {

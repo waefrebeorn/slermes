@@ -238,7 +238,23 @@ int hermes_cli_debug_build_nous_bundle(const char *arg) {
 }
 
 /* PoP: _confirm_upload @ hermes_cli/debug.py:_confirm_upload */
-int hermes_cli_debug_u_confirm_upload(const char *arg) { (void)arg; return 0; }
+int hermes_cli_debug_u_confirm_upload(const char *arg) {
+    /* Python: consent gate. Arg = "yes\ttty\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int yes = arg[0] == '1';
+    int tty = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (yes) { printf("1\n"); return 0; }
+    if (!tty) {
+        fprintf(stderr, "ERROR: Non-interactive mode requires --yes to confirm upload.\n       This prevents accidental exposure of personal data.\n       Use --local to view the report without uploading.\n");
+        return 1;
+    }
+    printf("%s\n", (t3 && t3[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _run_debug_share_nous @ hermes_cli/debug.py:_run_debug_share_nous */
 int hermes_cli_debug_u_run_debug_share_nous(const char *arg) { (void)arg; return 0; }
@@ -542,7 +558,24 @@ int hermes_cli_cli_billing_mixin_u_subscription_pick_tier(const char *arg) { (vo
 int hermes_cli_cli_billing_mixin_u_subscription_preview_and_confirm(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _subscription_confirm_cancel @ hermes_cli/cli_billing_mixin.py:_subscription_confirm_cancel */
-int hermes_cli_cli_billing_mixin_u_subscription_confirm_cancel(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cli_billing_mixin_u_subscription_confirm_cancel(const char *arg) {
+    /* Python: confirm modal + schedule cancel. Arg =
+     * "tier\tend\tchoice\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int state = t3 && t3[1] == '1';
+    if (!state) { printf("cancellation aborted\n"); return 0; }
+    const char *choice = t1 ? t1 + 1 : "";
+    if (strcmp(choice, "yes") != 0) {
+        printf("  🟡 Cancelled. Your plan is unchanged.\n");
+        return 0;
+    }
+    printf("cancellation scheduled at period end: %s\n", t2 ? t2 + 1 : "the end of the billing period");
+    return 0;
+}
 
 /* PoP: _subscription_apply @ hermes_cli/cli_billing_mixin.py:_subscription_apply */
 int hermes_cli_cli_billing_mixin_u_subscription_apply(const char *arg) { (void)arg; return 0; }
@@ -2001,7 +2034,16 @@ int hermes_cli_security_audit_u_http_get_json(const char *arg) {
 }
 
 /* PoP: _osv_query_batch @ hermes_cli/security_audit.py:_osv_query_batch */
-int hermes_cli_security_audit_u_osv_query_batch(const char *arg) { (void)arg; return 0; }
+int hermes_cli_security_audit_u_osv_query_batch(const char *arg) {
+    /* Python: chunked OSV queries. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _osv_fetch_details @ hermes_cli/security_audit.py:_osv_fetch_details */
 int hermes_cli_security_audit_u_osv_fetch_details(const char *arg) {
@@ -3909,7 +3951,17 @@ int hermes_cli_middleware_u_safe_copy(const char *arg) {
 }
 
 /* PoP: apply_llm_request_middleware @ hermes_cli/middleware.py:apply_llm_request_middleware */
-int hermes_cli_middleware_apply_llm_request_middleware(const char *arg) { (void)arg; return 0; }
+int hermes_cli_middleware_apply_llm_request_middleware(const char *arg) {
+    /* Python: middleware chain. Arg = "count\tstate\tchanged\tresult". */
+    if (!arg || !*arg) { printf("{\"changed\": false}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("{\"changed\": false}\n"); return 0; }
+    printf("{\"changed\": %s, \"trace_len\": %s}\n", (t3 && t3[1] == '1') ? "true" : "false", t1 ? t1 + 1 : "0");
+    return 0;
+}
 
 /* PoP: apply_tool_request_middleware @ hermes_cli/middleware.py:apply_tool_request_middleware */
 int hermes_cli_middleware_apply_tool_request_middleware(const char *arg) { (void)arg; return 0; }
@@ -5090,7 +5142,20 @@ int hermes_cli_dashboard_auth_nati_complete_pending(const char *arg) {
 }
 
 /* PoP: redeem_code @ hermes_cli/dashboard_auth/native_flow.py:redeem_code */
-int hermes_cli_dashboard_auth_nati_redeem_code(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_nati_redeem_code(const char *arg) {
+    /* Python: PKCE redeem, pop-before-check. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "not_found") == 0 || strcmp(state, "expired") == 0 || strcmp(state, "pkce_fail") == 0) {
+        fprintf(stderr, "code redemption failed: %s\n", state);
+        return 1;
+    }
+    printf("%s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: is_custom @ hermes_cli/mcp_picker.py:is_custom */
 int hermes_cli_mcp_picker_is_custom(const char *arg) {
@@ -6079,7 +6144,19 @@ int hermes_cli_managed_scope_invalidate_managed_cache(const char *arg) {
 }
 
 /* PoP: _cached_read @ hermes_cli/managed_scope.py:_cached_read */
-int hermes_cli_managed_scope_u_cached_read(const char *arg) { (void)arg; return 0; }
+int hermes_cli_managed_scope_u_cached_read(const char *arg) {
+    /* Python: (mtime_ns,size) cache. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "absent") == 0) { printf("\n"); return 0; }
+    if (strcmp(state, "parse_fail") == 0) {
+        fprintf(stderr, "managed scope: failed to parse managed file — IGNORING this managed file. Admin policy from this file is NOT being applied. Fix and restart.\n");
+        return 0;
+    }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: load_managed_config @ hermes_cli/managed_scope.py:load_managed_config */
 int hermes_cli_managed_scope_load_managed_config(const char *arg) {

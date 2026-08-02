@@ -1072,7 +1072,15 @@ int tools_delegation_live_log_add_stream_delta(const char *arg) {
 int tools_delegation_live_log_observe(const char *arg) { (void)arg; return 0; }
 
 /* PoP: wrap_progress_callback @ tools/delegation_live_log.py:wrap_progress_callback */
-int tools_delegation_live_log_wrap_progress_callback(const char *arg) { (void)arg; return 0; }
+int tools_delegation_live_log_wrap_progress_callback(const char *arg) {
+    /* Python: wrapper with _flush. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("wrapper created (no inner)\n"); return 0; }
+    printf("callback wrapped%s\n", (tab && tab[1] == '1') ? " (with flush)" : "");
+    return 0;
+}
 
 /* PoP: create_live_transcripts @ tools/delegation_live_log.py:create_live_transcripts */
 int tools_delegation_live_log_create_live_transcripts(const char *arg) { (void)arg; return 0; }
@@ -2078,7 +2086,15 @@ int tools_hook_output_spill_u_coerce_non_negative_int(const char *arg) {
 }
 
 /* PoP: get_spill_config @ tools/hook_output_spill.py:get_spill_config */
-int tools_hook_output_spill_get_spill_config(const char *arg) { (void)arg; return 0; }
+int tools_hook_output_spill_get_spill_config(const char *arg) {
+    /* Python: resolved spill config. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _resolve_spill_dir @ tools/hook_output_spill.py:_resolve_spill_dir */
 int tools_hook_output_spill_u_resolve_spill_dir(const char *arg) {
@@ -2204,7 +2220,15 @@ int tools_browser_tool_u_is_headed_mode(const char *arg) {
 int tools_browser_tool_u_store_full_snapshot(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _restrict_browser_evaluate @ tools/browser_tool.py:_restrict_browser_evaluate */
-int tools_browser_tool_u_restrict_browser_evaluate(const char *arg) { (void)arg; return 0; }
+int tools_browser_tool_u_restrict_browser_evaluate(const char *arg) {
+    /* Python: denylist toggle. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _camofox_current_page_private_url @ tools/browser_tool.py:_camofox_current_page_private_url */
 int tools_browser_tool_u_camofox_current_page_private_url(const char *arg) {
@@ -2690,7 +2714,16 @@ int tools_browser_camofox_state_get_camofox_state_dir(const char *arg) {
 }
 
 /* PoP: resolve_threshold @ tools/budget_config.py:resolve_threshold */
-int tools_budget_config_resolve_threshold(const char *arg) { (void)arg; return 0; }
+int tools_budget_config_resolve_threshold(const char *arg) {
+    /* Python: pinned > overrides > registry > default. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("100000\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("100000\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "100000");
+    return 0;
+}
 
 /* PoP: resolve_clarify_timeout @ tools/clarify_gateway.py:resolve_clarify_timeout */
 int tools_clarify_gateway_resolve_clarify_timeout(const char *arg) {

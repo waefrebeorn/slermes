@@ -1428,7 +1428,15 @@ int cgw_u_gateway_run_command(const char *arg) {
 }
 
 /* PoP: _spawn_detached_gateway @ hermes_cli/gateway.py:_spawn_detached_gateway */
-int cgw_u_spawn_detached_gateway(const char *arg) { (void)arg; return 0; }
+int cgw_u_spawn_detached_gateway(const char *arg) {
+    /* Python: detached Popen. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "open_fail") == 0 || strcmp(state, "popen_fail") == 0) { printf("0\n"); return 0; }
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _launchd_fallback_to_detached @ hermes_cli/gateway.py:_launchd_fallback_to_detached */
 int cgw_u_launchd_fallback_to_detached(const char *arg) {

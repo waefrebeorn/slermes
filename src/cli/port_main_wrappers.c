@@ -613,7 +613,21 @@ int main_u_aux_flow_provider_model(const char *arg) { (void)arg; return 0; }
 int main_u_aux_flow_custom_endpoint(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _prompt_provider_choice @ hermes_cli/main.py:_prompt_provider_choice */
-int main_u_prompt_provider_choice(const char *arg) { (void)arg; return 0; }
+int main_u_prompt_provider_choice(const char *arg) {
+    /* Python: curses or numbered. Arg =
+     * "count\tdefault\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) {
+        printf("numbered fallback: 1-%s choices\n", arg);
+        return 0;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _prompt_custom_api_mode_selection @ hermes_cli/main.py:_prompt_custom_api_mode_selection */
 int main_u_prompt_custom_api_mode_selection(const char *arg) { (void)arg; return 0; }
@@ -890,7 +904,15 @@ int main_u_desktop_stamp_path(const char *arg) {
 }
 
 /* PoP: _desktop_build_needed @ hermes_cli/main.py:_desktop_build_needed */
-int main_u_desktop_build_needed(const char *arg) { (void)arg; return 0; }
+int main_u_desktop_build_needed(const char *arg) {
+    /* Python: hash vs stamp. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("1\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _write_desktop_build_stamp @ hermes_cli/main.py:_write_desktop_build_stamp */
 int main_u_write_desktop_build_stamp(const char *arg) {

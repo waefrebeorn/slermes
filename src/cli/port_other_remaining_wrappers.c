@@ -238,7 +238,16 @@ int cron_jobs_get_cron_output_dir(const char *arg) {
 }
 
 /* PoP: _oneshot_run_claim_ttl_seconds @ cron/jobs.py:_oneshot_run_claim_ttl_seconds */
-int cron_jobs_u_oneshot_run_claim_ttl_seconds(const char *arg) { (void)arg; return 0; }
+int cron_jobs_u_oneshot_run_claim_ttl_seconds(const char *arg) {
+    /* Python: derived TTL. Arg = "raw\tstate\tresult". */
+    if (!arg || !*arg) { printf("1800.0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("1800.0\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "1800.0");
+    return 0;
+}
 
 /* PoP: _job_running_in_this_process @ cron/jobs.py:_job_running_in_this_process */
 int cron_jobs_u_job_running_in_this_process(const char *arg) {

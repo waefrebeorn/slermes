@@ -280,7 +280,18 @@ int mcpo_remove_oauth_tokens(const char *arg) {
 int mcpo_u_configure_callback_port(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_redirect_uri @ tools/mcp_oauth.py:_resolve_redirect_uri */
-int mcpo_u_resolve_redirect_uri(const char *arg) { (void)arg; return 0; }
+int mcpo_u_resolve_redirect_uri(const char *arg) {
+    /* Python: configured or loopback. Arg =
+     * "configured\tredirect_host\tport\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int configured = arg[0] == '1';
+    if (configured) { printf("%s\n", t1 ? t1 + 1 : ""); return 0; }
+    printf("http://%s:%s/callback\n", (t1 && t1[1]) ? t1 + 1 : "127.0.0.1", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _build_client_metadata @ tools/mcp_oauth.py:_build_client_metadata */
 int mcpo_u_build_client_metadata(const char *arg) {

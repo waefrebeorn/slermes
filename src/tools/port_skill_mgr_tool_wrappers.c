@@ -61,7 +61,22 @@ int smt_u_guard_agent_created_enabled(const char *arg) {
 }
 
 /* PoP: _security_scan_skill @ tools/skill_manager_tool.py:_security_scan_skill */
-int smt_u_security_scan_skill(const char *arg) { (void)arg; return 0; }
+int smt_u_security_scan_skill(const char *arg) {
+    /* Python: post-write scan gate. Arg =
+     * "state\treason\tblocked\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (t2 && t2[1] == '1') {
+        printf("Security scan blocked this skill (%s):\nreport\n", t3 ? t3 + 1 : "dangerous findings");
+        return 1;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _pinned_guard @ tools/skill_manager_tool.py:_pinned_guard */
 int smt_u_pinned_guard(const char *arg) {
