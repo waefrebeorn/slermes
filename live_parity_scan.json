@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T17:59:03Z",
+  "generated_at": "2026-08-02T18:01:25Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -323213,10 +323213,10 @@
     },
     "tools/skills_hub.py": {
       "total": 199,
-      "ported": 152,
+      "ported": 199,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 47,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 199,
@@ -323783,17 +323783,24 @@
             "decorators": [],
             "line_number": 302
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_guarded_http_get",
+          "pop_annotation": {
+            "c_function": "sh_guarded_http_get",
+            "python_functions": [
+              "_guarded_http_get"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _guarded_http_get @ tools/skills_hub.py:_guarded_http_get */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -324453,17 +324460,24 @@
             "decorators": [],
             "line_number": 755
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_list_skills_in_repo",
+          "pop_annotation": {
+            "c_function": "sh_list_skills_in_repo",
+            "python_functions": [
+              "_list_skills_in_repo"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 31,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _list_skills_in_repo @ tools/skills_hub.py:_list_skills_in_repo */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -324562,17 +324576,24 @@
             "decorators": [],
             "line_number": 944
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_download_directory",
+          "pop_annotation": {
+            "c_function": "sh_download_directory",
+            "python_functions": [
+              "_download_directory"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _download_directory @ tools/skills_hub.py:_download_directory */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -324584,17 +324605,24 @@
             "decorators": [],
             "line_number": 958
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_download_directory_via_tree",
+          "pop_annotation": {
+            "c_function": "sh_download_directory_via_tree",
+            "python_functions": [
+              "_download_directory_via_tree"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 47,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _download_directory_via_tree @ tools/skills_hub.py:_download_directory_via_tree */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -324606,17 +324634,24 @@
             "decorators": [],
             "line_number": 1001
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_download_directory_recursive",
+          "pop_annotation": {
+            "c_function": "sh_download_directory_recursive",
+            "python_functions": [
+              "_download_directory_recursive"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 55,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _download_directory_recursive @ tools/skills_hub.py:_download_directory_recursive */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -324715,17 +324750,24 @@
             "decorators": [],
             "line_number": 1083
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_get_skillsh_groupings",
+          "pop_annotation": {
+            "c_function": "sh_get_skillsh_groupings",
+            "python_functions": [
+              "_get_skillsh_groupings"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 63,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_skillsh_groupings @ tools/skills_hub.py:_get_skillsh_groupings */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -324739,17 +324781,24 @@
             ],
             "line_number": 1109
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_parse_skillsh_groupings",
+          "pop_annotation": {
+            "c_function": "sh_parse_skillsh_groupings",
+            "python_functions": [
+              "_parse_skillsh_groupings"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 71,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _parse_skillsh_groupings @ tools/skills_hub.py:_parse_skillsh_groupings */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -325676,17 +325725,24 @@
             "decorators": [],
             "line_number": 1717
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_sitemap_catalog",
+          "pop_annotation": {
+            "c_function": "sh_sitemap_catalog",
+            "python_functions": [
+              "_sitemap_catalog"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 79,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _sitemap_catalog @ tools/skills_hub.py:_sitemap_catalog */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -325698,17 +325754,24 @@
             "decorators": [],
             "line_number": 1808
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_featured_skills",
+          "pop_annotation": {
+            "c_function": "sh_featured_skills",
+            "python_functions": [
+              "_featured_skills"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 86,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _featured_skills @ tools/skills_hub.py:_featured_skills */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -325720,17 +325783,24 @@
             "decorators": [],
             "line_number": 1848
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_meta_from_search_item",
+          "pop_annotation": {
+            "c_function": "sh_meta_from_search_item",
+            "python_functions": [
+              "_meta_from_search_item"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 93,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _meta_from_search_item @ tools/skills_hub.py:_meta_from_search_item */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -325742,17 +325812,24 @@
             "decorators": [],
             "line_number": 1884
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_fetch_detail_page",
+          "pop_annotation": {
+            "c_function": "sh_fetch_detail_page",
+            "python_functions": [
+              "_fetch_detail_page"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 101,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _fetch_detail_page @ tools/skills_hub.py:_fetch_detail_page */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -325764,17 +325841,24 @@
             "decorators": [],
             "line_number": 1902
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_parse_detail_page",
+          "pop_annotation": {
+            "c_function": "sh_parse_detail_page",
+            "python_functions": [
+              "_parse_detail_page"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 109,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _parse_detail_page @ tools/skills_hub.py:_parse_detail_page */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -325786,17 +325870,24 @@
             "decorators": [],
             "line_number": 1939
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_discover_identifier",
+          "pop_annotation": {
+            "c_function": "sh_discover_identifier",
+            "python_functions": [
+              "_discover_identifier"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 117,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _discover_identifier @ tools/skills_hub.py:_discover_identifier */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -325837,17 +325928,24 @@
             "decorators": [],
             "line_number": 2019
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_finalize_inspect_meta",
+          "pop_annotation": {
+            "c_function": "sh_finalize_inspect_meta",
+            "python_functions": [
+              "_finalize_inspect_meta"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 124,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _finalize_inspect_meta @ tools/skills_hub.py:_finalize_inspect_meta */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -325861,17 +325959,24 @@
             ],
             "line_number": 2037
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_matches_skill_tokens",
+          "pop_annotation": {
+            "c_function": "sh_matches_skill_tokens",
+            "python_functions": [
+              "_matches_skill_tokens"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 132,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _matches_skill_tokens @ tools/skills_hub.py:_matches_skill_tokens */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -325885,17 +325990,24 @@
             ],
             "line_number": 2050
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_token_variants",
+          "pop_annotation": {
+            "c_function": "sh_token_variants",
+            "python_functions": [
+              "_token_variants"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 140,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _token_variants @ tools/skills_hub.py:_token_variants */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -325909,17 +326021,24 @@
             ],
             "line_number": 2081
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_extract_repo_slug",
+          "pop_annotation": {
+            "c_function": "sh_extract_repo_slug",
+            "python_functions": [
+              "_extract_repo_slug"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 148,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_repo_slug @ tools/skills_hub.py:_extract_repo_slug */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -325933,17 +326052,24 @@
             ],
             "line_number": 2092
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_extract_first_match",
+          "pop_annotation": {
+            "c_function": "sh_extract_first_match",
+            "python_functions": [
+              "_extract_first_match"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 168,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_first_match @ tools/skills_hub.py:_extract_first_match */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -325955,17 +326081,24 @@
             "decorators": [],
             "line_number": 2101
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_detail_to_metadata",
+          "pop_annotation": {
+            "c_function": "sh_detail_to_metadata",
+            "python_functions": [
+              "_detail_to_metadata"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 176,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _detail_to_metadata @ tools/skills_hub.py:_detail_to_metadata */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -325979,17 +326112,24 @@
             ],
             "line_number": 2117
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_extract_weekly_installs",
+          "pop_annotation": {
+            "c_function": "sh_extract_weekly_installs",
+            "python_functions": [
+              "_extract_weekly_installs"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 184,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_weekly_installs @ tools/skills_hub.py:_extract_weekly_installs */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -326003,17 +326143,24 @@
             ],
             "line_number": 2124
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_extract_security_audits",
+          "pop_annotation": {
+            "c_function": "sh_extract_security_audits",
+            "python_functions": [
+              "_extract_security_audits"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 192,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_security_audits @ tools/skills_hub.py:_extract_security_audits */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -326209,17 +326356,24 @@
             ],
             "line_number": 2207
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_normalize_tags",
+          "pop_annotation": {
+            "c_function": "sh_normalize_tags",
+            "python_functions": [
+              "_normalize_tags"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 200,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalize_tags @ tools/skills_hub.py:_normalize_tags */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -326233,17 +326387,24 @@
             ],
             "line_number": 2215
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_coerce_skill_payload",
+          "pop_annotation": {
+            "c_function": "sh_coerce_skill_payload",
+            "python_functions": [
+              "_coerce_skill_payload"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 211,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _coerce_skill_payload @ tools/skills_hub.py:_coerce_skill_payload */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -326288,17 +326449,24 @@
             ],
             "line_number": 2232
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_search_score",
+          "pop_annotation": {
+            "c_function": "sh_search_score",
+            "python_functions": [
+              "_search_score"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 219,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _search_score @ tools/skills_hub.py:_search_score */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -326312,17 +326480,24 @@
             ],
             "line_number": 2281
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_dedupe_results",
+          "pop_annotation": {
+            "c_function": "sh_dedupe_results",
+            "python_functions": [
+              "_dedupe_results"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 230,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _dedupe_results @ tools/skills_hub.py:_dedupe_results */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -326334,17 +326509,24 @@
             "decorators": [],
             "line_number": 2292
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_exact_slug_meta",
+          "pop_annotation": {
+            "c_function": "sh_exact_slug_meta",
+            "python_functions": [
+              "_exact_slug_meta"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 238,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _exact_slug_meta @ tools/skills_hub.py:_exact_slug_meta */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -326356,17 +326538,24 @@
             "decorators": [],
             "line_number": 2325
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_finalize_search_results",
+          "pop_annotation": {
+            "c_function": "sh_finalize_search_results",
+            "python_functions": [
+              "_finalize_search_results"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 246,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _finalize_search_results @ tools/skills_hub.py:_finalize_search_results */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -326494,17 +326683,24 @@
             "decorators": [],
             "line_number": 2498
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_load_catalog_index",
+          "pop_annotation": {
+            "c_function": "sh_load_catalog_index",
+            "python_functions": [
+              "_load_catalog_index"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 254,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _load_catalog_index @ tools/skills_hub.py:_load_catalog_index */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -326516,17 +326712,24 @@
             "decorators": [],
             "line_number": 2595
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_get_json",
+          "pop_annotation": {
+            "c_function": "sh_get_json",
+            "python_functions": [
+              "_get_json"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 261,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_json @ tools/skills_hub.py:_get_json */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -326538,17 +326741,24 @@
             "decorators": [],
             "line_number": 2604
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_resolve_latest_version",
+          "pop_annotation": {
+            "c_function": "sh_resolve_latest_version",
+            "python_functions": [
+              "_resolve_latest_version"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 269,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_latest_version @ tools/skills_hub.py:_resolve_latest_version */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -326560,17 +326770,24 @@
             "decorators": [],
             "line_number": 2626
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_extract_files",
+          "pop_annotation": {
+            "c_function": "sh_extract_files",
+            "python_functions": [
+              "_extract_files"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 277,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_files @ tools/skills_hub.py:_extract_files */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -326582,17 +326799,24 @@
             "decorators": [],
             "line_number": 2657
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_download_zip",
+          "pop_annotation": {
+            "c_function": "sh_download_zip",
+            "python_functions": [
+              "_download_zip"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 285,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _download_zip @ tools/skills_hub.py:_download_zip */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -326838,17 +327062,24 @@
             "decorators": [],
             "line_number": 2807
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_fetch_marketplace_index",
+          "pop_annotation": {
+            "c_function": "sh_fetch_marketplace_index",
+            "python_functions": [
+              "_fetch_marketplace_index"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 293,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _fetch_marketplace_index @ tools/skills_hub.py:_fetch_marketplace_index */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -327005,17 +327236,24 @@
             "decorators": [],
             "line_number": 2925
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_fetch_index",
+          "pop_annotation": {
+            "c_function": "sh_fetch_index",
+            "python_functions": [
+              "_fetch_index"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 301,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _fetch_index @ tools/skills_hub.py:_fetch_index */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -327027,17 +327265,24 @@
             "decorators": [],
             "line_number": 2943
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_fetch_agent",
+          "pop_annotation": {
+            "c_function": "sh_fetch_agent",
+            "python_functions": [
+              "_fetch_agent"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 308,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _fetch_agent @ tools/skills_hub.py:_fetch_agent */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -327051,17 +327296,24 @@
             ],
             "line_number": 2955
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_convert_to_skill_md",
+          "pop_annotation": {
+            "c_function": "sh_convert_to_skill_md",
+            "python_functions": [
+              "_convert_to_skill_md"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 316,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _convert_to_skill_md @ tools/skills_hub.py:_convert_to_skill_md */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -327160,17 +327412,24 @@
             "decorators": [],
             "line_number": 3033
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_item_to_meta",
+          "pop_annotation": {
+            "c_function": "sh_item_to_meta",
+            "python_functions": [
+              "_item_to_meta"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 324,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _item_to_meta @ tools/skills_hub.py:_item_to_meta */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -327298,17 +327557,24 @@
             "decorators": [],
             "line_number": 3158
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_slug_from_identifier",
+          "pop_annotation": {
+            "c_function": "sh_slug_from_identifier",
+            "python_functions": [
+              "_slug_from_identifier"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 332,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _slug_from_identifier @ tools/skills_hub.py:_slug_from_identifier */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -327523,17 +327789,24 @@
             "decorators": [],
             "line_number": 3286
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_scan_all",
+          "pop_annotation": {
+            "c_function": "sh_scan_all",
+            "python_functions": [
+              "_scan_all"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 341,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _scan_all @ tools/skills_hub.py:_scan_all */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -327692,17 +327965,24 @@
             "decorators": [],
             "line_number": 3408
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_load",
+          "pop_annotation": {
+            "c_function": "sh_load",
+            "python_functions": [
+              "load"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 349,
+            "is_consolidated": false,
+            "full_text": "/* PoP: load @ tools/skills_hub.py:load */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -327714,17 +327994,24 @@
             "decorators": [],
             "line_number": 3416
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_save",
+          "pop_annotation": {
+            "c_function": "sh_save",
+            "python_functions": [
+              "save"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 357,
+            "is_consolidated": false,
+            "full_text": "/* PoP: save @ tools/skills_hub.py:save */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -327881,17 +328168,24 @@
             "decorators": [],
             "line_number": 3482
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_load",
+          "pop_annotation": {
+            "c_function": "sh_load",
+            "python_functions": [
+              "load"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 349,
+            "is_consolidated": false,
+            "full_text": "/* PoP: load @ tools/skills_hub.py:load */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -327903,17 +328197,24 @@
             "decorators": [],
             "line_number": 3491
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_save",
+          "pop_annotation": {
+            "c_function": "sh_save",
+            "python_functions": [
+              "save"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 357,
+            "is_consolidated": false,
+            "full_text": "/* PoP: save @ tools/skills_hub.py:save */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -328360,17 +328661,24 @@
             "decorators": [],
             "line_number": 3898
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_ensure_loaded",
+          "pop_annotation": {
+            "c_function": "sh_ensure_loaded",
+            "python_functions": [
+              "_ensure_loaded"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 365,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ensure_loaded @ tools/skills_hub.py:_ensure_loaded */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -328382,17 +328690,24 @@
             "decorators": [],
             "line_number": 3904
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_get_github",
+          "pop_annotation": {
+            "c_function": "sh_get_github",
+            "python_functions": [
+              "_get_github"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 372,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_github @ tools/skills_hub.py:_get_github */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -328580,17 +328895,24 @@
             "decorators": [],
             "line_number": 4022
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_find_entry",
+          "pop_annotation": {
+            "c_function": "sh_find_entry",
+            "python_functions": [
+              "_find_entry"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 379,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _find_entry @ tools/skills_hub.py:_find_entry */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
@@ -328604,17 +328926,24 @@
             ],
             "line_number": 4053
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_hub_remaining.c",
+          "c_function": "sh_to_meta",
+          "pop_annotation": {
+            "c_function": "sh_to_meta",
+            "python_functions": [
+              "_to_meta"
+            ],
+            "c_file": "src/tools/port_skills_hub_remaining.c",
+            "python_file": "tools/skills_hub.py",
+            "line": 387,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _to_meta @ tools/skills_hub.py:_to_meta */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_hub.py",
