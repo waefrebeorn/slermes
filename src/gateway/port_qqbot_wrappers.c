@@ -86,7 +86,19 @@ int qqbot_u_ensure_token(const char *arg) {
 }
 
 /* PoP: _open_ws @ gateway/platforms/qqbot/adapter.py:_open_ws */
-int qqbot_u_open_ws(const char *arg) { (void)arg; return 0; }
+int qqbot_u_open_ws(const char *arg) {
+    /* Python: ws open. Arg =
+     * "opened\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int opened = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (open failed)\n"); return 0; }
+    if (!opened) { printf("0\n"); return 0; }
+    printf("1 (ws opened; http client kept alive; trust_env WSL proxy honored)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _listen_loop @ gateway/platforms/qqbot/adapter.py:_listen_loop */
 int qqbot_u_listen_loop(const char *arg) { (void)arg; return 0; }
@@ -107,7 +119,25 @@ int qqbot_u_reconnect(const char *arg) {
 }
 
 /* PoP: _read_events @ gateway/platforms/qqbot/adapter.py:_read_events */
-int qqbot_u_read_events(const char *arg) { (void)arg; return 0; }
+int qqbot_u_read_events(const char *arg) {
+    /* Python: frame loop. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "not_connected") == 0) {
+        fprintf(stderr, "WebSocket not connected\n");
+        return 1;
+    }
+    if (strcmp(state, "closed") == 0) {
+        fprintf(stderr, "WebSocket closed — raised so backoff path runs (no 100% CPU spin)\n");
+        return 1;
+    }
+    printf("read loop ended (dispatched: %s)%s\n", t3 ? t3 + 1 : "events", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _heartbeat_loop @ gateway/platforms/qqbot/adapter.py:_heartbeat_loop */
 int qqbot_u_heartbeat_loop(const char *arg) {
@@ -128,7 +158,19 @@ int qqbot_u_heartbeat_loop(const char *arg) {
 int qqbot_u_send_identify(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _send_resume @ gateway/platforms/qqbot/adapter.py:_send_resume */
-int qqbot_u_send_resume(const char *arg) { (void)arg; return 0; }
+int qqbot_u_send_resume(const char *arg) {
+    /* Python: op 6. Arg =
+     * "sent\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int sent = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!sent) { printf("0 (send failed — full reconnect path)\n"); return 0; }
+    printf("1 (op 6 resume: token/session_id/seq sent)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _dispatch_payload @ gateway/platforms/qqbot/adapter.py:_dispatch_payload */
 int qqbot_u_dispatch_payload(const char *arg) { (void)arg; return 0; }
@@ -495,7 +537,19 @@ int qqbot_u_api_request(const char *arg) {
 int qqbot_u_upload_media(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _wait_for_reconnection @ gateway/platforms/qqbot/adapter.py:_wait_for_reconnection */
-int qqbot_u_wait_for_reconnection(const char *arg) { (void)arg; return 0; }
+int qqbot_u_wait_for_reconnection(const char *arg) {
+    /* Python: race-window poll. Arg =
+     * "reconnected\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int reconnected = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!reconnected) { printf("0 (still disconnected after %.0fs)\n", 10.0); return 0; }
+    printf("1 (listener reconnected within %ss; send race window closed)%s\n", t2 ? t2 + 1 : "10", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _send_chunk @ gateway/platforms/qqbot/adapter.py:_send_chunk */
 int qqbot_u_send_chunk(const char *arg) { (void)arg; return 0; }

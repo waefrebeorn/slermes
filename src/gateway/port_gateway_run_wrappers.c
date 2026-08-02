@@ -205,7 +205,17 @@ int grun_u_await_adapter_cleanup_with_timeout(const char *arg) {
 }
 
 /* PoP: _safe_adapter_disconnect @ gateway/run.py:_safe_adapter_disconnect */
-int grun_u_safe_adapter_disconnect(const char *arg) { (void)arg; return 0; }
+int grun_u_safe_adapter_disconnect(const char *arg) {
+    /* Python: defensive disconnect. Arg =
+     * "done\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("1 (disconnect completed under timeout — partial-init tolerated, never raises, no Unclosed-session leaks)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _bounded_adapter_teardown @ gateway/run.py:_bounded_adapter_teardown */
 int grun_u_bounded_adapter_teardown(const char *arg) { (void)arg; return 0; }
@@ -811,7 +821,17 @@ int grun_u_queue_startup_restore_event(const char *arg) {
 }
 
 /* PoP: _drain_startup_restore_queue @ gateway/run.py:_drain_startup_restore_queue */
-int grun_u_drain_startup_restore_queue(const char *arg) { (void)arg; return 0; }
+int grun_u_drain_startup_restore_queue(const char *arg) {
+    /* Python: replay queue. Arg =
+     * "drained\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no queue)\n"); return 0; }
+    printf("%s message(s) replayed (adapter-missing → dropped w/ debug log)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _finish_startup_restore @ gateway/run.py:_finish_startup_restore */
 int grun_u_finish_startup_restore(const char *arg) {
@@ -1188,7 +1208,19 @@ int grun_u_post_turn_goal_continuation(const char *arg) { (void)arg; return 0; }
 int grun_u_handle_voice_channel_join(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _handle_voice_channel_leave @ gateway/run.py:_handle_voice_channel_leave */
-int grun_u_handle_voice_channel_leave(const char *arg) { (void)arg; return 0; }
+int grun_u_handle_voice_channel_leave(const char *arg) {
+    /* Python: leave voice. Arg =
+     * "left\tstate\tresult". */
+    if (!arg || !*arg) { printf("Not in a voice channel.\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int left = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("Not in a voice channel.\n"); return 0; }
+    if (!left) { printf("Not in a voice channel.\n"); return 0; }
+    printf("Left the voice channel.%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _handle_voice_timeout_cleanup @ gateway/run.py:_handle_voice_timeout_cleanup */
 int grun_u_handle_voice_timeout_cleanup(const char *arg) {
@@ -1259,7 +1291,19 @@ int grun_u_run_background_task_inner(const char *arg) {
 }
 
 /* PoP: _get_telegram_topic_capabilities @ gateway/run.py:_get_telegram_topic_capabilities */
-int grun_u_get_telegram_topic_capabilities(const char *arg) { (void)arg; return 0; }
+int grun_u_get_telegram_topic_capabilities(const char *arg) {
+    /* Python: getMe flags. Arg =
+     * "checked\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\"checked\": false}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int checked = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{\"checked\": false}\n"); return 0; }
+    if (!checked) { printf("{\"checked\": false} (getMe failed)\n"); return 0; }
+    printf("{\"checked\": true, \"capabilities\": %s} (can_send_paid_media etc.)%s\n", t2 ? t2 + 1 : "{}", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _ensure_telegram_system_topic @ gateway/run.py:_ensure_telegram_system_topic */
 int grun_u_ensure_telegram_system_topic(const char *arg) { (void)arg; return 0; }

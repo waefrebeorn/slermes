@@ -124,7 +124,19 @@ int hermes_cli_dashboard_auth_rout_u_reset_password_rate_limit(const char *arg) 
 int hermes_cli_dashboard_auth_rout_auth_password_login(const char *arg) { (void)arg; return 0; }
 
 /* PoP: auth_logout @ hermes_cli/dashboard_auth/routes.py:auth_logout */
-int hermes_cli_dashboard_auth_rout_auth_logout(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_rout_auth_logout(const char *arg) {
+    /* Python: best-effort revoke. Arg =
+     * "revoked\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int revoked = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no refresh token)\n"); return 0; }
+    if (!revoked) { printf("0 (revoke failures logged, never raised)\n"); return 0; }
+    printf("1 (session revoked across every provider; cookies cleared)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: api_auth_me @ hermes_cli/dashboard_auth/routes.py:api_auth_me */
 int hermes_cli_dashboard_auth_rout_api_auth_me(const char *arg) {

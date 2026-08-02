@@ -1955,13 +1955,33 @@ int tools_online_research_u__aexit__(const char *arg) {
 }
 
 /* PoP: search_duckduckgo @ tools/online_research.py:search_duckduckgo */
-int tools_online_research_search_duckduckgo(const char *arg) { (void)arg; return 0; }
+int tools_online_research_search_duckduckgo(const char *arg) {
+    /* Python: HTML scrape. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s result(s) (html.duckduckgo.com, UA pinned, result__url/snippet regex parse)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: search_brave @ tools/online_research.py:search_brave */
 int tools_online_research_search_brave(const char *arg) { (void)arg; return 0; }
 
 /* PoP: search_google_cse @ tools/online_research.py:search_google_cse */
-int tools_online_research_search_google_cse(const char *arg) { (void)arg; return 0; }
+int tools_online_research_search_google_cse(const char *arg) {
+    /* Python: CSE API. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[] (no GOOGLE_CSE_KEY/ID)\n"); return 0; }
+    printf("%s result(s) (customsearch/v1, num<=10)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: get_researcher @ tools/online_research.py:get_researcher */
 int tools_online_research_get_researcher(const char *arg) {

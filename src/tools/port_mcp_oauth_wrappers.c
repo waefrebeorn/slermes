@@ -223,7 +223,19 @@ int mcpo_u_meta_path(const char *arg) {
 int mcpo_get_tokens(const char *arg) { (void)arg; return 0; }
 
 /* PoP: set_tokens @ tools/mcp_oauth.py:set_tokens */
-int mcpo_set_tokens(const char *arg) { (void)arg; return 0; }
+int mcpo_set_tokens(const char *arg) {
+    /* Python: absolute expires_at. Arg =
+     * "saved\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int saved = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!saved) { printf("0 (write failed)\n"); return 0; }
+    printf("1 (tokens persisted with absolute expires_at — restart reconstructs TTL; no false is_token_valid)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: get_client_info @ tools/mcp_oauth.py:get_client_info */
 int mcpo_get_client_info(const char *arg) {

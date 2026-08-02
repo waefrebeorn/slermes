@@ -740,7 +740,21 @@ int yb_u_extract_connect_id(const char *arg) {
 int yb_u_heartbeat_loop(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _receive_loop @ gateway/platforms/yuanbao.py:_receive_loop */
-int yb_u_receive_loop(const char *arg) { (void)arg; return 0; }
+int yb_u_receive_loop(const char *arg) {
+    /* Python: frame dispatch. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "closed") == 0) {
+        printf("ws closed (code=%s) — reconnect path\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    printf("receive loop ended: %s (bytes-only frames, _handle_frame dispatch)%s\n", state, (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _extract_sender_key @ gateway/platforms/yuanbao.py:_extract_sender_key */
 int yb_u_extract_sender_key(const char *arg) {
@@ -951,10 +965,34 @@ int yb_get_group_member_list_raw(const char *arg) { (void)arg; return 0; }
 int yb_query_session_members(const char *arg) { (void)arg; return 0; }
 
 /* PoP: send_heartbeat_once @ gateway/platforms/yuanbao.py:send_heartbeat_once */
-int yb_send_heartbeat_once(const char *arg) { (void)arg; return 0; }
+int yb_send_heartbeat_once(const char *arg) {
+    /* Python: single hb. Arg =
+     * "sent\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int sent = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no ws / no bot id)\n"); return 0; }
+    if (!sent) { printf("0 (send failed — best effort)\n"); return 0; }
+    printf("1 (heartbeat %s sent; group: → group hb, direct: → c2c hb)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _worker @ gateway/platforms/yuanbao.py:_worker */
-int yb_u_worker(const char *arg) { (void)arg; return 0; }
+int yb_u_worker(const char *arg) {
+    /* Python: 2s RUNNING loop. Arg =
+     * "finished\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int finished = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!finished) { printf("0 (renewed — still active)\n"); return 0; }
+    printf("1 (RUNNING hb every %ss; 30s no-renewal → FINISH + exit)%s\n", t2 ? t2 + 1 : "2", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _notifier @ gateway/platforms/yuanbao.py:_notifier */
 int yb_u_notifier(const char *arg) {

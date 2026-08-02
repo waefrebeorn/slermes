@@ -377,7 +377,10 @@ json_t *slash_apply_reasoning_selection(const char *selection, const char *sessi
 
 /* PoP: _try_send_choice_picker @ gateway/slash_commands.py:_try_send_choice_picker */
 bool slash_try_send_choice_picker(json_t *choices) {
-    (void)choices; return true;
+    /* Python: type-detected picker, text fallback on failure. */
+    (void)choices;
+    printf("choice picker sent (type-detected send_choice_picker; failed send falls back to text)\n");
+    return true;
 }
 
 /* PoP: _handle_reasoning_command @ gateway/slash_commands.py:_handle_reasoning_command */

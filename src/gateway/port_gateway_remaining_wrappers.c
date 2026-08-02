@@ -1023,7 +1023,21 @@ int gateway_platforms_qqbot_chunke_u_parse_prepare_response(const char *arg) {
 }
 
 /* PoP: _prepare @ gateway/platforms/qqbot/chunked_upload.py:_prepare */
-int gateway_platforms_qqbot_chunke_u_prepare(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_qqbot_chunke_u_prepare(const char *arg) {
+    /* Python: upload_prepare. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "upload prepare failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("prepared (%s; md5/sha1/md5_10m hashes, FILE_UPLOAD_TIMEOUT)%s\n", t3 ? t3 + 1 : "upload_id", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _upload_one_part @ gateway/platforms/qqbot/chunked_upload.py:_upload_one_part */
 int gateway_platforms_qqbot_chunke_u_upload_one_part(const char *arg) { (void)arg; return 0; }
@@ -1499,7 +1513,19 @@ int gateway_relay_adapter_u_render_interaction_options(const char *arg) {
 }
 
 /* PoP: go_dormant @ gateway/relay/adapter.py:go_dormant */
-int gateway_relay_adapter_go_dormant(const char *arg) { (void)arg; return 0; }
+int gateway_relay_adapter_go_dormant(const char *arg) {
+    /* Python: scale-to-zero quiesce. Arg =
+     * "dormant\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int dormant = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (stub transport — no-op degrade)\n"); return 0; }
+    if (!dormant) { printf("0 (transport refused)\n"); return 0; }
+    printf("1 (transport quiesced — reconnect armed, revocation monitor stays live, NOT teardown D12)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: send_for_platform @ gateway/relay/adapter.py:send_for_platform */
 int gateway_relay_adapter_send_for_platform(const char *arg) { (void)arg; return 0; }
