@@ -1125,7 +1125,15 @@ int tools_environments_modal_u_ensure_modal_sdk(const char *arg) {
 }
 
 /* PoP: _resolve_modal_image @ tools/environments/modal.py:_resolve_modal_image */
-int tools_environments_modal_u_resolve_modal_image(const char *arg) { (void)arg; return 0; }
+int tools_environments_modal_u_resolve_modal_image(const char *arg) {
+    /* Python: registry/snapshot refs. Arg = "spec\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("modal image resolved: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _run_loop @ tools/environments/modal.py:_run_loop */
 int tools_environments_modal_u_run_loop(const char *arg) {

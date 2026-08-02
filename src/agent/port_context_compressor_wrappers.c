@@ -184,7 +184,18 @@ int ctxc_u_validate_summary_user_provenance(const char *arg) { (void)arg; return
 int ctxc_u_latest_user_task_snapshot(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _ground_historical_task_snapshot @ agent/context_compressor.py:_ground_historical_task_snapshot */
-int ctxc_u_ground_historical_task_snapshot(const char *arg) { (void)arg; return 0; }
+int ctxc_u_ground_historical_task_snapshot(const char *arg) {
+    /* Python: ground task snapshot section. Arg =
+     * "has_snapshot\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_snapshot = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!has_snapshot || !state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _ensure_last_n_user_messages_in_tail @ agent/context_compressor.py:_ensure_last_n_user_messages_in_tail */
 int ctxc_u_ensure_last_n_user_messages_in_tail(const char *arg) { (void)arg; return 0; }

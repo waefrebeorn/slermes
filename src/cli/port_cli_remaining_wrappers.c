@@ -193,7 +193,17 @@ int hermes_cli_debug_u_resolve_log_path(const char *arg) {
 int hermes_cli_debug_u_capture_log_snapshot(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _capture_default_log_snapshots @ hermes_cli/debug.py:_capture_default_log_snapshots */
-int hermes_cli_debug_u_capture_default_log_snapshots(const char *arg) { (void)arg; return 0; }
+int hermes_cli_debug_u_capture_default_log_snapshots(const char *arg) {
+    /* Python: 5 log snapshots. Arg = "log_lines\tredact\tstate\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", t3 ? t3 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _capture_dump @ hermes_cli/debug.py:_capture_dump */
 int hermes_cli_debug_u_capture_dump(const char *arg) {
@@ -3444,7 +3454,23 @@ int hermes_cli_active_sessions_u_prune_dead(const char *arg) {
 }
 
 /* PoP: transfer_active_session @ hermes_cli/active_sessions.py:transfer_active_session */
-int hermes_cli_active_sessions_transfer_active_session(const char *arg) { (void)arg; return 0; }
+int hermes_cli_active_sessions_transfer_active_session(const char *arg) {
+    /* Python: move lease to new session id. Arg =
+     * "session_id\treleased\tenabled\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *session_id = arg;
+    int released = t1 && t1[1] == '1';
+    int enabled = t2 && t2[1] == '1';
+    int state = t3 && t3[1] == '1';
+    if (!session_id[0] || released) { printf("0\n"); return 0; }
+    if (!enabled) { printf("1\n"); return 0; }
+    printf("%d\n", state ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _translate_one_server @ hermes_cli/codex_runtime_plugin_migration.py:_translate_one_server */
 int hermes_cli_codex_runtime_plugi_u_translate_one_server(const char *arg) { (void)arg; return 0; }
@@ -3510,7 +3536,20 @@ int hermes_cli_codex_runtime_plugi_u_strip_existing_managed_block(const char *ar
 int hermes_cli_codex_runtime_plugi_u_query_codex_plugins(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _looks_like_test_tempdir @ hermes_cli/codex_runtime_plugin_migration.py:_looks_like_test_tempdir */
-int hermes_cli_codex_runtime_plugi_u_looks_like_test_tempdir(const char *arg) { (void)arg; return 0; }
+int hermes_cli_codex_runtime_plugi_u_looks_like_test_tempdir(const char *arg) {
+    /* Python: pytest tempdir heuristic. Arg = "path". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    char low[512];
+    size_t w = 0;
+    for (const char *p = arg; *p && w < sizeof(low)-1; p++) {
+        char c = *p;
+        low[w++] = (c >= 'A' && c <= 'Z') ? (char)(c - 'A' + 'a') : c;
+    }
+    low[w] = '\0';
+    if (strstr(low, "pytest-of-") || strstr(low, "/pytest-") || strstr(low, "/tmp/pytest") || strstr(low, "/private/var/folders/")) { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _build_hermes_tools_mcp_entry @ hermes_cli/codex_runtime_plugin_migration.py:_build_hermes_tools_mcp_entry */
 int hermes_cli_codex_runtime_plugi_u_build_hermes_tools_mcp_entry(const char *arg) { (void)arg; return 0; }
@@ -5561,7 +5600,20 @@ int hermes_cli__early_recovery_u_probe_broken_packages(const char *arg) {
 }
 
 /* PoP: _run_repair_install @ hermes_cli/_early_recovery.py:_run_repair_install */
-int hermes_cli__early_recovery_u_run_repair_install(const char *arg) { (void)arg; return 0; }
+int hermes_cli__early_recovery_u_run_repair_install(const char *arg) {
+    /* Python: ensurepip + force-reinstall. Arg = "specs\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "ok") == 0) { printf("1\n"); return 0; }
+    if (strcmp(state, "no_pip") == 0) {
+        fprintf(stderr, "  ✗ Early venv repair could not run pip\n");
+        return 0;
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: recover_if_needed @ hermes_cli/_early_recovery.py:recover_if_needed */
 int hermes_cli__early_recovery_recover_if_needed(const char *arg) { (void)arg; return 0; }
@@ -6351,7 +6403,16 @@ int hermes_cli_moa_config_u_coerce_degraded_reference_policy(const char *arg) {
 }
 
 /* PoP: coerce_privacy_filter @ hermes_cli/moa_config.py:coerce_privacy_filter */
-int hermes_cli_moa_config_coerce_privacy_filter(const char *arg) { (void)arg; return 0; }
+int hermes_cli_moa_config_coerce_privacy_filter(const char *arg) {
+    /* Python: '' / display / full. Arg = "value\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *value = arg;
+    if (strcmp(value, "true") == 0 || strcmp(value, "on") == 0 || strcmp(value, "yes") == 0 || strcmp(value, "1") == 0) { printf("full\n"); return 0; }
+    if (strcmp(value, "display") == 0 || strcmp(value, "full") == 0) { printf("%s\n", value); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: moa_usage @ hermes_cli/moa_config.py:moa_usage */
 int hermes_cli_moa_config_moa_usage(const char *arg) {

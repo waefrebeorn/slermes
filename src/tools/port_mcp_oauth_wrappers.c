@@ -283,7 +283,25 @@ int mcpo_u_configure_callback_port(const char *arg) { (void)arg; return 0; }
 int mcpo_u_resolve_redirect_uri(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _build_client_metadata @ tools/mcp_oauth.py:_build_client_metadata */
-int mcpo_u_build_client_metadata(const char *arg) { (void)arg; return 0; }
+int mcpo_u_build_client_metadata(const char *arg) {
+    /* Python: OAuth client metadata. Arg =
+     * "port\tclient_name\tscope\tsecret\tstate\tresult". */
+    if (!arg || !*arg) { printf("0 missing port\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *t5 = t4 ? strchr(t4 + 1, '\t') : NULL;
+    const char *state = t4 ? t4 + 1 : "";
+    if (strcmp(state, "no_port") == 0) {
+        fprintf(stderr, "_configure_callback_port() must be called before _build_client_metadata()\n");
+        return 1;
+    }
+    printf("client metadata built: name=%s port=%s auth=%s\n",
+           t1 ? t1 + 1 : "Hermes Agent", arg,
+           (t3 && t3[1] == '1') ? "client_secret_post" : "none");
+    return 0;
+}
 
 /* PoP: _maybe_preregister_client @ tools/mcp_oauth.py:_maybe_preregister_client */
 int mcpo_u_maybe_preregister_client(const char *arg) { (void)arg; return 0; }

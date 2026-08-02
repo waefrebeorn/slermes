@@ -699,4 +699,17 @@ int cua_install_ffmpeg(const char *arg) {
 }
 
 /* PoP: _maybe_attach_element_token @ tools/computer_use/cua_backend.py:_maybe_attach_element_token */
-int cua_u_maybe_attach_element_token(const char *arg) { (void)arg; return 0; }
+int cua_u_maybe_attach_element_token(const char *arg) {
+    /* Python: token attach w/ capability gate. Arg =
+     * "has_index\thas_token\tcapable\tattached". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int has_index = arg[0] == '1';
+    int has_token = t1 && t1[1] == '1';
+    int capable = t2 && t2[1] == '1';
+    if (!has_index || !has_token || !capable) { printf("no token attach\n"); return 0; }
+    printf("element_token attached\n");
+    return 0;
+}

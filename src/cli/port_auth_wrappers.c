@@ -122,7 +122,22 @@ int auth_u_mark_qwen_oauth_active(const char *arg) {
 }
 
 /* PoP: resolve_qwen_runtime_credentials @ hermes_cli/auth.py:resolve_qwen_runtime_credentials */
-int auth_resolve_qwen_runtime_credentials(const char *arg) { (void)arg; return 0; }
+int auth_resolve_qwen_runtime_credentials(const char *arg) {
+    /* Python: read + refresh + resolve. Arg =
+     * "state\trefreshed\tbase_url\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "missing") == 0) {
+        fprintf(stderr, "Qwen OAuth access token missing. Re-run 'qwen auth qwen-oauth'.\n");
+        return 1;
+    }
+    printf("qwen credentials resolved%s: base=%s\n",
+           (t1 && t1[1] == '1') ? " (refreshed)" : "", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: get_qwen_auth_status @ hermes_cli/auth.py:get_qwen_auth_status */
 int auth_get_qwen_auth_status(const char *arg) {

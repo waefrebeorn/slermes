@@ -966,7 +966,15 @@ int gateway_relay_ws_transport_u_close_code_of(const char *arg) { (void)arg; ret
 int gateway_relay_ws_transport_u_reconnect_loop(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _env_multiplex_profiles_override @ gateway/config.py:_env_multiplex_profiles_override */
-int gateway_config_u_env_multiplex_profiles_override(const char *arg) { (void)arg; return 0; }
+int gateway_config_u_env_multiplex_profiles_override(const char *arg) {
+    /* Python: env > config > default. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "unset") == 0 || strcmp(state, "blank") == 0 || strcmp(state, "unknown") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _normalize_transport_token @ gateway/config.py:_normalize_transport_token */
 int gateway_config_u_normalize_transport_token(const char *arg) {
@@ -1189,7 +1197,18 @@ int gateway_platforms_webhook_filt_u_resolve_profile_path(const char *arg) {
 }
 
 /* PoP: _resolve_script_path @ gateway/platforms/webhook_filters.py:_resolve_script_path */
-int gateway_platforms_webhook_filt_u_resolve_script_path(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_webhook_filt_u_resolve_script_path(const char *arg) {
+    /* Python: scripts-root-relative resolve. Arg =
+     * "script_value\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "ok") == 0) { printf("%s\n", t2 ? t2 + 1 : ""); return 0; }
+    fprintf(stderr, "%s\n", t3 ? t3 + 1 : "script resolution failed");
+    return 1;
+}
 
 /* PoP: _load_filter_file_values @ gateway/platforms/webhook_filters.py:_load_filter_file_values */
 int gateway_platforms_webhook_filt_u_load_filter_file_values(const char *arg) {

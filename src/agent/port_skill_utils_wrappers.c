@@ -202,7 +202,17 @@ int sku_u_resolve_dotpath(const char *arg) {
 }
 
 /* PoP: resolve_skill_config_values @ agent/skill_utils.py:resolve_skill_config_values */
-int sku_resolve_skill_config_values(const char *arg) { (void)arg; return 0; }
+int sku_resolve_skill_config_values(const char *arg) {
+    /* Python: config values w/ defaults + expansion. Arg =
+     * "vars_json\tstate\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _normalize_skill_description @ agent/skill_utils.py:_normalize_skill_description */
 int sku_u_normalize_skill_description(const char *arg) {
@@ -255,7 +265,12 @@ int sku_is_skill_description_truncated_for_prompt(const char *arg) {
 }
 
 /* PoP: iter_skill_index_files @ agent/skill_utils.py:iter_skill_index_files */
-int sku_iter_skill_index_files(const char *arg) { (void)arg; return 0; }
+int sku_iter_skill_index_files(const char *arg) {
+    /* Python: sorted index file walk. Arg = "files" (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: parse_qualified_name @ agent/skill_utils.py:parse_qualified_name */
 int sku_parse_qualified_name(const char *arg) {

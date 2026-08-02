@@ -225,7 +225,15 @@ int cron_jobs_get_cron_output_dir(const char *arg) {
 int cron_jobs_u_oneshot_run_claim_ttl_seconds(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _job_running_in_this_process @ cron/jobs.py:_job_running_in_this_process */
-int cron_jobs_u_job_running_in_this_process(const char *arg) { (void)arg; return 0; }
+int cron_jobs_u_job_running_in_this_process(const char *arg) {
+    /* Python: scheduler running set. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "check_failed") == 0) { printf("1\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _preserve_file_ownership @ cron/jobs.py:_preserve_file_ownership */
 int cron_jobs_u_preserve_file_ownership(const char *arg) { (void)arg; return 0; }

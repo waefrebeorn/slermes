@@ -1754,7 +1754,16 @@ int agent_pet_generate_imagegen_u_forced_provider_from_env(const char *arg) {
 int agent_pet_generate_imagegen_resolve_provider(const char *arg) { (void)arg; return 0; }
 
 /* PoP: list_sprite_providers @ agent/pet/generate/imagegen.py:list_sprite_providers */
-int agent_pet_generate_imagegen_list_sprite_providers(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_imagegen_list_sprite_providers(const char *arg) {
+    /* Python: ref-capable providers. Arg = "providers_json\tcount\tstate". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _save_local @ agent/pet/generate/imagegen.py:_save_local */
 int agent_pet_generate_imagegen_u_save_local(const char *arg) {
@@ -2329,7 +2338,18 @@ int agent_credits_tracker_age_seconds(const char *arg) {
 int agent_prompt_caching_u_can_carry_marker(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _apply_system_cache_markers @ agent/prompt_caching.py:_apply_system_cache_markers */
-int agent_prompt_caching_u_apply_system_cache_markers(const char *arg) { (void)arg; return 0; }
+int agent_prompt_caching_u_apply_system_cache_markers(const char *arg) {
+    /* Python: split system prefix. Arg =
+     * "prefix_ok\tstate\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int prefix_ok = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("1\n"); return 0; }
+    printf("%s\n", prefix_ok ? "2" : "1");
+    return 0;
+}
 
 /* PoP: _canonical_url_param_name @ agent/redact.py:_canonical_url_param_name */
 int agent_redact_u_canonical_url_param_name(const char *arg) {

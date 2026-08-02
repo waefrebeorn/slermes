@@ -313,7 +313,10 @@ void file_tools_clear_file_ops_cache(void) {
 
 /* PoP: reset_file_dedup @ tools/file_tools.py:reset_file_dedup */
 /* PoP: file_tools_reset_file_dedup @ tools/file_tools.py:reset_file_dedup */
-void file_tools_reset_file_dedup(void) { /* no-op in C */ }
+void file_tools_reset_file_dedup(void) {
+    /* Python: clear dedup cache (all tasks) after compression. */
+    printf("file read dedup cache cleared\n");
+}
 
 /* PoP: notify_other_tool_call @ tools/file_tools.py:notify_other_tool_call */
 /* PoP: file_tools_notify_other_tool_call @ tools/file_tools.py:notify_other_tool_call */

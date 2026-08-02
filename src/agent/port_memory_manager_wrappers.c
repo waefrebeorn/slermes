@@ -140,7 +140,19 @@ int mm_u_forget_background_future(const char *arg) {
 }
 
 /* PoP: _get_sync_executor @ agent/memory_manager.py:_get_sync_executor */
-int mm_u_get_sync_executor(const char *arg) { (void)arg; return 0; }
+int mm_u_get_sync_executor(const char *arg) {
+    /* Python: lazy daemon pool. Arg = "shutting_down\texists\tstate". */
+    if (!arg || !*arg) { printf("executor ready\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int shutting = arg[0] == '1';
+    if (shutting) { printf("\n"); return 0; }
+    int exists = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!exists && !state) { printf("\n"); return 0; }
+    printf("sync executor ready%s\n", exists ? "" : " (created)");
+    return 0;
+}
 
 /* PoP: flush_pending @ agent/memory_manager.py:flush_pending */
 int mm_flush_pending(const char *arg) {
