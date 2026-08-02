@@ -10,6 +10,8 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include "hermes_json.h"
+#include "hermes_core_types.h"
+#include "yaml.h"
 
 /* PoP: _send_or_update_status_coro @ gateway/run.py:_send_or_update_status_coro */
 int grun_u_send_or_update_status_coro(const char *arg) { (void)arg; return 0; }
@@ -150,7 +152,54 @@ int grun_u_resume_paused_platform(const char *arg) { (void)arg; return 0; }
 int grun_u_resolve_model_for_channel(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _get_system_prompt_for_channel @ gateway/run.py:_get_system_prompt_for_channel */
-int grun_u_get_system_prompt_for_channel(const char *arg) { (void)arg; return 0; }
+int grun_u_get_system_prompt_for_channel(const char *arg) {
+    /* Python: channel_overrides lookup by chat_id, then thread_id, then
+     * parent_id (forum children inherit the parent entry); falls back to
+     * the ephemeral gateway prompt. Arg = platform, chat_id, thread_id,
+     * parent_id (tab-separated). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    char buf[1024];
+    snprintf(buf, sizeof(buf), "%s", arg);
+    char *save = NULL;
+    char *platform = strtok_r(buf, "\t", &save);
+    char *chat_id = strtok_r(NULL, "\t", &save);
+    char *thread_id = strtok_r(NULL, "\t", &save);
+    char *parent_id = strtok_r(NULL, "\t", &save);
+    if (!platform || !*platform || !chat_id || !*chat_id) { printf("\n"); return 0; }
+    hermes_config_t cfg;
+    memset(&cfg, 0, sizeof(cfg));
+    if (!hermes_config_load(&cfg, NULL)) { printf("\n"); return 0; }
+    char *err = NULL;
+    yaml_doc_t *doc = yaml_parse_file(cfg.config_path, &err);
+    if (!doc) { free(err); printf("\n"); return 0; }
+    const char *keys[3];
+    int kn = 0;
+    keys[kn++] = chat_id;
+    if (thread_id && *thread_id) keys[kn++] = thread_id;
+    if (parent_id && *parent_id) keys[kn++] = parent_id;
+    const char *found = NULL;
+    for (int i = 0; i < kn && !found; i++) {
+        char path[512];
+        snprintf(path, sizeof(path),
+                 "gateway.platforms.%s.channel_overrides.%s.system_prompt",
+                 platform, keys[i]);
+        const char *v = yaml_get_string(doc, path);
+        if (v && *v) found = v;
+    }
+    yaml_free(doc);
+    if (found) {
+        /* Python: (override.system_prompt or "").strip() */
+        while (*found && isspace((unsigned char)*found)) found++;
+        size_t n = strlen(found);
+        while (n > 0 && isspace((unsigned char)found[n - 1])) n--;
+        printf("%.*s\n", (int)n, found);
+        return 0;
+    }
+    /* No override: Python returns _ephemeral_system_prompt or "". The C
+     * port has no per-channel ephemeral slot -> empty line. */
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _refresh_fallback_model @ gateway/run.py:_refresh_fallback_model */
 int grun_u_refresh_fallback_model(const char *arg) { (void)arg; return 0; }
@@ -165,7 +214,17 @@ int grun_u_snapshot_running_agents(const char *arg) { (void)arg; return 0; }
 int grun_u_claim_active_session_slot(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _agent_has_active_subagents @ gateway/run.py:_agent_has_active_subagents */
-int grun_u_agent_has_active_subagents(const char *arg) { (void)arg; return 0; }
+int grun_u_agent_has_active_subagents(const char *arg) {
+    /* Python: running_agent._active_children must be a non-empty real
+     * collection (guards MagicMock auto-creation). The shim receives the
+     * children list as JSON. */
+    if (!arg || !*arg) return 0;
+    json_t *arr = json_parse(arg, NULL);
+    if (!arr) return 0;
+    int n = (arr->type == JSON_ARRAY) ? json_len(arr) : 0;
+    json_free(arr);
+    return n > 0;
+}
 
 /* PoP: _session_has_compression_in_flight @ gateway/run.py:_session_has_compression_in_flight */
 int grun_u_session_has_compression_in_flight(const char *arg) { (void)arg; return 0; }
