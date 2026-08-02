@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:26:20Z",
+  "generated_at": "2026-08-02T20:28:30Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -47628,10 +47628,10 @@
     },
     "agent/nous_rate_guard.py": {
       "total": 10,
-      "ported": 1,
+      "ported": 10,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 9,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 10,
@@ -47647,16 +47647,24 @@
             "decorators": [],
             "line_number": 29
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_nous_rate_guard_remaining.c",
+          "c_function": "nrg_state_path",
+          "pop_annotation": {
+            "c_function": "nrg_state_path",
+            "python_functions": [
+              "_state_path"
+            ],
+            "c_file": "src/agent/port_nous_rate_guard_remaining.c",
+            "python_file": "agent/nous_rate_guard.py",
+            "line": 25,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _state_path @ agent/nous_rate_guard.py:_state_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/nous_rate_guard.py",
@@ -47668,16 +47676,24 @@
             "decorators": [],
             "line_number": 39
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_nous_rate_guard_remaining.c",
+          "c_function": "nrg_parse_reset_seconds",
+          "pop_annotation": {
+            "c_function": "nrg_parse_reset_seconds",
+            "python_functions": [
+              "_parse_reset_seconds"
+            ],
+            "c_file": "src/agent/port_nous_rate_guard_remaining.c",
+            "python_file": "agent/nous_rate_guard.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _parse_reset_seconds @ agent/nous_rate_guard.py:_parse_reset_seconds */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/nous_rate_guard.py",
@@ -47689,16 +47705,24 @@
             "decorators": [],
             "line_number": 71
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_nous_rate_guard_remaining.c",
+          "c_function": "nrg_record_nous_rate_limit",
+          "pop_annotation": {
+            "c_function": "nrg_record_nous_rate_limit",
+            "python_functions": [
+              "record_nous_rate_limit"
+            ],
+            "c_file": "src/agent/port_nous_rate_guard_remaining.c",
+            "python_file": "agent/nous_rate_guard.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: record_nous_rate_limit @ agent/nous_rate_guard.py:record_nous_rate_limit */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/nous_rate_guard.py",
@@ -47710,16 +47734,24 @@
             "decorators": [],
             "line_number": 139
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_nous_rate_guard_remaining.c",
+          "c_function": "nrg_nous_rate_limit_remaining",
+          "pop_annotation": {
+            "c_function": "nrg_nous_rate_limit_remaining",
+            "python_functions": [
+              "nous_rate_limit_remaining"
+            ],
+            "c_file": "src/agent/port_nous_rate_guard_remaining.c",
+            "python_file": "agent/nous_rate_guard.py",
+            "line": 68,
+            "is_consolidated": false,
+            "full_text": "/* PoP: nous_rate_limit_remaining @ agent/nous_rate_guard.py:nous_rate_limit_remaining */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/nous_rate_guard.py",
@@ -47731,16 +47763,24 @@
             "decorators": [],
             "line_number": 163
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_nous_rate_guard_remaining.c",
+          "c_function": "nrg_clear_nous_rate_limit",
+          "pop_annotation": {
+            "c_function": "nrg_clear_nous_rate_limit",
+            "python_functions": [
+              "clear_nous_rate_limit"
+            ],
+            "c_file": "src/agent/port_nous_rate_guard_remaining.c",
+            "python_file": "agent/nous_rate_guard.py",
+            "line": 95,
+            "is_consolidated": false,
+            "full_text": "/* PoP: clear_nous_rate_limit @ agent/nous_rate_guard.py:clear_nous_rate_limit */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/nous_rate_guard.py",
@@ -47752,16 +47792,24 @@
             "decorators": [],
             "line_number": 173
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_nous_rate_guard_remaining.c",
+          "c_function": "nrg_format_remaining",
+          "pop_annotation": {
+            "c_function": "nrg_format_remaining",
+            "python_functions": [
+              "format_remaining"
+            ],
+            "c_file": "src/agent/port_nous_rate_guard_remaining.c",
+            "python_file": "agent/nous_rate_guard.py",
+            "line": 104,
+            "is_consolidated": false,
+            "full_text": "/* PoP: format_remaining @ agent/nous_rate_guard.py:format_remaining */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/nous_rate_guard.py",
@@ -47773,16 +47821,24 @@
             "decorators": [],
             "line_number": 192
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_nous_rate_guard_remaining.c",
+          "c_function": "nrg_is_genuine_nous_rate_limit",
+          "pop_annotation": {
+            "c_function": "nrg_is_genuine_nous_rate_limit",
+            "python_functions": [
+              "is_genuine_nous_rate_limit"
+            ],
+            "c_file": "src/agent/port_nous_rate_guard_remaining.c",
+            "python_file": "agent/nous_rate_guard.py",
+            "line": 115,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_genuine_nous_rate_limit @ agent/nous_rate_guard.py:is_genuine_nous_rate_limit */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/nous_rate_guard.py",
@@ -47794,16 +47850,24 @@
             "decorators": [],
             "line_number": 247
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_nous_rate_guard_remaining.c",
+          "c_function": "nrg_parse_buckets_from_headers",
+          "pop_annotation": {
+            "c_function": "nrg_parse_buckets_from_headers",
+            "python_functions": [
+              "_parse_buckets_from_headers"
+            ],
+            "c_file": "src/agent/port_nous_rate_guard_remaining.c",
+            "python_file": "agent/nous_rate_guard.py",
+            "line": 126,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _parse_buckets_from_headers @ agent/nous_rate_guard.py:_parse_buckets_from_headers */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/nous_rate_guard.py",
@@ -47815,16 +47879,24 @@
             "decorators": [],
             "line_number": 286
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_nous_rate_guard_remaining.c",
+          "c_function": "nrg_has_exhausted_bucket",
+          "pop_annotation": {
+            "c_function": "nrg_has_exhausted_bucket",
+            "python_functions": [
+              "_has_exhausted_bucket"
+            ],
+            "c_file": "src/agent/port_nous_rate_guard_remaining.c",
+            "python_file": "agent/nous_rate_guard.py",
+            "line": 134,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _has_exhausted_bucket @ agent/nous_rate_guard.py:_has_exhausted_bucket */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/nous_rate_guard.py",
@@ -151262,10 +151334,10 @@
     },
     "gateway/systemd_notify.py": {
       "total": 13,
-      "ported": 5,
+      "ported": 13,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 8,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 13,
@@ -151310,16 +151382,24 @@
             "decorators": [],
             "line_number": 17
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_systemd_notify_remaining.c",
+          "c_function": "sd_n_notify",
+          "pop_annotation": {
+            "c_function": "sd_n_notify",
+            "python_functions": [
+              "notify"
+            ],
+            "c_file": "src/gateway/port_systemd_notify_remaining.c",
+            "python_file": "gateway/systemd_notify.py",
+            "line": 48,
+            "is_consolidated": false,
+            "full_text": "/* PoP: notify @ gateway/systemd_notify.py:notify */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/systemd_notify.py",
@@ -151360,16 +151440,24 @@
             "decorators": [],
             "line_number": 63
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_systemd_notify_remaining.c",
+          "c_function": "sd_n_init",
+          "pop_annotation": {
+            "c_function": "sd_n_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_systemd_notify_remaining.c",
+            "python_file": "gateway/systemd_notify.py",
+            "line": 55,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/systemd_notify.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/systemd_notify.py",
@@ -151383,16 +151471,24 @@
             ],
             "line_number": 78
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_systemd_notify_remaining.c",
+          "c_function": "sd_n_enabled",
+          "pop_annotation": {
+            "c_function": "sd_n_enabled",
+            "python_functions": [
+              "enabled"
+            ],
+            "c_file": "src/gateway/port_systemd_notify_remaining.c",
+            "python_file": "gateway/systemd_notify.py",
+            "line": 64,
+            "is_consolidated": false,
+            "full_text": "/* PoP: enabled @ gateway/systemd_notify.py:enabled */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/systemd_notify.py",
@@ -151437,16 +151533,24 @@
             ],
             "line_number": 86
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_systemd_notify_remaining.c",
+          "c_function": "sd_n_task",
+          "pop_annotation": {
+            "c_function": "sd_n_task",
+            "python_functions": [
+              "task"
+            ],
+            "c_file": "src/gateway/port_systemd_notify_remaining.c",
+            "python_file": "gateway/systemd_notify.py",
+            "line": 69,
+            "is_consolidated": false,
+            "full_text": "/* PoP: task @ gateway/systemd_notify.py:task */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/systemd_notify.py",
@@ -151487,16 +151591,24 @@
             "decorators": [],
             "line_number": 102
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_systemd_notify_remaining.c",
+          "c_function": "sd_n_start",
+          "pop_annotation": {
+            "c_function": "sd_n_start",
+            "python_functions": [
+              "start"
+            ],
+            "c_file": "src/gateway/port_systemd_notify_remaining.c",
+            "python_file": "gateway/systemd_notify.py",
+            "line": 74,
+            "is_consolidated": false,
+            "full_text": "/* PoP: start @ gateway/systemd_notify.py:start */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/systemd_notify.py",
@@ -151508,16 +151620,24 @@
             "decorators": [],
             "line_number": 118
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_systemd_notify_remaining.c",
+          "c_function": "sd_n_ready",
+          "pop_annotation": {
+            "c_function": "sd_n_ready",
+            "python_functions": [
+              "ready"
+            ],
+            "c_file": "src/gateway/port_systemd_notify_remaining.c",
+            "python_file": "gateway/systemd_notify.py",
+            "line": 82,
+            "is_consolidated": false,
+            "full_text": "/* PoP: ready @ gateway/systemd_notify.py:ready */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/systemd_notify.py",
@@ -151558,16 +151678,24 @@
             "decorators": [],
             "line_number": 140
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_systemd_notify_remaining.c",
+          "c_function": "sd_n_run",
+          "pop_annotation": {
+            "c_function": "sd_n_run",
+            "python_functions": [
+              "_run"
+            ],
+            "c_file": "src/gateway/port_systemd_notify_remaining.c",
+            "python_file": "gateway/systemd_notify.py",
+            "line": 89,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _run @ gateway/systemd_notify.py:_run */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/systemd_notify.py",
@@ -151579,16 +151707,24 @@
             "decorators": [],
             "line_number": 159
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_systemd_notify_remaining.c",
+          "c_function": "sd_n_stop",
+          "pop_annotation": {
+            "c_function": "sd_n_stop",
+            "python_functions": [
+              "stop"
+            ],
+            "c_file": "src/gateway/port_systemd_notify_remaining.c",
+            "python_file": "gateway/systemd_notify.py",
+            "line": 97,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stop @ gateway/systemd_notify.py:stop */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
