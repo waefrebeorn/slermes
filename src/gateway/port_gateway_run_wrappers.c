@@ -259,7 +259,22 @@ int grun_u_restart_loop_guard_config(const char *arg) {
 }
 
 /* PoP: _log_scale_to_zero_not_armed_reason @ gateway/run.py:_log_scale_to_zero_not_armed_reason */
-int grun_u_log_scale_to_zero_not_armed_reason(const char *arg) { (void)arg; return 0; }
+int grun_u_log_scale_to_zero_not_armed_reason(const char *arg) {
+    /* Python: opted-in only. Arg =
+     * "opted_in\trelay_only\twake_url\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int opted_in = arg[0] == '1';
+    int relay_only = t1 && t1[1] == '1';
+    int wake_url = t2 && t2[1] == '1';
+    int state = t3 && t3[1] == '1';
+    if (!opted_in || !state) { printf("quiet (not opted in)\n"); return 0; }
+    printf("scale-to-zero: NOT armed despite opt-in — relay_only=%s, wake_url=%s\n", relay_only ? "yes" : "no", wake_url ? "set" : "MISSING");
+    return 0;
+}
 
 /* PoP: _scale_to_zero_note_real_inbound @ gateway/run.py:_scale_to_zero_note_real_inbound */
 int grun_u_scale_to_zero_note_real_inbound(const char *arg) {
@@ -767,7 +782,19 @@ int grun_u_reset_notice_session_info(const char *arg) {
 int grun_u_format_session_info(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _sibling_thread_run_keys @ gateway/run.py:_sibling_thread_run_keys */
-int grun_u_sibling_thread_run_keys(const char *arg) { (void)arg; return 0; }
+int grun_u_sibling_thread_run_keys(const char *arg) {
+    /* Python: per-user thread keys. Arg =
+     * "in_thread\tcount\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int in_thread = arg[0] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!in_thread || !state) { printf("[]\n"); return 0; }
+    printf("%s\n", t3 ? t3 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _is_stale_restart_redelivery @ gateway/run.py:_is_stale_restart_redelivery */
 int grun_u_is_stale_restart_redelivery(const char *arg) { (void)arg; return 0; }

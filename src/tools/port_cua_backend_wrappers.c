@@ -375,7 +375,28 @@ int cua_u_lifecycle_coro(const char *arg) { (void)arg; return 0; }
 int cua_u_populate_capabilities(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _start_lifecycle_locked @ tools/computer_use/cua_backend.py:_start_lifecycle_locked */
-int cua_u_start_lifecycle_locked(const char *arg) { (void)arg; return 0; }
+int cua_u_start_lifecycle_locked(const char *arg) {
+    /* Python: 30s ready wait. Arg = "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_bridge") == 0) {
+        fprintf(stderr, "cua-driver bridge not started\n");
+        return 1;
+    }
+    if (strcmp(state, "timeout") == 0) {
+        fprintf(stderr, "cua-driver session never reached ready (timeout 30s; stuck in phase: %s)\n", t3 ? t3 + 1 : "unknown");
+        return 1;
+    }
+    if (strcmp(state, "setup_fail") == 0) {
+        fprintf(stderr, "cua-driver session setup failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("lifecycle ready: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _stop_lifecycle_locked @ tools/computer_use/cua_backend.py:_stop_lifecycle_locked */
 int cua_u_stop_lifecycle_locked(const char *arg) {

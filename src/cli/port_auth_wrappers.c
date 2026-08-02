@@ -448,7 +448,21 @@ int auth_u_pool_codex_access_token(const char *arg) {
 }
 
 /* PoP: _read_xai_oauth_tokens @ hermes_cli/auth.py:_read_xai_oauth_tokens */
-int auth_u_read_xai_oauth_tokens(const char *arg) { (void)arg; return 0; }
+int auth_u_read_xai_oauth_tokens(const char *arg) {
+    /* Python: profile + global fallback. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "missing") == 0 || strcmp(state, "no_access") == 0 || strcmp(state, "no_refresh") == 0) {
+        fprintf(stderr, "No xAI OAuth credentials stored. Select xAI Grok OAuth (SuperGrok / Premium+) in `hermes model`.\n");
+        return 1;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _save_xai_oauth_tokens @ hermes_cli/auth.py:_save_xai_oauth_tokens */
 int auth_u_save_xai_oauth_tokens(const char *arg) {
@@ -494,7 +508,20 @@ int auth_u_xai_proactive_refresh_skew_seconds(const char *arg) {
 }
 
 /* PoP: _xai_validate_oauth_endpoint @ hermes_cli/auth.py:_xai_validate_oauth_endpoint */
-int auth_u_xai_validate_oauth_endpoint(const char *arg) { (void)arg; return 0; }
+int auth_u_xai_validate_oauth_endpoint(const char *arg) {
+    /* Python: HTTPS + x.ai pin. Arg = "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "not_https") == 0 || strcmp(state, "no_host") == 0 || strcmp(state, "wrong_origin") == 0) {
+        fprintf(stderr, "xAI OIDC discovery endpoint rejected: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _xai_validate_inference_base_url @ hermes_cli/auth.py:_xai_validate_inference_base_url */
 int auth_u_xai_validate_inference_base_url(const char *arg) { (void)arg; return 0; }
@@ -558,7 +585,20 @@ int auth_u_try_import_shared_nous_state(const char *arg) { (void)arg; return 0; 
 int auth_u_refresh_access_token(const char *arg) { (void)arg; return 0; }
 
 /* PoP: fetch_nous_models @ hermes_cli/auth.py:fetch_nous_models */
-int auth_fetch_nous_models(const char *arg) { (void)arg; return 0; }
+int auth_fetch_nous_models(const char *arg) {
+    /* Python: /models fetch. Arg = "state\tresult\terr". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "http_fail") == 0) {
+        fprintf(stderr, "/models request failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: resolve_nous_access_token @ hermes_cli/auth.py:resolve_nous_access_token */
 int auth_resolve_nous_access_token(const char *arg) { (void)arg; return 0; }

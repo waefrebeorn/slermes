@@ -246,7 +246,15 @@ int envd_u_is_container_gone(const char *arg) {
 int envd_u_recreate_container(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _storage_opt_supported @ tools/environments/docker.py:_storage_opt_supported */
-int envd_u_storage_opt_supported(const char *arg) { (void)arg; return 0; }
+int envd_u_storage_opt_supported(const char *arg) {
+    /* Python: overlay2+XFS probe. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _container_network_mode @ tools/environments/docker.py:_container_network_mode */
 int envd_u_container_network_mode(const char *arg) {

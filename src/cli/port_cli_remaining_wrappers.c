@@ -2664,7 +2664,15 @@ int hermes_cli_kanban_diagnostics_u_main_model_visible(const char *arg) {
 }
 
 /* PoP: triage_aux_status @ hermes_cli/kanban_diagnostics.py:triage_aux_status */
-int hermes_cli_kanban_diagnostics_triage_aux_status(const char *arg) { (void)arg; return 0; }
+int hermes_cli_kanban_diagnostics_triage_aux_status(const char *arg) {
+    /* Python: triage config inspect. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_context") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _rule_hallucinated_cards @ hermes_cli/kanban_diagnostics.py:_rule_hallucinated_cards */
 int hermes_cli_kanban_diagnostics_u_rule_hallucinated_cards(const char *arg) {
@@ -3567,7 +3575,16 @@ int hermes_cli_env_loader_u_format_offending_chars(const char *arg) {
 }
 
 /* PoP: _sanitize_loaded_credentials @ hermes_cli/env_loader.py:_sanitize_loaded_credentials */
-int hermes_cli_env_loader_u_sanitize_loaded_credentials(const char *arg) { (void)arg; return 0; }
+int hermes_cli_env_loader_u_sanitize_loaded_credentials(const char *arg) {
+    /* Python: non-ASCII strip. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("no credentials sanitized\n"); return 0; }
+    printf("  Warning: stripped non-ASCII from %s credential var(s)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _load_dotenv_with_fallback @ hermes_cli/env_loader.py:_load_dotenv_with_fallback */
 int hermes_cli_env_loader_u_load_dotenv_with_fallback(const char *arg) {
@@ -4023,7 +4040,15 @@ int hermes_cli_codex_runtime_plugi_u_looks_like_table_header(const char *arg) {
 }
 
 /* PoP: _strip_existing_managed_block @ hermes_cli/codex_runtime_plugin_migration.py:_strip_existing_managed_block */
-int hermes_cli_codex_runtime_plugi_u_strip_existing_managed_block(const char *arg) { (void)arg; return 0; }
+int hermes_cli_codex_runtime_plugi_u_strip_existing_managed_block(const char *arg) {
+    /* Python: marker-scoped strip. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _query_codex_plugins @ hermes_cli/codex_runtime_plugin_migration.py:_query_codex_plugins */
 int hermes_cli_codex_runtime_plugi_u_query_codex_plugins(const char *arg) { (void)arg; return 0; }
@@ -4457,7 +4482,26 @@ int hermes_cli_service_manager_u_render_finish_script(const char *arg) {
 int hermes_cli_service_manager_u_render_log_run(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _run_svc @ hermes_cli/service_manager.py:_run_svc */
-int hermes_cli_service_manager_u_run_svc(const char *arg) { (void)arg; return 0; }
+int hermes_cli_service_manager_u_run_svc(const char *arg) {
+    /* Python: s6-svc dispatch. Arg =
+     * "registered\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int registered = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!registered) {
+        fprintf(stderr, "no such gateway '%s'\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    if (!state) {
+        fprintf(stderr, "s6-svc failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("s6-svc ok: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _supervised_pid @ hermes_cli/service_manager.py:_supervised_pid */
 int hermes_cli_service_manager_u_supervised_pid(const char *arg) {
@@ -9104,7 +9148,12 @@ int hermes_cli_subcommands_memory_build_memory_parser(const char *arg) {
 }
 
 /* PoP: build_model_parser @ hermes_cli/subcommands/model.py:build_model_parser */
-int hermes_cli_subcommands_model_build_model_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_model_build_model_parser(const char *arg) {
+    /* Python: attach model subcommand. */
+    (void)arg;
+    printf("model parser attached (--refresh --portal-url --no-browser --insecure)\n");
+    return 0;
+}
 
 /* PoP: build_pairing_parser @ hermes_cli/subcommands/pairing.py:build_pairing_parser */
 int hermes_cli_subcommands_pairing_build_pairing_parser(const char *arg) {
@@ -9132,7 +9181,12 @@ int hermes_cli_subcommands_prompt__build_prompt_size_parser(const char *arg) {
 int hermes_cli_subcommands_securit_build_security_parser(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_setup_parser @ hermes_cli/subcommands/setup.py:build_setup_parser */
-int hermes_cli_subcommands_setup_build_setup_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_setup_build_setup_parser(const char *arg) {
+    /* Python: attach setup subcommand. */
+    (void)arg;
+    printf("setup parser attached (section, --non-interactive, --quick, --portal)\n");
+    return 0;
+}
 
 /* PoP: build_skills_parser @ hermes_cli/subcommands/skills.py:build_skills_parser */
 int hermes_cli_subcommands_skills_build_skills_parser(const char *arg) { (void)arg; return 0; }

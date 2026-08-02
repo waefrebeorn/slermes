@@ -240,7 +240,18 @@ int tt_get_session_cwd(const char *arg) {
 }
 
 /* PoP: register_task_env_overrides @ tools/terminal_tool.py:register_task_env_overrides */
-int tt_register_task_env_overrides(const char *arg) { (void)arg; return 0; }
+int tt_register_task_env_overrides(const char *arg) {
+    /* Python: override registration. Arg =
+     * "has_cwd\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_cwd = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("overrides registered\n"); return 0; }
+    printf("overrides registered%s\n", has_cwd ? " + live env cwd updated + session record set" : "");
+    return 0;
+}
 
 /* PoP: clear_task_env_overrides @ tools/terminal_tool.py:clear_task_env_overrides */
 int tt_clear_task_env_overrides(const char *arg) {

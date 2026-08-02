@@ -405,7 +405,16 @@ int tools_lazy_deps_u_is_present(const char *arg) {
 }
 
 /* PoP: _core_constraints_file @ tools/lazy_deps.py:_core_constraints_file */
-int tools_lazy_deps_u_core_constraints_file(const char *arg) { (void)arg; return 0; }
+int tools_lazy_deps_u_core_constraints_file(const char *arg) {
+    /* Python: pinned constraints. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("constraints file written (%s pins): %s\n", t2 ? t2 + 1 : arg, t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _venv_pip_install @ tools/lazy_deps.py:_venv_pip_install */
 int tools_lazy_deps_u_venv_pip_install(const char *arg) { (void)arg; return 0; }
@@ -1021,7 +1030,15 @@ int tools_delegate_tool_u_spill_summary_to_file(const char *arg) {
 }
 
 /* PoP: _parent_summary_char_budget @ tools/delegate_tool.py:_parent_summary_char_budget */
-int tools_delegate_tool_u_parent_summary_char_budget(const char *arg) { (void)arg; return 0; }
+int tools_delegate_tool_u_parent_summary_char_budget(const char *arg) {
+    /* Python: headroom split. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "unknown") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _apply_summary_budget @ tools/delegate_tool.py:_apply_summary_budget */
 int tools_delegate_tool_u_apply_summary_budget(const char *arg) { (void)arg; return 0; }

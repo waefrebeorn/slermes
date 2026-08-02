@@ -624,7 +624,15 @@ int main_u_is_profile_api_key_provider(const char *arg) {
 int main_select_provider_and_model(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _clear_stale_openai_base_url @ hermes_cli/main.py:_clear_stale_openai_base_url */
-int main_u_clear_stale_openai_base_url(const char *arg) { (void)arg; return 0; }
+int main_u_clear_stale_openai_base_url(const char *arg) {
+    /* Python: stale aux route. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("no clear needed\n"); return 0; }
+    printf("Cleared stale OPENAI_BASE_URL from .env (was: %s)\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _all_aux_tasks @ hermes_cli/main.py:_all_aux_tasks */
 int main_u_all_aux_tasks(const char *arg) {

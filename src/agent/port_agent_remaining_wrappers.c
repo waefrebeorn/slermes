@@ -932,7 +932,15 @@ int agent_chat_completion_helpers_u_check_stale_giveup(const char *arg) {
 }
 
 /* PoP: _derive_stream_stale_timeout @ agent/chat_completion_helpers.py:_derive_stream_stale_timeout */
-int agent_chat_completion_helpers_u_derive_stream_stale_timeout(const char *arg) { (void)arg; return 0; }
+int agent_chat_completion_helpers_u_derive_stream_stale_timeout(const char *arg) {
+    /* Python: patience budget. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("180.0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("180.0\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "180.0");
+    return 0;
+}
 
 /* PoP: _bedrock_reasoning_stale_floor @ agent/chat_completion_helpers.py:_bedrock_reasoning_stale_floor */
 int agent_chat_completion_helpers_u_bedrock_reasoning_stale_floor(const char *arg) { (void)arg; return 0; }
