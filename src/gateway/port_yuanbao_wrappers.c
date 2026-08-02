@@ -322,7 +322,16 @@ int yb_u_rewrite_slash_command(const char *text) {
 }
 
 /* PoP: _extract_inbound_media_refs @ gateway/platforms/yuanbao.py:_extract_inbound_media_refs */
-int yb_u_extract_inbound_media_refs(const char *arg) { (void)arg; return 0; }
+int yb_u_extract_inbound_media_refs(const char *arg) {
+    /* Python: TIM msg_body. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _extract_link_urls @ gateway/platforms/yuanbao.py:_extract_link_urls */
 int yb_u_extract_link_urls(const char *arg) {

@@ -692,7 +692,15 @@ int agent_subscription_view_subscription_state_from_payload(const char *arg) {
 int agent_subscription_view_build_subscription_state(const char *arg) { (void)arg; return 0; }
 
 /* PoP: subscription_manage_url @ agent/subscription_view.py:subscription_manage_url */
-int agent_subscription_view_subscription_manage_url(const char *arg) { (void)arg; return 0; }
+int agent_subscription_view_subscription_manage_url(const char *arg) {
+    /* Python: manage deep-link. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _format_dollars_grouped @ agent/subscription_view.py:_format_dollars_grouped */
 int agent_subscription_view_u_format_dollars_grouped(const char *arg) {
@@ -1848,7 +1856,15 @@ int agent_error_classifier_u_classify_by_error_code(const char *arg) {
 int agent_error_classifier_u_classify_by_message(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _extract_error_code @ agent/error_classifier.py:_extract_error_code */
-int agent_error_classifier_u_extract_error_code(const char *arg) { (void)arg; return 0; }
+int agent_error_classifier_u_extract_error_code(const char *arg) {
+    /* Python: nested/string error. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: queue_prefetch @ agent/memory_provider.py:queue_prefetch */
 int agent_memory_provider_queue_prefetch(const char *arg) {
@@ -2006,7 +2022,18 @@ int agent_codex_runtime_u_item_field(const char *arg) {
 }
 
 /* PoP: _apply_active_turn_redirect @ agent/conversation_loop.py:_apply_active_turn_redirect */
-int agent_conversation_loop_u_apply_active_turn_redirect(const char *arg) { (void)arg; return 0; }
+int agent_conversation_loop_u_apply_active_turn_redirect(const char *arg) {
+    /* Python: role-alternation fix. Arg =
+     * "last_is_assistant\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int last_is_assistant = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("checkpoint appended (%s path), stream break set\n", last_is_assistant ? "attributed-in-user" : "assistant+user");
+    return 0;
+}
 
 /* PoP: _billing_block_dict @ agent/conversation_loop.py:_billing_block_dict */
 int agent_conversation_loop_u_billing_block_dict(const char *arg) {

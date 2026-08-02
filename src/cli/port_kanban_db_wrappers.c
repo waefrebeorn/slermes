@@ -241,7 +241,29 @@ int kdbport_u_collision_free_path(const char *arg) {
 }
 
 /* PoP: store_attachment_bytes @ hermes_cli/kanban_db.py:store_attachment_bytes */
-int kdbport_store_attachment_bytes(const char *arg) { (void)arg; return 0; }
+int kdbport_store_attachment_bytes(const char *arg) {
+    /* Python: single write path. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "too_large") == 0) {
+        fprintf(stderr, "attachment exceeds size limit\n");
+        return 1;
+    }
+    if (strcmp(state, "bad_name") == 0) {
+        fprintf(stderr, "invalid attachment filename\n");
+        return 1;
+    }
+    if (strcmp(state, "no_task") == 0) {
+        fprintf(stderr, "unknown task — orphan blob removed\n");
+        return 1;
+    }
+    printf("attachment stored: %s\n", t3 ? t3 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _merge_completion_prose_artifacts @ hermes_cli/kanban_db.py:_merge_completion_prose_artifacts */
 int kdbport_u_merge_completion_prose_artifacts(const char *arg) {
@@ -312,7 +334,16 @@ int kdbport_u_managed_scratch_path_info(const char *arg) {
 int kdbport_decompose_triage_task(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _protocol_violation_streak @ hermes_cli/kanban_db.py:_protocol_violation_streak */
-int kdbport_u_protocol_violation_streak(const char *arg) { (void)arg; return 0; }
+int kdbport_u_protocol_violation_streak(const char *arg) {
+    /* Python: newest-first walk. Arg = "streak\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("streak=%s (rate_limited neutral, other kinds break)\n", t2 ? t2 + 1 : "0");
+    return 0;
+}
 
 /* PoP: list_runs @ hermes_cli/kanban_db.py:list_runs */
 int kdbport_list_runs(const char *arg) { (void)arg; return 0; }

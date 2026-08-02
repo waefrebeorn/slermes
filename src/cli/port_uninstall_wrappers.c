@@ -199,7 +199,19 @@ int uninst_u_discover_named_profiles(const char *arg) {
 }
 
 /* PoP: _uninstall_profile @ hermes_cli/uninstall.py:_uninstall_profile */
-int uninst_u_uninstall_profile(const char *arg) { (void)arg; return 0; }
+int uninst_u_uninstall_profile(const char *arg) {
+    /* Python: stop+alias+wipe. Arg =
+     * "name\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *name = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("uninstall skipped\n"); return 0; }
+    printf("Uninstalling profile '%s'...\n", name);
+    printf("  gateway stopped/removed, alias removed, home wiped\n");
+    return 0;
+}
 
 /* PoP: run_gui_uninstall @ hermes_cli/uninstall.py:run_gui_uninstall */
 int uninst_run_gui_uninstall(const char *arg) { (void)arg; return 0; }

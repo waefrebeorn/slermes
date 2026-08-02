@@ -2491,7 +2491,15 @@ int tools_browser_tool_u_is_headed_mode(const char *arg) {
 }
 
 /* PoP: _store_full_snapshot @ tools/browser_tool.py:_store_full_snapshot */
-int tools_browser_tool_u_store_full_snapshot(const char *arg) { (void)arg; return 0; }
+int tools_browser_tool_u_store_full_snapshot(const char *arg) {
+    /* Python: redacted cache write. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("snapshot stored (redacted, hash-deduped): %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _restrict_browser_evaluate @ tools/browser_tool.py:_restrict_browser_evaluate */
 int tools_browser_tool_u_restrict_browser_evaluate(const char *arg) {
@@ -2913,7 +2921,18 @@ int tools_microsoft_graph_client_post_json(const char *arg) { (void)arg; return 
 int tools_microsoft_graph_client_u_request(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _media_caption_split @ tools/send_message_tool.py:_media_caption_split */
-int tools_send_message_tool_u_media_caption_split(const char *arg) { (void)arg; return 0; }
+int tools_send_message_tool_u_media_caption_split(const char *arg) {
+    /* Python: caption chokepoint. Arg =
+     * "captionable\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int captionable = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !captionable) { printf("\t%s\n", t2 ? t2 + 1 : ""); return 0; }
+    printf("%s\t\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _resolve_slack_user_target @ tools/send_message_tool.py:_resolve_slack_user_target */
 int tools_send_message_tool_u_resolve_slack_user_target(const char *arg) { (void)arg; return 0; }

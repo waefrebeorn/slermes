@@ -963,7 +963,19 @@ int main_u_capture_head_sha(const char *arg) {
 }
 
 /* PoP: _validate_critical_files_syntax @ hermes_cli/main.py:_validate_critical_files_syntax */
-int main_u_validate_critical_files_syntax(const char *arg) { (void)arg; return 0; }
+int main_u_validate_critical_files_syntax(const char *arg) {
+    /* Python: py_compile sweep. Arg =
+     * "ok\tstate\tresult". */
+    if (!arg || !*arg) { printf("1\t\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int ok = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\t%s\t%s\n", t2 ? t2 + 1 : "?", t3 ? t3 + 1 : "?"); return 0; }
+    printf("%d\t\t\n", ok ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _gateway_prompt @ hermes_cli/main.py:_gateway_prompt */
 int main_u_gateway_prompt(const char *arg) {

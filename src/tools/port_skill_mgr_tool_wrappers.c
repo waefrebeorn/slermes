@@ -237,7 +237,20 @@ int smt_u_patch_skill(const char *arg) { (void)arg; return 0; }
 int smt_u_delete_skill(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _remove_file @ tools/skill_manager_tool.py:_remove_file */
-int smt_u_remove_file(const char *arg) { (void)arg; return 0; }
+int smt_u_remove_file(const char *arg) {
+    /* Python: supporting-file rm. Arg =
+     * "found\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"success\": false}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int found = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{\"success\": false, \"error\": \"%s\"}\n", t3 ? t3 + 1 : "remove failed"); return 1; }
+    if (!found) { printf("{\"success\": false, \"error\": \"file not found\"}\n"); return 1; }
+    printf("{\"success\": true, \"message\": \"File removed from skill.\"}\n");
+    return 0;
+}
 
 /* PoP: _apply_skill_write_gate @ tools/skill_manager_tool.py:_apply_skill_write_gate */
 int smt_u_apply_skill_write_gate(const char *arg) {

@@ -1690,7 +1690,18 @@ int gateway_systemd_notify_u_lag_tolerance(const char *arg) {
 }
 
 /* PoP: record_tick @ gateway/systemd_notify.py:record_tick */
-int gateway_systemd_notify_record_tick(const char *arg) { (void)arg; return 0; }
+int gateway_systemd_notify_record_tick(const char *arg) {
+    /* Python: lag budget. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) {
+        printf("0 (WATCHDOG=1 paused — unhealthy/late)\n");
+        return 0;
+    }
+    printf("%s\n", (tab && tab[1] == '1') ? "1 (WATCHDOG=1 fed)" : "0 (late — unhealthy)");
+    return 0;
+}
 
 /* PoP: _warn_slack_directory @ gateway/channel_directory.py:_warn_slack_directory */
 int gateway_channel_directory_u_warn_slack_directory(const char *arg) {

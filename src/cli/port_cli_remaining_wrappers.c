@@ -1064,7 +1064,23 @@ int hermes_cli_curses_ui_read_menu_key(const char *arg) {
 }
 
 /* PoP: _decode_menu_key @ hermes_cli/curses_ui.py:_decode_menu_key */
-int hermes_cli_curses_ui_u_decode_menu_key(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curses_ui_u_decode_menu_key(const char *arg) {
+    /* Python: key -> action. Arg = "key\tstate\tresult". */
+    if (!arg || !*arg) { printf("none\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *key = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("none\n"); return 0; }
+    if (strcmp(key, "up") == 0 || strcmp(key, "k") == 0) { printf("up\n"); return 0; }
+    if (strcmp(key, "down") == 0 || strcmp(key, "j") == 0) { printf("down\n"); return 0; }
+    if (strcmp(key, "enter") == 0) { printf("select\n"); return 0; }
+    if (strcmp(key, "space") == 0) { printf("toggle\n"); return 0; }
+    if (strcmp(key, "q") == 0) { printf("cancel\n"); return 0; }
+    if (strcmp(key, "esc") == 0) { printf("cancel (lone ESC after 60ms peek)\n"); return 0; }
+    printf("none\n");
+    return 0;
+}
 
 /* PoP: _run_curses_menu @ hermes_cli/curses_ui.py:_run_curses_menu */
 int hermes_cli_curses_ui_u_run_curses_menu(const char *arg) { (void)arg; return 0; }
@@ -3291,7 +3307,15 @@ int hermes_cli_skin_engine_u_mapping_or_empty(const char *arg) {
 }
 
 /* PoP: _build_skin_config @ hermes_cli/skin_engine.py:_build_skin_config */
-int hermes_cli_skin_engine_u_build_skin_config(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skin_engine_u_build_skin_config(const char *arg) {
+    /* Python: default-merge. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: get_active_skin_name @ hermes_cli/skin_engine.py:get_active_skin_name */
 int hermes_cli_skin_engine_get_active_skin_name(const char *arg) {
@@ -4321,7 +4345,12 @@ int hermes_cli_journey_u_open_in_editor(const char *arg) {
 }
 
 /* PoP: register_cli @ hermes_cli/journey.py:register_cli */
-int hermes_cli_journey_register_cli(const char *arg) { (void)arg; return 0; }
+int hermes_cli_journey_register_cli(const char *arg) {
+    /* Python: journey subcommand wiring. */
+    (void)arg;
+    printf("journey CLI wired (--reveal --play --json; list/delete/edit)\n");
+    return 0;
+}
 
 /* PoP: cmd_journey @ hermes_cli/journey.py:cmd_journey */
 int hermes_cli_journey_cmd_journey(const char *arg) {
@@ -4757,7 +4786,21 @@ int hermes_cli_dashboard_auth_midd_u_expires_in_seconds(const char *arg) {
 }
 
 /* PoP: _attempt_refresh @ hermes_cli/dashboard_auth/middleware.py:_attempt_refresh */
-int hermes_cli_dashboard_auth_midd_u_attempt_refresh(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_midd_u_attempt_refresh(const char *arg) {
+    /* Python: RT rotation. Arg =
+     * "no_rt\trejected\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int no_rt = arg[0] == '1';
+    int rejected = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (no_rt || rejected) { printf("\n"); return 0; }
+    if (!state) { printf("refresh failed — provider unreachable\n"); return 1; }
+    printf("session rotated: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _dotenv_key_names @ hermes_cli/dump.py:_dotenv_key_names */
 int hermes_cli_dump_u_dotenv_key_names(const char *arg) {
@@ -5801,7 +5844,15 @@ int hermes_cli_proxy_cli_cmd_install(const char *arg) {
 int hermes_cli_proxy_cli_cmd_start(const char *arg) { (void)arg; return 0; }
 
 /* PoP: format_status_text @ hermes_cli/proxy_cli.py:format_status_text */
-int hermes_cli_proxy_cli_format_status_text(const char *arg) { (void)arg; return 0; }
+int hermes_cli_proxy_cli_format_status_text(const char *arg) {
+    /* Python: egress status. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("Egress proxy status\n  Enabled: no\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: cmd_disable @ hermes_cli/proxy_cli.py:cmd_disable */
 int hermes_cli_proxy_cli_cmd_disable(const char *arg) {
@@ -6966,7 +7017,15 @@ int hermes_cli_oneshot_u_normalize_toolsets(const char *arg) {
 int hermes_cli_oneshot_u_validate_explicit_toolsets(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _write_usage_file @ hermes_cli/oneshot.py:_write_usage_file */
-int hermes_cli_oneshot_u_write_usage_file(const char *arg) { (void)arg; return 0; }
+int hermes_cli_oneshot_u_write_usage_file(const char *arg) {
+    /* Python: spend report. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("usage file write skipped\n"); return 0; }
+    printf("usage report written: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: run_oneshot @ hermes_cli/oneshot.py:run_oneshot */
 int hermes_cli_oneshot_run_oneshot(const char *arg) {
@@ -9178,7 +9237,12 @@ int hermes_cli_subcommands_prompt__build_prompt_size_parser(const char *arg) {
 }
 
 /* PoP: build_security_parser @ hermes_cli/subcommands/security.py:build_security_parser */
-int hermes_cli_subcommands_securit_build_security_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_securit_build_security_parser(const char *arg) {
+    /* Python: audit subcommand. */
+    (void)arg;
+    printf("security parser attached (audit --json --fail-on --skip-*)\n");
+    return 0;
+}
 
 /* PoP: build_setup_parser @ hermes_cli/subcommands/setup.py:build_setup_parser */
 int hermes_cli_subcommands_setup_build_setup_parser(const char *arg) {

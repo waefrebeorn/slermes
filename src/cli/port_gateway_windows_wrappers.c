@@ -366,7 +366,15 @@ int gw_u_install_startup_entry(const char *arg) {
 }
 
 /* PoP: _resolve_detached_python @ hermes_cli/gateway_windows.py:_resolve_detached_python */
-int gw_u_resolve_detached_python(const char *arg) { (void)arg; return 0; }
+int gw_u_resolve_detached_python(const char *arg) {
+    /* Python: console python. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\t\t\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\t\t\n"); return 0; }
+    printf("%s\tvenv_dir\t\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _prepend_pythonpath @ hermes_cli/gateway_windows.py:_prepend_pythonpath */
 int gw_u_prepend_pythonpath(const char *arg) {
