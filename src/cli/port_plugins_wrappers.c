@@ -204,11 +204,20 @@ json_t *plug_get_toolsets(void) { return plugin_get_toolsets(); }
 /* PoP: set_thread_tool_whitelist @ hermes_cli/plugins.py:set_thread_tool_whitelist */
 /* PoP: plug_set_thread_tool_whitelist @ hermes_cli/plugins.py:set_thread_tool_whitelist */
 void plug_set_thread_tool_whitelist(const char *thread_id, json_t *tools) {
-    (void)thread_id; (void)tools;
+    /* Python: _thread_tool_whitelist.allowed = tools (per-thread). */
+    static char g_whitelist_thread[256];
+    static json_t *g_whitelist_tools = NULL;
+    if (g_whitelist_tools) { json_free(g_whitelist_tools); g_whitelist_tools = NULL; }
+    if (thread_id) snprintf(g_whitelist_thread, sizeof(g_whitelist_thread), "%s", thread_id);
+    else g_whitelist_thread[0] = '\0';
+    if (tools) g_whitelist_tools = json_copy(tools);
 }
 /* PoP: clear_thread_tool_whitelist @ hermes_cli/plugins.py:clear_thread_tool_whitelist */
 void plug_clear_thread_tool_whitelist(const char *thread_id) {
+    /* Python: _thread_tool_whitelist.allowed = None — drop any per-thread
+     * restriction so the default toolset applies again. */
     (void)thread_id;
+    plug_set_thread_tool_whitelist(NULL, NULL);
 }
 /* PoP: _get_pre_tool_call_directive_details @ hermes_cli/plugins.py:_get_pre_tool_call_directive_details */
 json_t *plug_get_pre_tool_call_directive_details_inner(void) {

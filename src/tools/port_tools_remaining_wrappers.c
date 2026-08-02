@@ -469,7 +469,13 @@ int tools_mcp_dashboard_oauth_worker_done(const char *arg) { (void)arg; return 0
 int tools_mcp_dashboard_oauth_dashboard_oauth_flow(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_dashboard_oauth_flow @ tools/mcp_dashboard_oauth.py:get_dashboard_oauth_flow */
-int tools_mcp_dashboard_oauth_get_dashboard_oauth_flow(const char *arg) { (void)arg; return 0; }
+int tools_mcp_dashboard_oauth_get_dashboard_oauth_flow(const char *arg) {
+    /* Python: the current dashboard OAuth flow from the thread-local store. */
+    static char g_flow[1024];
+    if (arg && *arg) snprintf(g_flow, sizeof(g_flow), "%s", arg);
+    printf("%s\n", g_flow);
+    return 0;
+}
 
 /* PoP: clear_expired @ tools/online_research.py:clear_expired */
 int tools_online_research_clear_expired(const char *arg) { (void)arg; return 0; }

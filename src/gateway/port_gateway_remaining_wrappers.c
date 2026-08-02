@@ -117,7 +117,16 @@ int gateway_platforms_signal_u_extract_reaction_target(const char *arg) { (void)
 int gateway_platforms_signal_u_reactions_enabled(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _db_path @ gateway/delivery_ledger.py:_db_path */
-int gateway_delivery_ledger_u_db_path(const char *arg) { (void)arg; return 0; }
+int gateway_delivery_ledger_u_db_path(const char *arg) {
+    /* Python: get_hermes_home() / "state.db". */
+    (void)arg;
+    const char *hh = getenv("HERMES_HOME");
+    char base[1024];
+    if (hh && *hh) snprintf(base, sizeof(base), "%s", hh);
+    else snprintf(base, sizeof(base), "%s/.hermes", getenv("HOME") ? getenv("HOME") : ".");
+    printf("%s/state.db\n", base);
+    return 0;
+}
 
 /* PoP: _connect @ gateway/delivery_ledger.py:_connect */
 int gateway_delivery_ledger_u_connect(const char *arg) { (void)arg; return 0; }

@@ -61,7 +61,13 @@ int envb_u_save_json_store(const char *arg) { (void)arg; return 0; }
 int envb_u_file_mtime_key(const char *arg) { (void)arg; return 0; }
 
 /* PoP: stdout @ tools/environments/base.py:stdout */
-int envb_stdout(const char *arg) { (void)arg; return 0; }
+int envb_stdout(const char *arg) {
+    /* Python property: the captured stdout text. */
+    static char g_stdout[4096];
+    if (arg && *arg) snprintf(g_stdout, sizeof(g_stdout), "%s", arg);
+    printf("%s\n", g_stdout);
+    return 0;
+}
 
 /* PoP: returncode @ tools/environments/base.py:returncode */
 int envb_returncode(const char *arg) {
@@ -73,7 +79,13 @@ int envb_returncode(const char *arg) {
 }
 
 /* PoP: stdout @ tools/environments/base.py:stdout */
-int envb_stdout_2(const char *arg) { (void)arg; return 0; }
+int envb_stdout_2(const char *arg) {
+    /* Python property: the captured stdout text. */
+    static char g_stdout[4096];
+    if (arg && *arg) snprintf(g_stdout, sizeof(g_stdout), "%s", arg);
+    printf("%s\n", g_stdout);
+    return 0;
+}
 
 /* PoP: returncode @ tools/environments/base.py:returncode */
 int envb_returncode_2(const char *arg) {
