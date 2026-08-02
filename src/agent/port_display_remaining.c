@@ -190,18 +190,105 @@ bool disp_emit_inline_diff(const char *diff_text) {
 
 /* PoP: _render_inline_unified_diff @ agent/display.py:_render_inline_unified_diff */
 char *disp_render_inline_unified_diff(const char *diff_text) {
-    /* Python: transcript-style colored diff lines. */
+    /* Python: transcript-style colored diff lines — real: prefix
+     * +/-/@@ lines with ansi colors. */
     if (!diff_text) return strdup("");
-    printf("unified diff rendered inline\n");
-    return strdup(diff_text);
+    size_t cap = strlen(diff_text) * 2 + 64;
+    char *out = malloc(cap);
+    if (!out) return strdup("");
+    char *q = out;
+    const char *p = diff_text;
+    while (*p) {
+        const char *nl = strchr(p, '\n');
+        size_t ll = nl ? (size_t)(nl - p) : strlen(p);
+        const char *color = "";
+        if (ll > 0 && p[0] == '+') color = "\x1b[32m";
+        else if (ll > 0 && p[0] == '-') color = "\x1b[31m";
+        else if (ll > 1 && p[0] == '@' && p[1] == '@') color = "\x1b[36m";
+        size_t need = (size_t)(q - out) + ll + 16;
+        if (need > cap) {
+            cap = need * 2;
+            char *nb = realloc(out, cap);
+            if (!nb) { free(out); return strdup(diff_text); }
+            out = nb;
+            q = out + strlen(out);
+        }
+        if (*color) {
+            size_t cl = strlen(color);
+            memcpy(q, color, cl);
+            q += cl;
+        }
+        memcpy(q, p, ll);
+        q += ll;
+        if (*color) {
+            memcpy(q, "\x1b[0m", 5);
+            q += 5;
+        }
+        *q++ = '\n';
+        p = nl ? nl + 1 : p + ll;
+    }
+    *q = '\0';
+    return out;
 }
 
 /* PoP: _split_unified_diff_sections @ agent/display.py:_split_unified_diff_sections */
 char *disp_split_unified_diff_sections(const char *diff) {
-    /* Python: per-file sections. */
+    /* Python: per-file sections — real: group lines between
+     * "diff --git" headers into a json array of arrays. */
     if (!diff) return strdup("[]");
-    printf("diff split into per-file sections\n");
-    return strdup("[]");
+    size_t cap = strlen(diff) + 64;
+    char *out = malloc(cap);
+    if (!out) return strdup("[]");
+    strcpy(out, "[");
+    bool first = true;
+    const char *p = diff;
+    const char *sec_start = NULL;
+    while (*p) {
+        const char *nl = strchr(p, '\n');
+        size_t ll = nl ? (size_t)(nl - p) : strlen(p);
+        if (strncmp(p, "diff --git", 10) == 0) {
+            if (sec_start && !first) {
+                size_t need = strlen(out) + 4;
+                if (need > cap) {
+                    cap = need * 2;
+                    char *nb = realloc(out, cap);
+                    if (!nb) break;
+                    out = nb;
+                }
+                strcat(out, "]");
+            }
+            size_t need = strlen(out) + 8;
+            if (need > cap) {
+                cap = need * 2;
+                char *nb = realloc(out, cap);
+                if (!nb) break;
+                out = nb;
+            }
+            if (!first) strcat(out, ",");
+            strcat(out, "[");
+            sec_start = p;
+            first = false;
+        } else if (sec_start) {
+            size_t need = strlen(out) + ll + 8;
+            if (need > cap) {
+                cap = need * 2;
+                char *nb = realloc(out, cap);
+                if (!nb) break;
+                out = nb;
+            }
+            strcat(out, "\"");
+            /* escape quotes */
+            for (size_t i = 0; i < ll; i++) {
+                if (p[i] == '"') strcat(out, "\\\"");
+                else { char c[2] = {p[i], 0}; strcat(out, c); }
+            }
+            strcat(out, "\",");
+        }
+        p = nl ? nl + 1 : p + ll;
+    }
+    if (!first) strcat(out, "]");
+    strcat(out, "]");
+    return out;
 }
 
 /* PoP: _summarize_rendered_diff_sections @ agent/display.py:_summarize_rendered_diff_sections */

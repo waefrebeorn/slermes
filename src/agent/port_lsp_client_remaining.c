@@ -12,6 +12,13 @@
 #include <stdbool.h>
 #include <ctype.h>
 
+/* Forward decls — handlers defined below in this unit. */
+int lspc_handle_work_done_create(void);
+char *lspc_handle_workspace_configuration(const char *params_json);
+int lspc_handle_register_capability(const char *params_json);
+int lspc_handle_unregister_capability(const char *params_json);
+char *lspc_handle_workspace_folders(const char *workspace_root);
+
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
     char *d = strdup(s);
@@ -149,10 +156,38 @@ int lspc_send_error_response(long id, long code, const char *message) {
 
 /* PoP: _dispatch_request @ agent/lsp/client.py:_dispatch_request */
 char *lspc_dispatch_request(const char *msg_json) {
-    /* Python: method → handler routing. */
+    /* Python: method → handler routing — real: extract method + id
+     * and route to the right response builder. */
     if (!msg_json) return NULL;
-    printf("lsp request dispatched\n");
-    return NULL;
+    const char *m = strstr(msg_json, "\"method\"");
+    if (!m) return NULL;
+    const char *colon = strchr(m, ':');
+    if (!colon) return NULL;
+    const char *v = colon + 1;
+    while (*v == ' ' || *v == '"') v++;
+    const char *e = v;
+    while (*e && *e != '"') e++;
+    char *method = strndup(v, (size_t)(e - v));
+    const char *id = strstr(msg_json, "\"id\"");
+    char *result = NULL;
+    if (method && strcmp(method, "workspace/configuration") == 0) {
+        result = lspc_handle_workspace_configuration(msg_json);
+    } else if (method && strcmp(method, "workspace/workspaceFolders") == 0) {
+        result = lspc_handle_workspace_folders(".");
+    } else if (method && strcmp(method, "client/registerCapability") == 0) {
+        lspc_handle_register_capability(msg_json);
+        result = strdup("{}");
+    } else if (method && strcmp(method, "client/unregisterCapability") == 0) {
+        lspc_handle_unregister_capability(msg_json);
+        result = strdup("{}");
+    } else if (method && strcmp(method, "window/workDoneProgress/create") == 0) {
+        lspc_handle_work_done_create();
+        result = strdup("{}");
+    } else {
+        result = strdup("{}");
+    }
+    free(method);
+    return result;
 }
 
 /* PoP: _handle_work_done_create @ agent/lsp/client.py:_handle_work_done_create */

@@ -74,10 +74,37 @@ bool wx2_coerce_bool(const char *value, bool default_value) {
 
 /* PoP: _extract_text @ gateway/platforms/weixin.py:_extract_text */
 char *wx2_extract_text(const char *item_list_json) {
-    /* Python: text_item extraction from item list. */
+    /* Python: text_item extraction from item list — real: find
+     * "text_item": {"content": "..."} entries and join. */
     if (!item_list_json) return strdup("");
-    printf("text extracted from item list\n");
-    return strdup("");
+    size_t cap = strlen(item_list_json) + 16;
+    char *out = malloc(cap);
+    if (!out) return strdup("");
+    out[0] = '\0';
+    const char *p = item_list_json;
+    while ((p = strstr(p, "text_item")) != NULL) {
+        const char *content = strstr(p, "content");
+        if (!content || content > p + 200) { p += 9; continue; }
+        const char *colon = strchr(content, ':');
+        if (!colon) { p += 9; continue; }
+        const char *v = colon + 1;
+        while (*v == ' ' || *v == '"') v++;
+        const char *e = v;
+        while (*e && *e != '"') e++;
+        if (e > v) {
+            size_t need = strlen(out) + (size_t)(e - v) + 4;
+            if (need > cap) {
+                cap = need * 2;
+                char *nb = realloc(out, cap);
+                if (!nb) break;
+                out = nb;
+            }
+            if (*out) strcat(out, " ");
+            strncat(out, v, (size_t)(e - v));
+        }
+        p = e;
+    }
+    return out;
 }
 
 /* PoP: connect @ gateway/platforms/weixin.py:connect */
@@ -172,8 +199,21 @@ char *wx2_get_chat_info(const char *chat_id) {
 
 /* PoP: format_message @ gateway/platforms/weixin.py:format_message */
 char *wx2_format_message(const char *content) {
-    /* Python: copy-friendly line wrap + markdown normalize. */
+    /* Python: copy-friendly line wrap + markdown normalize — real:
+     * strip markdown bold/italic/code markers (wechat copy jumbles
+     * them). */
     if (!content) return strdup("");
-    printf("weixin message formatted (copy-friendly wrap)\n");
-    return strdup(content);
+    size_t cap = strlen(content) + 1;
+    char *out = malloc(cap);
+    if (!out) return strdup("");
+    char *q = out;
+    bool in_code = false;
+    for (const char *p = content; *p; p++) {
+        if (*p == '`') { in_code = !in_code; continue; }
+        if (!in_code && (*p == '*' || *p == '_') && p[1] && p[1] != *p) continue;
+        if (!in_code && *p == '#' && (p == content || p[-1] == '\n')) continue;
+        *q++ = *p;
+    }
+    *q = '\0';
+    return out;
 }

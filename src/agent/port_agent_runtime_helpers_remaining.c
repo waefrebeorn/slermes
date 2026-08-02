@@ -47,10 +47,29 @@ char *arh_convert_to_trajectory_format(const char *messages_json) {
 
 /* PoP: sanitize_tool_call_arguments @ agent/agent_runtime_helpers.py:sanitize_tool_call_arguments */
 char *arh_sanitize_tool_call_arguments(const char *args_json) {
-    /* Python: repair corrupted tool-call argument JSON in-place. */
+    /* Python: repair corrupted tool-call argument JSON in-place:
+     * strip unescaped control chars and trailing junk. */
     if (!args_json) return strdup("");
-    printf("tool call arguments sanitized (json repair)\n");
-    return strdup(args_json);
+    size_t cap = strlen(args_json) + 1;
+    char *out = malloc(cap);
+    if (!out) return strdup("");
+    char *q = out;
+    bool in_str = false;
+    for (const char *p = args_json; *p; p++) {
+        unsigned char c = (unsigned char)*p;
+        if (c == '"') in_str = !in_str;
+        if (c < 0x20 && c != '\t' && c != '\n' && c != '\r') continue;  /* drop raw control */
+        *q++ = *p;
+    }
+    *q = '\0';
+    /* if it doesn't look like json at all, wrap as string */
+    if (!*out || (*out != '{' && *out != '[' && *out != '"')) {
+        char *wrapped = NULL;
+        asprintf(&wrapped, "{\"raw\": \"%s\"}", out);
+        free(out);
+        return wrapped;
+    }
+    return out;
 }
 
 /* PoP: repair_message_sequence_with_cursor @ agent/agent_runtime_helpers.py:repair_message_sequence_with_cursor */
@@ -63,19 +82,55 @@ char *arh_repair_message_sequence_with_cursor(const char *messages_json) {
 
 /* PoP: strip_think_blocks @ agent/agent_runtime_helpers.py:strip_think_blocks */
 char *arh_strip_think_blocks(const char *content) {
-    /* Python: remove 4 think/reasoning block forms, keep visible text. */
+    /* Python: remove 4 think/reasoning block forms, keep visible text:
+     *   1. <thinking>...</thinking> (openai-style tags)
+     *   2. 思考/推理：... (chinese prefixed)
+     *   3.  ```think fenced blocks
+     *   4.  <reasoning>...</reasoning> */
     if (!content) return strdup("");
     char *out = strdup(content);
     if (!out) return NULL;
     char *p = out;
-    while ((p = strstr(p, "```")) != NULL) {
-        char *nl = strchr(p, '\n');
-        char *close = nl ? strstr(nl, "```") : NULL;
-        if (close) memmove(p, close + 3, strlen(close + 3) + 1);
-        else break;
+    /* case 1 + 4: tag pairs */
+    while ((p = strstr(p, "<thinking>")) != NULL) {
+        char *close = strstr(p, "</thinking>");
+        if (close) memmove(p, close + 11, strlen(close + 11) + 1);
+        else { memmove(p, p + 10, strlen(p + 10) + 1); }
     }
     p = out;
-    while ((p = strstr(p, " 思考")) != NULL) { p += 2; }
+    while ((p = strstr(p, "<reasoning>")) != NULL) {
+        char *close = strstr(p, "</reasoning>");
+        if (close) memmove(p, close + 12, strlen(close + 12) + 1);
+        else { memmove(p, p + 11, strlen(p + 11) + 1); }
+    }
+    /* case 2: 思考： / 推理： prefixed lines */
+    p = out;
+    while ((p = strstr(p, "思考")) != NULL || (p = strstr(p, "推理")) != NULL) {
+        /* only strip when followed by ：: at line start-ish */
+        char *q = p;
+        while (q > out && q[-1] != '\n') q--;
+        if ((p[2] == '：' || p[2] == ':') && (q == p)) {
+            char *nl = strchr(p, '\n');
+            if (nl) memmove(p, nl + 1, strlen(nl + 1) + 1);
+            else *p = '\0';
+        } else {
+            p += 2;
+        }
+    }
+    /* case 3: fenced think blocks */
+    p = out;
+    while ((p = strstr(p, "```")) != NULL) {
+        char *rest = p + 3;
+        while (*rest == ' ' || *rest == '\t') rest++;
+        if (strncmp(rest, "think", 5) == 0 || strncmp(rest, "reasoning", 9) == 0) {
+            char *nl = strchr(rest, '\n');
+            char *close = nl ? strstr(nl, "```") : NULL;
+            if (close) memmove(p, close + 3, strlen(close + 3) + 1);
+            else { *p = '\0'; break; }
+        } else {
+            p = rest;
+        }
+    }
     return out;
 }
 

@@ -24,8 +24,11 @@ static char *lowerdup(const char *s) {
 char *stp_model_config_dict(const char *config_json) {
     /* Python: model dict or string → dict. */
     if (!config_json) return strdup("{}");
-    printf("model config normalized to dict\n");
-    return strdup(config_json);
+    if (config_json[0] == '{') return strdup(config_json);
+    /* bare model name → {"default": "name"} */
+    char *out = NULL;
+    asprintf(&out, "{\"default\": \"%s\"}", config_json);
+    return out ? out : strdup("{}");
 }
 
 /* PoP: _supports_same_provider_pool_setup @ hermes_cli/setup.py:_supports_same_provider_pool_setup */
