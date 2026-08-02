@@ -15,10 +15,32 @@
 int wssr_u_win32(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _ownership @ hermes_cli/windows_ssh_runtime.py:_ownership */
-int wssr_u_ownership(const char *arg) { (void)arg; return 0; }
+int wssr_u_ownership(const char *arg) {
+    /* Python: value must fullmatch [0-9a-f]{32} else ValueError. */
+    if (!arg || !*arg) { printf("invalid ownership ID\n"); return 1; }
+    if (strlen(arg) != 32) { printf("invalid ownership ID\n"); return 1; }
+    for (const char *p = arg; *p; p++) {
+        if (!((*p >= '0' && *p <= '9') || (*p >= 'a' && *p <= 'f'))) {
+            printf("invalid ownership ID\n"); return 1;
+        }
+    }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _nonce @ hermes_cli/windows_ssh_runtime.py:_nonce */
-int wssr_u_nonce(const char *arg) { (void)arg; return 0; }
+int wssr_u_nonce(const char *arg) {
+    /* Python: value must fullmatch [0-9a-f]{16} else ValueError. */
+    if (!arg || !*arg) { printf("invalid spawn nonce\n"); return 1; }
+    if (strlen(arg) != 16) { printf("invalid spawn nonce\n"); return 1; }
+    for (const char *p = arg; *p; p++) {
+        if (!((*p >= '0' && *p <= '9') || (*p >= 'a' && *p <= 'f'))) {
+            printf("invalid spawn nonce\n"); return 1;
+        }
+    }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _root @ hermes_cli/windows_ssh_runtime.py:_root */
 int wssr_u_root(const char *arg) {

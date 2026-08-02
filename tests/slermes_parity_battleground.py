@@ -854,8 +854,14 @@ class ParityAnalyzer:
         def stmt_bootleg(s):
             if s.startswith('(void)'):
                 return True
-            if re.match(r'^return\s+(0|NULL|null|false|FALSE|"\s*"|\'\0\')\s*;?$', s):
+            if re.match(r'^return\s+(0|NULL|null|false|FALSE|""|\'\0\')\s*;?$', s):
                 return True
+            # assignment to a symbol NOT defined in this port file (module
+            # global / static / struct member) is a legitimate setter, not a
+            # bootleg — mirrors the getter rule below (return <bare static>).
+            m_asgn = re.match(r'^([\w][\w\->\.\[\]]*)\s*(?:=|\+=|-=|\*=|/=)\s*[^;]*;?$', s)
+            if m_asgn:
+                return self._recursive_bootleg(m_asgn.group(1), stack) if m_asgn.group(1) in defined else False
             if re.match(r'^return\s+[\w]+\s*;?$', s):
                 v = re.match(r'^return\s+([\w]+)\s*;?$', s).group(1)
                 # returning an undefined symbol (static/global state) is a

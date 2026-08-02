@@ -45,7 +45,15 @@ int appr_u_shell_segment_tokens(const char *arg) { (void)arg; return 0; }
 int appr_u_iter_top_level_shell_segments(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _split_option @ tools/approval.py:_split_option */
-int appr_u_split_option(const char *arg) { (void)arg; return 0; }
+int appr_u_split_option(const char *arg) {
+    /* Python: "=" in token -> (option, value); else (token, None).
+     * Print "option\tvalue" or "token\t". */
+    if (!arg) { printf("\t\n"); return 0; }
+    const char *eq = strchr(arg, '=');
+    if (!eq) { printf("%s\t\n", arg); return 0; }
+    printf("%.*s\t%s\n", (int)(eq - arg), arg, eq + 1);
+    return 0;
+}
 
 /* PoP: _interpreter_exec_flag @ tools/approval.py:_interpreter_exec_flag */
 int appr_u_interpreter_exec_flag(const char *arg) { (void)arg; return 0; }

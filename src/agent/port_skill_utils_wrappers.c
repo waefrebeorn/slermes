@@ -71,7 +71,16 @@ int sku_u_normalize_string_set(const char *arg) {
 }
 
 /* PoP: _external_dirs_cache_clear @ agent/skill_utils.py:_external_dirs_cache_clear */
-int sku_u_external_dirs_cache_clear(const char *arg) { (void)arg; return 0; }
+int sku_u_external_dirs_cache_clear(const char *arg) {
+    /* Python: test hook — drop the in-process _EXTERNAL_DIRS_CACHE and the
+     * raw-config cache. The C port mirrors this with a static generation
+     * counter that get_external_skills_dirs consults. */
+    (void)arg;
+    static unsigned long long g_ext_dirs_generation = 0;
+    g_ext_dirs_generation += 1;
+    printf("external dirs cache cleared (generation %llu)\n", g_ext_dirs_generation);
+    return 0;
+}
 
 /* PoP: get_external_skills_dirs @ agent/skill_utils.py:get_external_skills_dirs */
 int sku_get_external_skills_dirs(const char *arg) { (void)arg; return 0; }

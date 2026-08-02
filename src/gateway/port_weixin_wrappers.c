@@ -9,7 +9,9 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <sys/stat.h>
 #include "hermes_json.h"
+#include "port_config_py_helpers.h"
 
 /* PoP: _make_ssl_connector @ gateway/platforms/weixin.py:_make_ssl_connector */
 int wx_u_make_ssl_connector(const char *arg) { (void)arg; return 0; }
@@ -39,7 +41,34 @@ int wx_u_download_bytes(const char *arg) { (void)arg; return 0; }
 int wx_u_download_and_decrypt_media(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _save_sync_buf @ gateway/platforms/weixin.py:_save_sync_buf */
-int wx_u_save_sync_buf(const char *arg) { (void)arg; return 0; }
+int wx_u_save_sync_buf(const char *arg) {
+    /* Python: atomic_json_write(_sync_buf_path(hermes_home, account_id),
+     * {"get_updates_buf": sync_buf}). Arg = "hermes_home\taccount_id\tsync_buf". */
+    if (!arg || !*arg) return 1;
+    const char *tab1 = strchr(arg, '\t');
+    char home[1024];
+    size_t hlen = tab1 ? (size_t)(tab1 - arg) : strlen(arg);
+    if (hlen >= sizeof(home)) hlen = sizeof(home) - 1;
+    memcpy(home, arg, hlen); home[hlen] = '\0';
+    const char *tab2 = tab1 ? strchr(tab1 + 1, '\t') : NULL;
+    char acct[256];
+    size_t alen = tab2 ? (size_t)(tab2 - tab1 - 1) : 0;
+    if (alen >= sizeof(acct)) alen = sizeof(acct) - 1;
+    if (tab1) { memcpy(acct, tab1 + 1, alen); acct[alen] = '\0'; }
+    else acct[0] = '\0';
+    const char *buf = tab2 ? tab2 + 1 : "";
+    char dir[1100], path[1200];
+    snprintf(dir, sizeof(dir), "%s/weixin/accounts", home);
+    mkdir(dir, 0700);
+    snprintf(path, sizeof(path), "%s/%s.sync.json", dir, acct);
+    json_t *obj = json_object();
+    json_set(obj, "get_updates_buf", json_string(buf));
+    int rc = config_py_atomic_config_write(path, obj);
+    json_free(obj);
+    if (rc != 0) { printf("error\n"); return 1; }
+    printf("%s\n", path);
+    return 0;
+}
 
 /* PoP: qr_login @ gateway/platforms/weixin.py:qr_login */
 int wx_qr_login(const char *arg) { (void)arg; return 0; }

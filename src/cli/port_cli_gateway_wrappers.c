@@ -212,7 +212,20 @@ int cgw_u_preflight_user_systemd(const char *arg) { (void)arg; return 0; }
 int cgw_u_raise_user_systemd_unavailable(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _systemctl_cmd @ hermes_cli/gateway.py:_systemctl_cmd */
-int cgw_u_systemctl_cmd(const char *arg) { (void)arg; return 0; }
+int cgw_u_systemctl_cmd(const char *arg) {
+    /* Python: ["systemctl"] if system else ["systemctl", "--user"].
+     * Arg = "1"/"true" for system-wide. */
+    int system = 0;
+    if (arg && *arg) {
+        if (strcmp(arg, "1") == 0) system = 1;
+        else if (strlen(arg) == 4 && tolower((unsigned char)arg[0]) == 't' &&
+                 tolower((unsigned char)arg[1]) == 'r' && tolower((unsigned char)arg[2]) == 'u' &&
+                 tolower((unsigned char)arg[3]) == 'e') system = 1;
+    }
+    if (system) printf("systemctl\n");
+    else printf("systemctl\t--user\n");
+    return 0;
+}
 
 /* PoP: _journalctl_cmd @ hermes_cli/gateway.py:_journalctl_cmd */
 int cgw_u_journalctl_cmd(const char *arg) {

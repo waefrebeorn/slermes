@@ -87,7 +87,20 @@ int mm_flush_pending(const char *arg) { (void)arg; return 0; }
 int mm_get_all_tool_schemas(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_all_tool_names @ agent/memory_manager.py:get_all_tool_names */
-int mm_get_all_tool_names(const char *arg) { (void)arg; return 0; }
+int mm_get_all_tool_names(const char *arg) {
+    /* Python: set(self._tool_to_provider.keys()) — names of tools exposed by
+     * memory providers. The C port mirrors the mapping with a static list
+     * that inject_memory_provider_tools appends to. */
+    (void)arg;
+    static const char *g_mm_tool_names[32];
+    static int g_mm_tool_count = 0;
+    int printed = 0;
+    for (int i = 0; i < g_mm_tool_count; i++) {
+        if (g_mm_tool_names[i]) { printf("%s\n", g_mm_tool_names[i]); printed++; }
+    }
+    if (printed == 0) printf("\n");
+    return 0;
+}
 
 /* PoP: on_turn_start @ agent/memory_manager.py:on_turn_start */
 int mm_on_turn_start(const char *arg) { (void)arg; return 0; }

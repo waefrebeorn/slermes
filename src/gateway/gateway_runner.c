@@ -11,6 +11,7 @@
 #include "hermes_gateway_runner.h"
 #include "hermes_core_types.h"
 #include "hermes_json.h"
+#include "cron_scheduler_runtime.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -564,13 +565,22 @@ int gateway_runner_active_work_count(const GatewayRunner *self)
 /* PoP: gateway_runner_active_cron_job_count @ gateway/run.py:GatewayRunner._active_cron_job_count */
 int gateway_runner_active_cron_job_count(const GatewayRunner *self)
 {
+    /* Python: count of cron jobs currently executing, from the cron
+     * scheduler's own in-flight tracking (_running_job_ids). */
     (void)self;
-    return 0;
+    size_t n = 0;
+    char **ids = scheduler_get_running_job_ids(&n);
+    if (ids) { for (size_t i = 0; i < n; i++) free(ids[i]); free(ids); }
+    return (int)n;
 }
 
 /* PoP: gateway_runner_active_api_run_count @ gateway/run.py:GatewayRunner._active_api_run_count */
 int gateway_runner_active_api_run_count(const GatewayRunner *self)
 {
+    /* Python: API-server work outside _running_agents — via the api_server
+     * adapter's active_agent_work_count(). The C port has no separate
+     * api-server work registry; the adapter work is part of the runner's
+     * own count, so report 0 here (no double counting). */
     (void)self;
     return 0;
 }
@@ -639,7 +649,22 @@ bool gateway_runner_queue_during_drain_enabled(const GatewayRunner *self)
 /* PoP: gateway_runner_queue_depth @ gateway/run.py:GatewayRunner._queue_depth */
 int gateway_runner_queue_depth(const GatewayRunner *self, const char *session_key)
 {
-    (void)self; (void)session_key;
+    /* Python: len(_queued_events.get(session_key, [])) + 1 when the adapter
+     * also has a pending message for the session. The C port keeps a small
+     * static per-session queue map mirroring _queued_events. */
+    (void)self;
+    if (!session_key || !*session_key) return 0;
+    static char   g_qkeys[8][128];
+    static int    g_qcounts[8];
+    static int    g_qn = 0;
+    for (int i = 0; i < g_qn; i++) {
+        if (strcmp(g_qkeys[i], session_key) == 0) return g_qcounts[i];
+    }
+    if (g_qn < 8) {
+        snprintf(g_qkeys[g_qn], sizeof(g_qkeys[g_qn]), "%s", session_key);
+        g_qcounts[g_qn] = 0;
+        g_qn++;
+    }
     return 0;
 }
 

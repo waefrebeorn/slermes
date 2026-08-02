@@ -11,6 +11,7 @@
 #include <ctype.h>
 #include <time.h>
 #include <unistd.h>
+#include <sys/ioctl.h>
 #include "hermes_json.h"
 
 /* PoP: _redirect_uri @ hermes_cli/dashboard_auth/routes.py:_redirect_uri */
@@ -1062,7 +1063,36 @@ int hermes_cli_journey_u_fade(const char *arg) { (void)arg; return 0; }
 int hermes_cli_journey_u_row_to_text(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _term_size @ hermes_cli/journey.py:_term_size */
-int hermes_cli_journey_u_term_size(const char *arg) { (void)arg; return 0; }
+int hermes_cli_journey_u_term_size(const char *arg) {
+    /* Python: shutil.get_terminal_size((90, 30)); return
+     * (max(40, width or cols), max(10, height or rows)).
+     * Arg = "width\theight" (empty fields = None). */
+    long want_w = 0, want_h = 0;
+    if (arg && *arg) {
+        char w[32], h[32];
+        const char *tab = strchr(arg, '\t');
+        size_t wlen = tab ? (size_t)(tab - arg) : strlen(arg);
+        if (wlen >= sizeof(w)) wlen = sizeof(w) - 1;
+        memcpy(w, arg, wlen); w[wlen] = '\0';
+        if (tab) { snprintf(h, sizeof(h), "%s", tab + 1); }
+        else h[0] = '\0';
+        if (w[0]) want_w = strtol(w, NULL, 10);
+        if (h[0]) want_h = strtol(h, NULL, 10);
+    }
+    long cols = 90, rows = 30;
+#ifdef TIOCGWINSZ
+    struct winsize ws;
+    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == 0 && ws.ws_col > 0 && ws.ws_row > 0) {
+        cols = ws.ws_col; rows = ws.ws_row;
+    }
+#endif
+    if (want_w > 0) cols = want_w;
+    if (want_h > 0) rows = want_h;
+    if (cols < 40) cols = 40;
+    if (rows < 10) rows = 10;
+    printf("%ld\t%ld\n", cols, rows);
+    return 0;
+}
 
 /* PoP: _frame_renderable @ hermes_cli/journey.py:_frame_renderable */
 int hermes_cli_journey_u_frame_renderable(const char *arg) { (void)arg; return 0; }
@@ -2203,7 +2233,21 @@ int hermes_cli_session_export_html_generate_multi_session_html_e_rt(const char *
 int hermes_cli_session_export_html_generate_html_export(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _version_tuple @ hermes_cli/sqlite_runtime.py:_version_tuple */
-int hermes_cli_sqlite_runtime_u_version_tuple(const char *arg) { (void)arg; return 0; }
+int hermes_cli_sqlite_runtime_u_version_tuple(const char *arg) {
+    /* Python: [int(p) for p in parts] padded with zeros to length 3, first 3.
+     * Arg = tab-separated version parts. */
+    if (!arg || !*arg) { printf("0\t0\t0\n"); return 0; }
+    long vals[3] = {0, 0, 0};
+    int idx = 0;
+    const char *p = arg;
+    while (*p && idx < 3) {
+        while (*p == '\t') p++;
+        if (!*p) break;
+        vals[idx++] = strtol(p, (char **)&p, 10);
+    }
+    printf("%ld\t%ld\t%ld\n", vals[0], vals[1], vals[2]);
+    return 0;
+}
 
 /* PoP: is_sqlite_wal_reset_vulnerable @ hermes_cli/sqlite_runtime.py:is_sqlite_wal_reset_vulnerable */
 int hermes_cli_sqlite_runtime_is_sqlite_wal_reset_vulnerable(const char *arg) { (void)arg; return 0; }

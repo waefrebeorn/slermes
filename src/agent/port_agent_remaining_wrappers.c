@@ -447,6 +447,7 @@ int agent_chat_completion_helpers_u_bump_stale_streak(const char *arg) {
      * The C port keeps a static counter mirroring the agent attr. */
     (void)arg;
     g_stale_streams += 1;
+    printf("stale streak %lld\n", g_stale_streams);
     return 0;
 }
 
@@ -589,10 +590,44 @@ int agent_agent_init_u_codex_gpt55_autoraise_notice_seen(const char *arg) { (voi
 int agent_agent_init_u_record_codex_gpt55_autoraise_notice(const char *arg) { (void)arg; return 0; }
 
 /* PoP: usage_pct @ agent/rate_limit_tracker.py:usage_pct */
-int agent_rate_limit_tracker_usage_pct(const char *arg) { (void)arg; return 0; }
+int agent_rate_limit_tracker_usage_pct(const char *arg) {
+    /* Python: if limit <= 0 -> 0.0; else (used / limit) * 100.0.
+     * Arg = "used\tlimit". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    char used_s[64], limit_s[64];
+    size_t ulen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (ulen >= sizeof(used_s)) ulen = sizeof(used_s) - 1;
+    memcpy(used_s, arg, ulen); used_s[ulen] = '\0';
+    const char *lim = tab ? tab + 1 : "0";
+    if (strlen(lim) >= sizeof(limit_s)) { snprintf(limit_s, sizeof(limit_s), "%.60s", lim); }
+    else snprintf(limit_s, sizeof(limit_s), "%s", lim);
+    double used = strtod(used_s, NULL);
+    double limit = strtod(limit_s, NULL);
+    if (limit <= 0) { printf("0\n"); return 0; }
+    printf("%g\n", (used / limit) * 100.0);
+    return 0;
+}
 
 /* PoP: remaining_seconds_now @ agent/rate_limit_tracker.py:remaining_seconds_now */
-int agent_rate_limit_tracker_remaining_seconds_now(const char *arg) { (void)arg; return 0; }
+int agent_rate_limit_tracker_remaining_seconds_now(const char *arg) {
+    /* Python: max(0.0, reset_seconds - (now - captured_at)).
+     * Arg = "captured_at\treset_seconds". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    char cap_s[64], res_s[64];
+    size_t clen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (clen >= sizeof(cap_s)) clen = sizeof(cap_s) - 1;
+    memcpy(cap_s, arg, clen); cap_s[clen] = '\0';
+    const char *rs = tab ? tab + 1 : "0";
+    snprintf(res_s, sizeof(res_s), "%s", rs);
+    double captured = strtod(cap_s, NULL);
+    double reset = strtod(res_s, NULL);
+    double remaining = reset - ((double)time(NULL) - captured);
+    if (remaining < 0) remaining = 0;
+    printf("%g\n", remaining);
+    return 0;
+}
 
 /* PoP: has_data @ agent/rate_limit_tracker.py:has_data */
 int agent_rate_limit_tracker_has_data(const char *arg) {
@@ -602,7 +637,15 @@ int agent_rate_limit_tracker_has_data(const char *arg) {
 }
 
 /* PoP: age_seconds @ agent/rate_limit_tracker.py:age_seconds */
-int agent_rate_limit_tracker_age_seconds(const char *arg) { (void)arg; return 0; }
+int agent_rate_limit_tracker_age_seconds(const char *arg) {
+    /* Python: if not has_data (captured_at <= 0) -> float("inf");
+     * else time.time() - self.captured_at. Arg = "captured_at" epoch. */
+    if (!arg || !*arg) { printf("inf\n"); return 0; }
+    double captured = strtod(arg, NULL);
+    if (captured <= 0) { printf("inf\n"); return 0; }
+    printf("%g\n", (double)time(NULL) - captured);
+    return 0;
+}
 
 /* PoP: _safe_float @ agent/rate_limit_tracker.py:_safe_float */
 int agent_rate_limit_tracker_u_safe_float(const char *arg) {
@@ -1030,7 +1073,15 @@ int agent_credits_tracker_has_data(const char *arg) {
 }
 
 /* PoP: age_seconds @ agent/credits_tracker.py:age_seconds */
-int agent_credits_tracker_age_seconds(const char *arg) { (void)arg; return 0; }
+int agent_credits_tracker_age_seconds(const char *arg) {
+    /* Python: if not has_data (captured_at <= 0) -> float("inf");
+     * else time.time() - self.captured_at. Arg = "captured_at" epoch. */
+    if (!arg || !*arg) { printf("inf\n"); return 0; }
+    double captured = strtod(arg, NULL);
+    if (captured <= 0) { printf("inf\n"); return 0; }
+    printf("%g\n", (double)time(NULL) - captured);
+    return 0;
+}
 
 /* PoP: _can_carry_marker @ agent/prompt_caching.py:_can_carry_marker */
 int agent_prompt_caching_u_can_carry_marker(const char *arg) { (void)arg; return 0; }

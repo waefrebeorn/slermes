@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include "hermes_json.h"
+#include "registry.h"
 
 /* PoP: _canon_key_combo @ tools/computer_use/tool.py:_canon_key_combo */
 int tools_computer_use_tool_u_canon_key_combo(const char *arg) { (void)arg; return 0; }
@@ -221,7 +222,19 @@ int tools_registry_invalidate_check_fn_cache(const char *arg) { (void)arg; retur
 int tools_registry_u_snapshot_state(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _snapshot_entries @ tools/registry.py:_snapshot_entries */
-int tools_registry_u_snapshot_entries(const char *arg) { (void)arg; return 0; }
+int tools_registry_u_snapshot_entries(const char *arg) {
+    /* Python: return self._snapshot_state()[0] — stable list of registered
+     * tool entries. The C port delegates to the live tool registry. */
+    (void)arg;
+    size_t n = registry_get_count();
+    printf("[");
+    for (size_t i = 0; i < n; i++) {
+        if (i) printf(",");
+        printf("\"%s\"", registry_get_name(i));
+    }
+    printf("]\n");
+    return 0;
+}
 
 /* PoP: get_entry @ tools/registry.py:get_entry */
 int tools_registry_get_entry(const char *arg) { (void)arg; return 0; }
@@ -256,7 +269,14 @@ int tools_registry_check_tool_availability(const char *arg) { (void)arg; return 
 int tools_x_search_tool_u_load_x_search_config(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _get_x_search_model @ tools/x_search_tool.py:_get_x_search_model */
-int tools_x_search_tool_u_get_x_search_model(const char *arg) { (void)arg; return 0; }
+int tools_x_search_tool_u_get_x_search_model(const char *arg) {
+    /* Python: cfg.get("model") or DEFAULT_X_SEARCH_MODEL ("grok-4.5"). */
+    (void)arg;
+    const char *model = "grok-4.5";
+    if (arg && *arg && strcmp(arg, "-") != 0) model = arg;
+    printf("%s\n", model);
+    return 0;
+}
 
 /* PoP: _get_x_search_reasoning_effort @ tools/x_search_tool.py:_get_x_search_reasoning_effort */
 int tools_x_search_tool_u_get_x_search_reasoning_effort(const char *arg) { (void)arg; return 0; }
@@ -861,7 +881,15 @@ int tools_env_probe_u_ensure_probe_started(const char *arg) { (void)arg; return 
 int tools_env_probe_warm_environment_probe_async(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_orphaned @ tools/mcp_stdio_watchdog.py:_is_orphaned */
-int tools_mcp_stdio_watchdog_u_is_orphaned(const char *arg) { (void)arg; return 0; }
+int tools_mcp_stdio_watchdog_u_is_orphaned(const char *arg) {
+    /* Python: getppid() != original_ppid — the process lost its original
+     * POSIX parent. The C port captures the original ppid on first call. */
+    (void)arg;
+    static pid_t g_original_ppid = 0;
+    if (g_original_ppid == 0) g_original_ppid = getppid();
+    printf("%d\n", getppid() != g_original_ppid);
+    return 0;
+}
 
 /* PoP: _terminate_process_group @ tools/mcp_stdio_watchdog.py:_terminate_process_group */
 int tools_mcp_stdio_watchdog_u_terminate_process_group(const char *arg) { (void)arg; return 0; }
@@ -964,7 +992,15 @@ int tools_daemon_pool_u_adjust_thread_count(const char *arg) { (void)arg; return
 int tools_debug_helpers_log_call(const char *arg) { (void)arg; return 0; }
 
 /* PoP: set_emitter @ tools/desktop_ui.py:set_emitter */
-int tools_desktop_ui_set_emitter(const char *arg) { (void)arg; return 0; }
+int tools_desktop_ui_set_emitter(const char *arg) {
+    /* Python: global _emit; _emit = fn — install (or clear) the renderer
+     * event sink. The C port stores the emitter token; NULL/empty clears. */
+    static char g_desktop_ui_emitter[512] = {0};
+    if (arg && *arg) snprintf(g_desktop_ui_emitter, sizeof(g_desktop_ui_emitter), "%s", arg);
+    else g_desktop_ui_emitter[0] = '\0';
+    printf("emitter %s\n", g_desktop_ui_emitter[0] ? "set" : "cleared");
+    return 0;
+}
 
 /* PoP: _resolve_host_path @ tools/environments/file_sync.py:_resolve_host_path */
 int tools_environments_file_sync_u_resolve_host_path(const char *arg) { (void)arg; return 0; }

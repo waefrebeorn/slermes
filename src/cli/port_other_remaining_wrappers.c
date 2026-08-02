@@ -9,10 +9,33 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <sys/stat.h>
 #include "hermes_json.h"
+#include "hermes_util_str.h"
+#include "sqlite3.h"
 
 /* PoP: _connect @ cron/executions.py:_connect */
-int cron_executions_u_connect(const char *arg) { (void)arg; return 0; }
+int cron_executions_u_connect(const char *arg) {
+    /* Python: EXECUTIONS_FILE.parent.mkdir(parents=True, exist_ok=True);
+     * sqlite3.connect(EXECUTIONS_FILE, timeout=5). The shim opens (creating
+     * if needed) <hermes_home>/cron/executions.db and prints its path. */
+    (void)arg;
+    char home[1024];
+    hermes_home_dir(home, sizeof(home));
+    char dir[1100], path[1200];
+    snprintf(dir, sizeof(dir), "%s/cron", home);
+    mkdir(dir, 0700);
+    snprintf(path, sizeof(path), "%s/executions.db", dir);
+    sqlite3 *db = NULL;
+    if (sqlite3_open_v2(path, &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL) != SQLITE_OK) {
+        if (db) sqlite3_close(db);
+        printf("error\n");
+        return 1;
+    }
+    sqlite3_close(db);
+    printf("%s\n", path);
+    return 0;
+}
 
 /* PoP: _initialize_schema @ cron/executions.py:_initialize_schema */
 int cron_executions_u_initialize_schema(const char *arg) { (void)arg; return 0; }

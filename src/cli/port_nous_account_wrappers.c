@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include "hermes_json.h"
+#include "hash.h"
 #include <time.h>
 
 /* Python module global _account_info_cache. */
@@ -124,7 +125,22 @@ int nous_u_error_info(const char *arg) { (void)arg; return 0; }
 int nous_u_portal_base_url(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cache_key @ hermes_cli/nous_account.py:_cache_key */
-int nous_u_cache_key(const char *arg) { (void)arg; return 0; }
+int nous_u_cache_key(const char *arg) {
+    /* Python: f"{portal_base_url or ''}:{sha256(access_token).hexdigest()}".
+     * Arg = "access_token\tportal_base_url". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    char token[4096];
+    size_t tlen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (tlen >= sizeof(token)) tlen = sizeof(token) - 1;
+    memcpy(token, arg, tlen); token[tlen] = '\0';
+    const char *base = tab ? tab + 1 : "";
+    char *hex = hash_sha256_hex((const unsigned char *)token, tlen);
+    if (!hex) { printf("\n"); return 0; }
+    printf("%s:%s\n", base, hex);
+    free(hex);
+    return 0;
+}
 
 /* PoP: _parse_iso_timestamp @ hermes_cli/nous_account.py:_parse_iso_timestamp */
 int nous_u_parse_iso_timestamp(const char *arg) {
