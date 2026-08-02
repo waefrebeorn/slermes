@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:04:03Z",
+  "generated_at": "2026-08-02T20:06:13Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -20057,10 +20057,10 @@
     },
     "agent/conversation_compression.py": {
       "total": 41,
-      "ported": 30,
+      "ported": 41,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 11,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 41,
@@ -20511,16 +20511,24 @@
             "decorators": [],
             "line_number": 495
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_compression_remaining.c",
+          "c_function": "ccp_compression_lock_holder",
+          "pop_annotation": {
+            "c_function": "ccp_compression_lock_holder",
+            "python_functions": [
+              "_compression_lock_holder"
+            ],
+            "c_file": "src/agent/port_conversation_compression_remaining.c",
+            "python_file": "agent/conversation_compression.py",
+            "line": 26,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _compression_lock_holder @ agent/conversation_compression.py:_compression_lock_holder */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_compression.py",
@@ -20590,16 +20598,24 @@
             "decorators": [],
             "line_number": 575
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_compression_remaining.c",
+          "c_function": "ccp_start",
+          "pop_annotation": {
+            "c_function": "ccp_start",
+            "python_functions": [
+              "start"
+            ],
+            "c_file": "src/agent/port_conversation_compression_remaining.c",
+            "python_file": "agent/conversation_compression.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: start @ agent/conversation_compression.py:start */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_compression.py",
@@ -20611,16 +20627,24 @@
             "decorators": [],
             "line_number": 580
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_compression_remaining.c",
+          "c_function": "ccp_stop",
+          "pop_annotation": {
+            "c_function": "ccp_stop",
+            "python_functions": [
+              "stop"
+            ],
+            "c_file": "src/agent/port_conversation_compression_remaining.c",
+            "python_file": "agent/conversation_compression.py",
+            "line": 43,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stop @ agent/conversation_compression.py:stop */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_compression.py",
@@ -20661,16 +20685,24 @@
             "decorators": [],
             "line_number": 594
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_compression_remaining.c",
+          "c_function": "ccp_run",
+          "pop_annotation": {
+            "c_function": "ccp_run",
+            "python_functions": [
+              "_run"
+            ],
+            "c_file": "src/agent/port_conversation_compression_remaining.c",
+            "python_file": "agent/conversation_compression.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _run @ agent/conversation_compression.py:_run */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_compression.py",
@@ -20711,16 +20743,24 @@
             "decorators": [],
             "line_number": 630
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_compression_remaining.c",
+          "c_function": "ccp_start",
+          "pop_annotation": {
+            "c_function": "ccp_start",
+            "python_functions": [
+              "start"
+            ],
+            "c_file": "src/agent/port_conversation_compression_remaining.c",
+            "python_file": "agent/conversation_compression.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: start @ agent/conversation_compression.py:start */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_compression.py",
@@ -20732,16 +20772,24 @@
             "decorators": [],
             "line_number": 634
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_compression_remaining.c",
+          "c_function": "ccp_stop",
+          "pop_annotation": {
+            "c_function": "ccp_stop",
+            "python_functions": [
+              "stop"
+            ],
+            "c_file": "src/agent/port_conversation_compression_remaining.c",
+            "python_file": "agent/conversation_compression.py",
+            "line": 43,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stop @ agent/conversation_compression.py:stop */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_compression.py",
@@ -20753,16 +20801,24 @@
             "decorators": [],
             "line_number": 644
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_compression_remaining.c",
+          "c_function": "ccp_run",
+          "pop_annotation": {
+            "c_function": "ccp_run",
+            "python_functions": [
+              "_run"
+            ],
+            "c_file": "src/agent/port_conversation_compression_remaining.c",
+            "python_file": "agent/conversation_compression.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _run @ agent/conversation_compression.py:_run */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_compression.py",
@@ -20774,16 +20830,24 @@
             "decorators": [],
             "line_number": 678
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_compression_remaining.c",
+          "c_function": "ccp_check_compression_model_feasibility",
+          "pop_annotation": {
+            "c_function": "ccp_check_compression_model_feasibility",
+            "python_functions": [
+              "check_compression_model_feasibility"
+            ],
+            "c_file": "src/agent/port_conversation_compression_remaining.c",
+            "python_file": "agent/conversation_compression.py",
+            "line": 57,
+            "is_consolidated": false,
+            "full_text": "/* PoP: check_compression_model_feasibility @ agent/conversation_compression.py:check_compression_model_feasibility */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_compression.py",
@@ -20795,16 +20859,24 @@
             "decorators": [],
             "line_number": 930
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_compression_remaining.c",
+          "c_function": "ccp_replay_compression_warning",
+          "pop_annotation": {
+            "c_function": "ccp_replay_compression_warning",
+            "python_functions": [
+              "replay_compression_warning"
+            ],
+            "c_file": "src/agent/port_conversation_compression_remaining.c",
+            "python_file": "agent/conversation_compression.py",
+            "line": 65,
+            "is_consolidated": false,
+            "full_text": "/* PoP: replay_compression_warning @ agent/conversation_compression.py:replay_compression_warning */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_compression.py",
@@ -21106,16 +21178,24 @@
             "decorators": [],
             "line_number": 1231
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_compression_remaining.c",
+          "c_function": "ccp_compress_context",
+          "pop_annotation": {
+            "c_function": "ccp_compress_context",
+            "python_functions": [
+              "compress_context"
+            ],
+            "c_file": "src/agent/port_conversation_compression_remaining.c",
+            "python_file": "agent/conversation_compression.py",
+            "line": 73,
+            "is_consolidated": false,
+            "full_text": "/* PoP: compress_context @ agent/conversation_compression.py:compress_context */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_compression.py",
@@ -21156,16 +21236,24 @@
             "decorators": [],
             "line_number": 2477
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_compression_remaining.c",
+          "c_function": "ccp_try_shrink_image_parts_in_messages",
+          "pop_annotation": {
+            "c_function": "ccp_try_shrink_image_parts_in_messages",
+            "python_functions": [
+              "try_shrink_image_parts_in_messages"
+            ],
+            "c_file": "src/agent/port_conversation_compression_remaining.c",
+            "python_file": "agent/conversation_compression.py",
+            "line": 81,
+            "is_consolidated": false,
+            "full_text": "/* PoP: try_shrink_image_parts_in_messages @ agent/conversation_compression.py:try_shrink_image_parts_in_messages */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -343684,10 +343772,10 @@
     },
     "tools/tool_search.py": {
       "total": 23,
-      "ported": 7,
+      "ported": 18,
       "partial": 5,
       "stub": 0,
-      "real_gaps": 11,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 23,
@@ -343734,17 +343822,24 @@
             "decorators": [],
             "line_number": 117
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tool_search_remaining.c",
+          "c_function": "ts_safe_int",
+          "pop_annotation": {
+            "c_function": "ts_safe_int",
+            "python_functions": [
+              "_safe_int"
+            ],
+            "c_file": "src/tools/port_tool_search_remaining.c",
+            "python_file": "tools/tool_search.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _safe_int @ tools/tool_search.py:_safe_int */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tool_search.py",
@@ -343843,17 +343938,24 @@
             "decorators": [],
             "line_number": 163
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tool_search_remaining.c",
+          "c_function": "ts_is_deferrable_tool_name",
+          "pop_annotation": {
+            "c_function": "ts_is_deferrable_tool_name",
+            "python_functions": [
+              "is_deferrable_tool_name"
+            ],
+            "c_file": "src/tools/port_tool_search_remaining.c",
+            "python_file": "tools/tool_search.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_deferrable_tool_name @ tools/tool_search.py:is_deferrable_tool_name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tool_search.py",
@@ -343894,17 +343996,24 @@
             "decorators": [],
             "line_number": 217
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tool_search_remaining.c",
+          "c_function": "ts_estimate_tokens_from_schemas",
+          "pop_annotation": {
+            "c_function": "ts_estimate_tokens_from_schemas",
+            "python_functions": [
+              "estimate_tokens_from_schemas"
+            ],
+            "c_file": "src/tools/port_tool_search_remaining.c",
+            "python_file": "tools/tool_search.py",
+            "line": 41,
+            "is_consolidated": false,
+            "full_text": "/* PoP: estimate_tokens_from_schemas @ tools/tool_search.py:estimate_tokens_from_schemas */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tool_search.py",
@@ -343958,17 +344067,24 @@
             "decorators": [],
             "line_number": 289
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tool_search_remaining.c",
+          "c_function": "ts_entry_search_text",
+          "pop_annotation": {
+            "c_function": "ts_entry_search_text",
+            "python_functions": [
+              "_entry_search_text"
+            ],
+            "c_file": "src/tools/port_tool_search_remaining.c",
+            "python_file": "tools/tool_search.py",
+            "line": 48,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _entry_search_text @ tools/tool_search.py:_entry_search_text */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tool_search.py",
@@ -344043,17 +344159,24 @@
             "decorators": [],
             "line_number": 378
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tool_search_remaining.c",
+          "c_function": "ts_search_catalog",
+          "pop_annotation": {
+            "c_function": "ts_search_catalog",
+            "python_functions": [
+              "search_catalog"
+            ],
+            "c_file": "src/tools/port_tool_search_remaining.c",
+            "python_file": "tools/tool_search.py",
+            "line": 58,
+            "is_consolidated": false,
+            "full_text": "/* PoP: search_catalog @ tools/tool_search.py:search_catalog */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tool_search.py",
@@ -344065,17 +344188,24 @@
             "decorators": [],
             "line_number": 426
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tool_search_remaining.c",
+          "c_function": "ts_bridge_tool_schemas",
+          "pop_annotation": {
+            "c_function": "ts_bridge_tool_schemas",
+            "python_functions": [
+              "bridge_tool_schemas"
+            ],
+            "c_file": "src/tools/port_tool_search_remaining.c",
+            "python_file": "tools/tool_search.py",
+            "line": 104,
+            "is_consolidated": false,
+            "full_text": "/* PoP: bridge_tool_schemas @ tools/tool_search.py:bridge_tool_schemas */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tool_search.py",
@@ -344087,17 +344217,24 @@
             "decorators": [],
             "line_number": 529
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tool_search_remaining.c",
+          "c_function": "ts_assemble_tool_defs",
+          "pop_annotation": {
+            "c_function": "ts_assemble_tool_defs",
+            "python_functions": [
+              "assemble_tool_defs"
+            ],
+            "c_file": "src/tools/port_tool_search_remaining.c",
+            "python_file": "tools/tool_search.py",
+            "line": 112,
+            "is_consolidated": false,
+            "full_text": "/* PoP: assemble_tool_defs @ tools/tool_search.py:assemble_tool_defs */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tool_search.py",
@@ -344167,17 +344304,24 @@
             "decorators": [],
             "line_number": 605
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tool_search_remaining.c",
+          "c_function": "ts_dispatch_tool_search",
+          "pop_annotation": {
+            "c_function": "ts_dispatch_tool_search",
+            "python_functions": [
+              "dispatch_tool_search"
+            ],
+            "c_file": "src/tools/port_tool_search_remaining.c",
+            "python_file": "tools/tool_search.py",
+            "line": 120,
+            "is_consolidated": false,
+            "full_text": "/* PoP: dispatch_tool_search @ tools/tool_search.py:dispatch_tool_search */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tool_search.py",
@@ -344189,17 +344333,24 @@
             "decorators": [],
             "line_number": 632
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tool_search_remaining.c",
+          "c_function": "ts_dispatch_tool_describe",
+          "pop_annotation": {
+            "c_function": "ts_dispatch_tool_describe",
+            "python_functions": [
+              "dispatch_tool_describe"
+            ],
+            "c_file": "src/tools/port_tool_search_remaining.c",
+            "python_file": "tools/tool_search.py",
+            "line": 128,
+            "is_consolidated": false,
+            "full_text": "/* PoP: dispatch_tool_describe @ tools/tool_search.py:dispatch_tool_describe */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tool_search.py",
@@ -344211,17 +344362,24 @@
             "decorators": [],
             "line_number": 660
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tool_search_remaining.c",
+          "c_function": "ts_scoped_deferrable_names",
+          "pop_annotation": {
+            "c_function": "ts_scoped_deferrable_names",
+            "python_functions": [
+              "scoped_deferrable_names"
+            ],
+            "c_file": "src/tools/port_tool_search_remaining.c",
+            "python_file": "tools/tool_search.py",
+            "line": 135,
+            "is_consolidated": false,
+            "full_text": "/* PoP: scoped_deferrable_names @ tools/tool_search.py:scoped_deferrable_names */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tool_search.py",
@@ -344233,17 +344391,24 @@
             "decorators": [],
             "line_number": 680
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tool_search_remaining.c",
+          "c_function": "ts_resolve_underlying_call",
+          "pop_annotation": {
+            "c_function": "ts_resolve_underlying_call",
+            "python_functions": [
+              "resolve_underlying_call"
+            ],
+            "c_file": "src/tools/port_tool_search_remaining.c",
+            "python_file": "tools/tool_search.py",
+            "line": 143,
+            "is_consolidated": false,
+            "full_text": "/* PoP: resolve_underlying_call @ tools/tool_search.py:resolve_underlying_call */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
