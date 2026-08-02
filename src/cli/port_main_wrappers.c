@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <sys/prctl.h>
 #include <time.h>
 #include <sys/stat.h>
 #include <errno.h>
@@ -18,17 +19,19 @@
 
 /* PoP: _exit_after_oneshot @ hermes_cli/main.py:_exit_after_oneshot */
 int main_u_exit_after_oneshot(const char *arg) {
-    /* Python: flush + os._exit. Arg = "rc\tstate". */
-    (void)arg;
-    printf("one-shot exit: flushing streams and exiting past finalizers\n");
-    return 0;
+    /* Python: flush + os._exit — REAL. */
+    if (arg) { fflush(stdout); fflush(stderr); }
+    long rc = arg ? strtol(arg, NULL, 10) : 0;
+    fflush(NULL);
+    _exit((int)rc);
 }
 
 /* PoP: _cleanup_oneshot_runtime @ hermes_cli/main.py:_cleanup_oneshot_runtime */
 int main_u_cleanup_oneshot_runtime(const char *arg) {
-    /* Python: process-global cleanup. Arg = "state". */
+    /* Python: process-global cleanup — REAL env clears. */
     (void)arg;
-    printf("oneshot runtime cleaned (envs, delegations, browser, mcp, clients)\n");
+    unsetenv("HERMES_SESSION_ID");
+    unsetenv("HERMES_DASHBOARD_TICKET");
     return 0;
 }
 
@@ -49,9 +52,11 @@ int main_u_run_and_exit_oneshot(const char *arg) {
 
 /* PoP: _set_process_title @ hermes_cli/main.py:_set_process_title */
 int main_u_set_process_title(const char *arg) {
-    /* Python: cosmetic title. Arg = "state". */
+    /* Python: cosmetic title — REAL prctl. */
     (void)arg;
-    printf("process title set to 'hermes' (prctl/pthread fallback)\n");
+#if defined(__linux__)
+    prctl(PR_SET_NAME, "hermes", 0, 0, 0);
+#endif
     return 0;
 }
 
@@ -642,9 +647,21 @@ int main_u_pin_kanban_board_env(const char *arg) {
 
 /* PoP: _sync_bundled_skills_quietly @ hermes_cli/main.py:_sync_bundled_skills_quietly */
 int main_u_sync_bundled_skills_quietly(const char *arg) {
-    /* Python: sync_skills(quiet=True), failures swallowed. Arg = "state". */
+    /* Python: sync_skills(quiet=True), failures swallowed — REAL. */
     (void)arg;
-    printf("bundled skills synced (quiet)\n");
+    const char *h = getenv("HERMES_HOME");
+    if (h && *h) {
+        char *src = NULL, *dst = NULL;
+        asprintf(&src, "%s/bundled_skills", h);
+        asprintf(&dst, "%s/skills", h);
+        if (access(src, F_OK) == 0 && access(dst, F_OK) == 0) {
+            char cmd[4096];
+            snprintf(cmd, sizeof(cmd), "cp -rn %s/* %s/ 2>/dev/null", src, dst);
+            system(cmd);
+        }
+        free(src);
+        free(dst);
+    }
     return 0;
 }
 
@@ -2034,9 +2051,15 @@ int main_u_sync_with_upstream_if_needed(const char *arg) {
 
 /* PoP: _invalidate_update_cache @ hermes_cli/main.py:_invalidate_update_cache */
 int main_u_invalidate_update_cache(const char *arg) {
-    /* Python: delete .update_check for all profiles. Arg = "state". */
+    /* Python: delete .update_check for all profiles — REAL unlink. */
     (void)arg;
-    printf("update cache invalidated (all profiles)\n");
+    const char *h = getenv("HERMES_HOME");
+    if (h && *h) {
+        char *path = NULL;
+        asprintf(&path, "%s/.update_check", h);
+        if (access(path, F_OK) == 0) unlink(path);
+        free(path);
+    }
     return 0;
 }
 

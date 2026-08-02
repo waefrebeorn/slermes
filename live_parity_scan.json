@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T23:48:42Z",
+  "generated_at": "2026-08-02T23:50:29Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -205731,10 +205731,10 @@
     },
     "hermes_cli/main.py": {
       "total": 285,
-      "ported": 246,
+      "ported": 250,
       "partial": 1,
       "stub": 0,
-      "real_gaps": 38,
+      "real_gaps": 34,
       "thin": true,
       "pop_mismatch": false,
       "py_func_count": 285,
@@ -205750,7 +205750,7 @@
             "decorators": [],
             "line_number": 96
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_main_wrappers.c",
           "c_function": "main_u_exit_after_oneshot",
           "pop_annotation": {
@@ -205760,16 +205760,14 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 19,
+            "line": 20,
             "is_consolidated": false,
             "full_text": "/* PoP: _exit_after_oneshot @ hermes_cli/main.py:_exit_after_oneshot */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -205781,7 +205779,7 @@
             "decorators": [],
             "line_number": 128
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_main_wrappers.c",
           "c_function": "main_u_cleanup_oneshot_runtime",
           "pop_annotation": {
@@ -205791,16 +205789,14 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 27,
+            "line": 29,
             "is_consolidated": false,
             "full_text": "/* PoP: _cleanup_oneshot_runtime @ hermes_cli/main.py:_cleanup_oneshot_runtime */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -205822,7 +205818,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 35,
+            "line": 38,
             "is_consolidated": false,
             "full_text": "/* PoP: _run_and_exit_oneshot @ hermes_cli/main.py:_run_and_exit_oneshot */"
           },
@@ -205841,7 +205837,7 @@
             "decorators": [],
             "line_number": 215
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_main_wrappers.c",
           "c_function": "main_u_set_process_title",
           "pop_annotation": {
@@ -205851,16 +205847,14 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 50,
+            "line": 53,
             "is_consolidated": false,
             "full_text": "/* PoP: _set_process_title @ hermes_cli/main.py:_set_process_title */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -205882,7 +205876,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 58,
+            "line": 63,
             "is_consolidated": false,
             "full_text": "/* PoP: _config_default_interface_early @ hermes_cli/main.py:_config_default_interface_early */"
           },
@@ -205911,7 +205905,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 69,
+            "line": 74,
             "is_consolidated": false,
             "full_text": "/* PoP: _wants_tui_early @ hermes_cli/main.py:_wants_tui_early */"
           },
@@ -205940,7 +205934,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 90,
+            "line": 95,
             "is_consolidated": false,
             "full_text": "/* PoP: _suppress_mouse_residue_early @ hermes_cli/main.py:_suppress_mouse_residue_early */"
           },
@@ -205969,7 +205963,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 105,
+            "line": 110,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_termux_startup_environment_fast @ hermes_cli/main.py:_is_termux_startup_environment_fast */"
           },
@@ -205998,7 +205992,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 116,
+            "line": 121,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_termux_fast_version_argv @ hermes_cli/main.py:_is_termux_fast_version_argv */"
           },
@@ -206027,7 +206021,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 123,
+            "line": 128,
             "is_consolidated": false,
             "full_text": "/* PoP: _read_openai_version_fast @ hermes_cli/main.py:_read_openai_version_fast */"
           },
@@ -206056,7 +206050,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 165,
+            "line": 170,
             "is_consolidated": false,
             "full_text": "/* PoP: _print_fast_version_info @ hermes_cli/main.py:_print_fast_version_info */"
           },
@@ -206085,7 +206079,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 183,
+            "line": 188,
             "is_consolidated": false,
             "full_text": "/* PoP: _try_termux_ultrafast_version @ hermes_cli/main.py:_try_termux_ultrafast_version */"
           },
@@ -206114,7 +206108,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 196,
+            "line": 201,
             "is_consolidated": false,
             "full_text": "/* PoP: _require_tty @ hermes_cli/main.py:_require_tty */"
           },
@@ -206143,7 +206137,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 209,
+            "line": 214,
             "is_consolidated": false,
             "full_text": "/* PoP: _apply_profile_override @ hermes_cli/main.py:_apply_profile_override */"
           },
@@ -206172,7 +206166,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 224,
+            "line": 229,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_termux_startup_environment @ hermes_cli/main.py:_is_termux_startup_environment */"
           },
@@ -206259,7 +206253,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 230,
+            "line": 235,
             "is_consolidated": false,
             "full_text": "/* PoP: _termux_bundled_skills_fingerprint @ hermes_cli/main.py:_termux_bundled_skills_fingerprint */"
           },
@@ -206288,7 +206282,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 242,
+            "line": 247,
             "is_consolidated": false,
             "full_text": "/* PoP: _termux_bundled_skills_stamp_path @ hermes_cli/main.py:_termux_bundled_skills_stamp_path */"
           },
@@ -206317,7 +206311,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 254,
+            "line": 259,
             "is_consolidated": false,
             "full_text": "/* PoP: _termux_bundled_skills_sync_needed @ hermes_cli/main.py:_termux_bundled_skills_sync_needed */"
           },
@@ -206346,7 +206340,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 276,
+            "line": 281,
             "is_consolidated": false,
             "full_text": "/* PoP: _mark_termux_bundled_skills_synced @ hermes_cli/main.py:_mark_termux_bundled_skills_synced */"
           },
@@ -206375,7 +206369,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 288,
+            "line": 293,
             "is_consolidated": false,
             "full_text": "/* PoP: _sync_bundled_skills_for_startup @ hermes_cli/main.py:_sync_bundled_skills_for_startup */"
           },
@@ -206404,7 +206398,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 299,
+            "line": 304,
             "is_consolidated": false,
             "full_text": "/* PoP: _termux_should_prefetch_update_check @ hermes_cli/main.py:_termux_should_prefetch_update_check */"
           },
@@ -206462,7 +206456,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 311,
+            "line": 316,
             "is_consolidated": false,
             "full_text": "/* PoP: _has_any_provider_configured @ hermes_cli/main.py:_has_any_provider_configured */"
           },
@@ -206491,7 +206485,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 361,
+            "line": 366,
             "is_consolidated": false,
             "full_text": "/* PoP: _session_browse_picker @ hermes_cli/main.py:_session_browse_picker */"
           },
@@ -206520,7 +206514,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 376,
+            "line": 381,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_last_session @ hermes_cli/main.py:_resolve_last_session */"
           },
@@ -206549,7 +206543,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 387,
+            "line": 392,
             "is_consolidated": false,
             "full_text": "/* PoP: _probe_container @ hermes_cli/main.py:_probe_container */"
           },
@@ -206578,7 +206572,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 401,
+            "line": 406,
             "is_consolidated": false,
             "full_text": "/* PoP: _exec_in_container @ hermes_cli/main.py:_exec_in_container */"
           },
@@ -206607,7 +206601,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 418,
+            "line": 423,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_session_by_name_or_id @ hermes_cli/main.py:_resolve_session_by_name_or_id */"
           },
@@ -206665,7 +206659,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 429,
+            "line": 434,
             "is_consolidated": false,
             "full_text": "/* PoP: _print_tui_exit_summary @ hermes_cli/main.py:_print_tui_exit_summary */"
           },
@@ -206723,7 +206717,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 446,
+            "line": 451,
             "is_consolidated": false,
             "full_text": "/* PoP: _termux_workspace_install_context @ hermes_cli/main.py:_termux_workspace_install_context */"
           },
@@ -206752,7 +206746,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 463,
+            "line": 468,
             "is_consolidated": false,
             "full_text": "/* PoP: _tui_need_npm_install @ hermes_cli/main.py:_tui_need_npm_install */"
           },
@@ -206781,7 +206775,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 478,
+            "line": 483,
             "is_consolidated": false,
             "full_text": "/* PoP: _iter_tui_build_inputs @ hermes_cli/main.py:_iter_tui_build_inputs */"
           },
@@ -206810,7 +206804,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 487,
+            "line": 492,
             "is_consolidated": false,
             "full_text": "/* PoP: _tui_need_rebuild @ hermes_cli/main.py:_tui_need_rebuild */"
           },
@@ -206839,7 +206833,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 502,
+            "line": 507,
             "is_consolidated": false,
             "full_text": "/* PoP: _ensure_tui_node @ hermes_cli/main.py:_ensure_tui_node */"
           },
@@ -206868,7 +206862,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 518,
+            "line": 523,
             "is_consolidated": false,
             "full_text": "/* PoP: _find_bundled_tui @ hermes_cli/main.py:_find_bundled_tui */"
           },
@@ -206941,7 +206935,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 531,
+            "line": 536,
             "is_consolidated": false,
             "full_text": "/* PoP: _make_tui_argv @ hermes_cli/main.py:_make_tui_argv */"
           },
@@ -206970,7 +206964,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 549,
+            "line": 554,
             "is_consolidated": false,
             "full_text": "/* PoP: _normalize_tui_toolsets @ hermes_cli/main.py:_normalize_tui_toolsets */"
           },
@@ -207028,7 +207022,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 573,
+            "line": 578,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_tui_heap_mb @ hermes_cli/main.py:_resolve_tui_heap_mb */"
           },
@@ -207057,7 +207051,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 589,
+            "line": 594,
             "is_consolidated": false,
             "full_text": "/* PoP: _safe_tui_cwd @ hermes_cli/main.py:_safe_tui_cwd */"
           },
@@ -207086,7 +207080,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 607,
+            "line": 612,
             "is_consolidated": false,
             "full_text": "/* PoP: _apply_tui_python_env @ hermes_cli/main.py:_apply_tui_python_env */"
           },
@@ -207115,7 +207109,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 618,
+            "line": 623,
             "is_consolidated": false,
             "full_text": "/* PoP: _launch_tui @ hermes_cli/main.py:_launch_tui */"
           },
@@ -207144,7 +207138,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 632,
+            "line": 637,
             "is_consolidated": false,
             "full_text": "/* PoP: _pin_kanban_board_env @ hermes_cli/main.py:_pin_kanban_board_env */"
           },
@@ -207173,13 +207167,13 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 643,
+            "line": 648,
             "is_consolidated": false,
             "full_text": "/* PoP: _sync_bundled_skills_quietly @ hermes_cli/main.py:_sync_bundled_skills_quietly */"
           },
           "stub_reason": null,
           "severity": "LOW",
-          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "notes": "Explicit PoP annotation",
           "da_flags": []
         },
         {
@@ -207202,7 +207196,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 651,
+            "line": 668,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_use_tui @ hermes_cli/main.py:_resolve_use_tui */"
           },
@@ -207231,7 +207225,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 675,
+            "line": 692,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_chat @ hermes_cli/main.py:cmd_chat */"
           },
@@ -207282,7 +207276,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 693,
+            "line": 710,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_proxy @ hermes_cli/main.py:cmd_proxy */"
           },
@@ -207311,7 +207305,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 705,
+            "line": 722,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_whatsapp @ hermes_cli/main.py:cmd_whatsapp */"
           },
@@ -207340,7 +207334,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 726,
+            "line": 743,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_whatsapp_cloud @ hermes_cli/main.py:cmd_whatsapp_cloud */"
           },
@@ -207413,7 +207407,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 737,
+            "line": 754,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_profile_api_key_provider @ hermes_cli/main.py:_is_profile_api_key_provider */"
           },
@@ -207442,7 +207436,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 745,
+            "line": 762,
             "is_consolidated": false,
             "full_text": "/* PoP: select_provider_and_model @ hermes_cli/main.py:select_provider_and_model */"
           },
@@ -207471,7 +207465,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 760,
+            "line": 777,
             "is_consolidated": false,
             "full_text": "/* PoP: _clear_stale_openai_base_url @ hermes_cli/main.py:_clear_stale_openai_base_url */"
           },
@@ -207500,7 +207494,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 771,
+            "line": 788,
             "is_consolidated": false,
             "full_text": "/* PoP: _all_aux_tasks @ hermes_cli/main.py:_all_aux_tasks */"
           },
@@ -207529,7 +207523,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 780,
+            "line": 797,
             "is_consolidated": false,
             "full_text": "/* PoP: _format_aux_current @ hermes_cli/main.py:_format_aux_current */"
           },
@@ -207558,7 +207552,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 810,
+            "line": 827,
             "is_consolidated": false,
             "full_text": "/* PoP: _save_aux_choice @ hermes_cli/main.py:_save_aux_choice */"
           },
@@ -207587,7 +207581,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 824,
+            "line": 841,
             "is_consolidated": false,
             "full_text": "/* PoP: _reset_aux_to_auto @ hermes_cli/main.py:_reset_aux_to_auto */"
           },
@@ -207616,7 +207610,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 836,
+            "line": 853,
             "is_consolidated": false,
             "full_text": "/* PoP: _aux_config_menu @ hermes_cli/main.py:_aux_config_menu */"
           },
@@ -207645,7 +207639,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 855,
+            "line": 872,
             "is_consolidated": false,
             "full_text": "/* PoP: _aux_select_for_task @ hermes_cli/main.py:_aux_select_for_task */"
           },
@@ -207674,7 +207668,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 869,
+            "line": 886,
             "is_consolidated": false,
             "full_text": "/* PoP: _aux_flow_provider_model @ hermes_cli/main.py:_aux_flow_provider_model */"
           },
@@ -207703,7 +207697,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 880,
+            "line": 897,
             "is_consolidated": false,
             "full_text": "/* PoP: _aux_flow_custom_endpoint @ hermes_cli/main.py:_aux_flow_custom_endpoint */"
           },
@@ -207732,7 +207726,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 901,
+            "line": 918,
             "is_consolidated": false,
             "full_text": "/* PoP: _prompt_provider_choice @ hermes_cli/main.py:_prompt_provider_choice */"
           },
@@ -207761,7 +207755,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 918,
+            "line": 935,
             "is_consolidated": false,
             "full_text": "/* PoP: _prompt_custom_api_mode_selection @ hermes_cli/main.py:_prompt_custom_api_mode_selection */"
           },
@@ -207819,7 +207813,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 930,
+            "line": 947,
             "is_consolidated": false,
             "full_text": "/* PoP: _custom_provider_api_key_config_value @ hermes_cli/main.py:_custom_provider_api_key_config_value */"
           },
@@ -207848,7 +207842,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 948,
+            "line": 965,
             "is_consolidated": false,
             "full_text": "/* PoP: _custom_provider_base_url_config_value @ hermes_cli/main.py:_custom_provider_base_url_config_value */"
           },
@@ -207877,7 +207871,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 964,
+            "line": 981,
             "is_consolidated": false,
             "full_text": "/* PoP: _save_custom_provider @ hermes_cli/main.py:_save_custom_provider */"
           },
@@ -207906,7 +207900,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 979,
+            "line": 996,
             "is_consolidated": false,
             "full_text": "/* PoP: _remove_custom_provider @ hermes_cli/main.py:_remove_custom_provider */"
           },
@@ -207935,7 +207929,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 994,
+            "line": 1011,
             "is_consolidated": false,
             "full_text": "/* PoP: __getattr__ @ hermes_cli/main.py:__getattr__ */"
           },
@@ -207986,7 +207980,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1013,
+            "line": 1030,
             "is_consolidated": false,
             "full_text": "/* PoP: _set_reasoning_effort @ hermes_cli/main.py:_set_reasoning_effort */"
           },
@@ -208015,7 +208009,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1027,
+            "line": 1044,
             "is_consolidated": false,
             "full_text": "/* PoP: _prompt_reasoning_effort_selection @ hermes_cli/main.py:_prompt_reasoning_effort_selection */"
           },
@@ -208124,7 +208118,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1039,
+            "line": 1056,
             "is_consolidated": false,
             "full_text": "/* PoP: _run_anthropic_oauth_flow @ hermes_cli/main.py:_run_anthropic_oauth_flow */"
           },
@@ -208153,7 +208147,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1058,
+            "line": 1075,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_login @ hermes_cli/main.py:cmd_login */"
           },
@@ -208182,7 +208176,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1066,
+            "line": 1083,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_logout @ hermes_cli/main.py:cmd_logout */"
           },
@@ -208306,7 +208300,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1074,
+            "line": 1091,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_slack @ hermes_cli/main.py:cmd_slack */"
           },
@@ -208364,7 +208358,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1093,
+            "line": 1110,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_project @ hermes_cli/main.py:cmd_project */"
           },
@@ -208393,7 +208387,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1101,
+            "line": 1118,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_hooks @ hermes_cli/main.py:cmd_hooks */"
           },
@@ -208444,7 +208438,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1109,
+            "line": 1126,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_security @ hermes_cli/main.py:cmd_security */"
           },
@@ -208604,7 +208598,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1124,
+            "line": 1141,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_import @ hermes_cli/main.py:cmd_import */"
           },
@@ -208635,7 +208629,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1132,
+            "line": 1149,
             "is_consolidated": false,
             "full_text": "/* PoP: _print_version_info @ hermes_cli/main.py:_print_version_info */"
           },
@@ -208664,7 +208658,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1152,
+            "line": 1169,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_version @ hermes_cli/main.py:cmd_version */"
           },
@@ -208715,7 +208709,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1160,
+            "line": 1177,
             "is_consolidated": false,
             "full_text": "/* PoP: _clear_bytecode_cache @ hermes_cli/main.py:_clear_bytecode_cache */"
           },
@@ -208744,7 +208738,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1172,
+            "line": 1189,
             "is_consolidated": false,
             "full_text": "/* PoP: _capture_head_sha @ hermes_cli/main.py:_capture_head_sha */"
           },
@@ -208773,7 +208767,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1184,
+            "line": 1201,
             "is_consolidated": false,
             "full_text": "/* PoP: _validate_critical_files_syntax @ hermes_cli/main.py:_validate_critical_files_syntax */"
           },
@@ -208802,7 +208796,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1199,
+            "line": 1216,
             "is_consolidated": false,
             "full_text": "/* PoP: _gateway_prompt @ hermes_cli/main.py:_gateway_prompt */"
           },
@@ -208831,7 +208825,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1216,
+            "line": 1233,
             "is_consolidated": false,
             "full_text": "/* PoP: _web_ui_build_needed @ hermes_cli/main.py:_web_ui_build_needed */"
           },
@@ -208860,7 +208854,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1227,
+            "line": 1244,
             "is_consolidated": false,
             "full_text": "/* PoP: _compute_web_ui_content_hash @ hermes_cli/main.py:_compute_web_ui_content_hash */"
           },
@@ -208889,7 +208883,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1238,
+            "line": 1255,
             "is_consolidated": false,
             "full_text": "/* PoP: _web_ui_stamp_path @ hermes_cli/main.py:_web_ui_stamp_path */"
           },
@@ -208918,7 +208912,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1250,
+            "line": 1267,
             "is_consolidated": false,
             "full_text": "/* PoP: _write_web_ui_build_stamp @ hermes_cli/main.py:_write_web_ui_build_stamp */"
           },
@@ -208947,7 +208941,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1263,
+            "line": 1280,
             "is_consolidated": false,
             "full_text": "/* PoP: _run_with_idle_timeout @ hermes_cli/main.py:_run_with_idle_timeout */"
           },
@@ -208976,7 +208970,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1281,
+            "line": 1298,
             "is_consolidated": false,
             "full_text": "/* PoP: _nixos_build_env @ hermes_cli/main.py:_nixos_build_env */"
           },
@@ -209005,7 +208999,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1292,
+            "line": 1309,
             "is_consolidated": false,
             "full_text": "/* PoP: _run_npm_install_deterministic @ hermes_cli/main.py:_run_npm_install_deterministic */"
           },
@@ -209034,7 +209028,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1307,
+            "line": 1324,
             "is_consolidated": false,
             "full_text": "/* PoP: _build_web_ui @ hermes_cli/main.py:_build_web_ui */"
           },
@@ -209063,7 +209057,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1322,
+            "line": 1339,
             "is_consolidated": false,
             "full_text": "/* PoP: _do_build_web_ui @ hermes_cli/main.py:_do_build_web_ui */"
           },
@@ -209092,7 +209086,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1337,
+            "line": 1354,
             "is_consolidated": false,
             "full_text": "/* PoP: _desktop_dist_exists @ hermes_cli/main.py:_desktop_dist_exists */"
           },
@@ -209121,7 +209115,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1345,
+            "line": 1362,
             "is_consolidated": false,
             "full_text": "/* PoP: _compute_desktop_content_hash @ hermes_cli/main.py:_compute_desktop_content_hash */"
           },
@@ -209150,7 +209144,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1356,
+            "line": 1373,
             "is_consolidated": false,
             "full_text": "/* PoP: _desktop_stamp_path @ hermes_cli/main.py:_desktop_stamp_path */"
           },
@@ -209179,7 +209173,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1368,
+            "line": 1385,
             "is_consolidated": false,
             "full_text": "/* PoP: _desktop_build_needed @ hermes_cli/main.py:_desktop_build_needed */"
           },
@@ -209208,7 +209202,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1379,
+            "line": 1396,
             "is_consolidated": false,
             "full_text": "/* PoP: _write_desktop_build_stamp @ hermes_cli/main.py:_write_desktop_build_stamp */"
           },
@@ -209237,7 +209231,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1395,
+            "line": 1412,
             "is_consolidated": false,
             "full_text": "/* PoP: _desktop_packaged_executable @ hermes_cli/main.py:_desktop_packaged_executable */"
           },
@@ -209266,7 +209260,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1417,
+            "line": 1434,
             "is_consolidated": false,
             "full_text": "/* PoP: _expected_windows_pe_machines @ hermes_cli/main.py:_expected_windows_pe_machines */"
           },
@@ -209295,7 +209289,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1436,
+            "line": 1453,
             "is_consolidated": false,
             "full_text": "/* PoP: _parse_pe_machine @ hermes_cli/main.py:_parse_pe_machine */"
           },
@@ -209324,7 +209318,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1452,
+            "line": 1469,
             "is_consolidated": false,
             "full_text": "/* PoP: _pe_machine_or_none @ hermes_cli/main.py:_pe_machine_or_none */"
           },
@@ -209353,7 +209347,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1473,
+            "line": 1490,
             "is_consolidated": false,
             "full_text": "/* PoP: _desktop_exe_integrity_error @ hermes_cli/main.py:_desktop_exe_integrity_error */"
           },
@@ -209382,7 +209376,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1489,
+            "line": 1506,
             "is_consolidated": false,
             "full_text": "/* PoP: _desktop_backup_unpacked_dir @ hermes_cli/main.py:_desktop_backup_unpacked_dir */"
           },
@@ -209411,7 +209405,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1503,
+            "line": 1520,
             "is_consolidated": false,
             "full_text": "/* PoP: _rollback_desktop_from_backup @ hermes_cli/main.py:_rollback_desktop_from_backup */"
           },
@@ -209440,7 +209434,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1514,
+            "line": 1531,
             "is_consolidated": false,
             "full_text": "/* PoP: _ensure_desktop_exe_launchable @ hermes_cli/main.py:_ensure_desktop_exe_launchable */"
           },
@@ -209498,7 +209492,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1535,
+            "line": 1552,
             "is_consolidated": false,
             "full_text": "/* PoP: _purge_electron_build_cache @ hermes_cli/main.py:_purge_electron_build_cache */"
           },
@@ -209615,7 +209609,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1550,
+            "line": 1567,
             "is_consolidated": false,
             "full_text": "/* PoP: _redownload_electron_dist @ hermes_cli/main.py:_redownload_electron_dist */"
           },
@@ -209666,7 +209660,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1567,
+            "line": 1584,
             "is_consolidated": false,
             "full_text": "/* PoP: _stop_desktop_processes_locking_build @ hermes_cli/main.py:_stop_desktop_processes_locking_build */"
           },
@@ -209695,7 +209689,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1580,
+            "line": 1597,
             "is_consolidated": false,
             "full_text": "/* PoP: _desktop_macos_relaunchable_fixup @ hermes_cli/main.py:_desktop_macos_relaunchable_fixup */"
           },
@@ -209724,7 +209718,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1596,
+            "line": 1613,
             "is_consolidated": false,
             "full_text": "/* PoP: _force_adhoc_macos_signing @ hermes_cli/main.py:_force_adhoc_macos_signing */"
           },
@@ -209753,7 +209747,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1615,
+            "line": 1632,
             "is_consolidated": false,
             "full_text": "/* PoP: _desktop_linux_needs_no_sandbox @ hermes_cli/main.py:_desktop_linux_needs_no_sandbox */"
           },
@@ -209782,7 +209776,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1630,
+            "line": 1647,
             "is_consolidated": false,
             "full_text": "/* PoP: _desktop_linux_sandbox_helper_is_regular_file @ hermes_cli/main.py:_desktop_linux_sandbox_helper_is_regular_file */"
           },
@@ -209811,7 +209805,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1644,
+            "line": 1661,
             "is_consolidated": false,
             "full_text": "/* PoP: _desktop_linux_sandbox_fixup @ hermes_cli/main.py:_desktop_linux_sandbox_fixup */"
           },
@@ -209840,7 +209834,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1666,
+            "line": 1683,
             "is_consolidated": false,
             "full_text": "/* PoP: _desktop_launch_options @ hermes_cli/main.py:_desktop_launch_options */"
           },
@@ -209869,7 +209863,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1677,
+            "line": 1694,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_gui @ hermes_cli/main.py:cmd_gui */"
           },
@@ -209898,7 +209892,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1698,
+            "line": 1715,
             "is_consolidated": false,
             "full_text": "/* PoP: _find_stale_dashboard_pids @ hermes_cli/main.py:_find_stale_dashboard_pids */"
           },
@@ -209927,7 +209921,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1711,
+            "line": 1728,
             "is_consolidated": false,
             "full_text": "/* PoP: _print_curator_first_run_notice @ hermes_cli/main.py:_print_curator_first_run_notice */"
           },
@@ -209958,7 +209952,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1719,
+            "line": 1736,
             "is_consolidated": false,
             "full_text": "/* PoP: _print_fts_optimize_available_notice @ hermes_cli/main.py:_print_fts_optimize_available_notice */"
           },
@@ -209989,7 +209983,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1727,
+            "line": 1744,
             "is_consolidated": false,
             "full_text": "/* PoP: _print_curator_recent_run_notice @ hermes_cli/main.py:_print_curator_recent_run_notice */"
           },
@@ -210049,7 +210043,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1734,
+            "line": 1751,
             "is_consolidated": false,
             "full_text": "/* PoP: _restart_managed_dashboard_service @ hermes_cli/main.py:_restart_managed_dashboard_service */"
           },
@@ -210078,7 +210072,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1749,
+            "line": 1766,
             "is_consolidated": false,
             "full_text": "/* PoP: _kill_stale_dashboard_processes @ hermes_cli/main.py:_kill_stale_dashboard_processes */"
           },
@@ -210129,7 +210123,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1764,
+            "line": 1781,
             "is_consolidated": false,
             "full_text": "/* PoP: _update_via_zip @ hermes_cli/main.py:_update_via_zip */"
           },
@@ -210158,7 +210152,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1786,
+            "line": 1803,
             "is_consolidated": false,
             "full_text": "/* PoP: _stash_local_changes_if_needed @ hermes_cli/main.py:_stash_local_changes_if_needed */"
           },
@@ -210187,7 +210181,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1802,
+            "line": 1819,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_stash_selector @ hermes_cli/main.py:_resolve_stash_selector */"
           },
@@ -210216,7 +210210,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1835,
+            "line": 1852,
             "is_consolidated": false,
             "full_text": "/* PoP: _print_stash_cleanup_guidance @ hermes_cli/main.py:_print_stash_cleanup_guidance */"
           },
@@ -210245,7 +210239,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1849,
+            "line": 1866,
             "is_consolidated": false,
             "full_text": "/* PoP: _stash_apply_failed_only_on_existing_untracked @ hermes_cli/main.py:_stash_apply_failed_only_on_existing_untracked */"
           },
@@ -210274,7 +210268,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1861,
+            "line": 1878,
             "is_consolidated": false,
             "full_text": "/* PoP: _restore_stashed_changes @ hermes_cli/main.py:_restore_stashed_changes */"
           },
@@ -210303,7 +210297,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1881,
+            "line": 1898,
             "is_consolidated": false,
             "full_text": "/* PoP: _discard_stashed_changes @ hermes_cli/main.py:_discard_stashed_changes */"
           },
@@ -210332,7 +210326,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2842,
+            "line": 2865,
             "is_consolidated": false,
             "full_text": "/* PoP: _get_origin_url @ hermes_cli/main.py:_get_origin_url */"
           },
@@ -210361,7 +210355,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1900,
+            "line": 1917,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_fork @ hermes_cli/main.py:_is_fork */"
           },
@@ -210390,7 +210384,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1926,
+            "line": 1943,
             "is_consolidated": false,
             "full_text": "/* PoP: _has_upstream_remote @ hermes_cli/main.py:_has_upstream_remote */"
           },
@@ -210419,7 +210413,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1936,
+            "line": 1953,
             "is_consolidated": false,
             "full_text": "/* PoP: _add_upstream_remote @ hermes_cli/main.py:_add_upstream_remote */"
           },
@@ -210448,7 +210442,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1946,
+            "line": 1963,
             "is_consolidated": false,
             "full_text": "/* PoP: _count_commits_between @ hermes_cli/main.py:_count_commits_between */"
           },
@@ -210477,7 +210471,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1969,
+            "line": 1986,
             "is_consolidated": false,
             "full_text": "/* PoP: _should_skip_upstream_prompt @ hermes_cli/main.py:_should_skip_upstream_prompt */"
           },
@@ -210506,7 +210500,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 1986,
+            "line": 2003,
             "is_consolidated": false,
             "full_text": "/* PoP: _mark_skip_upstream_prompt @ hermes_cli/main.py:_mark_skip_upstream_prompt */"
           },
@@ -210535,7 +210529,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2008,
+            "line": 2025,
             "is_consolidated": false,
             "full_text": "/* PoP: _sync_fork_with_upstream @ hermes_cli/main.py:_sync_fork_with_upstream */"
           },
@@ -210564,7 +210558,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2016,
+            "line": 2033,
             "is_consolidated": false,
             "full_text": "/* PoP: _sync_with_upstream_if_needed @ hermes_cli/main.py:_sync_with_upstream_if_needed */"
           },
@@ -210583,7 +210577,7 @@
             "decorators": [],
             "line_number": 7928
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_main_wrappers.c",
           "c_function": "main_u_invalidate_update_cache",
           "pop_annotation": {
@@ -210593,16 +210587,14 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2035,
+            "line": 2052,
             "is_consolidated": false,
             "full_text": "/* PoP: _invalidate_update_cache @ hermes_cli/main.py:_invalidate_update_cache */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -210624,7 +210616,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2043,
+            "line": 2066,
             "is_consolidated": false,
             "full_text": "/* PoP: _load_installable_optional_extras @ hermes_cli/main.py:_load_installable_optional_extras */"
           },
@@ -210682,7 +210674,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2055,
+            "line": 2078,
             "is_consolidated": false,
             "full_text": "/* PoP: _lazy_refresh_marker_path @ hermes_cli/main.py:_lazy_refresh_marker_path */"
           },
@@ -210711,7 +210703,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2067,
+            "line": 2090,
             "is_consolidated": false,
             "full_text": "/* PoP: _write_marker_file @ hermes_cli/main.py:_write_marker_file */"
           },
@@ -210740,7 +210732,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2079,
+            "line": 2102,
             "is_consolidated": false,
             "full_text": "/* PoP: _clear_marker_file @ hermes_cli/main.py:_clear_marker_file */"
           },
@@ -210769,7 +210761,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2088,
+            "line": 2111,
             "is_consolidated": false,
             "full_text": "/* PoP: _write_update_incomplete_marker @ hermes_cli/main.py:_write_update_incomplete_marker */"
           },
@@ -210798,7 +210790,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2106,
+            "line": 2129,
             "is_consolidated": false,
             "full_text": "/* PoP: _clear_update_incomplete_marker @ hermes_cli/main.py:_clear_update_incomplete_marker */"
           },
@@ -210827,7 +210819,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2122,
+            "line": 2145,
             "is_consolidated": false,
             "full_text": "/* PoP: _write_lazy_refresh_incomplete_marker @ hermes_cli/main.py:_write_lazy_refresh_incomplete_marker */"
           },
@@ -210856,7 +210848,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2141,
+            "line": 2164,
             "is_consolidated": false,
             "full_text": "/* PoP: _clear_lazy_refresh_incomplete_marker @ hermes_cli/main.py:_clear_lazy_refresh_incomplete_marker */"
           },
@@ -210885,7 +210877,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2158,
+            "line": 2181,
             "is_consolidated": false,
             "full_text": "/* PoP: _recover_from_interrupted_install @ hermes_cli/main.py:_recover_from_interrupted_install */"
           },
@@ -210914,7 +210906,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2183,
+            "line": 2206,
             "is_consolidated": false,
             "full_text": "/* PoP: _recover_lazy_refresh_marker_locked @ hermes_cli/main.py:_recover_lazy_refresh_marker_locked */"
           },
@@ -210943,7 +210935,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2203,
+            "line": 2226,
             "is_consolidated": false,
             "full_text": "/* PoP: _recover_core_update_marker_locked @ hermes_cli/main.py:_recover_core_update_marker_locked */"
           },
@@ -210972,7 +210964,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2221,
+            "line": 2244,
             "is_consolidated": false,
             "full_text": "/* PoP: _windows_running_hermes_launcher_locked @ hermes_cli/main.py:_windows_running_hermes_launcher_locked */"
           },
@@ -211001,7 +210993,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2235,
+            "line": 2258,
             "is_consolidated": false,
             "full_text": "/* PoP: _default_venv_install_target @ hermes_cli/main.py:_default_venv_install_target */"
           },
@@ -211030,7 +211022,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2250,
+            "line": 2273,
             "is_consolidated": false,
             "full_text": "/* PoP: _run_install_with_heartbeat @ hermes_cli/main.py:_run_install_with_heartbeat */"
           },
@@ -211088,7 +211080,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2264,
+            "line": 2287,
             "is_consolidated": false,
             "full_text": "/* PoP: _venv_scripts_dir @ hermes_cli/main.py:_venv_scripts_dir */"
           },
@@ -211117,7 +211109,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2281,
+            "line": 2304,
             "is_consolidated": false,
             "full_text": "/* PoP: _hermes_exe_shims @ hermes_cli/main.py:_hermes_exe_shims */"
           },
@@ -211146,7 +211138,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2307,
+            "line": 2330,
             "is_consolidated": false,
             "full_text": "/* PoP: _detect_concurrent_hermes_instances @ hermes_cli/main.py:_detect_concurrent_hermes_instances */"
           },
@@ -211175,7 +211167,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2320,
+            "line": 2343,
             "is_consolidated": false,
             "full_text": "/* PoP: _format_concurrent_instances_message @ hermes_cli/main.py:_format_concurrent_instances_message */"
           },
@@ -211204,7 +211196,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2337,
+            "line": 2360,
             "is_consolidated": false,
             "full_text": "/* PoP: _quarantine_running_hermes_exe @ hermes_cli/main.py:_quarantine_running_hermes_exe */"
           },
@@ -211233,7 +211225,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2355,
+            "line": 2378,
             "is_consolidated": false,
             "full_text": "/* PoP: _schedule_replace_on_reboot @ hermes_cli/main.py:_schedule_replace_on_reboot */"
           },
@@ -211262,7 +211254,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2368,
+            "line": 2391,
             "is_consolidated": false,
             "full_text": "/* PoP: _restore_quarantined_exes @ hermes_cli/main.py:_restore_quarantined_exes */"
           },
@@ -211291,7 +211283,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2396,
+            "line": 2419,
             "is_consolidated": false,
             "full_text": "/* PoP: _run_quarantined_install @ hermes_cli/main.py:_run_quarantined_install */"
           },
@@ -211320,7 +211312,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2410,
+            "line": 2433,
             "is_consolidated": false,
             "full_text": "/* PoP: _cleanup_quarantined_exes @ hermes_cli/main.py:_cleanup_quarantined_exes */"
           },
@@ -211349,7 +211341,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2422,
+            "line": 2445,
             "is_consolidated": false,
             "full_text": "/* PoP: _run_package_only_install @ hermes_cli/main.py:_run_package_only_install */"
           },
@@ -211378,7 +211370,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2436,
+            "line": 2459,
             "is_consolidated": false,
             "full_text": "/* PoP: _lazy_refresh_repair_specs @ hermes_cli/main.py:_lazy_refresh_repair_specs */"
           },
@@ -211407,7 +211399,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2447,
+            "line": 2470,
             "is_consolidated": false,
             "full_text": "/* PoP: _upgrade_pip_before_lazy_refresh @ hermes_cli/main.py:_upgrade_pip_before_lazy_refresh */"
           },
@@ -211436,7 +211428,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2456,
+            "line": 2479,
             "is_consolidated": false,
             "full_text": "/* PoP: _detect_broken_lazy_refresh_imports @ hermes_cli/main.py:_detect_broken_lazy_refresh_imports */"
           },
@@ -211465,7 +211457,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2468,
+            "line": 2491,
             "is_consolidated": false,
             "full_text": "/* PoP: _repair_broken_lazy_refresh_imports @ hermes_cli/main.py:_repair_broken_lazy_refresh_imports */"
           },
@@ -211494,7 +211486,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2480,
+            "line": 2503,
             "is_consolidated": false,
             "full_text": "/* PoP: _repair_venv_via_import_probes @ hermes_cli/main.py:_repair_venv_via_import_probes */"
           },
@@ -211523,7 +211515,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2497,
+            "line": 2520,
             "is_consolidated": false,
             "full_text": "/* PoP: _refresh_active_lazy_features @ hermes_cli/main.py:_refresh_active_lazy_features */"
           },
@@ -211552,7 +211544,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2512,
+            "line": 2535,
             "is_consolidated": false,
             "full_text": "/* PoP: _install_python_dependencies_with_optional_fallback @ hermes_cli/main.py:_install_python_dependencies_with_optional_fallback */"
           },
@@ -211581,7 +211573,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2530,
+            "line": 2553,
             "is_consolidated": false,
             "full_text": "/* PoP: _load_console_script_names @ hermes_cli/main.py:_load_console_script_names */"
           },
@@ -211610,7 +211602,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2538,
+            "line": 2561,
             "is_consolidated": false,
             "full_text": "/* PoP: _verify_console_scripts_installed @ hermes_cli/main.py:_verify_console_scripts_installed */"
           },
@@ -211639,7 +211631,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2557,
+            "line": 2580,
             "is_consolidated": false,
             "full_text": "/* PoP: _verify_core_dependencies_installed @ hermes_cli/main.py:_verify_core_dependencies_installed */"
           },
@@ -211668,7 +211660,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2575,
+            "line": 2598,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_install_target_python @ hermes_cli/main.py:_resolve_install_target_python */"
           },
@@ -211755,7 +211747,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2589,
+            "line": 2612,
             "is_consolidated": false,
             "full_text": "/* PoP: _install_psutil_android_compat @ hermes_cli/main.py:_install_psutil_android_compat */"
           },
@@ -211784,7 +211776,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2600,
+            "line": 2623,
             "is_consolidated": false,
             "full_text": "/* PoP: _ensure_uv_for_termux @ hermes_cli/main.py:_ensure_uv_for_termux */"
           },
@@ -211813,7 +211805,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2613,
+            "line": 2636,
             "is_consolidated": false,
             "full_text": "/* PoP: _npm_manifest_paths @ hermes_cli/main.py:_npm_manifest_paths */"
           },
@@ -211842,7 +211834,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2625,
+            "line": 2648,
             "is_consolidated": false,
             "full_text": "/* PoP: _npm_manifests_digest @ hermes_cli/main.py:_npm_manifests_digest */"
           },
@@ -211871,7 +211863,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2640,
+            "line": 2663,
             "is_consolidated": false,
             "full_text": "/* PoP: _npm_lockfile_changed @ hermes_cli/main.py:_npm_lockfile_changed */"
           },
@@ -211900,7 +211892,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2653,
+            "line": 2676,
             "is_consolidated": false,
             "full_text": "/* PoP: _record_npm_lockfile_hash @ hermes_cli/main.py:_record_npm_lockfile_hash */"
           },
@@ -211929,7 +211921,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2667,
+            "line": 2690,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_windows_npm_path @ hermes_cli/main.py:_is_windows_npm_path */"
           },
@@ -211958,7 +211950,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2681,
+            "line": 2704,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_node_runtime_npm @ hermes_cli/main.py:_resolve_node_runtime_npm */"
           },
@@ -211987,7 +211979,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2696,
+            "line": 2719,
             "is_consolidated": false,
             "full_text": "/* PoP: _update_node_dependencies @ hermes_cli/main.py:_update_node_dependencies */"
           },
@@ -212133,7 +212125,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 994,
+            "line": 1011,
             "is_consolidated": false,
             "full_text": "/* PoP: __getattr__ @ hermes_cli/main.py:__getattr__ */"
           },
@@ -212162,7 +212154,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2734,
+            "line": 2757,
             "is_consolidated": false,
             "full_text": "/* PoP: _install_hangup_protection @ hermes_cli/main.py:_install_hangup_protection */"
           },
@@ -212191,7 +212183,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2749,
+            "line": 2772,
             "is_consolidated": false,
             "full_text": "/* PoP: _log_only_write @ hermes_cli/main.py:_log_only_write */"
           },
@@ -212220,7 +212212,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2760,
+            "line": 2783,
             "is_consolidated": false,
             "full_text": "/* PoP: _run_logged_subprocess @ hermes_cli/main.py:_run_logged_subprocess */"
           },
@@ -212249,7 +212241,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2773,
+            "line": 2796,
             "is_consolidated": false,
             "full_text": "/* PoP: _finalize_update_output @ hermes_cli/main.py:_finalize_update_output */"
           },
@@ -212278,7 +212270,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2781,
+            "line": 2804,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_update_branch @ hermes_cli/main.py:_resolve_update_branch */"
           },
@@ -212307,7 +212299,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2792,
+            "line": 2815,
             "is_consolidated": false,
             "full_text": "/* PoP: _cmd_update_check @ hermes_cli/main.py:_cmd_update_check */"
           },
@@ -212336,7 +212328,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2814,
+            "line": 2837,
             "is_consolidated": false,
             "full_text": "/* PoP: _ensure_fhs_path_guard @ hermes_cli/main.py:_ensure_fhs_path_guard */"
           },
@@ -212365,7 +212357,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2829,
+            "line": 2852,
             "is_consolidated": false,
             "full_text": "/* PoP: _size_delta_label @ hermes_cli/main.py:_size_delta_label */"
           },
@@ -212394,7 +212386,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2858,
+            "line": 2881,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_pre_update_backup_mode @ hermes_cli/main.py:_resolve_pre_update_backup_mode */"
           },
@@ -212423,7 +212415,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2869,
+            "line": 2892,
             "is_consolidated": false,
             "full_text": "/* PoP: _run_pre_update_backup @ hermes_cli/main.py:_run_pre_update_backup */"
           },
@@ -212452,7 +212444,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2882,
+            "line": 2905,
             "is_consolidated": false,
             "full_text": "/* PoP: _write_update_planned_stop_marker @ hermes_cli/main.py:_write_update_planned_stop_marker */"
           },
@@ -212481,7 +212473,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2895,
+            "line": 2918,
             "is_consolidated": false,
             "full_text": "/* PoP: _wait_for_windows_update_gateway_exit @ hermes_cli/main.py:_wait_for_windows_update_gateway_exit */"
           },
@@ -212510,7 +212502,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2908,
+            "line": 2931,
             "is_consolidated": false,
             "full_text": "/* PoP: _venv_core_imports_healthy @ hermes_cli/main.py:_venv_core_imports_healthy */"
           },
@@ -212539,7 +212531,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2922,
+            "line": 2945,
             "is_consolidated": false,
             "full_text": "/* PoP: _detect_venv_python_processes @ hermes_cli/main.py:_detect_venv_python_processes */"
           },
@@ -212568,7 +212560,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2935,
+            "line": 2958,
             "is_consolidated": false,
             "full_text": "/* PoP: _format_venv_python_holders_message @ hermes_cli/main.py:_format_venv_python_holders_message */"
           },
@@ -212597,7 +212589,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2951,
+            "line": 2974,
             "is_consolidated": false,
             "full_text": "/* PoP: _pause_windows_gateways_for_update @ hermes_cli/main.py:_pause_windows_gateways_for_update */"
           },
@@ -212626,7 +212618,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2966,
+            "line": 2989,
             "is_consolidated": false,
             "full_text": "/* PoP: _cold_start_windows_gateway_after_update @ hermes_cli/main.py:_cold_start_windows_gateway_after_update */"
           },
@@ -212655,7 +212647,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2982,
+            "line": 3005,
             "is_consolidated": false,
             "full_text": "/* PoP: _for_each_systemd_gateway_unit @ hermes_cli/main.py:_for_each_systemd_gateway_unit */"
           },
@@ -212684,7 +212676,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 2994,
+            "line": 3017,
             "is_consolidated": false,
             "full_text": "/* PoP: _warn_incomplete_gateway_fleet_restart @ hermes_cli/main.py:_warn_incomplete_gateway_fleet_restart */"
           },
@@ -212713,7 +212705,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3013,
+            "line": 3036,
             "is_consolidated": false,
             "full_text": "/* PoP: _resume_windows_gateways_after_update @ hermes_cli/main.py:_resume_windows_gateways_after_update */"
           },
@@ -212742,7 +212734,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3028,
+            "line": 3051,
             "is_consolidated": false,
             "full_text": "/* PoP: _discard_lockfile_churn @ hermes_cli/main.py:_discard_lockfile_churn */"
           },
@@ -212800,7 +212792,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3041,
+            "line": 3064,
             "is_consolidated": false,
             "full_text": "/* PoP: _cmd_update_impl @ hermes_cli/main.py:_cmd_update_impl */"
           },
@@ -212887,7 +212879,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3062,
+            "line": 3085,
             "is_consolidated": false,
             "full_text": "/* PoP: _render_distribution_plan @ hermes_cli/main.py:_render_distribution_plan */"
           },
@@ -212916,7 +212908,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3081,
+            "line": 3104,
             "is_consolidated": false,
             "full_text": "/* PoP: _report_dashboard_status @ hermes_cli/main.py:_report_dashboard_status */"
           },
@@ -212945,7 +212937,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3095,
+            "line": 3118,
             "is_consolidated": false,
             "full_text": "/* PoP: _dashboard_listening @ hermes_cli/main.py:_dashboard_listening */"
           },
@@ -212974,7 +212966,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3108,
+            "line": 3131,
             "is_consolidated": false,
             "full_text": "/* PoP: _maybe_setup_dashboard_auth_interactively @ hermes_cli/main.py:_maybe_setup_dashboard_auth_interactively */"
           },
@@ -213003,7 +212995,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3123,
+            "line": 3146,
             "is_consolidated": false,
             "full_text": "/* PoP: _read_ssh_session_token_file @ hermes_cli/main.py:_read_ssh_session_token_file */"
           },
@@ -213032,7 +213024,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3144,
+            "line": 3167,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_electron_packaged_web_dist @ hermes_cli/main.py:_is_electron_packaged_web_dist */"
           },
@@ -213083,7 +213075,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3153,
+            "line": 3176,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_dashboard_register @ hermes_cli/main.py:cmd_dashboard_register */"
           },
@@ -213112,7 +213104,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3162,
+            "line": 3185,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_gateway_enroll @ hermes_cli/main.py:cmd_gateway_enroll */"
           },
@@ -213141,7 +213133,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3171,
+            "line": 3194,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_completion @ hermes_cli/main.py:cmd_completion */"
           },
@@ -213214,7 +213206,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3187,
+            "line": 3210,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_console @ hermes_cli/main.py:cmd_console */"
           },
@@ -213294,7 +213286,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3195,
+            "line": 3218,
             "is_consolidated": false,
             "full_text": "/* PoP: _plugin_cli_discovery_needed @ hermes_cli/main.py:_plugin_cli_discovery_needed */"
           },
@@ -213352,7 +213344,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3208,
+            "line": 3231,
             "is_consolidated": false,
             "full_text": "/* PoP: _command_has_dedicated_mcp_startup @ hermes_cli/main.py:_command_has_dedicated_mcp_startup */"
           },
@@ -213381,7 +213373,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3221,
+            "line": 3244,
             "is_consolidated": false,
             "full_text": "/* PoP: _should_background_mcp_startup @ hermes_cli/main.py:_should_background_mcp_startup */"
           },
@@ -213410,7 +213402,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3234,
+            "line": 3257,
             "is_consolidated": false,
             "full_text": "/* PoP: _prepare_agent_startup @ hermes_cli/main.py:_prepare_agent_startup */"
           },
@@ -213439,7 +213431,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3249,
+            "line": 3272,
             "is_consolidated": false,
             "full_text": "/* PoP: _apply_safe_mode @ hermes_cli/main.py:_apply_safe_mode */"
           },
@@ -213468,7 +213460,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3266,
+            "line": 3289,
             "is_consolidated": false,
             "full_text": "/* PoP: _set_chat_arg_defaults @ hermes_cli/main.py:_set_chat_arg_defaults */"
           },
@@ -213497,7 +213489,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3275,
+            "line": 3298,
             "is_consolidated": false,
             "full_text": "/* PoP: _try_termux_fast_cli_launch @ hermes_cli/main.py:_try_termux_fast_cli_launch */"
           },
@@ -213526,7 +213518,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3290,
+            "line": 3313,
             "is_consolidated": false,
             "full_text": "/* PoP: _try_termux_fast_tui_launch @ hermes_cli/main.py:_try_termux_fast_tui_launch */"
           },
@@ -213577,7 +213569,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3301,
+            "line": 3324,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_acp @ hermes_cli/main.py:cmd_acp */"
           },
@@ -213693,7 +213685,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3313,
+            "line": 3336,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_pairing @ hermes_cli/main.py:cmd_pairing */"
           },
@@ -213773,7 +213765,7 @@
             ],
             "c_file": "src/cli/port_main_wrappers.c",
             "python_file": "hermes_cli/main.py",
-            "line": 3321,
+            "line": 3344,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_claw @ hermes_cli/main.py:cmd_claw */"
           },
