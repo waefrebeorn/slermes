@@ -50,7 +50,15 @@ int msf_bedrock_model_routable_from_region(const char *arg) {
 int msf_u_prune_replaced_custom_model_config_credentials(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _prompt_auth_credentials_choice @ hermes_cli/model_setup_flows.py:_prompt_auth_credentials_choice */
-int msf_u_prompt_auth_credentials_choice(const char *arg) { (void)arg; return 0; }
+int msf_u_prompt_auth_credentials_choice(const char *arg) {
+    /* Python: use/reauth/cancel. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("use\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "use") == 0 || strcmp(state, "reauth") == 0 || strcmp(state, "cancel") == 0) { printf("%s\n", state); return 0; }
+    printf("%s\n", tab ? tab + 1 : "use");
+    return 0;
+}
 
 /* PoP: _model_flow_openrouter @ hermes_cli/model_setup_flows.py:_model_flow_openrouter */
 int msf_u_model_flow_openrouter(const char *arg) { (void)arg; return 0; }

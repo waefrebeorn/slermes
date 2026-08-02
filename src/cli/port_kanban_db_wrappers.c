@@ -13,7 +13,16 @@
 #include "sqlite3.h"
 
 /* PoP: _assert_not_delegated_child_mutation @ hermes_cli/kanban_db.py:_assert_not_delegated_child_mutation */
-int kdbport_u_assert_not_delegated_child_mutation(const char *arg) { (void)arg; return 0; }
+int kdbport_u_assert_not_delegated_child_mutation(const char *arg) {
+    /* Python: reject child mutations. Arg = "delegated\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int delegated = arg[0] == '1';
+    int state = tab && tab[1] == '1';
+    if (!delegated || !state) { printf("mutation allowed\n"); return 0; }
+    fprintf(stderr, "delegate_task child contexts cannot mutate Kanban tasks or boards\n");
+    return 1;
+}
 
 /* PoP: scoped_current_board @ hermes_cli/kanban_db.py:scoped_current_board */
 int kdbport_scoped_current_board(const char *arg) {

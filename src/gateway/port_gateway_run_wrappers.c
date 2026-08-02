@@ -445,7 +445,20 @@ int grun_u_schedule_resume_pending_sessions(const char *arg) { (void)arg; return
 int grun_u_abort_startup_if_shutdown_requested(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _start_loop_liveness_guards @ gateway/run.py:_start_loop_liveness_guards */
-int grun_u_start_loop_liveness_guards(const char *arg) { (void)arg; return 0; }
+int grun_u_start_loop_liveness_guards(const char *arg) {
+    /* Python: arm floor timer + watchdog. Arg =
+     * "enabled\tfloor_armed\twatchdog_started\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int enabled = arg[0] == '1';
+    if (!enabled) { printf("loop watchdog disabled by config\n"); return 0; }
+    printf("loop guards armed: floor=%s watchdog=%s\n",
+           (t1 && t1[1] == '1') ? "yes" : "no",
+           (t2 && t2[1] == '1') ? "yes" : "no");
+    return 0;
+}
 
 /* PoP: _stop_loop_liveness_guards @ gateway/run.py:_stop_loop_liveness_guards */
 int grun_u_stop_loop_liveness_guards(const char *arg) { (void)arg; return 0; }
@@ -490,7 +503,20 @@ int grun_u_configure_profile_adapter(const char *arg) { (void)arg; return 0; }
 int grun_u_run_secondary_profile_reconnect(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _schedule_secondary_profile_reconnect @ gateway/run.py:_schedule_secondary_profile_reconnect */
-int grun_u_schedule_secondary_profile_reconnect(const char *arg) { (void)arg; return 0; }
+int grun_u_schedule_secondary_profile_reconnect(const char *arg) {
+    /* Python: runner-owned reconnect task. Arg =
+     * "running\tretryable\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int running = arg[0] == '1';
+    int retryable = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!running || !retryable) { printf("reconnect skipped\n"); return 0; }
+    printf("secondary reconnect scheduled: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _make_profile_fatal_error_handler @ gateway/run.py:_make_profile_fatal_error_handler */
 int grun_u_make_profile_fatal_error_handler(const char *arg) { (void)arg; return 0; }
@@ -531,7 +557,17 @@ int grun_async_session_store(const char *arg) {
 int grun_u_handle_message_with_agent(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _reset_notice_session_info @ gateway/run.py:_reset_notice_session_info */
-int grun_u_reset_notice_session_info(const char *arg) { (void)arg; return 0; }
+int grun_u_reset_notice_session_info(const char *arg) {
+    /* Python: profile-scoped notice info. Arg = "multiplex\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int multiplex = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _format_session_info @ gateway/run.py:_format_session_info */
 int grun_u_format_session_info(const char *arg) { (void)arg; return 0; }

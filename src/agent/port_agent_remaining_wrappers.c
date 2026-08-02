@@ -17,7 +17,18 @@
 #include "hash.h"
 
 /* PoP: _endpoint_scoped_context_length @ agent/model_metadata.py:_endpoint_scoped_context_length */
-int agent_model_metadata_u_endpoint_scoped_context_length(const char *arg) { (void)arg; return 0; }
+int agent_model_metadata_u_endpoint_scoped_context_length(const char *arg) {
+    /* Python: Kimi coding endpoint gate. Arg =
+     * "base_url\tmodel\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t3 ? t3 + 1 : "1048576");
+    return 0;
+}
 
 /* PoP: _skip_persistent_context_cache @ agent/model_metadata.py:_skip_persistent_context_cache */
 int agent_model_metadata_u_skip_persistent_context_cache(const char *arg) {

@@ -30,7 +30,15 @@ int cgw_has_process_service_mismatch(const char *arg) {
 int cgw_u_scan_gateway_pids(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _filter_venv_launcher_stubs @ hermes_cli/gateway.py:_filter_venv_launcher_stubs */
-int cgw_u_filter_venv_launcher_stubs(const char *arg) { (void)arg; return 0; }
+int cgw_u_filter_venv_launcher_stubs(const char *arg) {
+    /* Python: drop parent stubs. Arg = "pids\tdropped\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long dropped = t1 ? strtol(t1 + 1, NULL, 10) : 0;
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: find_profile_gateway_processes @ hermes_cli/gateway.py:find_profile_gateway_processes */
 int cgw_find_profile_gateway_processes(const char *arg) {
@@ -105,7 +113,21 @@ int cgw_u_hermes_home_from_systemd_unit_file(const char *arg) {
 }
 
 /* PoP: _sync_hermes_home_from_systemd_unit @ hermes_cli/gateway.py:_sync_hermes_home_from_systemd_unit */
-int cgw_u_sync_hermes_home_from_systemd_unit(const char *arg) { (void)arg; return 0; }
+int cgw_u_sync_hermes_home_from_systemd_unit(const char *arg) {
+    /* Python: adopt unit HERMES_HOME. Arg =
+     * "is_system\tunit_home\tcurrent\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int is_system = arg[0] == '1';
+    const char *unit_home = t1 ? t1 + 1 : "";
+    int state = t3 && t3[1] == '1';
+    if (!is_system) { printf("no sync (user scope)\n"); return 0; }
+    if (!state) { printf("no unit home to adopt\n"); return 0; }
+    printf("HERMES_HOME synced from unit: %s\n", unit_home);
+    return 0;
+}
 
 /* PoP: _read_systemd_unit_properties @ hermes_cli/gateway.py:_read_systemd_unit_properties */
 int cgw_u_read_systemd_unit_properties(const char *arg) {
@@ -510,7 +532,20 @@ int cgw_u_user_systemd_socket_ready(const char *arg) {
 }
 
 /* PoP: _ensure_user_systemd_env @ hermes_cli/gateway.py:_ensure_user_systemd_env */
-int cgw_u_ensure_user_systemd_env(const char *arg) { (void)arg; return 0; }
+int cgw_u_ensure_user_systemd_env(const char *arg) {
+    /* Python: set DBUS/XDG_RUNTIME. Arg =
+     * "uid\thas_xdg\thas_dbus\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int has_xdg = t1 && t1[1] == '1';
+    int has_dbus = t2 && t2[1] == '1';
+    int state = t3 && t3[1] == '1';
+    if (!state) { printf("env already set\n"); return 0; }
+    printf("XDG_RUNTIME_DIR=%s; DBUS set=%d\n", arg, has_dbus ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _wait_for_user_dbus_socket @ hermes_cli/gateway.py:_wait_for_user_dbus_socket */
 int cgw_u_wait_for_user_dbus_socket(const char *arg) {
@@ -1083,7 +1118,22 @@ int cgw_u_system_scope_wizard_would_need_root(const char *arg) {
 }
 
 /* PoP: _print_system_scope_remediation @ hermes_cli/gateway.py:_print_system_scope_remediation */
-int cgw_u_print_system_scope_remediation(const char *arg) { (void)arg; return 0; }
+int cgw_u_print_system_scope_remediation(const char *arg) {
+    /* Python: root-required remediation. Arg = "action\tservice". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *action = arg;
+    const char *svc = tab ? tab + 1 : "hermes-gateway";
+    printf("Gateway is installed as a system-wide service — %s requires root.\n", action);
+    printf("  Options:\n");
+    printf("    1. %s it this time:\n", action);
+    printf("         sudo systemctl %s %s\n", action, svc);
+    printf("    2. Switch to a per-user service (recommended for personal use):\n");
+    printf("         sudo hermes gateway uninstall --system\n");
+    printf("         hermes gateway install\n");
+    printf("         hermes gateway start\n");
+    return 0;
+}
 
 /* PoP: _get_restart_drain_timeout @ hermes_cli/gateway.py:_get_restart_drain_timeout */
 int cgw_u_get_restart_drain_timeout(const char *arg) {

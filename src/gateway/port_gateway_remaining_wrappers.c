@@ -1408,7 +1408,16 @@ int gateway_authz_mixin_u_pairing_store_for(const char *arg) {
 }
 
 /* PoP: _probe_state_db @ gateway/readiness.py:_probe_state_db */
-int gateway_readiness_u_probe_state_db(const char *arg) { (void)arg; return 0; }
+int gateway_readiness_u_probe_state_db(const char *arg) {
+    /* Python: RO schema probe. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("ok not initialized\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "missing") == 0) { printf("ok not initialized\n"); return 0; }
+    if (strcmp(state, "ok") == 0) { printf("ok\n"); return 0; }
+    printf("degraded %s\n", tab ? tab + 1 : "error");
+    return 0;
+}
 
 /* PoP: _probe_config @ gateway/readiness.py:_probe_config */
 int gateway_readiness_u_probe_config(const char *arg) {

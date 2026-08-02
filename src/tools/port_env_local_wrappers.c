@@ -279,7 +279,17 @@ int envl_u_prepend_hermes_bin_dir(const char *arg) {
 int envl_u_append_missing_sane_path_entries(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _apply_windows_msys_bash_env_defaults @ tools/environments/local.py:_apply_windows_msys_bash_env_defaults */
-int envl_u_apply_windows_msys_bash_env_defaults(const char *arg) { (void)arg; return 0; }
+int envl_u_apply_windows_msys_bash_env_defaults(const char *arg) {
+    /* Python: MSYS path conversion off. Arg = "is_windows\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int is_windows = arg[0] == '1';
+    int state = tab && tab[1] == '1';
+    if (!is_windows) { printf("no-op (not windows)\n"); return 0; }
+    if (!state) { printf("defaults already set\n"); return 0; }
+    printf("MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL=*\n");
+    return 0;
+}
 
 /* PoP: _path_env_key @ tools/environments/local.py:_path_env_key */
 int envl_u_path_env_key(const char *arg) {

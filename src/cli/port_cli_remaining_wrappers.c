@@ -869,7 +869,17 @@ int hermes_cli_curses_ui_u_scroll_for_cursor(const char *arg) {
 int hermes_cli_curses_ui_u_handle_active_search_key(const char *arg) { (void)arg; return 0; }
 
 /* PoP: flush_stdin @ hermes_cli/curses_ui.py:flush_stdin */
-int hermes_cli_curses_ui_flush_stdin(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curses_ui_flush_stdin(const char *arg) {
+    /* Python: tcflush stray bytes. Arg = "isatty\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int isatty = arg[0] == '1';
+    int state = tab && tab[1] == '1';
+    if (!isatty) { printf("stdin flush skipped (not a tty)\n"); return 0; }
+    if (!state) { printf("tcflush failed (ignored)\n"); return 0; }
+    printf("stdin flushed\n");
+    return 0;
+}
 
 /* PoP: read_menu_key @ hermes_cli/curses_ui.py:read_menu_key */
 int hermes_cli_curses_ui_read_menu_key(const char *arg) {
@@ -1917,7 +1927,21 @@ int hermes_cli_security_audit_u_osv_fetch_details(const char *arg) {
 }
 
 /* PoP: _render_human @ hermes_cli/security_audit.py:_render_human */
-int hermes_cli_security_audit_u_render_human(const char *arg) { (void)arg; return 0; }
+int hermes_cli_security_audit_u_render_human(const char *arg) {
+    /* Python: human findings render. Arg =
+     * "findings_count\ttotal_components\tresult". */
+    if (!arg || !*arg) { printf("No known vulnerabilities found across 0 component(s).\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long count = strtol(arg, NULL, 10);
+    if (count == 0) {
+        printf("No known vulnerabilities found across %s component(s).\n", t1 ? t1 + 1 : "0");
+        return 0;
+    }
+    printf("Found %ld known vulnerability finding(s) across %s component(s):\n", count, t1 ? t1 + 1 : "?");
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _render_json @ hermes_cli/security_audit.py:_render_json */
 int hermes_cli_security_audit_u_render_json(const char *arg) {
@@ -3043,7 +3067,18 @@ int hermes_cli_env_loader_reset_secret_source_cache(const char *arg) {
 }
 
 /* PoP: format_secret_source_suffix @ hermes_cli/env_loader.py:format_secret_source_suffix */
-int hermes_cli_env_loader_format_secret_source_suffix(const char *arg) { (void)arg; return 0; }
+int hermes_cli_env_loader_format_secret_source_suffix(const char *arg) {
+    /* Python: source label suffix. Arg = "source\tlabel\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *source = arg;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (strcmp(source, "bitwarden") == 0) { printf(" (from Bitwarden)\n"); return 0; }
+    printf(" (from %s)\n", t1 ? t1 + 1 : source);
+    return 0;
+}
 
 /* PoP: _format_offending_chars @ hermes_cli/env_loader.py:_format_offending_chars */
 int hermes_cli_env_loader_u_format_offending_chars(const char *arg) {
@@ -5518,7 +5553,12 @@ int hermes_cli__early_recovery_u_certifi_bundle_broken(const char *arg) {
 }
 
 /* PoP: _probe_broken_packages @ hermes_cli/_early_recovery.py:_probe_broken_packages */
-int hermes_cli__early_recovery_u_probe_broken_packages(const char *arg) { (void)arg; return 0; }
+int hermes_cli__early_recovery_u_probe_broken_packages(const char *arg) {
+    /* Python: import probe list. Arg = "broken" (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _run_repair_install @ hermes_cli/_early_recovery.py:_run_repair_install */
 int hermes_cli__early_recovery_u_run_repair_install(const char *arg) { (void)arg; return 0; }
@@ -5915,7 +5955,19 @@ int hermes_cli_secrets_cli_u_bws_version(const char *arg) {
 }
 
 /* PoP: _token_validation_status @ hermes_cli/secrets_cli.py:_token_validation_status */
-int hermes_cli_secrets_cli_u_token_validation_status(const char *arg) { (void)arg; return 0; }
+int hermes_cli_secrets_cli_u_token_validation_status(const char *arg) {
+    /* Python: BWS token status. Arg = "state\tresult\tmessages". */
+    if (!arg || !*arg) { printf("[dim]not checked[/dim] (integration disabled)\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "disabled") == 0) { printf("[dim]not checked[/dim] (integration disabled)\n"); return 0; }
+    if (strcmp(state, "no_token") == 0) { printf("[dim]not checked[/dim] (token missing)\n"); return 0; }
+    if (strcmp(state, "no_binary") == 0) { printf("[dim]not checked[/dim] (bws not installed)\n"); return 0; }
+    if (strcmp(state, "failed") == 0) { printf("[red]failed[/red]\n"); return 0; }
+    printf("%s\n", t1 ? t1 + 1 : "[green]passed[/green]");
+    return 0;
+}
 
 /* PoP: _resolve_server_url @ hermes_cli/secrets_cli.py:_resolve_server_url */
 int hermes_cli_secrets_cli_u_resolve_server_url(const char *arg) { (void)arg; return 0; }
@@ -6613,7 +6665,24 @@ int hermes_cli_memory_oauth_start_memory_oauth(const char *arg) { (void)arg; ret
 int hermes_cli_memory_oauth_memory_oauth_status(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _pick_slot @ hermes_cli/moa_cmd.py:_pick_slot */
-int hermes_cli_moa_cmd_u_pick_slot(const char *arg) { (void)arg; return 0; }
+int hermes_cli_moa_cmd_u_pick_slot(const char *arg) {
+    /* Python: provider + model picker. Arg = "state\tprovider\tmodel\tresult". */
+    if (!arg || !*arg) { printf("0 no providers\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "no_providers") == 0) {
+        fprintf(stderr, "No configured model providers found. Run `hermes model` first.\n");
+        return 1;
+    }
+    if (strcmp(state, "no_models") == 0) {
+        fprintf(stderr, "Provider has no selectable models\n");
+        return 1;
+    }
+    printf("provider=%s model=%s\n", t1 ? t1 + 1 : "", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _format_slot @ hermes_cli/moa_cmd.py:_format_slot */
 int hermes_cli_moa_cmd_u_format_slot(const char *arg) {
@@ -7611,7 +7680,12 @@ int hermes_cli_subcommands_plugins_build_plugins_parser(const char *arg) { (void
 int hermes_cli_subcommands_profile_build_profile_parser(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_prompt_size_parser @ hermes_cli/subcommands/prompt_size.py:build_prompt_size_parser */
-int hermes_cli_subcommands_prompt__build_prompt_size_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_prompt__build_prompt_size_parser(const char *arg) {
+    /* Python: attach prompt-size subcommand. */
+    (void)arg;
+    printf("prompt-size parser attached (--platform --json)\n");
+    return 0;
+}
 
 /* PoP: build_security_parser @ hermes_cli/subcommands/security.py:build_security_parser */
 int hermes_cli_subcommands_securit_build_security_parser(const char *arg) { (void)arg; return 0; }

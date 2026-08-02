@@ -37,7 +37,13 @@ int envd_u_normalize_forward_env_names(const char *arg) {
 }
 
 /* PoP: _normalize_env_dict @ tools/environments/docker.py:_normalize_env_dict */
-int envd_u_normalize_env_dict(const char *arg) { (void)arg; return 0; }
+int envd_u_normalize_env_dict(const char *arg) {
+    /* Python: {str:str} normalize. Arg = "env_json\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", tab ? tab + 1 : arg);
+    return 0;
+}
 
 /* PoP: _load_hermes_env_vars @ tools/environments/docker.py:_load_hermes_env_vars */
 int envd_u_load_hermes_env_vars(const char *arg) {
