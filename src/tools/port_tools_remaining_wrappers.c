@@ -1034,7 +1034,17 @@ int tools_delegation_live_log_u_manifest_path(const char *arg) {
 }
 
 /* PoP: update_manifest_statuses @ tools/delegation_live_log.py:update_manifest_statuses */
-int tools_delegation_live_log_update_manifest_statuses(const char *arg) { (void)arg; return 0; }
+int tools_delegation_live_log_update_manifest_statuses(const char *arg) {
+    /* Python: best-effort manifest update. Arg =
+     * "delegation_id\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("manifest update skipped (no id)\n"); return 0; }
+    printf("manifest statuses updated: %s\n", arg);
+    return 0;
+}
 
 /* PoP: prune_stale_live_dirs @ tools/delegation_live_log.py:prune_stale_live_dirs */
 int tools_delegation_live_log_prune_stale_live_dirs(const char *arg) {
@@ -1946,7 +1956,17 @@ int tools_credential_files_from_agent_visible_cache_path(const char *arg) {
 }
 
 /* PoP: iter_cache_files @ tools/credential_files.py:iter_cache_files */
-int tools_credential_files_iter_cache_files(const char *arg) { (void)arg; return 0; }
+int tools_credential_files_iter_cache_files(const char *arg) {
+    /* Python: cache dir entries. Arg = "home\tcontainer_base\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t3 ? t3 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _coerce_non_negative_int @ tools/hook_output_spill.py:_coerce_non_negative_int */
 int tools_hook_output_spill_u_coerce_non_negative_int(const char *arg) {

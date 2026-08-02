@@ -237,7 +237,17 @@ int grun_u_clear_goal_pending_continuations(const char *arg) { (void)arg; return
 int grun_u_persist_active_agents(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _enter_external_drain @ gateway/run.py:_enter_external_drain */
-int grun_u_enter_external_drain(const char *arg) { (void)arg; return 0; }
+int grun_u_enter_external_drain(const char *arg) {
+    /* Python: idempotent drain entry. Arg = "already_active\tinflight\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int already = arg[0] == '1';
+    if (already) { printf("drain already active (no-op)\n"); return 0; }
+    printf("External drain ENGAGED — refusing new turns; %s in-flight turn(s) will finish. Process stays up.\n",
+           t1 ? t1 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _exit_external_drain @ gateway/run.py:_exit_external_drain */
 int grun_u_exit_external_drain(const char *arg) { (void)arg; return 0; }

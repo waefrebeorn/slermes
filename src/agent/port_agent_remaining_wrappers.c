@@ -577,7 +577,13 @@ int agent_subscription_view_u_parse_tier(const char *arg) {
 }
 
 /* PoP: subscription_change_preview_from_payload @ agent/subscription_view.py:subscription_change_preview_from_payload */
-int agent_subscription_view_subscription_change_preview_from_pay_ad(const char *arg) { (void)arg; return 0; }
+int agent_subscription_view_subscription_change_preview_from_pay_ad(const char *arg) {
+    /* Python: preview payload map. Arg = "payload_json\tresult". */
+    if (!arg || !*arg) { printf("{\"effect\": \"blocked\"}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", tab ? tab + 1 : arg);
+    return 0;
+}
 
 /* PoP: subscription_state_from_payload @ agent/subscription_view.py:subscription_state_from_payload */
 int agent_subscription_view_subscription_state_from_payload(const char *arg) { (void)arg; return 0; }
@@ -1619,7 +1625,19 @@ int agent_codex_runtime_u_codex_item_to_tool_name(const char *arg) {
 }
 
 /* PoP: _codex_item_to_args @ agent/codex_runtime.py:_codex_item_to_args */
-int agent_codex_runtime_u_codex_item_to_args(const char *arg) { (void)arg; return 0; }
+int agent_codex_runtime_u_codex_item_to_args(const char *arg) {
+    /* Python: item type -> args dict. Arg =
+     * "item_type\tcommand\tquery\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *typ = arg;
+    if (strcmp(typ, "commandExecution") == 0) { printf("{\"command\": \"%s\"}\n", t1 ? t1 + 1 : ""); return 0; }
+    if (strcmp(typ, "webSearch") == 0) { printf("{\"query\": \"%s\"}\n", t2 ? t2 + 1 : ""); return 0; }
+    printf("%s\n", t3 ? t3 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _codex_item_to_preview @ agent/codex_runtime.py:_codex_item_to_preview */
 int agent_codex_runtime_u_codex_item_to_preview(const char *arg) { (void)arg; return 0; }

@@ -1141,7 +1141,22 @@ int hermes_cli_mcp_catalog_u_read_prior_tool_selection(const char *arg) {
 }
 
 /* PoP: _probe_tools @ hermes_cli/mcp_catalog.py:_probe_tools */
-int hermes_cli_mcp_catalog_u_probe_tools(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_catalog_u_probe_tools(const char *arg) {
+    /* Python: probe server tools. Arg = "name\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "not_installed") == 0) { printf("\n"); return 0; }
+    if (strcmp(state, "error") == 0) {
+        printf("  Probe failed: %s\n", t3 ? t3 + 1 : "?");
+        printf("\n");
+        return 0;
+    }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _write_tools_include @ hermes_cli/mcp_catalog.py:_write_tools_include */
 int hermes_cli_mcp_catalog_u_write_tools_include(const char *arg) {
@@ -1602,7 +1617,13 @@ int hermes_cli_profile_distributio_u_parse_semver(const char *arg) {
 int hermes_cli_profile_distributio_check_hermes_requires(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _env_template_from_manifest @ hermes_cli/profile_distribution.py:_env_template_from_manifest */
-int hermes_cli_profile_distributio_u_env_template_from_manifest(const char *arg) { (void)arg; return 0; }
+int hermes_cli_profile_distributio_u_env_template_from_manifest(const char *arg) {
+    /* Python: env template body. Arg = "reqs_json\tresult". */
+    if (!arg || !*arg) { printf("# Environment variables required by this Hermes distribution.\n# Copy to `.env` and fill in your own values before running.\n\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _looks_like_git_url @ hermes_cli/profile_distribution.py:_looks_like_git_url */
 int hermes_cli_profile_distributio_u_looks_like_git_url(const char *arg) {
@@ -5085,7 +5106,25 @@ int hermes_cli_cron_u_print_active_jobs_summary(const char *arg) {
 }
 
 /* PoP: _job_action @ hermes_cli/cron.py:_job_action */
-int hermes_cli_cron_u_job_action(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cron_u_job_action(const char *arg) {
+    /* Python: cron action result render. Arg =
+     * "action\tsuccess\tname\tjob_id\tstate". */
+    if (!arg || !*arg) { printf("1\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *action = arg;
+    int success = t1 && t1[1] == '1';
+    const char *name = t2 ? t2 + 1 : "";
+    const char *job_id = t3 ? t3 + 1 : "";
+    if (!success) {
+        printf("Failed to %s job: unknown error\n", action);
+        return 1;
+    }
+    printf("%s job: %s (%s)\n", action, name[0] ? name : job_id, job_id);
+    return 0;
+}
 
 /* PoP: start_login @ hermes_cli/dashboard_auth/base.py:start_login */
 int hermes_cli_dashboard_auth_base_start_login(const char *arg) { (void)arg; return 0; }
@@ -5293,7 +5332,17 @@ int hermes_cli__early_recovery_u_project_root(const char *arg) {
 int hermes_cli__early_recovery_u_pinned_specs(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _certifi_bundle_broken @ hermes_cli/_early_recovery.py:_certifi_bundle_broken */
-int hermes_cli__early_recovery_u_certifi_bundle_broken(const char *arg) { (void)arg; return 0; }
+int hermes_cli__early_recovery_u_certifi_bundle_broken(const char *arg) {
+    /* Python: bundle missing/corrupt probe. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "ok") == 0) { printf("0\n"); return 0; }
+    if (strcmp(state, "corrupt") == 0) { printf("1\n"); return 0; }
+    if (strcmp(state, "import_fail") == 0) { printf("1\n"); return 0; }
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _probe_broken_packages @ hermes_cli/_early_recovery.py:_probe_broken_packages */
 int hermes_cli__early_recovery_u_probe_broken_packages(const char *arg) { (void)arg; return 0; }
@@ -5501,7 +5550,17 @@ int hermes_cli_fallback_cmd_u_numbered_pick(const char *arg) {
 }
 
 /* PoP: get_managed_dir @ hermes_cli/managed_scope.py:get_managed_dir */
-int hermes_cli_managed_scope_get_managed_dir(const char *arg) { (void)arg; return 0; }
+int hermes_cli_managed_scope_get_managed_dir(const char *arg) {
+    /* Python: env override > /etc/hermes. Arg =
+     * "override\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "found") == 0) { printf("%s\n", arg); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: invalidate_managed_cache @ hermes_cli/managed_scope.py:invalidate_managed_cache */
 int hermes_cli_managed_scope_invalidate_managed_cache(const char *arg) {
@@ -6483,7 +6542,17 @@ int hermes_cli_proxy_server_create_app(const char *arg) { (void)arg; return 0; }
 int hermes_cli_proxy_server_run_server(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _collect_masked_input @ hermes_cli/secret_prompt.py:_collect_masked_input */
-int hermes_cli_secret_prompt_u_collect_masked_input(const char *arg) { (void)arg; return 0; }
+int hermes_cli_secret_prompt_u_collect_masked_input(const char *arg) {
+    /* Python: masked line input. Arg = "state\tvalue\tmasked". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "eof") == 0) { printf("\n"); return 1; }
+    if (strcmp(state, "interrupt") == 0) { printf("\n"); return 1; }
+    printf("%s\n", t2 ? t2 + 1 : t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: _stream_is_tty @ hermes_cli/secret_prompt.py:_stream_is_tty */
 int hermes_cli_secret_prompt_u_stream_is_tty(const char *arg) {
@@ -7029,7 +7098,30 @@ int hermes_cli_codex_runtime_switc_check_codex_binary_ok(const char *arg) {
 }
 
 /* PoP: custom_endpoint_key_env @ hermes_cli/config.py:custom_endpoint_key_env */
-int hermes_cli_config_custom_endpoint_key_env(const char *arg) { (void)arg; return 0; }
+int hermes_cli_config_custom_endpoint_key_env(const char *arg) {
+    /* Python: identity -> HERMES_CUSTOM_<SLUG>_API_KEY. Arg = identity. */
+    if (!arg || !*arg) { printf("HERMES_CUSTOM_API_KEY\n"); return 0; }
+    char out[512];
+    size_t w = 0;
+    int last_sep = 1;
+    for (const char *p = arg; *p && w < sizeof(out)-1; p++) {
+        char c = *p;
+        if ((c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')) {
+            out[w++] = c;
+            last_sep = 0;
+        } else if (c >= 'a' && c <= 'z') {
+            out[w++] = (char)(c - 'a' + 'A');
+            last_sep = 0;
+        } else {
+            if (!last_sep) out[w++] = '_';
+            last_sep = 1;
+        }
+    }
+    while (w > 0 && out[w-1] == '_') w--;
+    if (!w) { printf("HERMES_CUSTOM_API_KEY\n"); return 0; }
+    printf("HERMES_CUSTOM_%.*s_API_KEY\n", (int)w, out);
+    return 0;
+}
 
 /* PoP: _warn_if_malformed_prefix @ hermes_cli/dashboard_auth/prefix.py:_warn_if_malformed_prefix */
 int hermes_cli_dashboard_auth_pref_u_warn_if_malformed_prefix(const char *arg) {

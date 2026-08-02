@@ -53,7 +53,16 @@ int mcpo_u_find_free_port(const char *arg) {
 }
 
 /* PoP: _reserve_callback_port @ tools/mcp_oauth.py:_reserve_callback_port */
-int mcpo_u_reserve_callback_port(const char *arg) { (void)arg; return 0; }
+int mcpo_u_reserve_callback_port(const char *arg) {
+    /* Python: bound ephemeral port. Arg = "state\tport\treserved". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 port bind failed\n"); return 1; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _cached_redirect_port @ tools/mcp_oauth.py:_cached_redirect_port */
 int mcpo_u_cached_redirect_port(const char *arg) { (void)arg; return 0; }

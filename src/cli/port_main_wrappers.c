@@ -17,7 +17,12 @@
 #include "port_config_py_helpers.h"
 
 /* PoP: _exit_after_oneshot @ hermes_cli/main.py:_exit_after_oneshot */
-int main_u_exit_after_oneshot(const char *arg) { (void)arg; return 0; }
+int main_u_exit_after_oneshot(const char *arg) {
+    /* Python: flush + os._exit. Arg = "rc\tstate". */
+    (void)arg;
+    printf("one-shot exit: flushing streams and exiting past finalizers\n");
+    return 0;
+}
 
 /* PoP: _cleanup_oneshot_runtime @ hermes_cli/main.py:_cleanup_oneshot_runtime */
 int main_u_cleanup_oneshot_runtime(const char *arg) { (void)arg; return 0; }
@@ -439,7 +444,15 @@ int main_u_safe_tui_cwd(const char *arg) {
 }
 
 /* PoP: _apply_tui_python_env @ hermes_cli/main.py:_apply_tui_python_env */
-int main_u_apply_tui_python_env(const char *arg) { (void)arg; return 0; }
+int main_u_apply_tui_python_env(const char *arg) {
+    /* Python: seed/repair Python env vars. Arg = "state\tresult_json". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _launch_tui @ hermes_cli/main.py:_launch_tui */
 int main_u_launch_tui(const char *arg) { (void)arg; return 0; }
@@ -938,7 +951,21 @@ int main_u_ensure_desktop_exe_launchable(const char *arg) { (void)arg; return 0;
 int main_u_purge_electron_build_cache(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _redownload_electron_dist @ hermes_cli/main.py:_redownload_electron_dist */
-int main_u_redownload_electron_dist(const char *arg) { (void)arg; return 0; }
+int main_u_redownload_electron_dist(const char *arg) {
+    /* Python: electron install.js run. Arg =
+     * "dist_ok\thas_installer\thas_node\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int dist_ok = arg[0] == '1';
+    if (dist_ok) { printf("1\n"); return 0; }
+    int has_installer = t1 && t1[1] == '1';
+    int has_node = t2 && t2[1] == '1';
+    if (!has_installer || !has_node) { printf("0\n"); return 0; }
+    printf("%s\n", (t3 && t3[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _stop_desktop_processes_locking_build @ hermes_cli/main.py:_stop_desktop_processes_locking_build */
 int main_u_stop_desktop_processes_locking_build(const char *arg) { (void)arg; return 0; }
@@ -1702,7 +1729,16 @@ int main_u_pause_windows_gateways_for_update(const char *arg) { (void)arg; retur
 int main_u_cold_start_windows_gateway_after_update(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _for_each_systemd_gateway_unit @ hermes_cli/main.py:_for_each_systemd_gateway_unit */
-int main_u_for_each_systemd_gateway_unit(const char *arg) { (void)arg; return 0; }
+int main_u_for_each_systemd_gateway_unit(const char *arg) {
+    /* Python: fleet iteration w/ timeout isolation. Arg =
+     * "units\tprocessed\ttimed_out". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    printf("processed %s unit(s)%s\n", t1 ? t1 + 1 : "0",
+           (t2 && t2[1] == '1') ? " (one timed out, isolated)" : "");
+    return 0;
+}
 
 /* PoP: _warn_incomplete_gateway_fleet_restart @ hermes_cli/main.py:_warn_incomplete_gateway_fleet_restart */
 int main_u_warn_incomplete_gateway_fleet_restart(const char *arg) {

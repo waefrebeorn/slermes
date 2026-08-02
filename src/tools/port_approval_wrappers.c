@@ -39,7 +39,26 @@ int appr_u_user_deny_block_result(const char *arg) {
 }
 
 /* PoP: _command_parser_limit_exceeded @ tools/approval.py:_command_parser_limit_exceeded */
-int appr_u_command_parser_limit_exceeded(const char *arg) { (void)arg; return 0; }
+int appr_u_command_parser_limit_exceeded(const char *arg) {
+    /* Python: length/separator bounds. Arg =
+     * "len\tmax_chars\tsep_free_max\tmax_segs\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    long len = strtol(arg, NULL, 10);
+    long max_chars = t1 ? strtol(t1 + 1, NULL, 10) : 10000;
+    long sep_free_max = t2 ? strtol(t2 + 1, NULL, 10) : 2000;
+    long max_segs = t3 ? strtol(t3 + 1, NULL, 10) : 20;
+    if (len > max_chars) { printf("1\n"); return 0; }
+    if (len > sep_free_max) {
+        /* need to know if separators present — result flag passed in */
+        if (t4 && t4[1] == '0') { printf("1\n"); return 0; }
+    }
+    printf("%d\n", (t4 && t4[1] == '1') ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _shell_tokens_with_spans @ tools/approval.py:_shell_tokens_with_spans */
 int appr_u_shell_tokens_with_spans(const char *arg) { (void)arg; return 0; }

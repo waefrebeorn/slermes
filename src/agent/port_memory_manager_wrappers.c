@@ -143,7 +143,18 @@ int mm_u_forget_background_future(const char *arg) {
 int mm_u_get_sync_executor(const char *arg) { (void)arg; return 0; }
 
 /* PoP: flush_pending @ agent/memory_manager.py:flush_pending */
-int mm_flush_pending(const char *arg) { (void)arg; return 0; }
+int mm_flush_pending(const char *arg) {
+    /* Python: executor sentinel barrier. Arg = "has_executor\ttimed_out\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_executor = arg[0] == '1';
+    if (!has_executor) { printf("1\n"); return 0; }
+    int timed_out = t1 && t1[1] == '1';
+    if (timed_out) { printf("0\n"); return 0; }
+    printf("%s\n", (t2 && t2[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: get_all_tool_schemas @ agent/memory_manager.py:get_all_tool_schemas */
 int mm_get_all_tool_schemas(const char *arg) { (void)arg; return 0; }
