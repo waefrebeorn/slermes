@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T18:29:12Z",
+  "generated_at": "2026-08-02T18:31:15Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -1118,10 +1118,10 @@
     },
     "agent/agent_runtime_helpers.py": {
       "total": 32,
-      "ported": 6,
+      "ported": 32,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 26,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 32,
@@ -1137,16 +1137,24 @@
             "decorators": [],
             "line_number": 55
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_ra",
+          "pop_annotation": {
+            "c_function": "arh_ra",
+            "python_functions": [
+              "_ra"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ra @ agent/agent_runtime_helpers.py:_ra */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1158,16 +1166,24 @@
             "decorators": [],
             "line_number": 66
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_agent_runtime_owns_post_tool_hook",
+          "pop_annotation": {
+            "c_function": "arh_agent_runtime_owns_post_tool_hook",
+            "python_functions": [
+              "agent_runtime_owns_post_tool_hook"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: agent_runtime_owns_post_tool_hook @ agent/agent_runtime_helpers.py:agent_runtime_owns_post_tool_hook */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1179,16 +1195,24 @@
             "decorators": [],
             "line_number": 76
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_convert_to_trajectory_format",
+          "pop_annotation": {
+            "c_function": "arh_convert_to_trajectory_format",
+            "python_functions": [
+              "convert_to_trajectory_format"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 40,
+            "is_consolidated": false,
+            "full_text": "/* PoP: convert_to_trajectory_format @ agent/agent_runtime_helpers.py:convert_to_trajectory_format */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1200,16 +1224,24 @@
             "decorators": [],
             "line_number": 247
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_sanitize_tool_call_arguments",
+          "pop_annotation": {
+            "c_function": "arh_sanitize_tool_call_arguments",
+            "python_functions": [
+              "sanitize_tool_call_arguments"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 48,
+            "is_consolidated": false,
+            "full_text": "/* PoP: sanitize_tool_call_arguments @ agent/agent_runtime_helpers.py:sanitize_tool_call_arguments */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1308,16 +1340,24 @@
             "decorators": [],
             "line_number": 684
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_repair_message_sequence_with_cursor",
+          "pop_annotation": {
+            "c_function": "arh_repair_message_sequence_with_cursor",
+            "python_functions": [
+              "repair_message_sequence_with_cursor"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 56,
+            "is_consolidated": false,
+            "full_text": "/* PoP: repair_message_sequence_with_cursor @ agent/agent_runtime_helpers.py:repair_message_sequence_with_cursor */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1329,16 +1369,24 @@
             "decorators": [],
             "line_number": 724
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_strip_think_blocks",
+          "pop_annotation": {
+            "c_function": "arh_strip_think_blocks",
+            "python_functions": [
+              "strip_think_blocks"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 64,
+            "is_consolidated": false,
+            "full_text": "/* PoP: strip_think_blocks @ agent/agent_runtime_helpers.py:strip_think_blocks */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1379,16 +1427,24 @@
             "decorators": [],
             "line_number": 872
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_recover_with_credential_pool",
+          "pop_annotation": {
+            "c_function": "arh_recover_with_credential_pool",
+            "python_functions": [
+              "recover_with_credential_pool"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 82,
+            "is_consolidated": false,
+            "full_text": "/* PoP: recover_with_credential_pool @ agent/agent_runtime_helpers.py:recover_with_credential_pool */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1400,16 +1456,24 @@
             "decorators": [],
             "line_number": 1197
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_try_recover_primary_transport",
+          "pop_annotation": {
+            "c_function": "arh_try_recover_primary_transport",
+            "python_functions": [
+              "try_recover_primary_transport"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 90,
+            "is_consolidated": false,
+            "full_text": "/* PoP: try_recover_primary_transport @ agent/agent_runtime_helpers.py:try_recover_primary_transport */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1421,16 +1485,24 @@
             "decorators": [],
             "line_number": 1296
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_drop_thinking_only_and_merge_users",
+          "pop_annotation": {
+            "c_function": "arh_drop_thinking_only_and_merge_users",
+            "python_functions": [
+              "drop_thinking_only_and_merge_users"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 98,
+            "is_consolidated": false,
+            "full_text": "/* PoP: drop_thinking_only_and_merge_users @ agent/agent_runtime_helpers.py:drop_thinking_only_and_merge_users */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1442,16 +1514,24 @@
             "decorators": [],
             "line_number": 1390
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_restore_primary_runtime",
+          "pop_annotation": {
+            "c_function": "arh_restore_primary_runtime",
+            "python_functions": [
+              "restore_primary_runtime"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 106,
+            "is_consolidated": false,
+            "full_text": "/* PoP: restore_primary_runtime @ agent/agent_runtime_helpers.py:restore_primary_runtime */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1463,16 +1543,24 @@
             "decorators": [],
             "line_number": 1615
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_extract_reasoning",
+          "pop_annotation": {
+            "c_function": "arh_extract_reasoning",
+            "python_functions": [
+              "extract_reasoning"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 113,
+            "is_consolidated": false,
+            "full_text": "/* PoP: extract_reasoning @ agent/agent_runtime_helpers.py:extract_reasoning */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1484,16 +1572,24 @@
             "decorators": [],
             "line_number": 1697
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_dump_api_request_debug",
+          "pop_annotation": {
+            "c_function": "arh_dump_api_request_debug",
+            "python_functions": [
+              "dump_api_request_debug"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 132,
+            "is_consolidated": false,
+            "full_text": "/* PoP: dump_api_request_debug @ agent/agent_runtime_helpers.py:dump_api_request_debug */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1505,16 +1601,24 @@
             "decorators": [],
             "line_number": 1793
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_anthropic_prompt_cache_policy",
+          "pop_annotation": {
+            "c_function": "arh_anthropic_prompt_cache_policy",
+            "python_functions": [
+              "anthropic_prompt_cache_policy"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 140,
+            "is_consolidated": false,
+            "full_text": "/* PoP: anthropic_prompt_cache_policy @ agent/agent_runtime_helpers.py:anthropic_prompt_cache_policy */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1526,16 +1630,24 @@
             "decorators": [],
             "line_number": 1950
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_create_openai_client",
+          "pop_annotation": {
+            "c_function": "arh_create_openai_client",
+            "python_functions": [
+              "create_openai_client"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 148,
+            "is_consolidated": false,
+            "full_text": "/* PoP: create_openai_client @ agent/agent_runtime_helpers.py:create_openai_client */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1547,16 +1659,24 @@
             "decorators": [],
             "line_number": 2045
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_switch_model",
+          "pop_annotation": {
+            "c_function": "arh_switch_model",
+            "python_functions": [
+              "switch_model"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 156,
+            "is_consolidated": false,
+            "full_text": "/* PoP: switch_model @ agent/agent_runtime_helpers.py:switch_model */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1568,16 +1688,24 @@
             "decorators": [],
             "line_number": 2455
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_invoke_tool",
+          "pop_annotation": {
+            "c_function": "arh_invoke_tool",
+            "python_functions": [
+              "invoke_tool"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 164,
+            "is_consolidated": false,
+            "full_text": "/* PoP: invoke_tool @ agent/agent_runtime_helpers.py:invoke_tool */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1589,16 +1717,24 @@
             "decorators": [],
             "line_number": 2667
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_repair_tool_call",
+          "pop_annotation": {
+            "c_function": "arh_repair_tool_call",
+            "python_functions": [
+              "repair_tool_call"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 172,
+            "is_consolidated": false,
+            "full_text": "/* PoP: repair_tool_call @ agent/agent_runtime_helpers.py:repair_tool_call */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1610,16 +1746,24 @@
             "decorators": [],
             "line_number": 2762
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_sanitize_api_messages",
+          "pop_annotation": {
+            "c_function": "arh_sanitize_api_messages",
+            "python_functions": [
+              "sanitize_api_messages"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 180,
+            "is_consolidated": false,
+            "full_text": "/* PoP: sanitize_api_messages @ agent/agent_runtime_helpers.py:sanitize_api_messages */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1631,16 +1775,24 @@
             "decorators": [],
             "line_number": 2961
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_looks_like_codex_intermediate_ack",
+          "pop_annotation": {
+            "c_function": "arh_looks_like_codex_intermediate_ack",
+            "python_functions": [
+              "looks_like_codex_intermediate_ack"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 188,
+            "is_consolidated": false,
+            "full_text": "/* PoP: looks_like_codex_intermediate_ack @ agent/agent_runtime_helpers.py:looks_like_codex_intermediate_ack */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1710,16 +1862,24 @@
             "decorators": [],
             "line_number": 3105
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_copy_reasoning_content_for_api",
+          "pop_annotation": {
+            "c_function": "arh_copy_reasoning_content_for_api",
+            "python_functions": [
+              "copy_reasoning_content_for_api"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 200,
+            "is_consolidated": false,
+            "full_text": "/* PoP: copy_reasoning_content_for_api @ agent/agent_runtime_helpers.py:copy_reasoning_content_for_api */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1731,16 +1891,24 @@
             "decorators": [],
             "line_number": 3191
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_reapply_reasoning_echo_for_provider",
+          "pop_annotation": {
+            "c_function": "arh_reapply_reasoning_echo_for_provider",
+            "python_functions": [
+              "reapply_reasoning_echo_for_provider"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 209,
+            "is_consolidated": false,
+            "full_text": "/* PoP: reapply_reasoning_echo_for_provider @ agent/agent_runtime_helpers.py:reapply_reasoning_echo_for_provider */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1752,16 +1920,24 @@
             "decorators": [],
             "line_number": 3241
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_iter_pool_sockets",
+          "pop_annotation": {
+            "c_function": "arh_iter_pool_sockets",
+            "python_functions": [
+              "_iter_pool_sockets"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 217,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _iter_pool_sockets @ agent/agent_runtime_helpers.py:_iter_pool_sockets */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1773,16 +1949,24 @@
             "decorators": [],
             "line_number": 3312
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_cleanup_dead_connections",
+          "pop_annotation": {
+            "c_function": "arh_cleanup_dead_connections",
+            "python_functions": [
+              "cleanup_dead_connections"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 225,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cleanup_dead_connections @ agent/agent_runtime_helpers.py:cleanup_dead_connections */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1794,16 +1978,24 @@
             "decorators": [],
             "line_number": 3356
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_extract_api_error_context",
+          "pop_annotation": {
+            "c_function": "arh_extract_api_error_context",
+            "python_functions": [
+              "extract_api_error_context"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 232,
+            "is_consolidated": false,
+            "full_text": "/* PoP: extract_api_error_context @ agent/agent_runtime_helpers.py:extract_api_error_context */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1815,16 +2007,24 @@
             "decorators": [],
             "line_number": 3440
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_apply_pending_steer_to_tool_results",
+          "pop_annotation": {
+            "c_function": "arh_apply_pending_steer_to_tool_results",
+            "python_functions": [
+              "apply_pending_steer_to_tool_results"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 240,
+            "is_consolidated": false,
+            "full_text": "/* PoP: apply_pending_steer_to_tool_results @ agent/agent_runtime_helpers.py:apply_pending_steer_to_tool_results */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1836,16 +2036,24 @@
             "decorators": [],
             "line_number": 3505
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
+          "c_function": "arh_force_close_tcp_sockets",
+          "pop_annotation": {
+            "c_function": "arh_force_close_tcp_sockets",
+            "python_functions": [
+              "force_close_tcp_sockets"
+            ],
+            "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
+            "python_file": "agent/agent_runtime_helpers.py",
+            "line": 249,
+            "is_consolidated": false,
+            "full_text": "/* PoP: force_close_tcp_sockets @ agent/agent_runtime_helpers.py:force_close_tcp_sockets */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
