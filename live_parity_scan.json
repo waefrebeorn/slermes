@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:30:44Z",
+  "generated_at": "2026-08-02T20:32:36Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -110197,10 +110197,10 @@
     },
     "gateway/platforms/qqbot/keyboards.py": {
       "total": 19,
-      "ported": 10,
+      "ported": 19,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 9,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 19,
@@ -110216,17 +110216,24 @@
             "decorators": [],
             "line_number": 62
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_keyboards_remaining.c",
+          "c_function": "qkb_to_dict",
+          "pop_annotation": {
+            "c_function": "qkb_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/gateway/port_qqbot_keyboards_remaining.c",
+            "python_file": "gateway/platforms/qqbot/keyboards.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ gateway/platforms/qqbot/keyboards.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/keyboards.py",
@@ -110238,17 +110245,24 @@
             "decorators": [],
             "line_number": 84
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_keyboards_remaining.c",
+          "c_function": "qkb_to_dict",
+          "pop_annotation": {
+            "c_function": "qkb_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/gateway/port_qqbot_keyboards_remaining.c",
+            "python_file": "gateway/platforms/qqbot/keyboards.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ gateway/platforms/qqbot/keyboards.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/keyboards.py",
@@ -110260,17 +110274,24 @@
             "decorators": [],
             "line_number": 105
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_keyboards_remaining.c",
+          "c_function": "qkb_to_dict",
+          "pop_annotation": {
+            "c_function": "qkb_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/gateway/port_qqbot_keyboards_remaining.c",
+            "python_file": "gateway/platforms/qqbot/keyboards.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ gateway/platforms/qqbot/keyboards.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/keyboards.py",
@@ -110282,17 +110303,24 @@
             "decorators": [],
             "line_number": 125
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_keyboards_remaining.c",
+          "c_function": "qkb_to_dict",
+          "pop_annotation": {
+            "c_function": "qkb_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/gateway/port_qqbot_keyboards_remaining.c",
+            "python_file": "gateway/platforms/qqbot/keyboards.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ gateway/platforms/qqbot/keyboards.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/keyboards.py",
@@ -110304,17 +110332,24 @@
             "decorators": [],
             "line_number": 138
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_keyboards_remaining.c",
+          "c_function": "qkb_to_dict",
+          "pop_annotation": {
+            "c_function": "qkb_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/gateway/port_qqbot_keyboards_remaining.c",
+            "python_file": "gateway/platforms/qqbot/keyboards.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ gateway/platforms/qqbot/keyboards.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/keyboards.py",
@@ -110326,17 +110361,24 @@
             "decorators": [],
             "line_number": 146
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_keyboards_remaining.c",
+          "c_function": "qkb_to_dict",
+          "pop_annotation": {
+            "c_function": "qkb_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/gateway/port_qqbot_keyboards_remaining.c",
+            "python_file": "gateway/platforms/qqbot/keyboards.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ gateway/platforms/qqbot/keyboards.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/keyboards.py",
@@ -110348,17 +110390,24 @@
             "decorators": [],
             "line_number": 155
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_keyboards_remaining.c",
+          "c_function": "qkb_to_dict",
+          "pop_annotation": {
+            "c_function": "qkb_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/gateway/port_qqbot_keyboards_remaining.c",
+            "python_file": "gateway/platforms/qqbot/keyboards.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ gateway/platforms/qqbot/keyboards.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/keyboards.py",
@@ -110602,17 +110651,24 @@
             "decorators": [],
             "line_number": 345
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_keyboards_remaining.c",
+          "c_function": "qkb_init",
+          "pop_annotation": {
+            "c_function": "qkb_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_qqbot_keyboards_remaining.c",
+            "python_file": "gateway/platforms/qqbot/keyboards.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/qqbot/keyboards.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/keyboards.py",
@@ -110624,17 +110680,24 @@
             "decorators": [],
             "line_number": 355
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_qqbot_keyboards_remaining.c",
+          "c_function": "qkb_send",
+          "pop_annotation": {
+            "c_function": "qkb_send",
+            "python_functions": [
+              "send"
+            ],
+            "c_file": "src/gateway/port_qqbot_keyboards_remaining.c",
+            "python_file": "gateway/platforms/qqbot/keyboards.py",
+            "line": 45,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send @ gateway/platforms/qqbot/keyboards.py:send */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/keyboards.py",
@@ -130889,10 +130952,10 @@
     },
     "gateway/run.py": {
       "total": 369,
-      "ported": 360,
+      "ported": 369,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 9,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 369,
@@ -132126,16 +132189,24 @@
             "decorators": [],
             "line_number": 1541
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_run_remaining.c",
+          "c_function": "gwr_home_target_env_var",
+          "pop_annotation": {
+            "c_function": "gwr_home_target_env_var",
+            "python_functions": [
+              "_home_target_env_var"
+            ],
+            "c_file": "src/gateway/port_gateway_run_remaining.c",
+            "python_file": "gateway/run.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _home_target_env_var @ gateway/run.py:_home_target_env_var */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/run.py",
@@ -132147,16 +132218,24 @@
             "decorators": [],
             "line_number": 1556
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_run_remaining.c",
+          "c_function": "gwr_home_thread_env_var",
+          "pop_annotation": {
+            "c_function": "gwr_home_thread_env_var",
+            "python_functions": [
+              "_home_thread_env_var"
+            ],
+            "c_file": "src/gateway/port_gateway_run_remaining.c",
+            "python_file": "gateway/run.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _home_thread_env_var @ gateway/run.py:_home_thread_env_var */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/run.py",
@@ -133533,16 +133612,24 @@
             "decorators": [],
             "line_number": 3306
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_run_remaining.c",
+          "c_function": "gwr_init",
+          "pop_annotation": {
+            "c_function": "gwr_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_gateway_run_remaining.c",
+            "python_file": "gateway/run.py",
+            "line": 46,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/run.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/run.py",
@@ -135596,16 +135683,24 @@
             ],
             "line_number": 5433
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_run_remaining.c",
+          "c_function": "gwr_load_prefill_messages",
+          "pop_annotation": {
+            "c_function": "gwr_load_prefill_messages",
+            "python_functions": [
+              "_load_prefill_messages"
+            ],
+            "c_file": "src/gateway/port_gateway_run_remaining.c",
+            "python_file": "gateway/run.py",
+            "line": 54,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _load_prefill_messages @ gateway/run.py:_load_prefill_messages */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/run.py",
@@ -139479,16 +139574,24 @@
             "decorators": [],
             "line_number": 16704
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_run_remaining.c",
+          "c_function": "gwr_thread_metadata_for_source",
+          "pop_annotation": {
+            "c_function": "gwr_thread_metadata_for_source",
+            "python_functions": [
+              "_thread_metadata_for_source"
+            ],
+            "c_file": "src/gateway/port_gateway_run_remaining.c",
+            "python_file": "gateway/run.py",
+            "line": 63,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _thread_metadata_for_source @ gateway/run.py:_thread_metadata_for_source */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/run.py",
@@ -139562,16 +139665,24 @@
             ],
             "line_number": 16793
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_run_remaining.c",
+          "c_function": "gwr_reply_anchor_for_event",
+          "pop_annotation": {
+            "c_function": "gwr_reply_anchor_for_event",
+            "python_functions": [
+              "_reply_anchor_for_event"
+            ],
+            "c_file": "src/gateway/port_gateway_run_remaining.c",
+            "python_file": "gateway/run.py",
+            "line": 71,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _reply_anchor_for_event @ gateway/run.py:_reply_anchor_for_event */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/run.py",
@@ -139873,16 +139984,24 @@
             "decorators": [],
             "line_number": 17434
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_run_remaining.c",
+          "c_function": "gwr_decide_image_input_mode",
+          "pop_annotation": {
+            "c_function": "gwr_decide_image_input_mode",
+            "python_functions": [
+              "_decide_image_input_mode"
+            ],
+            "c_file": "src/gateway/port_gateway_run_remaining.c",
+            "python_file": "gateway/run.py",
+            "line": 79,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _decide_image_input_mode @ gateway/run.py:_decide_image_input_mode */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/run.py",
@@ -141300,16 +141419,24 @@
             "decorators": [],
             "line_number": 19940
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_run_remaining.c",
+          "c_function": "gwr_run_agent",
+          "pop_annotation": {
+            "c_function": "gwr_run_agent",
+            "python_functions": [
+              "_run_agent"
+            ],
+            "c_file": "src/gateway/port_gateway_run_remaining.c",
+            "python_file": "gateway/run.py",
+            "line": 87,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _run_agent @ gateway/run.py:_run_agent */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/run.py",
@@ -141553,16 +141680,24 @@
             "decorators": [],
             "line_number": 24337
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_run_remaining.c",
+          "c_function": "gwr_main",
+          "pop_annotation": {
+            "c_function": "gwr_main",
+            "python_functions": [
+              "main"
+            ],
+            "c_file": "src/gateway/port_gateway_run_remaining.c",
+            "python_file": "gateway/run.py",
+            "line": 95,
+            "is_consolidated": false,
+            "full_text": "/* PoP: main @ gateway/run.py:main */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/run.py",
