@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:20:49Z",
+  "generated_at": "2026-08-02T21:22:57Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -12679,10 +12679,10 @@
     },
     "agent/browser_provider.py": {
       "total": 9,
-      "ported": 4,
+      "ported": 9,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 9,
@@ -12701,16 +12701,24 @@
             ],
             "line_number": 63
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_browser_provider_remaining.c",
+          "c_function": "brp_name",
+          "pop_annotation": {
+            "c_function": "brp_name",
+            "python_functions": [
+              "name"
+            ],
+            "c_file": "src/agent/port_browser_provider_remaining.c",
+            "python_file": "agent/browser_provider.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: name @ agent/browser_provider.py:name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/browser_provider.py",
@@ -12724,16 +12732,24 @@
             ],
             "line_number": 72
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_browser_provider_remaining.c",
+          "c_function": "brp_display_name",
+          "pop_annotation": {
+            "c_function": "brp_display_name",
+            "python_functions": [
+              "display_name"
+            ],
+            "c_file": "src/agent/port_browser_provider_remaining.c",
+            "python_file": "agent/browser_provider.py",
+            "line": 27,
+            "is_consolidated": false,
+            "full_text": "/* PoP: display_name @ agent/browser_provider.py:display_name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/browser_provider.py",
@@ -12747,16 +12763,24 @@
             ],
             "line_number": 77
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_browser_provider_remaining.c",
+          "c_function": "brp_is_available",
+          "pop_annotation": {
+            "c_function": "brp_is_available",
+            "python_functions": [
+              "is_available"
+            ],
+            "c_file": "src/agent/port_browser_provider_remaining.c",
+            "python_file": "agent/browser_provider.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_available @ agent/browser_provider.py:is_available */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/browser_provider.py",
@@ -12861,16 +12885,24 @@
             "decorators": [],
             "line_number": 127
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_browser_provider_remaining.c",
+          "c_function": "brp_get_setup_schema",
+          "pop_annotation": {
+            "c_function": "brp_get_setup_schema",
+            "python_functions": [
+              "get_setup_schema"
+            ],
+            "c_file": "src/agent/port_browser_provider_remaining.c",
+            "python_file": "agent/browser_provider.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_setup_schema @ agent/browser_provider.py:get_setup_schema */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/browser_provider.py",
@@ -12911,16 +12943,24 @@
             "decorators": [],
             "line_number": 173
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_browser_provider_remaining.c",
+          "c_function": "brp_provider_name",
+          "pop_annotation": {
+            "c_function": "brp_provider_name",
+            "python_functions": [
+              "provider_name"
+            ],
+            "c_file": "src/agent/port_browser_provider_remaining.c",
+            "python_file": "agent/browser_provider.py",
+            "line": 43,
+            "is_consolidated": false,
+            "full_text": "/* PoP: provider_name @ agent/browser_provider.py:provider_name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -22252,10 +22292,10 @@
     },
     "agent/copilot_acp_client.py": {
       "total": 21,
-      "ported": 16,
+      "ported": 21,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 21,
@@ -22648,16 +22688,24 @@
             "decorators": [],
             "line_number": 384
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_copilot_acp_client_remaining2.c",
+          "c_function": "cac2_init",
+          "pop_annotation": {
+            "c_function": "cac2_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_copilot_acp_client_remaining2.c",
+            "python_file": "agent/copilot_acp_client.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/copilot_acp_client.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/copilot_acp_client.py",
@@ -22669,16 +22717,24 @@
             "decorators": [],
             "line_number": 387
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_copilot_acp_client_remaining2.c",
+          "c_function": "cac2_create",
+          "pop_annotation": {
+            "c_function": "cac2_create",
+            "python_functions": [
+              "create"
+            ],
+            "c_file": "src/agent/port_copilot_acp_client_remaining2.c",
+            "python_file": "agent/copilot_acp_client.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: create @ agent/copilot_acp_client.py:create */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/copilot_acp_client.py",
@@ -22690,16 +22746,24 @@
             "decorators": [],
             "line_number": 392
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_copilot_acp_client_remaining2.c",
+          "c_function": "cac2_init",
+          "pop_annotation": {
+            "c_function": "cac2_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_copilot_acp_client_remaining2.c",
+            "python_file": "agent/copilot_acp_client.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/copilot_acp_client.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/copilot_acp_client.py",
@@ -22711,16 +22775,24 @@
             "decorators": [],
             "line_number": 399
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_copilot_acp_client_remaining2.c",
+          "c_function": "cac2_init",
+          "pop_annotation": {
+            "c_function": "cac2_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_copilot_acp_client_remaining2.c",
+            "python_file": "agent/copilot_acp_client.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/copilot_acp_client.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/copilot_acp_client.py",
@@ -22732,16 +22804,24 @@
             "decorators": [],
             "line_number": 423
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_copilot_acp_client_remaining2.c",
+          "c_function": "cac2_close",
+          "pop_annotation": {
+            "c_function": "cac2_close",
+            "python_functions": [
+              "close"
+            ],
+            "c_file": "src/agent/port_copilot_acp_client_remaining2.c",
+            "python_file": "agent/copilot_acp_client.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: close @ agent/copilot_acp_client.py:close */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/copilot_acp_client.py",
