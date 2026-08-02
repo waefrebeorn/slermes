@@ -198,7 +198,21 @@ int tt_u_is_unusable_container_cwd(const char *arg) { (void)arg; return 0; }
 int tt_u_ensure_terminal_env_bridged(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _get_modal_backend_state @ tools/terminal_tool.py:_get_modal_backend_state */
-int tt_u_get_modal_backend_state(const char *arg) { (void)arg; return 0; }
+int tt_u_get_modal_backend_state(const char *arg) {
+    /* Python: resolve_modal_backend_state(modal_mode, has_direct,
+     * managed_ready). Arg = "mode\tdirect\tmanaged" (1/0). */
+    if (!arg || !*arg) { printf("direct\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    if (!t1) { printf("%s\n", arg); return 0; }
+    const char *t2 = strchr(t1 + 1, '\t');
+    int direct = (t1[1] == '1');
+    int managed = t2 ? (t2[1] == '1') : 0;
+    if (strncmp(arg, "managed", 7) == 0 && managed) { printf("managed\n"); return 0; }
+    if (direct) { printf("direct\n"); return 0; }
+    if (managed) { printf("managed\n"); return 0; }
+    printf("none\n");
+    return 0;
+}
 
 /* PoP: _cleanup_thread_worker @ tools/terminal_tool.py:_cleanup_thread_worker */
 int tt_u_cleanup_thread_worker(const char *arg) { (void)arg; return 0; }

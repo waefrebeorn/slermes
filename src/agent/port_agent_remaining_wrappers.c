@@ -1050,7 +1050,12 @@ int agent_account_usage_u_codex_backend_urls(const char *arg) { (void)arg; retur
 int agent_account_usage_u_resolve_codex_usage_credentials(const char *arg) { (void)arg; return 0; }
 
 /* PoP: redeemed @ agent/account_usage.py:redeemed */
-int agent_account_usage_redeemed(const char *arg) { (void)arg; return 0; }
+int agent_account_usage_redeemed(const char *arg) {
+    /* Python: self.status == "reset". Arg = status. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%d\n", strcmp(arg, "reset") == 0);
+    return 0;
+}
 
 /* PoP: redeem_codex_reset_credit @ agent/account_usage.py:redeem_codex_reset_credit */
 int agent_account_usage_redeem_codex_reset_credit(const char *arg) { (void)arg; return 0; }

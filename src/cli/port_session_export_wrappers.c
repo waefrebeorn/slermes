@@ -95,7 +95,27 @@ int sexp_export_record_count(const char *arg) { (void)arg; return 0; }
 int sexp_iter_user_prompt_records(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _render_jsonl @ hermes_cli/session_export.py:_render_jsonl */
-int sexp_u_render_jsonl(const char *arg) { (void)arg; return 0; }
+int sexp_u_render_jsonl(const char *arg) {
+    /* Python: json.dumps per row joined by \n (+ trailing). Arg = "only" or
+     * rows JSON array (each row dumped verbatim). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    if (strcmp(arg, "user-prompts") == 0) { printf("\n"); return 0; }
+    json_t *arr = json_parse(arg, NULL);
+    if (!arr || !json_is_array(arr)) {
+        if (arr) json_free(arr);
+        printf("%s\n", arg);
+        return 0;
+    }
+    size_t n = json_len(arr);
+    for (size_t i = 0; i < n; i++) {
+        json_t *row = json_get(arr, i);
+        char *s = json_dumps(row, 0);
+        printf("%s\n", s ? s : "");
+        free(s);
+    }
+    json_free(arr);
+    return 0;
+}
 
 /* PoP: _render_markdown @ hermes_cli/session_export.py:_render_markdown */
 int sexp_u_render_markdown(const char *arg) {

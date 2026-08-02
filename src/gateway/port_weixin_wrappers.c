@@ -125,7 +125,17 @@ int wx_u_split_text(const char *arg) {
 }
 
 /* PoP: _open_rate_limit_circuit @ gateway/platforms/weixin.py:_open_rate_limit_circuit */
-int wx_u_open_rate_limit_circuit(const char *arg) { (void)arg; return 0; }
+int wx_u_open_rate_limit_circuit(const char *arg) {
+    /* Python: extend circuit-until by open seconds (monotonic). Arg =
+     * "open_seconds\tuntil_monotonic" (seconds > 0 gates). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    double secs = atof(arg);
+    if (secs <= 0) { printf("0\n"); return 0; }
+    double until = tab ? atof(tab + 1) : 0;
+    printf("circuit open until %.1f\n", until + secs);
+    return 0;
+}
 
 /* PoP: _record_rate_limit_event @ gateway/platforms/weixin.py:_record_rate_limit_event */
 int wx_u_record_rate_limit_event(const char *arg) { (void)arg; return 0; }

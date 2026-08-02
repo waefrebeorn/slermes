@@ -269,7 +269,17 @@ int main_u_tui_need_rebuild(const char *arg) { (void)arg; return 0; }
 int main_u_ensure_tui_node(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _find_bundled_tui @ hermes_cli/main.py:_find_bundled_tui */
-int main_u_find_bundled_tui(const char *arg) { (void)arg; return 0; }
+int main_u_find_bundled_tui(const char *arg) {
+    /* Python: <cli_dir>/tui_dist/entry.js if file. Arg = cli dir (optional;
+     * empty = cwd). */
+    const char *dir = (arg && *arg) ? arg : ".";
+    char path[1200];
+    snprintf(path, sizeof(path), "%s/tui_dist/entry.js", dir);
+    struct stat st;
+    if (stat(path, &st) == 0 && S_ISREG(st.st_mode)) printf("%s\n", path);
+    else printf("\n");
+    return 0;
+}
 
 /* PoP: _make_tui_argv @ hermes_cli/main.py:_make_tui_argv */
 int main_u_make_tui_argv(const char *arg) { (void)arg; return 0; }

@@ -130,7 +130,6 @@ const char *su_archive_dir(const char *hermes_home, char *out, size_t sz) {
     return skill_usage_archive_dir(hermes_home, out);
 }
 /* PoP: _parse_iso_timestamp @ tools/skill_usage.py:_parse_iso_timestamp */
-/* PoP: su_parse_iso_timestamp @ hermes_cli/session_export_md.py:_iso_timestamp */
 double su_parse_iso_timestamp(const char *iso) {
     (void)iso; return 0.0;
 }

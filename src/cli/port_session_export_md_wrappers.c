@@ -13,7 +13,21 @@
 #include "hermes_json.h"
 
 /* PoP: _iso_timestamp @ hermes_cli/session_export_md.py:_iso_timestamp */
-int sexmd_u_iso_timestamp(const char *arg) { (void)arg; return 0; }
+int sexmd_u_iso_timestamp(const char *arg) {
+    /* Python: float epoch -> UTC ISO with Z; empty -> ""; non-numeric ->
+     * str(value). Arg = value. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    char *end = NULL;
+    double ts = strtod(arg, &end);
+    if (end == arg || *end != '\0') { printf("%s\n", arg); return 0; }
+    time_t t = (time_t)ts;
+    struct tm tm_buf;
+    if (gmtime_r(&t, &tm_buf) == NULL) { printf("%s\n", arg); return 0; }
+    char out[40];
+    strftime(out, sizeof(out), "%Y-%m-%dT%H:%M:%S", &tm_buf);
+    printf("%sZ\n", out);
+    return 0;
+}
 
 /* PoP: _frontmatter_value @ hermes_cli/session_export_md.py:_frontmatter_value */
 int sexmd_u_frontmatter_value(const char *arg) { (void)arg; return 0; }

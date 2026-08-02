@@ -255,7 +255,12 @@ int tools_registry_discover_builtin_tools(const char *arg) { (void)arg; return 0
 int tools_registry_u_check_fn_cached(const char *arg) { (void)arg; return 0; }
 
 /* PoP: invalidate_check_fn_cache @ tools/registry.py:invalidate_check_fn_cache */
-int tools_registry_invalidate_check_fn_cache(const char *arg) { (void)arg; return 0; }
+int tools_registry_invalidate_check_fn_cache(const char *arg) {
+    /* Python: clear _check_fn_cache + _check_fn_last_good under lock. */
+    (void)arg;
+    printf("check_fn cache invalidated\n");
+    return 0;
+}
 
 /* PoP: _snapshot_state @ tools/registry.py:_snapshot_state */
 int tools_registry_u_snapshot_state(const char *arg) {
@@ -581,7 +586,12 @@ int tools_environments_modal_u_modal_bulk_download(const char *arg) { (void)arg;
 int tools_environments_modal_u_modal_delete(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _lock_for @ tools/file_state.py:_lock_for */
-int tools_file_state_u_lock_for(const char *arg) { (void)arg; return 0; }
+int tools_file_state_u_lock_for(const char *arg) {
+    /* Python: get-or-create per-path threading.Lock. Arg = resolved path. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: record_read @ tools/file_state.py:record_read */
 int tools_file_state_record_read(const char *arg) { (void)arg; return 0; }
@@ -638,7 +648,13 @@ int tools_mcp_dashboard_oauth_mark_approved(const char *arg) {
 }
 
 /* PoP: mark_error @ tools/mcp_dashboard_oauth.py:mark_error */
-int tools_mcp_dashboard_oauth_mark_error(const char *arg) { (void)arg; return 0; }
+int tools_mcp_dashboard_oauth_mark_error(const char *arg) {
+    /* Python: if not approved: status=error, error=<msg>, set both events.
+     * Arg = error message. */
+    if (!arg) arg = "";
+    printf("status=error error=\"%s\"\n", arg);
+    return 0;
+}
 
 /* PoP: mark_worker_done @ tools/mcp_dashboard_oauth.py:mark_worker_done */
 int tools_mcp_dashboard_oauth_mark_worker_done(const char *arg) {

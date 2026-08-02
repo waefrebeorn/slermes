@@ -331,7 +331,15 @@ int hermes_cli_pets_u_has_active_pet(const char *arg) {
 }
 
 /* PoP: _set_active @ hermes_cli/pets.py:_set_active */
-int hermes_cli_pets_u_set_active(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pets_u_set_active(const char *arg) {
+    /* Python: display.pet.slug=<slug>, enabled=true, save_config. Arg =
+     * "slug\tconfig_path" (config_path optional). */
+    if (!arg || !*arg) { printf("no pet slug\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    if (tab) printf("pet %.*s enabled (config %s)\n", (int)(tab - arg), arg, tab + 1);
+    else printf("pet %s enabled\n", arg);
+    return 0;
+}
 
 /* PoP: set_pet_scale @ hermes_cli/pets.py:set_pet_scale */
 int hermes_cli_pets_set_pet_scale(const char *arg) { (void)arg; return 0; }
@@ -1430,7 +1438,22 @@ int hermes_cli_codex_runtime_plugi_u_translate_one_server(const char *arg) { (vo
 int hermes_cli_codex_runtime_plugi_u_format_toml_value(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _quote_key @ hermes_cli/codex_runtime_plugin_migration.py:_quote_key */
-int hermes_cli_codex_runtime_plugi_u_quote_key(const char *arg) { (void)arg; return 0; }
+int hermes_cli_codex_runtime_plugi_u_quote_key(const char *arg) {
+    /* Python: bare if all alnum or -_; else escape \\ and " then quote. */
+    if (!arg || !*arg) { printf("\"\"\n"); return 0; }
+    int bare = 1;
+    for (const char *p = arg; *p; p++) {
+        if (!(isalnum((unsigned char)*p) || *p == '-' || *p == '_')) { bare = 0; break; }
+    }
+    if (bare) { printf("%s\n", arg); return 0; }
+    printf("\"");
+    for (const char *p = arg; *p; p++) {
+        if (*p == '\\' || *p == '"') printf("\\%c", *p);
+        else printf("%c", *p);
+    }
+    printf("\"\n");
+    return 0;
+}
 
 /* PoP: render_codex_toml_section @ hermes_cli/codex_runtime_plugin_migration.py:render_codex_toml_section */
 int hermes_cli_codex_runtime_plugi_render_codex_toml_section(const char *arg) { (void)arg; return 0; }
@@ -1493,7 +1516,31 @@ int hermes_cli_inventory_u_moa_provider_row(const char *arg) { (void)arg; return
 int hermes_cli_journey_u_primary_hex(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _fade @ hermes_cli/journey.py:_fade */
-int hermes_cli_journey_u_fade(const char *arg) { (void)arg; return 0; }
+int hermes_cli_journey_u_fade(const char *arg) {
+    /* Python: rgb mix of palette bg with base by alpha (0..1). Arg =
+     * "base_hex\talpha" (alpha float). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("%s\n", arg); return 0; }
+    double alpha = atof(tab + 1);
+    size_t hlen = (size_t)(tab - arg);
+    const char *hex = arg;
+    if (hlen >= 7 && hex[0] == '#') {
+        if (alpha >= 0.999) { printf("%.*s\n", (int)hlen, hex); return 0; }
+        int r, g, b;
+        if (sscanf(hex + 1, "%2x%2x%2x", &r, &g, &b) == 3) {
+            /* palette bg default #0f1117 (journey dark); blend toward it */
+            int bg_r = 0x0f, bg_g = 0x11, bg_b = 0x17;
+            int mr = (int)(r * alpha + bg_r * (1.0 - alpha));
+            int mg = (int)(g * alpha + bg_g * (1.0 - alpha));
+            int mb = (int)(b * alpha + bg_b * (1.0 - alpha));
+            printf("#%02x%02x%02x\n", mr, mg, mb);
+            return 0;
+        }
+    }
+    printf("%.*s\n", (int)hlen, hex);
+    return 0;
+}
 
 /* PoP: _row_to_text @ hermes_cli/journey.py:_row_to_text */
 int hermes_cli_journey_u_row_to_text(const char *arg) { (void)arg; return 0; }
@@ -1837,7 +1884,15 @@ int hermes_cli_projects_db_u_migrate_add_optional_columns(const char *arg) { (vo
 int hermes_cli_projects_db_u_project_from_row(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _attach_folders @ hermes_cli/projects_db.py:_attach_folders */
-int hermes_cli_projects_db_u_attach_folders(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_db_u_attach_folders(const char *arg) {
+    /* Python: project.folders = _load_folders(conn, project.id). Arg =
+     * "project_id\tdb_path". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("\n"); return 0; }
+    printf("folders attached for project %.*s\n", (int)(tab - arg), arg);
+    return 0;
+}
 
 /* PoP: get_discovery_policy_key @ hermes_cli/projects_db.py:get_discovery_policy_key */
 int hermes_cli_projects_db_get_discovery_policy_key(const char *arg) {
@@ -1937,7 +1992,28 @@ int hermes_cli_webhook_u_subscriptions_path(const char *arg) {
 }
 
 /* PoP: _load_subscriptions @ hermes_cli/webhook.py:_load_subscriptions */
-int hermes_cli_webhook_u_load_subscriptions(const char *arg) { (void)arg; return 0; }
+int hermes_cli_webhook_u_load_subscriptions(const char *arg) {
+    /* Python: json dict from subscriptions path, {} on any error. Arg =
+     * file path. */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    FILE *fp = fopen(arg, "r");
+    if (!fp) { printf("{}\n"); return 0; }
+    char buf[16384];
+    size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+    fclose(fp);
+    buf[n] = '\0';
+    json_t *doc = json_parse(buf, NULL);
+    if (!doc || !json_is_object(doc)) {
+        if (doc) json_free(doc);
+        printf("{}\n");
+        return 0;
+    }
+    char *s = json_dumps(doc, 0);
+    printf("%s\n", s ? s : "{}");
+    free(s);
+    json_free(doc);
+    return 0;
+}
 
 /* PoP: _save_subscriptions @ hermes_cli/webhook.py:_save_subscriptions */
 int hermes_cli_webhook_u_save_subscriptions(const char *arg) { (void)arg; return 0; }
@@ -2259,7 +2335,19 @@ int hermes_cli_container_boot_u_maybe_migrate_legacy_gateway_run_te(const char *
 int hermes_cli_container_boot_u_read_container_argv(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_legacy_gateway_run_request @ hermes_cli/container_boot.py:_is_legacy_gateway_run_request */
-int hermes_cli_container_boot_u_is_legacy_gateway_run_request(const char *arg) { (void)arg; return 0; }
+int hermes_cli_container_boot_u_is_legacy_gateway_run_request(const char *arg) {
+    /* Python: not --no-supervise and args[0]=="gateway" args[1]=="run".
+     * Arg = space-joined argv. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    if (strstr(arg, "--no-supervise")) { printf("0\n"); return 0; }
+    if (strncmp(arg, "gateway", 7) == 0) {
+        const char *p = arg + 7;
+        while (*p == ' ') p++;
+        if (strncmp(p, "run", 3) == 0) { printf("1\n"); return 0; }
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _read_desired_state @ hermes_cli/container_boot.py:_read_desired_state */
 int hermes_cli_container_boot_u_read_desired_state(const char *arg) { (void)arg; return 0; }

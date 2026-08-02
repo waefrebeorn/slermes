@@ -594,7 +594,22 @@ int gateway_status_phrases_u_merge_phrase_config(const char *arg) { (void)arg; r
 int gateway_status_phrases_resolve_status_phrase_catalog(const char *arg) { (void)arg; return 0; }
 
 /* PoP: classify_status_context @ gateway/status_phrases.py:classify_status_context */
-int gateway_status_phrases_classify_status_context(const char *arg) { (void)arg; return 0; }
+int gateway_status_phrases_classify_status_context(const char *arg) {
+    /* Python: normalized kind in {heartbeat, waiting, long_running, status}
+     * -> "status"; else "generic". Arg = kind. */
+    if (!arg || !*arg) { printf("generic\n"); return 0; }
+    char buf[64];
+    size_t n = strlen(arg);
+    if (n >= sizeof(buf)) n = sizeof(buf) - 1;
+    memcpy(buf, arg, n); buf[n] = '\0';
+    for (char *p = buf; *p; p++) *p = (char)tolower((unsigned char)*p);
+    static const char *status_kinds[] = {"heartbeat", "waiting", "long_running", "status"};
+    for (size_t i = 0; i < sizeof(status_kinds) / sizeof(status_kinds[0]); i++) {
+        if (strcmp(buf, status_kinds[i]) == 0) { printf("status\n"); return 0; }
+    }
+    printf("generic\n");
+    return 0;
+}
 
 /* PoP: choose_status_phrase @ gateway/status_phrases.py:choose_status_phrase */
 int gateway_status_phrases_choose_status_phrase(const char *arg) { (void)arg; return 0; }

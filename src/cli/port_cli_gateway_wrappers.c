@@ -230,7 +230,19 @@ int cgw_u_print_other_profiles_gateway_status(const char *arg) { (void)arg; retu
 int cgw_u_reap_unsupervised_gateway_orphans(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _wsl_systemd_operational @ hermes_cli/gateway.py:_wsl_systemd_operational */
-int cgw_u_wsl_systemd_operational(const char *arg) { (void)arg; return 0; }
+int cgw_u_wsl_systemd_operational(const char *arg) {
+    /* Python: _systemd_operational(system=True) — systemctl working as PID 1.
+     * Arg = optional check hint. */
+    (void)arg;
+    struct stat st;
+    /* systemd as PID 1: /run/systemd/system exists */
+    if (stat("/run/systemd/system", &st) == 0 && S_ISDIR(st.st_mode)) {
+        printf("1\n");
+        return 0;
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _systemd_operational @ hermes_cli/gateway.py:_systemd_operational */
 int cgw_u_systemd_operational(const char *arg) { (void)arg; return 0; }
@@ -369,7 +381,17 @@ int cgw_remove_legacy_hermes_units(const char *arg) { (void)arg; return 0; }
 int cgw_print_systemd_scope_conflict_warning(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _require_root_for_system_service @ hermes_cli/gateway.py:_require_root_for_system_service */
-int cgw_u_require_root_for_system_service(const char *arg) { (void)arg; return 0; }
+int cgw_u_require_root_for_system_service(const char *arg) {
+    /* Python: raise SystemScopeRequiresRootError if euid != 0. Arg = action
+     * (empty = ok on POSIX non-system paths). */
+    if (geteuid() == 0) { printf("0\n"); return 0; }
+    if (arg && *arg) {
+        printf("System gateway %s requires root. Re-run with sudo.\n", arg);
+        return 1;
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _system_service_identity @ hermes_cli/gateway.py:_system_service_identity */
 int cgw_u_system_service_identity(const char *arg) { (void)arg; return 0; }
@@ -444,7 +466,14 @@ int cgw_u_stable_service_working_dir(const char *arg) { (void)arg; return 0; }
 int cgw_u_systemd_watchdog_seconds(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _systemd_watchdog_service_fields @ hermes_cli/gateway.py:_systemd_watchdog_service_fields */
-int cgw_u_systemd_watchdog_service_fields(const char *arg) { (void)arg; return 0; }
+int cgw_u_systemd_watchdog_service_fields(const char *arg) {
+    /* Python: ("notify", "NotifyAccess=main\nWatchdogSec=<s>s\n") when
+     * seconds > 0 else ("simple", ""). Arg = watchdog seconds. */
+    long secs = (arg && *arg) ? strtol(arg, NULL, 10) : 0;
+    if (secs <= 0) { printf("simple\t\n"); return 0; }
+    printf("notify\tNotifyAccess=main\nWatchdogSec=%lds\n", secs);
+    return 0;
+}
 
 /* PoP: generate_systemd_unit @ hermes_cli/gateway.py:generate_systemd_unit */
 int cgw_generate_systemd_unit(const char *arg) { (void)arg; return 0; }

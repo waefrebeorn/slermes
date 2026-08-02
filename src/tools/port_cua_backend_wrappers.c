@@ -17,7 +17,28 @@
 int cua_u_action_result_from(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _computer_use_cfg @ tools/computer_use/cua_backend.py:_computer_use_cfg */
-int cua_u_computer_use_cfg(const char *arg) { (void)arg; return 0; }
+int cua_u_computer_use_cfg(const char *arg) {
+    /* Python: (load_config() or {}).get("computer_use") or {} on error.
+     * Arg = config JSON (or empty). */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    json_t *cfg = json_parse(arg, NULL);
+    if (!cfg || !json_is_object(cfg)) {
+        if (cfg) json_free(cfg);
+        printf("{}\n");
+        return 0;
+    }
+    json_t *cu = json_obj_get(cfg, "computer_use");
+    if (cu && json_is_object(cu)) {
+        char *s = json_dumps(cu, 0);
+        printf("%s\n", s ? s : "{}");
+        free(s);
+        json_free(cfg);
+        return 0;
+    }
+    printf("{}\n");
+    json_free(cfg);
+    return 0;
+}
 
 /* PoP: _cua_no_overlay @ tools/computer_use/cua_backend.py:_cua_no_overlay */
 int cua_u_cua_no_overlay(const char *arg) { (void)arg; return 0; }
