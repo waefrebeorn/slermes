@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:39:41Z",
+  "generated_at": "2026-08-02T21:41:27Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -299838,10 +299838,10 @@
     },
     "tools/delegate_tool.py": {
       "total": 49,
-      "ported": 44,
+      "ported": 48,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 49,
@@ -300060,17 +300060,24 @@
             "decorators": [],
             "line_number": 182
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_delegate_tool_remaining.c",
+          "c_function": "dlg_interrupt_subagent",
+          "pop_annotation": {
+            "c_function": "dlg_interrupt_subagent",
+            "python_functions": [
+              "interrupt_subagent"
+            ],
+            "c_file": "src/tools/port_delegate_tool_remaining.c",
+            "python_file": "tools/delegate_tool.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: interrupt_subagent @ tools/delegate_tool.py:interrupt_subagent */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/delegate_tool.py",
@@ -300082,17 +300089,24 @@
             "decorators": [],
             "line_number": 205
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_delegate_tool_remaining.c",
+          "c_function": "dlg_list_active_subagents",
+          "pop_annotation": {
+            "c_function": "dlg_list_active_subagents",
+            "python_functions": [
+              "list_active_subagents"
+            ],
+            "c_file": "src/tools/port_delegate_tool_remaining.c",
+            "python_file": "tools/delegate_tool.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: list_active_subagents @ tools/delegate_tool.py:list_active_subagents */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/delegate_tool.py",
@@ -300967,17 +300981,24 @@
             "decorators": [],
             "line_number": 2432
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_delegate_tool_remaining.c",
+          "c_function": "dlg_delegate_task",
+          "pop_annotation": {
+            "c_function": "dlg_delegate_task",
+            "python_functions": [
+              "delegate_task"
+            ],
+            "c_file": "src/tools/port_delegate_tool_remaining.c",
+            "python_file": "tools/delegate_tool.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: delegate_task @ tools/delegate_tool.py:delegate_task */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/delegate_tool.py",
@@ -301047,17 +301068,24 @@
             "decorators": [],
             "line_number": 3330
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_delegate_tool_remaining.c",
+          "c_function": "dlg_load_config",
+          "pop_annotation": {
+            "c_function": "dlg_load_config",
+            "python_functions": [
+              "_load_config"
+            ],
+            "c_file": "src/tools/port_delegate_tool_remaining.c",
+            "python_file": "tools/delegate_tool.py",
+            "line": 44,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _load_config @ tools/delegate_tool.py:_load_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/delegate_tool.py",
