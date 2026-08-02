@@ -1,0 +1,50 @@
+[
+{
+"op": "scheduler_parse_wake_gate",
+"value": ""
+},
+{
+"op": "scheduler_parse_wake_gate",
+"value": "x"
+},
+{
+"op": "scheduler_parse_wake_gate",
+"value": "hello world"
+},
+{
+"op": "scheduler_parse_wake_gate",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "scheduler_parse_wake_gate",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "scheduler_parse_wake_gate",
+"value": "user@example.com"
+},
+{
+"op": "scheduler_parse_wake_gate",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "scheduler_parse_wake_gate",
+"value": "key:value;key2:v2"
+},
+{
+"op": "scheduler_parse_wake_gate",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "scheduler_parse_wake_gate",
+"value": "CamelCaseString"
+},
+{
+"op": "scheduler_parse_wake_gate",
+"value": "12345"
+},
+{
+"op": "scheduler_parse_wake_gate",
+"value": "  spaced  "
+}
+]

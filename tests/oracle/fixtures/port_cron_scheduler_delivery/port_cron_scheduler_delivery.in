@@ -1,0 +1,50 @@
+[
+{
+"op": "scheduler_is_known_delivery_platform",
+"value": ""
+},
+{
+"op": "scheduler_is_known_delivery_platform",
+"value": "x"
+},
+{
+"op": "scheduler_is_known_delivery_platform",
+"value": "hello world"
+},
+{
+"op": "scheduler_is_known_delivery_platform",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "scheduler_is_known_delivery_platform",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "scheduler_is_known_delivery_platform",
+"value": "user@example.com"
+},
+{
+"op": "scheduler_is_known_delivery_platform",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "scheduler_is_known_delivery_platform",
+"value": "key:value;key2:v2"
+},
+{
+"op": "scheduler_is_known_delivery_platform",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "scheduler_is_known_delivery_platform",
+"value": "CamelCaseString"
+},
+{
+"op": "scheduler_is_known_delivery_platform",
+"value": "12345"
+},
+{
+"op": "scheduler_is_known_delivery_platform",
+"value": "  spaced  "
+}
+]

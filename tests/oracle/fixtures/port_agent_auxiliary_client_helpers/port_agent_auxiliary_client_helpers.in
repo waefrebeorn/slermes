@@ -1,0 +1,242 @@
+[
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": ""
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "x"
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "hello world"
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "user@example.com"
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "key:value;key2:v2"
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "CamelCaseString"
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "12345"
+},
+{
+"op": "aux__is_anthropic_compatible_host",
+"value": "  spaced  "
+},
+{
+"op": "aux__evict_cached_clients",
+"value": ""
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "x"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "hello world"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "user@example.com"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "key:value;key2:v2"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "CamelCaseString"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "12345"
+},
+{
+"op": "aux__evict_cached_clients",
+"value": "  spaced  "
+},
+{
+"op": "aux__is_openrouter_client",
+"value": ""
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "x"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "hello world"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "user@example.com"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "key:value;key2:v2"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "CamelCaseString"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "12345"
+},
+{
+"op": "aux__is_openrouter_client",
+"value": "  spaced  "
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": ""
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "x"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "hello world"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "user@example.com"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "key:value;key2:v2"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "CamelCaseString"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "12345"
+},
+{
+"op": "aux__refresh_provider_credentials",
+"value": "  spaced  "
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": ""
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "x"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "hello world"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "user@example.com"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "key:value;key2:v2"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "CamelCaseString"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "12345"
+},
+{
+"op": "aux__task_minimum_context_length",
+"value": "  spaced  "
+}
+]

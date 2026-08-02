@@ -1,0 +1,50 @@
+[
+{
+"op": "cli_tools_write_approval_pending_count",
+"value": ""
+},
+{
+"op": "cli_tools_write_approval_pending_count",
+"value": "x"
+},
+{
+"op": "cli_tools_write_approval_pending_count",
+"value": "hello world"
+},
+{
+"op": "cli_tools_write_approval_pending_count",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_tools_write_approval_pending_count",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_tools_write_approval_pending_count",
+"value": "user@example.com"
+},
+{
+"op": "cli_tools_write_approval_pending_count",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_tools_write_approval_pending_count",
+"value": "key:value;key2:v2"
+},
+{
+"op": "cli_tools_write_approval_pending_count",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "cli_tools_write_approval_pending_count",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_tools_write_approval_pending_count",
+"value": "12345"
+},
+{
+"op": "cli_tools_write_approval_pending_count",
+"value": "  spaced  "
+}
+]

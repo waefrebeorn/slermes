@@ -24,7 +24,18 @@ int gw_u_preserve_hermes_home_path(const char *arg) { (void)arg; return 0; }
 int gw_u_quote_cmd_script_arg(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _quote_schtasks_arg @ hermes_cli/gateway_windows.py:_quote_schtasks_arg */
-int gw_u_quote_schtasks_arg(const char *arg) { (void)arg; return 0; }
+int gw_u_quote_schtasks_arg(const char *arg) {
+    if (!arg) { printf("\n"); return 0; }
+    int needs = 0;
+    for (const char *p = arg; *p; p++)
+        if (*p == ' ' || *p == '\t' || *p == '"') { needs = 1; break; }
+    if (!needs) { printf("%s\n", arg); return 0; }
+    putchar('"');
+    for (const char *p = arg; *p; p++)
+        if (*p == '"') { putchar('\\'); putchar('"'); } else putchar(*p);
+    putchar('"'); putchar('\n');
+    return 0;
+}
 
 /* PoP: _exec_schtasks @ hermes_cli/gateway_windows.py:_exec_schtasks */
 int gw_u_exec_schtasks(const char *arg) { (void)arg; return 0; }
@@ -54,7 +65,16 @@ int gw_u_launch_elevated_uninstall(const char *arg) { (void)arg; return 0; }
 int gw_get_task_name(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _sanitize_filename @ hermes_cli/gateway_windows.py:_sanitize_filename */
-int gw_u_sanitize_filename(const char *arg) { (void)arg; return 0; }
+int gw_u_sanitize_filename(const char *arg) {
+    if (!arg) { printf("\n"); return 0; }
+    for (const char *p = arg; *p; p++) {
+        unsigned char c = (unsigned char)*p;
+        if (c < 0x20 || strchr("<>:\"/\|?*", c)) putchar('_');
+        else putchar(c);
+    }
+    putchar('\n');
+    return 0;
+}
 
 /* PoP: get_task_script_path @ hermes_cli/gateway_windows.py:get_task_script_path */
 int gw_get_task_script_path(const char *arg) { (void)arg; return 0; }

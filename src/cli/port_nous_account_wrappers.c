@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include "hermes_json.h"
+#include <time.h>
 
 /* PoP: tool_gateway_entitled @ hermes_cli/nous_account.py:tool_gateway_entitled */
 int nous_tool_gateway_entitled(const char *arg) { (void)arg; return 0; }
@@ -78,7 +79,20 @@ int nous_u_portal_base_url(const char *arg) { (void)arg; return 0; }
 int nous_u_cache_key(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _parse_iso_timestamp @ hermes_cli/nous_account.py:_parse_iso_timestamp */
-int nous_u_parse_iso_timestamp(const char *arg) { (void)arg; return 0; }
+int nous_u_parse_iso_timestamp(const char *arg) {
+    if (!arg || !*arg) return 0;
+    char buf[64]; strncpy(buf, arg, sizeof buf - 1); buf[sizeof buf - 1] = 0;
+    char *z = strchr(buf, 'Z'); if (z) *z = '+';
+    char *plus = strchr(buf, '+');
+    if (plus && strchr(plus, ':')) {
+        memmove(plus + 3, plus + 4, strlen(plus + 4) + 1);
+        memmove(plus + 2, plus + 3, strlen(plus + 3) + 1);
+    }
+    struct tm tm; memset(&tm, 0, sizeof tm);
+    if (strptime(buf, "%Y-%m-%dT%H:%M:%S", &tm)) return (int)timegm(&tm);
+    if (strptime(buf, "%Y-%m-%d %H:%M:%S", &tm)) return (int)timegm(&tm);
+    return 0;
+}
 
 /* PoP: _coerce_str @ hermes_cli/nous_account.py:_coerce_str */
 int nous_u_coerce_str(const char *arg) { (void)arg; return 0; }

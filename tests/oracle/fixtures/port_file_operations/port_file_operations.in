@@ -1,0 +1,146 @@
+[
+{
+"op": "file_ops_has_bom",
+"value": ""
+},
+{
+"op": "file_ops_has_bom",
+"value": "x"
+},
+{
+"op": "file_ops_has_bom",
+"value": "hello world"
+},
+{
+"op": "file_ops_has_bom",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "file_ops_has_bom",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "file_ops_has_bom",
+"value": "user@example.com"
+},
+{
+"op": "file_ops_has_bom",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "file_ops_has_bom",
+"value": "key:value;key2:v2"
+},
+{
+"op": "file_ops_has_bom",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "file_ops_has_bom",
+"value": "CamelCaseString"
+},
+{
+"op": "file_ops_has_bom",
+"value": "12345"
+},
+{
+"op": "file_ops_has_bom",
+"value": "  spaced  "
+},
+{
+"op": "file_ops_is_line_oriented_newline_error",
+"value": ""
+},
+{
+"op": "file_ops_is_line_oriented_newline_error",
+"value": "x"
+},
+{
+"op": "file_ops_is_line_oriented_newline_error",
+"value": "hello world"
+},
+{
+"op": "file_ops_is_line_oriented_newline_error",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "file_ops_is_line_oriented_newline_error",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "file_ops_is_line_oriented_newline_error",
+"value": "user@example.com"
+},
+{
+"op": "file_ops_is_line_oriented_newline_error",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "file_ops_is_line_oriented_newline_error",
+"value": "key:value;key2:v2"
+},
+{
+"op": "file_ops_is_line_oriented_newline_error",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "file_ops_is_line_oriented_newline_error",
+"value": "CamelCaseString"
+},
+{
+"op": "file_ops_is_line_oriented_newline_error",
+"value": "12345"
+},
+{
+"op": "file_ops_is_line_oriented_newline_error",
+"value": "  spaced  "
+},
+{
+"op": "file_ops_pattern_has_regex_newline",
+"value": ""
+},
+{
+"op": "file_ops_pattern_has_regex_newline",
+"value": "x"
+},
+{
+"op": "file_ops_pattern_has_regex_newline",
+"value": "hello world"
+},
+{
+"op": "file_ops_pattern_has_regex_newline",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "file_ops_pattern_has_regex_newline",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "file_ops_pattern_has_regex_newline",
+"value": "user@example.com"
+},
+{
+"op": "file_ops_pattern_has_regex_newline",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "file_ops_pattern_has_regex_newline",
+"value": "key:value;key2:v2"
+},
+{
+"op": "file_ops_pattern_has_regex_newline",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "file_ops_pattern_has_regex_newline",
+"value": "CamelCaseString"
+},
+{
+"op": "file_ops_pattern_has_regex_newline",
+"value": "12345"
+},
+{
+"op": "file_ops_pattern_has_regex_newline",
+"value": "  spaced  "
+}
+]

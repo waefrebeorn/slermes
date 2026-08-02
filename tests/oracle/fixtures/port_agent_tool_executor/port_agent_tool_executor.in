@@ -1,0 +1,50 @@
+[
+{
+"op": "agent_tool_executor__is_interpreter_shutdown_submit_error",
+"value": ""
+},
+{
+"op": "agent_tool_executor__is_interpreter_shutdown_submit_error",
+"value": "x"
+},
+{
+"op": "agent_tool_executor__is_interpreter_shutdown_submit_error",
+"value": "hello world"
+},
+{
+"op": "agent_tool_executor__is_interpreter_shutdown_submit_error",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "agent_tool_executor__is_interpreter_shutdown_submit_error",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "agent_tool_executor__is_interpreter_shutdown_submit_error",
+"value": "user@example.com"
+},
+{
+"op": "agent_tool_executor__is_interpreter_shutdown_submit_error",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "agent_tool_executor__is_interpreter_shutdown_submit_error",
+"value": "key:value;key2:v2"
+},
+{
+"op": "agent_tool_executor__is_interpreter_shutdown_submit_error",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "agent_tool_executor__is_interpreter_shutdown_submit_error",
+"value": "CamelCaseString"
+},
+{
+"op": "agent_tool_executor__is_interpreter_shutdown_submit_error",
+"value": "12345"
+},
+{
+"op": "agent_tool_executor__is_interpreter_shutdown_submit_error",
+"value": "  spaced  "
+}
+]

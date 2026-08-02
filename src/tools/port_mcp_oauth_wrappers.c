@@ -15,7 +15,23 @@
 int mcpo_u_get_token_dir(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _safe_filename @ tools/mcp_oauth.py:_safe_filename */
-int mcpo_u_safe_filename(const char *arg) { (void)arg; return 0; }
+int mcpo_u_safe_filename(const char *arg) {
+    if (!arg || !*arg) { printf("default\n"); return 0; }
+    char out[160]; int n = 0;
+    for (const char *p = arg; *p && n < 128; p++) {
+        char c = *p;
+        if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
+            (c >= '0' && c <= '9') || c == '_' || c == '-')
+            out[n++] = c;
+        else out[n++] = '_';
+    }
+    out[n] = 0;
+    int s = 0; while (out[s] == '_') s++;
+    int e = n - 1; while (e > s && out[e] == '_') e--;
+    if (e < s) { printf("default\n"); return 0; }
+    printf("%.*s\n", e - s + 1, out + s);
+    return 0;
+}
 
 /* PoP: _find_free_port @ tools/mcp_oauth.py:_find_free_port */
 int mcpo_u_find_free_port(const char *arg) { (void)arg; return 0; }

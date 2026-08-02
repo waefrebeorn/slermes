@@ -1,0 +1,50 @@
+[
+{
+"op": "cli_hermes_cli_memory_setup__install_dependencies",
+"value": ""
+},
+{
+"op": "cli_hermes_cli_memory_setup__install_dependencies",
+"value": "x"
+},
+{
+"op": "cli_hermes_cli_memory_setup__install_dependencies",
+"value": "hello world"
+},
+{
+"op": "cli_hermes_cli_memory_setup__install_dependencies",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_hermes_cli_memory_setup__install_dependencies",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_hermes_cli_memory_setup__install_dependencies",
+"value": "user@example.com"
+},
+{
+"op": "cli_hermes_cli_memory_setup__install_dependencies",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_hermes_cli_memory_setup__install_dependencies",
+"value": "key:value;key2:v2"
+},
+{
+"op": "cli_hermes_cli_memory_setup__install_dependencies",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "cli_hermes_cli_memory_setup__install_dependencies",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_hermes_cli_memory_setup__install_dependencies",
+"value": "12345"
+},
+{
+"op": "cli_hermes_cli_memory_setup__install_dependencies",
+"value": "  spaced  "
+}
+]

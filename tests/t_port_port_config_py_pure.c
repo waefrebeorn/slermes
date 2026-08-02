@@ -1,0 +1,61 @@
+/* AUTO-GENERATED integration oracle harness for port_config_py_pure (gen_integration_oracle.py). */
+#include "hermes_core_types.h"
+#include "hermes_json.h"
+#include "port_config_py_pure.c"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+extern int config_coerce_ssl_verify(const char *);
+extern int config_coerce_config_version(const char *);
+extern bool config_is_env_config_key(const char *);
+
+static char *read_all(const char *path){
+    FILE *f = fopen(path, "rb"); if (!f) return NULL;
+    fseek(f, 0, SEEK_END); long n = ftell(f); fseek(f, 0, SEEK_SET);
+    if (n < 0) { fclose(f); return NULL; }
+    char *buf = (char *)malloc((size_t)n + 1); if (!buf) { fclose(f); return NULL; }
+    size_t r = fread(buf, 1, (size_t)n, f); buf[r] = '\0'; fclose(f); return buf;
+}
+
+static json_t *emit_config_coerce_ssl_verify(const json_t *c){
+    const char *value = json_get_str(c, "value", "");
+    bool v = (config_coerce_ssl_verify(value) ? true : false);
+    json_t *o = json_new_object(); json_set(o, "fn", json_string("config_coerce_ssl_verify"));
+    json_set(o, "out", json_bool(v)); return o;
+}
+
+static json_t *emit_config_coerce_config_version(const json_t *c){
+    const char *value = json_get_str(c, "value", "");
+    long v = (long)config_coerce_config_version(value);
+    json_t *o = json_new_object(); json_set(o, "fn", json_string("config_coerce_config_version"));
+    json_set(o, "out", json_int(v)); return o;
+}
+
+static json_t *emit_config_is_env_config_key(const json_t *c){
+    const char *value = json_get_str(c, "value", "");
+    bool v = (bool)config_is_env_config_key(value);
+    json_t *o = json_new_object(); json_set(o, "fn", json_string("config_is_env_config_key"));
+    json_set(o, "out", json_bool(v)); return o;
+}
+
+int main(int argc, char **argv){
+    if (argc < 2) { fprintf(stderr, "usage: %s <cases.json>\n", argv[0]); return 2; }
+    char *input = read_all(argv[1]);
+    if (!input) { fprintf(stderr, "cannot read %s\n", argv[1]); return 2; }
+    char *err = NULL; json_t *root = json_parse(input, &err);
+    if (err) { fprintf(stderr, "parse error: %s\n", err); free(err); free(input); return 2; }
+    if (root->type != JSON_ARRAY) { fprintf(stderr, "fixture must be a JSON array\n"); free(input); return 2; }
+    int n = json_array_size(root);
+    for (int i = 0; i < n; i++){
+        json_t *c = json_get(root, i);
+        const char *op = json_get_str(c, "op", "");
+        json_t *o = NULL;
+        if (strcmp(op, "config_coerce_ssl_verify") == 0) o = emit_config_coerce_ssl_verify(c);
+        else if (strcmp(op, "config_coerce_config_version") == 0) o = emit_config_coerce_config_version(c);
+        else if (strcmp(op, "config_is_env_config_key") == 0) o = emit_config_is_env_config_key(c);
+        else { o = json_new_object(); json_set(o, "fn", json_string(op)); }
+        char *ser = json_serialize(o); printf("%s\n", ser); free(ser); json_free(o);
+    }
+    json_free(root); free(input); return 0;
+}

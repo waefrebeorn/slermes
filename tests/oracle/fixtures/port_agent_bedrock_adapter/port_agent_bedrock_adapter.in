@@ -1,0 +1,50 @@
+[
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": ""
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "x"
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "hello world"
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "user@example.com"
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "key:value;key2:v2"
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "12345"
+},
+{
+"op": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+"value": "  spaced  "
+}
+]

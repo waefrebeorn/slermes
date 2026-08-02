@@ -1,0 +1,50 @@
+[
+{
+"op": "cli_agent_display__verb_drops_preview",
+"value": ""
+},
+{
+"op": "cli_agent_display__verb_drops_preview",
+"value": "x"
+},
+{
+"op": "cli_agent_display__verb_drops_preview",
+"value": "hello world"
+},
+{
+"op": "cli_agent_display__verb_drops_preview",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_agent_display__verb_drops_preview",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_agent_display__verb_drops_preview",
+"value": "user@example.com"
+},
+{
+"op": "cli_agent_display__verb_drops_preview",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_agent_display__verb_drops_preview",
+"value": "key:value;key2:v2"
+},
+{
+"op": "cli_agent_display__verb_drops_preview",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "cli_agent_display__verb_drops_preview",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_agent_display__verb_drops_preview",
+"value": "12345"
+},
+{
+"op": "cli_agent_display__verb_drops_preview",
+"value": "  spaced  "
+}
+]

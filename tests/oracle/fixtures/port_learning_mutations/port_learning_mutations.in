@@ -1,0 +1,50 @@
+[
+{
+"op": "learning_mutations_parse_node_kind",
+"value": ""
+},
+{
+"op": "learning_mutations_parse_node_kind",
+"value": "x"
+},
+{
+"op": "learning_mutations_parse_node_kind",
+"value": "hello world"
+},
+{
+"op": "learning_mutations_parse_node_kind",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "learning_mutations_parse_node_kind",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "learning_mutations_parse_node_kind",
+"value": "user@example.com"
+},
+{
+"op": "learning_mutations_parse_node_kind",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "learning_mutations_parse_node_kind",
+"value": "key:value;key2:v2"
+},
+{
+"op": "learning_mutations_parse_node_kind",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "learning_mutations_parse_node_kind",
+"value": "CamelCaseString"
+},
+{
+"op": "learning_mutations_parse_node_kind",
+"value": "12345"
+},
+{
+"op": "learning_mutations_parse_node_kind",
+"value": "  spaced  "
+}
+]

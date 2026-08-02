@@ -1,0 +1,242 @@
+[
+{
+"op": "gw_surface_passes_raw_text",
+"value": ""
+},
+{
+"op": "gw_surface_passes_raw_text",
+"value": "x"
+},
+{
+"op": "gw_surface_passes_raw_text",
+"value": "hello world"
+},
+{
+"op": "gw_surface_passes_raw_text",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gw_surface_passes_raw_text",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gw_surface_passes_raw_text",
+"value": "user@example.com"
+},
+{
+"op": "gw_surface_passes_raw_text",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gw_surface_passes_raw_text",
+"value": "key:value;key2:v2"
+},
+{
+"op": "gw_surface_passes_raw_text",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "gw_surface_passes_raw_text",
+"value": "CamelCaseString"
+},
+{
+"op": "gw_surface_passes_raw_text",
+"value": "12345"
+},
+{
+"op": "gw_surface_passes_raw_text",
+"value": "  spaced  "
+},
+{
+"op": "gw_looks_like_provider_error",
+"value": ""
+},
+{
+"op": "gw_looks_like_provider_error",
+"value": "x"
+},
+{
+"op": "gw_looks_like_provider_error",
+"value": "hello world"
+},
+{
+"op": "gw_looks_like_provider_error",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gw_looks_like_provider_error",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gw_looks_like_provider_error",
+"value": "user@example.com"
+},
+{
+"op": "gw_looks_like_provider_error",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gw_looks_like_provider_error",
+"value": "key:value;key2:v2"
+},
+{
+"op": "gw_looks_like_provider_error",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "gw_looks_like_provider_error",
+"value": "CamelCaseString"
+},
+{
+"op": "gw_looks_like_provider_error",
+"value": "12345"
+},
+{
+"op": "gw_looks_like_provider_error",
+"value": "  spaced  "
+},
+{
+"op": "gw_uses_observed_group_context",
+"value": ""
+},
+{
+"op": "gw_uses_observed_group_context",
+"value": "x"
+},
+{
+"op": "gw_uses_observed_group_context",
+"value": "hello world"
+},
+{
+"op": "gw_uses_observed_group_context",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gw_uses_observed_group_context",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gw_uses_observed_group_context",
+"value": "user@example.com"
+},
+{
+"op": "gw_uses_observed_group_context",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gw_uses_observed_group_context",
+"value": "key:value;key2:v2"
+},
+{
+"op": "gw_uses_observed_group_context",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "gw_uses_observed_group_context",
+"value": "CamelCaseString"
+},
+{
+"op": "gw_uses_observed_group_context",
+"value": "12345"
+},
+{
+"op": "gw_uses_observed_group_context",
+"value": "  spaced  "
+},
+{
+"op": "gw_is_auto_continue_noise",
+"value": ""
+},
+{
+"op": "gw_is_auto_continue_noise",
+"value": "x"
+},
+{
+"op": "gw_is_auto_continue_noise",
+"value": "hello world"
+},
+{
+"op": "gw_is_auto_continue_noise",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gw_is_auto_continue_noise",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gw_is_auto_continue_noise",
+"value": "user@example.com"
+},
+{
+"op": "gw_is_auto_continue_noise",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gw_is_auto_continue_noise",
+"value": "key:value;key2:v2"
+},
+{
+"op": "gw_is_auto_continue_noise",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "gw_is_auto_continue_noise",
+"value": "CamelCaseString"
+},
+{
+"op": "gw_is_auto_continue_noise",
+"value": "12345"
+},
+{
+"op": "gw_is_auto_continue_noise",
+"value": "  spaced  "
+},
+{
+"op": "gw_is_control_interrupt_message",
+"value": ""
+},
+{
+"op": "gw_is_control_interrupt_message",
+"value": "x"
+},
+{
+"op": "gw_is_control_interrupt_message",
+"value": "hello world"
+},
+{
+"op": "gw_is_control_interrupt_message",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "gw_is_control_interrupt_message",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "gw_is_control_interrupt_message",
+"value": "user@example.com"
+},
+{
+"op": "gw_is_control_interrupt_message",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "gw_is_control_interrupt_message",
+"value": "key:value;key2:v2"
+},
+{
+"op": "gw_is_control_interrupt_message",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "gw_is_control_interrupt_message",
+"value": "CamelCaseString"
+},
+{
+"op": "gw_is_control_interrupt_message",
+"value": "12345"
+},
+{
+"op": "gw_is_control_interrupt_message",
+"value": "  spaced  "
+}
+]

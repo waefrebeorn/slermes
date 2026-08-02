@@ -24,7 +24,11 @@ int envd_u_load_hermes_env_vars(const char *arg) { (void)arg; return 0; }
 int envd_u_sanitize_label_value(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _get_active_profile_name @ tools/environments/docker.py:_get_active_profile_name */
-int envd_u_get_active_profile_name(const char *arg) { (void)arg; return 0; }
+int envd_u_get_active_profile_name(const char *arg) {
+    const char *p = getenv("HERMES_PROFILE");
+    printf("%s\n", (p && *p) ? p : "default");
+    return 0;
+}
 
 /* PoP: reap_orphan_containers @ tools/environments/docker.py:reap_orphan_containers */
 int envd_reap_orphan_containers(const char *arg) { (void)arg; return 0; }

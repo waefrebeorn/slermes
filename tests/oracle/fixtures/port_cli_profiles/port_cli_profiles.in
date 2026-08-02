@@ -1,0 +1,50 @@
+[
+{
+"op": "profile_dir_exists",
+"value": ""
+},
+{
+"op": "profile_dir_exists",
+"value": "x"
+},
+{
+"op": "profile_dir_exists",
+"value": "hello world"
+},
+{
+"op": "profile_dir_exists",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "profile_dir_exists",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "profile_dir_exists",
+"value": "user@example.com"
+},
+{
+"op": "profile_dir_exists",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "profile_dir_exists",
+"value": "key:value;key2:v2"
+},
+{
+"op": "profile_dir_exists",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "profile_dir_exists",
+"value": "CamelCaseString"
+},
+{
+"op": "profile_dir_exists",
+"value": "12345"
+},
+{
+"op": "profile_dir_exists",
+"value": "  spaced  "
+}
+]

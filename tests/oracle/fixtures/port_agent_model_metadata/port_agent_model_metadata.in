@@ -1,0 +1,50 @@
+[
+{
+"op": "cli_agent_model_metadata_is_output_cap_error",
+"value": ""
+},
+{
+"op": "cli_agent_model_metadata_is_output_cap_error",
+"value": "x"
+},
+{
+"op": "cli_agent_model_metadata_is_output_cap_error",
+"value": "hello world"
+},
+{
+"op": "cli_agent_model_metadata_is_output_cap_error",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_agent_model_metadata_is_output_cap_error",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_agent_model_metadata_is_output_cap_error",
+"value": "user@example.com"
+},
+{
+"op": "cli_agent_model_metadata_is_output_cap_error",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_agent_model_metadata_is_output_cap_error",
+"value": "key:value;key2:v2"
+},
+{
+"op": "cli_agent_model_metadata_is_output_cap_error",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "cli_agent_model_metadata_is_output_cap_error",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_agent_model_metadata_is_output_cap_error",
+"value": "12345"
+},
+{
+"op": "cli_agent_model_metadata_is_output_cap_error",
+"value": "  spaced  "
+}
+]

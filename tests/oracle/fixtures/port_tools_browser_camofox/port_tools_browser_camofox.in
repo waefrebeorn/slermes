@@ -1,0 +1,50 @@
+[
+{
+"op": "_is_loopback_hostname",
+"value": ""
+},
+{
+"op": "_is_loopback_hostname",
+"value": "x"
+},
+{
+"op": "_is_loopback_hostname",
+"value": "hello world"
+},
+{
+"op": "_is_loopback_hostname",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "_is_loopback_hostname",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "_is_loopback_hostname",
+"value": "user@example.com"
+},
+{
+"op": "_is_loopback_hostname",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "_is_loopback_hostname",
+"value": "key:value;key2:v2"
+},
+{
+"op": "_is_loopback_hostname",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "_is_loopback_hostname",
+"value": "CamelCaseString"
+},
+{
+"op": "_is_loopback_hostname",
+"value": "12345"
+},
+{
+"op": "_is_loopback_hostname",
+"value": "  spaced  "
+}
+]

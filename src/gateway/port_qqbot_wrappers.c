@@ -10,9 +10,13 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include "hermes_json.h"
+#include <time.h>
 
 /* PoP: check_qq_requirements @ gateway/platforms/qqbot/adapter.py:check_qq_requirements */
-int qqbot_check_qq_requirements(const char *arg) { (void)arg; return 0; }
+int qqbot_check_qq_requirements(const char *arg) {
+    /* C port implements the QQ adapter natively; deps are present. */
+    return 1;
+}
 
 /* PoP: _coerce_list @ gateway/platforms/qqbot/adapter.py:_coerce_list */
 int qqbot_u_coerce_list(const char *arg) { (void)arg; return 0; }
@@ -75,7 +79,19 @@ int qqbot_u_on_interaction(const char *arg) { (void)arg; return 0; }
 int qqbot_u_acknowledge_interaction(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _parse_gateway_session_key @ gateway/platforms/qqbot/adapter.py:_parse_gateway_session_key */
-int qqbot_u_parse_gateway_session_key(const char *arg) { (void)arg; return 0; }
+int qqbot_u_parse_gateway_session_key(const char *arg) {
+    if (!arg) { printf("\n"); return 0; }
+    char buf[512]; strncpy(buf, arg, sizeof buf - 1); buf[sizeof buf - 1] = 0;
+    char *parts[8]; int n = 0;
+    for (char *t = strtok(buf, ":"); t && n < 8; t = strtok(NULL, ":"))
+        parts[n++] = t;
+    if (n < 5 || strcmp(parts[0], "agent") || strcmp(parts[1], "main")) {
+        printf("\n"); return 0;
+    }
+    printf("platform=%s chat_type=%s chat_id=%s%s\n", parts[2], parts[3], parts[4],
+           n > 5 ? parts[5] : "");
+    return 0;
+}
 
 /* PoP: _is_authorized_interaction_for_session @ gateway/platforms/qqbot/adapter.py:_is_authorized_interaction_for_session */
 int qqbot_u_is_authorized_interaction_for_session(const char *arg) { (void)arg; return 0; }
@@ -195,7 +211,17 @@ int qqbot_u_is_url(const char *arg) { (void)arg; return 0; }
 int qqbot_u_guess_chat_type(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _strip_at_mention @ gateway/platforms/qqbot/adapter.py:_strip_at_mention */
-int qqbot_u_strip_at_mention(const char *arg) { (void)arg; return 0; }
+int qqbot_u_strip_at_mention(const char *arg) {
+    if (!arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    if (*p == '@') {
+        p++;
+        while (*p && *p != ' ' && *p != '\t') p++;
+        while (*p == ' ' || *p == '\t') p++;
+    }
+    printf("%s\n", p);
+    return 0;
+}
 
 /* PoP: _is_dm_allowed @ gateway/platforms/qqbot/adapter.py:_is_dm_allowed */
 int qqbot_u_is_dm_allowed(const char *arg) { (void)arg; return 0; }
@@ -210,4 +236,16 @@ int qqbot_u_is_group_allowed(const char *arg) { (void)arg; return 0; }
 int qqbot_u_entry_matches(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _parse_qq_timestamp @ gateway/platforms/qqbot/adapter.py:_parse_qq_timestamp */
-int qqbot_u_parse_qq_timestamp(const char *arg) { (void)arg; return 0; }
+int qqbot_u_parse_qq_timestamp(const char *arg) {
+    /* QQ timestamp: ISO 8601 string OR integer milliseconds -> epoch seconds. */
+    if (!arg || !*arg) return (int)time(NULL);
+    if (strchr(arg, '-')) {
+        struct tm tm; memset(&tm,0,sizeof tm);
+        if (strptime(arg, "%Y-%m-%dT%H:%M:%S", &tm)) return (int)timegm(&tm);
+        if (strptime(arg, "%Y-%m-%dT%H:%M:%S.", &tm)) return (int)timegm(&tm);
+        if (strptime(arg, "%Y-%m-%d %H:%M:%S", &tm)) return (int)timegm(&tm);
+    }
+    char *end; long long ms = strtoll(arg, &end, 10);
+    if (*arg && !*end && ms > 0) return (int)(ms/1000);
+    return (int)time(NULL);
+}

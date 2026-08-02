@@ -1,0 +1,50 @@
+[
+{
+"op": "cli_tools_env_passthrough_is_env_passthrough",
+"value": ""
+},
+{
+"op": "cli_tools_env_passthrough_is_env_passthrough",
+"value": "x"
+},
+{
+"op": "cli_tools_env_passthrough_is_env_passthrough",
+"value": "hello world"
+},
+{
+"op": "cli_tools_env_passthrough_is_env_passthrough",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_tools_env_passthrough_is_env_passthrough",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_tools_env_passthrough_is_env_passthrough",
+"value": "user@example.com"
+},
+{
+"op": "cli_tools_env_passthrough_is_env_passthrough",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_tools_env_passthrough_is_env_passthrough",
+"value": "key:value;key2:v2"
+},
+{
+"op": "cli_tools_env_passthrough_is_env_passthrough",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "cli_tools_env_passthrough_is_env_passthrough",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_tools_env_passthrough_is_env_passthrough",
+"value": "12345"
+},
+{
+"op": "cli_tools_env_passthrough_is_env_passthrough",
+"value": "  spaced  "
+}
+]

@@ -1,0 +1,98 @@
+[
+{
+"op": "cli_gateway_response_filters_is_intentional_silence_response",
+"value": ""
+},
+{
+"op": "cli_gateway_response_filters_is_intentional_silence_response",
+"value": "x"
+},
+{
+"op": "cli_gateway_response_filters_is_intentional_silence_response",
+"value": "hello world"
+},
+{
+"op": "cli_gateway_response_filters_is_intentional_silence_response",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_gateway_response_filters_is_intentional_silence_response",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_gateway_response_filters_is_intentional_silence_response",
+"value": "user@example.com"
+},
+{
+"op": "cli_gateway_response_filters_is_intentional_silence_response",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_gateway_response_filters_is_intentional_silence_response",
+"value": "key:value;key2:v2"
+},
+{
+"op": "cli_gateway_response_filters_is_intentional_silence_response",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "cli_gateway_response_filters_is_intentional_silence_response",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_gateway_response_filters_is_intentional_silence_response",
+"value": "12345"
+},
+{
+"op": "cli_gateway_response_filters_is_intentional_silence_response",
+"value": "  spaced  "
+},
+{
+"op": "cli_gateway_response_filters_is_partial_silence_marker",
+"value": ""
+},
+{
+"op": "cli_gateway_response_filters_is_partial_silence_marker",
+"value": "x"
+},
+{
+"op": "cli_gateway_response_filters_is_partial_silence_marker",
+"value": "hello world"
+},
+{
+"op": "cli_gateway_response_filters_is_partial_silence_marker",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_gateway_response_filters_is_partial_silence_marker",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_gateway_response_filters_is_partial_silence_marker",
+"value": "user@example.com"
+},
+{
+"op": "cli_gateway_response_filters_is_partial_silence_marker",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_gateway_response_filters_is_partial_silence_marker",
+"value": "key:value;key2:v2"
+},
+{
+"op": "cli_gateway_response_filters_is_partial_silence_marker",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "cli_gateway_response_filters_is_partial_silence_marker",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_gateway_response_filters_is_partial_silence_marker",
+"value": "12345"
+},
+{
+"op": "cli_gateway_response_filters_is_partial_silence_marker",
+"value": "  spaced  "
+}
+]

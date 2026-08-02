@@ -21,7 +21,11 @@ int envl_u_resolve_local_initial_cwd(const char *arg) { (void)arg; return 0; }
 int envl_u_windows_to_msys_path(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _bash_safe_path @ tools/environments/local.py:_bash_safe_path */
-int envl_u_bash_safe_path(const char *arg) { (void)arg; return 0; }
+int envl_u_bash_safe_path(const char *arg) {
+    if (!arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _quote_bash_path @ tools/environments/local.py:_quote_bash_path */
 int envl_u_quote_bash_path(const char *arg) { (void)arg; return 0; }
@@ -108,7 +112,16 @@ int envl_get_temp_dir(const char *arg) { (void)arg; return 0; }
 int envl_u_quote_cwd_for_cd(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _quote_shell_path @ tools/environments/local.py:_quote_shell_path */
-int envl_u_quote_shell_path(const char *arg) { (void)arg; return 0; }
+int envl_u_quote_shell_path(const char *arg) {
+    if (!arg) { printf("''\n"); return 0; }
+    putchar('\'');
+    for (const char *p = arg; *p; p++) {
+        if (*p == '\'') { putchar('\''); putchar('\\'); putchar('\''); }
+        else putchar(*p);
+    }
+    putchar('\''); putchar('\n');
+    return 0;
+}
 
 /* PoP: _update_cwd @ tools/environments/local.py:_update_cwd */
 int envl_u_update_cwd(const char *arg) { (void)arg; return 0; }

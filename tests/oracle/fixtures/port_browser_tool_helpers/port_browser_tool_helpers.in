@@ -1,0 +1,50 @@
+[
+{
+"op": "browser__should_inject_engine",
+"value": ""
+},
+{
+"op": "browser__should_inject_engine",
+"value": "x"
+},
+{
+"op": "browser__should_inject_engine",
+"value": "hello world"
+},
+{
+"op": "browser__should_inject_engine",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "browser__should_inject_engine",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "browser__should_inject_engine",
+"value": "user@example.com"
+},
+{
+"op": "browser__should_inject_engine",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "browser__should_inject_engine",
+"value": "key:value;key2:v2"
+},
+{
+"op": "browser__should_inject_engine",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "browser__should_inject_engine",
+"value": "CamelCaseString"
+},
+{
+"op": "browser__should_inject_engine",
+"value": "12345"
+},
+{
+"op": "browser__should_inject_engine",
+"value": "  spaced  "
+}
+]

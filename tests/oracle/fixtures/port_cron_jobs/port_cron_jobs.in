@@ -1,0 +1,146 @@
+[
+{
+"op": "cronjobs_remove_job",
+"value": ""
+},
+{
+"op": "cronjobs_remove_job",
+"value": "x"
+},
+{
+"op": "cronjobs_remove_job",
+"value": "hello world"
+},
+{
+"op": "cronjobs_remove_job",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cronjobs_remove_job",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cronjobs_remove_job",
+"value": "user@example.com"
+},
+{
+"op": "cronjobs_remove_job",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cronjobs_remove_job",
+"value": "key:value;key2:v2"
+},
+{
+"op": "cronjobs_remove_job",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "cronjobs_remove_job",
+"value": "CamelCaseString"
+},
+{
+"op": "cronjobs_remove_job",
+"value": "12345"
+},
+{
+"op": "cronjobs_remove_job",
+"value": "  spaced  "
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": ""
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "x"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "hello world"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "user@example.com"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "key:value;key2:v2"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "CamelCaseString"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "12345"
+},
+{
+"op": "cronjobs_claim_dispatch",
+"value": "  spaced  "
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": ""
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "x"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "hello world"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "user@example.com"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "key:value;key2:v2"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "CamelCaseString"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "12345"
+},
+{
+"op": "cronjobs_advance_next_run",
+"value": "  spaced  "
+}
+]

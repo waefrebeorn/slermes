@@ -1,6 +1,6 @@
 {
-  "total": 177,
-  "real": 153,
+  "total": 158,
+  "real": 134,
   "stub": 0,
   "partial": 24,
   "stub_file_count": 0,
@@ -149,26 +149,26 @@
       "lines": 17
     },
     {
-      "file": "src/cli/port_model_normalize.c",
-      "func": "_normalize_for_deepseek",
-      "lines": 17
-    },
-    {
       "file": "src/gateway/port_gateway_relay_ws_transport.c",
       "func": "ws_transport_dial_url",
       "lines": 17
+    },
+    {
+      "file": "src/tools/port_terminal_tool.c",
+      "func": "read_shell_token",
+      "lines": 16
     }
   ],
   "undefined_calls": [
     {
       "file": "src/agent/port_agent_coding_context.c",
       "func": "detect_project_facts",
-      "undefined": "json_object_set"
+      "undefined": "json_array_append"
     },
     {
       "file": "src/agent/port_agent_coding_context.c",
       "func": "detect_project_facts",
-      "undefined": "json_array_append"
+      "undefined": "json_object_set"
     },
     {
       "file": "src/cli/port_auth_na.c",
@@ -183,12 +183,7 @@
     {
       "file": "src/cli/port_auth_na.c",
       "func": "_xai_oauth_state_from_store",
-      "undefined": "json_object_set"
-    },
-    {
-      "file": "src/cli/port_auth_na.c",
-      "func": "_xai_oauth_state_from_store",
-      "undefined": "json_array_count"
+      "undefined": "json_new_object"
     },
     {
       "file": "src/cli/port_auth_na.c",
@@ -198,12 +193,17 @@
     {
       "file": "src/cli/port_auth_na.c",
       "func": "_xai_oauth_state_from_store",
-      "undefined": "json_new_object"
+      "undefined": "json_object_get"
     },
     {
       "file": "src/cli/port_auth_na.c",
       "func": "_xai_oauth_state_from_store",
-      "undefined": "json_object_get"
+      "undefined": "json_array_count"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_xai_oauth_state_from_store",
+      "undefined": "json_object_set"
     },
     {
       "file": "src/cli/port_auth_na.c",
@@ -223,11 +223,6 @@
     {
       "file": "src/cli/port_auth_na.c",
       "func": "_write_through_xai_oauth_to_global_root",
-      "undefined": "json_object_set"
-    },
-    {
-      "file": "src/cli/port_auth_na.c",
-      "func": "_write_through_xai_oauth_to_global_root",
       "undefined": "json_new_object"
     },
     {
@@ -237,7 +232,7 @@
     },
     {
       "file": "src/cli/port_auth_na.c",
-      "func": "_auth_file_cache_key",
+      "func": "_write_through_xai_oauth_to_global_root",
       "undefined": "json_object_set"
     },
     {
@@ -248,12 +243,17 @@
     {
       "file": "src/cli/port_auth_na.c",
       "func": "_auth_file_cache_key",
-      "undefined": "json_new_number"
+      "undefined": "json_new_string"
     },
     {
       "file": "src/cli/port_auth_na.c",
       "func": "_auth_file_cache_key",
-      "undefined": "json_new_string"
+      "undefined": "json_object_set"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_auth_file_cache_key",
+      "undefined": "json_new_number"
     },
     {
       "file": "src/cli/port_auth_na.c",
@@ -268,17 +268,12 @@
     {
       "file": "src/cli/port_config.c",
       "func": "_strip_dotted_keys",
-      "undefined": "json_object_get"
-    },
-    {
-      "file": "src/cli/port_config.c",
-      "func": "_strip_dotted_keys",
       "undefined": "json_new_null"
     },
     {
       "file": "src/cli/port_config.c",
-      "func": "clear_model_endpoint_credentials",
-      "undefined": "json_object_set"
+      "func": "_strip_dotted_keys",
+      "undefined": "json_object_get"
     },
     {
       "file": "src/cli/port_config.c",
@@ -289,6 +284,11 @@
       "file": "src/cli/port_config.c",
       "func": "clear_model_endpoint_credentials",
       "undefined": "json_new_string"
+    },
+    {
+      "file": "src/cli/port_config.c",
+      "func": "clear_model_endpoint_credentials",
+      "undefined": "json_object_set"
     },
     {
       "file": "src/cli/port_config.c",
@@ -308,17 +308,17 @@
     {
       "file": "src/cli/port_kanban_db_na.c",
       "func": "_resolve_worktree_workspace",
+      "undefined": "json_new_object"
+    },
+    {
+      "file": "src/cli/port_kanban_db_na.c",
+      "func": "_resolve_worktree_workspace",
       "undefined": "json_object_set"
     },
     {
       "file": "src/cli/port_kanban_db_na.c",
       "func": "_resolve_worktree_workspace",
       "undefined": "json_new_string"
-    },
-    {
-      "file": "src/cli/port_kanban_db_na.c",
-      "func": "_resolve_worktree_workspace",
-      "undefined": "json_new_object"
     },
     {
       "file": "src/cli/port_kanban_db_na.c",
@@ -328,12 +328,17 @@
     {
       "file": "src/cli/port_kanban_db_na.c",
       "func": "_dispatch_once_locked",
-      "undefined": "json_object_set"
+      "undefined": "json_new_object"
     },
     {
       "file": "src/cli/port_kanban_db_na.c",
       "func": "_dispatch_once_locked",
-      "undefined": "json_new_object"
+      "undefined": "json_new_string"
+    },
+    {
+      "file": "src/cli/port_kanban_db_na.c",
+      "func": "_dispatch_once_locked",
+      "undefined": "json_object_set"
     },
     {
       "file": "src/cli/port_kanban_db_na.c",
@@ -341,9 +346,9 @@
       "undefined": "json_new_number"
     },
     {
-      "file": "src/cli/port_kanban_db_na.c",
-      "func": "_dispatch_once_locked",
-      "undefined": "json_new_string"
+      "file": "src/cli/port_main.c",
+      "func": "_build_provider_choices",
+      "undefined": "json_array_append"
     },
     {
       "file": "src/cli/port_main.c",
@@ -354,11 +359,6 @@
       "file": "src/cli/port_main.c",
       "func": "_build_provider_choices",
       "undefined": "json_new_string"
-    },
-    {
-      "file": "src/cli/port_main.c",
-      "func": "_build_provider_choices",
-      "undefined": "json_array_append"
     },
     {
       "file": "src/cli/port_web_server.c",

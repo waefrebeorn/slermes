@@ -1,0 +1,50 @@
+[
+{
+"op": "cli_hermes_cli_prompt_size__bytes",
+"value": ""
+},
+{
+"op": "cli_hermes_cli_prompt_size__bytes",
+"value": "x"
+},
+{
+"op": "cli_hermes_cli_prompt_size__bytes",
+"value": "hello world"
+},
+{
+"op": "cli_hermes_cli_prompt_size__bytes",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_hermes_cli_prompt_size__bytes",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_hermes_cli_prompt_size__bytes",
+"value": "user@example.com"
+},
+{
+"op": "cli_hermes_cli_prompt_size__bytes",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_hermes_cli_prompt_size__bytes",
+"value": "key:value;key2:v2"
+},
+{
+"op": "cli_hermes_cli_prompt_size__bytes",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "cli_hermes_cli_prompt_size__bytes",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_hermes_cli_prompt_size__bytes",
+"value": "12345"
+},
+{
+"op": "cli_hermes_cli_prompt_size__bytes",
+"value": "  spaced  "
+}
+]

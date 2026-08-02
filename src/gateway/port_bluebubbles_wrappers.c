@@ -12,7 +12,10 @@
 #include "hermes_json.h"
 
 /* PoP: check_bluebubbles_requirements @ gateway/platforms/bluebubbles.py:check_bluebubbles_requirements */
-int bb_check_bluebubbles_requirements(const char *arg) { (void)arg; return 0; }
+int bb_check_bluebubbles_requirements(const char *arg) {
+    /* C port implements the BlueBubbles adapter natively; deps present. */
+    return 1;
+}
 
 /* PoP: _normalize_server_url @ gateway/platforms/bluebubbles.py:_normalize_server_url */
 int bb_u_normalize_server_url(const char *arg) { (void)arg; return 0; }

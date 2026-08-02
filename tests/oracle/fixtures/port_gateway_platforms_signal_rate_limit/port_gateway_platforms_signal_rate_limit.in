@@ -1,0 +1,98 @@
+[
+{
+"op": "cli_gateway_platforms_signal_rate_limit__extract_retry_after_seconds",
+"value": ""
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__extract_retry_after_seconds",
+"value": "x"
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__extract_retry_after_seconds",
+"value": "hello world"
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__extract_retry_after_seconds",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__extract_retry_after_seconds",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__extract_retry_after_seconds",
+"value": "user@example.com"
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__extract_retry_after_seconds",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__extract_retry_after_seconds",
+"value": "key:value;key2:v2"
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__extract_retry_after_seconds",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__extract_retry_after_seconds",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__extract_retry_after_seconds",
+"value": "12345"
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__extract_retry_after_seconds",
+"value": "  spaced  "
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error",
+"value": ""
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error",
+"value": "x"
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error",
+"value": "hello world"
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error",
+"value": "user@example.com"
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error",
+"value": "key:value;key2:v2"
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error",
+"value": "CamelCaseString"
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error",
+"value": "12345"
+},
+{
+"op": "cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error",
+"value": "  spaced  "
+}
+]

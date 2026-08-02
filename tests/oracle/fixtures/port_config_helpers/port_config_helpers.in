@@ -1,0 +1,50 @@
+[
+{
+"op": "is_env_config_key",
+"value": ""
+},
+{
+"op": "is_env_config_key",
+"value": "x"
+},
+{
+"op": "is_env_config_key",
+"value": "hello world"
+},
+{
+"op": "is_env_config_key",
+"value": "{\"a\":1,\"b\":[2,3]}"
+},
+{
+"op": "is_env_config_key",
+"value": "a=b&pwd=secret&token=x"
+},
+{
+"op": "is_env_config_key",
+"value": "user@example.com"
+},
+{
+"op": "is_env_config_key",
+"value": "https://example.com/path?q=1"
+},
+{
+"op": "is_env_config_key",
+"value": "key:value;key2:v2"
+},
+{
+"op": "is_env_config_key",
+"value": "/abs/path/file.txt"
+},
+{
+"op": "is_env_config_key",
+"value": "CamelCaseString"
+},
+{
+"op": "is_env_config_key",
+"value": "12345"
+},
+{
+"op": "is_env_config_key",
+"value": "  spaced  "
+}
+]
