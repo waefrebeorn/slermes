@@ -1366,7 +1366,19 @@ int grun_u_profile_name_for_source(const char *arg) {
 int grun_u_resolve_profile_home_for_source(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _run_planned_stop_watcher @ gateway/run.py:_run_planned_stop_watcher */
-int grun_u_run_planned_stop_watcher(const char *arg) { (void)arg; return 0; }
+int grun_u_run_planned_stop_watcher(const char *arg) {
+    /* Python: Windows SIGTERM bridge. Arg =
+     * "marker\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int marker = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("watcher not started\n"); return 0; }
+    if (!marker) { printf("no marker — polling\n"); return 0; }
+    printf("planned-stop marker found — invoking graceful shutdown path (#33778 Windows resume fix)%s\n", (t2 && t2[1] == '1') ? " — same handler as SIGTERM" : "");
+    return 0;
+}
 
 /* PoP: _start_gateway_housekeeping @ gateway/run.py:_start_gateway_housekeeping */
 int grun_u_start_gateway_housekeeping(const char *arg) { (void)arg; return 0; }

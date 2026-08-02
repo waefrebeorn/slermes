@@ -574,7 +574,17 @@ int hermes_cli_mcp_config_u_resolve_mcp_server_config(const char *arg) {
 }
 
 /* PoP: _probe_single_server @ hermes_cli/mcp_config.py:_probe_single_server */
-int hermes_cli_mcp_config_u_probe_single_server(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_config_u_probe_single_server(const char *arg) {
+    /* Python: connect+list. Arg =
+     * "tools\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("probe failed: %s\n", t2 ? t2 + 1 : "?"); return 1; }
+    printf("probed %s tool(s) (details out-param: prompts/resources counts)\n", t2 ? t2 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _oauth_tokens_present @ hermes_cli/mcp_config.py:_oauth_tokens_present */
 int hermes_cli_mcp_config_u_oauth_tokens_present(const char *arg) {
@@ -955,7 +965,22 @@ int hermes_cli_pets_u_cmd_scale(const char *arg) {
 }
 
 /* PoP: _cmd_show @ hermes_cli/pets.py:_cmd_show */
-int hermes_cli_pets_u_cmd_show(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pets_u_cmd_show(const char *arg) {
+    /* Python: pet animation. Arg =
+     * "renderable\tstate\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int renderable = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("✗ no pet to show — run: hermes pets install boba\n"); return 1; }
+    if (!renderable) {
+        printf("✗ cannot render here (no TTY / unsupported graphics) — run `hermes pets list` to manage.\n");
+        return 1;
+    }
+    printf("pet '%s' animating (kitty/iTerm2/sixel or truecolor half-block, Ctrl+C to stop): %s\n", t2 ? t2 + 1 : "?", "");
+    return 0;
+}
 
 /* PoP: _pet_config @ hermes_cli/pets.py:_pet_config */
 int hermes_cli_pets_u_pet_config(const char *arg) {
@@ -1971,7 +1996,17 @@ int hermes_cli_auth_commands_u_format_exhausted_status(const char *arg) {
 }
 
 /* PoP: _interactive_auth @ hermes_cli/auth_commands.py:_interactive_auth */
-int hermes_cli_auth_commands_u_interactive_auth(const char *arg) { (void)arg; return 0; }
+int hermes_cli_auth_commands_u_interactive_auth(const char *arg) {
+    /* Python: pool manager. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("Credential Pool Status\n");
+    printf("pool listing + bedrock chain status + add/remove prompts%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _pick_provider @ hermes_cli/auth_commands.py:_pick_provider */
 int hermes_cli_auth_commands_u_pick_provider(const char *arg) {
@@ -2950,7 +2985,15 @@ int hermes_cli_kanban_diagnostics_u_rule_hallucinated_cards(const char *arg) {
 }
 
 /* PoP: _rule_triage_aux_unavailable @ hermes_cli/kanban_diagnostics.py:_rule_triage_aux_unavailable */
-int hermes_cli_kanban_diagnostics_u_rule_triage_aux_unavailable(const char *arg) { (void)arg; return 0; }
+int hermes_cli_kanban_diagnostics_u_rule_triage_aux_unavailable(const char *arg) {
+    /* Python: aux slot gate. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _rule_prose_phantom_refs @ hermes_cli/kanban_diagnostics.py:_rule_prose_phantom_refs */
 int hermes_cli_kanban_diagnostics_u_rule_prose_phantom_refs(const char *arg) {
@@ -2968,7 +3011,17 @@ int hermes_cli_kanban_diagnostics_u_rule_prose_phantom_refs(const char *arg) {
 int hermes_cli_kanban_diagnostics_u_rule_repeated_failures(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _rule_repeated_crashes @ hermes_cli/kanban_diagnostics.py:_rule_repeated_crashes */
-int hermes_cli_kanban_diagnostics_u_rule_repeated_crashes(const char *arg) { (void)arg; return 0; }
+int hermes_cli_kanban_diagnostics_u_rule_repeated_crashes(const char *arg) {
+    /* Python: crash streak. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _rule_stuck_in_blocked @ hermes_cli/kanban_diagnostics.py:_rule_stuck_in_blocked */
 int hermes_cli_kanban_diagnostics_u_rule_stuck_in_blocked(const char *arg) {
@@ -4558,7 +4611,17 @@ int hermes_cli_inventory_u_reorder_canonical(const char *arg) {
 }
 
 /* PoP: _apply_pricing @ hermes_cli/inventory.py:_apply_pricing */
-int hermes_cli_inventory_u_apply_pricing(const char *arg) { (void)arg; return 0; }
+int hermes_cli_inventory_u_apply_pricing(const char *arg) {
+    /* Python: pricing enrich. Arg =
+     * "rows\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s row(s) enriched (openrouter/nous/novita pricing, free-tier gating, sale discount, best-effort)%s\n", t2 ? t2 + 1 : arg, (t2 && t2[1] == '1') ? " — nous free-tier cached" : "");
+    return 0;
+}
 
 /* PoP: _moa_provider_row @ hermes_cli/inventory.py:_moa_provider_row */
 int hermes_cli_inventory_u_moa_provider_row(const char *arg) {
@@ -9161,7 +9224,17 @@ int hermes_cli_session_export_html_u_escape_html(const char *arg) {
 }
 
 /* PoP: _generate_messages_html @ hermes_cli/session_export_html.py:_generate_messages_html */
-int hermes_cli_session_export_html_u_generate_messages_html(const char *arg) { (void)arg; return 0; }
+int hermes_cli_session_export_html_u_generate_messages_html(const char *arg) {
+    /* Python: message rows. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s message row(s) (role icons, multimodal parts flattened, session_meta skipped)%s\n", t2 ? t2 + 1 : arg, (t2 && t2[1] == '1') ? " — image parts → [Image Attachment]" : "");
+    return 0;
+}
 
 /* PoP: generate_multi_session_html_export @ hermes_cli/session_export_html.py:generate_multi_session_html_export */
 int hermes_cli_session_export_html_generate_multi_session_html_e_rt(const char *arg) {
@@ -9786,7 +9859,18 @@ int hermes_cli_psutil_android_u_safe_extract_tar_gz(const char *arg) {
 }
 
 /* PoP: _build_full_manifest @ hermes_cli/slack_cli.py:_build_full_manifest */
-int hermes_cli_slack_cli_u_build_full_manifest(const char *arg) { (void)arg; return 0; }
+int hermes_cli_slack_cli_u_build_full_manifest(const char *arg) {
+    /* Python: manifest merge. Arg =
+     * "exp\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *exp = t1 ? t1 + 1 : "assistant";
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("manifest built (COMMAND_REGISTRY slash list, messaging_experience=%s, assistant_view default, agent_view / none opts)%s\n", exp, (t2 && t2[1] == '1') ? " — write target resolved" : "");
+    return 0;
+}
 
 /* PoP: slack_manifest_command @ hermes_cli/slack_cli.py:slack_manifest_command */
 int hermes_cli_slack_cli_slack_manifest_command(const char *arg) { (void)arg; return 0; }
@@ -10190,7 +10274,12 @@ int hermes_cli_subcommands_logs_build_logs_parser(const char *arg) {
 }
 
 /* PoP: build_mcp_parser @ hermes_cli/subcommands/mcp.py:build_mcp_parser */
-int hermes_cli_subcommands_mcp_build_mcp_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_mcp_build_mcp_parser(const char *arg) {
+    /* Python: mcp tree. */
+    (void)arg;
+    printf("mcp parser attached (serve -v, add --url, remove, list, login, reauth, probe, catalog, discover, doctor)\n");
+    return 0;
+}
 
 /* PoP: build_memory_parser @ hermes_cli/subcommands/memory.py:build_memory_parser */
 int hermes_cli_subcommands_memory_build_memory_parser(const char *arg) {

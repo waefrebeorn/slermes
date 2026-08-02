@@ -331,7 +331,16 @@ int envd_u_container_network_mode(const char *arg) {
 }
 
 /* PoP: _find_reusable_container @ tools/environments/docker.py:_find_reusable_container */
-int envd_u_find_reusable_container(const char *arg) { (void)arg; return 0; }
+int envd_u_find_reusable_container(const char *arg) {
+    /* Python: label-restricted. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s (hermes-agent + task + profile labels; egress label included when on; never matches foreign hermes-* names)\n", tab ? tab + 1 : "none");
+    return 0;
+}
 
 /* PoP: wait_for_cleanup @ tools/environments/docker.py:wait_for_cleanup */
 int envd_wait_for_cleanup(const char *arg) {

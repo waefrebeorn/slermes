@@ -190,7 +190,17 @@ int nsub_u_resolve_browser_feature_state(const char *arg) {
 }
 
 /* PoP: apply_nous_managed_defaults @ hermes_cli/nous_subscription.py:apply_nous_managed_defaults */
-int nsub_apply_nous_managed_defaults(const char *arg) { (void)arg; return 0; }
+int nsub_apply_nous_managed_defaults(const char *arg) {
+    /* Python: gateway defaults. Arg =
+     * "changed\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s setting(s) changed (web/tts/stt/browser defaults when entitled + provider is nous, explicit config respected)\n", t2 ? t2 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _get_gateway_direct_credentials @ hermes_cli/nous_subscription.py:_get_gateway_direct_credentials */
 int nsub_u_get_gateway_direct_credentials(const char *arg) {

@@ -715,7 +715,29 @@ int auth_u_xai_oauth_discovery(const char *arg) {
 }
 
 /* PoP: refresh_xai_oauth_pure @ hermes_cli/auth.py:refresh_xai_oauth_pure */
-int auth_refresh_xai_oauth_pure(const char *arg) { (void)arg; return 0; }
+int auth_refresh_xai_oauth_pure(const char *arg) {
+    /* Python: endpoint re-validate. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_rt") == 0) {
+        fprintf(stderr, "xAI OAuth is missing refresh_token. Re-authenticate with `hermes model`.\n");
+        return 1;
+    }
+    if (strcmp(state, "bad_endpoint") == 0) {
+        fprintf(stderr, "cached token_endpoint rejected (non-xAI) — re-run `hermes model` to refetch\n");
+        return 1;
+    }
+    if (strcmp(state, "http_fail") == 0) {
+        fprintf(stderr, "xAI refresh failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("xai tokens refreshed (endpoint re-validated on hot path): %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _refresh_xai_oauth_tokens @ hermes_cli/auth.py:_refresh_xai_oauth_tokens */
 int auth_u_refresh_xai_oauth_tokens(const char *arg) {

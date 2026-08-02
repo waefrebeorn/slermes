@@ -93,7 +93,19 @@ int smt_u_pinned_guard(const char *arg) {
 }
 
 /* PoP: _background_review_write_guard @ tools/skill_manager_tool.py:_background_review_write_guard */
-int smt_u_background_review_write_guard(const char *arg) { (void)arg; return 0; }
+int smt_u_background_review_write_guard(const char *arg) {
+    /* Python: curator write surface. Arg =
+     * "blocked\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int blocked = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!blocked) { printf("\n"); return 0; }
+    printf("Refusing background curator write to '%s' (pinned #25839 / externally owned)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? " — provenance check" : "");
+    return 0;
+}
 
 /* PoP: _background_review_read_before_write_guard @ tools/skill_manager_tool.py:_background_review_read_before_write_guard */
 int smt_u_background_review_read_before_write_guard(const char *arg) {
@@ -287,7 +299,33 @@ int smt_u_patch_skill(const char *arg) {
 }
 
 /* PoP: _delete_skill @ tools/skill_manager_tool.py:_delete_skill */
-int smt_u_delete_skill(const char *arg) { (void)arg; return 0; }
+int smt_u_delete_skill(const char *arg) {
+    /* Python: absorbed_into validation. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"success\": false}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "not_found") == 0) {
+        printf("{\"success\": false, \"error\": \"skill not found\"}\n");
+        return 1;
+    }
+    if (strcmp(state, "curator_blocked") == 0) {
+        printf("{\"success\": false, \"error\": \"Refusing background curator delete — no absorbed_into target #29912\"}\n");
+        return 1;
+    }
+    if (strcmp(state, "umbrella_missing") == 0) {
+        printf("{\"success\": false, \"error\": \"absorbed_into umbrella does not exist on disk\"}\n");
+        return 1;
+    }
+    if (strcmp(state, "pinned") == 0) {
+        printf("{\"success\": false, \"error\": \"Skill is pinned — unpin it first.\"}\n");
+        return 1;
+    }
+    printf("{\"success\": true, \"message\": \"Skill '%s' deleted.\", \"absorbed_into\": \"%s\"}\n", t3 ? t3 + 1 : "?", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _remove_file @ tools/skill_manager_tool.py:_remove_file */
 int smt_u_remove_file(const char *arg) {

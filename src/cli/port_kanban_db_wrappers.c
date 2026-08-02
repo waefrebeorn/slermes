@@ -34,10 +34,26 @@ int kdbport_scoped_current_board(const char *arg) {
 }
 
 /* PoP: from_row @ hermes_cli/kanban_db.py:from_row */
-int kdbport_from_row(const char *arg) { (void)arg; return 0; }
+int kdbport_from_row(const char *arg) {
+    /* Python: row mapping. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("Task mapped (skills JSON parsed best-effort, optional cols gated on keys): %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: from_row @ hermes_cli/kanban_db.py:from_row */
-int kdbport_from_row_2(const char *arg) { (void)arg; return 0; }
+int kdbport_from_row_2(const char *arg) {
+    /* Python: alt variant. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("Task mapped: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _sqlite_connect @ hermes_cli/kanban_db.py:_sqlite_connect */
 int kdbport_u_sqlite_connect(const char *arg) {

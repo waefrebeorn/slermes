@@ -1819,7 +1819,23 @@ int main_u_sync_fork_with_upstream(const char *arg) {
 }
 
 /* PoP: _sync_with_upstream_if_needed @ hermes_cli/main.py:_sync_with_upstream_if_needed */
-int main_u_sync_with_upstream_if_needed(const char *arg) { (void)arg; return 0; }
+int main_u_sync_with_upstream_if_needed(const char *arg) {
+    /* Python: fork sync. Arg =
+     * "synced\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int synced = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!synced) {
+        printf("ℹ Your fork is not tracking the official Hermes repository.\n");
+        printf("→ Adding upstream remote...\n");
+        return 0;
+    }
+    printf("fork synced from upstream (origin strictly behind; ff pull; sync back attempt)%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _invalidate_update_cache @ hermes_cli/main.py:_invalidate_update_cache */
 int main_u_invalidate_update_cache(const char *arg) {

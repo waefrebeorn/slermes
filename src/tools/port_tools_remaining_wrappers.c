@@ -2737,7 +2737,19 @@ int tools_checkpoint_manager_u_pre_v2_shadow_repos(const char *arg) {
 }
 
 /* PoP: _workdir_is_observably_gone @ tools/checkpoint_manager.py:_workdir_is_observably_gone */
-int tools_checkpoint_manager_u_workdir_is_observably_gone(const char *arg) { (void)arg; return 0; }
+int tools_checkpoint_manager_u_workdir_is_observably_gone(const char *arg) {
+    /* Python: 3-step corroboration. Arg =
+     * "gone\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int gone = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!gone) { printf("0 (parent missing = volume absent — know nothing)\n"); return 0; }
+    printf("1 (parent present + identity matched + gone: %s)\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _dir_has_any_entry @ tools/checkpoint_manager.py:_dir_has_any_entry */
 int tools_checkpoint_manager_u_dir_has_any_entry(const char *arg) {

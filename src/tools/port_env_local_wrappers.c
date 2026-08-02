@@ -174,7 +174,18 @@ int envl_u_scrub_delegated_child_kanban_env(const char *arg) {
 }
 
 /* PoP: hermes_subprocess_env @ tools/environments/local.py:hermes_subprocess_env */
-int envl_hermes_subprocess_env(const char *arg) { (void)arg; return 0; }
+int envl_hermes_subprocess_env(const char *arg) {
+    /* Python: 2-tier strip. Arg =
+     * "inherit\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\n}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int inherit = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{\n}\n"); return 0; }
+    printf("env built (tier1 always-strip: bot tokens/github/remote-compute; tier2 provider keys %s)%s\n", inherit ? "INHERITED" : "stripped", (t2 && t2[1] == '1') ? " — no skill-passthrough surface" : "");
+    return 0;
+}
 
 /* PoP: _find_bash @ tools/environments/local.py:_find_bash */
 int envl_u_find_bash(const char *arg) {

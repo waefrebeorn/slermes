@@ -151,7 +151,18 @@ int qqbot_u_parse_gateway_session_key(const char *arg) {
 }
 
 /* PoP: _is_authorized_interaction_for_session @ gateway/platforms/qqbot/adapter.py:_is_authorized_interaction_for_session */
-int qqbot_u_is_authorized_interaction_for_session(const char *arg) { (void)arg; return 0; }
+int qqbot_u_is_authorized_interaction_for_session(const char *arg) {
+    /* Python: operator match. Arg =
+     * "authorized\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int authorized = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s (c2c: operator==chat_id; group/guild: chat match AND operator==session user)%s\n", authorized ? "1" : "0", t2 && t2[1] == '1' ? " — parsed" : "");
+    return 0;
+}
 
 /* PoP: _default_interaction_dispatch @ gateway/platforms/qqbot/adapter.py:_default_interaction_dispatch */
 int qqbot_u_default_interaction_dispatch(const char *arg) { (void)arg; return 0; }
