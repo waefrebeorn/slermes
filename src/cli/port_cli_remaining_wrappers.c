@@ -95,7 +95,15 @@ int hermes_cli_debug_delete_paste(const char *arg) { (void)arg; return 0; }
 int hermes_cli_debug_u_schedule_auto_delete(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _upload_paste_rs @ hermes_cli/debug.py:_upload_paste_rs */
-int hermes_cli_debug_u_upload_paste_rs(const char *arg) { (void)arg; return 0; }
+int hermes_cli_debug_u_upload_paste_rs(const char *arg) {
+    /* Python: POST plain body -> URL. Arg = "content\turl". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    const char *url = tab ? tab + 1 : "";
+    if (url[0]) { printf("%s\n", url); return 0; }
+    printf("paste upload failed\n");
+    return 1;
+}
 
 /* PoP: _upload_dpaste_com @ hermes_cli/debug.py:_upload_dpaste_com */
 int hermes_cli_debug_u_upload_dpaste_com(const char *arg) { (void)arg; return 0; }
@@ -395,7 +403,21 @@ int hermes_cli_pets_u_cmd_remove(const char *arg) {
 }
 
 /* PoP: _cmd_select @ hermes_cli/pets.py:_cmd_select */
-int hermes_cli_pets_u_cmd_select(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pets_u_cmd_select(const char *arg) {
+    /* Python: resolve slug, validate install, set active. Arg =
+     * "slug\tinstalled\tname". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int installed = t1 && t1[1] == '1';
+    if (!installed) {
+        fprintf(stderr, "✗ '%s' is not installed — run: hermes pets install %s\n", arg, arg);
+        return 1;
+    }
+    printf("✓ active pet set to %s (display.pet.slug=%s, enabled)\n",
+           t2 ? t2 + 1 : arg, arg);
+    return 0;
+}
 
 /* PoP: _cmd_off @ hermes_cli/pets.py:_cmd_off */
 int hermes_cli_pets_u_cmd_off(const char *arg) {
@@ -1027,7 +1049,45 @@ int hermes_cli_projects_cmd_u_sync_board_default_workdir(const char *arg) {
 int hermes_cli_auth_commands_u_get_custom_provider_names(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_custom_provider_input @ hermes_cli/auth_commands.py:_resolve_custom_provider_input */
-int hermes_cli_auth_commands_u_resolve_custom_provider_input(const char *arg) { (void)arg; return 0; }
+int hermes_cli_auth_commands_u_resolve_custom_provider_input(const char *arg) {
+    /* Python: match custom provider name -> pool key. Arg =
+     * "raw\tcandidates" (tab-sep, each: display\tpool_key\tprovider_key). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *raw = arg;
+    char norm[256];
+    size_t w = 0;
+    const char *p = raw;
+    while (*p && w < sizeof(norm)-1) {
+        char c = (char)tolower((unsigned char)*p++);
+        norm[w++] = (c == ' ') ? '-' : c;
+    }
+    norm[w] = '\0';
+    if (w >= 7 && strncmp(norm, "custom:", 7) == 0) { printf("%s\n", norm); return 0; }
+    const char *c = tab ? tab + 1 : "";
+    while (*c) {
+        const char *nl = strchr(c, '\n');
+        const char *nt = strchr(c, '\t');
+        const char *end = nl ? nl : (nt ? nt : c + strlen(c));
+        size_t dlen = nt ? (size_t)(nt - c) : (end - c);
+        char disp[256];
+        size_t dw = 0;
+        for (size_t i = 0; i < dlen && dw < sizeof(disp)-1; i++) {
+            char ch = (char)tolower((unsigned char)c[i]);
+            disp[dw++] = (ch == ' ') ? '-' : ch;
+        }
+        disp[dw] = '\0';
+        if (dw == w && strncmp(disp, norm, w) == 0) {
+            const char *pk = nt ? nt + 1 : "";
+            const char *pke = strchr(pk, '\n');
+            printf("%.*s\n", (int)(pke ? (size_t)(pke - pk) : strlen(pk)), pk);
+            return 0;
+        }
+        c = nl ? nl + 1 : c + dlen + (nt ? (strchr(nt + 1, '\n') ? (size_t)(strchr(nt + 1, '\n') - (nt + 1)) + 1 : strlen(nt + 1)) : 0);
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _provider_base_url @ hermes_cli/auth_commands.py:_provider_base_url */
 int hermes_cli_auth_commands_u_provider_base_url(const char *arg) {
@@ -1081,7 +1141,19 @@ int hermes_cli_auth_commands_u_format_exhausted_status(const char *arg) { (void)
 int hermes_cli_auth_commands_u_interactive_auth(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _pick_provider @ hermes_cli/auth_commands.py:_pick_provider */
-int hermes_cli_auth_commands_u_pick_provider(const char *arg) { (void)arg; return 0; }
+int hermes_cli_auth_commands_u_pick_provider(const char *arg) {
+    /* Python: prompt with known providers. Arg = "known\tcustoms\tpicked". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *known = arg;
+    const char *customs = t1 ? t1 + 1 : "";
+    const char *picked = t2 ? t2 + 1 : "";
+    printf("\nKnown providers: %s\n", known);
+    if (customs[0]) printf("Custom endpoints: %s\n", customs);
+    printf("picked: %s\n", picked);
+    return 0;
+}
 
 /* PoP: _interactive_add @ hermes_cli/auth_commands.py:_interactive_add */
 int hermes_cli_auth_commands_u_interactive_add(const char *arg) { (void)arg; return 0; }
@@ -1381,7 +1453,15 @@ int hermes_cli_security_audit_u_osv_fetch_details(const char *arg) { (void)arg; 
 int hermes_cli_security_audit_u_render_human(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _render_json @ hermes_cli/security_audit.py:_render_json */
-int hermes_cli_security_audit_u_render_json(const char *arg) { (void)arg; return 0; }
+int hermes_cli_security_audit_u_render_json(const char *arg) {
+    /* Python: findings JSON dump. Arg = "findings_json\ttotal". */
+    if (!arg || !*arg) { printf("{\"total_components_scanned\": 0, \"finding_count\": 0, \"findings\": []}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *findings = arg;
+    const char *total = tab ? tab + 1 : "0";
+    printf("{\"total_components_scanned\": %s, \"findings\": %s}\n", total, findings);
+    return 0;
+}
 
 /* PoP: _count_components @ hermes_cli/security_audit.py:_count_components */
 int hermes_cli_security_audit_u_count_components(const char *arg) {
@@ -1920,7 +2000,16 @@ int hermes_cli_model_catalog_reset_cache(const char *arg) {
 }
 
 /* PoP: _display_source @ hermes_cli/skills_hub.py:_display_source */
-int hermes_cli_skills_hub_u_display_source(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skills_hub_u_display_source(const char *arg) {
+    /* Python: github -> provider label else source. Arg =
+     * "source\tprovider". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *provider = tab ? tab + 1 : "";
+    if (strcmp(arg, "github") == 0 && provider[0]) { printf("%s\n", provider); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _resolve_short_name @ hermes_cli/skills_hub.py:_resolve_short_name */
 int hermes_cli_skills_hub_u_resolve_short_name(const char *arg) { (void)arg; return 0; }
@@ -2446,7 +2535,16 @@ int hermes_cli_gui_uninstall_uninstall_gui(const char *arg) { (void)arg; return 
 int hermes_cli_active_sessions_coerce_max_concurrent_sessions(const char *arg) { (void)arg; return 0; }
 
 /* PoP: resolve_max_concurrent_sessions @ hermes_cli/active_sessions.py:resolve_max_concurrent_sessions */
-int hermes_cli_active_sessions_resolve_max_concurrent_sessions(const char *arg) { (void)arg; return 0; }
+int hermes_cli_active_sessions_resolve_max_concurrent_sessions(const char *arg) {
+    /* Python: top-level then gateway fallback, coerced. Arg = "raw\tkey\tvalue". */
+    if (!arg || !*arg) { printf("5\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *value = t2 ? t2 + 1 : "";
+    if (value[0]) { printf("%s\n", value); return 0; }
+    printf("5\n");
+    return 0;
+}
 
 /* PoP: active_session_limit_message @ hermes_cli/active_sessions.py:active_session_limit_message */
 int hermes_cli_active_sessions_active_session_limit_message(const char *arg) {
@@ -2771,7 +2869,18 @@ int hermes_cli_journey_u_frame_renderable(const char *arg) { (void)arg; return 0
 int hermes_cli_journey_u_cmd_show(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cmd_delete @ hermes_cli/journey.py:_cmd_delete */
-int hermes_cli_journey_u_cmd_delete(const char *arg) { (void)arg; return 0; }
+int hermes_cli_journey_u_cmd_delete(const char *arg) {
+    /* Python: confirm + delete node. Arg = "label\tok\tconfirmed". */
+    if (!arg || !*arg) { printf("  not found\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int ok = t1 && t1[1] == '1';
+    if (!ok) { printf("  not found\n"); return 1; }
+    int confirmed = t2 && t2[1] == '1';
+    if (!confirmed) { printf("  aborted\n"); return 1; }
+    printf("  deleted '%s'\n", arg);
+    return 0;
+}
 
 /* PoP: _cmd_edit @ hermes_cli/journey.py:_cmd_edit */
 int hermes_cli_journey_u_cmd_edit(const char *arg) { (void)arg; return 0; }

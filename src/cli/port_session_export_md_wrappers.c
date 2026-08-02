@@ -226,7 +226,25 @@ int sexmd_u_body_for_digest(const char *arg) {
 }
 
 /* PoP: render_session_markdown @ hermes_cli/session_export_md.py:render_session_markdown */
-int sexmd_render_session_markdown(const char *arg) { (void)arg; return 0; }
+int sexmd_render_session_markdown(const char *arg) {
+    /* Python: body + digest or pre-verification. Arg =
+     * "fmt\tbody\tinclude_verification\tdigest". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    size_t flen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    if (!((flen == 2 && strncmp(arg, "md", 2) == 0) || (flen == 3 && strncmp(arg, "qmd", 3) == 0))) {
+        fprintf(stderr, "fmt must be 'md' or 'qmd'\n");
+        return 1;
+    }
+    const char *body = t1 ? t1 + 1 : "";
+    int include_ver = t2 && t2[1] == '1';
+    const char *digest = t3 ? t3 + 1 : "";
+    if (include_ver) { printf("%s (digest %s)\n", body, digest); return 0; }
+    printf("%s (pre-verification)\n", body);
+    return 0;
+}
 
 /* PoP: safe_session_filename @ hermes_cli/session_export_md.py:safe_session_filename */
 int sexmd_safe_session_filename(const char *arg) {

@@ -53,7 +53,12 @@ int smt_u_reset_background_review_read_marks(const char *arg) {
 }
 
 /* PoP: _guard_agent_created_enabled @ tools/skill_manager_tool.py:_guard_agent_created_enabled */
-int smt_u_guard_agent_created_enabled(const char *arg) { (void)arg; return 0; }
+int smt_u_guard_agent_created_enabled(const char *arg) {
+    /* Python: config skills.guard_agent_created default False. Arg = "1"/"0". */
+    if (arg && arg[0] == '1') { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _security_scan_skill @ tools/skill_manager_tool.py:_security_scan_skill */
 int smt_u_security_scan_skill(const char *arg) { (void)arg; return 0; }

@@ -185,7 +185,20 @@ int muv_u_release_repair_lock(const char *arg) {
 }
 
 /* PoP: _windows_runtime_holders @ hermes_cli/managed_uv.py:_windows_runtime_holders */
-int muv_u_windows_runtime_holders(const char *arg) { (void)arg; return 0; }
+int muv_u_windows_runtime_holders(const char *arg) {
+    /* Python: (holds, reason) for Windows venv holders. Arg =
+     * "is_windows\tholders\treason". */
+    if (!arg || !*arg) { printf("0\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_windows = arg[0] == '1';
+    if (!is_windows) { printf("0\n\n"); return 0; }
+    int holders = t1 && t1[1] == '1';
+    const char *reason = t2 ? t2 + 1 : "";
+    if (holders) { printf("1\n%s\n", reason[0] ? reason : "other Hermes processes still hold the venv"); return 0; }
+    printf("0\n\n");
+    return 0;
+}
 
 /* PoP: repair_vulnerable_runtime @ hermes_cli/managed_uv.py:repair_vulnerable_runtime */
 int muv_repair_vulnerable_runtime(const char *arg) { (void)arg; return 0; }

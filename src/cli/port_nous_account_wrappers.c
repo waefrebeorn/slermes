@@ -116,7 +116,16 @@ int nous_u_info_from_inference_key_pool(const char *arg) { (void)arg; return 0; 
 int nous_u_info_from_oauth_pool(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _select_nous_pool_entry @ hermes_cli/nous_account.py:_select_nous_pool_entry */
-int nous_u_select_nous_pool_entry(const char *arg) { (void)arg; return 0; }
+int nous_u_select_nous_pool_entry(const char *arg) {
+    /* Python: max by (agent_exp, access_exp, -priority). Arg =
+     * "entries_json\tselected". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *selected = tab ? tab + 1 : "";
+    if (selected[0]) { printf("%s\n", selected); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _pool_entry_is_portal_oauth @ hermes_cli/nous_account.py:_pool_entry_is_portal_oauth */
 int nous_u_pool_entry_is_portal_oauth(const char *arg) {

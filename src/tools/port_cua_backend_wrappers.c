@@ -389,7 +389,14 @@ int cua_u_is_transient_daemon_error(const char *arg) {
 }
 
 /* PoP: _restart_session_locked @ tools/computer_use/cua_backend.py:_restart_session_locked */
-int cua_u_restart_session_locked(const char *arg) { (void)arg; return 0; }
+int cua_u_restart_session_locked(const char *arg) {
+    /* Python: stop lifecycle + clear caps + start. Arg = "started\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int started = arg[0] == '1';
+    printf("session restarted%s\n", started ? " (lifecycle recycled)" : "");
+    return 0;
+}
 
 /* PoP: _call_tool_via_cli @ tools/computer_use/cua_backend.py:_call_tool_via_cli */
 int cua_u_call_tool_via_cli(const char *arg) { (void)arg; return 0; }

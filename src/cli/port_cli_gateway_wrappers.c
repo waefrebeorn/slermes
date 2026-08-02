@@ -664,7 +664,24 @@ int cgw_install_linux_gateway_from_setup(const char *arg) { (void)arg; return 0;
 int cgw_get_systemd_linger_status(const char *arg) { (void)arg; return 0; }
 
 /* PoP: print_systemd_linger_guidance @ hermes_cli/gateway.py:print_systemd_linger_guidance */
-int cgw_print_systemd_linger_guidance(const char *arg) { (void)arg; return 0; }
+int cgw_print_systemd_linger_guidance(const char *arg) {
+    /* Python: linger status + fix. Arg = "state\tdetail" (state: enabled/
+     * disabled/unknown). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    const char *detail = tab ? tab + 1 : "";
+    if (strcmp(state, "enabled") == 0) printf("✓ Systemd linger is enabled (service survives logout)\n");
+    else if (strcmp(state, "disabled") == 0) {
+        printf("⚠ Systemd linger is disabled (gateway may stop when you log out)\n");
+        printf("  Run: sudo loginctl enable-linger $USER\n");
+    } else {
+        printf("⚠ Could not verify systemd linger (%s)\n", detail[0] ? detail : "unknown");
+        printf("  If you want the gateway user service to survive logout, run:\n");
+        printf("  sudo loginctl enable-linger $USER\n");
+    }
+    return 0;
+}
 
 /* PoP: _launchd_user_home @ hermes_cli/gateway.py:_launchd_user_home */
 int cgw_u_launchd_user_home(const char *arg) {

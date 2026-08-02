@@ -623,7 +623,23 @@ int yb_send_group_msg_body(const char *arg) { (void)arg; return 0; }
 int yb_u_dispatch_encoded(const char *arg) { (void)arg; return 0; }
 
 /* PoP: validate_media @ gateway/platforms/yuanbao.py:validate_media */
-int yb_validate_media(const char *arg) { (void)arg; return 0; }
+int yb_validate_media(const char *arg) {
+    /* Python: empty/large check. Arg = "size\tmax_mb\tfilename". */
+    if (!arg || !*arg) { printf("Empty file: <unknown>\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    double size = strtod(arg, NULL);
+    double max_mb = t1 ? strtod(t1 + 1, NULL) : 20;
+    const char *fname = t2 ? t2 + 1 : "file";
+    if (size <= 0) { printf("Empty file: %s\n", fname); return 1; }
+    double max_bytes = max_mb * 1024 * 1024;
+    if (size > max_bytes) {
+        printf("File too large: %s (%.1fMB > %.0fMB)\n", fname, size / 1024 / 1024, max_mb);
+        return 1;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: strip_cron_wrapper @ gateway/platforms/yuanbao.py:strip_cron_wrapper */
 int yb_strip_cron_wrapper(const char *content) {
@@ -694,7 +710,23 @@ int yb_u_chat_locks(const char *arg) {
 }
 
 /* PoP: validate_media @ gateway/platforms/yuanbao.py:validate_media */
-int yb_validate_media_2(const char *arg) { (void)arg; return 0; }
+int yb_validate_media_2(const char *arg) {
+    /* Python: duplicate stub — same as validate_media. */
+    if (!arg || !*arg) { printf("Empty file: <unknown>\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    double size = strtod(arg, NULL);
+    double max_mb = t1 ? strtod(t1 + 1, NULL) : 20;
+    const char *fname = t2 ? t2 + 1 : "file";
+    if (size <= 0) { printf("Empty file: %s\n", fname); return 1; }
+    double max_bytes = max_mb * 1024 * 1024;
+    if (size > max_bytes) {
+        printf("File too large: %s (%.1fMB > %.0fMB)\n", fname, size / 1024 / 1024, max_mb);
+        return 1;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: set_active @ gateway/platforms/yuanbao.py:set_active */
 void yb_set_active(void *adapter) {

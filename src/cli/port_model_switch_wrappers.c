@@ -134,7 +134,16 @@ int msw_u_configured_provider_matches(const char *arg) { (void)arg; return 0; }
 int msw_u_resolve_named_custom_model_id(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _credential_pool_is_usable @ hermes_cli/model_switch.py:_credential_pool_is_usable */
-int msw_u_credential_pool_is_usable(const char *arg) { (void)arg; return 0; }
+int msw_u_credential_pool_is_usable(const char *arg) {
+    /* Python: pool available else raw present. Arg = "has_creds\thas_avail\traw_present". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_creds = arg[0] == '1';
+    if (has_creds) { printf("%s\n", (t1 && t1[1] == '1') ? "1" : "0"); return 0; }
+    printf("%s\n", (t2 && t2[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _extra_headers_from_config @ hermes_cli/model_switch.py:_extra_headers_from_config */
 int msw_u_extra_headers_from_config(const char *arg) {

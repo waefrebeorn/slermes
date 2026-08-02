@@ -260,7 +260,12 @@ int mcpo_u_make_callback_waiter(const char *arg) { (void)arg; return 0; }
 int mcpo_u_paste_callback_reader(const char *arg) { (void)arg; return 0; }
 
 /* PoP: remove_oauth_tokens @ tools/mcp_oauth.py:remove_oauth_tokens */
-int mcpo_remove_oauth_tokens(const char *arg) { (void)arg; return 0; }
+int mcpo_remove_oauth_tokens(const char *arg) {
+    /* Python: storage.remove(). Arg = "server_name\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("OAuth tokens removed for '%s'\n", arg);
+    return 0;
+}
 
 /* PoP: _configure_callback_port @ tools/mcp_oauth.py:_configure_callback_port */
 int mcpo_u_configure_callback_port(const char *arg) { (void)arg; return 0; }

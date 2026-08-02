@@ -1151,7 +1151,12 @@ int agent_credential_pool_u_single_use_refresh_lock_timeout(const char *arg) { (
 int agent_credential_pool_u_codex_quota_restored_upstream(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _log_no_available_entries @ agent/credential_pool.py:_log_no_available_entries */
-int agent_credential_pool_u_log_no_available_entries(const char *arg) { (void)arg; return 0; }
+int agent_credential_pool_u_log_no_available_entries(const char *arg) {
+    /* Python: throttle INFO log. Arg = "throttled". */
+    if (arg && arg[0] == '1') { printf("log throttled\n"); return 0; }
+    printf("credential pool: no available entries (all exhausted or empty)\n");
+    return 0;
+}
 
 /* PoP: try_refresh_matching @ agent/credential_pool.py:try_refresh_matching */
 int agent_credential_pool_try_refresh_matching(const char *arg) { (void)arg; return 0; }

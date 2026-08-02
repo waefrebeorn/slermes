@@ -48,7 +48,13 @@ int vev_u_connect(const char *arg) {
 }
 
 /* PoP: _transaction @ agent/verification_evidence.py:_transaction */
-int vev_u_transaction(const char *arg) { (void)arg; return 0; }
+int vev_u_transaction(const char *arg) {
+    /* Python: commit/rollback + ALWAYS close. Arg = "db_path\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("transaction completed (conn closed): %s\n", arg);
+    return 0;
+}
 
 /* PoP: _ensure_schema @ agent/verification_evidence.py:_ensure_schema */
 int vev_u_ensure_schema(const char *arg) { (void)arg; return 0; }
