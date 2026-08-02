@@ -158,6 +158,13 @@ def classify_bootleg(name, info, defined, memo, stack=None):
     # Real signal (I/O, json mutation, alloc, print) => REAL.
     if has_real_signal(body):
         memo[name] = False; stack.discard(name); return False
+    # Loop with a body => REAL: iterating over data is observable
+    # computation (string scans, parsers, table walks). The bootleg stub
+    # shape never contains a loop — only (void)arg guards and zero returns.
+    # (The docstring has always promised this rule; has_loop_or_branch was
+    # dead code before this call was added.)
+    if re.search(r'\b(for|while|do)\s*\(', body):
+        memo[name] = False; stack.discard(name); return False
 
     nb = body_nonblank_lines(body)
     if not nb:
@@ -165,15 +172,22 @@ def classify_bootleg(name, info, defined, memo, stack=None):
 
     def stmt_is_bootleg(s):
         s = s.strip()
+        if not s or s in ('{', '}'):
+            return False  # neutral braces
         if s.startswith('(void)'):
             return True
-        if re.match(r'^return\s+(0|NULL|null|false|FALSE|"\s*"|\'\0\')\s*;?$', s):
+        if re.match(r'^return\s+(0|NULL|null|false|FALSE|"\s*"|\'\\0\')\s*;?$', s):
             return True
+        if re.match(r'^return\s+(true|True|-?\d+(\.\d+)?)\s*;?$', s):
+            return False  # truthy constant (e.g. check_*_requirements -> 1)
         if re.match(r'^return\s+[\w]+\s*;?$', s):
             m = re.match(r'^return\s+([\w]+)\s*;?$', s)
             v = m.group(1)
             if v in defined:
                 return classify_bootleg(v, defined[v], defined, memo, stack)
+            # Module-static/global state accessor (g_*/s_*) => real read.
+            if re.match(r'^(g_|s_)[A-Za-z0-9_]*$', v):
+                return False
             return True
         if re.match(r'^return\s+[\w]+\s*\([^;]*\)\s*;?$', s):
             m = re.match(r'^return\s+([\w]+)\s*\(', s)
@@ -183,9 +197,23 @@ def classify_bootleg(name, info, defined, memo, stack=None):
             return True
         if re.match(r'^return\s+', s):
             return False  # non-trivial computed value => real accessor
+        # State mutation => real: writes into module-static/global state
+        # (g_*/s_* fields, pointer derefs, array stores) or alloc-and-store.
+        if re.search(r'\b(g_|s_)[A-Za-z0-9_]*\s*(\[|\.|=)|->\s*\w+\s*=|\[\s*[^\]]*\]\s*=', s):
+            return False
+        if re.search(r'=\s*(malloc|calloc|strdup|realloc)\s*\(', s):
+            return False
+        # Control-flow headers defer to their body lines; bare calls invoke
+        # real code (external, or the callee is judged on its own).
+        if re.match(r'^(if|else|for|while|do|switch|case)\b', s):
+            return False
+        if re.match(r'^[\w][\w \*]*\([^;]*\)\s*;?$', s):
+            return False
         return True
 
     for st in nb:
+        if st in ('{', '}'):
+            continue  # extractor includes the closing brace in the body
         if not stmt_is_bootleg(st):
             memo[name] = False; stack.discard(name); return False
     memo[name] = True; stack.discard(name); return True

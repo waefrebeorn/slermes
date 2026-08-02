@@ -20,6 +20,14 @@
 static bool s_yolo_mode_frozen = false;
 static bool s_yolo_mode_frozen_set = false;
 
+/* Pending gateway approvals (Python _pending: session_key -> payload) and
+ * per-session approved set (Python _session_approved). */
+static char g_pending_sessions[32][192];
+static char g_pending_payloads[32][2048];
+static int g_pending_n = 0;
+static char g_session_approved[64][192];
+static int g_session_approved_n = 0;
+
 void freeze_yolo_mode(bool value)
 {
     s_yolo_mode_frozen = value;
@@ -1132,21 +1140,63 @@ void approval_unregister_gateway_notify(void) {
 
 /* PoP: approval_resolve_gateway_approval @ tools/approval.py:resolve_gateway_approval */
 int approval_resolve_gateway_approval(const char *platform, const char *chat_id) {
-    (void)platform; (void)chat_id;
-    /* Interactive resolution is handled by the gateway wait callback. */
-    return 0;
+    /* Python: resolve the oldest pending gateway approval (FIFO) and relay
+     * the choice to the waiting agent thread. The C shim keys by
+     * platform/chat: resolve the oldest pending record for the chat, which
+     * unblocks the gateway wait callback. Returns the count resolved. */
+    (void)platform;
+    if (g_pending_n == 0) return 0;
+    int idx = 0;
+    if (chat_id && chat_id[0]) {
+        int found = -1;
+        for (int i = 0; i < g_pending_n; i++)
+            if (strstr(g_pending_sessions[i], chat_id)) { found = i; break; }
+        if (found < 0) return 0;
+        idx = found;
+    }
+    for (int j = idx; j < g_pending_n - 1; j++) {
+        strcpy(g_pending_sessions[j], g_pending_sessions[j + 1]);
+        strcpy(g_pending_payloads[j], g_pending_payloads[j + 1]);
+    }
+    g_pending_n--;
+    hermes_log(LOG_INFO, "approval", "gateway approval resolved for %s",
+               chat_id ? chat_id : "(any)");
+    return 1;
 }
 
 /* PoP: approval_submit_pending @ tools/approval.py:submit_pending */
 int approval_submit_pending(const char *session_key, const char *payload) {
-    (void)session_key; (void)payload;
-    return 0;
+    /* Python: _pending[session_key] = approval — replace any prior entry. */
+    if (!session_key || !*session_key) return 0;
+    for (int i = 0; i < g_pending_n; i++)
+        if (strcmp(g_pending_sessions[i], session_key) == 0) {
+            snprintf(g_pending_payloads[i], sizeof(g_pending_payloads[i]),
+                     "%s", payload ? payload : "");
+            return 1;
+        }
+    if (g_pending_n >= 32) return 0;
+    snprintf(g_pending_sessions[g_pending_n], sizeof(g_pending_sessions[g_pending_n]),
+             "%s", session_key);
+    snprintf(g_pending_payloads[g_pending_n], sizeof(g_pending_payloads[g_pending_n]),
+             "%s", payload ? payload : "");
+    g_pending_n++;
+    return 1;
 }
 
 /* PoP: approval_approve_session @ tools/approval.py:approve_session */
 int approval_approve_session(const char *session_key, int approve) {
-    (void)session_key; (void)approve;
-    return 0;
+    /* Python: _session_approved[session_key].add(pattern_key). The C shim
+     * collapses pattern_key to an int flag: approve=1 records the session
+     * as approved (idempotent set semantics). */
+    if (!session_key || !*session_key) return 0;
+    if (!approve) return 1; /* deny: no record (set remains unchanged) */
+    for (int i = 0; i < g_session_approved_n; i++)
+        if (strcmp(g_session_approved[i], session_key) == 0) return 1;
+    if (g_session_approved_n >= 64) return 0;
+    snprintf(g_session_approved[g_session_approved_n],
+             sizeof(g_session_approved[g_session_approved_n]), "%s", session_key);
+    g_session_approved_n++;
+    return 1;
 }
 
 /* PoP: approval_check_execute_code_guard @ tools/approval.py:check_execute_code_guard */

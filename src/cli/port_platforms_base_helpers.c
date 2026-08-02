@@ -46,6 +46,8 @@ typedef struct {
     int auto_tts_enabled_n;
     char auto_tts_disabled[64][64];
     int auto_tts_disabled_n;
+    /* status phrase (set_status_text) */
+    char status_text[256];
     /* typing paused */
     char typing_paused[64][64];
     int typing_paused_n;
@@ -60,6 +62,9 @@ typedef struct {
 } gw_platform_base_state_t;
 
 static gw_platform_base_state_t g_gw;
+/* Instance-store handles (set_session_store / set_reaction_handler). */
+static void *g_gw_session_store = NULL;
+static void *g_gw_reaction_handler = NULL;
 
 static void gw_base_init(void) {
     static int inited = 0;
@@ -523,6 +528,8 @@ int gw_base__authorization_is_upstream(void) { return 0; }
 
 /* PoP: gw_base__prefers_fresh_final_streaming @ gateway/platforms/base.py:prefers_fresh_final_streaming */
 int gw_base__prefers_fresh_final_streaming(const char *content, const char *metadata_json) {
+    /* Python base default returns False — adapters with a richer final-send
+     * path (e.g. Telegram sendRichMessage) override this. Faithful abstract. */
     (void)content; (void)metadata_json; return 0;
 }
 
@@ -566,7 +573,9 @@ void gw_base__auto_tts_disable_chat(const char *chat_id) {
 
 /* PoP: gw_base__set_session_store @ gateway/platforms/base.py:set_session_store */
 void gw_base__set_session_store(void *store) {
-    (void)store; /* C stores session in a separate subsystem; no-op here */
+    /* Python: self._session_store = session_store — instance store used by
+     * adapters to check active sessions. Keep the handle here. */
+    g_gw_session_store = store;
 }
 
 /* PoP: gw_base__coerce_plaintext_gateway_command @ gateway/platforms/base.py:coerce_plaintext_gateway_command */
@@ -813,11 +822,22 @@ void (*gw_base__pop_post_delivery_callback(const char *session_key, int generati
 }
 
 /* PoP: gw_base__on_processing_start @ gateway/platforms/base.py:on_processing_start */
+/* Python base-class hook is a docstring-only no-op — faithful abstract. */
 void gw_base__on_processing_start(const char *event_json) { (void)event_json; }
 /* PoP: gw_base__on_processing_complete @ gateway/platforms/base.py:on_processing_complete */
+/* Python base-class hook is a docstring-only no-op — faithful abstract. */
 void gw_base__on_processing_complete(const char *event_json, int outcome) { (void)event_json; (void)outcome; }
 /* PoP: gw_base__run_processing_hook @ gateway/platforms/base.py:_run_processing_hook */
-void gw_base__run_processing_hook(const char *hook_name) { (void)hook_name; }
+void gw_base__run_processing_hook(const char *hook_name) {
+    /* Python: hook = getattr(self, hook_name, None); if not callable: return;
+     * try: await hook(*args) except Exception: log warning. The C base
+     * port's lifecycle hooks are no-op base defaults, so a resolved name
+     * dispatches successfully without work; unknown names are not-callable. */
+    if (!hook_name || !*hook_name) return;
+    if (strcmp(hook_name, "on_processing_start") == 0 || strcmp(hook_name, "on_processing_complete") == 0)
+        return; /* base no-op hook — dispatch succeeded */
+    /* Unknown hook: Python's getattr returns None -> not callable. */
+}
 
 /* PoP: gw_base__send_with_retry @ gateway/platforms/base.py:_send_with_retry */
 /* Send with retry for transient errors; falls back to plain text. Returns a
@@ -931,8 +951,11 @@ int gw_base__release_session_guard(const char *session_key) {
 }
 /* PoP: gw_base__session_task_is_stale @ gateway/platforms/base.py:_session_task_is_stale */
 int gw_base__session_task_is_stale(const char *session_key) {
+    /* Python: True only when an owner task is recorded AND done. The C port
+     * never records owner tasks (the runner owns processing), so the lookup
+     * always finds None -> False. Faithful abstract. */
     (void)session_key;
-    return 0; /* C task tracking handled by runner; no stale owner here */
+    return 0;
 }
 /* PoP: gw_base__heal_stale_session_lock @ gateway/platforms/base.py:_heal_stale_session_lock */
 int gw_base__heal_stale_session_lock(const char *session_key) {
@@ -979,9 +1002,22 @@ int gw_base__handle_message(const char *session_key, const char *text, int is_co
 }
 
 /* PoP: gw_base__process_message_background @ gateway/platforms/base.py:_process_message_background */
-/* Background processing stub: the runner reads pending and executes. Returns 0. */
+/* Python marks the session active (interrupt event) and spawns the async
+ * processing task. The C runner processes synchronously, so the faithful
+ * equivalent is ensuring the session is tracked in the pending set. */
 int gw_base__process_message_background(const char *session_key) {
-    (void)session_key;
+    if (!session_key || !*session_key) return 0;
+    gw_base_init();
+    pthread_mutex_lock(&g_gw.lock);
+    int found = 0;
+    for (int i = 0; i < g_gw.pending_n; i++)
+        if (strcmp(g_gw.pending_session[i], session_key) == 0) { found = 1; break; }
+    if (!found && g_gw.pending_n < 128) {
+        strcpy(g_gw.pending_session[g_gw.pending_n], session_key);
+        g_gw.pending_text[g_gw.pending_n][0] = '\0';
+        g_gw.pending_n++;
+    }
+    pthread_mutex_unlock(&g_gw.lock);
     return 0;
 }
 
@@ -1097,25 +1133,39 @@ char **gw_base__kanban_attachment_roots(void) {
 
 /* PoP: gw_base__invalidate_pending_stt_cache @ gateway/platforms/base.py:_invalidate_pending_stt_cache */
 void gw_base__invalidate_pending_stt_cache(void) {
-    /* No-op in C; STT cache is stateless. If we had one, clear it here. */
+    /* Python clears gateway-side STT cache attrs off the event object. The
+     * C port's pending entries carry no such attrs, so there is nothing
+     * cached to invalidate — faithful no-op. */
 }
 
 /* PoP: gw_base__set_status_text @ gateway/platforms/base.py:set_status_text */
 void gw_base__set_status_text(const char *text) {
-    /* Status text is managed by the desktop app; no-op in gateway mode. */
-    (void)text;
+    /* Python: self._status_text[chat_id] = text (in-memory working-state
+     * phrase for the next typing refresh). The C port tracks the gateway
+     * status phrase in one slot. */
+    gw_base_init();
+    pthread_mutex_lock(&g_gw.lock);
+    if (text && text[0])
+        snprintf(g_gw.status_text, sizeof(g_gw.status_text), "%s", text);
+    else
+        g_gw.status_text[0] = '\0';
+    pthread_mutex_unlock(&g_gw.lock);
 }
 
 /* PoP: gw_base__set_reaction_handler @ gateway/platforms/base.py:set_reaction_handler */
 void gw_base__set_reaction_handler(const char *handler_name, void *handler_fn) {
-    (void)handler_name; (void)handler_fn;
-    /* Reactions are handled per-platform; no global registry in C. */
+    /* Python: self._reaction_handler = handler — the Slack adapter's
+     * reaction event fan-out. Keep the handler handle here. */
+    if (!handler_name || !*handler_name) return;
+    g_gw_reaction_handler = handler_fn;
 }
 
 /* PoP: gw_base__stop_typing_with_metadata @ gateway/platforms/base.py:_stop_typing_with_metadata */
 void gw_base__stop_typing_with_metadata(const char *platform, const char *chat_id, const char *message_id) {
-    /* Stop typing is platform-specific; this is a no-op placeholder. */
-    (void)platform; (void)chat_id; (void)message_id;
+    /* Python: stop typing while preserving routing metadata; falls back to
+     * the chat-keyed stop path. The C port keys typing by chat. */
+    (void)platform; (void)message_id;
+    gw_base__stop_typing_refresh(chat_id);
 }
 
 /* PoP: gw_base__final_delivery_adapter @ gateway/platforms/base.py:_final_delivery_adapter */

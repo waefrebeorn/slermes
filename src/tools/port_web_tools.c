@@ -13,6 +13,7 @@
 #include "hermes_core_types.h"
 #include "hermes_logger.h"
 #include "hermes_json.h"
+#include "yaml.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -216,9 +217,20 @@ char **web_web_requires_env(int *out_count)
 /* PoP: web_get_extract_char_limit @ tools/web_tools.py:_get_extract_char_limit */
 int web_get_extract_char_limit(void)
 {
-
-    /* Default: 15000, clamped to [2000, 500000] */
-    return 15000;
+    /* Python: web.extract_char_limit from config, clamped to [2000, 500000],
+     * default 15000 (a typo can't blow up context, footer needs 2k). */
+    hermes_config_t cfg;
+    memset(&cfg, 0, sizeof(cfg));
+    if (!hermes_config_load(&cfg, NULL)) return 15000;
+    char *err = NULL;
+    yaml_doc_t *doc = yaml_parse_file(cfg.config_path, &err);
+    if (!doc) { free(err); return 15000; }
+    int v = yaml_get_int(doc, "web.extract_char_limit", 0);
+    yaml_free(doc);
+    if (v <= 0) return 15000;
+    if (v < 2000) return 2000;
+    if (v > 500000) return 500000;
+    return v;
 }
 
 /* PoP: web_convert_base64_images_to_links @ tools/web_tools.py:convert_base64_images_to_links */

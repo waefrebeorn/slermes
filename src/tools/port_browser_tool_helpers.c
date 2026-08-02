@@ -15,6 +15,7 @@
 #include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "browser_redact.h"
+#include "plugin.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -71,8 +72,11 @@ int browser__should_inject_engine(const char *engine) {
 int browser__is_legacy_provider_registry_overridden(void) { return 0; }
 
 /* PoP: browser__ensure_browser_plugins_loaded @ tools/browser_tool.py:_ensure_browser_plugins_loaded */
-/* C has no plugin discovery; no-op (idempotent, cheap). */
-void browser__ensure_browser_plugins_loaded(void) { }
+void browser__ensure_browser_plugins_loaded(void) {
+    /* Python: idempotent plugin discovery so the browser registry is
+     * populated regardless of import order (cheap; early-returns). */
+    plugin_ensure_discovered();
+}
 
 /* PoP: browser__get_cloud_provider @ tools/browser_tool.py:_get_cloud_provider */
 /* Returns malloc'd provider name ("browseruse"/"browserbase"/NULL) or NULL for

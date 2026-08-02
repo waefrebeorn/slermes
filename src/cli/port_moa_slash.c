@@ -225,7 +225,9 @@ char *moa_gateway_handle_command(const char *text) {
 }
 
 /* PoP: moa_gateway_register_slash_handler @ gateway/moa_slash.py:register_moa_slash_handler */
+/* Python body is `pass` (comment: the handler is picked up by the gateway's
+ * command dispatch via GatewaySlashCommandsMixin._handle_moa_command). The
+ * C port's moa_gateway_handle_command is the same dispatch — faithful
+ * abstract no-op. */
 void moa_gateway_register_slash_handler(void) {
-    /* The handler is picked up by the gateway command dispatch via
-     * moa_gateway_handle_command; nothing to register at init. */
 }

@@ -16,6 +16,7 @@
 #include "hermes_logger.h"
 #include "hermes_agent.h"
 #include "provider.h"
+#include "provider_metadata.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -488,9 +489,27 @@ int aux__cleanup_stale_async_clients(void) {
     return 0;
 }
 /* PoP: aux__neuter_async_httpx_del @ agent/auxiliary_client.py:neuter_async_httpx_del */
-void aux__neuter_async_httpx_del(void) { /* C has no httpx; no-op */ }
+void aux__neuter_async_httpx_del(void) {
+    /* Python replaces AsyncHttpxClientWrapper.__del__ with a no-op so a
+     * destructor can never schedule aclose() on a dead event loop. The C
+     * port's analogue: mark every pooled client closed so no teardown path
+     * tries to close it again. */
+    pthread_mutex_lock(&g_pool_lock);
+    for (int i = 0; i < g_pool_n; i++) g_pool[i].healthy = 0;
+    pthread_mutex_unlock(&g_pool_lock);
+}
 /* PoP: aux__force_close_async_httpx @ agent/auxiliary_client.py:_force_close_async_httpx */
-void aux__force_close_async_httpx(void *client) { (void)client; }
+void aux__force_close_async_httpx(void *client) {
+    /* Python marks the httpx AsyncClient state CLOSED so its destructor
+     * never schedules aclose on a dead loop (connections drop at process
+     * exit). The C port's analogue is the client pool: mark the matching
+     * entry closed. */
+    if (!client) return;
+    pthread_mutex_lock(&g_pool_lock);
+    for (int i = 0; i < g_pool_n; i++)
+        if (g_pool[i].client == client) g_pool[i].healthy = 0;
+    pthread_mutex_unlock(&g_pool_lock);
+}
 
 /* ---- provider resolution chain ---- */
 /* PoP: aux__resolve_single_provider @ agent/auxiliary_client.py:_resolve_single_provider */
@@ -559,10 +578,12 @@ int aux__task_minimum_context_length(const char *task_type) {
     return 2048;
 }
 /* PoP: aux__candidate_context_window @ agent/auxiliary_client.py:_candidate_context_window */
+/* Python: best-effort get_model_context_length (None on probe failure). */
 int aux__candidate_context_window(const char *provider, const char *model) {
-    (void)provider; (void)model;
-    /* Conservative default; real windows come from the provider catalog. */
-    return 128000;
+    (void)provider;
+    if (!model || !*model) return 128000;
+    int w = model_context_window(model);
+    return w >= 0 ? w : 128000;
 }
 
 /* ---- vision backend resolution ---- */

@@ -18,6 +18,8 @@
 #include "slermes_home.h"
 #include "gateway_status.h"
 #include "yaml.h"
+#include "hermes_logger.h"
+#include <unistd.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -1070,12 +1072,32 @@ void profile_maybe_register_gateway_service(const char *profile_name) {
 
 /* PoP: profile_maybe_unregister_gateway_service @ hermes_cli/profiles.py:_maybe_unregister_gateway_service */
 void profile_maybe_unregister_gateway_service(const char *profile_name) {
-    (void)profile_name;
+    /* Python: no-op on host — only tears down an s6 gateway service inside
+     * the container. Detect the s6 marker; absent => silent return. */
+    if (!profile_name || !*profile_name) return;
+    const char *s6 = getenv("S6_SERVICES_DIR");
+    if (!s6 || !*s6) return; /* host path — silent */
+    char cmd[1024];
+    snprintf(cmd, sizeof(cmd), "s6-rc -d change %s 2>/dev/null || true", profile_name);
+    if (system(cmd) == 0) hermes_log(LOG_INFO, "profiles",
+                                     "unregistered s6 gateway service %s", profile_name);
 }
 
 /* PoP: profile_cleanup_gateway_service @ hermes_cli/profiles.py:_cleanup_gateway_service */
 void profile_cleanup_gateway_service(const char *name, const char *profile_dir) {
-    (void)name; (void)profile_dir;
+    /* Python (Linux): systemctl --user disable, then remove the unit file.
+     * Best-effort like the Python path; absent units are skipped. */
+    (void)profile_dir;
+    if (!name || !*name) return;
+    const char *home = getenv("HOME");
+    char svc_file[1024];
+    snprintf(svc_file, sizeof(svc_file), "%s/.config/systemd/user/%s.service",
+             home ? home : "", name);
+    char cmd[1152];
+    snprintf(cmd, sizeof(cmd), "systemctl --user disable %s 2>/dev/null", name);
+    if (system(cmd) != 0) { /* best-effort: keep going to remove the file */ }
+    if (unlink(svc_file) == 0)
+        hermes_log(LOG_INFO, "profiles", "removed gateway service unit %s", svc_file);
 }
 
 /* PoP: profile_stop_gateway_process @ hermes_cli/profiles.py:_stop_gateway_process */

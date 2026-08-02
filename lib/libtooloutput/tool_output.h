@@ -41,6 +41,9 @@ bool tool_output_exceeds_byte_limit(size_t byte_count);
 /* Check if a line count exceeds the line limit */
 bool tool_output_exceeds_line_limit(int line_count);
 
+/* Reset the process-lifetime cache (Python _reset_tool_output_limits_cache). */
+void tool_output_reset_cache(void);
+
 #ifdef __cplusplus
 }
 #endif
