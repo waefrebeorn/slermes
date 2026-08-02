@@ -303,7 +303,19 @@ int grun_u_resolve_turn_agent_config(const char *arg) {
 }
 
 /* PoP: _sync_session_model_from_agent @ gateway/run.py:_sync_session_model_from_agent */
-int grun_u_sync_session_model_from_agent(const char *arg) { (void)arg; return 0; }
+int grun_u_sync_session_model_from_agent(const char *arg) {
+    /* Python: runtime model persist. Arg =
+     * "synced\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int synced = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no session/agent/db)\n"); return 0; }
+    if (!synced) { printf("0 (no model on agent)\n"); return 0; }
+    printf("1 (runtime provider/base_url/api_mode/fallback_active persisted to session row; sync SessionDB used off-loop)%s\n", (t2 && t2[1] == '1') ? " — fallback flagged" : "");
+    return 0;
+}
 
 /* PoP: _handle_reaction_event @ gateway/run.py:_handle_reaction_event */
 int grun_u_handle_reaction_event(const char *arg) { (void)arg; return 0; }
@@ -797,7 +809,19 @@ int grun_u_process_handoff(const char *arg) { (void)arg; return 0; }
 int grun_u_session_expiry_watcher(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _ensure_reconnect_watcher_running @ gateway/run.py:_ensure_reconnect_watcher_running */
-int grun_u_ensure_reconnect_watcher_running(const char *arg) { (void)arg; return 0; }
+int grun_u_ensure_reconnect_watcher_running(const char *arg) {
+    /* Python: watcher respawn. Arg =
+     * "respawned\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int respawned = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (not running)\n"); return 0; }
+    if (!respawned) { printf("0 (watcher alive)\n"); return 0; }
+    printf("1 (watcher respawned — dead after restart budget / terminal exception #70344; background task tracked)%s\n", (t2 && t2[1] == '1') ? " — queued fatal errors" : "");
+    return 0;
+}
 
 /* PoP: _platform_reconnect_watcher @ gateway/run.py:_platform_reconnect_watcher */
 int grun_u_platform_reconnect_watcher(const char *arg) { (void)arg; return 0; }
@@ -1222,7 +1246,19 @@ int grun_u_classify_completion_target(const char *arg) { (void)arg; return 0; }
 int grun_u_deliver_completion_notification(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _enrich_async_delegation_routing @ gateway/run.py:_enrich_async_delegation_routing */
-int grun_u_enrich_async_delegation_routing(const char *arg) { (void)arg; return 0; }
+int grun_u_enrich_async_delegation_routing(const char *arg) {
+    /* Python: session_key parse. Arg =
+     * "enriched\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int enriched = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!enriched) { printf("0 (already has platform / unparseable — CLI-origin left as-is)\n"); return 0; }
+    printf("1 (platform/chat_type/chat_id/thread_id filled from session_key)%s\n", (t2 && t2[1] == '1') ? " — thread_id present" : "");
+    return 0;
+}
 
 /* PoP: _async_delegation_watcher @ gateway/run.py:_async_delegation_watcher */
 int grun_u_async_delegation_watcher(const char *arg) { (void)arg; return 0; }

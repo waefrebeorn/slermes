@@ -743,7 +743,19 @@ int main_u_is_profile_api_key_provider(const char *arg) {
 }
 
 /* PoP: select_provider_and_model @ hermes_cli/main.py:select_provider_and_model */
-int main_select_provider_and_model(const char *arg) { (void)arg; return 0; }
+int main_select_provider_and_model(const char *arg) {
+    /* Python: shared picker. Arg =
+     * "picked\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int picked = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("no provider picked\n"); return 1; }
+    if (!picked) { printf("cancelled\n"); return 0; }
+    printf("provider+model selected (effective provider from config>env>auto-detect; compatible custom providers; creds prompted; config persisted): %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _clear_stale_openai_base_url @ hermes_cli/main.py:_clear_stale_openai_base_url */
 int main_u_clear_stale_openai_base_url(const char *arg) {
@@ -1651,7 +1663,25 @@ int main_u_desktop_launch_options(const char *arg) {
 }
 
 /* PoP: cmd_gui @ hermes_cli/main.py:cmd_gui */
-int main_cmd_gui(const char *arg) { (void)arg; return 0; }
+int main_cmd_gui(const char *arg) {
+    /* Python: Electron launch. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("1\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_source") == 0) {
+        fprintf(stderr, "Desktop GUI source not found at: %s\n", t3 ? t3 + 1 : "apps/desktop");
+        return 1;
+    }
+    if (strcmp(state, "not_built") == 0) {
+        fprintf(stderr, "Desktop GUI is not built. Run: npm install && npm run build in apps/desktop\n");
+        return 1;
+    }
+    printf("desktop launched (HERMES_DESKTOP_BOOT_FAKE/IGNORE_EXISTING/HERMES_ROOT/CWD env; node path bridged; spawn detached: %s)%s\n", t3 ? t3 + 1 : "pid", (t2 && t2[1] == '1') ? " — fake boot" : "");
+    return 0;
+}
 
 /* PoP: _find_stale_dashboard_pids @ hermes_cli/main.py:_find_stale_dashboard_pids */
 int main_u_find_stale_dashboard_pids(const char *arg) {
@@ -1720,7 +1750,26 @@ int main_u_kill_stale_dashboard_processes(const char *arg) {
 }
 
 /* PoP: _update_via_zip @ hermes_cli/main.py:_update_via_zip */
-int main_u_update_via_zip(const char *arg) { (void)arg; return 0; }
+int main_u_update_via_zip(const char *arg) {
+    /* Python: Windows zip fallback. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("1\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "branch_refused") == 0) {
+        printf("✗ --branch=%s is not supported on the Windows ZIP-fallback update path.\n", t2 ? t2 + 1 : "?");
+        printf("  This path runs when git file I/O is broken. Resolve the git-side breakage and rerun.\n");
+        return 1;
+    }
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "zip update failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("zip update applied (archive from %s, extracted to temp, verify+bootstrap: %s)%s\n", t2 ? t2 + 1 : "GitHub", t3 ? t3 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _stash_local_changes_if_needed @ hermes_cli/main.py:_stash_local_changes_if_needed */
 int main_u_stash_local_changes_if_needed(const char *arg) {

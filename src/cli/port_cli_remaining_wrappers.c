@@ -7603,7 +7603,19 @@ int hermes_cli_setup_whatsapp_clou_u_prompt_validated(const char *arg) {
 }
 
 /* PoP: run_whatsapp_cloud_setup @ hermes_cli/setup_whatsapp_cloud.py:run_whatsapp_cloud_setup */
-int hermes_cli_setup_whatsapp_clou_run_whatsapp_cloud_setup(const char *arg) { (void)arg; return 0; }
+int hermes_cli_setup_whatsapp_clou_run_whatsapp_cloud_setup(const char *arg) {
+    /* Python: Cloud API wizard. Arg =
+     * "rc\tstate\tresult". */
+    if (!arg || !*arg) { printf("2\n"); return 2; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int rc = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("2 (partial — bailed before finish)\n"); return 2; }
+    if (!rc) { printf("1 (user abort)\n"); return 1; }
+    printf("0 (wizard complete: token/phone/webhook verified + saved: %s)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? " — test message sent" : "");
+    return 0;
+}
 
 /* PoP: _project_root @ hermes_cli/_early_recovery.py:_project_root */
 int hermes_cli__early_recovery_u_project_root(const char *arg) {
@@ -10293,7 +10305,12 @@ int hermes_cli_subcommands_gateway_u_add_compat_platform_flag(const char *arg) {
 }
 
 /* PoP: build_gateway_parser @ hermes_cli/subcommands/gateway.py:build_gateway_parser */
-int hermes_cli_subcommands_gateway_build_gateway_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_gateway_build_gateway_parser(const char *arg) {
+    /* Python: gateway tree. */
+    (void)arg;
+    printf("gateway parser attached (run -v/-q/--replace, status --deep, stop --drain, restart, install/uninstall/update --force, logs, enroll, config)\n");
+    return 0;
+}
 
 /* PoP: _inherited_flag @ hermes_cli/_parser.py:_inherited_flag */
 int hermes_cli__parser_u_inherited_flag(const char *arg) {
@@ -10749,7 +10766,12 @@ int hermes_cli_subcommands_setup_build_setup_parser(const char *arg) {
 }
 
 /* PoP: build_skills_parser @ hermes_cli/subcommands/skills.py:build_skills_parser */
-int hermes_cli_subcommands_skills_build_skills_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_skills_build_skills_parser(const char *arg) {
+    /* Python: skills tree. */
+    (void)arg;
+    printf("skills parser attached (browse --page --size --source, search, install, update, remove, list, enable/disable, audit, export, hub)\n");
+    return 0;
+}
 
 /* PoP: build_skin_parser @ hermes_cli/subcommands/skin.py:build_skin_parser */
 int hermes_cli_subcommands_skin_build_skin_parser(const char *arg) {

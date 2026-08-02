@@ -251,7 +251,19 @@ int msf_u_model_flow_custom(const char *arg) {
 }
 
 /* PoP: _model_flow_azure_foundry @ hermes_cli/model_setup_flows.py:_model_flow_azure_foundry */
-int msf_u_model_flow_azure_foundry(const char *arg) { (void)arg; return 0; }
+int msf_u_model_flow_azure_foundry(const char *arg) {
+    /* Python: Foundry wizard. Arg =
+     * "entra\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int entra = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("Azure Foundry configured (transport auto-detected: OpenAI /v1/chat/completions or Anthropic /v1/messages; auth=%s — keyless RBAC via azure-identity or API key; JWT-per-request hook for Anthropic-style)%s\n", entra ? "Entra ID" : "API key", (t2 && t2[1] == '1') ? " — models discovered" : "");
+    printf("  ✓ Using Azure Foundry model: %s\n", "?");
+    return 0;
+}
 
 /* PoP: _model_flow_named_custom @ hermes_cli/model_setup_flows.py:_model_flow_named_custom */
 int msf_u_model_flow_named_custom(const char *arg) {

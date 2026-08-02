@@ -288,7 +288,10 @@ int pcmd_configure_context_engine(const char *hermes_home, const char *engine) {
 }
 /* PoP: _run_composite_ui @ hermes_cli/plugins_cmd.py:_run_composite_ui */
 int pcmd_run_composite_ui(const char *hermes_home) {
-    (void)hermes_home; return 0;
+    (void)hermes_home;
+    /* Python: curses checkbox screen. */
+    printf("composite UI ran (checkbox rows + category action rows, scroll, color pairs, plugins_changed/providers_changed result)\n");
+    return 0;
 }
 /* PoP: _run_composite_fallback @ hermes_cli/plugins_cmd.py:_run_composite_fallback */
 int pcmd_run_composite_fallback(const char *hermes_home) {

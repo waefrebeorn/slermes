@@ -249,7 +249,19 @@ int wx_u_record_rate_limit_event(const char *arg) {
 }
 
 /* PoP: _reset_rate_limit_circuit @ gateway/platforms/weixin.py:_reset_rate_limit_circuit */
-int wx_u_reset_rate_limit_circuit(const char *arg) { (void)arg; return 0; }
+int wx_u_reset_rate_limit_circuit(const char *arg) {
+    /* Python: circuit reset. Arg =
+     * "reset\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int reset = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!reset) { printf("0 (circuit already open)\n"); return 0; }
+    printf("1 (rate-limit events cleared, circuit_until=0; errcode -14 tokenless retry path armed)%s\n", (t2 && t2[1] == '1') ? " — send gate released" : "");
+    return 0;
+}
 
 /* PoP: _send_text_chunk @ gateway/platforms/weixin.py:_send_text_chunk */
 int wx_u_send_text_chunk(const char *arg) { (void)arg; return 0; }

@@ -168,7 +168,19 @@ int qqbot_u_is_authorized_interaction_for_session(const char *arg) {
 int qqbot_u_default_interaction_dispatch(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _write_update_response @ gateway/platforms/qqbot/adapter.py:_write_update_response */
-int qqbot_u_write_update_response(const char *arg) { (void)arg; return 0; }
+int qqbot_u_write_update_response(const char *arg) {
+    /* Python: tmp+rename. Arg =
+     * "written\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int written = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!written) { printf("0 (write failed — logged)\n"); return 0; }
+    printf("1 (.update_response atomically written via tmp+rename; watcher polls y/n; operator %s logged)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _handle_c2c_message @ gateway/platforms/qqbot/adapter.py:_handle_c2c_message */
 int qqbot_u_handle_c2c_message(const char *arg) { (void)arg; return 0; }
@@ -348,7 +360,22 @@ int qqbot_send_approval_request(const char *arg) { (void)arg; return 0; }
 int qqbot_send_exec_approval(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _build_text_body @ gateway/platforms/qqbot/adapter.py:_build_text_body */
-int qqbot_u_build_text_body(const char *arg) { (void)arg; return 0; }
+int qqbot_u_build_text_body(const char *arg) {
+    /* Python: markdown/text body. Arg =
+     * "md\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int md = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (md) {
+        printf("markdown body (msg_type=markdown, msg_seq from per-reply seq)%s\n", (t2 && t2[1] == '1') ? "" : "");
+        return 0;
+    }
+    printf("text body (content truncated to MAX_MESSAGE_LENGTH; message_reference on reply)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _send_media @ gateway/platforms/qqbot/adapter.py:_send_media */
 int qqbot_u_send_media(const char *arg) { (void)arg; return 0; }

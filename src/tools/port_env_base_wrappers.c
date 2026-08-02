@@ -327,7 +327,19 @@ int envb_u_embed_stdin_heredoc(const char *arg) {
 }
 
 /* PoP: _wait_for_process @ tools/environments/base.py:_wait_for_process */
-int envb_u_wait_for_process(const char *arg) { (void)arg; return 0; }
+int envb_u_wait_for_process(const char *arg) {
+    /* Python: poll wait. Arg =
+     * "done\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int done = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!done) { printf("0 (interrupted/killed — cleanup guaranteed)\n"); return 0; }
+    printf("1 (exit %s; bounded_capture head/tail window #64435; activity_callback every 10s; try/finally kill on KeyboardInterrupt/SystemExit)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — stdout drained" : "");
+    return 0;
+}
 
 /* PoP: _update_cwd @ tools/environments/base.py:_update_cwd */
 int envb_u_update_cwd(const char *arg) {

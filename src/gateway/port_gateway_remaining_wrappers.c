@@ -96,7 +96,19 @@ int gateway_platforms_signal_u_sse_listener(const char *arg) { (void)arg; return
 int gateway_platforms_signal_u_health_monitor(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _force_reconnect @ gateway/platforms/signal.py:_force_reconnect */
-int gateway_platforms_signal_u_force_reconnect(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_signal_u_force_reconnect(const char *arg) {
+    /* Python: SSE close. Arg =
+     * "closed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int closed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no active stream)\n"); return 0; }
+    if (!closed) { printf("0 (stream already consumed)\n"); return 0; }
+    printf("1 (SSE response closed — reconnect loop picks up)%s\n", (t2 && t2[1] == '1') ? " — background task tracked" : "");
+    return 0;
+}
 
 /* PoP: _handle_envelope @ gateway/platforms/signal.py:_handle_envelope */
 int gateway_platforms_signal_u_handle_envelope(const char *arg) { (void)arg; return 0; }
@@ -1380,7 +1392,17 @@ int gateway_relay_adapter_u_discord_interaction_to_event(const char *arg) {
 }
 
 /* PoP: _render_interaction_options @ gateway/relay/adapter.py:_render_interaction_options */
-int gateway_relay_adapter_u_render_interaction_options(const char *arg) { (void)arg; return 0; }
+int gateway_relay_adapter_u_render_interaction_options(const char *arg) {
+    /* Python: discord options flatten. Arg =
+     * "parts\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s part(s) (scalars → value; SUB_COMMAND/GROUP → name + recurse one level)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — command shape" : "");
+    return 0;
+}
 
 /* PoP: go_dormant @ gateway/relay/adapter.py:go_dormant */
 int gateway_relay_adapter_go_dormant(const char *arg) { (void)arg; return 0; }

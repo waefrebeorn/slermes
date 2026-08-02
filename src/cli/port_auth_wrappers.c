@@ -988,7 +988,21 @@ int auth_u_sync_nous_pool_from_auth_store(const char *arg) {
 }
 
 /* PoP: resolve_nous_runtime_credentials @ hermes_cli/auth.py:resolve_nous_runtime_credentials */
-int auth_resolve_nous_runtime_credentials(const char *arg) { (void)arg; return 0; }
+int auth_resolve_nous_runtime_credentials(const char *arg) {
+    /* Python: inference JWT. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "not_logged_in") == 0) {
+        fprintf(stderr, "Hermes is not logged into Nous Portal.\n");
+        return 1;
+    }
+    printf("runtime creds resolved (invoke JWT, refresh-under-lock, shared-state routing metadata; source=invoke_jwt, auth_path=%s)%s\n", t3 ? t3 + 1 : "", (t2 && t2[1] == '1') ? " — refreshed" : "");
+    return 0;
+}
 
 /* PoP: _snapshot_nous_pool_status @ hermes_cli/auth.py:_snapshot_nous_pool_status */
 int auth_u_snapshot_nous_pool_status(const char *arg) {

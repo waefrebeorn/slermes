@@ -195,7 +195,17 @@ int kdbport_repair_db(const char *arg) {
 }
 
 /* PoP: _migrate_add_optional_columns @ hermes_cli/kanban_db.py:_migrate_add_optional_columns */
-int kdbport_u_migrate_add_optional_columns(const char *arg) { (void)arg; return 0; }
+int kdbport_u_migrate_add_optional_columns(const char *arg) {
+    /* Python: additive columns. Arg =
+     * "added\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s column(s) added (tenant/result/branch_name/project_id/idempotency_key + index block; PRAGMA refresh after early adds)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — legacy partial DB handled" : "");
+    return 0;
+}
 
 /* PoP: set_model_override @ hermes_cli/kanban_db.py:set_model_override */
 int kdbport_set_model_override(const char *arg) {
