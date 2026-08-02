@@ -1502,7 +1502,27 @@ int agent_memory_provider_on_memory_write(const char *arg) {
 }
 
 /* PoP: _codex_item_to_tool_name @ agent/codex_runtime.py:_codex_item_to_tool_name */
-int agent_codex_runtime_u_codex_item_to_tool_name(const char *arg) { (void)arg; return 0; }
+int agent_codex_runtime_u_codex_item_to_tool_name(const char *arg) {
+    /* Python: item type -> synthetic tool name. Arg =
+     * "item_type\tserver\ttool". */
+    if (!arg || !*arg) { printf("unknown\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *typ = arg;
+    if (strcmp(typ, "commandExecution") == 0) { printf("exec_command\n"); return 0; }
+    if (strcmp(typ, "fileChange") == 0) { printf("apply_patch\n"); return 0; }
+    if (strcmp(typ, "mcpToolCall") == 0) {
+        const char *server = t1 ? t1 + 1 : "mcp";
+        const char *tool = t2 ? t2 + 1 : "unknown";
+        if (strcmp(server, "hermes") == 0) { printf("%s\n", tool); return 0; }
+        printf("mcp.%s.%s\n", server, tool);
+        return 0;
+    }
+    if (strcmp(typ, "dynamicToolCall") == 0) { printf("%s\n", t2 ? t2 + 1 : "dynamic"); return 0; }
+    if (strcmp(typ, "webSearch") == 0) { printf("web_search\n"); return 0; }
+    printf("%s\n", typ);
+    return 0;
+}
 
 /* PoP: _codex_item_to_args @ agent/codex_runtime.py:_codex_item_to_args */
 int agent_codex_runtime_u_codex_item_to_args(const char *arg) { (void)arg; return 0; }
@@ -2162,7 +2182,18 @@ int agent_stream_single_writer_claim_stream_writer(const char *arg) {
 }
 
 /* PoP: stream_writer_is_current @ agent/stream_single_writer.py:stream_writer_is_current */
-int agent_stream_single_writer_stream_writer_is_current(const char *arg) { (void)arg; return 0; }
+int agent_stream_single_writer_stream_writer_is_current(const char *arg) {
+    /* Python: falsy token -> True; else delegate check. Arg =
+     * "token\tcurrent\tstate". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (strcmp(arg, "0") == 0) { printf("1\n"); return 0; }
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("1\n"); return 0; }
+    printf("%s\n", (t1 && t1[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _is_pure_tool_call_tail @ agent/turn_finalizer.py:_is_pure_tool_call_tail */
 int agent_turn_finalizer_u_is_pure_tool_call_tail(const char *arg) { (void)arg; return 0; }

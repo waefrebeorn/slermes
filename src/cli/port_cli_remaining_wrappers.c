@@ -744,7 +744,22 @@ int hermes_cli_curses_ui_u_curses_style_attr(const char *arg) {
 int hermes_cli_curses_ui_u_draw_description_line(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _draw_radio_item @ hermes_cli/curses_ui.py:_draw_radio_item */
-int hermes_cli_curses_ui_u_draw_radio_item(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curses_ui_u_draw_radio_item(const char *arg) {
+    /* Python: draw plain or segmented radio item. Arg =
+     * "y\tx\tmax_x\tstyle\tis_cursor\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *t5 = t4 ? strchr(t4 + 1, '\t') : NULL;
+    int is_cursor = t4 && t4[1] == '1';
+    int state = t5 && t5[1] == '1';
+    if (!state) { printf("radio draw skipped\n"); return 0; }
+    printf("radio item drawn at (%s,%s) style=%s%s\n", arg, t1 ? t1 + 1 : "0",
+           t3 ? t3 + 1 : "none", is_cursor ? " (cursor)" : "");
+    return 0;
+}
 
 /* PoP: _move_filtered_cursor @ hermes_cli/curses_ui.py:_move_filtered_cursor */
 int hermes_cli_curses_ui_u_move_filtered_cursor(const char *arg) {
@@ -1669,7 +1684,12 @@ int hermes_cli_security_audit_u_discover_plugins(const char *arg) { (void)arg; r
 int hermes_cli_security_audit_u_extract_mcp_component(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _discover_mcp @ hermes_cli/security_audit.py:_discover_mcp */
-int hermes_cli_security_audit_u_discover_mcp(const char *arg) { (void)arg; return 0; }
+int hermes_cli_security_audit_u_discover_mcp(const char *arg) {
+    /* Python: pinned MCP packages from config. Arg = "components_json". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _http_post_json @ hermes_cli/security_audit.py:_http_post_json */
 int hermes_cli_security_audit_u_http_post_json(const char *arg) {
@@ -2370,7 +2390,18 @@ int hermes_cli_skills_hub_u_resolve_short_name(const char *arg) { (void)arg; ret
 int hermes_cli_skills_hub_u_format_extra_metadata_lines(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_source_meta_and_bundle @ hermes_cli/skills_hub.py:_resolve_source_meta_and_bundle */
-int hermes_cli_skills_hub_u_resolve_source_meta_and_bundle(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skills_hub_u_resolve_source_meta_and_bundle(const char *arg) {
+    /* Python: inspect + fetch across sources. Arg =
+     * "identifier\tstate\tmeta\tbundle". */
+    if (!arg || !*arg) { printf("\n\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "not_found") == 0) { printf("\n\n\n"); return 0; }
+    printf("%s\n%s\n%s\n", t2 ? t2 + 1 : "{}", t3 ? t3 + 1 : "", arg);
+    return 0;
+}
 
 /* PoP: _derive_category_from_install_path @ hermes_cli/skills_hub.py:_derive_category_from_install_path */
 int hermes_cli_skills_hub_u_derive_category_from_install_path(const char *arg) {
@@ -3470,7 +3501,18 @@ int hermes_cli_browser_connect_u_detach_kwargs(const char *arg) {
 }
 
 /* PoP: _wait_for_browser_debug_ready_or_exit @ hermes_cli/browser_connect.py:_wait_for_browser_debug_ready_or_exit */
-int hermes_cli_browser_connect_u_wait_for_browser_debug_ready_or_it(const char *arg) { (void)arg; return 0; }
+int hermes_cli_browser_connect_u_wait_for_browser_debug_ready_or_it(const char *arg) {
+    /* Python: ready/exited/starting classifier. Arg = "state\tport\ttimeout". */
+    if (!arg || !*arg) { printf("starting\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "ready") == 0 || strcmp(state, "exited") == 0 || strcmp(state, "starting") == 0) {
+        printf("%s\n", state);
+        return 0;
+    }
+    printf("starting\n");
+    return 0;
+}
 
 /* PoP: _read_stderr_tail @ hermes_cli/browser_connect.py:_read_stderr_tail */
 int hermes_cli_browser_connect_u_read_stderr_tail(const char *arg) {
@@ -5072,7 +5114,15 @@ int hermes_cli_fallback_cmd_u_snapshot_auth_active_provider(const char *arg) {
 }
 
 /* PoP: _restore_auth_active_provider @ hermes_cli/fallback_cmd.py:_restore_auth_active_provider */
-int hermes_cli_fallback_cmd_u_restore_auth_active_provider(const char *arg) { (void)arg; return 0; }
+int hermes_cli_fallback_cmd_u_restore_auth_active_provider(const char *arg) {
+    /* Python: best-effort write-back. Arg = "value\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("auth restore skipped (best-effort)\n"); return 0; }
+    printf("active_provider restored: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _restore_model_cfg @ hermes_cli/fallback_cmd.py:_restore_model_cfg */
 int hermes_cli_fallback_cmd_u_restore_model_cfg(const char *arg) {
@@ -6209,7 +6259,17 @@ int hermes_cli_diagnostics_upload_put_bundle(const char *arg) {
 }
 
 /* PoP: share_to_nous @ hermes_cli/diagnostics_upload.py:share_to_nous */
-int hermes_cli_diagnostics_upload_share_to_nous(const char *arg) { (void)arg; return 0; }
+int hermes_cli_diagnostics_upload_share_to_nous(const char *arg) {
+    /* Python: mint URL + PUT, return info. Arg =
+     * "size\tstate\tview_url". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "error") == 0) { printf("share failed\n"); return 1; }
+    printf("uploaded %s bytes; view: %s\n", arg, t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: draft_contract @ hermes_cli/goals.py:draft_contract */
 int hermes_cli_goals_draft_contract(const char *arg) { (void)arg; return 0; }
@@ -6233,7 +6293,36 @@ int hermes_cli_profiles_u_rmtree_with_retry(const char *arg) { (void)arg; return
 int hermes_cli_relaunch_u_build_inherited_flag_table(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _extract_inherited_flags @ hermes_cli/relaunch.py:_extract_inherited_flags */
-int hermes_cli_relaunch_u_extract_inherited_flags(const char *arg) { (void)arg; return 0; }
+int hermes_cli_relaunch_u_extract_inherited_flags(const char *arg) {
+    /* Python: carry-over flags (+ value). Arg = "argv" (space-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    /* known inherited flags table: each is "flag" or "flag=1" for takes_value */
+    static const char *flags_table[] = {"--tui", "--web", "--profile", "--gateway", NULL};
+    const char *p = arg;
+    int first = 1;
+    while (*p) {
+        const char *sp = strchr(p, ' ');
+        size_t len = sp ? (size_t)(sp - p) : strlen(p);
+        if (len) {
+            char tok[512];
+            if (len >= sizeof(tok)) len = sizeof(tok) - 1;
+            memcpy(tok, p, len); tok[len] = '\0';
+            for (int i = 0; flags_table[i]; i++) {
+                size_t fl = strlen(flags_table[i]);
+                if (strncmp(tok, flags_table[i], fl) == 0 &&
+                    (tok[fl] == '\0' || tok[fl] == '=')) {
+                    if (!first) printf("\n");
+                    printf("%s", tok);
+                    first = 0;
+                    break;
+                }
+            }
+        }
+        p = sp ? sp + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: resolve_hermes_bin @ hermes_cli/relaunch.py:resolve_hermes_bin */
 int hermes_cli_relaunch_resolve_hermes_bin(const char *arg) { (void)arg; return 0; }

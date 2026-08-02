@@ -125,10 +125,28 @@ int ctxc_u_compression_block_reason(const char *arg) { (void)arg; return 0; }
 int ctxc_u_refresh_durable_guards(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _automatic_compression_blocked @ agent/context_compressor.py:_automatic_compression_blocked */
-int ctxc_u_automatic_compression_blocked(const char *arg) { (void)arg; return 0; }
+int ctxc_u_automatic_compression_blocked(const char *arg) {
+    /* Python: local snapshot + durable refresh re-check. Arg =
+     * "locally_blocked\tstill_blocked\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int locally = arg[0] == '1';
+    if (!locally) { printf("0\n"); return 0; }
+    int still = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%d\n", still ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _automatic_compression_blocked_locally @ agent/context_compressor.py:_automatic_compression_blocked_locally */
-int ctxc_u_automatic_compression_blocked_locally(const char *arg) { (void)arg; return 0; }
+int ctxc_u_automatic_compression_blocked_locally(const char *arg) {
+    /* Python: cooldown + tripped snapshot check. Arg = "blocked". */
+    if (arg && arg[0] == '1') { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: prune_tool_results_only @ agent/context_compressor.py:prune_tool_results_only */
 int ctxc_prune_tool_results_only(const char *arg) { (void)arg; return 0; }

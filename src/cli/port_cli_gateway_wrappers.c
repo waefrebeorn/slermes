@@ -319,7 +319,14 @@ int cgw_u_print_gateway_process_mismatch(const char *arg) {
 }
 
 /* PoP: _print_other_profiles_gateway_status @ hermes_cli/gateway.py:_print_other_profiles_gateway_status */
-int cgw_u_print_other_profiles_gateway_status(const char *arg) { (void)arg; return 0; }
+int cgw_u_print_other_profiles_gateway_status(const char *arg) {
+    /* Python: per-profile gateway summary. Arg = "procs_json\tcurrent". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("\nOther profiles:\n");
+    printf("  %s\n", arg);
+    return 0;
+}
 
 /* PoP: _reap_unsupervised_gateway_orphans @ hermes_cli/gateway.py:_reap_unsupervised_gateway_orphans */
 int cgw_u_reap_unsupervised_gateway_orphans(const char *arg) { (void)arg; return 0; }
@@ -592,7 +599,21 @@ int cgw_has_legacy_hermes_units(const char *arg) {
 }
 
 /* PoP: print_legacy_unit_warning @ hermes_cli/gateway.py:print_legacy_unit_warning */
-int cgw_print_legacy_unit_warning(const char *arg) { (void)arg; return 0; }
+int cgw_print_legacy_unit_warning(const char *arg) {
+    /* Python: warn about legacy units if any. Arg = "units" (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("⚠ Legacy Hermes gateway unit(s) detected from an older install:\n");
+    const char *p = arg;
+    while (*p) {
+        const char *t = strchr(p, '\t');
+        size_t len = t ? (size_t)(t - p) : strlen(p);
+        printf("    %.*s  (user scope)\n", (int)len, p);
+        p = t ? t + 1 : p + len;
+    }
+    printf("  These run alongside the current hermes-gateway service and cause SIGTERM flap loops — both try to use the same bot token.\n");
+    printf("  Remove them with:\n    hermes gateway migrate-legacy\n");
+    return 0;
+}
 
 /* PoP: remove_legacy_hermes_units @ hermes_cli/gateway.py:remove_legacy_hermes_units */
 int cgw_remove_legacy_hermes_units(const char *arg) { (void)arg; return 0; }

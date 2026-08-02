@@ -799,9 +799,13 @@ bool process_registry_is_session_waiting(const char *session_id)
  * Whether the CLI drain should skip a completion event for this session. */
 bool process_registry_drain_should_skip(const char *session_id)
 {
-    /* In C, we'd check _completion_consumed and _poll_observed sets. */
-    (void)session_id;
-    return false;
+    /* Python: consumed OR (skip_poll_observed AND poll-observed). The
+     * registry tracks both conditions in the same consumed set; poll()
+     * marks a session there once its exit was observed inline. */
+    if (!session_id || !*session_id)
+        return false;
+    extern bool process_registry_completion_consumed(const char *session_id);
+    return process_registry_completion_consumed(session_id);
 }
 
 /* PoP: read_log @ tools/process_registry.py:read_log */

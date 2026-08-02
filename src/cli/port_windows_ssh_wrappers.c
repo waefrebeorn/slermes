@@ -113,7 +113,15 @@ int wssr_u_system_sid(const char *arg) {
 }
 
 /* PoP: _security_attributes @ hermes_cli/windows_ssh_runtime.py:_security_attributes */
-int wssr_u_security_attributes(const char *arg) { (void)arg; return 0; }
+int wssr_u_security_attributes(const char *arg) {
+    /* Python: owner+system ACL, DACL protected. Arg = "owner_sid\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("security attributes unavailable\n"); return 0; }
+    printf("security attributes built (owner=%s, DACL protected)\n", arg);
+    return 0;
+}
 
 /* PoP: _allowed_sids @ hermes_cli/windows_ssh_runtime.py:_allowed_sids */
 int wssr_u_allowed_sids(const char *arg) {

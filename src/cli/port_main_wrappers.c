@@ -368,7 +368,28 @@ int main_u_find_bundled_tui(const char *arg) {
 int main_u_make_tui_argv(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _normalize_tui_toolsets @ hermes_cli/main.py:_normalize_tui_toolsets */
-int main_u_normalize_tui_toolsets(const char *arg) { (void)arg; return 0; }
+int main_u_normalize_tui_toolsets(const char *arg) {
+    /* Python: comma-split list of non-empty. Arg = "raw" (comma-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    int first = 1;
+    while (*p) {
+        while (*p == ',') p++;
+        const char *c = strchr(p, ',');
+        size_t len = c ? (size_t)(c - p) : strlen(p);
+        const char *s = p, *e = p + len;
+        while (s < e && (*s == ' ' || *s == '\t')) s++;
+        while (e > s && (e[-1] == ' ' || e[-1] == '\t')) e--;
+        if (e > s) {
+            if (!first) printf("\n");
+            printf("%.*s", (int)(e - s), s);
+            first = 0;
+        }
+        p = c ? c + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _resolve_tui_heap_mb @ hermes_cli/main.py:_resolve_tui_heap_mb */
 int main_u_resolve_tui_heap_mb(const char *arg) { (void)arg; return 0; }
@@ -1578,7 +1599,17 @@ int main_u_write_update_planned_stop_marker(const char *arg) {
 }
 
 /* PoP: _wait_for_windows_update_gateway_exit @ hermes_cli/main.py:_wait_for_windows_update_gateway_exit */
-int main_u_wait_for_windows_update_gateway_exit(const char *arg) { (void)arg; return 0; }
+int main_u_wait_for_windows_update_gateway_exit(const char *arg) {
+    /* Python: poll pid set until deadline. Arg =
+     * "survivors\tstate\ttimed_out". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("gateway wait skipped\n"); return 0; }
+    printf("gateway exited; survivors: %s\n", t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: _venv_core_imports_healthy @ hermes_cli/main.py:_venv_core_imports_healthy */
 int main_u_venv_core_imports_healthy(const char *arg) { (void)arg; return 0; }

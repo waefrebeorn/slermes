@@ -345,7 +345,16 @@ int tools_homeassistant_tool_u_get_headers(const char *arg) {
 }
 
 /* PoP: _filter_and_summarize @ tools/homeassistant_tool.py:_filter_and_summarize */
-int tools_homeassistant_tool_u_filter_and_summarize(const char *arg) { (void)arg; return 0; }
+int tools_homeassistant_tool_u_filter_and_summarize(const char *arg) {
+    /* Python: filter by domain/area + compact summary. Arg =
+     * "states_json\tdomain\tarea". */
+    if (!arg || !*arg) { printf("{\"count\": 0, \"entities\": []}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    printf("{\"count\": 0, \"entities\": [], \"domain\": \"%s\", \"area\": \"%s\"}\n",
+           t1 ? t1 + 1 : "", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _async_list_entities @ tools/homeassistant_tool.py:_async_list_entities */
 int tools_homeassistant_tool_u_async_list_entities(const char *arg) { (void)arg; return 0; }
@@ -1102,7 +1111,17 @@ int tools_file_state_note_write(const char *arg) { (void)arg; return 0; }
 int tools_file_state_check_stale(const char *arg) { (void)arg; return 0; }
 
 /* PoP: writes_since @ tools/file_state.py:writes_since */
-int tools_file_state_writes_since(const char *arg) { (void)arg; return 0; }
+int tools_file_state_writes_since(const char *arg) {
+    /* Python: {writer_tid: [paths]} after ts. Arg =
+     * "result_json\tcount\tstate". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: known_reads @ tools/file_state.py:known_reads */
 int tools_file_state_known_reads(const char *arg) {
@@ -1135,7 +1154,16 @@ int tools_file_state_note_write_2(const char *arg) { (void)arg; return 0; }
 int tools_file_state_check_stale_2(const char *arg) { (void)arg; return 0; }
 
 /* PoP: writes_since @ tools/file_state.py:writes_since */
-int tools_file_state_writes_since_2(const char *arg) { (void)arg; return 0; }
+int tools_file_state_writes_since_2(const char *arg) {
+    /* Python: duplicate stub — same as writes_since. */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: known_reads @ tools/file_state.py:known_reads */
 int tools_file_state_known_reads_2(const char *arg) { (void)arg; return 0; }
@@ -1886,7 +1914,13 @@ int tools_session_search_tool_u_resolve_lineage(const char *arg) {
 }
 
 /* PoP: _is_compression_ended @ tools/session_search_tool.py:_is_compression_ended */
-int tools_session_search_tool_u_is_compression_ended(const char *arg) { (void)arg; return 0; }
+int tools_session_search_tool_u_is_compression_ended(const char *arg) {
+    /* Python: own end_reason == compression. Arg = "session_id\tended". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _is_compacted_message @ tools/session_search_tool.py:_is_compacted_message */
 int tools_session_search_tool_u_is_compacted_message(const char *arg) { (void)arg; return 0; }

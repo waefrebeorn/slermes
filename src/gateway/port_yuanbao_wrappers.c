@@ -226,7 +226,20 @@ int yb_group_policy(const char *arg) {
 }
 
 /* PoP: _format_shared_link @ gateway/platforms/yuanbao.py:_format_shared_link */
-int yb_u_format_shared_link(const char *arg) { (void)arg; return 0; }
+int yb_u_format_shared_link(const char *arg) {
+    /* Python: elem 1010 share card. Arg = "title\tlink\tpreview". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *title = arg;
+    const char *link = t1 ? t1 + 1 : "";
+    const char *preview = t2 ? t2 + 1 : "";
+    if (link[0]) printf("[share_card: %s | %s]\n", title, link);
+    else printf("[share_card: %s]\n", title);
+    if (preview[0]) printf("Preview: %s\n", preview);
+    if (link[0]) printf("[visit link for full content]\n");
+    return 0;
+}
 
 /* PoP: _format_link_understanding @ gateway/platforms/yuanbao.py:_format_link_understanding */
 int yb_u_format_link_understanding(const char *arg) {
