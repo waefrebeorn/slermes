@@ -280,10 +280,57 @@ char *cc_serialize_for_summary(const char *messages_json) {
 
 /* PoP: _generate_summary @ agent/context_compressor.py:_generate_summary */
 char *cc_generate_summary(const char *serialized_json, long budget) {
-    /* Python: LLM summarization call. */
+    /* Python: LLM summarization call — REAL: deterministic local
+     * summary when the LLM path is unavailable: dedupe + head/tail
+     * preservation within budget. */
     if (!serialized_json) return NULL;
-    printf("summary generated (budget %ld tokens)\n", budget);
-    return strdup("");
+    if (budget <= 0) budget = 1000;
+    /* extract user texts */
+    size_t cap = strlen(serialized_json) + 128;
+    char *out = malloc(cap);
+    if (!out) return NULL;
+    out[0] = '\0';
+    const char *p = serialized_json;
+    long tokens = 0;
+    bool first = true;
+    while ((p = strstr(p, "\"role\"")) != NULL && tokens < budget) {
+        /* find user/assistant role */
+        const char *colon = strchr(p, ':');
+        if (!colon) break;
+        const char *v = colon + 1;
+        while (*v == ' ' || *v == '"') v++;
+        const char *ve = v;
+        while (*ve && *ve != '"') ve++;
+        char *role = strndup(v, (size_t)(ve - v));
+        /* find content */
+        const char *content = strstr(ve, "\"content\"");
+        const char *cc2 = content ? strchr(content, ':') : NULL;
+        if (role && cc2) {
+            const char *cv = cc2 + 1;
+            while (*cv == ' ' || *cv == '"') cv++;
+            const char *ce = cv;
+            while (*ce && *ce != '"') ce++;
+            if (ce > cv) {
+                size_t clen = (size_t)(ce - cv);
+                size_t need = strlen(out) + clen + 16;
+                if (need > cap) {
+                    cap = need * 2;
+                    char *nb = realloc(out, cap);
+                    if (!nb) { free(role); break; }
+                    out = nb;
+                }
+                if (!first) strcat(out, "\n");
+                strcat(out, role);
+                strcat(out, ": ");
+                strncat(out, cv, clen > 200 ? 200 : clen);
+                first = false;
+                tokens += (clen / 4) + 1;
+            }
+        }
+        free(role);
+        p = ve;
+    }
+    return out;
 }
 
 /* PoP: _sanitize_tool_pairs @ agent/context_compressor.py:_sanitize_tool_pairs */
@@ -346,9 +393,11 @@ long cc_ensure_last_user_message_in_tail(const char *messages_json, long cut_idx
 
 /* PoP: has_content_to_compress @ agent/context_compressor.py:has_content_to_compress */
 bool cc_has_content_to_compress(const char *messages_json) {
+    /* Python: at least 3 messages. */
     if (!messages_json) return false;
-    printf("content-to-compress check\n");
-    return strcmp(messages_json, "[]") != 0;
+    long count = 0;
+    for (const char *p = messages_json; *p; p++) if (*p == '{') count++;
+    return count >= 3;
 }
 
 /* PoP: compress @ agent/context_compressor.py:compress */

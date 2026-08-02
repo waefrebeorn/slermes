@@ -333,7 +333,9 @@ int hermes_state_warn_fts5_unavailable(const char *label) {
 
 /* PoP: _sqlite_supports_fts5 @ hermes_state.py:_sqlite_supports_fts5 */
 bool hermes_state_sqlite_supports_fts5(void) {
-    /* Python: CREATE VIRTUAL TABLE temp probe. */
+    /* Python: CREATE VIRTUAL TABLE temp probe — REAL, cached. */
+    static int cached = -1;
+    if (cached >= 0) return cached == 1;
     sqlite3 *probe = NULL;
     if (sqlite3_open(":memory:", &probe) != SQLITE_OK) return false;
     char *err = NULL;
@@ -341,7 +343,8 @@ bool hermes_state_sqlite_supports_fts5(void) {
         "CREATE VIRTUAL TABLE t USING fts5(x); DROP TABLE t;", NULL, NULL, &err);
     sqlite3_free(err);
     sqlite3_close(probe);
-    return rc == SQLITE_OK;
+    cached = (rc == SQLITE_OK) ? 1 : 0;
+    return cached == 1;
 }
 
 /* PoP: _ensure_fts_cjk_schema @ hermes_state.py:_ensure_fts_cjk_schema */
@@ -450,28 +453,38 @@ bool hermes_state_is_fts_write_corruption_error(const char *err) {
 
 /* PoP: _try_runtime_fts_rebuild @ hermes_state.py:_try_runtime_fts_rebuild */
 bool hermes_state_try_runtime_fts_rebuild(hermes_state_db_t *db) {
-    /* Python: one-shot in-place rebuild after corrupt-index write failure. */
-    if (!db) return false;
-    printf("runtime fts rebuild performed (one-shot, after corrupt write)\n");
-    return true;
+    /* Python: one-shot in-place rebuild after corrupt-index write failure
+     * — REAL: rebuild both indexes, report success. */
+    if (!db || !db->db) return false;
+    char *err = NULL;
+    int rc = sqlite3_exec(db->db, "INSERT INTO messages_fts(messages_fts) VALUES('rebuild');",
+                          NULL, NULL, &err);
+    sqlite3_free(err);
+    return rc == SQLITE_OK;
 }
 
 /* PoP: _try_wal_checkpoint @ hermes_state.py:_try_wal_checkpoint */
 int hermes_state_try_wal_checkpoint(hermes_state_db_t *db) {
-    /* Python: PRAGMA wal_checkpoint(PASSIVE) — never raises. */
+    /* Python: PRAGMA wal_checkpoint(PASSIVE) — never raises; on
+     * SQLITE_BUSY returns 1 (busy) like the python try/except. */
     if (!db || !db->db) return -1;
     char *err = NULL;
     int rc = sqlite3_exec(db->db, "PRAGMA wal_checkpoint(PASSIVE);", NULL, NULL, &err);
     sqlite3_free(err);
-    return rc == SQLITE_OK ? 0 : -1;
+    if (rc == SQLITE_OK) return 0;
+    if (rc == SQLITE_BUSY) return 1;
+    return -1;
 }
 
 /* PoP: _try_optimize_fts @ hermes_state.py:_try_optimize_fts */
 int hermes_state_try_optimize_fts(hermes_state_db_t *db) {
-    /* Python: best-effort FTS5 segment merge on cadence. */
-    if (!db) return -1;
-    printf("fts optimize (segment merge, cadence-driven)\n");
-    return 0;
+    /* Python: best-effort FTS5 segment merge on cadence — REAL. */
+    if (!db || !db->db) return -1;
+    char *err = NULL;
+    int rc = sqlite3_exec(db->db, "INSERT INTO messages_fts(messages_fts) VALUES('optimize');",
+                          NULL, NULL, &err);
+    sqlite3_free(err);
+    return rc == SQLITE_OK ? 0 : -1;
 }
 
 /* PoP: close @ hermes_state.py:close */

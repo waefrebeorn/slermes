@@ -23,10 +23,36 @@ static char *lowerdup(const char *s) {
 
 /* PoP: _guarded_http_get @ tools/skills_hub.py:_guarded_http_get */
 char *sh_guarded_http_get(const char *url) {
-    /* Python: SSRF + redirect-target validation; MAX redirects. */
+    /* Python: SSRF + redirect-target validation; MAX redirects —
+     * REAL: block private/link-local hosts up front, then http_get. */
     if (!url) return NULL;
-    printf("guarded fetch: %s (SSRF + redirect-target validation)\n", url);
-    return NULL;
+    /* SSRF guard: parse host, block private ranges */
+    const char *scheme_end = strstr(url, "://");
+    if (!scheme_end) return NULL;
+    const char *host = scheme_end + 3;
+    const char *host_end = host;
+    while (*host_end && *host_end != '/' && *host_end != ':' && *host_end != '?') host_end++;
+    char *h = strndup(host, (size_t)(host_end - host));
+    bool blocked = false;
+    if (h) {
+        if (strcmp(h, "localhost") == 0 || strcmp(h, "127.0.0.1") == 0 ||
+            strcmp(h, "::1") == 0 || strcmp(h, "0.0.0.0") == 0 ||
+            strncmp(h, "10.", 3) == 0 || strncmp(h, "192.168.", 8) == 0 ||
+            strncmp(h, "172.", 4) == 0 || strncmp(h, "169.254.", 8) == 0 ||
+            strncmp(h, "127.", 4) == 0) {
+            blocked = true;
+        }
+    }
+    free(h);
+    if (blocked) return NULL;
+    http_t *c = http_new(20);
+    if (!c) return NULL;
+    http_resp_t *r = http_get(c, url, "User-Agent: hermes-agent");
+    char *out = NULL;
+    if (r && r->status == 200 && r->body) out = strdup(r->body);
+    if (r) http_resp_free(r);
+    http_free(c);
+    return out;
 }
 
 /* PoP: _list_skills_in_repo @ tools/skills_hub.py:_list_skills_in_repo */

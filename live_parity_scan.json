@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:04:26Z",
+  "generated_at": "2026-08-02T19:06:33Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -18045,7 +18045,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 289,
+            "line": 336,
             "is_consolidated": false,
             "full_text": "/* PoP: _sanitize_tool_pairs @ agent/context_compressor.py:_sanitize_tool_pairs */"
           },
@@ -18074,7 +18074,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 297,
+            "line": 344,
             "is_consolidated": false,
             "full_text": "/* PoP: _align_boundary_forward @ agent/context_compressor.py:_align_boundary_forward */"
           },
@@ -18161,7 +18161,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 305,
+            "line": 352,
             "is_consolidated": false,
             "full_text": "/* PoP: _protect_head_size @ agent/context_compressor.py:_protect_head_size */"
           },
@@ -18190,7 +18190,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 312,
+            "line": 359,
             "is_consolidated": false,
             "full_text": "/* PoP: _align_boundary_backward @ agent/context_compressor.py:_align_boundary_backward */"
           },
@@ -18219,7 +18219,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 319,
+            "line": 366,
             "is_consolidated": false,
             "full_text": "/* PoP: _find_last_user_message_idx @ agent/context_compressor.py:_find_last_user_message_idx */"
           },
@@ -18248,7 +18248,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 326,
+            "line": 373,
             "is_consolidated": false,
             "full_text": "/* PoP: _find_last_assistant_message_idx @ agent/context_compressor.py:_find_last_assistant_message_idx */"
           },
@@ -18277,7 +18277,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 333,
+            "line": 380,
             "is_consolidated": false,
             "full_text": "/* PoP: _ensure_last_assistant_message_in_tail @ agent/context_compressor.py:_ensure_last_assistant_message_in_tail */"
           },
@@ -18306,7 +18306,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 340,
+            "line": 387,
             "is_consolidated": false,
             "full_text": "/* PoP: _ensure_last_user_message_in_tail @ agent/context_compressor.py:_ensure_last_user_message_in_tail */"
           },
@@ -18422,7 +18422,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 347,
+            "line": 394,
             "is_consolidated": false,
             "full_text": "/* PoP: has_content_to_compress @ agent/context_compressor.py:has_content_to_compress */"
           },
@@ -18451,7 +18451,7 @@
             ],
             "c_file": "src/agent/port_context_compressor_remaining.c",
             "python_file": "agent/context_compressor.py",
-            "line": 354,
+            "line": 403,
             "is_consolidated": false,
             "full_text": "/* PoP: compress @ agent/context_compressor.py:compress */"
           },
@@ -267852,7 +267852,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 347,
+            "line": 350,
             "is_consolidated": false,
             "full_text": "/* PoP: _ensure_fts_cjk_schema @ hermes_state.py:_ensure_fts_cjk_schema */"
           },
@@ -267883,7 +267883,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 355,
+            "line": 358,
             "is_consolidated": false,
             "full_text": "/* PoP: _drop_fts_triggers @ hermes_state.py:_drop_fts_triggers */"
           },
@@ -267914,7 +267914,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 373,
+            "line": 376,
             "is_consolidated": false,
             "full_text": "/* PoP: _fts_trigger_count @ hermes_state.py:_fts_trigger_count */"
           },
@@ -267945,7 +267945,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 389,
+            "line": 392,
             "is_consolidated": false,
             "full_text": "/* PoP: _rebuild_fts_indexes @ hermes_state.py:_rebuild_fts_indexes */"
           },
@@ -267976,7 +267976,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 400,
+            "line": 403,
             "is_consolidated": false,
             "full_text": "/* PoP: _rebuild_legacy_fts_indexes @ hermes_state.py:_rebuild_legacy_fts_indexes */"
           },
@@ -268005,7 +268005,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 408,
+            "line": 411,
             "is_consolidated": false,
             "full_text": "/* PoP: _fts_table_probe @ hermes_state.py:_fts_table_probe */"
           },
@@ -268034,7 +268034,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 423,
+            "line": 426,
             "is_consolidated": false,
             "full_text": "/* PoP: _ensure_fts_schema @ hermes_state.py:_ensure_fts_schema */"
           },
@@ -268063,7 +268063,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 430,
+            "line": 433,
             "is_consolidated": false,
             "full_text": "/* PoP: _execute_write @ hermes_state.py:_execute_write */"
           },
@@ -268094,7 +268094,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 439,
+            "line": 442,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_fts_write_corruption_error @ hermes_state.py:_is_fts_write_corruption_error */"
           },
@@ -268123,7 +268123,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 451,
+            "line": 454,
             "is_consolidated": false,
             "full_text": "/* PoP: _try_runtime_fts_rebuild @ hermes_state.py:_try_runtime_fts_rebuild */"
           },
@@ -268152,7 +268152,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 459,
+            "line": 466,
             "is_consolidated": false,
             "full_text": "/* PoP: _try_wal_checkpoint @ hermes_state.py:_try_wal_checkpoint */"
           },
@@ -268181,7 +268181,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 469,
+            "line": 479,
             "is_consolidated": false,
             "full_text": "/* PoP: _try_optimize_fts @ hermes_state.py:_try_optimize_fts */"
           },
@@ -268210,7 +268210,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 477,
+            "line": 490,
             "is_consolidated": false,
             "full_text": "/* PoP: close @ hermes_state.py:close */"
           },
@@ -268239,7 +268239,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 491,
+            "line": 504,
             "is_consolidated": false,
             "full_text": "/* PoP: fts_rebuild_status @ hermes_state.py:fts_rebuild_status */"
           },
@@ -268268,7 +268268,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 498,
+            "line": 511,
             "is_consolidated": false,
             "full_text": "/* PoP: _fts_rebuild_finish @ hermes_state.py:_fts_rebuild_finish */"
           },
@@ -268297,7 +268297,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 506,
+            "line": 519,
             "is_consolidated": false,
             "full_text": "/* PoP: _fts_teardown_trash_step @ hermes_state.py:_fts_teardown_trash_step */"
           },
@@ -268326,7 +268326,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 515,
+            "line": 528,
             "is_consolidated": false,
             "full_text": "/* PoP: fts_rebuild_step @ hermes_state.py:fts_rebuild_step */"
           },
@@ -268355,7 +268355,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 523,
+            "line": 536,
             "is_consolidated": false,
             "full_text": "/* PoP: fts_cjk_rebuild_status @ hermes_state.py:fts_cjk_rebuild_status */"
           },
@@ -268384,7 +268384,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 529,
+            "line": 542,
             "is_consolidated": false,
             "full_text": "/* PoP: fts_cjk_rebuild_step @ hermes_state.py:fts_cjk_rebuild_step */"
           },
@@ -268413,7 +268413,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 536,
+            "line": 549,
             "is_consolidated": false,
             "full_text": "/* PoP: _fts_cjk_rebuild_finish @ hermes_state.py:_fts_cjk_rebuild_finish */"
           },
@@ -268442,7 +268442,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 543,
+            "line": 556,
             "is_consolidated": false,
             "full_text": "/* PoP: _fts_cjk_reset_if_stale @ hermes_state.py:_fts_cjk_reset_if_stale */"
           },
@@ -268471,7 +268471,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 551,
+            "line": 564,
             "is_consolidated": false,
             "full_text": "/* PoP: fts_optimize_available @ hermes_state.py:fts_optimize_available */"
           },
@@ -268500,7 +268500,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 566,
+            "line": 579,
             "is_consolidated": false,
             "full_text": "/* PoP: _has_fts_trash @ hermes_state.py:_has_fts_trash */"
           },
@@ -268529,7 +268529,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 580,
+            "line": 593,
             "is_consolidated": false,
             "full_text": "/* PoP: _demote_legacy_fts_to_trash @ hermes_state.py:_demote_legacy_fts_to_trash */"
           },
@@ -268558,7 +268558,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 588,
+            "line": 601,
             "is_consolidated": false,
             "full_text": "/* PoP: optimize_fts_storage @ hermes_state.py:optimize_fts_storage */"
           },
@@ -268589,7 +268589,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 596,
+            "line": 609,
             "is_consolidated": false,
             "full_text": "/* PoP: _parse_schema_columns @ hermes_state.py:_parse_schema_columns */"
           },
@@ -268618,7 +268618,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 603,
+            "line": 616,
             "is_consolidated": false,
             "full_text": "/* PoP: _reconcile_columns @ hermes_state.py:_reconcile_columns */"
           },
@@ -268647,7 +268647,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 611,
+            "line": 624,
             "is_consolidated": false,
             "full_text": "/* PoP: _init_schema @ hermes_state.py:_init_schema */"
           },
@@ -268734,7 +268734,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 618,
+            "line": 631,
             "is_consolidated": false,
             "full_text": "/* PoP: record_gateway_session_peer @ hermes_state.py:record_gateway_session_peer */"
           },
@@ -268966,7 +268966,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 636,
+            "line": 649,
             "is_consolidated": false,
             "full_text": "/* PoP: _backfill_gateway_metadata_from_sessions_json @ hermes_state.py:_backfill_gateway_metadata_from_sessions_json */"
           },
@@ -268995,7 +268995,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 643,
+            "line": 656,
             "is_consolidated": false,
             "full_text": "/* PoP: find_latest_gateway_session_for_peer @ hermes_state.py:find_latest_gateway_session_for_peer */"
           },
@@ -269198,7 +269198,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 650,
+            "line": 663,
             "is_consolidated": false,
             "full_text": "/* PoP: backfill_repo_roots @ hermes_state.py:backfill_repo_roots */"
           },
@@ -270157,7 +270157,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 657,
+            "line": 670,
             "is_consolidated": false,
             "full_text": "/* PoP: get_session_by_title @ hermes_state.py:get_session_by_title */"
           },
@@ -270186,7 +270186,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 675,
+            "line": 688,
             "is_consolidated": false,
             "full_text": "/* PoP: resolve_session_by_title @ hermes_state.py:resolve_session_by_title */"
           },
@@ -270275,7 +270275,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 683,
+            "line": 696,
             "is_consolidated": false,
             "full_text": "/* PoP: _compact_session_cols @ hermes_state.py:_compact_session_cols */"
           },
@@ -270304,7 +270304,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 689,
+            "line": 702,
             "is_consolidated": false,
             "full_text": "/* PoP: distinct_session_cwds @ hermes_state.py:distinct_session_cwds */"
           },
@@ -270362,7 +270362,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 696,
+            "line": 709,
             "is_consolidated": false,
             "full_text": "/* PoP: list_cron_job_runs @ hermes_state.py:list_cron_job_runs */"
           },
@@ -270391,7 +270391,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 704,
+            "line": 717,
             "is_consolidated": false,
             "full_text": "/* PoP: _get_session_rich_row @ hermes_state.py:_get_session_rich_row */"
           },
@@ -270420,7 +270420,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 712,
+            "line": 725,
             "is_consolidated": false,
             "full_text": "/* PoP: list_skill_scaffolded_sessions @ hermes_state.py:list_skill_scaffolded_sessions */"
           },
@@ -270449,7 +270449,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 719,
+            "line": 732,
             "is_consolidated": false,
             "full_text": "/* PoP: get_first_assistant_text @ hermes_state.py:get_first_assistant_text */"
           },
@@ -270979,7 +270979,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 726,
+            "line": 739,
             "is_consolidated": false,
             "full_text": "/* PoP: get_resume_conversations @ hermes_state.py:get_resume_conversations */"
           },
@@ -271008,7 +271008,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 734,
+            "line": 747,
             "is_consolidated": false,
             "full_text": "/* PoP: get_ancestor_display_prefix @ hermes_state.py:get_ancestor_display_prefix */"
           },
@@ -271215,7 +271215,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 741,
+            "line": 754,
             "is_consolidated": false,
             "full_text": "/* PoP: _sanitize_fts5_query @ hermes_state.py:_sanitize_fts5_query */"
           },
@@ -271246,7 +271246,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 758,
+            "line": 771,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_cjk_codepoint @ hermes_state.py:_is_cjk_codepoint */"
           },
@@ -271277,7 +271277,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 764,
+            "line": 777,
             "is_consolidated": false,
             "full_text": "/* PoP: _contains_cjk @ hermes_state.py:_contains_cjk */"
           },
@@ -271308,7 +271308,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 779,
+            "line": 792,
             "is_consolidated": false,
             "full_text": "/* PoP: _count_cjk @ hermes_state.py:_count_cjk */"
           },
@@ -271339,7 +271339,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 795,
+            "line": 808,
             "is_consolidated": false,
             "full_text": "/* PoP: _has_lone_cjk_run @ hermes_state.py:_has_lone_cjk_run */"
           },
@@ -271370,7 +271370,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 817,
+            "line": 830,
             "is_consolidated": false,
             "full_text": "/* PoP: _trigram_eligible_tokens @ hermes_state.py:_trigram_eligible_tokens */"
           },
@@ -271399,7 +271399,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 834,
+            "line": 847,
             "is_consolidated": false,
             "full_text": "/* PoP: _run_trigram_search @ hermes_state.py:_run_trigram_search */"
           },
@@ -271428,7 +271428,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 841,
+            "line": 854,
             "is_consolidated": false,
             "full_text": "/* PoP: search_messages @ hermes_state.py:search_messages */"
           },
@@ -271486,7 +271486,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 849,
+            "line": 862,
             "is_consolidated": false,
             "full_text": "/* PoP: _search_messages_impl @ hermes_state.py:_search_messages_impl */"
           },
@@ -271515,7 +271515,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 856,
+            "line": 869,
             "is_consolidated": false,
             "full_text": "/* PoP: _search_unindexed_gap @ hermes_state.py:_search_unindexed_gap */"
           },
@@ -271544,7 +271544,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 864,
+            "line": 877,
             "is_consolidated": false,
             "full_text": "/* PoP: search_sessions_by_id @ hermes_state.py:search_sessions_by_id */"
           },
@@ -271573,7 +271573,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 871,
+            "line": 884,
             "is_consolidated": false,
             "full_text": "/* PoP: search_sessions @ hermes_state.py:search_sessions */"
           },
@@ -271805,7 +271805,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 879,
+            "line": 892,
             "is_consolidated": false,
             "full_text": "/* PoP: export_session_lineage @ hermes_state.py:export_session_lineage */"
           },
@@ -271834,7 +271834,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 886,
+            "line": 899,
             "is_consolidated": false,
             "full_text": "/* PoP: export_all @ hermes_state.py:export_all */"
           },
@@ -271927,7 +271927,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 893,
+            "line": 906,
             "is_consolidated": false,
             "full_text": "/* PoP: _float_or_none @ hermes_state.py:_float_or_none */"
           },
@@ -272080,7 +272080,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 904,
+            "line": 917,
             "is_consolidated": false,
             "full_text": "/* PoP: import_sessions @ hermes_state.py:import_sessions */"
           },
@@ -272838,7 +272838,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 913,
+            "line": 926,
             "is_consolidated": false,
             "full_text": "/* PoP: list_unlinked_telegram_sessions_for_user @ hermes_state.py:list_unlinked_telegram_sessions_for_user */"
           },
@@ -272896,7 +272896,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 922,
+            "line": 935,
             "is_consolidated": false,
             "full_text": "/* PoP: optimize_fts @ hermes_state.py:optimize_fts */"
           },
@@ -272925,7 +272925,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 932,
+            "line": 945,
             "is_consolidated": false,
             "full_text": "/* PoP: rebuild_fts @ hermes_state.py:rebuild_fts */"
           },
@@ -273012,7 +273012,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 942,
+            "line": 955,
             "is_consolidated": false,
             "full_text": "/* PoP: maybe_auto_prune_and_vacuum @ hermes_state.py:maybe_auto_prune_and_vacuum */"
           },
@@ -273265,7 +273265,7 @@
             ],
             "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
             "python_file": "hermes_state.py",
-            "line": 950,
+            "line": 963,
             "is_consolidated": false,
             "full_text": "/* PoP: __getattr__ @ hermes_state.py:__getattr__ */"
           },
@@ -329082,7 +329082,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 32,
+            "line": 58,
             "is_consolidated": false,
             "full_text": "/* PoP: _list_skills_in_repo @ tools/skills_hub.py:_list_skills_in_repo */"
           },
@@ -329198,7 +329198,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 40,
+            "line": 66,
             "is_consolidated": false,
             "full_text": "/* PoP: _download_directory @ tools/skills_hub.py:_download_directory */"
           },
@@ -329227,7 +329227,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 48,
+            "line": 74,
             "is_consolidated": false,
             "full_text": "/* PoP: _download_directory_via_tree @ tools/skills_hub.py:_download_directory_via_tree */"
           },
@@ -329256,7 +329256,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 56,
+            "line": 82,
             "is_consolidated": false,
             "full_text": "/* PoP: _download_directory_recursive @ tools/skills_hub.py:_download_directory_recursive */"
           },
@@ -329372,7 +329372,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 64,
+            "line": 90,
             "is_consolidated": false,
             "full_text": "/* PoP: _get_skillsh_groupings @ tools/skills_hub.py:_get_skillsh_groupings */"
           },
@@ -329403,7 +329403,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 72,
+            "line": 98,
             "is_consolidated": false,
             "full_text": "/* PoP: _parse_skillsh_groupings @ tools/skills_hub.py:_parse_skillsh_groupings */"
           },
@@ -330347,7 +330347,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 80,
+            "line": 106,
             "is_consolidated": false,
             "full_text": "/* PoP: _sitemap_catalog @ tools/skills_hub.py:_sitemap_catalog */"
           },
@@ -330376,7 +330376,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 87,
+            "line": 113,
             "is_consolidated": false,
             "full_text": "/* PoP: _featured_skills @ tools/skills_hub.py:_featured_skills */"
           },
@@ -330405,7 +330405,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 94,
+            "line": 120,
             "is_consolidated": false,
             "full_text": "/* PoP: _meta_from_search_item @ tools/skills_hub.py:_meta_from_search_item */"
           },
@@ -330434,7 +330434,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 102,
+            "line": 128,
             "is_consolidated": false,
             "full_text": "/* PoP: _fetch_detail_page @ tools/skills_hub.py:_fetch_detail_page */"
           },
@@ -330463,7 +330463,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 110,
+            "line": 136,
             "is_consolidated": false,
             "full_text": "/* PoP: _parse_detail_page @ tools/skills_hub.py:_parse_detail_page */"
           },
@@ -330492,7 +330492,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 118,
+            "line": 144,
             "is_consolidated": false,
             "full_text": "/* PoP: _discover_identifier @ tools/skills_hub.py:_discover_identifier */"
           },
@@ -330550,7 +330550,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 125,
+            "line": 151,
             "is_consolidated": false,
             "full_text": "/* PoP: _finalize_inspect_meta @ tools/skills_hub.py:_finalize_inspect_meta */"
           },
@@ -330581,7 +330581,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 133,
+            "line": 159,
             "is_consolidated": false,
             "full_text": "/* PoP: _matches_skill_tokens @ tools/skills_hub.py:_matches_skill_tokens */"
           },
@@ -330612,7 +330612,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 141,
+            "line": 167,
             "is_consolidated": false,
             "full_text": "/* PoP: _token_variants @ tools/skills_hub.py:_token_variants */"
           },
@@ -330643,7 +330643,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 149,
+            "line": 175,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_repo_slug @ tools/skills_hub.py:_extract_repo_slug */"
           },
@@ -330674,7 +330674,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 173,
+            "line": 199,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_first_match @ tools/skills_hub.py:_extract_first_match */"
           },
@@ -330703,7 +330703,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 181,
+            "line": 207,
             "is_consolidated": false,
             "full_text": "/* PoP: _detail_to_metadata @ tools/skills_hub.py:_detail_to_metadata */"
           },
@@ -330734,7 +330734,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 189,
+            "line": 215,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_weekly_installs @ tools/skills_hub.py:_extract_weekly_installs */"
           },
@@ -330765,7 +330765,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 197,
+            "line": 223,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_security_audits @ tools/skills_hub.py:_extract_security_audits */"
           },
@@ -330978,7 +330978,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 205,
+            "line": 231,
             "is_consolidated": false,
             "full_text": "/* PoP: _normalize_tags @ tools/skills_hub.py:_normalize_tags */"
           },
@@ -331009,7 +331009,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 247,
+            "line": 273,
             "is_consolidated": false,
             "full_text": "/* PoP: _coerce_skill_payload @ tools/skills_hub.py:_coerce_skill_payload */"
           },
@@ -331071,7 +331071,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 255,
+            "line": 281,
             "is_consolidated": false,
             "full_text": "/* PoP: _search_score @ tools/skills_hub.py:_search_score */"
           },
@@ -331102,7 +331102,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 266,
+            "line": 292,
             "is_consolidated": false,
             "full_text": "/* PoP: _dedupe_results @ tools/skills_hub.py:_dedupe_results */"
           },
@@ -331131,7 +331131,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 274,
+            "line": 300,
             "is_consolidated": false,
             "full_text": "/* PoP: _exact_slug_meta @ tools/skills_hub.py:_exact_slug_meta */"
           },
@@ -331160,7 +331160,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 282,
+            "line": 308,
             "is_consolidated": false,
             "full_text": "/* PoP: _finalize_search_results @ tools/skills_hub.py:_finalize_search_results */"
           },
@@ -331305,7 +331305,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 290,
+            "line": 316,
             "is_consolidated": false,
             "full_text": "/* PoP: _load_catalog_index @ tools/skills_hub.py:_load_catalog_index */"
           },
@@ -331334,7 +331334,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 297,
+            "line": 323,
             "is_consolidated": false,
             "full_text": "/* PoP: _get_json @ tools/skills_hub.py:_get_json */"
           },
@@ -331363,7 +331363,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 311,
+            "line": 337,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_latest_version @ tools/skills_hub.py:_resolve_latest_version */"
           },
@@ -331392,7 +331392,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 319,
+            "line": 345,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_files @ tools/skills_hub.py:_extract_files */"
           },
@@ -331421,7 +331421,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 327,
+            "line": 353,
             "is_consolidated": false,
             "full_text": "/* PoP: _download_zip @ tools/skills_hub.py:_download_zip */"
           },
@@ -331684,7 +331684,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 335,
+            "line": 361,
             "is_consolidated": false,
             "full_text": "/* PoP: _fetch_marketplace_index @ tools/skills_hub.py:_fetch_marketplace_index */"
           },
@@ -331858,7 +331858,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 343,
+            "line": 369,
             "is_consolidated": false,
             "full_text": "/* PoP: _fetch_index @ tools/skills_hub.py:_fetch_index */"
           },
@@ -331887,7 +331887,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 350,
+            "line": 376,
             "is_consolidated": false,
             "full_text": "/* PoP: _fetch_agent @ tools/skills_hub.py:_fetch_agent */"
           },
@@ -331918,7 +331918,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 368,
+            "line": 394,
             "is_consolidated": false,
             "full_text": "/* PoP: _convert_to_skill_md @ tools/skills_hub.py:_convert_to_skill_md */"
           },
@@ -332034,7 +332034,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 376,
+            "line": 402,
             "is_consolidated": false,
             "full_text": "/* PoP: _item_to_meta @ tools/skills_hub.py:_item_to_meta */"
           },
@@ -332179,7 +332179,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 384,
+            "line": 410,
             "is_consolidated": false,
             "full_text": "/* PoP: _slug_from_identifier @ tools/skills_hub.py:_slug_from_identifier */"
           },
@@ -332411,7 +332411,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 395,
+            "line": 421,
             "is_consolidated": false,
             "full_text": "/* PoP: _scan_all @ tools/skills_hub.py:_scan_all */"
           },
@@ -332587,7 +332587,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 403,
+            "line": 429,
             "is_consolidated": false,
             "full_text": "/* PoP: load @ tools/skills_hub.py:load */"
           },
@@ -332616,7 +332616,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 411,
+            "line": 437,
             "is_consolidated": false,
             "full_text": "/* PoP: save @ tools/skills_hub.py:save */"
           },
@@ -332790,7 +332790,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 403,
+            "line": 429,
             "is_consolidated": false,
             "full_text": "/* PoP: load @ tools/skills_hub.py:load */"
           },
@@ -332819,7 +332819,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 411,
+            "line": 437,
             "is_consolidated": false,
             "full_text": "/* PoP: save @ tools/skills_hub.py:save */"
           },
@@ -333283,7 +333283,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 419,
+            "line": 445,
             "is_consolidated": false,
             "full_text": "/* PoP: _ensure_loaded @ tools/skills_hub.py:_ensure_loaded */"
           },
@@ -333312,7 +333312,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 426,
+            "line": 452,
             "is_consolidated": false,
             "full_text": "/* PoP: _get_github @ tools/skills_hub.py:_get_github */"
           },
@@ -333517,7 +333517,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 433,
+            "line": 459,
             "is_consolidated": false,
             "full_text": "/* PoP: _find_entry @ tools/skills_hub.py:_find_entry */"
           },
@@ -333548,7 +333548,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 441,
+            "line": 467,
             "is_consolidated": false,
             "full_text": "/* PoP: _to_meta @ tools/skills_hub.py:_to_meta */"
           },
