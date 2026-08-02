@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T17:56:30Z",
+  "generated_at": "2026-08-02T17:59:03Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -21234,10 +21234,10 @@
     },
     "agent/credential_pool.py": {
       "total": 68,
-      "ported": 19,
+      "ported": 68,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 49,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 68,
@@ -21311,16 +21311,24 @@
             "decorators": [],
             "line_number": 190
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_post_init",
+          "pop_annotation": {
+            "c_function": "cpl_post_init",
+            "python_functions": [
+              "__post_init__"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __post_init__ @ agent/credential_pool.py:__post_init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -21363,16 +21371,24 @@
             ],
             "line_number": 205
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_from_dict",
+          "pop_annotation": {
+            "c_function": "cpl_from_dict",
+            "python_functions": [
+              "from_dict"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 33,
+            "is_consolidated": false,
+            "full_text": "/* PoP: from_dict @ agent/credential_pool.py:from_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -21384,16 +21400,24 @@
             "decorators": [],
             "line_number": 221
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_to_dict",
+          "pop_annotation": {
+            "c_function": "cpl_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 41,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ agent/credential_pool.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -21496,16 +21520,24 @@
             "decorators": [],
             "line_number": 280
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_next_priority",
+          "pop_annotation": {
+            "c_function": "cpl_next_priority",
+            "python_functions": [
+              "_next_priority"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _next_priority @ agent/credential_pool.py:_next_priority */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -21517,16 +21549,24 @@
             "decorators": [],
             "line_number": 284
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_is_manual_source",
+          "pop_annotation": {
+            "c_function": "cpl_is_manual_source",
+            "python_functions": [
+              "_is_manual_source"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 55,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_manual_source @ agent/credential_pool.py:_is_manual_source */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -21538,16 +21578,24 @@
             "decorators": [],
             "line_number": 289
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_exhausted_ttl",
+          "pop_annotation": {
+            "c_function": "cpl_exhausted_ttl",
+            "python_functions": [
+              "_exhausted_ttl"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 69,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _exhausted_ttl @ agent/credential_pool.py:_exhausted_ttl */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -21559,16 +21607,24 @@
             "decorators": [],
             "line_number": 298
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_parse_absolute_timestamp",
+          "pop_annotation": {
+            "c_function": "cpl_parse_absolute_timestamp",
+            "python_functions": [
+              "_parse_absolute_timestamp"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 79,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _parse_absolute_timestamp @ agent/credential_pool.py:_parse_absolute_timestamp */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -21580,16 +21636,24 @@
             "decorators": [],
             "line_number": 328
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_extract_retry_delay_seconds",
+          "pop_annotation": {
+            "c_function": "cpl_extract_retry_delay_seconds",
+            "python_functions": [
+              "_extract_retry_delay_seconds"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 99,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_retry_delay_seconds @ agent/credential_pool.py:_extract_retry_delay_seconds */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -21601,16 +21665,24 @@
             "decorators": [],
             "line_number": 351
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_normalize_error_context",
+          "pop_annotation": {
+            "c_function": "cpl_normalize_error_context",
+            "python_functions": [
+              "_normalize_error_context"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 115,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalize_error_context @ agent/credential_pool.py:_normalize_error_context */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -21622,16 +21694,24 @@
             "decorators": [],
             "line_number": 376
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_exhausted_until",
+          "pop_annotation": {
+            "c_function": "cpl_exhausted_until",
+            "python_functions": [
+              "_exhausted_until"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 123,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _exhausted_until @ agent/credential_pool.py:_exhausted_until */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -21643,16 +21723,24 @@
             "decorators": [],
             "line_number": 387
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_normalize_custom_pool_name",
+          "pop_annotation": {
+            "c_function": "cpl_normalize_custom_pool_name",
+            "python_functions": [
+              "_normalize_custom_pool_name"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 141,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalize_custom_pool_name @ agent/credential_pool.py:_normalize_custom_pool_name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -21693,16 +21781,24 @@
             "decorators": [],
             "line_number": 418
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_get_custom_provider_pool_key",
+          "pop_annotation": {
+            "c_function": "cpl_get_custom_provider_pool_key",
+            "python_functions": [
+              "get_custom_provider_pool_key"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 161,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_custom_provider_pool_key @ agent/credential_pool.py:get_custom_provider_pool_key */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -21714,16 +21810,24 @@
             "decorators": [],
             "line_number": 448
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_list_custom_pool_providers",
+          "pop_annotation": {
+            "c_function": "cpl_list_custom_pool_providers",
+            "python_functions": [
+              "list_custom_pool_providers"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 169,
+            "is_consolidated": false,
+            "full_text": "/* PoP: list_custom_pool_providers @ agent/credential_pool.py:list_custom_pool_providers */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -21735,16 +21839,24 @@
             "decorators": [],
             "line_number": 459
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_get_custom_provider_config",
+          "pop_annotation": {
+            "c_function": "cpl_get_custom_provider_config",
+            "python_functions": [
+              "_get_custom_provider_config"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 176,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_custom_provider_config @ agent/credential_pool.py:_get_custom_provider_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -21756,16 +21868,24 @@
             "decorators": [],
             "line_number": 470
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_get_pool_strategy",
+          "pop_annotation": {
+            "c_function": "cpl_get_pool_strategy",
+            "python_functions": [
+              "get_pool_strategy"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 184,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_pool_strategy @ agent/credential_pool.py:get_pool_strategy */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -21835,16 +21955,24 @@
             "decorators": [],
             "line_number": 583
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_init",
+          "pop_annotation": {
+            "c_function": "cpl_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 193,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/credential_pool.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -21856,16 +21984,24 @@
             "decorators": [],
             "line_number": 606
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_has_credentials",
+          "pop_annotation": {
+            "c_function": "cpl_has_credentials",
+            "python_functions": [
+              "has_credentials"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 201,
+            "is_consolidated": false,
+            "full_text": "/* PoP: has_credentials @ agent/credential_pool.py:has_credentials */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -21877,16 +22013,24 @@
             "decorators": [],
             "line_number": 610
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_has_available",
+          "pop_annotation": {
+            "c_function": "cpl_has_available",
+            "python_functions": [
+              "has_available"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 206,
+            "is_consolidated": false,
+            "full_text": "/* PoP: has_available @ agent/credential_pool.py:has_available */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -21898,16 +22042,24 @@
             "decorators": [],
             "line_number": 620
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_entries",
+          "pop_annotation": {
+            "c_function": "cpl_entries",
+            "python_functions": [
+              "entries"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 211,
+            "is_consolidated": false,
+            "full_text": "/* PoP: entries @ agent/credential_pool.py:entries */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -21948,16 +22100,24 @@
             "decorators": [],
             "line_number": 629
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_current",
+          "pop_annotation": {
+            "c_function": "cpl_current",
+            "python_functions": [
+              "current"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 217,
+            "is_consolidated": false,
+            "full_text": "/* PoP: current @ agent/credential_pool.py:current */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -21998,16 +22158,24 @@
             "decorators": [],
             "line_number": 655
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_replace_entry",
+          "pop_annotation": {
+            "c_function": "cpl_replace_entry",
+            "python_functions": [
+              "_replace_entry"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 222,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _replace_entry @ agent/credential_pool.py:_replace_entry */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22019,16 +22187,24 @@
             "decorators": [],
             "line_number": 662
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_persist",
+          "pop_annotation": {
+            "c_function": "cpl_persist",
+            "python_functions": [
+              "_persist"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 230,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _persist @ agent/credential_pool.py:_persist */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22040,16 +22216,24 @@
             "decorators": [],
             "line_number": 669
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_is_terminal_auth_failure",
+          "pop_annotation": {
+            "c_function": "cpl_is_terminal_auth_failure",
+            "python_functions": [
+              "_is_terminal_auth_failure"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 240,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_terminal_auth_failure @ agent/credential_pool.py:_is_terminal_auth_failure */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22061,16 +22245,24 @@
             "decorators": [],
             "line_number": 692
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_mark_exhausted",
+          "pop_annotation": {
+            "c_function": "cpl_mark_exhausted",
+            "python_functions": [
+              "_mark_exhausted"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 254,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _mark_exhausted @ agent/credential_pool.py:_mark_exhausted */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22111,16 +22303,24 @@
             "decorators": [],
             "line_number": 778
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_sync_codex_entry_from_auth_store",
+          "pop_annotation": {
+            "c_function": "cpl_sync_codex_entry_from_auth_store",
+            "python_functions": [
+              "_sync_codex_entry_from_auth_store"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 264,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _sync_codex_entry_from_auth_store @ agent/credential_pool.py:_sync_codex_entry_from_auth_store */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22132,16 +22332,24 @@
             "decorators": [],
             "line_number": 842
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_sync_xai_oauth_entry_from_auth_store",
+          "pop_annotation": {
+            "c_function": "cpl_sync_xai_oauth_entry_from_auth_store",
+            "python_functions": [
+              "_sync_xai_oauth_entry_from_auth_store"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 272,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _sync_xai_oauth_entry_from_auth_store @ agent/credential_pool.py:_sync_xai_oauth_entry_from_auth_store */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22182,16 +22390,24 @@
             "decorators": [],
             "line_number": 939
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_sync_nous_entry_from_auth_store",
+          "pop_annotation": {
+            "c_function": "cpl_sync_nous_entry_from_auth_store",
+            "python_functions": [
+              "_sync_nous_entry_from_auth_store"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 280,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _sync_nous_entry_from_auth_store @ agent/credential_pool.py:_sync_nous_entry_from_auth_store */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22203,16 +22419,24 @@
             "decorators": [],
             "line_number": 1011
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_sync_device_code_entry_to_auth_store",
+          "pop_annotation": {
+            "c_function": "cpl_sync_device_code_entry_to_auth_store",
+            "python_functions": [
+              "_sync_device_code_entry_to_auth_store"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 287,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _sync_device_code_entry_to_auth_store @ agent/credential_pool.py:_sync_device_code_entry_to_auth_store */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22224,16 +22448,24 @@
             "decorators": [],
             "line_number": 1126
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_refresh_entry",
+          "pop_annotation": {
+            "c_function": "cpl_refresh_entry",
+            "python_functions": [
+              "_refresh_entry"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 295,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _refresh_entry @ agent/credential_pool.py:_refresh_entry */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22332,16 +22564,24 @@
             "decorators": [],
             "line_number": 1569
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_entry_needs_refresh",
+          "pop_annotation": {
+            "c_function": "cpl_entry_needs_refresh",
+            "python_functions": [
+              "_entry_needs_refresh"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 304,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _entry_needs_refresh @ agent/credential_pool.py:_entry_needs_refresh */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22353,16 +22593,24 @@
             "decorators": [],
             "line_number": 1593
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_select",
+          "pop_annotation": {
+            "c_function": "cpl_select",
+            "python_functions": [
+              "select"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 313,
+            "is_consolidated": false,
+            "full_text": "/* PoP: select @ agent/credential_pool.py:select */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22374,16 +22622,24 @@
             "decorators": [],
             "line_number": 1603
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_available_entries",
+          "pop_annotation": {
+            "c_function": "cpl_available_entries",
+            "python_functions": [
+              "_available_entries"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 321,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _available_entries @ agent/credential_pool.py:_available_entries */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22424,16 +22680,24 @@
             "decorators": [],
             "line_number": 1748
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_select_unlocked",
+          "pop_annotation": {
+            "c_function": "cpl_select_unlocked",
+            "python_functions": [
+              "_select_unlocked"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 329,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _select_unlocked @ agent/credential_pool.py:_select_unlocked */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22445,16 +22709,24 @@
             "decorators": [],
             "line_number": 1786
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_peek",
+          "pop_annotation": {
+            "c_function": "cpl_peek",
+            "python_functions": [
+              "peek"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 336,
+            "is_consolidated": false,
+            "full_text": "/* PoP: peek @ agent/credential_pool.py:peek */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22466,16 +22738,24 @@
             "decorators": [],
             "line_number": 1796
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_mark_exhausted_and_rotate",
+          "pop_annotation": {
+            "c_function": "cpl_mark_exhausted_and_rotate",
+            "python_functions": [
+              "mark_exhausted_and_rotate"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 343,
+            "is_consolidated": false,
+            "full_text": "/* PoP: mark_exhausted_and_rotate @ agent/credential_pool.py:mark_exhausted_and_rotate */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22487,16 +22767,24 @@
             "decorators": [],
             "line_number": 1926
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_acquire_lease",
+          "pop_annotation": {
+            "c_function": "cpl_acquire_lease",
+            "python_functions": [
+              "acquire_lease"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 352,
+            "is_consolidated": false,
+            "full_text": "/* PoP: acquire_lease @ agent/credential_pool.py:acquire_lease */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22508,16 +22796,24 @@
             "decorators": [],
             "line_number": 1957
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_release_lease",
+          "pop_annotation": {
+            "c_function": "cpl_release_lease",
+            "python_functions": [
+              "release_lease"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 360,
+            "is_consolidated": false,
+            "full_text": "/* PoP: release_lease @ agent/credential_pool.py:release_lease */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22529,16 +22825,24 @@
             "decorators": [],
             "line_number": 1966
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_try_refresh_current",
+          "pop_annotation": {
+            "c_function": "cpl_try_refresh_current",
+            "python_functions": [
+              "try_refresh_current"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 367,
+            "is_consolidated": false,
+            "full_text": "/* PoP: try_refresh_current @ agent/credential_pool.py:try_refresh_current */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22579,16 +22883,24 @@
             "decorators": [],
             "line_number": 2013
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_try_refresh_current_unlocked",
+          "pop_annotation": {
+            "c_function": "cpl_try_refresh_current_unlocked",
+            "python_functions": [
+              "_try_refresh_current_unlocked"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 375,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _try_refresh_current_unlocked @ agent/credential_pool.py:_try_refresh_current_unlocked */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22600,16 +22912,24 @@
             "decorators": [],
             "line_number": 2022
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_reset_statuses",
+          "pop_annotation": {
+            "c_function": "cpl_reset_statuses",
+            "python_functions": [
+              "reset_statuses"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 382,
+            "is_consolidated": false,
+            "full_text": "/* PoP: reset_statuses @ agent/credential_pool.py:reset_statuses */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22621,16 +22941,24 @@
             "decorators": [],
             "line_number": 2047
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_remove_index",
+          "pop_annotation": {
+            "c_function": "cpl_remove_index",
+            "python_functions": [
+              "remove_index"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 390,
+            "is_consolidated": false,
+            "full_text": "/* PoP: remove_index @ agent/credential_pool.py:remove_index */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22642,16 +22970,24 @@
             "decorators": [],
             "line_number": 2065
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_resolve_target",
+          "pop_annotation": {
+            "c_function": "cpl_resolve_target",
+            "python_functions": [
+              "resolve_target"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 398,
+            "is_consolidated": false,
+            "full_text": "/* PoP: resolve_target @ agent/credential_pool.py:resolve_target */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22663,16 +22999,24 @@
             "decorators": [],
             "line_number": 2091
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_add_entry",
+          "pop_annotation": {
+            "c_function": "cpl_add_entry",
+            "python_functions": [
+              "add_entry"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 407,
+            "is_consolidated": false,
+            "full_text": "/* PoP: add_entry @ agent/credential_pool.py:add_entry */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22684,16 +23028,24 @@
             "decorators": [],
             "line_number": 2099
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_upsert_entry",
+          "pop_annotation": {
+            "c_function": "cpl_upsert_entry",
+            "python_functions": [
+              "_upsert_entry"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 415,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _upsert_entry @ agent/credential_pool.py:_upsert_entry */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22705,16 +23057,24 @@
             "decorators": [],
             "line_number": 2144
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_normalize_pool_priorities",
+          "pop_annotation": {
+            "c_function": "cpl_normalize_pool_priorities",
+            "python_functions": [
+              "_normalize_pool_priorities"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 423,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalize_pool_priorities @ agent/credential_pool.py:_normalize_pool_priorities */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22726,16 +23086,24 @@
             "decorators": [],
             "line_number": 2178
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_seed_from_singletons",
+          "pop_annotation": {
+            "c_function": "cpl_seed_from_singletons",
+            "python_functions": [
+              "_seed_from_singletons"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 430,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _seed_from_singletons @ agent/credential_pool.py:_seed_from_singletons */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22747,16 +23115,24 @@
             "decorators": [],
             "line_number": 2505
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_seed_from_env",
+          "pop_annotation": {
+            "c_function": "cpl_seed_from_env",
+            "python_functions": [
+              "_seed_from_env"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 437,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _seed_from_env @ agent/credential_pool.py:_seed_from_env */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22768,16 +23144,24 @@
             "decorators": [],
             "line_number": 2635
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_prune_stale_seeded_entries",
+          "pop_annotation": {
+            "c_function": "cpl_prune_stale_seeded_entries",
+            "python_functions": [
+              "_prune_stale_seeded_entries"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 444,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _prune_stale_seeded_entries @ agent/credential_pool.py:_prune_stale_seeded_entries */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
@@ -22789,16 +23173,24 @@
             "decorators": [],
             "line_number": 2670
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_credential_pool_remaining.c",
+          "c_function": "cpl_seed_custom_pool",
+          "pop_annotation": {
+            "c_function": "cpl_seed_custom_pool",
+            "python_functions": [
+              "_seed_custom_pool"
+            ],
+            "c_file": "src/agent/port_credential_pool_remaining.c",
+            "python_file": "agent/credential_pool.py",
+            "line": 452,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _seed_custom_pool @ agent/credential_pool.py:_seed_custom_pool */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/credential_pool.py",
