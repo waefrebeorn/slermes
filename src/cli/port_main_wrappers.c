@@ -640,7 +640,15 @@ int main_u_aux_config_menu(const char *arg) { (void)arg; return 0; }
 int main_u_aux_select_for_task(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _aux_flow_provider_model @ hermes_cli/main.py:_aux_flow_provider_model */
-int main_u_aux_flow_provider_model(const char *arg) { (void)arg; return 0; }
+int main_u_aux_flow_provider_model(const char *arg) {
+    /* Python: aux model prompt. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("No change.\n"); return 0; }
+    printf("aux task model saved: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _aux_flow_custom_endpoint @ hermes_cli/main.py:_aux_flow_custom_endpoint */
 int main_u_aux_flow_custom_endpoint(const char *arg) { (void)arg; return 0; }
@@ -874,10 +882,32 @@ int main_u_capture_head_sha(const char *arg) {
 int main_u_validate_critical_files_syntax(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _gateway_prompt @ hermes_cli/main.py:_gateway_prompt */
-int main_u_gateway_prompt(const char *arg) { (void)arg; return 0; }
+int main_u_gateway_prompt(const char *arg) {
+    /* Python: file IPC prompt. Arg =
+     * "state\tresult\ttimed_out". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) {
+        printf("  (no response, using default: %s)\n", t2 ? t2 + 1 : "");
+        return 0;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _web_ui_build_needed @ hermes_cli/main.py:_web_ui_build_needed */
-int main_u_web_ui_build_needed(const char *arg) { (void)arg; return 0; }
+int main_u_web_ui_build_needed(const char *arg) {
+    /* Python: hash vs sentinel. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("1\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _compute_web_ui_content_hash @ hermes_cli/main.py:_compute_web_ui_content_hash */
 int main_u_compute_web_ui_content_hash(const char *arg) { (void)arg; return 0; }
@@ -1845,7 +1875,16 @@ int main_u_ensure_uv_for_termux(const char *arg) {
 }
 
 /* PoP: _npm_manifest_paths @ hermes_cli/main.py:_npm_manifest_paths */
-int main_u_npm_manifest_paths(const char *arg) { (void)arg; return 0; }
+int main_u_npm_manifest_paths(const char *arg) {
+    /* Python: workspaces globs. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _npm_manifests_digest @ hermes_cli/main.py:_npm_manifests_digest */
 int main_u_npm_manifests_digest(const char *arg) {

@@ -271,7 +271,15 @@ int kdbport_u_unique_attachment_path(const char *arg) {
 }
 
 /* PoP: _managed_scratch_path_info @ hermes_cli/kanban_db.py:_managed_scratch_path_info */
-int kdbport_u_managed_scratch_path_info(const char *arg) { (void)arg; return 0; }
+int kdbport_u_managed_scratch_path_info(const char *arg) {
+    /* Python: root containment. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\t\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\t\n"); return 0; }
+    printf("1\t%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: decompose_triage_task @ hermes_cli/kanban_db.py:decompose_triage_task */
 int kdbport_decompose_triage_task(const char *arg) { (void)arg; return 0; }

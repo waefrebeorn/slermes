@@ -333,7 +333,20 @@ int grun_u_exit_external_drain(const char *arg) { (void)arg; return 0; }
 int grun_u_drain_control_watcher(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _pause_failed_platform @ gateway/run.py:_pause_failed_platform */
-int grun_u_pause_failed_platform(const char *arg) { (void)arg; return 0; }
+int grun_u_pause_failed_platform(const char *arg) {
+    /* Python: manual pause. Arg =
+     * "known\tpaused\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int known = arg[0] == '1';
+    int paused = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!known || paused || !state) { printf("platform not paused\n"); return 0; }
+    printf("platform paused (next_retry=inf): %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _resume_paused_platform @ gateway/run.py:_resume_paused_platform */
 int grun_u_resume_paused_platform(const char *arg) {
@@ -969,7 +982,15 @@ int grun_u_rebind_turn_lease(const char *arg) {
 int grun_u_clear_conversation_scope(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _clear_session_boundary_security_state @ gateway/run.py:_clear_session_boundary_security_state */
-int grun_u_clear_session_boundary_security_state(const char *arg) { (void)arg; return 0; }
+int grun_u_clear_session_boundary_security_state(const char *arg) {
+    /* Python: per-session clear. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("no session key\n"); return 0; }
+    printf("session boundary security state cleared: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _bind_adapter_run_generation @ gateway/run.py:_bind_adapter_run_generation */
 int grun_u_bind_adapter_run_generation(const char *arg) { (void)arg; return 0; }

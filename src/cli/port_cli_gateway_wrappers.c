@@ -677,7 +677,16 @@ int cgw_u_legacy_unit_search_paths(const char *arg) {
 }
 
 /* PoP: _find_legacy_hermes_units @ hermes_cli/gateway.py:_find_legacy_hermes_units */
-int cgw_u_find_legacy_hermes_units(const char *arg) { (void)arg; return 0; }
+int cgw_u_find_legacy_hermes_units(const char *arg) {
+    /* Python: allowlist scan. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: has_legacy_hermes_units @ hermes_cli/gateway.py:has_legacy_hermes_units */
 int cgw_has_legacy_hermes_units(const char *arg) {

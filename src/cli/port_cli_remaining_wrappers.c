@@ -1940,7 +1940,20 @@ int hermes_cli_profile_distributio_u_git_clone(const char *arg) {
 }
 
 /* PoP: _stage_source @ hermes_cli/profile_distribution.py:_stage_source */
-int hermes_cli_profile_distributio_u_stage_source(const char *arg) { (void)arg; return 0; }
+int hermes_cli_profile_distributio_u_stage_source(const char *arg) {
+    /* Python: git/local resolve. Arg = "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_manifest") == 0 || strcmp(state, "unresolved") == 0) {
+        fprintf(stderr, "DistributionError: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("staged: %s (provenance: %s)\n", arg, t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _reject_distribution_symlinks @ hermes_cli/profile_distribution.py:_reject_distribution_symlinks */
 int hermes_cli_profile_distributio_u_reject_distribution_symlinks(const char *arg) {
@@ -3850,7 +3863,16 @@ int hermes_cli_active_sessions_transfer_active_session(const char *arg) {
 int hermes_cli_codex_runtime_plugi_u_translate_one_server(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _format_toml_value @ hermes_cli/codex_runtime_plugin_migration.py:_format_toml_value */
-int hermes_cli_codex_runtime_plugi_u_format_toml_value(const char *arg) { (void)arg; return 0; }
+int hermes_cli_codex_runtime_plugi_u_format_toml_value(const char *arg) {
+    /* Python: TOML basic string. Arg = "value\tstate\tresult". */
+    if (!arg || !*arg) { printf("\"\"\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("%s\n", arg); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _quote_key @ hermes_cli/codex_runtime_plugin_migration.py:_quote_key */
 int hermes_cli_codex_runtime_plugi_u_quote_key(const char *arg) {
@@ -5672,7 +5694,16 @@ int hermes_cli__subprocess_compat_windows_hide_flags(const char *arg) {
 }
 
 /* PoP: suppress_platform_ver_console @ hermes_cli/_subprocess_compat.py:suppress_platform_ver_console */
-int hermes_cli__subprocess_compat_suppress_platform_ver_console(const char *arg) { (void)arg; return 0; }
+int hermes_cli__subprocess_compat_suppress_platform_ver_console(const char *arg) {
+    /* Python: _syscmd_ver stub. Arg = "is_windows\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int is_windows = arg[0] == '1';
+    int state = tab && tab[1] == '1';
+    if (!is_windows || !state) { printf("no-op (non-windows)\n"); return 0; }
+    printf("platform._syscmd_ver stubbed (no console flash)\n");
+    return 0;
+}
 
 /* PoP: windows_detach_popen_kwargs @ hermes_cli/_subprocess_compat.py:windows_detach_popen_kwargs */
 int hermes_cli__subprocess_compat_windows_detach_popen_kwargs(const char *arg) {
@@ -6317,7 +6348,17 @@ int hermes_cli_setup_whatsapp_clou_u_validate_app_secret(const char *arg) {
 }
 
 /* PoP: _validate_access_token @ hermes_cli/setup_whatsapp_cloud.py:_validate_access_token */
-int hermes_cli_setup_whatsapp_clou_u_validate_access_token(const char *arg) { (void)arg; return 0; }
+int hermes_cli_setup_whatsapp_clou_u_validate_access_token(const char *arg) {
+    /* Python: EAA check. Arg = "value\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\tAccess token is required\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\t%s\n", t2 ? t2 + 1 : "invalid"); return 0; }
+    if (strncmp(arg, "EAA", 3) != 0) { printf("0\tMeta WhatsApp access tokens start with 'EAA'.\n"); return 0; }
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _prompt_validated @ hermes_cli/setup_whatsapp_cloud.py:_prompt_validated */
 int hermes_cli_setup_whatsapp_clou_u_prompt_validated(const char *arg) {
@@ -6794,7 +6835,15 @@ int hermes_cli_providers_is_routing_aggregator(const char *arg) {
 }
 
 /* PoP: host_mandated_api_mode @ hermes_cli/providers.py:host_mandated_api_mode */
-int hermes_cli_providers_host_mandated_api_mode(const char *arg) { (void)arg; return 0; }
+int hermes_cli_providers_host_mandated_api_mode(const char *arg) {
+    /* Python: exact-hostname map. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: determine_api_mode @ hermes_cli/providers.py:determine_api_mode */
 int hermes_cli_providers_determine_api_mode(const char *arg) {
@@ -8348,7 +8397,15 @@ int hermes_cli_partial_compress_extract_compress_flags(const char *arg) {
 }
 
 /* PoP: summarize_compress_preview @ hermes_cli/partial_compress.py:summarize_compress_preview */
-int hermes_cli_partial_compress_summarize_compress_preview(const char *arg) { (void)arg; return 0; }
+int hermes_cli_partial_compress_summarize_compress_preview(const char *arg) {
+    /* Python: preview report. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _cmd_open @ hermes_cli/portal_cli.py:_cmd_open */
 int hermes_cli_portal_cli_u_cmd_open(const char *arg) {

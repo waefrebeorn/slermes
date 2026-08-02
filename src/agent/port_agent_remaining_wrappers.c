@@ -101,7 +101,15 @@ int agent_model_metadata_u_context_cache_key(const char *arg) {
 }
 
 /* PoP: _query_ollama_api_show_uncached @ agent/model_metadata.py:_query_ollama_api_show_uncached */
-int agent_model_metadata_u_query_ollama_api_show_uncached(const char *arg) { (void)arg; return 0; }
+int agent_model_metadata_u_query_ollama_api_show_uncached(const char *arg) {
+    /* Python: /api/show. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _query_local_context_length_uncached @ agent/model_metadata.py:_query_local_context_length_uncached */
 int agent_model_metadata_u_query_local_context_length_uncached(const char *arg) { (void)arg; return 0; }
@@ -1860,7 +1868,18 @@ int agent_memory_provider_on_turn_start(const char *arg) {
 }
 
 /* PoP: on_session_switch @ agent/memory_provider.py:on_session_switch */
-int agent_memory_provider_on_session_switch(const char *arg) { (void)arg; return 0; }
+int agent_memory_provider_on_session_switch(const char *arg) {
+    /* Python: session-switch hook. Arg =
+     * "new_session\treset\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("default no-op\n"); return 0; }
+    printf("provider switched to session: %s%s\n", t3 ? t3 + 1 : "", (t1 && t1[1] == '1') ? " (reset buffers)" : "");
+    return 0;
+}
 
 /* PoP: on_pre_compress @ agent/memory_provider.py:on_pre_compress */
 int agent_memory_provider_on_pre_compress(const char *arg) {

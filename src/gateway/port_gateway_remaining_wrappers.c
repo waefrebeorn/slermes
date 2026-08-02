@@ -973,7 +973,16 @@ int gateway_platforms_qqbot_chunke_u_compute_file_hashes(const char *arg) {
 int gateway_platforms_qqbot_chunke_u_run_with_concurrency(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _render_relay_context @ gateway/relay/ws_transport.py:_render_relay_context */
-int gateway_relay_ws_transport_u_render_relay_context(const char *arg) { (void)arg; return 0; }
+int gateway_relay_ws_transport_u_render_relay_context(const char *arg) {
+    /* Python: channel context render. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _normalize_slack_parent_command @ gateway/relay/ws_transport.py:_normalize_slack_parent_command */
 int gateway_relay_ws_transport_u_normalize_slack_parent_command(const char *arg) {
@@ -1682,7 +1691,16 @@ int gateway_channel_directory_u_slack_api_error_code(const char *arg) {
 }
 
 /* PoP: _build_from_sessions_db @ gateway/channel_directory.py:_build_from_sessions_db */
-int gateway_channel_directory_u_build_from_sessions_db(const char *arg) { (void)arg; return 0; }
+int gateway_channel_directory_u_build_from_sessions_db(const char *arg) {
+    /* Python: state.db rows. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _build_from_sessions_json @ gateway/channel_directory.py:_build_from_sessions_json */
 int gateway_channel_directory_u_build_from_sessions_json(const char *arg) {

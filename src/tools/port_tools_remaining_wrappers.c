@@ -141,7 +141,15 @@ int tools_computer_use_tool_u_shrink_capture_for_vision(const char *arg) {
 }
 
 /* PoP: _should_route_through_aux_vision @ tools/computer_use/tool.py:_should_route_through_aux_vision */
-int tools_computer_use_tool_u_should_route_through_aux_vision(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_tool_u_should_route_through_aux_vision(const char *arg) {
+    /* Python: cached routing. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _capture_after_mode @ tools/computer_use/tool.py:_capture_after_mode */
 int tools_computer_use_tool_u_capture_after_mode(const char *arg) {
