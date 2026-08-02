@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:57:36Z",
+  "generated_at": "2026-08-02T19:59:56Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -31833,10 +31833,10 @@
     },
     "agent/image_routing.py": {
       "total": 14,
-      "ported": 3,
+      "ported": 14,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 11,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 14,
@@ -31852,16 +31852,24 @@
             "decorators": [],
             "line_number": 82
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_image_routing_remaining.c",
+          "c_function": "imgr_extract_image_refs",
+          "pop_annotation": {
+            "c_function": "imgr_extract_image_refs",
+            "python_functions": [
+              "extract_image_refs"
+            ],
+            "c_file": "src/agent/port_image_routing_remaining.c",
+            "python_file": "agent/image_routing.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: extract_image_refs @ agent/image_routing.py:extract_image_refs */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/image_routing.py",
@@ -31873,16 +31881,24 @@
             "decorators": [],
             "line_number": 163
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_image_routing_remaining.c",
+          "c_function": "imgr_coerce_capability_bool",
+          "pop_annotation": {
+            "c_function": "imgr_coerce_capability_bool",
+            "python_functions": [
+              "_coerce_capability_bool"
+            ],
+            "c_file": "src/agent/port_image_routing_remaining.c",
+            "python_file": "agent/image_routing.py",
+            "line": 58,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _coerce_capability_bool @ agent/image_routing.py:_coerce_capability_bool */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/image_routing.py",
@@ -31894,16 +31910,24 @@
             "decorators": [],
             "line_number": 180
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_image_routing_remaining.c",
+          "c_function": "imgr_supports_vision_override",
+          "pop_annotation": {
+            "c_function": "imgr_supports_vision_override",
+            "python_functions": [
+              "_supports_vision_override"
+            ],
+            "c_file": "src/agent/port_image_routing_remaining.c",
+            "python_file": "agent/image_routing.py",
+            "line": 72,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _supports_vision_override @ agent/image_routing.py:_supports_vision_override */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/image_routing.py",
@@ -31973,16 +31997,24 @@
             "decorators": [],
             "line_number": 350
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_image_routing_remaining.c",
+          "c_function": "imgr_coerce_mode",
+          "pop_annotation": {
+            "c_function": "imgr_coerce_mode",
+            "python_functions": [
+              "_coerce_mode"
+            ],
+            "c_file": "src/agent/port_image_routing_remaining.c",
+            "python_file": "agent/image_routing.py",
+            "line": 83,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _coerce_mode @ agent/image_routing.py:_coerce_mode */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/image_routing.py",
@@ -31994,16 +32026,24 @@
             "decorators": [],
             "line_number": 360
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_image_routing_remaining.c",
+          "c_function": "imgr_explicit_aux_vision_override",
+          "pop_annotation": {
+            "c_function": "imgr_explicit_aux_vision_override",
+            "python_functions": [
+              "_explicit_aux_vision_override"
+            ],
+            "c_file": "src/agent/port_image_routing_remaining.c",
+            "python_file": "agent/image_routing.py",
+            "line": 97,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _explicit_aux_vision_override @ agent/image_routing.py:_explicit_aux_vision_override */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/image_routing.py",
@@ -32015,16 +32055,24 @@
             "decorators": [],
             "line_number": 387
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_image_routing_remaining.c",
+          "c_function": "imgr_lookup_supports_vision",
+          "pop_annotation": {
+            "c_function": "imgr_lookup_supports_vision",
+            "python_functions": [
+              "_lookup_supports_vision"
+            ],
+            "c_file": "src/agent/port_image_routing_remaining.c",
+            "python_file": "agent/image_routing.py",
+            "line": 104,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _lookup_supports_vision @ agent/image_routing.py:_lookup_supports_vision */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/image_routing.py",
@@ -32036,16 +32084,24 @@
             "decorators": [],
             "line_number": 461
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_image_routing_remaining.c",
+          "c_function": "imgr_decide_image_input_mode",
+          "pop_annotation": {
+            "c_function": "imgr_decide_image_input_mode",
+            "python_functions": [
+              "decide_image_input_mode"
+            ],
+            "c_file": "src/agent/port_image_routing_remaining.c",
+            "python_file": "agent/image_routing.py",
+            "line": 119,
+            "is_consolidated": false,
+            "full_text": "/* PoP: decide_image_input_mode @ agent/image_routing.py:decide_image_input_mode */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/image_routing.py",
@@ -32057,16 +32113,24 @@
             "decorators": [],
             "line_number": 524
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_image_routing_remaining.c",
+          "c_function": "imgr_sniff_mime_from_bytes",
+          "pop_annotation": {
+            "c_function": "imgr_sniff_mime_from_bytes",
+            "python_functions": [
+              "_sniff_mime_from_bytes"
+            ],
+            "c_file": "src/agent/port_image_routing_remaining.c",
+            "python_file": "agent/image_routing.py",
+            "line": 128,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _sniff_mime_from_bytes @ agent/image_routing.py:_sniff_mime_from_bytes */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/image_routing.py",
@@ -32107,16 +32171,24 @@
             "decorators": [],
             "line_number": 643
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_image_routing_remaining.c",
+          "c_function": "imgr_guess_mime",
+          "pop_annotation": {
+            "c_function": "imgr_guess_mime",
+            "python_functions": [
+              "_guess_mime"
+            ],
+            "c_file": "src/agent/port_image_routing_remaining.c",
+            "python_file": "agent/image_routing.py",
+            "line": 144,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _guess_mime @ agent/image_routing.py:_guess_mime */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/image_routing.py",
@@ -32128,16 +32200,24 @@
             "decorators": [],
             "line_number": 669
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_image_routing_remaining.c",
+          "c_function": "imgr_file_to_data_url",
+          "pop_annotation": {
+            "c_function": "imgr_file_to_data_url",
+            "python_functions": [
+              "_file_to_data_url"
+            ],
+            "c_file": "src/agent/port_image_routing_remaining.c",
+            "python_file": "agent/image_routing.py",
+            "line": 168,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _file_to_data_url @ agent/image_routing.py:_file_to_data_url */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/image_routing.py",
@@ -32149,16 +32229,24 @@
             "decorators": [],
             "line_number": 728
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_image_routing_remaining.c",
+          "c_function": "imgr_build_native_content_parts",
+          "pop_annotation": {
+            "c_function": "imgr_build_native_content_parts",
+            "python_functions": [
+              "build_native_content_parts"
+            ],
+            "c_file": "src/agent/port_image_routing_remaining.c",
+            "python_file": "agent/image_routing.py",
+            "line": 207,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_native_content_parts @ agent/image_routing.py:build_native_content_parts */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -55005,10 +55093,10 @@
     },
     "agent/redact.py": {
       "total": 19,
-      "ported": 6,
+      "ported": 17,
       "partial": 2,
       "stub": 0,
-      "real_gaps": 11,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 19,
@@ -55024,17 +55112,24 @@
             "decorators": [],
             "line_number": 326
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_redact_remaining.c",
+          "c_function": "red_mask_secret",
+          "pop_annotation": {
+            "c_function": "red_mask_secret",
+            "python_functions": [
+              "mask_secret"
+            ],
+            "c_file": "src/agent/port_redact_remaining.c",
+            "python_file": "agent/redact.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: mask_secret @ agent/redact.py:mask_secret */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/redact.py",
@@ -55067,17 +55162,24 @@
             "decorators": [],
             "line_number": 381
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_redact_remaining.c",
+          "c_function": "red_redact_query_string",
+          "pop_annotation": {
+            "c_function": "red_redact_query_string",
+            "python_functions": [
+              "_redact_query_string"
+            ],
+            "c_file": "src/agent/port_redact_remaining.c",
+            "python_file": "agent/redact.py",
+            "line": 51,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _redact_query_string @ agent/redact.py:_redact_query_string */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/redact.py",
@@ -55089,17 +55191,24 @@
             "decorators": [],
             "line_number": 403
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_redact_remaining.c",
+          "c_function": "red_redact_url_query_params",
+          "pop_annotation": {
+            "c_function": "red_redact_url_query_params",
+            "python_functions": [
+              "_redact_url_query_params"
+            ],
+            "c_file": "src/agent/port_redact_remaining.c",
+            "python_file": "agent/redact.py",
+            "line": 103,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _redact_url_query_params @ agent/redact.py:_redact_url_query_params */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/redact.py",
@@ -55111,17 +55220,24 @@
             "decorators": [],
             "line_number": 419
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_redact_remaining.c",
+          "c_function": "red_redact_url_userinfo",
+          "pop_annotation": {
+            "c_function": "red_redact_url_userinfo",
+            "python_functions": [
+              "_redact_url_userinfo"
+            ],
+            "c_file": "src/agent/port_redact_remaining.c",
+            "python_file": "agent/redact.py",
+            "line": 131,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _redact_url_userinfo @ agent/redact.py:_redact_url_userinfo */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/redact.py",
@@ -55220,17 +55336,24 @@
             "decorators": [],
             "line_number": 491
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_redact_remaining.c",
+          "c_function": "red_redact_http_request_target_query_params",
+          "pop_annotation": {
+            "c_function": "red_redact_http_request_target_query_params",
+            "python_functions": [
+              "_redact_http_request_target_query_params"
+            ],
+            "c_file": "src/agent/port_redact_remaining.c",
+            "python_file": "agent/redact.py",
+            "line": 174,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _redact_http_request_target_query_params @ agent/redact.py:_redact_http_request_target_query_params */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/redact.py",
@@ -55242,17 +55365,24 @@
             "decorators": [],
             "line_number": 500
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_redact_remaining.c",
+          "c_function": "red_redact_form_body",
+          "pop_annotation": {
+            "c_function": "red_redact_form_body",
+            "python_functions": [
+              "_redact_form_body"
+            ],
+            "c_file": "src/agent/port_redact_remaining.c",
+            "python_file": "agent/redact.py",
+            "line": 182,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _redact_form_body @ agent/redact.py:_redact_form_body */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/redact.py",
@@ -55372,17 +55502,24 @@
             "decorators": [],
             "line_number": 817
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_redact_remaining.c",
+          "c_function": "red_extract_literal_prefix",
+          "pop_annotation": {
+            "c_function": "red_extract_literal_prefix",
+            "python_functions": [
+              "_extract_literal_prefix"
+            ],
+            "c_file": "src/agent/port_redact_remaining.c",
+            "python_file": "agent/redact.py",
+            "line": 189,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_literal_prefix @ agent/redact.py:_extract_literal_prefix */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/redact.py",
@@ -55394,17 +55531,24 @@
             "decorators": [],
             "line_number": 837
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_redact_remaining.c",
+          "c_function": "red_has_known_prefix_substring",
+          "pop_annotation": {
+            "c_function": "red_has_known_prefix_substring",
+            "python_functions": [
+              "_has_known_prefix_substring"
+            ],
+            "c_file": "src/agent/port_redact_remaining.c",
+            "python_file": "agent/redact.py",
+            "line": 202,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _has_known_prefix_substring @ agent/redact.py:_has_known_prefix_substring */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/redact.py",
@@ -55416,17 +55560,24 @@
             "decorators": [],
             "line_number": 858
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_redact_remaining.c",
+          "c_function": "red_has_http_method_substring",
+          "pop_annotation": {
+            "c_function": "red_has_http_method_substring",
+            "python_functions": [
+              "_has_http_method_substring"
+            ],
+            "c_file": "src/agent/port_redact_remaining.c",
+            "python_file": "agent/redact.py",
+            "line": 212,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _has_http_method_substring @ agent/redact.py:_has_http_method_substring */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/redact.py",
@@ -55438,17 +55589,24 @@
             "decorators": [],
             "line_number": 867
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_redact_remaining.c",
+          "c_function": "red_formatter_init",
+          "pop_annotation": {
+            "c_function": "red_formatter_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_redact_remaining.c",
+            "python_file": "agent/redact.py",
+            "line": 225,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/redact.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/redact.py",
@@ -55460,17 +55618,24 @@
             "decorators": [],
             "line_number": 870
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_redact_remaining.c",
+          "c_function": "red_formatter_format",
+          "pop_annotation": {
+            "c_function": "red_formatter_format",
+            "python_functions": [
+              "format"
+            ],
+            "c_file": "src/agent/port_redact_remaining.c",
+            "python_file": "agent/redact.py",
+            "line": 234,
+            "is_consolidated": false,
+            "full_text": "/* PoP: format @ agent/redact.py:format */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
