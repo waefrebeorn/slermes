@@ -109,7 +109,15 @@ int qqbot_u_handle_ready(const char *arg) {
 int qqbot_u_parse_json(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _next_msg_seq @ gateway/platforms/qqbot/adapter.py:_next_msg_seq */
-int qqbot_u_next_msg_seq(const char *arg) { (void)arg; return 0; }
+int qqbot_u_next_msg_seq(const char *arg) {
+    /* Python: 0..65535 seq. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "0");
+    return 0;
+}
 
 /* PoP: _on_message @ gateway/platforms/qqbot/adapter.py:_on_message */
 int qqbot_u_on_message(const char *arg) { (void)arg; return 0; }

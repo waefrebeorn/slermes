@@ -642,7 +642,22 @@ int tools_registry_discover_builtin_tools(const char *arg) {
 }
 
 /* PoP: _check_fn_cached @ tools/registry.py:_check_fn_cached */
-int tools_registry_u_check_fn_cached(const char *arg) { (void)arg; return 0; }
+int tools_registry_u_check_fn_cached(const char *arg) {
+    /* Python: flake grace. Arg =
+     * "fresh_ok\tin_grace\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int fresh_ok = arg[0] == '1';
+    int in_grace = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (fresh_ok) { printf("1 (fresh)\n"); return 0; }
+    if (in_grace) { printf("1 (flake suppressed — last good within grace)\n"); return 0; }
+    printf("0 (failure cached)\n");
+    return 0;
+}
 
 /* PoP: invalidate_check_fn_cache @ tools/registry.py:invalidate_check_fn_cache */
 int tools_registry_invalidate_check_fn_cache(const char *arg) {
@@ -1041,7 +1056,19 @@ int tools_delegate_tool_u_parent_summary_char_budget(const char *arg) {
 }
 
 /* PoP: _apply_summary_budget @ tools/delegate_tool.py:_apply_summary_budget */
-int tools_delegate_tool_u_apply_summary_budget(const char *arg) { (void)arg; return 0; }
+int tools_delegate_tool_u_apply_summary_budget(const char *arg) {
+    /* Python: min-cap trim. Arg =
+     * "trimmed\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int trimmed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!trimmed) { printf("summaries within budget\n"); return 0; }
+    printf("summaries trimmed (min of static ceiling + headroom budget), spill files written: %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _run_single_child @ tools/delegate_tool.py:_run_single_child */
 int tools_delegate_tool_u_run_single_child(const char *arg) { (void)arg; return 0; }

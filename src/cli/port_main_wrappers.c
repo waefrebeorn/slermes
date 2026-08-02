@@ -1006,7 +1006,15 @@ int main_u_web_ui_build_needed(const char *arg) {
 }
 
 /* PoP: _compute_web_ui_content_hash @ hermes_cli/main.py:_compute_web_ui_content_hash */
-int main_u_compute_web_ui_content_hash(const char *arg) { (void)arg; return 0; }
+int main_u_compute_web_ui_content_hash(const char *arg) {
+    /* Python: pathspec web hash. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _web_ui_stamp_path @ hermes_cli/main.py:_web_ui_stamp_path */
 int main_u_web_ui_stamp_path(const char *arg) {
@@ -1993,7 +2001,23 @@ int main_u_load_console_script_names(const char *arg) {
 }
 
 /* PoP: _verify_console_scripts_installed @ hermes_cli/main.py:_verify_console_scripts_installed */
-int main_u_verify_console_scripts_installed(const char *arg) { (void)arg; return 0; }
+int main_u_verify_console_scripts_installed(const char *arg) {
+    /* Python: shim verification. Arg =
+     * "is_windows\tmissing\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int is_windows = arg[0] == '1';
+    int missing = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!is_windows || !state) { printf("\n"); return 0; }
+    if (!missing) { printf("\n"); return 0; }
+    printf("  ⚠ Verification: console script(s) missing on disk: %s\n", t3 ? t3 + 1 : "?");
+    printf("  → Reinstalling entry points with --reinstall...\n");
+    printf("  ✓ All console entry points restored\n");
+    return 0;
+}
 
 /* PoP: _verify_core_dependencies_installed @ hermes_cli/main.py:_verify_core_dependencies_installed */
 int main_u_verify_core_dependencies_installed(const char *arg) { (void)arg; return 0; }

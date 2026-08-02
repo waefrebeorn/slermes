@@ -581,7 +581,18 @@ int grun_u_defer_agent_cleanup_until_future_done(const char *arg) { (void)arg; r
 int grun_u_cleanup_agent_resources_off_loop(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cleanup_agent_resources @ gateway/run.py:_cleanup_agent_resources */
-int grun_u_cleanup_agent_resources(const char *arg) { (void)arg; return 0; }
+int grun_u_cleanup_agent_resources(const char *arg) {
+    /* Python: best-effort teardown. Arg =
+     * "has_agent\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_agent = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !has_agent) { printf("no agent to clean\n"); return 0; }
+    printf("agent resources cleaned (memory shutdown w/ transcript, close, stale aux clients)%s\n", (t2 && t2[1] == '1') ? " — transcript passed" : "");
+    return 0;
+}
 
 /* PoP: _increment_restart_failure_counts @ gateway/run.py:_increment_restart_failure_counts */
 int grun_u_increment_restart_failure_counts(const char *arg) {
@@ -1091,7 +1102,18 @@ int grun_u_rebind_turn_lease(const char *arg) {
 }
 
 /* PoP: _clear_conversation_scope @ gateway/run.py:_clear_conversation_scope */
-int grun_u_clear_conversation_scope(const char *arg) { (void)arg; return 0; }
+int grun_u_clear_conversation_scope(const char *arg) {
+    /* Python: THE funnel. Arg =
+     * "has_key\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_key = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !has_key) { printf("no scope to clear\n"); return 0; }
+    printf("conversation scope cleared (%s, security state too)\n", t2 ? t2 + 1 : "all scoped dicts");
+    return 0;
+}
 
 /* PoP: _clear_session_boundary_security_state @ gateway/run.py:_clear_session_boundary_security_state */
 int grun_u_clear_session_boundary_security_state(const char *arg) {

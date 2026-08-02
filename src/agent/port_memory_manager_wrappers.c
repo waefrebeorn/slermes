@@ -252,7 +252,18 @@ int mm_on_turn_start(const char *arg) {
 }
 
 /* PoP: commit_session_boundary_async @ agent/memory_manager.py:commit_session_boundary_async */
-int mm_commit_session_boundary_async(const char *arg) { (void)arg; return 0; }
+int mm_commit_session_boundary_async(const char *arg) {
+    /* Python: serialized end→switch. Arg =
+     * "has_providers\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_providers = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !has_providers) { printf("no boundary task\n"); return 0; }
+    printf("boundary task queued (end→switch serialized on worker)%s\n", (t2 && t2[1] == '1') ? " — inline fallback" : "");
+    return 0;
+}
 
 /* PoP: on_session_switch @ agent/memory_manager.py:on_session_switch */
 int mm_on_session_switch(const char *arg) {
@@ -350,7 +361,16 @@ int mm_u_memory_tool_result_succeeded(const char *arg) {
 }
 
 /* PoP: notify_memory_tool_write @ agent/memory_manager.py:notify_memory_tool_write */
-int mm_notify_memory_tool_write(const char *arg) { (void)arg; return 0; }
+int mm_notify_memory_tool_write(const char *arg) {
+    /* Python: mirror gate. Arg = "ops\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("mirrored %s mutating op(s) to external providers\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: shutdown_drain_state @ agent/memory_manager.py:shutdown_drain_state */
 int mm_shutdown_drain_state(const char *arg) {

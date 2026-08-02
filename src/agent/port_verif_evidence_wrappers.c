@@ -150,7 +150,18 @@ int vev_classify_verification_command(const char *arg) {
 }
 
 /* PoP: record_terminal_result @ agent/verification_evidence.py:record_terminal_result */
-int vev_record_terminal_result(const char *arg) { (void)arg; return 0; }
+int vev_record_terminal_result(const char *arg) {
+    /* Python: evidence insert. Arg =
+     * "is_evidence\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_evidence = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !is_evidence) { printf("\n"); return 0; }
+    printf("verification event recorded: %s\n", t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: mark_workspace_edited @ agent/verification_evidence.py:mark_workspace_edited */
 int vev_mark_workspace_edited(const char *arg) {

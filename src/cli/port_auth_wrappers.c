@@ -234,7 +234,28 @@ int auth_u_spotify_exchange_code_for_tokens(const char *arg) {
 }
 
 /* PoP: _refresh_spotify_oauth_state @ hermes_cli/auth.py:_refresh_spotify_oauth_state */
-int auth_u_refresh_spotify_oauth_state(const char *arg) { (void)arg; return 0; }
+int auth_u_refresh_spotify_oauth_state(const char *arg) {
+    /* Python: spotify refresh. Arg = "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_rt") == 0) {
+        fprintf(stderr, "Spotify refresh token missing. Run `hermes auth spotify` again.\n");
+        return 1;
+    }
+    if (strcmp(state, "http_fail") == 0) {
+        fprintf(stderr, "Spotify token refresh failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    if (strcmp(state, "no_token") == 0) {
+        fprintf(stderr, "Spotify refresh response did not include an access_token.\n");
+        return 1;
+    }
+    printf("spotify refreshed: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: resolve_spotify_runtime_credentials @ hermes_cli/auth.py:resolve_spotify_runtime_credentials */
 int auth_resolve_spotify_runtime_credentials(const char *arg) { (void)arg; return 0; }

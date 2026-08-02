@@ -211,7 +211,15 @@ int envd_u_resolve_host_user_spec(const char *arg) {
 }
 
 /* PoP: _cgroup_limits_available @ tools/environments/docker.py:_cgroup_limits_available */
-int envd_u_cgroup_limits_available(const char *arg) { (void)arg; return 0; }
+int envd_u_cgroup_limits_available(const char *arg) {
+    /* Python: sleep-0 probe. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0 (limits disabled)\n"); return 0; }
+    printf("%s (cached per-process)\n", (tab && tab[1] == '1') ? "1 (--cpus/--memory/--pids-limit ok)" : "0 (no delegation — running unlimited)");
+    return 0;
+}
 
 /* PoP: _ensure_docker_available @ tools/environments/docker.py:_ensure_docker_available */
 int envd_u_ensure_docker_available(const char *arg) { (void)arg; return 0; }

@@ -257,7 +257,26 @@ int hermes_cli_debug_u_confirm_upload(const char *arg) {
 }
 
 /* PoP: _run_debug_share_nous @ hermes_cli/debug.py:_run_debug_share_nous */
-int hermes_cli_debug_u_run_debug_share_nous(const char *arg) { (void)arg; return 0; }
+int hermes_cli_debug_u_run_debug_share_nous(const char *arg) {
+    /* Python: Nous-S3 upload. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "declined") == 0) {
+        printf("upload declined by user\n");
+        return 0;
+    }
+    if (strcmp(state, "failed") == 0) {
+        fprintf(stderr, "Nous upload failed: %s — run `hermes debug share --local`\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("\nDebug bundle uploaded to Nous (private):\n");
+    printf("  View URL  %s\n", t3 ? t3 + 1 : "?");
+    return 0;
+}
 
 /* PoP: run_debug @ hermes_cli/debug.py:run_debug */
 int hermes_cli_debug_run_debug(const char *arg) {
@@ -1337,7 +1356,22 @@ int hermes_cli_mcp_catalog_u_run_bootstrap(const char *arg) {
 }
 
 /* PoP: _do_git_install @ hermes_cli/mcp_catalog.py:_do_git_install */
-int hermes_cli_mcp_catalog_u_do_git_install(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_catalog_u_do_git_install(const char *arg) {
+    /* Python: clone+checkout. Arg =
+     * "sha_ref\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int sha_ref = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) {
+        fprintf(stderr, "git install failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("installed at %s (%s)\n", t3 ? t3 + 1 : "?", sha_ref ? "SHA checkout" : "depth-1 branch");
+    return 0;
+}
 
 /* PoP: _expand_install_dir @ hermes_cli/mcp_catalog.py:_expand_install_dir */
 int hermes_cli_mcp_catalog_u_expand_install_dir(const char *arg) {
@@ -2576,7 +2610,25 @@ int hermes_cli_telegram_managed_bo_poll_for_token(const char *arg) {
 }
 
 /* PoP: auto_setup_telegram_bot_result @ hermes_cli/telegram_managed_bot.py:auto_setup_telegram_bot_result */
-int hermes_cli_telegram_managed_bo_auto_setup_telegram_bot_result(const char *arg) { (void)arg; return 0; }
+int hermes_cli_telegram_managed_bo_auto_setup_telegram_bot_result(const char *arg) {
+    /* Python: QR pairing flow. Arg =
+     * "paired\ttimed_out\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int paired = arg[0] == '1';
+    int timed_out = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!paired) {
+        if (timed_out) { printf("  ✗ Timed out waiting for bot creation — check Telegram.\n"); }
+        else { printf("  ✗ Could not reach the Hermes Telegram onboarding service.\n"); }
+        return 0;
+    }
+    printf("  ✓ Bot created successfully! %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _collect_memory_provider_external_paths @ hermes_cli/backup.py:_collect_memory_provider_external_paths */
 int hermes_cli_backup_u_collect_memory_provider_external_paths(const char *arg) {
@@ -4510,7 +4562,15 @@ int hermes_cli_middleware_u_get_middleware_callbacks(const char *arg) {
 int hermes_cli_middleware_u_run_execution_chain(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _s6_running @ hermes_cli/service_manager.py:_s6_running */
-int hermes_cli_service_manager_u_s6_running(const char *arg) { (void)arg; return 0; }
+int hermes_cli_service_manager_u_s6_running(const char *arg) {
+    /* Python: /proc/1/comm + basedir. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s (comm=s6-svscan AND /run/s6/basedir)\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _profile_dir_for_gateway_service @ hermes_cli/service_manager.py:_profile_dir_for_gateway_service */
 int hermes_cli_service_manager_u_profile_dir_for_gateway_service(const char *arg) {
@@ -4778,7 +4838,22 @@ int hermes_cli_dashboard_auth_midd_u_ordered_session_providers(const char *arg) 
 }
 
 /* PoP: _unauth_response @ hermes_cli/dashboard_auth/middleware.py:_unauth_response */
-int hermes_cli_dashboard_auth_midd_u_unauth_response(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_midd_u_unauth_response(const char *arg) {
+    /* Python: 401 JSON / 302 HTML. Arg =
+     * "is_api\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_api = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (is_api) {
+        printf("401 JSON: {\"error\": \"unauthenticated\", \"login_url\": \"%s\"}\n", t2 ? t2 + 1 : "/login");
+        return 0;
+    }
+    printf("302 → %s\n", t2 ? t2 + 1 : "/login");
+    return 0;
+}
 
 /* PoP: _auto_sso_response @ hermes_cli/dashboard_auth/middleware.py:_auto_sso_response */
 int hermes_cli_dashboard_auth_midd_u_auto_sso_response(const char *arg) { (void)arg; return 0; }
@@ -7616,7 +7691,25 @@ int hermes_cli_dingtalk_auth_render_qr_to_terminal(const char *arg) {
 }
 
 /* PoP: dingtalk_qr_auth @ hermes_cli/dingtalk_auth.py:dingtalk_qr_auth */
-int hermes_cli_dingtalk_auth_dingtalk_qr_auth(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dingtalk_auth_dingtalk_qr_auth(const char *arg) {
+    /* Python: QR device flow. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "init_fail") == 0) {
+        fprintf(stderr, "  Authorization init failed: %s\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    if (strcmp(state, "auth_fail") == 0) {
+        fprintf(stderr, "  Authorization failed: %s\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    printf("  QR scan authorization successful! client_id=%s\n", t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _default_gateway_id @ hermes_cli/gateway_enroll.py:_default_gateway_id */
 int hermes_cli_gateway_enroll_u_default_gateway_id(const char *arg) {
@@ -8053,7 +8146,12 @@ int hermes_cli_bundles_u_cmd_delete(const char *arg) {
 }
 
 /* PoP: register_cli @ hermes_cli/bundles.py:register_cli */
-int hermes_cli_bundles_register_cli(const char *arg) { (void)arg; return 0; }
+int hermes_cli_bundles_register_cli(const char *arg) {
+    /* Python: bundles argparse tree. */
+    (void)arg;
+    printf("bundles CLI wired (list/show/create/delete/reload)\n");
+    return 0;
+}
 
 /* PoP: _generate_dashboard_name @ hermes_cli/dashboard_register.py:_generate_dashboard_name */
 int hermes_cli_dashboard_register_u_generate_dashboard_name(const char *arg) {

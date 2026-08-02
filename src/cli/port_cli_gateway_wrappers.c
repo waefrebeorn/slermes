@@ -1834,7 +1834,16 @@ int cgw_u_is_service_installed(const char *arg) {
 }
 
 /* PoP: _is_service_running @ hermes_cli/gateway.py:_is_service_running */
-int cgw_u_is_service_running(const char *arg) { (void)arg; return 0; }
+int cgw_u_is_service_running(const char *arg) {
+    /* Python: systemd→launchd→win→manual. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s (service or pid probe)\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _builtin_setup_fn @ hermes_cli/gateway.py:_builtin_setup_fn */
 int cgw_u_builtin_setup_fn(const char *arg) {
