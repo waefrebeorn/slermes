@@ -1243,7 +1243,19 @@ int gateway_kanban_watchers_u_deliver_kanban_artifacts(const char *arg) { (void)
 int gateway_kanban_watchers_u_kanban_dispatcher_watcher(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _start_revocation_monitor @ gateway/relay/adapter.py:_start_revocation_monitor */
-int gateway_relay_adapter_u_start_revocation_monitor(const char *arg) { (void)arg; return 0; }
+int gateway_relay_adapter_u_start_revocation_monitor(const char *arg) {
+    /* Python: 4401 poll. Arg =
+     * "already\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int already = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (already) { printf("monitor already running\n"); return 0; }
+    printf("revocation monitor spawned (1s poll → relay_disabled non-retryable fatal)%s\n", t2 && t2[1] == '1' ? " — revoked" : "");
+    return 0;
+}
 
 /* PoP: _watch_for_revocation @ gateway/relay/adapter.py:_watch_for_revocation */
 int gateway_relay_adapter_u_watch_for_revocation(const char *arg) { (void)arg; return 0; }

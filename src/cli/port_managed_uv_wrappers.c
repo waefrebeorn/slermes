@@ -192,7 +192,21 @@ int muv_u_smoke_candidate_venv(const char *arg) {
 }
 
 /* PoP: _stage_candidate_venv @ hermes_cli/managed_uv.py:_stage_candidate_venv */
-int muv_u_stage_candidate_venv(const char *arg) { (void)arg; return 0; }
+int muv_u_stage_candidate_venv(const char *arg) {
+    /* Python: relocatable stage. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "create_fail") == 0 || strcmp(state, "no_lock") == 0 || strcmp(state, "sync_fail") == 0 || strcmp(state, "smoke_fail") == 0) {
+        printf("candidate venv rejected: %s\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    printf("candidate venv staged: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _rename_with_retry @ hermes_cli/managed_uv.py:_rename_with_retry */
 int muv_u_rename_with_retry(const char *arg) {

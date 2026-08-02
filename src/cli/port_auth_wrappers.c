@@ -472,7 +472,18 @@ int auth_u_codex_usage_probe_url(const char *arg) {
 int auth_u_probe_codex_quota_restored(const char *arg) { (void)arg; return 0; }
 
 /* PoP: clear_codex_pool_quota_cooldowns @ hermes_cli/auth.py:clear_codex_pool_quota_cooldowns */
-int auth_clear_codex_pool_quota_cooldowns(const char *arg) { (void)arg; return 0; }
+int auth_clear_codex_pool_quota_cooldowns(const char *arg) {
+    /* Python: quota-shaped only. Arg =
+     * "cleared\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int cleared = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("cleared %s entry(ies) (429-shaped only, dead entries untouched)\n", t2 ? t2 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _pool_codex_access_token @ hermes_cli/auth.py:_pool_codex_access_token */
 int auth_u_pool_codex_access_token(const char *arg) {

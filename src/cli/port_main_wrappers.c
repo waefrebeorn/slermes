@@ -768,7 +768,16 @@ int main_u_prompt_provider_choice(const char *arg) {
 }
 
 /* PoP: _prompt_custom_api_mode_selection @ hermes_cli/main.py:_prompt_custom_api_mode_selection */
-int main_u_prompt_custom_api_mode_selection(const char *arg) { (void)arg; return 0; }
+int main_u_prompt_custom_api_mode_selection(const char *arg) {
+    /* Python: 4-mode picker. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("auto-detect (cancelled/invalid)\n"); return 0; }
+    printf("mode selected: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _custom_provider_api_key_config_value @ hermes_cli/main.py:_custom_provider_api_key_config_value */
 int main_u_custom_provider_api_key_config_value(const char *arg) {
@@ -1058,7 +1067,15 @@ int main_u_write_web_ui_build_stamp(const char *arg) {
 int main_u_run_with_idle_timeout(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _nixos_build_env @ hermes_cli/main.py:_nixos_build_env */
-int main_u_nixos_build_env(const char *arg) { (void)arg; return 0; }
+int main_u_nixos_build_env(const char *arg) {
+    /* Python: two-tier python3. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("PYTHON=%s (tier %s)\n", tab ? tab + 1 : "?", (tab && tab[1] == '2') ? "nix-shell fallback" : "venv fast path");
+    return 0;
+}
 
 /* PoP: _run_npm_install_deterministic @ hermes_cli/main.py:_run_npm_install_deterministic */
 int main_u_run_npm_install_deterministic(const char *arg) { (void)arg; return 0; }

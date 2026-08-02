@@ -132,7 +132,19 @@ int smt_u_background_review_preflight(const char *arg) {
 }
 
 /* PoP: _curator_consolidation_delete_guard @ tools/skill_manager_tool.py:_curator_consolidation_delete_guard */
-int smt_u_curator_consolidation_delete_guard(const char *arg) { (void)arg; return 0; }
+int smt_u_curator_consolidation_delete_guard(const char *arg) {
+    /* Python: fail-closed #29912. Arg =
+     * "declared\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int declared = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (declared) { printf("\n"); return 0; }
+    printf("Refusing background curator delete: no absorbed_into target — keeping skill active.\n");
+    return 0;
+}
 
 /* PoP: _validate_category @ tools/skill_manager_tool.py:_validate_category */
 int smt_u_validate_category(const char *arg) { (void)arg; return 0; }

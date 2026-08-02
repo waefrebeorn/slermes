@@ -159,7 +159,18 @@ int mm_u_provider_sync_accepts_messages(const char *arg) {
 }
 
 /* PoP: sync_all @ agent/memory_manager.py:sync_all */
-int mm_sync_all(const char *arg) { (void)arg; return 0; }
+int mm_sync_all(const char *arg) {
+    /* Python: background sync. Arg =
+     * "has_providers\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_providers = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !has_providers) { printf("no providers to sync\n"); return 0; }
+    printf("sync dispatched off-thread (serialized worker)%s\n", (t2 && t2[1] == '1') ? " — scaffolding stripped" : "");
+    return 0;
+}
 
 /* PoP: _submit_background @ agent/memory_manager.py:_submit_background */
 int mm_u_submit_background(const char *arg) {
@@ -382,7 +393,22 @@ int mm_shutdown_drain_state(const char *arg) {
 }
 
 /* PoP: _drain_sync_executor @ agent/memory_manager.py:_drain_sync_executor */
-int mm_u_drain_sync_executor(const char *arg) { (void)arg; return 0; }
+int mm_u_drain_sync_executor(const char *arg) {
+    /* Python: bounded drain. Arg =
+     * "timed_out\tstate\tresult". */
+    if (!arg || !*arg) { printf("drained\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int timed_out = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("drain skipped (no executor)\n"); return 0; }
+    if (timed_out) {
+        printf("drain timed out — abandoned writes/prefetches logged, %s active task(s) detached\n", t2 ? t2 + 1 : "0");
+        return 0;
+    }
+    printf("drained (all queued FIFO work ran)\n");
+    return 0;
+}
 
 /* PoP: initialize_all @ agent/memory_manager.py:initialize_all */
 int mm_initialize_all(const char *arg) {

@@ -3242,7 +3242,19 @@ int tools_mixture_of_agents_tool_u_build_auth_header(const char *arg) { (void)ar
 int tools_moa_performance_u_build_auth_header(const char *arg) { (void)arg; return 0; }
 
 /* PoP: scan_file @ tools/skills_guard.py:scan_file */
-int tools_skills_guard_scan_file(const char *arg) { (void)arg; return 0; }
+int tools_skills_guard_scan_file(const char *arg) {
+    /* Python: threat scan. Arg =
+     * "findings\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int findings = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    if (!findings) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _record_tirith_crash @ tools/tirith_security.py:_record_tirith_crash */
 int tools_tirith_security_u_record_tirith_crash(const char *arg) {

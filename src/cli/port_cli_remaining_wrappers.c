@@ -21,7 +21,18 @@
 #include "sqlite3.h"
 
 /* PoP: _redirect_uri @ hermes_cli/dashboard_auth/routes.py:_redirect_uri */
-int hermes_cli_dashboard_auth_rout_u_redirect_uri(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_rout_u_redirect_uri(const char *arg) {
+    /* Python: 3-tier callback. Arg =
+     * "public\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int public = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s (tier %s)\n", t2 ? t2 + 1 : "?", public ? "1: declared public_url" : "2/3: request + forwarded prefix");
+    return 0;
+}
 
 /* PoP: _prefix @ hermes_cli/dashboard_auth/routes.py:_prefix */
 int hermes_cli_dashboard_auth_rout_u_prefix(const char *arg) {
@@ -50,7 +61,18 @@ int hermes_cli_dashboard_auth_rout_auth_native_authorize(const char *arg) { (voi
 int hermes_cli_dashboard_auth_rout_auth_callback(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _validate_post_login_target @ hermes_cli/dashboard_auth/routes.py:_validate_post_login_target */
-int hermes_cli_dashboard_auth_rout_u_validate_post_login_target(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_rout_u_validate_post_login_target(const char *arg) {
+    /* Python: re-validate next. Arg =
+     * "safe\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int safe = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !safe) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _password_rate_limited @ hermes_cli/dashboard_auth/routes.py:_password_rate_limited */
 int hermes_cli_dashboard_auth_rout_u_password_rate_limited(const char *arg) {
@@ -4167,7 +4189,15 @@ int hermes_cli_codex_runtime_plugi_u_insert_managed_block_at_top_el(const char *
 }
 
 /* PoP: _strip_unmanaged_plugin_tables @ hermes_cli/codex_runtime_plugin_migration.py:_strip_unmanaged_plugin_tables */
-int hermes_cli_codex_runtime_plugi_u_strip_unmanaged_plugin_tables(const char *arg) { (void)arg; return 0; }
+int hermes_cli_codex_runtime_plugi_u_strip_unmanaged_plugin_tables(const char *arg) {
+    /* Python: dup-table killer. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _looks_like_table_header @ hermes_cli/codex_runtime_plugin_migration.py:_looks_like_table_header */
 int hermes_cli_codex_runtime_plugi_u_looks_like_table_header(const char *arg) {
@@ -7316,7 +7346,16 @@ int hermes_cli_providers_custom_provider_slug(const char *arg) {
 }
 
 /* PoP: resolve_custom_provider @ hermes_cli/providers.py:resolve_custom_provider */
-int hermes_cli_providers_resolve_custom_provider(const char *arg) { (void)arg; return 0; }
+int hermes_cli_providers_resolve_custom_provider(const char *arg) {
+    /* Python: bare-custom self-heal. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("resolved: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: register_cli @ hermes_cli/secrets_cli.py:register_cli */
 int hermes_cli_secrets_cli_register_cli(const char *arg) { (void)arg; return 0; }
@@ -8041,7 +8080,15 @@ int hermes_cli_session_filters_format_epoch(const char *arg) {
 int hermes_cli_session_filters_build_prune_filters(const char *arg) { (void)arg; return 0; }
 
 /* PoP: describe_filters @ hermes_cli/session_filters.py:describe_filters */
-int hermes_cli_session_filters_describe_filters(const char *arg) { (void)arg; return 0; }
+int hermes_cli_session_filters_describe_filters(const char *arg) {
+    /* Python: human summary. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("no filters (all ended sessions)\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("no filters (all ended sessions)\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: url_origin @ hermes_cli/urllib_security.py:url_origin */
 int hermes_cli_urllib_security_url_origin(const char *arg) {

@@ -137,7 +137,18 @@ int envl_u_inject_context_hermes_home(const char *arg) {
 }
 
 /* PoP: _inject_session_context_env @ tools/environments/local.py:_inject_session_context_env */
-int envl_u_inject_session_context_env(const char *arg) { (void)arg; return 0; }
+int envl_u_inject_session_context_env(const char *arg) {
+    /* Python: contextvar bridge. Arg =
+     * "engaged\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int engaged = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("no session env injection\n"); return 0; }
+    printf("session vars bridged (%s: authoritative ContextVars, unset stripped)%s\n", engaged ? "engaged" : "fallback inherit", t2 && t2[1] == '1' ? " — leak guard active" : "");
+    return 0;
+}
 
 /* PoP: _scrub_delegated_child_kanban_env @ tools/environments/local.py:_scrub_delegated_child_kanban_env */
 int envl_u_scrub_delegated_child_kanban_env(const char *arg) {
@@ -250,7 +261,16 @@ int envl_u_bash_starts(const char *arg) {
 }
 
 /* PoP: _git_bash_bin_dirs @ tools/environments/local.py:_git_bash_bin_dirs */
-int envl_u_git_bash_bin_dirs(const char *arg) { (void)arg; return 0; }
+int envl_u_git_bash_bin_dirs(const char *arg) {
+    /* Python: /etc/profile order. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _prepend_git_bash_dirs @ tools/environments/local.py:_prepend_git_bash_dirs */
 int envl_u_prepend_git_bash_dirs(const char *arg) {

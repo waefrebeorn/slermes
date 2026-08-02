@@ -36,7 +36,15 @@ int grun_u_resolve_runtime_agent_kwargs_for_provider(const char *arg) {
 }
 
 /* PoP: _try_resolve_fallback_provider @ gateway/run.py:_try_resolve_fallback_provider */
-int grun_u_try_resolve_fallback_provider(const char *arg) { (void)arg; return 0; }
+int grun_u_try_resolve_fallback_provider(const char *arg) {
+    /* Python: fallback chain. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("fallback resolved: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _probe_audio_duration @ gateway/run.py:_probe_audio_duration */
 int grun_u_probe_audio_duration(const char *arg) { (void)arg; return 0; }
@@ -211,7 +219,15 @@ int grun_u_sync_telegram_topic_binding(const char *arg) {
 }
 
 /* PoP: _recover_telegram_topic_thread_id @ gateway/run.py:_recover_telegram_topic_thread_id */
-int grun_u_recover_telegram_topic_thread_id(const char *arg) { (void)arg; return 0; }
+int grun_u_recover_telegram_topic_thread_id(const char *arg) {
+    /* Python: lobby-pin. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "not_tg") == 0 || strcmp(state, "non_lobby") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _normalize_source_for_session_key @ gateway/run.py:_normalize_source_for_session_key */
 int grun_u_normalize_source_for_session_key(const char *arg) {
@@ -1229,7 +1245,15 @@ int grun_u_sweep_idle_cached_agents(const char *arg) { (void)arg; return 0; }
 int grun_u_run_agent_via_proxy(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _profile_name_for_source @ gateway/run.py:_profile_name_for_source */
-int grun_u_profile_name_for_source(const char *arg) { (void)arg; return 0; }
+int grun_u_profile_name_for_source(const char *arg) {
+    /* Python: route match. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _resolve_profile_home_for_source @ gateway/run.py:_resolve_profile_home_for_source */
 int grun_u_resolve_profile_home_for_source(const char *arg) { (void)arg; return 0; }

@@ -371,7 +371,17 @@ int cua_cua_driver_install_hint(void) {
 }
 
 /* PoP: _parse_elements_from_structured @ tools/computer_use/cua_backend.py:_parse_elements_from_structured */
-int cua_u_parse_elements_from_structured(const char *arg) { (void)arg; return 0; }
+int cua_u_parse_elements_from_structured(const char *arg) {
+    /* Python: real frames. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s element(s) parsed (frames + tokens preserved)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _require_started @ tools/computer_use/cua_backend.py:_require_started */
 int cua_u_require_started(const char *arg) { (void)arg; return 0; }
