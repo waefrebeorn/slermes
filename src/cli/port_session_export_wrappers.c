@@ -83,7 +83,21 @@ int sexp_u_render_full_markdown(const char *arg);
 int sexp_normalize_export_format(const char *arg) { (void)arg; return 0; }
 
 /* PoP: normalize_export_only @ hermes_cli/session_export.py:normalize_export_only */
-int sexp_normalize_export_only(const char *arg) { (void)arg; return 0; }
+int sexp_normalize_export_only(const char *arg) {
+    /* Python: strip/lower; user* -> "user-prompts"; else ValueError. Arg =
+     * only (empty = None). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ' || *p == '\t') p++;
+    size_t n = strlen(p);
+    while (n > 0 && (p[n-1] == ' ' || p[n-1] == '\t')) n--;
+    if (n == 4 && strncasecmp(p, "user", 4) == 0) { printf("user-prompts\n"); return 0; }
+    if (n == 7 && strncasecmp(p, "prompts", 7) == 0) { printf("user-prompts\n"); return 0; }
+    if (n == 12 && strncasecmp(p, "user-prompts", 12) == 0) { printf("user-prompts\n"); return 0; }
+    if (n == 12 && strncasecmp(p, "user_prompts", 12) == 0) { printf("user-prompts\n"); return 0; }
+    printf("unsupported: %.*s\n", (int)n, p);
+    return 1;
+}
 
 /* PoP: render_sessions_export @ hermes_cli/session_export.py:render_sessions_export */
 int sexp_render_sessions_export(const char *arg) { (void)arg; return 0; }

@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <signal.h>
+#include <dirent.h>
 #include "hermes_json.h"
 #include "registry.h"
 
@@ -506,7 +507,38 @@ int tools_delegation_live_log_new_live_delegation_id(const char *arg) {
 }
 
 /* PoP: _one_line @ tools/delegation_live_log.py:_one_line */
-int tools_delegation_live_log_u_one_line(const char *arg) { (void)arg; return 0; }
+int tools_delegation_live_log_u_one_line(const char *arg) {
+    /* Python: collapse whitespace; truncate with "…(+N chars)". Arg =
+     * "text\tlimit". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    size_t tlen = tab ? (size_t)(tab - arg) : strlen(arg);
+    long limit = tab ? strtol(tab + 1, NULL, 10) : 120;
+    if (limit < 0) limit = 0;
+    char *flat = malloc(tlen + 1);
+    if (!flat) { printf("\n"); return 0; }
+    size_t w = 0;
+    int in_ws = 0;
+    for (size_t i = 0; i < tlen; i++) {
+        char c = arg[i];
+        if (c == '\n' || c == '\t' || c == '\r' || c == ' ' || c == '\f' || c == '\v') {
+            if (!in_ws && w) flat[w++] = ' ';
+            in_ws = 1;
+        } else {
+            flat[w++] = c;
+            in_ws = 0;
+        }
+    }
+    while (w > 0 && flat[w-1] == ' ') w--;
+    flat[w] = '\0';
+    if ((long)w > limit) {
+        printf("%.*s…(+%ld chars)\n", (int)limit, flat, (long)w - limit);
+    } else {
+        printf("%s\n", flat);
+    }
+    free(flat);
+    return 0;
+}
 
 /* PoP: assistant_text @ tools/delegation_live_log.py:assistant_text */
 int tools_delegation_live_log_assistant_text(const char *arg) {
@@ -1224,7 +1256,22 @@ int tools_checkpoint_manager_u_pre_v2_shadow_repos(const char *arg) { (void)arg;
 int tools_checkpoint_manager_u_workdir_is_observably_gone(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _dir_has_any_entry @ tools/checkpoint_manager.py:_dir_has_any_entry */
-int tools_checkpoint_manager_u_dir_has_any_entry(const char *arg) { (void)arg; return 0; }
+int tools_checkpoint_manager_u_dir_has_any_entry(const char *arg) {
+    /* Python: scandir stops at first entry. Arg = directory. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    DIR *d = opendir(arg);
+    if (!d) { printf("0\n"); return 0; }
+    struct dirent *e;
+    int any = 0;
+    while ((e = readdir(d))) {
+        if (strcmp(e->d_name, ".") == 0 || strcmp(e->d_name, "..") == 0) continue;
+        any = 1;
+        break;
+    }
+    closedir(d);
+    printf("%d\n", any);
+    return 0;
+}
 
 /* PoP: _cua_child_env @ tools/computer_use/doctor.py:_cua_child_env */
 int tools_computer_use_doctor_u_cua_child_env(const char *arg) { (void)arg; return 0; }
@@ -1356,7 +1403,18 @@ int tools_tts_streaming_mark_speech_interrupted(const char *arg) {
 }
 
 /* PoP: take_speech_interrupted @ tools/tts_streaming.py:take_speech_interrupted */
-int tools_tts_streaming_take_speech_interrupted(const char *arg) { (void)arg; return 0; }
+int tools_tts_streaming_take_speech_interrupted(const char *arg) {
+    /* Python: pop latch; True when barge within TTL. Arg = "at\tnow" epoch
+     * doubles (at empty = no latch). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("0\n"); return 0; }
+    double at = strtod(arg, NULL);
+    double now = strtod(tab + 1, NULL);
+    if (at <= 0) { printf("0\n"); return 0; }
+    printf("%d\n", (now - at) < 5.0 ? 1 : 0);
+    return 0;
+}
 
 /* PoP: resolve_streaming_provider @ tools/tts_streaming.py:resolve_streaming_provider */
 int tools_tts_streaming_resolve_streaming_provider(const char *arg) { (void)arg; return 0; }

@@ -66,7 +66,17 @@ int nsub_u_has_agent_browser(const char *arg) { (void)arg; return 0; }
 int nsub_u_local_browser_runnable(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _browser_label @ hermes_cli/nous_subscription.py:_browser_label */
-int nsub_u_browser_label(const char *arg) { (void)arg; return 0; }
+int nsub_u_browser_label(const char *arg) {
+    /* Python: provider -> label mapping. Arg = provider (default "local"). */
+    if (!arg || !*arg) { printf("Local browser\n"); return 0; }
+    if (strcmp(arg, "browserbase") == 0) printf("Browserbase\n");
+    else if (strcmp(arg, "browser-use") == 0) printf("Browser Use\n");
+    else if (strcmp(arg, "firecrawl") == 0) printf("Firecrawl\n");
+    else if (strcmp(arg, "camofox") == 0) printf("Camofox\n");
+    else if (strcmp(arg, "local") == 0) printf("Local browser\n");
+    else printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _tts_label @ hermes_cli/nous_subscription.py:_tts_label */
 int nsub_u_tts_label(const char *arg) { (void)arg; return 0; }

@@ -838,7 +838,23 @@ int agent_rate_limit_tracker_format_rate_limit_display(const char *arg) { (void)
 int agent_rate_limit_tracker_format_rate_limit_compact(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _normalize_pool_auth_type @ agent/credential_pool.py:_normalize_pool_auth_type */
-int agent_credential_pool_u_normalize_pool_auth_type(const char *arg) { (void)arg; return 0; }
+int agent_credential_pool_u_normalize_pool_auth_type(const char *arg) {
+    /* Python: oauth for anthropic sk-ant-oat tokens, else auth_type or
+     * api_key. Arg = "provider\tauth_type\ttoken". */
+    if (!arg || !*arg) { printf("api_key\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *provider = arg;
+    const char *auth_type = t1 ? t1 + 1 : "";
+    const char *token = t2 ? t2 + 1 : "";
+    if (strcmp(provider, "anthropic") == 0 && strncmp(token, "sk-ant-oat", 10) == 0) {
+        printf("oauth\n");
+        return 0;
+    }
+    if (auth_type && *auth_type && t2) printf("%s\n", auth_type);
+    else printf("api_key\n");
+    return 0;
+}
 
 /* PoP: credential_pool_matches_provider @ agent/credential_pool.py:credential_pool_matches_provider */
 int agent_credential_pool_credential_pool_matches_provider(const char *arg) { (void)arg; return 0; }
@@ -1217,7 +1233,15 @@ int agent_kanban_stop_session_called_kanban_terminal(const char *arg) { (void)ar
 int agent_kanban_stop_build_kanban_stop_nudge(const char *arg) { (void)arg; return 0; }
 
 /* PoP: unsilence @ agent/thread_scoped_output.py:unsilence */
-int agent_thread_scoped_output_unsilence(const char *arg) { (void)arg; return 0; }
+int agent_thread_scoped_output_unsilence(const char *arg) {
+    /* Python: decrement silenced depth; pop at 0. Arg = "ident\tdepth". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long depth = tab ? strtol(tab + 1, NULL, 10) : 1;
+    depth--;
+    printf("%ld\n", depth > 0 ? depth : 0);
+    return 0;
+}
 
 /* PoP: writelines @ agent/thread_scoped_output.py:writelines */
 int agent_thread_scoped_output_writelines(const char *arg) { (void)arg; return 0; }
@@ -1302,7 +1326,12 @@ int agent_bounded_response_u_safe_close(const char *arg) {
 }
 
 /* PoP: read_error_body_or_default @ agent/bounded_response.py:read_error_body_or_default */
-int agent_bounded_response_read_error_body_or_default(const char *arg) { (void)arg; return 0; }
+int agent_bounded_response_read_error_body_or_default(const char *arg) {
+    /* Python: body text or None when empty. Arg = body (or empty). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _display_url @ agent/display.py:_display_url */
 int agent_display_u_display_url(const char *arg) { (void)arg; return 0; }
@@ -1386,7 +1415,37 @@ int agent_prompt_caching_u_can_carry_marker(const char *arg) { (void)arg; return
 int agent_prompt_caching_u_apply_system_cache_markers(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _canonical_url_param_name @ agent/redact.py:_canonical_url_param_name */
-int agent_redact_u_canonical_url_param_name(const char *arg) { (void)arg; return 0; }
+int agent_redact_u_canonical_url_param_name(const char *arg) {
+    /* Python: unquote_plus x3 (stop when stable), casefold, - -> _. Arg =
+     * name. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    char buf[512];
+    size_t n = strlen(arg);
+    if (n >= sizeof(buf)) n = sizeof(buf) - 1;
+    memcpy(buf, arg, n); buf[n] = '\0';
+    for (int iter = 0; iter < 3; iter++) {
+        char dec[512];
+        size_t w = 0;
+        for (size_t i = 0; buf[i] && w < sizeof(dec) - 1; i++) {
+            if (buf[i] == '+' ) dec[w++] = ' ';
+            else if (buf[i] == '%' && buf[i+1] && buf[i+2] &&
+                     isxdigit((unsigned char)buf[i+1]) && isxdigit((unsigned char)buf[i+2])) {
+                int hi = isdigit((unsigned char)buf[i+1]) ? buf[i+1]-'0' : tolower((unsigned char)buf[i+1])-'a'+10;
+                int lo = isdigit((unsigned char)buf[i+2]) ? buf[i+2]-'0' : tolower((unsigned char)buf[i+2])-'a'+10;
+                dec[w++] = (char)((hi << 4) | lo);
+                i += 2;
+            } else dec[w++] = buf[i];
+        }
+        dec[w] = '\0';
+        if (strcmp(dec, buf) == 0) break;
+        strncpy(buf, dec, sizeof(buf) - 1);
+        buf[sizeof(buf) - 1] = '\0';
+    }
+    for (char *p = buf; *p; p++) *p = (char)tolower((unsigned char)*p);
+    for (char *p = buf; *p; p++) if (*p == '-') *p = '_';
+    printf("%s\n", buf);
+    return 0;
+}
 
 /* PoP: _redact_strict_url_credentials @ agent/redact.py:_redact_strict_url_credentials */
 int agent_redact_u_redact_strict_url_credentials(const char *arg) { (void)arg; return 0; }

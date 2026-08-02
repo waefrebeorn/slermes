@@ -47,7 +47,29 @@ int envl_u_resolve_safe_cwd(const char *arg) { (void)arg; return 0; }
 int envl_u_build_provider_env_blocklist(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _inject_context_hermes_home @ tools/environments/local.py:_inject_context_hermes_home */
-int envl_u_inject_context_hermes_home(const char *arg) { (void)arg; return 0; }
+int envl_u_inject_context_hermes_home(const char *arg) {
+    /* Python: env["HERMES_HOME"] = override when set. Arg =
+     * "override\tenv_json" (override empty = no-op). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab || tab == arg) { printf("0\n"); return 0; }
+    json_t *env = json_parse(tab + 1, NULL);
+    if (!env || !json_is_object(env)) {
+        if (env) json_free(env);
+        printf("0\n");
+        return 0;
+    }
+    char ov[256];
+    size_t olen = (size_t)(tab - arg);
+    if (olen >= sizeof(ov)) olen = sizeof(ov) - 1;
+    memcpy(ov, arg, olen); ov[olen] = '\0';
+    json_set(env, "HERMES_HOME", json_string(ov));
+    char *s = json_dumps(env, 0);
+    printf("%s\n", s ? s : "{}");
+    free(s);
+    json_free(env);
+    return 0;
+}
 
 /* PoP: _inject_session_context_env @ tools/environments/local.py:_inject_session_context_env */
 int envl_u_inject_session_context_env(const char *arg) { (void)arg; return 0; }
@@ -62,7 +84,22 @@ int envl_hermes_subprocess_env(const char *arg) { (void)arg; return 0; }
 int envl_u_find_bash(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _looks_like_msys_spawn_failure @ tools/environments/local.py:_looks_like_msys_spawn_failure */
-int envl_u_looks_like_msys_spawn_failure(const char *arg) { (void)arg; return 0; }
+int envl_u_looks_like_msys_spawn_failure(const char *arg) {
+    /* Python: case-insensitive marker match (dofork:, child_copy:,
+     * 0xc0000142, 0xc0000005). Arg = details text. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    char buf[1024];
+    size_t n = strlen(arg);
+    if (n >= sizeof(buf)) n = sizeof(buf) - 1;
+    for (size_t i = 0; i < n; i++) buf[i] = (char)tolower((unsigned char)arg[i]);
+    buf[n] = '\0';
+    static const char *markers[] = {"dofork:", "child_copy:", "0xc0000142", "0xc0000005"};
+    for (size_t i = 0; i < sizeof(markers) / sizeof(markers[0]); i++) {
+        if (strstr(buf, markers[i])) { printf("1\n"); return 0; }
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _mandatory_aslr_enabled @ tools/environments/local.py:_mandatory_aslr_enabled */
 int envl_u_mandatory_aslr_enabled(const char *arg) { (void)arg; return 0; }

@@ -843,7 +843,34 @@ int hermes_cli_security_audit_u_extract_mcp_component(const char *arg) { (void)a
 int hermes_cli_security_audit_u_discover_mcp(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _http_post_json @ hermes_cli/security_audit.py:_http_post_json */
-int hermes_cli_security_audit_u_http_post_json(const char *arg) { (void)arg; return 0; }
+int hermes_cli_security_audit_u_http_post_json(const char *arg) {
+    /* Python: urllib POST JSON, parse response JSON. Arg =
+     * "url\tpayload_json" (curl fallback). */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    char url[2048];
+    size_t ulen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (ulen >= sizeof(url)) ulen = sizeof(url) - 1;
+    memcpy(url, arg, ulen); url[ulen] = '\0';
+    char cmd[3200];
+    if (tab && tab[1]) {
+        snprintf(cmd, sizeof(cmd),
+                 "curl -sS --max-time 20 -X POST -H 'Content-Type: application/json' -d '%s' '%s' 2>/dev/null",
+                 tab + 1, url);
+    } else {
+        snprintf(cmd, sizeof(cmd),
+                 "curl -sS --max-time 20 -X POST -H 'Content-Type: application/json' -d '{}' '%s' 2>/dev/null",
+                 url);
+    }
+    FILE *fp = popen(cmd, "r");
+    if (!fp) { printf("\n"); return 1; }
+    char buf[16384];
+    size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+    pclose(fp);
+    buf[n] = '\0';
+    printf("%s\n", buf);
+    return 0;
+}
 
 /* PoP: _http_get_json @ hermes_cli/security_audit.py:_http_get_json */
 int hermes_cli_security_audit_u_http_get_json(const char *arg) {
@@ -1184,7 +1211,27 @@ int hermes_cli_skin_engine_get_color(const char *arg) {
 int hermes_cli_skin_engine_get_spinner_wings(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_branding @ hermes_cli/skin_engine.py:get_branding */
-int hermes_cli_skin_engine_get_branding(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skin_engine_get_branding(const char *arg) {
+    /* Python: branding.get(key, fallback). Arg = "key\tfallback\tbranding_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    if (!t1) { printf("\n"); return 0; }
+    const char *t2 = strchr(t1 + 1, '\t');
+    if (!t2) { printf("\n"); return 0; }
+    char key[128];
+    size_t klen = (size_t)(t1 - arg);
+    if (klen >= sizeof(key)) klen = sizeof(key) - 1;
+    memcpy(key, arg, klen); key[klen] = '\0';
+    size_t flen = (size_t)(t2 - t1 - 1);
+    json_t *b = json_parse(t2 + 1, NULL);
+    if (b && json_is_object(b)) {
+        const char *v = json_get_str(b, key, "");
+        if (v && *v) { printf("%s\n", v); json_free(b); return 0; }
+        json_free(b);
+    } else if (b) json_free(b);
+    printf("%.*s\n", (int)flen, t1 + 1);
+    return 0;
+}
 
 /* PoP: _skins_dir @ hermes_cli/skin_engine.py:_skins_dir */
 int hermes_cli_skin_engine_u_skins_dir(const char *arg) {
@@ -2539,7 +2586,32 @@ int hermes_cli_container_boot_u_is_legacy_gateway_run_request(const char *arg) {
 int hermes_cli_container_boot_u_read_desired_state(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cleanup_stale_runtime_files @ hermes_cli/container_boot.py:_cleanup_stale_runtime_files */
-int hermes_cli_container_boot_u_cleanup_stale_runtime_files(const char *arg) { (void)arg; return 0; }
+int hermes_cli_container_boot_u_cleanup_stale_runtime_files(const char *arg) {
+    /* Python: unlink gateway.pid + processes.json (missing_ok). Arg =
+     * "profile_dir\tgateway.pid\tprocesses.json" (or dir + names). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    size_t dlen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    char dir[1024];
+    if (dlen >= sizeof(dir)) dlen = sizeof(dir) - 1;
+    memcpy(dir, arg, dlen); dir[dlen] = '\0';
+    int removed = 0;
+    const char *p = t1 ? t1 + 1 : NULL;
+    if (!p || !*p) p = "gateway.pid";
+    while (p && *p) {
+        const char *t2 = strchr(p, '\t');
+        size_t nlen = t2 ? (size_t)(t2 - p) : strlen(p);
+        char name[256];
+        if (nlen >= sizeof(name)) nlen = sizeof(name) - 1;
+        memcpy(name, p, nlen); name[nlen] = '\0';
+        char full[1300];
+        snprintf(full, sizeof(full), "%s/%s", dir, name);
+        if (unlink(full) == 0) removed++;
+        p = t2 ? t2 + 1 : p + nlen;
+    }
+    printf("%d\n", removed);
+    return 0;
+}
 
 /* PoP: _register_service @ hermes_cli/container_boot.py:_register_service */
 int hermes_cli_container_boot_u_register_service(const char *arg) { (void)arg; return 0; }
@@ -3680,7 +3752,29 @@ int hermes_cli_provider_catalog_provider_catalog_by_slug(const char *arg) {
 }
 
 /* PoP: _normalize_member_parts @ hermes_cli/psutil_android.py:_normalize_member_parts */
-int hermes_cli_psutil_android_u_normalize_member_parts(const char *arg) { (void)arg; return 0; }
+int hermes_cli_psutil_android_u_normalize_member_parts(const char *arg) {
+    /* Python: PurePosixPath parts minus "" and "."; reject absolute or
+     * "..". Arg = member_name. */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    if (arg[0] == '/') { printf("unsafe: %s\n", arg); return 1; }
+    const char *p = arg;
+    int first = 1;
+    int safe = 1;
+    while (*p) {
+        const char *slash = strchr(p, '/');
+        size_t len = slash ? (size_t)(slash - p) : strlen(p);
+        if (len == 2 && p[0] == '.' && p[1] == '.') { safe = 0; break; }
+        if (!(len == 1 && p[0] == '.') && len) {
+            if (!first) printf("/");
+            printf("%.*s", (int)len, p);
+            first = 0;
+        }
+        p = slash ? slash + 1 : p + len;
+    }
+    if (!safe || first) { printf("unsafe: %s\n", arg); return 1; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _safe_extract_tar_gz @ hermes_cli/psutil_android.py:_safe_extract_tar_gz */
 int hermes_cli_psutil_android_u_safe_extract_tar_gz(const char *arg) { (void)arg; return 0; }

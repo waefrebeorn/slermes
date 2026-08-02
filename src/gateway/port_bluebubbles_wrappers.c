@@ -56,7 +56,22 @@ int bb_u_clean_mention_text(const char *arg) { (void)arg; return 0; }
 int bb_u_api_post(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _webhook_url @ gateway/platforms/bluebubbles.py:_webhook_url */
-int bb_u_webhook_url(const char *arg) { (void)arg; return 0; }
+int bb_u_webhook_url(const char *arg) {
+    /* Python: http://host:port/path; loopback hosts -> localhost. Arg =
+     * "host\tport\tpath". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *host = arg;
+    const char *port = t1 ? t1 + 1 : "0";
+    const char *path = t2 ? t2 + 1 : "/";
+    if (strcmp(host, "0.0.0.0") == 0 || strcmp(host, "127.0.0.1") == 0 ||
+        strcmp(host, "localhost") == 0 || strcmp(host, "::") == 0) {
+        host = "localhost";
+    }
+    printf("http://%s:%s%s\n", host, port, path);
+    return 0;
+}
 
 /* PoP: _webhook_register_url @ gateway/platforms/bluebubbles.py:_webhook_register_url */
 int bb_u_webhook_register_url(const char *arg) { (void)arg; return 0; }

@@ -949,7 +949,21 @@ int main_u_default_venv_install_target(const char *arg) { (void)arg; return 0; }
 int main_u_run_install_with_heartbeat(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _venv_scripts_dir @ hermes_cli/main.py:_venv_scripts_dir */
-int main_u_venv_scripts_dir(const char *arg) { (void)arg; return 0; }
+int main_u_venv_scripts_dir(const char *arg) {
+    /* Python: <project>/venv/Scripts (win) or bin dir if it exists. Arg =
+     * project root (or HERMES_HOME). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    char p1[1024], p2[1024];
+    snprintf(p1, sizeof(p1), "%s/venv", arg);
+    struct stat st;
+    if (stat(p1, &st) != 0 || !S_ISDIR(st.st_mode)) { printf("\n"); return 0; }
+    snprintf(p2, sizeof(p2), "%s/venv/bin", arg);
+    if (stat(p2, &st) == 0 && S_ISDIR(st.st_mode)) { printf("%s\n", p2); return 0; }
+    snprintf(p2, sizeof(p2), "%s/venv/Scripts", arg);
+    if (stat(p2, &st) == 0 && S_ISDIR(st.st_mode)) { printf("%s\n", p2); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _hermes_exe_shims @ hermes_cli/main.py:_hermes_exe_shims */
 int main_u_hermes_exe_shims(const char *arg) { (void)arg; return 0; }
@@ -967,7 +981,32 @@ int main_u_quarantine_running_hermes_exe(const char *arg) { (void)arg; return 0;
 int main_u_schedule_replace_on_reboot(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _restore_quarantined_exes @ hermes_cli/main.py:_restore_quarantined_exes */
-int main_u_restore_quarantined_exes(const char *arg) { (void)arg; return 0; }
+int main_u_restore_quarantined_exes(const char *arg) {
+    /* Python: rename quarantined back when original missing. Arg =
+     * "orig\tquarantined\torig\tquarantined..." (tab pairs). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *p = arg;
+    int restored = 0;
+    while (*p) {
+        const char *t1 = strchr(p, '\t');
+        if (!t1) break;
+        const char *t2 = strchr(t1 + 1, '\t');
+        size_t olen = (size_t)(t1 - p);
+        size_t qlen = t2 ? (size_t)(t2 - t1 - 1) : strlen(t1 + 1);
+        char orig[1024], quar[1024];
+        if (olen < sizeof(orig) && qlen < sizeof(quar)) {
+            memcpy(orig, p, olen); orig[olen] = '\0';
+            memcpy(quar, t1 + 1, qlen); quar[qlen] = '\0';
+            struct stat so, sq;
+            if (stat(orig, &so) != 0 && stat(quar, &sq) == 0) {
+                if (rename(quar, orig) == 0) restored++;
+            }
+        }
+        p = t2 ? t2 + 1 : t1 + 1 + qlen;
+    }
+    printf("%d\n", restored);
+    return 0;
+}
 
 /* PoP: _run_quarantined_install @ hermes_cli/main.py:_run_quarantined_install */
 int main_u_run_quarantined_install(const char *arg) { (void)arg; return 0; }

@@ -404,7 +404,14 @@ int cgw_u_service_scope_label(const char *arg) {
 int cgw_get_installed_systemd_scopes(const char *arg) { (void)arg; return 0; }
 
 /* PoP: has_conflicting_systemd_units @ hermes_cli/gateway.py:has_conflicting_systemd_units */
-int cgw_has_conflicting_systemd_units(const char *arg) { (void)arg; return 0; }
+int cgw_has_conflicting_systemd_units(const char *arg) {
+    /* Python: len(installed scopes) > 1. Arg = "scope\tscope..." (tab-sep). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    long count = 1;
+    for (const char *p = arg; *p; p++) if (*p == '\t') count++;
+    printf("%d\n", count > 1 ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _legacy_unit_search_paths @ hermes_cli/gateway.py:_legacy_unit_search_paths */
 int cgw_u_legacy_unit_search_paths(const char *arg) { (void)arg; return 0; }
@@ -698,7 +705,23 @@ int cgw_systemd_install(const char *arg) { (void)arg; return 0; }
 int cgw_systemd_uninstall(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _require_service_installed @ hermes_cli/gateway.py:_require_service_installed */
-int cgw_u_require_service_installed(const char *arg) { (void)arg; return 0; }
+int cgw_u_require_service_installed(const char *arg) {
+    /* Python: exit(1) with install hint when unit missing. Arg =
+     * "unit_path\tsystem". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    size_t plen = tab ? (size_t)(tab - arg) : strlen(arg);
+    int is_system = tab && tab[1] && strncmp(tab + 1, "1", 1) == 0;
+    char path[1024];
+    if (plen >= sizeof(path)) plen = sizeof(path) - 1;
+    memcpy(path, arg, plen); path[plen] = '\0';
+    struct stat st;
+    if (stat(path, &st) == 0) { printf("0\n"); return 0; }
+    printf("✗ Gateway service is not installed\n");
+    printf("  Run: %shermes gateway install%s\n",
+           is_system ? "sudo " : "", is_system ? " --system" : "");
+    return 1;
+}
 
 /* PoP: systemd_start @ hermes_cli/gateway.py:systemd_start */
 int cgw_systemd_start(const char *arg) { (void)arg; return 0; }
