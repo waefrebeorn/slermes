@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:51:28Z",
+  "generated_at": "2026-08-02T21:53:37Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -39217,10 +39217,10 @@
     },
     "agent/lsp/reporter.py": {
       "total": 4,
-      "ported": 0,
+      "ported": 4,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 4,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 4,
@@ -39236,16 +39236,24 @@
             "decorators": [],
             "line_number": 30
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_reporter_remaining.c",
+          "c_function": "lsr_sanitize_field",
+          "pop_annotation": {
+            "c_function": "lsr_sanitize_field",
+            "python_functions": [
+              "_sanitize_field"
+            ],
+            "c_file": "src/agent/port_lsp_reporter_remaining.c",
+            "python_file": "agent/lsp/reporter.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _sanitize_field @ agent/lsp/reporter.py:_sanitize_field */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/reporter.py",
@@ -39257,16 +39265,24 @@
             "decorators": [],
             "line_number": 66
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_reporter_remaining.c",
+          "c_function": "lsr_format_diagnostic",
+          "pop_annotation": {
+            "c_function": "lsr_format_diagnostic",
+            "python_functions": [
+              "format_diagnostic"
+            ],
+            "c_file": "src/agent/port_lsp_reporter_remaining.c",
+            "python_file": "agent/lsp/reporter.py",
+            "line": 40,
+            "is_consolidated": false,
+            "full_text": "/* PoP: format_diagnostic @ agent/lsp/reporter.py:format_diagnostic */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/reporter.py",
@@ -39278,16 +39294,24 @@
             "decorators": [],
             "line_number": 85
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_reporter_remaining.c",
+          "c_function": "lsr_report_for_file",
+          "pop_annotation": {
+            "c_function": "lsr_report_for_file",
+            "python_functions": [
+              "report_for_file"
+            ],
+            "c_file": "src/agent/port_lsp_reporter_remaining.c",
+            "python_file": "agent/lsp/reporter.py",
+            "line": 55,
+            "is_consolidated": false,
+            "full_text": "/* PoP: report_for_file @ agent/lsp/reporter.py:report_for_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/reporter.py",
@@ -39299,16 +39323,24 @@
             "decorators": [],
             "line_number": 115
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_reporter_remaining.c",
+          "c_function": "lsr_truncate",
+          "pop_annotation": {
+            "c_function": "lsr_truncate",
+            "python_functions": [
+              "truncate"
+            ],
+            "c_file": "src/agent/port_lsp_reporter_remaining.c",
+            "python_file": "agent/lsp/reporter.py",
+            "line": 65,
+            "is_consolidated": false,
+            "full_text": "/* PoP: truncate @ agent/lsp/reporter.py:truncate */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -146886,10 +146918,10 @@
     },
     "gateway/session_context.py": {
       "total": 8,
-      "ported": 4,
+      "ported": 8,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 4,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 8,
@@ -146934,16 +146966,24 @@
             "decorators": [],
             "line_number": 141
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_session_context_remaining.c",
+          "c_function": "sct_set_current_session_id",
+          "pop_annotation": {
+            "c_function": "sct_set_current_session_id",
+            "python_functions": [
+              "set_current_session_id"
+            ],
+            "c_file": "src/gateway/port_session_context_remaining.c",
+            "python_file": "gateway/session_context.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: set_current_session_id @ gateway/session_context.py:set_current_session_id */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/session_context.py",
@@ -146955,16 +146995,24 @@
             "decorators": [],
             "line_number": 156
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_session_context_remaining.c",
+          "c_function": "sct_set_session_vars",
+          "pop_annotation": {
+            "c_function": "sct_set_session_vars",
+            "python_functions": [
+              "set_session_vars"
+            ],
+            "c_file": "src/gateway/port_session_context_remaining.c",
+            "python_file": "gateway/session_context.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: set_session_vars @ gateway/session_context.py:set_session_vars */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/session_context.py",
@@ -146976,16 +147024,24 @@
             "decorators": [],
             "line_number": 216
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_session_context_remaining.c",
+          "c_function": "sct_clear_session_vars",
+          "pop_annotation": {
+            "c_function": "sct_clear_session_vars",
+            "python_functions": [
+              "clear_session_vars"
+            ],
+            "c_file": "src/gateway/port_session_context_remaining.c",
+            "python_file": "gateway/session_context.py",
+            "line": 42,
+            "is_consolidated": false,
+            "full_text": "/* PoP: clear_session_vars @ gateway/session_context.py:clear_session_vars */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/session_context.py",
@@ -147026,16 +147082,24 @@
             "decorators": [],
             "line_number": 303
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_session_context_remaining.c",
+          "c_function": "sct_get_session_env",
+          "pop_annotation": {
+            "c_function": "sct_get_session_env",
+            "python_functions": [
+              "get_session_env"
+            ],
+            "c_file": "src/gateway/port_session_context_remaining.c",
+            "python_file": "gateway/session_context.py",
+            "line": 52,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_session_env @ gateway/session_context.py:get_session_env */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/session_context.py",
