@@ -11,6 +11,9 @@
 #include <ctype.h>
 #include "hermes_json.h"
 
+/* Active adapter instance (set_active). */
+static void *s_yb_active_adapter;
+
 /* PoP: __repr__ @ gateway/platforms/yuanbao.py:__repr__ */
 int yb_u__repr__(const char *arg) { (void)arg; return 0; }
 
@@ -21,7 +24,15 @@ int yb_use_before(const char *arg) { (void)arg; return 0; }
 int yb_use_after(const char *arg) { (void)arg; return 0; }
 
 /* PoP: middleware_names @ gateway/platforms/yuanbao.py:middleware_names */
-int yb_middleware_names(const char *arg) { (void)arg; return 0; }
+int yb_middleware_names(void) {
+    /* Python returns the ordered list of registered inbound middleware
+     * names. The C port registers no Yuanbao middlewares yet, so the
+     * registry query yields an empty list. */
+    static const char *const *registered = NULL; /* none registered in C */
+    for (size_t i = 0; registered && registered[i]; i++)
+        printf("%s\n", registered[i]);
+    return 0;
+}
 
 /* PoP: convert_json_msg_body @ gateway/platforms/yuanbao.py:convert_json_msg_body */
 int yb_convert_json_msg_body(const char *arg) { (void)arg; return 0; }
@@ -48,7 +59,13 @@ int yb_u_schedule_content_redact(const char *arg) { (void)arg; return 0; }
 int yb_u_patch_transcript(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_self_reference @ gateway/platforms/yuanbao.py:_is_self_reference */
-int yb_u_is_self_reference(const char *arg) { (void)arg; return 0; }
+int yb_u_is_self_reference(const char *from_account, const char *bot_id) {
+    /* Python: _is_self_reference(from_account, bot_id) — True iff the
+     * sender equals the bot itself; falsy inputs are never self. */
+    if (!from_account || !*from_account || !bot_id || !*bot_id)
+        return 0;
+    return strcmp(from_account, bot_id) == 0;
+}
 
 /* PoP: is_dm_allowed @ gateway/platforms/yuanbao.py:is_dm_allowed */
 int yb_is_dm_allowed(const char *arg) { (void)arg; return 0; }
@@ -75,7 +92,21 @@ int yb_u_format_link_understanding(const char *arg) { (void)arg; return 0; }
 int yb_u_parse_resource_id(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _rewrite_slash_command @ gateway/platforms/yuanbao.py:_rewrite_slash_command */
-int yb_u_rewrite_slash_command(const char *arg) { (void)arg; return 0; }
+int yb_u_rewrite_slash_command(const char *text) {
+    /* Python: text.strip(); a leading full-width slash (U+FF0F, Chinese
+     * IME) becomes ASCII '/' so commands are recognized. */
+    if (!text) { printf("\n"); return 0; }
+    const char *s = text;
+    while (*s && isspace((unsigned char)*s)) s++;
+    size_t n = strlen(s);
+    while (n > 0 && isspace((unsigned char)s[n - 1])) n--;
+    if (n >= 3 && (unsigned char)s[0] == 0xEF &&
+        (unsigned char)s[1] == 0xBC && (unsigned char)s[2] == 0x8F)
+        printf("/%.*s\n", (int)(n - 3), s + 3);
+    else
+        printf("%.*s\n", (int)n, s);
+    return 0;
+}
 
 /* PoP: _extract_inbound_media_refs @ gateway/platforms/yuanbao.py:_extract_inbound_media_refs */
 int yb_u_extract_inbound_media_refs(const char *arg) { (void)arg; return 0; }
@@ -87,10 +118,39 @@ int yb_u_extract_link_urls(const char *arg) { (void)arg; return 0; }
 int yb_u_extract_forwarded_records(const char *arg) { (void)arg; return 0; }
 
 /* PoP: is_skippable_placeholder @ gateway/platforms/yuanbao.py:is_skippable_placeholder */
-int yb_is_skippable_placeholder(const char *arg) { (void)arg; return 0; }
+int yb_is_skippable_placeholder(const char *text, int media_count) {
+    /* Python: media-bearing messages are never placeholders; otherwise a
+     * stripped text matching a SKIPPABLE_PLACEHOLDERS entry is skipped. */
+    if (media_count > 0) return 0;
+    if (!text) return 0;
+    const char *s = text;
+    while (*s && isspace((unsigned char)*s)) s++;
+    size_t n = strlen(s);
+    while (n > 0 && isspace((unsigned char)s[n - 1])) n--;
+    static const char *const ph[] = {
+        "[image]", "[图片]", "[file]", "[文件]",
+        "[video]", "[视频]", "[voice]", "[语音]", NULL };
+    for (int i = 0; ph[i]; i++)
+        if (strlen(ph[i]) == n && strncmp(s, ph[i], n) == 0) return 1;
+    return 0;
+}
 
 /* PoP: _rewrite_slash_command @ gateway/platforms/yuanbao.py:_rewrite_slash_command */
-int yb_u_rewrite_slash_command_2(const char *arg) { (void)arg; return 0; }
+int yb_u_rewrite_slash_command_2(const char *text) {
+    /* Python: text.strip(); a leading full-width slash (U+FF0F, Chinese
+     * IME) becomes ASCII '/' so commands are recognized. */
+    if (!text) { printf("\n"); return 0; }
+    const char *s = text;
+    while (*s && isspace((unsigned char)*s)) s++;
+    size_t n = strlen(s);
+    while (n > 0 && isspace((unsigned char)s[n - 1])) n--;
+    if (n >= 3 && (unsigned char)s[0] == 0xEF &&
+        (unsigned char)s[1] == 0xBC && (unsigned char)s[2] == 0x8F)
+        printf("/%.*s\n", (int)(n - 3), s + 3);
+    else
+        printf("%.*s\n", (int)n, s);
+    return 0;
+}
 
 /* PoP: _detect_owner_command @ gateway/platforms/yuanbao.py:_detect_owner_command */
 int yb_u_detect_owner_command(const char *arg) { (void)arg; return 0; }
@@ -335,7 +395,34 @@ int yb_u_dispatch_encoded(const char *arg) { (void)arg; return 0; }
 int yb_validate_media(const char *arg) { (void)arg; return 0; }
 
 /* PoP: strip_cron_wrapper @ gateway/platforms/yuanbao.py:strip_cron_wrapper */
-int yb_strip_cron_wrapper(const char *arg) { (void)arg; return 0; }
+int yb_strip_cron_wrapper(const char *content) {
+    /* Python: strip the scheduler "Cronjob Response:" header/footer wrapper
+     * when all markers line up; otherwise content passes through. */
+    if (!content) { printf("\n"); return 0; }
+    const char *divider = "\n-------------\n\n";
+    const char *footer_prefix =
+        "\n\nTo stop or manage this job, send me a new message (e.g. \"stop reminder ";
+    if (strncmp(content, "Cronjob Response: ", 18) != 0) {
+        printf("%s\n", content); return 0;
+    }
+    const char *d = strstr(content, divider);
+    if (!d) { printf("%s\n", content); return 0; }
+    const char *f = NULL; /* last occurrence of footer_prefix */
+    for (const char *p = content; (p = strstr(p, footer_prefix)); p++)
+        f = p;
+    if (!f || f <= d) { printf("%s\n", content); return 0; }
+    size_t hlen = (size_t)(d - content); /* header must carry a job id */
+    if (hlen < 10 || memmem(content, hlen, "\n(job_id: ", 10) == NULL) {
+        printf("%s\n", content); return 0;
+    }
+    const char *b = d + strlen(divider);
+    size_t blen = (size_t)(f - b);
+    while (blen > 0 && isspace((unsigned char)b[0])) { b++; blen--; }
+    while (blen > 0 && isspace((unsigned char)b[blen - 1])) blen--;
+    if (blen == 0) { printf("%s\n", content); return 0; } /* body or content */
+    printf("%.*s\n", (int)blen, b);
+    return 0;
+}
 
 /* PoP: _handle_send_start @ gateway/platforms/yuanbao.py:_handle_send_start */
 int yb_u_handle_send_start(const char *arg) { (void)arg; return 0; }
@@ -368,7 +455,10 @@ int yb_u_chat_locks(const char *arg) { (void)arg; return 0; }
 int yb_validate_media_2(const char *arg) { (void)arg; return 0; }
 
 /* PoP: set_active @ gateway/platforms/yuanbao.py:set_active */
-int yb_set_active(const char *arg) { (void)arg; return 0; }
+void yb_set_active(void *adapter) {
+    /* Python classmethod: register (or clear) the active adapter instance. */
+    s_yb_active_adapter = adapter;
+}
 
 /* PoP: _track_task @ gateway/platforms/yuanbao.py:_track_task */
 int yb_u_track_task(const char *arg) { (void)arg; return 0; }

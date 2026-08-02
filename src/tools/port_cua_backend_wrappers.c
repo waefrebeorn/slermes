@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <unistd.h>
 #include "hermes_json.h"
 
 /* PoP: _action_result_from @ tools/computer_use/cua_backend.py:_action_result_from */
@@ -54,19 +55,139 @@ int cua_u_mcp_args_with_overlay_flag(const char *arg) { (void)arg; return 0; }
 int cua_u_cua_driver_supports_no_overlay(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _has_path_separator @ tools/computer_use/cua_backend.py:_has_path_separator */
-int cua_u_has_path_separator(const char *arg) { (void)arg; return 0; }
+int cua_u_has_path_separator(const char *value) {
+    /* Python: os.sep in value or (os.altsep is not None and os.altsep in
+     * value). POSIX sep is '/'; altsep only exists on Windows. */
+    if (!value) return 0;
+    if (strchr(value, '/')) return 1;
+#ifdef _WIN32
+    if (strchr(value, '\\')) return 1;
+#endif
+    return 0;
+}
 
 /* PoP: _candidate_cua_driver_commands @ tools/computer_use/cua_backend.py:_candidate_cua_driver_commands */
 int cua_u_candidate_cua_driver_commands(const char *arg) { (void)arg; return 0; }
 
+/* shutil.which-style lookup: separator-bearing paths are checked directly,
+ * bare names are searched across PATH. */
+static char *cua_which(const char *name) {
+    if (!name || !*name) return NULL;
+    if (strchr(name, '/')) {
+        if (access(name, X_OK) == 0) return strdup(name);
+        return NULL;
+    }
+    const char *path = getenv("PATH");
+    if (!path) return NULL;
+    char *copy = strdup(path);
+    char *save = NULL;
+    char *dir;
+    for (dir = strtok_r(copy, ":", &save); dir;
+         dir = strtok_r(NULL, ":", &save)) {
+        char full[4096];
+        snprintf(full, sizeof(full), "%s/%s", dir, name);
+        if (access(full, X_OK) == 0) {
+            char *r = strdup(full);
+            free(copy);
+            return r;
+        }
+    }
+    free(copy);
+    return NULL;
+}
+
+/* os.path.expanduser for a leading "~/" (or bare "~"). */
+static char *cua_expanduser(const char *p) {
+    if (p[0] == '~' && (p[1] == '/' || p[1] == '\0')) {
+        const char *home = getenv("HOME");
+        if (home) {
+            char buf[4096];
+            snprintf(buf, sizeof(buf), "%s%s", home, p + 1);
+            return strdup(buf);
+        }
+    }
+    return strdup(p);
+}
+
 /* PoP: resolve_cua_driver_cmd @ tools/computer_use/cua_backend.py:resolve_cua_driver_cmd */
-int cua_resolve_cua_driver_cmd(const char *arg) { (void)arg; return 0; }
+int cua_resolve_cua_driver_cmd(const char *arg) {
+    /* Python: an explicit override (arg) or HERMES_CUA_DRIVER_CMD is
+     * authoritative; otherwise resolve "cua-driver" on PATH, then the
+     * canonical install locations. Print the resolved path, or an empty
+     * line when the driver is missing (Python returns None). */
+    const char *configured = NULL;
+    char envbuf[4096];
+    if (arg && *arg) {
+        configured = arg;
+    } else {
+        const char *e = getenv("HERMES_CUA_DRIVER_CMD");
+        if (e && *e) {
+            const char *s = e;
+            while (*s && isspace((unsigned char)*s)) s++;
+            size_t n = strlen(s);
+            while (n && isspace((unsigned char)s[n - 1])) n--;
+            if (n > 0 && n < sizeof(envbuf)) {
+                memcpy(envbuf, s, n);
+                envbuf[n] = '\0';
+                configured = envbuf;
+            }
+        }
+    }
+    if (configured && *configured) {
+        char *exp = cua_expanduser(configured);
+        char *hit = cua_which(exp);
+        if (hit) printf("%s\n", hit);
+        else printf("\n");
+        free(hit);
+        free(exp);
+        return 0;
+    }
+    char *path_hit = cua_which("cua-driver");
+    if (path_hit) {
+        printf("%s\n", path_hit);
+        free(path_hit);
+        return 0;
+    }
+    const char *home = getenv("HOME");
+    static const char *const installs[] = {
+        ".local/bin/cua-driver", ".cargo/bin/cua-driver",
+        "/opt/homebrew/bin/cua-driver", "/usr/local/bin/cua-driver", NULL };
+    for (int i = 0; installs[i]; i++) {
+        char full[4096];
+        if (installs[i][0] == '/')
+            snprintf(full, sizeof(full), "%s", installs[i]);
+        else
+            snprintf(full, sizeof(full), "%s/%s", home ? home : "", installs[i]);
+        if (access(full, X_OK) == 0) {
+            printf("%s\n", full);
+            return 0;
+        }
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: cua_driver_update_nudge @ tools/computer_use/cua_backend.py:cua_driver_update_nudge */
 int cua_cua_driver_update_nudge(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cua_driver_install_hint @ tools/computer_use/cua_backend.py:cua_driver_install_hint */
-int cua_cua_driver_install_hint(const char *arg) { (void)arg; return 0; }
+int cua_cua_driver_install_hint(void) {
+    /* Python: multi-line install guidance; the installer command differs
+     * per platform (PowerShell on Windows, bash+curl elsewhere). */
+#ifdef _WIN32
+    printf("cua-driver is not installed. Install with one of:\n");
+    printf("  hermes computer-use install\n");
+    printf("Or run the upstream installer directly:\n");
+    printf("  irm https://raw.githubusercontent.com/trycua/cua/main/libs/cua-driver/scripts/install.ps1 | iex\n");
+#else
+    printf("cua-driver is not installed. Install with one of:\n");
+    printf("  hermes computer-use install\n");
+    printf("Or run the upstream installer directly:\n");
+    printf("  /bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/trycua/cua/main/libs/cua-driver/scripts/install.sh)\"\n");
+#endif
+    printf("Or run `hermes tools` and enable the Computer Use toolset to install it automatically.\n");
+    return 0;
+}
 
 /* PoP: _parse_elements_from_structured @ tools/computer_use/cua_backend.py:_parse_elements_from_structured */
 int cua_u_parse_elements_from_structured(const char *arg) { (void)arg; return 0; }
@@ -96,13 +217,38 @@ int cua_u_call_tool_async(const char *arg) { (void)arg; return 0; }
 int cua_capabilities_discovered(const char *arg) { (void)arg; return 0; }
 
 /* PoP: capability_version @ tools/computer_use/cua_backend.py:capability_version */
-int cua_capability_version(const char *arg) { (void)arg; return 0; }
+int cua_capability_version(void) {
+    /* Python: driver-advertised capability vocabulary version ("" when the
+     * driver predates the field). The C port does not launch the driver,
+     * so no version has ever been advertised — print the empty string. */
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _is_closed_session_error @ tools/computer_use/cua_backend.py:_is_closed_session_error */
-int cua_u_is_closed_session_error(const char *arg) { (void)arg; return 0; }
+int cua_u_is_closed_session_error(const char *arg) {
+    /* Python classifies the exception by class name/module: ClosedResourceError,
+     * BrokenResourceError, EndOfStream, anyio.*Resource*, BrokenPipeError and
+     * EOFError are all recoverable by reconnecting. Arg carries the exception
+     * name/message text. */
+    if (!arg || !*arg) return 0;
+    static const char *const names[] = {
+        "ClosedResourceError", "BrokenResourceError", "EndOfStream",
+        "BrokenPipeError", "EOFError", NULL };
+    for (int i = 0; names[i]; i++)
+        if (strstr(arg, names[i])) return 1;
+    if (strstr(arg, "anyio") && strstr(arg, "Resource")) return 1;
+    return 0;
+}
 
 /* PoP: _is_transient_daemon_error @ tools/computer_use/cua_backend.py:_is_transient_daemon_error */
-int cua_u_is_transient_daemon_error(const char *arg) { (void)arg; return 0; }
+int cua_u_is_transient_daemon_error(const char *arg) {
+    /* Python: EAGAIN congestion from the cua-driver daemon proxy — the
+     * message carries "Resource temporarily unavailable" or "os error 35". */
+    if (!arg) return 0;
+    return strstr(arg, "Resource temporarily unavailable") != NULL ||
+           strstr(arg, "os error 35") != NULL;
+}
 
 /* PoP: _restart_session_locked @ tools/computer_use/cua_backend.py:_restart_session_locked */
 int cua_u_restart_session_locked(const char *arg) { (void)arg; return 0; }

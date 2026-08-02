@@ -204,3 +204,5 @@ native/fts5_cjk/*.so
 
 # built binary
 /slermes
+@DB*
+@DBMUT*
