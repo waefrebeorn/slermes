@@ -87,7 +87,23 @@ int cua_u_z_index_uninformative(const char *arg) {
 }
 
 /* PoP: _parse_xprop_net_active_window @ tools/computer_use/cua_backend.py:_parse_xprop_net_active_window */
-int cua_u_parse_xprop_net_active_window(const char *arg) { (void)arg; return 0; }
+int cua_u_parse_xprop_net_active_window(const char *arg) {
+    /* Python: "window id # 0x..." or first hex token. Arg = stdout. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = strstr(arg, "window id # ");
+    if (!p) p = strstr(arg, "0x");
+    if (!p) { printf("\n"); return 0; }
+    const char *h = p;
+    if (strncmp(p, "window id # ", 12) == 0) h = p + 12;
+    char buf[32];
+    size_t w = 0;
+    while (*h && w < sizeof(buf)-1 && (isxdigit((unsigned char)*h) || *h == 'x' || *h == 'X')) buf[w++] = *h++;
+    buf[w] = '\0';
+    if (w < 3) { printf("\n"); return 0; }
+    unsigned long v = strtoul(buf, NULL, 16);
+    printf("%lu\n", v);
+    return 0;
+}
 
 /* PoP: _linux_x11_active_window_id @ tools/computer_use/cua_backend.py:_linux_x11_active_window_id */
 int cua_u_linux_x11_active_window_id(const char *arg) { (void)arg; return 0; }

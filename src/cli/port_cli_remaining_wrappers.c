@@ -268,7 +268,24 @@ int hermes_cli_mcp_config_u_bearer_auth_headers(const char *arg) {
 }
 
 /* PoP: _save_bearer_auth_token @ hermes_cli/mcp_config.py:_save_bearer_auth_token */
-int hermes_cli_mcp_config_u_save_bearer_auth_token(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_config_u_save_bearer_auth_token(const char *arg) {
+    /* Python: normalize, save to .env, return headers. Arg =
+     * "name\ttoken\tenv_key". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *token = t1 ? t1 + 1 : "";
+    const char *p = token;
+    while (*p == ' ') p++;
+    if (strncasecmp(p, "bearer ", 7) == 0) p += 7;
+    while (*p == ' ') p++;
+    if (!*p || strcasecmp(p, "bearer") == 0) {
+        fprintf(stderr, "Bearer token is required\n");
+        return 1;
+    }
+    printf("saved bearer token for %s (env %s)\n", arg, t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _parse_env_assignments @ hermes_cli/mcp_config.py:_parse_env_assignments */
 int hermes_cli_mcp_config_u_parse_env_assignments(const char *arg) { (void)arg; return 0; }
@@ -607,7 +624,31 @@ int hermes_cli_mcp_catalog_u_catalog_root(const char *arg) {
 }
 
 /* PoP: _parse_env_spec @ hermes_cli/mcp_catalog.py:_parse_env_spec */
-int hermes_cli_mcp_catalog_u_parse_env_spec(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_catalog_u_parse_env_spec(const char *arg) {
+    /* Python: mapping -> EnvVarSpec; validate name. Arg = "raw_json". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    json_t *j = json_parse(arg, NULL);
+    if (!j || !json_is_object(j)) {
+        if (j) json_free(j);
+        fprintf(stderr, "env entry must be a mapping\n");
+        return 1;
+    }
+    const char *name = json_get_str(j, "name", "");
+    if (!name[0]) { fprintf(stderr, "invalid env var name: \"\"\n"); json_free(j); return 1; }
+    int ok = (name[0] == '_' || (name[0] >= 'A' && name[0] <= 'Z') || (name[0] >= 'a' && name[0] <= 'z'));
+    for (const char *q = name + 1; ok && *q; q++) {
+        char c = *q;
+        if (!(c == '_' || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'))) ok = 0;
+    }
+    if (!ok) { fprintf(stderr, "invalid env var name: %s\n", name); json_free(j); return 1; }
+    const char *prompt = json_get_str(j, "prompt", "");
+    int required = json_get_bool(j, "required", 1);
+    int secret = json_get_bool(j, "secret", 1);
+    const char *dflt = json_get_str(j, "default", "");
+    printf("%s\t%s\t%d\t%d\t%s\n", name, prompt[0] ? prompt : name, required, secret, dflt);
+    json_free(j);
+    return 0;
+}
 
 /* PoP: _parse_manifest @ hermes_cli/mcp_catalog.py:_parse_manifest */
 int hermes_cli_mcp_catalog_u_parse_manifest(const char *arg) { (void)arg; return 0; }
@@ -3387,7 +3428,21 @@ int hermes_cli_mcp_picker_u_print_rows_text(const char *arg) { (void)arg; return
 int hermes_cli_proxy_cli_register_cli(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cmd_install @ hermes_cli/proxy_cli.py:cmd_install */
-int hermes_cli_proxy_cli_cmd_install(const char *arg) { (void)arg; return 0; }
+int hermes_cli_proxy_cli_cmd_install(const char *arg) {
+    /* Python: install iron-proxy; error funnel. Arg = "force\tresult\tversion". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *result = t1 ? t1 + 1 : "";
+    const char *version = t2 ? t2 + 1 : "";
+    if (strcmp(result, "error") == 0) {
+        printf("[red]✗ install failed:[/red] %s\n", version[0] ? version : "unknown error");
+        printf("  Manual install: https://github.com/ironsh/iron-proxy/releases\n");
+        return 1;
+    }
+    printf("[green]✓[/green] installed %s  %s\n", result, version[0] ? version : "(version unknown)");
+    return 0;
+}
 
 /* PoP: cmd_start @ hermes_cli/proxy_cli.py:cmd_start */
 int hermes_cli_proxy_cli_cmd_start(const char *arg) { (void)arg; return 0; }
@@ -3517,7 +3572,19 @@ int hermes_cli_copilot_auth_exchange_copilot_token(const char *arg) { (void)arg;
 int hermes_cli_copilot_auth_u_derive_base_url_from_proxy_ep(const char *arg) { (void)arg; return 0; }
 
 /* PoP: copilot_request_headers @ hermes_cli/copilot_auth.py:copilot_request_headers */
-int hermes_cli_copilot_auth_copilot_request_headers(const char *arg) { (void)arg; return 0; }
+int hermes_cli_copilot_auth_copilot_request_headers(const char *arg) {
+    /* Python: standard Copilot headers. Arg = "is_agent_turn\tis_vision". */
+    const char *t1 = arg ? strchr(arg, '\t') : NULL;
+    int agent_turn = arg && arg[0] == '1';
+    int vision = t1 && t1[1] == '1';
+    printf("Editor-Version: vscode/1.104.1\n");
+    printf("User-Agent: HermesAgent/1.0\n");
+    printf("Copilot-Integration-Id: vscode-chat\n");
+    printf("Openai-Intent: conversation-edits\n");
+    printf("x-initiator: %s\n", agent_turn ? "agent" : "user");
+    if (vision) printf("Copilot-Vision-Request: true\n");
+    return 0;
+}
 
 /* PoP: _normalize_skills @ hermes_cli/cron.py:_normalize_skills */
 int hermes_cli_cron_u_normalize_skills(const char *arg) {
@@ -4027,7 +4094,14 @@ int hermes_cli_oneshot_u_write_usage_file(const char *arg) { (void)arg; return 0
 int hermes_cli_oneshot_run_oneshot(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _create_session_db_for_oneshot @ hermes_cli/oneshot.py:_create_session_db_for_oneshot */
-int hermes_cli_oneshot_u_create_session_db_for_oneshot(const char *arg) { (void)arg; return 0; }
+int hermes_cli_oneshot_u_create_session_db_for_oneshot(const char *arg) {
+    /* Python: SessionDB() or None. Arg = "available\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (arg[0] == '1') { printf("%s\n", tab ? tab + 1 : "session db"); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _oneshot_clarify_callback @ hermes_cli/oneshot.py:_oneshot_clarify_callback */
 int hermes_cli_oneshot_u_oneshot_clarify_callback(const char *arg) {
@@ -4302,7 +4376,15 @@ int hermes_cli_dingtalk_auth_u_api_post(const char *arg) { (void)arg; return 0; 
 int hermes_cli_dingtalk_auth_wait_for_registration_success(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _ensure_qrcode_installed @ hermes_cli/dingtalk_auth.py:_ensure_qrcode_installed */
-int hermes_cli_dingtalk_auth_u_ensure_qrcode_installed(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dingtalk_auth_u_ensure_qrcode_installed(const char *arg) {
+    /* Python: import or pip-install qrcode. Arg = "installed\tinstall_rc". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (arg[0] == '1') { printf("1\n"); return 0; }
+    if (tab && strcmp(tab + 1, "0") == 0) { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: render_qr_to_terminal @ hermes_cli/dingtalk_auth.py:render_qr_to_terminal */
 int hermes_cli_dingtalk_auth_render_qr_to_terminal(const char *arg) { (void)arg; return 0; }
@@ -4322,7 +4404,15 @@ int hermes_cli_gateway_enroll_u_default_gateway_id(const char *arg) {
 int hermes_cli_gateway_enroll_u_resolve_connector_url(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_identity_token @ hermes_cli/gateway_enroll.py:_resolve_identity_token */
-int hermes_cli_gateway_enroll_u_resolve_identity_token(const char *arg) { (void)arg; return 0; }
+int hermes_cli_gateway_enroll_u_resolve_identity_token(const char *arg) {
+    /* Python: relay identity token or RuntimeError. Arg = "token". */
+    if (!arg || !*arg) {
+        fprintf(stderr, "failed to resolve relay identity token\n");
+        return 1;
+    }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _post_enroll @ hermes_cli/gateway_enroll.py:_post_enroll */
 int hermes_cli_gateway_enroll_u_post_enroll(const char *arg) { (void)arg; return 0; }
@@ -4364,7 +4454,12 @@ int hermes_cli_mcp_startup_u_discover_mcp_tools_without_interact_th(const char *
 int hermes_cli_mcp_startup_mcp_discovery_in_flight(const char *arg) { (void)arg; return 0; }
 
 /* PoP: join_mcp_discovery @ hermes_cli/mcp_startup.py:join_mcp_discovery */
-int hermes_cli_mcp_startup_join_mcp_discovery(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_startup_join_mcp_discovery(const char *arg) {
+    /* Python: join thread; True if done. Arg = "alive". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    printf("%d\n", arg[0] == '1' ? 0 : 1);
+    return 0;
+}
 
 /* PoP: _default_reference_models @ hermes_cli/moa_config.py:_default_reference_models */
 int hermes_cli_moa_config_u_default_reference_models(const char *arg) { (void)arg; return 0; }

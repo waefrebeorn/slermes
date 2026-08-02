@@ -90,7 +90,13 @@ int msw_parse_model_flags_detailed(const char *arg) { (void)arg; return 0; }
 int msw_u_model_sort_key(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_authenticated_provider_slugs @ hermes_cli/model_switch.py:get_authenticated_provider_slugs */
-int msw_get_authenticated_provider_slugs(const char *arg) { (void)arg; return 0; }
+int msw_get_authenticated_provider_slugs(const char *arg) {
+    /* Python: slugs from list_authenticated_providers or []. Arg = "slugs"
+     * (tab-sep, empty = none). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _resolve_alias_fallback @ hermes_cli/model_switch.py:_resolve_alias_fallback */
 int msw_u_resolve_alias_fallback(const char *arg) {

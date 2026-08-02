@@ -123,7 +123,14 @@ int cron_executions_u_prune_unlocked(const char *arg) {
 int cron_executions_create_execution(const char *arg) { (void)arg; return 0; }
 
 /* PoP: mark_execution_running @ cron/executions.py:mark_execution_running */
-int cron_executions_mark_execution_running(const char *arg) { (void)arg; return 0; }
+int cron_executions_mark_execution_running(const char *arg) {
+    /* Python: claimed -> running exactly once. Arg = "claimed\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (arg[0] == '1') { printf("%s\n", tab ? tab + 1 : "running"); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: finish_execution @ cron/executions.py:finish_execution */
 int cron_executions_finish_execution(const char *arg) { (void)arg; return 0; }

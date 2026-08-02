@@ -1080,7 +1080,18 @@ int agent_turn_context_append_notes_to_multimodal_content(const char *arg) { (vo
 int agent_turn_context_reanchor_current_turn_user_idx(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _compression_warrants_another_preflight_pass @ agent/turn_context.py:_compression_warrants_another_preflight_pass */
-int agent_turn_context_u_compression_warrants_another_preflight__ss(const char *arg) { (void)arg; return 0; }
+int agent_turn_context_u_compression_warrants_another_preflight__ss(const char *arg) {
+    /* Python: over threshold AND reduced >5%. Arg = "new\tthreshold\torig". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    double new_t = strtod(arg, NULL);
+    double thresh = t1 ? strtod(t1 + 1, NULL) : 0;
+    double orig = t2 ? strtod(t2 + 1, NULL) : 0;
+    if (new_t >= thresh && orig > 0 && new_t < orig * 0.95) { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _should_idle_compact @ agent/turn_context.py:_should_idle_compact */
 int agent_turn_context_u_should_idle_compact(const char *arg) { (void)arg; return 0; }
@@ -1133,7 +1144,13 @@ int agent_trace_upload_u_resolve_hf_token(const char *arg) {
 int agent_trace_upload_u_do_upload(const char *arg) { (void)arg; return 0; }
 
 /* PoP: load_session_messages @ agent/trace_upload.py:load_session_messages */
-int agent_trace_upload_load_session_messages(const char *arg) { (void)arg; return 0; }
+int agent_trace_upload_load_session_messages(const char *arg) {
+    /* Python: (messages, meta) from SessionDB. Arg = "messages_json\tmeta_json". */
+    if (!arg || !*arg) { printf("[]\n{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n%s\n", arg, tab ? tab + 1 : "{}");
+    return 0;
+}
 
 /* PoP: upload_session_trace @ agent/trace_upload.py:upload_session_trace */
 int agent_trace_upload_upload_session_trace(const char *arg) { (void)arg; return 0; }
@@ -1367,7 +1384,16 @@ int agent_pet_generate_imagegen_u_save_local(const char *arg) {
 }
 
 /* PoP: _rejected_background @ agent/pet/generate/imagegen.py:_rejected_background */
-int agent_pet_generate_imagegen_u_rejected_background(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_imagegen_u_rejected_background(const char *arg) {
+    /* Python: "background" + "not supported"/"transparent". Arg = error. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    char low[1200];
+    snprintf(low, sizeof(low), "%s", arg);
+    for (char *p = low; *p; p++) *p = (char)tolower((unsigned char)*p);
+    if (strstr(low, "background") && (strstr(low, "not supported") || strstr(low, "transparent"))) { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _harden_transparency @ agent/pet/generate/orchestrate.py:_harden_transparency */
 int agent_pet_generate_orchestrate_u_harden_transparency(const char *arg) { (void)arg; return 0; }

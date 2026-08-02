@@ -348,7 +348,15 @@ int tools_homeassistant_tool_u_handle_call_service(const char *arg) { (void)arg;
 int tools_homeassistant_tool_u_async_list_services(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _handle_list_services @ tools/homeassistant_tool.py:_handle_list_services */
-int tools_homeassistant_tool_u_handle_list_services(const char *arg) { (void)arg; return 0; }
+int tools_homeassistant_tool_u_handle_list_services(const char *arg) {
+    /* Python: ha_list_services -> {"result": [...]}. Arg =
+     * "domain\tresult_json". */
+    if (!arg || !*arg) { printf("{\"result\": []}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *result = tab ? tab + 1 : "[]";
+    printf("{\"result\": %s}\n", result);
+    return 0;
+}
 
 /* PoP: _check_ha_available @ tools/homeassistant_tool.py:_check_ha_available */
 int tools_homeassistant_tool_u_check_ha_available(const char *arg) {
@@ -638,7 +646,61 @@ int tools_delegate_tool_u_resolve_delegation_credentials(const char *arg) { (voi
 int tools_delegate_tool_u_build_dynamic_schema_overrides(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _strip_model_hidden_task_fields @ tools/delegate_tool.py:_strip_model_hidden_task_fields */
-int tools_delegate_tool_u_strip_model_hidden_task_fields(const char *arg) { (void)arg; return 0; }
+int tools_delegate_tool_u_strip_model_hidden_task_fields(const char *arg) {
+    /* Python: drop hidden keys from task dicts (only if changed). Arg =
+     * "tasks_json\thidden_keys". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    json_t *tasks = json_parse(arg, NULL);
+    if (!tasks || !json_is_array(tasks)) {
+        if (tasks) json_free(tasks);
+        printf("%s\n", arg);
+        return 0;
+    }
+    const char *hidden = t1 ? t1 + 1 : "";
+    size_t n = json_array_size(tasks);
+    json_t *out = json_array();
+    int changed = 0;
+    for (size_t i = 0; i < n; i++) {
+        json_t *task = json_array_get(tasks, i);
+        if (!task || !json_is_object(task)) {
+            char *s = json_dumps(task, 0);
+            json_append(out, s ? json_parse(s, NULL) : NULL);
+            free(s);
+            continue;
+        }
+        json_t *stripped = json_object();
+        int any_drop = 0;
+        for (size_t k = 0; k < task->c.count; k++) {
+            const char *key = task->c.keys[k];
+            int drop = 0;
+            const char *hp = hidden;
+            while (*hp) {
+                const char *ht = strchr(hp, '\t');
+                size_t hl = ht ? (size_t)(ht - hp) : strlen(hp);
+                if (hl == strlen(key) && strncmp(hp, key, hl) == 0) { drop = 1; break; }
+                hp = ht ? ht + 1 : hp + hl;
+            }
+            if (drop) { any_drop = 1; continue; }
+            json_t *v = json_obj_get(task, key);
+            char *vs = json_dumps(v, 0);
+            json_set(stripped, key, vs ? json_parse(vs, NULL) : NULL);
+            free(vs);
+        }
+        changed = changed || any_drop;
+        char *s = json_dumps(stripped, 0);
+        json_append(out, s ? json_parse(s, NULL) : NULL);
+        free(s);
+        json_free(stripped);
+    }
+    if (!changed) { printf("%s\n", arg); json_free(tasks); json_free(out); return 0; }
+    char *s = json_dumps(out, 0);
+    printf("%s\n", s ? s : "[]");
+    free(s);
+    json_free(tasks);
+    json_free(out);
+    return 0;
+}
 
 /* PoP: live_transcript_root @ tools/delegation_live_log.py:live_transcript_root */
 int tools_delegation_live_log_live_transcript_root(const char *arg) {
@@ -1453,7 +1515,13 @@ int tools_project_tools_u_apply_workspace(const char *arg) {
 }
 
 /* PoP: project_list @ tools/project_tools.py:project_list */
-int tools_project_tools_project_list(const char *arg) { (void)arg; return 0; }
+int tools_project_tools_project_list(const char *arg) {
+    /* Python: {active_id, projects: [...]}. Arg = "active_id\tprojects_json". */
+    if (!arg || !*arg) { printf("{\"active_id\": null, \"projects\": []}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("{\"active_id\": \"%s\", \"projects\": %s}\n", arg, tab ? tab + 1 : "[]");
+    return 0;
+}
 
 /* PoP: project_create @ tools/project_tools.py:project_create */
 int tools_project_tools_project_create(const char *arg) { (void)arg; return 0; }

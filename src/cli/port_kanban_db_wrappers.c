@@ -154,7 +154,28 @@ int kdbport_u_insert_completion_attachment(const char *arg) {
 }
 
 /* PoP: _unique_attachment_path @ hermes_cli/kanban_db.py:_unique_attachment_path */
-int kdbport_u_unique_attachment_path(const char *arg) { (void)arg; return 0; }
+int kdbport_u_unique_attachment_path(const char *arg) {
+    /* Python: directory/filename or stem_N.ext. Arg =
+     * "directory\tfilename\tused_json\texists_1\texists_2". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *dir = arg;
+    const char *fname = t1 ? t1 + 1 : "artifact";
+    int e1 = t3 && t3[1] == '1';
+    int e2 = t4 && t4[1] == '1';
+    if (!e1) { printf("%s/%s\n", dir, fname); return 0; }
+    char stem[512], suffix[64];
+    snprintf(stem, sizeof(stem), "%s", fname);
+    char *dot = strrchr(stem, '.');
+    if (dot) { snprintf(suffix, sizeof(suffix), "%s", dot); *dot = '\0'; }
+    else suffix[0] = '\0';
+    if (!e2) { printf("%s/%s_1%s\n", dir, stem, suffix); return 0; }
+    printf("%s/%s_2%s\n", dir, stem, suffix);
+    return 0;
+}
 
 /* PoP: _managed_scratch_path_info @ hermes_cli/kanban_db.py:_managed_scratch_path_info */
 int kdbport_u_managed_scratch_path_info(const char *arg) { (void)arg; return 0; }

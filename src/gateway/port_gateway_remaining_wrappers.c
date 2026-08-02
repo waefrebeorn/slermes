@@ -956,7 +956,16 @@ int gateway_config_platform_binds_port(const char *arg) { (void)arg; return 0; }
 int gateway_config_persist_home_channel(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _has_usable_api_server_key @ gateway/config.py:_has_usable_api_server_key */
-int gateway_config_u_has_usable_api_server_key(const char *arg) { (void)arg; return 0; }
+int gateway_config_u_has_usable_api_server_key(const char *arg) {
+    /* Python: key present and >=16 chars. Arg = key. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ') p++;
+    size_t len = strlen(p);
+    while (len > 0 && (p[len-1] == ' ')) len--;
+    printf("%d\n", len >= 16 ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _resolve_auto_decompose_settings @ gateway/kanban_watchers.py:_resolve_auto_decompose_settings */
 int gateway_kanban_watchers_u_resolve_auto_decompose_settings(const char *arg) { (void)arg; return 0; }

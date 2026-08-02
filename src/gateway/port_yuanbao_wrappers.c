@@ -140,7 +140,39 @@ int yb_is_dm_allowed(const char *arg) {
 }
 
 /* PoP: is_dm_intake_allowed @ gateway/platforms/yuanbao.py:is_dm_intake_allowed */
-int yb_is_dm_intake_allowed(const char *arg) { (void)arg; return 0; }
+int yb_is_dm_intake_allowed(const char *arg) {
+    /* Python: principal required; policy switch. Arg =
+     * "principal\tpolicy\tallowlist_json\topen_opted". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *principal = arg;
+    size_t plen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    if (!plen) { printf("0\n"); return 0; }
+    const char *policy = t1 ? t1 + 1 : "";
+    size_t polen = t2 ? (size_t)(t2 - t1 - 1) : strlen(policy);
+    if (polen == 8 && strncmp(policy, "disabled", 8) == 0) { printf("0\n"); return 0; }
+    if (polen == 9 && strncmp(policy, "allowlist", 9) == 0) {
+        const char *p = t2 ? t2 + 1 : "";
+        int found = 0;
+        while (*p) {
+            const char *tab = strchr(p, '\t');
+            size_t len = tab ? (size_t)(tab - p) : strlen(p);
+            if (len == plen && strncmp(p, principal, plen) == 0) { found = 1; break; }
+            p = tab ? tab + 1 : p + len;
+        }
+        printf("%d\n", found);
+        return 0;
+    }
+    if (polen == 7 && strncmp(policy, "pairing", 7) == 0) { printf("1\n"); return 0; }
+    if (polen == 4 && strncmp(policy, "open", 4) == 0) {
+        printf("%d\n", t3 && t3[1] == '1' ? 1 : 0);
+        return 0;
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: is_group_allowed @ gateway/platforms/yuanbao.py:is_group_allowed */
 int yb_is_group_allowed(const char *arg) {
