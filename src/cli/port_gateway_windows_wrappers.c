@@ -134,7 +134,13 @@ int gw_u_sanitize_filename(const char *arg) {
 }
 
 /* PoP: get_task_script_path @ hermes_cli/gateway_windows.py:get_task_script_path */
-int gw_get_task_script_path(const char *arg) { (void)arg; return 0; }
+int gw_get_task_script_path(const char *arg) {
+    /* Python: HERMES_HOME/gateway-service/<task>.cmd. Arg = "home\ttask_name". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s/gateway-service/%s.cmd\n", arg, tab ? tab + 1 : "Hermes_Gateway");
+    return 0;
+}
 
 /* PoP: _startup_dir @ hermes_cli/gateway_windows.py:_startup_dir */
 int gw_u_startup_dir(const char *arg) { (void)arg; return 0; }

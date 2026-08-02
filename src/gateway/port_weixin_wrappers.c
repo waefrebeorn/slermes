@@ -214,7 +214,18 @@ int wx_u_open_rate_limit_circuit(const char *arg) {
 }
 
 /* PoP: _record_rate_limit_event @ gateway/platforms/weixin.py:_record_rate_limit_event */
-int wx_u_record_rate_limit_event(const char *arg) { (void)arg; return 0; }
+int wx_u_record_rate_limit_event(const char *arg) {
+    /* Python: window-prune events, append, breaker check. Arg =
+     * "count\tthreshold\topened". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long count = strtol(arg, NULL, 10) + 1;
+    long thresh = t1 ? strtol(t1 + 1, NULL, 10) : 3;
+    int opened = t2 && t2[1] == '1';
+    printf("%d\n", (count >= thresh && opened) ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _reset_rate_limit_circuit @ gateway/platforms/weixin.py:_reset_rate_limit_circuit */
 int wx_u_reset_rate_limit_circuit(const char *arg) { (void)arg; return 0; }

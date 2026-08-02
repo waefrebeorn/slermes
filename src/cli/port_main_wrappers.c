@@ -397,7 +397,12 @@ int main_cmd_whatsapp(const char *arg) { (void)arg; return 0; }
 int main_cmd_whatsapp_cloud(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_profile_api_key_provider @ hermes_cli/main.py:_is_profile_api_key_provider */
-int main_u_is_profile_api_key_provider(const char *arg) { (void)arg; return 0; }
+int main_u_is_profile_api_key_provider(const char *arg) {
+    /* Python: provider profile auth_type == api_key. Arg = "auth_type". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%d\n", strcmp(arg, "api_key") == 0 ? 1 : 0);
+    return 0;
+}
 
 /* PoP: select_provider_and_model @ hermes_cli/main.py:select_provider_and_model */
 int main_select_provider_and_model(const char *arg) { (void)arg; return 0; }

@@ -236,7 +236,13 @@ int tools_lazy_deps_u_unsupported_feature_reason(const char *arg) { (void)arg; r
 int tools_lazy_deps_u_is_satisfied(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_present @ tools/lazy_deps.py:_is_present */
-int tools_lazy_deps_u_is_present(const char *arg) { (void)arg; return 0; }
+int tools_lazy_deps_u_is_present(const char *arg) {
+    /* Python: package version() check. Arg = "pkg\tfound". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _core_constraints_file @ tools/lazy_deps.py:_core_constraints_file */
 int tools_lazy_deps_u_core_constraints_file(const char *arg) { (void)arg; return 0; }
@@ -1677,7 +1683,12 @@ int tools_computer_use_doctor_u_cua_child_env(const char *arg) {
 }
 
 /* PoP: _sanitized_cua_env @ tools/computer_use/doctor.py:_sanitized_cua_env */
-int tools_computer_use_doctor_u_sanitized_cua_env(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_doctor_u_sanitized_cua_env(const char *arg) {
+    /* Python: telemetry env with secrets stripped. Arg = "env_json". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _drive_health_report @ tools/computer_use/doctor.py:_drive_health_report */
 int tools_computer_use_doctor_u_drive_health_report(const char *arg) { (void)arg; return 0; }

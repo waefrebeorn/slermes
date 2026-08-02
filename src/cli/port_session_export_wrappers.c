@@ -387,7 +387,55 @@ int sexp_u_messages(const char *arg) {
 }
 
 /* PoP: _message_text @ hermes_cli/session_export.py:_message_text */
-int sexp_u_message_text(const char *arg) { (void)arg; return 0; }
+int sexp_u_message_text(const char *arg) {
+    /* Python: str passthrough; list -> join parts; dict text/content. Arg =
+     * "type\tvalue" (type: str/list/dict/other). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *typ = arg;
+    const char *val = tab ? tab + 1 : "";
+    if (strcmp(typ, "str") == 0) { printf("%s\n", val); return 0; }
+    if (strcmp(typ, "list") == 0) {
+        json_t *j = json_parse(val, NULL);
+        if (j && json_is_array(j)) {
+            size_t n = json_array_size(j);
+            int first = 1;
+            for (size_t i = 0; i < n; i++) {
+                json_t *it = json_array_get(j, i);
+                const char *s = it && json_is_string(it) ? json_string_value(it) : "";
+                if (s[0]) {
+                    if (!first) printf("\n");
+                    printf("%s", s);
+                    first = 0;
+                }
+            }
+            printf("\n");
+            json_free(j);
+            return 0;
+        }
+        if (j) json_free(j);
+        printf("\n");
+        return 0;
+    }
+    if (strcmp(typ, "dict") == 0) {
+        json_t *j = json_parse(val, NULL);
+        if (j && json_is_object(j)) {
+            const char *t = json_get_str(j, "text", "");
+            if (!t[0]) t = json_get_str(j, "content", "");
+            if (t[0]) { printf("%s\n", t); json_free(j); return 0; }
+            char *s = json_dumps(j, 0);
+            printf("%s\n", s ? s : "");
+            free(s);
+            json_free(j);
+            return 0;
+        }
+        if (j) json_free(j);
+        printf("%s\n", val);
+        return 0;
+    }
+    printf("%s\n", val);
+    return 0;
+}
 
 /* PoP: _content_part_text @ hermes_cli/session_export.py:_content_part_text */
 int sexp_u_content_part_text(const char *arg) {

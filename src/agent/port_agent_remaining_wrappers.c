@@ -238,7 +238,13 @@ int agent_pet_generate_atlas_u_clear_transparent_rgb(const char *arg) {
 }
 
 /* PoP: mirror_frames @ agent/pet/generate/atlas.py:mirror_frames */
-int agent_pet_generate_atlas_mirror_frames(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_atlas_mirror_frames(const char *arg) {
+    /* Python: horizontal flip each frame in place. Arg = "count\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("mirrored %s frame(s)%s\n", arg, tab && tab[1] == '1' ? " (RGBA)" : "");
+    return 0;
+}
 
 /* PoP: compose_atlas @ agent/pet/generate/atlas.py:compose_atlas */
 int agent_pet_generate_atlas_compose_atlas(const char *arg) { (void)arg; return 0; }
@@ -525,7 +531,50 @@ int agent_subscription_view_subscription_manage_url(const char *arg) { (void)arg
 int agent_subscription_view_u_format_dollars_grouped(const char *arg) { (void)arg; return 0; }
 
 /* PoP: selectable_tiers @ agent/subscription_view.py:selectable_tiers */
-int agent_subscription_view_selectable_tiers(const char *arg) { (void)arg; return 0; }
+int agent_subscription_view_selectable_tiers(const char *arg) {
+    /* Python: enabled non-current tiers with order > 0, sorted. Arg =
+     * "tiers_json" (array of {tier_order, is_enabled, is_current, name}). */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    json_t *tiers = json_parse(arg, NULL);
+    if (!tiers || !json_is_array(tiers)) {
+        if (tiers) json_free(tiers);
+        printf("[]\n");
+        return 0;
+    }
+    /* simple selection sort by tier_order */
+    size_t n = json_array_size(tiers);
+    long *orders = calloc(n, sizeof(long));
+    json_t **sel = calloc(n, sizeof(json_t *));
+    size_t m = 0;
+    for (size_t i = 0; i < n; i++) {
+        json_t *t = json_array_get(tiers, i);
+        if (!t || !json_is_object(t)) continue;
+        int enabled = json_get_bool(t, "is_enabled", 0);
+        int current = json_get_bool(t, "is_current", 0);
+        long order = (long)json_get_num(t, "tier_order", 0);
+        if (enabled && !current && order > 0) { orders[m] = order; sel[m] = t; m++; }
+    }
+    for (size_t i = 0; i < m; i++) {
+        for (size_t j = i + 1; j < m; j++) {
+            if (orders[j] < orders[i]) {
+                long to = orders[i]; orders[i] = orders[j]; orders[j] = to;
+                json_t *tt = sel[i]; sel[i] = sel[j]; sel[j] = tt;
+            }
+        }
+    }
+    int first = 1;
+    for (size_t i = 0; i < m; i++) {
+        char *s = json_dumps(sel[i], 0);
+        if (!first) printf("\n");
+        printf("%s", s ? s : "{}");
+        free(s);
+        first = 0;
+    }
+    printf("\n");
+    free(orders); free(sel);
+    json_free(tiers);
+    return 0;
+}
 
 /* PoP: format_tier_row @ agent/subscription_view.py:format_tier_row */
 int agent_subscription_view_format_tier_row(const char *arg) {
@@ -1704,7 +1753,21 @@ int agent_oneshot_run_oneshot(const char *arg) { (void)arg; return 0; }
 int agent_tool_executor_u_ensure_file_checkpoint(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _parse_tool_arguments @ agent/tool_executor.py:_parse_tool_arguments */
-int agent_tool_executor_u_parse_tool_arguments(const char *arg) { (void)arg; return 0; }
+int agent_tool_executor_u_parse_tool_arguments(const char *arg) {
+    /* Python: JSON parse without repair; error dict on bad. Arg = raw. */
+    if (!arg || !*arg) { printf("{}\nInvalid tool arguments: Tool arguments must be a valid JSON object; tool was not executed.\n"); return 1; }
+    json_t *j = json_parse(arg, NULL);
+    if (j && json_is_object(j)) {
+        char *s = json_dumps(j, 0);
+        printf("%s\n\n", s ? s : "{}");
+        free(s);
+        json_free(j);
+        return 0;
+    }
+    if (j) json_free(j);
+    printf("{}\nInvalid tool arguments: Tool arguments must be a valid JSON object; tool was not executed.\n");
+    return 1;
+}
 
 /* PoP: execute_tool_calls_segmented @ agent/tool_executor.py:execute_tool_calls_segmented */
 int agent_tool_executor_execute_tool_calls_segmented(const char *arg) { (void)arg; return 0; }

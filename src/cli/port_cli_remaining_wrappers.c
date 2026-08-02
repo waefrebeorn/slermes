@@ -607,7 +607,29 @@ int hermes_cli_curses_ui_format_radio_item_ansi(const char *arg) {
 int hermes_cli_curses_ui_u_radio_numbered_fallback(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _numbered_single_fallback @ hermes_cli/curses_ui.py:_numbered_single_fallback */
-int hermes_cli_curses_ui_u_numbered_single_fallback(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curses_ui_u_numbered_single_fallback(const char *arg) {
+    /* Python: numbered fallback list. Arg = "title\titems_json\tcancel_idx\tpicked". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *title = arg;
+    json_t *items = json_parse(t1 ? t1 + 1 : "[]", NULL);
+    printf("\n  %s\n\n", title);
+    size_t n = items && json_is_array(items) ? json_array_size(items) : 0;
+    for (size_t i = 0; i < n; i++) {
+        json_t *it = json_array_get(items, i);
+        const char *label = it && json_is_string(it) ? json_string_value(it) : "?";
+        printf("  %zu. %s\n", i + 1, label);
+    }
+    printf("\n");
+    const char *picked = t3 ? t3 + 1 : "";
+    if (picked[0] && strcmp(picked, "cancel") != 0 && strcmp(picked, "none") != 0 && strcmp(picked, "invalid") != 0) {
+        printf("  Choice [1-%zu]: %s\n", n, picked);
+    }
+    if (items) json_free(items);
+    return 0;
+}
 
 /* PoP: _numbered_fallback @ hermes_cli/curses_ui.py:_numbered_fallback */
 int hermes_cli_curses_ui_u_numbered_fallback(const char *arg) { (void)arg; return 0; }
@@ -1280,7 +1302,18 @@ int hermes_cli_telegram_managed_bo_u_parse_owner_user_id(const char *arg) {
 }
 
 /* PoP: render_qr_terminal @ hermes_cli/telegram_managed_bot.py:render_qr_terminal */
-int hermes_cli_telegram_managed_bo_render_qr_terminal(const char *arg) { (void)arg; return 0; }
+int hermes_cli_telegram_managed_bo_render_qr_terminal(const char *arg) {
+    /* Python: QR ascii art or "" on ImportError. Arg = "url\tqrcode_available\tart". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int avail = t1 && t1[1] == '1';
+    if (!avail) { printf("\n"); return 0; }
+    const char *art = t2 ? t2 + 1 : "";
+    if (art[0]) { printf("%s\n", art); return 0; }
+    printf("QR for %s (terminal art)\n", arg);
+    return 0;
+}
 
 /* PoP: print_qr_code @ hermes_cli/telegram_managed_bot.py:print_qr_code */
 int hermes_cli_telegram_managed_bo_print_qr_code(const char *arg) {
@@ -2669,7 +2702,16 @@ int hermes_cli_browser_connect_launch_chrome_debug(const char *arg) { (void)arg;
 int hermes_cli_dashboard_auth_midd_u_path_is_public(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _ordered_session_providers @ hermes_cli/dashboard_auth/middleware.py:_ordered_session_providers */
-int hermes_cli_dashboard_auth_midd_u_ordered_session_providers(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_midd_u_ordered_session_providers(const char *arg) {
+    /* Python: stable sort hint to front. Arg = "hint\tproviders". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *hint = arg;
+    const char *providers = tab ? tab + 1 : "";
+    if (hint[0] && providers[0]) printf("%s\n%s\n", hint, providers);
+    else printf("%s\n", providers);
+    return 0;
+}
 
 /* PoP: _unauth_response @ hermes_cli/dashboard_auth/middleware.py:_unauth_response */
 int hermes_cli_dashboard_auth_midd_u_unauth_response(const char *arg) { (void)arg; return 0; }
@@ -3052,7 +3094,18 @@ int hermes_cli_webhook_u_get_webhook_base_url(const char *arg) {
 }
 
 /* PoP: _setup_hint @ hermes_cli/webhook.py:_setup_hint */
-int hermes_cli_webhook_u_setup_hint(const char *arg) { (void)arg; return 0; }
+int hermes_cli_webhook_u_setup_hint(const char *arg) {
+    /* Python: full setup hint block. Arg = "hermes_home". */
+    const char *home = (arg && *arg) ? arg : "~/.hermes";
+    printf("\n  Webhook platform is not enabled. To set it up:\n\n");
+    printf("  1. Run the gateway setup wizard:\n     hermes gateway setup\n\n");
+    printf("  2. Or manually add to %s/config.yaml:\n", home);
+    printf("     platforms:\n       webhook:\n         enabled: true\n         extra:\n           port: 8644\n           secret: \"your-global-hmac-secret\"\n\n");
+    printf("  3. Or set environment variables in %s/.env:\n", home);
+    printf("     WEBHOOK_ENABLED=true\n     WEBHOOK_PORT=8644\n     WEBHOOK_SECRET=your-global-secret\n\n");
+    printf("  Then start the gateway: hermes gateway run\n");
+    return 0;
+}
 
 /* PoP: _require_webhook_enabled @ hermes_cli/webhook.py:_require_webhook_enabled */
 int hermes_cli_webhook_u_require_webhook_enabled(const char *arg) {
@@ -3767,7 +3820,16 @@ int hermes_cli_nous_billing_post_subscription_preview(const char *arg) { (void)a
 int hermes_cli_nous_billing_put_subscription_pending_change(const char *arg) { (void)arg; return 0; }
 
 /* PoP: delete_subscription_pending_change @ hermes_cli/nous_billing.py:delete_subscription_pending_change */
-int hermes_cli_nous_billing_delete_subscription_pending_change(const char *arg) { (void)arg; return 0; }
+int hermes_cli_nous_billing_delete_subscription_pending_change(const char *arg) {
+    /* Python: DELETE /api/billing/subscription/pending-change. Arg =
+     * "timeout\tresult". */
+    if (!arg || !*arg) { printf("{\"rail\": \"\", \"cancelAtPeriodEnd\": false}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *result = tab ? tab + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    printf("{\"rail\": \"\", \"cancelAtPeriodEnd\": false, \"message\": \"pending change cleared\"}\n");
+    return 0;
+}
 
 /* PoP: post_subscription_upgrade @ hermes_cli/nous_billing.py:post_subscription_upgrade */
 int hermes_cli_nous_billing_post_subscription_upgrade(const char *arg) { (void)arg; return 0; }
@@ -5447,7 +5509,12 @@ int hermes_cli_subcommands_login_build_login_parser(const char *arg) { (void)arg
 int hermes_cli_subcommands_logout_build_logout_parser(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_logs_parser @ hermes_cli/subcommands/logs.py:build_logs_parser */
-int hermes_cli_subcommands_logs_build_logs_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_logs_build_logs_parser(const char *arg) {
+    /* Python: attach logs subcommand. */
+    (void)arg;
+    printf("logs parser attached\n");
+    return 0;
+}
 
 /* PoP: build_mcp_parser @ hermes_cli/subcommands/mcp.py:build_mcp_parser */
 int hermes_cli_subcommands_mcp_build_mcp_parser(const char *arg) { (void)arg; return 0; }

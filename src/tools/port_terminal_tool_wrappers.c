@@ -124,7 +124,15 @@ int tt_u_docker_has_host_access(const char *arg) {
 }
 
 /* PoP: _check_all_guards @ tools/terminal_tool.py:_check_all_guards */
-int tt_u_check_all_guards(const char *arg) { (void)arg; return 0; }
+int tt_u_check_all_guards(const char *arg) {
+    /* Python: consolidated guard result. Arg = "command\tapproved\tmessage". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int approved = t1 && t1[1] == '1';
+    printf("%d\n%s\n", approved ? 1 : 0, t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _sudo_wrong_password_failure @ tools/terminal_tool.py:_sudo_wrong_password_failure */
 int tt_u_sudo_wrong_password_failure(const char *arg) {

@@ -31,7 +31,12 @@ int appr_u_observe_smart_approval_verdict(const char *arg) {
 int appr_u_match_user_deny_rule(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _user_deny_block_result @ tools/approval.py:_user_deny_block_result */
-int appr_u_user_deny_block_result(const char *arg) { (void)arg; return 0; }
+int appr_u_user_deny_block_result(const char *arg) {
+    /* Python: standard deny block result. Arg = pattern. */
+    if (!arg || !*arg) { printf("{\"approved\": false, \"user_deny\": true}\n"); return 0; }
+    printf("{\"approved\": false, \"user_deny\": true, \"message\": \"BLOCKED: this command matches the user-defined deny rule '%s' (approvals.deny in config.yaml). It cannot be executed via the agent — not even with --yolo, /yolo, or approvals.mode=off. Do NOT retry or rephrase this command; the user has explicitly forbidden it.\"}\n", arg);
+    return 0;
+}
 
 /* PoP: _command_parser_limit_exceeded @ tools/approval.py:_command_parser_limit_exceeded */
 int appr_u_command_parser_limit_exceeded(const char *arg) { (void)arg; return 0; }

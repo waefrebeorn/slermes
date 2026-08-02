@@ -54,7 +54,29 @@ int mcpo_u_reserve_callback_port(const char *arg) { (void)arg; return 0; }
 int mcpo_u_cached_redirect_port(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cached_redirect_uri @ tools/mcp_oauth.py:_cached_redirect_uri */
-int mcpo_u_cached_redirect_uri(const char *arg) { (void)arg; return 0; }
+int mcpo_u_cached_redirect_uri(const char *arg) {
+    /* Python: first https redirect_uri with netloc. Arg = "client_info_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (!j || !json_is_object(j)) {
+        if (j) json_free(j);
+        printf("\n");
+        return 0;
+    }
+    json_t *uris = json_obj_get(j, "redirect_uris");
+    if (uris && json_is_array(uris)) {
+        size_t n = json_array_size(uris);
+        for (size_t i = 0; i < n; i++) {
+            json_t *u = json_array_get(uris, i);
+            if (!u || !json_is_string(u)) continue;
+            const char *s = json_string_value(u);
+            if (strncmp(s, "https://", 8) == 0) { printf("%s\n", s); json_free(j); return 0; }
+        }
+    }
+    json_free(j);
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _is_interactive @ tools/mcp_oauth.py:_is_interactive */
 int mcpo_u_is_interactive(const char *arg) {
@@ -82,7 +104,12 @@ int mcpo_force_interactive_oauth(const char *arg) {
 }
 
 /* PoP: suppress_interactive_oauth @ tools/mcp_oauth.py:suppress_interactive_oauth */
-int mcpo_suppress_interactive_oauth(const char *arg) { (void)arg; return 0; }
+int mcpo_suppress_interactive_oauth(const char *arg) {
+    /* Python: ContextVar suppress during block. Arg = "state". */
+    (void)arg;
+    printf("interactive oauth suppressed\n");
+    return 0;
+}
 
 /* PoP: _can_open_browser @ tools/mcp_oauth.py:_can_open_browser */
 int mcpo_u_can_open_browser(const char *arg) { (void)arg; return 0; }

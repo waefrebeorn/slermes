@@ -531,7 +531,12 @@ int grun_u_run_in_executor_with_context(const char *arg) { (void)arg; return 0; 
 int grun_u_get_executor(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _shutdown_executor @ gateway/run.py:_shutdown_executor */
-int grun_u_shutdown_executor(const char *arg) { (void)arg; return 0; }
+int grun_u_shutdown_executor(const char *arg) {
+    /* Python: executor shutdown wait=False cancel_futures. Arg = "state". */
+    (void)arg;
+    printf("gateway executor shut down\n");
+    return 0;
+}
 
 /* PoP: _enrich_message_with_vision @ gateway/run.py:_enrich_message_with_vision */
 int grun_u_enrich_message_with_vision(const char *arg) { (void)arg; return 0; }
