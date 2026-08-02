@@ -175,10 +175,34 @@ char *bw_run_bws_list(const char *bws_path, const char *token) {
 
 /* PoP: apply_bitwarden_secrets @ agent/secret_sources/bitwarden.py:apply_bitwarden_secrets */
 long bw_apply_bitwarden_secrets(const char *secrets_json) {
-    /* Python: merge into env. */
+    /* Python: merge into env — real: parse {"KEY": "value", ...}
+     * and setenv each. */
     if (!secrets_json) return 0;
-    printf("bitwarden secrets applied to env\n");
-    return 0;
+    long applied = 0;
+    const char *p = secrets_json;
+    while ((p = strchr(p, '"')) != NULL) {
+        const char *ke = p + 1;
+        while (*ke && *ke != '"') ke++;
+        if (ke == p + 1) { p = ke + 1; continue; }
+        char *key = strndup(p + 1, (size_t)(ke - p - 1));
+        const char *colon = strchr(ke, ':');
+        if (!colon) { free(key); break; }
+        const char *v = colon + 1;
+        while (*v == ' ' || *v == '"') v++;
+        const char *ve = v;
+        while (*ve && *ve != '"' && *ve != ',' && *ve != '}') ve++;
+        if (ve > v) {
+            char *val = strndup(v, (size_t)(ve - v));
+            if (key && *key && val) {
+                setenv(key, val, 0);  /* don't clobber existing */
+                applied++;
+            }
+            free(val);
+        }
+        free(key);
+        p = ve;
+    }
+    return applied;
 }
 
 /* PoP: override_existing @ agent/secret_sources/bitwarden.py:override_existing */
@@ -220,8 +244,13 @@ char *bw_classify_bws_error(const char *error) {
     char *l = lowerdup(error);
     if (!l) return strdup("unknown");
     char *r;
-    if (strstr(l, "unauthorized") || strstr(l, "401")) r = strdup("auth");
-    else if (strstr(l, "timeout") || strstr(l, "connection")) r = strdup("network");
+    if (strstr(l, "unauthorized") || strstr(l, "401") || strstr(l, "forbidden") || strstr(l, "403"))
+        r = strdup("auth");
+    else if (strstr(l, "timeout") || strstr(l, "connection") || strstr(l, "resolve") ||
+             strstr(l, "network") || strstr(l, "dns"))
+        r = strdup("network");
+    else if (strstr(l, "parse") || strstr(l, "json") || strstr(l, "decode"))
+        r = strdup("parse");
     else r = strdup("unknown");
     free(l);
     return r;

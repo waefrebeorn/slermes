@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <errno.h>
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -78,9 +79,11 @@ char *aps_handle_health_detailed(void) {
 int aps_parse_nonnegative_int(const char *value, int default_value) {
     /* Python: int parse; negative/error → default. */
     if (!value || !*value) return default_value;
+    /* reject leading + / embedded junk like Python int() would */
     char *end = NULL;
+    errno = 0;
     long v = strtol(value, &end, 10);
-    if (end == value || *end != '\0') return default_value;
+    if (errno != 0 || end == value || *end != '\0') return default_value;
     if (v < 0) return default_value;
     return (int)v;
 }

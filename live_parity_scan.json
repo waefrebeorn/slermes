@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T18:54:46Z",
+  "generated_at": "2026-08-02T18:56:58Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -55702,7 +55702,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 184,
+            "line": 208,
             "is_consolidated": false,
             "full_text": "/* PoP: override_existing @ agent/secret_sources/bitwarden.py:override_existing */"
           },
@@ -55733,7 +55733,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 190,
+            "line": 214,
             "is_consolidated": false,
             "full_text": "/* PoP: protected_env_vars @ agent/secret_sources/bitwarden.py:protected_env_vars */"
           },
@@ -55762,7 +55762,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 195,
+            "line": 219,
             "is_consolidated": false,
             "full_text": "/* PoP: config_schema @ agent/secret_sources/bitwarden.py:config_schema */"
           },
@@ -55791,7 +55791,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 200,
+            "line": 224,
             "is_consolidated": false,
             "full_text": "/* PoP: fetch @ agent/secret_sources/bitwarden.py:fetch */"
           },
@@ -55820,7 +55820,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 208,
+            "line": 232,
             "is_consolidated": false,
             "full_text": "/* PoP: remediation @ agent/secret_sources/bitwarden.py:remediation */"
           },
@@ -55849,7 +55849,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 216,
+            "line": 240,
             "is_consolidated": false,
             "full_text": "/* PoP: _classify_bws_error @ agent/secret_sources/bitwarden.py:_classify_bws_error */"
           },
@@ -55878,7 +55878,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 230,
+            "line": 259,
             "is_consolidated": false,
             "full_text": "/* PoP: clear_caches @ agent/secret_sources/bitwarden.py:clear_caches */"
           },
@@ -55907,7 +55907,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 236,
+            "line": 265,
             "is_consolidated": false,
             "full_text": "/* PoP: _reset_cache_for_tests @ agent/secret_sources/bitwarden.py:_reset_cache_for_tests */"
           },
@@ -63138,7 +63138,7 @@
             ],
             "c_file": "src/agent/port_tool_guardrails_remaining.c",
             "python_file": "agent/tool_guardrails.py",
-            "line": 158,
+            "line": 178,
             "is_consolidated": false,
             "full_text": "/* PoP: _as_bool @ agent/tool_guardrails.py:_as_bool */"
           },
@@ -63167,7 +63167,7 @@
             ],
             "c_file": "src/agent/port_tool_guardrails_remaining.c",
             "python_file": "agent/tool_guardrails.py",
-            "line": 174,
+            "line": 194,
             "is_consolidated": false,
             "full_text": "/* PoP: _positive_int @ agent/tool_guardrails.py:_positive_int */"
           },
@@ -91504,7 +91504,7 @@
             ],
             "c_file": "src/gateway/port_api_server_remaining.c",
             "python_file": "gateway/platforms/api_server.py",
-            "line": 22,
+            "line": 23,
             "is_consolidated": false,
             "full_text": "/* PoP: _normalize_multimodal_content @ gateway/platforms/api_server.py:_normalize_multimodal_content */"
           },
@@ -92230,7 +92230,7 @@
             ],
             "c_file": "src/gateway/port_api_server_remaining.c",
             "python_file": "gateway/platforms/api_server.py",
-            "line": 30,
+            "line": 31,
             "is_consolidated": false,
             "full_text": "/* PoP: _notify_cron_provider_jobs_changed @ gateway/platforms/api_server.py:_notify_cron_provider_jobs_changed */"
           },
@@ -92461,7 +92461,7 @@
             ],
             "c_file": "src/gateway/port_api_server_remaining.c",
             "python_file": "gateway/platforms/api_server.py",
-            "line": 37,
+            "line": 38,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_max_concurrent_runs @ gateway/platforms/api_server.py:_resolve_max_concurrent_runs */"
           },
@@ -92550,7 +92550,7 @@
             ],
             "c_file": "src/gateway/port_api_server_remaining.c",
             "python_file": "gateway/platforms/api_server.py",
-            "line": 49,
+            "line": 50,
             "is_consolidated": false,
             "full_text": "/* PoP: _origin_allowed @ gateway/platforms/api_server.py:_origin_allowed */"
           },
@@ -92807,7 +92807,7 @@
             ],
             "c_file": "src/gateway/port_api_server_remaining.c",
             "python_file": "gateway/platforms/api_server.py",
-            "line": 58,
+            "line": 59,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_request_profile @ gateway/platforms/api_server.py:_resolve_request_profile */"
           },
@@ -93532,7 +93532,7 @@
             ],
             "c_file": "src/gateway/port_api_server_remaining.c",
             "python_file": "gateway/platforms/api_server.py",
-            "line": 70,
+            "line": 71,
             "is_consolidated": false,
             "full_text": "/* PoP: _handle_health_detailed @ gateway/platforms/api_server.py:_handle_health_detailed */"
           },
@@ -93708,7 +93708,7 @@
             ],
             "c_file": "src/gateway/port_api_server_remaining.c",
             "python_file": "gateway/platforms/api_server.py",
-            "line": 77,
+            "line": 78,
             "is_consolidated": false,
             "full_text": "/* PoP: _parse_nonnegative_int @ gateway/platforms/api_server.py:_parse_nonnegative_int */"
           },
@@ -94650,7 +94650,7 @@
             ],
             "c_file": "src/gateway/port_api_server_remaining.c",
             "python_file": "gateway/platforms/api_server.py",
-            "line": 88,
+            "line": 91,
             "is_consolidated": false,
             "full_text": "/* PoP: _handle_cron_fire @ gateway/platforms/api_server.py:_handle_cron_fire */"
           },
@@ -94803,7 +94803,7 @@
             ],
             "c_file": "src/gateway/port_api_server_remaining.c",
             "python_file": "gateway/platforms/api_server.py",
-            "line": 96,
+            "line": 99,
             "is_consolidated": false,
             "full_text": "/* PoP: _concurrency_limited_response @ gateway/platforms/api_server.py:_concurrency_limited_response */"
           },
@@ -94834,7 +94834,7 @@
             ],
             "c_file": "src/gateway/port_api_server_remaining.c",
             "python_file": "gateway/platforms/api_server.py",
-            "line": 107,
+            "line": 110,
             "is_consolidated": false,
             "full_text": "/* PoP: _bind_api_server_session @ gateway/platforms/api_server.py:_bind_api_server_session */"
           },
@@ -200530,7 +200530,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 148,
+            "line": 155,
             "is_consolidated": false,
             "full_text": "/* PoP: _electron_dist_binary @ hermes_cli/main.py:_electron_dist_binary */"
           },
@@ -200559,7 +200559,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 156,
+            "line": 163,
             "is_consolidated": false,
             "full_text": "/* PoP: _electron_dist_ok @ hermes_cli/main.py:_electron_dist_ok */"
           },
@@ -200588,7 +200588,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 166,
+            "line": 173,
             "is_consolidated": false,
             "full_text": "/* PoP: _electron_pkg_staged_missing_dist @ hermes_cli/main.py:_electron_pkg_staged_missing_dist */"
           },
@@ -200646,7 +200646,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 178,
+            "line": 185,
             "is_consolidated": false,
             "full_text": "/* PoP: _try_redownload_electron_dist @ hermes_cli/main.py:_try_redownload_electron_dist */"
           },
@@ -201110,7 +201110,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 186,
+            "line": 193,
             "is_consolidated": false,
             "full_text": "/* PoP: _atomic_replace_dir @ hermes_cli/main.py:_atomic_replace_dir */"
           },
@@ -203024,7 +203024,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 194,
+            "line": 219,
             "is_consolidated": false,
             "full_text": "/* PoP: __init__ @ hermes_cli/main.py:__init__ */"
           },
@@ -203082,7 +203082,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 203,
+            "line": 228,
             "is_consolidated": false,
             "full_text": "/* PoP: flush @ hermes_cli/main.py:flush */"
           },
@@ -203111,7 +203111,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 209,
+            "line": 234,
             "is_consolidated": false,
             "full_text": "/* PoP: isatty @ hermes_cli/main.py:isatty */"
           },
@@ -203140,7 +203140,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 216,
+            "line": 241,
             "is_consolidated": false,
             "full_text": "/* PoP: fileno @ hermes_cli/main.py:fileno */"
           },
@@ -204097,7 +204097,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 222,
+            "line": 247,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_dashboard @ hermes_cli/main.py:cmd_dashboard */"
           },
@@ -204213,7 +204213,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 231,
+            "line": 256,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_prompt_size @ hermes_cli/main.py:cmd_prompt_size */"
           },
@@ -204242,7 +204242,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 239,
+            "line": 264,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_logs @ hermes_cli/main.py:cmd_logs */"
           },
@@ -204300,7 +204300,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 246,
+            "line": 271,
             "is_consolidated": false,
             "full_text": "/* PoP: _build_provider_choices @ hermes_cli/main.py:_build_provider_choices */"
           },
@@ -204619,7 +204619,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 253,
+            "line": 278,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_memory @ hermes_cli/main.py:cmd_memory */"
           },
@@ -204793,7 +204793,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 261,
+            "line": 286,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_plugins @ hermes_cli/main.py:cmd_plugins */"
           },
@@ -330674,7 +330674,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 168,
+            "line": 172,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_first_match @ tools/skills_hub.py:_extract_first_match */"
           },
@@ -330703,7 +330703,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 176,
+            "line": 180,
             "is_consolidated": false,
             "full_text": "/* PoP: _detail_to_metadata @ tools/skills_hub.py:_detail_to_metadata */"
           },
@@ -330734,7 +330734,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 184,
+            "line": 188,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_weekly_installs @ tools/skills_hub.py:_extract_weekly_installs */"
           },
@@ -330765,7 +330765,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 192,
+            "line": 196,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_security_audits @ tools/skills_hub.py:_extract_security_audits */"
           },
@@ -330978,7 +330978,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 200,
+            "line": 204,
             "is_consolidated": false,
             "full_text": "/* PoP: _normalize_tags @ tools/skills_hub.py:_normalize_tags */"
           },
@@ -331009,7 +331009,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 211,
+            "line": 246,
             "is_consolidated": false,
             "full_text": "/* PoP: _coerce_skill_payload @ tools/skills_hub.py:_coerce_skill_payload */"
           },
@@ -331071,7 +331071,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 219,
+            "line": 254,
             "is_consolidated": false,
             "full_text": "/* PoP: _search_score @ tools/skills_hub.py:_search_score */"
           },
@@ -331102,7 +331102,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 230,
+            "line": 265,
             "is_consolidated": false,
             "full_text": "/* PoP: _dedupe_results @ tools/skills_hub.py:_dedupe_results */"
           },
@@ -331131,7 +331131,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 238,
+            "line": 273,
             "is_consolidated": false,
             "full_text": "/* PoP: _exact_slug_meta @ tools/skills_hub.py:_exact_slug_meta */"
           },
@@ -331160,7 +331160,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 246,
+            "line": 281,
             "is_consolidated": false,
             "full_text": "/* PoP: _finalize_search_results @ tools/skills_hub.py:_finalize_search_results */"
           },
@@ -331305,7 +331305,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 254,
+            "line": 289,
             "is_consolidated": false,
             "full_text": "/* PoP: _load_catalog_index @ tools/skills_hub.py:_load_catalog_index */"
           },
@@ -331334,7 +331334,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 261,
+            "line": 296,
             "is_consolidated": false,
             "full_text": "/* PoP: _get_json @ tools/skills_hub.py:_get_json */"
           },
@@ -331363,7 +331363,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 269,
+            "line": 304,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_latest_version @ tools/skills_hub.py:_resolve_latest_version */"
           },
@@ -331392,7 +331392,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 277,
+            "line": 312,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_files @ tools/skills_hub.py:_extract_files */"
           },
@@ -331421,7 +331421,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 285,
+            "line": 320,
             "is_consolidated": false,
             "full_text": "/* PoP: _download_zip @ tools/skills_hub.py:_download_zip */"
           },
@@ -331684,7 +331684,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 293,
+            "line": 328,
             "is_consolidated": false,
             "full_text": "/* PoP: _fetch_marketplace_index @ tools/skills_hub.py:_fetch_marketplace_index */"
           },
@@ -331858,7 +331858,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 301,
+            "line": 336,
             "is_consolidated": false,
             "full_text": "/* PoP: _fetch_index @ tools/skills_hub.py:_fetch_index */"
           },
@@ -331887,7 +331887,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 308,
+            "line": 343,
             "is_consolidated": false,
             "full_text": "/* PoP: _fetch_agent @ tools/skills_hub.py:_fetch_agent */"
           },
@@ -331918,7 +331918,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 316,
+            "line": 351,
             "is_consolidated": false,
             "full_text": "/* PoP: _convert_to_skill_md @ tools/skills_hub.py:_convert_to_skill_md */"
           },
@@ -332034,7 +332034,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 324,
+            "line": 359,
             "is_consolidated": false,
             "full_text": "/* PoP: _item_to_meta @ tools/skills_hub.py:_item_to_meta */"
           },
@@ -332179,7 +332179,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 332,
+            "line": 367,
             "is_consolidated": false,
             "full_text": "/* PoP: _slug_from_identifier @ tools/skills_hub.py:_slug_from_identifier */"
           },
@@ -332411,7 +332411,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 341,
+            "line": 378,
             "is_consolidated": false,
             "full_text": "/* PoP: _scan_all @ tools/skills_hub.py:_scan_all */"
           },
@@ -332587,7 +332587,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 349,
+            "line": 386,
             "is_consolidated": false,
             "full_text": "/* PoP: load @ tools/skills_hub.py:load */"
           },
@@ -332616,7 +332616,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 357,
+            "line": 394,
             "is_consolidated": false,
             "full_text": "/* PoP: save @ tools/skills_hub.py:save */"
           },
@@ -332790,7 +332790,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 349,
+            "line": 386,
             "is_consolidated": false,
             "full_text": "/* PoP: load @ tools/skills_hub.py:load */"
           },
@@ -332819,7 +332819,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 357,
+            "line": 394,
             "is_consolidated": false,
             "full_text": "/* PoP: save @ tools/skills_hub.py:save */"
           },
@@ -333283,7 +333283,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 365,
+            "line": 402,
             "is_consolidated": false,
             "full_text": "/* PoP: _ensure_loaded @ tools/skills_hub.py:_ensure_loaded */"
           },
@@ -333312,7 +333312,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 372,
+            "line": 409,
             "is_consolidated": false,
             "full_text": "/* PoP: _get_github @ tools/skills_hub.py:_get_github */"
           },
@@ -333517,7 +333517,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 379,
+            "line": 416,
             "is_consolidated": false,
             "full_text": "/* PoP: _find_entry @ tools/skills_hub.py:_find_entry */"
           },
@@ -333548,7 +333548,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 387,
+            "line": 424,
             "is_consolidated": false,
             "full_text": "/* PoP: _to_meta @ tools/skills_hub.py:_to_meta */"
           },

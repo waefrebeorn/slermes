@@ -139,10 +139,17 @@ int mn_cmd_uninstall(const char *args) {
 
 /* PoP: _electron_dir @ hermes_cli/main.py:_electron_dir */
 char *mn_electron_dir(const char *workspace_root) {
-    /* Python: electron package dir under desktop workspace. */
-    char *out = NULL;
-    asprintf(&out, "%s/desktop/node_modules/electron", workspace_root ? workspace_root : ".");
-    return out;
+    /* Python: electron package dir under desktop workspace — npm
+     * may keep workspace roots hoisted, so probe both layouts. */
+    if (!workspace_root) return NULL;
+    char *a = NULL, *b = NULL;
+    asprintf(&a, "%s/desktop/node_modules/electron", workspace_root);
+    asprintf(&b, "%s/node_modules/electron", workspace_root);
+    if (access(a, F_OK) == 0) { free(b); return a; }
+    if (access(b, F_OK) == 0) { free(a); return b; }
+    free(a); free(b);
+    asprintf(&a, "%s/desktop/node_modules/electron", workspace_root);
+    return a;
 }
 
 /* PoP: _electron_dist_binary @ hermes_cli/main.py:_electron_dist_binary */
@@ -185,9 +192,27 @@ bool mn_try_redownload_electron_dist(const char *electron_dir) {
 
 /* PoP: _atomic_replace_dir @ hermes_cli/main.py:_atomic_replace_dir */
 int mn_atomic_replace_dir(const char *src, const char *dst) {
-    /* Python: replace dst with src atomically (never half-deleted). */
+    /* Python: replace dst with src atomically (never half-deleted):
+     * rename dst → dst.old, src → dst, then remove dst.old. */
     if (!src || !dst) return -1;
-    printf("directory replaced atomically: %s → %s\n", src, dst);
+    char *old = NULL;
+    asprintf(&old, "%s.old-%ld", dst, (long)getpid());
+    if (access(old, F_OK) == 0) unlink(old);
+    if (access(dst, F_OK) == 0) {
+        if (rename(dst, old) != 0) { free(old); return -1; }
+    }
+    if (rename(src, dst) != 0) {
+        /* roll back */
+        if (access(old, F_OK) == 0) rename(old, dst);
+        free(old);
+        return -1;
+    }
+    if (access(old, F_OK) == 0) {
+        char *cmd = NULL;
+        asprintf(&cmd, "rm -rf %s", old);
+        if (cmd) { system(cmd); free(cmd); }
+    }
+    free(old);
     return 0;
 }
 

@@ -158,7 +158,11 @@ char *sh_extract_repo_slug(const char *repo_value) {
     if (n > 4 && strcmp(v + n - 4, ".git") == 0) v[n-4] = '\0';
     if (strncmp(v, "https://github.com/", 19) == 0)
         memmove(v, v + 19, strlen(v + 19) + 1);
-    if (strncmp(v, "github.com/", 11) == 0)
+    else if (strncmp(v, "http://github.com/", 18) == 0)
+        memmove(v, v + 18, strlen(v + 18) + 1);
+    else if (strncmp(v, "git@github.com:", 15) == 0)
+        memmove(v, v + 15, strlen(v + 15) + 1);
+    else if (strncmp(v, "github.com/", 11) == 0)
         memmove(v, v + 11, strlen(v + 11) + 1);
     char *out = strdup(v);
     free(v);
@@ -202,8 +206,39 @@ char *sh_normalize_tags(const char *tags_json) {
     /* Python: list → str list; dict → keys minus "latest". */
     if (!tags_json) return strdup("[]");
     if (tags_json[0] == '{') {
-        printf("tag dict keys normalized (latest excluded)\n");
-        return strdup("[]");
+        /* extract quoted keys, skip "latest" */
+        size_t cap = strlen(tags_json) + 16;
+        char *out = malloc(cap);
+        if (!out) return strdup("[]");
+        strcpy(out, "[");
+        bool first = true;
+        const char *p = tags_json;
+        while ((p = strchr(p, '"')) != NULL) {
+            const char *e = p + 1;
+            while (*e && *e != '"') e++;
+            if (e > p + 1) {
+                char *key = strndup(p + 1, (size_t)(e - p - 1));
+                bool skip = key && strcmp(key, "latest") == 0;
+                if (key && !skip) {
+                    size_t need = strlen(out) + strlen(key) + 8;
+                    if (need > cap) {
+                        cap = need * 2;
+                        char *nb = realloc(out, cap);
+                        if (!nb) { free(key); break; }
+                        out = nb;
+                    }
+                    if (!first) strcat(out, ",");
+                    strcat(out, "\"");
+                    strcat(out, key);
+                    strcat(out, "\"");
+                    first = false;
+                }
+                free(key);
+            }
+            p = e;
+        }
+        strcat(out, "]");
+        return out;
     }
     return strdup(tags_json);
 }
@@ -335,6 +370,8 @@ char *sh_slug_from_identifier(const char *identifier) {
     if (!identifier) return NULL;
     if (strncmp(identifier, "browse-sh/", 10) == 0)
         return strdup(identifier + 10);
+    const char *slash = strrchr(identifier, '/');
+    if (slash && slash[1]) return strdup(slash + 1);
     return strdup(identifier);
 }
 

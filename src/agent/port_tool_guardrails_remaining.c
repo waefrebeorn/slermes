@@ -149,10 +149,30 @@ char *tg_coerce_args(const char *args_json) {
 
 /* PoP: _result_hash @ agent/tool_guardrails.py:_result_hash */
 char *tg_result_hash(const char *result) {
-    /* Python: canonical json hash of parsed result. */
+    /* Python: canonical json hash of parsed result — real FNV-1a
+     * 64-bit over the compacted string. */
     if (!result) return strdup("");
-    printf("result hash computed (canonical json)\n");
-    return strdup(result);
+    /* compact: strip whitespace outside quotes */
+    size_t cap = strlen(result) + 1;
+    char *compact = malloc(cap);
+    if (!compact) return strdup("");
+    char *q = compact;
+    bool in_str = false;
+    for (const char *p = result; *p; p++) {
+        if (*p == '"') in_str = !in_str;
+        if ((*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') && !in_str) continue;
+        *q++ = *p;
+    }
+    *q = '\0';
+    unsigned long long h = 1469598103934665603ULL;
+    for (const char *p = compact; *p; p++) {
+        h ^= (unsigned char)*p;
+        h *= 1099511628211ULL;
+    }
+    free(compact);
+    char *out = NULL;
+    asprintf(&out, "%016llx", h);
+    return out;
 }
 
 /* PoP: _as_bool @ agent/tool_guardrails.py:_as_bool */
