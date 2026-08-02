@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:50:45Z",
+  "generated_at": "2026-08-02T20:52:35Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -65606,10 +65606,10 @@
     },
     "agent/tool_executor.py": {
       "total": 16,
-      "ported": 9,
+      "ported": 16,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 7,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 16,
@@ -65770,16 +65770,24 @@
             "decorators": [],
             "line_number": 157
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_executor_remaining.c",
+          "c_function": "tex_ra",
+          "pop_annotation": {
+            "c_function": "tex_ra",
+            "python_functions": [
+              "_ra"
+            ],
+            "c_file": "src/agent/port_tool_executor_remaining.c",
+            "python_file": "agent/tool_executor.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ra @ agent/tool_executor.py:_ra */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_executor.py",
@@ -65820,16 +65828,24 @@
             "decorators": [],
             "line_number": 167
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_executor_remaining.c",
+          "c_function": "tex_emit_terminal_post_tool_call",
+          "pop_annotation": {
+            "c_function": "tex_emit_terminal_post_tool_call",
+            "python_functions": [
+              "_emit_terminal_post_tool_call"
+            ],
+            "c_file": "src/agent/port_tool_executor_remaining.c",
+            "python_file": "agent/tool_executor.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _emit_terminal_post_tool_call @ agent/tool_executor.py:_emit_terminal_post_tool_call */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_executor.py",
@@ -65841,16 +65857,24 @@
             "decorators": [],
             "line_number": 202
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_executor_remaining.c",
+          "c_function": "tex_cancelled_tool_result",
+          "pop_annotation": {
+            "c_function": "tex_cancelled_tool_result",
+            "python_functions": [
+              "_cancelled_tool_result"
+            ],
+            "c_file": "src/agent/port_tool_executor_remaining.c",
+            "python_file": "agent/tool_executor.py",
+            "line": 37,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cancelled_tool_result @ agent/tool_executor.py:_cancelled_tool_result */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_executor.py",
@@ -65862,16 +65886,24 @@
             "decorators": [],
             "line_number": 212
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_executor_remaining.c",
+          "c_function": "tex_emit_cancelled_terminal_post_tool_call",
+          "pop_annotation": {
+            "c_function": "tex_emit_cancelled_terminal_post_tool_call",
+            "python_functions": [
+              "_emit_cancelled_terminal_post_tool_call"
+            ],
+            "c_file": "src/agent/port_tool_executor_remaining.c",
+            "python_file": "agent/tool_executor.py",
+            "line": 46,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _emit_cancelled_terminal_post_tool_call @ agent/tool_executor.py:_emit_cancelled_terminal_post_tool_call */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_executor.py",
@@ -65883,16 +65915,24 @@
             "decorators": [],
             "line_number": 241
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_executor_remaining.c",
+          "c_function": "tex_tool_search_scoped_names",
+          "pop_annotation": {
+            "c_function": "tex_tool_search_scoped_names",
+            "python_functions": [
+              "_tool_search_scoped_names"
+            ],
+            "c_file": "src/agent/port_tool_executor_remaining.c",
+            "python_file": "agent/tool_executor.py",
+            "line": 55,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _tool_search_scoped_names @ agent/tool_executor.py:_tool_search_scoped_names */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_executor.py",
@@ -65962,16 +66002,24 @@
             "decorators": [],
             "line_number": 349
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_executor_remaining.c",
+          "c_function": "tex_execute_tool_calls_concurrent",
+          "pop_annotation": {
+            "c_function": "tex_execute_tool_calls_concurrent",
+            "python_functions": [
+              "execute_tool_calls_concurrent"
+            ],
+            "c_file": "src/agent/port_tool_executor_remaining.c",
+            "python_file": "agent/tool_executor.py",
+            "line": 62,
+            "is_consolidated": false,
+            "full_text": "/* PoP: execute_tool_calls_concurrent @ agent/tool_executor.py:execute_tool_calls_concurrent */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_executor.py",
@@ -65983,16 +66031,24 @@
             "decorators": [],
             "line_number": 1053
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tool_executor_remaining.c",
+          "c_function": "tex_execute_tool_calls_sequential",
+          "pop_annotation": {
+            "c_function": "tex_execute_tool_calls_sequential",
+            "python_functions": [
+              "execute_tool_calls_sequential"
+            ],
+            "c_file": "src/agent/port_tool_executor_remaining.c",
+            "python_file": "agent/tool_executor.py",
+            "line": 70,
+            "is_consolidated": false,
+            "full_text": "/* PoP: execute_tool_calls_sequential @ agent/tool_executor.py:execute_tool_calls_sequential */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tool_executor.py",
@@ -226022,10 +226078,10 @@
     },
     "hermes_cli/plugins.py": {
       "total": 70,
-      "ported": 63,
+      "ported": 70,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 7,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 70,
@@ -226186,16 +226242,24 @@
             "decorators": [],
             "line_number": 342
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_plugins_remaining.c",
+          "c_function": "plg_init",
+          "pop_annotation": {
+            "c_function": "plg_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_plugins_remaining.c",
+            "python_file": "hermes_cli/plugins.py",
+            "line": 25,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/plugins.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/plugins.py",
@@ -226209,16 +226273,24 @@
             ],
             "line_number": 351
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_plugins_remaining.c",
+          "c_function": "plg_llm",
+          "pop_annotation": {
+            "c_function": "plg_llm",
+            "python_functions": [
+              "llm"
+            ],
+            "c_file": "src/cli/port_plugins_remaining.c",
+            "python_file": "hermes_cli/plugins.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: llm @ hermes_cli/plugins.py:llm */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/plugins.py",
@@ -226870,16 +226942,24 @@
             "decorators": [],
             "line_number": 1251
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_plugins_remaining.c",
+          "c_function": "plg_init",
+          "pop_annotation": {
+            "c_function": "plg_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_plugins_remaining.c",
+            "python_file": "hermes_cli/plugins.py",
+            "line": 25,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/plugins.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/plugins.py",
@@ -226891,16 +226971,24 @@
             "decorators": [],
             "line_number": 1279
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_plugins_remaining.c",
+          "c_function": "plg_discover_and_load",
+          "pop_annotation": {
+            "c_function": "plg_discover_and_load",
+            "python_functions": [
+              "discover_and_load"
+            ],
+            "c_file": "src/cli/port_plugins_remaining.c",
+            "python_file": "hermes_cli/plugins.py",
+            "line": 41,
+            "is_consolidated": false,
+            "full_text": "/* PoP: discover_and_load @ hermes_cli/plugins.py:discover_and_load */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/plugins.py",
@@ -226941,16 +227029,24 @@
             "decorators": [],
             "line_number": 1482
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_plugins_remaining.c",
+          "c_function": "plg_scan_directory",
+          "pop_annotation": {
+            "c_function": "plg_scan_directory",
+            "python_functions": [
+              "_scan_directory"
+            ],
+            "c_file": "src/cli/port_plugins_remaining.c",
+            "python_file": "hermes_cli/plugins.py",
+            "line": 48,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _scan_directory @ hermes_cli/plugins.py:_scan_directory */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/plugins.py",
@@ -227194,16 +227290,24 @@
             "decorators": [],
             "line_number": 1892
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_plugins_remaining.c",
+          "c_function": "plg_invoke_hook",
+          "pop_annotation": {
+            "c_function": "plg_invoke_hook",
+            "python_functions": [
+              "invoke_hook"
+            ],
+            "c_file": "src/cli/port_plugins_remaining.c",
+            "python_file": "hermes_cli/plugins.py",
+            "line": 85,
+            "is_consolidated": false,
+            "full_text": "/* PoP: invoke_hook @ hermes_cli/plugins.py:invoke_hook */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/plugins.py",
@@ -227505,16 +227609,24 @@
             "decorators": [],
             "line_number": 2049
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_plugins_remaining.c",
+          "c_function": "plg_invoke_hook",
+          "pop_annotation": {
+            "c_function": "plg_invoke_hook",
+            "python_functions": [
+              "invoke_hook"
+            ],
+            "c_file": "src/cli/port_plugins_remaining.c",
+            "python_file": "hermes_cli/plugins.py",
+            "line": 85,
+            "is_consolidated": false,
+            "full_text": "/* PoP: invoke_hook @ hermes_cli/plugins.py:invoke_hook */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/plugins.py",
