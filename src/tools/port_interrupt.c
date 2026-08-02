@@ -61,3 +61,9 @@ int tools_interrupt__ThreadAwareEventProxy_is_set(void)
 {
     return tools_interrupt_is_interrupted((unsigned long)pthread_self());
 }
+
+/* PoP: tools_interrupt_clear @ tools/interrupt.py:clear */
+void tools_interrupt_clear(void) {
+    /* Python: set_interrupt(False) — clear the interrupt flag. */
+    tools_interrupt_set_interrupt(0, 0);
+}

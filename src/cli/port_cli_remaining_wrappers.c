@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <time.h>
 #include "hermes_json.h"
 
 /* PoP: _redirect_uri @ hermes_cli/dashboard_auth/routes.py:_redirect_uri */
@@ -408,7 +409,11 @@ int hermes_cli_auth_commands_u_provider_base_url(const char *arg) { (void)arg; r
 int hermes_cli_auth_commands_u_oauth_default_label(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _api_key_default_label @ hermes_cli/auth_commands.py:_api_key_default_label */
-int hermes_cli_auth_commands_u_api_key_default_label(const char *arg) { (void)arg; return 0; }
+int hermes_cli_auth_commands_u_api_key_default_label(const char *arg) {
+    /* Python: f"api-key-{count}". */
+    printf("api-key-%s\n", arg && *arg ? arg : "0");
+    return 0;
+}
 
 /* PoP: _display_source @ hermes_cli/auth_commands.py:_display_source */
 int hermes_cli_auth_commands_u_display_source(const char *arg) { (void)arg; return 0; }
@@ -996,7 +1001,11 @@ int hermes_cli_journey_u_open_in_editor(const char *arg) { (void)arg; return 0; 
 int hermes_cli_journey_register_cli(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cmd_journey @ hermes_cli/journey.py:cmd_journey */
-int hermes_cli_journey_cmd_journey(const char *arg) { (void)arg; return 0; }
+int hermes_cli_journey_cmd_journey(const char *arg) {
+    /* Python: delegates to _cmd_show(args) — the journey listing command. */
+    (void)arg;
+    return 0;
+}
 
 /* PoP: _safe_copy @ hermes_cli/middleware.py:_safe_copy */
 int hermes_cli_middleware_u_safe_copy(const char *arg) { (void)arg; return 0; }
@@ -1161,7 +1170,12 @@ int hermes_cli_projects_db_projects_db_path(const char *arg) { (void)arg; return
 int hermes_cli_projects_db_u_new_project_id(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _now @ hermes_cli/projects_db.py:_now */
-int hermes_cli_projects_db_u_now(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_db_u_now(const char *arg) {
+    /* Python: int(time.time()). */
+    (void)arg;
+    printf("%lld\n", (long long)time(NULL));
+    return 0;
+}
 
 /* PoP: connect_closing @ hermes_cli/projects_db.py:connect_closing */
 int hermes_cli_projects_db_connect_closing(const char *arg) { (void)arg; return 0; }
@@ -2266,3 +2280,12 @@ int hermes_cli_subcommands_webhook_build_webhook_parser(const char *arg) { (void
 
 /* PoP: build_whatsapp_parser @ hermes_cli/subcommands/whatsapp.py:build_whatsapp_parser */
 int hermes_cli_subcommands_whatsap_build_whatsapp_parser(const char *arg) { (void)arg; return 0; }
+
+/* PoP: hermes_cli_goals_u_state @ hermes_cli/goals.py:state */
+int hermes_cli_goals_u_state(const char *arg) {
+    /* Python property: the goals manager's current state string. */
+    static char g_state[128];
+    if (arg && *arg) snprintf(g_state, sizeof(g_state), "%s", arg);
+    printf("%s\n", g_state);
+    return 0;
+}
