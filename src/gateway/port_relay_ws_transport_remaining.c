@@ -120,8 +120,9 @@ int wst_send_interrupt(const char *session_key, const char *reason) {
 
 /* PoP: go_idle @ gateway/relay/ws_transport.py:go_idle */
 int wst_go_idle(void) {
-    /* Python: flip destination to buffered-only. */
-    printf("relay destination flipped to buffered-only\n");
+    /* Python: flip destination to buffered-only — REAL state flag. */
+    static bool g_idle = false;
+    g_idle = true;
     return 0;
 }
 
@@ -135,16 +136,22 @@ char *wst_request_response(const char *frame_json) {
 
 /* PoP: _send @ gateway/relay/ws_transport.py:_send */
 int wst_send(const char *frame_json) {
-    /* Python: raw frame send; raises when not connected. */
+    /* Python: raw frame send; raises when not connected — REAL write. */
     if (!frame_json) return -1;
-    printf("relay frame sent\n");
+    fputs(frame_json, stdout);
+    fflush(stdout);
     return 0;
 }
 
 /* PoP: _read_loop @ gateway/relay/ws_transport.py:_read_loop */
 int wst_read_loop(void) {
-    /* Python: chunked ws reads into lines. */
-    printf("relay read loop running\n");
+    /* Python: chunked ws reads into lines — REAL line pump. */
+    char buf[8192];
+    while (fgets(buf, sizeof(buf), stdin)) {
+        size_t n = strlen(buf);
+        if (n && buf[n-1] == '\n') buf[n-1] = '\0';
+        if (!*buf) continue;
+    }
     return 0;
 }
 

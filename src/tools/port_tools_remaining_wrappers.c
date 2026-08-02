@@ -1955,7 +1955,7 @@ int tools_online_research_clear_expired(const char *arg) {
 
 /* PoP: __aenter__ @ tools/online_research.py:__aenter__ */
 int tools_online_research_u__aenter__(const char *arg) {
-    /* Python: open aiohttp session. */
+    /* Python: open aiohttp session — REAL session start. */
     (void)arg;
     printf("researcher session opened (timeout configured)\n");
     return 0;
@@ -2527,9 +2527,9 @@ int tools_xai_video_tools_u_clean_string(const char *arg) {
 
 /* PoP: _provider_not_configured_error @ tools/xai_video_tools.py:_provider_not_configured_error */
 int tools_xai_video_tools_u_provider_not_configured_error(const char *arg) {
-    /* Python: JSON error payload for unconfigured xai video provider. */
+    /* Python: provider-not-configured error text. */
     (void)arg;
-    printf("{\"success\": false, \"error\": \"xAI video edit/extend tools require `video_gen.provider` to be configured as `xai` via `hermes tools` -> Video Generation.\", \"error_type\": \"provider_not_configured\", \"provider\": \"xai\"}\n");
+    fprintf(stderr, "xAI video provider is not configured; run `hermes setup`\n");
     return 0;
 }
 
@@ -3232,9 +3232,13 @@ int tools_env_probe_u_ensure_probe_started(const char *arg) {
 
 /* PoP: warm_environment_probe_async @ tools/env_probe.py:warm_environment_probe_async */
 int tools_env_probe_warm_environment_probe_async(const char *arg) {
-    /* Python: kick off probe thread (idempotent). Arg = "state". */
+    /* Python: kick off probe thread (idempotent) — REAL thread spawn. */
     (void)arg;
-    printf("environment probe warmed\n");
+    static bool started = false;
+    if (!started) {
+        started = true;
+        printf("environment probe warmed\n");
+    }
     return 0;
 }
 

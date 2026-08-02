@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T23:50:29Z",
+  "generated_at": "2026-08-02T23:52:34Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -132381,10 +132381,10 @@
     },
     "gateway/relay/ws_transport.py": {
       "total": 29,
-      "ported": 22,
+      "ported": 25,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 7,
+      "real_gaps": 4,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 29,
@@ -132922,7 +132922,7 @@
             "decorators": [],
             "line_number": 530
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_relay_ws_transport_remaining.c",
           "c_function": "wst_go_idle",
           "pop_annotation": {
@@ -132936,12 +132936,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: go_idle @ gateway/relay/ws_transport.py:go_idle */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/ws_transport.py",
@@ -133021,7 +133019,7 @@
             ],
             "c_file": "src/gateway/port_relay_ws_transport_remaining.c",
             "python_file": "gateway/relay/ws_transport.py",
-            "line": 128,
+            "line": 129,
             "is_consolidated": false,
             "full_text": "/* PoP: _request_response @ gateway/relay/ws_transport.py:_request_response */"
           },
@@ -133040,7 +133038,7 @@
             "decorators": [],
             "line_number": 645
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_relay_ws_transport_remaining.c",
           "c_function": "wst_send",
           "pop_annotation": {
@@ -133050,16 +133048,14 @@
             ],
             "c_file": "src/gateway/port_relay_ws_transport_remaining.c",
             "python_file": "gateway/relay/ws_transport.py",
-            "line": 136,
+            "line": 137,
             "is_consolidated": false,
             "full_text": "/* PoP: _send @ gateway/relay/ws_transport.py:_send */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/ws_transport.py",
@@ -133071,7 +133067,7 @@
             "decorators": [],
             "line_number": 650
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_relay_ws_transport_remaining.c",
           "c_function": "wst_read_loop",
           "pop_annotation": {
@@ -133081,16 +133077,14 @@
             ],
             "c_file": "src/gateway/port_relay_ws_transport_remaining.c",
             "python_file": "gateway/relay/ws_transport.py",
-            "line": 144,
+            "line": 146,
             "is_consolidated": false,
             "full_text": "/* PoP: _read_loop @ gateway/relay/ws_transport.py:_read_loop */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/ws_transport.py",
@@ -133172,7 +133166,7 @@
             ],
             "c_file": "src/gateway/port_relay_ws_transport_remaining.c",
             "python_file": "gateway/relay/ws_transport.py",
-            "line": 151,
+            "line": 158,
             "is_consolidated": false,
             "full_text": "/* PoP: _handle_frame @ gateway/relay/ws_transport.py:_handle_frame */"
           },
@@ -133230,7 +133224,7 @@
             ],
             "c_file": "src/gateway/port_relay_ws_transport_remaining.c",
             "python_file": "gateway/relay/ws_transport.py",
-            "line": 160,
+            "line": 167,
             "is_consolidated": false,
             "full_text": "/* PoP: set_passthrough_handler @ gateway/relay/ws_transport.py:set_passthrough_handler */"
           },
@@ -283133,7 +283127,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/ansi_strip.py",
-            "line": 3598,
+            "line": 3602,
             "is_consolidated": false,
             "full_text": "/* PoP: sanitize_display_text @ tools/ansi_strip.py:sanitize_display_text */"
           },
@@ -286909,7 +286903,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/binary_extensions.py",
-            "line": 3610,
+            "line": 3614,
             "is_consolidated": false,
             "full_text": "/* PoP: has_binary_extension @ tools/binary_extensions.py:has_binary_extension */"
           },
@@ -288268,7 +288262,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/browser_camofox_state.py",
-            "line": 3636,
+            "line": 3640,
             "is_consolidated": false,
             "full_text": "/* PoP: get_camofox_state_dir @ tools/browser_camofox_state.py:get_camofox_state_dir */"
           },
@@ -292785,7 +292779,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/budget_config.py",
-            "line": 3646,
+            "line": 3650,
             "is_consolidated": false,
             "full_text": "/* PoP: resolve_threshold @ tools/budget_config.py:resolve_threshold */"
           },
@@ -294329,7 +294323,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/clarify_gateway.py",
-            "line": 3658,
+            "line": 3662,
             "is_consolidated": false,
             "full_text": "/* PoP: resolve_clarify_timeout @ tools/clarify_gateway.py:resolve_clarify_timeout */"
           },
@@ -295554,7 +295548,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/computer_use/backend.py",
-            "line": 3382,
+            "line": 3386,
             "is_consolidated": false,
             "full_text": "/* PoP: list_windows @ tools/computer_use/backend.py:list_windows */"
           },
@@ -295616,7 +295610,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/computer_use/backend.py",
-            "line": 3391,
+            "line": 3395,
             "is_consolidated": false,
             "full_text": "/* PoP: set_value @ tools/computer_use/backend.py:set_value */"
           },
@@ -301169,7 +301163,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/daemon_pool.py",
-            "line": 3673,
+            "line": 3677,
             "is_consolidated": false,
             "full_text": "/* PoP: _adjust_thread_count @ tools/daemon_pool.py:_adjust_thread_count */"
           },
@@ -301271,7 +301265,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/debug_helpers.py",
-            "line": 3687,
+            "line": 3691,
             "is_consolidated": false,
             "full_text": "/* PoP: log_call @ tools/debug_helpers.py:log_call */"
           },
@@ -303420,7 +303414,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/desktop_ui.py",
-            "line": 3701,
+            "line": 3705,
             "is_consolidated": false,
             "full_text": "/* PoP: set_emitter @ tools/desktop_ui.py:set_emitter */"
           },
@@ -304776,10 +304770,10 @@
     },
     "tools/env_probe.py": {
       "total": 11,
-      "ported": 10,
+      "ported": 11,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 11,
@@ -305056,7 +305050,7 @@
             "decorators": [],
             "line_number": 342
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/port_tools_remaining_wrappers.c",
           "c_function": "tools_env_probe_warm_environment_probe_async",
           "pop_annotation": {
@@ -305070,12 +305064,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: warm_environment_probe_async @ tools/env_probe.py:warm_environment_probe_async */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/env_probe.py",
@@ -307910,7 +307902,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/environments/file_sync.py",
-            "line": 3712,
+            "line": 3716,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_host_path @ tools/environments/file_sync.py:_resolve_host_path */"
           },
@@ -309477,7 +309469,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/environments/managed_modal.py",
-            "line": 3737,
+            "line": 3741,
             "is_consolidated": false,
             "full_text": "/* PoP: _request @ tools/environments/managed_modal.py:_request */"
           },
@@ -311647,7 +311639,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/feishu_drive_tool.py",
-            "line": 3752,
+            "line": 3756,
             "is_consolidated": false,
             "full_text": "/* PoP: _do_request @ tools/feishu_drive_tool.py:_do_request */"
           },
@@ -315783,7 +315775,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/focus_pane_tool.py",
-            "line": 3404,
+            "line": 3408,
             "is_consolidated": false,
             "full_text": "/* PoP: focus_pane_tool @ tools/focus_pane_tool.py:focus_pane_tool */"
           },
@@ -315812,7 +315804,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/focus_pane_tool.py",
-            "line": 3418,
+            "line": 3422,
             "is_consolidated": false,
             "full_text": "/* PoP: check_focus_pane_requirements @ tools/focus_pane_tool.py:check_focus_pane_requirements */"
           },
@@ -317698,7 +317690,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/image_generation_tool.py",
-            "line": 3428,
+            "line": 3432,
             "is_consolidated": false,
             "full_text": "/* PoP: check_image_generation_requirements @ tools/image_generation_tool.py:check_image_generation_requirements */"
           },
@@ -317785,7 +317777,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/image_generation_tool.py",
-            "line": 3439,
+            "line": 3443,
             "is_consolidated": false,
             "full_text": "/* PoP: _dispatch_to_plugin_provider @ tools/image_generation_tool.py:_dispatch_to_plugin_provider */"
           },
@@ -318376,7 +318368,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/interrupt.py",
-            "line": 3764,
+            "line": 3768,
             "is_consolidated": false,
             "full_text": "/* PoP: clear_current_thread_interrupt @ tools/interrupt.py:clear_current_thread_interrupt */"
           },
@@ -322333,7 +322325,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/mcp_stdio_watchdog.py",
-            "line": 3241,
+            "line": 3245,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_orphaned @ tools/mcp_stdio_watchdog.py:_is_orphaned */"
           },
@@ -322362,7 +322354,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/mcp_stdio_watchdog.py",
-            "line": 3252,
+            "line": 3256,
             "is_consolidated": false,
             "full_text": "/* PoP: _terminate_process_group @ tools/mcp_stdio_watchdog.py:_terminate_process_group */"
           },
@@ -322391,7 +322383,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/mcp_stdio_watchdog.py",
-            "line": 3267,
+            "line": 3271,
             "is_consolidated": false,
             "full_text": "/* PoP: _watchdog_loop @ tools/mcp_stdio_watchdog.py:_watchdog_loop */"
           },
@@ -327910,7 +327902,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/microsoft_graph_client.py",
-            "line": 3454,
+            "line": 3458,
             "is_consolidated": false,
             "full_text": "/* PoP: post_json @ tools/microsoft_graph_client.py:post_json */"
           },
@@ -328084,7 +328076,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/microsoft_graph_client.py",
-            "line": 3471,
+            "line": 3475,
             "is_consolidated": false,
             "full_text": "/* PoP: _request @ tools/microsoft_graph_client.py:_request */"
           },
@@ -328586,7 +328578,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/mixture_of_agents_tool.py",
-            "line": 3772,
+            "line": 3776,
             "is_consolidated": false,
             "full_text": "/* PoP: _build_auth_header @ tools/mixture_of_agents_tool.py:_build_auth_header */"
           },
@@ -329386,7 +329378,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/moa_performance.py",
-            "line": 3783,
+            "line": 3787,
             "is_consolidated": false,
             "full_text": "/* PoP: _build_auth_header @ tools/moa_performance.py:_build_auth_header */"
           },
@@ -330548,7 +330540,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/open_preview_tool.py",
-            "line": 3287,
+            "line": 3291,
             "is_consolidated": false,
             "full_text": "/* PoP: _normalize_target @ tools/open_preview_tool.py:_normalize_target */"
           },
@@ -330577,7 +330569,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/open_preview_tool.py",
-            "line": 3311,
+            "line": 3315,
             "is_consolidated": false,
             "full_text": "/* PoP: open_preview_tool @ tools/open_preview_tool.py:open_preview_tool */"
           },
@@ -330606,7 +330598,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/open_preview_tool.py",
-            "line": 3334,
+            "line": 3338,
             "is_consolidated": false,
             "full_text": "/* PoP: check_open_preview_requirements @ tools/open_preview_tool.py:check_open_preview_requirements */"
           },
@@ -334589,7 +334581,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/send_message_tool.py",
-            "line": 3488,
+            "line": 3492,
             "is_consolidated": false,
             "full_text": "/* PoP: _media_caption_split @ tools/send_message_tool.py:_media_caption_split */"
           },
@@ -335110,7 +335102,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/send_message_tool.py",
-            "line": 3502,
+            "line": 3506,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_slack_user_target @ tools/send_message_tool.py:_resolve_slack_user_target */"
           },
@@ -338530,7 +338522,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/skills_guard.py",
-            "line": 3794,
+            "line": 3798,
             "is_consolidated": false,
             "full_text": "/* PoP: scan_file @ tools/skills_guard.py:scan_file */"
           },
@@ -348488,7 +348480,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/thread_context.py",
-            "line": 3519,
+            "line": 3523,
             "is_consolidated": false,
             "full_text": "/* PoP: _callback_api @ tools/thread_context.py:_callback_api */"
           },
@@ -348517,7 +348509,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/thread_context.py",
-            "line": 3529,
+            "line": 3533,
             "is_consolidated": false,
             "full_text": "/* PoP: propagate_context_to_thread @ tools/thread_context.py:propagate_context_to_thread */"
           },
@@ -348746,7 +348738,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/tirith_security.py",
-            "line": 3809,
+            "line": 3813,
             "is_consolidated": false,
             "full_text": "/* PoP: _record_tirith_crash @ tools/tirith_security.py:_record_tirith_crash */"
           },
@@ -350514,7 +350506,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/tool_search.py",
-            "line": 3820,
+            "line": 3824,
             "is_consolidated": false,
             "full_text": "/* PoP: _safe_float @ tools/tool_search.py:_safe_float */"
           },
@@ -352406,7 +352398,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/tts_streaming.py",
-            "line": 3344,
+            "line": 3348,
             "is_consolidated": false,
             "full_text": "/* PoP: mark_speech_interrupted @ tools/tts_streaming.py:mark_speech_interrupted */"
           },
@@ -352435,7 +352427,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/tts_streaming.py",
-            "line": 3354,
+            "line": 3358,
             "is_consolidated": false,
             "full_text": "/* PoP: take_speech_interrupted @ tools/tts_streaming.py:take_speech_interrupted */"
           },
@@ -352674,7 +352666,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/tts_streaming.py",
-            "line": 3368,
+            "line": 3372,
             "is_consolidated": false,
             "full_text": "/* PoP: resolve_streaming_provider @ tools/tts_streaming.py:resolve_streaming_provider */"
           },
@@ -355883,7 +355875,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/video_generation_tool.py",
-            "line": 3543,
+            "line": 3547,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_active_provider @ tools/video_generation_tool.py:_resolve_active_provider */"
           },
@@ -356014,7 +356006,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/video_generation_tool.py",
-            "line": 3553,
+            "line": 3557,
             "is_consolidated": false,
             "full_text": "/* PoP: _handle_video_generate @ tools/video_generation_tool.py:_handle_video_generate */"
           },
@@ -357441,7 +357433,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/voice_mode.py",
-            "line": 3578,
+            "line": 3582,
             "is_consolidated": false,
             "full_text": "/* PoP: cancel @ tools/voice_mode.py:cancel */"
           },
@@ -357743,7 +357735,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/voice_mode.py",
-            "line": 3578,
+            "line": 3582,
             "is_consolidated": false,
             "full_text": "/* PoP: cancel @ tools/voice_mode.py:cancel */"
           },
@@ -359076,7 +359068,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_wrappers.c",
             "python_file": "tools/website_policy.py",
-            "line": 3837,
+            "line": 3841,
             "is_consolidated": false,
             "full_text": "/* PoP: check_website_access @ tools/website_policy.py:check_website_access */"
           },
