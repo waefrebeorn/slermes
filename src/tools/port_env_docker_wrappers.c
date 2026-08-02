@@ -170,7 +170,15 @@ int envd_u_build_security_args(const char *arg) {
 int envd_u_image_uses_init_entrypoint(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_host_user_spec @ tools/environments/docker.py:_resolve_host_user_spec */
-int envd_u_resolve_host_user_spec(const char *arg) { (void)arg; return 0; }
+int envd_u_resolve_host_user_spec(const char *arg) {
+    /* Python: "<uid>:<gid>" or None. Arg = "uid\tgid\thas". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (t2 && t2[1] == '1') printf("%s:%s\n", arg, t1 ? t1 + 1 : "");
+    else printf("\n");
+    return 0;
+}
 
 /* PoP: _cgroup_limits_available @ tools/environments/docker.py:_cgroup_limits_available */
 int envd_u_cgroup_limits_available(const char *arg) { (void)arg; return 0; }

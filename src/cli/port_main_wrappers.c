@@ -1220,7 +1220,30 @@ int main_u_venv_scripts_dir(const char *arg) {
 }
 
 /* PoP: _hermes_exe_shims @ hermes_cli/main.py:_hermes_exe_shims */
-int main_u_hermes_exe_shims(const char *arg) { (void)arg; return 0; }
+int main_u_hermes_exe_shims(const char *arg) {
+    /* Python: Windows exe shim paths. Arg = "is_windows\tscripts_dir\tnames". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_windows = arg[0] == '1';
+    if (!is_windows) { printf("\n"); return 0; }
+    const char *dir = t1 ? t1 + 1 : "";
+    const char *names = t2 ? t2 + 1 : "hermes hermes-agent hermes-acp hermes-gateway";
+    const char *p = names;
+    int first = 1;
+    while (*p) {
+        const char *sp = strchr(p, ' ');
+        size_t len = sp ? (size_t)(sp - p) : strlen(p);
+        if (len) {
+            if (!first) printf("\n");
+            printf("%s/%.*s.exe", dir, (int)len, p);
+            first = 0;
+        }
+        p = sp ? sp + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _detect_concurrent_hermes_instances @ hermes_cli/main.py:_detect_concurrent_hermes_instances */
 int main_u_detect_concurrent_hermes_instances(const char *arg) { (void)arg; return 0; }

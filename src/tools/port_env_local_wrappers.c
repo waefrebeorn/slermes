@@ -280,7 +280,19 @@ int envl_u_path_env_key(const char *arg) {
 int envl_u_make_run_env(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _read_terminal_shell_init_config @ tools/environments/local.py:_read_terminal_shell_init_config */
-int envl_u_read_terminal_shell_init_config(const char *arg) { (void)arg; return 0; }
+int envl_u_read_terminal_shell_init_config(const char *arg) {
+    /* Python: (files, auto_bashrc) defaults on failure. Arg =
+     * "state\tfiles\tauto_bashrc". */
+    if (!arg || !*arg) { printf("\n1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (strcmp(arg, "ok") == 0) {
+        printf("%s\n%s\n", t1 ? t1 + 1 : "", (t2 && t2[1] == '1') ? "1" : "0");
+        return 0;
+    }
+    printf("\n1\n");
+    return 0;
+}
 
 /* PoP: _resolve_shell_init_files @ tools/environments/local.py:_resolve_shell_init_files */
 int envl_u_resolve_shell_init_files(const char *arg) { (void)arg; return 0; }

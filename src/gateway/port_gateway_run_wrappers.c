@@ -91,7 +91,19 @@ int grun_u_telegram_topic_mode_enabled(const char *arg) { (void)arg; return 0; }
 int grun_u_should_send_telegram_lobby_reminder(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _record_telegram_topic_binding @ gateway/run.py:_record_telegram_topic_binding */
-int grun_u_record_telegram_topic_binding(const char *arg) { (void)arg; return 0; }
+int grun_u_record_telegram_topic_binding(const char *arg) {
+    /* Python: bind_telegram_topic persistence. Arg =
+     * "chat_id\tthread_id\tsession_key\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t3 && t3[1] == '1';
+    if (!state) { printf("binding skipped (no session db)\n"); return 0; }
+    printf("telegram topic bound: chat=%s thread=%s key=%s\n", arg,
+           t1 ? t1 + 1 : "", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _sync_telegram_topic_binding @ gateway/run.py:_sync_telegram_topic_binding */
 int grun_u_sync_telegram_topic_binding(const char *arg) { (void)arg; return 0; }

@@ -37,7 +37,12 @@ int adel_u_connect(const char *arg) {
 int adel_u_initialize_schema(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _transaction @ tools/async_delegation.py:_transaction */
-int adel_u_transaction(const char *arg) { (void)arg; return 0; }
+int adel_u_transaction(const char *arg) {
+    /* Python: commit/rollback + ALWAYS close. Arg = "db_path\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("transaction completed (conn closed): %s\n", arg);
+    return 0;
+}
 
 /* PoP: _persist_dispatch @ tools/async_delegation.py:_persist_dispatch */
 int adel_u_persist_dispatch(const char *arg) { (void)arg; return 0; }

@@ -341,7 +341,13 @@ int cua_u_start_lifecycle_locked(const char *arg) { (void)arg; return 0; }
 int cua_u_stop_lifecycle_locked(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _signal_shutdown_locked @ tools/computer_use/cua_backend.py:_signal_shutdown_locked */
-int cua_u_signal_shutdown_locked(const char *arg) { (void)arg; return 0; }
+int cua_u_signal_shutdown_locked(const char *arg) {
+    /* Python: threadsafe event set. Arg = "loop_running". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    if (arg[0] == '1') printf("shutdown event signaled (threadsafe)\n");
+    else printf("loop closed — nothing to signal\n");
+    return 0;
+}
 
 /* PoP: _call_tool_async @ tools/computer_use/cua_backend.py:_call_tool_async */
 int cua_u_call_tool_async(const char *arg) { (void)arg; return 0; }

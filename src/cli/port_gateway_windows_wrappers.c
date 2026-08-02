@@ -13,7 +13,12 @@
 #include "hermes_json.h"
 
 /* PoP: _schtasks_encoding @ hermes_cli/gateway_windows.py:_schtasks_encoding */
-int gw_u_schtasks_encoding(const char *arg) { (void)arg; return 0; }
+int gw_u_schtasks_encoding(const char *arg) {
+    /* Python: preferred locale encoding or utf-8. Arg = "encoding". */
+    if (!arg || !*arg) { printf("utf-8\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _assert_windows @ hermes_cli/gateway_windows.py:_assert_windows */
 int gw_u_assert_windows(const char *arg) {

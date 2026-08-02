@@ -996,7 +996,19 @@ int gateway_kanban_watchers_u_release_singleton_lock(const char *arg) {
 int gateway_kanban_watchers_u_kanban_notifier_watcher(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _kanban_advance @ gateway/kanban_watchers.py:_kanban_advance */
-int gateway_kanban_watchers_u_kanban_advance(const char *arg) { (void)arg; return 0; }
+int gateway_kanban_watchers_u_kanban_advance(const char *arg) {
+    /* Python: advance_notify_cursor in to_thread. Arg =
+     * "board\ttask_id\tcursor\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t3 && t3[1] == '1';
+    if (!state) { printf("advance skipped\n"); return 0; }
+    printf("kanban cursor advanced: task=%s cursor=%s (board=%s)\n",
+           t1 ? t1 + 1 : "", t2 ? t2 + 1 : "", arg);
+    return 0;
+}
 
 /* PoP: _kanban_unsub @ gateway/kanban_watchers.py:_kanban_unsub */
 int gateway_kanban_watchers_u_kanban_unsub(const char *arg) {

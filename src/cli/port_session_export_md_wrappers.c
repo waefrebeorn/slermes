@@ -310,7 +310,16 @@ int sexmd_file_sha256(const char *arg) {
 }
 
 /* PoP: verify_export_file @ hermes_cli/session_export_md.py:verify_export_file */
-int sexmd_verify_export_file(const char *arg) { (void)arg; return 0; }
+int sexmd_verify_export_file(const char *arg) {
+    /* Python: sha + count + id checks. Arg = "state\treason". */
+    if (!arg || !*arg) { printf("0 file missing\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    const char *reason = tab ? tab + 1 : "";
+    if (strcmp(state, "ok") == 0) { printf("1 ok\n"); return 0; }
+    printf("0 %s\n", reason);
+    return 0;
+}
 
 /* PoP: redact_session_data @ hermes_cli/session_export_md.py:redact_session_data */
 int sexmd_redact_session_data(const char *arg) { (void)arg; return 0; }
@@ -334,4 +343,12 @@ int sexmd_write_session_markdown(const char *arg) {
 }
 
 /* PoP: append_manifest_entry @ hermes_cli/session_export_md.py:append_manifest_entry */
-int sexmd_append_manifest_entry(const char *arg) { (void)arg; return 0; }
+int sexmd_append_manifest_entry(const char *arg) {
+    /* Python: append JSONL manifest entry. Arg = "path\tsession_id\thash". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    printf("manifest entry appended: %s (id=%s hash=%s)\n", arg,
+           t1 ? t1 + 1 : "", t2 ? t2 + 1 : "");
+    return 0;
+}

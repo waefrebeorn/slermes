@@ -1230,7 +1230,13 @@ int tools_image_source_u_is_local_terminal_backend(const char *arg) {
 }
 
 /* PoP: _media_cache_roots @ tools/image_source.py:_media_cache_roots */
-int tools_image_source_u_media_cache_roots(const char *arg) { (void)arg; return 0; }
+int tools_image_source_u_media_cache_roots(const char *arg) {
+    /* Python: 6 cache dirs under home. Arg = home. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s/cache\n%s/image_cache\n%s/audio_cache\n%s/video_cache\n%s/temp_vision_images\n%s/temp_video_files\n",
+           arg, arg, arg, arg, arg, arg);
+    return 0;
+}
 
 /* PoP: _permitted_host_read_target @ tools/image_source.py:_permitted_host_read_target */
 int tools_image_source_u_permitted_host_read_target(const char *arg) { (void)arg; return 0; }

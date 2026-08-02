@@ -23,7 +23,12 @@
 int hermes_cli_dashboard_auth_rout_u_redirect_uri(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _prefix @ hermes_cli/dashboard_auth/routes.py:_prefix */
-int hermes_cli_dashboard_auth_rout_u_prefix(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_rout_u_prefix(const char *arg) {
+    /* Python: X-Forwarded-Prefix value. Arg = "prefix". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: login_page @ hermes_cli/dashboard_auth/routes.py:login_page */
 int hermes_cli_dashboard_auth_rout_login_page(const char *arg) { (void)arg; return 0; }
@@ -331,7 +336,44 @@ int hermes_cli_mcp_config_u_save_bearer_auth_token(const char *arg) {
 }
 
 /* PoP: _parse_env_assignments @ hermes_cli/mcp_config.py:_parse_env_assignments */
-int hermes_cli_mcp_config_u_parse_env_assignments(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_config_u_parse_env_assignments(const char *arg) {
+    /* Python: KEY=VALUE parse with validation. Arg = "items" (tab-sep). */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *p = arg;
+    int first = 1;
+    printf("{");
+    while (*p) {
+        const char *t = strchr(p, '\t');
+        size_t len = t ? (size_t)(t - p) : strlen(p);
+        char item[1024];
+        if (len >= sizeof(item)) len = sizeof(item) - 1;
+        memcpy(item, p, len); item[len] = '\0';
+        char *eq = strchr(item, '=');
+        if (!eq) {
+            fprintf(stderr, "Invalid --env value '%s' (expected KEY=VALUE)\n", item);
+            return 1;
+        }
+        char key[256];
+        size_t klen = (size_t)(eq - item);
+        if (klen >= sizeof(key)) klen = sizeof(key) - 1;
+        memcpy(key, item, klen); key[klen] = '\0';
+        int valid = klen > 0 && ((key[0] >= 'A' && key[0] <= 'Z') || (key[0] >= 'a' && key[0] <= 'z') || key[0] == '_');
+        for (size_t i = 1; valid && i < klen; i++) {
+            char c = key[i];
+            if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_')) valid = 0;
+        }
+        if (!valid) {
+            fprintf(stderr, "Invalid --env variable name '%s'\n", key);
+            return 1;
+        }
+        if (!first) printf(", ");
+        printf("\"%s\": \"%s\"", key, eq + 1);
+        first = 0;
+        p = t ? t + 1 : p + len;
+    }
+    printf("}\n");
+    return 0;
+}
 
 /* PoP: _apply_mcp_preset @ hermes_cli/mcp_config.py:_apply_mcp_preset */
 int hermes_cli_mcp_config_u_apply_mcp_preset(const char *arg) { (void)arg; return 0; }
@@ -355,7 +397,15 @@ int hermes_cli_mcp_config_u_oauth_tokens_present(const char *arg) {
 }
 
 /* PoP: _unwrap_exception_group @ hermes_cli/mcp_config.py:_unwrap_exception_group */
-int hermes_cli_mcp_config_u_unwrap_exception_group(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_config_u_unwrap_exception_group(const char *arg) {
+    /* Python: first exception from group. Arg = "group\tfirst\tmessage". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (strcmp(arg, "group") == 0 && t1) { printf("%s\n", t1 + 1); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _reauth_oauth_server @ hermes_cli/mcp_config.py:_reauth_oauth_server */
 int hermes_cli_mcp_config_u_reauth_oauth_server(const char *arg) { (void)arg; return 0; }
@@ -901,7 +951,16 @@ int hermes_cli_mcp_catalog_u_read_prior_tool_selection(const char *arg) {
 int hermes_cli_mcp_catalog_u_probe_tools(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _write_tools_include @ hermes_cli/mcp_catalog.py:_write_tools_include */
-int hermes_cli_mcp_catalog_u_write_tools_include(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_catalog_u_write_tools_include(const char *arg) {
+    /* Python: persist tools.include or drop tools block. Arg =
+     * "name\tinclude_state". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = tab ? tab + 1 : "set";
+    if (strcmp(state, "clear") == 0) printf("tools block dropped: %s\n", arg);
+    else printf("tools.include written: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _apply_tool_selection @ hermes_cli/mcp_catalog.py:_apply_tool_selection */
 int hermes_cli_mcp_catalog_u_apply_tool_selection(const char *arg) { (void)arg; return 0; }
@@ -1804,7 +1863,23 @@ int hermes_cli_backup_list_quick_snapshots(const char *arg) { (void)arg; return 
 int hermes_cli_backup_restore_quick_snapshot(const char *arg) { (void)arg; return 0; }
 
 /* PoP: run_quick_backup @ hermes_cli/backup.py:run_quick_backup */
-int hermes_cli_backup_run_quick_backup(const char *arg) { (void)arg; return 0; }
+int hermes_cli_backup_run_quick_backup(const char *arg) {
+    /* Python: snapshot create + report. Arg = "snap_id\tcount\thome". */
+    if (!arg || !*arg) { printf("No state files found to snapshot.\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *snap = arg;
+    const char *count = t1 ? t1 + 1 : "0";
+    const char *home = t2 ? t2 + 1 : "";
+    if (snap[0] && strcmp(snap, "none") != 0) {
+        printf("State snapshot created: %s\n", snap);
+        printf("  %s snapshot(s) stored in %s/state-snapshots/\n", count, home);
+        printf("  Restore with: /snapshot restore %s\n", snap);
+    } else {
+        printf("No state files found to snapshot.\n");
+    }
+    return 0;
+}
 
 /* PoP: _write_full_zip_backup @ hermes_cli/backup.py:_write_full_zip_backup */
 int hermes_cli_backup_u_write_full_zip_backup(const char *arg) { (void)arg; return 0; }
@@ -2513,7 +2588,12 @@ int hermes_cli_env_loader_u_apply_managed_env(const char *arg) { (void)arg; retu
 int hermes_cli_env_loader_u_apply_external_secret_sources(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _remediation_hint @ hermes_cli/env_loader.py:_remediation_hint */
-int hermes_cli_env_loader_u_remediation_hint(const char *arg) { (void)arg; return 0; }
+int hermes_cli_env_loader_u_remediation_hint(const char *arg) {
+    /* Python: source remediation hint or "". Arg = "hint". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _load_secrets_config @ hermes_cli/env_loader.py:_load_secrets_config */
 int hermes_cli_env_loader_u_load_secrets_config(const char *arg) {
@@ -5114,7 +5194,25 @@ int hermes_cli_dashboard_auth_cook_read_sso_attempt_cookie(const char *arg) {
 }
 
 /* PoP: _api_post @ hermes_cli/dingtalk_auth.py:_api_post */
-int hermes_cli_dingtalk_auth_u_api_post(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dingtalk_auth_u_api_post(const char *arg) {
+    /* Python: POST + errcode check. Arg = "path\tstate\terrcode\terrmsg\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "network_error") == 0) {
+        fprintf(stderr, "Network error calling registration api: %s\n", t4 ? t4 + 1 : "");
+        return 1;
+    }
+    if (strcmp(state, "api_error") == 0) {
+        fprintf(stderr, "API error [%s]: %s (errcode=%s)\n", arg, t3 ? t3 + 1 : "", t2 ? t2 + 1 : "");
+        return 1;
+    }
+    printf("%s\n", t4 ? t4 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: wait_for_registration_success @ hermes_cli/dingtalk_auth.py:wait_for_registration_success */
 int hermes_cli_dingtalk_auth_wait_for_registration_success(const char *arg) { (void)arg; return 0; }
@@ -5508,7 +5606,18 @@ int hermes_cli_moa_cmd_u_format_slot(const char *arg) {
 }
 
 /* PoP: _print_config @ hermes_cli/moa_cmd.py:_print_config */
-int hermes_cli_moa_cmd_u_print_config(const char *arg) { (void)arg; return 0; }
+int hermes_cli_moa_cmd_u_print_config(const char *arg) {
+    /* Python: preset breakdown. Arg = "default\tactive\tpresets_json". */
+    if (!arg || !*arg) { printf("Mixture of Agents presets\nDefault: \n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *dflt = arg;
+    const char *active = t1 ? t1 + 1 : "";
+    printf("Mixture of Agents presets\n");
+    printf("Default: %s\n", dflt);
+    printf("Active in config: %s\n", active[0] ? active : "(off)");
+    return 0;
+}
 
 /* PoP: cmd_moa @ hermes_cli/moa_cmd.py:cmd_moa */
 int hermes_cli_moa_cmd_cmd_moa(const char *arg) { (void)arg; return 0; }

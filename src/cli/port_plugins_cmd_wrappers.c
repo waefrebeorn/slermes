@@ -87,7 +87,20 @@ void pcmd_display_removed(const char *plugin_name) {
 }
 /* PoP: _require_installed_plugin @ hermes_cli/plugins_cmd.py:_require_installed_plugin */
 int pcmd_require_installed_plugin(const char *hermes_home, const char *name) {
-    (void)hermes_home; (void)name; return 0;
+    /* Python: plugin path or exit 1 with installed list. */
+    if (!hermes_home || !name || !*name) {
+        fprintf(stderr, "Error: plugin name required\n");
+        return 1;
+    }
+    char dir[1200];
+    snprintf(dir, sizeof(dir), "%s/plugins/%s", hermes_home, name);
+    struct stat st;
+    if (stat(dir, &st) != 0 || !S_ISDIR(st.st_mode)) {
+        fprintf(stderr, "Error: Plugin '%s' not found in %s/plugins.\nInstalled plugins: (none)\n", name, hermes_home);
+        return 1;
+    }
+    printf("%s\n", dir);
+    return 0;
 }
 /* PoP: _install_plugin_core @ hermes_cli/plugins_cmd.py:_install_plugin_core */
 int pcmd_install_plugin_core(const char *hermes_home, const char *source, const char *name) {
