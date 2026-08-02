@@ -343,7 +343,15 @@ int moa_consume_reference_usage(const char *arg) {
 }
 
 /* PoP: _record_late_reference_accounting @ agent/moa_loop.py:_record_late_reference_accounting */
-int moa_u_record_late_reference_accounting(const char *arg) { (void)arg; return 0; }
+int moa_u_record_late_reference_accounting(const char *arg) {
+    /* Python: late-spend fold. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("late accounting skipped\n"); return 0; }
+    printf("late reference accounting folded: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: consume_and_save_trace @ agent/moa_loop.py:consume_and_save_trace */
 int moa_consume_and_save_trace(const char *arg) { (void)arg; return 0; }

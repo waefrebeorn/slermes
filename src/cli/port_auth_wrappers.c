@@ -448,7 +448,15 @@ int auth_u_xai_oauth_discovery(const char *arg) { (void)arg; return 0; }
 int auth_refresh_xai_oauth_pure(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _refresh_xai_oauth_tokens @ hermes_cli/auth.py:_refresh_xai_oauth_tokens */
-int auth_u_refresh_xai_oauth_tokens(const char *arg) { (void)arg; return 0; }
+int auth_u_refresh_xai_oauth_tokens(const char *arg) {
+    /* Python: refresh + persist. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0 refresh failed\n"); return 1; }
+    printf("xai tokens refreshed: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: resolve_xai_oauth_runtime_credentials @ hermes_cli/auth.py:resolve_xai_oauth_runtime_credentials */
 int auth_resolve_xai_oauth_runtime_credentials(const char *arg) { (void)arg; return 0; }

@@ -827,7 +827,16 @@ int main_cmd_version(const char *arg) {
 }
 
 /* PoP: _clear_bytecode_cache @ hermes_cli/main.py:_clear_bytecode_cache */
-int main_u_clear_bytecode_cache(const char *arg) { (void)arg; return 0; }
+int main_u_clear_bytecode_cache(const char *arg) {
+    /* Python: __pycache__ sweep. Arg = "removed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _capture_head_sha @ hermes_cli/main.py:_capture_head_sha */
 int main_u_capture_head_sha(const char *arg) {
@@ -1111,7 +1120,15 @@ int main_u_desktop_linux_sandbox_helper_is_regular_file(const char *arg) {
 int main_u_desktop_linux_sandbox_fixup(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _desktop_launch_options @ hermes_cli/main.py:_desktop_launch_options */
-int main_u_desktop_launch_options(const char *arg) { (void)arg; return 0; }
+int main_u_desktop_launch_options(const char *arg) {
+    /* Python: desktop.* options. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\tauto\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\tauto\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "\tauto");
+    return 0;
+}
 
 /* PoP: cmd_gui @ hermes_cli/main.py:cmd_gui */
 int main_cmd_gui(const char *arg) { (void)arg; return 0; }
@@ -1348,7 +1365,16 @@ int main_u_invalidate_update_cache(const char *arg) {
 }
 
 /* PoP: _load_installable_optional_extras @ hermes_cli/main.py:_load_installable_optional_extras */
-int main_u_load_installable_optional_extras(const char *arg) { (void)arg; return 0; }
+int main_u_load_installable_optional_extras(const char *arg) {
+    /* Python: optional-deps group refs. Arg = "group\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _lazy_refresh_marker_path @ hermes_cli/main.py:_lazy_refresh_marker_path */
 int main_u_lazy_refresh_marker_path(const char *arg) {
@@ -2170,7 +2196,15 @@ int main_u_set_chat_arg_defaults(const char *arg) {
 int main_u_try_termux_fast_cli_launch(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _try_termux_fast_tui_launch @ hermes_cli/main.py:_try_termux_fast_tui_launch */
-int main_u_try_termux_fast_tui_launch(const char *arg) { (void)arg; return 0; }
+int main_u_try_termux_fast_tui_launch(const char *arg) {
+    /* Python: phone hot path. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1 (TUI launched fast)" : "0");
+    return 0;
+}
 
 /* PoP: cmd_acp @ hermes_cli/main.py:cmd_acp */
 int main_cmd_acp(const char *arg) {

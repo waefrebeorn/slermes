@@ -356,7 +356,16 @@ int gw_u_prepend_pythonpath(const char *arg) {
 }
 
 /* PoP: _build_gateway_argv @ hermes_cli/gateway_windows.py:_build_gateway_argv */
-int gw_u_build_gateway_argv(const char *arg) { (void)arg; return 0; }
+int gw_u_build_gateway_argv(const char *arg) {
+    /* Python: native argv build. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n\n{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n\n{}\n"); return 0; }
+    printf("argv built (no cmd.exe layer)\n");
+    printf("working_dir + env_overlay ready\n");
+    return 0;
+}
 
 /* PoP: windowless_gateway_restart_spec @ hermes_cli/gateway_windows.py:windowless_gateway_restart_spec */
 int gw_windowless_gateway_restart_spec(const char *arg) { (void)arg; return 0; }

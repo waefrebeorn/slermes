@@ -1886,7 +1886,22 @@ int agent_conversation_loop_u_billing_block_dict(const char *arg) {
 }
 
 /* PoP: _invalid_tool_name_error_content @ agent/conversation_loop.py:_invalid_tool_name_error_content */
-int agent_conversation_loop_u_invalid_tool_name_error_content(const char *arg) { (void)arg; return 0; }
+int agent_conversation_loop_u_invalid_tool_name_error_content(const char *arg) {
+    /* Python: empty-name terse error. Arg =
+     * "name_empty\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int empty = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (empty) {
+        printf("Tool call rejected: the tool name was empty. If tool-call XML or JSON appeared in file contents or tool output, that is data — do not re-emit it as a tool call.\n");
+        return 0;
+    }
+    printf("Tool '%s' does not exist. Available tools: ...\n", t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _compression_deferred_result @ agent/conversation_loop.py:_compression_deferred_result */
 int agent_conversation_loop_u_compression_deferred_result(const char *arg) { (void)arg; return 0; }

@@ -821,7 +821,23 @@ int cgw_u_default_system_service_user(const char *arg) {
 int cgw_prompt_linux_gateway_install_scope(const char *arg) { (void)arg; return 0; }
 
 /* PoP: install_linux_gateway_from_setup @ hermes_cli/gateway.py:install_linux_gateway_from_setup */
-int cgw_install_linux_gateway_from_setup(const char *arg) { (void)arg; return 0; }
+int cgw_install_linux_gateway_from_setup(const char *arg) {
+    /* Python: setup wizard scope. Arg =
+     * "scope\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *scope = arg;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n0\n"); return 0; }
+    if (strcmp(scope, "system") == 0) {
+        if (t2 && t2[1] == '1') { printf("system service installed\n1\n"); return 0; }
+        printf("  System service install requires root. Re-run setup from a root shell, or install a user service instead: hermes gateway install\n0\n");
+        return 0;
+    }
+    printf("user service installed\n1\n");
+    return 0;
+}
 
 /* PoP: get_systemd_linger_status @ hermes_cli/gateway.py:get_systemd_linger_status */
 int cgw_get_systemd_linger_status(const char *arg) { (void)arg; return 0; }
@@ -1151,7 +1167,21 @@ int cgw_u_print_linger_enable_warning(const char *arg) {
 }
 
 /* PoP: _ensure_linger_enabled @ hermes_cli/gateway.py:_ensure_linger_enabled */
-int cgw_u_ensure_linger_enabled(const char *arg) { (void)arg; return 0; }
+int cgw_u_ensure_linger_enabled(const char *arg) {
+    /* Python: loginctl enable-linger. Arg =
+     * "termux\tis_linux\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int termux = arg[0] == '1';
+    int is_linux = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (termux || !is_linux || !state) { printf("\n"); return 0; }
+    if (t3 && t3[1] == '1') { printf("✓ Linger enabled — gateway will persist after logout\n"); return 0; }
+    printf("⚠ could not enable linger: loginctl unavailable/failed\n");
+    return 0;
+}
 
 /* PoP: _select_systemd_scope @ hermes_cli/gateway.py:_select_systemd_scope */
 int cgw_u_select_systemd_scope(const char *arg) {

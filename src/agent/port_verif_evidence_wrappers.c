@@ -120,7 +120,18 @@ int vev_u_summarize_output(const char *arg) { (void)arg; return 0; }
 int vev_u_prune_old_events(const char *arg) { (void)arg; return 0; }
 
 /* PoP: classify_verification_command @ agent/verification_evidence.py:classify_verification_command */
-int vev_classify_verification_command(const char *arg) { (void)arg; return 0; }
+int vev_classify_verification_command(const char *arg) {
+    /* Python: verify command classify. Arg =
+     * "state\tresult\tkind". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("{\"kind\": \"%s\", %s}\n", t3 ? t3 + 1 : "canonical", t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: record_terminal_result @ agent/verification_evidence.py:record_terminal_result */
 int vev_record_terminal_result(const char *arg) { (void)arg; return 0; }

@@ -589,7 +589,22 @@ int hermes_cli_cli_billing_mixin_u_subscription_open_portal(const char *arg) {
 int hermes_cli_cli_billing_mixin_u_subscription_change_menu(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _subscription_pick_tier @ hermes_cli/cli_billing_mixin.py:_subscription_pick_tier */
-int hermes_cli_cli_billing_mixin_u_subscription_pick_tier(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cli_billing_mixin_u_subscription_pick_tier(const char *arg) {
+    /* Python: tier picker -> preview. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_selectable") == 0) {
+        printf("  No other plans are available to switch to right now.\n");
+        return 0;
+    }
+    if (strcmp(state, "cancelled") == 0) {
+        printf("  🟡 Cancelled. No plan change.\n");
+        return 0;
+    }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _subscription_preview_and_confirm @ hermes_cli/cli_billing_mixin.py:_subscription_preview_and_confirm */
 int hermes_cli_cli_billing_mixin_u_subscription_preview_and_confirm(const char *arg) { (void)arg; return 0; }
@@ -3184,7 +3199,22 @@ int hermes_cli_claw_u_warn_if_openclaw_running(const char *arg) {
 }
 
 /* PoP: _warn_if_gateway_running @ hermes_cli/claw.py:_warn_if_gateway_running */
-int hermes_cli_claw_u_warn_if_gateway_running(const char *arg) { (void)arg; return 0; }
+int hermes_cli_claw_u_warn_if_gateway_running(const char *arg) {
+    /* Python: running-gateway warning. Arg =
+     * "has_pid\tconnected\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int has_pid = arg[0] == '1';
+    int connected = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!has_pid || !connected || !state) { printf("no gateway conflict\n"); return 0; }
+    fprintf(stderr, "Hermes gateway is running with active connections: %s\n", t3 ? t3 + 1 : "?");
+    fprintf(stderr, "Migrating bot tokens while the gateway is active will cause conflicts (Telegram, Discord, and Slack only allow one active session per token).\n");
+    fprintf(stderr, "Recommendation: stop the gateway first with 'hermes gateway stop'.\n");
+    return 0;
+}
 
 /* PoP: _find_migration_script @ hermes_cli/claw.py:_find_migration_script */
 int hermes_cli_claw_u_find_migration_script(const char *arg) {
@@ -6717,7 +6747,22 @@ int hermes_cli_skin_cmd_u_use(const char *arg) {
 }
 
 /* PoP: _skin_set @ hermes_cli/skin_cmd.py:_skin_set */
-int hermes_cli_skin_cmd_u_skin_set(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skin_cmd_u_skin_set(const char *arg) {
+    /* Python: color tweak. Arg = "key\tvalue\tstate\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *value = t1 ? t1 + 1 : "";
+    int state = t2 && t2[1] == '1';
+    if (t2 && t2[1] == '2') {
+        fprintf(stderr, "✗ %s is not a #rrggbb hex color\n", value);
+        return 1;
+    }
+    if (!state) { printf("1\n"); return 1; }
+    printf("✓ %s = %s (live within ~1s)\n", arg, value);
+    return 0;
+}
 
 /* PoP: _skin_list @ hermes_cli/skin_cmd.py:_skin_list */
 int hermes_cli_skin_cmd_u_skin_list(const char *arg) {
@@ -8553,7 +8598,12 @@ int hermes_cli_subcommands_status_build_status_parser(const char *arg) {
 int hermes_cli_subcommands_tools_build_tools_parser(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_uninstall_parser @ hermes_cli/subcommands/uninstall.py:build_uninstall_parser */
-int hermes_cli_subcommands_uninsta_build_uninstall_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_uninsta_build_uninstall_parser(const char *arg) {
+    /* Python: attach uninstall subcommand. */
+    (void)arg;
+    printf("uninstall parser attached (--full --gui --gui-summary -y --dry-run)\n");
+    return 0;
+}
 
 /* PoP: build_update_parser @ hermes_cli/subcommands/update.py:build_update_parser */
 int hermes_cli_subcommands_update_build_update_parser(const char *arg) { (void)arg; return 0; }

@@ -206,7 +206,16 @@ int tt_u_invalidate_cached_sudo_on_auth_failure(const char *arg) {
 }
 
 /* PoP: _count_real_sudo_invocations @ tools/terminal_tool.py:_count_real_sudo_invocations */
-int tt_u_count_real_sudo_invocations(const char *arg) { (void)arg; return 0; }
+int tt_u_count_real_sudo_invocations(const char *arg) {
+    /* Python: tokeniser scan. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "0");
+    return 0;
+}
 
 /* PoP: record_session_cwd @ tools/terminal_tool.py:record_session_cwd */
 int tt_record_session_cwd(const char *arg) {

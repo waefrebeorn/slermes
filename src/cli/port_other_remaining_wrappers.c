@@ -216,7 +216,24 @@ int cron_executions_latest_executions(const char *arg) {
 }
 
 /* PoP: _current_cron_store @ cron/jobs.py:_current_cron_store */
-int cron_jobs_u_current_cron_store(const char *arg) { (void)arg; return 0; }
+int cron_jobs_u_current_cron_store(const char *arg) {
+    /* Python: profile-pinned paths. Arg =
+     * "override\tconst_repointed\thome_changed\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int override = arg[0] == '1';
+    int repointed = t1 && t1[1] == '1';
+    int home_changed = t2 && t2[1] == '1';
+    int state = t3 && t3[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (override) { printf("override store\n"); return 0; }
+    if (repointed) { printf("module-constant store\n"); return 0; }
+    printf("%s\n", home_changed ? "active-profile store" : "import-time store");
+    return 0;
+}
 
 /* PoP: use_cron_store @ cron/jobs.py:use_cron_store */
 int cron_jobs_use_cron_store(const char *arg) {

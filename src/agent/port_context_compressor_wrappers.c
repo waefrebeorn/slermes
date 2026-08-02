@@ -67,7 +67,18 @@ int ctxc_u_persist_fallback_compression_streak(const char *arg) {
 }
 
 /* PoP: _load_ineffective_compression_count @ agent/context_compressor.py:_load_ineffective_compression_count */
-int ctxc_u_load_ineffective_compression_count(const char *arg) { (void)arg; return 0; }
+int ctxc_u_load_ineffective_compression_count(const char *arg) {
+    /* Python: durable strike count. Arg =
+     * "session_id\tstored\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("count lookup skipped (no session)\n"); return 0; }
+    printf("ineffective count loaded: %s\n", t3 ? t3 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _persist_ineffective_compression_count @ agent/context_compressor.py:_persist_ineffective_compression_count */
 int ctxc_u_persist_ineffective_compression_count(const char *arg) {

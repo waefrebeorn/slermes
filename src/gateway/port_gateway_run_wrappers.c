@@ -484,7 +484,22 @@ int grun_u_notify_active_sessions_of_shutdown(const char *arg) { (void)arg; retu
 int grun_u_finalize_shutdown_agents(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _should_emit_long_running_notification @ gateway/run.py:_should_emit_long_running_notification */
-int grun_u_should_emit_long_running_notification(const char *arg) { (void)arg; return 0; }
+int grun_u_should_emit_long_running_notification(const char *arg) {
+    /* Python: ownership guard. Arg =
+     * "has_agent\texecutor_done\trebound\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int has_agent = arg[0] == '1';
+    int executor_done = t1 && t1[1] == '1';
+    int rebound = t2 && t2[1] == '1';
+    int state = t3 && t3[1] == '1';
+    if (!has_agent || executor_done || rebound || !state) { printf("0\n"); return 0; }
+    printf("%s\n", (t4 && t4[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _defer_agent_cleanup_until_future_done @ gateway/run.py:_defer_agent_cleanup_until_future_done */
 int grun_u_defer_agent_cleanup_until_future_done(const char *arg) { (void)arg; return 0; }
@@ -947,7 +962,20 @@ int grun_u_interrupt_and_clear_session(const char *arg) { (void)arg; return 0; }
 int grun_u_refresh_agent_cache_message_count(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _voice_channel_sidecar_note @ gateway/run.py:_voice_channel_sidecar_note */
-int grun_u_voice_channel_sidecar_note(const char *arg) { (void)arg; return 0; }
+int grun_u_voice_channel_sidecar_note(const char *arg) {
+    /* Python: VC-change note. Arg =
+     * "is_discord\tchanged\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int is_discord = arg[0] == '1';
+    int changed = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!is_discord || !changed || !state) { printf("\n"); return 0; }
+    printf("%s\n", t3 ? t3 + 1 : "[Voice channel now: ...]");
+    return 0;
+}
 
 /* PoP: _pinned_session_context_prompt @ gateway/run.py:_pinned_session_context_prompt */
 int grun_u_pinned_session_context_prompt(const char *arg) {
