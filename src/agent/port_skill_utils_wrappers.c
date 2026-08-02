@@ -104,7 +104,20 @@ int sku_skill_matches_platform(const char *arg) {
 }
 
 /* PoP: _detect_environment @ agent/skill_utils.py:_detect_environment */
-int sku_u_detect_environment(const char *arg) { (void)arg; return 0; }
+int sku_u_detect_environment(const char *arg) {
+    /* Python: env detection. Arg = "env\tstate\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *env = arg;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("1\n"); return 0; }
+    if (strcmp(env, "kanban") == 0) { printf("%s\n", (t2 && t2[1] == '1') ? "1" : "0"); return 0; }
+    if (strcmp(env, "docker") == 0) { printf("%s\n", (t2 && t2[1] == '1') ? "1" : "0"); return 0; }
+    if (strcmp(env, "s6") == 0) { printf("%s\n", (t2 && t2[1] == '1') ? "1" : "0"); return 0; }
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: skill_matches_environment @ agent/skill_utils.py:skill_matches_environment */
 int sku_skill_matches_environment(const char *arg) { (void)arg; return 0; }

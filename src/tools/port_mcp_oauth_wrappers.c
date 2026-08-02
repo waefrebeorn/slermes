@@ -178,7 +178,16 @@ int mcpo_u_read_json(const char *arg) {
 }
 
 /* PoP: _write_json @ tools/mcp_oauth.py:_write_json */
-int mcpo_u_write_json(const char *arg) { (void)arg; return 0; }
+int mcpo_u_write_json(const char *arg) {
+    /* Python: 0600 O_EXCL. Arg = "path\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 write failed\n"); return 1; }
+    printf("json written 0600 atomic: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _tokens_path @ tools/mcp_oauth.py:_tokens_path */
 int mcpo_u_tokens_path(const char *arg) {

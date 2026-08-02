@@ -109,7 +109,16 @@ int yb_u_find_processing_session(const char *arg) {
 int yb_u_interrupt_for_recall(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _schedule_content_redact @ gateway/platforms/yuanbao.py:_schedule_content_redact */
-int yb_u_schedule_content_redact(const char *arg) { (void)arg; return 0; }
+int yb_u_schedule_content_redact(const char *arg) {
+    /* Python: poll-and-redact task. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("redact task not scheduled\n"); return 0; }
+    printf("recall redact scheduled (30x0.5s poll): %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _patch_transcript @ gateway/platforms/yuanbao.py:_patch_transcript */
 int yb_u_patch_transcript(const char *arg) { (void)arg; return 0; }

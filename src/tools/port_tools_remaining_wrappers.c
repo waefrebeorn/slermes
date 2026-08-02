@@ -383,7 +383,15 @@ int tools_lazy_deps_active_features(const char *arg) {
 int tools_lazy_deps_refresh_active_features(const char *arg) { (void)arg; return 0; }
 
 /* PoP: ensure_and_bind @ tools/lazy_deps.py:ensure_and_bind */
-int tools_lazy_deps_ensure_and_bind(const char *arg) { (void)arg; return 0; }
+int tools_lazy_deps_ensure_and_bind(const char *arg) {
+    /* Python: ensure + rebind. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _get_config @ tools/homeassistant_tool.py:_get_config */
 int tools_homeassistant_tool_u_get_config(const char *arg) {

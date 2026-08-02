@@ -12,7 +12,15 @@
 #include "hermes_json.h"
 
 /* PoP: _begin_compression_telemetry @ agent/context_compressor.py:_begin_compression_telemetry */
-int ctxc_u_begin_compression_telemetry(const char *arg) { (void)arg; return 0; }
+int ctxc_u_begin_compression_telemetry(const char *arg) {
+    /* Python: content-free seed. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _record_compression_regions @ agent/context_compressor.py:_record_compression_regions */
 int ctxc_u_record_compression_regions(const char *arg) {
@@ -223,7 +231,15 @@ int ctxc_u_automatic_compression_blocked_locally(const char *arg) {
 int ctxc_prune_tool_results_only(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _bound_summary_input @ agent/context_compressor.py:_bound_summary_input */
-int ctxc_u_bound_summary_input(const char *arg) { (void)arg; return 0; }
+int ctxc_u_bound_summary_input(const char *arg) {
+    /* Python: head/tail bound. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _validate_summary_user_provenance @ agent/context_compressor.py:_validate_summary_user_provenance */
 int ctxc_u_validate_summary_user_provenance(const char *arg) {

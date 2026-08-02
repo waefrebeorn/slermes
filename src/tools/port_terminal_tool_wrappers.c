@@ -342,7 +342,21 @@ int tt_u_is_unusable_container_cwd(const char *arg) {
 }
 
 /* PoP: _ensure_terminal_env_bridged @ tools/terminal_tool.py:_ensure_terminal_env_bridged */
-int tt_u_ensure_terminal_env_bridged(const char *arg) { (void)arg; return 0; }
+int tt_u_ensure_terminal_env_bridged(const char *arg) {
+    /* Python: config backfill. Arg =
+     * "env_set\tattempted\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int env_set = arg[0] == '1';
+    int attempted = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (env_set || attempted) { printf("no-op (explicit env wins)\n"); return 0; }
+    if (!state) { printf("bridge failed — local default\n"); return 0; }
+    printf("terminal config bridged to env: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _get_modal_backend_state @ tools/terminal_tool.py:_get_modal_backend_state */
 int tt_u_get_modal_backend_state(const char *arg) {

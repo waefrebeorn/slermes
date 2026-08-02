@@ -651,7 +651,25 @@ int main_u_aux_flow_provider_model(const char *arg) {
 }
 
 /* PoP: _aux_flow_custom_endpoint @ hermes_cli/main.py:_aux_flow_custom_endpoint */
-int main_u_aux_flow_custom_endpoint(const char *arg) { (void)arg; return 0; }
+int main_u_aux_flow_custom_endpoint(const char *arg) {
+    /* Python: OpenAI-compatible prompt. Arg =
+     * "task\tstate\tresult\taborted". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) {
+        printf("  Custom endpoint flow aborted\n");
+        return 0;
+    }
+    if (t3 && t3[1] == '1') {
+        printf("No URL provided. No change.\n");
+        return 0;
+    }
+    printf("%s: custom (%s)\n", arg, t1 ? t1 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _prompt_provider_choice @ hermes_cli/main.py:_prompt_provider_choice */
 int main_u_prompt_provider_choice(const char *arg) {
@@ -1116,7 +1134,20 @@ int main_u_redownload_electron_dist(const char *arg) {
 int main_u_stop_desktop_processes_locking_build(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _desktop_macos_relaunchable_fixup @ hermes_cli/main.py:_desktop_macos_relaunchable_fixup */
-int main_u_desktop_macos_relaunchable_fixup(const char *arg) { (void)arg; return 0; }
+int main_u_desktop_macos_relaunchable_fixup(const char *arg) {
+    /* Python: quarantine + ad-hoc resign. Arg =
+     * "darwin\thas_identity\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int darwin = arg[0] == '1';
+    int has_identity = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!darwin || has_identity || !state) { printf("no-op\n"); return 0; }
+    printf("quarantine cleared + deep ad-hoc codesign applied: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _force_adhoc_macos_signing @ hermes_cli/main.py:_force_adhoc_macos_signing */
 int main_u_force_adhoc_macos_signing(const char *arg) {

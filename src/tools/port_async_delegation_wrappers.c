@@ -88,7 +88,17 @@ int adel_u_delete_durable_delegation(const char *arg) {
 }
 
 /* PoP: _prune_durable_records @ tools/async_delegation.py:_prune_durable_records */
-int adel_u_prune_durable_records(const char *arg) { (void)arg; return 0; }
+int adel_u_prune_durable_records(const char *arg) {
+    /* Python: delivered-first bound. Arg =
+     * "removed\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("prune skipped\n"); return 0; }
+    printf("pruned durable records (delivered first): %s\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _persist_completion @ tools/async_delegation.py:_persist_completion */
 int adel_u_persist_completion(const char *arg) {

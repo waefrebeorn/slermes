@@ -806,21 +806,36 @@ int gw_base__interrupt_session_activity(const char *session_key, const char *cha
 }
 
 /* ---- post-delivery callbacks ---- */
+static const char *g_pdc_key[64];
 static void (*g_pdc_cb[64])(void);
 static int g_pdc_gen[64];
 static int g_pdc_n = 0;
 /* PoP: gw_base__register_post_delivery_callback @ gateway/platforms/base.py:register_post_delivery_callback */
 void gw_base__register_post_delivery_callback(const char *session_key, void (*cb)(void), int generation) {
-    (void)session_key;
-    if (g_pdc_n < 64) { g_pdc_cb[g_pdc_n] = cb; g_pdc_gen[g_pdc_n] = generation; g_pdc_n++; }
+    if (!session_key || !cb) return;
+    if (g_pdc_n < 64) { g_pdc_key[g_pdc_n] = session_key; g_pdc_cb[g_pdc_n] = cb; g_pdc_gen[g_pdc_n] = generation; g_pdc_n++; }
 }
 /* PoP: gw_base__pop_post_delivery_callback @ gateway/platforms/base.py:pop_post_delivery_callback */
 void (*gw_base__pop_post_delivery_callback(const char *session_key, int generation))(void) {
-    (void)session_key;
+    /* Python: generation-owned pop. */
+    if (!session_key) return NULL;
     if (g_pdc_n == 0) return NULL;
-    void (*cb)(void) = g_pdc_cb[g_pdc_n-1];
-    g_pdc_n--;
-    return cb;
+    /* Entry is (generation, callback) pairs; only pop when generation
+     * matches (or generation < 0 = no ownership requirement). */
+    for (int i = g_pdc_n - 1; i >= 0; i--) {
+        if (strcmp(g_pdc_key[i], session_key) != 0) continue;
+        if (generation >= 0 && g_pdc_gen[i] != generation) return NULL;
+        void (*cb)(void) = g_pdc_cb[i];
+        /* Remove entry i by shifting tail down. */
+        for (int j = i; j < g_pdc_n - 1; j++) {
+            g_pdc_key[j] = g_pdc_key[j + 1];
+            g_pdc_gen[j] = g_pdc_gen[j + 1];
+            g_pdc_cb[j] = g_pdc_cb[j + 1];
+        }
+        g_pdc_n--;
+        return cb;
+    }
+    return NULL;
 }
 
 /* PoP: gw_base__on_processing_start @ gateway/platforms/base.py:on_processing_start */

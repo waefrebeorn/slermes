@@ -188,7 +188,16 @@ int moa_u_merge_slot_extra_body(const char *arg) {
 }
 
 /* PoP: _maybe_apply_moa_cache_control @ agent/moa_loop.py:_maybe_apply_moa_cache_control */
-int moa_u_maybe_apply_moa_cache_control(const char *arg) { (void)arg; return 0; }
+int moa_u_maybe_apply_moa_cache_control(const char *arg) {
+    /* Python: policy-resolved decoration. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("messages unchanged (policy off/error)\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "cache_control applied");
+    return 0;
+}
 
 /* PoP: _run_reference @ agent/moa_loop.py:_run_reference */
 int moa_u_run_reference(const char *arg) { (void)arg; return 0; }

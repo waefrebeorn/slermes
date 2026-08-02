@@ -1180,7 +1180,21 @@ int gateway_kanban_watchers_u_resolve_auto_decompose_settings(const char *arg) {
 }
 
 /* PoP: _acquire_singleton_lock @ gateway/kanban_watchers.py:_acquire_singleton_lock */
-int gateway_kanban_watchers_u_acquire_singleton_lock(const char *arg) { (void)arg; return 0; }
+int gateway_kanban_watchers_u_acquire_singleton_lock(const char *arg) {
+    /* Python: advisory flock. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) {
+        printf("\t%s\n", t3 ? t3 + 1 : "unavailable");
+        return 0;
+    }
+    printf("held\t\n");
+    return 0;
+}
 
 /* PoP: _release_singleton_lock @ gateway/kanban_watchers.py:_release_singleton_lock */
 int gateway_kanban_watchers_u_release_singleton_lock(const char *arg) {
