@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:12:19Z",
+  "generated_at": "2026-08-02T20:14:18Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -31596,10 +31596,10 @@
     },
     "agent/image_gen_provider.py": {
       "total": 15,
-      "ported": 5,
+      "ported": 15,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 10,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 15,
@@ -31618,16 +31618,24 @@
             ],
             "line_number": 73
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_image_gen_provider_remaining.c",
+          "c_function": "igp_name",
+          "pop_annotation": {
+            "c_function": "igp_name",
+            "python_functions": [
+              "name"
+            ],
+            "c_file": "src/agent/port_image_gen_provider_remaining.c",
+            "python_file": "agent/image_gen_provider.py",
+            "line": 26,
+            "is_consolidated": false,
+            "full_text": "/* PoP: name @ agent/image_gen_provider.py:name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/image_gen_provider.py",
@@ -31670,16 +31678,24 @@
             "decorators": [],
             "line_number": 84
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_image_gen_provider_remaining.c",
+          "c_function": "igp_is_available",
+          "pop_annotation": {
+            "c_function": "igp_is_available",
+            "python_functions": [
+              "is_available"
+            ],
+            "c_file": "src/agent/port_image_gen_provider_remaining.c",
+            "python_file": "agent/image_gen_provider.py",
+            "line": 31,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_available @ agent/image_gen_provider.py:is_available */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/image_gen_provider.py",
@@ -31809,16 +31825,24 @@
             ],
             "line_number": 166
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_image_gen_provider_remaining.c",
+          "c_function": "igp_generate",
+          "pop_annotation": {
+            "c_function": "igp_generate",
+            "python_functions": [
+              "generate"
+            ],
+            "c_file": "src/agent/port_image_gen_provider_remaining.c",
+            "python_file": "agent/image_gen_provider.py",
+            "line": 37,
+            "is_consolidated": false,
+            "full_text": "/* PoP: generate @ agent/image_gen_provider.py:generate */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/image_gen_provider.py",
@@ -31830,16 +31854,24 @@
             "decorators": [],
             "line_number": 196
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_image_gen_provider_remaining.c",
+          "c_function": "igp_resolve_aspect_ratio",
+          "pop_annotation": {
+            "c_function": "igp_resolve_aspect_ratio",
+            "python_functions": [
+              "resolve_aspect_ratio"
+            ],
+            "c_file": "src/agent/port_image_gen_provider_remaining.c",
+            "python_file": "agent/image_gen_provider.py",
+            "line": 45,
+            "is_consolidated": false,
+            "full_text": "/* PoP: resolve_aspect_ratio @ agent/image_gen_provider.py:resolve_aspect_ratio */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/image_gen_provider.py",
@@ -31851,16 +31883,24 @@
             "decorators": [],
             "line_number": 210
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_image_gen_provider_remaining.c",
+          "c_function": "igp_normalize_reference_images",
+          "pop_annotation": {
+            "c_function": "igp_normalize_reference_images",
+            "python_functions": [
+              "normalize_reference_images"
+            ],
+            "c_file": "src/agent/port_image_gen_provider_remaining.c",
+            "python_file": "agent/image_gen_provider.py",
+            "line": 58,
+            "is_consolidated": false,
+            "full_text": "/* PoP: normalize_reference_images @ agent/image_gen_provider.py:normalize_reference_images */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/image_gen_provider.py",
@@ -31872,16 +31912,24 @@
             "decorators": [],
             "line_number": 230
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_image_gen_provider_remaining.c",
+          "c_function": "igp_images_cache_dir",
+          "pop_annotation": {
+            "c_function": "igp_images_cache_dir",
+            "python_functions": [
+              "_images_cache_dir"
+            ],
+            "c_file": "src/agent/port_image_gen_provider_remaining.c",
+            "python_file": "agent/image_gen_provider.py",
+            "line": 66,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _images_cache_dir @ agent/image_gen_provider.py:_images_cache_dir */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/image_gen_provider.py",
@@ -31893,16 +31941,24 @@
             "decorators": [],
             "line_number": 239
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_image_gen_provider_remaining.c",
+          "c_function": "igp_save_b64_image",
+          "pop_annotation": {
+            "c_function": "igp_save_b64_image",
+            "python_functions": [
+              "save_b64_image"
+            ],
+            "c_file": "src/agent/port_image_gen_provider_remaining.c",
+            "python_file": "agent/image_gen_provider.py",
+            "line": 77,
+            "is_consolidated": false,
+            "full_text": "/* PoP: save_b64_image @ agent/image_gen_provider.py:save_b64_image */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/image_gen_provider.py",
@@ -31914,16 +31970,24 @@
             "decorators": [],
             "line_number": 272
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_image_gen_provider_remaining.c",
+          "c_function": "igp_save_url_image",
+          "pop_annotation": {
+            "c_function": "igp_save_url_image",
+            "python_functions": [
+              "save_url_image"
+            ],
+            "c_file": "src/agent/port_image_gen_provider_remaining.c",
+            "python_file": "agent/image_gen_provider.py",
+            "line": 113,
+            "is_consolidated": false,
+            "full_text": "/* PoP: save_url_image @ agent/image_gen_provider.py:save_url_image */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/image_gen_provider.py",
@@ -31935,16 +31999,24 @@
             "decorators": [],
             "line_number": 341
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_image_gen_provider_remaining.c",
+          "c_function": "igp_success_response",
+          "pop_annotation": {
+            "c_function": "igp_success_response",
+            "python_functions": [
+              "success_response"
+            ],
+            "c_file": "src/agent/port_image_gen_provider_remaining.c",
+            "python_file": "agent/image_gen_provider.py",
+            "line": 134,
+            "is_consolidated": false,
+            "full_text": "/* PoP: success_response @ agent/image_gen_provider.py:success_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/image_gen_provider.py",
@@ -31956,16 +32028,24 @@
             "decorators": [],
             "line_number": 374
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_image_gen_provider_remaining.c",
+          "c_function": "igp_error_response",
+          "pop_annotation": {
+            "c_function": "igp_error_response",
+            "python_functions": [
+              "error_response"
+            ],
+            "c_file": "src/agent/port_image_gen_provider_remaining.c",
+            "python_file": "agent/image_gen_provider.py",
+            "line": 142,
+            "is_consolidated": false,
+            "full_text": "/* PoP: error_response @ agent/image_gen_provider.py:error_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -47469,10 +47549,10 @@
     },
     "agent/onboarding.py": {
       "total": 11,
-      "ported": 1,
+      "ported": 11,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 10,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 11,
@@ -47488,16 +47568,24 @@
             "decorators": [],
             "line_number": 36
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onboarding_remaining.c",
+          "c_function": "obd_busy_input_hint_gateway",
+          "pop_annotation": {
+            "c_function": "obd_busy_input_hint_gateway",
+            "python_functions": [
+              "busy_input_hint_gateway"
+            ],
+            "c_file": "src/agent/port_onboarding_remaining.c",
+            "python_file": "agent/onboarding.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: busy_input_hint_gateway @ agent/onboarding.py:busy_input_hint_gateway */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/onboarding.py",
@@ -47509,16 +47597,24 @@
             "decorators": [],
             "line_number": 70
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onboarding_remaining.c",
+          "c_function": "obd_busy_input_hint_cli",
+          "pop_annotation": {
+            "c_function": "obd_busy_input_hint_cli",
+            "python_functions": [
+              "busy_input_hint_cli"
+            ],
+            "c_file": "src/agent/port_onboarding_remaining.c",
+            "python_file": "agent/onboarding.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: busy_input_hint_cli @ agent/onboarding.py:busy_input_hint_cli */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/onboarding.py",
@@ -47530,16 +47626,24 @@
             "decorators": [],
             "line_number": 97
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onboarding_remaining.c",
+          "c_function": "obd_tool_progress_hint_gateway",
+          "pop_annotation": {
+            "c_function": "obd_tool_progress_hint_gateway",
+            "python_functions": [
+              "tool_progress_hint_gateway"
+            ],
+            "c_file": "src/agent/port_onboarding_remaining.c",
+            "python_file": "agent/onboarding.py",
+            "line": 40,
+            "is_consolidated": false,
+            "full_text": "/* PoP: tool_progress_hint_gateway @ agent/onboarding.py:tool_progress_hint_gateway */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/onboarding.py",
@@ -47551,16 +47655,24 @@
             "decorators": [],
             "line_number": 105
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onboarding_remaining.c",
+          "c_function": "obd_tool_progress_hint_cli",
+          "pop_annotation": {
+            "c_function": "obd_tool_progress_hint_cli",
+            "python_functions": [
+              "tool_progress_hint_cli"
+            ],
+            "c_file": "src/agent/port_onboarding_remaining.c",
+            "python_file": "agent/onboarding.py",
+            "line": 45,
+            "is_consolidated": false,
+            "full_text": "/* PoP: tool_progress_hint_cli @ agent/onboarding.py:tool_progress_hint_cli */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/onboarding.py",
@@ -47572,16 +47684,24 @@
             "decorators": [],
             "line_number": 112
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onboarding_remaining.c",
+          "c_function": "obd_openclaw_residue_hint_cli",
+          "pop_annotation": {
+            "c_function": "obd_openclaw_residue_hint_cli",
+            "python_functions": [
+              "openclaw_residue_hint_cli"
+            ],
+            "c_file": "src/agent/port_onboarding_remaining.c",
+            "python_file": "agent/onboarding.py",
+            "line": 50,
+            "is_consolidated": false,
+            "full_text": "/* PoP: openclaw_residue_hint_cli @ agent/onboarding.py:openclaw_residue_hint_cli */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/onboarding.py",
@@ -47593,16 +47713,24 @@
             "decorators": [],
             "line_number": 131
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onboarding_remaining.c",
+          "c_function": "obd_detect_openclaw_residue",
+          "pop_annotation": {
+            "c_function": "obd_detect_openclaw_residue",
+            "python_functions": [
+              "detect_openclaw_residue"
+            ],
+            "c_file": "src/agent/port_onboarding_remaining.c",
+            "python_file": "agent/onboarding.py",
+            "line": 55,
+            "is_consolidated": false,
+            "full_text": "/* PoP: detect_openclaw_residue @ agent/onboarding.py:detect_openclaw_residue */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/onboarding.py",
@@ -47614,16 +47742,24 @@
             "decorators": [],
             "line_number": 147
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onboarding_remaining.c",
+          "c_function": "obd_profile_build_mode",
+          "pop_annotation": {
+            "c_function": "obd_profile_build_mode",
+            "python_functions": [
+              "profile_build_mode"
+            ],
+            "c_file": "src/agent/port_onboarding_remaining.c",
+            "python_file": "agent/onboarding.py",
+            "line": 67,
+            "is_consolidated": false,
+            "full_text": "/* PoP: profile_build_mode @ agent/onboarding.py:profile_build_mode */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/onboarding.py",
@@ -47635,16 +47771,24 @@
             "decorators": [],
             "line_number": 170
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onboarding_remaining.c",
+          "c_function": "obd_profile_build_directive",
+          "pop_annotation": {
+            "c_function": "obd_profile_build_directive",
+            "python_functions": [
+              "profile_build_directive"
+            ],
+            "c_file": "src/agent/port_onboarding_remaining.c",
+            "python_file": "agent/onboarding.py",
+            "line": 84,
+            "is_consolidated": false,
+            "full_text": "/* PoP: profile_build_directive @ agent/onboarding.py:profile_build_directive */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/onboarding.py",
@@ -47685,16 +47829,24 @@
             "decorators": [],
             "line_number": 211
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onboarding_remaining.c",
+          "c_function": "obd_is_seen",
+          "pop_annotation": {
+            "c_function": "obd_is_seen",
+            "python_functions": [
+              "is_seen"
+            ],
+            "c_file": "src/agent/port_onboarding_remaining.c",
+            "python_file": "agent/onboarding.py",
+            "line": 90,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_seen @ agent/onboarding.py:is_seen */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/onboarding.py",
@@ -47706,16 +47858,24 @@
             "decorators": [],
             "line_number": 216
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_onboarding_remaining.c",
+          "c_function": "obd_mark_seen",
+          "pop_annotation": {
+            "c_function": "obd_mark_seen",
+            "python_functions": [
+              "mark_seen"
+            ],
+            "c_file": "src/agent/port_onboarding_remaining.c",
+            "python_file": "agent/onboarding.py",
+            "line": 99,
+            "is_consolidated": false,
+            "full_text": "/* PoP: mark_seen @ agent/onboarding.py:mark_seen */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
