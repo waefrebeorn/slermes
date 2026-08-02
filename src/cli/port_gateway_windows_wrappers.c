@@ -41,7 +41,23 @@ int gw_u_quote_schtasks_arg(const char *arg) {
 int gw_u_exec_schtasks(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _should_fall_back @ hermes_cli/gateway_windows.py:_should_fall_back */
-int gw_u_should_fall_back(const char *arg) { (void)arg; return 0; }
+int gw_u_should_fall_back(const char *arg) {
+    /* Python: code == 124 or fallback patterns. Arg = "code\tdetail". */
+    if (!arg || !*arg) return 0;
+    int code = 0;
+    const char *tab = strchr(arg, '\t');
+    if (tab) code = atoi(arg);
+    else code = atoi(arg);
+    if (code == 124) return 1;
+    const char *detail = tab ? tab + 1 : "";
+    char *low = strdup(detail);
+    for (char *p = low; *p; p++) if (*p >= 'A' && *p <= 'Z') *p = (char)(*p + 32);
+    int hit = strstr(low, "access is denied") || strstr(low, "acceso denegado") ||
+              strstr(low, "přístup byl odepřen") || strstr(low, "schtasks timed out") ||
+              strstr(low, "schtasks produced no output");
+    free(low);
+    return hit;
+}
 
 /* PoP: _is_access_denied @ hermes_cli/gateway_windows.py:_is_access_denied */
 int gw_u_is_access_denied(const char *arg) {

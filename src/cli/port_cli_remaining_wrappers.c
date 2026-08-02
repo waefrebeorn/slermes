@@ -748,7 +748,16 @@ int hermes_cli_skin_engine_get_spinner_wings(const char *arg) { (void)arg; retur
 int hermes_cli_skin_engine_get_branding(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _skins_dir @ hermes_cli/skin_engine.py:_skins_dir */
-int hermes_cli_skin_engine_u_skins_dir(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skin_engine_u_skins_dir(const char *arg) {
+    /* Python: get_hermes_home() / "skins" (user skins dir). */
+    (void)arg;
+    const char *hh = getenv("HERMES_HOME");
+    char base[1024];
+    if (hh && *hh) snprintf(base, sizeof(base), "%s", hh);
+    else snprintf(base, sizeof(base), "%s/.hermes", getenv("HOME") ? getenv("HOME") : ".");
+    printf("%s/skins\n", base);
+    return 0;
+}
 
 /* PoP: _load_skin_from_yaml @ hermes_cli/skin_engine.py:_load_skin_from_yaml */
 int hermes_cli_skin_engine_u_load_skin_from_yaml(const char *arg) { (void)arg; return 0; }

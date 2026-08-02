@@ -189,7 +189,12 @@ int gateway_delivery_ledger_ledger_enabled(const char *arg) { (void)arg; return 
 int gateway_delivery_ledger_debug_rows(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _schedule @ gateway/shutdown_watchdog.py:_schedule */
-int gateway_shutdown_watchdog_u_schedule(const char *arg) { (void)arg; return 0; }
+int gateway_shutdown_watchdog_u_schedule(const char *arg) {
+    /* Python: self._timer = loop.call_later(interval, self._tick). */
+    if (arg && *arg) printf("scheduled tick in %s s\n", arg);
+    else printf("scheduled tick\n");
+    return 0;
+}
 
 /* PoP: _tick @ gateway/shutdown_watchdog.py:_tick */
 int gateway_shutdown_watchdog_u_tick(const char *arg) {

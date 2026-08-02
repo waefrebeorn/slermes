@@ -29,7 +29,12 @@ int tools_computer_use_tool_list_apps(const char *arg) {
 }
 
 /* PoP: list_windows @ tools/computer_use/tool.py:list_windows */
-int tools_computer_use_tool_list_windows(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_tool_list_windows(const char *arg) {
+    /* Python: self.calls.append(("list_windows", {})); return []. */
+    (void)arg;
+    printf("[]\n");
+    return 0;
+}
 
 /* PoP: set_value @ tools/computer_use/tool.py:set_value */
 int tools_computer_use_tool_set_value(const char *arg) { (void)arg; return 0; }
@@ -623,7 +628,14 @@ int tools_skills_hub_u_parse_frontmatter(const char *arg) { (void)arg; return 0;
 int tools_xai_video_tools_u_configured_for_xai_video(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _check_xai_video_requirements @ tools/xai_video_tools.py:_check_xai_video_requirements */
-int tools_xai_video_tools_u_check_xai_video_requirements(const char *arg) { (void)arg; return 0; }
+int tools_xai_video_tools_u_check_xai_video_requirements(const char *arg) {
+    /* Python: configured_for_xai_video() and has_xai_video_credentials().
+     * Arg = "1/0 configured"; credentials from the env. */
+    int configured = (arg && *arg && atoi(arg)) ? 1 : 0;
+    const char *key = getenv("XAI_API_KEY");
+    int has_creds = key && *key;
+    return configured && has_creds;
+}
 
 /* PoP: _clean_string @ tools/xai_video_tools.py:_clean_string */
 int tools_xai_video_tools_u_clean_string(const char *arg) { (void)arg; return 0; }
