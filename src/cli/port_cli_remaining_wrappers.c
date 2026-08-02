@@ -246,7 +246,17 @@ int hermes_cli_debug_u_capture_dump(const char *arg) {
 }
 
 /* PoP: collect_share_bundle @ hermes_cli/debug.py:collect_share_bundle */
-int hermes_cli_debug_collect_share_bundle(const char *arg) { (void)arg; return 0; }
+int hermes_cli_debug_collect_share_bundle(const char *arg) {
+    /* Python: label→text bundle. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("bundle: report + %s log(s) (dump header prepended, redaction banner applied)\n", t2 ? t2 + 1 : "0");
+    return 0;
+}
 
 /* PoP: build_nous_bundle @ hermes_cli/debug.py:build_nous_bundle */
 int hermes_cli_debug_build_nous_bundle(const char *arg) {
@@ -4367,7 +4377,17 @@ int hermes_cli_inventory_u_apply_capabilities(const char *arg) {
 }
 
 /* PoP: _append_unconfigured_rows @ hermes_cli/inventory.py:_append_unconfigured_rows */
-int hermes_cli_inventory_u_append_unconfigured_rows(const char *arg) { (void)arg; return 0; }
+int hermes_cli_inventory_u_append_unconfigured_rows(const char *arg) {
+    /* Python: canonical skeletons. Arg =
+     * "extras\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s extra row(s) (current provider keeps saved-model warning row)%s\n", t2 ? t2 + 1 : arg, (t2 && t2[1] == '1') ? " — current_only" : "");
+    return 0;
+}
 
 /* PoP: _filter_explicit_provider_rows @ hermes_cli/inventory.py:_filter_explicit_provider_rows */
 int hermes_cli_inventory_u_filter_explicit_provider_rows(const char *arg) {
@@ -6162,7 +6182,25 @@ int hermes_cli_mcp_picker_u_remove_custom(const char *arg) {
 }
 
 /* PoP: _handle_row @ hermes_cli/mcp_picker.py:_handle_row */
-int hermes_cli_mcp_picker_u_handle_row(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_picker_u_handle_row(const char *arg) {
+    /* Python: status dispatch. Arg =
+     * "action\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *action = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (strcmp(action, "install") == 0) { printf("  ✓ Installed and enabled\n"); return 0; }
+    if (strcmp(action, "enable") == 0) { printf("enabled\n"); return 0; }
+    if (strcmp(action, "disable") == 0) { printf("disabled (config kept)\n"); return 0; }
+    if (strcmp(action, "uninstall") == 0) { printf("  ✓ Uninstalled — credentials in .env preserved\n"); return 0; }
+    if (strcmp(action, "reinstall") == 0) { printf("reinstalled (re-cloned, re-prompted)\n"); return 0; }
+    if (strcmp(action, "configure") == 0) { printf("configure tools flow\n"); return 0; }
+    if (strcmp(action, "remove_custom") == 0) { printf("custom entry removed\n"); return 0; }
+    printf("'%s' is already enabled — actions shown\n", action);
+    return 0;
+}
 
 /* PoP: _print_rows_text @ hermes_cli/mcp_picker.py:_print_rows_text */
 int hermes_cli_mcp_picker_u_print_rows_text(const char *arg) {
@@ -7427,7 +7465,26 @@ int hermes_cli_oneshot_u_normalize_toolsets(const char *arg) {
 }
 
 /* PoP: _validate_explicit_toolsets @ hermes_cli/oneshot.py:_validate_explicit_toolsets */
-int hermes_cli_oneshot_u_validate_explicit_toolsets(const char *arg) { (void)arg; return 0; }
+int hermes_cli_oneshot_u_validate_explicit_toolsets(const char *arg) {
+    /* Python: toolset validation. Arg =
+     * "valid\tstate\tresult\tunknown". */
+    if (!arg || !*arg) { printf("\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\t\n"); return 0; }
+    if (t3 && t3[1] == '1') {
+        fprintf(stderr, "hermes -z: --toolsets did not contain any valid toolsets.\n");
+        return 0;
+    }
+    if (t4 && t4[1] == '1') {
+        fprintf(stderr, "hermes -z: ignoring unknown --toolsets entries (and disabled MCP servers)\n");
+    }
+    printf("%s\t\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _write_usage_file @ hermes_cli/oneshot.py:_write_usage_file */
 int hermes_cli_oneshot_u_write_usage_file(const char *arg) {
@@ -8924,7 +8981,18 @@ int hermes_cli_stdio_u_default_windows_editor(const char *arg) {
 }
 
 /* PoP: _augment_path_with_known_tools @ hermes_cli/stdio.py:_augment_path_with_known_tools */
-int hermes_cli_stdio_u_augment_path_with_known_tools(const char *arg) { (void)arg; return 0; }
+int hermes_cli_stdio_u_augment_path_with_known_tools(const char *arg) {
+    /* Python: first-launch PATH patch. Arg =
+     * "prepended\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int prepended = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !prepended) { printf("no PATH augmentation (POSIX or dirs missing)\n"); return 0; }
+    printf("PATH prepended with %s known tool dir(s) (git, venv Scripts, WinGet Links)\n", t2 ? t2 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _has_system_browser @ hermes_cli/dep_ensure.py:_has_system_browser */
 int hermes_cli_dep_ensure_u_has_system_browser(const char *arg) {

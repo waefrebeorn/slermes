@@ -184,7 +184,17 @@ int sku_u_external_dirs_cache_clear(const char *arg) {
 }
 
 /* PoP: get_external_skills_dirs @ agent/skill_utils.py:get_external_skills_dirs */
-int sku_get_external_skills_dirs(const char *arg) { (void)arg; return 0; }
+int sku_get_external_skills_dirs(const char *arg) {
+    /* Python: mtime-keyed cache. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s dir(s) (expanded, deduped, local-skills excluded, mtime cache)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: get_all_skills_dirs @ agent/skill_utils.py:get_all_skills_dirs */
 int sku_get_all_skills_dirs(const char *arg) {

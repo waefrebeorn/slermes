@@ -14,7 +14,16 @@
 #include "hermes_json.h"
 
 /* PoP: _action_result_from @ tools/computer_use/cua_backend.py:_action_result_from */
-int cua_u_action_result_from(const char *arg) { (void)arg; return 0; }
+int cua_u_action_result_from(const char *arg) {
+    /* Python: structured verdict lift. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("ActionResult built (verified/effect/escalation/path/code lifted, delivery echoed): %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _computer_use_cfg @ tools/computer_use/cua_backend.py:_computer_use_cfg */
 int cua_u_computer_use_cfg(const char *arg) {

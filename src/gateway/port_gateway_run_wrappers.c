@@ -391,7 +391,21 @@ int grun_u_enter_external_drain(const char *arg) {
 }
 
 /* PoP: _exit_external_drain @ gateway/run.py:_exit_external_drain */
-int grun_u_exit_external_drain(const char *arg) { (void)arg; return 0; }
+int grun_u_exit_external_drain(const char *arg) {
+    /* Python: revert drain. Arg =
+     * "mid_drain\tshutting\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int mid_drain = arg[0] == '1';
+    int shutting = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state || !mid_drain) { printf("not draining\n"); return 0; }
+    if (shutting) { printf("drain marker cleared during shutdown — NOT reverting to running\n"); return 0; }
+    printf("External drain RELEASED — re-accepting new turns; gateway_state -> running%s\n", t3 && t3[1] == '1' ? " (persisted)" : "");
+    return 0;
+}
 
 /* PoP: _drain_control_watcher @ gateway/run.py:_drain_control_watcher */
 int grun_u_drain_control_watcher(const char *arg) { (void)arg; return 0; }

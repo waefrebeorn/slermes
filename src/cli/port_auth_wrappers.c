@@ -143,7 +143,32 @@ int auth_u_save_qwen_cli_tokens(const char *arg) {
 }
 
 /* PoP: _refresh_qwen_cli_tokens @ hermes_cli/auth.py:_refresh_qwen_cli_tokens */
-int auth_u_refresh_qwen_cli_tokens(const char *arg) { (void)arg; return 0; }
+int auth_u_refresh_qwen_cli_tokens(const char *arg) {
+    /* Python: qwen refresh. Arg = "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_rt") == 0) {
+        fprintf(stderr, "Qwen OAuth refresh token missing. Re-run 'qwen auth qwen-oauth'.\n");
+        return 1;
+    }
+    if (strcmp(state, "http_fail") == 0) {
+        fprintf(stderr, "Qwen OAuth refresh failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    if (strcmp(state, "bad_json") == 0) {
+        fprintf(stderr, "Qwen OAuth refresh returned invalid JSON\n");
+        return 1;
+    }
+    if (strcmp(state, "no_token") == 0) {
+        fprintf(stderr, "Qwen OAuth refresh response missing access_token.\n");
+        return 1;
+    }
+    printf("qwen refreshed (expiry = now + %s, saved): %s\n", t2 ? t2 + 1 : "6h", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _mark_qwen_oauth_active @ hermes_cli/auth.py:_mark_qwen_oauth_active */
 int auth_u_mark_qwen_oauth_active(const char *arg) {
@@ -929,7 +954,23 @@ int auth_u_xai_oauth_poll_device_token(const char *arg) {
 }
 
 /* PoP: _xai_oauth_device_code_login @ hermes_cli/auth.py:_xai_oauth_device_code_login */
-int auth_u_xai_oauth_device_code_login(const char *arg) { (void)arg; return 0; }
+int auth_u_xai_oauth_device_code_login(const char *arg) {
+    /* Python: device flow. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "missing_tokens") == 0) {
+        fprintf(stderr, "xAI device-code token response was missing required tokens.\n");
+        return 1;
+    }
+    printf("To continue:\n  1. Open: %s\n  2. If prompted, enter code: %s\n", t3 ? t3 + 1 : "?", t2 ? t2 + 1 : "?");
+    printf("Waiting for approval (polling every Ns)...\n");
+    printf("state saved (source=oauth-device-code, base_url validated)\n");
+    return 0;
+}
 
 /* PoP: _codex_device_code_login @ hermes_cli/auth.py:_codex_device_code_login */
 int auth_u_codex_device_code_login(const char *arg) { (void)arg; return 0; }

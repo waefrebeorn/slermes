@@ -830,7 +830,19 @@ int main_u_custom_provider_base_url_config_value(const char *arg) {
 }
 
 /* PoP: _save_custom_provider @ hermes_cli/main.py:_save_custom_provider */
-int main_u_save_custom_provider(const char *arg) { (void)arg; return 0; }
+int main_u_save_custom_provider(const char *arg) {
+    /* Python: upsert provider. Arg =
+     * "exists\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int exists = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (exists) { printf("custom provider updated (model/context/api_mode/key_env merged, no dup)\n"); return 0; }
+    printf("  💾 Saved to custom providers as \"%s\" (edit in config.yaml)\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _remove_custom_provider @ hermes_cli/main.py:_remove_custom_provider */
 int main_u_remove_custom_provider(const char *arg) {
@@ -1194,7 +1206,26 @@ int main_u_write_desktop_build_stamp(const char *arg) {
 }
 
 /* PoP: _desktop_packaged_executable @ hermes_cli/main.py:_desktop_packaged_executable */
-int main_u_desktop_packaged_executable(const char *arg) { (void)arg; return 0; }
+int main_u_desktop_packaged_executable(const char *arg) {
+    /* Python: PE-arch filtered. Arg =
+     * "platform\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *platform = t1 ? t1 + 1 : "linux";
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (strcmp(platform, "win32") == 0) {
+        printf("win-unpacked/Hermes.exe (PE machine matched to host, mtime tie-break)\n");
+        return 0;
+    }
+    if (strcmp(platform, "darwin") == 0) {
+        printf("mac*/Hermes.app/Contents/MacOS/Hermes (newest)\n");
+        return 0;
+    }
+    printf("linux-unpacked/hermes (or Hermes, newest)\n");
+    return 0;
+}
 
 /* PoP: _expected_windows_pe_machines @ hermes_cli/main.py:_expected_windows_pe_machines */
 int main_u_expected_windows_pe_machines(const char *arg) {

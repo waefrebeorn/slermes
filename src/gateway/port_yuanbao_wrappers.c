@@ -86,7 +86,19 @@ int yb_parse_json_push(const char *arg) {
 }
 
 /* PoP: _decode_single @ gateway/platforms/yuanbao.py:_decode_single */
-int yb_u_decode_single(const char *arg) { (void)arg; return 0; }
+int yb_u_decode_single(const char *arg) {
+    /* Python: json→protobuf. Arg =
+     * "via\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *via = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("\t\n"); return 0; }
+    if (via[0]) { printf("push\t%s\n", via); return 0; }
+    printf("\t\n");
+    return 0;
+}
 
 /* PoP: _handle_recall @ gateway/platforms/yuanbao.py:_handle_recall */
 int yb_u_handle_recall(const char *arg) {

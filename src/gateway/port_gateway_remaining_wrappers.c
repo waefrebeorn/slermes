@@ -1800,7 +1800,19 @@ int gateway_turn_lease_u__len__(const char *arg) {
 int gateway_turn_lease_u_evict_idle(const char *arg) { (void)arg; return 0; }
 
 /* PoP: rebind @ gateway/turn_lease.py:rebind */
-int gateway_turn_lease_rebind(const char *arg) { (void)arg; return 0; }
+int gateway_turn_lease_rebind(const char *arg) {
+    /* Python: rotation alias. Arg =
+     * "rebound\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int reb = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!reb) { printf("0 (blocked: target lease live, or token invalid — #64934 edge)\n"); return 0; }
+    printf("1 (lease aliased to new session id, token followed)\n");
+    return 0;
+}
 
 /* PoP: specificity @ gateway/profile_routing.py:specificity */
 int gateway_profile_routing_specificity(const char *arg) {

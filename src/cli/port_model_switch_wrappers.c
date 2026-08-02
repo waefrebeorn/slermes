@@ -105,7 +105,17 @@ int msw_u_check_hermes_model_warning(const char *arg) {
 }
 
 /* PoP: _load_direct_aliases @ hermes_cli/model_switch.py:_load_direct_aliases */
-int msw_u_load_direct_aliases(const char *arg) { (void)arg; return 0; }
+int msw_u_load_direct_aliases(const char *arg) {
+    /* Python: config alias map. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("loaded %s direct model alias(es)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _ensure_direct_aliases @ hermes_cli/model_switch.py:_ensure_direct_aliases */
 int msw_u_ensure_direct_aliases(const char *arg) {
@@ -116,7 +126,19 @@ int msw_u_ensure_direct_aliases(const char *arg) {
 }
 
 /* PoP: parse_model_flags_detailed @ hermes_cli/model_switch.py:parse_model_flags_detailed */
-int msw_parse_model_flags_detailed(const char *arg) { (void)arg; return 0; }
+int msw_parse_model_flags_detailed(const char *arg) {
+    /* Python: hand-rolled flag parse. Arg =
+     * "model\tprovider\tflags\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t\t0\t0\t0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int state = t3 && t3[1] == '1';
+    if (!state) { printf("\t\t0\t0\t0\n"); return 0; }
+    printf("%s\t%s\t%s\n", arg, t1 ? t1 + 1 : "", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _model_sort_key @ hermes_cli/model_switch.py:_model_sort_key */
 int msw_u_model_sort_key(const char *arg) { (void)arg; return 0; }

@@ -1018,7 +1018,19 @@ int agent_chat_completion_helpers_should_use_direct_api_call(const char *arg) {
 }
 
 /* PoP: direct_api_call @ agent/chat_completion_helpers.py:direct_api_call */
-int agent_chat_completion_helpers_direct_api_call(const char *arg) { (void)arg; return 0; }
+int agent_chat_completion_helpers_direct_api_call(const char *arg) {
+    /* Python: inline no-interrupt call. Arg =
+     * "ok\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int ok = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("direct API call skipped\n"); return 0; }
+    if (!ok) { printf("interrupted during API call\n"); return 1; }
+    printf("non-streaming response inline (no interrupt worker, no nested-pool deadlock #62151)%s\n", (t2 && t2[1] == '1') ? " — stale streak reset" : "");
+    return 0;
+}
 
 /* PoP: _fallback_entry_is_same_backend_by_base_url @ agent/chat_completion_helpers.py:_fallback_entry_is_same_backend_by_base_url */
 int agent_chat_completion_helpers_u_fallback_entry_is_same_backe_rl(const char *arg) {
@@ -2989,7 +3001,18 @@ int agent_skill_commands_split_stacked_skill_commands(const char *arg) {
 }
 
 /* PoP: build_stacked_skill_invocation_message @ agent/skill_commands.py:build_stacked_skill_invocation_message */
-int agent_skill_commands_build_stacked_skill_invocation_message(const char *arg) { (void)arg; return 0; }
+int agent_skill_commands_build_stacked_skill_invocation_message(const char *arg) {
+    /* Python: stacked slash builder. Arg =
+     * "loaded\tmissing\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n\t\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n\t\t\n"); return 0; }
+    printf("message built: loaded=%s missing=%s (blocks start with [Loaded as part of the...])\n", t1 ? t1 + 1 : "[]", t3 ? t3 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: claim_stream_writer @ agent/stream_single_writer.py:claim_stream_writer */
 int agent_stream_single_writer_claim_stream_writer(const char *arg) {

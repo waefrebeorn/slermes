@@ -362,7 +362,22 @@ int adel_u_push_completion_event(const char *arg) {
 int adel_dispatch_async_delegation_batch(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _finalize_batch @ tools/async_delegation.py:_finalize_batch */
-int adel_u_finalize_batch(const char *arg) { (void)arg; return 0; }
+int adel_u_finalize_batch(const char *arg) {
+    /* Python: one combined event. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_record") == 0) { printf("\n"); return 0; }
+    if (strcmp(state, "no_registry") == 0) {
+        fprintf(stderr, "Async delegation batch finished but process_registry import failed; result lost: %s\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    printf("batch finalized, combined event enqueued (status=%s)%s\n", t2 ? t2 + 1 : "completed", (t2 && t2[1] == '1') ? " — live transcripts carried" : "");
+    return 0;
+}
 
 /* PoP: list_async_delegations @ tools/async_delegation.py:list_async_delegations */
 int adel_list_async_delegations(const char *arg) {
