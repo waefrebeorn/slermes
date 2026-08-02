@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:48:53Z",
+  "generated_at": "2026-08-02T20:50:45Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -129996,10 +129996,10 @@
     },
     "gateway/relay/transport.py": {
       "total": 10,
-      "ported": 3,
+      "ported": 10,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 7,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 10,
@@ -130015,16 +130015,24 @@
             "decorators": [],
             "line_number": 45
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_transport_remaining.c",
+          "c_function": "rtr_connect",
+          "pop_annotation": {
+            "c_function": "rtr_connect",
+            "python_functions": [
+              "connect"
+            ],
+            "c_file": "src/gateway/port_relay_transport_remaining.c",
+            "python_file": "gateway/relay/transport.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: connect @ gateway/relay/transport.py:connect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/transport.py",
@@ -130036,16 +130044,24 @@
             "decorators": [],
             "line_number": 49
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_transport_remaining.c",
+          "c_function": "rtr_disconnect",
+          "pop_annotation": {
+            "c_function": "rtr_disconnect",
+            "python_functions": [
+              "disconnect"
+            ],
+            "c_file": "src/gateway/port_relay_transport_remaining.c",
+            "python_file": "gateway/relay/transport.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: disconnect @ gateway/relay/transport.py:disconnect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/transport.py",
@@ -130057,16 +130073,24 @@
             "decorators": [],
             "line_number": 53
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_transport_remaining.c",
+          "c_function": "rtr_handshake",
+          "pop_annotation": {
+            "c_function": "rtr_handshake",
+            "python_functions": [
+              "handshake"
+            ],
+            "c_file": "src/gateway/port_relay_transport_remaining.c",
+            "python_file": "gateway/relay/transport.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: handshake @ gateway/relay/transport.py:handshake */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/transport.py",
@@ -130136,16 +130160,24 @@
             "decorators": [],
             "line_number": 73
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_transport_remaining.c",
+          "c_function": "rtr_send_outbound",
+          "pop_annotation": {
+            "c_function": "rtr_send_outbound",
+            "python_functions": [
+              "send_outbound"
+            ],
+            "c_file": "src/gateway/port_relay_transport_remaining.c",
+            "python_file": "gateway/relay/transport.py",
+            "line": 42,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_outbound @ gateway/relay/transport.py:send_outbound */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/transport.py",
@@ -130157,16 +130189,24 @@
             "decorators": [],
             "line_number": 89
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_transport_remaining.c",
+          "c_function": "rtr_get_chat_info",
+          "pop_annotation": {
+            "c_function": "rtr_get_chat_info",
+            "python_functions": [
+              "get_chat_info"
+            ],
+            "c_file": "src/gateway/port_relay_transport_remaining.c",
+            "python_file": "gateway/relay/transport.py",
+            "line": 50,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_chat_info @ gateway/relay/transport.py:get_chat_info */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/transport.py",
@@ -130178,16 +130218,24 @@
             "decorators": [],
             "line_number": 93
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_transport_remaining.c",
+          "c_function": "rtr_send_interrupt",
+          "pop_annotation": {
+            "c_function": "rtr_send_interrupt",
+            "python_functions": [
+              "send_interrupt"
+            ],
+            "c_file": "src/gateway/port_relay_transport_remaining.c",
+            "python_file": "gateway/relay/transport.py",
+            "line": 59,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_interrupt @ gateway/relay/transport.py:send_interrupt */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/transport.py",
@@ -130228,16 +130276,24 @@
             "decorators": [],
             "line_number": 117
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_transport_remaining.c",
+          "c_function": "rtr_send_follow_up",
+          "pop_annotation": {
+            "c_function": "rtr_send_follow_up",
+            "python_functions": [
+              "send_follow_up"
+            ],
+            "c_file": "src/gateway/port_relay_transport_remaining.c",
+            "python_file": "gateway/relay/transport.py",
+            "line": 67,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_follow_up @ gateway/relay/transport.py:send_follow_up */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -306254,10 +306310,10 @@
     },
     "tools/environments/modal.py": {
       "total": 21,
-      "ported": 14,
+      "ported": 21,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 7,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 21,
@@ -306505,17 +306561,24 @@
             "decorators": [],
             "line_number": 130
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_modal_remaining.c",
+          "c_function": "mdl_init",
+          "pop_annotation": {
+            "c_function": "mdl_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_environments_modal_remaining.c",
+            "python_file": "tools/environments/modal.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/environments/modal.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/modal.py",
@@ -306527,17 +306590,24 @@
             "decorators": [],
             "line_number": 135
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_modal_remaining.c",
+          "c_function": "mdl_start",
+          "pop_annotation": {
+            "c_function": "mdl_start",
+            "python_functions": [
+              "start"
+            ],
+            "c_file": "src/tools/port_environments_modal_remaining.c",
+            "python_file": "tools/environments/modal.py",
+            "line": 27,
+            "is_consolidated": false,
+            "full_text": "/* PoP: start @ tools/environments/modal.py:start */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/modal.py",
@@ -306607,17 +306677,24 @@
             "decorators": [],
             "line_number": 157
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_modal_remaining.c",
+          "c_function": "mdl_stop",
+          "pop_annotation": {
+            "c_function": "mdl_stop",
+            "python_functions": [
+              "stop"
+            ],
+            "c_file": "src/tools/port_environments_modal_remaining.c",
+            "python_file": "tools/environments/modal.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stop @ tools/environments/modal.py:stop */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/modal.py",
@@ -306629,17 +306706,24 @@
             "decorators": [],
             "line_number": 174
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_modal_remaining.c",
+          "c_function": "mdl_init",
+          "pop_annotation": {
+            "c_function": "mdl_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_environments_modal_remaining.c",
+            "python_file": "tools/environments/modal.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/environments/modal.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/modal.py",
@@ -306767,17 +306851,24 @@
             "decorators": [],
             "line_number": 400
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_modal_remaining.c",
+          "c_function": "mdl_before_execute",
+          "pop_annotation": {
+            "c_function": "mdl_before_execute",
+            "python_functions": [
+              "_before_execute"
+            ],
+            "c_file": "src/tools/port_environments_modal_remaining.c",
+            "python_file": "tools/environments/modal.py",
+            "line": 40,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _before_execute @ tools/environments/modal.py:_before_execute */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/modal.py",
@@ -306789,17 +306880,24 @@
             "decorators": [],
             "line_number": 408
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_modal_remaining.c",
+          "c_function": "mdl_run_bash",
+          "pop_annotation": {
+            "c_function": "mdl_run_bash",
+            "python_functions": [
+              "_run_bash"
+            ],
+            "c_file": "src/tools/port_environments_modal_remaining.c",
+            "python_file": "tools/environments/modal.py",
+            "line": 47,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _run_bash @ tools/environments/modal.py:_run_bash */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/modal.py",
@@ -306811,17 +306909,24 @@
             "decorators": [],
             "line_number": 442
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_modal_remaining.c",
+          "c_function": "mdl_cleanup",
+          "pop_annotation": {
+            "c_function": "mdl_cleanup",
+            "python_functions": [
+              "cleanup"
+            ],
+            "c_file": "src/tools/port_environments_modal_remaining.c",
+            "python_file": "tools/environments/modal.py",
+            "line": 55,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cleanup @ tools/environments/modal.py:cleanup */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
