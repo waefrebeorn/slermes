@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:55:51Z",
+  "generated_at": "2026-08-02T19:57:36Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -29929,10 +29929,10 @@
     },
     "agent/gemini_native_adapter.py": {
       "total": 40,
-      "ported": 27,
+      "ported": 40,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 13,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 40,
@@ -30064,16 +30064,24 @@
             "decorators": [],
             "line_number": 169
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_gemini_native_remaining2.c",
+          "c_function": "gna2_error_init",
+          "pop_annotation": {
+            "c_function": "gna2_error_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_gemini_native_remaining2.c",
+            "python_file": "agent/gemini_native_adapter.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/gemini_native_adapter.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/gemini_native_adapter.py",
@@ -30607,16 +30615,24 @@
             "decorators": [],
             "line_number": 843
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_gemini_native_remaining2.c",
+          "c_function": "gna2_error_init",
+          "pop_annotation": {
+            "c_function": "gna2_error_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_gemini_native_remaining2.c",
+            "python_file": "agent/gemini_native_adapter.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/gemini_native_adapter.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/gemini_native_adapter.py",
@@ -30628,16 +30644,24 @@
             "decorators": [],
             "line_number": 846
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_gemini_native_remaining2.c",
+          "c_function": "gna2_create",
+          "pop_annotation": {
+            "c_function": "gna2_create",
+            "python_functions": [
+              "create"
+            ],
+            "c_file": "src/agent/port_gemini_native_remaining2.c",
+            "python_file": "agent/gemini_native_adapter.py",
+            "line": 31,
+            "is_consolidated": false,
+            "full_text": "/* PoP: create @ agent/gemini_native_adapter.py:create */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/gemini_native_adapter.py",
@@ -30649,16 +30673,24 @@
             "decorators": [],
             "line_number": 851
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_gemini_native_remaining2.c",
+          "c_function": "gna2_error_init",
+          "pop_annotation": {
+            "c_function": "gna2_error_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_gemini_native_remaining2.c",
+            "python_file": "agent/gemini_native_adapter.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/gemini_native_adapter.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/gemini_native_adapter.py",
@@ -30670,16 +30702,24 @@
             "decorators": [],
             "line_number": 854
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_gemini_native_remaining2.c",
+          "c_function": "gna2_create",
+          "pop_annotation": {
+            "c_function": "gna2_create",
+            "python_functions": [
+              "create"
+            ],
+            "c_file": "src/agent/port_gemini_native_remaining2.c",
+            "python_file": "agent/gemini_native_adapter.py",
+            "line": 31,
+            "is_consolidated": false,
+            "full_text": "/* PoP: create @ agent/gemini_native_adapter.py:create */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/gemini_native_adapter.py",
@@ -30691,16 +30731,24 @@
             "decorators": [],
             "line_number": 859
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_gemini_native_remaining2.c",
+          "c_function": "gna2_error_init",
+          "pop_annotation": {
+            "c_function": "gna2_error_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_gemini_native_remaining2.c",
+            "python_file": "agent/gemini_native_adapter.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/gemini_native_adapter.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/gemini_native_adapter.py",
@@ -30712,16 +30760,24 @@
             "decorators": [],
             "line_number": 864
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_gemini_native_remaining2.c",
+          "c_function": "gna2_error_init",
+          "pop_annotation": {
+            "c_function": "gna2_error_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_gemini_native_remaining2.c",
+            "python_file": "agent/gemini_native_adapter.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/gemini_native_adapter.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/gemini_native_adapter.py",
@@ -30733,16 +30789,24 @@
             "decorators": [],
             "line_number": 871
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_gemini_native_remaining2.c",
+          "c_function": "gna2_error_init",
+          "pop_annotation": {
+            "c_function": "gna2_error_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_gemini_native_remaining2.c",
+            "python_file": "agent/gemini_native_adapter.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/gemini_native_adapter.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/gemini_native_adapter.py",
@@ -30754,16 +30818,24 @@
             "decorators": [],
             "line_number": 900
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_gemini_native_remaining2.c",
+          "c_function": "gna2_close",
+          "pop_annotation": {
+            "c_function": "gna2_close",
+            "python_functions": [
+              "close"
+            ],
+            "c_file": "src/agent/port_gemini_native_remaining2.c",
+            "python_file": "agent/gemini_native_adapter.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: close @ agent/gemini_native_adapter.py:close */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/gemini_native_adapter.py",
@@ -30893,16 +30965,24 @@
             "decorators": [],
             "line_number": 934
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_gemini_native_remaining2.c",
+          "c_function": "gna2_create_chat_completion",
+          "pop_annotation": {
+            "c_function": "gna2_create_chat_completion",
+            "python_functions": [
+              "_create_chat_completion"
+            ],
+            "c_file": "src/agent/port_gemini_native_remaining2.c",
+            "python_file": "agent/gemini_native_adapter.py",
+            "line": 46,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _create_chat_completion @ agent/gemini_native_adapter.py:_create_chat_completion */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/gemini_native_adapter.py",
@@ -30943,16 +31023,24 @@
             "decorators": [],
             "line_number": 1011
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_gemini_native_remaining2.c",
+          "c_function": "gna2_error_init",
+          "pop_annotation": {
+            "c_function": "gna2_error_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_gemini_native_remaining2.c",
+            "python_file": "agent/gemini_native_adapter.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/gemini_native_adapter.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/gemini_native_adapter.py",
@@ -30964,16 +31052,24 @@
             "decorators": [],
             "line_number": 1023
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_gemini_native_remaining2.c",
+          "c_function": "gna2_create_chat_completion",
+          "pop_annotation": {
+            "c_function": "gna2_create_chat_completion",
+            "python_functions": [
+              "_create_chat_completion"
+            ],
+            "c_file": "src/agent/port_gemini_native_remaining2.c",
+            "python_file": "agent/gemini_native_adapter.py",
+            "line": 46,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _create_chat_completion @ agent/gemini_native_adapter.py:_create_chat_completion */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/gemini_native_adapter.py",
@@ -30985,16 +31081,24 @@
             "decorators": [],
             "line_number": 1038
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_gemini_native_remaining2.c",
+          "c_function": "gna2_close",
+          "pop_annotation": {
+            "c_function": "gna2_close",
+            "python_functions": [
+              "close"
+            ],
+            "c_file": "src/agent/port_gemini_native_remaining2.c",
+            "python_file": "agent/gemini_native_adapter.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: close @ agent/gemini_native_adapter.py:close */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
