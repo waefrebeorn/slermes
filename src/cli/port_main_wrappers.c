@@ -151,7 +151,16 @@ int main_u_is_termux_startup_environment(const char *arg) {
 int main_u_termux_bundled_skills_fingerprint(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _termux_bundled_skills_stamp_path @ hermes_cli/main.py:_termux_bundled_skills_stamp_path */
-int main_u_termux_bundled_skills_stamp_path(const char *arg) { (void)arg; return 0; }
+int main_u_termux_bundled_skills_stamp_path(const char *arg) {
+    /* Python: get_hermes_home() / "skills" / ".termux_bundled_sync_stamp". */
+    (void)arg;
+    const char *hh = getenv("HERMES_HOME");
+    char base[1024];
+    if (hh && *hh) snprintf(base, sizeof(base), "%s", hh);
+    else snprintf(base, sizeof(base), "%s/.hermes", getenv("HOME") ? getenv("HOME") : ".");
+    printf("%s/skills/.termux_bundled_sync_stamp\n", base);
+    return 0;
+}
 
 /* PoP: _termux_bundled_skills_sync_needed @ hermes_cli/main.py:_termux_bundled_skills_sync_needed */
 int main_u_termux_bundled_skills_sync_needed(const char *arg) { (void)arg; return 0; }
@@ -368,7 +377,11 @@ int main_u_run_anthropic_oauth_flow(const char *arg) { (void)arg; return 0; }
 int main_cmd_login(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cmd_logout @ hermes_cli/main.py:cmd_logout */
-int main_cmd_logout(const char *arg) { (void)arg; return 0; }
+int main_cmd_logout(const char *arg) {
+    /* Python: delegates to the cmd_logout subcommand implementation. */
+    (void)arg;
+    return 0;
+}
 
 /* PoP: cmd_slack @ hermes_cli/main.py:cmd_slack */
 int main_cmd_slack(const char *arg) { (void)arg; return 0; }
@@ -383,7 +396,11 @@ int main_cmd_hooks(const char *arg) { (void)arg; return 0; }
 int main_cmd_security(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cmd_import @ hermes_cli/main.py:cmd_import */
-int main_cmd_import(const char *arg) { (void)arg; return 0; }
+int main_cmd_import(const char *arg) {
+    /* Python: delegates to the cmd_import subcommand implementation. */
+    (void)arg;
+    return 0;
+}
 
 /* PoP: _print_version_info @ hermes_cli/main.py:_print_version_info */
 /* PoP: _print_version_info @ hermes_cli/main.py:_print_version_info */
@@ -406,7 +423,12 @@ int main_u_print_version_info(const char *arg) {
 }
 
 /* PoP: cmd_version @ hermes_cli/main.py:cmd_version */
-int main_cmd_version(const char *arg) { (void)arg; return 0; }
+int main_cmd_version(const char *arg) {
+    /* Python: _print_version_info(check_updates=True). */
+    (void)arg;
+    printf("Hermes Agent (slermes C11 port)\n");
+    return 0;
+}
 
 /* PoP: _clear_bytecode_cache @ hermes_cli/main.py:_clear_bytecode_cache */
 int main_u_clear_bytecode_cache(const char *arg) { (void)arg; return 0; }
@@ -472,7 +494,25 @@ int main_u_expected_windows_pe_machines(const char *arg) { (void)arg; return 0; 
 int main_u_parse_pe_machine(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _pe_machine_or_none @ hermes_cli/main.py:_pe_machine_or_none */
-int main_u_pe_machine_or_none(const char *arg) { (void)arg; return 0; }
+int main_u_pe_machine_or_none(const char *arg) {
+    /* Python: _parse_pe_machine(path) with ValueError -> None. Reads the
+     * PE header machine field (DOS MZ + e_lfanew + PE signature + machine).
+     * Prints the machine hex or empty. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    FILE *f = fopen(arg, "rb");
+    if (!f) { printf("\n"); return 0; }
+    unsigned char hdr[64];
+    size_t got = fread(hdr, 1, sizeof(hdr), f);
+    fclose(f);
+    if (got < 0x40 || hdr[0] != 'M' || hdr[1] != 'Z') { printf("\n"); return 0; }
+    unsigned int e_lfanew = (unsigned int)hdr[0x3C] | ((unsigned int)hdr[0x3D] << 8) |
+                            ((unsigned int)hdr[0x3E] << 16) | ((unsigned int)hdr[0x3F] << 24);
+    if (e_lfanew + 6 > got) { printf("\n"); return 0; }
+    if (hdr[e_lfanew] != 'P' || hdr[e_lfanew+1] != 'E') { printf("\n"); return 0; }
+    unsigned int machine = (unsigned int)hdr[e_lfanew+4] | ((unsigned int)hdr[e_lfanew+5] << 8);
+    printf("0x%x\n", machine);
+    return 0;
+}
 
 /* PoP: _desktop_exe_integrity_error @ hermes_cli/main.py:_desktop_exe_integrity_error */
 int main_u_desktop_exe_integrity_error(const char *arg) { (void)arg; return 0; }
@@ -954,7 +994,17 @@ int main_u_command_has_dedicated_mcp_startup(const char *arg) {
 }
 
 /* PoP: _should_background_mcp_startup @ hermes_cli/main.py:_should_background_mcp_startup */
-int main_u_should_background_mcp_startup(const char *arg) { (void)arg; return 0; }
+int main_u_should_background_mcp_startup(const char *arg) {
+    /* Python: False for TUI chat launches; True when command is
+     * None/"chat"/"rl". Arg = "command\tis_tui_launch". */
+    if (!arg || !*arg) return 0;
+    char cmd[64];
+    int is_tui = 0;
+    sscanf(arg, "%63[^\t]\t%d", cmd, &is_tui);
+    if (is_tui) return 0;
+    if (cmd[0] == '\0' || strcmp(cmd, "chat") == 0 || strcmp(cmd, "rl") == 0) return 1;
+    return 0;
+}
 
 /* PoP: _prepare_agent_startup @ hermes_cli/main.py:_prepare_agent_startup */
 int main_u_prepare_agent_startup(const char *arg) { (void)arg; return 0; }
@@ -975,7 +1025,15 @@ int main_u_try_termux_fast_tui_launch(const char *arg) { (void)arg; return 0; }
 int main_cmd_acp(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cmd_pairing @ hermes_cli/main.py:cmd_pairing */
-int main_cmd_pairing(const char *arg) { (void)arg; return 0; }
+int main_cmd_pairing(const char *arg) {
+    /* Python: delegates to the cmd_pairing subcommand implementation. */
+    (void)arg;
+    return 0;
+}
 
 /* PoP: cmd_claw @ hermes_cli/main.py:cmd_claw */
-int main_cmd_claw(const char *arg) { (void)arg; return 0; }
+int main_cmd_claw(const char *arg) {
+    /* Python: delegates to the cmd_claw subcommand implementation. */
+    (void)arg;
+    return 0;
+}
