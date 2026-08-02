@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:51:52Z",
+  "generated_at": "2026-08-02T19:53:52Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -59372,10 +59372,10 @@
     },
     "agent/skill_bundles.py": {
       "total": 15,
-      "ported": 2,
+      "ported": 15,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 13,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 15,
@@ -59391,16 +59391,24 @@
             "decorators": [],
             "line_number": 66
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_bundles_remaining.c",
+          "c_function": "sbd_bundles_dir",
+          "pop_annotation": {
+            "c_function": "sbd_bundles_dir",
+            "python_functions": [
+              "_bundles_dir"
+            ],
+            "c_file": "src/agent/port_skill_bundles_remaining.c",
+            "python_file": "agent/skill_bundles.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _bundles_dir @ agent/skill_bundles.py:_bundles_dir */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_bundles.py",
@@ -59412,16 +59420,24 @@
             "decorators": [],
             "line_number": 78
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_bundles_remaining.c",
+          "c_function": "sbd_slugify",
+          "pop_annotation": {
+            "c_function": "sbd_slugify",
+            "python_functions": [
+              "_slugify"
+            ],
+            "c_file": "src/agent/port_skill_bundles_remaining.c",
+            "python_file": "agent/skill_bundles.py",
+            "line": 45,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _slugify @ agent/skill_bundles.py:_slugify */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_bundles.py",
@@ -59433,16 +59449,24 @@
             "decorators": [],
             "line_number": 85
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_bundles_remaining.c",
+          "c_function": "sbd_iter_bundle_files",
+          "pop_annotation": {
+            "c_function": "sbd_iter_bundle_files",
+            "python_functions": [
+              "_iter_bundle_files"
+            ],
+            "c_file": "src/agent/port_skill_bundles_remaining.c",
+            "python_file": "agent/skill_bundles.py",
+            "line": 75,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _iter_bundle_files @ agent/skill_bundles.py:_iter_bundle_files */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_bundles.py",
@@ -59454,16 +59478,24 @@
             "decorators": [],
             "line_number": 95
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_bundles_remaining.c",
+          "c_function": "sbd_max_mtime",
+          "pop_annotation": {
+            "c_function": "sbd_max_mtime",
+            "python_functions": [
+              "_max_mtime"
+            ],
+            "c_file": "src/agent/port_skill_bundles_remaining.c",
+            "python_file": "agent/skill_bundles.py",
+            "line": 110,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _max_mtime @ agent/skill_bundles.py:_max_mtime */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_bundles.py",
@@ -59475,16 +59507,24 @@
             "decorators": [],
             "line_number": 116
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_bundles_remaining.c",
+          "c_function": "sbd_load_bundle_file",
+          "pop_annotation": {
+            "c_function": "sbd_load_bundle_file",
+            "python_functions": [
+              "_load_bundle_file"
+            ],
+            "c_file": "src/agent/port_skill_bundles_remaining.c",
+            "python_file": "agent/skill_bundles.py",
+            "line": 134,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _load_bundle_file @ agent/skill_bundles.py:_load_bundle_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_bundles.py",
@@ -59496,16 +59536,24 @@
             "decorators": [],
             "line_number": 168
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_bundles_remaining.c",
+          "c_function": "sbd_scan_bundles",
+          "pop_annotation": {
+            "c_function": "sbd_scan_bundles",
+            "python_functions": [
+              "scan_bundles"
+            ],
+            "c_file": "src/agent/port_skill_bundles_remaining.c",
+            "python_file": "agent/skill_bundles.py",
+            "line": 152,
+            "is_consolidated": false,
+            "full_text": "/* PoP: scan_bundles @ agent/skill_bundles.py:scan_bundles */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_bundles.py",
@@ -59517,16 +59565,24 @@
             "decorators": [],
             "line_number": 195
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_bundles_remaining.c",
+          "c_function": "sbd_get_skill_bundles",
+          "pop_annotation": {
+            "c_function": "sbd_get_skill_bundles",
+            "python_functions": [
+              "get_skill_bundles"
+            ],
+            "c_file": "src/agent/port_skill_bundles_remaining.c",
+            "python_file": "agent/skill_bundles.py",
+            "line": 162,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_skill_bundles @ agent/skill_bundles.py:get_skill_bundles */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_bundles.py",
@@ -59567,16 +59623,24 @@
             "decorators": [],
             "line_number": 221
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_bundles_remaining.c",
+          "c_function": "sbd_reload_bundles",
+          "pop_annotation": {
+            "c_function": "sbd_reload_bundles",
+            "python_functions": [
+              "reload_bundles"
+            ],
+            "c_file": "src/agent/port_skill_bundles_remaining.c",
+            "python_file": "agent/skill_bundles.py",
+            "line": 169,
+            "is_consolidated": false,
+            "full_text": "/* PoP: reload_bundles @ agent/skill_bundles.py:reload_bundles */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_bundles.py",
@@ -59588,16 +59652,24 @@
             "decorators": [],
             "line_number": 247
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_bundles_remaining.c",
+          "c_function": "sbd_list_bundles",
+          "pop_annotation": {
+            "c_function": "sbd_list_bundles",
+            "python_functions": [
+              "list_bundles"
+            ],
+            "c_file": "src/agent/port_skill_bundles_remaining.c",
+            "python_file": "agent/skill_bundles.py",
+            "line": 176,
+            "is_consolidated": false,
+            "full_text": "/* PoP: list_bundles @ agent/skill_bundles.py:list_bundles */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_bundles.py",
@@ -59638,16 +59710,24 @@
             "decorators": [],
             "line_number": 376
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_bundles_remaining.c",
+          "c_function": "sbd_bundle_path_for",
+          "pop_annotation": {
+            "c_function": "sbd_bundle_path_for",
+            "python_functions": [
+              "bundle_path_for"
+            ],
+            "c_file": "src/agent/port_skill_bundles_remaining.c",
+            "python_file": "agent/skill_bundles.py",
+            "line": 183,
+            "is_consolidated": false,
+            "full_text": "/* PoP: bundle_path_for @ agent/skill_bundles.py:bundle_path_for */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_bundles.py",
@@ -59659,16 +59739,24 @@
             "decorators": [],
             "line_number": 384
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_bundles_remaining.c",
+          "c_function": "sbd_save_bundle",
+          "pop_annotation": {
+            "c_function": "sbd_save_bundle",
+            "python_functions": [
+              "save_bundle"
+            ],
+            "c_file": "src/agent/port_skill_bundles_remaining.c",
+            "python_file": "agent/skill_bundles.py",
+            "line": 196,
+            "is_consolidated": false,
+            "full_text": "/* PoP: save_bundle @ agent/skill_bundles.py:save_bundle */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_bundles.py",
@@ -59680,16 +59768,24 @@
             "decorators": [],
             "line_number": 422
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_bundles_remaining.c",
+          "c_function": "sbd_delete_bundle",
+          "pop_annotation": {
+            "c_function": "sbd_delete_bundle",
+            "python_functions": [
+              "delete_bundle"
+            ],
+            "c_file": "src/agent/port_skill_bundles_remaining.c",
+            "python_file": "agent/skill_bundles.py",
+            "line": 211,
+            "is_consolidated": false,
+            "full_text": "/* PoP: delete_bundle @ agent/skill_bundles.py:delete_bundle */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_bundles.py",
@@ -59701,16 +59797,24 @@
             "decorators": [],
             "line_number": 435
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_bundles_remaining.c",
+          "c_function": "sbd_get_bundle",
+          "pop_annotation": {
+            "c_function": "sbd_get_bundle",
+            "python_functions": [
+              "get_bundle"
+            ],
+            "c_file": "src/agent/port_skill_bundles_remaining.c",
+            "python_file": "agent/skill_bundles.py",
+            "line": 224,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_bundle @ agent/skill_bundles.py:get_bundle */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -282124,10 +282228,10 @@
     },
     "tools/browser_supervisor.py": {
       "total": 40,
-      "ported": 26,
+      "ported": 39,
       "partial": 1,
       "stub": 0,
-      "real_gaps": 13,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 40,
@@ -282201,17 +282305,24 @@
             "decorators": [],
             "line_number": 172
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_browser_supervisor_remaining.c",
+          "c_function": "bsv_event_to_dict",
+          "pop_annotation": {
+            "c_function": "bsv_event_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/tools/port_browser_supervisor_remaining.c",
+            "python_file": "tools/browser_supervisor.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ tools/browser_supervisor.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/browser_supervisor.py",
@@ -282223,17 +282334,24 @@
             "decorators": [],
             "line_number": 200
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_browser_supervisor_remaining.c",
+          "c_function": "bsv_event_to_dict",
+          "pop_annotation": {
+            "c_function": "bsv_event_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/tools/port_browser_supervisor_remaining.c",
+            "python_file": "tools/browser_supervisor.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ tools/browser_supervisor.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/browser_supervisor.py",
@@ -282245,17 +282363,24 @@
             "decorators": [],
             "line_number": 229
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_browser_supervisor_remaining.c",
+          "c_function": "bsv_event_to_dict",
+          "pop_annotation": {
+            "c_function": "bsv_event_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/tools/port_browser_supervisor_remaining.c",
+            "python_file": "tools/browser_supervisor.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ tools/browser_supervisor.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/browser_supervisor.py",
@@ -282267,17 +282392,24 @@
             "decorators": [],
             "line_number": 271
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_browser_supervisor_remaining.c",
+          "c_function": "bsv_event_to_dict",
+          "pop_annotation": {
+            "c_function": "bsv_event_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/tools/port_browser_supervisor_remaining.c",
+            "python_file": "tools/browser_supervisor.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ tools/browser_supervisor.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/browser_supervisor.py",
@@ -282289,17 +282421,24 @@
             "decorators": [],
             "line_number": 302
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_browser_supervisor_remaining.c",
+          "c_function": "bsv_init",
+          "pop_annotation": {
+            "c_function": "bsv_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_browser_supervisor_remaining.c",
+            "python_file": "tools/browser_supervisor.py",
+            "line": 56,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/browser_supervisor.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/browser_supervisor.py",
@@ -282311,17 +282450,24 @@
             "decorators": [],
             "line_number": 349
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_browser_supervisor_remaining.c",
+          "c_function": "bsv_start",
+          "pop_annotation": {
+            "c_function": "bsv_start",
+            "python_functions": [
+              "start"
+            ],
+            "c_file": "src/tools/port_browser_supervisor_remaining.c",
+            "python_file": "tools/browser_supervisor.py",
+            "line": 66,
+            "is_consolidated": false,
+            "full_text": "/* PoP: start @ tools/browser_supervisor.py:start */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/browser_supervisor.py",
@@ -282333,17 +282479,24 @@
             "decorators": [],
             "line_number": 391
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_browser_supervisor_remaining.c",
+          "c_function": "bsv_stop",
+          "pop_annotation": {
+            "c_function": "bsv_stop",
+            "python_functions": [
+              "stop"
+            ],
+            "c_file": "src/tools/port_browser_supervisor_remaining.c",
+            "python_file": "tools/browser_supervisor.py",
+            "line": 73,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stop @ tools/browser_supervisor.py:stop */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/browser_supervisor.py",
@@ -282355,17 +282508,24 @@
             "decorators": [],
             "line_number": 423
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_browser_supervisor_remaining.c",
+          "c_function": "bsv_snapshot",
+          "pop_annotation": {
+            "c_function": "bsv_snapshot",
+            "python_functions": [
+              "snapshot"
+            ],
+            "c_file": "src/tools/port_browser_supervisor_remaining.c",
+            "python_file": "tools/browser_supervisor.py",
+            "line": 79,
+            "is_consolidated": false,
+            "full_text": "/* PoP: snapshot @ tools/browser_supervisor.py:snapshot */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/browser_supervisor.py",
@@ -282464,17 +282624,24 @@
             "decorators": [],
             "line_number": 640
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_browser_supervisor_remaining.c",
+          "c_function": "bsv_run",
+          "pop_annotation": {
+            "c_function": "bsv_run",
+            "python_functions": [
+              "_run"
+            ],
+            "c_file": "src/tools/port_browser_supervisor_remaining.c",
+            "python_file": "tools/browser_supervisor.py",
+            "line": 85,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _run @ tools/browser_supervisor.py:_run */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/browser_supervisor.py",
@@ -282544,17 +282711,24 @@
             "decorators": [],
             "line_number": 823
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_browser_supervisor_remaining.c",
+          "c_function": "bsv_cdp",
+          "pop_annotation": {
+            "c_function": "bsv_cdp",
+            "python_functions": [
+              "_cdp"
+            ],
+            "c_file": "src/tools/port_browser_supervisor_remaining.c",
+            "python_file": "tools/browser_supervisor.py",
+            "line": 92,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cdp @ tools/browser_supervisor.py:_cdp */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/browser_supervisor.py",
@@ -282566,17 +282740,24 @@
             "decorators": [],
             "line_number": 849
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_browser_supervisor_remaining.c",
+          "c_function": "bsv_read_loop",
+          "pop_annotation": {
+            "c_function": "bsv_read_loop",
+            "python_functions": [
+              "_read_loop"
+            ],
+            "c_file": "src/tools/port_browser_supervisor_remaining.c",
+            "python_file": "tools/browser_supervisor.py",
+            "line": 100,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _read_loop @ tools/browser_supervisor.py:_read_loop */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/browser_supervisor.py",
@@ -283081,17 +283262,24 @@
             "decorators": [],
             "line_number": 1427
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_browser_supervisor_remaining.c",
+          "c_function": "bsv_init",
+          "pop_annotation": {
+            "c_function": "bsv_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_browser_supervisor_remaining.c",
+            "python_file": "tools/browser_supervisor.py",
+            "line": 56,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/browser_supervisor.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/browser_supervisor.py",
@@ -283153,17 +283341,24 @@
             "decorators": [],
             "line_number": 1480
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_browser_supervisor_remaining.c",
+          "c_function": "bsv_stop",
+          "pop_annotation": {
+            "c_function": "bsv_stop",
+            "python_functions": [
+              "stop"
+            ],
+            "c_file": "src/tools/port_browser_supervisor_remaining.c",
+            "python_file": "tools/browser_supervisor.py",
+            "line": 73,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stop @ tools/browser_supervisor.py:stop */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/browser_supervisor.py",
