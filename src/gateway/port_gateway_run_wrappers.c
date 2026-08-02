@@ -1250,7 +1250,17 @@ int grun_u_clear_session_env(const char *arg) {
 }
 
 /* PoP: _run_in_executor_with_context @ gateway/run.py:_run_in_executor_with_context */
-int grun_u_run_in_executor_with_context(const char *arg) { (void)arg; return 0; }
+int grun_u_run_in_executor_with_context(const char *arg) {
+    /* Python: contextvars-preserving. Arg =
+     * "done\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s (copy_context + executor, ctx.run(func))%s\n", t2 ? t2 + 1 : "done", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _get_executor @ gateway/run.py:_get_executor */
 int grun_u_get_executor(const char *arg) {

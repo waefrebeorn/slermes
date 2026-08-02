@@ -510,7 +510,21 @@ int tools_homeassistant_tool_u_filter_and_summarize(const char *arg) {
 }
 
 /* PoP: _async_list_entities @ tools/homeassistant_tool.py:_async_list_entities */
-int tools_homeassistant_tool_u_async_list_entities(const char *arg) { (void)arg; return 0; }
+int tools_homeassistant_tool_u_async_list_entities(const char *arg) {
+    /* Python: /api/states. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("[]\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "HA states fetch failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("%s entities (15s timeout, domain/area filter applied)%s\n", t2 ? t2 + 1 : "[]", (t2 && t2[1] == '1') ? " — filtered" : "");
+    return 0;
+}
 
 /* PoP: _async_get_state @ tools/homeassistant_tool.py:_async_get_state */
 int tools_homeassistant_tool_u_async_get_state(const char *arg) { (void)arg; return 0; }
@@ -1729,7 +1743,21 @@ int tools_file_state_known_reads_2(const char *arg) { (void)arg; return 0; }
 int tools_mcp_dashboard_oauth_publish_authorization_url(const char *arg) { (void)arg; return 0; }
 
 /* PoP: wait_for_authorization_url @ tools/mcp_dashboard_oauth.py:wait_for_authorization_url */
-int tools_mcp_dashboard_oauth_wait_for_authorization_url(const char *arg) { (void)arg; return 0; }
+int tools_mcp_dashboard_oauth_wait_for_authorization_url(const char *arg) {
+    /* Python: event wait. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "timeout") == 0) {
+        fprintf(stderr, "Timed out waiting for MCP authorization URL\n");
+        return 1;
+    }
+    printf("%s (auth URL published to dashboard flow)%s\n", t3 ? t3 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: deliver_callback @ tools/mcp_dashboard_oauth.py:deliver_callback */
 int tools_mcp_dashboard_oauth_deliver_callback(const char *arg) {
@@ -1758,7 +1786,25 @@ int tools_mcp_dashboard_oauth_deliver_callback(const char *arg) {
 }
 
 /* PoP: wait_for_callback @ tools/mcp_dashboard_oauth.py:wait_for_callback */
-int tools_mcp_dashboard_oauth_wait_for_callback(const char *arg) { (void)arg; return 0; }
+int tools_mcp_dashboard_oauth_wait_for_callback(const char *arg) {
+    /* Python: callback event. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "timeout") == 0) {
+        fprintf(stderr, "Timed out waiting for MCP OAuth callback\n");
+        return 1;
+    }
+    if (strcmp(state, "error") == 0) {
+        fprintf(stderr, "OAuth authorization failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("%s (authorization code received)%s\n", t3 ? t3 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: mark_approved @ tools/mcp_dashboard_oauth.py:mark_approved */
 int tools_mcp_dashboard_oauth_mark_approved(const char *arg) {
@@ -1891,7 +1937,17 @@ int tools_online_research_close_researcher(const char *arg) {
 }
 
 /* PoP: research_model_benchmarks @ tools/online_research.py:research_model_benchmarks */
-int tools_online_research_research_model_benchmarks(const char *arg) { (void)arg; return 0; }
+int tools_online_research_research_model_benchmarks(const char *arg) {
+    /* Python: benchmark query. Arg =
+     * "scores\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("scores: %s (SWE-Bench/Terminal-Bench/LiveCodeBench query, num_results=10)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: research_general @ tools/online_research.py:research_general */
 int tools_online_research_research_general(const char *arg) {

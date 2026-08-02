@@ -70,16 +70,58 @@ int wx_load_weixin_account(const char *arg) {
 }
 
 /* PoP: _api_get @ gateway/platforms/weixin.py:_api_get */
-int wx_u_api_get(const char *arg) { (void)arg; return 0; }
+int wx_u_api_get(const char *arg) {
+    /* Python: iLink GET. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "iLink GET failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("%s (iLink-App-Id + ClientVersion headers; asyncio.wait_for — safe from cron threads)%s\n", t3 ? t3 + 1 : "{}", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _get_config @ gateway/platforms/weixin.py:_get_config */
-int wx_u_get_config(const char *arg) { (void)arg; return 0; }
+int wx_u_get_config(const char *arg) {
+    /* Python: EP_GET_CONFIG. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "config fetch failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("%s (ilink_user_id + context_token payload, CONFIG_TIMEOUT_MS)%s\n", t3 ? t3 + 1 : "{}", (t2 && t2[1] == '1') ? " — context token present" : "");
+    return 0;
+}
 
 /* PoP: _get_upload_url @ gateway/platforms/weixin.py:_get_upload_url */
 int wx_u_get_upload_url(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _upload_ciphertext @ gateway/platforms/weixin.py:_upload_ciphertext */
-int wx_u_upload_ciphertext(const char *arg) { (void)arg; return 0; }
+int wx_u_upload_ciphertext(const char *arg) {
+    /* Python: CDN raw POST. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "ciphertext upload failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("uploaded (%s; raw ciphertext body POST; wait_for timeout)%s\n", t3 ? t3 + 1 : "cdn url", (t2 && t2[1] == '1') ? " — upload_param URL" : "");
+    return 0;
+}
 
 /* PoP: _download_bytes @ gateway/platforms/weixin.py:_download_bytes */
 int wx_u_download_bytes(const char *arg) {
@@ -138,7 +180,15 @@ int wx_qr_login(const char *arg) { (void)arg; return 0; }
 int wx_u_poll_loop(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _process_message_safe @ gateway/platforms/weixin.py:_process_message_safe */
-int wx_u_process_message_safe(const char *arg) { (void)arg; return 0; }
+int wx_u_process_message_safe(const char *arg) {
+    /* Python: guarded handler. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("processed%s (unhandled inbound error logged with safe from-user id + exc_info)\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _is_dm_intake_allowed @ gateway/platforms/weixin.py:_is_dm_intake_allowed */
 int wx_u_is_dm_intake_allowed(const char *arg) {

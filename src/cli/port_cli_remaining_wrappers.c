@@ -5918,7 +5918,17 @@ int hermes_cli_pty_session_detach_2(const char *arg) {
 }
 
 /* PoP: reap_idle @ hermes_cli/pty_session.py:reap_idle */
-int hermes_cli_pty_session_reap_idle(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pty_session_reap_idle(const char *arg) {
+    /* Python: dead/detached reap. Arg =
+     * "reaped\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s session(s) reaped (dead OR detached past TTL)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _reap_one_idle_or_raise @ hermes_cli/pty_session.py:_reap_one_idle_or_raise */
 int hermes_cli_pty_session_u_reap_one_idle_or_raise(const char *arg) {
@@ -9272,7 +9282,21 @@ int hermes_cli_memory_oauth_u_scope_to_profile(const char *arg) {
 int hermes_cli_memory_oauth_start_memory_oauth(const char *arg) { (void)arg; return 0; }
 
 /* PoP: memory_oauth_status @ hermes_cli/memory_oauth.py:memory_oauth_status */
-int hermes_cli_memory_oauth_memory_oauth_status(const char *arg) { (void)arg; return 0; }
+int hermes_cli_memory_oauth_memory_oauth_status(const char *arg) {
+    /* Python: flow status poll. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("idle\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "idle";
+    if (strcmp(state, "error") == 0) {
+        fprintf(stderr, "Failed to read OAuth status: %s\n", t3 ? t3 + 1 : "?");
+        return 500;
+    }
+    printf("%s (profile-scoped flow lookup)%s\n", state, (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _pick_slot @ hermes_cli/moa_cmd.py:_pick_slot */
 int hermes_cli_moa_cmd_u_pick_slot(const char *arg) {

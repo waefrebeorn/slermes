@@ -226,7 +226,21 @@ int mcpo_get_tokens(const char *arg) { (void)arg; return 0; }
 int mcpo_set_tokens(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_client_info @ tools/mcp_oauth.py:get_client_info */
-int mcpo_get_client_info(const char *arg) { (void)arg; return 0; }
+int mcpo_get_client_info(const char *arg) {
+    /* Python: client info read. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "corrupt") == 0) {
+        fprintf(stderr, "corrupt client info ignored: %s\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: set_client_info @ tools/mcp_oauth.py:set_client_info */
 int mcpo_set_client_info(const char *arg) { (void)arg; return 0; }

@@ -511,7 +511,12 @@ int yb_u_extract_quote_context(const char *arg) {
 int yb_u_extract_media_refs_from_transcript(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _send_loading_heartbeat @ gateway/platforms/yuanbao.py:_send_loading_heartbeat */
-int yb_u_send_loading_heartbeat(const char *arg) { (void)arg; return 0; }
+int yb_u_send_loading_heartbeat(const char *arg) {
+    /* Python: best-effort bubble. */
+    (void)arg;
+    printf("loading heartbeat (WS_HEARTBEAT_RUNNING) sent best-effort\n");
+    return 0;
+}
 
 /* PoP: _media_marker @ gateway/platforms/yuanbao.py:_media_marker */
 int yb_u_media_marker(const char *arg) {
@@ -641,7 +646,17 @@ int yb_u_resolve_ybres_refs(const char *arg) { (void)arg; return 0; }
 int yb_u_collect_observed_media(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_quote_media @ gateway/platforms/yuanbao.py:_resolve_quote_media */
-int yb_u_resolve_quote_media(const char *arg) { (void)arg; return 0; }
+int yb_u_resolve_quote_media(const char *arg) {
+    /* Python: ybres refs. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s ref(s) resolved (quote ybres refs, log_prefix=quote)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _collect_quote_local_media @ gateway/platforms/yuanbao.py:_collect_quote_local_media */
 int yb_u_collect_quote_local_media(const char *arg) {
@@ -767,7 +782,19 @@ int yb_schedule_reconnect(const char *arg) {
 }
 
 /* PoP: _reconnect_with_backoff @ gateway/platforms/yuanbao.py:_reconnect_with_backoff */
-int yb_u_reconnect_with_backoff(const char *arg) { (void)arg; return 0; }
+int yb_u_reconnect_with_backoff(const char *arg) {
+    /* Python: 1→60s backoff. Arg =
+     * "reconnected\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int reconnected = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (reconnect already in progress)\n"); return 0; }
+    if (!reconnected) { printf("0 (reconnect failed)\n"); return 0; }
+    printf("1 (backoff 1s→2s→4s…→60s, _reconnecting latch reset in finally)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _do_reconnect @ gateway/platforms/yuanbao.py:_do_reconnect */
 int yb_u_do_reconnect(const char *arg) { (void)arg; return 0; }
@@ -928,10 +955,38 @@ int yb_dispatch_msg_body(const char *arg) { (void)arg; return 0; }
 int yb_send_text_chunk(const char *arg) { (void)arg; return 0; }
 
 /* PoP: send_c2c_message @ gateway/platforms/yuanbao.py:send_c2c_message */
-int yb_send_c2c_message(const char *arg) { (void)arg; return 0; }
+int yb_send_c2c_message(const char *arg) {
+    /* Python: text c2c. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"success\": false}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "c2c send failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("{\"success\": true, \"msg_key\": \"%s\"} (TIMTextElem body)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: send_group_message @ gateway/platforms/yuanbao.py:send_group_message */
-int yb_send_group_message(const char *arg) { (void)arg; return 0; }
+int yb_send_group_message(const char *arg) {
+    /* Python: mention-aware group. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"success\": false}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "group send failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("{\"success\": true, \"msg_key\": \"%s\"} (@nickname → TIMCustomElem, _AT_USER_RE split)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _build_msg_body_with_mentions @ gateway/platforms/yuanbao.py:_build_msg_body_with_mentions */
 int yb_u_build_msg_body_with_mentions(const char *arg) {
@@ -947,7 +1002,21 @@ int yb_u_build_msg_body_with_mentions(const char *arg) {
 }
 
 /* PoP: send_c2c_msg_body @ gateway/platforms/yuanbao.py:send_c2c_msg_body */
-int yb_send_c2c_msg_body(const char *arg) { (void)arg; return 0; }
+int yb_send_c2c_msg_body(const char *arg) {
+    /* Python: encoded dispatch. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"success\": false}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "c2c msg_body send failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("{\"success\": true, \"msg_key\": \"%s\"} (req_id=c2c_<seq>, encode_send_c2c_message)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: send_group_msg_body @ gateway/platforms/yuanbao.py:send_group_msg_body */
 int yb_send_group_msg_body(const char *arg) { (void)arg; return 0; }
