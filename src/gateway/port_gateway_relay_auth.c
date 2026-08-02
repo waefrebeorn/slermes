@@ -18,6 +18,7 @@ typedef struct {
     bool valid;
 } relay_delivery_t;
 
+/* PoP: _delivery_payload @ gateway/relay/auth.py:_delivery_payload */
 relay_delivery_t relay_auth_delivery_payload(const char *message_json) {
     relay_delivery_t result = {0};
     if (!message_json) return result;
@@ -30,6 +31,8 @@ relay_delivery_t relay_auth_delivery_payload(const char *message_json) {
 
 /* Port of Python: _hmac_hex */
 /* Real HMAC-SHA256 of `data` under `key`, rendered as a lowercase hex string. */
+/* PoP: _hmac_hex @ gateway/relay/auth.py:_hmac_hex */
+/* PoP: sign @ gateway/relay/auth.py:sign */
 void relay_auth_hmac_hex(const char *key, const char *data, char *output, size_t out_sz) {
     if (!key || !data || !output || out_sz == 0) return;
 
@@ -48,6 +51,7 @@ void relay_auth_hmac_hex(const char *key, const char *data, char *output, size_t
 
 
 /* Port of Python: make_token */
+/* PoP: make_token @ gateway/relay/auth.py:make_token */
 void relay_auth_make_token(const char *secret, const char *payload, char *token_out, size_t out_sz) {
     if (!secret || !payload || !token_out || out_sz == 0) return;
     

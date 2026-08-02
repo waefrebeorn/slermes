@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:44:43Z",
+  "generated_at": "2026-08-02T20:47:05Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -67704,10 +67704,10 @@
     },
     "agent/transports/base.py": {
       "total": 8,
-      "ported": 1,
+      "ported": 8,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 7,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 8,
@@ -67726,16 +67726,24 @@
             ],
             "line_number": 21
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_base_remaining.c",
+          "c_function": "trb_api_mode",
+          "pop_annotation": {
+            "c_function": "trb_api_mode",
+            "python_functions": [
+              "api_mode"
+            ],
+            "c_file": "src/agent/port_transports_base_remaining.c",
+            "python_file": "agent/transports/base.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_mode @ agent/transports/base.py:api_mode */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/base.py",
@@ -67749,16 +67757,24 @@
             ],
             "line_number": 26
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_base_remaining.c",
+          "c_function": "trb_convert_messages",
+          "pop_annotation": {
+            "c_function": "trb_convert_messages",
+            "python_functions": [
+              "convert_messages"
+            ],
+            "c_file": "src/agent/port_transports_base_remaining.c",
+            "python_file": "agent/transports/base.py",
+            "line": 28,
+            "is_consolidated": false,
+            "full_text": "/* PoP: convert_messages @ agent/transports/base.py:convert_messages */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/base.py",
@@ -67772,16 +67788,24 @@
             ],
             "line_number": 35
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_base_remaining.c",
+          "c_function": "trb_convert_tools",
+          "pop_annotation": {
+            "c_function": "trb_convert_tools",
+            "python_functions": [
+              "convert_tools"
+            ],
+            "c_file": "src/agent/port_transports_base_remaining.c",
+            "python_file": "agent/transports/base.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: convert_tools @ agent/transports/base.py:convert_tools */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/base.py",
@@ -67795,16 +67819,24 @@
             ],
             "line_number": 43
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_base_remaining.c",
+          "c_function": "trb_build_kwargs",
+          "pop_annotation": {
+            "c_function": "trb_build_kwargs",
+            "python_functions": [
+              "build_kwargs"
+            ],
+            "c_file": "src/agent/port_transports_base_remaining.c",
+            "python_file": "agent/transports/base.py",
+            "line": 41,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_kwargs @ agent/transports/base.py:build_kwargs */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/base.py",
@@ -67818,16 +67850,24 @@
             ],
             "line_number": 60
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_base_remaining.c",
+          "c_function": "trb_normalize_response",
+          "pop_annotation": {
+            "c_function": "trb_normalize_response",
+            "python_functions": [
+              "normalize_response"
+            ],
+            "c_file": "src/agent/port_transports_base_remaining.c",
+            "python_file": "agent/transports/base.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: normalize_response @ agent/transports/base.py:normalize_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/base.py",
@@ -67839,16 +67879,24 @@
             "decorators": [],
             "line_number": 67
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_base_remaining.c",
+          "c_function": "trb_validate_response",
+          "pop_annotation": {
+            "c_function": "trb_validate_response",
+            "python_functions": [
+              "validate_response"
+            ],
+            "c_file": "src/agent/port_transports_base_remaining.c",
+            "python_file": "agent/transports/base.py",
+            "line": 56,
+            "is_consolidated": false,
+            "full_text": "/* PoP: validate_response @ agent/transports/base.py:validate_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/base.py",
@@ -67860,16 +67908,24 @@
             "decorators": [],
             "line_number": 75
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_base_remaining.c",
+          "c_function": "trb_extract_cache_stats",
+          "pop_annotation": {
+            "c_function": "trb_extract_cache_stats",
+            "python_functions": [
+              "extract_cache_stats"
+            ],
+            "c_file": "src/agent/port_transports_base_remaining.c",
+            "python_file": "agent/transports/base.py",
+            "line": 62,
+            "is_consolidated": false,
+            "full_text": "/* PoP: extract_cache_stats @ agent/transports/base.py:extract_cache_stats */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/base.py",
@@ -129550,10 +129606,10 @@
     },
     "gateway/relay/auth.py": {
       "total": 8,
-      "ported": 1,
+      "ported": 8,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 7,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 8,
@@ -129569,16 +129625,24 @@
             "decorators": [],
             "line_number": 51
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_relay_auth.c",
+          "c_function": "relay_auth_hmac_hex",
+          "pop_annotation": {
+            "c_function": "relay_auth_hmac_hex",
+            "python_functions": [
+              "_hmac_hex"
+            ],
+            "c_file": "src/gateway/port_gateway_relay_auth.c",
+            "python_file": "gateway/relay/auth.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _hmac_hex @ gateway/relay/auth.py:_hmac_hex */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/auth.py",
@@ -129590,16 +129654,24 @@
             "decorators": [],
             "line_number": 56
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_relay_auth.c",
+          "c_function": "relay_auth_hmac_hex",
+          "pop_annotation": {
+            "c_function": "relay_auth_hmac_hex",
+            "python_functions": [
+              "sign"
+            ],
+            "c_file": "src/gateway/port_gateway_relay_auth.c",
+            "python_file": "gateway/relay/auth.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: sign @ gateway/relay/auth.py:sign */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/auth.py",
@@ -129611,16 +129683,24 @@
             "decorators": [],
             "line_number": 61
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_auth_remaining2.c",
+          "c_function": "rlauth_verify_signature",
+          "pop_annotation": {
+            "c_function": "rlauth_verify_signature",
+            "python_functions": [
+              "verify_signature"
+            ],
+            "c_file": "src/gateway/port_relay_auth_remaining2.c",
+            "python_file": "gateway/relay/auth.py",
+            "line": 26,
+            "is_consolidated": false,
+            "full_text": "/* PoP: verify_signature @ gateway/relay/auth.py:verify_signature */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/auth.py",
@@ -129632,16 +129712,24 @@
             "decorators": [],
             "line_number": 83
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_relay_auth.c",
+          "c_function": "relay_auth_make_token",
+          "pop_annotation": {
+            "c_function": "relay_auth_make_token",
+            "python_functions": [
+              "make_token"
+            ],
+            "c_file": "src/gateway/port_gateway_relay_auth.c",
+            "python_file": "gateway/relay/auth.py",
+            "line": 54,
+            "is_consolidated": false,
+            "full_text": "/* PoP: make_token @ gateway/relay/auth.py:make_token */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/auth.py",
@@ -129663,7 +129751,7 @@
             ],
             "c_file": "src/gateway/port_gateway_relay_auth.c",
             "python_file": "gateway/relay/auth.py",
-            "line": 63,
+            "line": 67,
             "is_consolidated": false,
             "full_text": "/* PoP: relay_auth_make_upgrade_token @ gateway/relay/auth.py:make_upgrade_token */"
           },
@@ -129682,16 +129770,24 @@
             "decorators": [],
             "line_number": 109
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_auth_remaining2.c",
+          "c_function": "rlauth_verify_token",
+          "pop_annotation": {
+            "c_function": "rlauth_verify_token",
+            "python_functions": [
+              "verify_token"
+            ],
+            "c_file": "src/gateway/port_relay_auth_remaining2.c",
+            "python_file": "gateway/relay/auth.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: verify_token @ gateway/relay/auth.py:verify_token */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/auth.py",
@@ -129703,16 +129799,24 @@
             "decorators": [],
             "line_number": 137
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_relay_auth.c",
+          "c_function": "relay_auth_delivery_payload",
+          "pop_annotation": {
+            "c_function": "relay_auth_delivery_payload",
+            "python_functions": [
+              "_delivery_payload"
+            ],
+            "c_file": "src/gateway/port_gateway_relay_auth.c",
+            "python_file": "gateway/relay/auth.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _delivery_payload @ gateway/relay/auth.py:_delivery_payload */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/auth.py",
@@ -129724,16 +129828,24 @@
             "decorators": [],
             "line_number": 142
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_auth_remaining2.c",
+          "c_function": "rlauth_verify_delivery_signature",
+          "pop_annotation": {
+            "c_function": "rlauth_verify_delivery_signature",
+            "python_functions": [
+              "verify_delivery_signature"
+            ],
+            "c_file": "src/gateway/port_relay_auth_remaining2.c",
+            "python_file": "gateway/relay/auth.py",
+            "line": 52,
+            "is_consolidated": false,
+            "full_text": "/* PoP: verify_delivery_signature @ gateway/relay/auth.py:verify_delivery_signature */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
