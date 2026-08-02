@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:32:36Z",
+  "generated_at": "2026-08-02T20:34:38Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -31493,10 +31493,10 @@
     },
     "agent/i18n.py": {
       "total": 8,
-      "ported": 0,
+      "ported": 8,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 8,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 8,
@@ -31512,16 +31512,24 @@
             "decorators": [],
             "line_number": 91
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_i18n_remaining.c",
+          "c_function": "i18_locales_dir",
+          "pop_annotation": {
+            "c_function": "i18_locales_dir",
+            "python_functions": [
+              "_locales_dir"
+            ],
+            "c_file": "src/agent/port_i18n_remaining.c",
+            "python_file": "agent/i18n.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _locales_dir @ agent/i18n.py:_locales_dir */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/i18n.py",
@@ -31533,16 +31541,24 @@
             "decorators": [],
             "line_number": 121
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_i18n_remaining.c",
+          "c_function": "i18_normalize_lang",
+          "pop_annotation": {
+            "c_function": "i18_normalize_lang",
+            "python_functions": [
+              "_normalize_lang"
+            ],
+            "c_file": "src/agent/port_i18n_remaining.c",
+            "python_file": "agent/i18n.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalize_lang @ agent/i18n.py:_normalize_lang */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/i18n.py",
@@ -31554,16 +31570,24 @@
             "decorators": [],
             "line_number": 145
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_i18n_remaining.c",
+          "c_function": "i18_load_catalog",
+          "pop_annotation": {
+            "c_function": "i18_load_catalog",
+            "python_functions": [
+              "_load_catalog"
+            ],
+            "c_file": "src/agent/port_i18n_remaining.c",
+            "python_file": "agent/i18n.py",
+            "line": 53,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _load_catalog @ agent/i18n.py:_load_catalog */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/i18n.py",
@@ -31575,16 +31599,24 @@
             "decorators": [],
             "line_number": 180
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_i18n_remaining.c",
+          "c_function": "i18_flatten_into",
+          "pop_annotation": {
+            "c_function": "i18_flatten_into",
+            "python_functions": [
+              "_flatten_into"
+            ],
+            "c_file": "src/agent/port_i18n_remaining.c",
+            "python_file": "agent/i18n.py",
+            "line": 75,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _flatten_into @ agent/i18n.py:_flatten_into */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/i18n.py",
@@ -31596,16 +31628,24 @@
             "decorators": [],
             "line_number": 191
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_i18n_remaining.c",
+          "c_function": "i18_config_language_cached",
+          "pop_annotation": {
+            "c_function": "i18_config_language_cached",
+            "python_functions": [
+              "_config_language_cached"
+            ],
+            "c_file": "src/agent/port_i18n_remaining.c",
+            "python_file": "agent/i18n.py",
+            "line": 83,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _config_language_cached @ agent/i18n.py:_config_language_cached */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/i18n.py",
@@ -31617,16 +31657,24 @@
             "decorators": [],
             "line_number": 210
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_i18n_remaining.c",
+          "c_function": "i18_reset_language_cache",
+          "pop_annotation": {
+            "c_function": "i18_reset_language_cache",
+            "python_functions": [
+              "reset_language_cache"
+            ],
+            "c_file": "src/agent/port_i18n_remaining.c",
+            "python_file": "agent/i18n.py",
+            "line": 99,
+            "is_consolidated": false,
+            "full_text": "/* PoP: reset_language_cache @ agent/i18n.py:reset_language_cache */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/i18n.py",
@@ -31638,16 +31686,24 @@
             "decorators": [],
             "line_number": 221
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_i18n_remaining.c",
+          "c_function": "i18_get_language",
+          "pop_annotation": {
+            "c_function": "i18_get_language",
+            "python_functions": [
+              "get_language"
+            ],
+            "c_file": "src/agent/port_i18n_remaining.c",
+            "python_file": "agent/i18n.py",
+            "line": 105,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_language @ agent/i18n.py:get_language */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/i18n.py",
@@ -31659,16 +31715,24 @@
             "decorators": [],
             "line_number": 232
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_i18n_remaining.c",
+          "c_function": "i18_t",
+          "pop_annotation": {
+            "c_function": "i18_t",
+            "python_functions": [
+              "t"
+            ],
+            "c_file": "src/agent/port_i18n_remaining.c",
+            "python_file": "agent/i18n.py",
+            "line": 119,
+            "is_consolidated": false,
+            "full_text": "/* PoP: t @ agent/i18n.py:t */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -40797,10 +40861,10 @@
     },
     "agent/markdown_tables.py": {
       "total": 9,
-      "ported": 1,
+      "ported": 9,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 8,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 9,
@@ -40816,16 +40880,24 @@
             "decorators": [],
             "line_number": 49
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_markdown_tables_remaining.c",
+          "c_function": "mdt_disp_width",
+          "pop_annotation": {
+            "c_function": "mdt_disp_width",
+            "python_functions": [
+              "_disp_width"
+            ],
+            "c_file": "src/agent/port_markdown_tables_remaining.c",
+            "python_file": "agent/markdown_tables.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _disp_width @ agent/markdown_tables.py:_disp_width */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/markdown_tables.py",
@@ -40837,16 +40909,24 @@
             "decorators": [],
             "line_number": 61
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_markdown_tables_remaining.c",
+          "c_function": "mdt_pad_to_width",
+          "pop_annotation": {
+            "c_function": "mdt_pad_to_width",
+            "python_functions": [
+              "_pad_to_width"
+            ],
+            "c_file": "src/agent/port_markdown_tables_remaining.c",
+            "python_file": "agent/markdown_tables.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _pad_to_width @ agent/markdown_tables.py:_pad_to_width */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/markdown_tables.py",
@@ -40858,16 +40938,24 @@
             "decorators": [],
             "line_number": 65
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_markdown_tables_remaining.c",
+          "c_function": "mdt_split_table_row",
+          "pop_annotation": {
+            "c_function": "mdt_split_table_row",
+            "python_functions": [
+              "split_table_row"
+            ],
+            "c_file": "src/agent/port_markdown_tables_remaining.c",
+            "python_file": "agent/markdown_tables.py",
+            "line": 50,
+            "is_consolidated": false,
+            "full_text": "/* PoP: split_table_row @ agent/markdown_tables.py:split_table_row */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/markdown_tables.py",
@@ -40879,16 +40967,24 @@
             "decorators": [],
             "line_number": 76
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_markdown_tables_remaining.c",
+          "c_function": "mdt_is_table_divider",
+          "pop_annotation": {
+            "c_function": "mdt_is_table_divider",
+            "python_functions": [
+              "is_table_divider"
+            ],
+            "c_file": "src/agent/port_markdown_tables_remaining.c",
+            "python_file": "agent/markdown_tables.py",
+            "line": 92,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_table_divider @ agent/markdown_tables.py:is_table_divider */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/markdown_tables.py",
@@ -40900,16 +40996,24 @@
             "decorators": [],
             "line_number": 83
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_markdown_tables_remaining.c",
+          "c_function": "mdt_looks_like_table_row",
+          "pop_annotation": {
+            "c_function": "mdt_looks_like_table_row",
+            "python_functions": [
+              "looks_like_table_row"
+            ],
+            "c_file": "src/agent/port_markdown_tables_remaining.c",
+            "python_file": "agent/markdown_tables.py",
+            "line": 108,
+            "is_consolidated": false,
+            "full_text": "/* PoP: looks_like_table_row @ agent/markdown_tables.py:looks_like_table_row */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/markdown_tables.py",
@@ -40921,16 +41025,24 @@
             "decorators": [],
             "line_number": 105
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_markdown_tables_remaining.c",
+          "c_function": "mdt_render_block",
+          "pop_annotation": {
+            "c_function": "mdt_render_block",
+            "python_functions": [
+              "_render_block"
+            ],
+            "c_file": "src/agent/port_markdown_tables_remaining.c",
+            "python_file": "agent/markdown_tables.py",
+            "line": 120,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _render_block @ agent/markdown_tables.py:_render_block */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/markdown_tables.py",
@@ -40942,16 +41054,24 @@
             "decorators": [],
             "line_number": 145
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_markdown_tables_remaining.c",
+          "c_function": "mdt_wrap_to_width",
+          "pop_annotation": {
+            "c_function": "mdt_wrap_to_width",
+            "python_functions": [
+              "_wrap_to_width"
+            ],
+            "c_file": "src/agent/port_markdown_tables_remaining.c",
+            "python_file": "agent/markdown_tables.py",
+            "line": 128,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _wrap_to_width @ agent/markdown_tables.py:_wrap_to_width */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/markdown_tables.py",
@@ -40963,16 +41083,24 @@
             "decorators": [],
             "line_number": 211
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_markdown_tables_remaining.c",
+          "c_function": "mdt_render_vertical",
+          "pop_annotation": {
+            "c_function": "mdt_render_vertical",
+            "python_functions": [
+              "_render_vertical"
+            ],
+            "c_file": "src/agent/port_markdown_tables_remaining.c",
+            "python_file": "agent/markdown_tables.py",
+            "line": 159,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _render_vertical @ agent/markdown_tables.py:_render_vertical */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/markdown_tables.py",
