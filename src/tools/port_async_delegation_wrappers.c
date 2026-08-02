@@ -12,7 +12,16 @@
 #include "hermes_json.h"
 
 /* PoP: _db_path @ tools/async_delegation.py:_db_path */
-int adel_u_db_path(const char *arg) { (void)arg; return 0; }
+int adel_u_db_path(const char *arg) {
+    /* Python: get_hermes_home() / "state.db". */
+    (void)arg;
+    const char *hh = getenv("HERMES_HOME");
+    char base[1024];
+    if (hh && *hh) snprintf(base, sizeof(base), "%s", hh);
+    else snprintf(base, sizeof(base), "%s/.hermes", getenv("HOME") ? getenv("HOME") : ".");
+    printf("%s/state.db\n", base);
+    return 0;
+}
 
 /* PoP: _connect @ tools/async_delegation.py:_connect */
 int adel_u_connect(const char *arg) { (void)arg; return 0; }
@@ -75,7 +84,22 @@ int adel_get_durable_delegation(const char *arg) { (void)arg; return 0; }
 int adel_u_get_executor(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _new_delegation_id @ tools/async_delegation.py:_new_delegation_id */
-int adel_u_new_delegation_id(const char *arg) { (void)arg; return 0; }
+int adel_u_new_delegation_id(const char *arg) {
+    /* Python: "deleg_" + uuid4().hex[:8] — 8 hex chars from /dev/urandom. */
+    (void)arg;
+    unsigned char buf[4];
+    FILE *fp = fopen("/dev/urandom", "rb");
+    if (fp) {
+        size_t got = fread(buf, 1, 4, fp);
+        fclose(fp);
+        if (got == 4) {
+            printf("deleg_%02x%02x%02x%02x\n", buf[0], buf[1], buf[2], buf[3]);
+            return 0;
+        }
+    }
+    printf("deleg_00000000\n");
+    return 0;
+}
 
 /* PoP: _current_origin_session_id @ tools/async_delegation.py:_current_origin_session_id */
 int adel_u_current_origin_session_id(const char *arg) { (void)arg; return 0; }

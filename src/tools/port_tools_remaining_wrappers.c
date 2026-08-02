@@ -463,7 +463,12 @@ int tools_mcp_dashboard_oauth_mark_error(const char *arg) { (void)arg; return 0;
 int tools_mcp_dashboard_oauth_mark_worker_done(const char *arg) { (void)arg; return 0; }
 
 /* PoP: worker_done @ tools/mcp_dashboard_oauth.py:worker_done */
-int tools_mcp_dashboard_oauth_worker_done(const char *arg) { (void)arg; return 0; }
+int tools_mcp_dashboard_oauth_worker_done(const char *arg) {
+    /* Python: the worker-done event flag. */
+    static int g_done = 0;
+    if (arg && *arg) g_done = atoi(arg) != 0;
+    return g_done;
+}
 
 /* PoP: dashboard_oauth_flow @ tools/mcp_dashboard_oauth.py:dashboard_oauth_flow */
 int tools_mcp_dashboard_oauth_dashboard_oauth_flow(const char *arg) { (void)arg; return 0; }

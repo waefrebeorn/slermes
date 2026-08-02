@@ -683,7 +683,13 @@ int gateway_systemd_notify_u_notify_address(const char *arg) { (void)arg; return
 int gateway_systemd_notify_watchdog_interval_seconds(const char *arg) { (void)arg; return 0; }
 
 /* PoP: unhealthy @ gateway/systemd_notify.py:unhealthy */
-int gateway_systemd_notify_unhealthy(const char *arg) { (void)arg; return 0; }
+int gateway_systemd_notify_unhealthy(const char *arg) {
+    /* Python property: the unhealthy flag. */
+    static int g_unhealthy = 0;
+    if (arg && *arg) g_unhealthy = atoi(arg) != 0;
+    printf("%d\n", g_unhealthy);
+    return 0;
+}
 
 /* PoP: _lag_tolerance @ gateway/systemd_notify.py:_lag_tolerance */
 int gateway_systemd_notify_u_lag_tolerance(const char *arg) { (void)arg; return 0; }
