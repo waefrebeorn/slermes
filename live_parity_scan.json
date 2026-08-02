@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T22:09:22Z",
+  "generated_at": "2026-08-02T22:11:18Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -310292,10 +310292,10 @@
     },
     "tools/feishu_doc_tool.py": {
       "total": 4,
-      "ported": 0,
+      "ported": 4,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 4,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 4,
@@ -310311,16 +310311,24 @@
             "decorators": [],
             "line_number": 19
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_feishu_doc_tool_remaining.c",
+          "c_function": "fdt2_set_client",
+          "pop_annotation": {
+            "c_function": "fdt2_set_client",
+            "python_functions": [
+              "set_client"
+            ],
+            "c_file": "src/tools/port_feishu_doc_tool_remaining.c",
+            "python_file": "tools/feishu_doc_tool.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: set_client @ tools/feishu_doc_tool.py:set_client */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/feishu_doc_tool.py",
@@ -310332,16 +310340,24 @@
             "decorators": [],
             "line_number": 24
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_feishu_doc_tool_remaining.c",
+          "c_function": "fdt2_get_client",
+          "pop_annotation": {
+            "c_function": "fdt2_get_client",
+            "python_functions": [
+              "get_client"
+            ],
+            "c_file": "src/tools/port_feishu_doc_tool_remaining.c",
+            "python_file": "tools/feishu_doc_tool.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_client @ tools/feishu_doc_tool.py:get_client */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/feishu_doc_tool.py",
@@ -310353,16 +310369,24 @@
             "decorators": [],
             "line_number": 54
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_feishu_doc_tool_remaining.c",
+          "c_function": "fdt2_check_feishu",
+          "pop_annotation": {
+            "c_function": "fdt2_check_feishu",
+            "python_functions": [
+              "_check_feishu"
+            ],
+            "c_file": "src/tools/port_feishu_doc_tool_remaining.c",
+            "python_file": "tools/feishu_doc_tool.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _check_feishu @ tools/feishu_doc_tool.py:_check_feishu */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/feishu_doc_tool.py",
@@ -310374,16 +310398,24 @@
             "decorators": [],
             "line_number": 69
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_feishu_doc_tool_remaining.c",
+          "c_function": "fdt2_handle_feishu_doc_read",
+          "pop_annotation": {
+            "c_function": "fdt2_handle_feishu_doc_read",
+            "python_functions": [
+              "_handle_feishu_doc_read"
+            ],
+            "c_file": "src/tools/port_feishu_doc_tool_remaining.c",
+            "python_file": "tools/feishu_doc_tool.py",
+            "line": 43,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _handle_feishu_doc_read @ tools/feishu_doc_tool.py:_handle_feishu_doc_read */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -348134,10 +348166,10 @@
     },
     "tools/todo_tool.py": {
       "total": 10,
-      "ported": 5,
+      "ported": 9,
       "partial": 1,
       "stub": 0,
-      "real_gaps": 4,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 10,
@@ -348153,17 +348185,24 @@
             "decorators": [],
             "line_number": 56
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_todo_tool_remaining.c",
+          "c_function": "tdt_init",
+          "pop_annotation": {
+            "c_function": "tdt_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_todo_tool_remaining.c",
+            "python_file": "tools/todo_tool.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/todo_tool.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/todo_tool.py",
@@ -348196,17 +348235,24 @@
             "decorators": [],
             "line_number": 108
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_todo_tool_remaining.c",
+          "c_function": "tdt_read",
+          "pop_annotation": {
+            "c_function": "tdt_read",
+            "python_functions": [
+              "read"
+            ],
+            "c_file": "src/tools/port_todo_tool_remaining.c",
+            "python_file": "tools/todo_tool.py",
+            "line": 26,
+            "is_consolidated": false,
+            "full_text": "/* PoP: read @ tools/todo_tool.py:read */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/todo_tool.py",
@@ -348309,17 +348355,24 @@
             ],
             "line_number": 164
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_todo_tool_remaining.c",
+          "c_function": "tdt_validate",
+          "pop_annotation": {
+            "c_function": "tdt_validate",
+            "python_functions": [
+              "_validate"
+            ],
+            "c_file": "src/tools/port_todo_tool_remaining.c",
+            "python_file": "tools/todo_tool.py",
+            "line": 33,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _validate @ tools/todo_tool.py:_validate */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/todo_tool.py",
@@ -348362,17 +348415,24 @@
             "decorators": [],
             "line_number": 204
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_todo_tool_remaining.c",
+          "c_function": "tdt_todo_tool",
+          "pop_annotation": {
+            "c_function": "tdt_todo_tool",
+            "python_functions": [
+              "todo_tool"
+            ],
+            "c_file": "src/tools/port_todo_tool_remaining.c",
+            "python_file": "tools/todo_tool.py",
+            "line": 42,
+            "is_consolidated": false,
+            "full_text": "/* PoP: todo_tool @ tools/todo_tool.py:todo_tool */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/todo_tool.py",
