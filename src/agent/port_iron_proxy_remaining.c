@@ -14,6 +14,9 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sys/stat.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <time.h>
 
 static char *lowerdup(const char *s) {
@@ -407,16 +410,41 @@ char *ipx_read_http_listen_from_config(const char *config_path) {
 bool ipx_port_listening(const char *host, long port) {
     /* Python: TCP connect probe. */
     if (!host || port <= 0) return false;
-    printf("tcp probe %s:%ld\n", host, port);
-    return false;
+    int fd = socket(AF_INET, SOCK_STREAM, 0);
+    if (fd < 0) return false;
+    struct sockaddr_in addr;
+    memset(&addr, 0, sizeof(addr));
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons((uint16_t)port);
+    if (inet_pton(AF_INET, host, &addr.sin_addr) != 1) {
+        close(fd);
+        return false;
+    }
+    struct timeval tv = {0, 300000};  /* 300ms */
+    setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+    setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+    bool ok = connect(fd, (struct sockaddr *)&addr, sizeof(addr)) == 0;
+    close(fd);
+    return ok;
 }
 
 /* PoP: _tail_log @ agent/proxy_sources/iron_proxy.py:_tail_log */
 char *ipx_tail_log(const char *path) {
     /* Python: last 8KB, utf-8 tolerant. */
     if (!path) return strdup("(no log file)");
-    printf("log tailed (%s, last 8KB)\n", path);
-    return strdup("(no log file)");
+    FILE *f = fopen(path, "rb");
+    if (!f) return strdup("(no log file)");
+    fseek(f, 0, SEEK_END);
+    long n = ftell(f);
+    long start = n > 8192 ? n - 8192 : 0;
+    fseek(f, start, SEEK_SET);
+    size_t cap = (size_t)(n - start) + 2;
+    char *buf = malloc(cap);
+    if (!buf) { fclose(f); return strdup("(no log file)"); }
+    size_t r = fread(buf, 1, cap - 1, f);
+    buf[r] = '\0';
+    fclose(f);
+    return buf;
 }
 
 /* PoP: _reset_for_tests @ agent/proxy_sources/iron_proxy.py:_reset_for_tests */

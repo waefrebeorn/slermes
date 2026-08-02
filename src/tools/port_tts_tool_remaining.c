@@ -68,16 +68,34 @@ long tts_resolve_max_text_length(const char *provider_config_json, const char *p
 char *tts_load_tts_config(const char *config_yaml) {
     /* Python: tts section of config.yaml w/ defaults fallback. */
     if (!config_yaml) return strdup("{}");
-    printf("tts config loaded (defaults for missing keys)\n");
-    return strdup("{}");
+    const char *p = strstr(config_yaml, "tts:");
+    if (!p) return strdup("{}");
+    /* crude yaml section cut: until next top-level key (non-indented) */
+    const char *e = p + 4;
+    const char *q = e;
+    while (*q) {
+        if (*q == '\n' && q[1] && q[1] != ' ' && q[1] != '\t' && q[1] != '#' && q[1] != '\n') break;
+        q++;
+    }
+    char *out = strndup(p, (size_t)(q - p));
+    return out ? out : strdup("{}");
 }
 
 /* PoP: _get_named_provider_config @ tools/tts_tool.py:_get_named_provider_config */
 char *tts_get_named_provider_config(const char *tts_config_json, const char *name) {
     /* Python: tts.providers.<name> then legacy tts.<name>. */
     if (!tts_config_json || !name) return strdup("{}");
-    printf("named provider config fetched: %s\n", name);
-    return strdup("{}");
+    char needle[512];
+    snprintf(needle, sizeof(needle), "%s:", name);
+    const char *hit = strstr(tts_config_json, needle);
+    if (!hit) return strdup("{}");
+    const char *colon = strchr(hit, ':');
+    if (!colon) return strdup("{}");
+    const char *v = colon + 1;
+    const char *e = v;
+    while (*e && *e != '\n') e++;
+    char *out = strndup(v, (size_t)(e - v));
+    return out ? out : strdup("{}");
 }
 
 /* PoP: _plugin_provider_is_voice_compatible @ tools/tts_tool.py:_plugin_provider_is_voice_compatible */
@@ -91,8 +109,48 @@ bool tts_plugin_provider_is_voice_compatible(const char *plugin_json) {
 char *tts_iter_command_providers(const char *tts_config_json) {
     /* Python: yield (name, config) for command-type providers. */
     if (!tts_config_json) return strdup("[]");
-    printf("command-type providers enumerated\n");
-    return strdup("[]");
+    /* count "command" keys at provider level */
+    char *out = NULL;
+    size_t olen = 0, ocap = 128;
+    out = malloc(ocap);
+    if (!out) return strdup("[]");
+    out[0] = '\0';
+    strcpy(out, "[");
+    bool first = true;
+    const char *p = tts_config_json;
+    while ((p = strstr(p, "\"command\"")) != NULL) {
+        /* check it's a command-* provider section: previous key */
+        const char *prev = p;
+        while (prev > tts_config_json && *prev != '\n') prev--;
+        if (first) {
+            /* open provider name capture: look back for "name": "x" */
+            const char *name_p = strstr(prev, "\"name\"");
+            const char *np = name_p ? strchr(name_p, ':') : NULL;
+            if (np) {
+                const char *nq = np + 1;
+                while (*nq == ' ' || *nq == '"') nq++;
+                const char *ne = nq;
+                while (*ne && *ne != '"') ne++;
+                char *nm = strndup(nq, (size_t)(ne - nq));
+                size_t need = strlen(out) + (nm ? strlen(nm) : 0) + 8;
+                if (need > ocap) {
+                    ocap = need * 2;
+                    char *nb = realloc(out, ocap);
+                    if (!nb) { free(nm); break; }
+                    out = nb;
+                }
+                if (!first) strcat(out, ",");
+                strcat(out, "\"");
+                if (nm) strcat(out, nm);
+                strcat(out, "\"");
+                free(nm);
+                first = false;
+            }
+        }
+        p += 8;
+    }
+    strcat(out, "]");
+    return out;
 }
 
 /* PoP: _get_command_tts_output_format @ tools/tts_tool.py:_get_command_tts_output_format */
@@ -205,8 +263,7 @@ char *tts_generate_command_tts(const char *text, const char *config_json) {
 /* PoP: _has_any_command_tts_provider @ tools/tts_tool.py:_has_any_command_tts_provider */
 bool tts_has_any_command_tts_provider(const char *tts_config_json) {
     if (!tts_config_json) return false;
-    printf("command tts provider presence checked\n");
-    return strstr(tts_config_json, "command") != NULL;
+    return strstr(tts_config_json, "\"command\"") != NULL;
 }
 
 /* PoP: _has_ffmpeg @ tools/tts_tool.py:_has_ffmpeg */

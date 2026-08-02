@@ -231,10 +231,42 @@ char *cfg_strip_dotted_keys(const char *config_json, const char *keys_json) {
 
 /* PoP: cfg_get @ hermes_cli/config.py:cfg_get */
 char *cfg_cfg_get(const char *config_json, const char *dotted_path, const char *default_value) {
-    /* Python: safe nested traversal. */
+    /* Python: safe nested traversal — real: find "key": value at each
+     * depth segment in the json text. */
     if (!config_json || !dotted_path) return default_value ? strdup(default_value) : NULL;
-    printf("cfg_get %s\n", dotted_path);
-    return default_value ? strdup(default_value) : NULL;
+    const char *cur = config_json;
+    char *path = strdup(dotted_path);
+    char *tok = strtok(path, ".");
+    char *result = NULL;
+    while (tok && cur) {
+        char needle[512];
+        snprintf(needle, sizeof(needle), "\"%s\"", tok);
+        const char *hit = strstr(cur, needle);
+        if (!hit) { result = NULL; break; }
+        const char *colon = strchr(hit, ':');
+        if (!colon) { result = NULL; break; }
+        const char *v = colon + 1;
+        while (*v == ' ' || *v == '\t') v++;
+        tok = strtok(NULL, ".");
+        if (tok) {
+            /* descend into object */
+            if (*v == '{') { cur = v + 1; continue; }
+            result = NULL; break;
+        }
+        /* leaf: capture value */
+        if (*v == '"') {
+            const char *e = v + 1;
+            while (*e && *e != '"') e++;
+            result = strndup(v + 1, (size_t)(e - v - 1));
+        } else {
+            const char *e = v;
+            while (*e && *e != ',' && *e != '}' && *e != '\n') e++;
+            result = strndup(v, (size_t)(e - v));
+        }
+    }
+    free(path);
+    if (!result && default_value) return strdup(default_value);
+    return result;
 }
 
 /* PoP: load_config @ hermes_cli/config.py:load_config */
@@ -271,15 +303,110 @@ int cfg_invalidate_env_cache(void) {
 long cfg_sanitize_env_file(const char *path) {
     /* Python: normalize line formatting in-place; returns count. */
     if (!path) return 0;
-    printf(".env sanitized (safe formatting normalized)\n");
-    return 0;
+    FILE *f = fopen(path, "r");
+    if (!f) return 0;
+    char *buf = NULL;
+    size_t cap = 0, len = 0;
+    char chunk[4096];
+    size_t r;
+    while ((r = fread(chunk, 1, sizeof(chunk), f)) > 0) {
+        if (len + r + 1 > cap) {
+            cap = (cap ? cap * 2 : 65536);
+            if (cap < len + r + 1) cap = len + r + 1;
+            char *nb = realloc(buf, cap);
+            if (!nb) { free(buf); fclose(f); return 0; }
+            buf = nb;
+        }
+        memcpy(buf + len, chunk, r);
+        len += r;
+    }
+    fclose(f);
+    if (!buf) return 0;
+    buf[len] = '\0';
+    /* count lines with surrounding whitespace / CRLF to normalize */
+    long changed = 0;
+    char *out = malloc(len + 1);
+    if (!out) { free(buf); return 0; }
+    char *q = out;
+    char *line = buf;
+    while (line && *line) {
+        char *nl = strchr(line, '\n');
+        size_t ll = nl ? (size_t)(nl - line) : strlen(line);
+        char *copy = strndup(line, ll);
+        if (!copy) { break; }
+        /* strip trailing  */
+        size_t cl = strlen(copy);
+        if (cl && copy[cl-1] == '\r') { copy[--cl] = '\0'; changed++; }
+        /* strip surrounding spaces around key = value on non-comment lines */
+        if (copy[0] != '#' && strchr(copy, '=')) {
+            char *eq = strchr(copy, '=');
+            /* strip spaces before = */
+            char *e = eq;
+            while (e > copy && (e[-1] == ' ' || e[-1] == '\t')) { e--; changed++; }
+            if (e != eq) { memmove(e + 1, eq + 1, strlen(eq + 1) + 1); memcpy(e, "=", 1); }
+            /* strip spaces after = */
+            char *v = e + 1;
+            char *vs = v;
+            while (*vs == ' ' || *vs == '\t') { vs++; changed++; }
+            if (vs != v) memmove(v, vs, strlen(vs) + 1);
+        }
+        size_t cplen = strlen(copy);
+        memcpy(q, copy, cplen);
+        q += cplen;
+        *q++ = '\n';
+        free(copy);
+        line = nl ? nl + 1 : NULL;
+    }
+    *q = '\0';
+    free(buf);
+    FILE *w = fopen(path, "w");
+    if (w) { fwrite(out, 1, (size_t)(q - out), w); fclose(w); }
+    free(out);
+    return changed;
 }
 
 /* PoP: save_env_value @ hermes_cli/config.py:save_env_value */
 int cfg_save_env_value(const char *path, const char *key, const char *value) {
     /* Python: managed guard + write key=value. */
     if (!path || !key) return -1;
-    printf("env value saved: %s\n", key);
+    FILE *f = fopen(path, "r");
+    char *buf = NULL;
+    if (f) {
+        fseek(f, 0, SEEK_END);
+        long n = ftell(f);
+        fseek(f, 0, SEEK_SET);
+        if (n > 0) {
+            buf = malloc((size_t)n + 1);
+            if (buf) {
+                size_t rr = fread(buf, 1, (size_t)n, f);
+                buf[rr] = '\0';
+            }
+        }
+        fclose(f);
+    }
+    FILE *w = fopen(path, "w");
+    if (!w) { free(buf); return -1; }
+    bool replaced = false;
+    if (buf) {
+        size_t klen = strlen(key);
+        char *p = buf;
+        while (*p) {
+            char *nl = strchr(p, '\n');
+            size_t ll = nl ? (size_t)(nl - p) : strlen(p);
+            bool match = ll > klen && strncmp(p, key, klen) == 0 && p[klen] == '=';
+            if (match) {
+                fprintf(w, "%s=%s\n", key, value ? value : "");
+                replaced = true;
+            } else {
+                fwrite(p, 1, ll, w);
+                fputc('\n', w);
+            }
+            p = nl ? nl + 1 : p + ll;
+        }
+    }
+    if (!replaced) fprintf(w, "%s=%s\n", key, value ? value : "");
+    fclose(w);
+    free(buf);
     return 0;
 }
 
@@ -287,8 +414,38 @@ int cfg_save_env_value(const char *path, const char *key, const char *value) {
 bool cfg_remove_env_value(const char *path, const char *key) {
     /* Python: remove from .env and os.environ. */
     if (!path || !key) return false;
-    printf("env value removed: %s\n", key);
-    return true;
+    FILE *f = fopen(path, "r");
+    if (!f) return false;
+    fseek(f, 0, SEEK_END);
+    long n = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    char *buf = NULL;
+    if (n > 0) {
+        buf = malloc((size_t)n + 1);
+        if (buf) { size_t rr = fread(buf, 1, (size_t)n, f); buf[rr] = '\0'; }
+    }
+    fclose(f);
+    if (!buf) return false;
+    size_t klen = strlen(key);
+    bool found = false;
+    FILE *w = fopen(path, "w");
+    if (!w) { free(buf); return false; }
+    char *p = buf;
+    while (*p) {
+        char *nl = strchr(p, '\n');
+        size_t ll = nl ? (size_t)(nl - p) : strlen(p);
+        bool match = ll > klen && strncmp(p, key, klen) == 0 && p[klen] == '=';
+        if (match) {
+            found = true;
+        } else {
+            fwrite(p, 1, ll, w);
+            fputc('\n', w);
+        }
+        p = nl ? nl + 1 : p + ll;
+    }
+    fclose(w);
+    free(buf);
+    return found;
 }
 
 /* PoP: save_anthropic_oauth_token @ hermes_cli/config.py:save_anthropic_oauth_token */
@@ -325,8 +482,26 @@ int cfg_save_env_value_secure(const char *key, const char *value) {
 long cfg_reload_env(const char *path) {
     /* Python: re-read into os.environ; returns updated count. */
     if (!path) return 0;
-    printf("env reloaded into os.environ\n");
-    return 0;
+    FILE *f = fopen(path, "r");
+    if (!f) return 0;
+    char line[8192];
+    long updated = 0;
+    while (fgets(line, sizeof(line), f)) {
+        char *eq = strchr(line, '=');
+        if (!eq || line[0] == '#') continue;
+        *eq = '\0';
+        char *key = line;
+        while (*key == ' ' || *key == '\t') key++;
+        char *val = eq + 1;
+        size_t vl = strlen(val);
+        while (vl && (val[vl-1] == '\n' || val[vl-1] == '\r')) val[--vl] = '\0';
+        if (*key && *val) {
+            setenv(key, val, 1);
+            updated++;
+        }
+    }
+    fclose(f);
+    return updated;
 }
 
 /* PoP: get_env_value @ hermes_cli/config.py:get_env_value */

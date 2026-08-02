@@ -192,7 +192,21 @@ int stp_setup_qqbot(void) {
 
 /* PoP: _setup_webhooks @ hermes_cli/setup.py:_setup_webhooks */
 int stp_setup_webhooks(void) {
-    printf("webhooks setup\n");
+    /* Python: configures WEBHOOK_ENABLED + endpoint env values. */
+    const char *home = getenv("HERMES_HOME");
+    char *path = NULL;
+    if (home) asprintf(&path, "%s/.env", home);
+    else asprintf(&path, "%s/.hermes/.env", getenv("HOME") ? getenv("HOME") : ".");
+    if (!path) return -1;
+    FILE *f = fopen(path, "a");
+    if (!f) { free(path); return -1; }
+    const char *existing = getenv("WEBHOOK_ENABLED");
+    if (!existing || !*existing) {
+        fprintf(f, "WEBHOOK_ENABLED=true\n");
+        fprintf(f, "WEBHOOK_ENDPOINT=/webhook\n");
+    }
+    fclose(f);
+    free(path);
     return 0;
 }
 

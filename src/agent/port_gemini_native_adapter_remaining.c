@@ -53,8 +53,33 @@ char *gna_coerce_content_to_text(const char *content_json) {
     /* Python: None→""; str→itself; list→joined text pieces. */
     if (!content_json) return strdup("");
     if (content_json[0] != '[') return strdup(content_json);
-    printf("content list coerced to text\n");
-    return strdup("");
+    /* list: extract all "text": "..." values and join with space */
+    size_t cap = strlen(content_json) + 16;
+    char *out = malloc(cap);
+    if (!out) return strdup("");
+    out[0] = '\0';
+    const char *p = content_json;
+    while ((p = strstr(p, "\"text\"")) != NULL) {
+        const char *colon = strchr(p, ':');
+        if (!colon) break;
+        const char *v = colon + 1;
+        while (*v == ' ' || *v == '"') v++;
+        const char *e = v;
+        while (*e && *e != '"') e++;
+        if (e > v) {
+            size_t need = strlen(out) + (size_t)(e - v) + 4;
+            if (need > cap) {
+                cap = need * 2;
+                char *nb = realloc(out, cap);
+                if (!nb) break;
+                out = nb;
+            }
+            if (*out) strcat(out, " ");
+            strncat(out, v, (size_t)(e - v));
+        }
+        p = e;
+    }
+    return out;
 }
 
 /* PoP: _extract_multimodal_parts @ agent/gemini_native_adapter.py:_extract_multimodal_parts */
@@ -109,16 +134,36 @@ char *gna_translate_tools_to_gemini(const char *tools_json) {
 char *gna_translate_tool_choice_to_gemini(const char *tool_choice) {
     /* Python: auto/none/required → functionCallingConfig. */
     if (!tool_choice) return NULL;
-    printf("tool choice translated (auto/none/required)\n");
-    return strdup("{}");
+    if (strcmp(tool_choice, "none") == 0)
+        return strdup("{\"functionCallingConfig\": {\"mode\": \"NONE\"}}");
+    if (strcmp(tool_choice, "required") == 0 || strcmp(tool_choice, "force") == 0)
+        return strdup("{\"functionCallingConfig\": {\"mode\": \"ANY\"}}");
+    return strdup("{\"functionCallingConfig\": {\"mode\": \"AUTO\"}}");
 }
 
 /* PoP: _normalize_thinking_config @ agent/gemini_native_adapter.py:_normalize_thinking_config */
 char *gna_normalize_thinking_config(const char *config_json) {
     /* Python: thinkingBudget + includeThoughts. */
     if (!config_json || strcmp(config_json, "{}") == 0) return NULL;
-    printf("thinking config normalized\n");
-    return strdup(config_json);
+    long budget = 0;
+    const char *p = strstr(config_json, "thinkingBudget");
+    if (p) {
+        const char *colon = strchr(p, ':');
+        if (colon) budget = atol(colon + 1);
+    }
+    if (budget <= 0) {
+        const char *p2 = strstr(config_json, "thinking_budget");
+        if (p2) {
+            const char *colon = strchr(p2, ':');
+            if (colon) budget = atol(colon + 1);
+        }
+    }
+    char *out = NULL;
+    if (budget > 0)
+        asprintf(&out, "{\"thinkingConfig\": {\"thinkingBudget\": %ld, \"includeThoughts\": true}}", budget);
+    else
+        asprintf(&out, "{\"thinkingConfig\": {\"includeThoughts\": false}}");
+    return out;
 }
 
 /* PoP: build_gemini_request @ agent/gemini_native_adapter.py:build_gemini_request */

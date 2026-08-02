@@ -12,6 +12,7 @@
 #include <ctype.h>
 #include <time.h>
 #include <unistd.h>
+#include <dirent.h>
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -303,15 +304,49 @@ char *cur_write_run_report(const char *report_json) {
 char *cur_render_report_markdown(const char *report_json) {
     /* Python: human-readable report. */
     if (!report_json) return strdup("");
-    printf("report markdown rendered\n");
-    return strdup("");
+    const char *started = strstr(report_json, "started_at");
+    const char *dur = strstr(report_json, "duration_seconds");
+    const char *summary = strstr(report_json, "final_summary");
+    char *out = NULL;
+    asprintf(&out,
+        "# Curator run report\n\n- started_at: %s\n- duration_seconds: %s\n- summary: %s\n",
+        started ? started + 14 : "?",
+        dur ? dur + 20 : "0",
+        summary ? summary + 16 : "");
+    return out;
 }
 
 /* PoP: _render_candidate_list @ agent/curator.py:_render_candidate_list */
 char *cur_render_candidate_list(void) {
-    /* Python: agent-created skills w/ usage stats. */
-    printf("candidate list rendered (agent-created skills + usage)\n");
-    return strdup("");
+    /* Python: agent-created skills w/ usage stats — real scan of
+     * ~/.hermes/skills for skills/ subdirs. */
+    const char *home = getenv("HERMES_HOME");
+    char *skills_dir = NULL;
+    if (home) asprintf(&skills_dir, "%s/skills", home);
+    else asprintf(&skills_dir, "%s/.hermes/skills", getenv("HOME") ? getenv("HOME") : ".");
+    DIR *d = opendir(skills_dir);
+    char *out = NULL;
+    size_t cap = 512, len = 0;
+    out = malloc(cap);
+    if (!out) { free(skills_dir); return strdup(""); }
+    out[0] = '\0';
+    if (d) {
+        struct dirent *e;
+        while ((e = readdir(d)) != NULL) {
+            if (e->d_name[0] == '.') continue;
+            size_t need = len + strlen(e->d_name) + 8;
+            if (need > cap) {
+                cap = need * 2;
+                char *nb = realloc(out, cap);
+                if (!nb) break;
+                out = nb;
+            }
+            len += sprintf(out + len, "%s\n", e->d_name);
+        }
+        closedir(d);
+    }
+    free(skills_dir);
+    return out;
 }
 
 /* PoP: run_curator_review @ agent/curator.py:run_curator_review */

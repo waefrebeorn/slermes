@@ -76,20 +76,80 @@ char *cc_extract_tool_call_name_and_args(const char *tool_call_json) {
 char *cc_collect_path_mentions(const char *text, long limit) {
     /* Python: dedupe-appended path mentions (limit). */
     if (!text) return strdup("[]");
-    printf("path mentions collected (dedupe, limit %ld)\n", limit);
-    return strdup("[]");
+    size_t ocap = 256;
+    char *out = malloc(ocap);
+    if (!out) return strdup("[]");
+    strcpy(out, "[");
+    bool first = true;
+    long count = 0;
+    const char *p = text;
+    while (*p && (limit <= 0 || count < limit)) {
+        if (p[0] == '/' || (p[0] == '~' && p[1] == '/')) {
+            const char *e = p;
+            while (*e && *e != ' ' && *e != '\t' && *e != '\n' && *e != ')' && *e != ',' && *e != '.') e++;
+            size_t tok_len = (size_t)(e - p);
+            /* keep tokens with a dot extension or known dir-ish shape */
+            char *tok = strndup(p, tok_len);
+            bool keep = tok && (strchr(tok, '.') != NULL || strchr(tok, '/') != NULL);
+            if (keep && !strstr(out, tok)) {
+                size_t need = strlen(out) + tok_len + 8;
+                if (need > ocap) {
+                    ocap = need * 2;
+                    char *nb = realloc(out, ocap);
+                    if (!nb) { free(tok); break; }
+                    out = nb;
+                }
+                if (!first) strcat(out, ",");
+                strcat(out, "\"");
+                strncat(out, tok, tok_len);
+                strcat(out, "\"");
+                first = false;
+                count++;
+            }
+            free(tok);
+            p = e;
+        } else {
+            p++;
+        }
+    }
+    strcat(out, "]");
+    return out;
 }
 
 /* PoP: _append_text_to_content @ agent/context_compressor.py:_append_text_to_content */
 char *cc_append_text_to_content(const char *content_json, const char *text, bool prepend) {
-    /* Python: safe append/prepend to content. */
+    /* Python: safe append/prepend to content (string or parts list). */
     if (!text) return strdup(content_json ? content_json : "");
     if (!content_json || strcmp(content_json, "[]") == 0 || strcmp(content_json, "\"\"") == 0) {
         char *out = NULL;
-        asprintf(&out, "\"%s\"", text);
+        asprintf(&out, "{\"type\": \"text\", \"text\": \"%s\"}", text);
         return out;
     }
-    printf("text %s content\n", prepend ? "prepended to" : "appended to");
+    if (content_json[0] == '[') {
+        /* append a text part inside the list */
+        size_t len = strlen(content_json);
+        char *out = malloc(len + strlen(text) + 64);
+        if (!out) return strdup(content_json);
+        if (prepend) {
+            snprintf(out, len + strlen(text) + 64,
+                     "[{\"type\": \"text\", \"text\": \"%s\"},%s", text, content_json + 1);
+        } else {
+            snprintf(out, len + strlen(text) + 64,
+                     "%.*s,{\"type\": \"text\", \"text\": \"%s\"}]",
+                     (int)(len - 1), content_json, text);
+        }
+        return out;
+    }
+    if (content_json[0] == '"') {
+        size_t len = strlen(content_json);
+        char *out = malloc(len + strlen(text) + 8);
+        if (!out) return strdup(content_json);
+        if (prepend)
+            snprintf(out, len + strlen(text) + 8, "\"%s %.*s\"", text, (int)(len - 2), content_json + 1);
+        else
+            snprintf(out, len + strlen(text) + 8, "\"%.*s %s\"", (int)(len - 2), content_json + 1, text);
+        return out;
+    }
     return strdup(content_json);
 }
 

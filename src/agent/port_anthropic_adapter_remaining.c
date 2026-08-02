@@ -411,8 +411,24 @@ char *antr_image_source_from_openai_url(const char *url) {
     /* Python: data: URLs → base64 source; else url source. */
     if (!url || !*url) return strdup("{\"type\": \"url\", \"url\": \"\"}");
     if (strncmp(url, "data:", 5) == 0) {
-        printf("data url decoded to base64 source\n");
-        return strdup("{\"type\": \"base64\", \"media_type\": \"image/png\", \"data\": \"...\"}");
+        /* data:[<mediatype>][;base64],<data> */
+        const char *comma = strchr(url, ',');
+        if (!comma) return strdup("{\"type\": \"url\", \"url\": \"\"}");
+        char *header = strndup(url + 5, (size_t)(comma - url - 5));
+        char *media_type = strdup("image/png");
+        if (header) {
+            char *semi = strchr(header, ';');
+            if (semi && semi != header) {
+                char *mt = strndup(header, (size_t)(semi - header));
+                if (mt && *mt) { free(media_type); media_type = mt; }
+                else free(mt);
+            }
+        }
+        char *out = NULL;
+        asprintf(&out, "{\"type\": \"base64\", \"media_type\": \"%s\", \"data\": \"%s\"}",
+                 media_type, comma + 1);
+        free(header); free(media_type);
+        return out;
     }
     char *out = NULL;
     asprintf(&out, "{\"type\": \"url\", \"url\": \"%s\"}", url);
@@ -428,6 +444,25 @@ char *antr_convert_content_part_to_anthropic(const char *part_json) {
         asprintf(&out, "{\"type\": \"text\", \"text\": %s}", part_json);
         return out;
     }
+    if (part_json[0] == '{' && strstr(part_json, "image_url")) {
+        /* OpenAI image_url → anthropic image block via url */
+        const char *p = strstr(part_json, "\"url\"");
+        if (p) {
+            const char *colon = strchr(p, ':');
+            if (colon) {
+                const char *v = colon + 1;
+                while (*v == ' ' || *v == '"') v++;
+                const char *e = v;
+                while (*e && *e != '"') e++;
+                char *url = strndup(v, (size_t)(e - v));
+                char *src = antr_image_source_from_openai_url(url);
+                char *out = NULL;
+                asprintf(&out, "{\"type\": \"image\", \"source\": %s}", src);
+                free(url); free(src);
+                return out;
+            }
+        }
+    }
     return strdup(part_json);
 }
 
@@ -435,8 +470,38 @@ char *antr_convert_content_part_to_anthropic(const char *part_json) {
 char *antr_extract_preserved_thinking_blocks(const char *message_json) {
     /* Python: reasoning_details list → preserved thinking blocks. */
     if (!message_json || !strstr(message_json, "reasoning_details")) return strdup("[]");
-    printf("preserved thinking blocks extracted from reasoning_details\n");
-    return strdup("[]");
+    /* wrap each reasoning entry as {"type":"thinking","thinking":...} */
+    size_t cap = strlen(message_json) + 64;
+    char *out = malloc(cap);
+    if (!out) return strdup("[]");
+    strcpy(out, "[");
+    bool first = true;
+    const char *p = message_json;
+    while ((p = strstr(p, "\"content\"")) != NULL) {
+        const char *colon = strchr(p, ':');
+        if (!colon) break;
+        const char *v = colon + 1;
+        while (*v == ' ' || *v == '"') v++;
+        const char *e = v;
+        while (*e && *e != '"') e++;
+        if (e > v) {
+            size_t need = strlen(out) + (size_t)(e - v) + 40;
+            if (need > cap) {
+                cap = need * 2;
+                char *nb = realloc(out, cap);
+                if (!nb) break;
+                out = nb;
+            }
+            if (!first) strcat(out, ",");
+            strcat(out, "{\"type\": \"thinking\", \"thinking\": \"");
+            strncat(out, v, (size_t)(e - v));
+            strcat(out, "\"}");
+            first = false;
+        }
+        p = e;
+    }
+    strcat(out, "]");
+    return out;
 }
 
 /* PoP: _convert_content_to_anthropic @ agent/anthropic_adapter.py:_convert_content_to_anthropic */

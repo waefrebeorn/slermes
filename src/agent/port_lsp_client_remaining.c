@@ -237,8 +237,51 @@ bool lspc_wait_for_fresh_push(const char *path, long version, double timeout) {
 char *lspc_dedupe(const char *lists_json) {
     /* Python: content-key dedupe across lists. */
     if (!lists_json) return strdup("[]");
-    printf("diagnostics deduped\n");
-    return strdup("[]");
+    /* real-ish: keep one copy of each distinct diagnostic dict by
+     * first-occurrence order across the concatenated list. */
+    size_t ocap = strlen(lists_json) + 16;
+    char *out = malloc(ocap);
+    if (!out) return strdup("[]");
+    char *seen = malloc(strlen(lists_json) + 16);
+    if (!seen) { free(out); return strdup("[]"); }
+    seen[0] = '\0';
+    strcpy(out, "[");
+    bool first = true;
+    const char *p = lists_json;
+    while ((p = strstr(p, "{")) != NULL) {
+        const char *e = p;
+        int depth = 0;
+        while (*e) {
+            if (*e == '{') depth++;
+            else if (*e == '}') { depth--; if (depth == 0) { e++; break; } }
+            e++;
+        }
+        size_t seg_len = (size_t)(e - p);
+        char *seg = strndup(p, seg_len);
+        bool dup = seg && strstr(seen, seg) != NULL;
+        if (seg && !dup) {
+            size_t need = strlen(out) + seg_len + 8;
+            if (need > ocap) {
+                ocap = need * 2;
+                char *nb = realloc(out, ocap);
+                if (!nb) { free(seg); break; }
+                out = nb;
+            }
+            if (!first) strcat(out, ",");
+            strncat(out, seg, seg_len);
+            first = false;
+            size_t seen_len = strlen(seen);
+            if (seen_len + seg_len + 2 < strlen(lists_json) + 16) {
+                strcat(seen, "|");
+                strncat(seen, seg, seg_len);
+            }
+        }
+        free(seg);
+        p = e;
+    }
+    strcat(out, "]");
+    free(seen);
+    return out;
 }
 
 /* PoP: _diagnostic_key @ agent/lsp/client.py:_diagnostic_key */

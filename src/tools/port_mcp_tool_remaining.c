@@ -35,7 +35,31 @@ int mct_server_task_init(const char *server_name, long max_rpm, double timeout) 
 bool mct_check_rate_limit(const char *server_name) {
     /* Python: sliding 60s window; True when allowed. */
     if (!server_name) return true;
-    printf("rate limit check (%s)\n", server_name);
+    static char names[16][128];
+    static double stamps[16][4096];
+    static long counts[16];
+    static long next_slot = 0;
+    /* find slot for this server */
+    long slot = -1;
+    for (long i = 0; i < next_slot; i++)
+        if (strcmp(names[i], server_name) == 0) { slot = i; break; }
+    if (slot < 0) {
+        if (next_slot < 16) {
+            slot = next_slot++;
+            snprintf(names[slot], sizeof(names[slot]), "%s", server_name);
+            counts[slot] = 0;
+        } else {
+            return true;
+        }
+    }
+    double now = (double)time(NULL);
+    /* prune stamps older than 60s */
+    long kept = 0;
+    for (long i = 0; i < counts[slot]; i++)
+        if (now - stamps[slot][i] < 60.0) stamps[slot][kept++] = stamps[slot][i];
+    counts[slot] = kept;
+    if (kept >= 60) return false;  /* 60 rpm cap */
+    stamps[slot][counts[slot]++] = now;
     return true;
 }
 

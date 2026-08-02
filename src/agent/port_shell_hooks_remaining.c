@@ -136,23 +136,64 @@ char *shk_allowlist_path(const char *hermes_home) {
 char *shk_load_allowlist(const char *hermes_home) {
     /* Python: parsed allowlist or empty skeleton. */
     if (!hermes_home) return strdup("{\"approvals\": []}");
-    printf("allowlist loaded\n");
-    return strdup("{\"approvals\": []}");
+    char *path = shk_allowlist_path(hermes_home);
+    char *out = NULL;
+    FILE *f = fopen(path, "r");
+    if (f) {
+        fseek(f, 0, SEEK_END);
+        long n = ftell(f);
+        fseek(f, 0, SEEK_SET);
+        if (n > 0) {
+            char *buf = malloc((size_t)n + 1);
+            if (buf) {
+                size_t r = fread(buf, 1, (size_t)n, f);
+                buf[r] = '\0';
+                out = strdup(buf);
+                free(buf);
+            }
+        }
+        fclose(f);
+    }
+    free(path);
+    return out ? out : strdup("{\"approvals\": []}");
 }
 
 /* PoP: save_allowlist @ agent/shell_hooks.py:save_allowlist */
 int shk_save_allowlist(const char *hermes_home, const char *data_json) {
     /* Python: atomic mkstemp + os.replace (cross-process safe). */
     if (!hermes_home || !data_json) return -1;
-    printf("allowlist saved atomically (mkstemp + replace)\n");
-    return 0;
+    char *path = shk_allowlist_path(hermes_home);
+    char *tmp = NULL;
+    asprintf(&tmp, "%s.tmp.%ld", path, (long)getpid());
+    FILE *w = fopen(tmp, "w");
+    if (!w) { free(tmp); free(path); return -1; }
+    fwrite(data_json, 1, strlen(data_json), w);
+    fputc('\n', w);
+    if (fflush(w) != 0) { fclose(w); unlink(tmp); free(tmp); free(path); return -1; }
+    fclose(w);
+    int rc = rename(tmp, path);
+    if (rc != 0) unlink(tmp);
+    free(tmp); free(path);
+    return rc == 0 ? 0 : -1;
 }
 
 /* PoP: _is_allowlisted @ agent/shell_hooks.py:_is_allowlisted */
 bool shk_is_allowlisted(const char *allowlist_json, const char *event, const char *command) {
     /* Python: any approval entry matching event+command. */
     if (!allowlist_json || !event || !command) return false;
-    return strstr(allowlist_json, command) != NULL;
+    /* rough but real: look for the pair inside one approval object */
+    const char *p = allowlist_json;
+    while ((p = strstr(p, "\"event\"")) != NULL) {
+        const char *ev_end = strchr(p, '}');
+        const char *seg_end = ev_end ? ev_end : p + strlen(p);
+        size_t seg_len = (size_t)(seg_end - p);
+        char *seg = strndup(p, seg_len);
+        bool hit = seg && strstr(seg, event) && strstr(seg, command);
+        free(seg);
+        if (hit) return true;
+        p = ev_end ? ev_end + 1 : p + 7;
+    }
+    return false;
 }
 
 /* PoP: _locked_update_approvals @ agent/shell_hooks.py:_locked_update_approvals */

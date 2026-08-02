@@ -12,6 +12,8 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <errno.h>
+#include <dirent.h>
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -51,16 +53,24 @@ char *fo_densify_matches(const char *matches_json) {
 char *fo_delete_file(const char *path) {
     /* Python: unlink; WriteResult w/ error on failure. */
     if (!path) return strdup("{\"error\": \"no path\"}");
-    printf("file deleted: %s\n", path);
-    return strdup("{}");
+    if (unlink(path) != 0) {
+        char *out = NULL;
+        asprintf(&out, "{\"error\": \"delete failed: %s\"}", strerror(errno));
+        return out;
+    }
+    return strdup("{\"deleted\": true}");
 }
 
 /* PoP: move_file @ tools/file_operations.py:move_file */
 char *fo_move_file(const char *src, const char *dst) {
     /* Python: rename; WriteResult. */
     if (!src || !dst) return strdup("{\"error\": \"no path\"}");
-    printf("file moved: %s → %s\n", src, dst);
-    return strdup("{}");
+    if (rename(src, dst) != 0) {
+        char *out = NULL;
+        asprintf(&out, "{\"error\": \"move failed: %s\"}", strerror(errno));
+        return out;
+    }
+    return strdup("{\"moved\": true}");
 }
 
 /* PoP: _coerce_int @ tools/file_operations.py:_coerce_int */
@@ -77,7 +87,15 @@ long fo_coerce_int(const char *value, long default_value) {
 int fo_atomic_write(const char *path, const char *content) {
     /* Python: temp-file + rename, streamed. */
     if (!path || !content) return -1;
-    printf("atomic write: %s (temp + rename)\n", path);
+    char *tmp = NULL;
+    asprintf(&tmp, "%s.tmp.%ld", path, (long)getpid());
+    FILE *w = fopen(tmp, "w");
+    if (!w) { free(tmp); return -1; }
+    fwrite(content, 1, strlen(content), w);
+    if (fflush(w) != 0) { fclose(w); unlink(tmp); free(tmp); return -1; }
+    fclose(w);
+    if (rename(tmp, path) != 0) { unlink(tmp); free(tmp); return -1; }
+    free(tmp);
     return 0;
 }
 
@@ -85,8 +103,46 @@ int fo_atomic_write(const char *path, const char *content) {
 char *fo_suggest_similar_files(const char *path) {
     /* Python: same-dir similar-name candidates. */
     if (!path) return strdup("[]");
-    printf("similar files suggested for %s\n", path);
-    return strdup("[]");
+    const char *slash = strrchr(path, '/');
+    char *dir = slash ? strndup(path, (size_t)(slash - path)) : strdup(".");
+    const char *base = slash ? slash + 1 : path;
+    size_t blen = strlen(base);
+    char *out = NULL;
+    size_t olen = 0, ocap = 64;
+    out = malloc(ocap);
+    if (!out) { free(dir); return strdup("[]"); }
+    out[0] = '\0';
+    strcpy(out, "[");
+    DIR *d = opendir(dir);
+    bool first = true;
+    if (d) {
+        struct dirent *e;
+        while ((e = readdir(d)) != NULL) {
+            const char *nm = e->d_name;
+            if (strcmp(nm, base) == 0) continue;
+            /* similar: shares first 3 chars or levenshtein-ish prefix */
+            size_t common = 0;
+            while (common < blen && nm[common] && nm[common] == base[common]) common++;
+            if (common >= 3 && common < blen) {
+                size_t need = strlen(out) + strlen(nm) + 8;
+                if (need > ocap) {
+                    ocap = need * 2;
+                    char *nb = realloc(out, ocap);
+                    if (!nb) break;
+                    out = nb;
+                }
+                if (!first) strcat(out, ",");
+                strcat(out, "\"");
+                strcat(out, nm);
+                strcat(out, "\"");
+                first = false;
+            }
+        }
+        closedir(d);
+    }
+    strcat(out, "]");
+    free(dir);
+    return out;
 }
 
 /* PoP: _check_lint @ tools/file_operations.py:_check_lint */

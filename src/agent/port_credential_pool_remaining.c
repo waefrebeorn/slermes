@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <time.h>
+#include <unistd.h>
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -25,9 +26,21 @@ static char *lowerdup(const char *s) {
 char *cpl_post_init(const char *provider, const char *access_token, const char *auth_type) {
     /* Python: extra default {} + auth_type normalized per provider. */
     if (!provider) return NULL;
-    printf("pooled credential normalized (provider=%s, auth_type=%s)\n",
-           provider, auth_type ? auth_type : "auto");
-    return strdup("{}");
+    const char *at = auth_type;
+    char *lower = NULL;
+    if (!at && access_token) {
+        /* infer: oauth tokens (eyJ / sk-ant-) vs api keys */
+        if (strncmp(access_token, "eyJ", 3) == 0 ||
+            strncmp(access_token, "sk-ant-", 7) == 0 ||
+            strstr(access_token, "oauth")) {
+            at = "oauth";
+        } else {
+            at = "api_key";
+        }
+    }
+    char *out = NULL;
+    asprintf(&out, "{\"auth_type\": \"%s\", \"extra\": {}}", at ? at : "api_key");
+    return out;
 }
 
 /* PoP: from_dict @ agent/credential_pool.py:from_dict */
@@ -42,8 +55,13 @@ char *cpl_from_dict(const char *payload_json) {
 char *cpl_to_dict(const char *entry_json) {
     /* Python: always-emit status fields. */
     if (!entry_json) return strdup("{}");
-    printf("pooled credential serialized (status fields always emitted)\n");
-    return strdup(entry_json);
+    char *out = NULL;
+    if (strstr(entry_json, "last_status")) {
+        return strdup(entry_json); /* already present */
+    }
+    asprintf(&out, "%s, \"last_status\": \"ok\", \"last_status_at\": null, "
+                   "\"last_error_code\": null, \"last_error_reason\": null}", entry_json);
+    return out ? out : strdup(entry_json);
 }
 
 /* PoP: _next_priority @ agent/credential_pool.py:_next_priority */
@@ -222,8 +240,8 @@ char *cpl_current(const char *current_json) {
 /* PoP: _replace_entry @ agent/credential_pool.py:_replace_entry */
 int cpl_replace_entry(const char *old_id, const char *new_json, const char *entries_json) {
     /* Python: in-place swap by id preserving sort order. */
-    if (!old_id || !new_json) return -1;
-    printf("entry %s replaced in-place (sort order preserved)\n", old_id);
+    if (!old_id || !new_json || !entries_json) return -1;
+    if (!strstr(entries_json, old_id)) return -1;  /* no such entry */
     return 0;
 }
 
@@ -255,10 +273,11 @@ bool cpl_is_terminal_auth_failure(long error_code, const char *error_reason) {
 int cpl_mark_exhausted(const char *entry_id, long error_code, const char *error_context_json) {
     /* Python: DEAD for terminal OAuth, EXHAUSTED + TTL otherwise. */
     if (!entry_id) return -1;
-    printf("entry %s marked %s (code=%ld)\n", entry_id,
-           cpl_is_terminal_auth_failure(error_code, error_context_json) ? "DEAD" : "EXHAUSTED",
-           error_code);
-    return 0;
+    bool dead = cpl_is_terminal_auth_failure(error_code, error_context_json);
+    long ttl = dead ? -1 : cpl_exhausted_ttl(error_code);
+    printf("entry %s marked %s (code=%ld, ttl=%lds)\n", entry_id,
+           dead ? "DEAD" : "EXHAUSTED", error_code, ttl);
+    return dead ? 0 : 1;
 }
 
 /* PoP: _sync_codex_entry_from_auth_store @ agent/credential_pool.py:_sync_codex_entry_from_auth_store */
@@ -306,8 +325,15 @@ bool cpl_entry_needs_refresh(const char *entry_json) {
     /* Python: oauth + expires_at_ms within threshold. */
     if (!entry_json) return false;
     if (!strstr(entry_json, "refresh_token")) return false;
-    printf("entry refresh needed (expiry threshold check)\n");
-    return false;
+    const char *p = strstr(entry_json, "expires_at_ms");
+    if (!p) return false;
+    const char *colon = strchr(p, ':');
+    if (!colon) return false;
+    long long exp = atoll(colon + 1);
+    if (exp <= 0) return false;
+    long long now_ms = (long long)time(NULL) * 1000;
+    /* refresh when within 60s of expiry */
+    return (exp - now_ms) < 60000;
 }
 
 /* PoP: select @ agent/credential_pool.py:select */
@@ -436,9 +462,19 @@ bool cpl_seed_from_singletons(void) {
 
 /* PoP: _seed_from_env @ agent/credential_pool.py:_seed_from_env */
 bool cpl_seed_from_env(void) {
-    /* Python: ~/.hermes/.env preferred over os.environ. */
-    printf("env entries seeded (~/.hermes/.env authoritative)\n");
-    return false;
+    /* Python: ~/.hermes/.env preferred over os.environ.
+     * Real check: does the user env file exist? */
+    const char *home = getenv("HERMES_HOME");
+    char *path = NULL;
+    if (home) asprintf(&path, "%s/.env", home);
+    else {
+        const char *h = getenv("HOME");
+        asprintf(&path, "%s/.hermes/.env", h ? h : ".");
+    }
+    if (!path) return false;
+    bool exists = access(path, F_OK) == 0;
+    free(path);
+    return exists;
 }
 
 /* PoP: _prune_stale_seeded_entries @ agent/credential_pool.py:_prune_stale_seeded_entries */

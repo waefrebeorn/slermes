@@ -31,15 +31,28 @@ char *wx2_init(const char *hermes_home) {
 int wx2_restore(const char *account_id) {
     /* Python: restore cache from disk. */
     if (!account_id) return -1;
-    printf("weixin cache restored for %s\n", account_id);
-    return 0;
+    char *path = NULL;
+    asprintf(&path, "%s/weixin_cache_%s.json", getenv("HERMES_HOME") ? getenv("HERMES_HOME") : ".",
+             account_id);
+    FILE *f = fopen(path, "r");
+    int rc = f ? 0 : -1;
+    if (f) fclose(f);
+    free(path);
+    return rc;
 }
 
 /* PoP: _persist @ gateway/platforms/weixin.py:_persist */
 int wx2_persist(const char *account_id, const char *payload_json) {
     /* Python: prefix-stripped payload write. */
     if (!account_id || !payload_json) return -1;
-    printf("weixin cache persisted (%s)\n", account_id);
+    const char *home = getenv("HERMES_HOME");
+    char *path = NULL;
+    asprintf(&path, "%s/weixin_cache_%s.json", home ? home : ".", account_id);
+    FILE *w = fopen(path, "w");
+    if (!w) { free(path); return -1; }
+    fwrite(payload_json, 1, strlen(payload_json), w);
+    fclose(w);
+    free(path);
     return 0;
 }
 

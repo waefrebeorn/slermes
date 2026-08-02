@@ -70,10 +70,24 @@ bool brd_is_anthropic_bedrock_model(const char *model) {
 
 /* PoP: convert_tools_to_converse @ agent/bedrock_adapter.py:convert_tools_to_converse */
 char *brd_convert_tools_to_converse(const char *tools_json) {
-    /* Python: OpenAI tools → Converse toolSpec. */
+    /* Python: OpenAI tools → Converse toolSpec — real: rename
+     * "function" fields to "toolSpec" per tool object. */
     if (!tools_json) return strdup("[]");
-    printf("tools converted to converse toolSpec\n");
-    return strdup(tools_json);
+    char *out = malloc(strlen(tools_json) + 64);
+    if (!out) return strdup("[]");
+    const char *p = tools_json;
+    char *q = out;
+    while (*p) {
+        if (strncmp(p, "\"function\"", 10) == 0) {
+            memcpy(q, "\"toolSpec\"", 10);
+            q += 10;
+            p += 10;
+        } else {
+            *q++ = *p++;
+        }
+    }
+    *q = '\0';
+    return out;
 }
 
 /* PoP: _convert_content_to_converse @ agent/bedrock_adapter.py:_convert_content_to_converse */
@@ -92,12 +106,15 @@ char *brd_convert_messages_to_converse(const char *messages_json) {
 
 /* PoP: _converse_stop_reason_to_openai @ agent/bedrock_adapter.py:_converse_stop_reason_to_openai */
 char *brd_converse_stop_reason_to_openai(const char *reason) {
-    /* Python: end_turn→stop, tool_use→tool_calls, max_tokens→length… */
+    /* Python: end_turn→stop, tool_use→tool_calls, max_tokens→length…
+     * plus content_blocked / stop_sequence. */
     if (!reason) return strdup("stop");
     if (strcmp(reason, "end_turn") == 0) return strdup("stop");
     if (strcmp(reason, "tool_use") == 0) return strdup("tool_calls");
     if (strcmp(reason, "max_tokens") == 0) return strdup("length");
     if (strcmp(reason, "guardrail_intervened") == 0) return strdup("content_filter");
+    if (strcmp(reason, "content_blocked") == 0) return strdup("content_filter");
+    if (strcmp(reason, "stop_sequence") == 0) return strdup("stop");
     return strdup("stop");
 }
 

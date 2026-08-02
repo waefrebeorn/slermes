@@ -67,17 +67,41 @@ char *disp_get_tool_emoji(const char *tool_name) {
 /* PoP: _delegate_task_goal_parts @ agent/display.py:_delegate_task_goal_parts */
 char *disp_delegate_task_goal_parts(const char *tasks_json) {
     /* Python: (count, goal list) from tasks array. */
-    if (!tasks_json) return strdup("0\t[]");
-    printf("delegate goal parts parsed\n");
-    return strdup("0\t[]");
+    if (!tasks_json || tasks_json[0] != '[') return strdup("0\t[]");
+    long count = 0;
+    for (const char *p = tasks_json; *p; p++) if (*p == '{') count++;
+    char *out = NULL;
+    asprintf(&out, "%ld\t%s", count, tasks_json);
+    return out;
 }
 
 /* PoP: _resolved_path @ agent/display.py:_resolved_path */
 char *disp_resolved_path(const char *path) {
     /* Python: expanduser + cwd-relative resolution. */
     if (!path) return NULL;
-    printf("path resolved: %s\n", path);
-    return strdup(path);
+    const char *p = path;
+    char *expanded = NULL;
+    if (p[0] == '~' && (p[1] == '/' || p[1] == '\\' || p[1] == '\0')) {
+        const char *home = getenv("HOME");
+        if (home) asprintf(&expanded, "%s%s", home, p + 1);
+    }
+    char *abs = NULL;
+    if (expanded) {
+        if (expanded[0] == '/') abs = strdup(expanded);
+        else {
+            char cwd[4096];
+            if (getcwd(cwd, sizeof(cwd))) asprintf(&abs, "%s/%s", cwd, expanded);
+            else abs = strdup(expanded);
+        }
+        free(expanded);
+    } else if (p[0] == '/') {
+        abs = strdup(p);
+    } else {
+        char cwd[4096];
+        if (getcwd(cwd, sizeof(cwd))) asprintf(&abs, "%s/%s", cwd, p);
+        else abs = strdup(p);
+    }
+    return abs;
 }
 
 /* PoP: _snapshot_text @ agent/display.py:_snapshot_text */
@@ -284,28 +308,33 @@ int disp_spinner_stop(void) {
 
 /* PoP: _trim_error @ agent/display.py:_trim_error */
 char *disp_trim_error(const char *error) {
-    /* Python: strip long absolute paths to filenames. */
+    /* Python: strip long absolute paths to just the filename so the
+     * status line stays short. Real: tokenize on whitespace; any token
+     * that is an absolute path (/... or ~/...) → basename. */
     if (!error) return strdup("");
-    char *out = strdup(error);
+    char *out = malloc(strlen(error) + 1);
     if (!out) return NULL;
-    /* crude: replace /path/to/file.ext with basename */
-    char *p = out;
-    while ((p = strstr(p, "/")) != NULL) {
-        char *q = p;
-        char *last_slash = p;
-        while (*q) {
-            if (*q == '/') last_slash = q;
-            q++;
+    char *q = out;
+    const char *p = error;
+    while (*p) {
+        const char *tok_start = p;
+        while (*p && *p != ' ' && *p != '\t' && *p != '\n') p++;
+        size_t tok_len = (size_t)(p - tok_start);
+        const char *tok = tok_start;
+        if (tok_len > 0 && (tok[0] == '/' || (tok[0] == '~' && tok_len > 1 && tok[1] == '/'))) {
+            const char *base = tok;
+            for (size_t i = 0; i < tok_len; i++)
+                if (tok[i] == '/') base = tok + i + 1;
+            size_t base_len = (size_t)(tok + tok_len - base);
+            memcpy(q, base, base_len);
+            q += base_len;
+        } else {
+            memcpy(q, tok, tok_len);
+            q += tok_len;
         }
-        if (last_slash != p) {
-            char *name = last_slash + 1;
-            if (*name && !strchr(name, ' ')) {
-                memmove(p, name, strlen(name) + 1);
-                continue;
-            }
-        }
-        p++;
+        if (*p) *q++ = *p++;
     }
+    *q = '\0';
     return out;
 }
 
