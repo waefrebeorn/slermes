@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:37:27Z",
+  "generated_at": "2026-08-02T21:39:41Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -108039,10 +108039,10 @@
     },
     "gateway/platforms/msgraph_webhook.py": {
       "total": 25,
-      "ported": 20,
+      "ported": 25,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 25,
@@ -108329,17 +108329,24 @@
             "decorators": [],
             "line_number": 143
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_msgraph_webhook_remaining.c",
+          "c_function": "msw_connect",
+          "pop_annotation": {
+            "c_function": "msw_connect",
+            "python_functions": [
+              "connect"
+            ],
+            "c_file": "src/gateway/port_msgraph_webhook_remaining.c",
+            "python_file": "gateway/platforms/msgraph_webhook.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: connect @ gateway/platforms/msgraph_webhook.py:connect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/msgraph_webhook.py",
@@ -108351,17 +108358,24 @@
             "decorators": [],
             "line_number": 177
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_msgraph_webhook_remaining.c",
+          "c_function": "msw_disconnect",
+          "pop_annotation": {
+            "c_function": "msw_disconnect",
+            "python_functions": [
+              "disconnect"
+            ],
+            "c_file": "src/gateway/port_msgraph_webhook_remaining.c",
+            "python_file": "gateway/platforms/msgraph_webhook.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: disconnect @ gateway/platforms/msgraph_webhook.py:disconnect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/msgraph_webhook.py",
@@ -108373,17 +108387,24 @@
             "decorators": [],
             "line_number": 183
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_msgraph_webhook_remaining.c",
+          "c_function": "msw_send",
+          "pop_annotation": {
+            "c_function": "msw_send",
+            "python_functions": [
+              "send"
+            ],
+            "c_file": "src/gateway/port_msgraph_webhook_remaining.c",
+            "python_file": "gateway/platforms/msgraph_webhook.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send @ gateway/platforms/msgraph_webhook.py:send */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/msgraph_webhook.py",
@@ -108395,17 +108416,24 @@
             "decorators": [],
             "line_number": 193
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_msgraph_webhook_remaining.c",
+          "c_function": "msw_get_chat_info",
+          "pop_annotation": {
+            "c_function": "msw_get_chat_info",
+            "python_functions": [
+              "get_chat_info"
+            ],
+            "c_file": "src/gateway/port_msgraph_webhook_remaining.c",
+            "python_file": "gateway/platforms/msgraph_webhook.py",
+            "line": 43,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_chat_info @ gateway/platforms/msgraph_webhook.py:get_chat_info */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/msgraph_webhook.py",
@@ -108417,17 +108445,24 @@
             "decorators": [],
             "line_number": 196
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_msgraph_webhook_remaining.c",
+          "c_function": "msw_handle_health",
+          "pop_annotation": {
+            "c_function": "msw_handle_health",
+            "python_functions": [
+              "_handle_health"
+            ],
+            "c_file": "src/gateway/port_msgraph_webhook_remaining.c",
+            "python_file": "gateway/platforms/msgraph_webhook.py",
+            "line": 51,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _handle_health @ gateway/platforms/msgraph_webhook.py:_handle_health */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/msgraph_webhook.py",
@@ -174679,10 +174714,10 @@
     },
     "hermes_cli/console_engine.py": {
       "total": 63,
-      "ported": 58,
+      "ported": 63,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 63,
@@ -174698,16 +174733,24 @@
             "decorators": [],
             "line_number": 52
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_console_engine_remaining.c",
+          "c_function": "coe_error",
+          "pop_annotation": {
+            "c_function": "coe_error",
+            "python_functions": [
+              "error"
+            ],
+            "c_file": "src/cli/port_console_engine_remaining.c",
+            "python_file": "hermes_cli/console_engine.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: error @ hermes_cli/console_engine.py:error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/console_engine.py",
@@ -175560,16 +175603,24 @@
             "decorators": [],
             "line_number": 484
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_console_engine_remaining.c",
+          "c_function": "coe_init",
+          "pop_annotation": {
+            "c_function": "coe_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_console_engine_remaining.c",
+            "python_file": "hermes_cli/console_engine.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/console_engine.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/console_engine.py",
@@ -175581,16 +175632,24 @@
             "decorators": [],
             "line_number": 490
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_console_engine_remaining.c",
+          "c_function": "coe_execute",
+          "pop_annotation": {
+            "c_function": "coe_execute",
+            "python_functions": [
+              "execute"
+            ],
+            "c_file": "src/cli/port_console_engine_remaining.c",
+            "python_file": "hermes_cli/console_engine.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: execute @ hermes_cli/console_engine.py:execute */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/console_engine.py",
@@ -175689,16 +175748,24 @@
             "decorators": [],
             "line_number": 1109
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_console_engine_remaining.c",
+          "c_function": "coe_register",
+          "pop_annotation": {
+            "c_function": "coe_register",
+            "python_functions": [
+              "register"
+            ],
+            "c_file": "src/cli/port_console_engine_remaining.c",
+            "python_file": "hermes_cli/console_engine.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: register @ hermes_cli/console_engine.py:register */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/console_engine.py",
@@ -175739,16 +175806,24 @@
             "decorators": [],
             "line_number": 1147
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_console_engine_remaining.c",
+          "c_function": "coe_resolve_command",
+          "pop_annotation": {
+            "c_function": "coe_resolve_command",
+            "python_functions": [
+              "_resolve_command"
+            ],
+            "c_file": "src/cli/port_console_engine_remaining.c",
+            "python_file": "hermes_cli/console_engine.py",
+            "line": 57,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_command @ hermes_cli/console_engine.py:_resolve_command */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/console_engine.py",
