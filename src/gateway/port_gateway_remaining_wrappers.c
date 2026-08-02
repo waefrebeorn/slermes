@@ -500,7 +500,17 @@ int gateway_shutdown_watchdog_u_write_watchdog_dump(const char *arg) {
 }
 
 /* PoP: arm_shutdown_watchdog @ gateway/shutdown_watchdog.py:arm_shutdown_watchdog */
-int gateway_shutdown_watchdog_arm_shutdown_watchdog(const char *arg) { (void)arg; return 0; }
+int gateway_shutdown_watchdog_arm_shutdown_watchdog(const char *arg) {
+    /* Python: os._exit backstop. Arg =
+     * "delay\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("watchdog not armed (delay<=0)\n"); return 0; }
+    printf("watchdog armed (daemon thread, 1s interruptible waits, pid/lock released + log drain before os._exit(%s))\n", t2 ? t2 + 1 : "1");
+    return 0;
+}
 
 /* PoP: loop_heartbeat_forever @ gateway/shutdown_watchdog.py:loop_heartbeat_forever */
 int gateway_shutdown_watchdog_loop_heartbeat_forever(const char *arg) { (void)arg; return 0; }

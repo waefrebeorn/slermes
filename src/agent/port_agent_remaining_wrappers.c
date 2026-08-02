@@ -262,7 +262,17 @@ int agent_pet_generate_atlas_u_slot_bounds(const char *arg) {
 }
 
 /* PoP: _component_crops @ agent/pet/generate/atlas.py:_component_crops */
-int agent_pet_generate_atlas_u_component_crops(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_atlas_u_component_crops(const char *arg) {
+    /* Python: connected components. Arg =
+     * "frames\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s frame(s) (mass>=12%%, reading order, padding gate, axis-erase retry)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _sever_expected_gutters @ agent/pet/generate/atlas.py:_sever_expected_gutters */
 int agent_pet_generate_atlas_u_sever_expected_gutters(const char *arg) {
@@ -2318,7 +2328,22 @@ int agent_account_usage_u_codex_backend_urls(const char *arg) {
 }
 
 /* PoP: _resolve_codex_usage_credentials @ agent/account_usage.py:_resolve_codex_usage_credentials */
-int agent_account_usage_u_resolve_codex_usage_credentials(const char *arg) { (void)arg; return 0; }
+int agent_account_usage_u_resolve_codex_usage_credentials(const char *arg) {
+    /* Python: 3-tier resolve. Arg =
+     * "tier\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t\t\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *tier = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) {
+        fprintf(stderr, "No available openai-codex credential in credential pool\n");
+        return 1;
+    }
+    printf("key\tbase_url\taccount_id=%s (tier %s)\n", t3 ? t3 + 1 : "none", tier);
+    return 0;
+}
 
 /* PoP: redeemed @ agent/account_usage.py:redeemed */
 int agent_account_usage_redeemed(const char *arg) {

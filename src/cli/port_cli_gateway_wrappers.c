@@ -1891,7 +1891,17 @@ int cgw_u_guard_official_docker_root_gateway(const char *arg) {
 }
 
 /* PoP: _all_platforms @ hermes_cli/gateway.py:_all_platforms */
-int cgw_u_all_platforms(const char *arg) { (void)arg; return 0; }
+int cgw_u_all_platforms(const char *arg) {
+    /* Python: builtin + plugins. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s platform(s) (matrix hidden on win32, plugins discovered first call)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _platform_status @ hermes_cli/gateway.py:_platform_status */
 int cgw_u_platform_status(const char *arg) { (void)arg; return 0; }

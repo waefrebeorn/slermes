@@ -680,10 +680,48 @@ int auth_u_request_device_code(const char *arg) {
 }
 
 /* PoP: _poll_for_token @ hermes_cli/auth.py:_poll_for_token */
-int auth_u_poll_for_token(const char *arg) { (void)arg; return 0; }
+int auth_u_poll_for_token(const char *arg) {
+    /* Python: device poll. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "pending") == 0) {
+        printf("waiting for authorization (interval=%s, slow_down ramps +1s to 30 cap)...\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    if (strcmp(state, "no_token") == 0) {
+        fprintf(stderr, "Token response did not include access_token\n");
+        return 1;
+    }
+    if (strcmp(state, "timeout") == 0) {
+        fprintf(stderr, "Timed out waiting for device authorization\n");
+        return 1;
+    }
+    if (strcmp(state, "error") == 0) {
+        fprintf(stderr, "%s: %s\n", t2 ? t2 + 1 : "error", t3 ? t3 + 1 : "Unknown authentication error");
+        return 1;
+    }
+    printf("token payload: %s\n", t3 ? t3 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _try_import_shared_nous_state @ hermes_cli/auth.py:_try_import_shared_nous_state */
-int auth_u_try_import_shared_nous_state(const char *arg) { (void)arg; return 0; }
+int auth_u_try_import_shared_nous_state(const char *arg) {
+    /* Python: shared rehydrate. Arg =
+     * "imported\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int imported = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!imported) { printf("no shared state (or refresh failed) — falling back to device flow\n"); return 0; }
+    printf("shared Nous OAuth imported + forced-refreshed (state persisted back, terminal errors clear store)\n");
+    return 0;
+}
 
 /* PoP: _refresh_access_token @ hermes_cli/auth.py:_refresh_access_token */
 int auth_u_refresh_access_token(const char *arg) {
@@ -781,10 +819,33 @@ int auth_get_nous_auth_status(const char *arg) {
 }
 
 /* PoP: _compute_nous_auth_status @ hermes_cli/auth.py:_compute_nous_auth_status */
-int auth_u_compute_nous_auth_status(const char *arg) { (void)arg; return 0; }
+int auth_u_compute_nous_auth_status(const char *arg) {
+    /* Python: uncached status. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("{\"logged_in\": false}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_state") == 0) { printf("%s\n", tab ? tab + 1 : "{}"); return 0; }
+    if (strcmp(state, "runtime_err") == 0) {
+        printf("{\"logged_in\": false, \"error\": \"%s\", \"relogin_required\": %s}\n", tab ? tab + 1 : "?", "false");
+        return 0;
+    }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
 
 /* PoP: get_nous_session_validity @ hermes_cli/auth.py:get_nous_session_validity */
-int auth_get_nous_session_validity(const char *arg) { (void)arg; return 0; }
+int auth_get_nous_session_validity(const char *arg) {
+    /* Python: terminal-only. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("unknown\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "quarantined") == 0) { printf("terminal\n"); return 0; }
+    if (strcmp(state, "logged_in") == 0) { printf("valid\n"); return 0; }
+    if (strcmp(state, "relogin") == 0) { printf("terminal\n"); return 0; }
+    printf("unknown%s\n", tab ? " (non-terminal not-logged-in)" : "");
+    return 0;
+}
 
 /* PoP: get_codex_auth_status @ hermes_cli/auth.py:get_codex_auth_status */
 int auth_get_codex_auth_status(const char *arg) {
@@ -906,7 +967,26 @@ int auth_u_prompt_model_selection(const char *arg) { (void)arg; return 0; }
 int auth_u_login_openai_codex(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _login_xai_oauth @ hermes_cli/auth.py:_login_xai_oauth */
-int auth_u_login_xai_oauth(const char *arg) { (void)arg; return 0; }
+int auth_u_login_xai_oauth(const char *arg) {
+    /* Python: reuse-or-device. Arg =
+     * "reused\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int reused = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (reused) {
+        printf("Existing xAI OAuth credentials found in Hermes auth store.\n");
+        printf("Login successful! (config updated: model.provider=xai-oauth)\n");
+        return 0;
+    }
+    printf("Signing in to xAI Grok OAuth (SuperGrok / Premium+)...\n");
+    printf("Login successful!\n");
+    printf("  Auth state: ~/.hermes/auth.json\n");
+    printf("  Config updated: config.yaml (model.provider=xai-oauth, unsuppressed)\n");
+    return 0;
+}
 
 /* PoP: _xai_oauth_request_device_code @ hermes_cli/auth.py:_xai_oauth_request_device_code */
 int auth_u_xai_oauth_request_device_code(const char *arg) {

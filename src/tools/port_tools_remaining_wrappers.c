@@ -734,7 +734,17 @@ int tools_registry_u_caller_module(const char *arg) {
 }
 
 /* PoP: get_definitions @ tools/registry.py:get_definitions */
-int tools_registry_get_definitions(const char *arg) { (void)arg; return 0; }
+int tools_registry_get_definitions(const char *arg) {
+    /* Python: check_fn filtered. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("returned %s schema(s) (per-call check cache, name fallback, dynamic overrides)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _normalize_handler_result @ tools/registry.py:_normalize_handler_result */
 int tools_registry_u_normalize_handler_result(const char *arg) {

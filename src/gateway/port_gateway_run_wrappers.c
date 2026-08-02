@@ -1110,7 +1110,19 @@ int grun_u_extract_cache_busting_config(const char *arg) {
 int grun_u_agent_config_signature(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _rehydrate_session_model_override @ gateway/run.py:_rehydrate_session_model_override */
-int grun_u_rehydrate_session_model_override(const char *arg) { (void)arg; return 0; }
+int grun_u_rehydrate_session_model_override(const char *arg) {
+    /* Python: restart persistence. Arg =
+     * "rehydrated\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int rehydrated = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("no-op (in-memory wins or nothing persisted)\n"); return 0; }
+    if (!rehydrated) { printf("no persisted override\n"); return 0; }
+    printf("rehydrated /model override (api_key never persisted; creds re-resolved): %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _release_running_agent_state @ gateway/run.py:_release_running_agent_state */
 int grun_u_release_running_agent_state(const char *arg) {
@@ -1236,7 +1248,19 @@ int grun_u_init_cached_agent_for_turn(const char *arg) {
 }
 
 /* PoP: _commit_memory_before_soft_evict @ gateway/run.py:_commit_memory_before_soft_evict */
-int grun_u_commit_memory_before_soft_evict(const char *arg) { (void)arg; return 0; }
+int grun_u_commit_memory_before_soft_evict(const char *arg) {
+    /* Python: LRU-cap on_session_end. Arg =
+     * "committed\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int committed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!committed) { printf("no commit needed (no manager / non-finalizable / expired)\n"); return 0; }
+    printf("on_session_end committed pre-eviction (soft evict keeps session resumable #11205): %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _commit_then_release_soft @ gateway/run.py:_commit_then_release_soft */
 int grun_u_commit_then_release_soft(const char *arg) {

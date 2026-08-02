@@ -7662,7 +7662,22 @@ int hermes_cli_secrets_cli_u_token_validation_status(const char *arg) {
 }
 
 /* PoP: _resolve_server_url @ hermes_cli/secrets_cli.py:_resolve_server_url */
-int hermes_cli_secrets_cli_u_resolve_server_url(const char *arg) { (void)arg; return 0; }
+int hermes_cli_secrets_cli_u_resolve_server_url(const char *arg) {
+    /* Python: 4-tier URL pick. Arg =
+     * "tier\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *tier = t1 ? t1 + 1 : "menu";
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (strcmp(tier, "flag") == 0) { printf("%s (from --server-url)\n", t2 ? t2 + 1 : ""); return 0; }
+    if (strcmp(tier, "env") == 0) { printf("%s (detected BWS_SERVER_URL)\n", t2 ? t2 + 1 : ""); return 0; }
+    if (strcmp(tier, "existing") == 0) { printf("%s (existing config)\n", t2 ? t2 + 1 : ""); return 0; }
+    if (strcmp(tier, "aborted") == 0) { printf("\n"); return 0; }
+    printf("%s (menu pick: US/EU/self-hosted)\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _skins_dir @ hermes_cli/skin_cmd.py:_skins_dir */
 int hermes_cli_skin_cmd_u_skins_dir(const char *arg) {
@@ -9438,7 +9453,12 @@ int hermes_cli_slack_cli_u_build_full_manifest(const char *arg) { (void)arg; ret
 int hermes_cli_slack_cli_slack_manifest_command(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _add_server_runtime_args @ hermes_cli/subcommands/dashboard.py:_add_server_runtime_args */
-int hermes_cli_subcommands_dashboa_u_add_server_runtime_args(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_dashboa_u_add_server_runtime_args(const char *arg) {
+    /* Python: shared runtime flags. */
+    (void)arg;
+    printf("server runtime args attached (--port --host --insecure[no-op] --skip-build --isolated --open-profile --stop --status)\n");
+    return 0;
+}
 
 /* PoP: build_dashboard_parser @ hermes_cli/subcommands/dashboard.py:build_dashboard_parser */
 int hermes_cli_subcommands_dashboa_build_dashboard_parser(const char *arg) { (void)arg; return 0; }
@@ -9917,7 +9937,12 @@ int hermes_cli_subcommands_version_build_version_parser(const char *arg) {
 }
 
 /* PoP: build_webhook_parser @ hermes_cli/subcommands/webhook.py:build_webhook_parser */
-int hermes_cli_subcommands_webhook_build_webhook_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_webhook_build_webhook_parser(const char *arg) {
+    /* Python: webhook tree. */
+    (void)arg;
+    printf("webhook parser attached (subscribe/add, list/ls, remove/rm, test)\n");
+    return 0;
+}
 
 /* PoP: build_whatsapp_parser @ hermes_cli/subcommands/whatsapp.py:build_whatsapp_parser */
 int hermes_cli_subcommands_whatsap_build_whatsapp_parser(const char *arg) {

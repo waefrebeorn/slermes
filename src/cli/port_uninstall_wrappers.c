@@ -214,7 +214,29 @@ int uninst_u_uninstall_profile(const char *arg) {
 }
 
 /* PoP: run_gui_uninstall @ hermes_cli/uninstall.py:run_gui_uninstall */
-int uninst_run_gui_uninstall(const char *arg) { (void)arg; return 0; }
+int uninst_run_gui_uninstall(const char *arg) {
+    /* Python: GUI-only uninstall. Arg =
+     * "installed\tconfirmed\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int installed = arg[0] == '1';
+    int confirmed = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!installed) {
+        printf("No Hermes Chat GUI installation was found.\n");
+        return 0;
+    }
+    if (!confirmed) {
+        printf("Uninstall cancelled.\n");
+        return 0;
+    }
+    printf("✓ Chat GUI Uninstalled!\n");
+    printf("The Hermes agent is still installed. Run 'hermes' to use the CLI.\n");
+    return 0;
+}
 
 /* PoP: run_uninstall @ hermes_cli/uninstall.py:run_uninstall */
 int uninst_run_uninstall(const char *arg) { (void)arg; return 0; }

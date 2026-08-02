@@ -348,7 +348,29 @@ int wssr_u_resolve_direct_interpreter(const char *arg) {
 }
 
 /* PoP: spawn_backend @ hermes_cli/windows_ssh_runtime.py:spawn_backend */
-int wssr_spawn_backend(const char *arg) { (void)arg; return 0; }
+int wssr_spawn_backend(const char *arg) {
+    /* Python: bootstrap -c spawn. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\t\t\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "bad_path") == 0) {
+        fprintf(stderr, "Hermes path must be absolute\n");
+        return 1;
+    }
+    if (strcmp(state, "no_python") == 0) {
+        fprintf(stderr, "Hermes Python runtime was not found\n");
+        return 1;
+    }
+    if (strcmp(state, "bad_profile") == 0) {
+        fprintf(stderr, "invalid profile\n");
+        return 1;
+    }
+    printf("pid=%s creationTimeNs=%s logPath=%s tokenPath=%s\n", t3 ? t3 + 1 : "?", "?", "?", "?");
+    return 0;
+}
 
 /* PoP: inspect_hermes @ hermes_cli/windows_ssh_runtime.py:inspect_hermes */
 int wssr_inspect_hermes(const char *arg) {

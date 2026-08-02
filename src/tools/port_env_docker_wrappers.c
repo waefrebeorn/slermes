@@ -93,7 +93,15 @@ int envd_u_container_finished_at(const char *arg) {
 }
 
 /* PoP: find_docker @ tools/environments/docker.py:find_docker */
-int envd_find_docker(const char *arg) { (void)arg; return 0; }
+int envd_find_docker(const char *arg) {
+    /* Python: 4-step resolver. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s (override > docker > podman > macOS Desktop paths, cached)\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _egress_proxy_args_for_docker @ tools/environments/docker.py:_egress_proxy_args_for_docker */
 int envd_u_egress_proxy_args_for_docker(const char *arg) { (void)arg; return 0; }

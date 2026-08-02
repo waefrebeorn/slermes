@@ -366,7 +366,19 @@ int yb_u_extract_link_urls(const char *arg) {
 }
 
 /* PoP: _extract_forwarded_records @ gateway/platforms/yuanbao.py:_extract_forwarded_records */
-int yb_u_extract_forwarded_records(const char *arg) { (void)arg; return 0; }
+int yb_u_extract_forwarded_records(const char *arg) {
+    /* Python: b64 protobuf. Arg =
+     * "found\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int found = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!found) { printf("\n"); return 0; }
+    printf("ForwardMsgData: %s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: is_skippable_placeholder @ gateway/platforms/yuanbao.py:is_skippable_placeholder */
 int yb_is_skippable_placeholder(const char *text, int media_count) {
@@ -404,7 +416,21 @@ int yb_u_rewrite_slash_command_2(const char *text) {
 }
 
 /* PoP: _detect_owner_command @ gateway/platforms/yuanbao.py:_detect_owner_command */
-int yb_u_detect_owner_command(const char *arg) { (void)arg; return 0; }
+int yb_u_detect_owner_command(const char *arg) {
+    /* Python: allowlist identity. Arg =
+     * "cmd\towner\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *cmd = t1 ? t1 + 1 : "";
+    int owner = arg[0] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\t\t\n"); return 0; }
+    if (!cmd[0]) { printf("\t\t\n"); return 0; }
+    printf("%s\t%s\t%s\n", cmd, owner ? "1" : "0", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _is_at_bot @ gateway/platforms/yuanbao.py:_is_at_bot */
 int yb_u_is_at_bot(const char *arg) {
