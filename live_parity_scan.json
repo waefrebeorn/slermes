@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T18:31:15Z",
+  "generated_at": "2026-08-02T18:33:53Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -56372,10 +56372,10 @@
     },
     "agent/shell_hooks.py": {
       "total": 27,
-      "ported": 1,
+      "ported": 27,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 26,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 27,
@@ -56420,16 +56420,24 @@
             "decorators": [],
             "line_number": 187
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_matches_tool",
+          "pop_annotation": {
+            "c_function": "shk_matches_tool",
+            "python_functions": [
+              "matches_tool"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 25,
+            "is_consolidated": false,
+            "full_text": "/* PoP: matches_tool @ agent/shell_hooks.py:matches_tool */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56441,16 +56449,24 @@
             "decorators": [],
             "line_number": 203
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_register_from_config",
+          "pop_annotation": {
+            "c_function": "shk_register_from_config",
+            "python_functions": [
+              "register_from_config"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 46,
+            "is_consolidated": false,
+            "full_text": "/* PoP: register_from_config @ agent/shell_hooks.py:register_from_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56462,16 +56478,24 @@
             "decorators": [],
             "line_number": 287
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_iter_configured_hooks",
+          "pop_annotation": {
+            "c_function": "shk_iter_configured_hooks",
+            "python_functions": [
+              "iter_configured_hooks"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 54,
+            "is_consolidated": false,
+            "full_text": "/* PoP: iter_configured_hooks @ agent/shell_hooks.py:iter_configured_hooks */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56483,16 +56507,24 @@
             "decorators": [],
             "line_number": 295
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_reset_for_tests",
+          "pop_annotation": {
+            "c_function": "shk_reset_for_tests",
+            "python_functions": [
+              "reset_for_tests"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 62,
+            "is_consolidated": false,
+            "full_text": "/* PoP: reset_for_tests @ agent/shell_hooks.py:reset_for_tests */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56504,16 +56536,24 @@
             "decorators": [],
             "line_number": 305
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_parse_hooks_block",
+          "pop_annotation": {
+            "c_function": "shk_parse_hooks_block",
+            "python_functions": [
+              "_parse_hooks_block"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 68,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _parse_hooks_block @ agent/shell_hooks.py:_parse_hooks_block */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56525,16 +56565,24 @@
             "decorators": [],
             "line_number": 358
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_parse_single_entry",
+          "pop_annotation": {
+            "c_function": "shk_parse_single_entry",
+            "python_functions": [
+              "_parse_single_entry"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 76,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _parse_single_entry @ agent/shell_hooks.py:_parse_single_entry */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56546,16 +56594,24 @@
             "decorators": [],
             "line_number": 432
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_spawn",
+          "pop_annotation": {
+            "c_function": "shk_spawn",
+            "python_functions": [
+              "_spawn"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 88,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _spawn @ agent/shell_hooks.py:_spawn */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56567,16 +56623,24 @@
             "decorators": [],
             "line_number": 492
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_make_callback",
+          "pop_annotation": {
+            "c_function": "shk_make_callback",
+            "python_functions": [
+              "_make_callback"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 96,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _make_callback @ agent/shell_hooks.py:_make_callback */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56588,16 +56652,24 @@
             "decorators": [],
             "line_number": 536
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_serialize_payload",
+          "pop_annotation": {
+            "c_function": "shk_serialize_payload",
+            "python_functions": [
+              "_serialize_payload"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 104,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _serialize_payload @ agent/shell_hooks.py:_serialize_payload */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56609,16 +56681,24 @@
             "decorators": [],
             "line_number": 555
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_block_message",
+          "pop_annotation": {
+            "c_function": "shk_block_message",
+            "python_functions": [
+              "_block_message"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 112,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _block_message @ agent/shell_hooks.py:_block_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56630,16 +56710,24 @@
             "decorators": [],
             "line_number": 566
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_parse_response",
+          "pop_annotation": {
+            "c_function": "shk_parse_response",
+            "python_functions": [
+              "_parse_response"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 120,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _parse_response @ agent/shell_hooks.py:_parse_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56651,16 +56739,24 @@
             "decorators": [],
             "line_number": 627
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_allowlist_path",
+          "pop_annotation": {
+            "c_function": "shk_allowlist_path",
+            "python_functions": [
+              "allowlist_path"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 128,
+            "is_consolidated": false,
+            "full_text": "/* PoP: allowlist_path @ agent/shell_hooks.py:allowlist_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56672,16 +56768,24 @@
             "decorators": [],
             "line_number": 632
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_load_allowlist",
+          "pop_annotation": {
+            "c_function": "shk_load_allowlist",
+            "python_functions": [
+              "load_allowlist"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 135,
+            "is_consolidated": false,
+            "full_text": "/* PoP: load_allowlist @ agent/shell_hooks.py:load_allowlist */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56693,16 +56797,24 @@
             "decorators": [],
             "line_number": 646
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_save_allowlist",
+          "pop_annotation": {
+            "c_function": "shk_save_allowlist",
+            "python_functions": [
+              "save_allowlist"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 143,
+            "is_consolidated": false,
+            "full_text": "/* PoP: save_allowlist @ agent/shell_hooks.py:save_allowlist */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56714,16 +56826,24 @@
             "decorators": [],
             "line_number": 678
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_is_allowlisted",
+          "pop_annotation": {
+            "c_function": "shk_is_allowlisted",
+            "python_functions": [
+              "_is_allowlisted"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 151,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_allowlisted @ agent/shell_hooks.py:_is_allowlisted */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56737,16 +56857,24 @@
             ],
             "line_number": 689
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_locked_update_approvals",
+          "pop_annotation": {
+            "c_function": "shk_locked_update_approvals",
+            "python_functions": [
+              "_locked_update_approvals"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 158,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _locked_update_approvals @ agent/shell_hooks.py:_locked_update_approvals */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56758,16 +56886,24 @@
             "decorators": [],
             "line_number": 722
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_prompt_and_record",
+          "pop_annotation": {
+            "c_function": "shk_prompt_and_record",
+            "python_functions": [
+              "_prompt_and_record"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 166,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _prompt_and_record @ agent/shell_hooks.py:_prompt_and_record */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56779,16 +56915,24 @@
             "decorators": [],
             "line_number": 760
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_record_approval",
+          "pop_annotation": {
+            "c_function": "shk_record_approval",
+            "python_functions": [
+              "_record_approval"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 174,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _record_approval @ agent/shell_hooks.py:_record_approval */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56800,16 +56944,24 @@
             "decorators": [],
             "line_number": 778
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_utc_now_iso",
+          "pop_annotation": {
+            "c_function": "shk_utc_now_iso",
+            "python_functions": [
+              "_utc_now_iso"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 181,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _utc_now_iso @ agent/shell_hooks.py:_utc_now_iso */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56821,16 +56973,24 @@
             "decorators": [],
             "line_number": 782
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_revoke",
+          "pop_annotation": {
+            "c_function": "shk_revoke",
+            "python_functions": [
+              "revoke"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 192,
+            "is_consolidated": false,
+            "full_text": "/* PoP: revoke @ agent/shell_hooks.py:revoke */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56842,16 +57002,24 @@
             "decorators": [],
             "line_number": 807
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_command_script_path",
+          "pop_annotation": {
+            "c_function": "shk_command_script_path",
+            "python_functions": [
+              "_command_script_path"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 200,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _command_script_path @ agent/shell_hooks.py:_command_script_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56863,16 +57031,24 @@
             "decorators": [],
             "line_number": 834
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_resolve_effective_accept",
+          "pop_annotation": {
+            "c_function": "shk_resolve_effective_accept",
+            "python_functions": [
+              "_resolve_effective_accept"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 211,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_effective_accept @ agent/shell_hooks.py:_resolve_effective_accept */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56884,16 +57060,24 @@
             "decorators": [],
             "line_number": 861
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_allowlist_entry_for",
+          "pop_annotation": {
+            "c_function": "shk_allowlist_entry_for",
+            "python_functions": [
+              "allowlist_entry_for"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 220,
+            "is_consolidated": false,
+            "full_text": "/* PoP: allowlist_entry_for @ agent/shell_hooks.py:allowlist_entry_for */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56905,16 +57089,24 @@
             "decorators": [],
             "line_number": 873
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_script_mtime_iso",
+          "pop_annotation": {
+            "c_function": "shk_script_mtime_iso",
+            "python_functions": [
+              "script_mtime_iso"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 228,
+            "is_consolidated": false,
+            "full_text": "/* PoP: script_mtime_iso @ agent/shell_hooks.py:script_mtime_iso */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56926,16 +57118,24 @@
             "decorators": [],
             "line_number": 888
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_script_is_executable",
+          "pop_annotation": {
+            "c_function": "shk_script_is_executable",
+            "python_functions": [
+              "script_is_executable"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 241,
+            "is_consolidated": false,
+            "full_text": "/* PoP: script_is_executable @ agent/shell_hooks.py:script_is_executable */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/shell_hooks.py",
@@ -56947,16 +57147,24 @@
             "decorators": [],
             "line_number": 911
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_shell_hooks_remaining.c",
+          "c_function": "shk_run_once",
+          "pop_annotation": {
+            "c_function": "shk_run_once",
+            "python_functions": [
+              "run_once"
+            ],
+            "c_file": "src/agent/port_shell_hooks_remaining.c",
+            "python_file": "agent/shell_hooks.py",
+            "line": 247,
+            "is_consolidated": false,
+            "full_text": "/* PoP: run_once @ agent/shell_hooks.py:run_once */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -299460,10 +299668,10 @@
     },
     "tools/file_operations.py": {
       "total": 70,
-      "ported": 43,
+      "ported": 69,
       "partial": 1,
       "stub": 0,
-      "real_gaps": 26,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 70,
@@ -299624,17 +299832,24 @@
             "decorators": [],
             "line_number": 147
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_is_write_denied",
+          "pop_annotation": {
+            "c_function": "fo_is_write_denied",
+            "python_functions": [
+              "_is_write_denied"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_write_denied @ tools/file_operations.py:_is_write_denied */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -299646,17 +299861,24 @@
             "decorators": [],
             "line_number": 172
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_to_dict",
+          "pop_annotation": {
+            "c_function": "fo_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ tools/file_operations.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -299668,17 +299890,24 @@
             "decorators": [],
             "line_number": 192
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_to_dict",
+          "pop_annotation": {
+            "c_function": "fo_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ tools/file_operations.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -299690,17 +299919,24 @@
             "decorators": [],
             "line_number": 209
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_to_dict",
+          "pop_annotation": {
+            "c_function": "fo_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ tools/file_operations.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -299712,17 +299948,24 @@
             "decorators": [],
             "line_number": 254
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_densify_matches",
+          "pop_annotation": {
+            "c_function": "fo_densify_matches",
+            "python_functions": [
+              "_densify_matches"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 42,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _densify_matches @ tools/file_operations.py:_densify_matches */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -299734,17 +299977,24 @@
             "decorators": [],
             "line_number": 282
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_to_dict",
+          "pop_annotation": {
+            "c_function": "fo_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ tools/file_operations.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -299756,17 +300006,24 @@
             "decorators": [],
             "line_number": 322
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_to_dict",
+          "pop_annotation": {
+            "c_function": "fo_to_dict",
+            "python_functions": [
+              "to_dict"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: to_dict @ tools/file_operations.py:to_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -300022,17 +300279,24 @@
             ],
             "line_number": 469
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_delete_file",
+          "pop_annotation": {
+            "c_function": "fo_delete_file",
+            "python_functions": [
+              "delete_file"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 50,
+            "is_consolidated": false,
+            "full_text": "/* PoP: delete_file @ tools/file_operations.py:delete_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -300075,17 +300339,24 @@
             ],
             "line_number": 484
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_move_file",
+          "pop_annotation": {
+            "c_function": "fo_move_file",
+            "python_functions": [
+              "move_file"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 58,
+            "is_consolidated": false,
+            "full_text": "/* PoP: move_file @ tools/file_operations.py:move_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -300273,17 +300544,24 @@
             "decorators": [],
             "line_number": 719
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_coerce_int",
+          "pop_annotation": {
+            "c_function": "fo_coerce_int",
+            "python_functions": [
+              "_coerce_int"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 66,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _coerce_int @ tools/file_operations.py:_coerce_int */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -300672,17 +300950,24 @@
             "decorators": [],
             "line_number": 978
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_atomic_write",
+          "pop_annotation": {
+            "c_function": "fo_atomic_write",
+            "python_functions": [
+              "_atomic_write"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 76,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _atomic_write @ tools/file_operations.py:_atomic_write */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -300802,17 +301087,24 @@
             "decorators": [],
             "line_number": 1182
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_suggest_similar_files",
+          "pop_annotation": {
+            "c_function": "fo_suggest_similar_files",
+            "python_functions": [
+              "_suggest_similar_files"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 84,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _suggest_similar_files @ tools/file_operations.py:_suggest_similar_files */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -300853,17 +301145,24 @@
             "decorators": [],
             "line_number": 1273
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_delete_file",
+          "pop_annotation": {
+            "c_function": "fo_delete_file",
+            "python_functions": [
+              "delete_file"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 50,
+            "is_consolidated": false,
+            "full_text": "/* PoP: delete_file @ tools/file_operations.py:delete_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -300933,17 +301232,24 @@
             "decorators": [],
             "line_number": 1335
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_move_file",
+          "pop_annotation": {
+            "c_function": "fo_move_file",
+            "python_functions": [
+              "move_file"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 58,
+            "is_consolidated": false,
+            "full_text": "/* PoP: move_file @ tools/file_operations.py:move_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -301042,17 +301348,24 @@
             "decorators": [],
             "line_number": 1709
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_check_lint",
+          "pop_annotation": {
+            "c_function": "fo_check_lint",
+            "python_functions": [
+              "_check_lint"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 92,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _check_lint @ tools/file_operations.py:_check_lint */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -301064,17 +301377,24 @@
             "decorators": [],
             "line_number": 1797
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_check_lint_delta",
+          "pop_annotation": {
+            "c_function": "fo_check_lint_delta",
+            "python_functions": [
+              "_check_lint_delta"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 100,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _check_lint_delta @ tools/file_operations.py:_check_lint_delta */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -301086,17 +301406,24 @@
             "decorators": [],
             "line_number": 1882
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_lsp_local_only",
+          "pop_annotation": {
+            "c_function": "fo_lsp_local_only",
+            "python_functions": [
+              "_lsp_local_only"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 108,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _lsp_local_only @ tools/file_operations.py:_lsp_local_only */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -301108,17 +301435,24 @@
             "decorators": [],
             "line_number": 1903
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_lsp_handles_extension",
+          "pop_annotation": {
+            "c_function": "fo_lsp_handles_extension",
+            "python_functions": [
+              "_lsp_handles_extension"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 115,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _lsp_handles_extension @ tools/file_operations.py:_lsp_handles_extension */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -301130,17 +301464,24 @@
             "decorators": [],
             "line_number": 1926
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_lsp_will_handle",
+          "pop_annotation": {
+            "c_function": "fo_lsp_will_handle",
+            "python_functions": [
+              "_lsp_will_handle"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 123,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _lsp_will_handle @ tools/file_operations.py:_lsp_will_handle */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -301152,17 +301493,24 @@
             "decorators": [],
             "line_number": 1960
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_snapshot_lsp_baseline",
+          "pop_annotation": {
+            "c_function": "fo_snapshot_lsp_baseline",
+            "python_functions": [
+              "_snapshot_lsp_baseline"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 131,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _snapshot_lsp_baseline @ tools/file_operations.py:_snapshot_lsp_baseline */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -301174,17 +301522,24 @@
             "decorators": [],
             "line_number": 1983
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_maybe_lsp_diagnostics",
+          "pop_annotation": {
+            "c_function": "fo_maybe_lsp_diagnostics",
+            "python_functions": [
+              "_maybe_lsp_diagnostics"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 139,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _maybe_lsp_diagnostics @ tools/file_operations.py:_maybe_lsp_diagnostics */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -301225,17 +301580,24 @@
             "decorators": [],
             "line_number": 2116
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_search_files",
+          "pop_annotation": {
+            "c_function": "fo_search_files",
+            "python_functions": [
+              "_search_files"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 147,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _search_files @ tools/file_operations.py:_search_files */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -301247,17 +301609,24 @@
             "decorators": [],
             "line_number": 2202
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_search_files_rg",
+          "pop_annotation": {
+            "c_function": "fo_search_files_rg",
+            "python_functions": [
+              "_search_files_rg"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 155,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _search_files_rg @ tools/file_operations.py:_search_files_rg */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -301269,17 +301638,24 @@
             "decorators": [],
             "line_number": 2248
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_search_content",
+          "pop_annotation": {
+            "c_function": "fo_search_content",
+            "python_functions": [
+              "_search_content"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 163,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _search_content @ tools/file_operations.py:_search_content */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -301291,17 +301667,24 @@
             "decorators": [],
             "line_number": 2267
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_search_with_rg",
+          "pop_annotation": {
+            "c_function": "fo_search_with_rg",
+            "python_functions": [
+              "_search_with_rg"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 171,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _search_with_rg @ tools/file_operations.py:_search_with_rg */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -301313,17 +301696,24 @@
             "decorators": [],
             "line_number": 2393
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_operations_remaining.c",
+          "c_function": "fo_search_with_grep",
+          "pop_annotation": {
+            "c_function": "fo_search_with_grep",
+            "python_functions": [
+              "_search_with_grep"
+            ],
+            "c_file": "src/tools/port_file_operations_remaining.c",
+            "python_file": "tools/file_operations.py",
+            "line": 178,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _search_with_grep @ tools/file_operations.py:_search_with_grep */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
