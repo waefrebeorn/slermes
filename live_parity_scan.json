@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:01:54Z",
+  "generated_at": "2026-08-02T20:04:03Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -43964,10 +43964,10 @@
     },
     "agent/model_metadata.py": {
       "total": 72,
-      "ported": 61,
+      "ported": 72,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 11,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 72,
@@ -44012,16 +44012,24 @@
             "decorators": [],
             "line_number": 89
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_model_metadata_remaining.c",
+          "c_function": "mmd_strip_provider_prefix",
+          "pop_annotation": {
+            "c_function": "mmd_strip_provider_prefix",
+            "python_functions": [
+              "_strip_provider_prefix"
+            ],
+            "c_file": "src/agent/port_model_metadata_remaining.c",
+            "python_file": "agent/model_metadata.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _strip_provider_prefix @ agent/model_metadata.py:_strip_provider_prefix */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/model_metadata.py",
@@ -44294,16 +44302,24 @@
             "decorators": [],
             "line_number": 521
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_model_metadata_remaining.c",
+          "c_function": "mmd_infer_provider_from_url",
+          "pop_annotation": {
+            "c_function": "mmd_infer_provider_from_url",
+            "python_functions": [
+              "_infer_provider_from_url"
+            ],
+            "c_file": "src/agent/port_model_metadata_remaining.c",
+            "python_file": "agent/model_metadata.py",
+            "line": 33,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _infer_provider_from_url @ agent/model_metadata.py:_infer_provider_from_url */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/model_metadata.py",
@@ -44315,16 +44331,24 @@
             "decorators": [],
             "line_number": 539
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_model_metadata_remaining.c",
+          "c_function": "mmd_lmstudio_server_root",
+          "pop_annotation": {
+            "c_function": "mmd_lmstudio_server_root",
+            "python_functions": [
+              "_lmstudio_server_root"
+            ],
+            "c_file": "src/agent/port_model_metadata_remaining.c",
+            "python_file": "agent/model_metadata.py",
+            "line": 51,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _lmstudio_server_root @ agent/model_metadata.py:_lmstudio_server_root */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/model_metadata.py",
@@ -44336,16 +44360,24 @@
             "decorators": [],
             "line_number": 549
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_model_metadata_remaining.c",
+          "c_function": "mmd_is_known_provider_base_url",
+          "pop_annotation": {
+            "c_function": "mmd_is_known_provider_base_url",
+            "python_functions": [
+              "_is_known_provider_base_url"
+            ],
+            "c_file": "src/agent/port_model_metadata_remaining.c",
+            "python_file": "agent/model_metadata.py",
+            "line": 65,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_known_provider_base_url @ agent/model_metadata.py:_is_known_provider_base_url */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/model_metadata.py",
@@ -44560,16 +44592,24 @@
             "decorators": [],
             "line_number": 810
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_model_metadata_remaining.c",
+          "c_function": "mmd_iter_nested_dicts",
+          "pop_annotation": {
+            "c_function": "mmd_iter_nested_dicts",
+            "python_functions": [
+              "_iter_nested_dicts"
+            ],
+            "c_file": "src/agent/port_model_metadata_remaining.c",
+            "python_file": "agent/model_metadata.py",
+            "line": 73,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _iter_nested_dicts @ agent/model_metadata.py:_iter_nested_dicts */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/model_metadata.py",
@@ -44842,16 +44882,24 @@
             "decorators": [],
             "line_number": 1139
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_model_metadata_remaining.c",
+          "c_function": "mmd_get_context_cache_path",
+          "pop_annotation": {
+            "c_function": "mmd_get_context_cache_path",
+            "python_functions": [
+              "_get_context_cache_path"
+            ],
+            "c_file": "src/agent/port_model_metadata_remaining.c",
+            "python_file": "agent/model_metadata.py",
+            "line": 82,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_context_cache_path @ agent/model_metadata.py:_get_context_cache_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/model_metadata.py",
@@ -44863,16 +44911,24 @@
             "decorators": [],
             "line_number": 1145
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_model_metadata_remaining.c",
+          "c_function": "mmd_load_context_cache",
+          "pop_annotation": {
+            "c_function": "mmd_load_context_cache",
+            "python_functions": [
+              "_load_context_cache"
+            ],
+            "c_file": "src/agent/port_model_metadata_remaining.c",
+            "python_file": "agent/model_metadata.py",
+            "line": 91,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _load_context_cache @ agent/model_metadata.py:_load_context_cache */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/model_metadata.py",
@@ -44971,16 +45027,24 @@
             "decorators": [],
             "line_number": 1210
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_model_metadata_remaining.c",
+          "c_function": "mmd_invalidate_cached_context_length",
+          "pop_annotation": {
+            "c_function": "mmd_invalidate_cached_context_length",
+            "python_functions": [
+              "_invalidate_cached_context_length"
+            ],
+            "c_file": "src/agent/port_model_metadata_remaining.c",
+            "python_file": "agent/model_metadata.py",
+            "line": 108,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _invalidate_cached_context_length @ agent/model_metadata.py:_invalidate_cached_context_length */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/model_metadata.py",
@@ -45282,16 +45346,24 @@
             "decorators": [],
             "line_number": 1693
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_model_metadata_remaining.c",
+          "c_function": "mmd_model_name_suggests_kimi",
+          "pop_annotation": {
+            "c_function": "mmd_model_name_suggests_kimi",
+            "python_functions": [
+              "_model_name_suggests_kimi"
+            ],
+            "c_file": "src/agent/port_model_metadata_remaining.c",
+            "python_file": "agent/model_metadata.py",
+            "line": 116,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _model_name_suggests_kimi @ agent/model_metadata.py:_model_name_suggests_kimi */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/model_metadata.py",
@@ -45303,16 +45375,24 @@
             "decorators": [],
             "line_number": 1705
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_model_metadata_remaining.c",
+          "c_function": "mmd_model_name_suggests_minimax_m3",
+          "pop_annotation": {
+            "c_function": "mmd_model_name_suggests_minimax_m3",
+            "python_functions": [
+              "_model_name_suggests_minimax_m3"
+            ],
+            "c_file": "src/agent/port_model_metadata_remaining.c",
+            "python_file": "agent/model_metadata.py",
+            "line": 127,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _model_name_suggests_minimax_m3 @ agent/model_metadata.py:_model_name_suggests_minimax_m3 */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/model_metadata.py",
@@ -45817,16 +45897,24 @@
             "decorators": [],
             "line_number": 2752
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_model_metadata_remaining.c",
+          "c_function": "mmd_count_image_tokens",
+          "pop_annotation": {
+            "c_function": "mmd_count_image_tokens",
+            "python_functions": [
+              "_count_image_tokens"
+            ],
+            "c_file": "src/agent/port_model_metadata_remaining.c",
+            "python_file": "agent/model_metadata.py",
+            "line": 138,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _count_image_tokens @ agent/model_metadata.py:_count_image_tokens */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/model_metadata.py",
@@ -70266,10 +70354,10 @@
     },
     "agent/usage_pricing.py": {
       "total": 17,
-      "ported": 6,
+      "ported": 17,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 11,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 17,
@@ -70287,16 +70375,24 @@
             ],
             "line_number": 41
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_usage_pricing_remaining.c",
+          "c_function": "upr_prompt_tokens",
+          "pop_annotation": {
+            "c_function": "upr_prompt_tokens",
+            "python_functions": [
+              "prompt_tokens"
+            ],
+            "c_file": "src/agent/port_usage_pricing_remaining.c",
+            "python_file": "agent/usage_pricing.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: prompt_tokens @ agent/usage_pricing.py:prompt_tokens */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/usage_pricing.py",
@@ -70310,16 +70406,24 @@
             ],
             "line_number": 45
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_usage_pricing_remaining.c",
+          "c_function": "upr_total_tokens",
+          "pop_annotation": {
+            "c_function": "upr_total_tokens",
+            "python_functions": [
+              "total_tokens"
+            ],
+            "c_file": "src/agent/port_usage_pricing_remaining.c",
+            "python_file": "agent/usage_pricing.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: total_tokens @ agent/usage_pricing.py:total_tokens */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/usage_pricing.py",
@@ -70331,16 +70435,24 @@
             "decorators": [],
             "line_number": 48
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_usage_pricing_remaining.c",
+          "c_function": "upr_add",
+          "pop_annotation": {
+            "c_function": "upr_add",
+            "python_functions": [
+              "__add__"
+            ],
+            "c_file": "src/agent/port_usage_pricing_remaining.c",
+            "python_file": "agent/usage_pricing.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __add__ @ agent/usage_pricing.py:__add__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/usage_pricing.py",
@@ -70410,16 +70522,24 @@
             "decorators": [],
             "line_number": 898
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_usage_pricing_remaining.c",
+          "c_function": "upr_resolve_billing_route",
+          "pop_annotation": {
+            "c_function": "upr_resolve_billing_route",
+            "python_functions": [
+              "resolve_billing_route"
+            ],
+            "c_file": "src/agent/port_usage_pricing_remaining.c",
+            "python_file": "agent/usage_pricing.py",
+            "line": 57,
+            "is_consolidated": false,
+            "full_text": "/* PoP: resolve_billing_route @ agent/usage_pricing.py:resolve_billing_route */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/usage_pricing.py",
@@ -70431,16 +70551,24 @@
             "decorators": [],
             "line_number": 942
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_usage_pricing_remaining.c",
+          "c_function": "upr_normalize_bedrock_model_name",
+          "pop_annotation": {
+            "c_function": "upr_normalize_bedrock_model_name",
+            "python_functions": [
+              "_normalize_bedrock_model_name"
+            ],
+            "c_file": "src/agent/port_usage_pricing_remaining.c",
+            "python_file": "agent/usage_pricing.py",
+            "line": 72,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalize_bedrock_model_name @ agent/usage_pricing.py:_normalize_bedrock_model_name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/usage_pricing.py",
@@ -70510,16 +70638,24 @@
             "decorators": [],
             "line_number": 1024
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_usage_pricing_remaining.c",
+          "c_function": "upr_openrouter_pricing_entry",
+          "pop_annotation": {
+            "c_function": "upr_openrouter_pricing_entry",
+            "python_functions": [
+              "_openrouter_pricing_entry"
+            ],
+            "c_file": "src/agent/port_usage_pricing_remaining.c",
+            "python_file": "agent/usage_pricing.py",
+            "line": 81,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _openrouter_pricing_entry @ agent/usage_pricing.py:_openrouter_pricing_entry */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/usage_pricing.py",
@@ -70531,16 +70667,24 @@
             "decorators": [],
             "line_number": 1033
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_usage_pricing_remaining.c",
+          "c_function": "upr_pricing_entry_from_metadata",
+          "pop_annotation": {
+            "c_function": "upr_pricing_entry_from_metadata",
+            "python_functions": [
+              "_pricing_entry_from_metadata"
+            ],
+            "c_file": "src/agent/port_usage_pricing_remaining.c",
+            "python_file": "agent/usage_pricing.py",
+            "line": 91,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _pricing_entry_from_metadata @ agent/usage_pricing.py:_pricing_entry_from_metadata */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/usage_pricing.py",
@@ -70610,16 +70754,24 @@
             "decorators": [],
             "line_number": 1202
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_usage_pricing_remaining.c",
+          "c_function": "upr_estimate_usage_cost",
+          "pop_annotation": {
+            "c_function": "upr_estimate_usage_cost",
+            "python_functions": [
+              "estimate_usage_cost"
+            ],
+            "c_file": "src/agent/port_usage_pricing_remaining.c",
+            "python_file": "agent/usage_pricing.py",
+            "line": 100,
+            "is_consolidated": false,
+            "full_text": "/* PoP: estimate_usage_cost @ agent/usage_pricing.py:estimate_usage_cost */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/usage_pricing.py",
@@ -70631,16 +70783,24 @@
             "decorators": [],
             "line_number": 1281
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_usage_pricing_remaining.c",
+          "c_function": "upr_has_known_pricing",
+          "pop_annotation": {
+            "c_function": "upr_has_known_pricing",
+            "python_functions": [
+              "has_known_pricing"
+            ],
+            "c_file": "src/agent/port_usage_pricing_remaining.c",
+            "python_file": "agent/usage_pricing.py",
+            "line": 113,
+            "is_consolidated": false,
+            "full_text": "/* PoP: has_known_pricing @ agent/usage_pricing.py:has_known_pricing */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/usage_pricing.py",
@@ -70652,16 +70812,24 @@
             "decorators": [],
             "line_number": 1300
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_usage_pricing_remaining.c",
+          "c_function": "upr_format_duration_compact",
+          "pop_annotation": {
+            "c_function": "upr_format_duration_compact",
+            "python_functions": [
+              "format_duration_compact"
+            ],
+            "c_file": "src/agent/port_usage_pricing_remaining.c",
+            "python_file": "agent/usage_pricing.py",
+            "line": 122,
+            "is_consolidated": false,
+            "full_text": "/* PoP: format_duration_compact @ agent/usage_pricing.py:format_duration_compact */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/usage_pricing.py",
@@ -70673,16 +70841,24 @@
             "decorators": [],
             "line_number": 1314
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_usage_pricing_remaining.c",
+          "c_function": "upr_format_token_count_compact",
+          "pop_annotation": {
+            "c_function": "upr_format_token_count_compact",
+            "python_functions": [
+              "format_token_count_compact"
+            ],
+            "c_file": "src/agent/port_usage_pricing_remaining.c",
+            "python_file": "agent/usage_pricing.py",
+            "line": 133,
+            "is_consolidated": false,
+            "full_text": "/* PoP: format_token_count_compact @ agent/usage_pricing.py:format_token_count_compact */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
