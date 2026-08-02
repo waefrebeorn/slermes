@@ -189,7 +189,7 @@ PORT_OBJ = \
         src/tools/port_skills_hub.o src/tools/port_skills_hub_remaining.o src/tools/port_skill_manager_tool_remaining.o \
         src/tools/port_mcp_tool.o src/tools/port_mcp_tool_remaining.o \
         src/tools/port_send_message_tool.o \
-        src/tools/port_tts_tool.o src/tools/port_tts_tool_remaining.o src/tools/port_approval_remaining.o src/tools/port_approval_remaining2.o src/tools/port_cua_backend_remaining.o src/tools/port_voice_mode_remaining.o src/tools/port_environments_base_remaining.o src/tools/port_environments_modal_remaining.o src/tools/port_browser_supervisor_remaining.o src/tools/port_tool_search_remaining.o src/tools/port_moa_performance_remaining.o src/tools/port_tts_streaming_remaining.o src/tools/port_delegation_live_log_remaining.o src/tools/port_memory_tool_remaining.o src/tools/port_computer_use_tool_remaining.o src/tools/port_delegate_tool_remaining.o \
+        src/tools/port_tts_tool.o src/tools/port_tts_tool_remaining.o src/tools/port_approval_remaining.o src/tools/port_approval_remaining2.o src/tools/port_cua_backend_remaining.o src/tools/port_voice_mode_remaining.o src/tools/port_environments_base_remaining.o src/tools/port_environments_modal_remaining.o src/tools/port_environments_docker_remaining.o src/tools/port_browser_supervisor_remaining.o src/tools/port_tool_search_remaining.o src/tools/port_moa_performance_remaining.o src/tools/port_tts_streaming_remaining.o src/tools/port_delegation_live_log_remaining.o src/tools/port_memory_tool_remaining.o src/tools/port_computer_use_tool_remaining.o src/tools/port_delegate_tool_remaining.o \
         src/tools/port_file_operations.o src/tools/port_file_operations_remaining.o \
         src/tools/port_image_generation_tool.o \
         src/tools/environments.o \
@@ -206,7 +206,7 @@ PORT_OBJ = \
         src/cli/port_dump.o \
         src/cli/port_gateway.o \
         src/cli/port_gateway_windows.o \
-        src/cli/port_goals.o src/cli/port_goals_remaining.o src/cli/port_profile_distribution_remaining.o src/cli/port_projects_db_remaining.o \
+        src/cli/port_goals.o src/cli/port_goals_remaining.o src/cli/port_profile_distribution_remaining.o src/cli/port_projects_db_remaining.o src/cli/port_pty_bridge_remaining.o \
         src/cli/port_kanban_db.o \
         src/cli/kanban_schema.o \
         src/cli/kanban_model.o \

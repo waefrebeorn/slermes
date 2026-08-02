@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T22:01:11Z",
+  "generated_at": "2026-08-02T22:03:07Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -237922,10 +237922,10 @@
     },
     "hermes_cli/pty_bridge.py": {
       "total": 12,
-      "ported": 8,
+      "ported": 12,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 4,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 12,
@@ -237970,16 +237970,24 @@
             "decorators": [],
             "line_number": 100
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_pty_bridge_remaining.c",
+          "c_function": "ptb_init",
+          "pop_annotation": {
+            "c_function": "ptb_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_pty_bridge_remaining.c",
+            "python_file": "hermes_cli/pty_bridge.py",
+            "line": 25,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/pty_bridge.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/pty_bridge.py",
@@ -238113,16 +238121,24 @@
             "decorators": [],
             "line_number": 171
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_pty_bridge_remaining.c",
+          "c_function": "ptb_read",
+          "pop_annotation": {
+            "c_function": "ptb_read",
+            "python_functions": [
+              "read"
+            ],
+            "c_file": "src/cli/port_pty_bridge_remaining.c",
+            "python_file": "hermes_cli/pty_bridge.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: read @ hermes_cli/pty_bridge.py:read */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/pty_bridge.py",
@@ -238163,16 +238179,24 @@
             "decorators": [],
             "line_number": 218
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_pty_bridge_remaining.c",
+          "c_function": "ptb_resize",
+          "pop_annotation": {
+            "c_function": "ptb_resize",
+            "python_functions": [
+              "resize"
+            ],
+            "c_file": "src/cli/port_pty_bridge_remaining.c",
+            "python_file": "hermes_cli/pty_bridge.py",
+            "line": 46,
+            "is_consolidated": false,
+            "full_text": "/* PoP: resize @ hermes_cli/pty_bridge.py:resize */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/pty_bridge.py",
@@ -238184,16 +238208,24 @@
             "decorators": [],
             "line_number": 243
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_pty_bridge_remaining.c",
+          "c_function": "ptb_close",
+          "pop_annotation": {
+            "c_function": "ptb_close",
+            "python_functions": [
+              "close"
+            ],
+            "c_file": "src/cli/port_pty_bridge_remaining.c",
+            "python_file": "hermes_cli/pty_bridge.py",
+            "line": 58,
+            "is_consolidated": false,
+            "full_text": "/* PoP: close @ hermes_cli/pty_bridge.py:close */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/pty_bridge.py",
@@ -305590,10 +305622,10 @@
     },
     "tools/environments/docker.py": {
       "total": 29,
-      "ported": 25,
+      "ported": 29,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 4,
+      "real_gaps": 0,
       "thin": true,
       "pop_mismatch": false,
       "py_func_count": 29,
@@ -306131,17 +306163,24 @@
             "decorators": [],
             "line_number": 823
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_docker_remaining.c",
+          "c_function": "dke_init",
+          "pop_annotation": {
+            "c_function": "dke_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_environments_docker_remaining.c",
+            "python_file": "tools/environments/docker.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/environments/docker.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/docker.py",
@@ -306182,17 +306221,24 @@
             "decorators": [],
             "line_number": 1506
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_docker_remaining.c",
+          "c_function": "dke_run_bash",
+          "pop_annotation": {
+            "c_function": "dke_run_bash",
+            "python_functions": [
+              "_run_bash"
+            ],
+            "c_file": "src/tools/port_environments_docker_remaining.c",
+            "python_file": "tools/environments/docker.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _run_bash @ tools/environments/docker.py:_run_bash */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/docker.py",
@@ -306262,17 +306308,24 @@
             "decorators": [],
             "line_number": 1627
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_docker_remaining.c",
+          "c_function": "dke_execute",
+          "pop_annotation": {
+            "c_function": "dke_execute",
+            "python_functions": [
+              "execute"
+            ],
+            "c_file": "src/tools/port_environments_docker_remaining.c",
+            "python_file": "tools/environments/docker.py",
+            "line": 40,
+            "is_consolidated": false,
+            "full_text": "/* PoP: execute @ tools/environments/docker.py:execute */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/docker.py",
@@ -306373,17 +306426,24 @@
             "decorators": [],
             "line_number": 1813
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_environments_docker_remaining.c",
+          "c_function": "dke_cleanup",
+          "pop_annotation": {
+            "c_function": "dke_cleanup",
+            "python_functions": [
+              "cleanup"
+            ],
+            "c_file": "src/tools/port_environments_docker_remaining.c",
+            "python_file": "tools/environments/docker.py",
+            "line": 51,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cleanup @ tools/environments/docker.py:cleanup */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/docker.py",
