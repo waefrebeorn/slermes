@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:16:12Z",
+  "generated_at": "2026-08-02T21:18:26Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -12886,10 +12886,10 @@
     },
     "agent/browser_registry.py": {
       "total": 5,
-      "ported": 0,
+      "ported": 5,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 5,
@@ -12905,16 +12905,24 @@
             "decorators": [],
             "line_number": 52
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_browser_registry_remaining.c",
+          "c_function": "bsr_register_provider",
+          "pop_annotation": {
+            "c_function": "bsr_register_provider",
+            "python_functions": [
+              "register_provider"
+            ],
+            "c_file": "src/agent/port_browser_registry_remaining.c",
+            "python_file": "agent/browser_registry.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: register_provider @ agent/browser_registry.py:register_provider */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/browser_registry.py",
@@ -12926,16 +12934,24 @@
             "decorators": [],
             "line_number": 82
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_browser_registry_remaining.c",
+          "c_function": "bsr_list_providers",
+          "pop_annotation": {
+            "c_function": "bsr_list_providers",
+            "python_functions": [
+              "list_providers"
+            ],
+            "c_file": "src/agent/port_browser_registry_remaining.c",
+            "python_file": "agent/browser_registry.py",
+            "line": 28,
+            "is_consolidated": false,
+            "full_text": "/* PoP: list_providers @ agent/browser_registry.py:list_providers */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/browser_registry.py",
@@ -12947,16 +12963,24 @@
             "decorators": [],
             "line_number": 89
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_browser_registry_remaining.c",
+          "c_function": "bsr_get_provider",
+          "pop_annotation": {
+            "c_function": "bsr_get_provider",
+            "python_functions": [
+              "get_provider"
+            ],
+            "c_file": "src/agent/port_browser_registry_remaining.c",
+            "python_file": "agent/browser_registry.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_provider @ agent/browser_registry.py:get_provider */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/browser_registry.py",
@@ -12968,16 +12992,24 @@
             "decorators": [],
             "line_number": 113
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_browser_registry_remaining.c",
+          "c_function": "bsr_resolve",
+          "pop_annotation": {
+            "c_function": "bsr_resolve",
+            "python_functions": [
+              "_resolve"
+            ],
+            "c_file": "src/agent/port_browser_registry_remaining.c",
+            "python_file": "agent/browser_registry.py",
+            "line": 41,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve @ agent/browser_registry.py:_resolve */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/browser_registry.py",
@@ -12989,16 +13021,24 @@
             "decorators": [],
             "line_number": 189
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_browser_registry_remaining.c",
+          "c_function": "bsr_reset_for_tests",
+          "pop_annotation": {
+            "c_function": "bsr_reset_for_tests",
+            "python_functions": [
+              "_reset_for_tests"
+            ],
+            "c_file": "src/agent/port_browser_registry_remaining.c",
+            "python_file": "agent/browser_registry.py",
+            "line": 62,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _reset_for_tests @ agent/browser_registry.py:_reset_for_tests */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -53543,10 +53583,10 @@
     },
     "agent/prompt_builder.py": {
       "total": 31,
-      "ported": 26,
+      "ported": 31,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 31,
@@ -53620,16 +53660,24 @@
             "decorators": [],
             "line_number": 93
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_prompt_builder_remaining.c",
+          "c_function": "prb_find_hermes_md",
+          "pop_annotation": {
+            "c_function": "prb_find_hermes_md",
+            "python_functions": [
+              "_find_hermes_md"
+            ],
+            "c_file": "src/agent/port_prompt_builder_remaining.c",
+            "python_file": "agent/prompt_builder.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _find_hermes_md @ agent/prompt_builder.py:_find_hermes_md */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/prompt_builder.py",
@@ -53815,16 +53863,24 @@
             "decorators": [],
             "line_number": 1255
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_prompt_builder_remaining.c",
+          "c_function": "prb_dynamic_context_file_max_chars",
+          "pop_annotation": {
+            "c_function": "prb_dynamic_context_file_max_chars",
+            "python_functions": [
+              "_dynamic_context_file_max_chars"
+            ],
+            "c_file": "src/agent/port_prompt_builder_remaining.c",
+            "python_file": "agent/prompt_builder.py",
+            "line": 48,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _dynamic_context_file_max_chars @ agent/prompt_builder.py:_dynamic_context_file_max_chars */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/prompt_builder.py",
@@ -53836,16 +53892,24 @@
             "decorators": [],
             "line_number": 1270
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_prompt_builder_remaining.c",
+          "c_function": "prb_get_context_file_max_chars",
+          "pop_annotation": {
+            "c_function": "prb_get_context_file_max_chars",
+            "python_functions": [
+              "_get_context_file_max_chars"
+            ],
+            "c_file": "src/agent/port_prompt_builder_remaining.c",
+            "python_file": "agent/prompt_builder.py",
+            "line": 56,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_context_file_max_chars @ agent/prompt_builder.py:_get_context_file_max_chars */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/prompt_builder.py",
@@ -53857,16 +53921,24 @@
             "decorators": [],
             "line_number": 1300
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_prompt_builder_remaining.c",
+          "c_function": "prb_record_truncation_warning",
+          "pop_annotation": {
+            "c_function": "prb_record_truncation_warning",
+            "python_functions": [
+              "_record_truncation_warning"
+            ],
+            "c_file": "src/agent/port_prompt_builder_remaining.c",
+            "python_file": "agent/prompt_builder.py",
+            "line": 72,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _record_truncation_warning @ agent/prompt_builder.py:_record_truncation_warning */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/prompt_builder.py",
@@ -53878,16 +53950,24 @@
             "decorators": [],
             "line_number": 1309
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_prompt_builder_remaining.c",
+          "c_function": "prb_drain_truncation_warnings",
+          "pop_annotation": {
+            "c_function": "prb_drain_truncation_warnings",
+            "python_functions": [
+              "drain_truncation_warnings"
+            ],
+            "c_file": "src/agent/port_prompt_builder_remaining.c",
+            "python_file": "agent/prompt_builder.py",
+            "line": 85,
+            "is_consolidated": false,
+            "full_text": "/* PoP: drain_truncation_warnings @ agent/prompt_builder.py:drain_truncation_warnings */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/prompt_builder.py",
