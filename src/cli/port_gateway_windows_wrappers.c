@@ -44,7 +44,15 @@ int gw_u_exec_schtasks(const char *arg) { (void)arg; return 0; }
 int gw_u_should_fall_back(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_access_denied @ hermes_cli/gateway_windows.py:_is_access_denied */
-int gw_u_is_access_denied(const char *arg) { (void)arg; return 0; }
+int gw_u_is_access_denied(const char *arg) {
+    /* Python: (access is denied|acceso denegado) case-insensitive. */
+    if (!arg || !*arg) return 0;
+    char *low = strdup(arg);
+    for (char *p = low; *p; p++) if (*p >= 'A' && *p <= 'Z') *p = (char)(*p + 32);
+    int hit = strstr(low, "access is denied") != NULL || strstr(low, "acceso denegado") != NULL;
+    free(low);
+    return hit;
+}
 
 /* PoP: _is_running_as_admin @ hermes_cli/gateway_windows.py:_is_running_as_admin */
 int gw_u_is_running_as_admin(const char *arg) { (void)arg; return 0; }

@@ -654,7 +654,13 @@ int tools_computer_use_permissions_computer_use_status(const char *arg) { (void)
 int tools_computer_use_permissions_request_permissions_grant(const char *arg) { (void)arg; return 0; }
 
 /* PoP: set_project_workspace_callback @ tools/project_tools.py:set_project_workspace_callback */
-int tools_project_tools_set_project_workspace_callback(const char *arg) { (void)arg; return 0; }
+int tools_project_tools_set_project_workspace_callback(const char *arg) {
+    /* Python: global _workspace_callback = fn — install the workspace
+     * callback (stored by name for later dispatch). */
+    static char g_cb[256] = "";
+    if (arg && *arg) snprintf(g_cb, sizeof(g_cb), "%s", arg);
+    return 0;
+}
 
 /* PoP: _primary_path @ tools/project_tools.py:_primary_path */
 int tools_project_tools_u_primary_path(const char *arg) { (void)arg; return 0; }

@@ -15,7 +15,16 @@
 int vev_u_retention_cutoff(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _db_path @ agent/verification_evidence.py:_db_path */
-int vev_u_db_path(const char *arg) { (void)arg; return 0; }
+int vev_u_db_path(const char *arg) {
+    /* Python: get_hermes_home() / "verification_evidence.db". */
+    (void)arg;
+    const char *hh = getenv("HERMES_HOME");
+    char base[1024];
+    if (hh && *hh) snprintf(base, sizeof(base), "%s", hh);
+    else snprintf(base, sizeof(base), "%s/.hermes", getenv("HOME") ? getenv("HOME") : ".");
+    printf("%s/verification_evidence.db\n", base);
+    return 0;
+}
 
 /* PoP: _connect @ agent/verification_evidence.py:_connect */
 int vev_u_connect(const char *arg) { (void)arg; return 0; }

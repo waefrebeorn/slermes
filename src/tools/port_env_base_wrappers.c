@@ -18,7 +18,13 @@ static const char *g_envb_activity_callback = NULL;
 int envb_buffered_chars(const char *arg) { (void)arg; return 0; }
 
 /* PoP: total_chars @ tools/environments/base.py:total_chars */
-int envb_total_chars(const char *arg) { (void)arg; return 0; }
+int envb_total_chars(const char *arg) {
+    /* Python: locked counter of total captured chars. */
+    static long long g_total = 0;
+    if (arg && *arg) g_total = atoll(arg);
+    printf("%lld\n", g_total);
+    return 0;
+}
 
 /* PoP: append @ tools/environments/base.py:append */
 int envb_append(const char *arg) { (void)arg; return 0; }

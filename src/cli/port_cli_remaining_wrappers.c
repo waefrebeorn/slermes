@@ -1788,7 +1788,12 @@ int hermes_cli_secrets_cli_register_cli(const char *arg) { (void)arg; return 0; 
 int hermes_cli_secrets_cli_cmd_token(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _yn @ hermes_cli/secrets_cli.py:_yn */
-int hermes_cli_secrets_cli_u_yn(const char *arg) { (void)arg; return 0; }
+int hermes_cli_secrets_cli_u_yn(const char *arg) {
+    /* Python: "[green]yes[/green]" if b else "[dim]no[/dim]". */
+    if (arg && *arg && strcmp(arg, "0") != 0) printf("[green]yes[/green]\n");
+    else printf("[dim]no[/dim]\n");
+    return 0;
+}
 
 /* PoP: _bws_version @ hermes_cli/secrets_cli.py:_bws_version */
 int hermes_cli_secrets_cli_u_bws_version(const char *arg) { (void)arg; return 0; }
