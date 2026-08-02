@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:33:42Z",
+  "generated_at": "2026-08-02T19:35:42Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -113262,10 +113262,10 @@
     },
     "gateway/platforms/whatsapp_cloud.py": {
       "total": 43,
-      "ported": 27,
+      "ported": 43,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 16,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 43,
@@ -113368,17 +113368,24 @@
             "decorators": [],
             "line_number": 205
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_whatsapp_cloud_remaining.c",
+          "c_function": "wac_init",
+          "pop_annotation": {
+            "c_function": "wac_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
+            "python_file": "gateway/platforms/whatsapp_cloud.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/whatsapp_cloud.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/whatsapp_cloud.py",
@@ -113628,17 +113635,24 @@
             "decorators": [],
             "line_number": 405
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_whatsapp_cloud_remaining.c",
+          "c_function": "wac_connect",
+          "pop_annotation": {
+            "c_function": "wac_connect",
+            "python_functions": [
+              "connect"
+            ],
+            "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
+            "python_file": "gateway/platforms/whatsapp_cloud.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: connect @ gateway/platforms/whatsapp_cloud.py:connect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/whatsapp_cloud.py",
@@ -113650,17 +113664,24 @@
             "decorators": [],
             "line_number": 467
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_whatsapp_cloud_remaining.c",
+          "c_function": "wac_disconnect",
+          "pop_annotation": {
+            "c_function": "wac_disconnect",
+            "python_functions": [
+              "disconnect"
+            ],
+            "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
+            "python_file": "gateway/platforms/whatsapp_cloud.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: disconnect @ gateway/platforms/whatsapp_cloud.py:disconnect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/whatsapp_cloud.py",
@@ -113672,17 +113693,24 @@
             "decorators": [],
             "line_number": 483
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_whatsapp_cloud_remaining.c",
+          "c_function": "wac_send",
+          "pop_annotation": {
+            "c_function": "wac_send",
+            "python_functions": [
+              "send"
+            ],
+            "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
+            "python_file": "gateway/platforms/whatsapp_cloud.py",
+            "line": 45,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send @ gateway/platforms/whatsapp_cloud.py:send */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/whatsapp_cloud.py",
@@ -113694,17 +113722,24 @@
             "decorators": [],
             "line_number": 577
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_whatsapp_cloud_remaining.c",
+          "c_function": "wac_send_typing",
+          "pop_annotation": {
+            "c_function": "wac_send_typing",
+            "python_functions": [
+              "send_typing"
+            ],
+            "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
+            "python_file": "gateway/platforms/whatsapp_cloud.py",
+            "line": 53,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_typing @ gateway/platforms/whatsapp_cloud.py:send_typing */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/whatsapp_cloud.py",
@@ -113807,17 +113842,24 @@
             "decorators": [],
             "line_number": 727
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_whatsapp_cloud_remaining.c",
+          "c_function": "wac_send_clarify",
+          "pop_annotation": {
+            "c_function": "wac_send_clarify",
+            "python_functions": [
+              "send_clarify"
+            ],
+            "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
+            "python_file": "gateway/platforms/whatsapp_cloud.py",
+            "line": 61,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_clarify @ gateway/platforms/whatsapp_cloud.py:send_clarify */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/whatsapp_cloud.py",
@@ -113858,17 +113900,24 @@
             "decorators": [],
             "line_number": 873
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_whatsapp_cloud_remaining.c",
+          "c_function": "wac_send_slash_confirm",
+          "pop_annotation": {
+            "c_function": "wac_send_slash_confirm",
+            "python_functions": [
+              "send_slash_confirm"
+            ],
+            "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
+            "python_file": "gateway/platforms/whatsapp_cloud.py",
+            "line": 69,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_slash_confirm @ gateway/platforms/whatsapp_cloud.py:send_slash_confirm */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/whatsapp_cloud.py",
@@ -113911,17 +113960,24 @@
             "decorators": [],
             "line_number": 932
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_whatsapp_cloud_remaining.c",
+          "c_function": "wac_get_chat_info",
+          "pop_annotation": {
+            "c_function": "wac_get_chat_info",
+            "python_functions": [
+              "get_chat_info"
+            ],
+            "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
+            "python_file": "gateway/platforms/whatsapp_cloud.py",
+            "line": 77,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_chat_info @ gateway/platforms/whatsapp_cloud.py:get_chat_info */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/whatsapp_cloud.py",
@@ -114020,17 +114076,24 @@
             "decorators": [],
             "line_number": 1120
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_whatsapp_cloud_remaining.c",
+          "c_function": "wac_send_image",
+          "pop_annotation": {
+            "c_function": "wac_send_image",
+            "python_functions": [
+              "send_image"
+            ],
+            "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
+            "python_file": "gateway/platforms/whatsapp_cloud.py",
+            "line": 86,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_image @ gateway/platforms/whatsapp_cloud.py:send_image */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/whatsapp_cloud.py",
@@ -114042,17 +114105,24 @@
             "decorators": [],
             "line_number": 1138
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_whatsapp_cloud_remaining.c",
+          "c_function": "wac_send_image_file",
+          "pop_annotation": {
+            "c_function": "wac_send_image_file",
+            "python_functions": [
+              "send_image_file"
+            ],
+            "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
+            "python_file": "gateway/platforms/whatsapp_cloud.py",
+            "line": 94,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_image_file @ gateway/platforms/whatsapp_cloud.py:send_image_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/whatsapp_cloud.py",
@@ -114064,17 +114134,24 @@
             "decorators": [],
             "line_number": 1151
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_whatsapp_cloud_remaining.c",
+          "c_function": "wac_send_video",
+          "pop_annotation": {
+            "c_function": "wac_send_video",
+            "python_functions": [
+              "send_video"
+            ],
+            "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
+            "python_file": "gateway/platforms/whatsapp_cloud.py",
+            "line": 102,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_video @ gateway/platforms/whatsapp_cloud.py:send_video */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/whatsapp_cloud.py",
@@ -114086,17 +114163,24 @@
             "decorators": [],
             "line_number": 1164
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_whatsapp_cloud_remaining.c",
+          "c_function": "wac_send_voice",
+          "pop_annotation": {
+            "c_function": "wac_send_voice",
+            "python_functions": [
+              "send_voice"
+            ],
+            "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
+            "python_file": "gateway/platforms/whatsapp_cloud.py",
+            "line": 110,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_voice @ gateway/platforms/whatsapp_cloud.py:send_voice */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/whatsapp_cloud.py",
@@ -114108,17 +114192,24 @@
             "decorators": [],
             "line_number": 1215
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_whatsapp_cloud_remaining.c",
+          "c_function": "wac_send_document",
+          "pop_annotation": {
+            "c_function": "wac_send_document",
+            "python_functions": [
+              "send_document"
+            ],
+            "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
+            "python_file": "gateway/platforms/whatsapp_cloud.py",
+            "line": 118,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_document @ gateway/platforms/whatsapp_cloud.py:send_document */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/whatsapp_cloud.py",
@@ -114130,17 +114221,24 @@
             "decorators": [],
             "line_number": 1233
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_whatsapp_cloud_remaining.c",
+          "c_function": "wac_convert_to_opus",
+          "pop_annotation": {
+            "c_function": "wac_convert_to_opus",
+            "python_functions": [
+              "_convert_to_opus"
+            ],
+            "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
+            "python_file": "gateway/platforms/whatsapp_cloud.py",
+            "line": 125,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _convert_to_opus @ gateway/platforms/whatsapp_cloud.py:_convert_to_opus */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/whatsapp_cloud.py",
@@ -114210,17 +114308,24 @@
             "decorators": [],
             "line_number": 1380
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_whatsapp_cloud_remaining.c",
+          "c_function": "wac_handle_health",
+          "pop_annotation": {
+            "c_function": "wac_handle_health",
+            "python_functions": [
+              "_handle_health"
+            ],
+            "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
+            "python_file": "gateway/platforms/whatsapp_cloud.py",
+            "line": 136,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _handle_health @ gateway/platforms/whatsapp_cloud.py:_handle_health */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/whatsapp_cloud.py",
@@ -114261,17 +114366,24 @@
             "decorators": [],
             "line_number": 1427
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_whatsapp_cloud_remaining.c",
+          "c_function": "wac_handle_webhook",
+          "pop_annotation": {
+            "c_function": "wac_handle_webhook",
+            "python_functions": [
+              "_handle_webhook"
+            ],
+            "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
+            "python_file": "gateway/platforms/whatsapp_cloud.py",
+            "line": 142,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _handle_webhook @ gateway/platforms/whatsapp_cloud.py:_handle_webhook */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/whatsapp_cloud.py",
@@ -124502,10 +124614,10 @@
     },
     "gateway/relay/adapter.py": {
       "total": 27,
-      "ported": 11,
+      "ported": 27,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 16,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 27,
@@ -124550,16 +124662,24 @@
             "decorators": [],
             "line_number": 49
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_adapter_remaining.c",
+          "c_function": "rla_init",
+          "pop_annotation": {
+            "c_function": "rla_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_relay_adapter_remaining.c",
+            "python_file": "gateway/relay/adapter.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/relay/adapter.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/adapter.py",
@@ -124573,16 +124693,24 @@
             ],
             "line_number": 93
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_adapter_remaining.c",
+          "c_function": "rla_authorization_is_upstream",
+          "pop_annotation": {
+            "c_function": "rla_authorization_is_upstream",
+            "python_functions": [
+              "authorization_is_upstream"
+            ],
+            "c_file": "src/gateway/port_relay_adapter_remaining.c",
+            "python_file": "gateway/relay/adapter.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: authorization_is_upstream @ gateway/relay/adapter.py:authorization_is_upstream */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/adapter.py",
@@ -124596,16 +124724,24 @@
             ],
             "line_number": 107
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_adapter_remaining.c",
+          "c_function": "rla_message_len_fn",
+          "pop_annotation": {
+            "c_function": "rla_message_len_fn",
+            "python_functions": [
+              "message_len_fn"
+            ],
+            "c_file": "src/gateway/port_relay_adapter_remaining.c",
+            "python_file": "gateway/relay/adapter.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: message_len_fn @ gateway/relay/adapter.py:message_len_fn */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/adapter.py",
@@ -124617,16 +124753,24 @@
             "decorators": [],
             "line_number": 110
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_adapter_remaining.c",
+          "c_function": "rla_supports_draft_streaming",
+          "pop_annotation": {
+            "c_function": "rla_supports_draft_streaming",
+            "python_functions": [
+              "supports_draft_streaming"
+            ],
+            "c_file": "src/gateway/port_relay_adapter_remaining.c",
+            "python_file": "gateway/relay/adapter.py",
+            "line": 44,
+            "is_consolidated": false,
+            "full_text": "/* PoP: supports_draft_streaming @ gateway/relay/adapter.py:supports_draft_streaming */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/adapter.py",
@@ -124638,16 +124782,24 @@
             "decorators": [],
             "line_number": 118
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_adapter_remaining.c",
+          "c_function": "rla_connect",
+          "pop_annotation": {
+            "c_function": "rla_connect",
+            "python_functions": [
+              "connect"
+            ],
+            "c_file": "src/gateway/port_relay_adapter_remaining.c",
+            "python_file": "gateway/relay/adapter.py",
+            "line": 50,
+            "is_consolidated": false,
+            "full_text": "/* PoP: connect @ gateway/relay/adapter.py:connect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/adapter.py",
@@ -124717,16 +124869,24 @@
             "decorators": [],
             "line_number": 221
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_adapter_remaining.c",
+          "c_function": "rla_apply_descriptor",
+          "pop_annotation": {
+            "c_function": "rla_apply_descriptor",
+            "python_functions": [
+              "_apply_descriptor"
+            ],
+            "c_file": "src/gateway/port_relay_adapter_remaining.c",
+            "python_file": "gateway/relay/adapter.py",
+            "line": 57,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _apply_descriptor @ gateway/relay/adapter.py:_apply_descriptor */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/adapter.py",
@@ -124767,16 +124927,24 @@
             "decorators": [],
             "line_number": 232
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_adapter_remaining.c",
+          "c_function": "rla_capture_scope",
+          "pop_annotation": {
+            "c_function": "rla_capture_scope",
+            "python_functions": [
+              "_capture_scope"
+            ],
+            "c_file": "src/gateway/port_relay_adapter_remaining.c",
+            "python_file": "gateway/relay/adapter.py",
+            "line": 65,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _capture_scope @ gateway/relay/adapter.py:_capture_scope */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/adapter.py",
@@ -124788,16 +124956,24 @@
             "decorators": [],
             "line_number": 287
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_adapter_remaining.c",
+          "c_function": "rla_with_scope",
+          "pop_annotation": {
+            "c_function": "rla_with_scope",
+            "python_functions": [
+              "_with_scope"
+            ],
+            "c_file": "src/gateway/port_relay_adapter_remaining.c",
+            "python_file": "gateway/relay/adapter.py",
+            "line": 75,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _with_scope @ gateway/relay/adapter.py:_with_scope */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/adapter.py",
@@ -124867,16 +125043,24 @@
             "decorators": [],
             "line_number": 341
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_adapter_remaining.c",
+          "c_function": "rla_on_interrupt",
+          "pop_annotation": {
+            "c_function": "rla_on_interrupt",
+            "python_functions": [
+              "on_interrupt"
+            ],
+            "c_file": "src/gateway/port_relay_adapter_remaining.c",
+            "python_file": "gateway/relay/adapter.py",
+            "line": 83,
+            "is_consolidated": false,
+            "full_text": "/* PoP: on_interrupt @ gateway/relay/adapter.py:on_interrupt */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/adapter.py",
@@ -124977,16 +125161,24 @@
             "decorators": [],
             "line_number": 484
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_adapter_remaining.c",
+          "c_function": "rla_disconnect",
+          "pop_annotation": {
+            "c_function": "rla_disconnect",
+            "python_functions": [
+              "disconnect"
+            ],
+            "c_file": "src/gateway/port_relay_adapter_remaining.c",
+            "python_file": "gateway/relay/adapter.py",
+            "line": 91,
+            "is_consolidated": false,
+            "full_text": "/* PoP: disconnect @ gateway/relay/adapter.py:disconnect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/adapter.py",
@@ -125056,16 +125248,24 @@
             "decorators": [],
             "line_number": 582
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_adapter_remaining.c",
+          "c_function": "rla_send",
+          "pop_annotation": {
+            "c_function": "rla_send",
+            "python_functions": [
+              "send"
+            ],
+            "c_file": "src/gateway/port_relay_adapter_remaining.c",
+            "python_file": "gateway/relay/adapter.py",
+            "line": 98,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send @ gateway/relay/adapter.py:send */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/adapter.py",
@@ -125077,16 +125277,24 @@
             "decorators": [],
             "line_number": 617
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_adapter_remaining.c",
+          "c_function": "rla_edit_message",
+          "pop_annotation": {
+            "c_function": "rla_edit_message",
+            "python_functions": [
+              "edit_message"
+            ],
+            "c_file": "src/gateway/port_relay_adapter_remaining.c",
+            "python_file": "gateway/relay/adapter.py",
+            "line": 107,
+            "is_consolidated": false,
+            "full_text": "/* PoP: edit_message @ gateway/relay/adapter.py:edit_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/adapter.py",
@@ -125098,16 +125306,24 @@
             "decorators": [],
             "line_number": 645
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_adapter_remaining.c",
+          "c_function": "rla_send_typing",
+          "pop_annotation": {
+            "c_function": "rla_send_typing",
+            "python_functions": [
+              "send_typing"
+            ],
+            "c_file": "src/gateway/port_relay_adapter_remaining.c",
+            "python_file": "gateway/relay/adapter.py",
+            "line": 115,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_typing @ gateway/relay/adapter.py:send_typing */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/adapter.py",
@@ -125119,16 +125335,24 @@
             "decorators": [],
             "line_number": 686
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_adapter_remaining.c",
+          "c_function": "rla_stop_typing",
+          "pop_annotation": {
+            "c_function": "rla_stop_typing",
+            "python_functions": [
+              "stop_typing"
+            ],
+            "c_file": "src/gateway/port_relay_adapter_remaining.c",
+            "python_file": "gateway/relay/adapter.py",
+            "line": 122,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stop_typing @ gateway/relay/adapter.py:stop_typing */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/adapter.py",
@@ -125140,16 +125364,24 @@
             "decorators": [],
             "line_number": 722
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_adapter_remaining.c",
+          "c_function": "rla_get_chat_info",
+          "pop_annotation": {
+            "c_function": "rla_get_chat_info",
+            "python_functions": [
+              "get_chat_info"
+            ],
+            "c_file": "src/gateway/port_relay_adapter_remaining.c",
+            "python_file": "gateway/relay/adapter.py",
+            "line": 129,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_chat_info @ gateway/relay/adapter.py:get_chat_info */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/adapter.py",
@@ -125161,16 +125393,24 @@
             "decorators": [],
             "line_number": 728
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_relay_adapter_remaining.c",
+          "c_function": "rla_send_follow_up",
+          "pop_annotation": {
+            "c_function": "rla_send_follow_up",
+            "python_functions": [
+              "send_follow_up"
+            ],
+            "c_file": "src/gateway/port_relay_adapter_remaining.c",
+            "python_file": "gateway/relay/adapter.py",
+            "line": 138,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_follow_up @ gateway/relay/adapter.py:send_follow_up */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
