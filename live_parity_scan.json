@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T18:44:03Z",
+  "generated_at": "2026-08-02T18:45:59Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -114086,10 +114086,10 @@
     },
     "gateway/platforms/yuanbao.py": {
       "total": 214,
-      "ported": 165,
+      "ported": 199,
       "partial": 15,
       "stub": 0,
-      "real_gaps": 34,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 214,
@@ -114787,17 +114787,24 @@
             "decorators": [],
             "line_number": 1002
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_call",
+          "pop_annotation": {
+            "c_function": "yb2_call",
+            "python_functions": [
+              "__call__"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __call__ @ gateway/platforms/yuanbao.py:__call__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -114838,17 +114845,24 @@
             "decorators": [],
             "line_number": 1022
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_mw_init",
+          "pop_annotation": {
+            "c_function": "yb2_mw_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/yuanbao.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -114862,17 +114876,24 @@
             ],
             "line_number": 1028
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_mw_normalize",
+          "pop_annotation": {
+            "c_function": "yb2_mw_normalize",
+            "python_functions": [
+              "_normalize"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalize @ gateway/platforms/yuanbao.py:_normalize */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -114884,17 +114905,24 @@
             "decorators": [],
             "line_number": 1037
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_mw_use",
+          "pop_annotation": {
+            "c_function": "yb2_mw_use",
+            "python_functions": [
+              "use"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 44,
+            "is_consolidated": false,
+            "full_text": "/* PoP: use @ gateway/platforms/yuanbao.py:use */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -114964,17 +114992,24 @@
             "decorators": [],
             "line_number": 1070
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_mw_remove",
+          "pop_annotation": {
+            "c_function": "yb2_mw_remove",
+            "python_functions": [
+              "remove"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 52,
+            "is_consolidated": false,
+            "full_text": "/* PoP: remove @ gateway/platforms/yuanbao.py:remove */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -115017,17 +115052,24 @@
             "decorators": [],
             "line_number": 1082
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_mw_execute",
+          "pop_annotation": {
+            "c_function": "yb2_mw_execute",
+            "python_functions": [
+              "execute"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 60,
+            "is_consolidated": false,
+            "full_text": "/* PoP: execute @ gateway/platforms/yuanbao.py:execute */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -115248,17 +115290,24 @@
             ],
             "line_number": 1317
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_build_source",
+          "pop_annotation": {
+            "c_function": "yb2_build_source",
+            "python_functions": [
+              "_build_source"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 68,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _build_source @ gateway/platforms/yuanbao.py:_build_source */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -115512,17 +115561,24 @@
             "decorators": [],
             "line_number": 1546
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_mw_init",
+          "pop_annotation": {
+            "c_function": "yb2_mw_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/yuanbao.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -115865,17 +115921,24 @@
             ],
             "line_number": 1745
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_extract_text",
+          "pop_annotation": {
+            "c_function": "yb2_extract_text",
+            "python_functions": [
+              "_extract_text"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 79,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_text @ gateway/platforms/yuanbao.py:_extract_text */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -117254,17 +117317,24 @@
             "decorators": [],
             "line_number": 3371
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_mw_init",
+          "pop_annotation": {
+            "c_function": "yb2_mw_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/yuanbao.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -117278,17 +117348,24 @@
             ],
             "line_number": 3389
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_ws",
+          "pop_annotation": {
+            "c_function": "yb2_ws",
+            "python_functions": [
+              "ws"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 87,
+            "is_consolidated": false,
+            "full_text": "/* PoP: ws @ gateway/platforms/yuanbao.py:ws */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -117364,17 +117441,24 @@
             ],
             "line_number": 3401
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_is_connected",
+          "pop_annotation": {
+            "c_function": "yb2_is_connected",
+            "python_functions": [
+              "is_connected"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 93,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_connected @ gateway/platforms/yuanbao.py:is_connected */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -117386,17 +117470,24 @@
             "decorators": [],
             "line_number": 3416
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_open",
+          "pop_annotation": {
+            "c_function": "yb2_open",
+            "python_functions": [
+              "open"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 100,
+            "is_consolidated": false,
+            "full_text": "/* PoP: open @ gateway/platforms/yuanbao.py:open */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -117545,17 +117636,24 @@
             "decorators": [],
             "line_number": 3708
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_handle_frame",
+          "pop_annotation": {
+            "c_function": "yb2_handle_frame",
+            "python_functions": [
+              "_handle_frame"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 107,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _handle_frame @ gateway/platforms/yuanbao.py:_handle_frame */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -118238,17 +118336,24 @@
             "decorators": [],
             "line_number": 4301
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_mw_init",
+          "pop_annotation": {
+            "c_function": "yb2_mw_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/yuanbao.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -118368,17 +118473,24 @@
             "decorators": [],
             "line_number": 4452
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_mw_init",
+          "pop_annotation": {
+            "c_function": "yb2_mw_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/yuanbao.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -118511,17 +118623,24 @@
             "decorators": [],
             "line_number": 4573
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_mw_init",
+          "pop_annotation": {
+            "c_function": "yb2_mw_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/yuanbao.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -118633,17 +118752,24 @@
             "decorators": [],
             "line_number": 4629
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_mw_init",
+          "pop_annotation": {
+            "c_function": "yb2_mw_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/yuanbao.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -119067,17 +119193,24 @@
             ],
             "line_number": 4982
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_truncate_message",
+          "pop_annotation": {
+            "c_function": "yb2_truncate_message",
+            "python_functions": [
+              "truncate_message"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 115,
+            "is_consolidated": false,
+            "full_text": "/* PoP: truncate_message @ gateway/platforms/yuanbao.py:truncate_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -119141,17 +119274,24 @@
             "decorators": [],
             "line_number": 5055
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_mw_init",
+          "pop_annotation": {
+            "c_function": "yb2_mw_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/yuanbao.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -119337,17 +119477,24 @@
             "decorators": [],
             "line_number": 5101
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_stop_typing",
+          "pop_annotation": {
+            "c_function": "yb2_stop_typing",
+            "python_functions": [
+              "stop_typing"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 127,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stop_typing @ gateway/platforms/yuanbao.py:stop_typing */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -119531,17 +119678,24 @@
             ],
             "line_number": 5150
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_get_active",
+          "pop_annotation": {
+            "c_function": "yb2_get_active",
+            "python_functions": [
+              "get_active"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 135,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_active @ gateway/platforms/yuanbao.py:get_active */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -119584,17 +119738,24 @@
             "decorators": [],
             "line_number": 5159
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_mw_init",
+          "pop_annotation": {
+            "c_function": "yb2_mw_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/yuanbao.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -119637,17 +119798,24 @@
             ],
             "line_number": 5281
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_enforces_own_access_policy",
+          "pop_annotation": {
+            "c_function": "yb2_enforces_own_access_policy",
+            "python_functions": [
+              "enforces_own_access_policy"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 142,
+            "is_consolidated": false,
+            "full_text": "/* PoP: enforces_own_access_policy @ gateway/platforms/yuanbao.py:enforces_own_access_policy */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -119709,17 +119877,24 @@
             "decorators": [],
             "line_number": 5322
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_disconnect",
+          "pop_annotation": {
+            "c_function": "yb2_disconnect",
+            "python_functions": [
+              "disconnect"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 148,
+            "is_consolidated": false,
+            "full_text": "/* PoP: disconnect @ gateway/platforms/yuanbao.py:disconnect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -119752,17 +119927,24 @@
             "decorators": [],
             "line_number": 5356
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_get_chat_info",
+          "pop_annotation": {
+            "c_function": "yb2_get_chat_info",
+            "python_functions": [
+              "get_chat_info"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 155,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_chat_info @ gateway/platforms/yuanbao.py:get_chat_info */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -119774,17 +119956,24 @@
             "decorators": [],
             "line_number": 5369
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_send_typing",
+          "pop_annotation": {
+            "c_function": "yb2_send_typing",
+            "python_functions": [
+              "send_typing"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 165,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_typing @ gateway/platforms/yuanbao.py:send_typing */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -119796,17 +119985,24 @@
             "decorators": [],
             "line_number": 5376
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_stop_typing",
+          "pop_annotation": {
+            "c_function": "yb2_stop_typing",
+            "python_functions": [
+              "stop_typing"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 127,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stop_typing @ gateway/platforms/yuanbao.py:stop_typing */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -119910,17 +120106,24 @@
             "decorators": [],
             "line_number": 5439
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_send_image",
+          "pop_annotation": {
+            "c_function": "yb2_send_image",
+            "python_functions": [
+              "send_image"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 173,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_image @ gateway/platforms/yuanbao.py:send_image */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -119932,17 +120135,24 @@
             "decorators": [],
             "line_number": 5455
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_send_image_file",
+          "pop_annotation": {
+            "c_function": "yb2_send_image_file",
+            "python_functions": [
+              "send_image_file"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 181,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_image_file @ gateway/platforms/yuanbao.py:send_image_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -119954,17 +120164,24 @@
             "decorators": [],
             "line_number": 5471
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_send_file",
+          "pop_annotation": {
+            "c_function": "yb2_send_file",
+            "python_functions": [
+              "send_file"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 189,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_file @ gateway/platforms/yuanbao.py:send_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -119997,17 +120214,24 @@
             "decorators": [],
             "line_number": 5503
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_send_document",
+          "pop_annotation": {
+            "c_function": "yb2_send_document",
+            "python_functions": [
+              "send_document"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 197,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_document @ gateway/platforms/yuanbao.py:send_document */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -120048,17 +120272,24 @@
             "decorators": [],
             "line_number": 5528
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_get_status",
+          "pop_annotation": {
+            "c_function": "yb2_get_status",
+            "python_functions": [
+              "get_status"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 205,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_status @ gateway/platforms/yuanbao.py:get_status */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -120070,17 +120301,24 @@
             "decorators": [],
             "line_number": 5545
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_remaining.c",
+          "c_function": "yb2_get_active_adapter",
+          "pop_annotation": {
+            "c_function": "yb2_get_active_adapter",
+            "python_functions": [
+              "get_active_adapter"
+            ],
+            "c_file": "src/gateway/port_yuanbao_remaining.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 212,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_active_adapter @ gateway/platforms/yuanbao.py:get_active_adapter */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
