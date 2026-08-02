@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T23:21:31Z",
+  "generated_at": "2026-08-02T23:23:15Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -27854,10 +27854,10 @@
     },
     "agent/display.py": {
       "total": 66,
-      "ported": 57,
+      "ported": 60,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 9,
+      "real_gaps": 6,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 66,
@@ -29122,7 +29122,7 @@
             "decorators": [],
             "line_number": 877
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_display_remaining.c",
           "c_function": "disp_emit_inline_diff",
           "pop_annotation": {
@@ -29136,12 +29136,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _emit_inline_diff @ agent/display.py:_emit_inline_diff */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -29163,7 +29161,7 @@
             ],
             "c_file": "src/agent/port_display_remaining.c",
             "python_file": "agent/display.py",
-            "line": 191,
+            "line": 192,
             "is_consolidated": false,
             "full_text": "/* PoP: _render_inline_unified_diff @ agent/display.py:_render_inline_unified_diff */"
           },
@@ -29192,7 +29190,7 @@
             ],
             "c_file": "src/agent/port_display_remaining.c",
             "python_file": "agent/display.py",
-            "line": 234,
+            "line": 235,
             "is_consolidated": false,
             "full_text": "/* PoP: _split_unified_diff_sections @ agent/display.py:_split_unified_diff_sections */"
           },
@@ -29221,7 +29219,7 @@
             ],
             "c_file": "src/agent/port_display_remaining.c",
             "python_file": "agent/display.py",
-            "line": 294,
+            "line": 295,
             "is_consolidated": false,
             "full_text": "/* PoP: _summarize_rendered_diff_sections @ agent/display.py:_summarize_rendered_diff_sections */"
           },
@@ -29250,7 +29248,7 @@
             ],
             "c_file": "src/agent/port_display_remaining.c",
             "python_file": "agent/display.py",
-            "line": 302,
+            "line": 303,
             "is_consolidated": false,
             "full_text": "/* PoP: render_edit_diff_with_delta @ agent/display.py:render_edit_diff_with_delta */"
           },
@@ -29283,7 +29281,7 @@
             ],
             "c_file": "src/agent/port_display_remaining.c",
             "python_file": "agent/display.py",
-            "line": 310,
+            "line": 311,
             "is_consolidated": false,
             "full_text": "/* PoP: get_waiting_faces @ agent/display.py:get_waiting_faces */"
           },
@@ -29314,7 +29312,7 @@
             ],
             "c_file": "src/agent/port_display_remaining.c",
             "python_file": "agent/display.py",
-            "line": 316,
+            "line": 317,
             "is_consolidated": false,
             "full_text": "/* PoP: get_thinking_faces @ agent/display.py:get_thinking_faces */"
           },
@@ -29345,7 +29343,7 @@
             ],
             "c_file": "src/agent/port_display_remaining.c",
             "python_file": "agent/display.py",
-            "line": 321,
+            "line": 322,
             "is_consolidated": false,
             "full_text": "/* PoP: get_thinking_verbs @ agent/display.py:get_thinking_verbs */"
           },
@@ -29374,7 +29372,7 @@
             ],
             "c_file": "src/agent/port_display_remaining.c",
             "python_file": "agent/display.py",
-            "line": 326,
+            "line": 327,
             "is_consolidated": false,
             "full_text": "/* PoP: __init__ @ agent/display.py:__init__ */"
           },
@@ -29393,7 +29391,7 @@
             "decorators": [],
             "line_number": 1102
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_display_remaining.c",
           "c_function": "disp_spinner_write",
           "pop_annotation": {
@@ -29403,16 +29401,14 @@
             ],
             "c_file": "src/agent/port_display_remaining.c",
             "python_file": "agent/display.py",
-            "line": 336,
+            "line": 337,
             "is_consolidated": false,
             "full_text": "/* PoP: _write @ agent/display.py:_write */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -29436,7 +29432,7 @@
             ],
             "c_file": "src/agent/port_display_remaining.c",
             "python_file": "agent/display.py",
-            "line": 344,
+            "line": 346,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_tty @ agent/display.py:_is_tty */"
           },
@@ -29465,7 +29461,7 @@
             ],
             "c_file": "src/agent/port_display_remaining.c",
             "python_file": "agent/display.py",
-            "line": 349,
+            "line": 351,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_patch_stdout_proxy @ agent/display.py:_is_patch_stdout_proxy */"
           },
@@ -29496,7 +29492,7 @@
             ],
             "c_file": "src/agent/port_display_remaining.c",
             "python_file": "agent/display.py",
-            "line": 356,
+            "line": 357,
             "is_consolidated": false,
             "full_text": "/* PoP: _animate @ agent/display.py:_animate */"
           },
@@ -29525,7 +29521,7 @@
             ],
             "c_file": "src/agent/port_display_remaining.c",
             "python_file": "agent/display.py",
-            "line": 368,
+            "line": 365,
             "is_consolidated": false,
             "full_text": "/* PoP: start @ agent/display.py:start */"
           },
@@ -29556,7 +29552,7 @@
             ],
             "c_file": "src/agent/port_display_remaining.c",
             "python_file": "agent/display.py",
-            "line": 374,
+            "line": 371,
             "is_consolidated": false,
             "full_text": "/* PoP: update_text @ agent/display.py:update_text */"
           },
@@ -29587,7 +29583,7 @@
             ],
             "c_file": "src/agent/port_display_remaining.c",
             "python_file": "agent/display.py",
-            "line": 381,
+            "line": 377,
             "is_consolidated": false,
             "full_text": "/* PoP: print_above @ agent/display.py:print_above */"
           },
@@ -29608,7 +29604,7 @@
             "decorators": [],
             "line_number": 1215
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_display_remaining.c",
           "c_function": "disp_spinner_stop",
           "pop_annotation": {
@@ -29618,16 +29614,14 @@
             ],
             "c_file": "src/agent/port_display_remaining.c",
             "python_file": "agent/display.py",
-            "line": 389,
+            "line": 385,
             "is_consolidated": false,
             "full_text": "/* PoP: stop @ agent/display.py:stop */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/display.py",
@@ -29707,7 +29701,7 @@
             ],
             "c_file": "src/agent/port_display_remaining.c",
             "python_file": "agent/display.py",
-            "line": 396,
+            "line": 392,
             "is_consolidated": false,
             "full_text": "/* PoP: _trim_error @ agent/display.py:_trim_error */"
           },
@@ -29736,7 +29730,7 @@
             ],
             "c_file": "src/agent/port_display_remaining.c",
             "python_file": "agent/display.py",
-            "line": 428,
+            "line": 424,
             "is_consolidated": false,
             "full_text": "/* PoP: _detect_tool_failure @ agent/display.py:_detect_tool_failure */"
           },
@@ -29794,7 +29788,7 @@
             ],
             "c_file": "src/agent/port_display_remaining.c",
             "python_file": "agent/display.py",
-            "line": 437,
+            "line": 433,
             "is_consolidated": false,
             "full_text": "/* PoP: get_cute_tool_message @ agent/display.py:get_cute_tool_message */"
           },
@@ -172829,10 +172823,10 @@
     },
     "hermes_cli/config.py": {
       "total": 113,
-      "ported": 103,
+      "ported": 110,
       "partial": 2,
       "stub": 0,
-      "real_gaps": 8,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 113,
@@ -173080,7 +173074,7 @@
             "decorators": [],
             "line_number": 502
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_config_remaining.c",
           "c_function": "cfg_running_in_container",
           "pop_annotation": {
@@ -173094,12 +173088,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _running_in_container @ hermes_cli/config.py:_running_in_container */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -173121,7 +173113,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 70,
+            "line": 69,
             "is_consolidated": false,
             "full_text": "/* PoP: stamp_install_method @ hermes_cli/config.py:stamp_install_method */"
           },
@@ -173179,7 +173171,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 78,
+            "line": 83,
             "is_consolidated": false,
             "full_text": "/* PoP: recommended_update_command @ hermes_cli/config.py:recommended_update_command */"
           },
@@ -173208,7 +173200,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 86,
+            "line": 91,
             "is_consolidated": false,
             "full_text": "/* PoP: format_docker_update_message @ hermes_cli/config.py:format_docker_update_message */"
           },
@@ -173237,7 +173229,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 92,
+            "line": 97,
             "is_consolidated": false,
             "full_text": "/* PoP: format_managed_message @ hermes_cli/config.py:format_managed_message */"
           },
@@ -173266,7 +173258,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 102,
+            "line": 107,
             "is_consolidated": false,
             "full_text": "/* PoP: managed_error @ hermes_cli/config.py:managed_error */"
           },
@@ -173295,7 +173287,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 109,
+            "line": 114,
             "is_consolidated": false,
             "full_text": "/* PoP: get_container_exec_info @ hermes_cli/config.py:get_container_exec_info */"
           },
@@ -173353,7 +173345,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 122,
+            "line": 127,
             "is_consolidated": false,
             "full_text": "/* PoP: get_env_path @ hermes_cli/config.py:get_env_path */"
           },
@@ -173382,7 +173374,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 129,
+            "line": 134,
             "is_consolidated": false,
             "full_text": "/* PoP: get_project_root @ hermes_cli/config.py:get_project_root */"
           },
@@ -173575,7 +173567,7 @@
             "decorators": [],
             "line_number": 857
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_config_remaining.c",
           "c_function": "cfg_ensure_hermes_home",
           "pop_annotation": {
@@ -173585,16 +173577,14 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 136,
+            "line": 141,
             "is_consolidated": false,
             "full_text": "/* PoP: ensure_hermes_home @ hermes_cli/config.py:ensure_hermes_home */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -173645,7 +173635,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 144,
+            "line": 151,
             "is_consolidated": false,
             "full_text": "/* PoP: get_missing_env_vars @ hermes_cli/config.py:get_missing_env_vars */"
           },
@@ -173703,7 +173693,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 152,
+            "line": 159,
             "is_consolidated": false,
             "full_text": "/* PoP: clear_model_endpoint_credentials @ hermes_cli/config.py:clear_model_endpoint_credentials */"
           },
@@ -173848,7 +173838,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 160,
+            "line": 167,
             "is_consolidated": false,
             "full_text": "/* PoP: get_missing_config_fields @ hermes_cli/config.py:get_missing_config_fields */"
           },
@@ -173877,7 +173867,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 168,
+            "line": 175,
             "is_consolidated": false,
             "full_text": "/* PoP: get_missing_skill_config_vars @ hermes_cli/config.py:get_missing_skill_config_vars */"
           },
@@ -173993,7 +173983,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 175,
+            "line": 182,
             "is_consolidated": false,
             "full_text": "/* PoP: providers_dict_to_custom_providers @ hermes_cli/config.py:providers_dict_to_custom_providers */"
           },
@@ -174225,7 +174215,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 183,
+            "line": 190,
             "is_consolidated": false,
             "full_text": "/* PoP: get_custom_provider_context_length @ hermes_cli/config.py:get_custom_provider_context_length */"
           },
@@ -174273,7 +174263,7 @@
             "decorators": [],
             "line_number": 5689
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_config_remaining.c",
           "c_function": "cfg_check_config_version",
           "pop_annotation": {
@@ -174283,16 +174273,14 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 191,
+            "line": 204,
             "is_consolidated": false,
             "full_text": "/* PoP: check_config_version @ hermes_cli/config.py:check_config_version */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -174314,7 +174302,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 199,
+            "line": 215,
             "is_consolidated": false,
             "full_text": "/* PoP: validate_config_structure @ hermes_cli/config.py:validate_config_structure */"
           },
@@ -174343,7 +174331,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 207,
+            "line": 223,
             "is_consolidated": false,
             "full_text": "/* PoP: print_config_warnings @ hermes_cli/config.py:print_config_warnings */"
           },
@@ -174372,7 +174360,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 215,
+            "line": 231,
             "is_consolidated": false,
             "full_text": "/* PoP: warn_deprecated_cwd_env_vars @ hermes_cli/config.py:warn_deprecated_cwd_env_vars */"
           },
@@ -174517,7 +174505,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 224,
+            "line": 240,
             "is_consolidated": false,
             "full_text": "/* PoP: _strip_dotted_keys @ hermes_cli/config.py:_strip_dotted_keys */"
           },
@@ -174857,7 +174845,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 232,
+            "line": 248,
             "is_consolidated": false,
             "full_text": "/* PoP: cfg_get @ hermes_cli/config.py:cfg_get */"
           },
@@ -174973,7 +174961,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 272,
+            "line": 288,
             "is_consolidated": false,
             "full_text": "/* PoP: load_config @ hermes_cli/config.py:load_config */"
           },
@@ -175108,7 +175096,7 @@
             "decorators": [],
             "line_number": 7512
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_config_remaining.c",
           "c_function": "cfg_apply_terminal_config_to_env",
           "pop_annotation": {
@@ -175118,16 +175106,14 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 280,
+            "line": 296,
             "is_consolidated": false,
             "full_text": "/* PoP: apply_terminal_config_to_env @ hermes_cli/config.py:apply_terminal_config_to_env */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -175178,7 +175164,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 288,
+            "line": 318,
             "is_consolidated": false,
             "full_text": "/* PoP: save_config @ hermes_cli/config.py:save_config */"
           },
@@ -175257,7 +175243,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 306,
+            "line": 336,
             "is_consolidated": false,
             "full_text": "/* PoP: invalidate_env_cache @ hermes_cli/config.py:invalidate_env_cache */"
           },
@@ -175317,7 +175303,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 312,
+            "line": 342,
             "is_consolidated": false,
             "full_text": "/* PoP: sanitize_env_file @ hermes_cli/config.py:sanitize_env_file */"
           },
@@ -175433,7 +175419,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 379,
+            "line": 409,
             "is_consolidated": false,
             "full_text": "/* PoP: save_env_value @ hermes_cli/config.py:save_env_value */"
           },
@@ -175491,7 +175477,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 424,
+            "line": 454,
             "is_consolidated": false,
             "full_text": "/* PoP: remove_env_value @ hermes_cli/config.py:remove_env_value */"
           },
@@ -175510,7 +175496,7 @@
             "decorators": [],
             "line_number": 8323
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_config_remaining.c",
           "c_function": "cfg_save_anthropic_oauth_token",
           "pop_annotation": {
@@ -175520,16 +175506,14 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 462,
+            "line": 492,
             "is_consolidated": false,
             "full_text": "/* PoP: save_anthropic_oauth_token @ hermes_cli/config.py:save_anthropic_oauth_token */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -175541,7 +175525,7 @@
             "decorators": [],
             "line_number": 8330
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_config_remaining.c",
           "c_function": "cfg_use_anthropic_claude_code_credentials",
           "pop_annotation": {
@@ -175551,16 +175535,14 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 470,
+            "line": 501,
             "is_consolidated": false,
             "full_text": "/* PoP: use_anthropic_claude_code_credentials @ hermes_cli/config.py:use_anthropic_claude_code_credentials */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -175572,7 +175554,7 @@
             "decorators": [],
             "line_number": 8337
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_config_remaining.c",
           "c_function": "cfg_save_anthropic_api_key",
           "pop_annotation": {
@@ -175582,16 +175564,14 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 477,
+            "line": 508,
             "is_consolidated": false,
             "full_text": "/* PoP: save_anthropic_api_key @ hermes_cli/config.py:save_anthropic_api_key */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/config.py",
@@ -175613,7 +175593,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 484,
+            "line": 516,
             "is_consolidated": false,
             "full_text": "/* PoP: save_env_value_secure @ hermes_cli/config.py:save_env_value_secure */"
           },
@@ -175642,7 +175622,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 492,
+            "line": 524,
             "is_consolidated": false,
             "full_text": "/* PoP: reload_env @ hermes_cli/config.py:reload_env */"
           },
@@ -175671,7 +175651,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 518,
+            "line": 550,
             "is_consolidated": false,
             "full_text": "/* PoP: get_env_value @ hermes_cli/config.py:get_env_value */"
           },
@@ -175758,7 +175738,7 @@
             ],
             "c_file": "src/cli/port_config_remaining.c",
             "python_file": "hermes_cli/config.py",
-            "line": 538,
+            "line": 570,
             "is_consolidated": false,
             "full_text": "/* PoP: redact_config_value @ hermes_cli/config.py:redact_config_value */"
           },

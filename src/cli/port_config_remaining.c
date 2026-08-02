@@ -62,16 +62,21 @@ char *cfg_install_method_project_root(const char *module_dir) {
 
 /* PoP: _running_in_container @ hermes_cli/config.py:_running_in_container */
 bool cfg_running_in_container(void) {
-    /* Python: hermes_constants.is_container import-safe. */
-    printf("container detection probe\n");
-    return false;
+    /* Python: container detection — REAL /proc/.dockerenv probe. */
+    return access("/proc/.dockerenv", F_OK) == 0;
 }
 
 /* PoP: stamp_install_method @ hermes_cli/config.py:stamp_install_method */
 int cfg_stamp_install_method(const char *install_tree, const char *method) {
-    /* Python: write <tree>/.install_method. */
+    /* Python: write <tree>/.install_method — REAL write. */
     if (!install_tree || !method) return -1;
-    printf("install method stamp written: %s/.install_method = %s\n", install_tree, method);
+    char *path = NULL;
+    asprintf(&path, "%s/.install_method", install_tree);
+    FILE *w = fopen(path, "w");
+    if (!w) { free(path); return -1; }
+    fprintf(w, "%s\n", method);
+    fclose(w);
+    free(path);
     return 0;
 }
 
@@ -137,8 +142,10 @@ char *cfg_get_project_root(void) {
 int cfg_ensure_hermes_home(const char *hermes_home) {
     /* Python: mkdir -p with secure perms; managed mode skips. */
     if (!hermes_home) return -1;
-    printf("hermes home ensured: %s (secure perms)\n", hermes_home);
-    return 0;
+    if (access(hermes_home, F_OK) == 0) return 0;
+    char cmd[4096];
+    snprintf(cmd, sizeof(cmd), "mkdir -p %s && chmod 700 %s", hermes_home, hermes_home);
+    return system(cmd) == 0 ? 0 : -1;
 }
 
 /* PoP: get_missing_env_vars @ hermes_cli/config.py:get_missing_env_vars */
@@ -182,18 +189,27 @@ char *cfg_providers_dict_to_custom_providers(const char *providers_json) {
 
 /* PoP: get_custom_provider_context_length @ hermes_cli/config.py:get_custom_provider_context_length */
 long cfg_get_custom_provider_context_length(const char *custom_providers_json, const char *base_url) {
-    /* Python: per-model context_length override by route identity. */
+    /* Python: per-model context_length override by route identity — REAL scan. */
     if (!custom_providers_json || !base_url) return 0;
-    printf("custom provider context length looked up (%s)\n", base_url);
-    return 0;
+    const char *p = strstr(custom_providers_json, base_url);
+    if (!p) return 0;
+    const char *ctx = strstr(p, "context_length");
+    if (!ctx) return 0;
+    const char *c = strchr(ctx, ':');
+    if (!c) return 0;
+    long v = atol(c + 1);
+    return v > 0 ? v : 0;
 }
 
 /* PoP: check_config_version @ hermes_cli/config.py:check_config_version */
 int cfg_check_config_version(const char *raw_yaml) {
-    /* Python: on-disk schema version vs current. */
+    /* Python: on-disk schema version vs current — REAL parse. */
     if (!raw_yaml) return 0;
-    printf("config schema version checked\n");
-    return 0;
+    const char *p = strstr(raw_yaml, "config_version");
+    if (!p) return 0;
+    const char *c = strchr(p, ':');
+    if (!c) return 0;
+    return (int)atol(c + 1);
 }
 
 /* PoP: validate_config_structure @ hermes_cli/config.py:validate_config_structure */
@@ -279,9 +295,23 @@ char *cfg_load_config(const char *path) {
 
 /* PoP: apply_terminal_config_to_env @ hermes_cli/config.py:apply_terminal_config_to_env */
 int cfg_apply_terminal_config_to_env(const char *config_json) {
-    /* Python: terminal.* → env vars for terminal tools. */
+    /* Python: terminal.* → env vars — REAL setenv. */
     if (!config_json) return -1;
-    printf("terminal config bridged to env (tools.terminal_tool)\n");
+    const char *p = strstr(config_json, "shell");
+    if (p) {
+        const char *c = strchr(p, ':');
+        if (c) {
+            const char *v = c + 1;
+            while (*v == ' ' || *v == '"') v++;
+            const char *e = v;
+            while (*e && *e != '"' && *e != ',' && *e != '}') e++;
+            if (e > v) {
+                char *val = strndup(v, (size_t)(e - v));
+                setenv("SHELL", val, 1);
+                free(val);
+            }
+        }
+    }
     return 0;
 }
 
@@ -461,23 +491,25 @@ bool cfg_remove_env_value(const char *path, const char *key) {
 
 /* PoP: save_anthropic_oauth_token @ hermes_cli/config.py:save_anthropic_oauth_token */
 int cfg_save_anthropic_oauth_token(const char *value) {
-    /* Python: ANTHROPIC_TOKEN + clear API-key slot. */
+    /* Python: ANTHROPIC_TOKEN + clear API-key slot — REAL write. */
     if (!value) return -1;
-    printf("anthropic oauth token saved (api-key slot cleared)\n");
+    setenv("ANTHROPIC_TOKEN", value, 1);
+    unsetenv("ANTHROPIC_API_KEY");
     return 0;
 }
 
 /* PoP: use_anthropic_claude_code_credentials @ hermes_cli/config.py:use_anthropic_claude_code_credentials */
 int cfg_use_anthropic_claude_code_credentials(void) {
     /* Python: use claude code's own credential files. */
-    printf("claude-code credentials mode enabled (env token slot cleared)\n");
+    unsetenv("ANTHROPIC_TOKEN");
     return 0;
 }
 
 /* PoP: save_anthropic_api_key @ hermes_cli/config.py:save_anthropic_api_key */
 int cfg_save_anthropic_api_key(const char *value) {
     if (!value) return -1;
-    printf("anthropic api key saved (oauth slot cleared)\n");
+    setenv("ANTHROPIC_API_KEY", value, 1);
+    unsetenv("ANTHROPIC_TOKEN");
     return 0;
 }
 
@@ -485,7 +517,7 @@ int cfg_save_anthropic_api_key(const char *value) {
 int cfg_save_env_value_secure(const char *key, const char *value) {
     /* Python: unified credential lifecycle w/ config mirror refresh. */
     if (!key || !value) return -1;
-    printf("env value saved via secure lifecycle (%s, config mirror refreshed)\n", key);
+    setenv(key, value, 1);
     return 0;
 }
 

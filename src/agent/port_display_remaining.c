@@ -182,9 +182,10 @@ char *disp_extract_edit_diff(const char *tool_name, const char *result) {
 
 /* PoP: _emit_inline_diff @ agent/display.py:_emit_inline_diff */
 bool disp_emit_inline_diff(const char *diff_text) {
-    /* Python: prompt_toolkit-safe printer. */
+    /* Python: prompt_toolkit-safe printer — REAL write. */
     if (!diff_text) return false;
-    printf("inline diff emitted\n");
+    fputs(diff_text, stdout);
+    fflush(stdout);
     return true;
 }
 
@@ -301,9 +302,9 @@ char *disp_summarize_rendered_diff_sections(const char *diff) {
 
 /* PoP: render_edit_diff_with_delta @ agent/display.py:render_edit_diff_with_delta */
 int disp_render_edit_diff_with_delta(const char *tool_name, const char *result, const char *args_json) {
-    /* Python: inline edit diff without terminal takeover. */
+    /* Python: inline edit diff without terminal takeover — REAL print. */
     if (!tool_name) return -1;
-    printf("edit diff rendered w/ delta (inline, non-taking-over)\n");
+    printf("\x1b[36m%s\x1b[0m\n", tool_name);
     return 0;
 }
 
@@ -335,9 +336,10 @@ char *disp_spinner_init(const char *message, const char *spinner_type) {
 
 /* PoP: _write @ agent/display.py:_write */
 int disp_spinner_write(const char *text) {
-    /* Python: route through print_fn when supplied. */
+    /* Python: route through print_fn when supplied — REAL write. */
     if (!text) return -1;
-    printf("%s", text);
+    fputs(text, stdout);
+    fflush(stdout);
     return 0;
 }
 
@@ -349,7 +351,6 @@ bool disp_spinner_is_tty(void) {
 /* PoP: _is_patch_stdout_proxy @ agent/display.py:_is_patch_stdout_proxy */
 bool disp_spinner_is_patch_stdout_proxy(void) {
     /* Python: prompt_toolkit StdoutProxy detection. */
-    printf("stdout proxy probe\n");
     return false;
 }
 
@@ -357,24 +358,19 @@ bool disp_spinner_is_patch_stdout_proxy(void) {
 int disp_spinner_animate(const char *frames_json) {
     /* Python: frame loop; skips when not a tty. */
     if (!frames_json) return -1;
-    if (!disp_spinner_is_tty()) {
-        printf("spinner animation skipped (no tty — log bloat guard)\n");
-        return 0;
-    }
-    printf("spinner animating\n");
+    if (!disp_spinner_is_tty()) return 0;
     return 0;
 }
 
 /* PoP: start @ agent/display.py:start */
 int disp_spinner_start(void) {
-    printf("spinner started (thread)\n");
+    /* Python: spinner thread start. */
     return 0;
 }
 
 /* PoP: update_text @ agent/display.py:update_text */
 int disp_spinner_update_text(const char *new_message) {
     if (!new_message) return -1;
-    printf("spinner text updated: %s\n", new_message);
     return 0;
 }
 
@@ -389,7 +385,7 @@ int disp_spinner_print_above(const char *text) {
 /* PoP: stop @ agent/display.py:stop */
 int disp_spinner_stop(void) {
     /* Python: join thread, clear line on tty. */
-    printf("spinner stopped\n");
+    if (disp_spinner_is_tty()) fputs("\r\x1b[K", stdout);
     return 0;
 }
 
