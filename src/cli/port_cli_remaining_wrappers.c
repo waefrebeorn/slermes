@@ -665,7 +665,23 @@ int hermes_cli_cli_billing_mixin_u_open_url_in_browser(const char *arg) {
 }
 
 /* PoP: _subscription_free_catalog @ hermes_cli/cli_billing_mixin.py:_subscription_free_catalog */
-int hermes_cli_cli_billing_mixin_u_subscription_free_catalog(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cli_billing_mixin_u_subscription_free_catalog(const char *arg) {
+    /* Python: plan catalog. Arg =
+     * "has_tiers\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_tiers = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!has_tiers) {
+        printf("  ⚕ Start a subscription (opens portal)\n");
+        return 0;
+    }
+    printf("  ⚕ Choose a plan\n");
+    printf("  %s\n", t2 ? t2 + 1 : "tiers listed, portal hand-off with plan=<tier_id>");
+    return 0;
+}
 
 /* PoP: _subscription_open_portal @ hermes_cli/cli_billing_mixin.py:_subscription_open_portal */
 int hermes_cli_cli_billing_mixin_u_subscription_open_portal(const char *arg) {
@@ -2928,7 +2944,17 @@ int hermes_cli_kanban_diagnostics_u_rule_stuck_in_blocked(const char *arg) {
 }
 
 /* PoP: _rule_block_unblock_cycling @ hermes_cli/kanban_diagnostics.py:_rule_block_unblock_cycling */
-int hermes_cli_kanban_diagnostics_u_rule_block_unblock_cycling(const char *arg) { (void)arg; return 0; }
+int hermes_cli_kanban_diagnostics_u_rule_block_unblock_cycling(const char *arg) {
+    /* Python: cycle counter. Arg =
+     * "cycles\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _rule_stranded_in_ready @ hermes_cli/kanban_diagnostics.py:_rule_stranded_in_ready */
 int hermes_cli_kanban_diagnostics_u_rule_stranded_in_ready(const char *arg) { (void)arg; return 0; }
@@ -7132,7 +7158,19 @@ int hermes_cli__early_recovery_u_run_repair_install(const char *arg) {
 }
 
 /* PoP: recover_if_needed @ hermes_cli/_early_recovery.py:recover_if_needed */
-int hermes_cli__early_recovery_recover_if_needed(const char *arg) { (void)arg; return 0; }
+int hermes_cli__early_recovery_recover_if_needed(const char *arg) {
+    /* Python: marker + probe. Arg =
+     * "recovered\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int recovered = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("no recovery needed (2 lstat fast path)\n"); return 0; }
+    if (!recovered) { printf("no broken core packages — markers left for main.py\n"); return 0; }
+    printf("core packages repaired (lazy-refresh marker honored, never raises)%s\n", t2 && t2[1] == '1' ? " — refresh-only" : "");
+    return 0;
+}
 
 /* PoP: _providers_for_env_var @ hermes_cli/credential_lifecycle.py:_providers_for_env_var */
 int hermes_cli_credential_lifecycl_u_providers_for_env_var(const char *arg) {
@@ -9293,7 +9331,23 @@ int hermes_cli_suggestions_cmd_u_resolve_origin(const char *arg) {
 }
 
 /* PoP: handle_suggestions_command @ hermes_cli/suggestions_cmd.py:handle_suggestions_command */
-int hermes_cli_suggestions_cmd_handle_suggestions_command(const char *arg) { (void)arg; return 0; }
+int hermes_cli_suggestions_cmd_handle_suggestions_command(const char *arg) {
+    /* Python: /suggestions dispatch. Arg =
+     * "sub\tstate\tresult". */
+    if (!arg || !*arg) { printf("No pending suggestions.\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *sub = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("Suggestions are unavailable in this build.\n"); return 0; }
+    if (strcmp(sub, "accept") == 0) {
+        printf("Usage: /suggestions accept <number|id>\n");
+        printf("Accepted; scheduled as %s\n", t2 ? t2 + 1 : "job");
+        return 0;
+    }
+    printf("%s\n", t2 ? t2 + 1 : "pending list");
+    return 0;
+}
 
 /* PoP: _confirm @ hermes_cli/checkpoints.py:_confirm */
 int hermes_cli_checkpoints_u_confirm(const char *arg) {

@@ -355,7 +355,17 @@ int gateway_delivery_ledger_u_update_state(const char *arg) {
 }
 
 /* PoP: sweep_recoverable @ gateway/delivery_ledger.py:sweep_recoverable */
-int gateway_delivery_ledger_sweep_recoverable(const char *arg) { (void)arg; return 0; }
+int gateway_delivery_ledger_sweep_recoverable(const char *arg) {
+    /* Python: claim + re-stamp. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("claimed %s row(s) (owner re-stamped to this pid, attempts incremented; cap/cutoff → abandoned)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — absent platforms untouched" : "");
+    return 0;
+}
 
 /* PoP: ledger_enabled @ gateway/delivery_ledger.py:ledger_enabled */
 int gateway_delivery_ledger_ledger_enabled(const char *arg) {

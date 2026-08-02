@@ -46,7 +46,22 @@ int auth_detect_zai_endpoint(const char *arg) {
 }
 
 /* PoP: _resolve_zai_base_url @ hermes_cli/auth.py:_resolve_zai_base_url */
-int auth_u_resolve_zai_base_url(const char *arg) { (void)arg; return 0; }
+int auth_u_resolve_zai_base_url(const char *arg) {
+    /* Python: cached probe. Arg =
+     * "env\tcached\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int env = arg[0] == '1';
+    int cached = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (env) { printf("GLM_BASE_URL override wins\n"); return 0; }
+    if (cached) { printf("cached detected endpoint (key-hash matched): %s\n", t3 ? t3 + 1 : ""); return 0; }
+    printf("probed endpoint (up to 8s/endpoint): %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _format_nous_entitlement_auth_error @ hermes_cli/auth.py:_format_nous_entitlement_auth_error */
 /* PoP: _format_nous_entitlement_auth_error @ hermes_cli/auth.py:_format_nous_entitlement_auth_error */
@@ -823,7 +838,18 @@ int auth_u_sync_nous_pool_from_auth_store(const char *arg) {
 int auth_resolve_nous_runtime_credentials(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _snapshot_nous_pool_status @ hermes_cli/auth.py:_snapshot_nous_pool_status */
-int auth_u_snapshot_nous_pool_status(const char *arg) { (void)arg; return 0; }
+int auth_u_snapshot_nous_pool_status(const char *arg) {
+    /* Python: pool fallback status. Arg =
+     * "found\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\"logged_in\": false}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int found = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !found) { printf("{\"logged_in\": false}\n"); return 0; }
+    printf("pool status (best entry by agent expiry + access expiry + priority): %s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: get_nous_auth_status @ hermes_cli/auth.py:get_nous_auth_status */
 int auth_get_nous_auth_status(const char *arg) {

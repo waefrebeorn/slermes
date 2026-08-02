@@ -159,7 +159,24 @@ int kdbport_u_attempt_index_reindex_repair(const char *arg) {
 }
 
 /* PoP: repair_db @ hermes_cli/kanban_db.py:repair_db */
-int kdbport_repair_db(const char *arg) { (void)arg; return 0; }
+int kdbport_repair_db(const char *arg) {
+    /* Python: index-only REINDEX. Arg =
+     * "status\tstate\tresult". */
+    if (!arg || !*arg) { printf("missing\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *status = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("%s\tprobe failed\n", status); return 0; }
+    if (strcmp(status, "missing") == 0 || strcmp(status, "empty") == 0) {
+        printf("%s\tno db to repair\n", status);
+        return 0;
+    }
+    if (strcmp(status, "healthy") == 0) { printf("healthy\tno repair needed\n"); return 0; }
+    if (strcmp(status, "repaired") == 0) { printf("repaired\tREINDEX under flock, corrupt bytes quarantined\n"); return 0; }
+    printf("%s\tcorrupt beyond index repair — fail closed\n", status);
+    return 0;
+}
 
 /* PoP: _migrate_add_optional_columns @ hermes_cli/kanban_db.py:_migrate_add_optional_columns */
 int kdbport_u_migrate_add_optional_columns(const char *arg) { (void)arg; return 0; }

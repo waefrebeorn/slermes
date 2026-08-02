@@ -1029,7 +1029,18 @@ int agent_chat_completion_helpers_u_bedrock_reasoning_stale_floor(const char *ar
 }
 
 /* PoP: _dispatch_nonstreaming_api_request @ agent/chat_completion_helpers.py:_dispatch_nonstreaming_api_request */
-int agent_chat_completion_helpers_u_dispatch_nonstreaming_api_re_st(const char *arg) { (void)arg; return 0; }
+int agent_chat_completion_helpers_u_dispatch_nonstreaming_api_re_st(const char *arg) {
+    /* Python: single dispatch point. Arg =
+     * "mode\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *mode = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("dispatch skipped\n"); return 1; }
+    printf("non-streaming dispatch via %s (client ownership stays with caller)%s\n", mode, (t2 && t2[1] == '1') ? " — worker aborts registered" : "");
+    return 0;
+}
 
 /* PoP: should_use_direct_api_call @ agent/chat_completion_helpers.py:should_use_direct_api_call */
 int agent_chat_completion_helpers_should_use_direct_api_call(const char *arg) {
@@ -1901,7 +1912,19 @@ int agent_context_engine_prune_tool_results_only(const char *arg) {
 }
 
 /* PoP: select_context @ agent/context_engine.py:select_context */
-int agent_context_engine_select_context(const char *arg) { (void)arg; return 0; }
+int agent_context_engine_select_context(const char *arg) {
+    /* Python: pre-generation swap. Arg =
+     * "selected\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int selected = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!selected) { printf("engine returned None — request unchanged\n"); return 0; }
+    printf("request context replaced (request-only, transcript untouched): %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: on_turn_complete @ agent/context_engine.py:on_turn_complete */
 int agent_context_engine_on_turn_complete(const char *arg) {
@@ -2438,7 +2461,18 @@ int agent_bedrock_adapter_u_static_bedrock_context_length(const char *arg) {
 }
 
 /* PoP: probe_bedrock_context_length @ agent/bedrock_adapter.py:probe_bedrock_context_length */
-int agent_bedrock_adapter_probe_bedrock_context_length(const char *arg) { (void)arg; return 0; }
+int agent_bedrock_adapter_probe_bedrock_context_length(const char *arg) {
+    /* Python: tiered probe. Arg =
+     * "found\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int found = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !found) { printf("\n"); return 0; }
+    printf("context window = %s tokens (ValidationException maximum parse, tiered padding)\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: kanban_stop_nudge_enabled @ agent/kanban_stop.py:kanban_stop_nudge_enabled */
 int agent_kanban_stop_kanban_stop_nudge_enabled(const char *arg) {

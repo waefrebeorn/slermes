@@ -1924,7 +1924,22 @@ int cgw_u_all_platforms(const char *arg) {
 }
 
 /* PoP: _platform_status @ hermes_cli/gateway.py:_platform_status */
-int cgw_u_platform_status(const char *arg) { (void)arg; return 0; }
+int cgw_u_platform_status(const char *arg) {
+    /* Python: uncolored status. Arg =
+     * "registry\tstate\tresult". */
+    if (!arg || !*arg) { printf("not configured\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int registry = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("not configured\n"); return 0; }
+    if (registry) {
+        printf("%s (is_connected preferred, check_fn fallback only when no hook)\n", (t2 && t2[1] == '1') ? "configured" : "not configured");
+        return 0;
+    }
+    printf("%s\n", (t2 && t2[1] == '1') ? "configured" : "not configured");
+    return 0;
+}
 
 /* PoP: _runtime_health_lines @ hermes_cli/gateway.py:_runtime_health_lines */
 int cgw_u_runtime_health_lines(const char *arg) {

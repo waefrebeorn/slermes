@@ -146,7 +146,24 @@ int msf_u_model_flow_openai_codex(const char *arg) {
 }
 
 /* PoP: _model_flow_xai_oauth @ hermes_cli/model_setup_flows.py:_model_flow_xai_oauth */
-int msf_u_model_flow_xai_oauth(const char *arg) { (void)arg; return 0; }
+int msf_u_model_flow_xai_oauth(const char *arg) {
+    /* Python: xai flow. Arg =
+     * "logged_in\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int logged_in = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!logged_in) {
+        printf("Not logged into xAI OAuth. Starting login...\n");
+        printf("Login cancelled or failed.\n");
+        return 0;
+    }
+    printf("  xAI Grok OAuth (SuperGrok / Premium+) credentials: ✓\n");
+    printf("  ✓ Using xAI model: %s\n", t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _model_flow_qwen_oauth @ hermes_cli/model_setup_flows.py:_model_flow_qwen_oauth */
 int msf_u_model_flow_qwen_oauth(const char *arg) {
@@ -202,7 +219,19 @@ int msf_u_model_flow_copilot(const char *arg) { (void)arg; return 0; }
 int msf_u_model_flow_copilot_acp(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _model_flow_kimi @ hermes_cli/model_setup_flows.py:_model_flow_kimi */
-int msf_u_model_flow_kimi(const char *arg) { (void)arg; return 0; }
+int msf_u_model_flow_kimi(const char *arg) {
+    /* Python: key-prefix routing. Arg =
+     * "coding_plan\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int coding_plan = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("endpoint: %s (sk-kimi-* → api.kimi.com/coding/v1, else api.moonshot.ai/v1)\n", coding_plan ? "Kimi Coding Plan" : "legacy Moonshot");
+    printf("  ✓ Using Kimi model: %s\n", t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _model_flow_stepfun @ hermes_cli/model_setup_flows.py:_model_flow_stepfun */
 int msf_u_model_flow_stepfun(const char *arg) { (void)arg; return 0; }

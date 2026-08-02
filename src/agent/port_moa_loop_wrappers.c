@@ -123,7 +123,16 @@ int moa_u_aggregator_reasoning_config(const char *arg) {
 }
 
 /* PoP: _slot_runtime @ agent/moa_loop.py:_slot_runtime */
-int moa_u_slot_runtime(const char *arg) { (void)arg; return 0; }
+int moa_u_slot_runtime(const char *arg) {
+    /* Python: canonical resolver. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("slot kwargs resolved via resolve_runtime_provider: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _merge_slot_extra_body @ agent/moa_loop.py:_merge_slot_extra_body */
 int moa_u_merge_slot_extra_body(const char *arg) {

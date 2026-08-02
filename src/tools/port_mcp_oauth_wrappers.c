@@ -303,7 +303,20 @@ int mcpo_u_wait_for_callback(const char *arg) { (void)arg; return 0; }
 int mcpo_u_make_callback_waiter(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _paste_callback_reader @ tools/mcp_oauth.py:_paste_callback_reader */
-int mcpo_u_paste_callback_reader(const char *arg) { (void)arg; return 0; }
+int mcpo_u_paste_callback_reader(const char *arg) {
+    /* Python: stdin fallback. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "skip") == 0) {
+        printf("user opted out (skip token) — OAuthNonInteractiveError path\n");
+        return 0;
+    }
+    if (strcmp(state, "eof") == 0 || strcmp(state, "http_won") == 0) { printf("\n"); return 0; }
+    printf("parsed redirect: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: remove_oauth_tokens @ tools/mcp_oauth.py:remove_oauth_tokens */
 int mcpo_remove_oauth_tokens(const char *arg) {

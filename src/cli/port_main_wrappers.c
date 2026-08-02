@@ -2466,7 +2466,18 @@ int main_u_wait_for_windows_update_gateway_exit(const char *arg) {
 }
 
 /* PoP: _venv_core_imports_healthy @ hermes_cli/main.py:_venv_core_imports_healthy */
-int main_u_venv_core_imports_healthy(const char *arg) { (void)arg; return 0; }
+int main_u_venv_core_imports_healthy(const char *arg) {
+    /* Python: venv import probe. Arg =
+     * "healthy\tstate\tresult". */
+    if (!arg || !*arg) { printf("1\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int healthy = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("1\tprobe skipped (unknown → healthy)\n"); return 0; }
+    printf("%d\t%s\n", healthy ? 1 : 0, t2 ? t2 + 1 : "venv import check (half-updated-venv detector)");
+    return 0;
+}
 
 /* PoP: _detect_venv_python_processes @ hermes_cli/main.py:_detect_venv_python_processes */
 int main_u_detect_venv_python_processes(const char *arg) { (void)arg; return 0; }

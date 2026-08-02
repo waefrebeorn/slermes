@@ -1514,7 +1514,30 @@ int tools_file_state_note_write(const char *arg) {
 }
 
 /* PoP: check_stale @ tools/file_state.py:check_stale */
-int tools_file_state_check_stale(const char *arg) { (void)arg; return 0; }
+int tools_file_state_check_stale(const char *arg) {
+    /* Python: 3-class staleness. Arg =
+     * "class\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *cls = t1 ? t1 + 1 : "none";
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (strcmp(cls, "sibling") == 0) {
+        printf("warning: sibling subagent wrote this file after your last read: %s\n", t2 ? t2 + 1 : "");
+        return 0;
+    }
+    if (strcmp(cls, "external") == 0) {
+        printf("warning: file changed externally since your last read: %s\n", t2 ? t2 + 1 : "");
+        return 0;
+    }
+    if (strcmp(cls, "never_read") == 0) {
+        printf("note: you are writing a file you have never read: %s\n", t2 ? t2 + 1 : "");
+        return 0;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: writes_since @ tools/file_state.py:writes_since */
 int tools_file_state_writes_since(const char *arg) {
@@ -1566,7 +1589,15 @@ int tools_file_state_note_write_2(const char *arg) {
 }
 
 /* PoP: check_stale @ tools/file_state.py:check_stale */
-int tools_file_state_check_stale_2(const char *arg) { (void)arg; return 0; }
+int tools_file_state_check_stale_2(const char *arg) {
+    /* Python: alt variant. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("stale check: %s\n", tab ? tab + 1 : "ok");
+    return 0;
+}
 
 /* PoP: writes_since @ tools/file_state.py:writes_since */
 int tools_file_state_writes_since_2(const char *arg) {

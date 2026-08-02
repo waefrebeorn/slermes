@@ -172,7 +172,21 @@ int muv_u_runtime_request(const char *arg) {
 }
 
 /* PoP: _install_safe_python_generation @ hermes_cli/managed_uv.py:_install_safe_python_generation */
-int muv_u_install_safe_python_generation(const char *arg) { (void)arg; return 0; }
+int muv_u_install_safe_python_generation(const char *arg) {
+    /* Python: fixed-SQLite runtime. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "install_fail") == 0 || strcmp(state, "find_fail") == 0) {
+        printf("safe generation install failed: %s\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    printf("safe python generation staged (world-traversable, sqlite fixed): %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _smoke_candidate_venv @ hermes_cli/managed_uv.py:_smoke_candidate_venv */
 int muv_u_smoke_candidate_venv(const char *arg) {

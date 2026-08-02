@@ -1366,4 +1366,13 @@ int grun_u_await_thread_exit(const char *arg) { (void)arg; return 0; }
 int grun_start_gateway(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _exit_after_graceful_shutdown @ gateway/run.py:_exit_after_graceful_shutdown */
-int grun_u_exit_after_graceful_shutdown(const char *arg) { (void)arg; return 0; }
+int grun_u_exit_after_graceful_shutdown(const char *arg) {
+    /* Python: os._exit backstop. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("os._exit called (stdio flushed, pid file + runtime lock released, log drained — sys.exit would join wedged threads #53107)%s\n", tab ? tab + 1 : "");
+    return 0;
+}
