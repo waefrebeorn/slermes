@@ -571,7 +571,30 @@ int main_u_discard_stashed_changes(const char *arg) { (void)arg; return 0; }
 
 
 /* PoP: _is_fork @ hermes_cli/main.py:_is_fork */
-int main_u_is_fork(const char *arg) { (void)arg; return 0; }
+int main_u_is_fork(const char *arg) {
+    /* Python: normalize origin (rstrip /, strip .git) and compare against
+     * the four official repo URL spellings. */
+    if (!arg || !*arg) return 0;
+    char norm[1024];
+    snprintf(norm, sizeof(norm), "%s", arg);
+    size_t n = strlen(norm);
+    while (n > 0 && norm[n-1] == '/') norm[--n] = '\0';
+    if (n >= 4 && strcmp(norm + n - 4, ".git") == 0) norm[n-4] = '\0';
+    static const char *const official[] = {
+        "https://github.com/NousResearch/hermes-agent.git",
+        "git@github.com:NousResearch/hermes-agent.git",
+        "https://github.com/NousResearch/hermes-agent",
+        "git@github.com:NousResearch/hermes-agent", NULL};
+    for (int i = 0; official[i]; i++) {
+        char o[1024];
+        snprintf(o, sizeof(o), "%s", official[i]);
+        size_t on = strlen(o);
+        while (on > 0 && o[on-1] == '/') o[--on] = '\0';
+        if (on >= 4 && strcmp(o + on - 4, ".git") == 0) o[on-4] = '\0';
+        if (strcmp(o, norm) == 0) return 0;
+    }
+    return 1;
+}
 
 /* PoP: _has_upstream_remote @ hermes_cli/main.py:_has_upstream_remote */
 int main_u_has_upstream_remote(const char *arg) {

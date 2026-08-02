@@ -299,7 +299,25 @@ int cgw_u_refuse_temp_home_service_write(const char *arg) { (void)arg; return 0;
 int cgw_refresh_systemd_unit_if_needed(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _print_linger_enable_warning @ hermes_cli/gateway.py:_print_linger_enable_warning */
-int cgw_u_print_linger_enable_warning(const char *arg) { (void)arg; return 0; }
+int cgw_u_print_linger_enable_warning(const char *arg) {
+    /* Python (detail, username): the linger warning block. */
+    if (!arg || !*arg) return 0;
+    const char *tab = strchr(arg, '\t');
+    const char *detail = tab ? arg : NULL;
+    size_t dlen = tab ? (size_t)(tab - arg) : 0;
+    const char *username = tab ? tab + 1 : arg;
+    printf("\n");
+    printf("\xe2\x9a\xa0 Linger not enabled - gateway may stop when you close this terminal.\n");
+    if (detail && dlen) printf("  Auto-enable failed: %.*s\n", (int)dlen, detail);
+    printf("\n");
+    printf("  On headless servers (VPS, cloud instances) run:\n");
+    printf("    sudo loginctl enable-linger %s\n", username);
+    printf("\n");
+    printf("  Then restart the gateway:\n");
+    printf("    systemctl --user restart hermes-gateway\n");
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _ensure_linger_enabled @ hermes_cli/gateway.py:_ensure_linger_enabled */
 int cgw_u_ensure_linger_enabled(const char *arg) { (void)arg; return 0; }

@@ -476,7 +476,31 @@ int agent_chat_completion_helpers_should_use_direct_api_call(const char *arg) { 
 int agent_chat_completion_helpers_direct_api_call(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _fallback_entry_is_same_backend_by_base_url @ agent/chat_completion_helpers.py:_fallback_entry_is_same_backend_by_base_url */
-int agent_chat_completion_helpers_u_fallback_entry_is_same_backe_rl(const char *arg) { (void)arg; return 0; }
+int agent_chat_completion_helpers_u_fallback_entry_is_same_backe_rl(const char *arg) {
+    /* Python (fb_base_url, current_base_url, fb_model, current_model,
+     * fb_provider, current_provider): same base_url + same model means the
+     * fallback is the same backend UNLESS both sides are registered
+     * first-class providers (distinct auth identities). */
+    if (!arg || !*arg) return 0;
+    char fb_url[512], cur_url[512], fb_model[256], cur_model[256], fb_prov[128], cur_prov[128];
+    if (sscanf(arg, "%511[^\t]\t%511[^\t]\t%255[^\t]\t%255[^\t]\t%127[^\t]\t%127s",
+               fb_url, cur_url, fb_model, cur_model, fb_prov, cur_prov) < 6) return 0;
+    if (strcmp(fb_url, cur_url) != 0 || strcmp(fb_model, cur_model) != 0) return 0;
+    if (strcmp(fb_prov, cur_prov) == 0) return 1;
+    /* both first-class providers (xai-oauth/xai, openai-codex/openai-api,
+     * etc.) are distinct credential surfaces -> allow failover */
+    static const char *const first_class[] = {
+        "openai", "openai-api", "openai-codex", "xai", "xai-oauth",
+        "anthropic", "google", "azure", "bedrock", "nous", "nvidia_nim",
+        "gemini", "deepseek", "openrouter", NULL};
+    bool fb_fc = false, cur_fc = false;
+    for (int i = 0; first_class[i]; i++) {
+        if (strcmp(fb_prov, first_class[i]) == 0) fb_fc = true;
+        if (strcmp(cur_prov, first_class[i]) == 0) cur_fc = true;
+    }
+    if (fb_fc && cur_fc) return 0;
+    return 1;
+}
 
 /* PoP: _build_partial_stream_stub @ agent/chat_completion_helpers.py:_build_partial_stream_stub */
 int agent_chat_completion_helpers_u_build_partial_stream_stub(const char *arg) { (void)arg; return 0; }

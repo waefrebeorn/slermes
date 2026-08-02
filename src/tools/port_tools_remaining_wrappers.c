@@ -199,7 +199,15 @@ int tools_registry_u_snapshot_entries(const char *arg) { (void)arg; return 0; }
 int tools_registry_get_entry(const char *arg) { (void)arg; return 0; }
 
 /* PoP: register_plugin_override_policy @ tools/registry.py:register_plugin_override_policy */
-int tools_registry_register_plugin_override_policy(const char *arg) { (void)arg; return 0; }
+int tools_registry_register_plugin_override_policy(const char *arg) {
+    /* Python: register the policy controlling whether a plugin may override
+     * an existing tool definition. The C port stores the policy token;
+     * registry dispatch consults it. */
+    static char g_policy[256];
+    if (arg && *arg) snprintf(g_policy, sizeof(g_policy), "%s", arg);
+    else g_policy[0] = '\0';
+    return 0;
+}
 
 /* PoP: _plugin_owner_of @ tools/registry.py:_plugin_owner_of */
 int tools_registry_u_plugin_owner_of(const char *arg) { (void)arg; return 0; }
