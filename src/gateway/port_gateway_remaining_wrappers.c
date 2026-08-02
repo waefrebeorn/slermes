@@ -587,7 +587,21 @@ int gateway_config_coerce_systemd_watchdog_seconds(const char *arg) { (void)arg;
 int gateway_config_u_coerce_dict(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _getenv_str @ gateway/config.py:_getenv_str */
-int gateway_config_u_getenv_str(const char *arg) { (void)arg; return 0; }
+int gateway_config_u_getenv_str(const char *arg) {
+    /* Python: _getenv(name, default) -> value if not None else default.
+     * Arg = "name\tdefault". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    char name[256];
+    size_t nlen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (nlen >= sizeof(name)) nlen = sizeof(name) - 1;
+    memcpy(name, arg, nlen);
+    name[nlen] = '\0';
+    const char *def = tab ? tab + 1 : "";
+    const char *val = getenv(name);
+    printf("%s\n", val ? val : def);
+    return 0;
+}
 
 /* PoP: _getenv_int @ gateway/config.py:_getenv_int */
 int gateway_config_u_getenv_int(const char *arg) { (void)arg; return 0; }

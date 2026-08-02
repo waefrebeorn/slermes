@@ -236,7 +236,14 @@ int hermes_cli_pets_u_cmd_show(const char *arg) { (void)arg; return 0; }
 int hermes_cli_pets_u_pet_config(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _has_active_pet @ hermes_cli/pets.py:_has_active_pet */
-int hermes_cli_pets_u_has_active_pet(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pets_u_has_active_pet(const char *arg) {
+    /* Python: config enabled AND slug set. Arg = "enabled\tslug". */
+    if (!arg || !*arg) return 0;
+    const char *tab = strchr(arg, '\t');
+    int enabled = atoi(arg);
+    const char *slug = tab ? tab + 1 : "";
+    return enabled && *slug;
+}
 
 /* PoP: _set_active @ hermes_cli/pets.py:_set_active */
 int hermes_cli_pets_u_set_active(const char *arg) { (void)arg; return 0; }
@@ -430,7 +437,13 @@ int hermes_cli_auth_commands_u_api_key_default_label(const char *arg) {
 }
 
 /* PoP: _display_source @ hermes_cli/auth_commands.py:_display_source */
-int hermes_cli_auth_commands_u_display_source(const char *arg) { (void)arg; return 0; }
+int hermes_cli_auth_commands_u_display_source(const char *arg) {
+    /* Python: source.split(":", 1)[1] if "manual:" prefixed else source. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    if (strncmp(arg, "manual:", 7) == 0) printf("%s\n", arg + 7);
+    else printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _classify_exhausted_status @ hermes_cli/auth_commands.py:_classify_exhausted_status */
 int hermes_cli_auth_commands_u_classify_exhausted_status(const char *arg) { (void)arg; return 0; }

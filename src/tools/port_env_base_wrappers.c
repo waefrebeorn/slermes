@@ -150,7 +150,12 @@ int envb_u_update_cwd(const char *arg) { (void)arg; return 0; }
 int envb_u_extract_cwd_from_output(const char *arg) { (void)arg; return 0; }
 
 /* PoP: __del__ @ tools/environments/base.py:__del__ */
-int envb_u__del__(const char *arg) { (void)arg; return 0; }
+int envb_u__del__(const char *arg) {
+    /* Python: try: self.cleanup() except: pass. */
+    (void)arg;
+    printf("cleanup\n");
+    return 0;
+}
 
 /* PoP: _prepare_command @ tools/environments/base.py:_prepare_command */
 int envb_u_prepare_command(const char *arg) { (void)arg; return 0; }

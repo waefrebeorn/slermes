@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <time.h>
 #include "hermes_json.h"
 #include "libtooldispatch/tool_dispatch_helpers.h"
 
@@ -681,7 +682,20 @@ int agent_turn_context_u_compression_warrants_another_preflight__ss(const char *
 int agent_turn_context_u_should_idle_compact(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _now_iso @ agent/trace_upload.py:_now_iso */
-int agent_trace_upload_u_now_iso(const char *arg) { (void)arg; return 0; }
+int agent_trace_upload_u_now_iso(const char *arg) {
+    /* Python: UTC ISO-8601 with milliseconds + Z. */
+    (void)arg;
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    struct tm tmv;
+    gmtime_r(&ts.tv_sec, &tmv);
+    char buf[64];
+    snprintf(buf, sizeof(buf), "%04d-%02d-%02dT%02d:%02d:%02d.%03ldZ",
+             tmv.tm_year + 1900, tmv.tm_mon + 1, tmv.tm_mday,
+             tmv.tm_hour, tmv.tm_min, tmv.tm_sec, ts.tv_nsec / 1000000);
+    printf("%s\n", buf);
+    return 0;
+}
 
 /* PoP: _content_to_blocks @ agent/trace_upload.py:_content_to_blocks */
 int agent_trace_upload_u_content_to_blocks(const char *arg) { (void)arg; return 0; }
