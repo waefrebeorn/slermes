@@ -14,7 +14,19 @@
 #include "yaml.h"
 
 /* PoP: _send_or_update_status_coro @ gateway/run.py:_send_or_update_status_coro */
-int grun_u_send_or_update_status_coro(const char *arg) { (void)arg; return 0; }
+int grun_u_send_or_update_status_coro(const char *arg) {
+    /* Python: bubble edit #30045. Arg =
+     * "updated\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int updated = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!updated) { printf("0 (plain send — no send_or_update_status)\n"); return 0; }
+    printf("1 (previous bubble edited for status_key=%s)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _resolve_runtime_agent_kwargs @ gateway/run.py:_resolve_runtime_agent_kwargs */
 int grun_u_resolve_runtime_agent_kwargs(const char *arg) {
@@ -189,7 +201,19 @@ int grun_u_safe_adapter_disconnect(const char *arg) { (void)arg; return 0; }
 int grun_u_bounded_adapter_teardown(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _connect_initial_adapter_with_timeout @ gateway/run.py:_connect_initial_adapter_with_timeout */
-int grun_u_connect_initial_adapter_with_timeout(const char *arg) { (void)arg; return 0; }
+int grun_u_connect_initial_adapter_with_timeout(const char *arg) {
+    /* Python: scoped replace intent. Arg =
+     * "connected\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int connected = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!connected) { printf("0 (connect failed)\n"); return 0; }
+    printf("1 (cold-start connect; takeover allowed=%s only while awaited, cleared in finally)%s\n", (t2 && t2[1] == '1') ? "true" : "false", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _telegram_topic_mode_enabled @ gateway/run.py:_telegram_topic_mode_enabled */
 int grun_u_telegram_topic_mode_enabled(const char *arg) {

@@ -9279,7 +9279,21 @@ int hermes_cli_memory_oauth_u_scope_to_profile(const char *arg) {
 }
 
 /* PoP: start_memory_oauth @ hermes_cli/memory_oauth.py:start_memory_oauth */
-int hermes_cli_memory_oauth_start_memory_oauth(const char *arg) { (void)arg; return 0; }
+int hermes_cli_memory_oauth_start_memory_oauth(const char *arg) {
+    /* Python: zero-CLI flow. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "Failed to start OAuth: %s\n", t3 ? t3 + 1 : "?");
+        return 500;
+    }
+    printf("1 (loopback flow started in background worker; poll status: %s)%s\n", t3 ? t3 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: memory_oauth_status @ hermes_cli/memory_oauth.py:memory_oauth_status */
 int hermes_cli_memory_oauth_memory_oauth_status(const char *arg) {

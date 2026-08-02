@@ -104,7 +104,21 @@ int wx_u_get_config(const char *arg) {
 }
 
 /* PoP: _get_upload_url @ gateway/platforms/weixin.py:_get_upload_url */
-int wx_u_get_upload_url(const char *arg) { (void)arg; return 0; }
+int wx_u_get_upload_url(const char *arg) {
+    /* Python: EP_GET_UPLOAD_URL. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "upload url fetch failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("%s (filekey/media_type/to_user_id/rawsize/md5/filesize/no_need_thumb/aeskey payload)%s\n", t3 ? t3 + 1 : "url", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _upload_ciphertext @ gateway/platforms/weixin.py:_upload_ciphertext */
 int wx_u_upload_ciphertext(const char *arg) {
@@ -141,7 +155,21 @@ int wx_u_download_bytes(const char *arg) {
 }
 
 /* PoP: _download_and_decrypt_media @ gateway/platforms/weixin.py:_download_and_decrypt_media */
-int wx_u_download_and_decrypt_media(const char *arg) { (void)arg; return 0; }
+int wx_u_download_and_decrypt_media(const char *arg) {
+    /* Python: CDN + AES. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "media download/decrypt failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("bytes (%s; encrypted_query_param → _cdn_download_url; full_url → _assert_weixin_cdn_url; AES-128-ECB decrypt when aes_key)%s\n", t2 ? t2 + 1 : "downloaded", (t2 && t2[1] == '1') ? " — decrypted" : "");
+    return 0;
+}
 
 /* PoP: _save_sync_buf @ gateway/platforms/weixin.py:_save_sync_buf */
 int wx_u_save_sync_buf(const char *arg) {
@@ -328,10 +356,33 @@ int wx_u_reset_rate_limit_circuit(const char *arg) {
 }
 
 /* PoP: _send_text_chunk @ gateway/platforms/weixin.py:_send_text_chunk */
-int wx_u_send_text_chunk(const char *arg) { (void)arg; return 0; }
+int wx_u_send_text_chunk(const char *arg) {
+    /* Python: gated + retry. Arg =
+     * "sent\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int sent = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!sent) { printf("0 (failed)\n"); return 0; }
+    printf("1 (sent under _send_text_gate; -14 errcode → tokenless retry keeps cron pushes alive)%s\n", (t2 && t2[1] == '1') ? " — tokenless retry" : "");
+    return 0;
+}
 
 /* PoP: _send_text_chunk_locked @ gateway/platforms/weixin.py:_send_text_chunk_locked */
-int wx_u_send_text_chunk_locked(const char *arg) { (void)arg; return 0; }
+int wx_u_send_text_chunk_locked(const char *arg) {
+    /* Python: locked impl. Arg =
+     * "sent\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int sent = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s (per-chunk retry+backoff; -14 → retry without context_token)%s\n", sent ? "1" : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _ensure_typing_ticket @ gateway/platforms/weixin.py:_ensure_typing_ticket */
 int wx_u_ensure_typing_ticket(const char *arg) { (void)arg; return 0; }

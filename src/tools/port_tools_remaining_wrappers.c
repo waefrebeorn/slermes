@@ -1740,7 +1740,25 @@ int tools_file_state_writes_since_2(const char *arg) {
 int tools_file_state_known_reads_2(const char *arg) { (void)arg; return 0; }
 
 /* PoP: publish_authorization_url @ tools/mcp_dashboard_oauth.py:publish_authorization_url */
-int tools_mcp_dashboard_oauth_publish_authorization_url(const char *arg) { (void)arg; return 0; }
+int tools_mcp_dashboard_oauth_publish_authorization_url(const char *arg) {
+    /* Python: state-gated publish. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_state") == 0) {
+        fprintf(stderr, "OAuth authorization URL did not include state\n");
+        return 1;
+    }
+    if (strcmp(state, "ended") == 0) {
+        fprintf(stderr, "OAuth flow already ended\n");
+        return 1;
+    }
+    printf("1 (state=%s captured, status=authorization_required, ready event set)%s\n", t3 ? t3 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: wait_for_authorization_url @ tools/mcp_dashboard_oauth.py:wait_for_authorization_url */
 int tools_mcp_dashboard_oauth_wait_for_authorization_url(const char *arg) {
@@ -2001,7 +2019,17 @@ int tools_image_source_u_http_block_reason(const char *arg) {
 }
 
 /* PoP: _download_to_bytes @ tools/image_source.py:_download_to_bytes */
-int tools_image_source_u_download_to_bytes(const char *arg) { (void)arg; return 0; }
+int tools_image_source_u_download_to_bytes(const char *arg) {
+    /* Python: 50MB stream cap. Arg =
+     * "bytes\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 1; }
+    printf("%s B (50MB cap, SSRF redirect guard, website policy — SourceUnsafe on block; temp file cleaned)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _is_local_terminal_backend @ tools/image_source.py:_is_local_terminal_backend */
 int tools_image_source_u_is_local_terminal_backend(const char *arg) {

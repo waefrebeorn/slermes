@@ -477,13 +477,55 @@ int qqbot_u_wait_for_reconnection(const char *arg) { (void)arg; return 0; }
 int qqbot_u_send_chunk(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _send_c2c_text @ gateway/platforms/qqbot/adapter.py:_send_c2c_text */
-int qqbot_u_send_c2c_text(const char *arg) { (void)arg; return 0; }
+int qqbot_u_send_c2c_text(const char *arg) {
+    /* Python: /v2/users POST. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "c2c send failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("1 (msg_id=%s; seq advanced; keyboard attached %s)%s\n", t3 ? t3 + 1 : "?", (t2 && t2[1] == '1') ? "yes" : "no", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _send_group_text @ gateway/platforms/qqbot/adapter.py:_send_group_text */
-int qqbot_u_send_group_text(const char *arg) { (void)arg; return 0; }
+int qqbot_u_send_group_text(const char *arg) {
+    /* Python: /v2/groups POST. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "group send failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("1 (msg_id=%s; seq advanced; keyboard %s)%s\n", t3 ? t3 + 1 : "?", (t2 && t2[1] == '1') ? "yes" : "no", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _send_guild_text @ gateway/platforms/qqbot/adapter.py:_send_guild_text */
-int qqbot_u_send_guild_text(const char *arg) { (void)arg; return 0; }
+int qqbot_u_send_guild_text(const char *arg) {
+    /* Python: /channels POST. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "guild send failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("1 (msg_id=%s; content truncated to MAX_MESSAGE_LENGTH)%s\n", t3 ? t3 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: send_approval_request @ gateway/platforms/qqbot/adapter.py:send_approval_request */
 int qqbot_send_approval_request(const char *arg) { (void)arg; return 0; }

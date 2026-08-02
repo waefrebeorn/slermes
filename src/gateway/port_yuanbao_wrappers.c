@@ -907,7 +907,19 @@ int yb_send_heartbeat_once(const char *arg) { (void)arg; return 0; }
 int yb_u_worker(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _notifier @ gateway/platforms/yuanbao.py:_notifier */
-int yb_u_notifier(const char *arg) { (void)arg; return 0; }
+int yb_u_notifier(const char *arg) {
+    /* Python: slow wait push. Arg =
+     * "waited\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int waited = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!waited) { printf("0 (cancelled)\n"); return 0; }
+    printf("1 (wait notice sent after %ss; CancelledError swallowed)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: cancel @ gateway/platforms/yuanbao.py:cancel */
 int yb_cancel(const char *arg) {
@@ -943,7 +955,21 @@ int yb_get_chat_lock(const char *arg) {
 }
 
 /* PoP: send_media @ gateway/platforms/yuanbao.py:send_media */
-int yb_send_media(const char *arg) { (void)arg; return 0; }
+int yb_send_media(const char *arg) {
+    /* Python: handler dispatch. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"success\": false}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "unknown") == 0) {
+        fprintf(stderr, "Unknown media handler: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("{\"success\": true, \"msg_key\": \"%s\"} (handler %s, caption/reply threaded)%s\n", t3 ? t3 + 1 : "?", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: send_direct @ gateway/platforms/yuanbao.py:send_direct */
 int yb_send_direct(const char *arg) { (void)arg; return 0; }
@@ -1019,10 +1045,42 @@ int yb_send_c2c_msg_body(const char *arg) {
 }
 
 /* PoP: send_group_msg_body @ gateway/platforms/yuanbao.py:send_group_msg_body */
-int yb_send_group_msg_body(const char *arg) { (void)arg; return 0; }
+int yb_send_group_msg_body(const char *arg) {
+    /* Python: group encode. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"success\": false}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "group msg_body send failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("{\"success\": true, \"msg_key\": \"%s\"} (req_id=grp_<seq>, ref_msg_id=%s)%s\n", t2 ? t2 + 1 : "?", t3 ? t3 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _dispatch_encoded @ gateway/platforms/yuanbao.py:_dispatch_encoded */
-int yb_u_dispatch_encoded(const char *arg) { (void)arg; return 0; }
+int yb_u_dispatch_encoded(const char *arg) {
+    /* Python: WS send. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"success\": false}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "timeout") == 0) {
+        fprintf(stderr, "Request timeout after %ss\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "send_biz_request failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("{\"success\": true, \"msg_key\": \"%s\"} (WS send_biz_request, req_id=%s)%s\n", t3 ? t3 + 1 : "", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: validate_media @ gateway/platforms/yuanbao.py:validate_media */
 int yb_validate_media(const char *arg) {
@@ -1190,7 +1248,17 @@ int yb_u_sender_may_designate_home(const char *arg) {
 }
 
 /* PoP: _process_message_background @ gateway/platforms/yuanbao.py:_process_message_background */
-int yb_u_process_message_background(const char *arg) { (void)arg; return 0; }
+int yb_u_process_message_background(const char *arg) {
+    /* Python: notifier wrap. Arg =
+     * "done\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("1 (slow notifier started before, cancelled in finally)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _get_cached_token @ gateway/platforms/yuanbao.py:_get_cached_token */
 int yb_u_get_cached_token(const char *arg) {

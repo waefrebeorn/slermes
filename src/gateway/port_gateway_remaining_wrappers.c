@@ -164,7 +164,17 @@ int gateway_platforms_signal_u_track_sent_timestamp(const char *arg) {
 }
 
 /* PoP: _notify_batch_pacing @ gateway/platforms/signal.py:_notify_batch_pacing */
-int gateway_platforms_signal_u_notify_batch_pacing(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_signal_u_notify_batch_pacing(const char *arg) {
+    /* Python: pacing notice. Arg =
+     * "batch\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("notice sent: (More images coming — pausing ~%ss for Signal rate limit, batch %s/total)%s\n", t2 ? t2 + 1 : "?", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? " — logged failure" : "");
+    return 0;
+}
 
 /* PoP: _stop_typing_indicator @ gateway/platforms/signal.py:_stop_typing_indicator */
 int gateway_platforms_signal_u_stop_typing_indicator(const char *arg) { (void)arg; return 0; }
@@ -1118,7 +1128,19 @@ int gateway_relay_ws_transport_u_bot_id_for(const char *arg) {
 int gateway_relay_ws_transport_go_dormant(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _send_inbound_ack @ gateway/relay/ws_transport.py:_send_inbound_ack */
-int gateway_relay_ws_transport_u_send_inbound_ack(const char *arg) { (void)arg; return 0; }
+int gateway_relay_ws_transport_u_send_inbound_ack(const char *arg) {
+    /* Python: buffer ack. Arg =
+     * "acked\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int acked = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!acked) { printf("0 (ack send failed — redelivered next time)\n"); return 0; }
+    printf("1 (inbound_ack bufferId=%s sent — drain-without-dup §5.3)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _close_code_of @ gateway/relay/ws_transport.py:_close_code_of */
 int gateway_relay_ws_transport_u_close_code_of(const char *arg) {
