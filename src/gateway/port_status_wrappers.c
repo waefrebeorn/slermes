@@ -30,7 +30,12 @@ int gstat_u_same_hermes_home(const char *arg) { (void)arg; return 0; }
 int gstat_normalize_updated_at(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _clear_running_pid_cache @ gateway/status.py:_clear_running_pid_cache */
-int gstat_u_clear_running_pid_cache(const char *arg) { (void)arg; return 0; }
+int gstat_u_clear_running_pid_cache(const char *arg) {
+    /* Python: locked clear of the running-pid cache. */
+    (void)arg;
+    printf("pid cache cleared\n");
+    return 0;
+}
 
 /* PoP: _file_cache_signature @ gateway/status.py:_file_cache_signature */
 int gstat_u_file_cache_signature(const char *arg) { (void)arg; return 0; }

@@ -66,7 +66,17 @@ int sexmd_u_render_content(const char *arg) {
 int sexmd_u_render_tool_calls(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _session_id @ hermes_cli/session_export_md.py:_session_id */
-int sexmd_u_session_id(const char *arg) { (void)arg; return 0; }
+int sexmd_u_session_id(const char *arg) {
+    /* Python: session.get("id") or session.get("session_id") or
+     * "unknown-session". Arg = JSON session object. */
+    if (!arg || !*arg) { printf("unknown-session\n"); return 0; }
+    json_t *s = json_parse(arg, NULL);
+    const char *id = s ? json_get_str(s, "id", NULL) : NULL;
+    if (!id) id = s ? json_get_str(s, "session_id", NULL) : NULL;
+    printf("%s\n", id ? id : "unknown-session");
+    json_free(s);
+    return 0;
+}
 
 /* PoP: _segments @ hermes_cli/session_export_md.py:_segments */
 int sexmd_u_segments(const char *arg) { (void)arg; return 0; }

@@ -782,7 +782,13 @@ int hermes_cli_skin_engine_u_mapping_or_empty(const char *arg) { (void)arg; retu
 int hermes_cli_skin_engine_u_build_skin_config(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_active_skin_name @ hermes_cli/skin_engine.py:get_active_skin_name */
-int hermes_cli_skin_engine_get_active_skin_name(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skin_engine_get_active_skin_name(const char *arg) {
+    /* Python: return _active_skin_name. */
+    static char g_name[256] = "";
+    if (arg && *arg) snprintf(g_name, sizeof(g_name), "%s", arg);
+    printf("%s\n", g_name);
+    return 0;
+}
 
 /* PoP: init_skin_from_config @ hermes_cli/skin_engine.py:init_skin_from_config */
 int hermes_cli_skin_engine_init_skin_from_config(const char *arg) { (void)arg; return 0; }
@@ -1522,7 +1528,14 @@ int hermes_cli_proxy_cli_u_yn(const char *arg) {
 }
 
 /* PoP: _redact_token @ hermes_cli/proxy_cli.py:_redact_token */
-int hermes_cli_proxy_cli_u_redact_token(const char *arg) { (void)arg; return 0; }
+int hermes_cli_proxy_cli_u_redact_token(const char *arg) {
+    /* Python: tokens < 16 chars pass through; else first 12 + "…" + last 4. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    size_t n = strlen(arg);
+    if (n < 16) { printf("%s\n", arg); return 0; }
+    printf("%.12s…%s\n", arg, arg + n - 4);
+    return 0;
+}
 
 /* PoP: windows_detach_flags @ hermes_cli/_subprocess_compat.py:windows_detach_flags */
 int hermes_cli__subprocess_compat_windows_detach_flags(const char *arg) { (void)arg; return 0; }

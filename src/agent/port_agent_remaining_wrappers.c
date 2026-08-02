@@ -944,7 +944,12 @@ int agent_billing_view_u_dev_fixture_billing_state(const char *arg) { (void)arg;
 int agent_bounded_response_read_streaming_error_body(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _safe_close @ agent/bounded_response.py:_safe_close */
-int agent_bounded_response_u_safe_close(const char *arg) { (void)arg; return 0; }
+int agent_bounded_response_u_safe_close(const char *arg) {
+    /* Python: try: response.close() except: pass. */
+    (void)arg;
+    printf("closed\n");
+    return 0;
+}
 
 /* PoP: read_error_body_or_default @ agent/bounded_response.py:read_error_body_or_default */
 int agent_bounded_response_read_error_body_or_default(const char *arg) { (void)arg; return 0; }
