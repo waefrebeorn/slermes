@@ -825,7 +825,18 @@ int hermes_cli_auth_commands_u_get_custom_provider_names(const char *arg) { (voi
 int hermes_cli_auth_commands_u_resolve_custom_provider_input(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _provider_base_url @ hermes_cli/auth_commands.py:_provider_base_url */
-int hermes_cli_auth_commands_u_provider_base_url(const char *arg) { (void)arg; return 0; }
+int hermes_cli_auth_commands_u_provider_base_url(const char *arg) {
+    /* Python: openrouter fixed; custom pool cfg; registry. Arg =
+     * "provider\tcustom_base\tregistry_base". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    size_t plen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    if (plen == 10 && strncmp(arg, "openrouter", 10) == 0) { printf("https://openrouter.ai/api/v1\n"); return 0; }
+    if (t1 && t1[1]) { printf("%s\n", t1 + 1); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _oauth_default_label @ hermes_cli/auth_commands.py:_oauth_default_label */
 int hermes_cli_auth_commands_u_oauth_default_label(const char *arg) {
@@ -1185,7 +1196,19 @@ int hermes_cli_telegram_managed_bo_generate_bot_username(const char *arg) {
 }
 
 /* PoP: generate_deep_link @ hermes_cli/telegram_managed_bot.py:generate_deep_link */
-int hermes_cli_telegram_managed_bo_generate_deep_link(const char *arg) { (void)arg; return 0; }
+int hermes_cli_telegram_managed_bo_generate_deep_link(const char *arg) {
+    /* Python: t.me/newbot/<manager>/<username>?name=. Arg =
+     * "manager\tusername\tname" (name empty = none). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *manager = arg;
+    const char *username = t1 ? t1 + 1 : "";
+    const char *name = t2 ? t2 + 1 : "";
+    if (name[0]) printf("https://t.me/newbot/%s/%s?name=%s\n", manager, username, name);
+    else printf("https://t.me/newbot/%s/%s\n", manager, username);
+    return 0;
+}
 
 /* PoP: generate_pairing_nonce @ hermes_cli/telegram_managed_bot.py:generate_pairing_nonce */
 int hermes_cli_telegram_managed_bo_generate_pairing_nonce(const char *arg) {

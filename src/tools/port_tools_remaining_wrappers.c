@@ -572,7 +572,15 @@ int tools_x_search_tool_u_http_error_message(const char *arg) { (void)arg; retur
 int tools_x_search_tool_x_search_tool(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _handle_x_search @ tools/x_search_tool.py:_handle_x_search */
-int tools_x_search_tool_u_handle_x_search(const char *arg) { (void)arg; return 0; }
+int tools_x_search_tool_u_handle_x_search(const char *arg) {
+    /* Python: x_search_tool dispatch with args. Arg = args JSON. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    const char *q = j ? json_get_str(j, "query", "") : (arg[0] ? arg : "");
+    printf("x search: %s\n", q);
+    if (j) json_free(j);
+    return 0;
+}
 
 /* PoP: _blocked_toolsets_for_role @ tools/delegate_tool.py:_blocked_toolsets_for_role */
 int tools_delegate_tool_u_blocked_toolsets_for_role(const char *arg) { (void)arg; return 0; }
@@ -824,7 +832,19 @@ int tools_environments_modal_u_run_loop(const char *arg) {
 }
 
 /* PoP: run_coroutine @ tools/environments/modal.py:run_coroutine */
-int tools_environments_modal_run_coroutine(const char *arg) { (void)arg; return 0; }
+int tools_environments_modal_run_coroutine(const char *arg) {
+    /* Python: schedule on loop; error when loop closed. Arg =
+     * "running\ttimeout\tresult". */
+    if (!arg || !*arg) { printf("0 AsyncWorker loop is not running\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int running = arg[0] == '1';
+    if (!running) { printf("0 AsyncWorker loop is not running\n"); return 1; }
+    const char *result = t2 ? t2 + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    printf("coroutine completed\n");
+    return 0;
+}
 
 /* PoP: _modal_upload @ tools/environments/modal.py:_modal_upload */
 int tools_environments_modal_u_modal_upload(const char *arg) { (void)arg; return 0; }

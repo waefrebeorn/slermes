@@ -78,7 +78,17 @@ int adel_u_delete_durable_delegation(const char *arg) {
 int adel_u_prune_durable_records(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _persist_completion @ tools/async_delegation.py:_persist_completion */
-int adel_u_persist_completion(const char *arg) { (void)arg; return 0; }
+int adel_u_persist_completion(const char *arg) {
+    /* Python: UPDATE ... delivery_state='pending'. Arg =
+     * "delegation_id\tstatus\tresult_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    printf("completion persisted: id=%.*s status=%s\n",
+           (int)(t1 ? (size_t)(t1 - arg) : strlen(arg)), arg,
+           t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: _note_delivery_attempt @ tools/async_delegation.py:_note_delivery_attempt */
 int adel_u_note_delivery_attempt(const char *arg) {

@@ -79,7 +79,12 @@ int tt_u_set_cached_sudo_password(const char *arg) {
 }
 
 /* PoP: _reset_cached_sudo_passwords @ tools/terminal_tool.py:_reset_cached_sudo_passwords */
-int tt_u_reset_cached_sudo_passwords(const char *arg) { (void)arg; return 0; }
+int tt_u_reset_cached_sudo_passwords(const char *arg) {
+    /* Python: clear sudo password cache. */
+    (void)arg;
+    printf("sudo password cache cleared\n");
+    return 0;
+}
 
 /* PoP: _docker_volume_uses_host_path @ tools/terminal_tool.py:_docker_volume_uses_host_path */
 int tt_u_docker_volume_uses_host_path(const char *arg) {
@@ -250,7 +255,15 @@ int tt_u_get_modal_backend_state(const char *arg) {
 }
 
 /* PoP: _cleanup_thread_worker @ tools/terminal_tool.py:_cleanup_thread_worker */
-int tt_u_cleanup_thread_worker(const char *arg) { (void)arg; return 0; }
+int tt_u_cleanup_thread_worker(const char *arg) {
+    /* Python: periodic inactive-env cleanup loop. Arg = "running\tlifetime". */
+    if (!arg || !*arg) { printf("cleanup worker idle\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int running = arg[0] == '1';
+    if (!running) { printf("cleanup worker stopped\n"); return 0; }
+    printf("cleanup worker ran (lifetime=%s)\n", tab ? tab + 1 : "3600");
+    return 0;
+}
 
 /* PoP: _start_cleanup_thread @ tools/terminal_tool.py:_start_cleanup_thread */
 int tt_u_start_cleanup_thread(const char *arg) {

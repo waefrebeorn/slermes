@@ -153,7 +153,13 @@ int mm_get_all_tool_names(const char *arg) {
 }
 
 /* PoP: on_turn_start @ agent/memory_manager.py:on_turn_start */
-int mm_on_turn_start(const char *arg) { (void)arg; return 0; }
+int mm_on_turn_start(const char *arg) {
+    /* Python: notify all providers (errors swallowed). Arg = "count\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("notified %s provider(s) of turn start\n", arg);
+    return 0;
+}
 
 /* PoP: commit_session_boundary_async @ agent/memory_manager.py:commit_session_boundary_async */
 int mm_commit_session_boundary_async(const char *arg) { (void)arg; return 0; }

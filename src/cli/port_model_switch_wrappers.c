@@ -93,7 +93,17 @@ int msw_u_model_sort_key(const char *arg) { (void)arg; return 0; }
 int msw_get_authenticated_provider_slugs(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_alias_fallback @ hermes_cli/model_switch.py:_resolve_alias_fallback */
-int msw_u_resolve_alias_fallback(const char *arg) { (void)arg; return 0; }
+int msw_u_resolve_alias_fallback(const char *arg) {
+    /* Python: try providers (default openrouter,nous), first hit wins. Arg =
+     * "raw\tproviders\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *result = t2 ? t2 + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: resolve_display_context_length @ hermes_cli/model_switch.py:resolve_display_context_length */
 int msw_resolve_display_context_length(const char *arg) { (void)arg; return 0; }

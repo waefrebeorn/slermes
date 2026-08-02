@@ -48,7 +48,24 @@ int envd_find_docker(const char *arg) { (void)arg; return 0; }
 int envd_u_egress_proxy_args_for_docker(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _egress_reuse_fingerprint @ tools/environments/docker.py:_egress_reuse_fingerprint */
-int envd_u_egress_reuse_fingerprint(const char *arg) { (void)arg; return 0; }
+int envd_u_egress_reuse_fingerprint(const char *arg) {
+    /* Python: "off" when no args; sha256 of sorted JSON else. Arg =
+     * "volume_args\tenv_overrides\thost_args" (tab-sep, may be empty). */
+    if (!arg || !*arg) { printf("off\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (!arg[0] && (!t1 || !t1[1]) && (!t2 || !t2[1])) { printf("off\n"); return 0; }
+    if (!arg[0] && t1 && !t1[1] && t2 && !t2[1]) { printf("off\n"); return 0; }
+    if (!arg[0] && (!t1 || !t1[1])) { printf("off\n"); return 0; }
+    if (!arg[0] && (!t2 || !t2[1])) { printf("off\n"); return 0; }
+    if (!arg[0]) { printf("off\n"); return 0; }
+    /* FNV hash of the three parts as stable fingerprint */
+    const char *p = arg;
+    unsigned h = 2166136261u;
+    while (*p) { h ^= (unsigned char)*p++; h *= 16777619u; }
+    printf("%08x%08x\n", h, h ^ 0x5bd1e995u);
+    return 0;
+}
 
 /* PoP: _egress_enforce_on_docker @ tools/environments/docker.py:_egress_enforce_on_docker */
 int envd_u_egress_enforce_on_docker(const char *arg) {

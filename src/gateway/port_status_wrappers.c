@@ -145,7 +145,19 @@ int gstat_runtime_status_pid_is_live(const char *arg) { (void)arg; return 0; }
 int gstat_u_validated_scoped_lock_gateway_owner(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _scoped_lock_owner_state @ gateway/status.py:_scoped_lock_owner_state */
-int gstat_u_scoped_lock_owner_state(const char *arg) { (void)arg; return 0; }
+int gstat_u_scoped_lock_owner_state(const char *arg) {
+    /* Python: same/exited/unknown. Arg = "alive\tstart_match" (alive 1/0;
+     * start_match 1/0/2 where 2 = unknown). */
+    if (!arg || !*arg) { printf("unknown\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int alive = arg[0] == '1';
+    int match = tab ? tab[1] - '0' : 0;
+    if (!alive) { printf("exited\n"); return 0; }
+    if (match == 2) { printf("unknown\n"); return 0; }
+    if (match == 1) { printf("same\n"); return 0; }
+    printf("exited\n");
+    return 0;
+}
 
 /* PoP: _wait_for_scoped_lock_owner_exit @ gateway/status.py:_wait_for_scoped_lock_owner_exit */
 int gstat_u_wait_for_scoped_lock_owner_exit(const char *arg) {

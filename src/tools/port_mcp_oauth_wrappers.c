@@ -14,7 +14,16 @@
 #include "hermes_json.h"
 
 /* PoP: _get_token_dir @ tools/mcp_oauth.py:_get_token_dir */
-int mcpo_u_get_token_dir(const char *arg) { (void)arg; return 0; }
+int mcpo_u_get_token_dir(const char *arg) {
+    /* Python: HERMES_HOME/mcp-tokens. Arg = hermes_home. */
+    if (!arg || !*arg) {
+        const char *h = getenv("HERMES_HOME");
+        printf("%s/mcp-tokens\n", (h && *h) ? h : "~/.hermes");
+        return 0;
+    }
+    printf("%s/mcp-tokens\n", arg);
+    return 0;
+}
 
 /* PoP: _safe_filename @ tools/mcp_oauth.py:_safe_filename */
 int mcpo_u_safe_filename(const char *arg) {

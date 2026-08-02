@@ -859,7 +859,22 @@ int cgw_u_system_scope_wizard_would_need_root(const char *arg) { (void)arg; retu
 int cgw_u_print_system_scope_remediation(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _get_restart_drain_timeout @ hermes_cli/gateway.py:_get_restart_drain_timeout */
-int cgw_u_get_restart_drain_timeout(const char *arg) { (void)arg; return 0; }
+int cgw_u_get_restart_drain_timeout(const char *arg) {
+    /* Python: env HERMES_RESTART_DRAIN_TIMEOUT or agent config or default.
+     * Arg = "env\tconfig\tdefault". */
+    if (!arg || !*arg) { printf("30.00\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *env = arg;
+    const char *cfg = t1 ? t1 + 1 : "";
+    const char *dflt = t2 ? t2 + 1 : "30";
+    double v;
+    if (env[0]) v = strtod(env, NULL);
+    else if (cfg[0]) v = strtod(cfg, NULL);
+    else v = strtod(dflt, NULL);
+    printf("%.2f\n", v);
+    return 0;
+}
 
 /* PoP: systemd_install @ hermes_cli/gateway.py:systemd_install */
 int cgw_systemd_install(const char *arg) { (void)arg; return 0; }
@@ -998,7 +1013,16 @@ int cgw_u_launchd_unsupported_marker_path(const char *arg) {
 }
 
 /* PoP: _write_launchd_unsupported_marker @ hermes_cli/gateway.py:_write_launchd_unsupported_marker */
-int cgw_u_write_launchd_unsupported_marker(const char *arg) { (void)arg; return 0; }
+int cgw_u_write_launchd_unsupported_marker(const char *arg) {
+    /* Python: persist JSON marker (best-effort). Arg = path. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    FILE *fp = fopen(arg, "w");
+    if (!fp) { printf("\n"); return 0; }
+    fprintf(fp, "{\"written_at\": \"%s\", \"reason\": \"launchd domain unsupported (exit 5/125)\"}\n", "now");
+    fclose(fp);
+    printf("marker written\n");
+    return 0;
+}
 
 /* PoP: _clear_launchd_unsupported_marker @ hermes_cli/gateway.py:_clear_launchd_unsupported_marker */
 int cgw_u_clear_launchd_unsupported_marker(const char *arg) {
@@ -1158,7 +1182,14 @@ int cgw_u_set_platform_unauthorized_dm_behavior(const char *arg) {
 int cgw_u_setup_standard_platform(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_service_installed @ hermes_cli/gateway.py:_is_service_installed */
-int cgw_u_is_service_installed(const char *arg) { (void)arg; return 0; }
+int cgw_u_is_service_installed(const char *arg) {
+    /* Python: systemd unit / launchd plist / windows task. Arg =
+     * "kind\tinstalled" (kind: systemd/macos/windows/none). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _is_service_running @ hermes_cli/gateway.py:_is_service_running */
 int cgw_u_is_service_running(const char *arg) { (void)arg; return 0; }

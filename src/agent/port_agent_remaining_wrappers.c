@@ -1385,7 +1385,18 @@ int agent_bedrock_adapter_u_static_bedrock_context_length(const char *arg) { (vo
 int agent_bedrock_adapter_probe_bedrock_context_length(const char *arg) { (void)arg; return 0; }
 
 /* PoP: kanban_stop_nudge_enabled @ agent/kanban_stop.py:kanban_stop_nudge_enabled */
-int agent_kanban_stop_kanban_stop_nudge_enabled(const char *arg) { (void)arg; return 0; }
+int agent_kanban_stop_kanban_stop_nudge_enabled(const char *arg) {
+    /* Python: nudge off unless task set; explicit 0/false/no/off disables.
+     * Arg = "nudge_env\ttask". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *nudge = arg;
+    const char *task = tab ? tab + 1 : "";
+    if (nudge[0] && (strcmp(nudge, "0") == 0 || strcasecmp(nudge, "false") == 0 ||
+        strcasecmp(nudge, "no") == 0 || strcasecmp(nudge, "off") == 0)) { printf("0\n"); return 0; }
+    printf("%d\n", task[0] ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _tool_call_name @ agent/kanban_stop.py:_tool_call_name */
 int agent_kanban_stop_u_tool_call_name(const char *arg) {
@@ -1731,7 +1742,12 @@ int agent_credential_sources_u_remove_xai_oauth_device_code(const char *arg) { (
 int agent_insights_u_get_model_usage(const char *arg) { (void)arg; return 0; }
 
 /* PoP: preload_jiter_native_extension @ agent/jiter_preload.py:preload_jiter_native_extension */
-int agent_jiter_preload_preload_jiter_native_extension(const char *arg) { (void)arg; return 0; }
+int agent_jiter_preload_preload_jiter_native_extension(const char *arg) {
+    /* Python: import jiter.jiter early; True/False. Arg = "preloaded\t1/0". */
+    if (arg && arg[0] == '1') { printf("1\n"); return 0; }
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _ensure_required_array @ agent/moonshot_schema.py:_ensure_required_array */
 int agent_moonshot_schema_u_ensure_required_array(const char *arg) { (void)arg; return 0; }

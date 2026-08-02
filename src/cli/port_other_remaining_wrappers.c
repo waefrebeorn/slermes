@@ -170,7 +170,12 @@ int cron_jobs_use_cron_store(const char *arg) {
 }
 
 /* PoP: get_cron_output_dir @ cron/jobs.py:get_cron_output_dir */
-int cron_jobs_get_cron_output_dir(const char *arg) { (void)arg; return 0; }
+int cron_jobs_get_cron_output_dir(const char *arg) {
+    /* Python: current cron store output dir. Arg = path. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _oneshot_run_claim_ttl_seconds @ cron/jobs.py:_oneshot_run_claim_ttl_seconds */
 int cron_jobs_u_oneshot_run_claim_ttl_seconds(const char *arg) { (void)arg; return 0; }

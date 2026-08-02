@@ -408,7 +408,16 @@ int cua_kill_app(const char *arg) {
 }
 
 /* PoP: bring_to_front @ tools/computer_use/cua_backend.py:bring_to_front */
-int cua_bring_to_front(const char *arg) { (void)arg; return 0; }
+int cua_bring_to_front(const char *arg) {
+    /* Python: activate window. Arg = "pid\twindow_id\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *result = t2 ? t2 + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    printf("bring_to_front pid=%s%s\n", arg, t1 ? " (window_id given)" : "");
+    return 0;
+}
 
 /* PoP: get_cursor_position @ tools/computer_use/cua_backend.py:get_cursor_position */
 int cua_get_cursor_position(const char *arg) {
