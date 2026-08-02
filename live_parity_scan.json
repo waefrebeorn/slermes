@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:36:36Z",
+  "generated_at": "2026-08-02T20:38:43Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -70850,10 +70850,10 @@
     },
     "agent/tts_provider.py": {
       "total": 12,
-      "ported": 4,
+      "ported": 11,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 8,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 12,
@@ -70872,16 +70872,24 @@
             ],
             "line_number": 74
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tts_provider_remaining.c",
+          "c_function": "ttp_name",
+          "pop_annotation": {
+            "c_function": "ttp_name",
+            "python_functions": [
+              "name"
+            ],
+            "c_file": "src/agent/port_tts_provider_remaining.c",
+            "python_file": "agent/tts_provider.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: name @ agent/tts_provider.py:name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tts_provider.py",
@@ -70895,16 +70903,24 @@
             ],
             "line_number": 85
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tts_provider_remaining.c",
+          "c_function": "ttp_display_name",
+          "pop_annotation": {
+            "c_function": "ttp_display_name",
+            "python_functions": [
+              "display_name"
+            ],
+            "c_file": "src/agent/port_tts_provider_remaining.c",
+            "python_file": "agent/tts_provider.py",
+            "line": 27,
+            "is_consolidated": false,
+            "full_text": "/* PoP: display_name @ agent/tts_provider.py:display_name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tts_provider.py",
@@ -70916,16 +70932,24 @@
             "decorators": [],
             "line_number": 92
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tts_provider_remaining.c",
+          "c_function": "ttp_is_available",
+          "pop_annotation": {
+            "c_function": "ttp_is_available",
+            "python_functions": [
+              "is_available"
+            ],
+            "c_file": "src/agent/port_tts_provider_remaining.c",
+            "python_file": "agent/tts_provider.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_available @ agent/tts_provider.py:is_available */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tts_provider.py",
@@ -70966,16 +70990,24 @@
             "decorators": [],
             "line_number": 122
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tts_provider_remaining.c",
+          "c_function": "ttp_list_models",
+          "pop_annotation": {
+            "c_function": "ttp_list_models",
+            "python_functions": [
+              "list_models"
+            ],
+            "c_file": "src/agent/port_tts_provider_remaining.c",
+            "python_file": "agent/tts_provider.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: list_models @ agent/tts_provider.py:list_models */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tts_provider.py",
@@ -70987,16 +71019,24 @@
             "decorators": [],
             "line_number": 139
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tts_provider_remaining.c",
+          "c_function": "ttp_get_setup_schema",
+          "pop_annotation": {
+            "c_function": "ttp_get_setup_schema",
+            "python_functions": [
+              "get_setup_schema"
+            ],
+            "c_file": "src/agent/port_tts_provider_remaining.c",
+            "python_file": "agent/tts_provider.py",
+            "line": 44,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_setup_schema @ agent/tts_provider.py:get_setup_schema */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tts_provider.py",
@@ -71008,16 +71048,24 @@
             "decorators": [],
             "line_number": 166
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tts_provider_remaining.c",
+          "c_function": "ttp_default_model",
+          "pop_annotation": {
+            "c_function": "ttp_default_model",
+            "python_functions": [
+              "default_model"
+            ],
+            "c_file": "src/agent/port_tts_provider_remaining.c",
+            "python_file": "agent/tts_provider.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: default_model @ agent/tts_provider.py:default_model */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tts_provider.py",
@@ -71121,14 +71169,24 @@
             "line_number": 245
           },
           "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
-          "stub_reason": null,
+          "c_location": "src/agent/port_tts_provider_remaining.c",
+          "c_function": "ttp_voice_compatible",
+          "pop_annotation": {
+            "c_function": "ttp_voice_compatible",
+            "python_functions": [
+              "voice_compatible"
+            ],
+            "c_file": "src/agent/port_tts_provider_remaining.c",
+            "python_file": "agent/tts_provider.py",
+            "line": 55,
+            "is_consolidated": false,
+            "full_text": "/* PoP: voice_compatible @ agent/tts_provider.py:voice_compatible */"
+          },
+          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
           "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
+          "notes": "",
           "da_flags": [
-            "DA-1:no-c-equivalent"
+            "DA-2:bootleg-body"
           ]
         },
         {
@@ -71141,16 +71199,24 @@
             "decorators": [],
             "line_number": 263
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tts_provider_remaining.c",
+          "c_function": "ttp_resolve_output_format",
+          "pop_annotation": {
+            "c_function": "ttp_resolve_output_format",
+            "python_functions": [
+              "resolve_output_format"
+            ],
+            "c_file": "src/agent/port_tts_provider_remaining.c",
+            "python_file": "agent/tts_provider.py",
+            "line": 61,
+            "is_consolidated": false,
+            "full_text": "/* PoP: resolve_output_format @ agent/tts_provider.py:resolve_output_format */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -113142,10 +113208,10 @@
     },
     "gateway/platforms/webhook.py": {
       "total": 25,
-      "ported": 17,
+      "ported": 25,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 8,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 25,
@@ -113248,17 +113314,24 @@
             "decorators": [],
             "line_number": 156
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_webhook_remaining.c",
+          "c_function": "whk_init",
+          "pop_annotation": {
+            "c_function": "whk_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_webhook_remaining.c",
+            "python_file": "gateway/platforms/webhook.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/webhook.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/webhook.py",
@@ -113270,17 +113343,24 @@
             "decorators": [],
             "line_number": 218
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_webhook_remaining.c",
+          "c_function": "whk_connect",
+          "pop_annotation": {
+            "c_function": "whk_connect",
+            "python_functions": [
+              "connect"
+            ],
+            "c_file": "src/gateway/port_webhook_remaining.c",
+            "python_file": "gateway/platforms/webhook.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: connect @ gateway/platforms/webhook.py:connect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/webhook.py",
@@ -113292,17 +113372,24 @@
             "decorators": [],
             "line_number": 316
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_webhook_remaining.c",
+          "c_function": "whk_disconnect",
+          "pop_annotation": {
+            "c_function": "whk_disconnect",
+            "python_functions": [
+              "disconnect"
+            ],
+            "c_file": "src/gateway/port_webhook_remaining.c",
+            "python_file": "gateway/platforms/webhook.py",
+            "line": 37,
+            "is_consolidated": false,
+            "full_text": "/* PoP: disconnect @ gateway/platforms/webhook.py:disconnect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/webhook.py",
@@ -113314,17 +113401,24 @@
             "decorators": [],
             "line_number": 323
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_webhook_remaining.c",
+          "c_function": "whk_send",
+          "pop_annotation": {
+            "c_function": "whk_send",
+            "python_functions": [
+              "send"
+            ],
+            "c_file": "src/gateway/port_webhook_remaining.c",
+            "python_file": "gateway/platforms/webhook.py",
+            "line": 43,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send @ gateway/platforms/webhook.py:send */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/webhook.py",
@@ -113452,17 +113546,24 @@
             "decorators": [],
             "line_number": 427
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_webhook_remaining.c",
+          "c_function": "whk_get_chat_info",
+          "pop_annotation": {
+            "c_function": "whk_get_chat_info",
+            "python_functions": [
+              "get_chat_info"
+            ],
+            "c_file": "src/gateway/port_webhook_remaining.c",
+            "python_file": "gateway/platforms/webhook.py",
+            "line": 51,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_chat_info @ gateway/platforms/webhook.py:get_chat_info */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/webhook.py",
@@ -113474,17 +113575,24 @@
             "decorators": [],
             "line_number": 434
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_webhook_remaining.c",
+          "c_function": "whk_handle_health",
+          "pop_annotation": {
+            "c_function": "whk_handle_health",
+            "python_functions": [
+              "_handle_health"
+            ],
+            "c_file": "src/gateway/port_webhook_remaining.c",
+            "python_file": "gateway/platforms/webhook.py",
+            "line": 59,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _handle_health @ gateway/platforms/webhook.py:_handle_health */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/webhook.py",
@@ -113525,17 +113633,24 @@
             "decorators": [],
             "line_number": 497
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_webhook_remaining.c",
+          "c_function": "whk_resolve_request_profile",
+          "pop_annotation": {
+            "c_function": "whk_resolve_request_profile",
+            "python_functions": [
+              "_resolve_request_profile"
+            ],
+            "c_file": "src/gateway/port_webhook_remaining.c",
+            "python_file": "gateway/platforms/webhook.py",
+            "line": 64,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_request_profile @ gateway/platforms/webhook.py:_resolve_request_profile */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/webhook.py",
@@ -113547,17 +113662,24 @@
             "decorators": [],
             "line_number": 526
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_webhook_remaining.c",
+          "c_function": "whk_handle_webhook",
+          "pop_annotation": {
+            "c_function": "whk_handle_webhook",
+            "python_functions": [
+              "_handle_webhook"
+            ],
+            "c_file": "src/gateway/port_webhook_remaining.c",
+            "python_file": "gateway/platforms/webhook.py",
+            "line": 76,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _handle_webhook @ gateway/platforms/webhook.py:_handle_webhook */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/webhook.py",
