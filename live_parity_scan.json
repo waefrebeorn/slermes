@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T17:50:28Z",
+  "generated_at": "2026-08-02T17:53:27Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -91233,10 +91233,10 @@
     },
     "gateway/platforms/base.py": {
       "total": 178,
-      "ported": 116,
+      "ported": 165,
       "partial": 5,
       "stub": 0,
-      "real_gaps": 57,
+      "real_gaps": 8,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 178,
@@ -91302,17 +91302,24 @@
             "decorators": [],
             "line_number": 56
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_thread_metadata_for_source",
+          "pop_annotation": {
+            "c_function": "pb_thread_metadata_for_source",
+            "python_functions": [
+              "_thread_metadata_for_source"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 594,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _thread_metadata_for_source @ gateway/platforms/base.py:_thread_metadata_for_source */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -91324,17 +91331,24 @@
             "decorators": [],
             "line_number": 89
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_mark_notify_metadata",
+          "pop_annotation": {
+            "c_function": "pb_mark_notify_metadata",
+            "python_functions": [
+              "_mark_notify_metadata"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 26,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _mark_notify_metadata @ gateway/platforms/base.py:_mark_notify_metadata */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -91346,17 +91360,24 @@
             "decorators": [],
             "line_number": 96
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_reply_anchor_for_event",
+          "pop_annotation": {
+            "c_function": "pb_reply_anchor_for_event",
+            "python_functions": [
+              "_reply_anchor_for_event"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 612,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _reply_anchor_for_event @ gateway/platforms/base.py:_reply_anchor_for_event */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -91368,17 +91389,24 @@
             "decorators": [],
             "line_number": 131
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_should_send_media_as_audio",
+          "pop_annotation": {
+            "c_function": "pb_should_send_media_as_audio",
+            "python_functions": [
+              "should_send_media_as_audio"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 619,
+            "is_consolidated": false,
+            "full_text": "/* PoP: should_send_media_as_audio @ gateway/platforms/base.py:should_send_media_as_audio */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -91490,17 +91518,24 @@
             "decorators": [],
             "line_number": 242
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_detect_macos_system_proxy",
+          "pop_annotation": {
+            "c_function": "pb_detect_macos_system_proxy",
+            "python_functions": [
+              "_detect_macos_system_proxy"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 575,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _detect_macos_system_proxy @ gateway/platforms/base.py:_detect_macos_system_proxy */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -91512,17 +91547,24 @@
             "decorators": [],
             "line_number": 278
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_split_host_port",
+          "pop_annotation": {
+            "c_function": "pb_split_host_port",
+            "python_functions": [
+              "_split_host_port"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _split_host_port @ gateway/platforms/base.py:_split_host_port */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -91592,17 +91634,24 @@
             "decorators": [],
             "line_number": 347
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_should_bypass_proxy",
+          "pop_annotation": {
+            "c_function": "pb_should_bypass_proxy",
+            "python_functions": [
+              "should_bypass_proxy"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 97,
+            "is_consolidated": false,
+            "full_text": "/* PoP: should_bypass_proxy @ gateway/platforms/base.py:should_bypass_proxy */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -91672,17 +91721,24 @@
             "decorators": [],
             "line_number": 433
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_proxy_kwargs_for_aiohttp",
+          "pop_annotation": {
+            "c_function": "pb_proxy_kwargs_for_aiohttp",
+            "python_functions": [
+              "proxy_kwargs_for_aiohttp"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 121,
+            "is_consolidated": false,
+            "full_text": "/* PoP: proxy_kwargs_for_aiohttp @ gateway/platforms/base.py:proxy_kwargs_for_aiohttp */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -91868,17 +91924,24 @@
             "decorators": [],
             "line_number": 662
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_read_httpx_body_with_limit",
+          "pop_annotation": {
+            "c_function": "pb_read_httpx_body_with_limit",
+            "python_functions": [
+              "_read_httpx_body_with_limit"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 586,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _read_httpx_body_with_limit @ gateway/platforms/base.py:_read_httpx_body_with_limit */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -91919,17 +91982,24 @@
             "decorators": [],
             "line_number": 700
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_looks_like_image",
+          "pop_annotation": {
+            "c_function": "pb_looks_like_image",
+            "python_functions": [
+              "_looks_like_image"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 131,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _looks_like_image @ gateway/platforms/base.py:_looks_like_image */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -91941,17 +92011,24 @@
             "decorators": [],
             "line_number": 717
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_cache_image_from_bytes",
+          "pop_annotation": {
+            "c_function": "pb_cache_image_from_bytes",
+            "python_functions": [
+              "cache_image_from_bytes"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 143,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cache_image_from_bytes @ gateway/platforms/base.py:cache_image_from_bytes */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -91992,17 +92069,24 @@
             "decorators": [],
             "line_number": 809
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_cleanup_image_cache",
+          "pop_annotation": {
+            "c_function": "pb_cleanup_image_cache",
+            "python_functions": [
+              "cleanup_image_cache"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 159,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cleanup_image_cache @ gateway/platforms/base.py:cleanup_image_cache */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -92043,17 +92127,24 @@
             "decorators": [],
             "line_number": 847
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_cache_audio_from_bytes",
+          "pop_annotation": {
+            "c_function": "pb_cache_audio_from_bytes",
+            "python_functions": [
+              "cache_audio_from_bytes"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 169,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cache_audio_from_bytes @ gateway/platforms/base.py:cache_audio_from_bytes */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -92123,17 +92214,24 @@
             "decorators": [],
             "line_number": 954
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_cache_video_from_bytes",
+          "pop_annotation": {
+            "c_function": "pb_cache_video_from_bytes",
+            "python_functions": [
+              "cache_video_from_bytes"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 183,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cache_video_from_bytes @ gateway/platforms/base.py:cache_video_from_bytes */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -92232,17 +92330,24 @@
             "decorators": [],
             "line_number": 1135
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_media_delivery_recency_seconds",
+          "pop_annotation": {
+            "c_function": "pb_media_delivery_recency_seconds",
+            "python_functions": [
+              "_media_delivery_recency_seconds"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 197,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _media_delivery_recency_seconds @ gateway/platforms/base.py:_media_delivery_recency_seconds */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -92254,17 +92359,24 @@
             "decorators": [],
             "line_number": 1153
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_media_delivery_strict_mode",
+          "pop_annotation": {
+            "c_function": "pb_media_delivery_strict_mode",
+            "python_functions": [
+              "_media_delivery_strict_mode"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 217,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _media_delivery_strict_mode @ gateway/platforms/base.py:_media_delivery_strict_mode */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -92392,17 +92504,24 @@
             "decorators": [],
             "line_number": 1286
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_validate_media_delivery_path",
+          "pop_annotation": {
+            "c_function": "pb_validate_media_delivery_path",
+            "python_functions": [
+              "validate_media_delivery_path"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 229,
+            "is_consolidated": false,
+            "full_text": "/* PoP: validate_media_delivery_path @ gateway/platforms/base.py:validate_media_delivery_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -92559,17 +92678,24 @@
             "decorators": [],
             "line_number": 1587
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_cache_document_from_bytes",
+          "pop_annotation": {
+            "c_function": "pb_cache_document_from_bytes",
+            "python_functions": [
+              "cache_document_from_bytes"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 239,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cache_document_from_bytes @ gateway/platforms/base.py:cache_document_from_bytes */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -92581,17 +92707,24 @@
             "decorators": [],
             "line_number": 1619
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_cleanup_document_cache",
+          "pop_annotation": {
+            "c_function": "pb_cleanup_document_cache",
+            "python_functions": [
+              "cleanup_document_cache"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 255,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cleanup_document_cache @ gateway/platforms/base.py:cleanup_document_cache */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -92632,17 +92765,24 @@
             "decorators": [],
             "line_number": 1665
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_resolve_media_ext",
+          "pop_annotation": {
+            "c_function": "pb_resolve_media_ext",
+            "python_functions": [
+              "_resolve_media_ext"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 262,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_media_ext @ gateway/platforms/base.py:_resolve_media_ext */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -92654,17 +92794,24 @@
             "decorators": [],
             "line_number": 1685
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_cache_media_bytes",
+          "pop_annotation": {
+            "c_function": "pb_cache_media_bytes",
+            "python_functions": [
+              "cache_media_bytes"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 289,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cache_media_bytes @ gateway/platforms/base.py:cache_media_bytes */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -92821,17 +92968,24 @@
             "decorators": [],
             "line_number": 2013
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_classify_send_error",
+          "pop_annotation": {
+            "c_function": "pb_classify_send_error",
+            "python_functions": [
+              "classify_send_error"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 303,
+            "is_consolidated": false,
+            "full_text": "/* PoP: classify_send_error @ gateway/platforms/base.py:classify_send_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -92903,17 +93057,24 @@
             ],
             "line_number": 2113
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_text",
+          "pop_annotation": {
+            "c_function": "pb_text",
+            "python_functions": [
+              "text"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 328,
+            "is_consolidated": false,
+            "full_text": "/* PoP: text @ gateway/platforms/base.py:text */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -93041,17 +93202,24 @@
             "decorators": [],
             "line_number": 2317
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_strip_media_directives",
+          "pop_annotation": {
+            "c_function": "pb_strip_media_directives",
+            "python_functions": [
+              "_strip_media_directives"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 335,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _strip_media_directives @ gateway/platforms/base.py:_strip_media_directives */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -93116,17 +93284,24 @@
             ],
             "line_number": 2550
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_message_len_fn",
+          "pop_annotation": {
+            "c_function": "pb_message_len_fn",
+            "python_functions": [
+              "message_len_fn"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 357,
+            "is_consolidated": false,
+            "full_text": "/* PoP: message_len_fn @ gateway/platforms/base.py:message_len_fn */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -93200,17 +93375,24 @@
             "decorators": [],
             "line_number": 2618
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_supports_draft_streaming",
+          "pop_annotation": {
+            "c_function": "pb_supports_draft_streaming",
+            "python_functions": [
+              "supports_draft_streaming"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 371,
+            "is_consolidated": false,
+            "full_text": "/* PoP: supports_draft_streaming @ gateway/platforms/base.py:supports_draft_streaming */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -93280,17 +93462,24 @@
             "decorators": [],
             "line_number": 2677
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_send_draft",
+          "pop_annotation": {
+            "c_function": "pb_send_draft",
+            "python_functions": [
+              "send_draft"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 377,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_draft @ gateway/platforms/base.py:send_draft */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -93687,17 +93876,24 @@
             "decorators": [],
             "line_number": 2876
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_acquire_platform_lock",
+          "pop_annotation": {
+            "c_function": "pb_acquire_platform_lock",
+            "python_functions": [
+              "_acquire_platform_lock"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 385,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _acquire_platform_lock @ gateway/platforms/base.py:_acquire_platform_lock */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -93709,17 +93905,24 @@
             "decorators": [],
             "line_number": 2942
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_release_platform_lock",
+          "pop_annotation": {
+            "c_function": "pb_release_platform_lock",
+            "python_functions": [
+              "_release_platform_lock"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 393,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _release_platform_lock @ gateway/platforms/base.py:_release_platform_lock */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -94020,17 +94223,24 @@
             ],
             "line_number": 3076
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_connect",
+          "pop_annotation": {
+            "c_function": "pb_connect",
+            "python_functions": [
+              "connect"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 400,
+            "is_consolidated": false,
+            "full_text": "/* PoP: connect @ gateway/platforms/base.py:connect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -94044,17 +94254,24 @@
             ],
             "line_number": 3096
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_disconnect",
+          "pop_annotation": {
+            "c_function": "pb_disconnect",
+            "python_functions": [
+              "disconnect"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 407,
+            "is_consolidated": false,
+            "full_text": "/* PoP: disconnect @ gateway/platforms/base.py:disconnect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -94068,17 +94285,24 @@
             ],
             "line_number": 3101
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_send",
+          "pop_annotation": {
+            "c_function": "pb_send",
+            "python_functions": [
+              "send"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 413,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send @ gateway/platforms/base.py:send */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -94120,15 +94344,24 @@
             "line_number": 3157
           },
           "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
-          "stub_reason": null,
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_edit_message",
+          "pop_annotation": {
+            "c_function": "pb_edit_message",
+            "python_functions": [
+              "edit_message"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 419,
+            "is_consolidated": false,
+            "full_text": "/* PoP: edit_message @ gateway/platforms/base.py:edit_message */"
+          },
+          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
           "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
+          "notes": "",
           "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
+            "DA-2:bootleg-body"
           ]
         },
         {
@@ -94142,15 +94375,24 @@
             "line_number": 3186
           },
           "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
-          "stub_reason": null,
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_delete_message",
+          "pop_annotation": {
+            "c_function": "pb_delete_message",
+            "python_functions": [
+              "delete_message"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 426,
+            "is_consolidated": false,
+            "full_text": "/* PoP: delete_message @ gateway/platforms/base.py:delete_message */"
+          },
+          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
           "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
+          "notes": "",
           "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
+            "DA-2:bootleg-body"
           ]
         },
         {
@@ -94221,17 +94463,24 @@
             "decorators": [],
             "line_number": 3265
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_send_slash_confirm",
+          "pop_annotation": {
+            "c_function": "pb_send_slash_confirm",
+            "python_functions": [
+              "send_slash_confirm"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 432,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_slash_confirm @ gateway/platforms/base.py:send_slash_confirm */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -94243,17 +94492,24 @@
             "decorators": [],
             "line_number": 3300
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_send_clarify",
+          "pop_annotation": {
+            "c_function": "pb_send_clarify",
+            "python_functions": [
+              "send_clarify"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 439,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_clarify @ gateway/platforms/base.py:send_clarify */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -94295,15 +94551,24 @@
             "line_number": 3377
           },
           "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
-          "stub_reason": null,
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_send_typing",
+          "pop_annotation": {
+            "c_function": "pb_send_typing",
+            "python_functions": [
+              "send_typing"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 446,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_typing @ gateway/platforms/base.py:send_typing */"
+          },
+          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
           "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
+          "notes": "",
           "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
+            "DA-2:bootleg-body"
           ]
         },
         {
@@ -94317,15 +94582,24 @@
             "line_number": 3386
           },
           "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
-          "stub_reason": null,
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_stop_typing",
+          "pop_annotation": {
+            "c_function": "pb_stop_typing",
+            "python_functions": [
+              "stop_typing"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 452,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stop_typing @ gateway/platforms/base.py:stop_typing */"
+          },
+          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
           "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
+          "notes": "",
           "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
+            "DA-2:bootleg-body"
           ]
         },
         {
@@ -94396,17 +94670,24 @@
             "decorators": [],
             "line_number": 3475
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_send_image",
+          "pop_annotation": {
+            "c_function": "pb_send_image",
+            "python_functions": [
+              "send_image"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 458,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_image @ gateway/platforms/base.py:send_image */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -94418,17 +94699,24 @@
             "decorators": [],
             "line_number": 3494
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_send_animation",
+          "pop_annotation": {
+            "c_function": "pb_send_animation",
+            "python_functions": [
+              "send_animation"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 465,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_animation @ gateway/platforms/base.py:send_animation */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -94473,17 +94761,24 @@
             ],
             "line_number": 3518
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_extract_images",
+          "pop_annotation": {
+            "c_function": "pb_extract_images",
+            "python_functions": [
+              "extract_images"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 471,
+            "is_consolidated": false,
+            "full_text": "/* PoP: extract_images @ gateway/platforms/base.py:extract_images */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -94495,17 +94790,24 @@
             "decorators": [],
             "line_number": 3565
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_send_voice",
+          "pop_annotation": {
+            "c_function": "pb_send_voice",
+            "python_functions": [
+              "send_voice"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 479,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_voice @ gateway/platforms/base.py:send_voice */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -94517,17 +94819,24 @@
             "decorators": [],
             "line_number": 3594
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_prepare_tts_text",
+          "pop_annotation": {
+            "c_function": "pb_prepare_tts_text",
+            "python_functions": [
+              "prepare_tts_text"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 485,
+            "is_consolidated": false,
+            "full_text": "/* PoP: prepare_tts_text @ gateway/platforms/base.py:prepare_tts_text */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -94539,17 +94848,24 @@
             "decorators": [],
             "line_number": 3601
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_play_tts",
+          "pop_annotation": {
+            "c_function": "pb_play_tts",
+            "python_functions": [
+              "play_tts"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 502,
+            "is_consolidated": false,
+            "full_text": "/* PoP: play_tts @ gateway/platforms/base.py:play_tts */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -94561,17 +94877,24 @@
             "decorators": [],
             "line_number": 3615
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_send_video",
+          "pop_annotation": {
+            "c_function": "pb_send_video",
+            "python_functions": [
+              "send_video"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 508,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_video @ gateway/platforms/base.py:send_video */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -94583,17 +94906,24 @@
             "decorators": [],
             "line_number": 3642
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_send_document",
+          "pop_annotation": {
+            "c_function": "pb_send_document",
+            "python_functions": [
+              "send_document"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 514,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_document @ gateway/platforms/base.py:send_document */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -94605,17 +94935,24 @@
             "decorators": [],
             "line_number": 3676
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_send_image_file",
+          "pop_annotation": {
+            "c_function": "pb_send_image_file",
+            "python_functions": [
+              "send_image_file"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 520,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_image_file @ gateway/platforms/base.py:send_image_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -94629,17 +94966,24 @@
             ],
             "line_number": 3705
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_validate_media_delivery_path",
+          "pop_annotation": {
+            "c_function": "pb_validate_media_delivery_path",
+            "python_functions": [
+              "validate_media_delivery_path"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 229,
+            "is_consolidated": false,
+            "full_text": "/* PoP: validate_media_delivery_path @ gateway/platforms/base.py:validate_media_delivery_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -94839,17 +95183,24 @@
             ],
             "line_number": 3934
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_extract_local_files",
+          "pop_annotation": {
+            "c_function": "pb_extract_local_files",
+            "python_functions": [
+              "extract_local_files"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 526,
+            "is_consolidated": false,
+            "full_text": "/* PoP: extract_local_files @ gateway/platforms/base.py:extract_local_files */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -95188,17 +95539,24 @@
             ],
             "line_number": 4281
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_is_timeout_error",
+          "pop_annotation": {
+            "c_function": "pb_is_timeout_error",
+            "python_functions": [
+              "_is_timeout_error"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 534,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_timeout_error @ gateway/platforms/base.py:_is_timeout_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -95299,17 +95657,24 @@
             ],
             "line_number": 4434
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_merge_caption",
+          "pop_annotation": {
+            "c_function": "pb_merge_caption",
+            "python_functions": [
+              "_merge_caption"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 544,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _merge_caption @ gateway/platforms/base.py:_merge_caption */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -95787,17 +96152,24 @@
             ],
             "line_number": 5051
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_get_human_delay",
+          "pop_annotation": {
+            "c_function": "pb_get_human_delay",
+            "python_functions": [
+              "_get_human_delay"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 554,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_human_delay @ gateway/platforms/base.py:_get_human_delay */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -95977,17 +96349,24 @@
             ],
             "line_number": 5860
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_platforms_base.c",
+          "c_function": "pb_get_chat_info",
+          "pop_annotation": {
+            "c_function": "pb_get_chat_info",
+            "python_functions": [
+              "get_chat_info"
+            ],
+            "c_file": "src/gateway/port_platforms_base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 567,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_chat_info @ gateway/platforms/base.py:get_chat_info */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
