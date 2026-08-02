@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:18:26Z",
+  "generated_at": "2026-08-02T21:20:49Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -16,10 +16,10 @@
     },
     "agent/account_usage.py": {
       "total": 21,
-      "ported": 16,
+      "ported": 21,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 21,
@@ -35,16 +35,24 @@
             "decorators": [],
             "line_number": 21
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_account_usage_remaining.c",
+          "c_function": "acu_utc_now",
+          "pop_annotation": {
+            "c_function": "acu_utc_now",
+            "python_functions": [
+              "_utc_now"
+            ],
+            "c_file": "src/agent/port_account_usage_remaining.c",
+            "python_file": "agent/account_usage.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _utc_now @ agent/account_usage.py:_utc_now */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/account_usage.py",
@@ -261,16 +269,24 @@
             "decorators": [],
             "line_number": 137
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_account_usage_remaining.c",
+          "c_function": "acu_build_nous_credits_snapshot",
+          "pop_annotation": {
+            "c_function": "acu_build_nous_credits_snapshot",
+            "python_functions": [
+              "build_nous_credits_snapshot"
+            ],
+            "c_file": "src/agent/port_account_usage_remaining.c",
+            "python_file": "agent/account_usage.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_nous_credits_snapshot @ agent/account_usage.py:build_nous_credits_snapshot */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/account_usage.py",
@@ -282,16 +298,24 @@
             "decorators": [],
             "line_number": 233
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_account_usage_remaining.c",
+          "c_function": "acu_nous_credits_lines",
+          "pop_annotation": {
+            "c_function": "acu_nous_credits_lines",
+            "python_functions": [
+              "nous_credits_lines"
+            ],
+            "c_file": "src/agent/port_account_usage_remaining.c",
+            "python_file": "agent/account_usage.py",
+            "line": 44,
+            "is_consolidated": false,
+            "full_text": "/* PoP: nous_credits_lines @ agent/account_usage.py:nous_credits_lines */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/account_usage.py",
@@ -303,16 +327,24 @@
             "decorators": [],
             "line_number": 283
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_account_usage_remaining.c",
+          "c_function": "acu_snapshot_from_credits_state",
+          "pop_annotation": {
+            "c_function": "acu_snapshot_from_credits_state",
+            "python_functions": [
+              "_snapshot_from_credits_state"
+            ],
+            "c_file": "src/agent/port_account_usage_remaining.c",
+            "python_file": "agent/account_usage.py",
+            "line": 51,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _snapshot_from_credits_state @ agent/account_usage.py:_snapshot_from_credits_state */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/account_usage.py",
@@ -382,16 +414,24 @@
             "decorators": [],
             "line_number": 448
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_account_usage_remaining.c",
+          "c_function": "acu_resolve_codex_usage_url",
+          "pop_annotation": {
+            "c_function": "acu_resolve_codex_usage_url",
+            "python_functions": [
+              "_resolve_codex_usage_url"
+            ],
+            "c_file": "src/agent/port_account_usage_remaining.c",
+            "python_file": "agent/account_usage.py",
+            "line": 59,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_codex_usage_url @ agent/account_usage.py:_resolve_codex_usage_url */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/account_usage.py",
@@ -48006,10 +48046,10 @@
     },
     "agent/moonshot_schema.py": {
       "total": 6,
-      "ported": 1,
+      "ported": 6,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 6,
@@ -48025,16 +48065,24 @@
             "decorators": [],
             "line_number": 44
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_moonshot_schema_remaining.c",
+          "c_function": "msc_repair_schema",
+          "pop_annotation": {
+            "c_function": "msc_repair_schema",
+            "python_functions": [
+              "_repair_schema"
+            ],
+            "c_file": "src/agent/port_moonshot_schema_remaining.c",
+            "python_file": "agent/moonshot_schema.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _repair_schema @ agent/moonshot_schema.py:_repair_schema */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/moonshot_schema.py",
@@ -48075,16 +48123,24 @@
             "decorators": [],
             "line_number": 162
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_moonshot_schema_remaining.c",
+          "c_function": "msc_fill_missing_type",
+          "pop_annotation": {
+            "c_function": "msc_fill_missing_type",
+            "python_functions": [
+              "_fill_missing_type"
+            ],
+            "c_file": "src/agent/port_moonshot_schema_remaining.c",
+            "python_file": "agent/moonshot_schema.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _fill_missing_type @ agent/moonshot_schema.py:_fill_missing_type */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/moonshot_schema.py",
@@ -48096,16 +48152,24 @@
             "decorators": [],
             "line_number": 196
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_moonshot_schema_remaining.c",
+          "c_function": "msc_sanitize_moonshot_tool_parameters",
+          "pop_annotation": {
+            "c_function": "msc_sanitize_moonshot_tool_parameters",
+            "python_functions": [
+              "sanitize_moonshot_tool_parameters"
+            ],
+            "c_file": "src/agent/port_moonshot_schema_remaining.c",
+            "python_file": "agent/moonshot_schema.py",
+            "line": 42,
+            "is_consolidated": false,
+            "full_text": "/* PoP: sanitize_moonshot_tool_parameters @ agent/moonshot_schema.py:sanitize_moonshot_tool_parameters */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/moonshot_schema.py",
@@ -48117,16 +48181,24 @@
             "decorators": [],
             "line_number": 219
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_moonshot_schema_remaining.c",
+          "c_function": "msc_sanitize_moonshot_tools",
+          "pop_annotation": {
+            "c_function": "msc_sanitize_moonshot_tools",
+            "python_functions": [
+              "sanitize_moonshot_tools"
+            ],
+            "c_file": "src/agent/port_moonshot_schema_remaining.c",
+            "python_file": "agent/moonshot_schema.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: sanitize_moonshot_tools @ agent/moonshot_schema.py:sanitize_moonshot_tools */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/moonshot_schema.py",
@@ -48138,16 +48210,24 @@
             "decorators": [],
             "line_number": 246
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_moonshot_schema_remaining.c",
+          "c_function": "msc_is_moonshot_model",
+          "pop_annotation": {
+            "c_function": "msc_is_moonshot_model",
+            "python_functions": [
+              "is_moonshot_model"
+            ],
+            "c_file": "src/agent/port_moonshot_schema_remaining.c",
+            "python_file": "agent/moonshot_schema.py",
+            "line": 57,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_moonshot_model @ agent/moonshot_schema.py:is_moonshot_model */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
