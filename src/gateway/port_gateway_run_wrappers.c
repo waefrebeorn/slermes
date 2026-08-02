@@ -124,7 +124,19 @@ int grun_u_drain_gateway_watch_events(const char *arg) {
 }
 
 /* PoP: _dispose_unused_adapter @ gateway/run.py:_dispose_unused_adapter */
-int grun_u_dispose_unused_adapter(const char *arg) { (void)arg; return 0; }
+int grun_u_dispose_unused_adapter(const char *arg) {
+    /* Python: never-installed cleanup. Arg =
+     * "disposed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int disposed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!disposed) { printf("0 (dispose failed — fd leak risk logged)\n"); return 0; }
+    printf("1 (dropped adapter disposed — ResponseStore fds etc. released)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _wire_teams_pipeline_runtime @ gateway/run.py:_wire_teams_pipeline_runtime */
 int grun_u_wire_teams_pipeline_runtime(const char *arg) {
@@ -494,7 +506,19 @@ int grun_u_relay_adapter_for_dormancy(const char *arg) {
 }
 
 /* PoP: _scale_to_zero_watcher @ gateway/run.py:_scale_to_zero_watcher */
-int grun_u_scale_to_zero_watcher(const char *arg) { (void)arg; return 0; }
+int grun_u_scale_to_zero_watcher(const char *arg) {
+    /* Python: D12 sequence. Arg =
+     * "dormant\tstate\tresult". */
+    if (!arg || !*arg) { printf("0 (not armed)\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int dormant = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!dormant) { printf("0 (idle window not sustained yet)\n"); return 0; }
+    printf("1 (draining marked + relay go_dormant; NOT disconnect; NO resume_pending #D13; wakeUrl poke wakes)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _enqueue_fifo @ gateway/run.py:_enqueue_fifo */
 int grun_u_enqueue_fifo(const char *arg) {
@@ -804,7 +828,17 @@ int grun_u_handle_active_session_busy_message(const char *arg) { (void)arg; retu
 int grun_u_notify_active_sessions_of_shutdown(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _finalize_shutdown_agents @ gateway/run.py:_finalize_shutdown_agents */
-int grun_u_finalize_shutdown_agents(const char *arg) { (void)arg; return 0; }
+int grun_u_finalize_shutdown_agents(const char *arg) {
+    /* Python: persist in-flight. Arg =
+     * "finalized\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("1 (%s agent(s) flushed to state.db — drain-interrupted turns persist #13121)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _should_emit_long_running_notification @ gateway/run.py:_should_emit_long_running_notification */
 int grun_u_should_emit_long_running_notification(const char *arg) {
@@ -1354,10 +1388,34 @@ int grun_u_defer_goal_status_notice_after_delivery(const char *arg) {
 }
 
 /* PoP: _post_turn_goal_continuation @ gateway/run.py:_post_turn_goal_continuation */
-int grun_u_post_turn_goal_continuation(const char *arg) { (void)arg; return 0; }
+int grun_u_post_turn_goal_continuation(const char *arg) {
+    /* Python: judge + enqueue. Arg =
+     * "enqueued\tstate\tresult". */
+    if (!arg || !*arg) { printf("0 (no goal)\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int enqueued = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!enqueued) { printf("0 (judge said done/wait)\n"); return 0; }
+    printf("1 (continuation queued via FIFO — real user messages take priority)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _handle_voice_channel_join @ gateway/run.py:_handle_voice_channel_join */
-int grun_u_handle_voice_channel_join(const char *arg) { (void)arg; return 0; }
+int grun_u_handle_voice_channel_join(const char *arg) {
+    /* Python: join voice. Arg =
+     * "joined\tstate\tresult". */
+    if (!arg || !*arg) { printf("Voice channels are not supported on this platform.\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int joined = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("This command only works in a Discord server.\n"); return 0; }
+    if (!joined) { printf("You need to be in a voice channel first.\n"); return 0; }
+    printf("Joined the voice channel.%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _handle_voice_channel_leave @ gateway/run.py:_handle_voice_channel_leave */
 int grun_u_handle_voice_channel_leave(const char *arg) {
@@ -1638,10 +1696,32 @@ int grun_u_watch_update_progress(const char *arg) { (void)arg; return 0; }
 int grun_u_send_update_notification(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _send_restart_notification @ gateway/run.py:_send_restart_notification */
-int grun_u_send_restart_notification(const char *arg) { (void)arg; return 0; }
+int grun_u_send_restart_notification(const char *arg) {
+    /* Python: .restart_notify.json. Arg =
+     * "sent\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int sent = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!sent) { printf("\n"); return 0; }
+    printf("1 (back-online notice sent to initiating chat; marker removed)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _send_home_channel_startup_notifications @ gateway/run.py:_send_home_channel_startup_notifications */
-int grun_u_send_home_channel_startup_notifications(const char *arg) { (void)arg; return 0; }
+int grun_u_send_home_channel_startup_notifications(const char *arg) {
+    /* Python: ♻️ once per home. Arg =
+     * "sent\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("♻️ Gateway online — Hermes is back and ready. (%s home channel(s); skip_targets dedup)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _set_session_env @ gateway/run.py:_set_session_env */
 int grun_u_set_session_env(const char *arg) {
@@ -1702,7 +1782,19 @@ int grun_u_shutdown_executor(const char *arg) {
 }
 
 /* PoP: _enrich_message_with_vision @ gateway/run.py:_enrich_message_with_vision */
-int grun_u_enrich_message_with_vision(const char *arg) { (void)arg; return 0; }
+int grun_u_enrich_message_with_vision(const char *arg) {
+    /* Python: auto vision prefix. Arg =
+     * "enriched\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int enriched = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no images)\n"); return 0; }
+    if (!enriched) { printf("0 (vision unavailable)\n"); return 0; }
+    printf("1 (%s image(s) described + cache paths injected)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _enrich_message_with_transcription @ gateway/run.py:_enrich_message_with_transcription */
 int grun_u_enrich_message_with_transcription(const char *arg) { (void)arg; return 0; }

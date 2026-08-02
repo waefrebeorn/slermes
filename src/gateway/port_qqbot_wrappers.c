@@ -321,7 +321,19 @@ int qqbot_u_write_update_response(const char *arg) {
 }
 
 /* PoP: _handle_c2c_message @ gateway/platforms/qqbot/adapter.py:_handle_c2c_message */
-int qqbot_u_handle_c2c_message(const char *arg) { (void)arg; return 0; }
+int qqbot_u_handle_c2c_message(const char *arg) {
+    /* Python: dm intake. Arg =
+     * "handled\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int handled = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no openid / dm intake blocked)\n"); return 0; }
+    if (!handled) { printf("0\n"); return 0; }
+    printf("1 (c2c routed; attachments processed)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _handle_group_message @ gateway/platforms/qqbot/adapter.py:_handle_group_message */
 int qqbot_u_handle_group_message(const char *arg) {

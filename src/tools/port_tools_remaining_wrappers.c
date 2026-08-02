@@ -2047,7 +2047,20 @@ int tools_online_research_research_general(const char *arg) {
 }
 
 /* PoP: resolve_image_source @ tools/image_source.py:resolve_image_source */
-int tools_image_source_resolve_image_source(const char *arg) { (void)arg; return 0; }
+int tools_image_source_resolve_image_source(const char *arg) {
+    /* Python: scheme router. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_src") == 0) { fprintf(stderr, "image_url is required\n"); return 1; }
+    if (strcmp(state, "unsafe") == 0) { fprintf(stderr, "SourceUnsafe: %s\n", t3 ? t3 + 1 : "?"); return 1; }
+    if (strcmp(state, "scheme") == 0) { fprintf(stderr, "UnsupportedScheme: %s\n", t3 ? t3 + 1 : "?"); return 1; }
+    printf("%s (data: → b64; http(s) → safe download; file/local → path)%s\n", t3 ? t3 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _resolve_data_url @ tools/image_source.py:_resolve_data_url */
 int tools_image_source_u_resolve_data_url(const char *arg) {

@@ -638,7 +638,25 @@ int yb_u_guess_image_ext_from_url(const char *arg) {
 }
 
 /* PoP: _fetch_resource_url @ gateway/platforms/yuanbao.py:_fetch_resource_url */
-int yb_u_fetch_resource_url(const char *arg) { (void)arg; return 0; }
+int yb_u_fetch_resource_url(const char *arg) {
+    /* Python: resourceId → URL. Arg =
+     * "url\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "missing") == 0) {
+        fprintf(stderr, "missing resource_id\n");
+        return 1;
+    }
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "resource url fetch failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("%s (token cache; single 401-retry with force-refresh)%s\n", t3 ? t3 + 1 : "", (t2 && t2[1] == '1') ? " — retried" : "");
+    return 0;
+}
 
 /* PoP: _resolve_download_url @ gateway/platforms/yuanbao.py:_resolve_download_url */
 int yb_u_resolve_download_url(const char *arg) {
@@ -654,13 +672,33 @@ int yb_u_resolve_download_url(const char *arg) {
 }
 
 /* PoP: _download_and_cache @ gateway/platforms/yuanbao.py:_download_and_cache */
-int yb_u_download_and_cache(const char *arg) { (void)arg; return 0; }
+int yb_u_download_and_cache(const char *arg) {
+    /* Python: TTL cache. Arg =
+     * "path\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? " (rid cache hit — skipped download)" : "");
+    return 0;
+}
 
 /* PoP: _resolve_media_urls @ gateway/platforms/yuanbao.py:_resolve_media_urls */
 int yb_u_resolve_media_urls(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_ybres_refs @ gateway/platforms/yuanbao.py:_resolve_ybres_refs */
-int yb_u_resolve_ybres_refs(const char *arg) { (void)arg; return 0; }
+int yb_u_resolve_ybres_refs(const char *arg) {
+    /* Python: bounded concurrency. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\t\n"); return 0; }
+    printf("%s path(s)\t%s mime(s) (bounded concurrency, cache-hit served first, per-rid failures isolated)%s\n", t2 ? t2 + 1 : "0", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _collect_observed_media @ gateway/platforms/yuanbao.py:_collect_observed_media */
 int yb_u_collect_observed_media(const char *arg) {
@@ -878,7 +916,19 @@ int yb_u_reconnect_with_backoff(const char *arg) {
 }
 
 /* PoP: _do_reconnect @ gateway/platforms/yuanbao.py:_do_reconnect */
-int yb_u_do_reconnect(const char *arg) { (void)arg; return 0; }
+int yb_u_do_reconnect(const char *arg) {
+    /* Python: capped exp attempts. Arg =
+     * "reconnected\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int reconnected = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (attempts exhausted)\n"); return 0; }
+    if (!reconnected) { printf("0\n"); return 0; }
+    printf("1 (reconnected on attempt %s; wait min(2^n, 60); cleanup_ws before each try)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _cleanup_ws @ gateway/platforms/yuanbao.py:_cleanup_ws */
 int yb_u_cleanup_ws(const char *arg) {

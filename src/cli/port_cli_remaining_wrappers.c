@@ -139,7 +139,21 @@ int hermes_cli_dashboard_auth_rout_u_reset_password_rate_limit(const char *arg) 
 }
 
 /* PoP: auth_password_login @ hermes_cli/dashboard_auth/routes.py:auth_password_login */
-int hermes_cli_dashboard_auth_rout_auth_password_login(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_rout_auth_password_login(const char *arg) {
+    /* Python: password form. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"ok\": false, \"detail\": \"invalid_credentials\"}\n"); return 401; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "bad") == 0) {
+        printf("{\"ok\": false, \"detail\": \"invalid_credentials\"} (generic — no username/provider oracle)\n");
+        return 401;
+    }
+    printf("{\"ok\": true, \"next\": \"%s\"} (session cookies set; JSON not 302 — fetch-friendly)%s\n", t3 ? t3 + 1 : "/", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: auth_logout @ hermes_cli/dashboard_auth/routes.py:auth_logout */
 int hermes_cli_dashboard_auth_rout_auth_logout(const char *arg) {

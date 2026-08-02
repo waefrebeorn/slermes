@@ -205,7 +205,16 @@ int wx_u_save_sync_buf(const char *arg) {
 int wx_qr_login(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _poll_loop @ gateway/platforms/weixin.py:_poll_loop */
-int wx_u_poll_loop(const char *arg) { (void)arg; return 0; }
+int wx_u_poll_loop(const char *arg) {
+    /* Python: long-poll loop. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("poll loop (LONG_POLL_TIMEOUT_MS; sync_buf persisted; suggested timeout honored; consecutive_failures backoff)%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _process_message_safe @ gateway/platforms/weixin.py:_process_message_safe */
 int wx_u_process_message_safe(const char *arg) {

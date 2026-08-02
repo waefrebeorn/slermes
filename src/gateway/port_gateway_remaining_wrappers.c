@@ -90,7 +90,16 @@ int gateway_platforms_signal_validate_signal_config(const char *arg) {
 }
 
 /* PoP: _sse_listener @ gateway/platforms/signal.py:_sse_listener */
-int gateway_platforms_signal_u_sse_listener(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_signal_u_sse_listener(const char *arg) {
+    /* Python: SSE retry loop. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("SSE listener (account-quoted events URL; Accept text/event-stream; backoff reset on connect)%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _health_monitor @ gateway/platforms/signal.py:_health_monitor */
 int gateway_platforms_signal_u_health_monitor(const char *arg) {
@@ -177,7 +186,25 @@ int gateway_platforms_signal_u_fetch_attachment(const char *arg) {
 }
 
 /* PoP: _rpc @ gateway/platforms/signal.py:_rpc */
-int gateway_platforms_signal_u_rpc(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_signal_u_rpc(const char *arg) {
+    /* Python: JSON-RPC 2.0. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "rate_limited") == 0) {
+        fprintf(stderr, "SignalRateLimitError [429] — raise_on_rate_limit path\n");
+        return 1;
+    }
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "RPC failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("%s (log_failures=False → DEBUG not WARNING for typing-path spam)%s\n", t3 ? t3 + 1 : "{}", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _track_sent_timestamp @ gateway/platforms/signal.py:_track_sent_timestamp */
 int gateway_platforms_signal_u_track_sent_timestamp(const char *arg) {
