@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <openssl/evp.h>
 #include "hermes_json.h"
 
 /* PoP: _iso_timestamp @ hermes_cli/session_export_md.py:_iso_timestamp */
@@ -89,7 +90,25 @@ int sexmd_render_session_markdown(const char *arg) { (void)arg; return 0; }
 int sexmd_safe_session_filename(const char *arg) { (void)arg; return 0; }
 
 /* PoP: file_sha256 @ hermes_cli/session_export_md.py:file_sha256 */
-int sexmd_file_sha256(const char *arg) { (void)arg; return 0; }
+int sexmd_file_sha256(const char *arg) {
+    /* Python: hashlib.sha256(path.read_bytes()).hexdigest(). */
+    if (!arg || !*arg) return 0;
+    FILE *fp = fopen(arg, "rb");
+    if (!fp) return 0;
+    unsigned char buf[65536];
+    unsigned char out[32];
+    EVP_MD_CTX *ctx = EVP_MD_CTX_new();
+    if (!ctx) { fclose(fp); return 0; }
+    EVP_DigestInit_ex(ctx, EVP_sha256(), NULL);
+    size_t n;
+    while ((n = fread(buf, 1, sizeof(buf), fp)) > 0) EVP_DigestUpdate(ctx, buf, n);
+    fclose(fp);
+    EVP_DigestFinal_ex(ctx, out, NULL);
+    EVP_MD_CTX_free(ctx);
+    for (int i = 0; i < 32; i++) printf("%02x", out[i]);
+    printf("\n");
+    return 0;
+}
 
 /* PoP: verify_export_file @ hermes_cli/session_export_md.py:verify_export_file */
 int sexmd_verify_export_file(const char *arg) { (void)arg; return 0; }

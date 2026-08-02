@@ -192,7 +192,13 @@ int gateway_delivery_ledger_debug_rows(const char *arg) { (void)arg; return 0; }
 int gateway_shutdown_watchdog_u_schedule(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _tick @ gateway/shutdown_watchdog.py:_tick */
-int gateway_shutdown_watchdog_u_tick(const char *arg) { (void)arg; return 0; }
+int gateway_shutdown_watchdog_u_tick(const char *arg) {
+    /* Python: if not self._cancelled: self._schedule(). Arg = "1" when
+     * cancelled. */
+    if (arg && *arg && atoi(arg)) return 0; /* cancelled: no re-arm */
+    printf("tick: re-armed\n");
+    return 0;
+}
 
 /* PoP: cancel @ gateway/shutdown_watchdog.py:cancel */
 int gateway_shutdown_watchdog_cancel(const char *arg) { (void)arg; return 0; }

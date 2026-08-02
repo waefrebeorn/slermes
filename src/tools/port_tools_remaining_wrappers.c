@@ -21,7 +21,12 @@ int tools_computer_use_tool_reset_backend_for_tests(const char *arg) { (void)arg
 int tools_computer_use_tool_type_text(const char *arg) { (void)arg; return 0; }
 
 /* PoP: list_apps @ tools/computer_use/tool.py:list_apps */
-int tools_computer_use_tool_list_apps(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_tool_list_apps(const char *arg) {
+    /* Python: self.calls.append(("list_apps", {})); return []. */
+    (void)arg;
+    printf("[]\n");
+    return 0;
+}
 
 /* PoP: list_windows @ tools/computer_use/tool.py:list_windows */
 int tools_computer_use_tool_list_windows(const char *arg) { (void)arg; return 0; }

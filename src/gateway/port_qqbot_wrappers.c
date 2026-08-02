@@ -253,7 +253,12 @@ int qqbot_u_upload_local_file(const char *arg) { (void)arg; return 0; }
 int qqbot_u_load_media(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_url @ gateway/platforms/qqbot/adapter.py:_is_url */
-int qqbot_u_is_url(const char *arg) { (void)arg; return 0; }
+int qqbot_u_is_url(const char *arg) {
+    /* Python: urlparse(str(source)).scheme in {"http", "https"}. */
+    if (!arg || !*arg) return 0;
+    if (strncasecmp(arg, "http://", 7) == 0 || strncasecmp(arg, "https://", 8) == 0) return 1;
+    return 0;
+}
 
 /* PoP: _guess_chat_type @ gateway/platforms/qqbot/adapter.py:_guess_chat_type */
 int qqbot_u_guess_chat_type(const char *arg) { (void)arg; return 0; }

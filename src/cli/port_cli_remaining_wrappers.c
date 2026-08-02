@@ -1414,7 +1414,14 @@ int hermes_cli_dashboard_auth_nati_u_s256(const char *arg) { (void)arg; return 0
 int hermes_cli_dashboard_auth_nati_u_gc_locked(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _capacity_ok_locked @ hermes_cli/dashboard_auth/native_flow.py:_capacity_ok_locked */
-int hermes_cli_dashboard_auth_nati_u_capacity_ok_locked(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_nati_u_capacity_ok_locked(const char *arg) {
+    /* Python: (len(_pending) + len(_issued)) < 256 (per-IP cap). Arg =
+     * "pending\tissued". */
+    if (!arg || !*arg) return 1;
+    int pending = 0, issued = 0;
+    sscanf(arg, "%d\t%d", &pending, &issued);
+    return (pending + issued) < 256;
+}
 
 /* PoP: register_pending @ hermes_cli/dashboard_auth/native_flow.py:register_pending */
 int hermes_cli_dashboard_auth_nati_register_pending(const char *arg) { (void)arg; return 0; }
