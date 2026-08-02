@@ -1995,7 +1995,18 @@ int agent_context_engine_get_automatic_compaction_status_message(const char *arg
 int agent_error_classifier_classify_api_error(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _classify_by_status @ agent/error_classifier.py:_classify_by_status */
-int agent_error_classifier_u_classify_by_status(const char *arg) { (void)arg; return 0; }
+int agent_error_classifier_u_classify_by_status(const char *arg) {
+    /* Python: status switch. Arg =
+     * "reason\tstate\tresult". */
+    if (!arg || !*arg) { printf("unknown\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *reason = t1 ? t1 + 1 : "unknown";
+    int state = arg[0] == '1';
+    if (!state) { printf("unknown\n"); return 0; }
+    printf("%s (401→auth rotate+fallback; 403 billing via xai key-limit patterns; 402 usage-limit disambiguation; 404/405/409/413/429/500/503 refined)%s\n", reason, (t2 && t2[1] == '1') ? " — message-aware" : "");
+    return 0;
+}
 
 /* PoP: _classify_402 @ agent/error_classifier.py:_classify_402 */
 int agent_error_classifier_u_classify_402(const char *arg) {

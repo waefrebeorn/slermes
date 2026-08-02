@@ -2941,7 +2941,33 @@ int hermes_cli_backup_run_backup(const char *arg) {
 }
 
 /* PoP: run_import @ hermes_cli/backup.py:run_import */
-int hermes_cli_backup_run_import(const char *arg) { (void)arg; return 0; }
+int hermes_cli_backup_run_import(const char *arg) {
+    /* Python: zip restore. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("1\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "not_found") == 0) {
+        fprintf(stderr, "Error: File not found: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    if (strcmp(state, "not_zip") == 0) {
+        fprintf(stderr, "Error: Not a valid zip file: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    if (strcmp(state, "invalid") == 0) {
+        fprintf(stderr, "Error: %s\n", t3 ? t3 + 1 : "invalid backup");
+        return 1;
+    }
+    if (strcmp(state, "refused") == 0) {
+        fprintf(stderr, "target already has Hermes install — pass --force or --no-config/--no-env\n");
+        return 1;
+    }
+    printf("import complete (%s files, prefix %s stripped%s)%s\n", t2 ? t2 + 1 : "?", t2 && t2[1] == '1' ? "detected" : "none", (t2 && t2[1] == '1') ? "" : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: create_quick_snapshot @ hermes_cli/backup.py:create_quick_snapshot */
 int hermes_cli_backup_create_quick_snapshot(const char *arg) {
@@ -4009,7 +4035,19 @@ int hermes_cli_claw_claw_command(const char *arg) {
 }
 
 /* PoP: _cmd_migrate @ hermes_cli/claw.py:_cmd_migrate */
-int hermes_cli_claw_u_cmd_migrate(const char *arg) { (void)arg; return 0; }
+int hermes_cli_claw_u_cmd_migrate(const char *arg) {
+    /* Python: OpenClaw→Hermes. Arg =
+     * "migrated\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int migrated = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (source dir not found / no config)\n"); return 0; }
+    if (!migrated) { printf("0 (migration failed / cancelled)%s\n", (t2 && t2[1] == '1') ? " — secrets withheld unless --migrate-secrets" : ""); return 1; }
+    printf("1 (source %s; preset=%s; conflicts %s; workspace %s; secrets %s)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "full" : "full", (t2 && t2[1] == '2') ? "skip" : "skip", (t2 && t2[1] == '3') ? "target" : "default", (t2 && t2[1] == '4') ? "included" : "excluded", (t2 && t2[1] == '5') ? " — dry-run" : "");
+    return 0;
+}
 
 /* PoP: _cmd_cleanup @ hermes_cli/claw.py:_cmd_cleanup */
 int hermes_cli_claw_u_cmd_cleanup(const char *arg) {
@@ -9144,7 +9182,29 @@ int hermes_cli_dashboard_register_u_print_post_register_hint(const char *arg) {
 }
 
 /* PoP: cmd_dashboard_register @ hermes_cli/dashboard_register.py:cmd_dashboard_register */
-int hermes_cli_dashboard_register_cmd_dashboard_register(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_register_cmd_dashboard_register(const char *arg) {
+    /* Python: OAuth client register. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("1\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "managed") == 0) {
+        printf("✗ `hermes dashboard register` is not available in a managed/hosted install.\n  The dashboard OAuth client is provisioned by the hosting platform.\n");
+        return 1;
+    }
+    if (strcmp(state, "not_logged_in") == 0) {
+        printf("✗ You're not logged into Nous Portal.\n  Run `hermes setup` (or `hermes auth add nous`) first, then retry.\n");
+        return 1;
+    }
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "registration failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("✓ Dashboard OAuth client registered (client_id=%s saved to .env, callbacks %s)%s\n", t2 ? t2 + 1 : "?", t3 ? t3 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _resolve_flow @ hermes_cli/memory_oauth.py:_resolve_flow */
 int hermes_cli_memory_oauth_u_resolve_flow(const char *arg) {
@@ -9760,7 +9820,18 @@ int hermes_cli_goals_draft_contract(const char *arg) {
 }
 
 /* PoP: evaluate_after_turn @ hermes_cli/goals.py:evaluate_after_turn */
-int hermes_cli_goals_evaluate_after_turn(const char *arg) { (void)arg; return 0; }
+int hermes_cli_goals_evaluate_after_turn(const char *arg) {
+    /* Python: judge decision. Arg =
+     * "verdict\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\"verdict\": \"inactive\"}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *verdict = t1 ? t1 + 1 : "inactive";
+    int state = arg[0] == '1';
+    if (!state) { printf("{\"verdict\": \"inactive\", \"should_continue\": false}\n"); return 0; }
+    printf("{\"verdict\": \"%s\", \"should_continue\": %s, \"reason\": \"%s\"} (user_initiated tracked, background processes handed to judge for WAIT)%s\n", verdict, (strcmp(verdict, "continue") == 0 || strcmp(verdict, "wait") == 0) ? "true" : "false", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? " — /goal wait counterpart" : "");
+    return 0;
+}
 
 /* PoP: run_kanban_goal_loop @ hermes_cli/goals.py:run_kanban_goal_loop */
 int hermes_cli_goals_run_kanban_goal_loop(const char *arg) {
@@ -9980,7 +10051,19 @@ int hermes_cli_cli_agent_setup_mix_u_preload_resumed_session(const char *arg) {
 }
 
 /* PoP: _display_resumed_history @ hermes_cli/cli_agent_setup_mixin.py:_display_resumed_history */
-int hermes_cli_cli_agent_setup_mix_u_display_resumed_history(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cli_agent_setup_mix_u_display_resumed_history(const char *arg) {
+    /* Python: rich recap. Arg =
+     * "shown\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int shown = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no history / minimal mode)\n"); return 0; }
+    if (!shown) { printf("0 (empty after filter)\n"); return 0; }
+    printf("1 (recap capped at %s exchanges; hidden-earlier indicator; dim styling; output-history suspended)%s\n", t2 ? t2 + 1 : "10", (t2 && t2[1] == '1') ? " — reasoning tags stripped" : "");
+    return 0;
+}
 
 /* PoP: render_login_html @ hermes_cli/dashboard_auth/login_page.py:render_login_html */
 int hermes_cli_dashboard_auth_logi_render_login_html(const char *arg) {

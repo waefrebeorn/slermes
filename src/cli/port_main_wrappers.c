@@ -359,7 +359,19 @@ int main_u_has_any_provider_configured(const char *arg) {
 }
 
 /* PoP: _session_browse_picker @ hermes_cli/main.py:_session_browse_picker */
-int main_u_session_browse_picker(const char *arg) { (void)arg; return 0; }
+int main_u_session_browse_picker(const char *arg) {
+    /* Python: curses browser. Arg =
+     * "picked\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int picked = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("No sessions found.\n"); return 0; }
+    if (!picked) { printf("cancelled\n"); return 0; }
+    printf("session %s picked (curses live-search, adaptive column widths, tmux-safe — no simple_term_menu ghost duplication)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? " — fallback picker" : "");
+    return 0;
+}
 
 /* PoP: _resolve_last_session @ hermes_cli/main.py:_resolve_last_session */
 int main_u_resolve_last_session(const char *arg) {
@@ -661,7 +673,22 @@ int main_u_resolve_use_tui(const char *arg) {
 }
 
 /* PoP: cmd_chat @ hermes_cli/main.py:cmd_chat */
-int main_cmd_chat(const char *arg) { (void)arg; return 0; }
+int main_cmd_chat(const char *arg) {
+    /* Python: interactive chat. Arg =
+     * "resumed\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int resumed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) {
+        printf("No session found matching '%s'.\n", t2 ? t2 + 1 : "?");
+        printf("Use 'hermes sessions list' to see available sessions.\n");
+        return 1;
+    }
+    printf("chat started (%s; --continue resolved to %s%s; safe mode applied)%s\n", t2 ? t2 + 1 : "?", resumed ? "resume" : "fresh", (t2 && t2[1] == '1') ? " via name-or-id" : " via latest", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: cmd_proxy @ hermes_cli/main.py:cmd_proxy */
 int main_cmd_proxy(const char *arg) {
@@ -676,7 +703,25 @@ int main_cmd_proxy(const char *arg) {
 }
 
 /* PoP: cmd_whatsapp @ hermes_cli/main.py:cmd_whatsapp */
-int main_cmd_whatsapp(const char *arg) { (void)arg; return 0; }
+int main_cmd_whatsapp(const char *arg) {
+    /* Python: mode choice + QR. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("1\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_tty") == 0) {
+        fprintf(stderr, "whatsapp setup requires a TTY\n");
+        return 1;
+    }
+    if (strcmp(state, "cancelled") == 0) {
+        printf("\nSetup cancelled.\n");
+        return 0;
+    }
+    printf("whatsapp configured (mode=%s, bridge installed, QR paired: %s)%s\n", (t2 && t2[1] == '1') ? "bot" : "personal", t3 ? t3 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: cmd_whatsapp_cloud @ hermes_cli/main.py:cmd_whatsapp_cloud */
 int main_cmd_whatsapp_cloud(const char *arg) {

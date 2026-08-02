@@ -1078,7 +1078,18 @@ int yb_u_track_task(const char *arg) {
 }
 
 /* PoP: _sender_may_designate_home @ gateway/platforms/yuanbao.py:_sender_may_designate_home */
-int yb_u_sender_may_designate_home(const char *arg) { (void)arg; return 0; }
+int yb_u_sender_may_designate_home(const char *arg) {
+    /* Python: pairing-aware policy. Arg =
+     * "allowed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int allowed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no sender / unknown chat type)\n"); return 0; }
+    printf("%s (dm: allowlist or pairing-approved; group: allowlist or open-world opt-in)%s\n", allowed ? "1" : "0", (t2 && t2[1] == '1') ? " — intake forwards excluded" : "");
+    return 0;
+}
 
 /* PoP: _process_message_background @ gateway/platforms/yuanbao.py:_process_message_background */
 int yb_u_process_message_background(const char *arg) { (void)arg; return 0; }

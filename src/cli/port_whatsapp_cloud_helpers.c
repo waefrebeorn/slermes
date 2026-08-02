@@ -212,7 +212,14 @@ char *whatsapp_cloud_send_media_from_path_or_link(const char *url, const char *p
 
 /* PoP: _warn_once_no_ffmpeg @ gateway/platforms/whatsapp_cloud.py:_warn_once_no_ffmpeg */
 /* PoP: whatsapp_cloud_warn_once_no_ffmpeg @ gateway/platforms/whatsapp_cloud.py:_warn_once_no_ffmpeg */
-void whatsapp_cloud_warn_once_no_ffmpeg(void) { /* logged in C runtime */ }
+void whatsapp_cloud_warn_once_no_ffmpeg(void) {
+    /* Python: warn once that voice arrives as MP3 attachment instead of
+     * native voice note; winget/brew/apt install hints. */
+    static int warned = 0;
+    if (warned) return;
+    warned = 1;
+    fprintf(stderr, "[whatsapp_cloud] ffmpeg not found on PATH — voice messages will be delivered as MP3 audio attachments instead of native voice notes (green waveform bubble). Install ffmpeg: Windows `winget install Gyan.FFmpeg`, macOS `brew install ffmpeg`, Linux package manager.\n");
+}
 
 /* PoP: _download_media_to_cache @ gateway/platforms/whatsapp_cloud.py:_download_media_to_cache */
 char *whatsapp_cloud_download_media_to_cache(const char *url, const char *media_id) {

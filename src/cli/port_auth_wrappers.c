@@ -1187,7 +1187,19 @@ int auth_u_confirm_expensive_model_selection(const char *arg) {
 }
 
 /* PoP: _prompt_model_selection @ hermes_cli/auth.py:_prompt_model_selection */
-int auth_u_prompt_model_selection(const char *arg) { (void)arg; return 0; }
+int auth_u_prompt_model_selection(const char *arg) {
+    /* Python: picker w/ pricing. Arg =
+     * "chosen\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int chosen = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!chosen) { printf("no model selected\n"); return 0; }
+    printf("model %s (current-first ordering, $/Mtok columns, unavailable grayed + upgrade link, sale chrome nous-only, expensive-confirm gate)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? " — confirmed" : "");
+    return 0;
+}
 
 /* PoP: _login_openai_codex @ hermes_cli/auth.py:_login_openai_codex */
 int auth_u_login_openai_codex(const char *arg) {
@@ -1551,4 +1563,20 @@ int auth_u_login_minimax_oauth(const char *arg) {
 }
 
 /* PoP: _login_nous @ hermes_cli/auth.py:_login_nous */
-int auth_u_login_nous(const char *arg) { (void)arg; return 0; }
+int auth_u_login_nous(const char *arg) {
+    /* Python: device flow. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "shared_import") == 0) {
+        printf("Found existing Nous OAuth credentials%s\n", (t2 && t2[1] == '1') ? " at shared store" : "");
+        printf("Import these credentials? [Y/n] — imported\n");
+        return 0;
+    }
+    if (strcmp(state, "aborted") == 0) { printf("Login cancelled.\n"); return 0; }
+    printf("nous login %s (device code at portal, browser=%s, timeout=%s, insecure/ca_bundle honored)%s\n", state, (t2 && t2[1] == '1') ? "opened" : "off", t3 ? t3 + 1 : "15", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}

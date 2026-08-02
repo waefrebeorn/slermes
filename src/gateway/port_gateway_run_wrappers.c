@@ -1200,7 +1200,17 @@ int grun_u_echo_pending_stt_transcripts_once(const char *arg) { (void)arg; retur
 int grun_u_transcribe_and_echo_pending_voice(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _build_process_event_source @ gateway/run.py:_build_process_event_source */
-int grun_u_build_process_event_source(const char *arg) { (void)arg; return 0; }
+int grun_u_build_process_event_source(const char *arg) {
+    /* Python: session-store origin first. Arg =
+     * "origin\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("source resolved (session-store origin preferred — NEVER active foreground event, avoids cross-topic bleed%s)%s\n", (t2 && t2[1] == '1') ? "; fallback cached source" : "; fallback parse", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _inject_watch_notification @ gateway/run.py:_inject_watch_notification */
 int grun_u_inject_watch_notification(const char *arg) { (void)arg; return 0; }

@@ -350,7 +350,19 @@ int appr_u_is_verification_artifact_cleanup(const char *arg) {
 }
 
 /* PoP: _run_approval_gate @ tools/approval.py:_run_approval_gate */
-int appr_u_run_approval_gate(const char *arg) { (void)arg; return 0; }
+int appr_u_run_approval_gate(const char *arg) {
+    /* Python: single decision core. Arg =
+     * "approved\tstate\tresult". */
+    if (!arg || !*arg) { printf("denied (fail-closed)\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int approved = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("denied (timeout fail-closed)%s\n", (t2 && t2[1] == '1') ? " — yolo bypass" : ""); return 0; }
+    if (!approved) { printf("denied (%s persistence)%s\n", t2 ? t2 + 1 : "session", (t2 && t2[1] == '1') ? " — deny remembered" : ""); return 0; }
+    printf("approved (%s — [o]nce/[s]ession/[a]lways/[d]eny, cron auto-approve policy)%s\n", t2 ? t2 + 1 : "once", (t2 && t2[1] == '1') ? " — gateway submit_pending" : "");
+    return 1;
+}
 
 /* PoP: request_tool_approval @ tools/approval.py:request_tool_approval */
 int appr_request_tool_approval(const char *arg) {

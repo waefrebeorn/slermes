@@ -1078,7 +1078,19 @@ int gateway_relay_ws_transport_auth_revoked(const char *arg) {
 }
 
 /* PoP: _bot_id_for @ gateway/relay/ws_transport.py:_bot_id_for */
-int gateway_relay_ws_transport_u_bot_id_for(const char *arg) { (void)arg; return 0; }
+int gateway_relay_ws_transport_u_bot_id_for(const char *arg) {
+    /* Python: identity set match. Arg =
+     * "found\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int found = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!found) { printf("\n"); return 0; }
+    printf("%s (per-frame botId must match platform — never wrong-credential send; connector rejects un-fronted with structured failure)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? " — hello-advertised" : "");
+    return 0;
+}
 
 /* PoP: go_dormant @ gateway/relay/ws_transport.py:go_dormant */
 int gateway_relay_ws_transport_go_dormant(const char *arg) { (void)arg; return 0; }

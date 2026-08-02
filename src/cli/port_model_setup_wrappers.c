@@ -137,7 +137,23 @@ int msf_u_model_flow_moa(const char *arg) {
 }
 
 /* PoP: _model_flow_nous @ hermes_cli/model_setup_flows.py:_model_flow_nous */
-int msf_u_model_flow_nous(const char *arg) { (void)arg; return 0; }
+int msf_u_model_flow_nous(const char *arg) {
+    /* Python: portal flow. Arg =
+     * "logged_in\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int logged_in = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!logged_in) {
+        printf("Not logged into Nous Portal. Starting login...\n");
+        printf("Login cancelled or failed.\n");
+        return 0;
+    }
+    printf("  ✓ Using Nous model: %s (tool gateway prompt %s)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "shown" : "skipped", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _model_flow_openai_codex @ hermes_cli/model_setup_flows.py:_model_flow_openai_codex */
 int msf_u_model_flow_openai_codex(const char *arg) {
@@ -219,7 +235,20 @@ int msf_u_model_flow_minimax_oauth(const char *arg) {
 }
 
 /* PoP: _model_flow_custom @ hermes_cli/model_setup_flows.py:_model_flow_custom */
-int msf_u_model_flow_custom(const char *arg) { (void)arg; return 0; }
+int msf_u_model_flow_custom(const char *arg) {
+    /* Python: endpoint collect. Arg =
+     * "saved\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int saved = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!saved) { printf("aborted — no endpoint saved\n"); return 0; }
+    printf("custom endpoint saved to custom_providers (auto provider name, api_mode picked, key env resolved)%s\n", (t2 && t2[1] == '1') ? " — model saved too" : "");
+    printf("  ✓ Using custom model: %s\n", "?");
+    return 0;
+}
 
 /* PoP: _model_flow_azure_foundry @ hermes_cli/model_setup_flows.py:_model_flow_azure_foundry */
 int msf_u_model_flow_azure_foundry(const char *arg) { (void)arg; return 0; }

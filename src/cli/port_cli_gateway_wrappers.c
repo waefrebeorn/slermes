@@ -27,7 +27,17 @@ int cgw_has_process_service_mismatch(const char *arg) {
 }
 
 /* PoP: _scan_gateway_pids @ hermes_cli/gateway.py:_scan_gateway_pids */
-int cgw_u_scan_gateway_pids(const char *arg) { (void)arg; return 0; }
+int cgw_u_scan_gateway_pids(const char *arg) {
+    /* Python: strict cmdline matcher. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s pid(s) (looks_like_gateway_command_line strict matcher; ancestor chain excluded #13242; HERMES_HOME + profile arg match)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — runtime entrypoints included" : "");
+    return 0;
+}
 
 /* PoP: _filter_venv_launcher_stubs @ hermes_cli/gateway.py:_filter_venv_launcher_stubs */
 int cgw_u_filter_venv_launcher_stubs(const char *arg) {

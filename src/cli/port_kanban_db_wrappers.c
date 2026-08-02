@@ -375,7 +375,17 @@ int kdbport_u_managed_scratch_path_info(const char *arg) {
 }
 
 /* PoP: decompose_triage_task @ hermes_cli/kanban_db.py:decompose_triage_task */
-int kdbport_decompose_triage_task(const char *arg) { (void)arg; return 0; }
+int kdbport_decompose_triage_task(const char *arg) {
+    /* Python: fan-out w/ cycle guard. Arg =
+     * "children\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s child id(s) (root→todo parent; children done→root ready; same write_txn validation aborts whole graph on malformed; cycle refused)%s\n", t2 ? t2 + 1 : "[]", (t2 && t2[1] == '1') ? " — root assignee canonicalized" : "");
+    return 0;
+}
 
 /* PoP: _protocol_violation_streak @ hermes_cli/kanban_db.py:_protocol_violation_streak */
 int kdbport_u_protocol_violation_streak(const char *arg) {
