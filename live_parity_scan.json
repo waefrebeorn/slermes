@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T18:01:25Z",
+  "generated_at": "2026-08-02T18:03:56Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -35357,10 +35357,10 @@
     },
     "agent/lsp/servers.py": {
       "total": 61,
-      "ported": 16,
+      "ported": 61,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 45,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 61,
@@ -35840,16 +35840,24 @@
             "decorators": [],
             "line_number": 452
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_spawn_terraform_ls",
+          "pop_annotation": {
+            "c_function": "lsv_spawn_terraform_ls",
+            "python_functions": [
+              "_spawn_terraform_ls"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 86,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _spawn_terraform_ls @ agent/lsp/servers.py:_spawn_terraform_ls */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -35861,16 +35869,24 @@
             "decorators": [],
             "line_number": 472
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_spawn_dart",
+          "pop_annotation": {
+            "c_function": "lsv_spawn_dart",
+            "python_functions": [
+              "_spawn_dart"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 97,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _spawn_dart @ agent/lsp/servers.py:_spawn_dart */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -35882,16 +35898,24 @@
             "decorators": [],
             "line_number": 485
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_spawn_haskell_ls",
+          "pop_annotation": {
+            "c_function": "lsv_spawn_haskell_ls",
+            "python_functions": [
+              "_spawn_haskell_ls"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 107,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _spawn_haskell_ls @ agent/lsp/servers.py:_spawn_haskell_ls */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -35903,16 +35927,24 @@
             "decorators": [],
             "line_number": 500
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_spawn_julia",
+          "pop_annotation": {
+            "c_function": "lsv_spawn_julia",
+            "python_functions": [
+              "_spawn_julia"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 120,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _spawn_julia @ agent/lsp/servers.py:_spawn_julia */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -35924,16 +35956,24 @@
             "decorators": [],
             "line_number": 519
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_spawn_clojure_lsp",
+          "pop_annotation": {
+            "c_function": "lsv_spawn_clojure_lsp",
+            "python_functions": [
+              "_spawn_clojure_lsp"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 131,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _spawn_clojure_lsp @ agent/lsp/servers.py:_spawn_clojure_lsp */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -35945,16 +35985,24 @@
             "decorators": [],
             "line_number": 532
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_spawn_nixd",
+          "pop_annotation": {
+            "c_function": "lsv_spawn_nixd",
+            "python_functions": [
+              "_spawn_nixd"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 141,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _spawn_nixd @ agent/lsp/servers.py:_spawn_nixd */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -35966,16 +36014,24 @@
             "decorators": [],
             "line_number": 545
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_spawn_zls",
+          "pop_annotation": {
+            "c_function": "lsv_spawn_zls",
+            "python_functions": [
+              "_spawn_zls"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 151,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _spawn_zls @ agent/lsp/servers.py:_spawn_zls */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -35987,16 +36043,24 @@
             "decorators": [],
             "line_number": 558
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_spawn_gleam",
+          "pop_annotation": {
+            "c_function": "lsv_spawn_gleam",
+            "python_functions": [
+              "_spawn_gleam"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 161,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _spawn_gleam @ agent/lsp/servers.py:_spawn_gleam */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36008,16 +36072,24 @@
             "decorators": [],
             "line_number": 571
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_spawn_elixir_ls",
+          "pop_annotation": {
+            "c_function": "lsv_spawn_elixir_ls",
+            "python_functions": [
+              "_spawn_elixir_ls"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 171,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _spawn_elixir_ls @ agent/lsp/servers.py:_spawn_elixir_ls */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36029,16 +36101,24 @@
             "decorators": [],
             "line_number": 584
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_spawn_prisma",
+          "pop_annotation": {
+            "c_function": "lsv_spawn_prisma",
+            "python_functions": [
+              "_spawn_prisma"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 184,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _spawn_prisma @ agent/lsp/servers.py:_spawn_prisma */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36050,16 +36130,24 @@
             "decorators": [],
             "line_number": 597
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_spawn_kotlin_ls",
+          "pop_annotation": {
+            "c_function": "lsv_spawn_kotlin_ls",
+            "python_functions": [
+              "_spawn_kotlin_ls"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 194,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _spawn_kotlin_ls @ agent/lsp/servers.py:_spawn_kotlin_ls */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36071,16 +36159,24 @@
             "decorators": [],
             "line_number": 612
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_spawn_jdtls",
+          "pop_annotation": {
+            "c_function": "lsv_spawn_jdtls",
+            "python_functions": [
+              "_spawn_jdtls"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 204,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _spawn_jdtls @ agent/lsp/servers.py:_spawn_jdtls */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36092,16 +36188,24 @@
             "decorators": [],
             "line_number": 628
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_spawn_vue",
+          "pop_annotation": {
+            "c_function": "lsv_spawn_vue",
+            "python_functions": [
+              "_spawn_vue"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 215,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _spawn_vue @ agent/lsp/servers.py:_spawn_vue */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36113,16 +36217,24 @@
             "decorators": [],
             "line_number": 646
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_spawn_svelte",
+          "pop_annotation": {
+            "c_function": "lsv_spawn_svelte",
+            "python_functions": [
+              "_spawn_svelte"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 228,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _spawn_svelte @ agent/lsp/servers.py:_spawn_svelte */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36134,16 +36246,24 @@
             "decorators": [],
             "line_number": 664
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_spawn_astro",
+          "pop_annotation": {
+            "c_function": "lsv_spawn_astro",
+            "python_functions": [
+              "_spawn_astro"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 241,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _spawn_astro @ agent/lsp/servers.py:_spawn_astro */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36155,16 +36275,24 @@
             "decorators": [],
             "line_number": 685
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_find_pses_bundle",
+          "pop_annotation": {
+            "c_function": "lsv_find_pses_bundle",
+            "python_functions": [
+              "_find_pses_bundle"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 254,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _find_pses_bundle @ agent/lsp/servers.py:_find_pses_bundle */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36176,16 +36304,24 @@
             "decorators": [],
             "line_number": 733
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_spawn_powershell_es",
+          "pop_annotation": {
+            "c_function": "lsv_spawn_powershell_es",
+            "python_functions": [
+              "_spawn_powershell_es"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 263,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _spawn_powershell_es @ agent/lsp/servers.py:_spawn_powershell_es */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36197,16 +36333,24 @@
             "decorators": [],
             "line_number": 797
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_hermes_lsp_session_dir",
+          "pop_annotation": {
+            "c_function": "lsv_hermes_lsp_session_dir",
+            "python_functions": [
+              "hermes_lsp_session_dir"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 273,
+            "is_consolidated": false,
+            "full_text": "/* PoP: hermes_lsp_session_dir @ agent/lsp/servers.py:hermes_lsp_session_dir */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36218,16 +36362,24 @@
             "decorators": [],
             "line_number": 807
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_resolve_override",
+          "pop_annotation": {
+            "c_function": "lsv_resolve_override",
+            "python_functions": [
+              "_resolve_override"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 66,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_override @ agent/lsp/servers.py:_resolve_override */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36239,16 +36391,24 @@
             "decorators": [],
             "line_number": 820
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_python",
+          "pop_annotation": {
+            "c_function": "lsv_root_python",
+            "python_functions": [
+              "_root_python"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 281,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_python @ agent/lsp/servers.py:_root_python */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36260,16 +36420,24 @@
             "decorators": [],
             "line_number": 828
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_typescript",
+          "pop_annotation": {
+            "c_function": "lsv_root_typescript",
+            "python_functions": [
+              "_root_typescript"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 287,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_typescript @ agent/lsp/servers.py:_root_typescript */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36281,16 +36449,24 @@
             "decorators": [],
             "line_number": 845
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_go",
+          "pop_annotation": {
+            "c_function": "lsv_root_go",
+            "python_functions": [
+              "_root_go"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 293,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_go @ agent/lsp/servers.py:_root_go */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36302,16 +36478,24 @@
             "decorators": [],
             "line_number": 853
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_rust",
+          "pop_annotation": {
+            "c_function": "lsv_root_rust",
+            "python_functions": [
+              "_root_rust"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 298,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_rust @ agent/lsp/servers.py:_root_rust */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36323,16 +36507,24 @@
             "decorators": [],
             "line_number": 857
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_ruby",
+          "pop_annotation": {
+            "c_function": "lsv_root_ruby",
+            "python_functions": [
+              "_root_ruby"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 303,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_ruby @ agent/lsp/servers.py:_root_ruby */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36344,16 +36536,24 @@
             "decorators": [],
             "line_number": 861
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_clangd",
+          "pop_annotation": {
+            "c_function": "lsv_root_clangd",
+            "python_functions": [
+              "_root_clangd"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 308,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_clangd @ agent/lsp/servers.py:_root_clangd */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36365,16 +36565,24 @@
             "decorators": [],
             "line_number": 869
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_bash",
+          "pop_annotation": {
+            "c_function": "lsv_root_bash",
+            "python_functions": [
+              "_root_bash"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 314,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_bash @ agent/lsp/servers.py:_root_bash */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36386,16 +36594,24 @@
             "decorators": [],
             "line_number": 873
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_yaml",
+          "pop_annotation": {
+            "c_function": "lsv_root_yaml",
+            "python_functions": [
+              "_root_yaml"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 320,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_yaml @ agent/lsp/servers.py:_root_yaml */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36407,16 +36623,24 @@
             "decorators": [],
             "line_number": 877
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_lua",
+          "pop_annotation": {
+            "c_function": "lsv_root_lua",
+            "python_functions": [
+              "_root_lua"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 326,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_lua @ agent/lsp/servers.py:_root_lua */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36428,16 +36652,24 @@
             "decorators": [],
             "line_number": 885
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_php",
+          "pop_annotation": {
+            "c_function": "lsv_root_php",
+            "python_functions": [
+              "_root_php"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 332,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_php @ agent/lsp/servers.py:_root_php */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36449,16 +36681,24 @@
             "decorators": [],
             "line_number": 889
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_ocaml",
+          "pop_annotation": {
+            "c_function": "lsv_root_ocaml",
+            "python_functions": [
+              "_root_ocaml"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 337,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_ocaml @ agent/lsp/servers.py:_root_ocaml */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36470,16 +36710,24 @@
             "decorators": [],
             "line_number": 893
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_docker",
+          "pop_annotation": {
+            "c_function": "lsv_root_docker",
+            "python_functions": [
+              "_root_docker"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 342,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_docker @ agent/lsp/servers.py:_root_docker */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36491,16 +36739,24 @@
             "decorators": [],
             "line_number": 897
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_terraform",
+          "pop_annotation": {
+            "c_function": "lsv_root_terraform",
+            "python_functions": [
+              "_root_terraform"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 348,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_terraform @ agent/lsp/servers.py:_root_terraform */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36512,16 +36768,24 @@
             "decorators": [],
             "line_number": 901
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_dart",
+          "pop_annotation": {
+            "c_function": "lsv_root_dart",
+            "python_functions": [
+              "_root_dart"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 353,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_dart @ agent/lsp/servers.py:_root_dart */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36533,16 +36797,24 @@
             "decorators": [],
             "line_number": 905
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_haskell",
+          "pop_annotation": {
+            "c_function": "lsv_root_haskell",
+            "python_functions": [
+              "_root_haskell"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 358,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_haskell @ agent/lsp/servers.py:_root_haskell */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36554,16 +36826,24 @@
             "decorators": [],
             "line_number": 909
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_julia",
+          "pop_annotation": {
+            "c_function": "lsv_root_julia",
+            "python_functions": [
+              "_root_julia"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 363,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_julia @ agent/lsp/servers.py:_root_julia */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36575,16 +36855,24 @@
             "decorators": [],
             "line_number": 913
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_clojure",
+          "pop_annotation": {
+            "c_function": "lsv_root_clojure",
+            "python_functions": [
+              "_root_clojure"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 368,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_clojure @ agent/lsp/servers.py:_root_clojure */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36596,16 +36884,24 @@
             "decorators": [],
             "line_number": 919
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_nix",
+          "pop_annotation": {
+            "c_function": "lsv_root_nix",
+            "python_functions": [
+              "_root_nix"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 374,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_nix @ agent/lsp/servers.py:_root_nix */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36617,16 +36913,24 @@
             "decorators": [],
             "line_number": 924
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_zig",
+          "pop_annotation": {
+            "c_function": "lsv_root_zig",
+            "python_functions": [
+              "_root_zig"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 381,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_zig @ agent/lsp/servers.py:_root_zig */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36638,16 +36942,24 @@
             "decorators": [],
             "line_number": 928
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_elixir",
+          "pop_annotation": {
+            "c_function": "lsv_root_elixir",
+            "python_functions": [
+              "_root_elixir"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 386,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_elixir @ agent/lsp/servers.py:_root_elixir */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36659,16 +36971,24 @@
             "decorators": [],
             "line_number": 932
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_prisma",
+          "pop_annotation": {
+            "c_function": "lsv_root_prisma",
+            "python_functions": [
+              "_root_prisma"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 391,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_prisma @ agent/lsp/servers.py:_root_prisma */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36680,16 +37000,24 @@
             "decorators": [],
             "line_number": 938
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_kotlin",
+          "pop_annotation": {
+            "c_function": "lsv_root_kotlin",
+            "python_functions": [
+              "_root_kotlin"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 396,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_kotlin @ agent/lsp/servers.py:_root_kotlin */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36701,16 +37029,24 @@
             "decorators": [],
             "line_number": 946
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_java",
+          "pop_annotation": {
+            "c_function": "lsv_root_java",
+            "python_functions": [
+              "_root_java"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 402,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_java @ agent/lsp/servers.py:_root_java */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36722,16 +37058,24 @@
             "decorators": [],
             "line_number": 954
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_root_powershell",
+          "pop_annotation": {
+            "c_function": "lsv_root_powershell",
+            "python_functions": [
+              "_root_powershell"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 408,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _root_powershell @ agent/lsp/servers.py:_root_powershell */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36743,16 +37087,24 @@
             "decorators": [],
             "line_number": 1165
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_find_server_for_file",
+          "pop_annotation": {
+            "c_function": "lsv_find_server_for_file",
+            "python_functions": [
+              "find_server_for_file"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 416,
+            "is_consolidated": false,
+            "full_text": "/* PoP: find_server_for_file @ agent/lsp/servers.py:find_server_for_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/servers.py",
@@ -36764,16 +37116,24 @@
             "decorators": [],
             "line_number": 1173
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_servers_remaining.c",
+          "c_function": "lsv_language_id_for",
+          "pop_annotation": {
+            "c_function": "lsv_language_id_for",
+            "python_functions": [
+              "language_id_for"
+            ],
+            "c_file": "src/agent/port_lsp_servers_remaining.c",
+            "python_file": "agent/lsp/servers.py",
+            "line": 440,
+            "is_consolidated": false,
+            "full_text": "/* PoP: language_id_for @ agent/lsp/servers.py:language_id_for */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
