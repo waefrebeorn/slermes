@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:40:40Z",
+  "generated_at": "2026-08-02T20:42:43Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -67401,10 +67401,10 @@
     },
     "agent/transports/anthropic.py": {
       "total": 8,
-      "ported": 1,
+      "ported": 8,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 7,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 8,
@@ -67422,16 +67422,24 @@
             ],
             "line_number": 21
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_anthropic_remaining.c",
+          "c_function": "ant_api_mode",
+          "pop_annotation": {
+            "c_function": "ant_api_mode",
+            "python_functions": [
+              "api_mode"
+            ],
+            "c_file": "src/agent/port_transports_anthropic_remaining.c",
+            "python_file": "agent/transports/anthropic.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_mode @ agent/transports/anthropic.py:api_mode */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/anthropic.py",
@@ -67443,16 +67451,24 @@
             "decorators": [],
             "line_number": 24
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_anthropic_remaining.c",
+          "c_function": "ant_convert_messages",
+          "pop_annotation": {
+            "c_function": "ant_convert_messages",
+            "python_functions": [
+              "convert_messages"
+            ],
+            "c_file": "src/agent/port_transports_anthropic_remaining.c",
+            "python_file": "agent/transports/anthropic.py",
+            "line": 27,
+            "is_consolidated": false,
+            "full_text": "/* PoP: convert_messages @ agent/transports/anthropic.py:convert_messages */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/anthropic.py",
@@ -67464,16 +67480,24 @@
             "decorators": [],
             "line_number": 35
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_anthropic_remaining.c",
+          "c_function": "ant_convert_tools",
+          "pop_annotation": {
+            "c_function": "ant_convert_tools",
+            "python_functions": [
+              "convert_tools"
+            ],
+            "c_file": "src/agent/port_transports_anthropic_remaining.c",
+            "python_file": "agent/transports/anthropic.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: convert_tools @ agent/transports/anthropic.py:convert_tools */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/anthropic.py",
@@ -67514,16 +67538,24 @@
             "decorators": [],
             "line_number": 80
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_anthropic_remaining.c",
+          "c_function": "ant_normalize_response",
+          "pop_annotation": {
+            "c_function": "ant_normalize_response",
+            "python_functions": [
+              "normalize_response"
+            ],
+            "c_file": "src/agent/port_transports_anthropic_remaining.c",
+            "python_file": "agent/transports/anthropic.py",
+            "line": 43,
+            "is_consolidated": false,
+            "full_text": "/* PoP: normalize_response @ agent/transports/anthropic.py:normalize_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/anthropic.py",
@@ -67535,16 +67567,24 @@
             "decorators": [],
             "line_number": 194
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_anthropic_remaining.c",
+          "c_function": "ant_validate_response",
+          "pop_annotation": {
+            "c_function": "ant_validate_response",
+            "python_functions": [
+              "validate_response"
+            ],
+            "c_file": "src/agent/port_transports_anthropic_remaining.c",
+            "python_file": "agent/transports/anthropic.py",
+            "line": 51,
+            "is_consolidated": false,
+            "full_text": "/* PoP: validate_response @ agent/transports/anthropic.py:validate_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/anthropic.py",
@@ -67556,16 +67596,24 @@
             "decorators": [],
             "line_number": 222
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_anthropic_remaining.c",
+          "c_function": "ant_extract_cache_stats",
+          "pop_annotation": {
+            "c_function": "ant_extract_cache_stats",
+            "python_functions": [
+              "extract_cache_stats"
+            ],
+            "c_file": "src/agent/port_transports_anthropic_remaining.c",
+            "python_file": "agent/transports/anthropic.py",
+            "line": 58,
+            "is_consolidated": false,
+            "full_text": "/* PoP: extract_cache_stats @ agent/transports/anthropic.py:extract_cache_stats */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/anthropic.py",
@@ -67577,16 +67625,24 @@
             "decorators": [],
             "line_number": 243
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_anthropic_remaining.c",
+          "c_function": "ant_map_finish_reason",
+          "pop_annotation": {
+            "c_function": "ant_map_finish_reason",
+            "python_functions": [
+              "map_finish_reason"
+            ],
+            "c_file": "src/agent/port_transports_anthropic_remaining.c",
+            "python_file": "agent/transports/anthropic.py",
+            "line": 72,
+            "is_consolidated": false,
+            "full_text": "/* PoP: map_finish_reason @ agent/transports/anthropic.py:map_finish_reason */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -299133,10 +299189,10 @@
     },
     "tools/delegation_live_log.py": {
       "total": 21,
-      "ported": 13,
+      "ported": 21,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 8,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 21,
@@ -299239,16 +299295,24 @@
             "decorators": [],
             "line_number": 83
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_delegation_live_log_remaining.c",
+          "c_function": "dll_redact",
+          "pop_annotation": {
+            "c_function": "dll_redact",
+            "python_functions": [
+              "_redact"
+            ],
+            "c_file": "src/tools/port_delegation_live_log_remaining.c",
+            "python_file": "tools/delegation_live_log.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _redact @ tools/delegation_live_log.py:_redact */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/delegation_live_log.py",
@@ -299260,16 +299324,24 @@
             "decorators": [],
             "line_number": 119
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_delegation_live_log_remaining.c",
+          "c_function": "dll_init",
+          "pop_annotation": {
+            "c_function": "dll_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_delegation_live_log_remaining.c",
+            "python_file": "tools/delegation_live_log.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/delegation_live_log.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/delegation_live_log.py",
@@ -299281,16 +299353,24 @@
             "decorators": [],
             "line_number": 152
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_delegation_live_log_remaining.c",
+          "c_function": "dll_event",
+          "pop_annotation": {
+            "c_function": "dll_event",
+            "python_functions": [
+              "event"
+            ],
+            "c_file": "src/tools/port_delegation_live_log_remaining.c",
+            "python_file": "tools/delegation_live_log.py",
+            "line": 58,
+            "is_consolidated": false,
+            "full_text": "/* PoP: event @ tools/delegation_live_log.py:event */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/delegation_live_log.py",
@@ -299331,16 +299411,24 @@
             "decorators": [],
             "line_number": 176
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_delegation_live_log_remaining.c",
+          "c_function": "dll_thinking",
+          "pop_annotation": {
+            "c_function": "dll_thinking",
+            "python_functions": [
+              "thinking"
+            ],
+            "c_file": "src/tools/port_delegation_live_log_remaining.c",
+            "python_file": "tools/delegation_live_log.py",
+            "line": 69,
+            "is_consolidated": false,
+            "full_text": "/* PoP: thinking @ tools/delegation_live_log.py:thinking */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/delegation_live_log.py",
@@ -299410,16 +299498,24 @@
             "decorators": [],
             "line_number": 198
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_delegation_live_log_remaining.c",
+          "c_function": "dll_marker",
+          "pop_annotation": {
+            "c_function": "dll_marker",
+            "python_functions": [
+              "marker"
+            ],
+            "c_file": "src/tools/port_delegation_live_log_remaining.c",
+            "python_file": "tools/delegation_live_log.py",
+            "line": 77,
+            "is_consolidated": false,
+            "full_text": "/* PoP: marker @ tools/delegation_live_log.py:marker */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/delegation_live_log.py",
@@ -299460,16 +299556,24 @@
             "decorators": [],
             "line_number": 213
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_delegation_live_log_remaining.c",
+          "c_function": "dll_flush_stream",
+          "pop_annotation": {
+            "c_function": "dll_flush_stream",
+            "python_functions": [
+              "flush_stream"
+            ],
+            "c_file": "src/tools/port_delegation_live_log_remaining.c",
+            "python_file": "tools/delegation_live_log.py",
+            "line": 85,
+            "is_consolidated": false,
+            "full_text": "/* PoP: flush_stream @ tools/delegation_live_log.py:flush_stream */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/delegation_live_log.py",
@@ -299510,16 +299614,24 @@
             "decorators": [],
             "line_number": 263
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_delegation_live_log_remaining.c",
+          "c_function": "dll_finalize",
+          "pop_annotation": {
+            "c_function": "dll_finalize",
+            "python_functions": [
+              "finalize"
+            ],
+            "c_file": "src/tools/port_delegation_live_log_remaining.c",
+            "python_file": "tools/delegation_live_log.py",
+            "line": 93,
+            "is_consolidated": false,
+            "full_text": "/* PoP: finalize @ tools/delegation_live_log.py:finalize */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/delegation_live_log.py",
@@ -299618,16 +299730,24 @@
             "decorators": [],
             "line_number": 353
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_delegation_live_log_remaining.c",
+          "c_function": "dll_write_manifest",
+          "pop_annotation": {
+            "c_function": "dll_write_manifest",
+            "python_functions": [
+              "_write_manifest"
+            ],
+            "c_file": "src/tools/port_delegation_live_log_remaining.c",
+            "python_file": "tools/delegation_live_log.py",
+            "line": 101,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _write_manifest @ tools/delegation_live_log.py:_write_manifest */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/delegation_live_log.py",
