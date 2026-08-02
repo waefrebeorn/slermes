@@ -460,9 +460,14 @@ int tools_mcp_dashboard_oauth_mark_approved(const char *arg) { (void)arg; return
 int tools_mcp_dashboard_oauth_mark_error(const char *arg) { (void)arg; return 0; }
 
 /* PoP: mark_worker_done @ tools/mcp_dashboard_oauth.py:mark_worker_done */
-int tools_mcp_dashboard_oauth_mark_worker_done(const char *arg) { (void)arg; return 0; }
-
-/* PoP: worker_done @ tools/mcp_dashboard_oauth.py:worker_done */
+int tools_mcp_dashboard_oauth_mark_worker_done(const char *arg) {
+    /* Python: self._worker_done.set(). */
+    (void)arg;
+    static int g_done = 0;
+    g_done = 1;
+    printf("worker_done\n");
+    return g_done;
+}/* PoP: worker_done @ tools/mcp_dashboard_oauth.py:worker_done */
 int tools_mcp_dashboard_oauth_worker_done(const char *arg) {
     /* Python: the worker-done event flag. */
     static int g_done = 0;

@@ -12,7 +12,11 @@
 #include "hermes_json.h"
 
 /* PoP: log_info @ hermes_cli/uninstall.py:log_info */
-int uninst_log_info(const char *arg) { (void)arg; return 0; }
+int uninst_log_info(const char *arg) {
+    /* Python: print(f"{color('→', Colors.CYAN)} {msg}"). */
+    printf("\x1b[36m→\x1b[0m %s\n", arg ? arg : "");
+    return 0;
+}
 
 /* PoP: log_success @ hermes_cli/uninstall.py:log_success */
 int uninst_log_success(const char *arg) { (void)arg; return 0; }

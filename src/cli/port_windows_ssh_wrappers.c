@@ -21,7 +21,16 @@ int wssr_u_ownership(const char *arg) { (void)arg; return 0; }
 int wssr_u_nonce(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _root @ hermes_cli/windows_ssh_runtime.py:_root */
-int wssr_u_root(const char *arg) { (void)arg; return 0; }
+int wssr_u_root(const char *arg) {
+    /* Python: get_hermes_home() / "desktop-ssh". */
+    (void)arg;
+    const char *hh = getenv("HERMES_HOME");
+    char base[1024];
+    if (hh && *hh) snprintf(base, sizeof(base), "%s", hh);
+    else snprintf(base, sizeof(base), "%s/.hermes", getenv("HOME") ? getenv("HOME") : ".");
+    printf("%s/desktop-ssh\n", base);
+    return 0;
+}
 
 /* PoP: _directory @ hermes_cli/windows_ssh_runtime.py:_directory */
 int wssr_u_directory(const char *arg) { (void)arg; return 0; }
