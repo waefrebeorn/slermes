@@ -981,3 +981,217 @@ char *hermes_state_import_error(long long index, const char *error, const char *
     json_free(o);
     return out;
 }
+
+/* ── conversation shaping / maintenance ────────────────────────────────── */
+
+/* PoP: hermes_state_sanitize_context @ agent/memory_manager.py:sanitize_context */
+char *hermes_state_sanitize_context(const char *text) {
+    /* Strip <memory-context>...</memory-context> blocks, the recalled-memory
+     * System note, and bare memory-context fence tags (case-insensitive). */
+    if (!text) return strdup("");
+    size_t n = strlen(text);
+    char *out = malloc(n + 1);
+    size_t o = 0;
+    for (size_t i = 0; i < n;) {
+        /* <memory-context> ... </memory-context> block (any spacing/case) */
+        if (text[i] == '<') {
+            size_t j = i;
+            while (j < n && (text[j] == ' ' || text[j] == '\t')) j++;
+            bool close = j < n && text[j] == '/';
+            if (close) j++;
+            while (j < n && (text[j] == ' ' || text[j] == '\t')) j++;
+            if (n - j >= 14 && strncasecmp(text + j, "memory-context", 14) == 0) {
+                size_t k = j + 14;
+                while (k < n && (text[k] == ' ' || text[k] == '\t')) k++;
+                if (k < n && text[k] == '>') {
+                    if (!close) {
+                        /* find the closing tag */
+                        const char *close_tag = NULL;
+                        for (size_t q = k + 1; q + 15 <= n; q++) {
+                            if (text[q] == '<') {
+                                size_t r = q + 1;
+                                while (r < n && (text[r] == ' ' || text[r] == '\t')) r++;
+                                if (r < n && text[r] == '/') {
+                                    size_t s = r + 1;
+                                    while (s < n && (text[s] == ' ' || text[s] == '\t')) s++;
+                                    if (n - s >= 14 && strncasecmp(text + s, "memory-context", 14) == 0) {
+                                        size_t u = s + 14;
+                                        while (u < n && (text[u] == ' ' || text[u] == '\t')) u++;
+                                        if (u < n && text[u] == '>') { close_tag = text + q; break; }
+                                    }
+                                }
+                            }
+                        }
+                        if (close_tag) { i = (size_t)(close_tag - text) + 1; continue; }
+                    }
+                    i = k + 1;
+                    continue;
+                }
+            }
+        }
+        /* [System note: The following is recalled memory context, ...] */
+        if (text[i] == '[' && n - i >= 22 && strncasecmp(text + i, "[System note:", 13) == 0) {
+            const char *end = strstr(text + i, "]");
+            if (end && strstr(text + i, "recalled memory context")) {
+                i = (size_t)(end - text) + 1;
+                continue;
+            }
+        }
+        out[o++] = text[i++];
+    }
+    out[o] = '\0';
+    /* collapse the memory-context fence tags */
+    char *dst = out;
+    size_t w = 0;
+    for (size_t i = 0; out[i];) {
+        if (out[i] == '<') {
+            size_t j = i;
+            while (j < o && (out[j] == ' ' || out[j] == '\t')) j++;
+            bool close = j < o && out[j] == '/';
+            if (close) j++;
+            while (j < o && (out[j] == ' ' || out[j] == '\t')) j++;
+            if (o - j >= 14 && strncasecmp(out + j, "memory-context", 14) == 0) {
+                size_t k = j + 14;
+                while (k < o && (out[k] == ' ' || out[k] == '\t')) k++;
+                if (k < o && out[k] == '>') { i = k + 1; continue; }
+            }
+        }
+        dst[w++] = out[i++];
+    }
+    dst[w] = '\0';
+    return out;
+}
+
+/* PoP: hermes_state_rows_to_conversation @ hermes_state.py:_rows_to_conversation */
+char *hermes_state_rows_to_conversation(const char *rows_json) {
+    /* Decode fetched message rows into the OpenAI conversation format:
+     * content decoded (+ sanitized for user/assistant strings), api_content
+     * verbatim, display_kind/metadata, timestamp, tool_call_id, tool_name,
+     * effect_disposition, tool_calls parsed, message_id surfaced. */
+    if (!rows_json || !*rows_json) return strdup("[]");
+    json_t *rows = json_parse(rows_json, NULL);
+    if (!rows || rows->type != JSON_ARRAY) { if (rows) json_free(rows); return strdup("[]"); }
+    json_t *msgs = json_array();
+    for (size_t i = 0; i < json_len(rows); i++) {
+        json_t *row = json_get(rows, i);
+        if (!row || row->type != JSON_OBJECT) continue;
+        json_t *msg = json_object();
+        const char *role = json_get_str(row, "role", "unknown");
+        json_set(msg, "role", json_string(role));
+        /* content: decode (rows may carry encoded JSON strings) */
+        json_t *content_v = json_obj_get(row, "content");
+        const char *content = (content_v && json_is_string(content_v)) ? json_string_value(content_v) : "";
+        json_t *decoded = NULL;
+        json_t *content_out = NULL;
+        if (content_v && json_is_string(content_v)) {
+            json_t *parsed = json_parse(content, NULL);
+            if (parsed && parsed->type == JSON_STRING) {
+                decoded = parsed;
+                content_out = decoded;
+            } else if (parsed) {
+                content_out = parsed; /* content is JSON structure */
+                decoded = NULL;
+            }
+        }
+        if (!content_out) content_out = json_string(content);
+        if ((strcmp(role, "user") == 0 || strcmp(role, "assistant") == 0)
+            && content_out->type == JSON_STRING) {
+            char *clean = hermes_state_sanitize_context(json_string_value(content_out));
+            char *stripped = clean;
+            while (*stripped == ' ' || *stripped == '\t' || *stripped == '\n' || *stripped == '\r') stripped++;
+            size_t sl = strlen(stripped);
+            while (sl > 0 && (stripped[sl-1] == ' ' || stripped[sl-1] == '\t' || stripped[sl-1] == '\n' || stripped[sl-1] == '\r')) sl--;
+            json_t *repl = json_string(stripped);
+            /* rebuild at the stripped length (strip was already applied) */
+            json_free(repl);
+            char *tmp = malloc(sl + 1);
+            memcpy(tmp, stripped, sl);
+            tmp[sl] = '\0';
+            repl = json_string(tmp);
+            free(tmp);
+            json_free(content_out);
+            content_out = repl;
+            free(clean);
+        }
+        json_set(msg, "content", content_out);
+        if (decoded) json_free(decoded);
+        const char *v;
+        if ((v = json_get_str(row, "api_content", NULL))) json_set(msg, "api_content", json_string(v));
+        if ((v = json_get_str(row, "display_kind", NULL))) json_set(msg, "display_kind", json_string(v));
+        const char *dm = json_get_str(row, "display_metadata", NULL);
+        if (dm && *dm) {
+            json_t *dmd = json_parse(dm, NULL);
+            json_set(msg, "display_metadata", dmd ? dmd : json_string(dm));
+        }
+        json_t *ts = json_obj_get(row, "timestamp");
+        if (ts && !json_is_null(ts)) json_set(msg, "timestamp", json_copy(ts));
+        if ((v = json_get_str(row, "tool_call_id", NULL))) json_set(msg, "tool_call_id", json_string(v));
+        if ((v = json_get_str(row, "tool_name", NULL))) json_set(msg, "tool_name", json_string(v));
+        if ((v = json_get_str(row, "effect_disposition", NULL))) json_set(msg, "effect_disposition", json_string(v));
+        const char *tc = json_get_str(row, "tool_calls", NULL);
+        if (tc && *tc) {
+            json_t *parsed = json_parse(tc, NULL);
+            json_set(msg, "tool_calls", parsed ? parsed : json_array());
+        }
+        if ((v = json_get_str(row, "platform_message_id", NULL)))
+            json_set(msg, "message_id", json_string(v));
+        json_append(msgs, msg);
+    }
+    json_free(rows);
+    char *out = json_serialize(msgs);
+    json_free(msgs);
+    return out;
+}
+
+/* PoP: hermes_state_logical_size_bytes @ hermes_state.py:logical_size_bytes */
+long long hermes_state_logical_size_bytes(hermes_state_db_t *db) {
+    /* page_count * page_size — the size after the WAL is checkpointed. */
+    if (!db) return 0;
+    long long pages = 0, psize = 0;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db, "PRAGMA page_count", -1, &st, NULL) == SQLITE_OK) {
+        if (sqlite3_step(st) == SQLITE_ROW) pages = sqlite3_column_int64(st, 0);
+        sqlite3_finalize(st);
+    }
+    if (sqlite3_prepare_v2(db->db, "PRAGMA page_size", -1, &st, NULL) == SQLITE_OK) {
+        if (sqlite3_step(st) == SQLITE_ROW) psize = sqlite3_column_int64(st, 0);
+        sqlite3_finalize(st);
+    }
+    return pages * psize;
+}
+
+/* PoP: hermes_state_vacuum @ hermes_state.py:vacuum */
+bool hermes_state_vacuum(hermes_state_db_t *db) {
+    /* FTS5 segments merged first, then VACUUM (cannot run in a txn). */
+    if (!db) return false;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db, "INSERT INTO messages_fts(messages_fts) VALUES('optimize')",
+                           -1, &st, NULL) == SQLITE_OK) {
+        sqlite3_step(st);
+        sqlite3_finalize(st);
+    }
+    sqlite3_stmt *v = NULL;
+    if (sqlite3_prepare_v2(db->db, "VACUUM", -1, &v, NULL) != SQLITE_OK) return false;
+    bool ok = sqlite3_step(v) == SQLITE_DONE;
+    sqlite3_finalize(v);
+    return ok;
+}
+
+/* PoP: hermes_state_request_handoff @ hermes_state.py:request_handoff */
+bool hermes_state_request_handoff(hermes_state_db_t *db, const char *session_id,
+                                  const char *platform) {
+    /* pending only when the session is not already in a non-terminal state. */
+    if (!db || !session_id) return false;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE sessions SET handoff_state = 'pending', handoff_platform = ?1, "
+            "handoff_error = NULL "
+            "WHERE id = ?2 AND (handoff_state IS NULL OR handoff_state IN ('completed', 'failed'))",
+            -1, &st, NULL) != SQLITE_OK) return false;
+    sqlite3_bind_text(st, 1, platform ? platform : "", -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(st, 2, session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_step(st);
+    bool ok = sqlite3_changes(db->db) > 0;
+    sqlite3_finalize(st);
+    return ok;
+}
