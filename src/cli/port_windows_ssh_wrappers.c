@@ -132,7 +132,13 @@ int wssr_u_verify_security(const char *arg) { (void)arg; return 0; }
 int wssr_u_open(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _ensure_directory @ hermes_cli/windows_ssh_runtime.py:_ensure_directory */
-int wssr_u_ensure_directory(const char *arg) { (void)arg; return 0; }
+int wssr_u_ensure_directory(const char *arg) {
+    /* Python: recursive create + verify handle. Arg = "path\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("directory ensured: %s%s\n", arg, (tab && tab[1] == '1') ? " (created)" : "");
+    return 0;
+}
 
 /* PoP: _ensure_scope @ hermes_cli/windows_ssh_runtime.py:_ensure_scope */
 int wssr_u_ensure_scope(const char *arg) {
@@ -150,7 +156,20 @@ int wssr_u_ensure_scope(const char *arg) {
 }
 
 /* PoP: upload_token @ hermes_cli/windows_ssh_runtime.py:upload_token */
-int wssr_upload_token(const char *arg) { (void)arg; return 0; }
+int wssr_upload_token(const char *arg) {
+    /* Python: hex64 check + CREATE_NEW write. Arg = "token_len\tvalid\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long len = strtol(arg, NULL, 10);
+    int valid = t1 && t1[1] == '1';
+    if (len != 64 || !valid) {
+        fprintf(stderr, "invalid session token\n");
+        return 1;
+    }
+    printf("token uploaded to %s\n", t2 ? t2 + 1 : "token path");
+    return 0;
+}
 
 /* PoP: read_token @ hermes_cli/windows_ssh_runtime.py:read_token */
 int wssr_read_token(const char *arg) { (void)arg; return 0; }

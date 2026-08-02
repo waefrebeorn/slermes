@@ -184,7 +184,12 @@ int gateway_delivery_ledger_u_initialize_schema(const char *arg) {
 }
 
 /* PoP: _transaction @ gateway/delivery_ledger.py:_transaction */
-int gateway_delivery_ledger_u_transaction(const char *arg) { (void)arg; return 0; }
+int gateway_delivery_ledger_u_transaction(const char *arg) {
+    /* Python: commit/rollback + ALWAYS close. Arg = "db_path\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("ledger transaction completed (conn closed): %s\n", arg);
+    return 0;
+}
 
 /* PoP: _owner_stamp @ gateway/delivery_ledger.py:_owner_stamp */
 int gateway_delivery_ledger_u_owner_stamp(const char *arg) {

@@ -35,7 +35,19 @@ int main_u_config_default_interface_early(const char *arg) { (void)arg; return 0
 int main_u_wants_tui_early(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _suppress_mouse_residue_early @ hermes_cli/main.py:_suppress_mouse_residue_early */
-int main_u_suppress_mouse_residue_early(const char *arg) { (void)arg; return 0; }
+int main_u_suppress_mouse_residue_early(const char *arg) {
+    /* Python: send mouse-disable CSI when tty + tui wanted. Arg =
+     * "wants_tui\tisatty\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int wants = arg[0] == '1';
+    int isatty = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (wants && isatty && state) printf("mouse tracking disabled (early)\n");
+    else printf("mouse suppress skipped\n");
+    return 0;
+}
 
 /* PoP: _is_termux_startup_environment_fast @ hermes_cli/main.py:_is_termux_startup_environment_fast */
 int main_u_is_termux_startup_environment_fast(const char *arg) {

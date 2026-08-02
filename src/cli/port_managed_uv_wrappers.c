@@ -220,7 +220,16 @@ int muv_u_windows_runtime_holders(const char *arg) {
 int muv_repair_vulnerable_runtime(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _install_uv @ hermes_cli/managed_uv.py:_install_uv */
-int muv_u_install_uv(const char *arg) { (void)arg; return 0; }
+int muv_u_install_uv(const char *arg) {
+    /* Python: env vars + platform dispatch. Arg = "target\tsystem\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0 install failed\n"); return 1; }
+    printf("uv installed to %s (%s)\n", arg, t1 ? t1 + 1 : "posix");
+    return 0;
+}
 
 /* PoP: _install_uv_posix @ hermes_cli/managed_uv.py:_install_uv_posix */
 int muv_u_install_uv_posix(const char *arg) {

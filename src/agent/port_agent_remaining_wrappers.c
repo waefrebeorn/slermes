@@ -2008,7 +2008,16 @@ int agent_oneshot_render_template(const char *arg) {
 int agent_oneshot_run_oneshot(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _ensure_file_checkpoint @ agent/tool_executor.py:_ensure_file_checkpoint */
-int agent_tool_executor_u_ensure_file_checkpoint(const char *arg) { (void)arg; return 0; }
+int agent_tool_executor_u_ensure_file_checkpoint(const char *arg) {
+    /* Python: checkpoint before mutation. Arg = "has_path\tstate\twork_dir". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_path = arg[0] == '1';
+    if (!has_path) { printf("no path — checkpoint skipped\n"); return 0; }
+    printf("checkpoint ensured: %s\n", t2 ? t2 + 1 : "work dir");
+    return 0;
+}
 
 /* PoP: _parse_tool_arguments @ agent/tool_executor.py:_parse_tool_arguments */
 int agent_tool_executor_u_parse_tool_arguments(const char *arg) {

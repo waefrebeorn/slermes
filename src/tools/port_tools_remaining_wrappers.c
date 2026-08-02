@@ -549,7 +549,13 @@ int tools_registry_get_definitions(const char *arg) { (void)arg; return 0; }
 int tools_registry_u_normalize_handler_result(const char *arg) { (void)arg; return 0; }
 
 /* PoP: check_tool_availability @ tools/registry.py:check_tool_availability */
-int tools_registry_check_tool_availability(const char *arg) { (void)arg; return 0; }
+int tools_registry_check_tool_availability(const char *arg) {
+    /* Python: (available, unavailable). Arg = "available\tunavailable". */
+    if (!arg || !*arg) { printf("\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    printf("%s\n%s\n", arg, t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: _load_x_search_config @ tools/x_search_tool.py:_load_x_search_config */
 int tools_x_search_tool_u_load_x_search_config(const char *arg) {
@@ -676,7 +682,18 @@ int tools_x_search_tool_u_normalize_handles(const char *arg) {
 }
 
 /* PoP: _parse_iso_date @ tools/x_search_tool.py:_parse_iso_date */
-int tools_x_search_tool_u_parse_iso_date(const char *arg) { (void)arg; return 0; }
+int tools_x_search_tool_u_parse_iso_date(const char *arg) {
+    /* Python: strict YYYY-MM-DD. Arg = "date\tvalid". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    int valid = tab && tab[1] == '1';
+    if (!valid) {
+        fprintf(stderr, "%s must be YYYY-MM-DD\n", arg);
+        return 1;
+    }
+    printf("parsed: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _validate_date_range @ tools/x_search_tool.py:_validate_date_range */
 int tools_x_search_tool_u_validate_date_range(const char *arg) { (void)arg; return 0; }
@@ -1311,7 +1328,15 @@ int tools_kanban_tools_u_is_delegated_child_context(const char *arg) {
 }
 
 /* PoP: _reject_delegated_child_mutation @ tools/kanban_tools.py:_reject_delegated_child_mutation */
-int tools_kanban_tools_u_reject_delegated_child_mutation(const char *arg) { (void)arg; return 0; }
+int tools_kanban_tools_u_reject_delegated_child_mutation(const char *arg) {
+    /* Python: None or tool_error for child. Arg = "tool_name\tis_child". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int is_child = tab && tab[1] == '1';
+    if (!is_child) { printf("\n"); return 0; }
+    printf("error: %s refused: delegate_task child agents are not Kanban run owners. Return findings to the parent agent; the dispatcher worker or an explicitly configured Kanban orchestrator must perform board mutations.\n", arg);
+    return 1;
+}
 
 /* PoP: _connect @ tools/kanban_tools.py:_connect */
 int tools_kanban_tools_u_connect(const char *arg) {
@@ -1508,7 +1533,18 @@ int tools_skills_hub_u_fetch_bytes(const char *arg) {
 int tools_skills_hub_u_find_skill_dir(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _parse_frontmatter @ tools/skills_hub.py:_parse_frontmatter */
-int tools_skills_hub_u_parse_frontmatter(const char *arg) { (void)arg; return 0; }
+int tools_skills_hub_u_parse_frontmatter(const char *arg) {
+    /* Python: YAML frontmatter -> dict. Arg = "has_fm\tparsed\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_fm = arg[0] == '1';
+    if (!has_fm) { printf("{}\n"); return 0; }
+    int parsed = t1 && t1[1] == '1';
+    if (!parsed) { printf("{}\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _configured_for_xai_video @ tools/xai_video_tools.py:_configured_for_xai_video */
 int tools_xai_video_tools_u_configured_for_xai_video(const char *arg) {

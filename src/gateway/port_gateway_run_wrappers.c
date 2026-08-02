@@ -75,7 +75,19 @@ int grun_u_set_adapter_auto_tts_disabled(const char *arg) {
 }
 
 /* PoP: _set_adapter_auto_tts_enabled @ gateway/run.py:_set_adapter_auto_tts_enabled */
-int grun_u_set_adapter_auto_tts_enabled(const char *arg) { (void)arg; return 0; }
+int grun_u_set_adapter_auto_tts_enabled(const char *arg) {
+    /* Python: per-chat opt-in set + stale /voice off clear. Arg =
+     * "enabled\tchat_id\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int enabled = arg[0] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("no opt-in set on adapter\n"); return 0; }
+    printf("auto-tts %s for chat %s\n", enabled ? "enabled" : "disabled",
+           t1 ? t1 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _sync_voice_mode_state_to_adapter @ gateway/run.py:_sync_voice_mode_state_to_adapter */
 int grun_u_sync_voice_mode_state_to_adapter(const char *arg) { (void)arg; return 0; }

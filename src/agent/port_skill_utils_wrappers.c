@@ -136,7 +136,16 @@ int sku_get_all_skills_dirs(const char *arg) {
 int sku_normalize_skill_lookup_name(const char *arg) { (void)arg; return 0; }
 
 /* PoP: extract_skill_conditions @ agent/skill_utils.py:extract_skill_conditions */
-int sku_extract_skill_conditions(const char *arg) { (void)arg; return 0; }
+int sku_extract_skill_conditions(const char *arg) {
+    /* Python: 4 condition lists from hermes block. Arg =
+     * "fallback_toolsets\trequires_toolsets\tfallback_tools\trequires_tools". */
+    if (!arg || !*arg) { printf("\n\n\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    printf("%s\n%s\n%s\n%s\n", arg, t1 ? t1 + 1 : "", t2 ? t2 + 1 : "", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: extract_skill_config_vars @ agent/skill_utils.py:extract_skill_config_vars */
 int sku_extract_skill_config_vars(const char *arg) { (void)arg; return 0; }

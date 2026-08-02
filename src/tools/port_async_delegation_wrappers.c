@@ -205,7 +205,14 @@ int adel_release_event_delivery(const char *arg) {
 }
 
 /* PoP: get_durable_delegation @ tools/async_delegation.py:get_durable_delegation */
-int adel_get_durable_delegation(const char *arg) { (void)arg; return 0; }
+int adel_get_durable_delegation(const char *arg) {
+    /* Python: fetch row + JSON result. Arg = "row_json\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (strcmp(arg, "none") == 0) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _get_executor @ tools/async_delegation.py:_get_executor */
 int adel_u_get_executor(const char *arg) { (void)arg; return 0; }

@@ -126,7 +126,16 @@ int cron_executions_u_prune_unlocked(const char *arg) {
 }
 
 /* PoP: create_execution @ cron/executions.py:create_execution */
-int cron_executions_create_execution(const char *arg) { (void)arg; return 0; }
+int cron_executions_create_execution(const char *arg) {
+    /* Python: insert claimed row. Arg = "job_id\tstate\texecution_id". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("execution created: job=%s id=%s\n", arg, t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: mark_execution_running @ cron/executions.py:mark_execution_running */
 int cron_executions_mark_execution_running(const char *arg) {

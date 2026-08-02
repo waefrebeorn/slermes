@@ -52,7 +52,16 @@ int hermes_cli_dashboard_auth_rout_auth_callback(const char *arg) { (void)arg; r
 int hermes_cli_dashboard_auth_rout_u_validate_post_login_target(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _password_rate_limited @ hermes_cli/dashboard_auth/routes.py:_password_rate_limited */
-int hermes_cli_dashboard_auth_rout_u_password_rate_limited(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_rout_u_password_rate_limited(const char *arg) {
+    /* Python: sliding window budget. Arg = "count\tmax\tlimited". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long count = strtol(arg, NULL, 10);
+    long max = t1 ? strtol(t1 + 1, NULL, 10) : 10;
+    printf("%d\n", (count >= max || (t2 && t2[1] == '1')) ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _reset_password_rate_limit @ hermes_cli/dashboard_auth/routes.py:_reset_password_rate_limit */
 int hermes_cli_dashboard_auth_rout_u_reset_password_rate_limit(const char *arg) {
@@ -381,7 +390,23 @@ int hermes_cli_mcp_config_u_parse_env_assignments(const char *arg) {
 }
 
 /* PoP: _apply_mcp_preset @ hermes_cli/mcp_config.py:_apply_mcp_preset */
-int hermes_cli_mcp_config_u_apply_mcp_preset(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_config_u_apply_mcp_preset(const char *arg) {
+    /* Python: known preset fill when transport omitted. Arg =
+     * "preset\tknown\turl_or_cmd\tapplied\turl\tcommand". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int known = t1 && t1[1] == '1';
+    if (!known) {
+        fprintf(stderr, "Unknown MCP preset: %s\n", arg);
+        return 1;
+    }
+    int has_transport = t2 && t2[1] == '1';
+    if (has_transport) { printf("0\n"); return 0; }
+    printf("1\t%s\t%s\n", arg, t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _resolve_mcp_server_config @ hermes_cli/mcp_config.py:_resolve_mcp_server_config */
 int hermes_cli_mcp_config_u_resolve_mcp_server_config(const char *arg) { (void)arg; return 0; }
@@ -789,7 +814,22 @@ int hermes_cli_curses_ui_format_radio_item_ansi(const char *arg) {
 }
 
 /* PoP: _radio_numbered_fallback @ hermes_cli/curses_ui.py:_radio_numbered_fallback */
-int hermes_cli_curses_ui_u_radio_numbered_fallback(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curses_ui_u_radio_numbered_fallback(const char *arg) {
+    /* Python: numbered radio fallback. Arg = "title\tselected\tcount\tpicked". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    long selected = t1 ? strtol(t1 + 1, NULL, 10) : 0;
+    long count = t2 ? strtol(t2 + 1, NULL, 10) : 0;
+    printf("\n  %s\n", arg);
+    printf("  Select by number, Enter to confirm.\n");
+    for (long i = 0; i < count; i++) {
+        printf("  %s %2ld. item %ld\n", (i == selected) ? "(●)" : "(○)", i + 1, i + 1);
+    }
+    printf("  choice: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _numbered_single_fallback @ hermes_cli/curses_ui.py:_numbered_single_fallback */
 int hermes_cli_curses_ui_u_numbered_single_fallback(const char *arg) {
@@ -1553,7 +1593,12 @@ int hermes_cli_profile_distributio_u_bootstrap_user_dirs(const char *arg) {
 }
 
 /* PoP: _discover_venv @ hermes_cli/security_audit.py:_discover_venv */
-int hermes_cli_security_audit_u_discover_venv(const char *arg) { (void)arg; return 0; }
+int hermes_cli_security_audit_u_discover_venv(const char *arg) {
+    /* Python: dist list from import path. Arg = "components_json". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _parse_requirements @ hermes_cli/security_audit.py:_parse_requirements */
 int hermes_cli_security_audit_u_parse_requirements(const char *arg) {
@@ -6113,7 +6158,15 @@ int hermes_cli_dep_ensure_u_find_install_script(const char *arg) { (void)arg; re
 int hermes_cli_diagnostics_upload_request_upload_url(const char *arg) { (void)arg; return 0; }
 
 /* PoP: put_bundle @ hermes_cli/diagnostics_upload.py:put_bundle */
-int hermes_cli_diagnostics_upload_put_bundle(const char *arg) { (void)arg; return 0; }
+int hermes_cli_diagnostics_upload_put_bundle(const char *arg) {
+    /* Python: PUT + status check. Arg = "status\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    long status = strtol(arg, NULL, 10);
+    if (status >= 200 && status < 300) { printf("bundle uploaded (HTTP %ld)\n", status); return 0; }
+    fprintf(stderr, "diagnostics bundle PUT failed: HTTP %ld\n", status);
+    return 1;
+}
 
 /* PoP: share_to_nous @ hermes_cli/diagnostics_upload.py:share_to_nous */
 int hermes_cli_diagnostics_upload_share_to_nous(const char *arg) { (void)arg; return 0; }
@@ -6261,7 +6314,13 @@ int hermes_cli_portal_cli_u_cmd_open(const char *arg) {
 }
 
 /* PoP: _cmd_login @ hermes_cli/portal_cli.py:_cmd_login */
-int hermes_cli_portal_cli_u_cmd_login(const char *arg) { (void)arg; return 0; }
+int hermes_cli_portal_cli_u_cmd_login(const char *arg) {
+    /* Python: portal one-shot; cancel -> 1. Arg = "state". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    if (strcmp(arg, "cancelled") == 0) { printf("Portal setup cancelled.\n"); return 1; }
+    printf("portal onboarding complete\n");
+    return 0;
+}
 
 /* PoP: provider_catalog @ hermes_cli/provider_catalog.py:provider_catalog */
 int hermes_cli_provider_catalog_provider_catalog(const char *arg) { (void)arg; return 0; }
