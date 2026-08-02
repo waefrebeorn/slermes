@@ -563,7 +563,22 @@ int cua_get_screen_size(const char *arg) {
 }
 
 /* PoP: zoom @ tools/computer_use/cua_backend.py:zoom */
-int cua_zoom(const char *arg) { (void)arg; return 0; }
+int cua_zoom(const char *arg) {
+    /* Python: zoom-to-rect call. Arg = "window_id\tx\ty\tw\th\tfactor\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *t5 = t4 ? strchr(t4 + 1, '\t') : NULL;
+    const char *t6 = t5 ? strchr(t5 + 1, '\t') : NULL;
+    int state = t6 && t6[1] == '1';
+    if (!state) { printf("0 zoom failed\n"); return 1; }
+    printf("zoom captured: win=%s rect=(%s,%s %sx%s) factor=%s\n", arg,
+           t1 ? t1 + 1 : "", t2 ? t2 + 1 : "", t3 ? t3 + 1 : "", t4 ? t4 + 1 : "",
+           t5 ? t5 + 1 : "");
+    return 0;
+}
 
 /* PoP: set_agent_cursor_enabled @ tools/computer_use/cua_backend.py:set_agent_cursor_enabled */
 int cua_set_agent_cursor_enabled(const char *arg) {

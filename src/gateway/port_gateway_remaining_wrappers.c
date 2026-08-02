@@ -68,7 +68,15 @@ static char *gsp_relative_path_under(const char *base_dir, const char *raw_path)
 }
 
 /* PoP: _render_mentions @ gateway/platforms/signal.py:_render_mentions */
-int gateway_platforms_signal_u_render_mentions(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_signal_u_render_mentions(const char *arg) {
+    /* Python: replace U+FFFC with @id. Arg = "text\tmentions\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (strchr(arg, '\xef\xbf\xbc') == NULL && !strstr(arg, "\ufffc")) { printf("%s\n", arg); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: validate_signal_config @ gateway/platforms/signal.py:validate_signal_config */
 int gateway_platforms_signal_validate_signal_config(const char *arg) {

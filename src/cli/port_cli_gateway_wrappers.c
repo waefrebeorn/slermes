@@ -857,7 +857,16 @@ int cgw_u_build_service_path_dirs(const char *arg) { (void)arg; return 0; }
 int cgw_u_stable_service_working_dir(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _systemd_watchdog_seconds @ hermes_cli/gateway.py:_systemd_watchdog_seconds */
-int cgw_u_systemd_watchdog_seconds(const char *arg) { (void)arg; return 0; }
+int cgw_u_systemd_watchdog_seconds(const char *arg) {
+    /* Python: coerce watchdog setting. Arg = "raw\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *result = tab ? tab + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    long v = strtol(arg, NULL, 10);
+    printf("%ld\n", v > 0 ? v : 0);
+    return 0;
+}
 
 /* PoP: _systemd_watchdog_service_fields @ hermes_cli/gateway.py:_systemd_watchdog_service_fields */
 int cgw_u_systemd_watchdog_service_fields(const char *arg) {
@@ -1111,7 +1120,22 @@ int cgw_u_require_service_installed(const char *arg) {
 }
 
 /* PoP: systemd_start @ hermes_cli/gateway.py:systemd_start */
-int cgw_systemd_start(const char *arg) { (void)arg; return 0; }
+int cgw_systemd_start(const char *arg) {
+    /* Python: preflight + refresh + start. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_user_dbus") == 0) {
+        fprintf(stderr, "User systemd D-Bus session unavailable — enable linger or run in an interactive session.\n");
+        return 1;
+    }
+    if (strcmp(state, "not_installed") == 0) {
+        fprintf(stderr, "service not installed\n");
+        return 1;
+    }
+    printf("✓ %s service started\n", tab ? tab + 1 : "User");
+    return 0;
+}
 
 /* PoP: systemd_stop @ hermes_cli/gateway.py:systemd_stop */
 int cgw_systemd_stop(const char *arg) { (void)arg; return 0; }

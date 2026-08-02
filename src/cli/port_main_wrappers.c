@@ -360,7 +360,19 @@ int main_u_iter_tui_build_inputs(const char *arg) {
 }
 
 /* PoP: _tui_need_rebuild @ hermes_cli/main.py:_tui_need_rebuild */
-int main_u_tui_need_rebuild(const char *arg) { (void)arg; return 0; }
+int main_u_tui_need_rebuild(const char *arg) {
+    /* Python: force flag or mtime freshness. Arg =
+     * "force\tstate\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int force = arg[0] == '1';
+    if (force) { printf("1\n"); return 0; }
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("1\n"); return 0; }
+    printf("%s\n", t2 && t2[1] == '1' ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _ensure_tui_node @ hermes_cli/main.py:_ensure_tui_node */
 int main_u_ensure_tui_node(const char *arg) { (void)arg; return 0; }

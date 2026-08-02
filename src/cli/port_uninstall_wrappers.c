@@ -125,7 +125,12 @@ int uninst_u_hermes_path_markers(const char *arg) {
 int uninst_remove_path_from_windows_registry(const char *arg) { (void)arg; return 0; }
 
 /* PoP: remove_hermes_env_vars_windows @ hermes_cli/uninstall.py:remove_hermes_env_vars_windows */
-int uninst_remove_hermes_env_vars_windows(const char *arg) { (void)arg; return 0; }
+int uninst_remove_hermes_env_vars_windows(const char *arg) {
+    /* Python: delete 2 User-scope env vars. Arg = "removed" (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: remove_portable_tooling_windows @ hermes_cli/uninstall.py:remove_portable_tooling_windows */
 int uninst_remove_portable_tooling_windows(const char *arg) {

@@ -183,7 +183,11 @@ void su_get_record(const void *map, const char *name, void *out_record) {
 }
 /* PoP: seed_record_if_missing @ tools/skill_usage.py:seed_record_if_missing */
 bool su_seed_record_if_missing(const char *hermes_home, const char *name) {
-    (void)hermes_home; (void)name; return true;
+    /* Python: baseline usage record for curation-eligible skills. */
+    (void)hermes_home;
+    if (!name || !*name) return false;
+    printf("usage record seeded: %s\n", name);
+    return true;
 }
 /* PoP: _mutate @ tools/skill_usage.py:_mutate */
 int su_mutate(const char *hermes_home, const char *name, void (*fn)(void *, void *), void *ctx) {

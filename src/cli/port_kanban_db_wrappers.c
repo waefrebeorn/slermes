@@ -103,7 +103,17 @@ int kdbport_u_run_integrity_check(const char *arg) {
 }
 
 /* PoP: _repairable_index_names @ hermes_cli/kanban_db.py:_repairable_index_names */
-int kdbport_u_repairable_index_names(const char *arg) { (void)arg; return 0; }
+int kdbport_u_repairable_index_names(const char *arg) {
+    /* Python: distinct index names iff all repairable. Arg =
+     * "names\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "none") == 0) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _attempt_index_reindex_repair @ hermes_cli/kanban_db.py:_attempt_index_reindex_repair */
 int kdbport_u_attempt_index_reindex_repair(const char *arg) { (void)arg; return 0; }

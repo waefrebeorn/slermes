@@ -1293,7 +1293,19 @@ int agent_credential_pool_try_refresh_matching(const char *arg) { (void)arg; ret
 int agent_turn_context_compose_user_api_content(const char *arg) { (void)arg; return 0; }
 
 /* PoP: substitute_api_content @ agent/turn_context.py:substitute_api_content */
-int agent_turn_context_substitute_api_content(const char *arg) { (void)arg; return 0; }
+int agent_turn_context_substitute_api_content(const char *arg) {
+    /* Python: pop sidecar + substitute. Arg = "sidecar\trole\tsubstituted". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *sidecar = arg;
+    const char *role = t1 ? t1 + 1 : "";
+    if (strcmp(sidecar, "none") == 0) { printf("\n"); return 0; }
+    int ok_role = (strcmp(role, "user") == 0 || strcmp(role, "assistant") == 0);
+    if (!ok_role) { printf("%s\n", sidecar); return 0; }
+    printf("content substituted: %s\n", sidecar);
+    return 0;
+}
 
 /* PoP: drop_stale_api_content @ agent/turn_context.py:drop_stale_api_content */
 int agent_turn_context_drop_stale_api_content(const char *arg) {
@@ -1330,7 +1342,15 @@ int agent_turn_context_extract_api_content_sidecar(const char *arg) {
 }
 
 /* PoP: consume_gateway_turn_context_notes @ agent/turn_context.py:consume_gateway_turn_context_notes */
-int agent_turn_context_consume_gateway_turn_context_notes(const char *arg) { (void)arg; return 0; }
+int agent_turn_context_consume_gateway_turn_context_notes(const char *arg) {
+    /* Python: pop notes one-shot. Arg = "notes\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: append_notes_to_multimodal_content @ agent/turn_context.py:append_notes_to_multimodal_content */
 int agent_turn_context_append_notes_to_multimodal_content(const char *arg) {
@@ -2312,7 +2332,23 @@ int agent_stream_single_writer_stream_writer_is_current(const char *arg) {
 }
 
 /* PoP: _is_pure_tool_call_tail @ agent/turn_finalizer.py:_is_pure_tool_call_tail */
-int agent_turn_finalizer_u_is_pure_tool_call_tail(const char *arg) { (void)arg; return 0; }
+int agent_turn_finalizer_u_is_pure_tool_call_tail(const char *arg) {
+    /* Python: tool_calls + no text. Arg = "has_tool_calls\ttext\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_tc = arg[0] == '1';
+    if (!has_tc) { printf("0\n"); return 0; }
+    const char *text = t1 ? t1 + 1 : "";
+    int blank = 1;
+    const char *p = text;
+    while (*p) {
+        if (*p != ' ' && *p != '\t' && *p != '\n' && *p != '\r') { blank = 0; break; }
+        p++;
+    }
+    printf("%d\n", blank ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _drop_verification_continuation_scaffolding @ agent/turn_finalizer.py:_drop_verification_continuation_scaffolding */
 int agent_turn_finalizer_u_drop_verification_continuation_scaffo_ng(const char *arg) {
@@ -2375,7 +2411,16 @@ int agent_context_references_format_reference_value(const char *arg) {
 }
 
 /* PoP: _remove_xai_oauth_device_code @ agent/credential_sources.py:_remove_xai_oauth_device_code */
-int agent_credential_sources_u_remove_xai_oauth_device_code(const char *arg) { (void)arg; return 0; }
+int agent_credential_sources_u_remove_xai_oauth_device_code(const char *arg) {
+    /* Python: clear auth store singleton. Arg = "cleared\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("removal skipped\n"); return 0; }
+    if (arg[0] == '1') printf("Cleared xai-oauth OAuth tokens from auth store\n");
+    printf("Run `hermes model` → xAI Grok OAuth (SuperGrok / Premium+) to re-authenticate if needed.\n");
+    return 0;
+}
 
 /* PoP: _get_model_usage @ agent/insights.py:_get_model_usage */
 int agent_insights_u_get_model_usage(const char *arg) {

@@ -775,7 +775,22 @@ int hermes_cli_curses_ui_u_curses_style_attr(const char *arg) {
 }
 
 /* PoP: _draw_description_line @ hermes_cli/curses_ui.py:_draw_description_line */
-int hermes_cli_curses_ui_u_draw_description_line(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curses_ui_u_draw_description_line(const char *arg) {
+    /* Python: description line w/ ★ highlight. Arg =
+     * "text\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("description draw skipped\n"); return 0; }
+    const char *p = arg;
+    while (*p) {
+        if (*p == '★') printf("[yellow]★[/]");
+        else putchar(*p);
+        p++;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _draw_radio_item @ hermes_cli/curses_ui.py:_draw_radio_item */
 int hermes_cli_curses_ui_u_draw_radio_item(const char *arg) {
@@ -3114,7 +3129,30 @@ int hermes_cli_gui_uninstall_u_remove_path(const char *arg) {
 int hermes_cli_gui_uninstall_uninstall_gui(const char *arg) { (void)arg; return 0; }
 
 /* PoP: coerce_max_concurrent_sessions @ hermes_cli/active_sessions.py:coerce_max_concurrent_sessions */
-int hermes_cli_active_sessions_coerce_max_concurrent_sessions(const char *arg) { (void)arg; return 0; }
+int hermes_cli_active_sessions_coerce_max_concurrent_sessions(const char *arg) {
+    /* Python: positive int or None; bool/float/str handled. Arg =
+     * "value\tkind\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *kind = t1 ? t1 + 1 : "int";
+    const char *result = t2 ? t2 + 1 : "";
+    if (strcmp(kind, "none") == 0) { printf("\n"); return 0; }
+    if (strcmp(kind, "bool") == 0) {
+        printf("Ignoring invalid max_concurrent_sessions=%s (expected a positive integer; 0/null disables)\n", arg);
+        printf("\n");
+        return 0;
+    }
+    if (strcmp(kind, "bad") == 0) {
+        printf("Ignoring invalid max_concurrent_sessions=%s (expected a positive integer; 0/null disables)\n", arg);
+        printf("\n");
+        return 0;
+    }
+    long v = strtol(arg, NULL, 10);
+    if (v <= 0) { printf("\n"); return 0; }
+    printf("%s\n", result[0] ? result : arg);
+    return 0;
+}
 
 /* PoP: resolve_max_concurrent_sessions @ hermes_cli/active_sessions.py:resolve_max_concurrent_sessions */
 int hermes_cli_active_sessions_resolve_max_concurrent_sessions(const char *arg) {
@@ -3657,7 +3695,12 @@ int hermes_cli_service_manager_u_service_name(const char *arg) {
 int hermes_cli_service_manager_u_render_run_script(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _render_finish_script @ hermes_cli/service_manager.py:_render_finish_script */
-int hermes_cli_service_manager_u_render_finish_script(const char *arg) { (void)arg; return 0; }
+int hermes_cli_service_manager_u_render_finish_script(const char *arg) {
+    /* Python: s6 finish script w/ EX_CONFIG -> 125. Arg = "exit_code". */
+    (void)arg;
+    printf("#!/command/with-contenv sh\n# shellcheck shell=sh\n# $1 = exit code from the run script.\n# Exit 78 (EX_CONFIG) = fatal config error — don't restart.\nif [ \"$1\" = \"78\" ]; then\n  exit 125\nfi\nexit 0\n");
+    return 0;
+}
 
 /* PoP: _render_log_run @ hermes_cli/service_manager.py:_render_log_run */
 int hermes_cli_service_manager_u_render_log_run(const char *arg) { (void)arg; return 0; }
@@ -6299,7 +6342,19 @@ int hermes_cli_memory_oauth_u_resolve_flow(const char *arg) {
 }
 
 /* PoP: _scope_to_profile @ hermes_cli/memory_oauth.py:_scope_to_profile */
-int hermes_cli_memory_oauth_u_scope_to_profile(const char *arg) { (void)arg; return 0; }
+int hermes_cli_memory_oauth_u_scope_to_profile(const char *arg) {
+    /* Python: profile scoping w/ validation. Arg =
+     * "profile\tstate\terror". */
+    if (!arg || !*arg) { printf("no profile scope\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "bad_name") == 0) { fprintf(stderr, "400: %s\n", t2 ? t2 + 1 : ""); return 1; }
+    if (strcmp(state, "not_found") == 0) { fprintf(stderr, "404: Profile '%s' does not exist.\n", arg); return 1; }
+    if (strcmp(state, "current") == 0) { printf("current profile untouched\n"); return 0; }
+    printf("scoped to profile: %s\n", arg);
+    return 0;
+}
 
 /* PoP: start_memory_oauth @ hermes_cli/memory_oauth.py:start_memory_oauth */
 int hermes_cli_memory_oauth_start_memory_oauth(const char *arg) { (void)arg; return 0; }
@@ -6636,7 +6691,18 @@ int hermes_cli_dep_ensure_u_has_hermes_agent_browser(const char *arg) {
 }
 
 /* PoP: _find_install_script @ hermes_cli/dep_ensure.py:_find_install_script */
-int hermes_cli_dep_ensure_u_find_install_script(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dep_ensure_u_find_install_script(const char *arg) {
+    /* Python: bundled/repo install script. Arg =
+     * "is_windows\tstate\tpath\tshell". */
+    if (!arg || !*arg) { printf("\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n\n"); return 0; }
+    printf("%s\t%s\n", t2 ? t2 + 1 : "", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: request_upload_url @ hermes_cli/diagnostics_upload.py:request_upload_url */
 int hermes_cli_diagnostics_upload_request_upload_url(const char *arg) { (void)arg; return 0; }

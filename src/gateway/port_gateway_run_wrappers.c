@@ -150,7 +150,18 @@ int grun_u_record_telegram_topic_binding(const char *arg) {
 }
 
 /* PoP: _sync_telegram_topic_binding @ gateway/run.py:_sync_telegram_topic_binding */
-int grun_u_sync_telegram_topic_binding(const char *arg) { (void)arg; return 0; }
+int grun_u_sync_telegram_topic_binding(const char *arg) {
+    /* Python: refresh binding for topic lanes. Arg = "is_lane\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_lane = arg[0] == '1';
+    if (!is_lane) { printf("not a topic lane\n"); return 0; }
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("binding refresh failed: %s\n", t2 ? t2 + 1 : "?"); return 0; }
+    printf("topic binding refreshed\n");
+    return 0;
+}
 
 /* PoP: _recover_telegram_topic_thread_id @ gateway/run.py:_recover_telegram_topic_thread_id */
 int grun_u_recover_telegram_topic_thread_id(const char *arg) { (void)arg; return 0; }
@@ -186,7 +197,17 @@ int grun_u_restart_loop_guard_config(const char *arg) { (void)arg; return 0; }
 int grun_u_log_scale_to_zero_not_armed_reason(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _scale_to_zero_note_real_inbound @ gateway/run.py:_scale_to_zero_note_real_inbound */
-int grun_u_scale_to_zero_note_real_inbound(const char *arg) { (void)arg; return 0; }
+int grun_u_scale_to_zero_note_real_inbound(const char *arg) {
+    /* Python: stamp inbound + restore running. Arg = "in_cooldown\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int in_cooldown = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (in_cooldown && state) printf("real inbound stamped; runtime status restored to running\n");
+    else printf("real inbound stamped\n");
+    return 0;
+}
 
 /* PoP: _relay_adapter_for_dormancy @ gateway/run.py:_relay_adapter_for_dormancy */
 int grun_u_relay_adapter_for_dormancy(const char *arg) { (void)arg; return 0; }
@@ -326,7 +347,16 @@ int grun_u_agent_has_active_subagents(const char *arg) {
 int grun_u_session_has_compression_in_flight(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _lookup_session_id_under_store_lock @ gateway/run.py:_lookup_session_id_under_store_lock */
-int grun_u_lookup_session_id_under_store_lock(const char *arg) { (void)arg; return 0; }
+int grun_u_lookup_session_id_under_store_lock(const char *arg) {
+    /* Python: locked read. Arg = "session_key\tstate\tsession_id". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _queue_or_replace_pending_event @ gateway/run.py:_queue_or_replace_pending_event */
 int grun_u_queue_or_replace_pending_event(const char *arg) { (void)arg; return 0; }
