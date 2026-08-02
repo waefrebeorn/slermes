@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:35:42Z",
+  "generated_at": "2026-08-02T19:37:43Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -13508,10 +13508,10 @@
     },
     "agent/codex_responses_adapter.py": {
       "total": 15,
-      "ported": 0,
+      "ported": 15,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 15,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 15,
@@ -13527,16 +13527,24 @@
             "decorators": [],
             "line_number": 26
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_responses_adapter_remaining.c",
+          "c_function": "crx_classify_responses_issuer",
+          "pop_annotation": {
+            "c_function": "crx_classify_responses_issuer",
+            "python_functions": [
+              "_classify_responses_issuer"
+            ],
+            "c_file": "src/agent/port_codex_responses_adapter_remaining.c",
+            "python_file": "agent/codex_responses_adapter.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _classify_responses_issuer @ agent/codex_responses_adapter.py:_classify_responses_issuer */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/codex_responses_adapter.py",
@@ -13548,16 +13556,24 @@
             "decorators": [],
             "line_number": 79
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_responses_adapter_remaining.c",
+          "c_function": "crx_chat_content_to_responses_parts",
+          "pop_annotation": {
+            "c_function": "crx_chat_content_to_responses_parts",
+            "python_functions": [
+              "_chat_content_to_responses_parts"
+            ],
+            "c_file": "src/agent/port_codex_responses_adapter_remaining.c",
+            "python_file": "agent/codex_responses_adapter.py",
+            "line": 31,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _chat_content_to_responses_parts @ agent/codex_responses_adapter.py:_chat_content_to_responses_parts */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/codex_responses_adapter.py",
@@ -13569,16 +13585,24 @@
             "decorators": [],
             "line_number": 130
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_responses_adapter_remaining.c",
+          "c_function": "crx_summarize_user_message_for_log",
+          "pop_annotation": {
+            "c_function": "crx_summarize_user_message_for_log",
+            "python_functions": [
+              "_summarize_user_message_for_log"
+            ],
+            "c_file": "src/agent/port_codex_responses_adapter_remaining.c",
+            "python_file": "agent/codex_responses_adapter.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _summarize_user_message_for_log @ agent/codex_responses_adapter.py:_summarize_user_message_for_log */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/codex_responses_adapter.py",
@@ -13590,16 +13614,24 @@
             "decorators": [],
             "line_number": 182
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_responses_adapter_remaining.c",
+          "c_function": "crx_deterministic_call_id",
+          "pop_annotation": {
+            "c_function": "crx_deterministic_call_id",
+            "python_functions": [
+              "_deterministic_call_id"
+            ],
+            "c_file": "src/agent/port_codex_responses_adapter_remaining.c",
+            "python_file": "agent/codex_responses_adapter.py",
+            "line": 77,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _deterministic_call_id @ agent/codex_responses_adapter.py:_deterministic_call_id */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/codex_responses_adapter.py",
@@ -13611,16 +13643,24 @@
             "decorators": [],
             "line_number": 194
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_responses_adapter_remaining.c",
+          "c_function": "crx_split_responses_tool_id",
+          "pop_annotation": {
+            "c_function": "crx_split_responses_tool_id",
+            "python_functions": [
+              "_split_responses_tool_id"
+            ],
+            "c_file": "src/agent/port_codex_responses_adapter_remaining.c",
+            "python_file": "agent/codex_responses_adapter.py",
+            "line": 91,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _split_responses_tool_id @ agent/codex_responses_adapter.py:_split_responses_tool_id */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/codex_responses_adapter.py",
@@ -13632,16 +13672,24 @@
             "decorators": [],
             "line_number": 211
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_responses_adapter_remaining.c",
+          "c_function": "crx_derive_responses_function_call_id",
+          "pop_annotation": {
+            "c_function": "crx_derive_responses_function_call_id",
+            "python_functions": [
+              "_derive_responses_function_call_id"
+            ],
+            "c_file": "src/agent/port_codex_responses_adapter_remaining.c",
+            "python_file": "agent/codex_responses_adapter.py",
+            "line": 101,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _derive_responses_function_call_id @ agent/codex_responses_adapter.py:_derive_responses_function_call_id */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/codex_responses_adapter.py",
@@ -13653,16 +13701,24 @@
             "decorators": [],
             "line_number": 244
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_responses_adapter_remaining.c",
+          "c_function": "crx_responses_tools",
+          "pop_annotation": {
+            "c_function": "crx_responses_tools",
+            "python_functions": [
+              "_responses_tools"
+            ],
+            "c_file": "src/agent/port_codex_responses_adapter_remaining.c",
+            "python_file": "agent/codex_responses_adapter.py",
+            "line": 111,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _responses_tools @ agent/codex_responses_adapter.py:_responses_tools */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/codex_responses_adapter.py",
@@ -13674,16 +13730,24 @@
             "decorators": [],
             "line_number": 299
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_responses_adapter_remaining.c",
+          "c_function": "crx_normalize_responses_message_status",
+          "pop_annotation": {
+            "c_function": "crx_normalize_responses_message_status",
+            "python_functions": [
+              "_normalize_responses_message_status"
+            ],
+            "c_file": "src/agent/port_codex_responses_adapter_remaining.c",
+            "python_file": "agent/codex_responses_adapter.py",
+            "line": 119,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalize_responses_message_status @ agent/codex_responses_adapter.py:_normalize_responses_message_status */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/codex_responses_adapter.py",
@@ -13695,16 +13759,24 @@
             "decorators": [],
             "line_number": 313
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_responses_adapter_remaining.c",
+          "c_function": "crx_chat_messages_to_responses_input",
+          "pop_annotation": {
+            "c_function": "crx_chat_messages_to_responses_input",
+            "python_functions": [
+              "_chat_messages_to_responses_input"
+            ],
+            "c_file": "src/agent/port_codex_responses_adapter_remaining.c",
+            "python_file": "agent/codex_responses_adapter.py",
+            "line": 128,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _chat_messages_to_responses_input @ agent/codex_responses_adapter.py:_chat_messages_to_responses_input */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/codex_responses_adapter.py",
@@ -13716,16 +13788,24 @@
             "decorators": [],
             "line_number": 603
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_responses_adapter_remaining.c",
+          "c_function": "crx_preflight_codex_input_items",
+          "pop_annotation": {
+            "c_function": "crx_preflight_codex_input_items",
+            "python_functions": [
+              "_preflight_codex_input_items"
+            ],
+            "c_file": "src/agent/port_codex_responses_adapter_remaining.c",
+            "python_file": "agent/codex_responses_adapter.py",
+            "line": 136,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _preflight_codex_input_items @ agent/codex_responses_adapter.py:_preflight_codex_input_items */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/codex_responses_adapter.py",
@@ -13737,16 +13817,24 @@
             "decorators": [],
             "line_number": 823
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_responses_adapter_remaining.c",
+          "c_function": "crx_preflight_codex_api_kwargs",
+          "pop_annotation": {
+            "c_function": "crx_preflight_codex_api_kwargs",
+            "python_functions": [
+              "_preflight_codex_api_kwargs"
+            ],
+            "c_file": "src/agent/port_codex_responses_adapter_remaining.c",
+            "python_file": "agent/codex_responses_adapter.py",
+            "line": 144,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _preflight_codex_api_kwargs @ agent/codex_responses_adapter.py:_preflight_codex_api_kwargs */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/codex_responses_adapter.py",
@@ -13758,16 +13846,24 @@
             "decorators": [],
             "line_number": 1035
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_responses_adapter_remaining.c",
+          "c_function": "crx_extract_responses_message_text",
+          "pop_annotation": {
+            "c_function": "crx_extract_responses_message_text",
+            "python_functions": [
+              "_extract_responses_message_text"
+            ],
+            "c_file": "src/agent/port_codex_responses_adapter_remaining.c",
+            "python_file": "agent/codex_responses_adapter.py",
+            "line": 151,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_responses_message_text @ agent/codex_responses_adapter.py:_extract_responses_message_text */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/codex_responses_adapter.py",
@@ -13779,16 +13875,24 @@
             "decorators": [],
             "line_number": 1052
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_responses_adapter_remaining.c",
+          "c_function": "crx_extract_responses_reasoning_text",
+          "pop_annotation": {
+            "c_function": "crx_extract_responses_reasoning_text",
+            "python_functions": [
+              "_extract_responses_reasoning_text"
+            ],
+            "c_file": "src/agent/port_codex_responses_adapter_remaining.c",
+            "python_file": "agent/codex_responses_adapter.py",
+            "line": 167,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_responses_reasoning_text @ agent/codex_responses_adapter.py:_extract_responses_reasoning_text */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/codex_responses_adapter.py",
@@ -13800,16 +13904,24 @@
             "decorators": [],
             "line_number": 1069
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_responses_adapter_remaining.c",
+          "c_function": "crx_format_responses_error",
+          "pop_annotation": {
+            "c_function": "crx_format_responses_error",
+            "python_functions": [
+              "_format_responses_error"
+            ],
+            "c_file": "src/agent/port_codex_responses_adapter_remaining.c",
+            "python_file": "agent/codex_responses_adapter.py",
+            "line": 175,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _format_responses_error @ agent/codex_responses_adapter.py:_format_responses_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/codex_responses_adapter.py",
@@ -13821,16 +13933,24 @@
             "decorators": [],
             "line_number": 1115
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_responses_adapter_remaining.c",
+          "c_function": "crx_normalize_codex_response",
+          "pop_annotation": {
+            "c_function": "crx_normalize_codex_response",
+            "python_functions": [
+              "_normalize_codex_response"
+            ],
+            "c_file": "src/agent/port_codex_responses_adapter_remaining.c",
+            "python_file": "agent/codex_responses_adapter.py",
+            "line": 207,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalize_codex_response @ agent/codex_responses_adapter.py:_normalize_codex_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -65766,10 +65886,10 @@
     },
     "agent/transports/codex_app_server.py": {
       "total": 21,
-      "ported": 6,
+      "ported": 20,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 15,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 21,
@@ -65806,16 +65926,24 @@
             "decorators": [],
             "line_number": 71
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_remaining.c",
+          "c_function": "cas_init",
+          "pop_annotation": {
+            "c_function": "cas_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_codex_app_server_remaining.c",
+            "python_file": "agent/transports/codex_app_server.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/transports/codex_app_server.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server.py",
@@ -65827,16 +65955,24 @@
             "decorators": [],
             "line_number": 160
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_remaining.c",
+          "c_function": "cas_initialize",
+          "pop_annotation": {
+            "c_function": "cas_initialize",
+            "python_functions": [
+              "initialize"
+            ],
+            "c_file": "src/agent/port_codex_app_server_remaining.c",
+            "python_file": "agent/transports/codex_app_server.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: initialize @ agent/transports/codex_app_server.py:initialize */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server.py",
@@ -65848,16 +65984,24 @@
             "decorators": [],
             "line_number": 185
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_remaining.c",
+          "c_function": "cas_close",
+          "pop_annotation": {
+            "c_function": "cas_close",
+            "python_functions": [
+              "close"
+            ],
+            "c_file": "src/agent/port_codex_app_server_remaining.c",
+            "python_file": "agent/transports/codex_app_server.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: close @ agent/transports/codex_app_server.py:close */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server.py",
@@ -65869,16 +66013,24 @@
             "decorators": [],
             "line_number": 205
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_remaining.c",
+          "c_function": "cas_enter",
+          "pop_annotation": {
+            "c_function": "cas_enter",
+            "python_functions": [
+              "__enter__"
+            ],
+            "c_file": "src/agent/port_codex_app_server_remaining.c",
+            "python_file": "agent/transports/codex_app_server.py",
+            "line": 46,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __enter__ @ agent/transports/codex_app_server.py:__enter__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server.py",
@@ -65890,16 +66042,24 @@
             "decorators": [],
             "line_number": 208
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_remaining.c",
+          "c_function": "cas_exit",
+          "pop_annotation": {
+            "c_function": "cas_exit",
+            "python_functions": [
+              "__exit__"
+            ],
+            "c_file": "src/agent/port_codex_app_server_remaining.c",
+            "python_file": "agent/transports/codex_app_server.py",
+            "line": 52,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __exit__ @ agent/transports/codex_app_server.py:__exit__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server.py",
@@ -65911,16 +66071,24 @@
             "decorators": [],
             "line_number": 213
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_remaining.c",
+          "c_function": "cas_request",
+          "pop_annotation": {
+            "c_function": "cas_request",
+            "python_functions": [
+              "request"
+            ],
+            "c_file": "src/agent/port_codex_app_server_remaining.c",
+            "python_file": "agent/transports/codex_app_server.py",
+            "line": 57,
+            "is_consolidated": false,
+            "full_text": "/* PoP: request @ agent/transports/codex_app_server.py:request */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server.py",
@@ -65932,16 +66100,24 @@
             "decorators": [],
             "line_number": 243
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_remaining.c",
+          "c_function": "cas_notify",
+          "pop_annotation": {
+            "c_function": "cas_notify",
+            "python_functions": [
+              "notify"
+            ],
+            "c_file": "src/agent/port_codex_app_server_remaining.c",
+            "python_file": "agent/transports/codex_app_server.py",
+            "line": 65,
+            "is_consolidated": false,
+            "full_text": "/* PoP: notify @ agent/transports/codex_app_server.py:notify */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server.py",
@@ -66127,16 +66303,24 @@
             "decorators": [],
             "line_number": 293
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_remaining.c",
+          "c_function": "cas_take_id",
+          "pop_annotation": {
+            "c_function": "cas_take_id",
+            "python_functions": [
+              "_take_id"
+            ],
+            "c_file": "src/agent/port_codex_app_server_remaining.c",
+            "python_file": "agent/transports/codex_app_server.py",
+            "line": 73,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _take_id @ agent/transports/codex_app_server.py:_take_id */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server.py",
@@ -66148,16 +66332,24 @@
             "decorators": [],
             "line_number": 301
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_remaining.c",
+          "c_function": "cas_send",
+          "pop_annotation": {
+            "c_function": "cas_send",
+            "python_functions": [
+              "_send"
+            ],
+            "c_file": "src/agent/port_codex_app_server_remaining.c",
+            "python_file": "agent/transports/codex_app_server.py",
+            "line": 80,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _send @ agent/transports/codex_app_server.py:_send */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server.py",
@@ -66169,16 +66361,24 @@
             "decorators": [],
             "line_number": 314
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_remaining.c",
+          "c_function": "cas_read_stdout",
+          "pop_annotation": {
+            "c_function": "cas_read_stdout",
+            "python_functions": [
+              "_read_stdout"
+            ],
+            "c_file": "src/agent/port_codex_app_server_remaining.c",
+            "python_file": "agent/transports/codex_app_server.py",
+            "line": 89,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _read_stdout @ agent/transports/codex_app_server.py:_read_stdout */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server.py",
@@ -66190,16 +66390,24 @@
             "decorators": [],
             "line_number": 339
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_remaining.c",
+          "c_function": "cas_dispatch",
+          "pop_annotation": {
+            "c_function": "cas_dispatch",
+            "python_functions": [
+              "_dispatch"
+            ],
+            "c_file": "src/agent/port_codex_app_server_remaining.c",
+            "python_file": "agent/transports/codex_app_server.py",
+            "line": 96,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _dispatch @ agent/transports/codex_app_server.py:_dispatch */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server.py",
@@ -66211,16 +66419,24 @@
             "decorators": [],
             "line_number": 358
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_remaining.c",
+          "c_function": "cas_read_stderr",
+          "pop_annotation": {
+            "c_function": "cas_read_stderr",
+            "python_functions": [
+              "_read_stderr"
+            ],
+            "c_file": "src/agent/port_codex_app_server_remaining.c",
+            "python_file": "agent/transports/codex_app_server.py",
+            "line": 106,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _read_stderr @ agent/transports/codex_app_server.py:_read_stderr */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server.py",
@@ -66232,16 +66448,24 @@
             "decorators": [],
             "line_number": 376
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_remaining.c",
+          "c_function": "cas_parse_codex_version",
+          "pop_annotation": {
+            "c_function": "cas_parse_codex_version",
+            "python_functions": [
+              "parse_codex_version"
+            ],
+            "c_file": "src/agent/port_codex_app_server_remaining.c",
+            "python_file": "agent/transports/codex_app_server.py",
+            "line": 112,
+            "is_consolidated": false,
+            "full_text": "/* PoP: parse_codex_version @ agent/transports/codex_app_server.py:parse_codex_version */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server.py",
@@ -66253,16 +66477,24 @@
             "decorators": [],
             "line_number": 387
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_app_server_remaining.c",
+          "c_function": "cas_check_codex_binary",
+          "pop_annotation": {
+            "c_function": "cas_check_codex_binary",
+            "python_functions": [
+              "check_codex_binary"
+            ],
+            "c_file": "src/agent/port_codex_app_server_remaining.c",
+            "python_file": "agent/transports/codex_app_server.py",
+            "line": 129,
+            "is_consolidated": false,
+            "full_text": "/* PoP: check_codex_binary @ agent/transports/codex_app_server.py:check_codex_binary */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
