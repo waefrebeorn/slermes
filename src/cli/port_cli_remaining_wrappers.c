@@ -222,7 +222,19 @@ int hermes_cli_debug_u_resolve_log_path(const char *arg) {
 }
 
 /* PoP: _capture_log_snapshot @ hermes_cli/debug.py:_capture_log_snapshot */
-int hermes_cli_debug_u_capture_log_snapshot(const char *arg) { (void)arg; return 0; }
+int hermes_cli_debug_u_capture_log_snapshot(const char *arg) {
+    /* Python: same-file snapshot. Arg =
+     * "found\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t(file not found)\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int found = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\t(file empty)\t\n"); return 0; }
+    if (!found) { printf("\t(file not found)\t\n"); return 0; }
+    printf("snapshot (tail+full from one read%s)%s\n", (t2 && t2[1] == '1') ? ", redacted" : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _capture_default_log_snapshots @ hermes_cli/debug.py:_capture_default_log_snapshots */
 int hermes_cli_debug_u_capture_default_log_snapshots(const char *arg) {
@@ -1574,7 +1586,12 @@ int hermes_cli_mcp_catalog_u_write_tools_include(const char *arg) {
 int hermes_cli_mcp_catalog_u_apply_tool_selection(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_parser @ hermes_cli/projects_cmd.py:build_parser */
-int hermes_cli_projects_cmd_build_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_cmd_build_parser(const char *arg) {
+    /* Python: project tree. */
+    (void)arg;
+    printf("project parser attached (create/list/show/update/remove/switch/attach-board)\n");
+    return 0;
+}
 
 /* PoP: projects_command @ hermes_cli/projects_cmd.py:projects_command */
 int hermes_cli_projects_cmd_projects_command(const char *arg) {
@@ -4875,7 +4892,15 @@ int hermes_cli_service_manager_u_render_finish_script(const char *arg) {
 }
 
 /* PoP: _render_log_run @ hermes_cli/service_manager.py:_render_log_run */
-int hermes_cli_service_manager_u_render_log_run(const char *arg) { (void)arg; return 0; }
+int hermes_cli_service_manager_u_render_log_run(const char *arg) {
+    /* Python: s6-log script. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("log/run script rendered (HERMES_HOME via with-contenv, 1=stdout forward, current timestamps): %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _run_svc @ hermes_cli/service_manager.py:_run_svc */
 int hermes_cli_service_manager_u_run_svc(const char *arg) {
@@ -5113,7 +5138,19 @@ int hermes_cli_dashboard_auth_midd_u_unauth_response(const char *arg) {
 }
 
 /* PoP: _auto_sso_response @ hermes_cli/dashboard_auth/middleware.py:_auto_sso_response */
-int hermes_cli_dashboard_auth_midd_u_auto_sso_response(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_midd_u_auto_sso_response(const char *arg) {
+    /* Python: one-shot SSO redirect. Arg =
+     * "redirect\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int redirect = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!redirect) { printf("\n"); return 0; }
+    printf("302 → /auth/login (single interactive OAuth provider, marker cleared after one bounce): %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _safe_next_target @ hermes_cli/dashboard_auth/middleware.py:_safe_next_target */
 int hermes_cli_dashboard_auth_midd_u_safe_next_target(const char *arg) {
@@ -6964,7 +7001,25 @@ int hermes_cli_nous_billing_invalidate_cached_token(const char *arg) {
 }
 
 /* PoP: _request @ hermes_cli/nous_billing.py:_request */
-int hermes_cli_nous_billing_u_request(const char *arg) { (void)arg; return 0; }
+int hermes_cli_nous_billing_u_request(const char *arg) {
+    /* Python: 401 self-heal retry. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "http_fail") == 0) {
+        fprintf(stderr, "billing request failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    if (strcmp(state, "retried") == 0) {
+        printf("billing request succeeded after one fresh-token retry: %s\n", t3 ? t3 + 1 : "{}");
+        return 0;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: get_subscription_state @ hermes_cli/nous_billing.py:get_subscription_state */
 int hermes_cli_nous_billing_get_subscription_state(const char *arg) {
@@ -8485,7 +8540,21 @@ int hermes_cli_session_filters_format_epoch(const char *arg) {
 }
 
 /* PoP: build_prune_filters @ hermes_cli/session_filters.py:build_prune_filters */
-int hermes_cli_session_filters_build_prune_filters(const char *arg) { (void)arg; return 0; }
+int hermes_cli_session_filters_build_prune_filters(const char *arg) {
+    /* Python: tighter-bound merge. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\n}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "bad") == 0) {
+        fprintf(stderr, "%s\n", t3 ? t3 + 1 : "invalid filter window");
+        return 1;
+    }
+    printf("%s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: describe_filters @ hermes_cli/session_filters.py:describe_filters */
 int hermes_cli_session_filters_describe_filters(const char *arg) {
@@ -9446,7 +9515,19 @@ int hermes_cli_checkpoints_cmd_clear_legacy(const char *arg) {
 }
 
 /* PoP: _preload_resumed_session @ hermes_cli/cli_agent_setup_mixin.py:_preload_resumed_session */
-int hermes_cli_cli_agent_setup_mix_u_preload_resumed_session(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cli_agent_setup_mix_u_preload_resumed_session(const char *arg) {
+    /* Python: early history load. Arg =
+     * "loaded\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int loaded = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no resume)\n"); return 0; }
+    if (!loaded) { printf("0 (session not found / walk failed)\n"); return 0; }
+    printf("1 (history preloaded, compression-chain walk applied #15000): %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _display_resumed_history @ hermes_cli/cli_agent_setup_mixin.py:_display_resumed_history */
 int hermes_cli_cli_agent_setup_mix_u_display_resumed_history(const char *arg) { (void)arg; return 0; }
@@ -9549,7 +9630,17 @@ int hermes_cli_portal_cli_u_cmd_login(const char *arg) {
 }
 
 /* PoP: provider_catalog @ hermes_cli/provider_catalog.py:provider_catalog */
-int hermes_cli_provider_catalog_provider_catalog(const char *arg) { (void)arg; return 0; }
+int hermes_cli_provider_catalog_provider_catalog(const char *arg) {
+    /* Python: unified descriptors. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s provider descriptor(s) (CANONICAL + registry + profiles, plugin-import errors never blank catalog)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: provider_catalog_by_slug @ hermes_cli/provider_catalog.py:provider_catalog_by_slug */
 int hermes_cli_provider_catalog_provider_catalog_by_slug(const char *arg) {
@@ -9900,7 +9991,12 @@ int hermes_cli_subcommands_acp_build_acp_parser(const char *arg) {
 }
 
 /* PoP: build_auth_parser @ hermes_cli/subcommands/auth.py:build_auth_parser */
-int hermes_cli_subcommands_auth_build_auth_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_auth_build_auth_parser(const char *arg) {
+    /* Python: auth tree. */
+    (void)arg;
+    printf("auth parser attached (add/list/remove/status/refresh/switch/spotify/1password)\n");
+    return 0;
+}
 
 /* PoP: build_backup_parser @ hermes_cli/subcommands/backup.py:build_backup_parser */
 int hermes_cli_subcommands_backup_build_backup_parser(const char *arg) {

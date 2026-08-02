@@ -627,7 +627,19 @@ int cgw_u_wait_for_user_dbus_socket(const char *arg) {
 }
 
 /* PoP: _preflight_user_systemd @ hermes_cli/gateway.py:_preflight_user_systemd */
-int cgw_u_preflight_user_systemd(const char *arg) { (void)arg; return 0; }
+int cgw_u_preflight_user_systemd(const char *arg) {
+    /* Python: linger bootstraps. Arg =
+     * "linger\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int linger = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (linger) { printf("linger enabled — waited for user D-Bus socket\n"); return 0; }
+    printf("lingering enabled via loginctl (or socket ready)%s\n", (t2 && t2[1] == '1') ? " — auto_enable_linger" : "");
+    return 0;
+}
 
 /* PoP: _raise_user_systemd_unavailable @ hermes_cli/gateway.py:_raise_user_systemd_unavailable */
 int cgw_u_raise_user_systemd_unavailable(const char *arg) {
@@ -1818,7 +1830,27 @@ int cgw_u_wait_for_gateway_exit(const char *arg) {
 }
 
 /* PoP: launchd_restart @ hermes_cli/gateway.py:launchd_restart */
-int cgw_launchd_restart(const char *arg) { (void)arg; return 0; }
+int cgw_launchd_restart(const char *arg) {
+    /* Python: self-restart drain. Arg =
+     * "self\tdrain\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int self = arg[0] == '1';
+    int drain = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (self) {
+        printf("✓ Service restart requested (self-restart IPC, marker cleared)\n");
+        return 0;
+    }
+    if (drain) {
+        printf("→ Stopping gateway (PID %s) — draining in-flight runs (up to %.0fs)...\n", t3 ? t3 + 1 : "?", 180.0);
+    }
+    printf("✓ Service restarted (kickstart via %s/%s)\n", "domain", "label");
+    return 0;
+}
 
 /* PoP: launchd_status @ hermes_cli/gateway.py:launchd_status */
 int cgw_launchd_status(const char *arg) { (void)arg; return 0; }

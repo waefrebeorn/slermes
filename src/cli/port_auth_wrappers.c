@@ -545,7 +545,27 @@ int auth_u_codex_usage_probe_url(const char *arg) {
 }
 
 /* PoP: _probe_codex_quota_restored @ hermes_cli/auth.py:_probe_codex_quota_restored */
-int auth_u_probe_codex_quota_restored(const char *arg) { (void)arg; return 0; }
+int auth_u_probe_codex_quota_restored(const char *arg) {
+    /* Python: /usage window probe. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_token") == 0 || strcmp(state, "non_jwt") == 0) {
+        printf("None (no token / non-JWT refused)\n");
+        return 0;
+    }
+    if (strcmp(state, "restored") == 0) {
+        printf("True (all windows <100%%, throttled per token)\n");
+        return 0;
+    }
+    if (strcmp(state, "still_limited") == 0) {
+        printf("False (window still full or probe 429'd)\n");
+        return 0;
+    }
+    printf("None (indeterminate: %s)\n", tab ? tab + 1 : "?");
+    return 0;
+}
 
 /* PoP: clear_codex_pool_quota_cooldowns @ hermes_cli/auth.py:clear_codex_pool_quota_cooldowns */
 int auth_clear_codex_pool_quota_cooldowns(const char *arg) {

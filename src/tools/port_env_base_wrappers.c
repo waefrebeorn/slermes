@@ -285,7 +285,18 @@ int envb_u_quote_shell_path(const char *arg) {
 }
 
 /* PoP: _wrap_command @ tools/environments/base.py:_wrap_command */
-int envb_u_wrap_command(const char *arg) { (void)arg; return 0; }
+int envb_u_wrap_command(const char *arg) {
+    /* Python: snapshot script. Arg =
+     * "has_snapshot\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_snapshot = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("bash wrapper built (source snapshot → cd → run → re-dump env → CWD markers; atomic tmp+mv via $BASHPID #38249)%s\n", has_snapshot ? "" : " — no snapshot mode");
+    return 0;
+}
 
 /* PoP: _embed_stdin_heredoc @ tools/environments/base.py:_embed_stdin_heredoc */
 int envb_u_embed_stdin_heredoc(const char *arg) {

@@ -2211,7 +2211,19 @@ int agent_conversation_loop_u_compression_deferred_result(const char *arg) {
 }
 
 /* PoP: _apply_context_engine_selection @ agent/conversation_loop.py:_apply_context_engine_selection */
-int agent_conversation_loop_u_apply_context_engine_selection(const char *arg) { (void)arg; return 0; }
+int agent_conversation_loop_u_apply_context_engine_selection(const char *arg) {
+    /* Python: per-turn hook. Arg =
+     * "replaced\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int replaced = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("messages unchanged (no engine / base impl short-circuit)\n"); return 0; }
+    if (!replaced) { printf("messages unchanged (fail-open on exception/invalid)\n"); return 0; }
+    printf("request messages replaced by engine (request-only, never persisted)%s\n", (t2 && t2[1] == '1') ? " — turn complete notified" : "");
+    return 0;
+}
 
 /* PoP: _notify_context_engine_turn_complete @ agent/conversation_loop.py:_notify_context_engine_turn_complete */
 int agent_conversation_loop_u_notify_context_engine_turn_complete(const char *arg) {

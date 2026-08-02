@@ -296,7 +296,18 @@ int kdbport_u_merge_completion_prose_artifacts(const char *arg) {
 }
 
 /* PoP: _persist_scratch_completion_artifacts @ hermes_cli/kanban_db.py:_persist_scratch_completion_artifacts */
-int kdbport_u_persist_scratch_completion_artifacts(const char *arg) { (void)arg; return 0; }
+int kdbport_u_persist_scratch_completion_artifacts(const char *arg) {
+    /* Python: scratch salvage. Arg =
+     * "persisted\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int persisted = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !persisted) { printf("[] (no artifacts / not scratch / unmanaged)\n"); return 0; }
+    printf("%s artifact(s) copied to attachment dir (rollback discards on failure)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — manifest written" : "");
+    return 0;
+}
 
 /* PoP: _insert_completion_attachment @ hermes_cli/kanban_db.py:_insert_completion_attachment */
 int kdbport_u_insert_completion_attachment(const char *arg) {

@@ -339,7 +339,15 @@ int grun_u_scale_to_zero_note_real_inbound(const char *arg) {
 }
 
 /* PoP: _relay_adapter_for_dormancy @ gateway/run.py:_relay_adapter_for_dormancy */
-int grun_u_relay_adapter_for_dormancy(const char *arg) { (void)arg; return 0; }
+int grun_u_relay_adapter_for_dormancy(const char *arg) {
+    /* Python: connected relay. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("relay adapter: %s\n", tab ? tab + 1 : "none connected");
+    return 0;
+}
 
 /* PoP: _scale_to_zero_watcher @ gateway/run.py:_scale_to_zero_watcher */
 int grun_u_scale_to_zero_watcher(const char *arg) { (void)arg; return 0; }

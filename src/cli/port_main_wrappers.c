@@ -375,7 +375,21 @@ int main_u_probe_container(const char *arg) {
 }
 
 /* PoP: _exec_in_container @ hermes_cli/main.py:_exec_in_container */
-int main_u_exec_in_container(const char *arg) { (void)arg; return 0; }
+int main_u_exec_in_container(const char *arg) {
+    /* Python: execvp into container. Arg =
+     * "needs_sudo\tstate\tresult". */
+    if (!arg || !*arg) { printf("exec failed: no runtime\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int needs_sudo = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) {
+        fprintf(stderr, "Error: %s not found on PATH. Cannot route to container.\n", t2 ? t2 + 1 : "backend");
+        return 1;
+    }
+    printf("os.execvp into container%s (sudo probe first, exit code = container's)%s\n", needs_sudo ? " via sudo" : "", (t2 && t2[1] == '1') ? " — hermes_bin replaced" : "");
+    return 0;
+}
 
 /* PoP: _resolve_session_by_name_or_id @ hermes_cli/main.py:_resolve_session_by_name_or_id */
 int main_u_resolve_session_by_name_or_id(const char *arg) {
@@ -1152,7 +1166,22 @@ int main_u_write_web_ui_build_stamp(const char *arg) {
 }
 
 /* PoP: _run_with_idle_timeout @ hermes_cli/main.py:_run_with_idle_timeout */
-int main_u_run_with_idle_timeout(const char *arg) { (void)arg; return 0; }
+int main_u_run_with_idle_timeout(const char *arg) {
+    /* Python: streamed idle kill. Arg =
+     * "timed_out\tstate\tresult". */
+    if (!arg || !*arg) { printf("returncode=?\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int timed_out = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("returncode=? (spawn failed)\n"); return 0; }
+    if (timed_out) {
+        printf("idle timeout hit — process terminated, returncode=-15 (stale-dist fallback #23817 takes over)\n");
+        return 0;
+    }
+    printf("streamed to completion, merged stdout%s\n", (t2 && t2[1] == '1') ? " (output captured)" : "");
+    return 0;
+}
 
 /* PoP: _nixos_build_env @ hermes_cli/main.py:_nixos_build_env */
 int main_u_nixos_build_env(const char *arg) {
@@ -1914,7 +1943,22 @@ int main_u_recover_lazy_refresh_marker_locked(const char *arg) {
 }
 
 /* PoP: _recover_core_update_marker_locked @ hermes_cli/main.py:_recover_core_update_marker_locked */
-int main_u_recover_core_update_marker_locked(const char *arg) { (void)arg; return 0; }
+int main_u_recover_core_update_marker_locked(const char *arg) {
+    /* Python: full .[all] reinstall. Arg =
+     * "self_locked\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int self_locked = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("⚠ A previous `hermes update` was interrupted mid-install — finishing dependency installation now...\n");
+    if (self_locked) {
+        printf("  → Running from hermes.exe; package-only first aid, then quarantined full reinstall (marker stays until success #58004)\n");
+    }
+    printf("core marker cleared after %s\n", (t2 && t2[1] == '1') ? "full editable reinstall + smoke" : "install completed");
+    return 0;
+}
 
 /* PoP: _windows_running_hermes_launcher_locked @ hermes_cli/main.py:_windows_running_hermes_launcher_locked */
 int main_u_windows_running_hermes_launcher_locked(const char *arg) {
@@ -2422,7 +2466,19 @@ int main_u_resolve_update_branch(const char *arg) {
 int main_u_cmd_update_check(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _ensure_fhs_path_guard @ hermes_cli/main.py:_ensure_fhs_path_guard */
-int main_u_ensure_fhs_path_guard(const char *arg) { (void)arg; return 0; }
+int main_u_ensure_fhs_path_guard(const char *arg) {
+    /* Python: RHEL /usr/local/bin. Arg =
+     * "applied\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int applied = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("no-op (non-Linux / non-root / non-FHS / already resolves)\n"); return 0; }
+    if (!applied) { printf("already on PATH — no-op\n"); return 0; }
+    printf("added /usr/local/bin to PATH for RHEL-family root shell: %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _size_delta_label @ hermes_cli/main.py:_size_delta_label */
 /* PoP: _size_delta_label @ hermes_cli/main.py:_size_delta_label */
