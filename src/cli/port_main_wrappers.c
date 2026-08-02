@@ -450,7 +450,20 @@ int main_u_tui_need_rebuild(const char *arg) {
 }
 
 /* PoP: _ensure_tui_node @ hermes_cli/main.py:_ensure_tui_node */
-int main_u_ensure_tui_node(const char *arg) { (void)arg; return 0; }
+int main_u_ensure_tui_node(const char *arg) {
+    /* Python: node bootstrap. Arg =
+     * "found\tskipped\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int found = arg[0] == '1';
+    int skipped = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state || found || skipped) { printf("no bootstrap needed\n"); return 0; }
+    printf("node+npm ensured, PATH prepended: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _find_bundled_tui @ hermes_cli/main.py:_find_bundled_tui */
 int main_u_find_bundled_tui(const char *arg) {

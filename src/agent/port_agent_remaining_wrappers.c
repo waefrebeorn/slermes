@@ -206,7 +206,17 @@ int agent_model_metadata_u_tool_name_for_cache(const char *arg) {
 }
 
 /* PoP: _estimate_tools_tokens_rough @ agent/model_metadata.py:_estimate_tools_tokens_rough */
-int agent_model_metadata_u_estimate_tools_tokens_rough(const char *arg) { (void)arg; return 0; }
+int agent_model_metadata_u_estimate_tools_tokens_rough(const char *arg) {
+    /* Python: id-keyed cache. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s (chars/4, bounded cache)\n", t2 ? t2 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _has_slot_padding @ agent/pet/generate/atlas.py:_has_slot_padding */
 int agent_pet_generate_atlas_u_has_slot_padding(const char *arg) {

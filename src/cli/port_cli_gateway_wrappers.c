@@ -1805,7 +1805,17 @@ int cgw_u_all_platforms(const char *arg) { (void)arg; return 0; }
 int cgw_u_platform_status(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _runtime_health_lines @ hermes_cli/gateway.py:_runtime_health_lines */
-int cgw_u_runtime_health_lines(const char *arg) { (void)arg; return 0; }
+int cgw_u_runtime_health_lines(const char *arg) {
+    /* Python: stale-record detection. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _set_platform_unauthorized_dm_behavior @ hermes_cli/gateway.py:_set_platform_unauthorized_dm_behavior */
 int cgw_u_set_platform_unauthorized_dm_behavior(const char *arg) {

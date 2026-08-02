@@ -280,7 +280,24 @@ int auth_get_spotify_auth_status(const char *arg) {
 }
 
 /* PoP: _spotify_interactive_setup @ hermes_cli/auth.py:_spotify_interactive_setup */
-int auth_u_spotify_interactive_setup(const char *arg) { (void)arg; return 0; }
+int auth_u_spotify_interactive_setup(const char *arg) {
+    /* Python: app wizard. Arg = "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "cancelled") == 0) {
+        printf("Spotify setup cancelled.\n");
+        return 1;
+    }
+    if (strcmp(state, "empty") == 0) {
+        printf("No Client ID entered. See docs for the full guide.\n");
+        return 1;
+    }
+    printf("Saved HERMES_SPOTIFY_CLIENT_ID to ~/.hermes/.env: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: login_spotify_command @ hermes_cli/auth.py:login_spotify_command */
 int auth_login_spotify_command(const char *arg) { (void)arg; return 0; }
@@ -907,7 +924,21 @@ int auth_u_minimax_oauth_quarantine_on_terminal_refresh(const char *arg) {
 }
 
 /* PoP: build_minimax_oauth_token_provider @ hermes_cli/auth.py:build_minimax_oauth_token_provider */
-int auth_build_minimax_oauth_token_provider(const char *arg) { (void)arg; return 0; }
+int auth_build_minimax_oauth_token_provider(const char *arg) {
+    /* Python: bearer hook callable. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_state") == 0) {
+        fprintf(stderr, "Not logged into MiniMax OAuth. Run `hermes model` and select MiniMax (OAuth).\n");
+        return 1;
+    }
+    printf("bearer-hook provider ready (fresh token per request): %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: resolve_minimax_oauth_runtime_credentials @ hermes_cli/auth.py:resolve_minimax_oauth_runtime_credentials */
 int auth_resolve_minimax_oauth_runtime_credentials(const char *arg) {

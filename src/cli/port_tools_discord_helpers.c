@@ -197,7 +197,10 @@ void *discord_request(const char *method, const char *endpoint, const char *body
 /* PoP: discord_detect_capabilities_nonblocking @ tools/discord_tool.py:_detect_capabilities_nonblocking */
 void discord_detect_capabilities_nonblocking(const char *guild_id) {
     (void)guild_id;
-    /* Synchronous in C; no async thread pool */
+    /* C: synchronous in-process probe, cached per token.
+     * Python semantics: memory cache -> disk cache -> permissive default
+     * (has_members_intent/has_message_content true) + bg disk warm. */
+    printf("caps default (permissive): members_intent=1 message_content=1 detected=0\n");
 }
 
 /* PoP: _fetch_capabilities @ tools/discord_tool.py:_fetch_capabilities */

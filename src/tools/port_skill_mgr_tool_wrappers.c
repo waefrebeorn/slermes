@@ -212,7 +212,25 @@ int smt_u_add_description_prompt_preview(const char *arg) {
 }
 
 /* PoP: _create_skill @ tools/skill_manager_tool.py:_create_skill */
-int smt_u_create_skill(const char *arg) { (void)arg; return 0; }
+int smt_u_create_skill(const char *arg) {
+    /* Python: create + scan rollback. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"success\": false}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "exists") == 0) {
+        printf("{\"success\": false, \"error\": \"A skill named '%s' already exists.\"}\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    if (strcmp(state, "scan_blocked") == 0) {
+        printf("{\"success\": false, \"error\": \"%s\"}\n", t3 ? t3 + 1 : "security scan blocked");
+        return 0;
+    }
+    printf("{\"success\": true, \"message\": \"Skill '%s' created.\", \"hint\": \"add files via skill_manage(write_file)\u2026\"}\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _edit_skill @ tools/skill_manager_tool.py:_edit_skill */
 int smt_u_edit_skill(const char *arg) {

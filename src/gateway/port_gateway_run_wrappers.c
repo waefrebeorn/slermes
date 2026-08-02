@@ -92,7 +92,20 @@ int grun_u_wire_teams_pipeline_runtime(const char *arg) {
 }
 
 /* PoP: _warn_if_docker_media_delivery_is_risky @ gateway/run.py:_warn_if_docker_media_delivery_is_risky */
-int grun_u_warn_if_docker_media_delivery_is_risky(const char *arg) { (void)arg; return 0; }
+int grun_u_warn_if_docker_media_delivery_is_risky(const char *arg) {
+    /* Python: export-mount warn. Arg =
+     * "docker\thas_platforms\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int docker = arg[0] == '1';
+    int has_platforms = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state || !docker || !has_platforms) { printf("no warning\n"); return 0; }
+    printf("WARN: docker gateway lacks explicit output mount — MEDIA delivery can fail for container-local paths: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _set_adapter_auto_tts_disabled @ gateway/run.py:_set_adapter_auto_tts_disabled */
 int grun_u_set_adapter_auto_tts_disabled(const char *arg) {

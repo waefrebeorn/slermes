@@ -98,7 +98,15 @@ int envl_u_cwd_usable(const char *arg) {
 }
 
 /* PoP: _resolve_safe_cwd @ tools/environments/local.py:_resolve_safe_cwd */
-int envl_u_resolve_safe_cwd(const char *arg) { (void)arg; return 0; }
+int envl_u_resolve_safe_cwd(const char *arg) {
+    /* Python: ancestor walk. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _build_provider_env_blocklist @ tools/environments/local.py:_build_provider_env_blocklist */
 int envl_u_build_provider_env_blocklist(const char *arg) { (void)arg; return 0; }

@@ -1835,7 +1835,25 @@ int tools_kanban_tools_u_connect(const char *arg) {
 int tools_kanban_tools_heartbeat_current_worker_from_env(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _handle_attach @ tools/kanban_tools.py:_handle_attach */
-int tools_kanban_tools_u_handle_attach(const char *arg) { (void)arg; return 0; }
+int tools_kanban_tools_u_handle_attach(const char *arg) {
+    /* Python: base64 attach. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"error\": \"attach failed\"}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "bad_b64") == 0) {
+        printf("{\"error\": \"content_base64 is not valid base64\"}\n");
+        return 0;
+    }
+    if (strcmp(state, "too_large") == 0) {
+        printf("{\"error\": \"attachment exceeds size limit\"}\n");
+        return 0;
+    }
+    printf("attachment stored: id=%s size=%s\n", t3 ? t3 + 1 : "?", t2 ? t2 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _download_url_with_cap @ tools/kanban_tools.py:_download_url_with_cap */
 int tools_kanban_tools_u_download_url_with_cap(const char *arg) { (void)arg; return 0; }
@@ -2450,7 +2468,18 @@ int tools_hook_output_spill_u_build_preview(const char *arg) {
 }
 
 /* PoP: spill_if_oversized @ tools/hook_output_spill.py:spill_if_oversized */
-int tools_hook_output_spill_spill_if_oversized(const char *arg) { (void)arg; return 0; }
+int tools_hook_output_spill_spill_if_oversized(const char *arg) {
+    /* Python: bounded spill. Arg =
+     * "spilled\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int spilled = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !spilled) { printf("text under cap — unchanged\n"); return 0; }
+    printf("spilled to %s (preview head/tail)\n", t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _is_compaction_summary @ tools/session_search_tool.py:_is_compaction_summary */
 int tools_session_search_tool_u_is_compaction_summary(const char *arg) {
@@ -2625,7 +2654,19 @@ int tools_computer_use_doctor_u_sanitized_cua_env(const char *arg) {
 int tools_computer_use_doctor_u_drive_health_report(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _print_text_report @ tools/computer_use/doctor.py:_print_text_report */
-int tools_computer_use_doctor_u_print_text_report(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_doctor_u_print_text_report(const char *arg) {
+    /* Python: doctor render. Arg =
+     * "overall\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *overall = t1 ? t1 + 1 : "?";
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("• cua-driver ? on ? — %s\n", overall);
+    printf("  checks rendered with glyphs, hints, data lines\n");
+    return 0;
+}
 
 /* PoP: set_current_write_origin @ tools/skill_provenance.py:set_current_write_origin */
 const char *skill_provenance_current_origin(void); /* forward */

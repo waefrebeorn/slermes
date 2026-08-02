@@ -328,7 +328,25 @@ int adel_u_current_origin_session_id(const char *arg) {
 int adel_dispatch_async_delegation(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _push_completion_event @ tools/async_delegation.py:_push_completion_event */
-int adel_u_push_completion_event(const char *arg) { (void)arg; return 0; }
+int adel_u_push_completion_event(const char *arg) {
+    /* Python: loud-loss queue push. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_registry") == 0) {
+        fprintf(stderr, "process_registry import failed; result lost: %s\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    if (strcmp(state, "queue_fail") == 0) {
+        fprintf(stderr, "failed to enqueue completion event; result lost: %s\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    printf("completion event pushed: %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: dispatch_async_delegation_batch @ tools/async_delegation.py:dispatch_async_delegation_batch */
 int adel_dispatch_async_delegation_batch(const char *arg) { (void)arg; return 0; }

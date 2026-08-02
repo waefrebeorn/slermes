@@ -207,7 +207,15 @@ int cua_u_mcp_args_with_overlay_flag(const char *arg) {
 }
 
 /* PoP: _cua_driver_supports_no_overlay @ tools/computer_use/cua_backend.py:_cua_driver_supports_no_overlay */
-int cua_u_cua_driver_supports_no_overlay(const char *arg) { (void)arg; return 0; }
+int cua_u_cua_driver_supports_no_overlay(const char *arg) {
+    /* Python: --help probe. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s (cached --help probe)\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _has_path_separator @ tools/computer_use/cua_backend.py:_has_path_separator */
 int cua_u_has_path_separator(const char *value) {

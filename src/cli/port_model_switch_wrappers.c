@@ -144,7 +144,15 @@ int msw_u_resolve_alias_fallback(const char *arg) {
 }
 
 /* PoP: resolve_display_context_length @ hermes_cli/model_switch.py:resolve_display_context_length */
-int msw_resolve_display_context_length(const char *arg) { (void)arg; return 0; }
+int msw_resolve_display_context_length(const char *arg) {
+    /* Python: provider-aware ctx. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _configured_provider_matches @ hermes_cli/model_switch.py:_configured_provider_matches */
 int msw_u_configured_provider_matches(const char *arg) { (void)arg; return 0; }
@@ -193,7 +201,15 @@ int msw_u_extra_headers_from_config(const char *arg) {
 }
 
 /* PoP: prewarm_picker_cache_async @ hermes_cli/model_switch.py:prewarm_picker_cache_async */
-int msw_prewarm_picker_cache_async(const char *arg) { (void)arg; return 0; }
+int msw_prewarm_picker_cache_async(const char *arg) {
+    /* Python: bg daemon warm. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("already warmed — no thread\n"); return 0; }
+    printf("prewarm thread spawned%s\n", (tab && tab[1] == '1') ? " (failed silently — best-effort)" : "");
+    return 0;
+}
 
 /* PoP: _prepend_moa_picker_provider @ hermes_cli/model_switch.py:_prepend_moa_picker_provider */
 int msw_u_prepend_moa_picker_provider(const char *arg) {

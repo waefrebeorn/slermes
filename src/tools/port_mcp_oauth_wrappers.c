@@ -381,4 +381,22 @@ int mcpo_u_maybe_preregister_client(const char *arg) {
 }
 
 /* PoP: build_oauth_auth @ tools/mcp_oauth.py:build_oauth_auth */
-int mcpo_build_oauth_auth(const char *arg) { (void)arg; return 0; }
+int mcpo_build_oauth_auth(const char *arg) {
+    /* Python: OAuthClientProvider. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_sdk") == 0) {
+        fprintf(stderr, "MCP OAuth requested but SDK auth types are not available. Install with: pip install 'mcp>=1.26.0'\n");
+        return 0;
+    }
+    if (strcmp(state, "non_interactive") == 0) {
+        fprintf(stderr, "MCP OAuth: non-interactive environment and no cached tokens. Run `hermes mcp login <name>` interactively first.\n");
+        return 1;
+    }
+    printf("OAuthClientProvider built for %s\n", t3 ? t3 + 1 : "?");
+    return 0;
+}

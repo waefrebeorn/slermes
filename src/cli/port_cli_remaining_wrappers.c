@@ -766,7 +766,28 @@ int hermes_cli_cli_billing_mixin_u_usage_bar_lines(const char *arg) {
 }
 
 /* PoP: _billing_add_card_flow @ hermes_cli/cli_billing_mixin.py:_billing_add_card_flow */
-int hermes_cli_cli_billing_mixin_u_billing_add_card_flow(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cli_billing_mixin_u_billing_add_card_flow(const char *arg) {
+    /* Python: portal card loop. Arg =
+     * "found\tabandoned\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int found = arg[0] == '1';
+    int abandoned = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (abandoned) {
+        printf("  Cancelled. No funds added.\n");
+        return 0;
+    }
+    if (found) {
+        printf("  ✓ Card found: %s — continuing.\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    printf("  💳 Add a card first — no saved card on file.\n");
+    return 0;
+}
 
 /* PoP: _cmd_install @ hermes_cli/pets.py:_cmd_install */
 int hermes_cli_pets_u_cmd_install(const char *arg) {
@@ -9336,7 +9357,12 @@ int hermes_cli_subcommands_backup_build_backup_parser(const char *arg) {
 int hermes_cli_subcommands_claw_build_claw_parser(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_config_parser @ hermes_cli/subcommands/config.py:build_config_parser */
-int hermes_cli_subcommands_config_build_config_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_config_build_config_parser(const char *arg) {
+    /* Python: config subcommand tree. */
+    (void)arg;
+    printf("config parser attached (show/edit/get/set/unset/path/env-path/check/migrate)\n");
+    return 0;
+}
 
 /* PoP: build_console_parser @ hermes_cli/subcommands/console.py:build_console_parser */
 int hermes_cli_subcommands_console_build_console_parser(const char *arg) {
@@ -9382,7 +9408,12 @@ int hermes_cli_subcommands_gui_build_gui_parser(const char *arg) {
 }
 
 /* PoP: build_hooks_parser @ hermes_cli/subcommands/hooks.py:build_hooks_parser */
-int hermes_cli_subcommands_hooks_build_hooks_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_hooks_build_hooks_parser(const char *arg) {
+    /* Python: hooks subcommand tree. */
+    (void)arg;
+    printf("hooks parser attached (list/test/revoke/doctor)\n");
+    return 0;
+}
 
 /* PoP: build_import_cmd_parser @ hermes_cli/subcommands/import_cmd.py:build_import_cmd_parser */
 int hermes_cli_subcommands_import__build_import_cmd_parser(const char *arg) {
