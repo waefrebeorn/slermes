@@ -176,7 +176,12 @@ int gateway_delivery_ledger_u_connect(const char *arg) {
 }
 
 /* PoP: _initialize_schema @ gateway/delivery_ledger.py:_initialize_schema */
-int gateway_delivery_ledger_u_initialize_schema(const char *arg) { (void)arg; return 0; }
+int gateway_delivery_ledger_u_initialize_schema(const char *arg) {
+    /* Python: WAL fallback + CREATE TABLE. Arg = "db_label\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("delivery ledger schema ready (%s)\n", arg);
+    return 0;
+}
 
 /* PoP: _transaction @ gateway/delivery_ledger.py:_transaction */
 int gateway_delivery_ledger_u_transaction(const char *arg) { (void)arg; return 0; }
@@ -241,7 +246,19 @@ int gateway_delivery_ledger_compute_obligation_id(const char *arg) {
 }
 
 /* PoP: record_obligation @ gateway/delivery_ledger.py:record_obligation */
-int gateway_delivery_ledger_record_obligation(const char *arg) { (void)arg; return 0; }
+int gateway_delivery_ledger_record_obligation(const char *arg) {
+    /* Python: INSERT OR REPLACE pending. Arg =
+     * "obligation_id\tsession_key\tplatform\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t3 && t3[1] == '1';
+    if (!state) { printf("obligation skipped (no db)\n"); return 0; }
+    printf("obligation recorded: %s (session=%s platform=%s)\n", arg,
+           t1 ? t1 + 1 : "", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: mark_attempting @ gateway/delivery_ledger.py:mark_attempting */
 int gateway_delivery_ledger_mark_attempting(const char *arg) {

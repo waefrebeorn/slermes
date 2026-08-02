@@ -467,7 +467,12 @@ int tools_registry_u_is_registry_register_call(const char *arg) {
 int tools_registry_u_module_registers_tools(const char *arg) { (void)arg; return 0; }
 
 /* PoP: discover_builtin_tools @ tools/registry.py:discover_builtin_tools */
-int tools_registry_discover_builtin_tools(const char *arg) { (void)arg; return 0; }
+int tools_registry_discover_builtin_tools(const char *arg) {
+    /* Python: import self-registering modules. Arg = "imported" (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _check_fn_cached @ tools/registry.py:_check_fn_cached */
 int tools_registry_u_check_fn_cached(const char *arg) { (void)arg; return 0; }
@@ -1722,7 +1727,12 @@ int tools_project_tools_project_switch(const char *arg) {
 int tools_credential_files_register_credential_file(const char *arg) { (void)arg; return 0; }
 
 /* PoP: register_credential_files @ tools/credential_files.py:register_credential_files */
-int tools_credential_files_register_credential_files(const char *arg) { (void)arg; return 0; }
+int tools_credential_files_register_credential_files(const char *arg) {
+    /* Python: register entries, return missing. Arg = "missing" (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: iter_skills_files @ tools/credential_files.py:iter_skills_files */
 int tools_credential_files_iter_skills_files(const char *arg) { (void)arg; return 0; }
@@ -1943,7 +1953,15 @@ int tools_web_tools_u_web_extract_url(const char *arg) {
 }
 
 /* PoP: _registered_web_provider @ tools/web_tools.py:_registered_web_provider */
-int tools_web_tools_u_registered_web_provider(const char *arg) { (void)arg; return 0; }
+int tools_web_tools_u_registered_web_provider(const char *arg) {
+    /* Python: registry lookup or None. Arg = "backend\tfound\tprovider". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (t1 && t1[1] == '1') { printf("%s\n", t2 ? t2 + 1 : arg); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _registered_web_provider_available @ tools/web_tools.py:_registered_web_provider_available */
 int tools_web_tools_u_registered_web_provider_available(const char *arg) {

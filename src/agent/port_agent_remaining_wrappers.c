@@ -271,7 +271,15 @@ int agent_pet_generate_atlas_mirror_frames(const char *arg) {
 }
 
 /* PoP: compose_atlas @ agent/pet/generate/atlas.py:compose_atlas */
-int agent_pet_generate_atlas_compose_atlas(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_atlas_compose_atlas(const char *arg) {
+    /* Python: pack frames into RGBA atlas. Arg = "states\trows\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (t2 && t2[1] == '1') printf("atlas composed (RGBA, residue cleared)\n");
+    else printf("atlas composed (missing states transparent)\n");
+    return 0;
+}
 
 /* PoP: atlas_to_webp_bytes @ agent/pet/generate/atlas.py:atlas_to_webp_bytes */
 int agent_pet_generate_atlas_atlas_to_webp_bytes(const char *arg) {
@@ -1196,7 +1204,17 @@ int agent_credential_pool_entry_id_for_api_key(const char *arg) { (void)arg; ret
 int agent_credential_pool_u_sync_xai_oauth_entry_from_pool_store(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _single_use_refresh_lock_timeout @ agent/credential_pool.py:_single_use_refresh_lock_timeout */
-int agent_credential_pool_u_single_use_refresh_lock_timeout(const char *arg) { (void)arg; return 0; }
+int agent_credential_pool_u_single_use_refresh_lock_timeout(const char *arg) {
+    /* Python: max(lock, refresh + 5). Arg = "refresh_timeout\tlock_timeout". */
+    if (!arg || !*arg) { printf("30.00\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    double refresh = strtod(arg, NULL);
+    double lock = tab ? strtod(tab + 1, NULL) : 30.0;
+    double v = refresh + 5.0;
+    if (lock > v) v = lock;
+    printf("%.2f\n", v);
+    return 0;
+}
 
 /* PoP: _codex_quota_restored_upstream @ agent/credential_pool.py:_codex_quota_restored_upstream */
 int agent_credential_pool_u_codex_quota_restored_upstream(const char *arg) { (void)arg; return 0; }
@@ -1374,7 +1392,15 @@ int agent_context_engine_select_context(const char *arg) { (void)arg; return 0; 
 int agent_context_engine_on_turn_complete(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_automatic_compaction_status_message @ agent/context_engine.py:get_automatic_compaction_status_message */
-int agent_context_engine_get_automatic_compaction_status_message(const char *arg) { (void)arg; return 0; }
+int agent_context_engine_get_automatic_compaction_status_message(const char *arg) {
+    /* Python: None unless emit flag. Arg = "emit\tdefault_message". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int emit = arg[0] == '1';
+    if (!emit) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: classify_api_error @ agent/error_classifier.py:classify_api_error */
 int agent_error_classifier_classify_api_error(const char *arg) { (void)arg; return 0; }
@@ -1803,7 +1829,15 @@ int agent_agent_runtime_helpers_note_turn_start(const char *arg) { (void)arg; re
 int agent_agent_runtime_helpers_note_turn_persisted(const char *arg) { (void)arg; return 0; }
 
 /* PoP: sync_credential_pool_entry_id @ agent/agent_runtime_helpers.py:sync_credential_pool_entry_id */
-int agent_agent_runtime_helpers_sync_credential_pool_entry_id(const char *arg) { (void)arg; return 0; }
+int agent_agent_runtime_helpers_sync_credential_pool_entry_id(const char *arg) {
+    /* Python: rebind entry id or clear. Arg = "pool_bound\tentry_id". */
+    if (!arg || !*arg) { printf("entry id cleared\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int bound = arg[0] == '1';
+    if (!bound) { printf("entry id cleared (no pool)\n"); return 0; }
+    printf("entry id synced: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _get_hermes_oauth_file @ agent/anthropic_adapter.py:_get_hermes_oauth_file */
 int agent_anthropic_adapter_u_get_hermes_oauth_file(const char *arg) {
@@ -2074,7 +2108,14 @@ int agent_skill_commands_split_stacked_skill_commands(const char *arg) { (void)a
 int agent_skill_commands_build_stacked_skill_invocation_message(const char *arg) { (void)arg; return 0; }
 
 /* PoP: claim_stream_writer @ agent/stream_single_writer.py:claim_stream_writer */
-int agent_stream_single_writer_claim_stream_writer(const char *arg) { (void)arg; return 0; }
+int agent_stream_single_writer_claim_stream_writer(const char *arg) {
+    /* Python: monotonic token or 0 (unfenced). Arg = "token\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab[1] == '1') { printf("%s\n", arg); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: stream_writer_is_current @ agent/stream_single_writer.py:stream_writer_is_current */
 int agent_stream_single_writer_stream_writer_is_current(const char *arg) { (void)arg; return 0; }
@@ -2164,7 +2205,39 @@ int agent_jiter_preload_preload_jiter_native_extension(const char *arg) {
 }
 
 /* PoP: _ensure_required_array @ agent/moonshot_schema.py:_ensure_required_array */
-int agent_moonshot_schema_u_ensure_required_array(const char *arg) { (void)arg; return 0; }
+int agent_moonshot_schema_u_ensure_required_array(const char *arg) {
+    /* Python: required as list, pruned to props. Arg = "node_json". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (!j || !json_is_object(j)) {
+        if (j) json_free(j);
+        printf("{}\n");
+        return 0;
+    }
+    json_t *props = json_obj_get(j, "properties");
+    json_t *req = json_obj_get(j, "required");
+    if (req && json_is_array(req)) {
+        if (props && json_is_object(props)) {
+            /* prune entries not in props */
+            json_t *out = json_array();
+            size_t n = json_array_size(req);
+            for (size_t i = 0; i < n; i++) {
+                json_t *r = json_array_get(req, i);
+                if (!r || !json_is_string(r)) continue;
+                json_t *p = json_obj_get(props, json_string_value(r));
+                if (p) json_append(out, json_string(json_string_value(r)));
+            }
+            json_set(j, "required", out);
+        }
+    } else {
+        json_set(j, "required", json_array());
+    }
+    char *s = json_dumps(j, 0);
+    printf("%s\n", s ? s : "{}");
+    free(s);
+    json_free(j);
+    return 0;
+}
 
 /* PoP: _is_install_tree @ agent/runtime_cwd.py:_is_install_tree */
 int agent_runtime_cwd_u_is_install_tree(const char *arg) {

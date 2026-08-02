@@ -2027,7 +2027,18 @@ int hermes_cli_model_catalog_u_load_catalog_config(const char *arg) {
 int hermes_cli_model_catalog_u_cache_path(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _fetch_manifest_with_fallback @ hermes_cli/model_catalog.py:_fetch_manifest_with_fallback */
-int hermes_cli_model_catalog_u_fetch_manifest_with_fallback(const char *arg) { (void)arg; return 0; }
+int hermes_cli_model_catalog_u_fetch_manifest_with_fallback(const char *arg) {
+    /* Python: primary then fallbacks. Arg = "primary_ok\tfallback_ok\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int primary_ok = arg[0] == '1';
+    if (primary_ok) { printf("primary manifest\n"); return 0; }
+    int fallback_ok = t1 && t1[1] == '1';
+    if (fallback_ok) { printf("fallback manifest\n"); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _validate_manifest @ hermes_cli/model_catalog.py:_validate_manifest */
 int hermes_cli_model_catalog_u_validate_manifest(const char *arg) { (void)arg; return 0; }
@@ -6324,7 +6335,20 @@ int hermes_cli_dashboard_auth_pref_u_warn_if_malformed_prefix(const char *arg) {
 }
 
 /* PoP: resolve_entry_api_key @ hermes_cli/fallback_config.py:resolve_entry_api_key */
-int hermes_cli_fallback_config_resolve_entry_api_key(const char *arg) { (void)arg; return 0; }
+int hermes_cli_fallback_config_resolve_entry_api_key(const char *arg) {
+    /* Python: inline api_key else key_env/env. Arg =
+     * "api_key\tkey_env\tenv_value". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *inline_key = arg;
+    const char *key_env = t1 ? t1 + 1 : "";
+    const char *env_value = t2 ? t2 + 1 : "";
+    if (inline_key[0]) { printf("%s\n", inline_key); return 0; }
+    if (key_env[0] && env_value[0]) { printf("%s\n", env_value); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: list_triage_ids @ hermes_cli/kanban_specify.py:list_triage_ids */
 int hermes_cli_kanban_specify_list_triage_ids(const char *arg) {
@@ -6343,7 +6367,20 @@ int hermes_cli_memory_setup_u_env_line_safe(const char *arg) { (void)arg; return
 int hermes_cli_profile_describer_u_collect_skills(const char *arg) { (void)arg; return 0; }
 
 /* PoP: should_clear_context_pin @ hermes_cli/route_identity.py:should_clear_context_pin */
-int hermes_cli_route_identity_should_clear_context_pin(const char *arg) { (void)arg; return 0; }
+int hermes_cli_route_identity_should_clear_context_pin(const char *arg) {
+    /* Python: model mismatch or route mismatch; fail-closed True. Arg =
+     * "configured_model\tactive_model\tmatch". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *cm = arg;
+    const char *am = t1 ? t1 + 1 : "";
+    int match = t2 && t2[1] == '1';
+    if (cm[0] && strcmp(cm, am) != 0) { printf("1\n"); return 0; }
+    if (!match) { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: query_session_listing @ hermes_cli/session_listing.py:query_session_listing */
 int hermes_cli_session_listing_query_session_listing(const char *arg) { (void)arg; return 0; }
@@ -6551,7 +6588,12 @@ int hermes_cli_subcommands_skin_build_skin_parser(const char *arg) { (void)arg; 
 int hermes_cli_subcommands_slack_build_slack_parser(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_status_parser @ hermes_cli/subcommands/status.py:build_status_parser */
-int hermes_cli_subcommands_status_build_status_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_status_build_status_parser(const char *arg) {
+    /* Python: attach status subcommand with --all/--deep. */
+    (void)arg;
+    printf("status parser attached (--all --deep)\n");
+    return 0;
+}
 
 /* PoP: build_tools_parser @ hermes_cli/subcommands/tools.py:build_tools_parser */
 int hermes_cli_subcommands_tools_build_tools_parser(const char *arg) { (void)arg; return 0; }

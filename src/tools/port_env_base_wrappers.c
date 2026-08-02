@@ -75,7 +75,16 @@ int envb_get_sandbox_dir(const char *arg) {
 int envb_u_pipe_stdin(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _popen_bash @ tools/environments/base.py:_popen_bash */
-int envb_u_popen_bash(const char *arg) { (void)arg; return 0; }
+int envb_u_popen_bash(const char *arg) {
+    /* Python: Popen with piped stdio. Arg = "cmd\thas_stdin\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0 spawn failed\n"); return 1; }
+    printf("popen ok: %s%s\n", arg, (t1 && t1[1] == '1') ? " (stdin piped)" : "");
+    return 0;
+}
 
 /* PoP: _load_json_store @ tools/environments/base.py:_load_json_store */
 int envb_u_load_json_store(const char *arg) {

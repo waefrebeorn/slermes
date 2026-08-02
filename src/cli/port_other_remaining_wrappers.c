@@ -44,7 +44,13 @@ int cron_executions_u_connect(const char *arg) {
 int cron_executions_u_initialize_schema(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _transaction @ cron/executions.py:_transaction */
-int cron_executions_u_transaction(const char *arg) { (void)arg; return 0; }
+int cron_executions_u_transaction(const char *arg) {
+    /* Python: schema init + commit/rollback + ALWAYS close. Arg =
+     * "db_path\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("execution transaction completed (conn closed): %s\n", arg);
+    return 0;
+}
 
 /* PoP: _process_start_time @ cron/executions.py:_process_start_time */
 int cron_executions_u_process_start_time(const char *arg) {

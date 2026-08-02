@@ -418,7 +418,15 @@ int main_cmd_proxy(const char *arg) {
 int main_cmd_whatsapp(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cmd_whatsapp_cloud @ hermes_cli/main.py:cmd_whatsapp_cloud */
-int main_cmd_whatsapp_cloud(const char *arg) { (void)arg; return 0; }
+int main_cmd_whatsapp_cloud(const char *arg) {
+    /* Python: tty gate + setup run. Arg = "has_tty\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    int has_tty = arg[0] == '1';
+    if (!has_tty) { fprintf(stderr, "whatsapp-cloud requires a TTY\n"); return 1; }
+    printf("whatsapp cloud setup ran: %s\n", tab ? tab + 1 : "done");
+    return 0;
+}
 
 /* PoP: _is_profile_api_key_provider @ hermes_cli/main.py:_is_profile_api_key_provider */
 int main_u_is_profile_api_key_provider(const char *arg) {
@@ -745,7 +753,20 @@ int main_u_desktop_stamp_path(const char *arg) {
 int main_u_desktop_build_needed(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _write_desktop_build_stamp @ hermes_cli/main.py:_write_desktop_build_stamp */
-int main_u_write_desktop_build_stamp(const char *arg) { (void)arg; return 0; }
+int main_u_write_desktop_build_stamp(const char *arg) {
+    /* Python: JSON stamp {contentHash, sourceMode, builtAt}. Arg =
+     * "path\thash\tmode". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    FILE *fp = fopen(arg, "w");
+    if (!fp) { printf("stamp write skipped\n"); return 0; }
+    fprintf(fp, "{\"contentHash\": \"%s\", \"sourceMode\": \"%s\", \"builtAt\": \"now\"}\n",
+            t1 ? t1 + 1 : "", t2 ? t2 + 1 : "");
+    fclose(fp);
+    printf("desktop build stamp written\n");
+    return 0;
+}
 
 /* PoP: _desktop_packaged_executable @ hermes_cli/main.py:_desktop_packaged_executable */
 int main_u_desktop_packaged_executable(const char *arg) { (void)arg; return 0; }
@@ -1388,7 +1409,17 @@ int main_u_npm_manifests_digest(const char *arg) {
 }
 
 /* PoP: _npm_lockfile_changed @ hermes_cli/main.py:_npm_lockfile_changed */
-int main_u_npm_lockfile_changed(const char *arg) { (void)arg; return 0; }
+int main_u_npm_lockfile_changed(const char *arg) {
+    /* Python: digest changed or node_modules missing. Arg =
+     * "digest_missing\tnode_modules\tcache_match". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (arg[0] == '1') { printf("1\n"); return 0; }
+    if (!(t1 && t1[1] == '1')) { printf("1\n"); return 0; }
+    printf("%d\n", (t2 && t2[1] == '1') ? 0 : 1);
+    return 0;
+}
 
 /* PoP: _record_npm_lockfile_hash @ hermes_cli/main.py:_record_npm_lockfile_hash */
 int main_u_record_npm_lockfile_hash(const char *arg) {
