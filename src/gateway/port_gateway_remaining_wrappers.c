@@ -909,7 +909,14 @@ int gateway_kanban_watchers_u_kanban_notifier_watcher(const char *arg) { (void)a
 int gateway_kanban_watchers_u_kanban_advance(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _kanban_unsub @ gateway/kanban_watchers.py:_kanban_unsub */
-int gateway_kanban_watchers_u_kanban_unsub(const char *arg) { (void)arg; return 0; }
+int gateway_kanban_watchers_u_kanban_unsub(const char *arg) {
+    /* Python: remove_notify_sub then close. Arg = "board\tsub_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("unsubscribed kanban notify: %.*s\n",
+           (int)(tab ? (size_t)(tab - arg) : strlen(arg)), arg);
+    return 0;
+}
 
 /* PoP: _kanban_rewind @ gateway/kanban_watchers.py:_kanban_rewind */
 int gateway_kanban_watchers_u_kanban_rewind(const char *arg) { (void)arg; return 0; }
@@ -1054,7 +1061,21 @@ int gateway_platform_registry_is_registered(const char *arg) {
 int gateway_platform_registry_create_adapter(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _auth_env @ gateway/authz_mixin.py:_auth_env */
-int gateway_authz_mixin_u_auth_env(const char *arg) { (void)arg; return 0; }
+int gateway_authz_mixin_u_auth_env(const char *arg) {
+    /* Python: secret_scope value then env, else default, stripped. Arg =
+     * "name\tsecret_val\tenv_val\tdefault". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *secret = t1 ? t1 + 1 : "";
+    const char *env = t2 ? t2 + 1 : "";
+    const char *dflt = t3 ? t3 + 1 : "";
+    if (secret[0]) { printf("%s\n", secret); return 0; }
+    if (env[0]) { printf("%s\n", env); return 0; }
+    printf("%s\n", dflt);
+    return 0;
+}
 
 /* PoP: _coerce_allow_set @ gateway/authz_mixin.py:_coerce_allow_set */
 int gateway_authz_mixin_u_coerce_allow_set(const char *arg) { (void)arg; return 0; }

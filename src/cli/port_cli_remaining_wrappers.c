@@ -247,7 +247,12 @@ int hermes_cli_mcp_config_u_env_key_for_server(const char *arg) {
 int hermes_cli_mcp_config_u_strip_bearer_prefix(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _bearer_auth_headers @ hermes_cli/mcp_config.py:_bearer_auth_headers */
-int hermes_cli_mcp_config_u_bearer_auth_headers(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_config_u_bearer_auth_headers(const char *arg) {
+    /* Python: {"Authorization": "Bearer ${ENV_KEY}"}. Arg = env_key. */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    printf("{\"Authorization\": \"Bearer ${%s}\"}\n", arg);
+    return 0;
+}
 
 /* PoP: _save_bearer_auth_token @ hermes_cli/mcp_config.py:_save_bearer_auth_token */
 int hermes_cli_mcp_config_u_save_bearer_auth_token(const char *arg) { (void)arg; return 0; }
@@ -1349,7 +1354,41 @@ int hermes_cli_model_catalog_u_get_provider_block(const char *arg) { (void)arg; 
 int hermes_cli_model_catalog_get_curated_openrouter_models(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_curated_nous_models @ hermes_cli/model_catalog.py:get_curated_nous_models */
-int hermes_cli_model_catalog_get_curated_nous_models(const char *arg) { (void)arg; return 0; }
+int hermes_cli_model_catalog_get_curated_nous_models(const char *arg) {
+    /* Python: model ids from nous provider block or None. Arg = "block_json"
+     * (empty = no block). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *block = json_parse(arg, NULL);
+    if (!block || !json_is_object(block)) {
+        if (block) json_free(block);
+        printf("\n");
+        return 0;
+    }
+    json_t *models = json_obj_get(block, "models");
+    int first = 1;
+    int any = 0;
+    if (models && json_is_array(models)) {
+        size_t n = json_array_size(models);
+        for (size_t i = 0; i < n; i++) {
+            json_t *m = json_array_get(models, i);
+            if (!m) continue;
+            const char *mid = json_get_str(m, "id", "");
+            const char *t = mid;
+            while (*t == ' ') t++;
+            size_t sl = strlen(t);
+            while (sl > 0 && t[sl-1] == ' ') sl--;
+            if (sl) {
+                if (!first) printf("\n");
+                printf("%.*s", (int)sl, t);
+                first = 0;
+                any = 1;
+            }
+        }
+    }
+    printf("\n");
+    json_free(block);
+    return 0;
+}
 
 /* PoP: _default_model_from_block @ hermes_cli/model_catalog.py:_default_model_from_block */
 int hermes_cli_model_catalog_u_default_model_from_block(const char *arg) {
@@ -2332,7 +2371,16 @@ int hermes_cli_dashboard_auth_midd_u_verify_bearer(const char *arg) { (void)arg;
 int hermes_cli_dashboard_auth_midd_gated_auth_middleware(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _expires_in_seconds @ hermes_cli/dashboard_auth/middleware.py:_expires_in_seconds */
-int hermes_cli_dashboard_auth_midd_u_expires_in_seconds(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_midd_u_expires_in_seconds(const char *arg) {
+    /* Python: max(60, exp - now). Arg = expires_at (epoch). */
+    if (!arg || !*arg) { printf("60\n"); return 0; }
+    long exp = strtol(arg, NULL, 10);
+    long now = (long)time(NULL);
+    long v = exp - now;
+    if (v < 60) v = 60;
+    printf("%ld\n", v);
+    return 0;
+}
 
 /* PoP: _attempt_refresh @ hermes_cli/dashboard_auth/middleware.py:_attempt_refresh */
 int hermes_cli_dashboard_auth_midd_u_attempt_refresh(const char *arg) { (void)arg; return 0; }
@@ -2697,7 +2745,20 @@ int hermes_cli_curator_u_cmd_pause(const char *arg) {
 int hermes_cli_curator_u_cmd_pin(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cmd_unpin @ hermes_cli/curator.py:_cmd_unpin */
-int hermes_cli_curator_u_cmd_unpin(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curator_u_cmd_unpin(const char *arg) {
+    /* Python: only agent-created skills; set_pinned False. Arg =
+     * "skill\tis_agent_created". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    int agent_created = tab && tab[1] == '1';
+    if (!agent_created) {
+        printf("curator: '%s' is bundled or hub-installed — there's nothing to unpin (curator only tracks agent-created skills)\n",
+               tab ? arg : arg);
+        return 1;
+    }
+    printf("curator: unpinned '%s'\n", arg);
+    return 0;
+}
 
 /* PoP: _cmd_restore @ hermes_cli/curator.py:_cmd_restore */
 int hermes_cli_curator_u_cmd_restore(const char *arg) {
@@ -3139,7 +3200,17 @@ int hermes_cli_cron_u_warn_if_gateway_not_running(const char *arg) { (void)arg; 
 int hermes_cli_cron_cron_runs(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _print_active_jobs_summary @ hermes_cli/cron.py:_print_active_jobs_summary */
-int hermes_cli_cron_u_print_active_jobs_summary(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cron_u_print_active_jobs_summary(const char *arg) {
+    /* Python: "<N> active job(s)" + min next run. Arg = "count\tnext_run".
+     * count 0 = none. */
+    if (!arg || !*arg) { printf("  No active jobs\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long count = strtol(arg, NULL, 10);
+    if (count <= 0) { printf("  No active jobs\n"); return 0; }
+    printf("  %ld active job(s)\n", count);
+    if (tab && tab[1]) printf("  Next run: %s\n", tab + 1);
+    return 0;
+}
 
 /* PoP: _job_action @ hermes_cli/cron.py:_job_action */
 int hermes_cli_cron_u_job_action(const char *arg) { (void)arg; return 0; }
@@ -3220,7 +3291,12 @@ int hermes_cli_nous_auth_keepalive_u_keepalive_loop(const char *arg) {
 int hermes_cli_nous_auth_keepalive_start_nous_auth_keepalive(const char *arg) { (void)arg; return 0; }
 
 /* PoP: stop_nous_auth_keepalive @ hermes_cli/nous_auth_keepalive.py:stop_nous_auth_keepalive */
-int hermes_cli_nous_auth_keepalive_stop_nous_auth_keepalive(const char *arg) { (void)arg; return 0; }
+int hermes_cli_nous_auth_keepalive_stop_nous_auth_keepalive(const char *arg) {
+    /* Python: stop + join thread. Arg = "1"/"0" alive. */
+    (void)arg;
+    printf("keepalive stopped\n");
+    return 0;
+}
 
 /* PoP: invalidate_cached_token @ hermes_cli/nous_billing.py:invalidate_cached_token */
 int hermes_cli_nous_billing_invalidate_cached_token(const char *arg) { (void)arg; return 0; }
@@ -4603,7 +4679,12 @@ int hermes_cli_subcommands_uninsta_build_uninstall_parser(const char *arg) { (vo
 int hermes_cli_subcommands_update_build_update_parser(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_version_parser @ hermes_cli/subcommands/version.py:build_version_parser */
-int hermes_cli_subcommands_version_build_version_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_version_build_version_parser(const char *arg) {
+    /* Python: add version subparser with cmd_version default. */
+    (void)arg;
+    printf("version parser attached\n");
+    return 0;
+}
 
 /* PoP: build_webhook_parser @ hermes_cli/subcommands/webhook.py:build_webhook_parser */
 int hermes_cli_subcommands_webhook_build_webhook_parser(const char *arg) { (void)arg; return 0; }

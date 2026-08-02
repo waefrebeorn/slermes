@@ -15,7 +15,12 @@
 #include "hermes_json.h"
 
 /* PoP: managed_uv_path @ hermes_cli/managed_uv.py:managed_uv_path */
-int muv_managed_uv_path(const char *arg) { (void)arg; return 0; }
+int muv_managed_uv_path(const char *arg) {
+    /* Python: $HERMES_HOME/bin/uv (uv.exe on Windows). Arg = hermes_home. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s/bin/uv\n", arg);
+    return 0;
+}
 
 /* PoP: managed_python_install_dir @ hermes_cli/managed_uv.py:managed_python_install_dir */
 int muv_managed_python_install_dir(const char *arg) {

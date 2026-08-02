@@ -9,6 +9,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <time.h>
+#include <stdint.h>
 #include "hermes_json.h"
 
 /* Python module global _activity_callback_local.callback. */
@@ -224,7 +226,20 @@ int envb_u_quote_shell_path(const char *arg) {
 int envb_u_wrap_command(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _embed_stdin_heredoc @ tools/environments/base.py:_embed_stdin_heredoc */
-int envb_u_embed_stdin_heredoc(const char *arg) { (void)arg; return 0; }
+int envb_u_embed_stdin_heredoc(const char *arg) {
+    /* Python: command << 'DELIM'\nstdin\nDELIM with random delim. Arg =
+     * "command\tstdin_data". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *cmd = arg;
+    const char *data = tab ? tab + 1 : "";
+    unsigned int r = (unsigned int)(time(NULL) ^ (uintptr_t)arg);
+    r = r * 1103515245 + 12345;
+    char delim[32];
+    snprintf(delim, sizeof(delim), "HERMES_STDIN_%08x", r & 0xffffffffu);
+    printf("%s << '%s'\n%s\n%s\n", cmd, delim, data, delim);
+    return 0;
+}
 
 /* PoP: _wait_for_process @ tools/environments/base.py:_wait_for_process */
 int envb_u_wait_for_process(const char *arg) { (void)arg; return 0; }

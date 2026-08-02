@@ -300,7 +300,16 @@ int tools_homeassistant_tool_u_parse_service_response(const char *arg) { (void)a
 int tools_homeassistant_tool_u_async_call_service(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _handle_list_entities @ tools/homeassistant_tool.py:_handle_list_entities */
-int tools_homeassistant_tool_u_handle_list_entities(const char *arg) { (void)arg; return 0; }
+int tools_homeassistant_tool_u_handle_list_entities(const char *arg) {
+    /* Python: ha_list_entities -> {"result": [...]} or tool_error. Arg =
+     * "domain\tarea\tresult_json". */
+    if (!arg || !*arg) { printf("{\"result\": []}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *result = t2 ? t2 + 1 : "[]";
+    printf("{\"result\": %s}\n", result);
+    return 0;
+}
 
 /* PoP: _handle_get_state @ tools/homeassistant_tool.py:_handle_get_state */
 int tools_homeassistant_tool_u_handle_get_state(const char *arg) { (void)arg; return 0; }
@@ -470,7 +479,16 @@ int tools_x_search_tool_u_get_x_search_timeout_seconds(const char *arg) {
 }
 
 /* PoP: _get_x_search_retries @ tools/x_search_tool.py:_get_x_search_retries */
-int tools_x_search_tool_u_get_x_search_retries(const char *arg) { (void)arg; return 0; }
+int tools_x_search_tool_u_get_x_search_retries(const char *arg) {
+    /* Python: max(0, int(cfg retries)) or default. Arg = "raw\tdefault". */
+    if (!arg || !*arg) { printf("2\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long dflt = tab ? strtol(tab + 1, NULL, 10) : 2;
+    long v = strtol(arg, NULL, 10);
+    if (v < 0) v = 0;
+    printf("%ld\n", v);
+    return 0;
+}
 
 /* PoP: _resolve_xai_bearer @ tools/x_search_tool.py:_resolve_xai_bearer */
 int tools_x_search_tool_u_resolve_xai_bearer(const char *arg) { (void)arg; return 0; }

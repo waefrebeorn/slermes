@@ -466,7 +466,15 @@ int agent_tool_dispatch_helpers_u_maybe_wrap_untrusted(const char *arg) {
 }
 
 /* PoP: can_change_plan @ agent/subscription_view.py:can_change_plan */
-int agent_subscription_view_can_change_plan(const char *arg) { (void)arg; return 0; }
+int agent_subscription_view_can_change_plan(const char *arg) {
+    /* Python: raw if set else is_admin. Arg = "raw\tadmin" (raw empty =
+     * None). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (arg[0]) { printf("%s\n", arg); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _parse_current @ agent/subscription_view.py:_parse_current */
 int agent_subscription_view_u_parse_current(const char *arg) { (void)arg; return 0; }
@@ -759,7 +767,12 @@ int agent_agent_init_u_build_codex_gpt5_autoraise_notice(const char *arg) { (voi
 int agent_agent_init_u_resolve_compression_threshold(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _codex_gpt55_autoraise_notice_marker @ agent/agent_init.py:_codex_gpt55_autoraise_notice_marker */
-int agent_agent_init_u_codex_gpt55_autoraise_notice_marker(const char *arg) { (void)arg; return 0; }
+int agent_agent_init_u_codex_gpt55_autoraise_notice_marker(const char *arg) {
+    /* Python: $HERMES_HOME/.codex_gpt55_autoraise_notice. Arg = hermes_home. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s/.codex_gpt55_autoraise_notice\n", arg);
+    return 0;
+}
 
 /* PoP: _codex_gpt55_autoraise_notice_state @ agent/agent_init.py:_codex_gpt55_autoraise_notice_state */
 int agent_agent_init_u_codex_gpt55_autoraise_notice_state(const char *arg) { (void)arg; return 0; }

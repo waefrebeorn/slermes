@@ -38,7 +38,27 @@ int nous_tool_gateway_entitled(const char *arg) {
 }
 
 /* PoP: tool_gateway_entitled_for @ hermes_cli/nous_account.py:tool_gateway_entitled_for */
-int nous_tool_gateway_entitled_for(const char *arg) { (void)arg; return 0; }
+int nous_tool_gateway_entitled_for(const char *arg) {
+    /* Python: paid -> True; else enabled && coverage[cat]. Arg =
+     * "paid\tenabled\tcoverage_json\tcategory". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    if (arg[0] == '1') { printf("1\n"); return 0; }
+    int enabled = t1 && t1[1] == '1';
+    if (!enabled) { printf("0\n"); return 0; }
+    const char *cov = t2 ? t2 + 1 : "";
+    const char *cat = t3 ? t3 + 1 : "";
+    json_t *j = json_parse(cov, NULL);
+    if (j && json_is_object(j)) {
+        json_t *v = json_obj_get(j, cat);
+        if (v && json_is_true(v)) { printf("1\n"); json_free(j); return 0; }
+    }
+    if (j) json_free(j);
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: nous_portal_billing_url @ hermes_cli/nous_account.py:nous_portal_billing_url */
 int nous_nous_portal_billing_url(const char *arg) { (void)arg; return 0; }
@@ -53,7 +73,20 @@ int nous_format_nous_portal_entitlement_message(const char *arg) { (void)arg; re
 int nous_u_no_paid_access_message(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _credit_detail @ hermes_cli/nous_account.py:_credit_detail */
-int nous_u_credit_detail(const char *arg) { (void)arg; return 0; }
+int nous_u_credit_detail(const char *arg) {
+    /* Python: " (usable $X, subscription $Y, purchased $Z)" of present parts.
+     * Arg = "usable\tsubscription\tpurchased" (empty = absent). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int first = 1;
+    printf(" (");
+    if (arg[0]) { printf("usable $%.2f", strtod(arg, NULL)); first = 0; }
+    if (t1 && t1[1]) { if (!first) printf(", "); printf("subscription $%.2f", strtod(t1 + 1, NULL)); first = 0; }
+    if (t2 && t2[1]) { if (!first) printf(", "); printf("purchased $%.2f", strtod(t2 + 1, NULL)); first = 0; }
+    printf(")\n");
+    return 0;
+}
 
 /* PoP: reset_nous_portal_account_info_cache @ hermes_cli/nous_account.py:reset_nous_portal_account_info_cache */
 int nous_reset_nous_portal_account_info_cache(const char *arg) {

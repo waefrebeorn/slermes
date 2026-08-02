@@ -180,7 +180,14 @@ int tt_u_count_real_sudo_invocations(const char *arg) { (void)arg; return 0; }
 int tt_record_session_cwd(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_session_cwd @ tools/terminal_tool.py:get_session_cwd */
-int tt_get_session_cwd(const char *arg) { (void)arg; return 0; }
+int tt_get_session_cwd(const char *arg) {
+    /* Python: recorded cwd for key or None. Arg = "key\tcwd" (cwd empty =
+     * none). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: register_task_env_overrides @ tools/terminal_tool.py:register_task_env_overrides */
 int tt_register_task_env_overrides(const char *arg) { (void)arg; return 0; }

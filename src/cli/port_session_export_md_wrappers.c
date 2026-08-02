@@ -30,7 +30,20 @@ int sexmd_u_iso_timestamp(const char *arg) {
 }
 
 /* PoP: _frontmatter_value @ hermes_cli/session_export_md.py:_frontmatter_value */
-int sexmd_u_frontmatter_value(const char *arg) { (void)arg; return 0; }
+int sexmd_u_frontmatter_value(const char *arg) {
+    /* Python: null/true/false/json/string-json. Arg = "value\ttype"
+     * (type: none/bool/int/float/list/str). */
+    if (!arg || !*arg) { printf("null\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *val = arg;
+    const char *typ = tab ? tab + 1 : "str";
+    if (strcmp(typ, "none") == 0 || strcmp(val, "None") == 0) { printf("null\n"); return 0; }
+    if (strcmp(typ, "bool") == 0) { printf("%s\n", (val[0] == '1' || strcmp(val, "true") == 0) ? "true" : "false"); return 0; }
+    if (strcmp(typ, "list") == 0) { printf("%s\n", val); return 0; }
+    if (strcmp(typ, "int") == 0 || strcmp(typ, "float") == 0) { printf("%s\n", val); return 0; }
+    printf("\"%s\"\n", val);
+    return 0;
+}
 
 /* PoP: _frontmatter_line @ hermes_cli/session_export_md.py:_frontmatter_line */
 int sexmd_u_frontmatter_line(const char *arg) {

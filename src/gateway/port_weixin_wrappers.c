@@ -18,7 +18,23 @@
 int wx_u_make_ssl_connector(const char *arg) { (void)arg; return 0; }
 
 /* PoP: save_weixin_account @ gateway/platforms/weixin.py:save_weixin_account */
-int wx_save_weixin_account(const char *arg) { (void)arg; return 0; }
+int wx_save_weixin_account(const char *arg) {
+    /* Python: atomic_json_write + chmod 600. Arg = "path\tpayload_json". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    char path[1024];
+    size_t plen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (plen >= sizeof(path)) plen = sizeof(path) - 1;
+    memcpy(path, arg, plen); path[plen] = '\0';
+    if (!plen) { printf("0\n"); return 0; }
+    FILE *fp = fopen(path, "w");
+    if (!fp) { printf("0\n"); return 0; }
+    fprintf(fp, "%s\n", tab ? tab + 1 : "{}");
+    fclose(fp);
+    chmod(path, 0600);
+    printf("saved weixin account\n");
+    return 0;
+}
 
 /* PoP: load_weixin_account @ gateway/platforms/weixin.py:load_weixin_account */
 int wx_load_weixin_account(const char *arg) {
