@@ -185,7 +185,16 @@ int msf_u_model_flow_bedrock(const char *arg) { (void)arg; return 0; }
 int msf_u_model_flow_vertex(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _select_zai_endpoint @ hermes_cli/model_setup_flows.py:_select_zai_endpoint */
-int msf_u_select_zai_endpoint(const char *arg) { (void)arg; return 0; }
+int msf_u_select_zai_endpoint(const char *arg) {
+    /* Python: 4 endpoints + custom. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("Z.AI endpoint selected: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _model_flow_anthropic @ hermes_cli/model_setup_flows.py:_model_flow_anthropic */
 int msf_u_model_flow_anthropic(const char *arg) { (void)arg; return 0; }

@@ -166,4 +166,23 @@ int vev_mark_workspace_edited(const char *arg) {
 }
 
 /* PoP: verification_status @ agent/verification_evidence.py:verification_status */
-int vev_verification_status(const char *arg) { (void)arg; return 0; }
+int vev_verification_status(const char *arg) {
+    /* Python: best-known state. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{\"status\": \"not_applicable\", \"evidence\": null}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_facts") == 0) {
+        printf("{\"status\": \"not_applicable\", \"evidence\": null}\n");
+        return 0;
+    }
+    if (strcmp(state, "unverified") == 0) {
+        printf("{\"status\": \"unverified\", \"evidence\": null}\n");
+        return 0;
+    }
+    if (strcmp(state, "stale") == 0) {
+        printf("{\"status\": \"stale\", \"evidence\": {%s}}\n", tab ? tab + 1 : "");
+        return 0;
+    }
+    printf("{\"status\": \"%s\", \"evidence\": {%s}}\n", state, tab ? tab + 1 : "");
+    return 0;
+}

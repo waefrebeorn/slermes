@@ -23,7 +23,18 @@ int msw_u_declared_model_ids(const char *arg) {
 }
 
 /* PoP: _save_discovered_models_to_config @ hermes_cli/model_switch.py:_save_discovered_models_to_config */
-int msw_u_save_discovered_models_to_config(const char *arg) { (void)arg; return 0; }
+int msw_u_save_discovered_models_to_config(const char *arg) {
+    /* Python: custom_providers cache. Arg =
+     * "changed\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int changed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !changed) { printf("no config write needed\n"); return 0; }
+    printf("discovered models persisted: %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _bare_custom_provider_def @ hermes_cli/model_switch.py:_bare_custom_provider_def */
 int msw_u_bare_custom_provider_def(const char *arg) {

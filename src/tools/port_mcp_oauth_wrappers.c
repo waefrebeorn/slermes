@@ -314,7 +314,22 @@ int mcpo_remove_oauth_tokens(const char *arg) {
 }
 
 /* PoP: _configure_callback_port @ tools/mcp_oauth.py:_configure_callback_port */
-int mcpo_u_configure_callback_port(const char *arg) { (void)arg; return 0; }
+int mcpo_u_configure_callback_port(const char *arg) {
+    /* Python: port precedence. Arg =
+     * "dashboard\tcached\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int dashboard = arg[0] == '1';
+    int cached = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (dashboard) { printf("0 (dashboard flow)\n"); return 0; }
+    if (cached) { printf("0 (cached redirect URI)\n"); return 0; }
+    printf("%s (resolved: explicit > cached > ephemeral)\n", t3 ? t3 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _resolve_redirect_uri @ tools/mcp_oauth.py:_resolve_redirect_uri */
 int mcpo_u_resolve_redirect_uri(const char *arg) {

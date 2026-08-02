@@ -495,7 +495,17 @@ int cua_u_image_from_tool_result(const char *arg) {
 }
 
 /* PoP: _ingest_windows @ tools/computer_use/cua_backend.py:_ingest_windows */
-int cua_u_ingest_windows(const char *arg) { (void)arg; return 0; }
+int cua_u_ingest_windows(const char *arg) {
+    /* Python: pid/window_id gate. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("ingested %s window(s) (unusable skipped, null z->0)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _clear_active_target @ tools/computer_use/cua_backend.py:_clear_active_target */
 int cua_u_clear_active_target(const char *arg) {

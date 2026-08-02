@@ -1069,7 +1069,15 @@ int main_u_desktop_dist_exists(const char *arg) {
 }
 
 /* PoP: _compute_desktop_content_hash @ hermes_cli/main.py:_compute_desktop_content_hash */
-int main_u_compute_desktop_content_hash(const char *arg) { (void)arg; return 0; }
+int main_u_compute_desktop_content_hash(const char *arg) {
+    /* Python: pathspec walk. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _desktop_stamp_path @ hermes_cli/main.py:_desktop_stamp_path */
 int main_u_desktop_stamp_path(const char *arg) {

@@ -138,7 +138,18 @@ int agent_model_metadata_u_extract_chatgpt_account_id(const char *arg) {
 }
 
 /* PoP: _fetch_codex_oauth_context_lengths_with_source @ agent/model_metadata.py:_fetch_codex_oauth_context_lengths_with_source */
-int agent_model_metadata_u_fetch_codex_oauth_context_lengths_wit_ce(const char *arg) { (void)arg; return 0; }
+int agent_model_metadata_u_fetch_codex_oauth_context_lengths_wit_ce(const char *arg) {
+    /* Python: token-fingerprint cache. Arg =
+     * "from_http\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\t{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int from_http = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\t{}\n"); return 0; }
+    printf("%d\t%s\n", from_http ? 1 : 0, t2 ? t2 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _resolve_codex_oauth_context_length_with_source @ agent/model_metadata.py:_resolve_codex_oauth_context_length_with_source */
 int agent_model_metadata_u_resolve_codex_oauth_context_length_wi_ce(const char *arg) {
@@ -1739,7 +1750,22 @@ int agent_trace_upload_u_resolve_hf_token(const char *arg) {
 }
 
 /* PoP: _do_upload @ agent/trace_upload.py:_do_upload */
-int agent_trace_upload_u_do_upload(const char *arg) { (void)arg; return 0; }
+int agent_trace_upload_u_do_upload(const char *arg) {
+    /* Python: HF push. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("Upload failed\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_hub") == 0) {
+        printf("Hugging Face upload needs the `huggingface_hub` package (`pip install huggingface_hub`).\n");
+        return 0;
+    }
+    if (strcmp(state, "rejected") == 0) {
+        printf("Your Hugging Face token was rejected (whoami failed).\n");
+        return 0;
+    }
+    printf("%s\n", tab ? tab + 1 : "Uploaded -> https://huggingface.co/datasets/...");
+    return 0;
+}
 
 /* PoP: load_session_messages @ agent/trace_upload.py:load_session_messages */
 int agent_trace_upload_load_session_messages(const char *arg) {
@@ -2786,7 +2812,15 @@ int agent_billing_usage_build_usage_model(const char *arg) {
 }
 
 /* PoP: _dev_fixture_usage_model @ agent/billing_usage.py:_dev_fixture_usage_model */
-int agent_billing_usage_u_dev_fixture_usage_model(const char *arg) { (void)arg; return 0; }
+int agent_billing_usage_u_dev_fixture_usage_model(const char *arg) {
+    /* Python: fixture map. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("fixture usage model: %s\n", tab ? tab + 1 : "free");
+    return 0;
+}
 
 /* PoP: has_data @ agent/credits_tracker.py:has_data */
 int agent_credits_tracker_has_data(const char *arg) {

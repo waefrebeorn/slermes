@@ -313,7 +313,24 @@ int wssr_terminate_owned(const char *arg) {
 }
 
 /* PoP: _resolve_direct_interpreter @ hermes_cli/windows_ssh_runtime.py:_resolve_direct_interpreter */
-int wssr_u_resolve_direct_interpreter(const char *arg) { (void)arg; return 0; }
+int wssr_u_resolve_direct_interpreter(const char *arg) {
+    /* Python: base interpreter. Arg = "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\t\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_resolve") == 0) {
+        fprintf(stderr, "could not resolve the base Python interpreter\n");
+        return 1;
+    }
+    if (strcmp(state, "no_base") == 0) {
+        fprintf(stderr, "base Python interpreter was not found\n");
+        return 1;
+    }
+    printf("%s\t%s\n", t3 ? t3 + 1 : "?", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: spawn_backend @ hermes_cli/windows_ssh_runtime.py:spawn_backend */
 int wssr_spawn_backend(const char *arg) { (void)arg; return 0; }

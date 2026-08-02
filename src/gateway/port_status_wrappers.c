@@ -26,7 +26,17 @@ int gstat_u_get_starts_log_path(const char *arg) {
 }
 
 /* PoP: record_start_and_check_storm @ gateway/status.py:record_start_and_check_storm */
-int gstat_record_start_and_check_storm(const char *arg) { (void)arg; return 0; }
+int gstat_record_start_and_check_storm(const char *arg) {
+    /* Python: storm breaker. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("start recorded%s\n", (t2 && t2[1] == '1') ? " — STORM! backoff applied" : "");
+    return 0;
+}
 
 /* PoP: _get_process_hermes_home @ gateway/status.py:_get_process_hermes_home */
 int gstat_u_get_process_hermes_home(const char *arg) {

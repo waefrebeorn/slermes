@@ -435,7 +435,18 @@ int yb_u_extract_media_refs_from_transcript(const char *arg) { (void)arg; return
 int yb_u_send_loading_heartbeat(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _media_marker @ gateway/platforms/yuanbao.py:_media_marker */
-int yb_u_media_marker(const char *arg) { (void)arg; return 0; }
+int yb_u_media_marker(const char *arg) {
+    /* Python: multimedia marker. Arg =
+     * "kind\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *kind = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("[%s]\t\n", kind); return 0; }
+    printf("[%s|ybres:RID]\t%s\n", kind, t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _walk_forward_msgs @ gateway/platforms/yuanbao.py:_walk_forward_msgs */
 int yb_u_walk_forward_msgs(const char *arg) { (void)arg; return 0; }

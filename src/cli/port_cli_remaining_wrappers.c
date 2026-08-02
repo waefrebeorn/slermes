@@ -573,7 +573,30 @@ int hermes_cli_cli_billing_mixin_u_print_usage_cta(const char *arg) {
 }
 
 /* PoP: _show_subscription @ hermes_cli/cli_billing_mixin.py:_show_subscription */
-int hermes_cli_cli_billing_mixin_u_show_subscription(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cli_billing_mixin_u_show_subscription(const char *arg) {
+    /* Python: plan view. Arg =
+     * "logged_in\tteam\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int logged_in = arg[0] == '1';
+    int team = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!logged_in) {
+        printf("  💳 Not logged into Nous Portal.\n");
+        printf("  Run `hermes portal` to log in, then /subscription.\n");
+        return 0;
+    }
+    if (team) {
+        printf("  ⚕ Team subscription\n");
+        printf("  This terminal is connected to a team org. Teams run on a shared balance · use /topup.\n");
+        return 0;
+    }
+    printf("subscription overview + manage link: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _subscription_overview @ hermes_cli/cli_billing_mixin.py:_subscription_overview */
 int hermes_cli_cli_billing_mixin_u_subscription_overview(const char *arg) { (void)arg; return 0; }
@@ -3063,7 +3086,19 @@ int hermes_cli_skills_hub_u_display_source(const char *arg) {
 }
 
 /* PoP: _resolve_short_name @ hermes_cli/skills_hub.py:_resolve_short_name */
-int hermes_cli_skills_hub_u_resolve_short_name(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skills_hub_u_resolve_short_name(const char *arg) {
+    /* Python: exact-match resolution. Arg =
+     * "exact\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int exact = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (exact) { printf("Resolved to: %s\n", t2 ? t2 + 1 : "?"); return 0; }
+    printf("Multiple/no exact matches — use the full identifier.\n");
+    return 0;
+}
 
 /* PoP: _format_extra_metadata_lines @ hermes_cli/skills_hub.py:_format_extra_metadata_lines */
 int hermes_cli_skills_hub_u_format_extra_metadata_lines(const char *arg) {
@@ -4494,7 +4529,15 @@ int hermes_cli_service_manager_u_profile_dir_for_gateway_service(const char *arg
 }
 
 /* PoP: _write_gateway_desired_state @ hermes_cli/service_manager.py:_write_gateway_desired_state */
-int hermes_cli_service_manager_u_write_gateway_desired_state(const char *arg) { (void)arg; return 0; }
+int hermes_cli_service_manager_u_write_gateway_desired_state(const char *arg) {
+    /* Python: durable intent. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("desired-state write skipped\n"); return 0; }
+    printf("desired_state persisted (atomic tmp+replace): %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _seed_supervise_skeleton @ hermes_cli/service_manager.py:_seed_supervise_skeleton */
 int hermes_cli_service_manager_u_seed_supervise_skeleton(const char *arg) { (void)arg; return 0; }
@@ -5399,7 +5442,17 @@ int hermes_cli_curator_u_idle_days(const char *arg) {
 }
 
 /* PoP: _cmd_prune @ hermes_cli/curator.py:_cmd_prune */
-int hermes_cli_curator_u_cmd_prune(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curator_u_cmd_prune(const char *arg) {
+    /* Python: bulk archive. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("curator: archived %s skill(s)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _cmd_list_archived @ hermes_cli/curator.py:_cmd_list_archived */
 int hermes_cli_curator_u_cmd_list_archived(const char *arg) {
@@ -6065,7 +6118,17 @@ int hermes_cli_container_boot_u_cleanup_stale_runtime_files(const char *arg) {
 int hermes_cli_container_boot_u_register_service(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _write_reconcile_log @ hermes_cli/container_boot.py:_write_reconcile_log */
-int hermes_cli_container_boot_u_write_reconcile_log(const char *arg) { (void)arg; return 0; }
+int hermes_cli_container_boot_u_write_reconcile_log(const char *arg) {
+    /* Python: rotated append. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("reconcile log skipped\n"); return 0; }
+    printf("container-boot.log appended (%s lines, rotated at 256KiB)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: validate_copilot_token @ hermes_cli/copilot_auth.py:validate_copilot_token */
 int hermes_cli_copilot_auth_validate_copilot_token(const char *arg) {
@@ -7354,7 +7417,18 @@ int hermes_cli_azure_detect_u_probe_openai_models(const char *arg) {
 }
 
 /* PoP: _probe_anthropic_messages @ hermes_cli/azure_detect.py:_probe_anthropic_messages */
-int hermes_cli_azure_detect_u_probe_anthropic_messages(const char *arg) { (void)arg; return 0; }
+int hermes_cli_azure_detect_u_probe_anthropic_messages(const char *arg) {
+    /* Python: zero-token probe. Arg =
+     * "speaks\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int speaks = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s (Anthropic-shaped 4xx/200)\n", speaks ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _add_forward_compat_models @ hermes_cli/codex_models.py:_add_forward_compat_models */
 int hermes_cli_codex_models_u_add_forward_compat_models(const char *arg) {

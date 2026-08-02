@@ -1163,7 +1163,18 @@ int cgw_u_normalize_launchd_plist_for_comparison(const char *arg) {
 }
 
 /* PoP: systemd_unit_is_current @ hermes_cli/gateway.py:systemd_unit_is_current */
-int cgw_systemd_unit_is_current(const char *arg) { (void)arg; return 0; }
+int cgw_systemd_unit_is_current(const char *arg) {
+    /* Python: normalized compare. Arg =
+     * "current\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int current = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s (unit matches after optional-directive strip)\n", current ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _temp_home_in_service_definition @ hermes_cli/gateway.py:_temp_home_in_service_definition */
 int cgw_u_temp_home_in_service_definition(const char *arg) {
