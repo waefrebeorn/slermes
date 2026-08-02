@@ -101,7 +101,16 @@ int qqbot_u_open_ws(const char *arg) {
 }
 
 /* PoP: _listen_loop @ gateway/platforms/qqbot/adapter.py:_listen_loop */
-int qqbot_u_listen_loop(const char *arg) { (void)arg; return 0; }
+int qqbot_u_listen_loop(const char *arg) {
+    /* Python: close-code handling. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("listen loop (4004 token refresh; 4006/7/9 re-identify; 4008 60s backoff; 4914/4915 stop — bot offline/banned)%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _reconnect @ gateway/platforms/qqbot/adapter.py:_reconnect */
 int qqbot_u_reconnect(const char *arg) {

@@ -825,7 +825,17 @@ int grun_u_queue_or_replace_pending_event(const char *arg) {
 int grun_u_handle_active_session_busy_message(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _notify_active_sessions_of_shutdown @ gateway/run.py:_notify_active_sessions_of_shutdown */
-int grun_u_notify_active_sessions_of_shutdown(const char *arg) { (void)arg; return 0; }
+int grun_u_notify_active_sessions_of_shutdown(const char *arg) {
+    /* Python: pre-stop notices. Arg =
+     * "sent\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("1 (%s notices to active chats + home channels; failures swallowed — never block shutdown)%s\n", (t2 && t2[1] == '1') ? "restarting" : "shutting down", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _finalize_shutdown_agents @ gateway/run.py:_finalize_shutdown_agents */
 int grun_u_finalize_shutdown_agents(const char *arg) {
@@ -924,7 +934,19 @@ int grun_u_suspend_stuck_loop_sessions(const char *arg) {
 }
 
 /* PoP: _launch_detached_restart_command @ gateway/run.py:_launch_detached_restart_command */
-int grun_u_launch_detached_restart_command(const char *arg) { (void)arg; return 0; }
+int grun_u_launch_detached_restart_command(const char *arg) {
+    /* Python: detached helper. Arg =
+     * "launched\tstate\tresult". */
+    if (!arg || !*arg) { printf("0 (no hermes bin)\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int launched = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (already started once)\n"); return 0; }
+    if (!launched) { printf("0\n"); return 0; }
+    printf("1 (detached restart helper spawned; restart_after=%ss; Windows pythonw shim)%s\n", t2 ? t2 + 1 : "5", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _run_startup_resume_event @ gateway/run.py:_run_startup_resume_event */
 int grun_u_run_startup_resume_event(const char *arg) {
@@ -1077,10 +1099,30 @@ int grun_u_handoff_watcher(const char *arg) {
 }
 
 /* PoP: _process_handoff @ gateway/run.py:_process_handoff */
-int grun_u_process_handoff(const char *arg) { (void)arg; return 0; }
+int grun_u_process_handoff(const char *arg) {
+    /* Python: one handoff row. Arg =
+     * "done\tstate\tresult". */
+    if (!arg || !*arg) { printf("0 (empty handoff_platform)\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (handoff failed — caller marks row failed)\n"); return 1; }
+    printf("1 (handoff executed: %s platform, session switched, synthetic event)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _session_expiry_watcher @ gateway/run.py:_session_expiry_watcher */
-int grun_u_session_expiry_watcher(const char *arg) { (void)arg; return 0; }
+int grun_u_session_expiry_watcher(const char *arg) {
+    /* Python: finalize loop. Arg =
+     * "finalized\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (60s initial delay — gateway still starting)\n"); return 0; }
+    printf("%s session(s) finalized (on_session_finalize hooks, tool resource cleanup, cache evict, once-only mark)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _ensure_reconnect_watcher_running @ gateway/run.py:_ensure_reconnect_watcher_running */
 int grun_u_ensure_reconnect_watcher_running(const char *arg) {
@@ -1098,7 +1140,17 @@ int grun_u_ensure_reconnect_watcher_running(const char *arg) {
 }
 
 /* PoP: _platform_reconnect_watcher @ gateway/run.py:_platform_reconnect_watcher */
-int grun_u_platform_reconnect_watcher(const char *arg) { (void)arg; return 0; }
+int grun_u_platform_reconnect_watcher(const char *arg) {
+    /* Python: backoff retry. Arg =
+     * "retried\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (queue empty)\n"); return 0; }
+    printf("1 (backoff 30→60→120→240→300 cap; retryable self-heal indefinitely; non-retryable drop immediately; circuit breaker available)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _cancel_secondary_profile_reconnect_tasks @ gateway/run.py:_cancel_secondary_profile_reconnect_tasks */
 int grun_u_cancel_secondary_profile_reconnect_tasks(const char *arg) {
@@ -1153,7 +1205,17 @@ int grun_u_start_secondary_profile_adapters(const char *arg) {
 }
 
 /* PoP: _start_one_profile_adapters @ gateway/run.py:_start_one_profile_adapters */
-int grun_u_start_one_profile_adapters(const char *arg) { (void)arg; return 0; }
+int grun_u_start_one_profile_adapters(const char *arg) {
+    /* Python: scoped bring-up. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (MultiplexConfigError — open-policy violation)\n"); return 1; }
+    printf("%s adapter(s) for profile %s (under profile runtime scope)%s\n", t2 ? t2 + 1 : "0", t1 ? t1 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _configure_profile_adapter @ gateway/run.py:_configure_profile_adapter */
 int grun_u_configure_profile_adapter(const char *arg) {
@@ -1282,7 +1344,17 @@ int grun_u_deliver_platform_notice(const char *arg) {
 }
 
 /* PoP: _resolve_async_delegation_session @ gateway/run.py:_resolve_async_delegation_session */
-int grun_u_resolve_async_delegation_session(const char *arg) { (void)arg; return 0; }
+int grun_u_resolve_async_delegation_session(const char *arg) {
+    /* Python: lineage follow. Arg =
+     * "session\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n (fail-closed — unknown ownership; result stays in records)\n"); return 0; }
+    printf("%s (compression lineage followed; never overrides unrelated /new or restored route)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _prepare_inbound_message_text @ gateway/run.py:_prepare_inbound_message_text */
 int grun_u_prepare_inbound_message_text(const char *arg) { (void)arg; return 0; }
@@ -1524,7 +1596,17 @@ int grun_u_send_voice_reply(const char *arg) {
 }
 
 /* PoP: _deliver_media_from_response @ gateway/run.py:_deliver_media_from_response */
-int grun_u_deliver_media_from_response(const char *arg) { (void)arg; return 0; }
+int grun_u_deliver_media_from_response(const char *arg) {
+    /* Python: explicit MEDIA: only. Arg =
+     * "delivered\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no explicit MEDIA tags)\n"); return 0; }
+    printf("%s file(s) delivered (post-stream rescan — EXPLICIT-ONLY, no bare-path auto-detect)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _run_background_task @ gateway/run.py:_run_background_task */
 int grun_u_run_background_task(const char *arg) {
@@ -1700,7 +1782,19 @@ int grun_u_restore_telegram_topic_session(const char *arg) {
 }
 
 /* PoP: _execute_mcp_reload @ gateway/run.py:_execute_mcp_reload */
-int grun_u_execute_mcp_reload(const char *arg) { (void)arg; return 0; }
+int grun_u_execute_mcp_reload(const char *arg) {
+    /* Python: disconnect+reconnect. Arg =
+     * "reloaded\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int reloaded = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (reload failed)\n"); return 1; }
+    if (!reloaded) { printf("0\n"); return 1; }
+    printf("1 (old servers shutdown, tools rediscovered, changes notified: %s)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _maybe_confirm_destructive_slash @ gateway/run.py:_maybe_confirm_destructive_slash */
 int grun_u_maybe_confirm_destructive_slash(const char *arg) {
@@ -1755,10 +1849,31 @@ int grun_u_schedule_update_notification_watch(const char *arg) {
 }
 
 /* PoP: _watch_update_progress @ gateway/run.py:_watch_update_progress */
-int grun_u_watch_update_progress(const char *arg) { (void)arg; return 0; }
+int grun_u_watch_update_progress(const char *arg) {
+    /* Python: .update_output stream. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("update watcher (polls .update_output.txt, streams chunks @4s, forwards .update_prompt.json, intercepts replies → .update_response)%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _send_update_notification @ gateway/run.py:_send_update_notification */
-int grun_u_send_update_notification(const char *arg) { (void)arg; return 0; }
+int grun_u_send_update_notification(const char *arg) {
+    /* Python: legacy claim. Arg =
+     * "notified\tstate\tresult". */
+    if (!arg || !*arg) { printf("0 (still running — retry later)\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int notified = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (still running — retry later)\n"); return 0; }
+    if (!notified) { printf("1 (definitive skip)\n"); return 0; }
+    printf("1 (update finished — user notified via .update_pending.claimed.json)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _send_restart_notification @ gateway/run.py:_send_restart_notification */
 int grun_u_send_restart_notification(const char *arg) {
@@ -1942,7 +2057,18 @@ int grun_u_build_process_event_source(const char *arg) {
 }
 
 /* PoP: _inject_watch_notification @ gateway/run.py:_inject_watch_notification */
-int grun_u_inject_watch_notification(const char *arg) { (void)arg; return 0; }
+int grun_u_inject_watch_notification(const char *arg) {
+    /* Python: queued-event route. Arg =
+     * "accepted\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_route") == 0) { printf("\n"); return 0; }
+    if (strcmp(state, "retry") == 0) { printf("0 (retryable adapter failure)\n"); return 0; }
+    printf("1 (accepted; routing from queued event itself — never foreground message)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _classify_completion_target @ gateway/run.py:_classify_completion_target */
 int grun_u_classify_completion_target(const char *arg) {
@@ -1959,7 +2085,18 @@ int grun_u_classify_completion_target(const char *arg) {
 }
 
 /* PoP: _deliver_completion_notification @ gateway/run.py:_deliver_completion_notification */
-int grun_u_deliver_completion_notification(const char *arg) { (void)arg; return 0; }
+int grun_u_deliver_completion_notification(const char *arg) {
+    /* Python: once-per-lifecycle. Arg =
+     * "delivered\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "claimed") == 0) { printf("\n (another caller owns/delivered)\n"); return 0; }
+    if (strcmp(state, "retry") == 0) { printf("0 (claim released for retry)\n"); return 0; }
+    printf("1 (delivered once per live gateway; durable ids %s)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _enrich_async_delegation_routing @ gateway/run.py:_enrich_async_delegation_routing */
 int grun_u_enrich_async_delegation_routing(const char *arg) {

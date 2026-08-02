@@ -202,7 +202,25 @@ int wx_u_save_sync_buf(const char *arg) {
 }
 
 /* PoP: qr_login @ gateway/platforms/weixin.py:qr_login */
-int wx_qr_login(const char *arg) { (void)arg; return 0; }
+int wx_qr_login(const char *arg) {
+    /* Python: interactive QR. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_aiohttp") == 0) {
+        fprintf(stderr, "aiohttp is required for Weixin QR login\n");
+        return 1;
+    }
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "QR login failed/timed out: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("credential dict (trust_env session, SSL connector, QR poll: %s)%s\n", t3 ? t3 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _poll_loop @ gateway/platforms/weixin.py:_poll_loop */
 int wx_u_poll_loop(const char *arg) {

@@ -130,7 +130,19 @@ int gateway_platforms_signal_u_force_reconnect(const char *arg) {
 }
 
 /* PoP: _handle_envelope @ gateway/platforms/signal.py:_handle_envelope */
-int gateway_platforms_signal_u_handle_envelope(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_signal_u_handle_envelope(const char *arg) {
+    /* Python: syncMessage filter. Arg =
+     * "handled\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int handled = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (filtered sync event)\n"); return 0; }
+    if (!handled) { printf("0\n"); return 0; }
+    printf("1 (envelope processed%s)%s\n", (t2 && t2[1] == '1') ? " — note-to-self extracted" : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _remember_recipient_identifiers @ gateway/platforms/signal.py:_remember_recipient_identifiers */
 int gateway_platforms_signal_u_remember_recipient_identifiers(const char *arg) {

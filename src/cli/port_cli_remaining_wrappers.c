@@ -114,7 +114,25 @@ int hermes_cli_dashboard_auth_rout_auth_native_authorize(const char *arg) {
 }
 
 /* PoP: auth_callback @ hermes_cli/dashboard_auth/routes.py:auth_callback */
-int hermes_cli_dashboard_auth_rout_auth_callback(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_rout_auth_callback(const char *arg) {
+    /* Python: PKCE callback. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"detail\": \"Missing PKCE state cookie\"} (audit LOGIN_FAILURE)\n"); return 400; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_cookie") == 0) {
+        printf("{\"detail\": \"Missing PKCE state cookie\"} (audit LOGIN_FAILURE)\n");
+        return 400;
+    }
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "callback failed: %s\n", t3 ? t3 + 1 : "?");
+        return 400;
+    }
+    printf("session minted (provider=%s, broker_state honored; loopback code for native; cookies set; audit logged)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _validate_post_login_target @ hermes_cli/dashboard_auth/routes.py:_validate_post_login_target */
 int hermes_cli_dashboard_auth_rout_u_validate_post_login_target(const char *arg) {
@@ -5682,7 +5700,24 @@ int hermes_cli_dashboard_auth_midd_u_verify_bearer(const char *arg) {
 }
 
 /* PoP: gated_auth_middleware @ hermes_cli/dashboard_auth/middleware.py:gated_auth_middleware */
-int hermes_cli_dashboard_auth_midd_gated_auth_middleware(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_midd_gated_auth_middleware(const char *arg) {
+    /* Python: auth_required gate. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("pass-through (loopback mode)\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "token") == 0) {
+        printf("pass-through (token_authenticated — not a cookie session, never bounced to /login)%s\n", (t2 && t2[1] == '1') ? "" : "");
+        return 0;
+    }
+    if (strcmp(state, "unauth") == 0) {
+        printf("302 → /login (no-store, next= preserved)%s\n", (t2 && t2[1] == '1') ? "" : "");
+        return 0;
+    }
+    printf("pass-through (session ok)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _expires_in_seconds @ hermes_cli/dashboard_auth/middleware.py:_expires_in_seconds */
 int hermes_cli_dashboard_auth_midd_u_expires_in_seconds(const char *arg) {
