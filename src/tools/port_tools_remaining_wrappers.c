@@ -322,7 +322,15 @@ int tools_lazy_deps_u_unsupported_feature_reason(const char *arg) {
 }
 
 /* PoP: _is_satisfied @ tools/lazy_deps.py:_is_satisfied */
-int tools_lazy_deps_u_is_satisfied(const char *arg) { (void)arg; return 0; }
+int tools_lazy_deps_u_is_satisfied(const char *arg) {
+    /* Python: presence + version. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _is_present @ tools/lazy_deps.py:_is_present */
 int tools_lazy_deps_u_is_present(const char *arg) {

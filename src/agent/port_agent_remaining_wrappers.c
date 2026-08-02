@@ -308,7 +308,22 @@ int agent_pet_generate_atlas_u_significant_subject_boxes(const char *arg) {
 }
 
 /* PoP: _validate_extracted_frames @ agent/pet/generate/atlas.py:_validate_extracted_frames */
-int agent_pet_generate_atlas_u_validate_extracted_frames(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_atlas_u_validate_extracted_frames(const char *arg) {
+    /* Python: multi-pose rejection. Arg =
+     * "count\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) {
+        fprintf(stderr, "%s\n", t4 ? t4 + 1 : "frame validation failed");
+        return 1;
+    }
+    printf("frames validated: %s\n", arg);
+    return 0;
+}
 
 /* PoP: extract_strip_frames @ agent/pet/generate/atlas.py:extract_strip_frames */
 int agent_pet_generate_atlas_extract_strip_frames(const char *arg) { (void)arg; return 0; }
@@ -1038,7 +1053,15 @@ int agent_agent_init_u_provider_default_routes(const char *arg) {
 }
 
 /* PoP: _context_route_mismatch @ agent/agent_init.py:_context_route_mismatch */
-int agent_agent_init_u_context_route_mismatch(const char *arg) { (void)arg; return 0; }
+int agent_agent_init_u_context_route_mismatch(const char *arg) {
+    /* Python: route compare. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _normalize_custom_provider_name @ agent/agent_init.py:_normalize_custom_provider_name */
 int agent_agent_init_u_normalize_custom_provider_name(const char *arg) {
@@ -1068,7 +1091,21 @@ int agent_agent_init_u_custom_provider_runtime_ids(const char *arg) {
 }
 
 /* PoP: _build_codex_gpt5_autoraise_notice @ agent/agent_init.py:_build_codex_gpt5_autoraise_notice */
-int agent_agent_init_u_build_codex_gpt5_autoraise_notice(const char *arg) { (void)arg; return 0; }
+int agent_agent_init_u_build_codex_gpt5_autoraise_notice(const char *arg) {
+    /* Python: autoraise banner. Arg =
+     * "model\tcap\tfrom\tto\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *t5 = t4 ? strchr(t4 + 1, '\t') : NULL;
+    int state = t4 && t4[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("ℹ Codex %s caps context at %s, so auto-compaction was raised to %s%% (from %s%%) to use more of the window before summarizing.\n", arg, t1 ? t1 + 1 : "272K", t3 ? t3 + 1 : "?", t2 ? t2 + 1 : "?");
+    printf("  Opt back out: hermes config set compression.codex_gpt55_autoraise false\n");
+    return 0;
+}
 
 /* PoP: _resolve_compression_threshold @ agent/agent_init.py:_resolve_compression_threshold */
 int agent_agent_init_u_resolve_compression_threshold(const char *arg) {

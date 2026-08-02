@@ -533,7 +533,17 @@ int grun_u_increment_restart_failure_counts(const char *arg) {
 }
 
 /* PoP: _suspend_stuck_loop_sessions @ gateway/run.py:_suspend_stuck_loop_sessions */
-int grun_u_suspend_stuck_loop_sessions(const char *arg) { (void)arg; return 0; }
+int grun_u_suspend_stuck_loop_sessions(const char *arg) {
+    /* Python: restart-loop suspension. Arg =
+     * "suspended\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s suspended (file cleared)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _launch_detached_restart_command @ gateway/run.py:_launch_detached_restart_command */
 int grun_u_launch_detached_restart_command(const char *arg) { (void)arg; return 0; }

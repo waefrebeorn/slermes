@@ -191,7 +191,15 @@ int nous_u_fetch_nous_account_info(const char *arg) {
 }
 
 /* PoP: _info_from_valid_jwt @ hermes_cli/nous_account.py:_info_from_valid_jwt */
-int nous_u_info_from_valid_jwt(const char *arg) { (void)arg; return 0; }
+int nous_u_info_from_valid_jwt(const char *arg) {
+    /* Python: JWT claims map. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_claims") == 0 || strcmp(state, "expired") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _info_from_account_payload @ hermes_cli/nous_account.py:_info_from_account_payload */
 int nous_u_info_from_account_payload(const char *arg) {

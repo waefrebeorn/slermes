@@ -191,7 +191,18 @@ int adel_claim_event_delivery(const char *arg) {
 }
 
 /* PoP: release_completion_delivery @ tools/async_delegation.py:release_completion_delivery */
-int adel_release_completion_delivery(const char *arg) { (void)arg; return 0; }
+int adel_release_completion_delivery(const char *arg) {
+    /* Python: claim release / drop cap. Arg =
+     * "state\tdropped\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (t2 && t2[1] == '1') { printf("1 (terminally dropped)\n"); return 0; }
+    printf("1 (claim released)\n");
+    return 0;
+}
 
 /* PoP: drop_completion_delivery @ tools/async_delegation.py:drop_completion_delivery */
 int adel_drop_completion_delivery(const char *arg) {

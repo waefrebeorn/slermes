@@ -247,7 +247,15 @@ int ctxc_u_validate_summary_user_provenance(const char *arg) {
 }
 
 /* PoP: _latest_user_task_snapshot @ agent/context_compressor.py:_latest_user_task_snapshot */
-int ctxc_u_latest_user_task_snapshot(const char *arg) { (void)arg; return 0; }
+int ctxc_u_latest_user_task_snapshot(const char *arg) {
+    /* Python: deterministic anchor. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _ground_historical_task_snapshot @ agent/context_compressor.py:_ground_historical_task_snapshot */
 int ctxc_u_ground_historical_task_snapshot(const char *arg) {

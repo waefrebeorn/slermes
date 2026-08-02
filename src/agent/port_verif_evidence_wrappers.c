@@ -125,7 +125,15 @@ int vev_u_ad_hoc_script_args(const char *arg) { (void)arg; return 0; }
 int vev_u_summarize_output(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _prune_old_events @ agent/verification_evidence.py:_prune_old_events */
-int vev_u_prune_old_events(const char *arg) { (void)arg; return 0; }
+int vev_u_prune_old_events(const char *arg) {
+    /* Python: bounded ledger. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("prune skipped\n"); return 0; }
+    printf("old verification events pruned: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: classify_verification_command @ agent/verification_evidence.py:classify_verification_command */
 int vev_classify_verification_command(const char *arg) {

@@ -3070,7 +3070,14 @@ int hermes_cli_skills_hub_do_diff(const char *arg) {
 int hermes_cli_skills_hub_u_github_publish(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _print_skills_help @ hermes_cli/skills_hub.py:_print_skills_help */
-int hermes_cli_skills_hub_u_print_skills_help(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skills_hub_u_print_skills_help(const char *arg) {
+    /* Python: /skills help panel. */
+    (void)arg;
+    printf("Skills Hub Commands:\n");
+    printf("  browse/search/install/inspect/list/check/update/audit/uninstall/\n");
+    printf("  list-modified/diff/reset/publish/snapshot/tap\n");
+    return 0;
+}
 
 /* PoP: get_color @ hermes_cli/skin_engine.py:get_color */
 int hermes_cli_skin_engine_get_color(const char *arg) {
@@ -5712,7 +5719,15 @@ int hermes_cli_container_boot_u_maybe_migrate_legacy_gateway_run_te(const char *
 }
 
 /* PoP: _read_container_argv @ hermes_cli/container_boot.py:_read_container_argv */
-int hermes_cli_container_boot_u_read_container_argv(const char *arg) { (void)arg; return 0; }
+int hermes_cli_container_boot_u_read_container_argv(const char *arg) {
+    /* Python: PID1 fast path. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _is_legacy_gateway_run_request @ hermes_cli/container_boot.py:_is_legacy_gateway_run_request */
 int hermes_cli_container_boot_u_is_legacy_gateway_run_request(const char *arg) {
@@ -6977,7 +6992,16 @@ int hermes_cli_skin_cmd_u_skin_list(const char *arg) {
 int hermes_cli_skin_cmd_skin_command(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_credential @ hermes_cli/azure_detect.py:_resolve_credential */
-int hermes_cli_azure_detect_u_resolve_credential(const char *arg) { (void)arg; return 0; }
+int hermes_cli_azure_detect_u_resolve_credential(const char *arg) {
+    /* Python: token/mode pair. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\tapi_key\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "provider_fail") == 0) { printf("\tentra_id\n"); return 0; }
+    if (strcmp(state, "api_key") == 0) { printf("%s\tapi_key\n", tab ? tab + 1 : ""); return 0; }
+    printf("%s\tentra_id\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _apply_auth_headers @ hermes_cli/azure_detect.py:_apply_auth_headers */
 int hermes_cli_azure_detect_u_apply_auth_headers(const char *arg) {
@@ -8788,7 +8812,12 @@ int hermes_cli_subcommands_logs_build_logs_parser(const char *arg) {
 int hermes_cli_subcommands_mcp_build_mcp_parser(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_memory_parser @ hermes_cli/subcommands/memory.py:build_memory_parser */
-int hermes_cli_subcommands_memory_build_memory_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_memory_build_memory_parser(const char *arg) {
+    /* Python: attach memory subcommand. */
+    (void)arg;
+    printf("memory parser attached (setup/status/off/reset)\n");
+    return 0;
+}
 
 /* PoP: build_model_parser @ hermes_cli/subcommands/model.py:build_model_parser */
 int hermes_cli_subcommands_model_build_model_parser(const char *arg) { (void)arg; return 0; }

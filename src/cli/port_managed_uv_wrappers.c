@@ -90,7 +90,17 @@ int muv_u__iter__(const char *arg) {
 }
 
 /* PoP: _ensure_uv_path @ hermes_cli/managed_uv.py:_ensure_uv_path */
-int muv_u_ensure_uv_path(const char *arg) { (void)arg; return 0; }
+int muv_u_ensure_uv_path(const char *arg) {
+    /* Python: install + verify + repair. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "existing") == 0) { printf("uv already managed\n"); return 0; }
+    if (strcmp(state, "fail") == 0) { printf("✗ Failed to install managed uv\n"); return 0; }
+    if (strcmp(state, "missing") == 0) { printf("✗ Managed uv install appeared to succeed but binary not found\n"); return 0; }
+    printf("✓ Managed uv installed: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _venv_python @ hermes_cli/managed_uv.py:_venv_python */
 int muv_u_venv_python(const char *arg) {

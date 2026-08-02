@@ -93,7 +93,15 @@ int sku_skill_matches_platform_list(const char *arg) {
 }
 
 /* PoP: skill_matches_platform @ agent/skill_utils.py:skill_matches_platform */
-int sku_skill_matches_platform(const char *arg) { (void)arg; return 0; }
+int sku_skill_matches_platform(const char *arg) {
+    /* Python: platforms list gate. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("1\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _detect_environment @ agent/skill_utils.py:_detect_environment */
 int sku_u_detect_environment(const char *arg) { (void)arg; return 0; }
@@ -183,7 +191,16 @@ int sku_extract_skill_conditions(const char *arg) {
 int sku_extract_skill_config_vars(const char *arg) { (void)arg; return 0; }
 
 /* PoP: discover_all_skill_config_vars @ agent/skill_utils.py:discover_all_skill_config_vars */
-int sku_discover_all_skill_config_vars(const char *arg) { (void)arg; return 0; }
+int sku_discover_all_skill_config_vars(const char *arg) {
+    /* Python: dedup scan. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _resolve_dotpath @ agent/skill_utils.py:_resolve_dotpath */
 int sku_u_resolve_dotpath(const char *arg) {

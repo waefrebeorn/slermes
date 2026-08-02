@@ -851,7 +851,18 @@ int cgw_install_linux_gateway_from_setup(const char *arg) {
 }
 
 /* PoP: get_systemd_linger_status @ hermes_cli/gateway.py:get_systemd_linger_status */
-int cgw_get_systemd_linger_status(const char *arg) { (void)arg; return 0; }
+int cgw_get_systemd_linger_status(const char *arg) {
+    /* Python: loginctl Linger. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\t\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "unsupported") == 0) { printf("\t%s\n", tab ? tab + 1 : "unsupported"); return 0; }
+    if (strcmp(state, "no_loginctl") == 0) { printf("\tloginctl not found\n"); return 0; }
+    if (strcmp(state, "enabled") == 0) { printf("1\t\n"); return 0; }
+    if (strcmp(state, "disabled") == 0) { printf("0\t\n"); return 0; }
+    printf("\t%s\n", tab ? tab + 1 : "unknown");
+    return 0;
+}
 
 /* PoP: print_systemd_linger_guidance @ hermes_cli/gateway.py:print_systemd_linger_guidance */
 int cgw_print_systemd_linger_guidance(const char *arg) {
@@ -1620,7 +1631,20 @@ int cgw_launchd_stop(const char *arg) {
 }
 
 /* PoP: _wait_for_gateway_exit @ hermes_cli/gateway.py:_wait_for_gateway_exit */
-int cgw_u_wait_for_gateway_exit(const char *arg) { (void)arg; return 0; }
+int cgw_u_wait_for_gateway_exit(const char *arg) {
+    /* Python: PID-file wait. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "exited") == 0) { printf("1\n"); return 0; }
+    if (strcmp(state, "forced") == 0) { printf("1 (SIGKILL sent)\n"); return 0; }
+    if (strcmp(state, "timeout") == 0) {
+        printf("⚠ Gateway still running after timeout — restart may fail\n");
+        return 0;
+    }
+    printf("%s\n", tab ? tab + 1 : "1");
+    return 0;
+}
 
 /* PoP: launchd_restart @ hermes_cli/gateway.py:launchd_restart */
 int cgw_launchd_restart(const char *arg) { (void)arg; return 0; }

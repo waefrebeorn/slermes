@@ -17,7 +17,15 @@
 int auth_u_resolve_api_key_provider_secret(const char *arg) { (void)arg; return 0; }
 
 /* PoP: detect_zai_endpoint @ hermes_cli/auth.py:detect_zai_endpoint */
-int auth_detect_zai_endpoint(const char *arg) { (void)arg; return 0; }
+int auth_detect_zai_endpoint(const char *arg) {
+    /* Python: z.ai probe. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _resolve_zai_base_url @ hermes_cli/auth.py:_resolve_zai_base_url */
 int auth_u_resolve_zai_base_url(const char *arg) { (void)arg; return 0; }

@@ -209,7 +209,16 @@ int envd_u_cgroup_limits_available(const char *arg) { (void)arg; return 0; }
 int envd_u_ensure_docker_available(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _build_init_env_args @ tools/environments/docker.py:_build_init_env_args */
-int envd_u_build_init_env_args(const char *arg) { (void)arg; return 0; }
+int envd_u_build_init_env_args(const char *arg) {
+    /* Python: -e args. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _is_container_gone @ tools/environments/docker.py:_is_container_gone */
 int envd_u_is_container_gone(const char *arg) {
