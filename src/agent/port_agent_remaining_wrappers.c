@@ -1215,7 +1215,23 @@ int agent_conversation_loop_u_apply_context_engine_selection(const char *arg) { 
 int agent_conversation_loop_u_notify_context_engine_turn_complete(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _forced_provider_from_env @ agent/pet/generate/imagegen.py:_forced_provider_from_env */
-int agent_pet_generate_imagegen_u_forced_provider_from_env(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_imagegen_u_forced_provider_from_env(const char *arg) {
+    /* Python: env name if in ref-capable set else None. Arg = "env\trefset". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *env = arg;
+    const char *refs = tab ? tab + 1 : "";
+    size_t elen = tab ? (size_t)(tab - arg) : strlen(env);
+    const char *p = refs;
+    while (*p) {
+        const char *t2 = strchr(p, '\t');
+        size_t len = t2 ? (size_t)(t2 - p) : strlen(p);
+        if (len == elen && strncasecmp(p, env, elen) == 0) { printf("%s\n", env); return 0; }
+        p = t2 ? t2 + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: resolve_provider @ agent/pet/generate/imagegen.py:resolve_provider */
 int agent_pet_generate_imagegen_resolve_provider(const char *arg) { (void)arg; return 0; }

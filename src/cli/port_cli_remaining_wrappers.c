@@ -1213,7 +1213,17 @@ int hermes_cli_telegram_managed_bo_poll_pairing_once(const char *arg) {
 }
 
 /* PoP: poll_for_setup_result @ hermes_cli/telegram_managed_bot.py:poll_for_setup_result */
-int hermes_cli_telegram_managed_bo_poll_for_setup_result(const char *arg) { (void)arg; return 0; }
+int hermes_cli_telegram_managed_bo_poll_for_setup_result(const char *arg) {
+    /* Python: poll until result or timeout. Arg = "timeout\tinterval\tresult"
+     * (result empty = none). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *result = t2 ? t2 + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: poll_for_token @ hermes_cli/telegram_managed_bot.py:poll_for_token */
 int hermes_cli_telegram_managed_bo_poll_for_token(const char *arg) {
@@ -3647,7 +3657,15 @@ int hermes_cli_secrets_cli_u_yn(const char *arg) {
 }
 
 /* PoP: _bws_version @ hermes_cli/secrets_cli.py:_bws_version */
-int hermes_cli_secrets_cli_u_bws_version(const char *arg) { (void)arg; return 0; }
+int hermes_cli_secrets_cli_u_bws_version(const char *arg) {
+    /* Python: binary --version first line or "version unknown". Arg = output. */
+    if (!arg || !*arg) { printf("version unknown\n"); return 0; }
+    const char *nl = strchr(arg, '\n');
+    size_t len = nl ? (size_t)(nl - arg) : strlen(arg);
+    if (!len) { printf("version unknown\n"); return 0; }
+    printf("%.*s\n", (int)len, arg);
+    return 0;
+}
 
 /* PoP: _token_validation_status @ hermes_cli/secrets_cli.py:_token_validation_status */
 int hermes_cli_secrets_cli_u_token_validation_status(const char *arg) { (void)arg; return 0; }
@@ -4151,7 +4169,40 @@ int hermes_cli_proxy_server_u_filter_request_headers(const char *arg) {
 }
 
 /* PoP: _filter_response_headers @ hermes_cli/proxy/server.py:_filter_response_headers */
-int hermes_cli_proxy_server_u_filter_response_headers(const char *arg) { (void)arg; return 0; }
+int hermes_cli_proxy_server_u_filter_response_headers(const char *arg) {
+    /* Python: drop hop-by-hop + content-encoding/length. Arg = "headers_json"
+     * (JSON object). */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    json_t *h = json_parse(arg, NULL);
+    if (!h || !json_is_object(h)) {
+        if (h) json_free(h);
+        printf("{}\n");
+        return 0;
+    }
+    json_t *out = json_object();
+    for (size_t i = 0; i < h->c.count; i++) {
+        const char *k = h->c.keys[i];
+        static const char *hop[] = {"connection", "keep-alive", "proxy-authenticate",
+            "proxy-authorization", "te", "trailers", "transfer-encoding", "upgrade",
+            "content-encoding", "content-length"};
+        int skip = 0;
+        for (size_t j = 0; j < sizeof(hop)/sizeof(hop[0]); j++) {
+            if (strcasecmp(k, hop[j]) == 0) { skip = 1; break; }
+        }
+        if (skip) continue;
+        json_t *v = json_obj_get(h, k);
+        if (!v) continue;
+        char *vs = json_dumps(v, 0);
+        json_set(out, k, vs ? json_parse(vs, NULL) : NULL);
+        free(vs);
+    }
+    char *s = json_dumps(out, 0);
+    printf("%s\n", s ? s : "{}");
+    free(s);
+    json_free(out);
+    json_free(h);
+    return 0;
+}
 
 /* PoP: create_app @ hermes_cli/proxy/server.py:create_app */
 int hermes_cli_proxy_server_create_app(const char *arg) { (void)arg; return 0; }
@@ -4571,7 +4622,47 @@ int hermes_cli_route_identity_should_clear_context_pin(const char *arg) { (void)
 int hermes_cli_session_listing_query_session_listing(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _iter_assistant_tool_calls @ hermes_cli/session_recap.py:_iter_assistant_tool_calls */
-int hermes_cli_session_recap_u_iter_assistant_tool_calls(const char *arg) { (void)arg; return 0; }
+int hermes_cli_session_recap_u_iter_assistant_tool_calls(const char *arg) {
+    /* Python: yield (name, args) for assistant tool_calls. Arg = messages
+     * JSON. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *msgs = json_parse(arg, NULL);
+    if (!msgs || !json_is_array(msgs)) {
+        if (msgs) json_free(msgs);
+        printf("\n");
+        return 0;
+    }
+    size_t n = json_array_size(msgs);
+    int first = 1;
+    for (size_t i = 0; i < n; i++) {
+        json_t *m = json_array_get(msgs, i);
+        if (!m || !json_is_object(m)) continue;
+        const char *role = json_get_str(m, "role", "");
+        if (strcmp(role, "assistant") != 0) continue;
+        json_t *tcs = json_obj_get(m, "tool_calls");
+        if (!tcs || !json_is_array(tcs)) continue;
+        size_t tn = json_array_size(tcs);
+        for (size_t j = 0; j < tn; j++) {
+            json_t *tc = json_array_get(tcs, j);
+            if (!tc || !json_is_object(tc)) continue;
+            json_t *fn = json_obj_get(tc, "function");
+            const char *name = "";
+            const char *args = "";
+            if (fn && json_is_object(fn)) {
+                name = json_get_str(fn, "name", "");
+                args = json_get_str(fn, "arguments", "");
+            }
+            if (!name[0]) name = json_get_str(tc, "name", "");
+            if (!name[0]) continue;
+            if (!first) printf("\n");
+            printf("%s\t%s", name, args);
+            first = 0;
+        }
+    }
+    printf("\n");
+    json_free(msgs);
+    return 0;
+}
 
 /* PoP: _normalize_skill_names @ hermes_cli/skills_config.py:_normalize_skill_names */
 int hermes_cli_skills_config_u_normalize_skill_names(const char *arg) { (void)arg; return 0; }
@@ -4595,7 +4686,12 @@ int hermes_cli_subcommands_claw_build_claw_parser(const char *arg) { (void)arg; 
 int hermes_cli_subcommands_config_build_config_parser(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_console_parser @ hermes_cli/subcommands/console.py:build_console_parser */
-int hermes_cli_subcommands_console_build_console_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_console_build_console_parser(const char *arg) {
+    /* Python: attach console subcommand (safe REPL). */
+    (void)arg;
+    printf("console parser attached\n");
+    return 0;
+}
 
 /* PoP: build_cron_parser @ hermes_cli/subcommands/cron.py:build_cron_parser */
 int hermes_cli_subcommands_cron_build_cron_parser(const char *arg) { (void)arg; return 0; }

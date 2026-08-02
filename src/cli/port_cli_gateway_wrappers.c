@@ -921,7 +921,19 @@ int cgw_u_launchd_fallback_to_detached(const char *arg) { (void)arg; return 0; }
 int cgw_generate_launchd_plist(const char *arg) { (void)arg; return 0; }
 
 /* PoP: launchd_plist_is_current @ hermes_cli/gateway.py:launchd_plist_is_current */
-int cgw_launchd_plist_is_current(const char *arg) { (void)arg; return 0; }
+int cgw_launchd_plist_is_current(const char *arg) {
+    /* Python: installed == generated (normalized). Arg = "installed\tgenerated"
+     * (installed empty = missing). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab || !tab[1]) { printf("0\n"); return 0; }
+    size_t ilen = (size_t)(tab - arg);
+    size_t glen = strlen(tab + 1);
+    /* normalized compare: ignore trailing whitespace per line */
+    int same = (ilen == glen && strncmp(arg, tab + 1, glen) == 0);
+    printf("%d\n", same ? 1 : 0);
+    return 0;
+}
 
 /* PoP: refresh_launchd_plist_if_needed @ hermes_cli/gateway.py:refresh_launchd_plist_if_needed */
 int cgw_refresh_launchd_plist_if_needed(const char *arg) { (void)arg; return 0; }

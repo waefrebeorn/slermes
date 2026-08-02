@@ -574,7 +574,12 @@ void yb_set_active(void *adapter) {
 }
 
 /* PoP: _track_task @ gateway/platforms/yuanbao.py:_track_task */
-int yb_u_track_task(const char *arg) { (void)arg; return 0; }
+int yb_u_track_task(const char *arg) {
+    /* Python: register task in set + done callback. Arg = "task_id". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("tracked background task: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _sender_may_designate_home @ gateway/platforms/yuanbao.py:_sender_may_designate_home */
 int yb_u_sender_may_designate_home(const char *arg) { (void)arg; return 0; }

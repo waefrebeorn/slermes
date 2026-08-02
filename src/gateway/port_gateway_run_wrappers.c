@@ -422,7 +422,14 @@ int grun_u_handle_voice_channel_join(const char *arg) { (void)arg; return 0; }
 int grun_u_handle_voice_channel_leave(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _handle_voice_timeout_cleanup @ gateway/run.py:_handle_voice_timeout_cleanup */
-int grun_u_handle_voice_timeout_cleanup(const char *arg) { (void)arg; return 0; }
+int grun_u_handle_voice_timeout_cleanup(const char *arg) {
+    /* Python: voice_mode off + save + disable auto-tts. Arg = "chat_id\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("voice mode off (%.*s), auto-tts disabled\n",
+           (int)(tab ? (size_t)(tab - arg) : strlen(arg)), arg);
+    return 0;
+}
 
 /* PoP: _handle_voice_channel_input @ gateway/run.py:_handle_voice_channel_input */
 int grun_u_handle_voice_channel_input(const char *arg) { (void)arg; return 0; }

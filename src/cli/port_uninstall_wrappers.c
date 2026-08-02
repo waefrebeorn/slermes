@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <sys/stat.h>
 #include "hermes_json.h"
 
 /* PoP: log_info @ hermes_cli/uninstall.py:log_info */
@@ -33,7 +34,24 @@ int uninst_log_warn(const char *arg) {
 }
 
 /* PoP: find_shell_configs @ hermes_cli/uninstall.py:find_shell_configs */
-int uninst_find_shell_configs(const char *arg) { (void)arg; return 0; }
+int uninst_find_shell_configs(const char *arg) {
+    /* Python: existing shell config files under home. Arg = home dir. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    static const char *names[] = {".bashrc", ".bash_profile", ".profile", ".zshrc", ".zprofile"};
+    int first = 1;
+    for (size_t i = 0; i < sizeof(names)/sizeof(names[0]); i++) {
+        char path[1200];
+        snprintf(path, sizeof(path), "%s/%s", arg, names[i]);
+        struct stat st;
+        if (stat(path, &st) == 0) {
+            if (!first) printf("\n");
+            printf("%s", path);
+            first = 0;
+        }
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: remove_path_from_shell_configs @ hermes_cli/uninstall.py:remove_path_from_shell_configs */
 int uninst_remove_path_from_shell_configs(const char *arg) { (void)arg; return 0; }

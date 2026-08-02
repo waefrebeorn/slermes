@@ -93,7 +93,13 @@ int mm_u_prefetch_provider(const char *arg) { (void)arg; return 0; }
 int mm_queue_prefetch_all(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _provider_sync_accepts_messages @ agent/memory_manager.py:_provider_sync_accepts_messages */
-int mm_u_provider_sync_accepts_messages(const char *arg) { (void)arg; return 0; }
+int mm_u_provider_sync_accepts_messages(const char *arg) {
+    /* Python: signature has **kwargs or messages param (True on error). Arg =
+     * "1"/"0" accepts. */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    printf("%s\n", arg[0] == '1' ? "1" : "0");
+    return 0;
+}
 
 /* PoP: sync_all @ agent/memory_manager.py:sync_all */
 int mm_sync_all(const char *arg) { (void)arg; return 0; }

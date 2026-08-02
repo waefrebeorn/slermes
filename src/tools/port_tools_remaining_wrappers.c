@@ -736,7 +736,19 @@ int tools_environments_modal_u_direct_snapshot_key(const char *arg) {
 }
 
 /* PoP: _get_snapshot_restore_candidate @ tools/environments/modal.py:_get_snapshot_restore_candidate */
-int tools_environments_modal_u_get_snapshot_restore_candidate(const char *arg) { (void)arg; return 0; }
+int tools_environments_modal_u_get_snapshot_restore_candidate(const char *arg) {
+    /* Python: (snapshot_id, legacy_bool) or (None, False). Arg =
+     * "task_id\tnamespaced\tlegacy" (ids empty = none). */
+    if (!arg || !*arg) { printf("\n0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *ns = t1 ? t1 + 1 : "";
+    const char *leg = t2 ? t2 + 1 : "";
+    if (ns[0]) { printf("%s\t0\n", ns); return 0; }
+    if (leg[0]) { printf("%s\t1\n", leg); return 0; }
+    printf("\n0\n");
+    return 0;
+}
 
 /* PoP: _store_direct_snapshot @ tools/environments/modal.py:_store_direct_snapshot */
 int tools_environments_modal_u_store_direct_snapshot(const char *arg) {
@@ -1147,7 +1159,16 @@ int tools_skills_hub_u_ssrf_safe_http_get(const char *arg) {
 }
 
 /* PoP: _fetch_file_bytes @ tools/skills_hub.py:_fetch_file_bytes */
-int tools_skills_hub_u_fetch_file_bytes(const char *arg) { (void)arg; return 0; }
+int tools_skills_hub_u_fetch_file_bytes(const char *arg) {
+    /* Python: raw bytes from GitHub contents API. Arg = "repo\tpath". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("\n"); return 0; }
+    char url[1200];
+    snprintf(url, sizeof(url), "https://api.github.com/repos/%s/contents/%s", arg, tab + 1);
+    printf("%s\n", url);
+    return 0;
+}
 
 /* PoP: _fetch_bytes @ tools/skills_hub.py:_fetch_bytes */
 int tools_skills_hub_u_fetch_bytes(const char *arg) { (void)arg; return 0; }
@@ -1758,7 +1779,19 @@ int tools_environments_file_sync_u_resolve_host_path(const char *arg) {
 }
 
 /* PoP: _request @ tools/environments/managed_modal.py:_request */
-int tools_environments_managed_mod_u_request(const char *arg) { (void)arg; return 0; }
+int tools_environments_managed_mod_u_request(const char *arg) {
+    /* Python: requests.request with bearer + JSON. Arg =
+     * "method\torigin\tpath\tpayload". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    printf("managed modal request: %.*s %s%s\n",
+           (int)(t1 ? (size_t)(t1 - arg) : strlen(arg)), arg,
+           t2 ? t2 + 1 : "",
+           t3 ? t3 : "");
+    return 0;
+}
 
 /* PoP: _do_request @ tools/feishu_drive_tool.py:_do_request */
 int tools_feishu_drive_tool_u_do_request(const char *arg) { (void)arg; return 0; }

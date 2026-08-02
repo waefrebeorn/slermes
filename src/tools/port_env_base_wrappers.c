@@ -11,6 +11,7 @@
 #include <ctype.h>
 #include <time.h>
 #include <stdint.h>
+#include <sys/stat.h>
 #include "hermes_json.h"
 
 /* Python module global _activity_callback_local.callback. */
@@ -116,7 +117,14 @@ int envb_u_save_json_store(const char *arg) {
 }
 
 /* PoP: _file_mtime_key @ tools/environments/base.py:_file_mtime_key */
-int envb_u_file_mtime_key(const char *arg) { (void)arg; return 0; }
+int envb_u_file_mtime_key(const char *arg) {
+    /* Python: (mtime, size) or None. Arg = path. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    struct stat st;
+    if (stat(arg, &st) != 0) { printf("\n"); return 0; }
+    printf("%ld\t%lld\n", (long)st.st_mtime, (long long)st.st_size);
+    return 0;
+}
 
 /* PoP: stdout @ tools/environments/base.py:stdout */
 int envb_stdout(const char *arg) {

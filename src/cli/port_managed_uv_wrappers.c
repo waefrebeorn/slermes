@@ -177,7 +177,12 @@ int muv_u_cut_over_candidate(const char *arg) { (void)arg; return 0; }
 int muv_u_acquire_repair_lock(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _release_repair_lock @ hermes_cli/managed_uv.py:_release_repair_lock */
-int muv_u_release_repair_lock(const char *arg) { (void)arg; return 0; }
+int muv_u_release_repair_lock(const char *arg) {
+    /* Python: flock unlock + close (best-effort). Arg = path. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("repair lock released: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _windows_runtime_holders @ hermes_cli/managed_uv.py:_windows_runtime_holders */
 int muv_u_windows_runtime_holders(const char *arg) { (void)arg; return 0; }

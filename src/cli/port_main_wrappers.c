@@ -1204,7 +1204,15 @@ int main_u_run_logged_subprocess(const char *arg) { (void)arg; return 0; }
 int main_u_finalize_update_output(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_update_branch @ hermes_cli/main.py:_resolve_update_branch */
-int main_u_resolve_update_branch(const char *arg) { (void)arg; return 0; }
+int main_u_resolve_update_branch(const char *arg) {
+    /* Python: (args.branch or "main").strip() or "main". Arg = branch. */
+    if (!arg || !*arg) { printf("main\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ' || *p == '\t') p++;
+    if (!*p) { printf("main\n"); return 0; }
+    printf("%s\n", p);
+    return 0;
+}
 
 /* PoP: _cmd_update_check @ hermes_cli/main.py:_cmd_update_check */
 int main_u_cmd_update_check(const char *arg) { (void)arg; return 0; }
@@ -1290,7 +1298,17 @@ int main_u_render_distribution_plan(const char *arg) { (void)arg; return 0; }
 int main_u_report_dashboard_status(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _dashboard_listening @ hermes_cli/main.py:_dashboard_listening */
-int main_u_dashboard_listening(const char *arg) { (void)arg; return 0; }
+int main_u_dashboard_listening(const char *arg) {
+    /* Python: TCP connect probe at host:port. Arg = "host\tport". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long port = tab ? strtol(tab + 1, NULL, 10) : 8644;
+    char cmd[256];
+    snprintf(cmd, sizeof(cmd), "timeout 2 bash -c 'exec 3<>/dev/tcp/%s/%ld' 2>/dev/null", arg, port);
+    int rc = system(cmd);
+    printf("%d\n", rc == 0 ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _maybe_setup_dashboard_auth_interactively @ hermes_cli/main.py:_maybe_setup_dashboard_auth_interactively */
 int main_u_maybe_setup_dashboard_auth_interactively(const char *arg) { (void)arg; return 0; }

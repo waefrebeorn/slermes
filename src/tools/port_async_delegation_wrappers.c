@@ -127,7 +127,18 @@ int adel_mark_completion_delivered(const char *arg) { (void)arg; return 0; }
 int adel_claim_completion_delivery(const char *arg) { (void)arg; return 0; }
 
 /* PoP: claim_event_delivery @ tools/async_delegation.py:claim_event_delivery */
-int adel_claim_event_delivery(const char *arg) { (void)arg; return 0; }
+int adel_claim_event_delivery(const char *arg) {
+    /* Python: claim id "consumer:pid:hex" or ""/None. Arg =
+     * "type\tdelegation_id\tclaimed". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    size_t tlen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    if (!(tlen == 16 && strncmp(arg, "async_delegation", 16) == 0)) { printf("\n"); return 0; }
+    if (!t1 || !t1[1]) { printf("\n"); return 0; }
+    printf("%s\n", t2 && t2[1] ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: release_completion_delivery @ tools/async_delegation.py:release_completion_delivery */
 int adel_release_completion_delivery(const char *arg) { (void)arg; return 0; }
