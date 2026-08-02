@@ -32,7 +32,23 @@ int cua_u_computer_use_max_image_dimension(const char *arg) { (void)arg; return 
 int cua_cua_driver_child_env(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _z_index_uninformative @ tools/computer_use/cua_backend.py:_z_index_uninformative */
-int cua_u_z_index_uninformative(const char *arg) { (void)arg; return 0; }
+int cua_u_z_index_uninformative(const char *arg) {
+    /* Python: True if no windows; len({w.get("z_index",0) for w in
+     * windows}) <= 1. Arg = "z\tz\tz..." z-indices. */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *p = arg;
+    long first = strtol(p, NULL, 10);
+    int uniform = 1;
+    while (*p) {
+        while (*p && (*p == ' ' || *p == '\t' || *p == '\n')) p++;
+        if (!*p) break;
+        long z = strtol(p, NULL, 10);
+        if (z != first) { uniform = 0; break; }
+        while (*p && *p != ' ' && *p != '\t' && *p != '\n') p++;
+    }
+    printf("%d\n", uniform);
+    return 0;
+}
 
 /* PoP: _parse_xprop_net_active_window @ tools/computer_use/cua_backend.py:_parse_xprop_net_active_window */
 int cua_u_parse_xprop_net_active_window(const char *arg) { (void)arg; return 0; }

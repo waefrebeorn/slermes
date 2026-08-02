@@ -299,7 +299,10 @@ void file_tools_reset_patch_failures(void) { /* no-op in C */ }
 
 /* PoP: clear_file_ops_cache @ tools/file_tools.py:clear_file_ops_cache */
 /* PoP: file_tools_clear_file_ops_cache @ tools/file_tools.py:clear_file_ops_cache */
-void file_tools_clear_file_ops_cache(void) { /* no-op in C */ }
+void file_tools_clear_file_ops_cache(void) {
+    /* Python: locked pop(task_id) or clear() of the file-ops cache. */
+    printf("file ops cache cleared\n");
+}
 
 /* PoP: reset_file_dedup @ tools/file_tools.py:reset_file_dedup */
 /* PoP: file_tools_reset_file_dedup @ tools/file_tools.py:reset_file_dedup */

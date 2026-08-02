@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <errno.h>
 #include <dirent.h>
 #include <sys/stat.h>
 #include "hermes_json.h"
@@ -213,7 +214,23 @@ int cgw_u_profile_arg_for_target_user(const char *arg) { (void)arg; return 0; }
 int cgw_get_service_name(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_systemd_unit_path @ hermes_cli/gateway.py:get_systemd_unit_path */
-int cgw_get_systemd_unit_path(const char *arg) { (void)arg; return 0; }
+int cgw_get_systemd_unit_path(const char *arg) {
+    /* Python: system -> /etc/systemd/system/<name>.service; else
+     * ~/.config/systemd/user/<name>.service. Arg = "system_flag\tname"
+     * (or just name). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int system = 0;
+    const char *name = arg;
+    if (tab) {
+        system = (strcmp(arg, "1") == 0 || strcmp(arg, "true") == 0);
+        name = tab + 1;
+    }
+    if (system) printf("/etc/systemd/system/%s.service\n", name);
+    else printf("%s/.config/systemd/user/%s.service\n",
+                getenv("HOME") ? getenv("HOME") : ".", name);
+    return 0;
+}
 
 /* PoP: _user_dbus_socket_path @ hermes_cli/gateway.py:_user_dbus_socket_path */
 int cgw_u_user_dbus_socket_path(const char *arg) { (void)arg; return 0; }
@@ -611,7 +628,14 @@ int cgw_u_launchd_unsupported_marker_path(const char *arg) {
 int cgw_u_write_launchd_unsupported_marker(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _clear_launchd_unsupported_marker @ hermes_cli/gateway.py:_clear_launchd_unsupported_marker */
-int cgw_u_clear_launchd_unsupported_marker(const char *arg) { (void)arg; return 0; }
+int cgw_u_clear_launchd_unsupported_marker(const char *arg) {
+    /* Python: _launchd_unsupported_marker_path().unlink(missing_ok=True);
+     * OSError ignored. Arg = marker path. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    if (unlink(arg) == 0 || errno == ENOENT) printf("cleared %s\n", arg);
+    else printf("clear failed %s\n", arg);
+    return 0;
+}
 
 /* PoP: _launchd_unsupported_marker_exists @ hermes_cli/gateway.py:_launchd_unsupported_marker_exists */
 int cgw_u_launchd_unsupported_marker_exists(const char *arg) {

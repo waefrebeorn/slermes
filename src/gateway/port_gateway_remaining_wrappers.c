@@ -139,7 +139,45 @@ int gateway_delivery_ledger_u_initialize_schema(const char *arg) { (void)arg; re
 int gateway_delivery_ledger_u_transaction(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _owner_stamp @ gateway/delivery_ledger.py:_owner_stamp */
-int gateway_delivery_ledger_u_owner_stamp(const char *arg) { (void)arg; return 0; }
+int gateway_delivery_ledger_u_owner_stamp(const char *arg) {
+    /* Python: (os.getpid(), get_process_start_time(pid)) — pid + start
+     * time; start None on error. */
+    (void)arg;
+    long pid = (long)getpid();
+    printf("%ld\t", pid);
+    /* reuse the /proc starttime logic: field 22 + btime */
+    char path[64], buf[512];
+    snprintf(path, sizeof(path), "/proc/%ld/stat", pid);
+    FILE *fp = fopen(path, "r");
+    if (!fp) { printf("\n"); return 0; }
+    size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+    fclose(fp);
+    buf[n] = '\0';
+    char *p = strrchr(buf, ')');
+    if (!p) { printf("\n"); return 0; }
+    p += 2;
+    unsigned long long startticks = 0;
+    for (int i = 3; i <= 22 && p; i++) {
+        while (*p == ' ') p++;
+        char *e = p;
+        while (*e && *e != ' ') e++;
+        if (i == 22) { startticks = strtoull(p, NULL, 10); break; }
+        p = e;
+    }
+    FILE *bt = fopen("/proc/stat", "r");
+    if (!bt) { printf("\n"); return 0; }
+    char line[256];
+    long long btime = -1;
+    while (fgets(line, sizeof(line), bt)) {
+        if (strncmp(line, "btime ", 6) == 0) { btime = strtoll(line + 6, NULL, 10); break; }
+    }
+    fclose(bt);
+    if (btime < 0) { printf("\n"); return 0; }
+    long clk = sysconf(_SC_CLK_TCK);
+    if (clk <= 0) clk = 100;
+    printf("%lld\n", btime + (long long)(startticks / (unsigned long long)clk));
+    return 0;
+}
 
 /* PoP: _owner_alive @ gateway/delivery_ledger.py:_owner_alive */
 int gateway_delivery_ledger_u_owner_alive(const char *arg) { (void)arg; return 0; }

@@ -975,7 +975,26 @@ int agent_account_usage_redeemed(const char *arg) { (void)arg; return 0; }
 int agent_account_usage_redeem_codex_reset_credit(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _model_supports_prompt_cache @ agent/bedrock_adapter.py:_model_supports_prompt_cache */
-int agent_bedrock_adapter_u_model_supports_prompt_cache(const char *arg) { (void)arg; return 0; }
+int agent_bedrock_adapter_u_model_supports_prompt_cache(const char *arg) {
+    /* Python: any(pattern in model_lower for pattern in _CACHE_POINT_PATTERNS).
+     * Arg = model id; matches nova/claude/llama cache-point patterns. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    char buf[256];
+    size_t n = strlen(arg);
+    if (n >= sizeof(buf)) n = sizeof(buf) - 1;
+    memcpy(buf, arg, n); buf[n] = '\0';
+    for (char *p = buf; *p; p++) *p = (char)tolower((unsigned char)*p);
+    static const char *pats[] = {
+        "nova", "claude", "llama", "mistral", "haiku", "sonnet",
+        "cachepoint", "cache_point"
+    };
+    int hit = 0;
+    for (size_t i = 0; i < sizeof(pats) / sizeof(pats[0]); i++) {
+        if (strstr(buf, pats[i])) { hit = 1; break; }
+    }
+    printf("%d\n", hit);
+    return 0;
+}
 
 /* PoP: _safe_text @ agent/bedrock_adapter.py:_safe_text */
 int agent_bedrock_adapter_u_safe_text(const char *arg) { (void)arg; return 0; }

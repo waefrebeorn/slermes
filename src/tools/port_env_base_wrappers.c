@@ -199,4 +199,15 @@ int envb_u__del__(const char *arg) {
 }
 
 /* PoP: _prepare_command @ tools/environments/base.py:_prepare_command */
-int envb_u_prepare_command(const char *arg) { (void)arg; return 0; }
+int envb_u_prepare_command(const char *arg) {
+    /* Python: _transform_sudo_command(command) when SUDO_PASSWORD present.
+     * Arg = command (passes through; sudo transform is env-gated). */
+    if (!arg) arg = "";
+    const char *sp = getenv("SUDO_PASSWORD");
+    if (sp && *sp && strncmp(arg, "sudo ", 5) == 0) {
+        printf("printf '%%s\\n' \"$SUDO_PASSWORD\" | sudo -S %s\n", arg + 5);
+        return 0;
+    }
+    printf("%s\n", arg);
+    return 0;
+}

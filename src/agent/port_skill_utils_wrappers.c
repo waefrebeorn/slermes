@@ -130,7 +130,23 @@ int sku_u_resolve_dotpath(const char *arg) {
 int sku_resolve_skill_config_values(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _normalize_skill_description @ agent/skill_utils.py:_normalize_skill_description */
-int sku_u_normalize_skill_description(const char *arg) { (void)arg; return 0; }
+int sku_u_normalize_skill_description(const char *arg) {
+    /* Python: str(raw).strip().strip("'\"") if raw else "". Arg = raw. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    char buf[1024];
+    size_t n = strlen(arg);
+    if (n >= sizeof(buf)) n = sizeof(buf) - 1;
+    memcpy(buf, arg, n); buf[n] = '\0';
+    /* trim */
+    size_t start = 0, end = n;
+    while (start < end && (buf[start] == ' ' || buf[start] == '\t' || buf[start] == '\n')) start++;
+    while (end > start && (buf[end-1] == ' ' || buf[end-1] == '\t' || buf[end-1] == '\n')) end--;
+    /* strip leading/trailing quote chars */
+    while (start < end && (buf[start] == '\'' || buf[start] == '"')) start++;
+    while (end > start && (buf[end-1] == '\'' || buf[end-1] == '"')) end--;
+    printf("%.*s\n", (int)(end - start), buf + start);
+    return 0;
+}
 
 /* PoP: extract_skill_description @ agent/skill_utils.py:extract_skill_description */
 int sku_extract_skill_description(const char *arg) {

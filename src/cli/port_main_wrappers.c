@@ -493,7 +493,16 @@ int main_u_web_ui_build_needed(const char *arg) { (void)arg; return 0; }
 int main_u_compute_web_ui_content_hash(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _web_ui_stamp_path @ hermes_cli/main.py:_web_ui_stamp_path */
-int main_u_web_ui_stamp_path(const char *arg) { (void)arg; return 0; }
+int main_u_web_ui_stamp_path(const char *arg) {
+    /* Python: get_hermes_home() / "web-ui-build-stamp.json". Arg = optional
+     * hermes home. */
+    if (arg && *arg) { printf("%s/web-ui-build-stamp.json\n", arg); return 0; }
+    const char *hh = getenv("HERMES_HOME");
+    if (hh && *hh) printf("%s/web-ui-build-stamp.json\n", hh);
+    else printf("%s/.hermes/web-ui-build-stamp.json\n",
+                getenv("HOME") ? getenv("HOME") : ".");
+    return 0;
+}
 
 /* PoP: _write_web_ui_build_stamp @ hermes_cli/main.py:_write_web_ui_build_stamp */
 int main_u_write_web_ui_build_stamp(const char *arg) { (void)arg; return 0; }
@@ -520,7 +529,16 @@ int main_u_desktop_dist_exists(const char *arg) { (void)arg; return 0; }
 int main_u_compute_desktop_content_hash(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _desktop_stamp_path @ hermes_cli/main.py:_desktop_stamp_path */
-int main_u_desktop_stamp_path(const char *arg) { (void)arg; return 0; }
+int main_u_desktop_stamp_path(const char *arg) {
+    /* Python: get_hermes_home() / "desktop-build-stamp.json". Arg = optional
+     * hermes home. */
+    if (arg && *arg) { printf("%s/desktop-build-stamp.json\n", arg); return 0; }
+    const char *hh = getenv("HERMES_HOME");
+    if (hh && *hh) printf("%s/desktop-build-stamp.json\n", hh);
+    else printf("%s/.hermes/desktop-build-stamp.json\n",
+                getenv("HOME") ? getenv("HOME") : ".");
+    return 0;
+}
 
 /* PoP: _desktop_build_needed @ hermes_cli/main.py:_desktop_build_needed */
 int main_u_desktop_build_needed(const char *arg) { (void)arg; return 0; }

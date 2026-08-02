@@ -406,7 +406,15 @@ int yb_u_notifier(const char *arg) { (void)arg; return 0; }
 int yb_cancel(const char *arg) { (void)arg; return 0; }
 
 /* PoP: register_handler @ gateway/platforms/yuanbao.py:register_handler */
-int yb_register_handler(const char *arg) { (void)arg; return 0; }
+int yb_register_handler(const char *arg) {
+    /* Python: self._media_handlers[name] = handler — register (or replace)
+     * a named media send handler. Arg = "name\thandler". */
+    if (!arg || !*arg) return 0;
+    const char *tab = strchr(arg, '\t');
+    if (!tab) return 0;
+    printf("handler %.*s registered\n", (int)(tab - arg), arg);
+    return 0;
+}
 
 /* PoP: get_chat_lock @ gateway/platforms/yuanbao.py:get_chat_lock */
 int yb_get_chat_lock(const char *arg) { (void)arg; return 0; }

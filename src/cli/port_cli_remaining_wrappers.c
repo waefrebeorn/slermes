@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <signal.h>
+#include <sys/stat.h>
 #include "hermes_json.h"
 #include "base64.h"
 #include "hash.h"
@@ -143,7 +144,25 @@ int hermes_cli_mcp_config_u_remove_mcp_server(const char *arg) { (void)arg; retu
 int hermes_cli_mcp_config_u_replace_mcp_servers(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _env_key_for_server @ hermes_cli/mcp_config.py:_env_key_for_server */
-int hermes_cli_mcp_config_u_env_key_for_server(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_config_u_env_key_for_server(const char *arg) {
+    /* Python: re.sub(r"[^A-Za-z0-9_]", "_", name.upper()).strip("_") then
+     * f"MCP_{suffix}_API_KEY". Arg = server name. */
+    if (!arg || !*arg) { printf("MCP__API_KEY\n"); return 0; }
+    char buf[256];
+    size_t n = strlen(arg);
+    if (n >= sizeof(buf)) n = sizeof(buf) - 1;
+    memcpy(buf, arg, n); buf[n] = '\0';
+    for (char *p = buf; *p; p++) *p = (char)toupper((unsigned char)*p);
+    /* replace invalid chars, then trim leading/trailing underscores */
+    for (char *p = buf; *p; p++) {
+        if (!isalnum((unsigned char)*p) && *p != '_') *p = '_';
+    }
+    char *s = buf, *e = buf + strlen(buf);
+    while (s < e && *s == '_') s++;
+    while (e > s && *(e-1) == '_') e--;
+    printf("MCP_%.*s_API_KEY\n", (int)(e - s), s);
+    return 0;
+}
 
 /* PoP: _strip_bearer_prefix @ hermes_cli/mcp_config.py:_strip_bearer_prefix */
 int hermes_cli_mcp_config_u_strip_bearer_prefix(const char *arg) { (void)arg; return 0; }
@@ -319,7 +338,21 @@ int hermes_cli_curses_ui_u_draw_description_line(const char *arg) { (void)arg; r
 int hermes_cli_curses_ui_u_draw_radio_item(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _move_filtered_cursor @ hermes_cli/curses_ui.py:_move_filtered_cursor */
-int hermes_cli_curses_ui_u_move_filtered_cursor(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curses_ui_u_move_filtered_cursor(const char *arg) {
+    /* Python: filtered[(cursor_pos + delta) % len(filtered)]; cursor if
+     * empty. Arg = "cursor_pos\tdelta\tsize". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    long cursor = strtol(arg, NULL, 10);
+    const char *p = strchr(arg, '\t');
+    long delta = p ? strtol(p + 1, NULL, 10) : 0;
+    long size = 0;
+    if (p) { const char *p2 = strchr(p + 1, '\t'); if (p2) size = strtol(p2 + 1, NULL, 10); }
+    if (size <= 0) { printf("%ld\n", cursor); return 0; }
+    long idx = (cursor + delta) % size;
+    if (idx < 0) idx += size;
+    printf("%ld\n", idx);
+    return 0;
+}
 
 /* PoP: _scroll_for_cursor @ hermes_cli/curses_ui.py:_scroll_for_cursor */
 int hermes_cli_curses_ui_u_scroll_for_cursor(const char *arg) { (void)arg; return 0; }
@@ -367,7 +400,23 @@ int hermes_cli_mcp_catalog_catalog_diagnostics(const char *arg) { (void)arg; ret
 int hermes_cli_mcp_catalog_get_entry(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _install_root @ hermes_cli/mcp_catalog.py:_install_root */
-int hermes_cli_mcp_catalog_u_install_root(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_catalog_u_install_root(const char *arg) {
+    /* Python: get_hermes_home() / "mcp-installs"; mkdir(parents=True,
+     * exist_ok=True). Arg = optional hermes home. */
+    char path[1200];
+    if (arg && *arg) snprintf(path, sizeof(path), "%s/mcp-installs", arg);
+    else {
+        const char *hh = getenv("HERMES_HOME");
+        if (hh && *hh) snprintf(path, sizeof(path), "%s/mcp-installs", hh);
+        else snprintf(path, sizeof(path), "%s/.hermes/mcp-installs",
+                      getenv("HOME") ? getenv("HOME") : ".");
+    }
+    char cmd[1300];
+    snprintf(cmd, sizeof(cmd), "mkdir -p '%s'", path);
+    system(cmd);
+    printf("%s\n", path);
+    return 0;
+}
 
 /* PoP: _run_bootstrap @ hermes_cli/mcp_catalog.py:_run_bootstrap */
 int hermes_cli_mcp_catalog_u_run_bootstrap(const char *arg) { (void)arg; return 0; }
@@ -543,7 +592,17 @@ int hermes_cli_auth_commands_u_interactive_reset(const char *arg) {
 int hermes_cli_auth_commands_u_interactive_strategy(const char *arg) { (void)arg; return 0; }
 
 /* PoP: owned_paths @ hermes_cli/profile_distribution.py:owned_paths */
-int hermes_cli_profile_distributio_owned_paths(const char *arg) { (void)arg; return 0; }
+int hermes_cli_profile_distributio_owned_paths(const char *arg) {
+    /* Python: list(self.distribution_owned) if set, else
+     * list(DEFAULT_DIST_OWNED). Arg = tab-separated owned paths (empty =
+     * defaults). */
+    if (!arg || !*arg) {
+        printf("skills\nplugins\ncron\nmemories\nconfig.yaml\n");
+        return 0;
+    }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _load_yaml @ hermes_cli/profile_distribution.py:_load_yaml */
 int hermes_cli_profile_distributio_u_load_yaml(const char *arg) { (void)arg; return 0; }
@@ -582,7 +641,24 @@ int hermes_cli_profile_distributio_u_reject_distribution_symlinks(const char *ar
 int hermes_cli_profile_distributio_u_has_cron_jobs(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _count_skills @ hermes_cli/profile_distribution.py:_count_skills */
-int hermes_cli_profile_distributio_u_count_skills(const char *arg) { (void)arg; return 0; }
+int hermes_cli_profile_distributio_u_count_skills(const char *arg) {
+    /* Python: count SKILL.md files under staged/skills (excluding excluded
+     * paths); 0 if dir missing. Arg = skills dir path. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    struct stat st;
+    if (stat(arg, &st) != 0 || !S_ISDIR(st.st_mode)) { printf("0\n"); return 0; }
+    char cmd[1400];
+    snprintf(cmd, sizeof(cmd), "find '%s' -name SKILL.md 2>/dev/null | wc -l", arg);
+    FILE *fp = popen(cmd, "r");
+    if (!fp) { printf("0\n"); return 0; }
+    char buf[64];
+    size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+    pclose(fp);
+    buf[n] = '\0';
+    long count = strtol(buf, NULL, 10);
+    printf("%ld\n", count);
+    return 0;
+}
 
 /* PoP: _copy_dist_payload @ hermes_cli/profile_distribution.py:_copy_dist_payload */
 int hermes_cli_profile_distributio_u_copy_dist_payload(const char *arg) { (void)arg; return 0; }
@@ -647,7 +723,18 @@ int hermes_cli_security_audit_u_count_components(const char *arg) { (void)arg; r
 int hermes_cli_security_audit_cmd_security_audit(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _api_url @ hermes_cli/telegram_managed_bot.py:_api_url */
-int hermes_cli_telegram_managed_bo_u_api_url(const char *arg) { (void)arg; return 0; }
+int hermes_cli_telegram_managed_bo_u_api_url(const char *arg) {
+    /* Python: (api_url or env override or DEFAULT_API_URL).rstrip("/").
+     * Arg = optional api_url. */
+    const char *v = NULL;
+    if (arg && *arg) v = arg;
+    if (!v) v = getenv("TELEGRAM_ONBOARDING_URL");
+    if (!v || !*v) v = "https://onboarding.hermes.nousresearch.com";
+    size_t n = strlen(v);
+    while (n > 0 && v[n-1] == '/') n--;
+    printf("%.*s\n", (int)n, v);
+    return 0;
+}
 
 /* PoP: _parse_owner_user_id @ hermes_cli/telegram_managed_bot.py:_parse_owner_user_id */
 int hermes_cli_telegram_managed_bo_u_parse_owner_user_id(const char *arg) { (void)arg; return 0; }
@@ -963,7 +1050,13 @@ int hermes_cli_claw_u_print_migration_report(const char *arg) { (void)arg; retur
 int hermes_cli_env_loader_get_secret_source(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_secret_source_values @ hermes_cli/env_loader.py:get_secret_source_values */
-int hermes_cli_env_loader_get_secret_source_values(const char *arg) { (void)arg; return 0; }
+int hermes_cli_env_loader_get_secret_source_values(const char *arg) {
+    /* Python: dict(_SECRET_SOURCE_VALUES_BY_HOME.get(resolved_home, {})).
+     * Arg = hermes_home path (echoes {}; C env loader keeps no snapshot). */
+    (void)arg;
+    printf("{}\n");
+    return 0;
+}
 
 /* PoP: reset_secret_source_cache @ hermes_cli/env_loader.py:reset_secret_source_cache */
 int hermes_cli_env_loader_reset_secret_source_cache(const char *arg) { (void)arg; return 0; }
@@ -2024,7 +2117,23 @@ int hermes_cli_dashboard_auth_base_complete_password_login(const char *arg) { (v
 int hermes_cli_dashboard_auth_base_assert_protocol_compliance(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _timeout_seconds @ hermes_cli/nous_auth_keepalive.py:_timeout_seconds */
-int hermes_cli_nous_auth_keepalive_u_timeout_seconds(const char *arg) { (void)arg; return 0; }
+int hermes_cli_nous_auth_keepalive_u_timeout_seconds(const char *arg) {
+    /* Python: float(value) if not None; else float(env
+     * HERMES_NOUS_TIMEOUT_SECONDS or 15); 15.0 on ValueError. */
+    if (arg && *arg && strcmp(arg, "None") != 0) {
+        char *end = NULL;
+        double v = strtod(arg, &end);
+        if (end != arg && end && *end == '\0') { printf("%.6g\n", v); return 0; }
+    }
+    const char *env = getenv("HERMES_NOUS_TIMEOUT_SECONDS");
+    if (env && *env) {
+        char *end = NULL;
+        double v = strtod(env, &end);
+        if (end != env && end && *end == '\0') { printf("%.6g\n", v); return 0; }
+    }
+    printf("15\n");
+    return 0;
+}
 
 /* PoP: _entry_state @ hermes_cli/nous_auth_keepalive.py:_entry_state */
 int hermes_cli_nous_auth_keepalive_u_entry_state(const char *arg) { (void)arg; return 0; }
@@ -2638,7 +2747,22 @@ int hermes_cli_send_cmd_u_list_targets(const char *arg) { (void)arg; return 0; }
 int hermes_cli_send_cmd_u_load_hermes_env(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _escape_html @ hermes_cli/session_export_html.py:_escape_html */
-int hermes_cli_session_export_html_u_escape_html(const char *arg) { (void)arg; return 0; }
+int hermes_cli_session_export_html_u_escape_html(const char *arg) {
+    /* Python: str(text) then & < > " ' -> &amp; &lt; &gt; &quot; &#39;. */
+    if (!arg) arg = "";
+    for (const char *p = arg; *p; p++) {
+        switch (*p) {
+            case '&': fputs("&amp;", stdout); break;
+            case '<': fputs("&lt;", stdout); break;
+            case '>': fputs("&gt;", stdout); break;
+            case '"': fputs("&quot;", stdout); break;
+            case '\'': fputs("&#39;", stdout); break;
+            default: putchar(*p);
+        }
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _generate_messages_html @ hermes_cli/session_export_html.py:_generate_messages_html */
 int hermes_cli_session_export_html_u_generate_messages_html(const char *arg) { (void)arg; return 0; }
