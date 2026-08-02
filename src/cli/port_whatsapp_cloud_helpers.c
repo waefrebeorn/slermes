@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <strings.h>
+#include <unistd.h>
 #include <sys/stat.h>
 
 #include "hermes_json.h"
@@ -58,9 +59,28 @@ char *whatsapp_cloud_graph_url(const char *version, const char *phone_id) {
 /* PoP: _bounded_put @ gateway/platforms/whatsapp_cloud.py:_bounded_put */
 /* PoP: whatsapp_cloud_bounded_put @ gateway/platforms/whatsapp_cloud.py:_bounded_put */
 int whatsapp_cloud_bounded_put(const char *url, const char *body, int timeout_s) {
-    (void)url; (void)body; (void)timeout_s;
-    /* Full HTTP PUT handled by libhttp */
-    return 0;
+    /* Python: bounded HTTP PUT to the WhatsApp Cloud API (FIFO-capped
+     * interactive-state cache on the caller side). Real PUT via curl. */
+    if (!url || !*url) return 1;
+    char tmp[] = "/tmp/wa_put_XXXXXX";
+    int fd = mkstemp(tmp);
+    if (fd < 0) return 1;
+    if (body) write(fd, body, strlen(body));
+    close(fd);
+    if (timeout_s <= 0) timeout_s = 10;
+    char cmd[1600];
+    snprintf(cmd, sizeof(cmd),
+             "curl -sS --max-time %d -X PUT -H 'Content-Type: application/json' "
+             "--data-binary @'%s' '%s' >/dev/null 2>&1; echo $?",
+             timeout_s, tmp, url);
+    FILE *fp = popen(cmd, "r");
+    unlink(tmp);
+    if (!fp) return 1;
+    char buf[16];
+    size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+    pclose(fp);
+    buf[n] = '\0';
+    return strtol(buf, NULL, 10) == 0 ? 0 : 1;
 }
 
 /* PoP: _effective_reply_prefix @ gateway/platforms/whatsapp_cloud.py:_effective_reply_prefix */

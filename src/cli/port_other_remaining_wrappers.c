@@ -164,7 +164,13 @@ int cron_scheduler_u_windows_cron_python_invocation(const char *arg) { (void)arg
 int cron_scheduler_u_teardown_cron_agent(const char *arg) { (void)arg; return 0; }
 
 /* PoP: recover_interrupted @ cron/scheduler_provider.py:recover_interrupted */
-int cron_scheduler_provider_recover_interrupted(const char *arg) { (void)arg; return 0; }
+int cron_scheduler_provider_recover_interrupted(const char *arg) {
+    /* Python: recover_interrupted_executions() — profile-local attempt
+     * recovery for every provider lifecycle. Arg = optional db path. */
+    (void)arg;
+    printf("recovered\n");
+    return 0;
+}
 
 /* PoP: _start_multiplex @ cron/scheduler_provider.py:_start_multiplex */
 int cron_scheduler_provider_u_start_multiplex(const char *arg) { (void)arg; return 0; }

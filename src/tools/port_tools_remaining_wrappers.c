@@ -572,7 +572,16 @@ int tools_mcp_dashboard_oauth_deliver_callback(const char *arg) { (void)arg; ret
 int tools_mcp_dashboard_oauth_wait_for_callback(const char *arg) { (void)arg; return 0; }
 
 /* PoP: mark_approved @ tools/mcp_dashboard_oauth.py:mark_approved */
-int tools_mcp_dashboard_oauth_mark_approved(const char *arg) { (void)arg; return 0; }
+int tools_mcp_dashboard_oauth_mark_approved(const char *arg) {
+    /* Python: locked: error if status=="error" ("OAuth flow already
+     * ended"); else status="approved", error=None. Arg = current status. */
+    if (arg && strcmp(arg, "error") == 0) {
+        printf("OAuth flow already ended\n");
+        return 1;
+    }
+    printf("approved\n");
+    return 0;
+}
 
 /* PoP: mark_error @ tools/mcp_dashboard_oauth.py:mark_error */
 int tools_mcp_dashboard_oauth_mark_error(const char *arg) { (void)arg; return 0; }
@@ -768,7 +777,16 @@ int tools_tool_backend_helpers_has_direct_modal_credentials(const char *arg) { (
 int tools_tool_backend_helpers_resolve_modal_backend_state(const char *arg) { (void)arg; return 0; }
 
 /* PoP: resolve_openai_audio_api_key @ tools/tool_backend_helpers.py:resolve_openai_audio_api_key */
-int tools_tool_backend_helpers_resolve_openai_audio_api_key(const char *arg) { (void)arg; return 0; }
+int tools_tool_backend_helpers_resolve_openai_audio_api_key(const char *arg) {
+    /* Python: (VOICE_TOOLS_OPENAI_KEY or OPENAI_API_KEY).strip(). */
+    (void)arg;
+    const char *v = getenv("VOICE_TOOLS_OPENAI_KEY");
+    if (!v || !*v) v = getenv("OPENAI_API_KEY");
+    if (!v) v = "";
+    while (*v == ' ' || *v == '\t') v++;
+    printf("%s\n", v);
+    return 0;
+}
 
 /* PoP: prefers_gateway @ tools/tool_backend_helpers.py:prefers_gateway */
 int tools_tool_backend_helpers_prefers_gateway(const char *arg) { (void)arg; return 0; }
@@ -833,13 +851,34 @@ int tools_xai_video_tools_u_handle_xai_video_edit(const char *arg) { (void)arg; 
 int tools_xai_video_tools_u_handle_xai_video_extend(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_driver_cmd @ tools/computer_use/permissions.py:_resolve_driver_cmd */
-int tools_computer_use_permissions_u_resolve_driver_cmd(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_permissions_u_resolve_driver_cmd(const char *arg) {
+    /* Python: resolve_cua_driver_cmd(override) from cua_backend. Arg =
+     * override (or empty). */
+    if (!arg || !*arg) {
+        const char *env = getenv("CUA_DRIVER_CMD");
+        printf("%s\n", env && *env ? env : "xdpyinfo");
+        return 0;
+    }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _child_env @ tools/computer_use/permissions.py:_child_env */
 int tools_computer_use_permissions_u_child_env(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _json_out @ tools/computer_use/permissions.py:_json_out */
-int tools_computer_use_permissions_u_json_out(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_permissions_u_json_out(const char *arg) {
+    /* Python: run binary+args; parse stdout as JSON; None on empty/fail.
+     * Arg = JSON string (already captured); validated and echoed. */
+    if (!arg || !*arg) { printf("None\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (!j) { printf("None\n"); return 0; }
+    char *ser = json_serialize(j);
+    printf("%s\n", ser ? ser : arg);
+    free(ser);
+    json_free(j);
+    return 0;
+}
 
 /* PoP: _mac_permissions @ tools/computer_use/permissions.py:_mac_permissions */
 int tools_computer_use_permissions_u_mac_permissions(const char *arg) { (void)arg; return 0; }
@@ -1154,7 +1193,30 @@ int tools_voice_mode_cancel_2(const char *arg) { (void)arg; return 0; }
 int tools_ansi_strip_sanitize_display_text(const char *arg) { (void)arg; return 0; }
 
 /* PoP: has_binary_extension @ tools/binary_extensions.py:has_binary_extension */
-int tools_binary_extensions_has_binary_extension(const char *arg) { (void)arg; return 0; }
+int tools_binary_extensions_has_binary_extension(const char *arg) {
+    /* Python: path[dot:].lower() in BINARY_EXTENSIONS (no I/O).
+     * Arg = file path. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *dot = strrchr(arg, '.');
+    if (!dot) { printf("0\n"); return 0; }
+    static const char *exts[] = {
+        ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".ico", ".tiff",
+        ".mp4", ".mov", ".avi", ".mkv", ".webm", ".mp3", ".wav", ".ogg",
+        ".flac", ".m4a", ".pdf", ".zip", ".gz", ".tar", ".7z", ".rar",
+        ".exe", ".dll", ".so", ".dylib", ".bin", ".dat", ".class", ".pyc"
+    };
+    size_t n = strlen(dot);
+    char buf[16];
+    if (n >= sizeof(buf)) n = sizeof(buf) - 1;
+    memcpy(buf, dot, n); buf[n] = '\0';
+    for (char *p = buf; *p; p++) *p = (char)tolower((unsigned char)*p);
+    int hit = 0;
+    for (size_t i = 0; i < sizeof(exts) / sizeof(exts[0]); i++) {
+        if (strcmp(buf, exts[i]) == 0) { hit = 1; break; }
+    }
+    printf("%d\n", hit);
+    return 0;
+}
 
 /* PoP: get_camofox_state_dir @ tools/browser_camofox_state.py:get_camofox_state_dir */
 int tools_browser_camofox_state_get_camofox_state_dir(const char *arg) {

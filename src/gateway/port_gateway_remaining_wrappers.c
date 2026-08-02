@@ -267,7 +267,17 @@ int gateway_shutdown_watchdog_u_arm_loop_floor_timer(const char *arg) { (void)ar
 int gateway_shutdown_watchdog_start_loop_liveness_watchdog(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _process_hermes_home @ gateway/shutdown_watchdog.py:_process_hermes_home */
-int gateway_shutdown_watchdog_u_process_hermes_home(const char *arg) { (void)arg; return 0; }
+int gateway_shutdown_watchdog_u_process_hermes_home(const char *arg) {
+    /* Python: HERMES_HOME env if set (stripped), else get_hermes_home(). */
+    (void)arg;
+    const char *hh = getenv("HERMES_HOME");
+    if (hh && *hh) {
+        while (*hh == ' ' || *hh == '\t') hh++;
+        if (*hh) { printf("%s\n", hh); return 0; }
+    }
+    printf("%s/.hermes\n", getenv("HOME") ? getenv("HOME") : ".");
+    return 0;
+}
 
 /* PoP: get_loop_heartbeat_path @ gateway/shutdown_watchdog.py:get_loop_heartbeat_path */
 int gateway_shutdown_watchdog_get_loop_heartbeat_path(const char *arg) {
@@ -284,7 +294,16 @@ int gateway_shutdown_watchdog_get_loop_heartbeat_path(const char *arg) {
 }
 
 /* PoP: get_shutdown_watchdog_dump_path @ gateway/shutdown_watchdog.py:get_shutdown_watchdog_dump_path */
-int gateway_shutdown_watchdog_get_shutdown_watchdog_dump_path(const char *arg) { (void)arg; return 0; }
+int gateway_shutdown_watchdog_get_shutdown_watchdog_dump_path(const char *arg) {
+    /* Python: base / "state" / "gateway-shutdown-watchdog.json" (base =
+     * home arg or _process_hermes_home()). Arg = optional home. */
+    if (arg && *arg) { printf("%s/state/gateway-shutdown-watchdog.json\n", arg); return 0; }
+    const char *hh = getenv("HERMES_HOME");
+    if (hh && *hh) printf("%s/state/gateway-shutdown-watchdog.json\n", hh);
+    else printf("%s/.hermes/state/gateway-shutdown-watchdog.json\n",
+                getenv("HOME") ? getenv("HOME") : ".");
+    return 0;
+}
 
 /* PoP: write_loop_heartbeat @ gateway/shutdown_watchdog.py:write_loop_heartbeat */
 int gateway_shutdown_watchdog_write_loop_heartbeat(const char *arg) { (void)arg; return 0; }

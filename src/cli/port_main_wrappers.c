@@ -1187,7 +1187,21 @@ int main_u_should_background_mcp_startup(const char *arg) {
 int main_u_prepare_agent_startup(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _apply_safe_mode @ hermes_cli/main.py:_apply_safe_mode */
-int main_u_apply_safe_mode(const char *arg) { (void)arg; return 0; }
+int main_u_apply_safe_mode(const char *arg) {
+    /* Python: if args.safe_mode: set HERMES_SAFE_MODE=1,
+     * HERMES_IGNORE_USER_CONFIG=1, HERMES_IGNORE_RULES=1. Arg = "1"/"0". */
+    int safe = (arg && *arg && strcmp(arg, "1") == 0);
+    if (!safe && arg && strcmp(arg, "true") == 0) safe = 1;
+    if (safe) {
+        setenv("HERMES_SAFE_MODE", "1", 1);
+        setenv("HERMES_IGNORE_USER_CONFIG", "1", 1);
+        setenv("HERMES_IGNORE_RULES", "1", 1);
+        printf("safe mode applied\n");
+    } else {
+        printf("safe mode off\n");
+    }
+    return 0;
+}
 
 /* PoP: _set_chat_arg_defaults @ hermes_cli/main.py:_set_chat_arg_defaults */
 int main_u_set_chat_arg_defaults(const char *arg) { (void)arg; return 0; }

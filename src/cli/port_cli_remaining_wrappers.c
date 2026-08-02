@@ -249,7 +249,25 @@ int hermes_cli_cli_billing_mixin_u_billing_add_card_flow(const char *arg) { (voi
 int hermes_cli_pets_u_cmd_install(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cmd_remove @ hermes_cli/pets.py:_cmd_remove */
-int hermes_cli_pets_u_cmd_remove(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pets_u_cmd_remove(const char *arg) {
+    /* Python: slug = args.slug.strip(); remove_pet(slug) -> "✓ removed
+     * <slug>" (0) or "✗ '<slug>' is not installed" (1). Arg = slug. */
+    if (!arg || !*arg) return 1;
+    /* C pet store lives under ~/.hermes/pets/<slug> */
+    char path[1200];
+    snprintf(path, sizeof(path), "%s/.hermes/pets/%s",
+             getenv("HOME") ? getenv("HOME") : ".", arg);
+    struct stat st;
+    if (stat(path, &st) != 0) {
+        printf("\xE2\x9C\x97 '%s' is not installed\n", arg);
+        return 1;
+    }
+    char cmd[1300];
+    snprintf(cmd, sizeof(cmd), "rm -rf '%s'", path);
+    system(cmd);
+    printf("\xE2\x9C\x93 removed %s\n", arg);
+    return 0;
+}
 
 /* PoP: _cmd_select @ hermes_cli/pets.py:_cmd_select */
 int hermes_cli_pets_u_cmd_select(const char *arg) { (void)arg; return 0; }
@@ -764,7 +782,35 @@ int hermes_cli_telegram_managed_bo_create_pairing(const char *arg) { (void)arg; 
 int hermes_cli_telegram_managed_bo_poll_pairing_result_once(const char *arg) { (void)arg; return 0; }
 
 /* PoP: poll_pairing_once @ hermes_cli/telegram_managed_bot.py:poll_pairing_once */
-int hermes_cli_telegram_managed_bo_poll_pairing_once(const char *arg) { (void)arg; return 0; }
+int hermes_cli_telegram_managed_bo_poll_pairing_once(const char *arg) {
+    /* Python: poll_pairing_result_once(api_url, pairing) -> .token if ready
+     * else None. Arg = pairing id; polls via curl. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *api = getenv("TELEGRAM_ONBOARDING_URL");
+    if (!api || !*api) api = "https://onboarding.hermes.nousresearch.com";
+    char cmd[1600];
+    snprintf(cmd, sizeof(cmd),
+             "curl -sS --max-time 10 '%s/api/pairing/%s' 2>/dev/null", api, arg);
+    FILE *fp = popen(cmd, "r");
+    if (!fp) { printf("\n"); return 0; }
+    char buf[4096];
+    size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+    pclose(fp);
+    buf[n] = '\0';
+    /* token field may be "token", "access_token", or "ready" status */
+    json_t *res = json_parse(buf, NULL);
+    if (res && json_is_object(res)) {
+        const char *tok = json_get_str(res, "token", NULL);
+        if (!tok) tok = json_get_str(res, "access_token", NULL);
+        if (tok && *tok) printf("%s\n", tok);
+        else printf("\n");
+        json_free(res);
+        return 0;
+    }
+    if (res) json_free(res);
+    printf("\n");
+    return 0;
+}
 
 /* PoP: poll_for_setup_result @ hermes_cli/telegram_managed_bot.py:poll_for_setup_result */
 int hermes_cli_telegram_managed_bo_poll_for_setup_result(const char *arg) { (void)arg; return 0; }
@@ -1490,7 +1536,29 @@ int hermes_cli_browser_connect_u_detach_kwargs(const char *arg) { (void)arg; ret
 int hermes_cli_browser_connect_u_wait_for_browser_debug_ready_or_it(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _read_stderr_tail @ hermes_cli/browser_connect.py:_read_stderr_tail */
-int hermes_cli_browser_connect_u_read_stderr_tail(const char *arg) { (void)arg; return 0; }
+int hermes_cli_browser_connect_u_read_stderr_tail(const char *arg) {
+    /* Python: read file bytes; keep last _STDERR_TAIL_LIMIT (e.g. 64 KiB),
+     * decode utf-8 errors=replace, strip. Arg = path. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    FILE *fp = fopen(arg, "rb");
+    if (!fp) { printf("\n"); return 0; }
+    long size;
+    fseek(fp, 0, SEEK_END);
+    size = ftell(fp);
+    long limit = 65536;
+    long start = size > limit ? size - limit : 0;
+    fseek(fp, start, SEEK_SET);
+    char *buf = malloc((size_t)(size - start) + 1);
+    if (!buf) { fclose(fp); printf("\n"); return 0; }
+    size_t n = fread(buf, 1, (size_t)(size - start), fp);
+    fclose(fp);
+    buf[n] = '\0';
+    /* strip trailing whitespace */
+    while (n > 0 && (buf[n-1] == '\n' || buf[n-1] == '\r' || buf[n-1] == ' ' || buf[n-1] == '\t')) n--;
+    printf("%.*s\n", (int)n, buf);
+    free(buf);
+    return 0;
+}
 
 /* PoP: launch_chrome_debug @ hermes_cli/browser_connect.py:launch_chrome_debug */
 int hermes_cli_browser_connect_launch_chrome_debug(const char *arg) { (void)arg; return 0; }
@@ -2466,7 +2534,15 @@ int hermes_cli_codex_models_u_read_cache_models(const char *arg) { (void)arg; re
 int hermes_cli_dashboard_auth_cook_set_session_provider_cookie(const char *arg) { (void)arg; return 0; }
 
 /* PoP: read_session_cookies @ hermes_cli/dashboard_auth/cookies.py:read_session_cookies */
-int hermes_cli_dashboard_auth_cook_read_session_cookies(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_cook_read_session_cookies(const char *arg) {
+    /* Python: (at, rt) from cookie request helpers, either may be None.
+     * Arg = "access\trefresh" tokens (tab-separated). */
+    if (!arg || !*arg) { printf("\n\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("%s\n\n", arg); return 0; }
+    printf("%.*s\n%s\n", (int)(tab - arg), arg, tab + 1);
+    return 0;
+}
 
 /* PoP: read_session_provider @ hermes_cli/dashboard_auth/cookies.py:read_session_provider */
 int hermes_cli_dashboard_auth_cook_read_session_provider(const char *arg) {
@@ -2546,7 +2622,20 @@ int hermes_cli_moa_config_u_default_reference_models(const char *arg) { (void)ar
 int hermes_cli_moa_config_u_coerce_reference_timeout(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _coerce_degraded_reference_policy @ hermes_cli/moa_config.py:_coerce_degraded_reference_policy */
-int hermes_cli_moa_config_u_coerce_degraded_reference_policy(const char *arg) { (void)arg; return 0; }
+int hermes_cli_moa_config_u_coerce_degraded_reference_policy(const char *arg) {
+    /* Python: str(value or "loud").strip().lower(); "loud" if not in
+     * {"loud","silent"}. Arg = value. */
+    const char *v = (arg && *arg) ? arg : "loud";
+    while (*v == ' ' || *v == '\t') v++;
+    char buf[32];
+    size_t n = strlen(v);
+    if (n >= sizeof(buf)) n = sizeof(buf) - 1;
+    memcpy(buf, v, n); buf[n] = '\0';
+    for (char *p = buf; *p; p++) *p = (char)tolower((unsigned char)*p);
+    if (strcmp(buf, "silent") == 0) printf("silent\n");
+    else printf("loud\n");
+    return 0;
+}
 
 /* PoP: coerce_privacy_filter @ hermes_cli/moa_config.py:coerce_privacy_filter */
 int hermes_cli_moa_config_coerce_privacy_filter(const char *arg) { (void)arg; return 0; }

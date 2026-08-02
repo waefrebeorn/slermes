@@ -35,7 +35,16 @@ int cgw_u_filter_venv_launcher_stubs(const char *arg) { (void)arg; return 0; }
 int cgw_find_profile_gateway_processes(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _gateway_run_args_for_profile @ hermes_cli/gateway.py:_gateway_run_args_for_profile */
-int cgw_u_gateway_run_args_for_profile(const char *arg) { (void)arg; return 0; }
+int cgw_u_gateway_run_args_for_profile(const char *arg) {
+    /* Python: [python, -m hermes_cli.main] + [--profile p] if != default +
+     * [gateway run --replace]. Arg = profile name. */
+    if (!arg || !*arg || strcmp(arg, "default") == 0) {
+        printf("python3 -m hermes_cli.main gateway run --replace\n");
+        return 0;
+    }
+    printf("python3 -m hermes_cli.main --profile %s gateway run --replace\n", arg);
+    return 0;
+}
 
 /* PoP: _prepare_profile_gateway_update_restart @ hermes_cli/gateway.py:_prepare_profile_gateway_update_restart */
 int cgw_u_prepare_profile_gateway_update_restart(const char *arg) { (void)arg; return 0; }
@@ -92,7 +101,22 @@ int cgw_u_systemd_main_pid(const char *arg) {
 }
 
 /* PoP: _read_gateway_runtime_status @ hermes_cli/gateway.py:_read_gateway_runtime_status */
-int cgw_u_read_gateway_runtime_status(const char *arg) { (void)arg; return 0; }
+int cgw_u_read_gateway_runtime_status(const char *arg) {
+    /* Python: read_runtime_status() if dict else None. Arg = status JSON
+     * (or empty). */
+    if (!arg || !*arg) { printf("None\n"); return 0; }
+    json_t *st = json_parse(arg, NULL);
+    if (st && json_is_object(st)) {
+        char *ser = json_serialize(st);
+        printf("%s\n", ser ? ser : arg);
+        free(ser);
+        json_free(st);
+        return 0;
+    }
+    if (st) json_free(st);
+    printf("None\n");
+    return 0;
+}
 
 /* PoP: _gateway_runtime_status_for_pid @ hermes_cli/gateway.py:_gateway_runtime_status_for_pid */
 int cgw_u_gateway_runtime_status_for_pid(const char *arg) { (void)arg; return 0; }

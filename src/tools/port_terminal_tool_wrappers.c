@@ -57,7 +57,14 @@ int tt_u_get_approval_callback(const char *arg) {
 int tt_u_get_sudo_password_cache_scope(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _get_cached_sudo_password @ tools/terminal_tool.py:_get_cached_sudo_password */
-int tt_u_get_cached_sudo_password(const char *arg) { (void)arg; return 0; }
+int tt_u_get_cached_sudo_password(const char *arg) {
+    /* Python: locked _sudo_password_cache.get(scope, ""). Arg = scope. */
+    (void)arg;
+    const char *sp = getenv("SUDO_PASSWORD");
+    if (sp && *sp) printf("%s\n", sp);
+    else printf("\n");
+    return 0;
+}
 
 /* PoP: _set_cached_sudo_password @ tools/terminal_tool.py:_set_cached_sudo_password */
 int tt_u_set_cached_sudo_password(const char *arg) { (void)arg; return 0; }

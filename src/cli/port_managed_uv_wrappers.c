@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <unistd.h>
 #include <sys/stat.h>
 #include "hermes_json.h"
 
@@ -16,7 +17,15 @@
 int muv_managed_uv_path(const char *arg) { (void)arg; return 0; }
 
 /* PoP: managed_python_install_dir @ hermes_cli/managed_uv.py:managed_python_install_dir */
-int muv_managed_python_install_dir(const char *arg) { (void)arg; return 0; }
+int muv_managed_python_install_dir(const char *arg) {
+    /* Python: (project_root or _PROJECT_ROOT) / _RUNTIME_DIR_NAME / "python".
+     * Arg = optional project root. */
+    if (arg && *arg) { printf("%s/runtime/python\n", arg); return 0; }
+    char cwd[2048];
+    if (getcwd(cwd, sizeof(cwd))) printf("%s/runtime/python\n", cwd);
+    else printf("runtime/python\n");
+    return 0;
+}
 
 /* PoP: managed_python_env @ hermes_cli/managed_uv.py:managed_python_env */
 int muv_managed_python_env(const char *arg) { (void)arg; return 0; }

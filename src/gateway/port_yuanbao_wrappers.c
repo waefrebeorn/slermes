@@ -56,7 +56,16 @@ int yb_u_decode_single(const char *arg) { (void)arg; return 0; }
 int yb_u_handle_recall(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _find_processing_session @ gateway/platforms/yuanbao.py:_find_processing_session */
-int yb_u_find_processing_session(const char *arg) { (void)arg; return 0; }
+int yb_u_find_processing_session(const char *arg) {
+    /* Python: first session whose processing msg id == recalled_id and is
+     * active. Arg = "recalled_id\tsession\tsession..." — echo matching
+     * session or empty. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("\n"); return 0; }
+    printf("%s\n", tab + 1);
+    return 0;
+}
 
 /* PoP: _interrupt_for_recall @ gateway/platforms/yuanbao.py:_interrupt_for_recall */
 int yb_u_interrupt_for_recall(const char *arg) { (void)arg; return 0; }
